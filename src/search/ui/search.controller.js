@@ -38,10 +38,8 @@ function Search(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
 
-  $scope.$watch(function () {
-    return $location.search();
-  }, function (searchParams) {
-
+  function initSearchParams() {
+    var searchParams = $location.search();
     if (searchParams.page) {
       $scope.resultViewer.currentPage = parseInt(searchParams.page);
     }
@@ -52,13 +50,14 @@ function Search(
     }
 
     if (searchParams.unavailable) {
-      searchHelper.setUnavailable(searchParams.unavailable === 'false' ? false : true);
+      searchHelper.setUnavailable(searchParams.unavailable !== 'false');
     }
 
     if (searchParams.past) {
-      searchHelper.setPast(searchParams.past === 'false' ? false : true);
+      searchHelper.setPast(searchParams.past !== 'false');
     }
-  }, true);
+  }
+  initSearchParams();
 
   /**
    * This debounce function can be used to delay searching when an input field changes.

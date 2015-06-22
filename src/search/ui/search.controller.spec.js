@@ -30,6 +30,7 @@ describe('Controller: Search', function() {
     $location = {
       search: jasmine.createSpy('search')
     };
+    $location.search.andReturn({'query': 'some: query', 'page': 0});
     udbApi = jasmine.createSpyObj('udbApi', ['findEvents', 'getEventById']);
     searchController = $controller(
       'Search', {
@@ -45,7 +46,6 @@ describe('Controller: Search', function() {
 
   it('alerts if there is no query when trying to export events', function() {
     expect($scope.activeQuery).toEqual(false);
-    $location.search.andReturn({'query': 'some: query', 'page': 0});
 
     $scope.resultViewer.selectedIds = ['foo', 'bar'];
     $scope.exportEvents();
@@ -90,6 +90,7 @@ describe('Controller: Search', function() {
     });
 
     it('adds location parameters to the search helper', function () {
+
       $location.search.andReturn(
         {
           query: 'city: Tienen',
@@ -98,7 +99,16 @@ describe('Controller: Search', function() {
           past: 'false'
         }
       );
-      $scope.$digest();
+      var freshController = $controller(
+        'Search', {
+          $scope: $scope,
+          $window: $window,
+          $location: $location,
+          udbApi: udbApi,
+          eventLabeller: eventLabeller,
+          searchHelper: searchHelper
+        }
+      );
 
       expect(searchHelper.getQuery().queryString).toBe('city: Tienen');
       expect(searchHelper.getUnavailable()).toBe(false);
