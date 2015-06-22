@@ -61,7 +61,7 @@ describe('Controller: Search', function() {
 
     beforeEach(function () {
       var deferredEvents = $q.defer();
-      spyOn(searchHelper, 'getQuery').andReturn({queryString: 'city: Leuven'});
+      searchHelper.setQueryString('city: Leuven');
       udbApi.findEvents.andReturn(deferredEvents.promise);
     });
 
@@ -87,6 +87,22 @@ describe('Controller: Search', function() {
           page: '1'
         }
       );
+    });
+
+    it('adds location parameters to the search helper', function () {
+      $location.search.andReturn(
+        {
+          query: 'city: Tienen',
+          page: '2',
+          unavailable: 'false',
+          past: 'false'
+        }
+      );
+      $scope.$digest();
+
+      expect(searchHelper.getQuery().queryString).toBe('city: Tienen');
+      expect(searchHelper.getUnavailable()).toBe(false);
+      expect(searchHelper.getPast()).toBe(false);
     });
   });
 });

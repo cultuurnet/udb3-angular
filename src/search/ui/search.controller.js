@@ -52,11 +52,11 @@ function Search(
     }
 
     if (searchParams.unavailable) {
-      searchHelper.setUnavailable(searchParams.unavailable);
+      searchHelper.setUnavailable(searchParams.unavailable === 'false' ? false : true);
     }
 
     if (searchParams.past) {
-      searchHelper.setPast(searchParams.past);
+      searchHelper.setPast(searchParams.past === 'false' ? false : true);
     }
   }, true);
 
