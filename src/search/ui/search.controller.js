@@ -108,12 +108,14 @@ function Search(
         'page': String($scope.resultViewer.currentPage)
       };
 
-      if (!unavailable) { searchParams.unavailable = false; }
-      if (!past) { searchParams.past = false; }
+      if (!unavailable) { searchParams.unavailable = 'false'; }
+      if (!past) { searchParams.past = 'false'; }
     } else {
       searchParams = {
         'query': null,
-        'page': null
+        'page': null,
+        'unavailable': null,
+        'past': null
       };
     }
 
@@ -275,4 +277,5 @@ function Search(
     }
   });
 
+  this.findEvents = findEvents;
 }
