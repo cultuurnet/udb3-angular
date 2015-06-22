@@ -3,6 +3,20 @@
 </div>
 
 <div class="modal-body">
+  <div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="qe.includeUnavailable"> evenementen onder embargo tonen
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="qe.includePast"> evenementen uit het verleden tonen
+      </label>
+    </div>
+  </div>
+
   <div class="udb-query-editor">
     <div class="panel panel-default" ng-repeat="rootGroup in qe.groupedQueryTree.nodes">
 
