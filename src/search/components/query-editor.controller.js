@@ -23,6 +23,9 @@ function QueryEditorController(
   var qe = this,
       queryBuilder = LuceneQueryBuilder;
 
+  qe.includeUnavailable = true;
+  qe.includePast = true;
+
   qe.fields = _.filter(queryFields, 'editable');
 
   // use the first occurrence of a group name to order it against the other groups
@@ -85,6 +88,8 @@ function QueryEditorController(
    * Update the search input field with the data from the query editor
    */
   qe.updateQueryString = function () {
+    searchHelper.setUnavailable(qe.includeUnavailable);
+    searchHelper.setPast(qe.includePast);
     searchHelper.setQueryString(queryBuilder.unparseGroupedTree(qe.groupedQueryTree));
     $rootScope.$emit('stopEditingQuery');
   };

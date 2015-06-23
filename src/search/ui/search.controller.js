@@ -38,10 +38,8 @@ function Search(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
 
-  $scope.$watch(function () {
-    return $location.search();
-  }, function (searchParams) {
-
+  function initSearchParams() {
+    var searchParams = $location.search();
     if (searchParams.page) {
       $scope.resultViewer.currentPage = parseInt(searchParams.page);
     }
@@ -50,7 +48,16 @@ function Search(
       var queryString = String(searchParams.query) || '';
       searchHelper.setQueryString(queryString);
     }
-  }, true);
+
+    if (searchParams.unavailable) {
+      searchHelper.setUnavailable(searchParams.unavailable !== 'false');
+    }
+
+    if (searchParams.past) {
+      searchHelper.setPast(searchParams.past !== 'false');
+    }
+  }
+  initSearchParams();
 
   /**
    * This debounce function can be used to delay searching when an input field changes.
@@ -81,22 +88,37 @@ function Search(
    * @param {String|Query} query A query string or object to search with.
    */
   var findEvents = function (query) {
-    var offset = ($scope.resultViewer.currentPage - 1) * $scope.resultViewer.pageSize;
-    var queryString = typeof query === 'string' ? query : query.queryString;
-    var eventPromise = udbApi.findEvents(queryString, offset);
+    var offset = ($scope.resultViewer.currentPage - 1) * $scope.resultViewer.pageSize,
+        unavailable = searchHelper.getUnavailable(),
+        past = searchHelper.getPast(),
+        queryString = typeof query === 'string' ? query : query.queryString,
+        eventPromise = udbApi.findEvents(
+          queryString,
+          offset,
+          unavailable,
+          past
+        );
 
     // Check if a query string is defined else clear the relevant search parameters.
+    var searchParams = {};
     if (queryString) {
-      $location.search({
+      searchParams = {
         'query': getSearchQuery().queryString,
         'page': String($scope.resultViewer.currentPage)
-      });
+      };
+
+      if (!unavailable) { searchParams.unavailable = 'false'; }
+      if (!past) { searchParams.past = 'false'; }
     } else {
-      $location.search({
+      searchParams = {
         'query': null,
-        'page': null
-      });
+        'page': null,
+        'unavailable': null,
+        'past': null
+      };
     }
+
+    $location.search(searchParams);
 
     $scope.resultViewer.loading = true;
 
@@ -254,4 +276,5 @@ function Search(
     }
   });
 
+  this.findEvents = findEvents;
 }

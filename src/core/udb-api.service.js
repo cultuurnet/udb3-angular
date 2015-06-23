@@ -25,10 +25,12 @@ function UdbApi($q, $http, appConfig, $cookieStore, uitidAuth, $cacheFactory, Ud
   /**
    * @param {string} queryString - The query used to find events.
    * @param {?number} start - From which event offset the result set should start.
+   * @param {boolean} [unavailable=true]
+   * @param {boolean} [past=true]
    * @returns {Promise} A promise that signals a successful retrieval of
    *  search results or a failure.
    */
-  this.findEvents = function (queryString, start) {
+  this.findEvents = function (queryString, start, unavailable, past) {
     var deferredEvents = $q.defer(),
         offset = start || 0,
         searchParams = {
@@ -37,6 +39,8 @@ function UdbApi($q, $http, appConfig, $cookieStore, uitidAuth, $cacheFactory, Ud
 
     if (queryString.length) {
       searchParams.query = queryString;
+      searchParams.unavailable = (typeof unavailable === 'undefined' || !!unavailable) ? 'true' : 'false';
+      searchParams.past = (typeof past === 'undefined' || !!past) ? 'true' : 'false';
     }
 
     var request = $http.get(apiUrl + 'search', {

@@ -2199,10 +2199,12 @@ function UdbApi($q, $http, appConfig, $cookieStore, uitidAuth, $cacheFactory, Ud
   /**
    * @param {string} queryString - The query used to find events.
    * @param {?number} start - From which event offset the result set should start.
+   * @param {boolean} [unavailable=true]
+   * @param {boolean} [past=true]
    * @returns {Promise} A promise that signals a successful retrieval of
    *  search results or a failure.
    */
-  this.findEvents = function (queryString, start) {
+  this.findEvents = function (queryString, start, unavailable, past) {
     var deferredEvents = $q.defer(),
         offset = start || 0,
         searchParams = {
@@ -2211,6 +2213,8 @@ function UdbApi($q, $http, appConfig, $cookieStore, uitidAuth, $cacheFactory, Ud
 
     if (queryString.length) {
       searchParams.query = queryString;
+      searchParams.unavailable = (typeof unavailable === 'undefined' || !!unavailable) ? 'true' : 'false';
+      searchParams.past = (typeof past === 'undefined' || !!past) ? 'true' : 'false';
     }
 
     var request = $http.get(apiUrl + 'search', {
@@ -4807,6 +4811,9 @@ function QueryEditorController(
   var qe = this,
       queryBuilder = LuceneQueryBuilder;
 
+  qe.includeUnavailable = true;
+  qe.includePast = true;
+
   qe.fields = _.filter(queryFields, 'editable');
 
   // use the first occurrence of a group name to order it against the other groups
@@ -4869,6 +4876,8 @@ function QueryEditorController(
    * Update the search input field with the data from the query editor
    */
   qe.updateQueryString = function () {
+    searchHelper.setUnavailable(qe.includeUnavailable);
+    searchHelper.setPast(qe.includePast);
     searchHelper.setQueryString(queryBuilder.unparseGroupedTree(qe.groupedQueryTree));
     $rootScope.$emit('stopEditingQuery');
   };
@@ -6109,7 +6118,9 @@ angular
 function SearchHelper(LuceneQueryBuilder) {
   var query = {
     queryString: ''
-  };
+  },
+  unavailable = true,
+  past = true;
 
   this.setQueryString = function (queryString) {
     query = LuceneQueryBuilder.createQuery(queryString);
@@ -6124,6 +6135,36 @@ function SearchHelper(LuceneQueryBuilder) {
 
   this.getQuery = function () {
     return query;
+  };
+
+  /**
+   * Include events that have their embargo date set in the future
+   * @param {boolean} includeUnavailable
+   */
+  this.setUnavailable = function (includeUnavailable) {
+    unavailable = !!includeUnavailable;
+  };
+
+  /**
+   * @return {boolean}
+   */
+  this.getUnavailable = function () {
+    return unavailable;
+  };
+
+  /**
+   * Include past events
+   * @param {boolean} includePast
+   */
+  this.setPast = function (includePast) {
+    past = !!includePast;
+  };
+
+  /**
+   * @return {boolean}
+   */
+  this.getPast = function () {
+    return past;
   };
 }
 SearchHelper.$inject = ["LuceneQueryBuilder"];
@@ -6669,10 +6710,8 @@ function Search(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
 
-  $scope.$watch(function () {
-    return $location.search();
-  }, function (searchParams) {
-
+  function initSearchParams() {
+    var searchParams = $location.search();
     if (searchParams.page) {
       $scope.resultViewer.currentPage = parseInt(searchParams.page);
     }
@@ -6681,7 +6720,16 @@ function Search(
       var queryString = String(searchParams.query) || '';
       searchHelper.setQueryString(queryString);
     }
-  }, true);
+
+    if (searchParams.unavailable) {
+      searchHelper.setUnavailable(searchParams.unavailable !== 'false');
+    }
+
+    if (searchParams.past) {
+      searchHelper.setPast(searchParams.past !== 'false');
+    }
+  }
+  initSearchParams();
 
   /**
    * This debounce function can be used to delay searching when an input field changes.
@@ -6712,22 +6760,37 @@ function Search(
    * @param {String|Query} query A query string or object to search with.
    */
   var findEvents = function (query) {
-    var offset = ($scope.resultViewer.currentPage - 1) * $scope.resultViewer.pageSize;
-    var queryString = typeof query === 'string' ? query : query.queryString;
-    var eventPromise = udbApi.findEvents(queryString, offset);
+    var offset = ($scope.resultViewer.currentPage - 1) * $scope.resultViewer.pageSize,
+        unavailable = searchHelper.getUnavailable(),
+        past = searchHelper.getPast(),
+        queryString = typeof query === 'string' ? query : query.queryString,
+        eventPromise = udbApi.findEvents(
+          queryString,
+          offset,
+          unavailable,
+          past
+        );
 
     // Check if a query string is defined else clear the relevant search parameters.
+    var searchParams = {};
     if (queryString) {
-      $location.search({
+      searchParams = {
         'query': getSearchQuery().queryString,
         'page': String($scope.resultViewer.currentPage)
-      });
+      };
+
+      if (!unavailable) { searchParams.unavailable = 'false'; }
+      if (!past) { searchParams.past = 'false'; }
     } else {
-      $location.search({
+      searchParams = {
         'query': null,
-        'page': null
-      });
+        'page': null,
+        'unavailable': null,
+        'past': null
+      };
     }
+
+    $location.search(searchParams);
 
     $scope.resultViewer.loading = true;
 
@@ -6885,6 +6948,7 @@ function Search(
     }
   });
 
+  this.findEvents = findEvents;
 }
 Search.$inject = ["$scope", "udbApi", "LuceneQueryBuilder", "$window", "$location", "$modal", "SearchResultViewer", "eventLabeller", "searchHelper", "$rootScope", "eventExporter", "$translate"];
 
@@ -7608,6 +7672,20 @@ $templateCache.put('templates/unexpected-error-modal.html',
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
+    "  <div>\n" +
+    "    <div class=\"checkbox\">\n" +
+    "      <label>\n" +
+    "        <input type=\"checkbox\" ng-model=\"qe.includeUnavailable\"> evenementen onder embargo tonen\n" +
+    "      </label>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"checkbox\">\n" +
+    "      <label>\n" +
+    "        <input type=\"checkbox\" ng-model=\"qe.includePast\"> evenementen uit het verleden tonen\n" +
+    "      </label>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "\n" +
     "  <div class=\"udb-query-editor\">\n" +
     "    <div class=\"panel panel-default\" ng-repeat=\"rootGroup in qe.groupedQueryTree.nodes\">\n" +
     "\n" +
