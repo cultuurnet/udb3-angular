@@ -121,7 +121,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories) {
       this['@id'] = jsonPlace['@id'];
       this['@type'] = jsonPlace['@type'];
       if (jsonPlace['@id']) {
-        this.apiUrl = jsonPlace['@id'];
+        this.apiUrl = new URL(jsonPlace['@id']);
       }
       this.name = jsonPlace.name || {};
       this.address = jsonPlace.address || this.address;

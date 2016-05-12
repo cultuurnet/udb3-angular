@@ -4,7 +4,7 @@ describe('Controller: Event', function() {
   var $scope,
       eventController,
       jsonLDLangFilter,
-      eventTranslator,
+      offerTranslator,
       offerLabeller,
       offerEditor,
       EventTranslationState,
@@ -140,7 +140,7 @@ describe('Controller: Event', function() {
     $scope = $rootScope.$new();
     udbApi = $injector.get('udbApi');
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
-    eventTranslator = $injector.get('eventTranslator');
+    offerTranslator = $injector.get('offerTranslator');
     offerLabeller = jasmine.createSpyObj('offerLabeller', ['recentLabels', 'label']);
     offerEditor = $injector.get('offerEditor');
     EventTranslationState = $injector.get('EventTranslationState');
@@ -151,14 +151,14 @@ describe('Controller: Event', function() {
 
     $scope.event = {};
     deferredEvent = $q.defer(); deferredVariation = $q.defer();
-    spyOn(udbApi, 'getEventByLDId').and.returnValue(deferredEvent.promise);
+    spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
     spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
 
     eventController = $controller(
       'EventController', {
         udbApi: udbApi,
         jsonLDLangFilter: jsonLDLangFilter,
-        eventTranslator: eventTranslator,
+        offerTranslator: offerTranslator,
         offerLabeller: offerLabeller,
         offerEditor: offerEditor,
         EventTranslationState: EventTranslationState,

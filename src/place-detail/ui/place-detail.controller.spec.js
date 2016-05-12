@@ -63,7 +63,7 @@ describe('Controller: Place Detail', function() {
 
   beforeEach(inject(function($injector, $rootScope, $controller, _$q_) {
     $scope = $rootScope.$new();
-    placeId = '03458606-eb3f-462d-97f3-548710286702';
+    placeId = 'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702';
     udbApi = $injector.get('udbApi');
     $location = jasmine.createSpyObj('$location', ['path']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
@@ -77,10 +77,9 @@ describe('Controller: Place Detail', function() {
     deferredEvent = $q.defer(); deferredVariation = $q.defer();
     deferredPermission = $q.defer();
 
-    spyOn(udbApi, 'hasPlacePermission').and.returnValue(deferredPermission.promise);
-    deferredPermission.resolve({ 'data': { 'hasPermission': true } });
+    spyOn(udbApi, 'hasPermission').and.returnValue($q.resolve());
 
-    spyOn(udbApi, 'getPlaceById').and.returnValue(deferredEvent.promise);
+    spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
     deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
 
     spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
@@ -108,11 +107,11 @@ describe('Controller: Place Detail', function() {
     $scope.$digest();
 
     expect($scope.placeId).toEqual(placeId);
-    expect(udbApi.hasPlacePermission).toHaveBeenCalledWith(
-        '03458606-eb3f-462d-97f3-548710286702'
+    expect(udbApi.hasPermission).toHaveBeenCalledWith(
+        'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'
     );
-    expect(udbApi.getPlaceById).toHaveBeenCalledWith(
-        '03458606-eb3f-462d-97f3-548710286702'
+    expect(udbApi.getOffer).toHaveBeenCalledWith(
+        'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'
     );
     expect($scope.placeIsEditable).toEqual(true);
   });
@@ -165,7 +164,7 @@ describe('Controller: Place Detail', function() {
     var eventsUsingPlace = [
       'event-one',
       'event-two'
-    ]
+    ];
     var actualOptions;
     var modalOptions = {
       templateUrl: 'templates/place-delete-confirm-modal.html',
@@ -175,11 +174,7 @@ describe('Controller: Place Detail', function() {
         events: jasmine.any(Function)
       }
     };
-    eventCrud.findEventsAtPlace.and.returnValue($q.resolve({
-      data: {
-        events: eventsUsingPlace
-      }
-    }));
+    eventCrud.findEventsAtPlace.and.returnValue($q.resolve(eventsUsingPlace));
     $uibModal.open.and.callFake(function(options){
       actualOptions = options;
 

@@ -29,7 +29,7 @@ function eventExporter(jobLogger, udbApi, EventExportJob) {
    * @param {string}        email
    * @param {string[]}      properties
    * @param {boolean}       perDay
-   * @param {object}        customizations
+   * @param {Object}        customizations
    *
    * @return {object}
    */

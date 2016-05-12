@@ -14,7 +14,7 @@ angular
 function EventController(
   udbApi,
   jsonLDLangFilter,
-  eventTranslator,
+  offerTranslator,
   offerLabeller,
   offerEditor,
   EventTranslationState,
@@ -41,7 +41,7 @@ function EventController(
   function initController() {
     if (!$scope.event.title) {
       controller.fetching = true;
-      var eventPromise = udbApi.getEventByLDId($scope.event['@id']);
+      var eventPromise = udbApi.getOffer($scope.event['@id']);
 
       eventPromise.then(function (eventObject) {
         cachedEvent = eventObject;
@@ -154,7 +154,7 @@ function EventController(
         udbProperty = apiProperty || property;
 
     if (translation && translation !== cachedEvent[property][language]) {
-      var translationPromise = eventTranslator.translateProperty(cachedEvent, udbProperty, language, translation);
+      var translationPromise = offerTranslator.translateProperty(cachedEvent, udbProperty, language, translation);
 
       translationPromise.then(function () {
         cachedEvent.updateTranslationState();

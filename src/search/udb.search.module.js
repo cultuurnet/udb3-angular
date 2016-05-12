@@ -14,6 +14,7 @@ angular
     'peg',
     'udb.core',
     'udb.config',
+    'udb.router',
     'btford.socket-io',
     'pascalprecht.translate',
     'xeditable'

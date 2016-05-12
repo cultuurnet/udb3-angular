@@ -119,7 +119,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace) {
       this.id = jsonEvent['@id'].split('/').pop();
       this['@id'] = jsonEvent['@id'];
       this['@type'] = jsonEvent['@type'];
-      this.apiUrl = jsonEvent['@id'];
+      this.apiUrl = new URL(jsonEvent['@id']);
       this.name = jsonEvent.name || {};
       this.description = angular.copy(jsonEvent.description) || {};
       this.calendarSummary = jsonEvent.calendarSummary;

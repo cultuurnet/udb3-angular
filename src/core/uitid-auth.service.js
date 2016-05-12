@@ -49,4 +49,7 @@ function UitidAuth($window, $location, $http, appConfig, $cookieStore) {
     return $cookieStore.get('user');
   };
 
+  this.getToken = function () {
+    return 'foo';
+  };
 }

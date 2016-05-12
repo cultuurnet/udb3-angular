@@ -12,7 +12,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q) {
 
   var offerLabeller = this;
 
@@ -20,15 +20,37 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
   offerLabeller.recentLabels = ['some', 'recent', 'label'];
 
   function updateRecentLabels() {
-    var labelPromise = udbApi.getRecentLabels();
-
-    labelPromise.then(function (labels) {
-      offerLabeller.recentLabels = labels;
-    });
+    udbApi
+      .getRecentLabels()
+      .then(function (labels) {
+        offerLabeller.recentLabels = labels;
+      });
   }
 
   // warm up the cache
   updateRecentLabels();
+
+  /**
+   * A helper function to create and log jobs
+   *
+   * This partial function takes a constructor for a specific job type and passes on the arguments.
+   *
+   * @param {BaseJob} jobType
+   *  A job type that's based on BaseJob.
+   */
+  function jobCreatorFactory(jobType) {
+    var args =  Array.prototype.slice.call(arguments);
+    function jobCreator(response) {
+      args.unshift(response.data.commandId);
+      var job = new (Function.prototype.bind.apply(jobType, args))();
+
+      jobLogger.addJob(job);
+
+      return $q.resolve(job);
+    }
+
+    return jobCreator;
+  }
 
   /**
    * Label an event with a label
@@ -36,13 +58,11 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} label
    */
   this.label = function (offer, label) {
-    var jobPromise = udbApi.labelOffer(offer, label);
+    offer.label(label);
 
-    jobPromise.success(function (jobData) {
-      offer.label(label);
-      var job = new OfferLabelJob(jobData.commandId, offer, label);
-      jobLogger.addJob(job);
-    });
+    return udbApi
+      .labelOffer(offer.apiUrl, label)
+      .then(jobCreatorFactory(OfferLabelJob, offer, label));
   };
 
   /**
@@ -51,27 +71,21 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} label
    */
   this.unlabel = function (offer, label) {
-    var jobPromise = udbApi.unlabelOffer(offer, label);
+    offer.unlabel(label);
 
-    jobPromise.success(function (jobData) {
-      offer.unlabel(label);
-      var job = new OfferLabelJob(jobData.commandId, offer, label, true);
-      jobLogger.addJob(job);
-    });
+    return udbApi
+      .unlabelOffer(offer.apiUrl, label)
+      .then(jobCreatorFactory(OfferLabelJob, offer, label, true));
   };
 
   /**
-   * @param {string[]} offers
+   * @param {OfferIdentifier[]} offers
    * @param {string} label
    */
   this.labelOffersById = function (offers, label) {
-    var jobPromise = udbApi.labelOffers(offers, label);
-
-    jobPromise.success(function (jobData) {
-      var job = new OfferLabelBatchJob(jobData.commandId, offers, label);
-      console.log(job);
-      jobLogger.addJob(job);
-    });
+    return udbApi
+      .labelOffers(offers, label)
+      .then(jobCreatorFactory(OfferLabelBatchJob, offers, label));
   };
 
   /**
@@ -80,13 +94,10 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} label
    */
   this.labelQuery = function (query, label, eventCount) {
-    var jobPromise = udbApi.labelQuery(query, label);
     eventCount = eventCount || 0;
 
-    jobPromise.success(function (jobData) {
-      var job = new QueryLabelJob(jobData.commandId, eventCount, label);
-      jobLogger.addJob(job);
-    });
-
+    return udbApi
+      .labelQuery(query, label)
+      .then(jobCreatorFactory(QueryLabelJob, eventCount, label));
   };
 }

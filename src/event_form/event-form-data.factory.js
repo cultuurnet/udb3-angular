@@ -13,16 +13,6 @@
  */
 
 /**
- * @ngdoc service
- * @name udb.core.EventFormData
- * @description
- * Contains data needed for the steps in the event form.
- */
-angular
-  .module('udb.event-form')
-  .factory('EventFormData', EventFormDataFactory);
-
-/**
  * @typedef {Object} MediaObject
  * @property {string} @id
  * @property {string} @type
@@ -32,6 +22,24 @@ angular
  * @property {string} description
  * @property {string} copyrightHolder
  */
+
+/**
+ * @typedef {Object} BookingInfo
+ * @property {string} url
+ * @property {string} urlLabel
+ * @property {string} email
+ * @property {string} phone
+ */
+
+/**
+ * @ngdoc service
+ * @name udb.core.EventFormData
+ * @description
+ * Contains data needed for the steps in the event form.
+ */
+angular
+  .module('udb.event-form')
+  .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
 function EventFormDataFactory() {
@@ -88,6 +96,7 @@ function EventFormDataFactory() {
         email : []
       };
       this.facilities = [];
+      /** @type {BookingInfo} **/
       this.bookingInfo = {};
       /** @type {MediaObject[]} **/
       this.mediaObjects = [];
@@ -322,6 +331,8 @@ function EventFormDataFactory() {
 
     /**
      * Sets the booking info array.
+     *
+     * @param {BookingInfo} bookingInfo
      */
     setBookingInfo : function(bookingInfo) {
       this.bookingInfo = bookingInfo;

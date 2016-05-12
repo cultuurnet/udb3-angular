@@ -16,7 +16,7 @@ function PlaceController(
   $scope,
   jsonLDLangFilter,
   EventTranslationState,
-  placeTranslator,
+  offerTranslator,
   offerLabeller,
   $window
 ) {
@@ -39,7 +39,7 @@ function PlaceController(
   function initController() {
     if (!$scope.event.title) {
       controller.fetching = true;
-      var placePromise = udbApi.getPlaceByLDId($scope.event['@id']);
+      var placePromise = udbApi.getOffer($scope.event['@id']);
 
       placePromise.then(function (placeObject) {
         cachedPlace = placeObject;
@@ -135,7 +135,7 @@ function PlaceController(
         udbProperty = apiProperty || property;
 
     if (translation && translation !== cachedPlace[property][language]) {
-      var translationPromise = placeTranslator.translateProperty(cachedPlace, udbProperty, language, translation);
+      var translationPromise = offerTranslator.translateProperty(cachedPlace, udbProperty, language, translation);
 
       translationPromise.then(function () {
         cachedPlace.updateTranslationState();

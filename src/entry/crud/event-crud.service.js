@@ -46,11 +46,11 @@ function EventCrud(
    * Find all the events that take place here.
    *
    * @param {UdbPlace} place
-   *   Place Id to find events for
+   *
+   * @return {Promise.<OfferIdentifier[]>}
    */
   service.findEventsAtPlace = function(place) {
-    var jobPromise = udbApi.findEventsAtPlace(place);
-    return jobPromise;
+    return udbApi.findEventsAtPlace(place.apiUrl);
   };
 
   /**
@@ -68,21 +68,18 @@ function EventCrud(
    * @return {Promise.<EventCrudJob>}
    */
   service.deleteOffer = function (offer) {
-    var deferredJob = $q.defer();
-
-    function logAndResolveJob(jobData) {
+    function logJobAndFlagAsDeleted(response) {
+      var jobData = response.data;
       var job = new DeleteOfferJob(jobData.commandId, offer);
       offer.showDeleted = true;
       jobLogger.addJob(job);
-      deferredJob.resolve(job);
+
+      return $q.resolve(job);
     }
 
-    udbApi
+    return udbApi
       .deleteOffer(offer)
-      .success(logAndResolveJob)
-      .error(deferredJob.reject);
-
-    return deferredJob.promise;
+      .then(logJobAndFlagAsDeleted);
   };
 
   /**
@@ -90,212 +87,158 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
-
-    var jobPromise;
-    if (eventFormData.isEvent) {
-      jobPromise = udbApi.updateMajorInfo(eventFormData.id, eventFormData.getType(), eventFormData);
-    }
-    else {
-      jobPromise = udbApi.updateMajorInfo(eventFormData.id, eventFormData.getType(), eventFormData);
-    }
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, eventFormData, 'updateItem');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    udbApi
+      .updateMajorInfo(eventFormData)
+      .then(jobCreatorFactory(eventFormData, 'updateItem'));
   };
 
   /**
    * Creates a new organizer.
    */
   service.createOrganizer = function(organizer) {
-
     return udbApi.createOrganizer(organizer);
-
   };
 
   /**
    * Update the main language description and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {EventCrud.updateDescription.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.updateDescription = function(item) {
-
-    var jobPromise = udbApi.translateProperty(
-      item.id,
-      item.getType(),
-      'description',
-      udbApi.mainLanguage,
-      item.description.nl
-    );
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateDescription');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    return udbApi
+      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description.nl)
+      .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
   /**
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {EventCrud.updateTypicalAgeRange.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.updateTypicalAgeRange = function(item) {
-
-    var jobPromise = udbApi.updateProperty(item.id, item.getType(), 'typicalAgeRange', item.typicalAgeRange);
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateTypicalAgeRange');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
   };
 
   /**
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {EventCrud.deleteTypicalAgeRange.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.deleteTypicalAgeRange = function(item) {
-
-    var jobPromise = udbApi.deleteTypicalAgeRange(item.id, item.getType());
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateTypicalAgeRange');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    return udbApi
+      .deleteTypicalAgeRange(item.apiUrl)
+      .then(jobCreatorFactory(item, 'updateTypicalAgeRange'));
   };
 
   /**
    * Update the connected organizer and it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {EventCrud.updateOrganizer.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.updateOrganizer = function(item) {
-
-    var jobPromise = udbApi.updateProperty(item.id, item.getType(), 'organizer', item.organizer.id);
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateOrganizer');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    return udbApi
+      .updateProperty(item.id, item.getType(), 'organizer', item.organizer.id)
+      .then(jobCreatorFactory(item, 'updateOrganizer'));
   };
 
   /**
    * Delete the organizer for the event / place.
    *
    * @param {EventFormData} item
-   * @returns {EventCrud.updateOrganizer.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.deleteOfferOrganizer = function(item) {
-
-    var jobPromise = udbApi.deleteOfferOrganizer(item.id, item.getType(), item.organizer.id);
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'deleteOrganizer');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    return udbApi
+      .deleteOfferOrganizer(item.apiUrl, item.organizer.id)
+      .then(jobCreatorFactory(item, 'deleteOrganizer'));
   };
+
+  /**
+   * @param {EventFormData} item
+   * @param {string} jobName
+   *
+   * @return {Function}
+   *  Return a job creator that takes an http job creation response and turns it into a EventCrudJob promise.
+   */
+  function jobCreatorFactory(item, jobName) {
+    function jobCreator(response) {
+      var jobData = response.data;
+      var job = new EventCrudJob(jobData.commandId, item, jobName);
+      addJobAndInvalidateCache(jobLogger, job);
+
+      return $q.resolve(job);
+    }
+
+    return jobCreator;
+  }
 
   /**
    * Update the contact point and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {EventCrud.updateContactPoint.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.updateContactPoint = function(item) {
-
-    var jobPromise = udbApi.updateProperty(item.id, item.getType(), 'contactPoint', item.contactPoint);
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateContactInfo');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    return updateOfferProperty(item, 'contactPoint', 'updateContactInfo');
   };
 
   /**
    * Update the facilities and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {EventCrud.updateFacilities.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.updateFacilities = function(item) {
-
-    var jobPromise = udbApi.updateProperty(item.id, item.getType(), 'facilities', item.facilities);
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateFacilities');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
+    return updateOfferProperty(item, 'facilities', 'updateFacilities');
   };
 
   /**
    * Update the booking info and add it to the job logger.
    *
-   * @param {UdbEvent|UdbPlace} item
-   * @param {string} type
-   *  Type of item
-   * @returns {EventCrud.updateBookingInfo.jobPromise}
+   * @param {EventFormData} item
+   *
+   * @returns {Promise.<EventCrudJob>}
    */
   service.updateBookingInfo = function(item) {
-
-    var jobPromise = udbApi.updateProperty(item.id, item.getType(), 'bookingInfo', item.bookingInfo);
-
-    jobPromise.success(function (jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateBookingInfo');
-      addJobAndInvalidateCache(jobLogger, job);
-    });
-
-    return jobPromise;
-
+    return updateOfferProperty(item, 'bookingInfo', 'updateBookingInfo');
   };
+
+  /**
+   * @param {EventFormData} offer
+   * @param {string} propertyName
+   * @param {string} jobName
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  function updateOfferProperty(offer, propertyName, jobName) {
+    return udbApi
+      .updateProperty(offer.apiUrl, propertyName, offer[propertyName])
+      .then(function (response) {
+        var jobData = response.data;
+        var job = new EventCrudJob(jobData.commandId, offer, jobName);
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
+  }
 
   /**
    * Add a new image to the item.
    *
    * @param {EventFormData} item
    * @param {MediaObject} image
-   * @returns {EventCrud.addImage.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.addImage = function(item, image) {
     var imageId = image.id || image['@id'].split('/').pop();
 
-    function logJob(jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'addImage');
-      addJobAndInvalidateCache(jobLogger, job);
-
-      return $q.resolve(job);
-    }
-
     return udbApi
-      .addImage(item.id, item.getType(), imageId)
-      .then(logJob);
+      .addImage(item.apiUrl, imageId)
+      .then(jobCreatorFactory(item, 'addImage'));
   };
 
   /**
@@ -305,21 +248,14 @@ function EventCrud(
    * @param {MediaObject} image
    * @param {string} description
    * @param {string} copyrightHolder
-   * @returns {EventCrud.updateImage.jobPromise}
+   * @returns {Promise.<EventCrudJob>}
    */
   service.updateImage = function(item, image, description, copyrightHolder) {
     var imageId = image['@id'].split('/').pop();
 
-    function logJob(jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'updateImage');
-      addJobAndInvalidateCache(jobLogger, job);
-
-      return $q.resolve(job);
-    }
-
     return udbApi
-      .updateImage(item.id, item.getType(), imageId, description, copyrightHolder)
-      .then(logJob);
+      .updateImage(item.apiUrl, imageId, description, copyrightHolder)
+      .then(jobCreatorFactory(item, 'updateImage'));
   };
 
   /**
@@ -332,35 +268,28 @@ function EventCrud(
   service.removeImage = function(item, image) {
     var imageId = image['@id'].split('/').pop();
 
-    function logJob(jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'removeImage');
-      addJobAndInvalidateCache(jobLogger, job);
-
-      return $q.resolve(job);
-    }
-
     return udbApi
-      .removeImage(item.id, item.getType(), imageId)
-      .then(logJob);
-  };
-
-  service.selectMainImage = function (item, image) {
-    var imageId = image['@id'].split('/').pop();
-
-    function logJob(jobData) {
-      var job = new EventCrudJob(jobData.commandId, item, 'selectMainImage');
-      addJobAndInvalidateCache(jobLogger, job);
-
-      return $q.resolve(job);
-    }
-
-    return udbApi
-      .selectMainImage(item.id, item.getType(), imageId)
-      .then(logJob);
+      .removeImage(item.apiUrl, imageId)
+      .then(jobCreatorFactory(item, 'removeImage'));
   };
 
   /**
-   * @param {Object} event
+   * Select the main image for an item.
+   *
+   * @param {EventFormData} item
+   * @param {image} image
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.selectMainImage = function (item, image) {
+    var imageId = image['@id'].split('/').pop();
+
+    return udbApi
+      .selectMainImage(item.apiUrl, imageId)
+      .then(jobCreatorFactory(item, 'selectMainImage'));
+  };
+
+  /**
+   * @param {Object} event Angular event object
    * @param {EventFormData} eventFormData
    */
   function updateMajorInfo(event, eventFormData) {

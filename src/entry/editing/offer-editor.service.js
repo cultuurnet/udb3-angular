@@ -26,21 +26,25 @@ function OfferEditor(jobLogger, udbApi, VariationCreationJob, BaseJob, $q, varia
     var variationPromise = variationRepository.getPersonalVariation(offer);
 
     var removeDescription = function (variation) {
-      var deletePromise = editor.deleteVariation(offer, variation.id);
-      deletePromise.then(function () {
-        deferredUpdate.resolve(false);
-      }, rejectUpdate);
+      editor
+        .deleteVariation(offer, variation.id)
+        .then(revertToOriginal, rejectUpdate);
     };
 
-    var rejectUpdate = function (reason) {
-      deferredUpdate.reject(reason);
-    };
+    function rejectUpdate(errorResponse) {
+      deferredUpdate.reject(errorResponse.data);
+    }
+
+    function revertToOriginal() {
+      deferredUpdate.resolve(false);
+    }
 
     var createVariation = function () {
       purpose = purpose || 'personal';
-      var creationRequest = udbApi.createVariation(offer, description, purpose);
-      creationRequest.success(handleCreationJob);
-      creationRequest.error(rejectUpdate);
+
+      udbApi
+        .createVariation(offer.apiUrl, description, purpose)
+        .then(handleCreationJob, rejectUpdate);
     };
 
     var handleCreationJob = function (jobData) {
@@ -66,10 +70,6 @@ function OfferEditor(jobLogger, udbApi, VariationCreationJob, BaseJob, $q, varia
       });
 
       editRequest.error(rejectUpdate);
-    };
-
-    var revertToOriginal = function () {
-      deferredUpdate.resolve(false);
     };
 
     if (description) {

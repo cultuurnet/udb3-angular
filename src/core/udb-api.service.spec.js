@@ -9,7 +9,7 @@ describe('Service: UDB3 Api', function () {
     var appConfig = {
       baseUrl: baseUrl
     };
-    uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser']);
+    uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
 
     $provide.constant('appConfig', appConfig);
     $provide.provider('uitidAuth', {

@@ -2,44 +2,44 @@
 
 /**
  * @ngdoc service
- * @name udb.entry.PlaceTranslationJob
+ * @name udb.entry.OfferTranslationJob
  * @description
- * # Place Translation Job
- * This Is the factory that creates an place translation job
+ * # Offer Label Job
+ * This Is the factory that creates an offer label job
  */
 angular
   .module('udb.entry')
-  .factory('PlaceTranslationJob', PlaceTranslationJobFactory);
+  .factory('OfferTranslationJob', OfferTranslationJobFactory);
 
 /* @ngInject */
-function PlaceTranslationJobFactory(BaseJob, JobStates) {
+function OfferTranslationJobFactory(BaseJob, JobStates) {
 
   /**
-   * @class PlaceTranslationJob
+   * @class OfferTranslationJob
    * @constructor
    * @param {string} commandId
-   * @param {UdbPlace} place
+   * @param {UdbEvent|UdbPlace} offer
    * @param {string} property
    * @param {string} language
    * @param {string} translation
    */
-  var PlaceTranslationJob = function (commandId, place, property, language, translation) {
+  var OfferTranslationJob = function (commandId, offer, property, language, translation) {
     BaseJob.call(this, commandId);
-    this.place = place;
+    this.offer = offer;
     this.property = property;
     this.language = language;
     this.translation = translation;
   };
 
-  PlaceTranslationJob.prototype = Object.create(BaseJob.prototype);
-  PlaceTranslationJob.prototype.constructor = PlaceTranslationJob;
+  OfferTranslationJob.prototype = Object.create(BaseJob.prototype);
+  OfferTranslationJob.prototype.constructor = OfferTranslationJob;
 
-  PlaceTranslationJob.prototype.getDescription = function () {
+  OfferTranslationJob.prototype.getDescription = function () {
     var job = this,
         description;
 
     if (this.state === JobStates.FAILED) {
-      description = 'Vertalen van evenement mislukt';
+      description = 'Vertalen van aanbod mislukt';
     } else {
       var propertyName;
 
@@ -54,11 +54,11 @@ function PlaceTranslationJobFactory(BaseJob, JobStates) {
           propertyName = job.property;
       }
 
-      description = 'Vertaal ' + propertyName + ' van "' + job.place.name.nl + '"';
+      description = 'Vertaal ' + propertyName + ' van "' + job.event.name.nl + '"';
     }
 
     return description;
   };
 
-  return (PlaceTranslationJob);
+  return (OfferTranslationJob);
 }

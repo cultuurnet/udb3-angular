@@ -39,9 +39,7 @@ describe('Controller: Dashboard', function () {
   }));
 
   function getController(activeUser, dashboardItems) {
-    udbApi.getDashboardItems.and.returnValue($q.resolve({
-      data: dashboardItems
-    }));
+    udbApi.getDashboardItems.and.returnValue($q.resolve(dashboardItems));
 
     udbApi.getMe.and.returnValue($q.resolve(activeUser))
 

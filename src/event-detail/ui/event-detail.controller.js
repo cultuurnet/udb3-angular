@@ -47,25 +47,31 @@ function EventDetail(
     openEventDeleteConfirmModal($scope.event);
   };
 
-  // Check if user has permissions.
-  udbApi.hasPermission(eventId).then(function(result) {
-    $scope.hasEditPermissions = result.data.hasPermission;
-  });
+  function allowEditing() {
+    $scope.hasEditPermissions = true;
+  }
 
-  var eventLoaded = udbApi.getEventById($scope.eventId);
+  udbApi
+    .hasPermission($scope.eventId)
+    .then(allowEditing);
+
+  var eventLoaded = udbApi.getOffer($scope.eventId);
   var language = 'nl';
   var cachedEvent;
+
+  function showHistory(eventHistory) {
+    $scope.eventHistory = eventHistory;
+  }
 
   eventLoaded.then(
       function (event) {
         cachedEvent = event;
 
-        var eventHistoryLoaded = udbApi.getEventHistoryById($scope.eventId);
         var personalVariationLoaded = variationRepository.getPersonalVariation(event);
 
-        eventHistoryLoaded.then(function(eventHistory) {
-          $scope.eventHistory = eventHistory;
-        });
+        udbApi
+          .getHistory($scope.eventId)
+          .then(showHistory);
 
         $scope.event = jsonLDLangFilter(event, language);
 

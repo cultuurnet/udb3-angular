@@ -82,7 +82,8 @@ function EventFormController($scope, eventId, placeId, offerType, EventFormData,
       'contactPoint',
       'facilities',
       'image',
-      'additionalData'
+      'additionalData',
+      'apiUrl'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {

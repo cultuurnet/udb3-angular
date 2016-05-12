@@ -152,6 +152,9 @@ function SearchResultViewerFactory() {
 
       return _.contains(this.selectedOffers, theOffer);
     },
+    /**
+     * @param {PagedCollection} pagedResults
+     */
     setResults: function (pagedResults) {
       var viewer = this;
 

@@ -138,7 +138,7 @@ describe('Controller: Event Detail', function() {
 
   beforeEach(inject(function($injector, $rootScope, $controller, _$q_) {
     $scope = $rootScope.$new();
-    eventId = '1111be8c-a412-488d-9ecc-8fdf9e52edbc';
+    eventId = 'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc';
     udbApi = $injector.get('udbApi');
     $location = jasmine.createSpyObj('$location', ['path']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
@@ -151,10 +151,9 @@ describe('Controller: Event Detail', function() {
     deferredEvent = $q.defer(); deferredVariation = $q.defer();
     deferredPermission = $q.defer();
 
-    spyOn(udbApi, 'hasPermission').and.returnValue(deferredPermission.promise);
-    deferredPermission.resolve({ 'data': { 'hasPermission': true } });
+    spyOn(udbApi, 'hasPermission').and.returnValue($q.resolve());
 
-    spyOn(udbApi, 'getEventById').and.returnValue(deferredEvent.promise);
+    spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
 
     spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
@@ -162,9 +161,7 @@ describe('Controller: Event Detail', function() {
     deferredUpdate = $q.defer();
     spyOn(offerEditor, 'editDescription').and.returnValue(deferredUpdate.promise);
 
-    deferredHistory = $q.defer();
-    spyOn(udbApi, 'getEventHistoryById').and.returnValue(deferredHistory.promise);
-    deferredHistory.reject();
+    spyOn(udbApi, 'getHistory').and.returnValue($q.reject());
 
     eventController = $controller(
       'EventDetailController', {
@@ -186,13 +183,13 @@ describe('Controller: Event Detail', function() {
 
     expect($scope.eventId).toEqual(eventId);
     expect(udbApi.hasPermission).toHaveBeenCalledWith(
-        '1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+        'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
-    expect(udbApi.getEventById).toHaveBeenCalledWith(
-        '1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+    expect(udbApi.getOffer).toHaveBeenCalledWith(
+        'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
-    expect(udbApi.getEventHistoryById).toHaveBeenCalledWith(
-      '1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+    expect(udbApi.getHistory).toHaveBeenCalledWith(
+      'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
     expect($scope.eventIsEditable).toEqual(true);
   });

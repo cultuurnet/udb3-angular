@@ -278,6 +278,7 @@ module.exports = function (grunt) {
       modules: {
         src: [
           'src/core/udb.core.module.js',
+          'src/router/udb.router.module.js',
           'src/core/udb.config.module.js',
           'src/search/udb.search.module.js',
           'src/event_form/udb.event-form.module.js',

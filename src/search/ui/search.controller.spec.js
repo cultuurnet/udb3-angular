@@ -8,6 +8,7 @@ describe('Controller: Search', function() {
     offerLabeller = null,
     $location,
     $q,
+    $uibModal,
     searchHelper;
 
   beforeEach(module('udb.core', function ($translateProvider) {
@@ -34,11 +35,13 @@ describe('Controller: Search', function() {
     $window = {
       alert: jasmine.createSpy('alert')
     };
-    udbApi = jasmine.createSpyObj('udbApi', ['findEvents', 'getEventById']);
+    udbApi = jasmine.createSpyObj('udbApi', ['findEvents', 'getEventById', 'exportEvents']);
     udbApi.findEvents.and.returnValue($q.reject('nope'));
 
     $location = jasmine.createSpyObj('$location', ['search']);
     $location.search.and.returnValue({});
+
+    $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
   });
 
   function getController() {
@@ -49,7 +52,8 @@ describe('Controller: Search', function() {
         udbApi: udbApi,
         offerLabeller: offerLabeller,
         $location: $location,
-        searchHelper: searchHelper
+        searchHelper: searchHelper,
+        $uibModal: $uibModal
       }
     );
   }
@@ -75,6 +79,30 @@ describe('Controller: Search', function() {
 
     expect($window.alert).toHaveBeenCalledWith('An export is only possible after you have launched a search query');
   });
+
+  it('should provide the exporter with a list of event URLs when exporting a selection', inject(function (eventExporter) {
+    getController();
+
+    var place = {
+      '@id':'http://culudb-silex.dev:8080/place/3aad5023-84e2-4ba9-b1ce-201cee64504c',
+      '@type':'Place'
+    };
+    var event = {
+      '@id':'http://culudb-silex.dev:8080/event/35560d45-984c-47f2-b392-f40c2b8f9b45',
+      '@type':'Event'
+    };
+    
+    searchHelper.setQueryString('city:"Brussel"');
+    $scope.resultViewer.selectedOffers = [event, place];
+
+    $scope.exportEvents();
+
+    // Explicitly start the digest cycle in order to let $translate's promises resolve.
+    $scope.$digest();
+    expect(eventExporter.activeExport.selection).toEqual([
+      '35560d45-984c-47f2-b392-f40c2b8f9b45'
+    ]);
+  }));
 
   it('should silence the initial pageChanged call because ui bootstrap pagination is f*cked', function () {
     $location.search.and.returnValue({page: 5});
