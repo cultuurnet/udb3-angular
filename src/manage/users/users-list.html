@@ -1,0 +1,42 @@
+<h1 class="title" id="page-title">
+    Gebruikers
+</h1>
+<div class="row">
+    <udb-query-search-bar></udb-query-search-bar>
+</div>
+<div class="text-center" ng-show="ulc.loading">
+    <i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
+
+<div class="row" ng-cloak ng-show="!ulc.loading">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>E-mail</th>
+                    <th>Nick</th>
+                    <th>Rol</th>
+                    <th>Opties</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in ulc.users">
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.nick }}</td>
+                    <td>{{ user.roles.join(', ') }}</td>
+                    <td><a href="#">Bewerken</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <uib-pagination
+                total-items="ulc.pagedItemViewer.totalItems"
+                ng-model="ulc.pagedItemViewer.currentPage"
+                items-per-page="ulc.pagedItemViewer.pageSize"
+                ng-show="ulc.pagedItemViewer.totalItems > 0"
+                max-size="10"
+                ng-change="ulc.pageChanged()">
+        </uib-pagination>
+    </div>
+</div>

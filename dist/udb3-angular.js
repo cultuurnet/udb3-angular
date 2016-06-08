@@ -22,6 +22,8 @@ angular
     'udb.dashboard',
     'udb.saved-searches',
     'udb.media',
+    'udb.manage',
+    'udb.manage.users',
     'btford.socket-io',
     'pascalprecht.translate'
   ])
@@ -189,6 +191,54 @@ angular
     'udb.config'
   ]);
 
+/**
+ * @ngdoc module
+ * @name udb.manage
+ * @description
+ * The udb manage module
+ */
+angular
+  .module('udb.manage', [
+    'ngSanitize',
+    'ui.bootstrap',
+    'udb.core',
+    'udb.manage.users'
+  ])
+  .component('manageComponent', {
+    controller: 'ManageController',
+    controllerAs: 'mc',
+    template: '<ng-outlet></ng-outlet>',
+    $routeConfig: [
+      {
+        path: '/users/list',
+        name: 'UsersList',
+        component: 'usersComponent',
+        useAsDefault: true
+      }
+    ]
+  });
+/**
+ * @ngdoc module
+ * @name udb.manage
+ * @description
+ * The udb manage module
+ */
+angular
+  .module('udb.manage.users', [
+    'ngSanitize',
+    'ui.bootstrap'
+  ])
+  .component('usersComponent', {
+    controller: 'UsersListController',
+    controllerAs: 'ulc',
+    templateUrl: 'templates/users-list.html',
+    $canActivate: isAuthorized
+  });
+
+function isAuthorized(authorizationService) {
+  return authorizationService.isLoggedIn();
+}
+isAuthorized.$inject = ['authorizationService'];
 angular.module('peg', []).factory('LuceneQueryParser', function () {
  return (function() {
   /*
@@ -10410,6 +10460,347 @@ function udbExportModalButtons() {
   };
 }
 
+// Source: src/manage/components/query-search-bar.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.search.directive:udbSearchBar
+ * @description
+ * # udbQuerySearchBar
+ */
+angular
+  .module('udb.manage')
+  .directive('udbQuerySearchBar', udbQuerySearchBar);
+
+/* @ngInject */
+function udbQuerySearchBar($rootScope) {
+  return {
+    templateUrl: 'templates/query-search-bar.directive.html',
+    restrict: 'E',
+    link: function postLink(scope) {
+
+      var searchBar = {
+        queryString: ''
+      };
+
+      /**
+       * Search with a given query string and update the search bar or use the one currently displayed in the search bar
+       *
+       * @param {String} [queryString]
+       */
+      searchBar.find = function (queryString) {
+        var query = typeof queryString !== 'undefined' ? queryString : searchBar.queryString;
+
+        searchBar.queryString = query;
+        $rootScope.$emit('querySearchSubmitted', {query: query});
+      };
+
+      scope.qsb = searchBar;
+
+    }
+  };
+}
+udbQuerySearchBar.$inject = ["$rootScope"];
+
+// Source: src/manage/components/query-search-result-viewer.factory.js
+/**
+ * @ngdoc service
+ * @name udb.manage.UserSearchResultViewer
+ * @description
+ * # QuerySearchResultViewer
+ * User search result viewer factory
+ */
+angular
+  .module('udb.manage')
+  .factory('QuerySearchResultViewer', QuerySearchResultViewerFactory);
+
+function QuerySearchResultViewerFactory() {
+
+  /**
+   * @class SearchResultViewer
+   * @constructor
+   * @param    {number}     pageSize        The number of items shown per page
+   *
+   * @property {object[]}   events          A list of json-LD event objects
+   * @property {number}     pageSize        The current page size
+   * @property {number}     totalItems      The total items found
+   * @property {number}     currentPage     The index of the current page without zeroing
+   * @property {boolean}    loading         A flag to indicate the period between changing of the query and
+   *                                        receiving of the results.
+   * @property {SelectionState} selectionState Enum that keeps the state of selected results
+   */
+  var QuerySearchResultViewer = function (pageSize, activePage) {
+    this.pageSize = pageSize || 30;
+    this.users = [];
+    this.totalItems = 0;
+    this.currentPage = activePage || 1;
+    this.loading = true;
+  };
+
+  QuerySearchResultViewer.prototype = {
+    /**
+     * @param {PagedCollection} pagedResults
+     */
+    setResults: function (pagedResults) {
+      var viewer = this;
+
+      viewer.pageSize = pagedResults.itemsPerPage || 30;
+      viewer.users = pagedResults.users || [];
+      viewer.totalItems = pagedResults.totalItems || 0;
+
+      viewer.loading = false;
+    }
+  };
+
+  return (QuerySearchResultViewer);
+}
+
+// Source: src/manage/manage.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:UserListController
+ * @description
+ * # UserListController
+ */
+angular
+  .module('udb.manage')
+  .controller('ManageController', ManageController);
+
+/* @ngInject */
+function ManageController() {
+  var mc = this;
+}
+
+// Source: src/manage/users/user.service.js
+/**
+ * @ngdoc service
+ * @name udb.manage.user
+ * @description
+ * # user
+ * Service in the udb.manage.
+ */
+angular
+  .module('udb.manage')
+  .service('UserService', UserService);
+
+/* @ngInject */
+function UserService($q) {
+  var service = this;
+
+  var jsonUsers = [
+    {
+      'id': '1',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': [
+        'admin',
+        'moderator'
+      ]
+    },
+    {
+      'id': '2',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': [
+        'moderator'
+      ]
+    },
+    {
+      'id': '3',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': [
+        'admin'
+      ]
+    },
+    {
+      'id': '4',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': [
+        'admin'
+      ]
+    },
+    {
+      'id': '5',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '6',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': [
+        'moderator'
+      ]
+    },
+    {
+      'id': '7',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '8',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '9',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '10',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '11',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '12',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '13',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '14',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '15',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '16',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '17',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '18',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    },
+    {
+      'id': '19',
+      'email': 'info@mail.com',
+      'nick': 'nickname',
+      'roles': []
+    }
+  ];
+
+  function pageArray(items, itemsPerPage) {
+    var result = [];
+    angular.forEach(items, function(item, index) {
+      var rowIndex = Math.floor(index / itemsPerPage),
+          colIndex = index % itemsPerPage;
+      if (!result[rowIndex]) {
+        result[rowIndex] = [];
+        result[rowIndex].users = [];
+        result[rowIndex].itemsPerPage = itemsPerPage;
+        result[rowIndex].totalItems = items.length;
+      }
+
+      result[rowIndex].users[colIndex] = item;
+    });
+
+    return result;
+  }
+
+  service.find = function(query, page) {
+    var deferredUsers = $q.defer();
+
+    var usersArray;
+    if (query) {
+      usersArray = _.shuffle(jsonUsers);
+    }
+    else {
+      usersArray = jsonUsers;
+    }
+    usersArray = pageArray(usersArray, 10);
+
+    deferredUsers.resolve(usersArray[page - 1]);
+    return deferredUsers.promise;
+  };
+}
+UserService.$inject = ["$q"];
+
+// Source: src/manage/users/users-list.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:UserListController
+ * @description
+ * # UserListController
+ */
+angular
+  .module('udb.manage')
+  .controller('UsersListController', UsersListController);
+
+/* @ngInject */
+function UsersListController($scope, $rootScope, UserService, QuerySearchResultViewer) {
+  var ulc = this;
+  ulc.loading = false;
+  ulc.pagedItemViewer = new QuerySearchResultViewer(10, 1);
+
+  /**
+   * @param {PagedCollection} data
+   */
+  function setUsersResults(data) {
+    ulc.pagedItemViewer.loading = true;
+    ulc.pagedItemViewer.setResults(data);
+    ulc.users = data.users;
+  }
+
+  ulc.findUsers = function(query) {
+    // Reset the pager when search query is changed.
+    if (query !== ulc.query) {
+      ulc.pagedItemViewer.currentPage = 1;
+    }
+    ulc.query = query;
+    UserService
+      .find(ulc.query, ulc.pagedItemViewer.currentPage)
+      .then(setUsersResults);
+  };
+
+  ulc.findUsers();
+
+  var userSearchSubmittedListener = $rootScope.$on('userSearchSubmitted', function(event, args) {
+    ulc.findUsers(args.query);
+  });
+
+  ulc.pageChanged = function() {
+    ulc.findUsers(ulc.query);
+  };
+
+  $scope.$on('$destroy', userSearchSubmittedListener);
+}
+UsersListController.$inject = ["$scope", "$rootScope", "UserService", "QuerySearchResultViewer"];
+
 // Source: src/media/create-image-job.factory.js
 /**
  * @ngdoc service
@@ -16164,6 +16555,66 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <button ng-hide=\"exporter.onLastStep()\" class=\"btn btn-primary\"\n" +
     "          ng-click=\"exporter.nextStep()\">Volgende</button>\n" +
     "  <button ng-show=\"exporter.onLastStep()\" class=\"btn btn-primary\" ng-click=\"exporter.export()\">Exporteren</button>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/query-search-bar.directive.html',
+    "<form class=\"form-inline\" role=\"search\"\n" +
+    "      ng-class=\"{'has-errors': qsb.hasErrors, 'is-editing': qsb.isEditing}\">\n" +
+    "  <div class=\"form-group\">\n" +
+    "    <label for=\"user-search-input\">Zoeken op e-mail</label>\n" +
+    "    <input type=\"text\" id=\"user-search-input\" class=\"form-control\" ng-model=\"qsb.queryString\">\n" +
+    "    <i ng-show=\"qsb.hasErrors\" class=\"fa fa-warning warning-icon\" tooltip-append-to-body=\"true\"\n" +
+    "       tooltip-placement=\"bottom\" uib-tooltip=\"{{qsb.errors}}\"></i>\n" +
+    "  </div>\n" +
+    "  <button type=\"submit\" class=\"btn\" ng-click=\"qsb.find()\">Zoeken</button>\n" +
+    "</form>\n"
+  );
+
+
+  $templateCache.put('templates/users-list.html',
+    "<h1 class=\"title\" id=\"page-title\">\n" +
+    "    Gebruikers\n" +
+    "</h1>\n" +
+    "<div class=\"row\">\n" +
+    "    <udb-query-search-bar></udb-query-search-bar>\n" +
+    "</div>\n" +
+    "<div class=\"text-center\" ng-show=\"ulc.loading\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\" ng-cloak ng-show=\"!ulc.loading\">\n" +
+    "    <div class=\"table-responsive\">\n" +
+    "        <table class=\"table table-hover table-striped\">\n" +
+    "            <thead>\n" +
+    "                <tr>\n" +
+    "                    <th>E-mail</th>\n" +
+    "                    <th>Nick</th>\n" +
+    "                    <th>Rol</th>\n" +
+    "                    <th>Opties</th>\n" +
+    "                </tr>\n" +
+    "            </thead>\n" +
+    "            <tbody>\n" +
+    "                <tr ng-repeat=\"user in ulc.users\">\n" +
+    "                    <td>{{ user.email }}</td>\n" +
+    "                    <td>{{ user.nick }}</td>\n" +
+    "                    <td>{{ user.roles.join(', ') }}</td>\n" +
+    "                    <td><a href=\"#\">Bewerken</a></td>\n" +
+    "                </tr>\n" +
+    "            </tbody>\n" +
+    "        </table>\n" +
+    "    </div>\n" +
+    "    <div class=\"panel-footer\">\n" +
+    "        <uib-pagination\n" +
+    "                total-items=\"ulc.pagedItemViewer.totalItems\"\n" +
+    "                ng-model=\"ulc.pagedItemViewer.currentPage\"\n" +
+    "                items-per-page=\"ulc.pagedItemViewer.pageSize\"\n" +
+    "                ng-show=\"ulc.pagedItemViewer.totalItems > 0\"\n" +
+    "                max-size=\"10\"\n" +
+    "                ng-change=\"ulc.pageChanged()\">\n" +
+    "        </uib-pagination>\n" +
+    "    </div>\n" +
     "</div>\n"
   );
 

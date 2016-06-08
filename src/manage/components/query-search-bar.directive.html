@@ -1,0 +1,10 @@
+<form class="form-inline" role="search"
+      ng-class="{'has-errors': qsb.hasErrors, 'is-editing': qsb.isEditing}">
+  <div class="form-group">
+    <label for="user-search-input">Zoeken op e-mail</label>
+    <input type="text" id="user-search-input" class="form-control" ng-model="qsb.queryString">
+    <i ng-show="qsb.hasErrors" class="fa fa-warning warning-icon" tooltip-append-to-body="true"
+       tooltip-placement="bottom" uib-tooltip="{{qsb.errors}}"></i>
+  </div>
+  <button type="submit" class="btn" ng-click="qsb.find()">Zoeken</button>
+</form>
