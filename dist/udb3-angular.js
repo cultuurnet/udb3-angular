@@ -4013,7 +4013,12 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace['@id']) {
         this.apiUrl = new URL(jsonPlace['@id']);
       }
-      this.name = jsonPlace.name || {};
+
+      if (!jsonPlace.name.nl && jsonPlace.name) {
+        this.name = {'nl': jsonPlace.name};
+      } else {
+        this.name = jsonPlace.name || {};
+      }
       this.address = jsonPlace.address || this.address;
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
