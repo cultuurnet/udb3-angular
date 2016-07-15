@@ -64,6 +64,7 @@ module.exports = function(config) {
       'bower_components/bootstrap-datepicker/js/bootstrap-datepicker.js',
       'bower_components/rxjs/dist/rx.all.js',
       'bower_components/rx-angular/dist/rx.angular.js',
+      'bower_components/ng-focus-if/focusIf.js',
       'src/**/*.module.js',
       'src/**/*.js',
       'src/**/*.html'
