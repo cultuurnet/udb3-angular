@@ -212,33 +212,7 @@ angular
   .module('udb.management', [
     'udb.core',
     'udb.management.labels'
-  ])
-  .component('udbManagement', {
-    template: '<div ui-view></div>',
-    $routeConfig: [
-      {
-        path: '/labels/overview',
-        name: 'LabelsList',
-        component: 'labelsComponent'
-      },
-      {
-        path: '/labels/create',
-        name: 'LabelCreator',
-        component: 'udbLabelCreator'
-      },
-      {
-        path: '/labels/:id',
-        name: 'LabelEditor',
-        component: 'udbLabelEditor'
-      }
-    ],
-    $canActivate: isAuthorized
-  });
-
-function isAuthorized(authorizationService) {
-  return authorizationService.isLoggedIn();
-}
-isAuthorized.$inject = ['authorizationService'];
+  ]);
 angular.module('peg', []).factory('LuceneQueryParser', function () {
  return (function() {
   /*
@@ -10702,7 +10676,7 @@ angular
   .controller('LabelCreatorController', LabelCreatorController);
 
 /** @ngInject */
-function LabelCreatorController(LabelManager, $uibModal) {
+function LabelCreatorController(LabelManager, $uibModal, $state) {
   var creator = this;
   creator.creating = false;
   creator.create = create;
@@ -10714,7 +10688,7 @@ function LabelCreatorController(LabelManager, $uibModal) {
 
   function create() {
     function goToOverview(jobInfo) {
-      creator.$router.navigate(['LabelsList']);
+      $state.go('split.manageLabels');
     }
 
     creator.creating = true;
@@ -10744,7 +10718,7 @@ function LabelCreatorController(LabelManager, $uibModal) {
     );
   }
 }
-LabelCreatorController.$inject = ["LabelManager", "$uibModal"];
+LabelCreatorController.$inject = ["LabelManager", "$uibModal", "$state"];
 
 // Source: src/management/labels/label-editor.controller.js
 /**
@@ -10974,7 +10948,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   function createNewLabelJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
-    job.labelId = commandInfo.labelId;
+    job.labelId = commandInfo.uuid;
     jobLogger.addJob(job);
 
     return $q.resolve(job);
