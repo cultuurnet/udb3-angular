@@ -1900,6 +1900,15 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
  */
 angular
   .module('udb.core')
+  .constant('authorization', {
+    'createOffer' : 'AANBOD_INVOEREN',
+    'editOffer': 'AANBOD_BEWERKEN',
+    'moderateOffer': 'AANBOD_MODEREREN',
+    'removeOffer': 'AANBOD_VERWIJDEREN',
+    'manageOrganisations': 'ORGANISATIES_BEHEREN',
+    'manageUsers': 'GEBRUIKERS_BEHEREN',
+    'manageLabels': 'LABELS_BEHEREN'
+  })
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
@@ -1945,6 +1954,24 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
     }
 
     return deferredRedirect.promise;
+  };
+
+  /**
+   * @return {Promise.<PermissionCollection>}
+   */
+  this.getPermissions = function() {
+    return udbApi.getMyPermissions();
+  };
+
+  /**
+   * @param {string} permission - One of the authorization constants
+   */
+  this.hasPermission = function(permission) {
+    return this.getPermissions()
+      .then(function (permissions) {
+        var foundPermission = _.find(permissions, function(p) { return p.key === permission; });
+        return foundPermission ? true : false;
+      });
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
@@ -2822,6 +2849,13 @@ function UdbApi(
     }
 
     return deferredUser.promise;
+  };
+
+  this.getMyPermissions = function () {
+    // TODO cache these
+    return $http
+      .get(appConfig.baseUrl + 'user/permissions', defaultApiConfig)
+      .then(returnUnwrappedData);
   };
 
   /**

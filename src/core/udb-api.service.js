@@ -259,6 +259,13 @@ function UdbApi(
     return deferredUser.promise;
   };
 
+  this.getMyPermissions = function () {
+    // TODO cache these
+    return $http
+      .get(appConfig.baseUrl + 'user/permissions', defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
   /**
    * Get the editing permission for an offer.
 
