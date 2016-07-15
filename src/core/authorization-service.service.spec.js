@@ -48,11 +48,12 @@ describe('AuthorizationService: ', function () {
     $scope.$apply();
   });
 
-  it('should find not a permission in my permissions list', function () {
+  it('should find not a permission in my permissions list', function (done) {
     authorizationService
       .hasPermission('MEATY_THINGS')
       .then(function(hasPermission) {
         expect(hasPermission).toEqual(false);
+        done();
       });
 
     $scope.$apply();
