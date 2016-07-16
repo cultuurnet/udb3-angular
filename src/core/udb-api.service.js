@@ -259,11 +259,35 @@ function UdbApi(
     return deferredUser.promise;
   };
 
+  /**
+   * Get my user permissions
+   */
   this.getMyPermissions = function () {
-    // TODO cache these
-    return $http
-      .get(appConfig.baseUrl + 'user/permissions', defaultApiConfig)
-      .then(returnUnwrappedData);
+    var deferredPermissions = $q.defer();
+    var token = uitidAuth.getToken();
+
+    // cache the permissions with user token
+    // == will need to fetch permissions for each login
+    function storeAndResolvePermissions (permissionsList) {
+      offerCache.put(token, permissionsList);
+      deferredPermissions.resolve(permissionsList);
+    }
+
+    if (token) {
+      var permissions = offerCache.get(token);
+      if (!permissions) {
+        $http
+          .get(appConfig.baseUrl + 'user/permissions', defaultApiConfig)
+          .success(storeAndResolvePermissions)
+          .error(deferredPermissions.reject);
+      } else {
+        deferredPermissions.resolve(permissions);
+      }
+    } else {
+      deferredPermissions.reject();
+    }
+
+    return deferredPermissions.promise;
   };
 
   /**

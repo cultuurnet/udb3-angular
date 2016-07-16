@@ -1957,21 +1957,21 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
   };
 
   /**
-   * @return {Promise.<PermissionCollection>}
-   */
-  this.getPermissions = function() {
-    return udbApi.getMyPermissions();
-  };
-
-  /**
    * @param {string} permission - One of the authorization constants
    */
-  this.hasPermission = function(permission) {
-    return this.getPermissions()
-      .then(function (permissions) {
-        var foundPermission = _.find(permissions, function(p) { return p.key === permission; });
-        return foundPermission ? true : false;
-      });
+  this.hasPermission = function (permission) {
+    var deferredHasPermission = $q.defer();
+
+    function findPermission(permissionList) {
+      var foundPermission = _.find(permissionList, function(p) { return p.key === permission; });
+      deferredHasPermission.resolve(foundPermission ? true : false);
+    }
+
+    udbApi
+      .getMyPermissions()
+      .then(findPermission, deferredHasPermission.reject);
+
+    return deferredHasPermission.promise;
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
@@ -2851,11 +2851,35 @@ function UdbApi(
     return deferredUser.promise;
   };
 
+  /**
+   * Get my user permissions
+   */
   this.getMyPermissions = function () {
-    // TODO cache these
-    return $http
-      .get(appConfig.baseUrl + 'user/permissions', defaultApiConfig)
-      .then(returnUnwrappedData);
+    var deferredPermissions = $q.defer();
+    var token = uitidAuth.getToken();
+
+    // cache the permissions with user token
+    // == will need to fetch permissions for each login
+    function storeAndResolvePermissions (permissionsList) {
+      offerCache.put(token, permissionsList);
+      deferredPermissions.resolve(permissionsList);
+    }
+
+    if (token) {
+      var permissions = offerCache.get(token);
+      if (!permissions) {
+        $http
+          .get(appConfig.baseUrl + 'user/permissions', defaultApiConfig)
+          .success(storeAndResolvePermissions)
+          .error(deferredPermissions.reject);
+      } else {
+        deferredPermissions.resolve(permissions);
+      }
+    } else {
+      deferredPermissions.reject();
+    }
+
+    return deferredPermissions.promise;
   };
 
   /**
