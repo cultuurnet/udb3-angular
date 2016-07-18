@@ -847,8 +847,7 @@ function UdbApi(
    */
   this.updateRoleName = function (roleId, name) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
-
-    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=SetConstraint';
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=RenameRole';
 
     var updateData = {
       'name': name
@@ -912,6 +911,21 @@ function UdbApi(
 
     return $http
       .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} permissionKey
+   *  The key for the permission
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  this.removePermissionFromRole = function (permissionKey, roleId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 

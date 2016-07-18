@@ -16,14 +16,11 @@
                        class="form-control"
                        name="name"
                        type="text"
-                       ng-minlength="3"
                        ng-required="true"
                        ng-maxlength="255"
                        ng-model="editor.role.name"
-                       ng-model-options="{debounce: 300}"
-                       ng-disabled="editor.creating">
+                       ng-disabled="editor.saving">
                 <p class="help-block" ng-if="editor.form.name.$error.required">Een role naam is verplicht.</p>
-                <p class="help-block" ng-if="editor.form.name.$error.minlength">Een role moet uit minstens 3 tekens bestaan.</p>
                 <p class="help-block" ng-if="editor.form.name.$error.maxlength">Een role mag maximum 255 tekens bevatten.</p>
             </div>
         </div>
@@ -34,12 +31,11 @@
                 <label class="control-label" for="label-name-field">Bewerkrecht</label>
                 <input id="label-name-field"
                        class="form-control"
-                       name="editPermission"
+                       name="constraint"
                        type="text"
                        ng-maxlength="255"
-                       ng-model="editor.role.editPermission"
-                       ng-model-options="{debounce: 300}"
-                       ng-disabled="editor.creating">
+                       ng-model="editor.role.constraint"
+                       ng-disabled="editor.saving">
             </div>
         </div>
     </div>
@@ -82,11 +78,11 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <button ng-disabled="!editor.form.$valid || editor.creating"
+        <button ng-disabled="!editor.form.$valid || editor.saving"
           type="button"
           class="btn btn-primary"
-          ng-click="editor.create()">
-          Aanmaken <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.creating"></i>
+          ng-click="editor.save()">
+          Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
         </button>
       </div>
     </div>

@@ -21,23 +21,19 @@ function RoleEditorController(
   $q
 ) {
   var editor = this;
-  editor.creating = false;
+  editor.saving = false;
   editor.save = save;
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
+  var roleId = $stateParams.id;
 
-  function loadRoleFromParams () {
-    var roleId = $stateParams.id;
-    loadRole(roleId);
-    loadRolePermissions(roleId);
-  }
   function loadRole(roleId) {
     RoleManager
       .get(roleId).then(function(role) {
         editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
       .finally(function() {
-        editor.loadedRole = true;
+        loadRolePermissions(roleId);
       });
   }
   function showLoadingError () {
@@ -58,38 +54,48 @@ function RoleEditorController(
         }, showProblem)
     );
     $q.all(promisses).then(function() {
-      console.log('asdf', permissions, rolePermissions);
       // loaded all permissions & permissions linked to role
+      editor.role.permissions = {};
+      rolePermissions.forEach(function(permission) {
+        editor.role.permissions[permission.key] = true;
+      });
       editor.permissions = permissions;
       editor.loadedRolePermissions = true;
+      // save a copy of the original role before changes
+      editor.originalRole = _.cloneDeep(editor.role);
+      // done loading role
+      editor.loadedRole = true;
     });
   }
-  loadRoleFromParams();
+  loadRole(roleId);
 
   function save() {
-    function goToOverview() {
+    editor.saving = true;
+    //console.log('save', editor.role, editor.originalRole);
+    var promisses = [];
+    // go over the changes from the original role
+    // name changed
+    if (editor.originalRole.name !== editor.role.name) {
+      promisses.push(RoleManager.updateRoleName(roleId, editor.role.name));
+    }
+    // constraint changed
+    if (editor.originalRole.constraint !== editor.role.constraint) {
+      promisses.push(RoleManager.updateRoleConstraint(roleId, editor.role.constraint));
+    }
+    Object.keys(editor.role.permissions).forEach(function(key) {
+      // permission added
+      if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
+        promisses.push(RoleManager.addPermissionToRole(key, roleId));
+      }
+      // permission removed
+      if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
+        promisses.push(RoleManager.removePermissionFromRole(key, roleId));
+      }
+    });
+
+    $q.all(promisses).then(function() {
       $state.go('split.manageRoles');
-    }
-
-    function sendPermissions (createdRole) {
-      var roleId = createdRole.roleId;
-      console.log('going to send permissions', editor.role.permissions);
-      var promisses = [];
-      Object.keys(editor.role.permissions).forEach(function(permissionKey) {
-        promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
-      });
-      $q.all(promisses).then(function() {
-        goToOverview();
-      }).catch(showProblem);
-    }
-
-    editor.creating = true;
-    RoleManager
-      .create(editor.role.name, editor.role.editPermission)
-      .then(sendPermissions, showProblem)
-      .finally(function () {
-        editor.creating = false;
-      });
+    }).catch(showProblem);
   }
 
   /**

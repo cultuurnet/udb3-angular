@@ -3397,8 +3397,7 @@ function UdbApi(
    */
   this.updateRoleName = function (roleId, name) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
-
-    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=SetConstraint';
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=RenameRole';
 
     var updateData = {
       'name': name
@@ -3462,6 +3461,21 @@ function UdbApi(
 
     return $http
       .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} permissionKey
+   *  The key for the permission
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  this.removePermissionFromRole = function (permissionKey, roleId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -11324,23 +11338,19 @@ function RoleEditorController(
   $q
 ) {
   var editor = this;
-  editor.creating = false;
+  editor.saving = false;
   editor.save = save;
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
+  var roleId = $stateParams.id;
 
-  function loadRoleFromParams () {
-    var roleId = $stateParams.id;
-    loadRole(roleId);
-    loadRolePermissions(roleId);
-  }
   function loadRole(roleId) {
     RoleManager
       .get(roleId).then(function(role) {
         editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
       .finally(function() {
-        editor.loadedRole = true;
+        loadRolePermissions(roleId);
       });
   }
   function showLoadingError () {
@@ -11361,38 +11371,48 @@ function RoleEditorController(
         }, showProblem)
     );
     $q.all(promisses).then(function() {
-      console.log('asdf', permissions, rolePermissions);
       // loaded all permissions & permissions linked to role
+      editor.role.permissions = {};
+      rolePermissions.forEach(function(permission) {
+        editor.role.permissions[permission.key] = true;
+      });
       editor.permissions = permissions;
       editor.loadedRolePermissions = true;
+      // save a copy of the original role before changes
+      editor.originalRole = _.cloneDeep(editor.role);
+      // done loading role
+      editor.loadedRole = true;
     });
   }
-  loadRoleFromParams();
+  loadRole(roleId);
 
   function save() {
-    function goToOverview() {
+    editor.saving = true;
+    //console.log('save', editor.role, editor.originalRole);
+    var promisses = [];
+    // go over the changes from the original role
+    // name changed
+    if (editor.originalRole.name !== editor.role.name) {
+      promisses.push(RoleManager.updateRoleName(roleId, editor.role.name));
+    }
+    // constraint changed
+    if (editor.originalRole.constraint !== editor.role.constraint) {
+      promisses.push(RoleManager.updateRoleConstraint(roleId, editor.role.constraint));
+    }
+    Object.keys(editor.role.permissions).forEach(function(key) {
+      // permission added
+      if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
+        promisses.push(RoleManager.addPermissionToRole(key, roleId));
+      }
+      // permission removed
+      if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
+        promisses.push(RoleManager.removePermissionFromRole(key, roleId));
+      }
+    });
+
+    $q.all(promisses).then(function() {
       $state.go('split.manageRoles');
-    }
-
-    function sendPermissions (createdRole) {
-      var roleId = createdRole.roleId;
-      console.log('going to send permissions', editor.role.permissions);
-      var promisses = [];
-      Object.keys(editor.role.permissions).forEach(function(permissionKey) {
-        promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
-      });
-      $q.all(promisses).then(function() {
-        goToOverview();
-      }).catch(showProblem);
-    }
-
-    editor.creating = true;
-    RoleManager
-      .create(editor.role.name, editor.role.editPermission)
-      .then(sendPermissions, showProblem)
-      .finally(function () {
-        editor.creating = false;
-      });
+    }).catch(showProblem);
   }
 
   /**
@@ -11491,6 +11511,19 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   service.addPermissionToRole = function(permissionKey, roleId) {
     return udbApi
       .addPermissionToRole(permissionKey, roleId)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {string} permissionKey
+   *  The key for the permission
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  service.removePermissionFromRole = function(permissionKey, roleId) {
+    return udbApi
+      .removePermissionFromRole(permissionKey, roleId)
       .then(logRoleJob);
   };
 
@@ -17734,14 +17767,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       class=\"form-control\"\n" +
     "                       name=\"name\"\n" +
     "                       type=\"text\"\n" +
-    "                       ng-minlength=\"3\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
     "                       ng-model=\"editor.role.name\"\n" +
-    "                       ng-model-options=\"{debounce: 300}\"\n" +
-    "                       ng-disabled=\"editor.creating\">\n" +
+    "                       ng-disabled=\"editor.saving\">\n" +
     "                <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een role naam is verplicht.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een role moet uit minstens 3 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een role mag maximum 255 tekens bevatten.</p>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -17752,12 +17782,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht</label>\n" +
     "                <input id=\"label-name-field\"\n" +
     "                       class=\"form-control\"\n" +
-    "                       name=\"editPermission\"\n" +
+    "                       name=\"constraint\"\n" +
     "                       type=\"text\"\n" +
     "                       ng-maxlength=\"255\"\n" +
-    "                       ng-model=\"editor.role.editPermission\"\n" +
-    "                       ng-model-options=\"{debounce: 300}\"\n" +
-    "                       ng-disabled=\"editor.creating\">\n" +
+    "                       ng-model=\"editor.role.constraint\"\n" +
+    "                       ng-disabled=\"editor.saving\">\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -17800,11 +17829,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-12\">\n" +
-    "        <button ng-disabled=\"!editor.form.$valid || editor.creating\"\n" +
+    "        <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
     "          type=\"button\"\n" +
     "          class=\"btn btn-primary\"\n" +
-    "          ng-click=\"editor.create()\">\n" +
-    "          Aanmaken <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.creating\"></i>\n" +
+    "          ng-click=\"editor.save()\">\n" +
+    "          Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
     "        </button>\n" +
     "      </div>\n" +
     "    </div>\n" +
