@@ -1875,6 +1875,15 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
  */
 angular
   .module('udb.core')
+  .constant('authorization', {
+    'createOffer' : 'AANBOD_INVOEREN',
+    'editOffer': 'AANBOD_BEWERKEN',
+    'moderateOffer': 'AANBOD_MODEREREN',
+    'removeOffer': 'AANBOD_VERWIJDEREN',
+    'manageOrganisations': 'ORGANISATIES_BEHEREN',
+    'manageUsers': 'GEBRUIKERS_BEHEREN',
+    'manageLabels': 'LABELS_BEHEREN'
+  })
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
@@ -1920,6 +1929,24 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
     }
 
     return deferredRedirect.promise;
+  };
+
+  /**
+   * @param {string} permission - One of the authorization constants
+   */
+  this.hasPermission = function (permission) {
+    var deferredHasPermission = $q.defer();
+
+    function findPermission(permissionList) {
+      var foundPermission = _.find(permissionList, function(p) { return p.key === permission; });
+      deferredHasPermission.resolve(foundPermission ? true : false);
+    }
+
+    udbApi
+      .getMyPermissions()
+      .then(findPermission, deferredHasPermission.reject);
+
+    return deferredHasPermission.promise;
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
@@ -2797,6 +2824,37 @@ function UdbApi(
     }
 
     return deferredUser.promise;
+  };
+
+  /**
+   * Get my user permissions
+   */
+  this.getMyPermissions = function () {
+    var deferredPermissions = $q.defer();
+    var token = uitidAuth.getToken();
+
+    // cache the permissions with user token
+    // == will need to fetch permissions for each login
+    function storeAndResolvePermissions (permissionsList) {
+      offerCache.put(token, permissionsList);
+      deferredPermissions.resolve(permissionsList);
+    }
+
+    if (token) {
+      var permissions = offerCache.get(token);
+      if (!permissions) {
+        $http
+          .get(appConfig.baseUrl + 'user/permissions/', defaultApiConfig)
+          .success(storeAndResolvePermissions)
+          .error(deferredPermissions.reject);
+      } else {
+        deferredPermissions.resolve(permissions);
+      }
+    } else {
+      deferredPermissions.reject();
+    }
+
+    return deferredPermissions.promise;
   };
 
   /**
