@@ -835,15 +835,15 @@ function UdbApi(
       name: name
     };
 
+    /*
     var deferred = $q.defer();
     deferred.resolve({'roleId': 'argjaslfghaljdshgfas58464'});
     return deferred.promise;
+     */
 
-    /*
     return $http
       .post(appConfig.baseUrl + 'roles/', roleData, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
-     */
   };
 
   /**
@@ -852,23 +852,36 @@ function UdbApi(
   this.getPermissions = function () {
     var requestConfig = defaultApiConfig;
 
-    var deferred = $q.defer();
-    setTimeout(function(){
-    deferred.resolve([
-      {'key': 'aanbodinvoeren', 'name': 'Aanbod invoeren'},
-      {'key': 'aanbodbewerken', 'name': 'Aanbod bewerken'},
-      {'key': 'aanbodmoderen', 'name': 'Aanbod moderen'},
-      {'key': 'aanbodverwijderen', 'name': 'Aanbod verwijderen'},
-      {'key': 'organizatiesbeheren', 'name': 'Organisaties beheren'},
-      {'key': 'gebruikersbeheren', 'name': 'Gebruikers beheren'},
-      {'key': 'labelsbeheren', 'name': 'Labels beheren'}
-    ]);
-    }, 1000);
-
-    return deferred.promise;
-    /*
     return $http
       .get(appConfig.baseUrl + 'permissions/', requestConfig)
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} roleId
+   *  roleId for the role to retrieve permissions for
+   * @return {Promise.Array<Permission>}
+   */
+  this.getRolePermissions = function (roleId) {
+    var requestConfig = defaultApiConfig;
+
+     var deferred = $q.defer();
+     setTimeout(function(){
+     deferred.resolve([
+     {'key': 'aanbodinvoeren', 'name': 'Aanbod invoeren'},
+     {'key': 'aanbodbewerken', 'name': 'Aanbod bewerken'},
+     {'key': 'aanbodmoderen', 'name': 'Aanbod moderen'},
+     {'key': 'aanbodverwijderen', 'name': 'Aanbod verwijderen'},
+     {'key': 'organizatiesbeheren', 'name': 'Organisaties beheren'},
+     {'key': 'gebruikersbeheren', 'name': 'Gebruikers beheren'},
+     {'key': 'labelsbeheren', 'name': 'Labels beheren'}
+     ]);
+     }, 1000);
+
+     return deferred.promise;
+    /*
+    return $http
+      .get(appConfig.baseUrl + '/roles/' + roleId + '/permissions/', requestConfig)
       .then(returnUnwrappedData);
      */
   };

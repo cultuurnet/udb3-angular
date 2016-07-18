@@ -60,7 +60,6 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
       });
   }
 
-
   /**
    * @param {ApiProblem} problem
    */
