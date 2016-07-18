@@ -80,11 +80,24 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
 
   /**
    * @param {uuid} roleId
-   * @param {roleUpdate} roleUpdateData
+   * @param {string} name
    * @return {Promise}
    */
-  service.updateRole = function(roleId, roleUpdateData) {
-    return udbApi.updateRole(roleId, roleUpdateData);
+  service.updateRoleName = function(roleId, name) {
+    return udbApi
+      .updateRoleName(roleId, name)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {string} constraint
+   * @return {Promise}
+   */
+  service.updateRoleConstraint = function(roleId, constraint) {
+    return udbApi
+      .updateRoleConstraint(roleId, constraint)
+      .then(logRoleJob);
   };
 
   /**

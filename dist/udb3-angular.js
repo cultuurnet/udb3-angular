@@ -2580,12 +2580,6 @@ UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorM
  */
 
 /**
- * @typedef {Object} roleUpdate
- * @property {string} @name
- * @property {string} @constraint
- */
-
-/**
  * @typedef {Object} ApiProblem
  * @property {URL} type
  * @property {string} title
@@ -3398,20 +3392,31 @@ function UdbApi(
 
   /**
    * @param {uuid}    roleId
-   * @param {roleUpdate}  roleUpdateData
+   * @param {string}  name
    * @return {Promise.<Object|ApiProblem>} Object containing created roleId
    */
-  this.updateRole = function (roleId, roleUpdateData) {
-    var updateData = {};
-    if (typeof roleUpdateData.name !== 'undefined') {
-      updateData.name = roleUpdateData.name;
-    }
-    if (typeof roleUpdateData.constraint !== 'undefined') {
-      updateData.constraint = roleUpdateData.constraint;
-    }
+  this.updateRole = function (roleId, name) {
+    var updateData = {
+      name: name
+    };
 
     return $http
-      .patch(appConfig.baseUrl + 'roles/' + roleId, roleUpdateData, defaultApiConfig)
+      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {uuid}    roleId
+   * @param {string}  constraint
+   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   */
+  this.updateRole = function (roleId, constraint) {
+    var updateData = {
+      constraint: constraint
+    };
+
+    return $http
+      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -11474,11 +11479,24 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
 
   /**
    * @param {uuid} roleId
-   * @param {roleUpdate} roleUpdateData
+   * @param {string} name
    * @return {Promise}
    */
-  service.updateRole = function(roleId, roleUpdateData) {
-    return udbApi.updateRole(roleId, roleUpdateData);
+  service.updateRoleName = function(roleId, name) {
+    return udbApi
+      .updateRoleName(roleId, name)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {string} constraint
+   * @return {Promise}
+   */
+  service.updateRoleConstraint = function(roleId, constraint) {
+    return udbApi
+      .updateRoleConstraint(roleId, constraint)
+      .then(logRoleJob);
   };
 
   /**
