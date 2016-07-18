@@ -122,7 +122,7 @@ describe('Service: UDB3 Api', function () {
     uitidAuth.getToken.and.returnValue('token1');
 
     $httpBackend
-      .expectGET(baseUrl + 'user/permissions')
+      .expectGET(baseUrl + 'user/permissions/')
       .respond(JSON.stringify(expectedPermissions));
 
     service

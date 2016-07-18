@@ -277,7 +277,7 @@ function UdbApi(
       var permissions = offerCache.get(token);
       if (!permissions) {
         $http
-          .get(appConfig.baseUrl + 'user/permissions', defaultApiConfig)
+          .get(appConfig.baseUrl + 'user/permissions/', defaultApiConfig)
           .success(storeAndResolvePermissions)
           .error(deferredPermissions.reject);
       } else {
