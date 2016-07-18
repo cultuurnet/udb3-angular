@@ -13,6 +13,9 @@ angular
 /* @ngInject */
 function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   var llc = this;
+
+  llc.query = '';
+
   var itemsPerPage = 10;
   var minQueryLength = 3;
   var query$ = rx.createObservableFunction(llc, 'queryChanged');
@@ -26,7 +29,12 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
    * @return {boolean}
    */
   function ignoreShortQueries(query) {
-    return query.length >= minQueryLength;
+    if (llc.query === '') {
+      return true;
+    }
+    else {
+      return query.length >= minQueryLength;
+    }
   }
 
   /**
@@ -38,7 +46,6 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   }
 
   llc.loading = false;
-  llc.query = '';
   llc.page = 0;
   llc.minQueryLength = minQueryLength;
 
@@ -58,4 +65,11 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
       llc.loading = true;
     })
     .subscribe();
+
+  $scope.$on('$viewContentLoaded', function() {
+    LabelManager.find('', itemsPerPage, 0)
+      .then(function(results) {
+        llc.searchResult = results;
+      });
+  });
 }
