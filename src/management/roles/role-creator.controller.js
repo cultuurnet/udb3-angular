@@ -24,7 +24,7 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
 
   function loadPermissions () {
     PermissionManager
-      .getAll().then(function(permissions){
+      .getAll().then(function(permissions) {
         creator.permissions = permissions;
       }, showProblem)
       .finally(function() {
@@ -42,14 +42,13 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
       var roleId = createdRole.roleId;
       console.log('going to send permissions', creator.role.permissions);
       var promisses = [];
-      Object.keys(creator.role.permissions).forEach(function(permissionKey){
+      Object.keys(creator.role.permissions).forEach(function(permissionKey) {
         promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
       });
-      $q.all(promisses).then(function(){
+      $q.all(promisses).then(function() {
         goToOverview();
       }).catch(showProblem);
     }
-
 
     creator.creating = true;
     RoleManager

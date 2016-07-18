@@ -899,7 +899,7 @@ function UdbApi(
     var requestConfig = defaultApiConfig;
 
     return $http
-     .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, {}, requestConfig)
      .then(returnUnwrappedData);
   };
 

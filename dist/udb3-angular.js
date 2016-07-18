@@ -3449,7 +3449,7 @@ function UdbApi(
     var requestConfig = defaultApiConfig;
 
     return $http
-     .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, {}, requestConfig)
      .then(returnUnwrappedData);
   };
 
@@ -11225,7 +11225,7 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
 
   function loadPermissions () {
     PermissionManager
-      .getAll().then(function(permissions){
+      .getAll().then(function(permissions) {
         creator.permissions = permissions;
       }, showProblem)
       .finally(function() {
@@ -11243,14 +11243,13 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
       var roleId = createdRole.roleId;
       console.log('going to send permissions', creator.role.permissions);
       var promisses = [];
-      Object.keys(creator.role.permissions).forEach(function(permissionKey){
+      Object.keys(creator.role.permissions).forEach(function(permissionKey) {
         promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
       });
-      $q.all(promisses).then(function(){
+      $q.all(promisses).then(function() {
         goToOverview();
       }).catch(showProblem);
     }
-
 
     creator.creating = true;
     RoleManager
@@ -11313,9 +11312,9 @@ function RoleEditorController(
     loadRole(roleId);
     loadRolePermissions(roleId);
   }
-  function loadRole(roleId){
+  function loadRole(roleId) {
     RoleManager
-      .get(roleId).then(function(role){
+      .get(roleId).then(function(role) {
         editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
       .finally(function() {
@@ -11325,21 +11324,21 @@ function RoleEditorController(
   function showLoadingError () {
     editor.loadingError = 'Role niet gevonden!';
   }
-  function loadRolePermissions(roleId){
+  function loadRolePermissions(roleId) {
     var permissions, rolePermissions, promisses = [];
     promisses.push(
       RoleManager
-        .getRolePermissions(roleId).then(function(permissions){
+        .getRolePermissions(roleId).then(function(permissions) {
           rolePermissions = permissions;
         }, showProblem)
     );
     promisses.push(
       PermissionManager
-        .getAll().then(function(retrievedPermissions){
+        .getAll().then(function(retrievedPermissions) {
           permissions = retrievedPermissions;
         }, showProblem)
     );
-    $q.all(promisses).then(function(){
+    $q.all(promisses).then(function() {
       console.log('asdf', permissions, rolePermissions);
       // loaded all permissions & permissions linked to role
       editor.permissions = permissions;
@@ -11357,14 +11356,13 @@ function RoleEditorController(
       var roleId = createdRole.roleId;
       console.log('going to send permissions', editor.role.permissions);
       var promisses = [];
-      Object.keys(editor.role.permissions).forEach(function(permissionKey){
+      Object.keys(editor.role.permissions).forEach(function(permissionKey) {
         promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
       });
-      $q.all(promisses).then(function(){
+      $q.all(promisses).then(function() {
         goToOverview();
       }).catch(showProblem);
     }
-
 
     editor.creating = true;
     RoleManager
