@@ -73,7 +73,9 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
    * @return {Promise}
    */
   service.addPermissionToRole = function(permissionKey, roleId) {
-    return udbApi.addPermissionToRole(permissionKey, roleId);
+    return udbApi
+      .addPermissionToRole(permissionKey, roleId)
+      .then(logRoleJob);
   };
 
   /**
@@ -84,4 +86,27 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   service.updateRole = function(roleId, roleUpdateData) {
     return udbApi.updateRole(roleId, roleUpdateData);
   };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logRoleJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function createNewRoleJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    job.roleId = commandInfo.roleId;
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
 }
