@@ -10746,7 +10746,7 @@ function LabelCreatorController(LabelManager, $uibModal, $state) {
 
   function create() {
     function goToOverview(jobInfo) {
-      $state.go('split.manageLabels');
+      $state.go('split.manageLabels.list');
     }
 
     creator.creating = true;
@@ -17034,7 +17034,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/labels-list.html',
     "<div class=\"page-header\">\n" +
-    "    <h1>Labels <small><a ui-sref=\"split.manageLabelsCreate\">toevoegen</a></small></h1>\n" +
+    "    <h1>Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
@@ -17075,7 +17075,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <td ng-bind=\"::(label.visibility === 'invisible' ? 'Verborgen' : '')\"></td>\n" +
     "                        <td ng-bind=\"::(label.privacy === 'private' ? 'Voorbehouden' : '')\"></td>\n" +
     "                        <td>\n" +
-    "                            <a ui-sref=\"split.manageLabelsEdit({id: label.id})\">Bewerken</a>\n" +
+    "                            <a ui-sref=\"split.manageLabels.edit({id: label.id})\">Bewerken</a>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                    </tbody>\n" +
