@@ -3396,12 +3396,16 @@ function UdbApi(
    * @return {Promise.<Object|ApiProblem>} Object containing created roleId
    */
   this.updateRoleName = function (roleId, name) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=SetConstraint';
+
     var updateData = {
       'name': name
     };
 
     return $http
-      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, defaultApiConfig)
+      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -3411,12 +3415,15 @@ function UdbApi(
    * @return {Promise.<Object|ApiProblem>} Object containing created roleId
    */
   this.updateRoleConstraint = function (roleId, constraint) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=SetConstraint';
+
     var updateData = {
       'constraint': constraint
     };
 
     return $http
-      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, defaultApiConfig)
+      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
