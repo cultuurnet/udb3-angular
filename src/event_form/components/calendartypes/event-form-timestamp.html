@@ -27,7 +27,8 @@
                 uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
                 typeahead-on-select="EventFormStep2.eventTimingChanged()"
                 typeahead-editable="false"
-                placeholder="Bv. 08:00">
+                placeholder="Bv. 08:00"
+                focus-if="timestamp.showStartHour">
           </div>
         </div>
         <div class="col-xs-6 einduur" ng-show="timestamp.showStartHour">
@@ -47,7 +48,8 @@
                 uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
                 typeahead-on-select="EventFormStep2.eventTimingChanged()"
                 typeahead-editable="false"
-                placeholder="Bv. 23:00">
+                placeholder="Bv. 23:00"
+                focus-if="timestamp.showEndHour">
           </div>
         </div>
       </div>
@@ -60,8 +62,7 @@
   <div class="add-date">
     <a href="#" class="add-date-link" ng-click="addTimestamp()">
       <p id="add-date-plus">+</p>
-      <p id="add-date-label">Nog een dag toevoegen</p>
-      <p id="add-date-tip" class="muted col-sm-12"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>
+      <p id="add-date-label">Dag toevoegen</p>
     </a>
   </div>
 </div>

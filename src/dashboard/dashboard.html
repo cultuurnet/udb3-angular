@@ -9,7 +9,7 @@
   <div class="panel panel-default no-new no-data" ng-hide="dash.pagedItemViewer.events.length">
     <div class="panel-body text-center">
       <p class="text-center">Je hebt nog geen items toegevoegd.
-        <!--<br/><a href="event">Een activiteit of monument toevoegen?</a>-->
+        <span ng-if="dash.toggleAddOffer"><br/><a href="event">Een activiteit of monument toevoegen?</a></span>
       </p>
     </div>
   </div>
@@ -18,9 +18,9 @@
 
     <div class="clearfix">
       <p class="invoer-title"><span class="block-header">Recent</span>
-        <!--<span class="pull-right">-->
-          <!--<a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> Toevoegen</a>-->
-        <!--</span>-->
+        <span class="pull-right" ng-if="dash.toggleAddOffer">
+          <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> Toevoegen</a>
+        </span>
       </p>
     </div>
 

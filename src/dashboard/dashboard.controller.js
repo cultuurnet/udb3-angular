@@ -13,7 +13,7 @@
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer) {
+  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -21,6 +21,13 @@
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.username = '';
+
+    if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
+      dash.toggleAddOffer = appConfig.toggleAddOffer;
+    }
+    else {
+      dash.toggleAddOffer = true;
+    }
 
     udbApi
       .getMe()

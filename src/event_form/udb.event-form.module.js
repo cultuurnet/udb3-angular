@@ -13,5 +13,6 @@ angular
     'udb.config',
     'udb.entry',
     'udb.search',
-    'ngFileUpload'
+    'ngFileUpload',
+    'focus-if'
   ]);

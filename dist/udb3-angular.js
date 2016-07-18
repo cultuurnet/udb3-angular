@@ -88,7 +88,8 @@ angular
     'udb.config',
     'udb.entry',
     'udb.search',
-    'ngFileUpload'
+    'ngFileUpload',
+    'focus-if'
   ]);
 
 /**
@@ -223,6 +224,7 @@ angular
     'udb.management.labels',
     'udb.management.roles'
   ]);
+
 angular.module('peg', []).factory('LuceneQueryParser', function () {
  return (function() {
   /*
@@ -1885,6 +1887,15 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
  */
 angular
   .module('udb.core')
+  .constant('authorization', {
+    'createOffer' : 'AANBOD_INVOEREN',
+    'editOffer': 'AANBOD_BEWERKEN',
+    'moderateOffer': 'AANBOD_MODEREREN',
+    'removeOffer': 'AANBOD_VERWIJDEREN',
+    'manageOrganisations': 'ORGANISATIES_BEHEREN',
+    'manageUsers': 'GEBRUIKERS_BEHEREN',
+    'manageLabels': 'LABELS_BEHEREN'
+  })
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
@@ -1930,6 +1941,24 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
     }
 
     return deferredRedirect.promise;
+  };
+
+  /**
+   * @param {string} permission - One of the authorization constants
+   */
+  this.hasPermission = function (permission) {
+    var deferredHasPermission = $q.defer();
+
+    function findPermission(permissionList) {
+      var foundPermission = _.find(permissionList, function(p) { return p.key === permission; });
+      deferredHasPermission.resolve(foundPermission ? true : false);
+    }
+
+    udbApi
+      .getMyPermissions()
+      .then(findPermission, deferredHasPermission.reject);
+
+    return deferredHasPermission.promise;
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
@@ -2813,6 +2842,37 @@ function UdbApi(
     }
 
     return deferredUser.promise;
+  };
+
+  /**
+   * Get my user permissions
+   */
+  this.getMyPermissions = function () {
+    var deferredPermissions = $q.defer();
+    var token = uitidAuth.getToken();
+
+    // cache the permissions with user token
+    // == will need to fetch permissions for each login
+    function storeAndResolvePermissions (permissionsList) {
+      offerCache.put(token, permissionsList);
+      deferredPermissions.resolve(permissionsList);
+    }
+
+    if (token) {
+      var permissions = offerCache.get(token);
+      if (!permissions) {
+        $http
+          .get(appConfig.baseUrl + 'user/permissions/', defaultApiConfig)
+          .success(storeAndResolvePermissions)
+          .error(deferredPermissions.reject);
+      } else {
+        deferredPermissions.resolve(permissions);
+      }
+    } else {
+      deferredPermissions.reject();
+    }
+
+    return deferredPermissions.promise;
   };
 
   /**
@@ -4603,7 +4663,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer) {
+  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -4611,6 +4671,13 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.username = '';
+
+    if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
+      dash.toggleAddOffer = appConfig.toggleAddOffer;
+    }
+    else {
+      dash.toggleAddOffer = true;
+    }
 
     udbApi
       .getMe()
@@ -4705,7 +4772,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     }
 
   }
-  DashboardController.$inject = ["$scope", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer"];
+  DashboardController.$inject = ["$scope", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
 })();
 
@@ -8871,7 +8938,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       timestamp.showEndHour = false;
       controller.eventTimingChanged();
     }
-
   };
 
   /**
@@ -10820,7 +10886,7 @@ angular
   .controller('LabelCreatorController', LabelCreatorController);
 
 /** @ngInject */
-function LabelCreatorController(LabelManager, $uibModal) {
+function LabelCreatorController(LabelManager, $uibModal, $state) {
   var creator = this;
   creator.creating = false;
   creator.create = create;
@@ -10832,7 +10898,7 @@ function LabelCreatorController(LabelManager, $uibModal) {
 
   function create() {
     function goToOverview(jobInfo) {
-      creator.$router.navigate(['LabelsList']);
+      $state.go('split.manageLabels.list');
     }
 
     creator.creating = true;
@@ -10862,7 +10928,7 @@ function LabelCreatorController(LabelManager, $uibModal) {
     );
   }
 }
-LabelCreatorController.$inject = ["LabelManager", "$uibModal"];
+LabelCreatorController.$inject = ["LabelManager", "$uibModal", "$state"];
 
 // Source: src/management/labels/label-editor.controller.js
 /**
@@ -11092,7 +11158,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   function createNewLabelJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
-    job.labelId = commandInfo.labelId;
+    job.labelId = commandInfo.uuid;
     jobLogger.addJob(job);
 
     return $q.resolve(job);
@@ -15164,7 +15230,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
     "    <div class=\"panel-body text-center\">\n" +
     "      <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
-    "        <!--<br/><a href=\"event\">Een activiteit of monument toevoegen?</a>-->\n" +
+    "        <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of monument toevoegen?</a></span>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "  </div>\n" +
@@ -15173,9 +15239,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <div class=\"clearfix\">\n" +
     "      <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
-    "        <!--<span class=\"pull-right\">-->\n" +
-    "          <!--<a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>-->\n" +
-    "        <!--</span>-->\n" +
+    "        <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
+    "          <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
+    "        </span>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "\n" +
@@ -15604,7 +15670,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 08:00\">\n" +
+    "                placeholder=\"Bv. 08:00\"\n" +
+    "                focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -15624,7 +15691,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 23:00\">\n" +
+    "                placeholder=\"Bv. 23:00\"\n" +
+    "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -15637,8 +15705,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"add-date\">\n" +
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
-    "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
-    "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
+    "      <p id=\"add-date-label\">Dag toevoegen</p>\n" +
     "    </a>\n" +
     "  </div>\n" +
     "</div>"
@@ -17593,7 +17660,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/labels-list.html',
     "<div class=\"page-header\">\n" +
-    "    <h1>Labels <small><a ui-sref=\"split.manageLabelsCreate\">toevoegen</a></small></h1>\n" +
+    "    <h1>Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
@@ -17634,7 +17701,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <td ng-bind=\"::(label.visibility === 'invisible' ? 'Verborgen' : '')\"></td>\n" +
     "                        <td ng-bind=\"::(label.privacy === 'private' ? 'Voorbehouden' : '')\"></td>\n" +
     "                        <td>\n" +
-    "                            <a ui-sref=\"split.manageLabelsEdit({id: label.id})\">Bewerken</a>\n" +
+    "                            <a ui-sref=\"split.manageLabels.edit({id: label.id})\">Bewerken</a>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                    </tbody>\n" +

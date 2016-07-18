@@ -149,7 +149,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       timestamp.showEndHour = false;
       controller.eventTimingChanged();
     }
-
   };
 
   /**
