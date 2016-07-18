@@ -26,7 +26,7 @@
         </p>
         <div class="query-search-result"
              ng-class="{'loading-search-result': rlc.loading}"
-             ng-show="rlc.searchResult.totalItems > 0 && rlc.query.length >= rlc.minQueryLength">
+             ng-show="rlc.searchResult.totalItems > 0">
             <div class="table-responsive" >
                 <table class="table table-hover table-striped">
                     <thead>
@@ -36,7 +36,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="label in rlc.searchResult.member">
+                    <tr ng-repeat="role in rlc.searchResult.member">
                         <td ng-bind="::role.name"></td>
                         <td>
                             <div class="btn-group">

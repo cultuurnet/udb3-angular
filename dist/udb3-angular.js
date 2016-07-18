@@ -11151,6 +11151,9 @@ angular
 /* @ngInject */
 function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
   var rlc = this;
+
+  rlc.query = '';
+
   var itemsPerPage = 10;
   var minQueryLength = 3;
   var query$ = rx.createObservableFunction(rlc, 'queryChanged');
@@ -11164,7 +11167,12 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
    * @return {boolean}
    */
   function ignoreShortQueries(query) {
-    return query.length >= minQueryLength;
+    if (rlc.query === '') {
+      return true;
+    }
+    else {
+      return query.length >= minQueryLength;
+    }
   }
 
   /**
@@ -11196,6 +11204,13 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
       rlc.loading = true;
     })
     .subscribe();
+
+  $scope.$on('$viewContentLoaded', function() {
+    RoleManager.find('', itemsPerPage, 0)
+      .then(function(results) {
+        rlc.searchResult = results;
+      });
+  });
 }
 RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager"];
 
