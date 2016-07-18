@@ -88,7 +88,8 @@ angular
     'udb.config',
     'udb.entry',
     'udb.search',
-    'ngFileUpload'
+    'ngFileUpload',
+    'focus-if'
   ]);
 
 /**
@@ -211,33 +212,7 @@ angular
   .module('udb.management', [
     'udb.core',
     'udb.management.labels'
-  ])
-  .component('udbManagement', {
-    template: '<div ui-view></div>',
-    $routeConfig: [
-      {
-        path: '/labels/overview',
-        name: 'LabelsList',
-        component: 'labelsComponent'
-      },
-      {
-        path: '/labels/create',
-        name: 'LabelCreator',
-        component: 'udbLabelCreator'
-      },
-      {
-        path: '/labels/:id',
-        name: 'LabelEditor',
-        component: 'udbLabelEditor'
-      }
-    ],
-    $canActivate: isAuthorized
-  });
-
-function isAuthorized(authorizationService) {
-  return authorizationService.isLoggedIn();
-}
-isAuthorized.$inject = ['authorizationService'];
+  ]);
 angular.module('peg', []).factory('LuceneQueryParser', function () {
  return (function() {
   /*
@@ -8811,7 +8786,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       timestamp.showEndHour = false;
       controller.eventTimingChanged();
     }
-
   };
 
   /**
@@ -10760,7 +10734,7 @@ angular
   .controller('LabelCreatorController', LabelCreatorController);
 
 /** @ngInject */
-function LabelCreatorController(LabelManager, $uibModal) {
+function LabelCreatorController(LabelManager, $uibModal, $state) {
   var creator = this;
   creator.creating = false;
   creator.create = create;
@@ -10772,7 +10746,7 @@ function LabelCreatorController(LabelManager, $uibModal) {
 
   function create() {
     function goToOverview(jobInfo) {
-      creator.$router.navigate(['LabelsList']);
+      $state.go('split.manageLabels');
     }
 
     creator.creating = true;
@@ -10802,7 +10776,7 @@ function LabelCreatorController(LabelManager, $uibModal) {
     );
   }
 }
-LabelCreatorController.$inject = ["LabelManager", "$uibModal"];
+LabelCreatorController.$inject = ["LabelManager", "$uibModal", "$state"];
 
 // Source: src/management/labels/label-editor.controller.js
 /**
@@ -11032,7 +11006,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   function createNewLabelJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
-    job.labelId = commandInfo.labelId;
+    job.labelId = commandInfo.uuid;
     jobLogger.addJob(job);
 
     return $q.resolve(job);
@@ -15070,7 +15044,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 08:00\">\n" +
+    "                placeholder=\"Bv. 08:00\"\n" +
+    "                focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -15090,7 +15065,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 23:00\">\n" +
+    "                placeholder=\"Bv. 23:00\"\n" +
+    "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -15103,8 +15079,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"add-date\">\n" +
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
-    "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
-    "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
+    "      <p id=\"add-date-label\">Dag toevoegen</p>\n" +
     "    </a>\n" +
     "  </div>\n" +
     "</div>"

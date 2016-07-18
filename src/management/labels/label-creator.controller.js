@@ -11,7 +11,7 @@ angular
   .controller('LabelCreatorController', LabelCreatorController);
 
 /** @ngInject */
-function LabelCreatorController(LabelManager, $uibModal) {
+function LabelCreatorController(LabelManager, $uibModal, $state) {
   var creator = this;
   creator.creating = false;
   creator.create = create;
@@ -23,7 +23,7 @@ function LabelCreatorController(LabelManager, $uibModal) {
 
   function create() {
     function goToOverview(jobInfo) {
-      creator.$router.navigate(['LabelsList']);
+      $state.go('split.manageLabels');
     }
 
     creator.creating = true;

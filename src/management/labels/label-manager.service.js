@@ -134,7 +134,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   function createNewLabelJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
-    job.labelId = commandInfo.labelId;
+    job.labelId = commandInfo.uuid;
     jobLogger.addJob(job);
 
     return $q.resolve(job);
