@@ -3395,9 +3395,9 @@ function UdbApi(
    * @param {string}  name
    * @return {Promise.<Object|ApiProblem>} Object containing created roleId
    */
-  this.updateRole = function (roleId, name) {
+  this.updateRoleName = function (roleId, name) {
     var updateData = {
-      name: name
+      'name': name
     };
 
     return $http
@@ -3410,9 +3410,9 @@ function UdbApi(
    * @param {string}  constraint
    * @return {Promise.<Object|ApiProblem>} Object containing created roleId
    */
-  this.updateRole = function (roleId, constraint) {
+  this.updateRoleConstraint = function (roleId, constraint) {
     var updateData = {
-      constraint: constraint
+      'constraint': constraint
     };
 
     return $http
@@ -11224,8 +11224,8 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
   creator.loadedPermissions = false;
   creator.role = {
     name: '',
-    isPrivate: false,
-    isVisible: true
+    constraint: '',
+    permissions: {}
   };
 
   function loadPermissions () {
@@ -11244,13 +11244,23 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
       $state.go('split.manageRoles');
     }
 
-    function sendPermissions (createdRole) {
+    function roleCreated (createdRole) {
       var roleId = createdRole.roleId;
-      console.log('going to send permissions', creator.role.permissions);
+      // role is created
       var promisses = [];
+
+      // update constraint if not empty
+      if (creator.role.constraint.length > 0) {
+        console.log('happening');
+        promisses.push(RoleManager.updateRoleConstraint(roleId, creator.role.constraint));
+      }
+
+      // set all permissions for the role in parallel
       Object.keys(creator.role.permissions).forEach(function(permissionKey) {
         promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
       });
+
+      // when done we can return to overview or show error
       $q.all(promisses).then(function() {
         goToOverview();
       }).catch(showProblem);
@@ -11258,8 +11268,8 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
 
     creator.creating = true;
     RoleManager
-      .create(creator.role.name, creator.role.editPermission)
-      .then(sendPermissions, showProblem)
+      .create(creator.role.name)
+      .then(roleCreated, showProblem)
       .finally(function () {
         creator.creating = false;
       });
@@ -17638,10 +17648,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht</label>\n" +
     "                <input id=\"label-name-field\"\n" +
     "                       class=\"form-control\"\n" +
-    "                       name=\"editPermission\"\n" +
+    "                       name=\"constraint\"\n" +
     "                       type=\"text\"\n" +
     "                       ng-maxlength=\"255\"\n" +
-    "                       ng-model=\"creator.role.editPermission\"\n" +
+    "                       ng-model=\"creator.role.constraint\"\n" +
     "                       ng-model-options=\"{debounce: 300}\"\n" +
     "                       ng-disabled=\"creator.creating\">\n" +
     "            </div>\n" +

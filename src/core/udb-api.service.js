@@ -845,9 +845,9 @@ function UdbApi(
    * @param {string}  name
    * @return {Promise.<Object|ApiProblem>} Object containing created roleId
    */
-  this.updateRole = function (roleId, name) {
+  this.updateRoleName = function (roleId, name) {
     var updateData = {
-      name: name
+      'name': name
     };
 
     return $http
@@ -860,9 +860,9 @@ function UdbApi(
    * @param {string}  constraint
    * @return {Promise.<Object|ApiProblem>} Object containing created roleId
    */
-  this.updateRole = function (roleId, constraint) {
+  this.updateRoleConstraint = function (roleId, constraint) {
     var updateData = {
-      constraint: constraint
+      'constraint': constraint
     };
 
     return $http
