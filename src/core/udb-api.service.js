@@ -878,7 +878,7 @@ function UdbApi(
 
     return $http
       .get(appConfig.baseUrl + 'permissions/', requestConfig)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -890,7 +890,7 @@ function UdbApi(
     var requestConfig = defaultApiConfig;
     return $http
       .get(appConfig.baseUrl + 'roles/' + roleId + '/permissions/', requestConfig)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -905,7 +905,7 @@ function UdbApi(
 
     return $http
       .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, {}, requestConfig)
-     .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
