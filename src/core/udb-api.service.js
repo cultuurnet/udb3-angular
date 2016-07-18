@@ -30,6 +30,12 @@
  */
 
 /**
+ * @typedef {Object} roleUpdate
+ * @property {string} @name
+ * @property {string} @constraint
+ */
+
+/**
  * @typedef {Object} ApiProblem
  * @property {URL} type
  * @property {string} title
@@ -835,14 +841,27 @@ function UdbApi(
       name: name
     };
 
-    /*
-    var deferred = $q.defer();
-    deferred.resolve({'roleId': 'argjaslfghaljdshgfas58464'});
-    return deferred.promise;
-     */
-
     return $http
       .post(appConfig.baseUrl + 'roles/', roleData, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {uuid}    roleId
+   * @param {roleUpdate}  roleUpdateData
+   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   */
+  this.updateRole = function (roleId, roleUpdateData) {
+    var updateData = {};
+    if (typeof roleUpdateData.name !== 'undefined') {
+      updateData.name = roleUpdateData.name;
+    }
+    if (typeof roleUpdateData.constraint !== 'undefined') {
+      updateData.constraint = roleUpdateData.constraint;
+    }
+
+    return $http
+      .patch(appConfig.baseUrl + 'roles/' + roleId, roleUpdateData, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -864,26 +883,9 @@ function UdbApi(
    */
   this.getRolePermissions = function (roleId) {
     var requestConfig = defaultApiConfig;
-
-     var deferred = $q.defer();
-     setTimeout(function(){
-     deferred.resolve([
-     {'key': 'aanbodinvoeren', 'name': 'Aanbod invoeren'},
-     {'key': 'aanbodbewerken', 'name': 'Aanbod bewerken'},
-     {'key': 'aanbodmoderen', 'name': 'Aanbod moderen'},
-     {'key': 'aanbodverwijderen', 'name': 'Aanbod verwijderen'},
-     {'key': 'organizatiesbeheren', 'name': 'Organisaties beheren'},
-     {'key': 'gebruikersbeheren', 'name': 'Gebruikers beheren'},
-     {'key': 'labelsbeheren', 'name': 'Labels beheren'}
-     ]);
-     }, 1000);
-
-     return deferred.promise;
-    /*
     return $http
-      .get(appConfig.baseUrl + '/roles/' + roleId + '/permissions/', requestConfig)
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/permissions/', requestConfig)
       .then(returnUnwrappedData);
-     */
   };
 
   /**
@@ -896,15 +898,9 @@ function UdbApi(
   this.addPermissionToRole = function (permissionKey, roleId) {
     var requestConfig = defaultApiConfig;
 
-    var deferred = $q.defer();
-    setTimeout(deferred.resolve, 1000);
-
-    return deferred.promise;
-    /*
     return $http
      .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
      .then(returnUnwrappedData);
-     */
   };
 
   /**

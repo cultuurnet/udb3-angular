@@ -4,8 +4,12 @@
  * @typedef {Object} Role
  * @property {string}   id
  * @property {string}   name
- * @property {boolean}  isVisible
- * @property {boolean}  isPrivate
+ */
+
+/**
+ * @typedef {Object} roleUpdate
+ * @property {string} @name
+ * @property {string} @constraint
  */
 
 /**
@@ -48,7 +52,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
    *  The name or uuid of a role.
    * @return {Promise.<Role>}
    */
-  service.getRolePermission = function(roleId) {
+  service.getRolePermissions = function(roleId) {
     return udbApi.getRolePermissions(roleId);
   };
 
@@ -70,5 +74,14 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.addPermissionToRole = function(permissionKey, roleId) {
     return udbApi.addPermissionToRole(permissionKey, roleId);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {roleUpdate} roleUpdateData
+   * @return {Promise}
+   */
+  service.updateRole = function(roleId, roleUpdateData) {
+    return udbApi.updateRole(roleId, roleUpdateData);
   };
 }

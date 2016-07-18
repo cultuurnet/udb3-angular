@@ -2580,6 +2580,12 @@ UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorM
  */
 
 /**
+ * @typedef {Object} roleUpdate
+ * @property {string} @name
+ * @property {string} @constraint
+ */
+
+/**
  * @typedef {Object} ApiProblem
  * @property {URL} type
  * @property {string} title
@@ -3385,14 +3391,27 @@ function UdbApi(
       name: name
     };
 
-    /*
-    var deferred = $q.defer();
-    deferred.resolve({'roleId': 'argjaslfghaljdshgfas58464'});
-    return deferred.promise;
-     */
-
     return $http
       .post(appConfig.baseUrl + 'roles/', roleData, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {uuid}    roleId
+   * @param {roleUpdate}  roleUpdateData
+   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   */
+  this.updateRole = function (roleId, roleUpdateData) {
+    var updateData = {};
+    if (typeof roleUpdateData.name !== 'undefined') {
+      updateData.name = roleUpdateData.name;
+    }
+    if (typeof roleUpdateData.constraint !== 'undefined') {
+      updateData.constraint = roleUpdateData.constraint;
+    }
+
+    return $http
+      .patch(appConfig.baseUrl + 'roles/' + roleId, roleUpdateData, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -3414,26 +3433,9 @@ function UdbApi(
    */
   this.getRolePermissions = function (roleId) {
     var requestConfig = defaultApiConfig;
-
-     var deferred = $q.defer();
-     setTimeout(function(){
-     deferred.resolve([
-     {'key': 'aanbodinvoeren', 'name': 'Aanbod invoeren'},
-     {'key': 'aanbodbewerken', 'name': 'Aanbod bewerken'},
-     {'key': 'aanbodmoderen', 'name': 'Aanbod moderen'},
-     {'key': 'aanbodverwijderen', 'name': 'Aanbod verwijderen'},
-     {'key': 'organizatiesbeheren', 'name': 'Organisaties beheren'},
-     {'key': 'gebruikersbeheren', 'name': 'Gebruikers beheren'},
-     {'key': 'labelsbeheren', 'name': 'Labels beheren'}
-     ]);
-     }, 1000);
-
-     return deferred.promise;
-    /*
     return $http
-      .get(appConfig.baseUrl + '/roles/' + roleId + '/permissions/', requestConfig)
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/permissions/', requestConfig)
       .then(returnUnwrappedData);
-     */
   };
 
   /**
@@ -3446,15 +3448,9 @@ function UdbApi(
   this.addPermissionToRole = function (permissionKey, roleId) {
     var requestConfig = defaultApiConfig;
 
-    var deferred = $q.defer();
-    setTimeout(deferred.resolve, 1000);
-
-    return deferred.promise;
-    /*
     return $http
      .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
      .then(returnUnwrappedData);
-     */
   };
 
   /**
@@ -11297,7 +11293,15 @@ angular
   .controller('RoleEditorController', RoleEditorController);
 
 /** @ngInject */
-function RoleEditorController(RoleManager, PermissionManager, $uibModal, $state, $stateParams, $q) {
+function RoleEditorController(
+  RoleManager,
+  PermissionManager,
+  $uibModal,
+  $state,
+  $stateParams,
+  jsonLDLangFilter,
+  $q
+) {
   var editor = this;
   editor.creating = false;
   editor.save = save;
@@ -11312,7 +11316,7 @@ function RoleEditorController(RoleManager, PermissionManager, $uibModal, $state,
   function loadRole(roleId){
     RoleManager
       .get(roleId).then(function(role){
-        editor.role = role;
+        editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
       .finally(function() {
         editor.loadedRole = true;
@@ -11322,13 +11326,25 @@ function RoleEditorController(RoleManager, PermissionManager, $uibModal, $state,
     editor.loadingError = 'Role niet gevonden!';
   }
   function loadRolePermissions(roleId){
-    RoleManager
-      .getPermissions(roleId).then(function(permissions){
-        editor.rolePermissions = permissions;
-      }, showProblem)
-      .finally(function() {
-        editor.loadedRolePermissions = true;
-      });
+    var permissions, rolePermissions, promisses = [];
+    promisses.push(
+      RoleManager
+        .getRolePermissions(roleId).then(function(permissions){
+          rolePermissions = permissions;
+        }, showProblem)
+    );
+    promisses.push(
+      PermissionManager
+        .getAll().then(function(retrievedPermissions){
+          permissions = retrievedPermissions;
+        }, showProblem)
+    );
+    $q.all(promisses).then(function(){
+      console.log('asdf', permissions, rolePermissions);
+      // loaded all permissions & permissions linked to role
+      editor.permissions = permissions;
+      editor.loadedRolePermissions = true;
+    });
   }
   loadRoleFromParams();
 
@@ -11377,15 +11393,19 @@ function RoleEditorController(RoleManager, PermissionManager, $uibModal, $state,
     );
   }
 }
-RoleEditorController.$inject = ["RoleManager", "PermissionManager", "$uibModal", "$state", "$stateParams", "$q"];
+RoleEditorController.$inject = ["RoleManager", "PermissionManager", "$uibModal", "$state", "$stateParams", "jsonLDLangFilter", "$q"];
 
 // Source: src/management/roles/role-manager.service.js
 /**
  * @typedef {Object} Role
  * @property {string}   id
  * @property {string}   name
- * @property {boolean}  isVisible
- * @property {boolean}  isPrivate
+ */
+
+/**
+ * @typedef {Object} roleUpdate
+ * @property {string} @name
+ * @property {string} @constraint
  */
 
 /**
@@ -11428,7 +11448,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
    *  The name or uuid of a role.
    * @return {Promise.<Role>}
    */
-  service.getRolePermission = function(roleId) {
+  service.getRolePermissions = function(roleId) {
     return udbApi.getRolePermissions(roleId);
   };
 
@@ -11450,6 +11470,15 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.addPermissionToRole = function(permissionKey, roleId) {
     return udbApi.addPermissionToRole(permissionKey, roleId);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {roleUpdate} roleUpdateData
+   * @return {Promise}
+   */
+  service.updateRole = function(roleId, roleUpdateData) {
+    return udbApi.updateRole(roleId, roleUpdateData);
   };
 }
 RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
@@ -17688,7 +17717,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <input placeholder=\"Zoeken op naam\" ng-model=\"permissionSearch\">\n" +
     "              </div>\n" +
     "              <div class=\"col-md-1\">\n" +
-    "                <i ng-show=\"!editor.loadedPermissions\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                <i ng-show=\"!editor.loadedRolePermissions\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "              </div>\n" +
     "            </div>\n" +
     "            <div class=\"row\">\n" +

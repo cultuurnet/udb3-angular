@@ -11,7 +11,15 @@ angular
   .controller('RoleEditorController', RoleEditorController);
 
 /** @ngInject */
-function RoleEditorController(RoleManager, PermissionManager, $uibModal, $state, $stateParams, $q) {
+function RoleEditorController(
+  RoleManager,
+  PermissionManager,
+  $uibModal,
+  $state,
+  $stateParams,
+  jsonLDLangFilter,
+  $q
+) {
   var editor = this;
   editor.creating = false;
   editor.save = save;
@@ -26,7 +34,7 @@ function RoleEditorController(RoleManager, PermissionManager, $uibModal, $state,
   function loadRole(roleId){
     RoleManager
       .get(roleId).then(function(role){
-        editor.role = role;
+        editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
       .finally(function() {
         editor.loadedRole = true;
@@ -36,13 +44,25 @@ function RoleEditorController(RoleManager, PermissionManager, $uibModal, $state,
     editor.loadingError = 'Role niet gevonden!';
   }
   function loadRolePermissions(roleId){
-    RoleManager
-      .getPermissions(roleId).then(function(permissions){
-        editor.rolePermissions = permissions;
-      }, showProblem)
-      .finally(function() {
-        editor.loadedRolePermissions = true;
-      });
+    var permissions, rolePermissions, promisses = [];
+    promisses.push(
+      RoleManager
+        .getRolePermissions(roleId).then(function(permissions){
+          rolePermissions = permissions;
+        }, showProblem)
+    );
+    promisses.push(
+      PermissionManager
+        .getAll().then(function(retrievedPermissions){
+          permissions = retrievedPermissions;
+        }, showProblem)
+    );
+    $q.all(promisses).then(function(){
+      console.log('asdf', permissions, rolePermissions);
+      // loaded all permissions & permissions linked to role
+      editor.permissions = permissions;
+      editor.loadedRolePermissions = true;
+    });
   }
   loadRoleFromParams();
 
