@@ -71,7 +71,6 @@ function RoleEditorController(
 
   function save() {
     editor.saving = true;
-    //console.log('save', editor.role, editor.originalRole);
     var promisses = [];
     // go over the changes from the original role
     // name changed

@@ -45,7 +45,6 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
 
       // update constraint if not empty
       if (creator.role.constraint.length > 0) {
-        console.log('happening');
         promisses.push(RoleManager.updateRoleConstraint(roleId, creator.role.constraint));
       }
 

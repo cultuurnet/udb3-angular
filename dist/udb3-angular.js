@@ -11338,7 +11338,6 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
 
       // update constraint if not empty
       if (creator.role.constraint.length > 0) {
-        console.log('happening');
         promisses.push(RoleManager.updateRoleConstraint(roleId, creator.role.constraint));
       }
 
@@ -11454,7 +11453,6 @@ function RoleEditorController(
 
   function save() {
     editor.saving = true;
-    //console.log('save', editor.role, editor.originalRole);
     var promisses = [];
     // go over the changes from the original role
     // name changed
@@ -17770,11 +17768,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <uib-tab heading=\"Permissies\">\n" +
     "            <div class=\"row\">\n" +
     "              <div class=\"col-md-11\">\n" +
-    "                <!--\n" +
-    "                <udb-query-search-bar search-label=\"Zoeken op naam\" ng-model=\"permissionSearch\"\n" +
-    "                  on-change=\"llc.queryChanged(query)\"\n" +
-    "                ></udb-query-search-bar>\n" +
-    "                -->\n" +
     "                <input placeholder=\"Zoeken op naam\" ng-model=\"permissionSearch\">\n" +
     "              </div>\n" +
     "              <div class=\"col-md-1\">\n" +
