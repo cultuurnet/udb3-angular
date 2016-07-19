@@ -19,15 +19,15 @@
 <div class="row" ng-cloak>
     <div class="col-md-12">
         <p ng-show="rlc.query.length < rlc.minQueryLength">
-            Schrijf een zoekopdracht in het veld hierboven om rollen te tonen.
+            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.
         </p>
         <p ng-show="rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0">
             Geen rollen gevonden.
         </p>
-        <div class="query-search-result"
+        <div class="query-search-result roles-results"
              ng-class="{'loading-search-result': rlc.loading}"
              ng-show="rlc.searchResult.totalItems > 0">
-            <div class="table-responsive" >
+            <div class="table-responsive">
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>

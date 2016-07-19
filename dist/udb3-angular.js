@@ -17225,15 +17225,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"row\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <p ng-show=\"rlc.query.length < rlc.minQueryLength\">\n" +
-    "            Schrijf een zoekopdracht in het veld hierboven om rollen te tonen.\n" +
+    "            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.\n" +
     "        </p>\n" +
     "        <p ng-show=\"rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0\">\n" +
     "            Geen rollen gevonden.\n" +
     "        </p>\n" +
-    "        <div class=\"query-search-result\"\n" +
+    "        <div class=\"query-search-result roles-results\"\n" +
     "             ng-class=\"{'loading-search-result': rlc.loading}\"\n" +
-    "             ng-show=\"rlc.searchResult.totalItems > 0 && rlc.query.length >= rlc.minQueryLength\">\n" +
-    "            <div class=\"table-responsive\" >\n" +
+    "             ng-show=\"rlc.searchResult.totalItems > 0\">\n" +
+    "            <div class=\"table-responsive\">\n" +
     "                <table class=\"table table-hover table-striped\">\n" +
     "                    <thead>\n" +
     "                    <tr>\n" +
@@ -17242,7 +17242,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </tr>\n" +
     "                    </thead>\n" +
     "                    <tbody>\n" +
-    "                    <tr ng-repeat=\"label in rlc.searchResult.member\">\n" +
+    "                    <tr ng-repeat=\"role in rlc.searchResult.member\">\n" +
     "                        <td ng-bind=\"::role.name\"></td>\n" +
     "                        <td>\n" +
     "                            <div class=\"btn-group\">\n" +
