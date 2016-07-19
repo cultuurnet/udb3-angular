@@ -84,5 +84,6 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
         }
       }
     );
+    $state.go('split.manageRoles.list', {reload:true});
   }
 }
