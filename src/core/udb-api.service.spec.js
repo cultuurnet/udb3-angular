@@ -184,7 +184,129 @@ describe('Service: UDB3 Api', function () {
     service
       .findEvents('searchquery')
       .then(done);
+  });
 
+  // createRole
+  it('should post a new role to the api', function (done) {
+    var expectedData = {
+      'name': 'role name'
+    };
+    $httpBackend
+      .expectPOST(baseUrl + 'roles/', expectedData)
+      .respond(JSON.stringify({}));
+    service
+      .createRole('role name')
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // updateRoleName
+  it('should update the role name trough the api', function (done) {
+    var expectedData = {
+      'name': 'newname'
+    };
+    var expectedHeaders = {
+      'Content-Type': 'application/ld+json;domain-model=RenameRole',
+      'Authorization': 'Bearer bob',
+      'Accept': 'application/json, text/plain, */*'
+    };
+
+    // in order for the headers to match we also need the getMe()
+    // function to be called so it can set the Authorization headers
+    uitidAuth.getUser.and.returnValue(null);
+    uitidAuth.getToken.and.returnValue('bob');
+    $httpBackend
+      .expectGET(baseUrl + 'user')
+      .respond(JSON.stringify({}));
+
+    service
+      .getMe();
+
+    // What we actually want to check
+    $httpBackend
+      .expectPATCH(baseUrl + 'roles/roleid', expectedData, expectedHeaders)
+      .respond(JSON.stringify({}));
+
+    service
+      .updateRoleName('roleid', 'newname')
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // updateRoleConstraint
+  it('should update the constraint trough the api', function (done) {
+    var expectedData = {
+      'constraint': 'newconstraint'
+    };
+    var expectedHeaders = {
+      'Content-Type': 'application/ld+json;domain-model=SetConstraint',
+      'Authorization': 'Bearer bob',
+      'Accept': 'application/json, text/plain, */*'
+    };
+
+    // in order for the headers to match we also need the getMe()
+    // function to be called so it can set the Authorization headers
+    uitidAuth.getUser.and.returnValue(null);
+    uitidAuth.getToken.and.returnValue('bob');
+    $httpBackend
+      .expectGET(baseUrl + 'user')
+      .respond(JSON.stringify({}));
+
+    service
+      .getMe();
+
+    // What we actually want to check
+    $httpBackend
+      .expectPATCH(baseUrl + 'roles/roleid', expectedData, expectedHeaders)
+      .respond(JSON.stringify({}));
+
+    service
+      .updateRoleConstraint('roleid', 'newconstraint')
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // getPermissions
+  it('should get all permissions trough the api', function (done) {
+    $httpBackend
+      .expectGET(baseUrl + 'permissions/')
+      .respond(JSON.stringify({}));
+    service
+      .getPermissions()
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // getRolePermissions
+  it('should get permissions for a role trough the api', function (done) {
+    $httpBackend
+      .expectGET(baseUrl + 'roles/roleid/permissions/')
+      .respond(JSON.stringify({}));
+    service
+      .getRolePermissions('roleid')
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // addPermissionToRole
+  it('should add permissions to role trough the api', function (done) {
+    $httpBackend
+      .expectPUT(baseUrl + 'roles/roleid/permissions/permissionid')
+      .respond(JSON.stringify({}));
+    service
+      .addPermissionToRole('permissionid', 'roleid')
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // removePermissionFromRole
+  it('should remove permissions from role trough the api', function (done) {
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/roleid/permissions/permissionid')
+      .respond(JSON.stringify({}));
+    service
+      .removePermissionFromRole('permissionid', 'roleid')
+      .then(done);
     $httpBackend.flush();
   });
 
