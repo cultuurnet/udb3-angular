@@ -17963,8 +17963,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
     "                                    Bewerken <span class=\"caret\"></span></button>\n" +
     "                                <ul class=\"dropdown-menu\">\n" +
-    "                                    <li><a ui-sref=\"split.manageRoles.edit({id: role.uuid})\">Bewerken</a></li>\n" +
-    "                                    <li><a href=\"#\">Verwijderen</a></li>\n" +
+    "                                    <li><a ui-sref=\"split.manageRoles.edit({id: role.uuid})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
+    "                                    <!--<li><a href=\"#\">Verwijderen</a></li>-->\n" +
     "                                </ul>\n" +
     "                            </div>\n" +
     "                            </td>\n" +
