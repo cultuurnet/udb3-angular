@@ -10,6 +10,7 @@ describe('Service: UDB3 Api', function () {
       baseUrl: baseUrl,
       baseApiUrl: baseUrl
     };
+
     uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
 
     $provide.constant('appConfig', appConfig);
@@ -307,6 +308,61 @@ describe('Service: UDB3 Api', function () {
     service
       .removePermissionFromRole('permissionid', 'roleid')
       .then(done);
+    $httpBackend.flush();
+  });
+
+  // getHistory
+  it('should get history for an event from the api', function (done) {
+    // eventid is an url
+    var response = {};
+    $httpBackend
+      .expectGET('eventid/history')
+      .respond(JSON.stringify(response));
+    service
+      .getHistory('eventid')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // getRecentLabels
+  it('should get the users recent labels from the api', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'user/labels')
+      .respond(JSON.stringify(response));
+    service
+      .getRecentLabels()
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // hasPermission
+  it('should respond when the user has permission to the offer location', function (done) {
+    var responseWithPermission = {
+      hasPermission: true
+    };
+    $httpBackend
+      .expectGET('offerLocation/permission')
+      .respond(responseWithPermission);
+    service
+      .hasPermission('offerLocation')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+  it('should reject when the user has no permission to the offer location', function (done) {
+    var responseNoPermission = {
+      hasPermission: false
+    };
+    $httpBackend
+      .expectGET('offerLocation/permission')
+      .respond(responseNoPermission);
+    service
+      .hasPermission('offerLocation')
+      .catch(done);
+
     $httpBackend.flush();
   });
 
