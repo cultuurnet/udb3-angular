@@ -35,7 +35,7 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
 
   function create() {
     function goToOverview() {
-      $state.go('split.manageRoles');
+      $state.go('split.manageRoles.list', {reload:true});
     }
 
     function roleCreated (createdRole) {
