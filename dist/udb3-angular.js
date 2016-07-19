@@ -11328,7 +11328,7 @@ function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state
 
   function create() {
     function goToOverview() {
-      $state.go('split.manageRoles');
+      $state.go('split.manageRoles.list', {reload:true});
     }
 
     function roleCreated (createdRole) {
@@ -11475,7 +11475,7 @@ function RoleEditorController(
     });
 
     $q.all(promisses).then(function() {
-      $state.go('split.manageRoles');
+      $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
   }
 
@@ -17903,7 +17903,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/roles-list.html',
     "<div class=\"page-header\">\n" +
-    "    <h1>Rollen <small><a ui-sref=\"split.manageRolesCreate\">toevoegen</a></small></h1>\n" +
+    "    <h1>Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
