@@ -93,7 +93,7 @@ function RoleEditorController(
     });
 
     $q.all(promisses).then(function() {
-      $state.go('split.manageRoles');
+      $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
   }
 
