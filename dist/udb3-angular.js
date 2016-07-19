@@ -11652,6 +11652,9 @@ angular
 /* @ngInject */
 function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
   var rlc = this;
+
+  rlc.query = '';
+
   var itemsPerPage = 10;
   var minQueryLength = 3;
   var query$ = rx.createObservableFunction(rlc, 'queryChanged');
@@ -11665,7 +11668,12 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
    * @return {boolean}
    */
   function ignoreShortQueries(query) {
-    return query.length >= minQueryLength;
+    if (rlc.query === '') {
+      return true;
+    }
+    else {
+      return query.length >= minQueryLength;
+    }
   }
 
   /**
@@ -11697,6 +11705,13 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
       rlc.loading = true;
     })
     .subscribe();
+
+  $scope.$on('$viewContentLoaded', function() {
+    RoleManager.find('', itemsPerPage, 0)
+      .then(function(results) {
+        rlc.searchResult = results;
+      });
+  });
 }
 RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager"];
 
@@ -17903,11 +17918,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/roles-list.html',
     "<div class=\"page-header\">\n" +
-    "    <h1>Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
+    "    <h1>Rollen</h1>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
-    "    <div class=\"col-md-11\">\n" +
+    "    <div class=\"col-md-9\">\n" +
     "        <udb-query-search-bar search-label=\"Zoeken op rolnaam\"\n" +
     "                              on-change=\"rlc.queryChanged(query)\"\n" +
     "        ></udb-query-search-bar>\n" +
@@ -17915,20 +17930,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"col-md-1\">\n" +
     "        <i ng-show=\"rlc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
+    "    <div class=\"col-md-2\">\n" +
+    "        <a class=\"btn btn-primary\" ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">\n" +
+    "            <i class=\"fa fa-plus-circle\"></i> Rol toevoegen\n" +
+    "        </a>\n" +
+    "    </div>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <p ng-show=\"rlc.query.length < rlc.minQueryLength\">\n" +
-    "            Schrijf een zoekopdracht in het veld hierboven om rollen te tonen.\n" +
+    "            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.\n" +
     "        </p>\n" +
     "        <p ng-show=\"rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0\">\n" +
     "            Geen rollen gevonden.\n" +
     "        </p>\n" +
-    "        <div class=\"query-search-result\"\n" +
+    "        <div class=\"query-search-result roles-results\"\n" +
     "             ng-class=\"{'loading-search-result': rlc.loading}\"\n" +
-    "             ng-show=\"rlc.searchResult.totalItems > 0 && rlc.query.length >= rlc.minQueryLength\">\n" +
-    "            <div class=\"table-responsive\" >\n" +
+    "             ng-show=\"rlc.searchResult.totalItems > 0\">\n" +
     "                <table class=\"table table-hover table-striped\">\n" +
     "                    <thead>\n" +
     "                    <tr>\n" +
@@ -17937,14 +17956,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </tr>\n" +
     "                    </thead>\n" +
     "                    <tbody>\n" +
-    "                    <tr ng-repeat=\"label in rlc.searchResult.member\">\n" +
+    "                    <tr ng-repeat=\"role in rlc.searchResult.member\">\n" +
     "                        <td ng-bind=\"::role.name\"></td>\n" +
     "                        <td>\n" +
     "                            <div class=\"btn-group\">\n" +
     "                                <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
     "                                    Bewerken <span class=\"caret\"></span></button>\n" +
     "                                <ul class=\"dropdown-menu\">\n" +
-    "                                    <li><a href=\"#\">Bewerken</a></li>\n" +
+    "                                    <li><a ui-sref=\"split.manageRoles.edit({id: role.uuid})\">Bewerken</a></li>\n" +
     "                                    <li><a href=\"#\">Verwijderen</a></li>\n" +
     "                                </ul>\n" +
     "                            </div>\n" +
@@ -17952,7 +17971,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </tr>\n" +
     "                    </tbody>\n" +
     "                </table>\n" +
-    "            </div>\n" +
     "            <div class=\"panel-footer\">\n" +
     "                <uib-pagination\n" +
     "                        total-items=\"rlc.searchResult.totalItems\"\n" +

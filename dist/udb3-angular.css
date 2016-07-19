@@ -3160,6 +3160,12 @@ img.offer-image-thumbnail {
 .query-search-result .table {
   margin-bottom: 0px;
 }
+.roles-results .table thead tr th:first-child {
+  width: 80%;
+}
+.roles-results .table thead tr th:last-child {
+  width: 20%;
+}
 [udb-form-group] .help-block {
   display: none;
 }
