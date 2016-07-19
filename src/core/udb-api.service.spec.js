@@ -7,7 +7,8 @@ describe('Service: UDB3 Api', function () {
 
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
-      baseUrl: baseUrl
+      baseUrl: baseUrl,
+      baseApiUrl: baseUrl
     };
     uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
 
@@ -131,4 +132,61 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  // createSavedSearch
+  it('should post saved searches to the api', function (done) {
+    var response = {};
+    $httpBackend
+      .expectPOST(baseUrl + 'saved-searches/', {
+        name: 'saved-search-name',
+        query: 'saved-search-query'
+      })
+      .respond(JSON.stringify(response));
+    service
+      .createSavedSearch('saved-search-name', 'saved-search-query')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // getSavedSearches
+  it('should get saved searches from the api', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'saved-searches/')
+      .respond(JSON.stringify(response));
+    service
+      .getSavedSearches()
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // deleteSavedSearch
+  it('should delete saved searches from the api', function (done) {
+    var response = {};
+    $httpBackend
+      .expectDELETE(baseUrl + 'saved-searches/searchid')
+      .respond(JSON.stringify(response));
+    service
+      .deleteSavedSearch('searchid')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // findEvents
+  it('should find events when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'search?query=searchquery&start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findEvents('searchquery')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+
 });
