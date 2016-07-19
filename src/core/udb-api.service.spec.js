@@ -185,6 +185,7 @@ describe('Service: UDB3 Api', function () {
     service
       .findEvents('searchquery')
       .then(done);
+    $httpBackend.flush();
   });
 
   // createRole
