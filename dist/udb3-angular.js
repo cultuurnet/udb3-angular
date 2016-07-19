@@ -17948,7 +17948,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"query-search-result roles-results\"\n" +
     "             ng-class=\"{'loading-search-result': rlc.loading}\"\n" +
     "             ng-show=\"rlc.searchResult.totalItems > 0\">\n" +
-    "            <div class=\"table-responsive\">\n" +
     "                <table class=\"table table-hover table-striped\">\n" +
     "                    <thead>\n" +
     "                    <tr>\n" +
@@ -17964,7 +17963,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
     "                                    Bewerken <span class=\"caret\"></span></button>\n" +
     "                                <ul class=\"dropdown-menu\">\n" +
-    "                                    <li><a href=\"#\">Bewerken</a></li>\n" +
+    "                                    <li><a ui-sref=\"split.manageRoles.edit({id: role.uuid})\">Bewerken</a></li>\n" +
     "                                    <li><a href=\"#\">Verwijderen</a></li>\n" +
     "                                </ul>\n" +
     "                            </div>\n" +
@@ -17972,7 +17971,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </tr>\n" +
     "                    </tbody>\n" +
     "                </table>\n" +
-    "            </div>\n" +
     "            <div class=\"panel-footer\">\n" +
     "                <uib-pagination\n" +
     "                        total-items=\"rlc.searchResult.totalItems\"\n" +

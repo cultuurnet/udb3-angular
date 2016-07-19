@@ -29,7 +29,6 @@
         <div class="query-search-result roles-results"
              ng-class="{'loading-search-result': rlc.loading}"
              ng-show="rlc.searchResult.totalItems > 0">
-            <div class="table-responsive">
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>
@@ -45,7 +44,7 @@
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Bewerken <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#">Bewerken</a></li>
+                                    <li><a ui-sref="split.manageRoles.edit({id: role.uuid})">Bewerken</a></li>
                                     <li><a href="#">Verwijderen</a></li>
                                 </ul>
                             </div>
@@ -53,7 +52,6 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
             <div class="panel-footer">
                 <uib-pagination
                         total-items="rlc.searchResult.totalItems"
