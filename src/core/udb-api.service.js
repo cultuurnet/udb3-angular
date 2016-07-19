@@ -24,6 +24,12 @@
  */
 
 /**
+ * @typedef {Object} Permission
+ * @property {string} @key
+ * @property {string} @name
+ */
+
+/**
  * @typedef {Object} ApiProblem
  * @property {URL} type
  * @property {string} title
@@ -257,6 +263,37 @@ function UdbApi(
     }
 
     return deferredUser.promise;
+  };
+
+  /**
+   * Get my user permissions
+   */
+  this.getMyPermissions = function () {
+    var deferredPermissions = $q.defer();
+    var token = uitidAuth.getToken();
+
+    // cache the permissions with user token
+    // == will need to fetch permissions for each login
+    function storeAndResolvePermissions (permissionsList) {
+      offerCache.put(token, permissionsList);
+      deferredPermissions.resolve(permissionsList);
+    }
+
+    if (token) {
+      var permissions = offerCache.get(token);
+      if (!permissions) {
+        $http
+          .get(appConfig.baseUrl + 'user/permissions/', defaultApiConfig)
+          .success(storeAndResolvePermissions)
+          .error(deferredPermissions.reject);
+      } else {
+        deferredPermissions.resolve(permissions);
+      }
+    } else {
+      deferredPermissions.reject();
+    }
+
+    return deferredPermissions.promise;
   };
 
   /**
@@ -818,6 +855,109 @@ function UdbApi(
     return $http
       .get(appConfig.baseUrl + 'roles/', requestConfig)
       .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string}  name
+   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   */
+  this.createRole = function (name) {
+    var roleData = {
+      name: name
+    };
+
+    return $http
+      .post(appConfig.baseUrl + 'roles/', roleData, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {uuid}    roleId
+   * @param {string}  name
+   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   */
+  this.updateRoleName = function (roleId, name) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=RenameRole';
+
+    var updateData = {
+      'name': name
+    };
+
+    return $http
+      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {uuid}    roleId
+   * @param {string}  constraint
+   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   */
+  this.updateRoleConstraint = function (roleId, constraint) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=SetConstraint';
+
+    var updateData = {
+      'constraint': constraint
+    };
+
+    return $http
+      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @return {Promise.Array<Permission>}
+   */
+  this.getPermissions = function () {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .get(appConfig.baseUrl + 'permissions/', requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} roleId
+   *  roleId for the role to retrieve permissions for
+   * @return {Promise.Array<Permission>}
+   */
+  this.getRolePermissions = function (roleId) {
+    var requestConfig = defaultApiConfig;
+    return $http
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/permissions/', requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} permissionKey
+   *  The key for the permission
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  this.addPermissionToRole = function (permissionKey, roleId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} permissionKey
+   *  The key for the permission
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  this.removePermissionFromRole = function (permissionKey, roleId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**

@@ -1,0 +1,84 @@
+<div class="page-header">
+    <h1>Roles</h1>
+</div>
+<h2>Role Toevoegen</h2>
+
+<form name="creator.form" class="css-form" novalidate>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group" udb-form-group>
+                <label class="control-label" for="label-name-field">Naam</label>
+                <input id="label-name-field"
+                       class="form-control"
+                       name="name"
+                       type="text"
+                       ng-minlength="3"
+                       ng-required="true"
+                       ng-maxlength="255"
+                       ng-model="creator.role.name"
+                       ng-model-options="{debounce: 300}"
+                       ng-disabled="creator.creating">
+                <p class="help-block" ng-if="creator.form.name.$error.required">Een role naam is verplicht.</p>
+                <p class="help-block" ng-if="creator.form.name.$error.minlength">Een role moet uit minstens 3 tekens bestaan.</p>
+                <p class="help-block" ng-if="creator.form.name.$error.maxlength">Een role mag maximum 255 tekens bevatten.</p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group" udb-form-group>
+                <label class="control-label" for="label-name-field">Bewerkrecht</label>
+                <input id="label-name-field"
+                       class="form-control"
+                       name="constraint"
+                       type="text"
+                       ng-maxlength="255"
+                       ng-model="creator.role.constraint"
+                       ng-model-options="{debounce: 300}"
+                       ng-disabled="creator.creating">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <uib-tabset>
+          <uib-tab heading="Permissies">
+            <div class="row">
+              <div class="col-md-11">
+                <input placeholder="Zoeken op naam" ng-model="permissionSearch">
+              </div>
+              <div class="col-md-1">
+                <i ng-show="!creator.loadedPermissions" class="fa fa-circle-o-notch fa-spin"></i>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+            <div class="checkbox" ng-repeat="role in creator.permissions | filter: permissionSearch">
+                <label>
+                    <input type="checkbox"
+                      ng-model="creator.role.permissions[role.key]"> <strong ng-bind="::role.name"></strong>
+                </label>
+            </div>
+              </div>
+            </div>
+          </uib-tab>
+          <uib-tab heading="Leden">
+            Leden
+          </uib-tab>
+          <uib-tab heading="Labels">
+            Labels
+          </uib-tab>
+        </uib-tabset>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button ng-disabled="!creator.form.$valid || creator.creating"
+          type="button"
+          class="btn btn-primary"
+          ng-click="creator.create()">
+          Aanmaken <i class="fa fa-circle-o-notch fa-spin" ng-show="creator.creating"></i>
+        </button>
+      </div>
+    </div>
+</form>

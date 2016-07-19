@@ -12,7 +12,9 @@
         <i ng-show="rlc.loading" class="fa fa-circle-o-notch fa-spin"></i>
     </div>
     <div class="col-md-2">
-        <a class="btn btn-primary" ui-sref="split.manageRolesCreate"><i class="fa fa-plus-circle"></i> Rol toevoegen</a>
+        <a class="btn btn-primary" ui-sref="split.manageRoles.create" ui-sref-opts="{reload:true}">
+            <i class="fa fa-plus-circle"></i> Rol toevoegen
+        </a>
     </div>
 </div>
 

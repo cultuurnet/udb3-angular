@@ -23,7 +23,7 @@ function LabelCreatorController(LabelManager, $uibModal, $state) {
 
   function create() {
     function goToOverview(jobInfo) {
-      $state.go('split.manageLabels');
+      $state.go('split.manageLabels.list');
     }
 
     creator.creating = true;
