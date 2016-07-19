@@ -1,0 +1,63 @@
+<div class="page-header">
+    <h1>Rollen <small><a ui-sref="split.manageRolesCreate">toevoegen</a></small></h1>
+</div>
+
+<div class="row">
+    <div class="col-md-11">
+        <udb-query-search-bar search-label="Zoeken op rolnaam"
+                              on-change="rlc.queryChanged(query)"
+        ></udb-query-search-bar>
+    </div>
+    <div class="col-md-1">
+        <i ng-show="rlc.loading" class="fa fa-circle-o-notch fa-spin"></i>
+    </div>
+</div>
+
+<div class="row" ng-cloak>
+    <div class="col-md-12">
+        <p ng-show="rlc.query.length < rlc.minQueryLength">
+            Schrijf een zoekopdracht in het veld hierboven om rollen te tonen.
+        </p>
+        <p ng-show="rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0">
+            Geen rollen gevonden.
+        </p>
+        <div class="query-search-result"
+             ng-class="{'loading-search-result': rlc.loading}"
+             ng-show="rlc.searchResult.totalItems > 0 && rlc.query.length >= rlc.minQueryLength">
+            <div class="table-responsive" >
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>Naam</th>
+                        <th>Opties</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="label in rlc.searchResult.member">
+                        <td ng-bind="::role.name"></td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Bewerken <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Bewerken</a></li>
+                                    <li><a href="#">Verwijderen</a></li>
+                                </ul>
+                            </div>
+                            </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <uib-pagination
+                        total-items="rlc.searchResult.totalItems"
+                        ng-model="rlc.page"
+                        items-per-page="rlc.searchResult.itemsPerPage"
+                        max-size="10"
+                        ng-change="rlc.pageChanged(rlc.page)">
+                </uib-pagination>
+            </div>
+        </div>
+    </div>
+</div>

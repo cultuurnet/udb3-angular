@@ -9,5 +9,6 @@
 angular
   .module('udb.management', [
     'udb.core',
-    'udb.management.labels'
+    'udb.management.labels',
+    'udb.management.roles'
   ]);
