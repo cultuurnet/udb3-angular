@@ -131,4 +131,40 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should get a list of roles from the api', function (done) {
+    var expectedRoles = {
+      "itemsPerPage": 10,
+      "member": [
+        {
+          "uuid": "3",
+          "name": "test rol 3"
+        },
+        {
+          "uuid": "1",
+          "name": "test rol"
+        },
+        {
+          "uuid": "2",
+          "name": "test rol 2"
+        }
+      ],
+      "totalItems": "3"
+    };
+
+    function assertRoles (rolesList) {
+      expect(rolesList).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/?limit=30&start=0')
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .findRoles()
+      .then(assertRoles);
+
+    $httpBackend.flush();
+  });
 });
