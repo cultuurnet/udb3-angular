@@ -5,7 +5,8 @@ describe('Controller: Roles List', function() {
     $rootScope,
     $q,
     $controller,
-    searchResultGenerator;
+    searchResultGenerator,
+    RoleManager;
 
   var pagedSearchResult = {
     '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
@@ -31,13 +32,15 @@ describe('Controller: Roles List', function() {
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
     searchResultGenerator = _SearchResultGenerator_;
+    RoleManager = jasmine.createSpyObj('RoleManager', ['find']);
   }));
 
   function getRolesListController() {
     return $controller(
       'RolesListController', {
         SearchResultGenerator: searchResultGenerator,
-        $scope: $scope
+        $scope: $scope,
+        RoleManager: RoleManager
       }
     );
   }
@@ -66,5 +69,15 @@ describe('Controller: Roles List', function() {
     $scope.$digest();
 
     var sub = searchResult$.subscribe(assertLoadingEnded);
+  });
+
+  it('should load the roles list on $viewContentLoaded', function () {
+    getRolesListController();
+
+    RoleManager.find.and.returnValue($q.resolve(pagedSearchResult));
+
+    $scope.$broadcast('$viewContentLoaded');
+
+    expect(RoleManager.find).toHaveBeenCalledWith('', 10, 0);
   });
 });
