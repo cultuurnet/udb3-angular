@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>Labels <small><a ui-sref="split.manageLabelsCreate">toevoegen</a></small></h1>
+    <h1>Labels <small><a ui-sref="split.manageLabels.create">toevoegen</a></small></h1>
 </div>
 
 <div class="row">
@@ -40,7 +40,7 @@
                         <td ng-bind="::(label.visibility === 'invisible' ? 'Verborgen' : '')"></td>
                         <td ng-bind="::(label.privacy === 'private' ? 'Voorbehouden' : '')"></td>
                         <td>
-                            <a ui-sref="split.manageLabelsEdit({id: label.id})">Bewerken</a>
+                            <a ui-sref="split.manageLabels.edit({id: label.id})">Bewerken</a>
                         </td>
                     </tr>
                     </tbody>

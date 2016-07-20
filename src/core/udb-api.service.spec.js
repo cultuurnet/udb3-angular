@@ -97,4 +97,38 @@ describe('Service: UDB3 Api', function () {
 
     $scope.$apply();
   });
+
+  it('should return user permissions when token is given', function (done) {
+    var expectedPermissions = [
+      {
+        'key': "SWIMMINGPOOL",
+        'name': "Blubblub"
+      },
+      {
+        'key': 'BBQ',
+        'name': 'Hothothot'
+      },
+      {
+        'key': 'WINE_CELLAR',
+        'name': 'glugglug'
+      }
+    ];
+
+    function assertPermissions (permissionsList) {
+      expect(permissionsList).toEqual(expectedPermissions);
+      done();
+    }
+
+    uitidAuth.getToken.and.returnValue('token1');
+
+    $httpBackend
+      .expectGET(baseUrl + 'user/permissions/')
+      .respond(JSON.stringify(expectedPermissions));
+
+    service
+      .getMyPermissions()
+      .then(assertPermissions);
+
+    $httpBackend.flush();
+  });
 });
