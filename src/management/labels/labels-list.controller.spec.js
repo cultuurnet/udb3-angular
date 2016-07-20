@@ -5,8 +5,9 @@ describe('Controller: Labels List', function() {
     $rootScope,
     $q,
     $controller,
-    searchResultGenerator;
-  
+    searchResultGenerator,
+    LabelManager;
+
   var pagedSearchResult = {
     '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
     '@type': 'PagedCollection',
@@ -31,8 +32,9 @@ describe('Controller: Labels List', function() {
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
     searchResultGenerator = _SearchResultGenerator_;
+    LabelManager = jasmine.createSpyObj('LabelManager', ['find']);
   }));
-  
+
   function getLabelListController() {
     return $controller(
       'LabelsListController', {
@@ -66,5 +68,21 @@ describe('Controller: Labels List', function() {
     $scope.$digest();
 
     var sub = searchResult$.subscribe(assertLoadingEnded);
+  });
+
+  it('should load the label list on $viewContentLoaded', function () {
+    var controller = $controller(
+      'LabelsListController', {
+        SearchResultGenerator: searchResultGenerator,
+        $scope: $scope,
+        LabelManager: LabelManager
+      }
+    );
+
+    LabelManager.find.and.returnValue($q.resolve(pagedSearchResult));
+
+    $scope.$broadcast('$viewContentLoaded');
+
+    expect(LabelManager.find).toHaveBeenCalledWith('', 10, 0);
   });
 });
