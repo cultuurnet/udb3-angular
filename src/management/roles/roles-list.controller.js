@@ -56,12 +56,9 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   rlc.updateSearchResultViewer = updateSearchResultViewer;
 
   function updateSearchResultViewerOnJobFeedback(job) {
-    function unlockItem() {
-      job.item.showDeleted = false;
-    }
-
-    job.task.promise.then(updateSearchResultViewer, unlockItem);
+    job.task.promise.then(updateSearchResultViewer);
   }
+  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
 
   function openDeleteConfirmModal(role) {
     var modalInstance = $uibModal.open({
