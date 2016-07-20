@@ -45,6 +45,24 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     rlc.loading = false;
   }
 
+  function updateSearchResultViewer() {
+    rlc.loading = true;
+    RoleManager.find(rlc.query, itemsPerPage, rlc.page)
+      .then(function(results) {
+        rlc.searchResult = results;
+        rlc.loading = false;
+      });
+  }
+  rlc.updateSearchResultViewer = updateSearchResultViewer;
+
+  function updateSearchResultViewerOnJobFeedback(job) {
+    function unlockItem() {
+      job.item.showDeleted = false;
+    }
+
+    job.task.promise.then(updateSearchResultViewer, unlockItem);
+  }
+
   function openDeleteConfirmModal(role) {
     var modalInstance = $uibModal.open({
         templateUrl: 'templates/role-delete-confirm-modal.html',
@@ -55,7 +73,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
           }
         }
       });
-    //modalInstance.result.then(updateItemViewerOnJobFeedback);
+    modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
   }
   rlc.openDeleteConfirmModal = openDeleteConfirmModal;
 
@@ -82,9 +100,6 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     .subscribe();
 
   $scope.$on('$viewContentLoaded', function() {
-    RoleManager.find('', itemsPerPage, 0)
-      .then(function(results) {
-        rlc.searchResult = results;
-      });
+    rlc.updateSearchResultViewer();
   });
 }

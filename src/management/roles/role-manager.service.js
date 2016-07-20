@@ -2,7 +2,7 @@
 
 /**
  * @typedef {Object} Role
- * @property {string}   id
+ * @property {string}   uuid
  * @property {string}   name
  */
 
@@ -24,7 +24,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q) {
+function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   var service = this;
 
   /**
@@ -114,13 +114,20 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
-   * @param {uuid} roleId
+   * @param {Role} role
    * @return {Promise}
    */
-  service.deleteRole = function (roleId) {
+  service.deleteRole = function (role) {
+    function logDeleteJob(jobData) {
+      var job = new DeleteRoleJob(jobData.commandId, role);
+      jobLogger.addJob(job);
+
+      return $q.resolve(job);
+    }
+
     return udbApi
-      .removeRole(roleId)
-      .then(logRoleJob);
+      .removeRole(role.uuid)
+      .then(logDeleteJob);
   };
 
   /**

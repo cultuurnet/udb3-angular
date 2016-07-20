@@ -35,7 +35,7 @@ function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager
     }
 
     RoleManager
-      .deleteRole(item.uuid)
+      .deleteRole(item)
       .then($uibModalInstance.close)
       .catch(showError);
   }

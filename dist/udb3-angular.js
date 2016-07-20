@@ -11320,7 +11320,7 @@ function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager
     }
 
     RoleManager
-      .deleteRole(item.uuid)
+      .deleteRole(item)
       .then($uibModalInstance.close)
       .catch(showError);
   }
@@ -11334,6 +11334,58 @@ function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager
 
 }
 RoleDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "RoleManager", "item"];
+
+// Source: src/management/roles/delete-role-job.factory.js
+/**
+ * @ngdoc service
+ * @name udb.entry.DeleteRoleJob
+ * @description
+ * This is the factory that creates jobs to delete roles.
+ */
+angular
+  .module('udb.management.roles')
+  .factory('DeleteRoleJob', DeleteRoleJobFactory);
+
+/* @ngInject */
+function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
+
+  /**
+   * @class DeleteRoleJob
+   * @constructor
+   * @param {string} commandId
+   * @param {Role} role
+   */
+  var DeleteRoleJob = function (commandId, role) {
+    BaseJob.call(this, commandId);
+
+    this.role = role;
+    this.task = $q.defer();
+  };
+
+  DeleteRoleJob.prototype = Object.create(BaseJob.prototype);
+  DeleteRoleJob.prototype.constructor = DeleteRoleJob;
+
+  DeleteRoleJob.prototype.finish = function () {
+    BaseJob.prototype.finish.call(this);
+
+    if (this.state !== JobStates.FAILED) {
+      this.task.resolve();
+    }
+  };
+
+  DeleteRoleJob.prototype.fail = function () {
+    BaseJob.prototype.fail.call(this);
+
+    this.task.reject();
+  };
+
+  DeleteRoleJob.prototype.getDescription = function() {
+    return 'Role verwijderen: "' +  this.role.name + '".';
+  };
+
+  return (DeleteRoleJob);
+}
+DeleteRoleJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
 
 // Source: src/management/roles/permission-manager.service.js
 /**
@@ -11578,7 +11630,7 @@ RoleEditorController.$inject = ["RoleManager", "PermissionManager", "$uibModal",
 // Source: src/management/roles/role-manager.service.js
 /**
  * @typedef {Object} Role
- * @property {string}   id
+ * @property {string}   uuid
  * @property {string}   name
  */
 
@@ -11600,7 +11652,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q) {
+function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   var service = this;
 
   /**
@@ -11690,13 +11742,20 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
-   * @param {uuid} roleId
+   * @param {Role} role
    * @return {Promise}
    */
-  service.deleteRole = function (roleId) {
+  service.deleteRole = function (role) {
+    function logDeleteJob(jobData) {
+      var job = new DeleteRoleJob(jobData.commandId, role);
+      jobLogger.addJob(job);
+
+      return $q.resolve(job);
+    }
+
     return udbApi
-      .removeRole(roleId)
-      .then(logRoleJob);
+      .removeRole(role.uuid)
+      .then(logDeleteJob);
   };
 
   /**
@@ -11722,7 +11781,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
     return $q.resolve(job);
   }
 }
-RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob"];
 
 // Source: src/management/roles/roles-list.controller.js
 /**
@@ -11770,6 +11829,24 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     rlc.loading = false;
   }
 
+  function updateSearchResultViewer() {
+    rlc.loading = true;
+    RoleManager.find(rlc.query, itemsPerPage, rlc.page)
+      .then(function(results) {
+        rlc.searchResult = results;
+        rlc.loading = false;
+      });
+  }
+  rlc.updateSearchResultViewer = updateSearchResultViewer;
+
+  function updateSearchResultViewerOnJobFeedback(job) {
+    function unlockItem() {
+      job.item.showDeleted = false;
+    }
+
+    job.task.promise.then(updateSearchResultViewer, unlockItem);
+  }
+
   function openDeleteConfirmModal(role) {
     var modalInstance = $uibModal.open({
         templateUrl: 'templates/role-delete-confirm-modal.html',
@@ -11780,7 +11857,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
           }
         }
       });
-    //modalInstance.result.then(updateItemViewerOnJobFeedback);
+    modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
   }
   rlc.openDeleteConfirmModal = openDeleteConfirmModal;
 
@@ -11807,10 +11884,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     .subscribe();
 
   $scope.$on('$viewContentLoaded', function() {
-    RoleManager.find('', itemsPerPage, 0)
-      .then(function(results) {
-        rlc.searchResult = results;
-      });
+    rlc.updateSearchResultViewer();
   });
 }
 RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal"];
