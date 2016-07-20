@@ -11,7 +11,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal) {
   var rlc = this;
 
   rlc.query = '';
@@ -44,6 +44,20 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
     rlc.searchResult = searchResult;
     rlc.loading = false;
   }
+
+  function openDeleteConfirmModal(role) {
+    var modalInstance = $uibModal.open({
+        templateUrl: 'templates/role-delete-confirm-modal.html',
+        controller: 'RoleDeleteConfirmModalCtrl',
+        resolve: {
+          item: function () {
+            return role;
+          }
+        }
+      });
+    //modalInstance.result.then(updateItemViewerOnJobFeedback);
+  }
+  rlc.openDeleteConfirmModal = openDeleteConfirmModal;
 
   rlc.loading = false;
   rlc.query = '';

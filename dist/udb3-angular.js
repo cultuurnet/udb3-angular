@@ -3540,6 +3540,17 @@ function UdbApi(
   };
 
   /**
+   * @param {uuid} roleId
+   *  The uuid of the role to be removed.
+   * @return {Promise}
+   */
+  this.removeRole = function (roleId) {
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -11273,6 +11284,57 @@ function UniqueLabelDirective(LabelManager, $q) {
 }
 UniqueLabelDirective.$inject = ["LabelManager", "$q"];
 
+// Source: src/management/roles/components/role-delete-confirm-modal.controller.js
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:RoleDeleteConfirmModalCtrl
+ * @description
+ * # RoleDeleteConfirmModalCtrl
+ * Modal to delete a role.
+ */
+angular
+  .module('udb.management.roles')
+  .controller('RoleDeleteConfirmModalCtrl', RoleDeleteConfirmModalController);
+
+/* @ngInject */
+function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager, item) {
+
+  $scope.item = item;
+  $scope.saving = false;
+  $scope.error = false;
+
+  $scope.cancelRemoval = cancelRemoval;
+  $scope.deleteRole = deleteRole;
+
+  /**
+   * Delete the role.
+   */
+  function deleteRole() {
+    $scope.error = false;
+    $scope.saving = true;
+
+    function showError() {
+      $scope.saving = false;
+      $scope.error = true;
+    }
+
+    RoleManager
+      .deleteRole(item.uuid)
+      .then($uibModalInstance.close)
+      .catch(showError);
+  }
+
+  /**
+   * Cancel, modal dismiss.
+   */
+  function cancelRemoval() {
+    $uibModalInstance.dismiss();
+  }
+
+}
+RoleDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "RoleManager", "item"];
+
 // Source: src/management/roles/permission-manager.service.js
 /**
  * @typedef {Object} Permission
@@ -11628,6 +11690,16 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {uuid} roleId
+   * @return {Promise}
+   */
+  service.deleteRole = function (roleId) {
+    return udbApi
+      .removeRole(roleId)
+      .then(logRoleJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
@@ -11664,7 +11736,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal) {
   var rlc = this;
 
   rlc.query = '';
@@ -11698,6 +11770,20 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
     rlc.loading = false;
   }
 
+  function openDeleteConfirmModal(role) {
+    var modalInstance = $uibModal.open({
+        templateUrl: 'templates/role-delete-confirm-modal.html',
+        controller: 'RoleDeleteConfirmModalCtrl',
+        resolve: {
+          item: function () {
+            return role;
+          }
+        }
+      });
+    //modalInstance.result.then(updateItemViewerOnJobFeedback);
+  }
+  rlc.openDeleteConfirmModal = openDeleteConfirmModal;
+
   rlc.loading = false;
   rlc.query = '';
   rlc.page = 0;
@@ -11727,7 +11813,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
       });
   });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal"];
 
 // Source: src/management/roles/unique-role.directive.js
 angular
@@ -17749,6 +17835,33 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/role-delete-confirm-modal.html',
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"row\">\n" +
+    "\n" +
+    "      <div class=\"col-xs-12\">\n" +
+    "        <p>Ben je zeker dat je \"<span ng-bind=\"::item.name\"></span>\" wil verwijderen? Deze actie kan niet ongedaan worden.</p>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"col-xs-12\">\n" +
+    "        <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "          Er ging iets fout bij het verwijderen van de rol.\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\">\n" +
+    "    Annuleren\n" +
+    "  </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"deleteRole()\">\n" +
+    "    Definitief verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  </button>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/role-creator.html',
     "<div class=\"page-header\">\n" +
     "    <h1>Roles</h1>\n" +
@@ -17978,7 +18091,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    Bewerken <span class=\"caret\"></span></button>\n" +
     "                                <ul class=\"dropdown-menu\">\n" +
     "                                    <li><a ui-sref=\"split.manageRoles.edit({id: role.uuid})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
-    "                                    <!--<li><a href=\"#\">Verwijderen</a></li>-->\n" +
+    "                                    <li><a href ng-click=\"rlc.openDeleteConfirmModal(role)\">Verwijderen</a></li>\n" +
     "                                </ul>\n" +
     "                            </div>\n" +
     "                            </td>\n" +

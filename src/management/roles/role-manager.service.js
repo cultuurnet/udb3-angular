@@ -114,6 +114,16 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {uuid} roleId
+   * @return {Promise}
+   */
+  service.deleteRole = function (roleId) {
+    return udbApi
+      .removeRole(roleId)
+      .then(logRoleJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
