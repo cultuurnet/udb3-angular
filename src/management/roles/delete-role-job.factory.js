@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name udb.entry.DeleteRoleJob
+ * @name udb.management.roles.DeleteRoleJob
  * @description
  * This is the factory that creates jobs to delete roles.
  */
