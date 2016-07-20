@@ -167,4 +167,29 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should get the details of a role from the api', function (done) {
+    var expectedRole = {
+      'uuid': 1,
+      'name': 'test role',
+      'constraint': '',
+      'permissions': [],
+      'members': []
+    };
+
+    function assertRole (role) {
+      expect(role).toEqual(expectedRole);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1')
+      .respond(JSON.stringify(expectedRole));
+
+    service
+      .getRoleById(1)
+      .then(assertRole);
+
+    $httpBackend.flush();
+  });
 });
