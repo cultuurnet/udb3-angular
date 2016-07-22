@@ -62,6 +62,8 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams) {
    */
   function showLabel(label) {
     editor.label = label;
+    getVisibility(label);
+    getPrivacy(label);
   }
 
   function loadLabel(id) {
@@ -70,6 +72,28 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams) {
     LabelManager
       .get(id)
       .then(showLabel, showLoadingError);
+  }
+
+  function getVisibility(label) {
+    if (label.visibility === 'visible') {
+      label.isVisible = true;
+    }
+    else {
+      label.isVisible = false;
+    }
+
+    return label;
+  }
+
+  function getPrivacy(label) {
+    if (label.privacy === 'public') {
+      label.isPrivate = false;
+    }
+    else {
+      label.isPrivate = true;
+    }
+
+    return label;
   }
 
   function showLoadingError () {
