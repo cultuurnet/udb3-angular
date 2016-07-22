@@ -11,12 +11,13 @@ angular
   .controller('LabelEditorController', LabelEditorController);
 
 /** @ngInject */
-function LabelEditorController(LabelManager, $uibModal, $stateParams) {
+function LabelEditorController(LabelManager, $uibModal, $state, $stateParams, $q) {
   var editor = this;
   editor.updateVisibility = updateVisibility;
   editor.updatePrivacy = updatePrivacy;
+  editor.saving = false;
   editor.renaming = false;
-  editor.rename = rename;
+  editor.save = save;
 
   function rename() {
     function showRenamedLabel(jobInfo) {
@@ -30,6 +31,42 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams) {
       .finally(function () {
         editor.renaming = false;
       });
+  }
+
+  function save() {
+    editor.saving = true;
+
+    var promisses = [];
+    var checkRenaming = editor.originalLabel.name !== editor.label.name;
+
+    if (checkRenaming) {
+      rename();
+    }
+
+    else {
+      if (editor.originalLabel.isVisible !== editor.label.isVisible) {
+        if (editor.label.isVisible) {
+          promisses.push(LabelManager.makeVisible(editor.label));
+        }
+        else {
+          promisses.push(LabelManager.makeInvisible(editor.label));
+        }
+      }
+
+      if (editor.originalLabel.isPrivate !== editor.label.isPrivate) {
+        if (editor.label.isPrivate) {
+          promisses.push(LabelManager.makePrivate(editor.label));
+        }
+        else {
+          promisses.push(LabelManager.makePublic(editor.label));
+        }
+      }
+
+      $q.all(promisses).finally(function() {
+          editor.saving = false;
+          $state.reload();
+        }).catch(showProblem);
+    }
   }
 
   /**
@@ -64,6 +101,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams) {
     editor.label = label;
     getVisibility(label);
     getPrivacy(label);
+    editor.originalLabel = _.cloneDeep(editor.label);
   }
 
   function loadLabel(id) {
