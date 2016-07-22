@@ -92,6 +92,32 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  service.addUserToRole = function(userId, roleId) {
+    return udbApi
+      .addUserToRole(userId, roleId)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  service.removeUserFromRole = function(userId, roleId) {
+    return udbApi
+      .removeUserFromRole(userId, roleId)
+      .then(logRoleJob);
+  };
+
+  /**
    * @param {uuid} roleId
    * @param {string} name
    * @return {Promise}

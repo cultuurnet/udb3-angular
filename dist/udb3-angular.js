@@ -3540,6 +3540,36 @@ function UdbApi(
   };
 
   /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  this.addUserToRole = function (userId, roleId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  this.removeUserFromRole = function (userId, roleId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -11602,6 +11632,32 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   service.removePermissionFromRole = function(permissionKey, roleId) {
     return udbApi
       .removePermissionFromRole(permissionKey, roleId)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  service.addUserToRole = function(userId, roleId) {
+    return udbApi
+      .addUserToRole(userId, roleId)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  service.removeUserFromRole = function(userId, roleId) {
+    return udbApi
+      .removeUserFromRole(userId, roleId)
       .then(logRoleJob);
   };
 
