@@ -11338,7 +11338,7 @@ RoleDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "Role
 // Source: src/management/roles/delete-role-job.factory.js
 /**
  * @ngdoc service
- * @name udb.entry.DeleteRoleJob
+ * @name udb.management.roles.DeleteRoleJob
  * @description
  * This is the factory that creates jobs to delete roles.
  */
@@ -11840,12 +11840,9 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   rlc.updateSearchResultViewer = updateSearchResultViewer;
 
   function updateSearchResultViewerOnJobFeedback(job) {
-    function unlockItem() {
-      job.item.showDeleted = false;
-    }
-
-    job.task.promise.then(updateSearchResultViewer, unlockItem);
+    job.task.promise.then(updateSearchResultViewer);
   }
+  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
 
   function openDeleteConfirmModal(role) {
     var modalInstance = $uibModal.open({

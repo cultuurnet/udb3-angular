@@ -192,4 +192,78 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should return the job data or remove role', function (done) {
+    var expectedJob = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertJob (jobinfo) {
+      expect(jobinfo).toEqual(expectedJob);
+      done();
+    }
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/blub')
+      .respond(JSON.stringify(expectedJob));
+
+    service
+      .removeRole('blub')
+      .then(assertJob);
+
+    $httpBackend.flush();
+  });
+
+  it('should fail when the remove role fails', function (done) {
+    var expectedResponse = {
+      type: new URL(baseUrl + 'problem'),
+      title: 'Something went wrong.',
+      detail: 'We failed to perform the requested action!',
+      status: 400
+    };
+
+    function assertFailure (response) {
+      expect(response).toEqual(expectedResponse);
+      done();
+    }
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/blub')
+      .respond(400, '');
+
+    service
+      .removeRole('blub')
+      .then(function(){}, assertFailure);
+
+    $httpBackend.flush();
+  });
+
+  it('should return the error data when a call remove role fails', function (done) {
+    var expectedResponse = {
+      type: new URL(baseUrl + 'problem'),
+      title: 'Something went wrong.',
+      detail: 'Squash one bug, run the tests and 99 more bugs to fix.',
+      status: 400
+    };
+
+    function assertFailure (response) {
+      expect(response).toEqual(expectedResponse);
+      done();
+    }
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/blub')
+      .respond(400, JSON.stringify({
+        type: baseUrl + 'problem',
+        title: 'Something went wrong.',
+        detail: 'Squash one bug, run the tests and 99 more bugs to fix.',
+        status: 400
+    }));
+
+    service
+      .removeRole('blub')
+      .then(function(){}, assertFailure);
+
+    $httpBackend.flush();
+  });
 });
