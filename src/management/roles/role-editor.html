@@ -58,17 +58,58 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-            <div class="checkbox" ng-repeat="role in editor.permissions | filter: permissionSearch">
-                <label>
-                    <input type="checkbox"
-                      ng-model="editor.role.permissions[role.key]"> <strong ng-bind="::role.name"></strong>
-                </label>
-            </div>
+                <div class="checkbox" ng-repeat="role in editor.permissions | filter: permissionSearch">
+                    <label>
+                        <input type="checkbox"
+                          ng-model="editor.role.permissions[role.key]"> <strong ng-bind="::role.name"></strong>
+                    </label>
+                </div>
               </div>
             </div>
           </uib-tab>
           <uib-tab heading="Leden">
-            Leden
+              <div class="row">
+                  <div class="col-md-11">
+                      <div class="form-control">
+                          <label>Voeg lid toe</label>
+                          <input placeholder="E-mailadres"
+                                 id="email"
+                                 type="email"
+                                 name="email"
+                                 data-ng-model="editor.email"/>
+                          <button type="submit"
+                                  class="btn btn-primary"
+                                  ng-click="editor.addUser()"
+                                  ng-disabled="!editor.form.$valid || editor.addingUser">
+                              Toevoegen <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.addingUser"></i>
+                          </button>
+                      </div>
+                  </div>
+                  <div class="col-md-1">
+                      <i ng-show="!editor.loadedRoleUsers" class="fa fa-circle-o-notch fa-spin"></i>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12" ng-show="editor.roles.users > 0 && editor.loadedRoleUsers">
+                      <table class="table">
+                          <thead>
+                            <tr>
+                                <th>E-mailadres</th>
+                                <!--<th>Verwijderen</th>-->
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-repeat="user in editor.role.user">
+                                <td ng-bind="::user.email"></td>
+                                <!--<td><a href="#">Lidmaatschap verwijderen</a></td>-->
+                            </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <div class="col-md-12" ng-hide="editor.roles.users > 0">
+                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.
+                  </div>
+              </div>
           </uib-tab>
           <uib-tab heading="Labels">
             Labels

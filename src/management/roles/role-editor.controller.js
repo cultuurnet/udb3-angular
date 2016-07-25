@@ -23,8 +23,12 @@ function RoleEditorController(
   var editor = this;
   editor.saving = false;
   editor.save = save;
+  editor.addUser = addUser;
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
+  editor.loadedRoleUsers = false;
+  editor.addingUser = false;
+
   var roleId = $stateParams.id;
 
   function loadRole(roleId) {
@@ -34,6 +38,11 @@ function RoleEditorController(
       }, showLoadingError)
       .finally(function() {
         loadRolePermissions(roleId);
+        loadRoleUsers(roleId);
+        // save a copy of the original role before changes
+        editor.originalRole = _.cloneDeep(editor.role);
+        // done loading role
+        editor.loadedRole = true;
       });
   }
   function showLoadingError () {
@@ -61,12 +70,18 @@ function RoleEditorController(
       });
       editor.permissions = permissions;
       editor.loadedRolePermissions = true;
-      // save a copy of the original role before changes
-      editor.originalRole = _.cloneDeep(editor.role);
-      // done loading role
-      editor.loadedRole = true;
     });
   }
+
+  function loadRoleUsers(roleId) {
+    RoleManager
+      .getRoleUsers(roleId).then(function (users) {
+        editor.role.users = users;
+      });
+
+    editor.loadedRoleUsers = true;
+  }
+
   loadRole(roleId);
 
   function save() {
@@ -95,6 +110,14 @@ function RoleEditorController(
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
+  }
+
+  function addUser() {
+    editor.addingUser = true;
+
+    console.log(editor.email);
+
+    editor.addingUser = false;
   }
 
   /**
