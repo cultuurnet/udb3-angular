@@ -976,21 +976,6 @@ function UdbApi(
   };
 
   /**
-   * @param {string} userId
-   *  The id of the user
-   * @param {string} roleId
-   *  roleId for the role
-   * @return {Promise}
-   */
-  this.removeUserFromRole = function (userId, roleId) {
-    var requestConfig = defaultApiConfig;
-
-    return $http
-      .delete(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, requestConfig)
-      .then(returnUnwrappedData, returnApiProblem);
-  };
-
-  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
