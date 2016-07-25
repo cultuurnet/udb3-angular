@@ -214,6 +214,16 @@ angular
   ]);
 /**
  * @ngdoc module
+ * @name udb.management.users
+ * @description
+ * # User Management Module
+ */
+angular
+  .module('udb.management.users', [
+    'rx'
+  ]);
+/**
+ * @ngdoc module
  * @name udb.management
  * @description
  * # Management Module
@@ -222,7 +232,8 @@ angular
   .module('udb.management', [
     'udb.core',
     'udb.management.labels',
-    'udb.management.roles'
+    'udb.management.roles',
+    'udb.management.users'
   ]);
 
 angular.module('peg', []).factory('LuceneQueryParser', function () {
@@ -3510,6 +3521,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} roleId
+   *  roleId for the role to retrieve users for
+   * @return {Promise.Array<User>}
+   */
+  this.getRoleUsers = function (roleId) {
+    var requestConfig = defaultApiConfig;
+    return $http
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/users/', requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} permissionKey
    *  The key for the permission
    * @param {string} roleId
@@ -3555,18 +3578,24 @@ function UdbApi(
   };
 
   /**
-   * @param {string} userId
-   *  The id of the user
-   * @param {string} roleId
-   *  roleId for the role
-   * @return {Promise}
+   * @param {string} query
+   *  Matches case-insensitive and any part of a label.
+   * @param {Number} [limit]
+   *  The limit of results per page.
+   * @param {Number} [start]
+   * @return {Promise.<PagedCollection>}
    */
-  this.removeUserFromRole = function (userId, roleId) {
-    var requestConfig = defaultApiConfig;
+  this.findUsers = function (query, limit, start) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    requestConfig.params = {
+      query: query,
+      limit: limit ? limit : 30,
+      start: start ? start : 0
+    };
 
     return $http
-      .delete(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, requestConfig)
-      .then(returnUnwrappedData, returnApiProblem);
+      .get(appConfig.baseUrl + 'users/', requestConfig)
+      .then(returnUnwrappedData);
   };
 
   /**
@@ -11440,6 +11469,7 @@ angular
 function RoleEditorController(
   RoleManager,
   PermissionManager,
+  UserManager,
   $uibModal,
   $state,
   $stateParams,
@@ -11449,8 +11479,12 @@ function RoleEditorController(
   var editor = this;
   editor.saving = false;
   editor.save = save;
+  editor.addUser = addUser;
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
+  editor.loadedRoleUsers = false;
+  editor.addingUser = false;
+
   var roleId = $stateParams.id;
 
   function loadRole(roleId) {
@@ -11460,6 +11494,11 @@ function RoleEditorController(
       }, showLoadingError)
       .finally(function() {
         loadRolePermissions(roleId);
+        loadRoleUsers(roleId);
+        // save a copy of the original role before changes
+        editor.originalRole = _.cloneDeep(editor.role);
+        // done loading role
+        editor.loadedRole = true;
       });
   }
   function showLoadingError () {
@@ -11487,12 +11526,20 @@ function RoleEditorController(
       });
       editor.permissions = permissions;
       editor.loadedRolePermissions = true;
-      // save a copy of the original role before changes
-      editor.originalRole = _.cloneDeep(editor.role);
-      // done loading role
-      editor.loadedRole = true;
     });
   }
+
+  function loadRoleUsers(roleId) {
+    RoleManager
+      .getRoleUsers(roleId).then(function (users) {
+        editor.role.users = users;
+      }, function() {
+        editor.role.users = [];
+      });
+
+    editor.loadedRoleUsers = true;
+  }
+
   loadRole(roleId);
 
   function save() {
@@ -11517,10 +11564,38 @@ function RoleEditorController(
         promisses.push(RoleManager.removePermissionFromRole(key, roleId));
       }
     });
+    Object.keys(editor.role.users).forEach(function(key) {
+      // user added
+      if (editor.role.users[key] === true && !editor.originalRole.users[key]) {
+        promisses.push(RoleManager.addUserToRole());
+      }
+    });
 
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
+  }
+
+  function addUser() {
+    editor.addingUser = true;
+    var query = editor.email;
+    var limit = 1;
+    var start = 0;
+
+    var dummyUser = {
+      'uuid': '6f072ba8-c510-40ac-b387-51f582650e27',
+      'email': 'alberto@email.es',
+      'username': 'El Pistolero'
+    };
+
+    UserManager.find(query, limit, start)
+      .then(function(user) {
+        editor.role.users.push(user);
+      }, function() {
+        editor.role.users.push(dummyUser);
+      });
+
+    editor.addingUser = false;
   }
 
   /**
@@ -11541,7 +11616,7 @@ function RoleEditorController(
     );
   }
 }
-RoleEditorController.$inject = ["RoleManager", "PermissionManager", "$uibModal", "$state", "$stateParams", "jsonLDLangFilter", "$q"];
+RoleEditorController.$inject = ["RoleManager", "PermissionManager", "UserManager", "$uibModal", "$state", "$stateParams", "jsonLDLangFilter", "$q"];
 
 // Source: src/management/roles/role-manager.service.js
 /**
@@ -11601,6 +11676,15 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {string|uuid} roleId
+   *  The name or uuid of a role.
+   * @return {Promise.<Role>}
+   */
+  service.getRoleUsers = function(roleId) {
+    return udbApi.getRoleUsers(roleId);
+  };
+
+  /**
    * @param {string} name
    *  The name of the new role.
    * @return {Promise.<Role>}
@@ -11645,19 +11729,6 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   service.addUserToRole = function(userId, roleId) {
     return udbApi
       .addUserToRole(userId, roleId)
-      .then(logRoleJob);
-  };
-
-  /**
-   * @param {string} userId
-   *  The id of the user
-   * @param {string} roleId
-   *  roleId for the role
-   * @return {Promise}
-   */
-  service.removeUserFromRole = function(userId, roleId) {
-    return udbApi
-      .removeUserFromRole(userId, roleId)
       .then(logRoleJob);
   };
 
@@ -11931,6 +12002,42 @@ function SearchService($q) {
   };
 }
 SearchService.$inject = ["$q"];
+
+// Source: src/management/users/user-manager.service.js
+/**
+ * @typedef {Object} User
+ * @property {string}   uuid
+ * @property {string}   email
+ * @property {string}   username
+ */
+
+/**
+ * @ngdoc service
+ * @name udb.management.users
+ * @description
+ * # User Manager
+ * This service allows you to lookup users and perform actions on them.
+ */
+angular
+  .module('udb.management.users')
+  .service('UserManager', UserManager);
+
+/* @ngInject */
+function UserManager(udbApi, jobLogger, BaseJob, $q) {
+  var service = this;
+
+  /**
+   * @param {string} query
+   * @param {int} limit
+   * @param {int} start
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  service.find = function (query, limit, start) {
+    return udbApi.findUsers(query, limit, start);
+  };
+}
+UserManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
 
 // Source: src/media/create-image-job.factory.js
 /**
@@ -17954,17 +18061,56 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "            <div class=\"row\">\n" +
     "              <div class=\"col-md-12\">\n" +
-    "            <div class=\"checkbox\" ng-repeat=\"role in editor.permissions | filter: permissionSearch\">\n" +
-    "                <label>\n" +
-    "                    <input type=\"checkbox\"\n" +
-    "                      ng-model=\"editor.role.permissions[role.key]\"> <strong ng-bind=\"::role.name\"></strong>\n" +
-    "                </label>\n" +
-    "            </div>\n" +
+    "                <div class=\"checkbox\" ng-repeat=\"role in editor.permissions | filter: permissionSearch\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\"\n" +
+    "                          ng-model=\"editor.role.permissions[role.key]\"> <strong ng-bind=\"::role.name\"></strong>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
     "              </div>\n" +
     "            </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Leden\">\n" +
-    "            Leden\n" +
+    "              <div class=\"row\">\n" +
+    "                  <div class=\"col-md-11\">\n" +
+    "                          <label>Voeg lid toe</label>\n" +
+    "                          <input placeholder=\"E-mailadres\"\n" +
+    "                                 id=\"email\"\n" +
+    "                                 type=\"email\"\n" +
+    "                                 name=\"email\"\n" +
+    "                                 data-ng-model=\"editor.email\"/>\n" +
+    "                          <button type=\"submit\"\n" +
+    "                                  class=\"btn btn-primary\"\n" +
+    "                                  ng-click=\"editor.addUser()\"\n" +
+    "                                  ng-disabled=\"!editor.form.$valid || editor.addingUser\">\n" +
+    "                              Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.addingUser\"></i>\n" +
+    "                          </button>\n" +
+    "                  </div>\n" +
+    "                  <div class=\"col-md-1\">\n" +
+    "                      <i ng-show=\"!editor.loadedRoleUsers\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                  </div>\n" +
+    "              </div>\n" +
+    "              <div class=\"row\">\n" +
+    "                  <div class=\"col-md-12\" ng-show=\"editor.roles.users > 0 && editor.loadedRoleUsers\">\n" +
+    "                      <table class=\"table\">\n" +
+    "                          <thead>\n" +
+    "                            <tr>\n" +
+    "                                <th>E-mailadres</th>\n" +
+    "                                <!--<th>Verwijderen</th>-->\n" +
+    "                            </tr>\n" +
+    "                          </thead>\n" +
+    "                          <tbody>\n" +
+    "                            <tr ng-repeat=\"user in editor.role.user\">\n" +
+    "                                <td ng-bind=\"::user.email\"></td>\n" +
+    "                                <!--<td><a href=\"#\">Lidmaatschap verwijderen</a></td>-->\n" +
+    "                            </tr>\n" +
+    "                          </tbody>\n" +
+    "                      </table>\n" +
+    "                  </div>\n" +
+    "                  <div class=\"col-md-12\" ng-hide=\"editor.roles.users > 0\">\n" +
+    "                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.\n" +
+    "                  </div>\n" +
+    "              </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Labels\">\n" +
     "            Labels\n" +

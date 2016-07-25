@@ -14,6 +14,7 @@ angular
 function RoleEditorController(
   RoleManager,
   PermissionManager,
+  UserManager,
   $uibModal,
   $state,
   $stateParams,
@@ -77,6 +78,8 @@ function RoleEditorController(
     RoleManager
       .getRoleUsers(roleId).then(function (users) {
         editor.role.users = users;
+      }, function() {
+        editor.role.users = [];
       });
 
     editor.loadedRoleUsers = true;
@@ -106,6 +109,12 @@ function RoleEditorController(
         promisses.push(RoleManager.removePermissionFromRole(key, roleId));
       }
     });
+    Object.keys(editor.role.users).forEach(function(key) {
+      // user added
+      if (editor.role.users[key] === true && !editor.originalRole.users[key]) {
+        promisses.push(RoleManager.addUserToRole());
+      }
+    });
 
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
@@ -114,8 +123,22 @@ function RoleEditorController(
 
   function addUser() {
     editor.addingUser = true;
+    var query = editor.email;
+    var limit = 1;
+    var start = 0;
 
-    console.log(editor.email);
+    var dummyUser = {
+      'uuid': '6f072ba8-c510-40ac-b387-51f582650e27',
+      'email': 'alberto@email.es',
+      'username': 'El Pistolero'
+    };
+
+    UserManager.find(query, limit, start)
+      .then(function(user) {
+        editor.role.users.push(user);
+      }, function() {
+        editor.role.users.push(dummyUser);
+      });
 
     editor.addingUser = false;
   }
