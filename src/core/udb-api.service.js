@@ -931,6 +931,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} roleId
+   *  roleId for the role to retrieve users for
+   * @return {Promise.Array<User>}
+   */
+  this.getRoleUsers = function (roleId) {
+    var requestConfig = defaultApiConfig;
+    return $http
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/users/', requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} permissionKey
    *  The key for the permission
    * @param {string} roleId

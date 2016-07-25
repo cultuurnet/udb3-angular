@@ -57,6 +57,15 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {string|uuid} roleId
+   *  The name or uuid of a role.
+   * @return {Promise.<Role>}
+   */
+  service.getRoleUsers = function(roleId) {
+    return udbApi.getRoleUsers(roleId);
+  };
+
+  /**
    * @param {string} name
    *  The name of the new role.
    * @return {Promise.<Role>}
