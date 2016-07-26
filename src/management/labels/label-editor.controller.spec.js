@@ -31,7 +31,8 @@ describe('Controller: Labels Editor', function() {
       'makeInvisible',
       'makePrivate',
       'makePublic',
-      'get'
+      'get',
+      'copy'
     ]);
   }));
 
@@ -144,7 +145,7 @@ describe('Controller: Labels Editor', function() {
     expect(LabelManager.makePublic).toHaveBeenCalled();
   });
 
-it('should update a label\'s visibility to invisible', function() {
+  it('should update a label\'s visibility to invisible', function() {
     LabelManager.get.and.returnValue($q.resolve(label));
     $stateParams = { "id": id };
 
@@ -178,6 +179,46 @@ it('should update a label\'s visibility to invisible', function() {
     editor.save();
 
     expect(LabelManager.makeVisible).toHaveBeenCalled();
+  });
+
+  it('should rename a label', function() {
+    var newLabel = {
+      "id":"new-id",
+      "name":"Coco",
+      "visibility":"visible",
+      "privacy":"public"
+    };
+    LabelManager.get.and.returnValue($q.resolve(label));
+    $stateParams = { "id": id };
+
+    var editor = getController();
+
+    $scope.$digest();
+    editor.label.name = 'Coco';
+    LabelManager.copy.and.returnValue($q.resolve({labelId:"new-id"}));
+    LabelManager.get.and.returnValue($q.resolve(newLabel));
+
+    editor.save();
+    $scope.$digest();
+
+    expect(LabelManager.copy).toHaveBeenCalled();
+    expect(editor.label).toEqual(newLabel);
+  });
+
+  it('should update the saving indicator', function() {
+    LabelManager.get.and.returnValue($q.resolve(label));
+    $stateParams = { "id": id };
+
+    var editor = getController();
+
+    $scope.$digest();
+    editor.label.isVisible = false;
+    LabelManager.makeInvisible.and.returnValue($q.resolve());
+
+    editor.save();
+    $scope.$digest();
+
+    expect(editor.saving).toEqual(false);
   });
 
 });
