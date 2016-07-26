@@ -131,12 +131,6 @@ function RoleEditorController(
     var limit = 1;
     var start = 0;
 
-    var dummyUser = {
-      'uuid': '6f072ba8-c510-40ac-b387-51f582650e27',
-      'email': 'alberto@email.es',
-      'username': 'El Pistolero'
-    };
-
     UserManager.find(query, limit, start)
       .then(function(user) {
         var uuid = user.uuid;
@@ -151,9 +145,7 @@ function RoleEditorController(
             userAlreadyAdded();
           }
         });
-      }, function() {
-        editor.role.users.push(dummyUser);
-      });
+      }, showProblem);
 
     editor.addingUser = false;
   }
