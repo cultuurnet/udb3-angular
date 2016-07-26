@@ -11,7 +11,7 @@ angular
   .controller('LabelEditorController', LabelEditorController);
 
 /** @ngInject */
-function LabelEditorController(LabelManager, $uibModal, $state, $stateParams, $q) {
+function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
   var editor = this;
   editor.updateVisibility = updateVisibility;
   editor.updatePrivacy = updatePrivacy;
@@ -45,26 +45,15 @@ function LabelEditorController(LabelManager, $uibModal, $state, $stateParams, $q
 
     else {
       if (editor.originalLabel.isVisible !== editor.label.isVisible) {
-        if (editor.label.isVisible) {
-          promisses.push(LabelManager.makeVisible(editor.label));
-        }
-        else {
-          promisses.push(LabelManager.makeInvisible(editor.label));
-        }
+        promisses.push(updateVisibility());
       }
 
       if (editor.originalLabel.isPrivate !== editor.label.isPrivate) {
-        if (editor.label.isPrivate) {
-          promisses.push(LabelManager.makePrivate(editor.label));
-        }
-        else {
-          promisses.push(LabelManager.makePublic(editor.label));
-        }
+        promisses.push(updatePrivacy());
       }
 
       $q.all(promisses).finally(function() {
           editor.saving = false;
-          $state.reload();
         }).catch(showProblem);
     }
   }
@@ -140,14 +129,14 @@ function LabelEditorController(LabelManager, $uibModal, $state, $stateParams, $q
 
   function updateVisibility () {
     var isVisible = editor.label.isVisible;
-    var jobPromise = isVisible ? LabelManager.makeVisible(editor.label) : LabelManager.makeInvisible(editor.label);
-    jobPromise.catch(showProblem);
+
+    return isVisible ? LabelManager.makeVisible(editor.label) : LabelManager.makeInvisible(editor.label);
   }
 
   function updatePrivacy () {
     var isPrivate = editor.label.isPrivate;
-    var jobPromise = isPrivate ? LabelManager.makePrivate(editor.label) : LabelManager.makePublic(editor.label);
-    jobPromise.catch(showProblem);
+
+    return isPrivate ? LabelManager.makePrivate(editor.label) : LabelManager.makePublic(editor.label);
   }
 
   loadLabelFromParams();
