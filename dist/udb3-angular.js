@@ -11598,6 +11598,9 @@ function RoleEditorController(
         angular.forEach(editor.role.users, function(roleUser) {
           if (roleUser.uuid !== uuid) {
             editor.role.users.push(user);
+            editor.form.email.$setViewValue('');
+            editor.form.email.$setPristine(true);
+            editor.form.email.$render();
           }
           else {
             userAlreadyAdded();
@@ -11607,9 +11610,6 @@ function RoleEditorController(
         editor.role.users.push(dummyUser);
       });
 
-    editor.form.email.$setViewValue('');
-    editor.form.email.$setPristine(true);
-    editor.form.email.$render();
     editor.addingUser = false;
   }
 
@@ -18121,8 +18121,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </div>\n" +
     "              </div>\n" +
     "              <div class=\"row\">\n" +
-    "                  <!--<div class=\"col-md-12\" ng-show=\"editor.role.users > 0 && editor.loadedRoleUsers\">-->\n" +
-    "                  <div class=\"col-md-12\">\n" +
+    "                  <div class=\"col-md-12\" ng-show=\"editor.role.users.length && editor.loadedRoleUsers\">\n" +
     "                      <table class=\"table\">\n" +
     "                          <thead>\n" +
     "                            <tr>\n" +
@@ -18138,9 +18137,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                          </tbody>\n" +
     "                      </table>\n" +
     "                  </div>\n" +
-    "                  <!--<div class=\"col-md-12\" ng-hide=\"editor.role.users > 0\">\n" +
+    "                  <div class=\"col-md-12\" ng-hide=\"editor.role.users.length\">\n" +
     "                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.\n" +
-    "                  </div>-->\n" +
+    "                  </div>\n" +
     "              </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Labels\">\n" +

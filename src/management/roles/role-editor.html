@@ -88,8 +88,7 @@
                   </div>
               </div>
               <div class="row">
-                  <!--<div class="col-md-12" ng-show="editor.role.users > 0 && editor.loadedRoleUsers">-->
-                  <div class="col-md-12">
+                  <div class="col-md-12" ng-show="editor.role.users.length && editor.loadedRoleUsers">
                       <table class="table">
                           <thead>
                             <tr>
@@ -105,9 +104,9 @@
                           </tbody>
                       </table>
                   </div>
-                  <!--<div class="col-md-12" ng-hide="editor.role.users > 0">
+                  <div class="col-md-12" ng-hide="editor.role.users.length">
                       Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.
-                  </div>-->
+                  </div>
               </div>
           </uib-tab>
           <uib-tab heading="Labels">
