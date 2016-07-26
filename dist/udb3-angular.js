@@ -11537,35 +11537,56 @@ function RoleEditorController(
   editor.addingUser = false;
 
   var roleId = $stateParams.id;
+  var permissions, rolePermissions;
 
   function loadRole(roleId) {
     RoleManager
-      .get(roleId).then(function(role) {
+      .get(roleId)
+      .then(function(role) {
         editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
-      .finally(function() {
+      .then(function() {
         loadRolePermissions(roleId);
         loadRoleUsers(roleId);
+      })
+      .finally(function() {
+        // save a copy of the original role before changes
+        editor.originalRole = _.cloneDeep(editor.role);
+        // done loading role
+        editor.loadedRole = true;
       });
   }
   function showLoadingError () {
     editor.loadingError = 'Role niet gevonden!';
   }
-  function loadRolePermissions(roleId) {
-    var permissions, rolePermissions, promisses = [];
-    promisses.push(
+
+  function getRolePermissions(roleId) {
+    return $q.resolve(
       RoleManager
         .getRolePermissions(roleId).then(function(permissions) {
           rolePermissions = permissions;
         }, showProblem)
     );
-    promisses.push(
+  }
+
+  function getAllRolePermissions() {
+    return $q.resolve(
       PermissionManager
         .getAll().then(function(retrievedPermissions) {
           permissions = retrievedPermissions;
         }, showProblem)
     );
-    $q.all(promisses).then(function() {
+  }
+
+  function loadRolePermissions(roleId) {
+    var promisses = [];
+    promisses.push(
+      getRolePermissions(roleId)
+    );
+    promisses.push(
+      getAllRolePermissions()
+    );
+    return $q.all(promisses).then(function() {
       // loaded all permissions & permissions linked to role
       editor.role.permissions = {};
       rolePermissions.forEach(function(permission) {
@@ -11573,26 +11594,22 @@ function RoleEditorController(
       });
       editor.permissions = permissions;
       editor.loadedRolePermissions = true;
-      // save a copy of the original role before changes
-      editor.originalRole = _.cloneDeep(editor.role);
-      // done loading role
-      editor.loadedRole = true;
     });
   }
 
   function loadRoleUsers(roleId) {
-    RoleManager
-      .getRoleUsers(roleId).then(function (users) {
-        editor.role.users = users;
-      }, function() {
-        editor.role.users = [];
-      });
-
-    editor.loadedRoleUsers = true;
-    // save a copy of the original role before changes
-    editor.originalRole = _.cloneDeep(editor.role);
-    // done loading role
-    editor.loadedRole = true;
+    return $q.resolve(
+      RoleManager
+      .getRoleUsers(roleId)
+        .then(function (users) {
+          editor.role.users = users;
+        }, function() {
+          editor.role.users = [];
+        })
+        .finally(function () {
+          editor.loadedRoleUsers = true;
+        })
+    );
   }
 
   loadRole(roleId);
@@ -11637,12 +11654,6 @@ function RoleEditorController(
     var limit = 1;
     var start = 0;
 
-    var dummyUser = {
-      'uuid': '6f072ba8-c510-40ac-b387-51f582650e27',
-      'email': 'alberto@email.es',
-      'username': 'El Pistolero'
-    };
-
     UserManager.find(query, limit, start)
       .then(function(user) {
         var uuid = user.uuid;
@@ -11657,9 +11668,7 @@ function RoleEditorController(
             userAlreadyAdded();
           }
         });
-      }, function() {
-        editor.role.users.push(dummyUser);
-      });
+      }, showProblem);
 
     editor.addingUser = false;
   }
