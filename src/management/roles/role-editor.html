@@ -75,7 +75,7 @@
                                  id="email"
                                  type="email"
                                  name="email"
-                                 data-ng-model="editor.email"/>
+                                 data-ng-model="editor.email" />
                           <button type="submit"
                                   class="btn btn-primary"
                                   ng-click="editor.addUser()"
@@ -88,7 +88,8 @@
                   </div>
               </div>
               <div class="row">
-                  <div class="col-md-12" ng-show="editor.roles.users > 0 && editor.loadedRoleUsers">
+                  <!--<div class="col-md-12" ng-show="editor.role.users > 0 && editor.loadedRoleUsers">-->
+                  <div class="col-md-12">
                       <table class="table">
                           <thead>
                             <tr>
@@ -97,16 +98,16 @@
                             </tr>
                           </thead>
                           <tbody>
-                            <tr ng-repeat="user in editor.role.user">
+                            <tr ng-repeat="user in editor.role.users">
                                 <td ng-bind="::user.email"></td>
                                 <!--<td><a href="#">Lidmaatschap verwijderen</a></td>-->
                             </tr>
                           </tbody>
                       </table>
                   </div>
-                  <div class="col-md-12" ng-hide="editor.roles.users > 0">
+                  <!--<div class="col-md-12" ng-hide="editor.role.users > 0">
                       Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.
-                  </div>
+                  </div>-->
               </div>
           </uib-tab>
           <uib-tab heading="Labels">

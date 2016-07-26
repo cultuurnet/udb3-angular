@@ -11495,10 +11495,6 @@ function RoleEditorController(
       .finally(function() {
         loadRolePermissions(roleId);
         loadRoleUsers(roleId);
-        // save a copy of the original role before changes
-        editor.originalRole = _.cloneDeep(editor.role);
-        // done loading role
-        editor.loadedRole = true;
       });
   }
   function showLoadingError () {
@@ -11526,6 +11522,10 @@ function RoleEditorController(
       });
       editor.permissions = permissions;
       editor.loadedRolePermissions = true;
+      // save a copy of the original role before changes
+      editor.originalRole = _.cloneDeep(editor.role);
+      // done loading role
+      editor.loadedRole = true;
     });
   }
 
@@ -11538,6 +11538,10 @@ function RoleEditorController(
       });
 
     editor.loadedRoleUsers = true;
+    // save a copy of the original role before changes
+    editor.originalRole = _.cloneDeep(editor.role);
+    // done loading role
+    editor.loadedRole = true;
   }
 
   loadRole(roleId);
@@ -11566,8 +11570,8 @@ function RoleEditorController(
     });
     Object.keys(editor.role.users).forEach(function(key) {
       // user added
-      if (editor.role.users[key] === true && !editor.originalRole.users[key]) {
-        promisses.push(RoleManager.addUserToRole());
+      if (editor.role.users[key] && !editor.originalRole.users[key]) {
+        promisses.push(RoleManager.addUserToRole(editor.role.users[key].uuid, roleId));
       }
     });
 
@@ -11590,11 +11594,22 @@ function RoleEditorController(
 
     UserManager.find(query, limit, start)
       .then(function(user) {
-        editor.role.users.push(user);
+        var uuid = user.uuid;
+        angular.forEach(editor.role.users, function(roleUser) {
+          if (roleUser.uuid !== uuid) {
+            editor.role.users.push(user);
+          }
+          else {
+            userAlreadyAdded();
+          }
+        });
       }, function() {
         editor.role.users.push(dummyUser);
       });
 
+    editor.form.email.$setViewValue('');
+    editor.form.email.$setPristine(true);
+    editor.form.email.$render();
     editor.addingUser = false;
   }
 
@@ -11610,6 +11625,21 @@ function RoleEditorController(
         resolve: {
           errorMessage: function() {
             return problem.title + ' ' + problem.detail;
+          }
+        }
+      }
+    );
+  }
+
+  function userAlreadyAdded() {
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return 'De gebruiker hangt al aan deze rol.';
           }
         }
       }
@@ -18078,7 +18108,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                 id=\"email\"\n" +
     "                                 type=\"email\"\n" +
     "                                 name=\"email\"\n" +
-    "                                 data-ng-model=\"editor.email\"/>\n" +
+    "                                 data-ng-model=\"editor.email\" />\n" +
     "                          <button type=\"submit\"\n" +
     "                                  class=\"btn btn-primary\"\n" +
     "                                  ng-click=\"editor.addUser()\"\n" +
@@ -18091,7 +18121,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </div>\n" +
     "              </div>\n" +
     "              <div class=\"row\">\n" +
-    "                  <div class=\"col-md-12\" ng-show=\"editor.roles.users > 0 && editor.loadedRoleUsers\">\n" +
+    "                  <!--<div class=\"col-md-12\" ng-show=\"editor.role.users > 0 && editor.loadedRoleUsers\">-->\n" +
+    "                  <div class=\"col-md-12\">\n" +
     "                      <table class=\"table\">\n" +
     "                          <thead>\n" +
     "                            <tr>\n" +
@@ -18100,16 +18131,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                            </tr>\n" +
     "                          </thead>\n" +
     "                          <tbody>\n" +
-    "                            <tr ng-repeat=\"user in editor.role.user\">\n" +
+    "                            <tr ng-repeat=\"user in editor.role.users\">\n" +
     "                                <td ng-bind=\"::user.email\"></td>\n" +
     "                                <!--<td><a href=\"#\">Lidmaatschap verwijderen</a></td>-->\n" +
     "                            </tr>\n" +
     "                          </tbody>\n" +
     "                      </table>\n" +
     "                  </div>\n" +
-    "                  <div class=\"col-md-12\" ng-hide=\"editor.roles.users > 0\">\n" +
+    "                  <!--<div class=\"col-md-12\" ng-hide=\"editor.role.users > 0\">\n" +
     "                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.\n" +
-    "                  </div>\n" +
+    "                  </div>-->\n" +
     "              </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Labels\">\n" +
