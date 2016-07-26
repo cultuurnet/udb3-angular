@@ -131,4 +131,101 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should get a list of roles from the api', function (done) {
+    var expectedRoles = {
+      "itemsPerPage": 10,
+      "member": [
+        {
+          "uuid": "3",
+          "name": "test rol 3"
+        },
+        {
+          "uuid": "1",
+          "name": "test rol"
+        },
+        {
+          "uuid": "2",
+          "name": "test rol 2"
+        }
+      ],
+      "totalItems": "3"
+    };
+
+    function assertRoles (rolesList) {
+      expect(rolesList).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/?limit=30&start=0')
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .findRoles()
+      .then(assertRoles);
+
+    $httpBackend.flush();
+  });
+
+  it('should get a list of roles from the api', function (done) {
+    var expectedRoles = {
+      "itemsPerPage": 10,
+      "member": [
+        {
+          "uuid": "3",
+          "name": "test rol 3"
+        },
+        {
+          "uuid": "1",
+          "name": "test rol"
+        },
+        {
+          "uuid": "2",
+          "name": "test rol 2"
+        }
+      ],
+      "totalItems": "3"
+    };
+
+    function assertRoles (rolesList) {
+      expect(rolesList).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/?limit=12&query=joske&start=5')
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .findRoles('joske', 12, 5)
+      .then(assertRoles);
+
+    $httpBackend.flush();
+  });
+
+  it('should get the details of a role from the api', function (done) {
+    var expectedRole = {
+      'uuid': 1,
+      'name': 'test role',
+      'constraint': '',
+      'permissions': [],
+      'members': []
+    };
+
+    function assertRole (role) {
+      expect(role).toEqual(expectedRole);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1')
+      .respond(JSON.stringify(expectedRole));
+
+    service
+      .getRoleById(1)
+      .then(assertRole);
+
+    $httpBackend.flush();
+  });
 });
