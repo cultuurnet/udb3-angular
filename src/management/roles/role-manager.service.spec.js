@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: Role Manager', function () {
-  var udbApi, jobLogger, BaseJob, $q, service, DeleteRoleJob, $scope;
+  var udbApi, jobLogger, BaseJob, $q, service, $scope;
 
   var baseUrl = 'http://example.com/';
 
@@ -12,7 +12,11 @@ describe('Service: Role Manager', function () {
 
     $provide.constant('appConfig', appConfig);
 
-    udbApi = jasmine.createSpyObj('udbApi', ['removeRole']);
+    udbApi = jasmine.createSpyObj('udbApi', [
+      'removeRole',
+      'findRoles',
+      'getRoleById'
+    ]);
     $provide.provider('udbApi', {
       $get: function () {
         return udbApi;
@@ -27,16 +31,14 @@ describe('Service: Role Manager', function () {
     });
   }));
 
-  beforeEach(inject(function (_DeleteRoleJob_, RoleManager, $rootScope, _$q_, _BaseJob_) {
-    DeleteRoleJob = _DeleteRoleJob_;
+  beforeEach(inject(function (RoleManager, $rootScope, _$q_, _BaseJob_) {
     service = RoleManager;
     $scope = $rootScope.$new();
     $q = _$q_;
     BaseJob = _BaseJob_;
   }));
 
-  xit('should return a list of roles for a given query', function () {
-    udbApi = jasmine.createSpyObj('udbApi', ['findRoles']);
+  it('should return a list of roles for a given query', function (done) {
     var expectedRoles = {
       "itemsPerPage": 10,
       "member": [
@@ -55,14 +57,40 @@ describe('Service: Role Manager', function () {
       ],
       "totalItems": "3"
     };
-    service.find.and.returnValue(expectedRoles);
-    udbApi.findRoles.and.returnValue(expectedRoles);
+    udbApi.findRoles.and.returnValue($q.resolve(expectedRoles));
 
-    //expect(service.find).toHaveBeenCalled();
-    //expect(udbApi.findRoles).toHaveBeenCalled();
+    function assertResultset (result) {
+      expect(result).toEqual(expectedRoles);
+      done();
+    }
+
+    service
+      .find('', 10, 0)
+      .then(assertResultset);
+
+    $scope.$apply();
   });
 
-  it('should return a new DeleteRoleJob when a role is deleted', function (done) {
+  it('should fetch a role', function (done) {
+    var role = {
+      uuid: 'blub-id',
+      name: 'Blub'
+    }
+    udbApi.getRoleById.and.returnValue($q.resolve(role));
+
+    function assertRole (role) {
+      expect(role).toEqual(role);
+      done();
+    }
+
+    service
+      .get('blub-id')
+      .then(assertRole);
+
+    $scope.$apply();
+  });
+
+  xit('should return a new DeleteRoleJob when a role is deleted', function (done) {
     var role = {
       uuid: 'blub-id',
       name: 'Blub'
