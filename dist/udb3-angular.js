@@ -10942,12 +10942,13 @@ angular
   .controller('LabelEditorController', LabelEditorController);
 
 /** @ngInject */
-function LabelEditorController(LabelManager, $uibModal, $stateParams) {
+function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
   var editor = this;
   editor.updateVisibility = updateVisibility;
   editor.updatePrivacy = updatePrivacy;
+  editor.saving = false;
   editor.renaming = false;
-  editor.rename = rename;
+  editor.save = save;
 
   function rename() {
     function showRenamedLabel(jobInfo) {
@@ -10961,6 +10962,31 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams) {
       .finally(function () {
         editor.renaming = false;
       });
+  }
+
+  function save() {
+    editor.saving = true;
+
+    var promisses = [];
+    var checkRenaming = editor.originalLabel.name !== editor.label.name;
+
+    if (checkRenaming) {
+      rename();
+    }
+
+    else {
+      if (editor.originalLabel.isVisible !== editor.label.isVisible) {
+        promisses.push(updateVisibility());
+      }
+
+      if (editor.originalLabel.isPrivate !== editor.label.isPrivate) {
+        promisses.push(updatePrivacy());
+      }
+
+      $q.all(promisses).finally(function() {
+          editor.saving = false;
+        }).catch(showProblem);
+    }
   }
 
   /**
@@ -10993,6 +11019,9 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams) {
    */
   function showLabel(label) {
     editor.label = label;
+    getVisibility(label);
+    getPrivacy(label);
+    editor.originalLabel = _.cloneDeep(editor.label);
   }
 
   function loadLabel(id) {
@@ -11003,25 +11032,47 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams) {
       .then(showLabel, showLoadingError);
   }
 
+  function getVisibility(label) {
+    if (label.visibility === 'visible') {
+      label.isVisible = true;
+    }
+    else {
+      label.isVisible = false;
+    }
+
+    return label;
+  }
+
+  function getPrivacy(label) {
+    if (label.privacy === 'public') {
+      label.isPrivate = false;
+    }
+    else {
+      label.isPrivate = true;
+    }
+
+    return label;
+  }
+
   function showLoadingError () {
     editor.loadingError = 'Label niet gevonden!';
   }
 
   function updateVisibility () {
     var isVisible = editor.label.isVisible;
-    var jobPromise = isVisible ? LabelManager.makeVisible(editor.label) : LabelManager.makeInvisible(editor.label);
-    jobPromise.catch(showProblem);
+
+    return isVisible ? LabelManager.makeVisible(editor.label) : LabelManager.makeInvisible(editor.label);
   }
 
   function updatePrivacy () {
     var isPrivate = editor.label.isPrivate;
-    var jobPromise = isPrivate ? LabelManager.makePrivate(editor.label) : LabelManager.makePublic(editor.label);
-    jobPromise.catch(showProblem);
+
+    return isPrivate ? LabelManager.makePrivate(editor.label) : LabelManager.makePublic(editor.label);
   }
 
   loadLabelFromParams();
 }
-LabelEditorController.$inject = ["LabelManager", "$uibModal", "$stateParams"];
+LabelEditorController.$inject = ["LabelManager", "$uibModal", "$stateParams", "$q"];
 
 // Source: src/management/labels/label-manager.service.js
 /**
@@ -17659,25 +17710,37 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-show=\"editor.label\">\n" +
-    "    <label for=\"label-name-field\">Naam</label>\n" +
-    "    <input id=\"label-name-field\" type=\"text\" ng-model=\"editor.label.name\" ng-disabled=\"editor.renaming\">\n" +
-    "    <button ng-disabled=\"editor.renaming\" type=\"button\" class=\"btn btn-primary\" ng-click=\"editor.rename()\">\n" +
-    "        Hernoemen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.renaming\"></i>\n" +
-    "    </button>\n" +
-    "    <br>\n" +
-    "    <label>\n" +
-    "        <input type=\"checkbox\"\n" +
-    "               ng-change=\"editor.updateVisibility()\"\n" +
-    "               ng-model=\"editor.label.isVisible\"> Tonen op publicatiekanalen\n" +
-    "    </label>\n" +
-    "    <br>\n" +
-    "    <label>\n" +
-    "        <input type=\"checkbox\"\n" +
-    "               ng-change=\"editor.updatePrivacy()\"\n" +
-    "               ng-model=\"editor.label.isPrivate\"> Voorbehouden aan specifieke gebruikersgroepen\n" +
-    "    </label>\n" +
-    "</div>\n" +
+    "<form name=\"editor.form\" class=\"css-form\" novalidate>\n" +
+    "    <div ng-show=\"editor.label\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-md-6\">\n" +
+    "                <label for=\"label-name-field\">Naam</label>\n" +
+    "                <input id=\"label-name-field\" type=\"text\" ng-model=\"editor.label.name\" ng-disabled=\"editor.renaming\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-md-12\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\"\n" +
+    "                           ng-model=\"editor.label.isVisible\"> Tonen op publicatiekanalen\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-md-12\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\"\n" +
+    "                           ng-model=\"editor.label.isPrivate\"> Voorbehouden aan specifieke gebruikersgroepen\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "<button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "        type=\"button\"\n" +
+    "        class=\"btn btn-primary\"\n" +
+    "        ng-click=\"editor.save()\">\n" +
+    "    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "</button>\n" +
     "\n" +
     "<div ng-show=\"editor.loadingError\">\n" +
     "    <span ng-bind=\"editor.loadingError\"></span>\n" +
