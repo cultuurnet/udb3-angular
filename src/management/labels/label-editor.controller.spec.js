@@ -221,4 +221,14 @@ describe('Controller: Labels Editor', function() {
     expect(editor.saving).toEqual(false);
   });
 
+  it('should show a loading error', function() {
+    LabelManager.get.and.returnValue($q.reject());
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    expect(editor.loadingError).toEqual('Label niet gevonden!');
+  });
+
 });
