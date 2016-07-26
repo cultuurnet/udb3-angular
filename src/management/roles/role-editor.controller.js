@@ -40,10 +40,6 @@ function RoleEditorController(
       .finally(function() {
         loadRolePermissions(roleId);
         loadRoleUsers(roleId);
-        // save a copy of the original role before changes
-        editor.originalRole = _.cloneDeep(editor.role);
-        // done loading role
-        editor.loadedRole = true;
       });
   }
   function showLoadingError () {
@@ -71,6 +67,10 @@ function RoleEditorController(
       });
       editor.permissions = permissions;
       editor.loadedRolePermissions = true;
+      // save a copy of the original role before changes
+      editor.originalRole = _.cloneDeep(editor.role);
+      // done loading role
+      editor.loadedRole = true;
     });
   }
 
@@ -83,6 +83,10 @@ function RoleEditorController(
       });
 
     editor.loadedRoleUsers = true;
+    // save a copy of the original role before changes
+    editor.originalRole = _.cloneDeep(editor.role);
+    // done loading role
+    editor.loadedRole = true;
   }
 
   loadRole(roleId);
@@ -111,8 +115,8 @@ function RoleEditorController(
     });
     Object.keys(editor.role.users).forEach(function(key) {
       // user added
-      if (editor.role.users[key] === true && !editor.originalRole.users[key]) {
-        promisses.push(RoleManager.addUserToRole());
+      if (editor.role.users[key] && !editor.originalRole.users[key]) {
+        promisses.push(RoleManager.addUserToRole(editor.role.users[key].uuid, roleId));
       }
     });
 
@@ -135,7 +139,15 @@ function RoleEditorController(
 
     UserManager.find(query, limit, start)
       .then(function(user) {
-        editor.role.users.push(user);
+        var uuid = user.uuid;
+        angular.forEach(editor.role.users, function(roleUser) {
+          if (roleUser.uuid !== uuid) {
+            editor.role.users.push(user);
+          }
+          else {
+            userAlreadyAdded();
+          }
+        });
       }, function() {
         editor.role.users.push(dummyUser);
       });
@@ -155,6 +167,21 @@ function RoleEditorController(
         resolve: {
           errorMessage: function() {
             return problem.title + ' ' + problem.detail;
+          }
+        }
+      }
+    );
+  }
+
+  function userAlreadyAdded() {
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return 'De gebruiker hangt al aan deze rol.';
           }
         }
       }
