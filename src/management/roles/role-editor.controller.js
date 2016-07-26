@@ -143,6 +143,9 @@ function RoleEditorController(
         angular.forEach(editor.role.users, function(roleUser) {
           if (roleUser.uuid !== uuid) {
             editor.role.users.push(user);
+            editor.form.email.$setViewValue('');
+            editor.form.email.$setPristine(true);
+            editor.form.email.$render();
           }
           else {
             userAlreadyAdded();
