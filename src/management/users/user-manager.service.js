@@ -19,7 +19,7 @@ angular
   .service('UserManager', UserManager);
 
 /* @ngInject */
-function UserManager(udbApi, jobLogger, BaseJob, $q) {
+function UserManager(udbApi) {
   var service = this;
 
   /**
