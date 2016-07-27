@@ -25,6 +25,7 @@ function RoleEditorController(
   editor.save = save;
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
+  editor.addLabel = addLabel;
   var roleId = $stateParams.id;
 
   function loadRole(roleId) {
@@ -95,6 +96,22 @@ function RoleEditorController(
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
+  }
+
+  function addLabel(label) {
+    editor.saving = true;
+
+    RoleManager
+      .addLabelToRole(roleId, label.id)
+      .then(function () {
+        if (!editor.role.labels) {
+          editor.role.labels = [];
+        }
+        editor.role.labels.push(label);
+      }, showProblem)
+      .finally(function() {
+        editor.saving = false;
+      });
   }
 
   /**

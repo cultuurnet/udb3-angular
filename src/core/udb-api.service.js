@@ -961,6 +961,19 @@ function UdbApi(
   };
 
   /**
+   * @param {string} roleId
+   *  roleId for the role
+   * @param {string} labelId
+   *  The id of the label to be added
+   * @return {Promise}
+   */
+  this.addLabelToRole = function (roleId, labelId) {
+    return $http
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, {}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */

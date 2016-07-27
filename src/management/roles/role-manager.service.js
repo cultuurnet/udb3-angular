@@ -114,6 +114,17 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {uuid} roleId
+   * @param {string} labelId
+   * @return {Promise}
+   */
+  service.addLabelToRole = function(roleId, labelId) {
+    return udbApi
+      .addLabelToRole(roleId, labelId)
+      .then(logRoleJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
