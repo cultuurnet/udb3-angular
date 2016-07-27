@@ -962,6 +962,17 @@ function UdbApi(
 
   /**
    * @param {string} roleId
+   *  roleId for the role to retrieve labels for
+   * @return {Promise.Array<Permission>}
+   */
+  this.getRoleLabels = function (roleId) {
+    return $http
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/labels/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} roleId
    *  roleId for the role
    * @param {string} labelId
    *  The id of the label to be added

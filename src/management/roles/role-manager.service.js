@@ -124,6 +124,12 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
       .then(logRoleJob);
   };
 
+  service.getRoleLabels = function(roleId) {
+    return udbApi
+      .getRoleLabels(roleId)
+      .then(logRoleJob);
+  };
+
   /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}

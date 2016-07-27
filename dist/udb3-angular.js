@@ -3540,6 +3540,19 @@ function UdbApi(
   };
 
   /**
+   * @param {string} roleId
+   *  roleId for the role
+   * @param {string} labelId
+   *  The id of the label to be added
+   * @return {Promise}
+   */
+  this.addLabelToRole = function (roleId, labelId) {
+    return $http
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -11472,6 +11485,7 @@ function RoleEditorController(
   editor.save = save;
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
+  editor.addLabel = addLabel;
   var roleId = $stateParams.id;
 
   function loadRole(roleId) {
@@ -11542,6 +11556,22 @@ function RoleEditorController(
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
+  }
+
+  function addLabel(label) {
+    editor.saving = true;
+
+    RoleManager
+      .addLabelToRole(roleId, label.id)
+      .then(function () {
+        if (!editor.role.labels) {
+          editor.role.labels = [];
+        }
+        editor.role.labels.push(label);
+      }, showProblem)
+      .finally(function() {
+        editor.saving = false;
+      });
   }
 
   /**
@@ -11679,6 +11709,17 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {uuid} roleId
+   * @param {string} labelId
+   * @return {Promise}
+   */
+  service.addLabelToRole = function(roleId, labelId) {
+    return udbApi
+      .addLabelToRole(roleId, labelId)
+      .then(logRoleJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
@@ -11779,6 +11820,56 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
   });
 }
 RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager"];
+
+// Source: src/management/roles/search-label.component.js
+angular
+  .module('udb.management.roles')
+  .component('udbSearchLabel', {
+    templateUrl: 'templates/search-label.html',
+    controller: LabelSearchComponent,
+    controllerAs: 'select',
+    bindings: {
+      offer: '<',
+      labelAdded: '&',
+      labelRemoved: '&'
+    }
+  });
+
+/** @ngInject */
+function LabelSearchComponent(LabelManager) {
+  var select = this;
+  /** @type {Label[]} */
+  select.availableLabels = [];
+  select.suggestLabels = suggestLabels;
+  select.minimumInputLength = 2;
+  select.findDelay = 300;
+  select.label = null;
+
+  function findSuggestions(name) {
+    LabelManager
+      .find(name, 6, 0)
+      .then(function(results) {
+        setAvailableLabels(results.member);
+      })
+      .finally(function () {
+        select.refreshing = false;
+      });
+  }
+
+  var delayedFindSuggestions = _.debounce(findSuggestions, select.findDelay);
+
+  function suggestLabels(name) {
+    select.refreshing = true;
+    setAvailableLabels([]);
+    delayedFindSuggestions(name);
+  }
+
+  /** @param {Label[]} labels */
+  function setAvailableLabels(labels) {
+    select.availableLabels = labels;
+  }
+}
+LabelSearchComponent.$inject = ["LabelManager"];
 
 // Source: src/management/roles/unique-role.directive.js
 angular
@@ -17974,7 +18065,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Leden\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Labels\">\n" +
-    "            Labels\n" +
+    "            <udb-search-label role=\"editor.role\"\n" +
+    "                              label-added=\"editor.addLabel(label)\">\n" +
     "          </uib-tab>\n" +
     "        </uib-tabset>\n" +
     "      </div>\n" +
@@ -18060,6 +18152,31 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/search-label.html',
+    "<ui-select ng-model=\"select.label\"\n" +
+    "           reset-search-input=\"true\"\n" +
+    "           on-select=\"select.labelAdded({label: $item})\">\n" +
+    "    <ui-select-match placeholder=\"Voeg een label toe...\">{{$item.name}}</ui-select-match>\n" +
+    "    <ui-select-no-choice ng-show=\"$select.search.length >= select.minimumInputLength &&\">\n" +
+    "        <div class=\"udb-label-select-refreshing\" style=\"padding: 3px 20px\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Suggesties laden\n" +
+    "        </div>\n" +
+    "    </ui-select-no-choice>\n" +
+    "    <ui-select-choices repeat=\"label in select.availableLabels track by label.name\"\n" +
+    "                       ng-show=\"$select.search.length >= select.minimumInputLength &&\"\n" +
+    "                       ui-disable-choice=\"select.refreshing\"\n" +
+    "                       refresh=\"select.suggestLabels($select.search)\"\n" +
+    "                       refresh-delay=\"0\"\n" +
+    "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
+    "        <div>\n" +
+    "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
+    "            <span ng-if=\"!label.id\"> (nieuw label toevoegen)</span>\n" +
+    "        </div>\n" +
+    "    </ui-select-choices>\n" +
+    "</ui-select>"
   );
 
 
