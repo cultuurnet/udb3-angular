@@ -11546,8 +11546,10 @@ function RoleEditorController(
         editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
       .then(function() {
-        loadRolePermissions(roleId);
-        loadRoleUsers(roleId);
+        return loadRolePermissions(roleId);
+      })
+      .then(function () {
+        return loadRoleUsers(roleId);
       })
       .finally(function() {
         // save a copy of the original role before changes
@@ -11589,7 +11591,7 @@ function RoleEditorController(
     return $q.all(promisses).then(function() {
       // loaded all permissions & permissions linked to role
       editor.role.permissions = {};
-      angular.forEach(rolePermissions, function(permission) {
+      angular.forEach(rolePermissions, function(permission, key) {
         editor.role.permissions[permission.key] = true;
       });
       editor.permissions = permissions;
