@@ -138,7 +138,7 @@ describe('Controller: Roles Editor', function() {
     expect(editor.permissions).toEqual(allPermissions);
   });
 
-  xit('should load the role permissions', function() {
+  it('should load the role permissions', function() {
     getMockups();
 
     $stateParams = { "id": id };
@@ -147,7 +147,7 @@ describe('Controller: Roles Editor', function() {
 
     $scope.$digest();
     expect(RoleManager.getRolePermissions).toHaveBeenCalled();
-    expect(editor.role.permissions).toEqual(role.permissions);
+    expect(editor.role.permissions).toEqual(expectedRole.permissions);
   });
 
   it('should update the name of the role', function() {
