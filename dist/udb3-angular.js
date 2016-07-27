@@ -11561,21 +11561,21 @@ function RoleEditorController(
   }
 
   function getRolePermissions(roleId) {
-    return $q.resolve(
-      RoleManager
-        .getRolePermissions(roleId).then(function(permissions) {
+    return RoleManager
+        .getRolePermissions(roleId)
+        .then(function(permissions) {
           rolePermissions = permissions;
-        }, showProblem)
-    );
+          return rolePermissions;
+        }, showProblem);
   }
 
   function getAllRolePermissions() {
-    return $q.resolve(
-      PermissionManager
-        .getAll().then(function(retrievedPermissions) {
+    return PermissionManager
+        .getAll()
+        .then(function(retrievedPermissions) {
           permissions = retrievedPermissions;
-        }, showProblem)
-    );
+          return permissions;
+        }, showProblem);
   }
 
   function loadRolePermissions(roleId) {
