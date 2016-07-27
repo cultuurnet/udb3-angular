@@ -284,7 +284,7 @@ describe('Controller: Roles Editor', function() {
     expect($uibModal.open).toHaveBeenCalled();
   });
 
-  xit('should show a loading error', function() {
+  it('should show a loading error', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve(rolePermissions));
     RoleManager.getRoleUsers.and.returnValue($q.resolve(roleUsers));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));

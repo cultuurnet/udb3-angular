@@ -29,6 +29,7 @@ function RoleEditorController(
   editor.loadedRolePermissions = false;
   editor.loadedRoleUsers = false;
   editor.addingUser = false;
+  editor.role = {};
 
   var roleId = $stateParams.id;
   var permissions, rolePermissions;
