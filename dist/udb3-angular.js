@@ -11557,7 +11557,7 @@ function RoleEditorController(
       });
   }
   function showLoadingError () {
-    editor.loadingError = 'Role niet gevonden!';
+    editor.loadingError = 'Rol niet gevonden!';
   }
 
   function getRolePermissions(roleId) {
@@ -11589,7 +11589,7 @@ function RoleEditorController(
     return $q.all(promisses).then(function() {
       // loaded all permissions & permissions linked to role
       editor.role.permissions = {};
-      rolePermissions.forEach(function(permission) {
+      angular.forEach(rolePermissions, function(permission) {
         editor.role.permissions[permission.key] = true;
       });
       editor.permissions = permissions;
