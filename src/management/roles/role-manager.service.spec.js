@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: Role Manager', function () {
-  var udbApi, jobLogger, BaseJob, $q, service, $scope;
+  var udbApi, jobLogger, BaseJob, $q, service, DeleteRoleJob, $scope;
 
   var baseUrl = 'http://example.com/';
 
@@ -39,7 +39,8 @@ describe('Service: Role Manager', function () {
     });
   }));
 
-  beforeEach(inject(function (RoleManager, $rootScope, _$q_, _BaseJob_) {
+  beforeEach(inject(function (_DeleteRoleJob_, RoleManager, $rootScope, _$q_, _BaseJob_) {
+    DeleteRoleJob = _DeleteRoleJob_;
     service = RoleManager;
     $scope = $rootScope.$new();
     $q = _$q_;
@@ -255,7 +256,7 @@ describe('Service: Role Manager', function () {
     $scope.$apply();
   });
 
-  xit('should return a new DeleteRoleJob when a role is deleted', function (done) {
+  it('should return a new DeleteRoleJob when a role is deleted', function (done) {
     var role = {
       uuid: 'blub-id',
       name: 'Blub'

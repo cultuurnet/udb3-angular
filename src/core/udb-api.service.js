@@ -1022,6 +1022,17 @@ function UdbApi(
   };
 
   /**
+   * @param {uuid} roleId
+   *  The uuid of the role to be removed.
+   * @return {Promise}
+   */
+  this.removeRole = function (roleId) {
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
