@@ -15,7 +15,15 @@ describe('Service: Role Manager', function () {
     udbApi = jasmine.createSpyObj('udbApi', [
       'removeRole',
       'findRoles',
-      'getRoleById'
+      'getRoleById',
+      'getRolePermissions',
+      'getRoleUsers',
+      'createRole',
+      'addPermissionToRole',
+      'removePermissionFromRole',
+      'addUserToRole',
+      'updateRoleName',
+      'updateRoleConstraint'
     ]);
     $provide.provider('udbApi', {
       $get: function () {
@@ -75,7 +83,7 @@ describe('Service: Role Manager', function () {
     var role = {
       uuid: 'blub-id',
       name: 'Blub'
-    }
+    };
     udbApi.getRoleById.and.returnValue($q.resolve(role));
 
     function assertRole (role) {
@@ -90,11 +98,168 @@ describe('Service: Role Manager', function () {
     $scope.$apply();
   });
 
+  it('should get the permissions of a role', function (done) {
+    var expectedPermissions = [
+      {
+        "key": "MANAGE_USERS",
+        "name": "Gebruikers beheren"
+      }
+    ];
+    udbApi.getRolePermissions.and.returnValue($q.resolve(expectedPermissions));
+
+    function assertPermissions (permissions) {
+      expect(permissions).toEqual(expectedPermissions);
+      done();
+    }
+
+    service
+      .getRolePermissions('blub-id')
+      .then(assertPermissions);
+
+    $scope.$apply();
+  });
+
+  it('should get the users of a role', function (done) {
+    var expectedUsers = [
+      {
+        "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+        "email": "alberto@email.es",
+        "username": "El Pistolero"
+      }
+    ];
+    udbApi.getRoleUsers.and.returnValue($q.resolve(expectedUsers));
+
+    function assertUsers (users) {
+      expect(users).toEqual(expectedUsers);
+      done();
+    }
+
+    service
+      .getRoleUsers('blub-id')
+      .then(assertUsers);
+
+    $scope.$apply();
+  });
+
+  it('should create a new role', function (done) {
+    var expectedRoleId = {
+      roleId: "0823f57e-a6bd-450a-b4f5-8459b4b11043"
+    };
+
+    udbApi.createRole.and.returnValue($q.resolve(expectedRoleId));
+
+    function assertNewRole (roleId) {
+      expect(roleId).toEqual(expectedRoleId);
+      done();
+    }
+
+    service
+      .create('nieuwe rol')
+      .then(assertNewRole);
+
+    $scope.$apply();
+  });
+
+  it('should add a permission to a role', function(done) {
+    var expectedCommandId = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    udbApi.addPermissionToRole.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertPermission(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+      .addPermissionToRole('TEST_PERMISSION', '0823f57e-a6bd-450a-b4f5-8459b4b11043')
+      .then(assertPermission);
+
+      $scope.$apply();
+  });
+
+  it('should remove a permission from a role', function(done) {
+    var expectedCommandId = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    udbApi.removePermissionFromRole.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertPermission(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+      .removePermissionFromRole('AANBOD_INVOEREN', '0823f57e-a6bd-450a-b4f5-8459b4b11043')
+      .then(assertPermission);
+
+    $scope.$apply();
+  });
+
+  it('should add a user to a role', function(done) {
+    var expectedCommandId = {
+      commandId: "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    udbApi.addUserToRole.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertUser(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+      .addUserToRole('6f072ba8-c510-40ac-b387-51f582650e27', '0823f57e-a6bd-450a-b4f5-8459b4b11043')
+      .then(assertUser);
+
+    $scope.$apply();
+  });
+
+  it('should update the name of a role', function(done) {
+    var expectedCommandId = {
+      commandId: "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    udbApi.updateRoleName.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertRole(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+      .updateRoleName('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'andere rolnaam')
+      .then(assertRole);
+
+    $scope.$apply();
+  });
+
+  it('should update the constraint of a role', function(done) {
+    var expectedCommandId = {
+      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    udbApi.updateRoleConstraint.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertRole(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+      .updateRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'andere constraint')
+      .then(assertRole);
+
+    $scope.$apply();
+  });
+
   xit('should return a new DeleteRoleJob when a role is deleted', function (done) {
     var role = {
       uuid: 'blub-id',
       name: 'Blub'
-    }
+    };
     udbApi.removeRole.and.returnValue($q.resolve({commandId: 'blubblub'}));
 
     function assertJobCreation (job) {

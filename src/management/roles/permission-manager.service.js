@@ -18,7 +18,7 @@ angular
   .service('PermissionManager', PermissionManager);
 
 /* @ngInject */
-function PermissionManager(udbApi, jobLogger, BaseJob, $q) {
+function PermissionManager(udbApi) {
   var service = this;
 
   /**
