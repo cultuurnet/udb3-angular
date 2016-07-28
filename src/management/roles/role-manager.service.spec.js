@@ -179,15 +179,15 @@ describe('Service: Role Manager', function () {
       $scope.$apply();
   });
 
-  xit('should remove a permission from a role', function(done) {
+  it('should remove a permission from a role', function(done) {
     var expectedCommandId = {
-      id: '8cdc13e62efaecb9d8c21d59a29b9de4'
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
     };
 
     udbApi.removePermissionFromRole.and.returnValue($q.resolve(expectedCommandId));
 
-    function assertPermission(commandId) {
-      expect(commandId).toEqual(expectedCommandId);
+    function assertPermission(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
@@ -198,15 +198,15 @@ describe('Service: Role Manager', function () {
     $scope.$apply();
   });
 
-  xit('should add a user to a role', function(done) {
+  it('should add a user to a role', function(done) {
     var expectedCommandId = {
-      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
+      commandId: "8cdc13e62efaecb9d8c21d59a29b9de4"
     };
 
     udbApi.addUserToRole.and.returnValue($q.resolve(expectedCommandId));
 
-    function assertUser(commandId) {
-      expect(commandId).toEqual(expectedCommandId);
+    function assertUser(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
@@ -217,15 +217,15 @@ describe('Service: Role Manager', function () {
     $scope.$apply();
   });
 
-  xit('should update the name of a role', function(done) {
+  it('should update the name of a role', function(done) {
     var expectedCommandId = {
-      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
+      commandId: "8cdc13e62efaecb9d8c21d59a29b9de4"
     };
 
     udbApi.updateRoleName.and.returnValue($q.resolve(expectedCommandId));
 
-    function assertRole(commandId) {
-      expect(commandId).toEqual(expectedCommandId);
+    function assertRole(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
@@ -236,15 +236,15 @@ describe('Service: Role Manager', function () {
     $scope.$apply();
   });
 
-  xit('should update the constraint of a role', function(done) {
+  it('should update the constraint of a role', function(done) {
     var expectedCommandId = {
       "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
     };
 
     udbApi.updateRoleConstraint.and.returnValue($q.resolve(expectedCommandId));
 
-    function assertRole(commandId) {
-      expect(commandId).toEqual(expectedCommandId);
+    function assertRole(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
