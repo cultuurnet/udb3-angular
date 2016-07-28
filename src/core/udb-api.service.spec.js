@@ -2,7 +2,7 @@
 
 describe('Service: UDB3 Api', function () {
 
-  var $httpBackend, $scope, service, uitidAuth;
+  var $httpBackend, $scope, service, uitidAuth, offerCache;
   var baseUrl = 'http://foo.bar/';
 
   beforeEach(module('udb.core', function ($provide) {
@@ -21,10 +21,11 @@ describe('Service: UDB3 Api', function () {
     });
   }));
 
-  beforeEach(inject(function (_$httpBackend_, udbApi, $rootScope) {
+  beforeEach(inject(function (_$httpBackend_, udbApi, $rootScope, _$cacheFactory_) {
     $httpBackend = _$httpBackend_;
     service = udbApi;
     $scope = $rootScope.$new();
+    offerCache = _$cacheFactory_.get('offerCache');
   }));
 
   it('should only return the essential data when getting the currently logged in user', function (done) {
@@ -134,6 +135,22 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // removeItemFromCache
+  it('should not remove items from the offerCache if non-existent', function () {
+    var id = '12345';
+    spyOn(offerCache, 'remove');
+    service.removeItemFromCache(id);
+    expect(offerCache.remove).not.toHaveBeenCalled();
+  });
+  it('should remove items from the offerCache if existent', function () {
+    var id = '12345';
+    offerCache.put(id, true);
+
+    spyOn(offerCache, 'remove');
+    service.removeItemFromCache(id);
+    expect(offerCache.remove).toHaveBeenCalled();
+  });
+
   // createSavedSearch
   it('should post saved searches to the api', function (done) {
     var response = {};
@@ -184,7 +201,118 @@ describe('Service: UDB3 Api', function () {
       .respond(JSON.stringify(response));
     service
       .findEvents('searchquery')
+
       .then(done);
+    $httpBackend.flush();
+  });
+  it('should find events when provided no query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'search?start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findEvents('')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // getOffer
+  it('should retrieve offers from api when not in cache', function (done) {
+    var offerLocation = 'http://foobar/event/0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      '@id': offerLocation,
+      'name': 'Name',
+      'description': 'Blah Blah',
+      'creator': 'evenementen@stad.diksmuide.be',
+      'created': '2015-05-07T12:02:53+00:00',
+      'publisher': 'Invoerders Algemeen',
+      'calendarType': 'single'
+    };
+    $httpBackend
+      .expectGET(offerLocation)
+      .respond(JSON.stringify(response));
+    service
+      .getOffer(offerLocation)
+      .then(done);
+    $httpBackend.flush();
+  });
+  it('should retrieve offers from cache when in cache', function (done) {
+    var offerLocation = 'http://foobar/event/0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      '@id': offerLocation,
+      'name': 'Name',
+      'description': 'Blah Blah',
+      'creator': 'evenementen@stad.diksmuide.be',
+      'created': '2015-05-07T12:02:53+00:00',
+      'publisher': 'Invoerders Algemeen',
+      'calendarType': 'single'
+    };
+
+    // first time we expect a GET-call being made
+    $httpBackend
+      .expectGET(offerLocation)
+      .respond(JSON.stringify(response));
+    spyOn(offerCache, 'put').and.callThrough();
+
+    service
+      .getOffer(offerLocation)
+      .then(function(res){
+        // but the return get's stored in offerCache
+        expect(offerCache.put).toHaveBeenCalled();
+
+        // so a second time it should not make the api call
+        service
+          .getOffer(offerLocation)
+          .then(done);
+      });
+
+    $httpBackend.flush();
+  });
+
+  // getOrganizerById
+  it('should retrieve organizers from api when not in cache', function (done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      '@id': 'http://foobar/organizer/0823f57e-a6bd-450a-b4f5-8459b4b11043',
+      'name': 'STUK'
+    };
+    $httpBackend
+      .expectGET(baseUrl + 'organizer/' + organizerId)
+      .respond(JSON.stringify(response));
+    service
+      .getOrganizerById(organizerId)
+      .then(done);
+    $httpBackend.flush();
+  });
+  it('should retrieve organizers from cache when in cache', function (done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      '@id': 'http://foobar/organizer/0823f57e-a6bd-450a-b4f5-8459b4b11043',
+      'name': 'STUK'
+    };
+
+    // first time we expect a GET-call being made
+    $httpBackend
+      .expectGET(baseUrl + 'organizer/' + organizerId)
+      .respond(JSON.stringify(response));
+    // check the todo about own cache for organizers
+    spyOn(offerCache, 'put').and.callThrough();
+
+    // we're also testing getOrganizerByLDId here, since it's basically
+    // almost the same
+    service
+      .getOrganizerByLDId('http://foobar/organizer/' + organizerId)
+      .then(function(res){
+        // but the return get's stored in offerCache
+        expect(offerCache.put).toHaveBeenCalled();
+
+        // so a second time it should not make the api call
+        service
+          .getOrganizerById(organizerId)
+          .then(done);
+      });
+
     $httpBackend.flush();
   });
 
@@ -368,4 +496,101 @@ describe('Service: UDB3 Api', function () {
   });
 
 
+
+  it('should get a list of roles from the api', function (done) {
+    var expectedRoles = {
+      "itemsPerPage": 10,
+      "member": [
+        {
+          "uuid": "3",
+          "name": "test rol 3"
+        },
+        {
+          "uuid": "1",
+          "name": "test rol"
+        },
+        {
+          "uuid": "2",
+          "name": "test rol 2"
+        }
+      ],
+      "totalItems": "3"
+    };
+
+    function assertRoles (rolesList) {
+      expect(rolesList).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/?limit=30&start=0')
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .findRoles()
+      .then(assertRoles);
+
+    $httpBackend.flush();
+  });
+
+  it('should get a list of roles from the api', function (done) {
+    var expectedRoles = {
+      "itemsPerPage": 10,
+      "member": [
+        {
+          "uuid": "3",
+          "name": "test rol 3"
+        },
+        {
+          "uuid": "1",
+          "name": "test rol"
+        },
+        {
+          "uuid": "2",
+          "name": "test rol 2"
+        }
+      ],
+      "totalItems": "3"
+    };
+
+    function assertRoles (rolesList) {
+      expect(rolesList).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/?limit=12&query=joske&start=5')
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .findRoles('joske', 12, 5)
+      .then(assertRoles);
+
+    $httpBackend.flush();
+  });
+
+  it('should get the details of a role from the api', function (done) {
+    var expectedRole = {
+      'uuid': 1,
+      'name': 'test role',
+      'constraint': '',
+      'permissions': [],
+      'members': []
+    };
+
+    function assertRole (role) {
+      expect(role).toEqual(expectedRole);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1')
+      .respond(JSON.stringify(expectedRole));
+
+    service
+      .getRoleById(1)
+      .then(assertRole);
+
+    $httpBackend.flush();
+  });
 });

@@ -1,12 +1,12 @@
 'use strict';
 
-describe('Controller: Labels List', function() {
+describe('Controller: Roles List', function() {
   var $scope,
     $rootScope,
     $q,
     $controller,
     searchResultGenerator,
-    LabelManager;
+    RoleManager;
 
   var pagedSearchResult = {
     '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
@@ -24,7 +24,7 @@ describe('Controller: Labels List', function() {
 
 
   beforeEach(module('udb.management'));
-  beforeEach(module('udb.management.labels'));
+  beforeEach(module('udb.management.roles'));
 
   beforeEach(inject(function(_$rootScope_, _$q_, _$controller_, _SearchResultGenerator_) {
     $controller = _$controller_;
@@ -32,14 +32,15 @@ describe('Controller: Labels List', function() {
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
     searchResultGenerator = _SearchResultGenerator_;
-    LabelManager = jasmine.createSpyObj('LabelManager', ['find']);
+    RoleManager = jasmine.createSpyObj('RoleManager', ['find']);
   }));
 
-  function getLabelListController() {
+  function getRolesListController() {
     return $controller(
-      'LabelsListController', {
+      'RolesListController', {
         SearchResultGenerator: searchResultGenerator,
-        $scope: $scope
+        $scope: $scope,
+        RoleManager: RoleManager
       }
     );
   }
@@ -48,7 +49,7 @@ describe('Controller: Labels List', function() {
     var deferredSearchResult = $q.defer();
     var searchResult$ = Rx.Observable.fromPromise(deferredSearchResult.promise);
     spyOn(searchResultGenerator.prototype, 'getSearchResult$').and.returnValue(searchResult$);
-    var controller = getLabelListController();
+    var controller = getRolesListController();
 
     function assertLoadingEnded() {
       expect(controller.loading).toEqual(false);
@@ -70,19 +71,13 @@ describe('Controller: Labels List', function() {
     var sub = searchResult$.subscribe(assertLoadingEnded);
   });
 
-  it('should load the label list on $viewContentLoaded', function () {
-    var controller = $controller(
-      'LabelsListController', {
-        SearchResultGenerator: searchResultGenerator,
-        $scope: $scope,
-        LabelManager: LabelManager
-      }
-    );
+  it('should load the roles list on $viewContentLoaded', function () {
+    getRolesListController();
 
-    LabelManager.find.and.returnValue($q.resolve(pagedSearchResult));
+    RoleManager.find.and.returnValue($q.resolve(pagedSearchResult));
 
     $scope.$broadcast('$viewContentLoaded');
 
-    expect(LabelManager.find).toHaveBeenCalledWith('', 10, 0);
+    expect(RoleManager.find).toHaveBeenCalledWith('', 10, 0);
   });
 });
