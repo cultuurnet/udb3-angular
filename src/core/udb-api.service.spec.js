@@ -228,4 +228,80 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should get the users which are attached to a given role', function(done) {
+    var expectedUsers = [
+      {
+        "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+        "email": "alberto@email.es",
+        "username": "El Pistolero"
+      }
+    ];
+
+    function assertUsers(users) {
+      expect(users).toEqual(expectedUsers);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1/users/')
+      .respond(JSON.stringify(expectedUsers));
+
+    service
+      .getRoleUsers(1)
+      .then(assertUsers);
+
+    $httpBackend.flush();
+
+  });
+
+  it('should add a user to a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertUser(user) {
+      expect(user).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectPUT(baseUrl + 'roles/1/users/2')
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .addUserToRole(2,1)
+      .then(assertUser);
+
+    $httpBackend.flush();
+  });
+
+  it('should find a list of users for a given query', function(done) {
+    var expectedUsers = {
+      "itemsPerPage": 30,
+      "totalItems": 3562,
+      "member": [
+        {
+          "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+          "email": "alberto@email.es",
+          "username": "El Pistolero"
+        }
+      ]
+    };
+
+    function assertUsers(users) {
+      expect(users).toEqual(expectedUsers);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'users/?limit=30&query=test&start=0')
+      .respond(JSON.stringify(expectedUsers));
+
+    service
+      .findUsers('test',30,0)
+      .then(assertUsers);
+
+    $httpBackend.flush();
+  });
 });

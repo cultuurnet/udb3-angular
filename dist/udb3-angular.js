@@ -11402,7 +11402,7 @@ angular
   .service('PermissionManager', PermissionManager);
 
 /* @ngInject */
-function PermissionManager(udbApi, jobLogger, BaseJob, $q) {
+function PermissionManager(udbApi) {
   var service = this;
 
   /**
@@ -11414,7 +11414,7 @@ function PermissionManager(udbApi, jobLogger, BaseJob, $q) {
     return udbApi.getPermissions();
   };
 }
-PermissionManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+PermissionManager.$inject = ["udbApi"];
 
 // Source: src/management/roles/role-creator.controller.js
 /**
@@ -12116,7 +12116,7 @@ angular
   .service('UserManager', UserManager);
 
 /* @ngInject */
-function UserManager(udbApi, jobLogger, BaseJob, $q) {
+function UserManager(udbApi) {
   var service = this;
 
   /**
@@ -12130,7 +12130,7 @@ function UserManager(udbApi, jobLogger, BaseJob, $q) {
     return udbApi.findUsers(query, limit, start);
   };
 }
-UserManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+UserManager.$inject = ["udbApi"];
 
 // Source: src/media/create-image-job.factory.js
 /**
