@@ -32,4 +32,14 @@ function UserManager(udbApi) {
   service.find = function (query, limit, start) {
     return udbApi.findUsers(query, limit, start);
   };
+
+  /**
+   * @param email
+   *
+   * @returns {Promise}
+   *
+   */
+  service.findUserWithEmail = function(email) {
+    return udbApi.findUserWithEmail(email);
+  };
 }

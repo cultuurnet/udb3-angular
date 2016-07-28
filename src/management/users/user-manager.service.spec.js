@@ -13,7 +13,8 @@ describe('Service: User Manager', function () {
     $provide.constant('appConfig', appConfig);
 
     udbApi = jasmine.createSpyObj('udbApi', [
-      'findUsers'
+      'findUsers',
+      'findUserWithEmail'
     ]);
 
     $provide.provider('udbApi', {
@@ -52,6 +53,26 @@ describe('Service: User Manager', function () {
     service
       .find('test', 30, 0)
       .then(assertUsers);
+
+    $scope.$apply();
+  });
+
+  it('should return a user for a given e-mail address', function(done) {
+    var expectedUser = {
+      "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+      "email": "alberto@email.es",
+      "username": "El Pistolero"
+    };
+    udbApi.findUserWithEmail.and.returnValue($q.resolve(expectedUser));
+
+    function assertUser(user) {
+      expect(user).toEqual(expectedUser);
+      done();
+    }
+
+    service
+      .findUserWithEmail('alberto@email.es')
+      .then(assertUser);
 
     $scope.$apply();
   });
