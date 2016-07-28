@@ -465,4 +465,27 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should retrieve a user through an emailaddress', function(done) {
+    var expectedUser = {
+      "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+      "email": "alberto@email.es",
+      "username": "El Pistolero"
+    };
+
+    function assertUser(user) {
+      expect(user).toEqual(expectedUser);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'users/emails/alberto@email.es')
+      .respond(JSON.stringify(expectedUser));
+
+    service
+      .findUserWithEmail('alberto@email.es')
+      .then(assertUser);
+
+    $httpBackend.flush();
+  });
 });

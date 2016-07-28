@@ -1009,6 +1009,19 @@ function UdbApi(
   };
 
   /**
+   * @param {string} email
+   *  The e-mailaddress of a user.
+   * @return {Promise}
+   */
+  this.findUserWithEmail = function(email) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+
+    return $http
+      .get(appConfig.baseUrl + 'users/emails/' + email, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
