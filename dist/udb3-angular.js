@@ -3595,7 +3595,7 @@ function UdbApi(
 
     return $http
       .get(appConfig.baseUrl + 'users/', requestConfig)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
