@@ -34,6 +34,6 @@ describe('Factory: DeleteRoleJob', function () {
 
   it('should return a description', inject(function (DeleteRoleJob) {
     var roleJob = new DeleteRoleJob('theCommandId', role);
-    expect(roleJob.getDescription()).toEqual('Role verwijderen: "Blub".');
+    expect(roleJob.getDescription()).toEqual('Rol verwijderen: "Blub".');
   }));
 });

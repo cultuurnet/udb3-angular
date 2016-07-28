@@ -7,25 +7,37 @@
     <i class="fa fa-circle-o-notch fa-spin"></i>
 </div>
 
-<div ng-show="editor.label">
-    <label for="label-name-field">Naam</label>
-    <input id="label-name-field" type="text" ng-model="editor.label.name" ng-disabled="editor.renaming">
-    <button ng-disabled="editor.renaming" type="button" class="btn btn-primary" ng-click="editor.rename()">
-        Hernoemen <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.renaming"></i>
-    </button>
-    <br>
-    <label>
-        <input type="checkbox"
-               ng-change="editor.updateVisibility()"
-               ng-model="editor.label.isVisible"> Tonen op publicatiekanalen
-    </label>
-    <br>
-    <label>
-        <input type="checkbox"
-               ng-change="editor.updatePrivacy()"
-               ng-model="editor.label.isPrivate"> Voorbehouden aan specifieke gebruikersgroepen
-    </label>
-</div>
+<form name="editor.form" class="css-form" novalidate>
+    <div ng-show="editor.label">
+        <div class="row">
+            <div class="col-md-6">
+                <label for="label-name-field">Naam</label>
+                <input id="label-name-field" type="text" ng-model="editor.label.name" ng-disabled="editor.renaming">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>
+                    <input type="checkbox"
+                           ng-model="editor.label.isVisible"> Tonen op publicatiekanalen
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <label>
+                    <input type="checkbox"
+                           ng-model="editor.label.isPrivate"> Voorbehouden aan specifieke gebruikersgroepen
+                </label>
+            </div>
+        </div>
+    </div>
+<button ng-disabled="!editor.form.$valid || editor.saving"
+        type="button"
+        class="btn btn-primary"
+        ng-click="editor.save()">
+    Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+</button>
 
 <div ng-show="editor.loadingError">
     <span ng-bind="editor.loadingError"></span>
