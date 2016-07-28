@@ -11730,10 +11730,13 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
       .then(logRoleJob);
   };
 
+  /**
+   * @param {uuid} roleId
+   * @return {Promise}
+   */
   service.getRoleLabels = function(roleId) {
     return udbApi
-      .getRoleLabels(roleId)
-      .then(logRoleJob);
+      .getRoleLabels(roleId);
   };
 
   /**

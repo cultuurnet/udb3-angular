@@ -15,7 +15,8 @@ describe('Service: Role Manager', function () {
     udbApi = jasmine.createSpyObj('udbApi', [
       'removeRole',
       'findRoles',
-      'getRoleById'
+      'getRoleById',
+      'getRoleLabels'
     ]);
     $provide.provider('udbApi', {
       $get: function () {
@@ -108,5 +109,29 @@ describe('Service: Role Manager', function () {
       .then(assertJobCreation);
 
     $scope.$apply();
-  })
+  });
+
+  it('should fetch the role labels', function (done) {
+    var labels = [
+      {
+        "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+        "name": "Bloso",
+        "visibility": "visible",
+        "privacy": "public",
+        "parentUuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c"
+      }
+    ];
+    udbApi.getRoleLabels.and.returnValue($q.resolve(labels));
+
+    function assertLabels (labels) {
+      expect(labels).toEqual(labels);
+      done();
+    }
+
+    service
+      .getRoleLabels('blub-id')
+      .then(assertLabels);
+
+    $scope.$apply();
+  });
 });
