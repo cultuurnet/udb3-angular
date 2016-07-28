@@ -16,7 +16,8 @@ describe('Service: Role Manager', function () {
       'removeRole',
       'findRoles',
       'getRoleById',
-      'getRoleLabels'
+      'getRoleLabels',
+      'addLabelToRole'
     ]);
     $provide.provider('udbApi', {
       $get: function () {
@@ -131,6 +132,24 @@ describe('Service: Role Manager', function () {
     service
       .getRoleLabels('blub-id')
       .then(assertLabels);
+
+    $scope.$apply();
+  });
+
+  it('should add a label to a role', function (done) {
+    var command = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+    udbApi.addLabelToRole.and.returnValue($q.resolve(command));
+
+    function assertJob (job) {
+      expect(job.id).toEqual(command.commandId);
+      done();
+    }
+
+    service
+      .addLabelToRole('blub-id')
+      .then(assertJob);
 
     $scope.$apply();
   });
