@@ -3541,6 +3541,17 @@ function UdbApi(
 
   /**
    * @param {string} roleId
+   *  roleId for the role to retrieve labels for
+   * @return {Promise.Array<Permission>}
+   */
+  this.getRoleLabels = function (roleId) {
+    return $http
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/labels/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} roleId
    *  roleId for the role
    * @param {string} labelId
    *  The id of the label to be added
@@ -3548,7 +3559,7 @@ function UdbApi(
    */
   this.addLabelToRole = function (roleId, labelId) {
     return $http
-      .put(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId)
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, {}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -11716,6 +11727,12 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   service.addLabelToRole = function(roleId, labelId) {
     return udbApi
       .addLabelToRole(roleId, labelId)
+      .then(logRoleJob);
+  };
+
+  service.getRoleLabels = function(roleId) {
+    return udbApi
+      .getRoleLabels(roleId)
       .then(logRoleJob);
   };
 

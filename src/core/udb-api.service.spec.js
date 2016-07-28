@@ -228,4 +228,31 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should get the labels of a role', function (done) {
+    var expectedLabels = [
+      {
+        "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+        "name": "Bloso",
+        "visibility": "visible",
+        "privacy": "public",
+        "parentUuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c"
+      }
+    ];
+
+    function assertLabels (labels) {
+      expect(labels).toEqual(expectedLabels);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1/labels/')
+      .respond(JSON.stringify(expectedLabels));
+
+    service
+      .getRoleLabels(1)
+      .then(assertLabels);
+
+    $httpBackend.flush();
+  });
 });
