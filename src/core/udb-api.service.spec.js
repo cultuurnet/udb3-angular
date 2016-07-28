@@ -255,4 +255,25 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should add a label to a role', function (done) {
+    var command = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertCommand (result) {
+      expect(result).toEqual(command);
+      done();
+    }
+
+    $httpBackend
+      .expectPUT(baseUrl + 'roles/1/labels/2')
+      .respond(JSON.stringify(command));
+
+    service
+      .addLabelToRole(1, 2)
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
 });
