@@ -50,17 +50,23 @@
       </div>
     </div>
 
+    <p>
+      <a type="button" class="btn btn-link" ng-click="qe.addGroup()">
+        <i class="fa fa-plus-circle"></i> Groep toevoegen
+      </a>
+    </p>
+
     <div class="modal-footer">
-      <button type="button" class="pull-left btn btn-default" ng-click="qe.addGroup()">
-        Groep toevoegen
-      </button>
-      <div class="pull-right">
-        <a type="button" class="btn btn-default" ng-click="qe.stopEditing()">
-          Annuleren
-        </a>
-        <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()">
-          Zoeken
-        </button>
+      <div class="row">
+
+        <div class="pull-right">
+          <a type="button" class="btn btn-default" ng-click="qe.stopEditing()">
+            Annuleren
+          </a>
+          <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()">
+            Zoeken
+          </button>
+        </div>
       </div>
     </div>
   </div>
