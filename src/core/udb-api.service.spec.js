@@ -229,6 +229,125 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should create a role', function(done) {
+    var expectedRoleId = {
+      "roleId": "0823f57e-a6bd-450a-b4f5-8459b4b11043"
+    };
+
+    function assertRole(role) {
+      expect(role).toEqual(expectedRoleId);
+      done();
+    }
+
+    $httpBackend
+      .expectPOST(baseUrl + 'roles/')
+      .respond(JSON.stringify(expectedRoleId));
+
+    service
+      .createRole('nieuw rol')
+      .then(assertRole);
+
+    $httpBackend.flush();
+  });
+
+  it('should update the name of a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    var updateData = {
+      'name': 'bazinga!'
+    };
+
+    function assertRole(role) {
+      expect(role).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectPATCH(baseUrl + 'roles/1', updateData)
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .updateRoleName(1, 'bazinga!')
+      .then(assertRole);
+
+    $httpBackend.flush();
+  });
+
+  it('should update the constraint of a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    var updateData = {
+      'constraint': 'bazinga!'
+    };
+
+    function assertRole(role) {
+      expect(role).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectPATCH(baseUrl + 'roles/1', updateData)
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .updateRoleConstraint(1, 'bazinga!')
+      .then(assertRole);
+
+    $httpBackend.flush();
+  });
+
+  it('should get all the permissions', function(done) {
+    var expectedPermissions = [
+      {
+        "key": "MANAGE_USERS",
+        "name": "Gebruikers beheren"
+      }
+    ];
+
+    function assertPermissions(permissions) {
+      expect(permissions).toEqual(expectedPermissions);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'permissions/')
+      .respond(JSON.stringify(expectedPermissions));
+
+    service
+      .getPermissions()
+      .then(assertPermissions);
+
+    $httpBackend.flush();
+  });
+
+  it('should get the permissions for a given role', function(done) {
+    var expectedPermissions = [
+      {
+        "key": "MANAGE_USERS",
+        "name": "Gebruikers beheren"
+      }
+    ];
+
+    function assertPermissions(permissions) {
+      expect(permissions).toEqual(expectedPermissions);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1/permissions/')
+      .respond(JSON.stringify(expectedPermissions));
+
+    service
+      .getRolePermissions(1)
+      .then(assertPermissions);
+
+    $httpBackend.flush();
+  });
+
   it('should get the users which are attached to a given role', function(done) {
     var expectedUsers = [
       {
@@ -253,6 +372,48 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
 
+  });
+
+  it('should add a permission to a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertPermission(permission) {
+      expect(permission).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectPUT(baseUrl + 'roles/1/permissions/AANBOD_INVOEREN')
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .addPermissionToRole('AANBOD_INVOEREN',1)
+      .then(assertPermission);
+
+    $httpBackend.flush();
+  });
+
+  it('should remove a permission from a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertPermission(permission) {
+      expect(permission).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/1/permissions/AANBOD_INVOEREN')
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .removePermissionFromRole('AANBOD_INVOEREN',1)
+      .then(assertPermission);
+
+    $httpBackend.flush();
   });
 
   it('should add a user to a given role', function(done) {
