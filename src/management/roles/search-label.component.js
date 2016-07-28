@@ -7,7 +7,6 @@ angular
     controller: LabelSearchComponent,
     controllerAs: 'select',
     bindings: {
-      offer: '<',
       labelAdded: '&',
       labelRemoved: '&'
     }
@@ -34,12 +33,10 @@ function LabelSearchComponent(LabelManager) {
       });
   }
 
-  var delayedFindSuggestions = _.debounce(findSuggestions, select.findDelay);
-
   function suggestLabels(name) {
     select.refreshing = true;
     setAvailableLabels([]);
-    delayedFindSuggestions(name);
+    findSuggestions(name);
   }
 
   /** @param {Label[]} labels */
