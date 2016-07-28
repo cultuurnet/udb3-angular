@@ -76,7 +76,7 @@ describe('Service: Role Manager', function () {
     var role = {
       uuid: 'blub-id',
       name: 'Blub'
-    }
+    };
     udbApi.getRoleById.and.returnValue($q.resolve(role));
 
     function assertRole (role) {
@@ -95,7 +95,7 @@ describe('Service: Role Manager', function () {
     var role = {
       uuid: 'blub-id',
       name: 'Blub'
-    }
+    };
     udbApi.removeRole.and.returnValue($q.resolve({commandId: 'blubblub'}));
 
     function assertJobCreation (job) {

@@ -44,7 +44,7 @@ function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
   };
 
   DeleteRoleJob.prototype.getDescription = function() {
-    return 'Role verwijderen: "' +  this.role.name + '".';
+    return 'Rol verwijderen: "' +  this.role.name + '".';
   };
 
   return (DeleteRoleJob);
