@@ -34,7 +34,7 @@ function UserManager(udbApi) {
   };
 
   /**
-   * @param email
+   * @param {string} email
    *
    * @returns {Promise}
    *

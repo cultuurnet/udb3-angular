@@ -147,11 +147,9 @@ function RoleEditorController(
 
   function addUser() {
     editor.addingUser = true;
-    var query = editor.email;
-    var limit = 1;
-    var start = 0;
+    var email = editor.email;
 
-    UserManager.find(query, limit, start)
+    UserManager.findUserWithEmail(email)
       .then(function(user) {
         var uuid = user.uuid;
         angular.forEach(editor.role.users, function(roleUser) {

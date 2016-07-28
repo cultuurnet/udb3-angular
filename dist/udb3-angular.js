@@ -3599,6 +3599,19 @@ function UdbApi(
   };
 
   /**
+   * @param {string} email
+   *  The e-mailaddress of a user.
+   * @return {Promise}
+   */
+  this.findUserWithEmail = function(email) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+
+    return $http
+      .get(appConfig.baseUrl + 'users/emails/' + email, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -11653,11 +11666,9 @@ function RoleEditorController(
 
   function addUser() {
     editor.addingUser = true;
-    var query = editor.email;
-    var limit = 1;
-    var start = 0;
+    var email = editor.email;
 
-    UserManager.find(query, limit, start)
+    UserManager.findUserWithEmail(email)
       .then(function(user) {
         var uuid = user.uuid;
         angular.forEach(editor.role.users, function(roleUser) {
@@ -12128,6 +12139,16 @@ function UserManager(udbApi) {
    */
   service.find = function (query, limit, start) {
     return udbApi.findUsers(query, limit, start);
+  };
+
+  /**
+   * @param {string} email
+   *
+   * @returns {Promise}
+   *
+   */
+  service.findUserWithEmail = function(email) {
+    return udbApi.findUserWithEmail(email);
   };
 }
 UserManager.$inject = ["udbApi"];
