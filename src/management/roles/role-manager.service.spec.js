@@ -160,15 +160,15 @@ describe('Service: Role Manager', function () {
     $scope.$apply();
   });
 
-  xit('should add a permission to a role', function(done) {
+  it('should add a permission to a role', function(done) {
     var expectedCommandId = {
-      id: '8cdc13e62efaecb9d8c21d59a29b9de4'
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
     };
 
     udbApi.addPermissionToRole.and.returnValue($q.resolve(expectedCommandId));
 
-    function assertPermission(commandId) {
-      expect(commandId).toEqual(expectedCommandId);
+    function assertPermission(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
