@@ -408,6 +408,7 @@ function UdbApi(
    *   Value to save
    */
   this.updateProperty = function(offerLocation, property, value) {
+    // TODO: having both in path and updateData is duplicate
     var updateData = {};
     updateData[property] = value;
     var path = offerPropertyPaths[property] ? offerPropertyPaths[property] : property;
