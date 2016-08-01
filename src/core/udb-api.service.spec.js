@@ -795,6 +795,116 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // createOrganizer
+  it('should create an organizer', function(done){
+    var organizer = {
+      name: 'STUK'
+    };
+    var response = {
+      organizerId: 'f8597ef0-9364-4ab5-a3cc-1e344e599fc7',
+      url: 'http://culudb-silex.dev:8080/organizer/f8597ef0-9364-4ab5-a3cc-1e344e599fc7'
+    };
+
+    $httpBackend
+      .expectPOST(baseUrl + 'organizer', organizer)
+      .respond(JSON.stringify(response));
+    service
+      .createOrganizer(organizer)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // updateMajorInfo
+  it('should update major info', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var info = {
+      name: { nl: 'Test place' },
+      type: { id: '0.14.0.0.0', label: 'Monument', domain: 'eventtype' },
+      location: {
+        address: {
+          addressCountry: 'BE',
+          addressLocality: 'Leuven',
+          postalCode: '3000',
+          streetAddress: 'Teststraat 5'
+        }
+      },
+      calendarType: 'permanent',
+      openingHours: [
+        {
+          dayOfWeek: 'tuesday',
+          opens: '00:30',
+          closes: '12:00',
+          label: 'Dinsdag'
+        }
+      ]
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectPOST(offerLocation + '/major-info', info)
+      .respond(JSON.stringify(response));
+    service
+      .updateMajorInfo(offerLocation, info)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // deleteTypicalAgeRange
+  it('should delete a typical age range', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectDELETE(offerLocation + '/typical-age-range')
+      .respond(JSON.stringify(response));
+    service
+      .deleteTypicalAgeRange(offerLocation)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // deleteOfferOrganizer
+  it('should delete an organizer for an offer', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var organizerId = 'd8597ef0-9364-2ab5-a3cc-1e344e599fc1';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectDELETE(offerLocation + '/organizer/' + organizerId)
+      .respond(JSON.stringify(response));
+    service
+      .deleteOfferOrganizer(offerLocation, organizerId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // deleteVariation
+  it('should delete an organizer for an offer', function(done){
+    var variationId = '38597ef0-9364-0ab5-a3cc-2e344e599fc1';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'variations/' + variationId)
+      .respond(JSON.stringify(response));
+    service
+      .deleteVariation(variationId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
   it('should get a list of roles from the api', function (done) {
     var expectedRoles = {
       "itemsPerPage": 10,

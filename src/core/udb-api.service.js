@@ -447,6 +447,11 @@ function UdbApi(
     );
   };
 
+  /**
+   * @param {EventFormData} offer
+   *
+   * @return {Promise.<URL>}
+   */
   this.deleteOffer = function (offer) {
     return $http['delete'](
       offer['@id'],
@@ -527,6 +532,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
+    // TODO: swagger docs describes different path:
+    // /api/1.0/organizer
     return $http.post(
       appConfig.baseApiUrl + 'organizer',
       organizer,
