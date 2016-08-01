@@ -11,7 +11,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal) {
   var rlc = this;
 
   rlc.query = '';
@@ -45,6 +45,35 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
     rlc.loading = false;
   }
 
+  function updateSearchResultViewer() {
+    rlc.loading = true;
+    RoleManager.find(rlc.query, itemsPerPage, rlc.page)
+      .then(function(results) {
+        rlc.searchResult = results;
+        rlc.loading = false;
+      });
+  }
+  rlc.updateSearchResultViewer = updateSearchResultViewer;
+
+  function updateSearchResultViewerOnJobFeedback(job) {
+    job.task.promise.then(updateSearchResultViewer);
+  }
+  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
+
+  function openDeleteConfirmModal(role) {
+    var modalInstance = $uibModal.open({
+        templateUrl: 'templates/role-delete-confirm-modal.html',
+        controller: 'RoleDeleteConfirmModalCtrl',
+        resolve: {
+          item: function () {
+            return role;
+          }
+        }
+      });
+    modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
+  }
+  rlc.openDeleteConfirmModal = openDeleteConfirmModal;
+
   rlc.loading = false;
   rlc.query = '';
   rlc.page = 0;
@@ -68,9 +97,6 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager) {
     .subscribe();
 
   $scope.$on('$viewContentLoaded', function() {
-    RoleManager.find('', itemsPerPage, 0)
-      .then(function(results) {
-        rlc.searchResult = results;
-      });
+    rlc.updateSearchResultViewer();
   });
 }

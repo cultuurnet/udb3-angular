@@ -931,6 +931,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} roleId
+   *  roleId for the role to retrieve users for
+   * @return {Promise.Array<User>}
+   */
+  this.getRoleUsers = function (roleId) {
+    var requestConfig = defaultApiConfig;
+    return $http
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/users/', requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} permissionKey
    *  The key for the permission
    * @param {string} roleId
@@ -957,6 +969,66 @@ function UdbApi(
 
     return $http
       .delete(appConfig.baseUrl + 'roles/' + roleId + '/permissions/' + permissionKey, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  this.addUserToRole = function (userId, roleId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} query
+   *  Matches case-insensitive and any part of a label.
+   * @param {Number} [limit]
+   *  The limit of results per page.
+   * @param {Number} [start]
+   * @return {Promise.<PagedCollection>}
+   */
+  this.findUsers = function (query, limit, start) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    requestConfig.params = {
+      query: query,
+      limit: limit ? limit : 30,
+      start: start ? start : 0
+    };
+
+    return $http
+      .get(appConfig.baseUrl + 'users/', requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} email
+   *  The e-mailaddress of a user.
+   * @return {Promise}
+   */
+  this.findUserWithEmail = function(email) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+
+    return $http
+      .get(appConfig.baseUrl + 'users/emails/' + email, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {uuid} roleId
+   *  The uuid of the role to be removed.
+   * @return {Promise}
+   */
+  this.removeRole = function (roleId) {
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 

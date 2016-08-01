@@ -6,7 +6,8 @@ describe('Controller: Roles List', function() {
     $q,
     $controller,
     searchResultGenerator,
-    RoleManager;
+    RoleManager,
+    $uibModal;
 
   var pagedSearchResult = {
     '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
@@ -33,6 +34,7 @@ describe('Controller: Roles List', function() {
     $scope = $rootScope.$new();
     searchResultGenerator = _SearchResultGenerator_;
     RoleManager = jasmine.createSpyObj('RoleManager', ['find']);
+    $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
   }));
 
   function getRolesListController() {
@@ -40,7 +42,8 @@ describe('Controller: Roles List', function() {
       'RolesListController', {
         SearchResultGenerator: searchResultGenerator,
         $scope: $scope,
-        RoleManager: RoleManager
+        RoleManager: RoleManager,
+        $uibModal: $uibModal
       }
     );
   }
@@ -72,12 +75,29 @@ describe('Controller: Roles List', function() {
   });
 
   it('should load the roles list on $viewContentLoaded', function () {
-    getRolesListController();
+    var rlc = getRolesListController();
 
     RoleManager.find.and.returnValue($q.resolve(pagedSearchResult));
 
     $scope.$broadcast('$viewContentLoaded');
+    $scope.$digest();
 
     expect(RoleManager.find).toHaveBeenCalledWith('', 10, 0);
+    expect(rlc.searchResult).toEqual(pagedSearchResult);
+  });
+
+  it('should call update search result viewer after delete modal close', function () {
+    var rlc = getRolesListController();
+
+    RoleManager.find.and.returnValue($q.resolve(pagedSearchResult));
+    var job = { task: { promise: $q.resolve() }};
+    $uibModal.open.and.returnValue({ result: $q.resolve(job) });
+    spyOn(rlc, 'updateSearchResultViewerOnJobFeedback').and.callThrough();
+
+    rlc.openDeleteConfirmModal({id: 'blub', name: 'blub'});
+    $scope.$digest();
+
+    expect(RoleManager.find).toHaveBeenCalledWith('', 10, 0);
+    expect(rlc.searchResult).toEqual(pagedSearchResult);
   });
 });
