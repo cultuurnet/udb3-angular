@@ -45,7 +45,7 @@
                                     Bewerken <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <li><a ui-sref="split.manageRoles.edit({id: role.uuid})" ui-sref-opts="{reload:true}">Bewerken</a></li>
-                                    <!--<li><a href="#">Verwijderen</a></li>-->
+                                    <li><a href ng-click="rlc.openDeleteConfirmModal(role)">Verwijderen</a></li>
                                 </ul>
                             </div>
                             </td>
