@@ -614,8 +614,168 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+  it('should update properties using delimiter-seperated instead of CamelCase', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var propertyName = 'typicalAgeRange';
+    var value = 'updated';
+    var expectedBody = {
+      'typicalAgeRange': value
+    };
 
+    $httpBackend
+      .expectPOST(offerLocation + '/typical-age-range', expectedBody)
+      .respond();
+    service
+      .updateProperty(offerLocation, propertyName, value)
+      .then(done);
 
+    $httpBackend.flush();
+  });
+
+  // labelOffer
+  it('should label an offer', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var label = 'Bio';
+    var expectedBody = {
+      'label': label
+    };
+
+    $httpBackend
+      .expectPOST(offerLocation + '/labels', expectedBody)
+      .respond();
+    service
+      .labelOffer(offerLocation, label)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // unlabelOffer
+  it('should unlabel an offer', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var label = 'Bio';
+
+    $httpBackend
+      .expectDELETE(offerLocation + '/labels/' + label)
+      .respond();
+    service
+      .unlabelOffer(offerLocation, label)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // deleteOffer
+  it('should delete an offer', function(done){
+    var offer = {
+      '@id': 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1'
+    };
+
+    $httpBackend
+      .expectDELETE(offer['@id'])
+      .respond();
+    service
+      .deleteOffer(offer)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // createOffer
+  it('should create an offer', function(done){
+    var type = 'place';
+    var offer = {
+      'name': {
+        nl: "Super Awesome Party Night"
+      },
+      'type': {
+        id: '0.50.4.0.0',
+        label: 'Concert',
+        domain: 'eventtype'
+      },
+      'theme': {
+        id: '1.2.1.0.0',
+        label: 'Architectuur',
+        domain: 'thema'
+      },
+      'location': {
+        id: '6f072ba8-c510-40ac-b387-51f582650e27',
+        name: 'Versuz',
+        address: {
+          addressCountry: 'BE',
+          addressLocality: 'Hasselt',
+          postalCode: '3500',
+          streetAddress: 'Gouverneur Verwilghensingel 70'
+        }
+      },
+      'calendarType': 'single',
+      'startDate': '2015-05-07T12:02:53+00:00'
+    };
+    var response = {
+      eventId: 'f8597ef0-9364-4ab5-a3cc-1e344e599fc1',
+      url: 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1'
+    };
+
+    $httpBackend
+      .expectPOST(baseUrl + type, offer)
+      .respond(JSON.stringify(response));
+    service
+      .createOffer(type, offer)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // createVariation
+  it('should create a variation for an offerLocation', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var activeUser;
+    var description = '<p>William Kentridge keert [...] wie zich door haar laat bekoren.</p>';
+    var purpose = 'homepage-tips';
+    var activeUser = {
+      id: '6f072ba8-c510-40ac-b387-51f582650e27'
+    };
+    var expectedBody = {
+      owner: activeUser.id,
+      purpose: purpose,
+      same_as: offerLocation,
+      description: description
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+    uitidAuth.getUser.and.returnValue(activeUser);
+
+    $httpBackend
+      .expectPOST(baseUrl + 'variations/', expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .createVariation(offerLocation, description, purpose)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // editDescription
+  it('should edit the description for a variation', function(done){
+    var variationId = 'f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var description = '<p>William Kentridge keert [...] wie zich door haar laat bekoren.</p>';
+    var expectedBody = {
+      description: description
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectPATCH(baseUrl + 'variations/' + variationId, expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .editDescription(variationId, description)
+      .then(done);
+
+    $httpBackend.flush();
+  });
 
 
   it('should get a list of roles from the api', function (done) {
