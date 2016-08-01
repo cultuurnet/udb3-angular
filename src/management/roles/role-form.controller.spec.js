@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Controller: Roles Editor', function() {
+describe('Controller: Roles Form', function() {
   var
     RoleManager,
     PermissionManager,
@@ -83,7 +83,8 @@ describe('Controller: Roles Editor', function() {
       'removePermissionFromRole',
       'addUserToRole',
       'updateRoleName',
-      'updateRoleConstraint'
+      'updateRoleConstraint',
+      'addLabelToRole'
     ]);
 
     PermissionManager = jasmine.createSpyObj('PermissionManager', ['getAll']);
@@ -93,7 +94,7 @@ describe('Controller: Roles Editor', function() {
 
   function getController() {
     return $controller(
-      'RoleEditorController', {
+      'RoleFormController', {
         RoleManager: RoleManager,
         PermissionManager: PermissionManager,
         UserManager: Usermanager,
@@ -296,6 +297,44 @@ describe('Controller: Roles Editor', function() {
     $scope.$digest();
 
     expect(editor.loadingError).toEqual('Rol niet gevonden!');
+  });
+
+  it('should add a label to a role', function() {
+    RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
+    RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.reject());
+    RoleManager.addLabelToRole.and.returnValue($q.resolve());
+
+    var label = {
+      id: 'label-uuid',
+      name: 'Mijn label'
+    };
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    editor.addLabel(label);
+    $scope.$digest();
+
+    expect(RoleManager.addLabelToRole).toHaveBeenCalledWith(id, label.id);
+  });
+
+  it('should load all permissions without a roleId', function() {
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+
+    $stateParams = {};
+
+    var editor = getController();
+    $scope.$digest();
+
+    expect(RoleManager.get).not.toHaveBeenCalled();
+    expect(RoleManager.getRolePermissions).not.toHaveBeenCalled();
+    expect(RoleManager.getRoleUsers).not.toHaveBeenCalled();
+    expect(PermissionManager.getAll).toHaveBeenCalled();
+    expect(editor.permissions).toEqual(allPermissions);
   });
 
 });

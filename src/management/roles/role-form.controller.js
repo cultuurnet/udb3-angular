@@ -2,16 +2,16 @@
 
 /**
  * @ngdoc function
- * @name udbApp.controller:RoleEditorController
+ * @name udbApp.controller:RoleFormController
  * @description
- * # RoleEditorController
+ * # RoleFormController
  */
 angular
   .module('udb.management.roles')
-  .controller('RoleEditorController', RoleEditorController);
+  .controller('RoleFormController', RoleFormController);
 
 /** @ngInject */
-function RoleEditorController(
+function RoleFormController(
   RoleManager,
   PermissionManager,
   UserManager,
@@ -22,6 +22,7 @@ function RoleEditorController(
   $q
 ) {
   var editor = this;
+
   editor.saving = false;
   editor.save = save;
   editor.addUser = addUser;
@@ -31,18 +32,30 @@ function RoleEditorController(
   editor.loadedRoleUsers = false;
   editor.addingUser = false;
   editor.role = {};
+  editor.permissions = [];
 
   var roleId = $stateParams.id;
-  var permissions, rolePermissions;
+
+  function init() {
+    getAllRolePermissions()
+      .then(function() {
+        return roleId ? loadRole(roleId) : $q.resolve();
+      })
+      .finally(function() {
+        // done loading role
+        editor.loadedRole = true;
+        editor.loadedRolePermissions = true;
+      });
+  }
 
   function loadRole(roleId) {
-    RoleManager
+    return RoleManager
       .get(roleId)
       .then(function(role) {
         editor.role = jsonLDLangFilter(role, 'nl');
       }, showLoadingError)
       .then(function() {
-        return loadRolePermissions(roleId);
+        return getRolePermissions(roleId);
       })
       .then(function () {
         return loadRoleUsers(roleId);
@@ -50,10 +63,9 @@ function RoleEditorController(
       .finally(function() {
         // save a copy of the original role before changes
         editor.originalRole = _.cloneDeep(editor.role);
-        // done loading role
-        editor.loadedRole = true;
       });
   }
+
   function showLoadingError () {
     editor.loadingError = 'Rol niet gevonden!';
   }
@@ -61,8 +73,14 @@ function RoleEditorController(
   function getRolePermissions(roleId) {
     return RoleManager
         .getRolePermissions(roleId)
-        .then(function(permissions) {
-          rolePermissions = permissions;
+        .then(function(rolePermissions) {
+
+          // loaded all permissions & permissions linked to role
+          editor.role.permissions = {};
+          angular.forEach(rolePermissions, function(permission, key) {
+            editor.role.permissions[permission.key] = true;
+          });
+
           return rolePermissions;
         }, showProblem);
   }
@@ -71,28 +89,9 @@ function RoleEditorController(
     return PermissionManager
         .getAll()
         .then(function(retrievedPermissions) {
-          permissions = retrievedPermissions;
-          return permissions;
+          editor.permissions = retrievedPermissions;
+          return retrievedPermissions;
         }, showProblem);
-  }
-
-  function loadRolePermissions(roleId) {
-    var promisses = [];
-    promisses.push(
-      getRolePermissions(roleId)
-    );
-    promisses.push(
-      getAllRolePermissions()
-    );
-    return $q.all(promisses).then(function() {
-      // loaded all permissions & permissions linked to role
-      editor.role.permissions = {};
-      angular.forEach(rolePermissions, function(permission, key) {
-        editor.role.permissions[permission.key] = true;
-      });
-      editor.permissions = permissions;
-      editor.loadedRolePermissions = true;
-    });
   }
 
   function loadRoleUsers(roleId) {
@@ -110,11 +109,10 @@ function RoleEditorController(
     );
   }
 
-  loadRole(roleId);
-
   function save() {
     editor.saving = true;
     var promisses = [];
+
     // go over the changes from the original role
     // name changed
     if (editor.originalRole.name !== editor.role.name) {
@@ -217,4 +215,6 @@ function RoleEditorController(
       }
     );
   }
+
+  init();
 }
