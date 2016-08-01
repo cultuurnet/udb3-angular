@@ -337,4 +337,25 @@ describe('Controller: Roles Form', function() {
     expect(editor.permissions).toEqual(allPermissions);
   });
 
+  it('should create a role when no roleId specified', function() {
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.create.and.returnValue($q.resolve({
+      roleId: 'uuid-test123'
+    }));
+
+    $stateParams = {};
+
+    var editor = getController();
+    $scope.$digest();
+
+    editor.role.name = 'Test123';
+    editor.createRole();
+
+    $scope.$digest();
+
+    expect(RoleManager.create).toHaveBeenCalledWith('Test123');
+    expect(editor.role['@id']).toEqual('uuid-test123');
+    expect(editor.originalRole['@id']).toEqual('uuid-test123');
+  });
+
 });

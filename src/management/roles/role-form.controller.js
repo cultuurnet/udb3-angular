@@ -24,15 +24,26 @@ function RoleFormController(
   var editor = this;
 
   editor.saving = false;
-  editor.save = save;
-  editor.addUser = addUser;
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
-  editor.addLabel = addLabel;
   editor.loadedRoleUsers = false;
   editor.addingUser = false;
-  editor.role = {};
+  editor.role = {
+    permissions: [],
+    users: [],
+    labels: []
+  };
   editor.permissions = [];
+  editor.originalRole = {
+    permissions: [],
+    users: [],
+    labels: []
+  };
+
+  editor.save = save;
+  editor.addUser = addUser;
+  editor.addLabel = addLabel;
+  editor.createRole = createRole;
 
   var roleId = $stateParams.id;
 
@@ -107,6 +118,23 @@ function RoleFormController(
           editor.loadedRoleUsers = true;
         })
     );
+  }
+
+  function roleCreated (response) {
+    roleId = response.roleId;
+    editor.role['@id'] = roleId;
+    editor.originalRole['@id'] = roleId;
+  }
+
+  function createRole() {
+    if (!editor.role.id && editor.role.name) {
+      RoleManager
+        .create(editor.role.name)
+        .then(roleCreated, showProblem)
+        .finally(function () {
+          editor.saving = false;
+        });
+    }
   }
 
   function save() {
