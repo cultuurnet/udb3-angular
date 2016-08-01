@@ -12060,18 +12060,6 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
 
     return $q.resolve(job);
   }
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function createNewRoleJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    job.roleId = commandInfo.roleId;
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
 RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob"];
 
