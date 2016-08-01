@@ -777,6 +777,23 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // findEventsAtPlace
+  xit('should find events at a place', function(done){
+    // TODO: not sure about this one
+    // cannot find any documentation for it in the swagger.json
+    var placeLocation = 'http://culudb-silex.dev/place/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var response = {};
+    var expectedResponse = {};
+
+    $httpBackend
+      .expectGET(placeLocation + '/events')
+      .respond(JSON.stringify(response));
+    service
+      .findEventsAtPlace(placeLocation)
+      .then(done);
+
+    $httpBackend.flush();
+  });
 
   it('should get a list of roles from the api', function (done) {
     var expectedRoles = {
