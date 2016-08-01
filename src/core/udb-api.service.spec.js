@@ -495,6 +495,127 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // labelOffers
+  it('should label multiple offers using the api', function(done){
+    var label = 'Bio';
+    var offers = [
+      {
+        '@id': 'http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043',
+        '@type': 'Event'
+      },
+      {
+        '@id': 'http://culudb-silex.dev:8080/event/1823f57e-e6bd-250a-a4f5-2459b4b11045',
+        '@type': 'Place'
+      }
+    ];
+    var expectedBody = {
+      'label': label,
+      'offers': offers
+    };
+    $httpBackend
+      .expectPOST(baseUrl + 'offers/labels', expectedBody)
+      .respond();
+    service
+      .labelOffers(offers, label)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // labelQuery
+  it('should label a query using the api', function(done){
+    var label = 'Bio';
+    var query = '6e169e4a-32c8-4fca-a1ce-5beb2b2ac2cc';
+    var expectedBody = {
+      'label': label,
+      'query': query
+    };
+    $httpBackend
+      .expectPOST(baseUrl + 'query/labels', expectedBody)
+      .respond();
+    service
+      .labelQuery(query, label)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // exportEvents
+  it('should exports events based on a selection from the api', function(done){
+    var query = 'title:bio';
+    var customizations = {
+      brand: 'uitpas',
+      title: 'Organic in Mechelen'
+    };
+    var selection = [
+      'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1',
+      'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc2',
+      'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc3'
+    ];
+    var include = [
+      'author', 'name'
+    ];
+    var email = 'email@example.com';
+
+    var expectedBody = {
+      'query': query,
+      'selection': selection,
+      'order': {},
+      'include': include,
+      'perDay': true,
+      'customizations': customizations,
+      'email': email
+    };
+    $httpBackend
+      .expectPOST(baseUrl + 'events/export/pdf', expectedBody)
+      .respond();
+    service
+      .exportEvents(query, email, 'pdf', include, true, selection, customizations)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // translateProperty
+  it('should post a translation for a property to the api', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var language = 'nl';
+    var propertyName = 'title';
+    var translation = 'Een event titel';
+    var expectedBody = {
+      'title': translation
+    };
+
+    $httpBackend
+      .expectPOST(offerLocation + '/' + language + '/' + propertyName, expectedBody)
+      .respond();
+    service
+      .translateProperty(offerLocation, propertyName, language, translation)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // updateProperty
+  it('should update properties', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var propertyName = 'title';
+    var value = 'An updated title';
+    var expectedBody = {
+      'title': value
+    };
+
+    $httpBackend
+      .expectPOST(offerLocation + '/' + propertyName, expectedBody)
+      .respond();
+    service
+      .updateProperty(offerLocation, propertyName, value)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+
 
 
   it('should get a list of roles from the api', function (done) {
