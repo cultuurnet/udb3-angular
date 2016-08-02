@@ -11595,6 +11595,7 @@ function RoleFormController(
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
   editor.loadedRoleUsers = false;
+  editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
     permissions: [],
@@ -11615,6 +11616,12 @@ function RoleFormController(
 
   var roleId = $stateParams.id;
 
+  // @todo error falende role/users
+  // @todo error falende role/labels
+  // @todo delete label
+  // @todo delete user
+  // @todo opsplitsen form in kleine eventsourced stukken aka bye bye submit button
+
   function init() {
     getAllRolePermissions()
       .then(function() {
@@ -11624,6 +11631,8 @@ function RoleFormController(
         // done loading role
         editor.loadedRole = true;
         editor.loadedRolePermissions = true;
+        editor.loadedRoleUsers = true;
+        editor.loadedRoleLabels = true;
       });
   }
 
@@ -11638,6 +11647,9 @@ function RoleFormController(
       })
       .then(function () {
         return loadRoleUsers(roleId);
+      })
+      .then(function () {
+        return loadRoleLabels(roleId);
       })
       .finally(function() {
         // save a copy of the original role before changes
@@ -11684,6 +11696,24 @@ function RoleFormController(
         })
         .finally(function () {
           editor.loadedRoleUsers = true;
+        })
+    );
+  }
+
+  function loadRoleLabels(roleId) {
+    return $q.resolve(
+      RoleManager
+      .getRoleLabels(roleId)
+        .then(function (labels) {
+          editor.role.labels = labels;
+        }, function() {
+          editor.role.labels = [{
+      id: 'label-uuid',
+      name: 'Mijn label'
+    }];
+        })
+        .finally(function () {
+          editor.loadedRoleLabels = true;
         })
     );
   }
@@ -18337,6 +18367,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "              </div>\n" +
     "            </div>\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-12\">\n" +
+    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "                  type=\"button\"\n" +
+    "                  class=\"btn btn-primary\"\n" +
+    "                  ng-click=\"editor.save()\">\n" +
+    "                  Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "                </button>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Leden\">\n" +
     "              <div class=\"row\">\n" +
@@ -18361,41 +18401,67 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </div>\n" +
     "              <div class=\"row\">\n" +
     "                  <div class=\"col-md-12\" ng-show=\"editor.role.users.length && editor.loadedRoleUsers\">\n" +
-    "                      <table class=\"table\">\n" +
-    "                          <thead>\n" +
-    "                            <tr>\n" +
-    "                                <th>E-mailadres</th>\n" +
-    "                                <!--<th>Verwijderen</th>-->\n" +
-    "                            </tr>\n" +
-    "                          </thead>\n" +
-    "                          <tbody>\n" +
-    "                            <tr ng-repeat=\"user in editor.role.users\">\n" +
-    "                                <td ng-bind=\"::user.email\"></td>\n" +
-    "                                <!--<td><a href=\"#\">Lidmaatschap verwijderen</a></td>-->\n" +
-    "                            </tr>\n" +
-    "                          </tbody>\n" +
-    "                      </table>\n" +
+    "                    <table class=\"table\">\n" +
+    "                        <thead>\n" +
+    "                          <tr>\n" +
+    "                              <th>E-mailadres</th>\n" +
+    "                              <!--<th>Verwijderen</th>-->\n" +
+    "                          </tr>\n" +
+    "                        </thead>\n" +
+    "                        <tbody>\n" +
+    "                          <tr ng-repeat=\"user in editor.role.users\">\n" +
+    "                              <td ng-bind=\"::user.email\"></td>\n" +
+    "                              <!--<td><a href=\"#\">Lidmaatschap verwijderen</a></td>-->\n" +
+    "                          </tr>\n" +
+    "                        </tbody>\n" +
+    "                    </table>\n" +
     "                  </div>\n" +
     "                  <div class=\"col-md-12\" ng-hide=\"editor.role.users.length\">\n" +
     "                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.\n" +
     "                  </div>\n" +
     "              </div>\n" +
+    "              <div class=\"row\">\n" +
+    "                <div class=\"col-md-12\">\n" +
+    "                  <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "                    type=\"button\"\n" +
+    "                    class=\"btn btn-primary\"\n" +
+    "                    ng-click=\"editor.save()\">\n" +
+    "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "                  </button>\n" +
+    "                </div>\n" +
+    "              </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Labels\">\n" +
-    "            <udb-search-label role=\"editor.role\"\n" +
-    "                              label-added=\"editor.addLabel(label)\">\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-6 form-group\">\n" +
+    "                <label class=\"control-label\">Voeg een label toe</label>\n" +
+    "                <udb-search-label role=\"editor.role\"\n" +
+    "                                  label-added=\"editor.addLabel(label)\">\n" +
+    "              </div>\n" +
+    "            </div><!-- /row -->\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-12\" ng-show=\"editor.role.labels.length && editor.loadedRoleLabels\">\n" +
+    "                <table class=\"table\">\n" +
+    "                    <thead>\n" +
+    "                      <tr>\n" +
+    "                          <th>Toegevoegde labels</th>\n" +
+    "                          <!--<th>Verwijderen</th>-->\n" +
+    "                      </tr>\n" +
+    "                    </thead>\n" +
+    "                    <tbody>\n" +
+    "                      <tr ng-repeat=\"label in editor.role.labels\">\n" +
+    "                          <td ng-bind=\"::label.name\"></td>\n" +
+    "                          <!--<td><a href=\"#\">Lidmaatschap verwijderen</a></td>-->\n" +
+    "                      </tr>\n" +
+    "                    </tbody>\n" +
+    "                </table>\n" +
+    "              </div>\n" +
+    "              <div class=\"col-md-12\" ng-hide=\"editor.role.labels.length\">\n" +
+    "                  Er hangen nog geen labels aan deze rol.\n" +
+    "              </div>\n" +
+    "            </div><!-- /row -->\n" +
     "          </uib-tab>\n" +
     "        </uib-tabset>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\" ng-if=\"editor.role['@id']\">\n" +
-    "      <div class=\"col-md-12\">\n" +
-    "        <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "          type=\"button\"\n" +
-    "          class=\"btn btn-primary\"\n" +
-    "          ng-click=\"editor.save()\">\n" +
-    "          Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "        </button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "</form>\n"

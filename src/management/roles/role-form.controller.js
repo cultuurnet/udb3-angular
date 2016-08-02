@@ -27,6 +27,7 @@ function RoleFormController(
   editor.loadedRole = false;
   editor.loadedRolePermissions = false;
   editor.loadedRoleUsers = false;
+  editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
     permissions: [],
@@ -47,6 +48,12 @@ function RoleFormController(
 
   var roleId = $stateParams.id;
 
+  // @todo error falende role/users
+  // @todo error falende role/labels
+  // @todo delete label
+  // @todo delete user
+  // @todo opsplitsen form in kleine eventsourced stukken aka bye bye submit button
+
   function init() {
     getAllRolePermissions()
       .then(function() {
@@ -56,6 +63,8 @@ function RoleFormController(
         // done loading role
         editor.loadedRole = true;
         editor.loadedRolePermissions = true;
+        editor.loadedRoleUsers = true;
+        editor.loadedRoleLabels = true;
       });
   }
 
@@ -70,6 +79,9 @@ function RoleFormController(
       })
       .then(function () {
         return loadRoleUsers(roleId);
+      })
+      .then(function () {
+        return loadRoleLabels(roleId);
       })
       .finally(function() {
         // save a copy of the original role before changes
@@ -116,6 +128,24 @@ function RoleFormController(
         })
         .finally(function () {
           editor.loadedRoleUsers = true;
+        })
+    );
+  }
+
+  function loadRoleLabels(roleId) {
+    return $q.resolve(
+      RoleManager
+      .getRoleLabels(roleId)
+        .then(function (labels) {
+          editor.role.labels = labels;
+        }, function() {
+          editor.role.labels = [{
+      id: 'label-uuid',
+      name: 'Mijn label'
+    }];
+        })
+        .finally(function () {
+          editor.loadedRoleLabels = true;
         })
     );
   }

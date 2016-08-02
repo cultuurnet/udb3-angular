@@ -71,6 +71,16 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <div class="col-md-12">
+                <button ng-disabled="!editor.form.$valid || editor.saving"
+                  type="button"
+                  class="btn btn-primary"
+                  ng-click="editor.save()">
+                  Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+                </button>
+              </div>
+            </div>
           </uib-tab>
           <uib-tab heading="Leden">
               <div class="row">
@@ -95,41 +105,67 @@
               </div>
               <div class="row">
                   <div class="col-md-12" ng-show="editor.role.users.length && editor.loadedRoleUsers">
-                      <table class="table">
-                          <thead>
-                            <tr>
-                                <th>E-mailadres</th>
-                                <!--<th>Verwijderen</th>-->
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr ng-repeat="user in editor.role.users">
-                                <td ng-bind="::user.email"></td>
-                                <!--<td><a href="#">Lidmaatschap verwijderen</a></td>-->
-                            </tr>
-                          </tbody>
-                      </table>
+                    <table class="table">
+                        <thead>
+                          <tr>
+                              <th>E-mailadres</th>
+                              <!--<th>Verwijderen</th>-->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="user in editor.role.users">
+                              <td ng-bind="::user.email"></td>
+                              <!--<td><a href="#">Lidmaatschap verwijderen</a></td>-->
+                          </tr>
+                        </tbody>
+                    </table>
                   </div>
                   <div class="col-md-12" ng-hide="editor.role.users.length">
                       Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.
                   </div>
               </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <button ng-disabled="!editor.form.$valid || editor.saving"
+                    type="button"
+                    class="btn btn-primary"
+                    ng-click="editor.save()">
+                    Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+                  </button>
+                </div>
+              </div>
           </uib-tab>
           <uib-tab heading="Labels">
-            <udb-search-label role="editor.role"
-                              label-added="editor.addLabel(label)">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label class="control-label">Voeg een label toe</label>
+                <udb-search-label role="editor.role"
+                                  label-added="editor.addLabel(label)">
+              </div>
+            </div><!-- /row -->
+            <div class="row">
+              <div class="col-md-12" ng-show="editor.role.labels.length && editor.loadedRoleLabels">
+                <table class="table">
+                    <thead>
+                      <tr>
+                          <th>Toegevoegde labels</th>
+                          <!--<th>Verwijderen</th>-->
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="label in editor.role.labels">
+                          <td ng-bind="::label.name"></td>
+                          <!--<td><a href="#">Lidmaatschap verwijderen</a></td>-->
+                      </tr>
+                    </tbody>
+                </table>
+              </div>
+              <div class="col-md-12" ng-hide="editor.role.labels.length">
+                  Er hangen nog geen labels aan deze rol.
+              </div>
+            </div><!-- /row -->
           </uib-tab>
         </uib-tabset>
-      </div>
-    </div>
-    <div class="row" ng-if="editor.role['@id']">
-      <div class="col-md-12">
-        <button ng-disabled="!editor.form.$valid || editor.saving"
-          type="button"
-          class="btn btn-primary"
-          ng-click="editor.save()">
-          Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
-        </button>
       </div>
     </div>
 </form>
