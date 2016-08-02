@@ -743,7 +743,7 @@ function UdbApi(
       },
       file: imageFile
     };
-    var config = Object.assign(defaultApiConfig, uploadOptions);
+    var config = _.assign(defaultApiConfig, uploadOptions);
 
     return Upload.upload(config);
   };

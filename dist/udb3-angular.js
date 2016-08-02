@@ -2998,6 +2998,7 @@ function UdbApi(
    *   Value to save
    */
   this.updateProperty = function(offerLocation, property, value) {
+    // TODO: having both in path and updateData is duplicate
     var updateData = {};
     updateData[property] = value;
     var path = offerPropertyPaths[property] ? offerPropertyPaths[property] : property;
@@ -3036,6 +3037,11 @@ function UdbApi(
     );
   };
 
+  /**
+   * @param {EventFormData} offer
+   *
+   * @return {Promise.<URL>}
+   */
   this.deleteOffer = function (offer) {
     return $http['delete'](
       offer['@id'],
@@ -3116,6 +3122,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
+    // TODO: swagger docs describes different path:
+    // /api/1.0/organizer
     return $http.post(
       appConfig.baseApiUrl + 'organizer',
       organizer,
@@ -3325,7 +3333,7 @@ function UdbApi(
       },
       file: imageFile
     };
-    var config = Object.assign(defaultApiConfig, uploadOptions);
+    var config = _.assign(defaultApiConfig, uploadOptions);
 
     return Upload.upload(config);
   };

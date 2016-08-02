@@ -2,7 +2,7 @@
 
 describe('Service: UDB3 Api', function () {
 
-  var $httpBackend, $scope, service, uitidAuth, offerCache;
+  var $httpBackend, $scope, service, uitidAuth, offerCache, Upload;
   var baseUrl = 'http://foo.bar/';
 
   beforeEach(module('udb.core', function ($provide) {
@@ -14,6 +14,15 @@ describe('Service: UDB3 Api', function () {
     uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
 
     $provide.constant('appConfig', appConfig);
+
+    Upload = {
+      upload: jasmine.createSpy()
+    };
+
+    $provide.service('Upload', function() {
+      this.upload = Upload.upload;
+    });
+
     $provide.provider('uitidAuth', {
       $get: function () {
         return uitidAuth;
@@ -575,6 +584,34 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+  it('should exports events based on a selection without email or customizations', function(done){
+    var query = 'title:bio';
+    var selection = [
+      'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1',
+      'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc2',
+      'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc3'
+    ];
+    var include = [
+      'author', 'name'
+    ];
+
+    var expectedBody = {
+      'query': query,
+      'selection': selection,
+      'order': {},
+      'include': include,
+      'perDay': true,
+      'customizations': {}
+    };
+    $httpBackend
+      .expectPOST(baseUrl + 'events/export/pdf', expectedBody)
+      .respond();
+    service
+      .exportEvents(query, null, 'pdf', include, true, selection)
+      .then(done);
+
+    $httpBackend.flush();
+  });
 
   // translateProperty
   it('should post a translation for a property to the api', function(done){
@@ -904,6 +941,470 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  // addImage
+  it('should add images to an event or place', function(done){
+    var itemLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var imageId = '73695986-e4cf-4b29-8699-13d7cd77af8c';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+    var expectedBody = {
+      mediaObjectId: '73695986-e4cf-4b29-8699-13d7cd77af8c'
+    };
+
+    $httpBackend
+      .expectPOST(itemLocation + '/images', expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .addImage(itemLocation, imageId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // updateImage
+  it('should update description and copyrightHolder for an image', function(done){
+    var itemLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var imageId = '73695986-e4cf-4b29-8699-13d7cd77af8c';
+    var description = 'Image by Dirk';
+    var copyrightHolder = 'Dirk Dirkington';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+    var expectedBody = {
+      description: description,
+      copyrightHolder: copyrightHolder
+    };
+
+    $httpBackend
+      .expectPOST(itemLocation + '/images/' + imageId, expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .updateImage(itemLocation, imageId, description, copyrightHolder)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // removeImage
+  it('should remove an image from an event or place', function(done){
+    var itemLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var imageId = '73695986-e4cf-4b29-8699-13d7cd77af8c';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectDELETE(itemLocation + '/images/' + imageId)
+      .respond(JSON.stringify(response));
+    service
+      .removeImage(itemLocation, imageId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // setMainImage
+  it('should select an image as main image for an event or place', function(done){
+    var itemLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var imageId = '73695986-e4cf-4b29-8699-13d7cd77af8c';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+    var expectedBody = {
+      mediaObjectId: imageId
+    };
+
+    $httpBackend
+      .expectPOST(itemLocation + '/images/main', expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .selectMainImage(itemLocation, imageId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // getOfferVariations
+  it('should get variations for an offer based on parameters', function(done){
+    var itemLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var purpose = 'homepage-tips';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectGET(baseUrl + 'variations/?purpose=' + purpose)
+      .respond(JSON.stringify(response));
+    service
+      .getOfferVariations(null, purpose)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // getVariation
+  it('should get a variation', function(done){
+    var variationId = '04C47992-B01E-4EE4-96ED-289F22638324';
+    var response = {
+      '@id': 'http://culudb-silex.dev:8080/variations/04C47992-B01E-4EE4-96ED-289F22638324',
+      'name': {
+        'nl': 'Nederlands',
+        'de': 'Deutch',
+        'en': 'English',
+        'fr': 'Français'
+      },
+      'description': {
+        'nl': 'Alternatieve beschrijving in het Nederlands',
+        'de': 'Deutch',
+        'en': 'English',
+        'fr': 'Français'
+      },
+      'available': '2015-05-07T12:02:53+00:00',
+      'image': 'http://media.uitdatabank.be/20150416/153cfa0f-0d22-451e-bfd1-490b7c4ef109.jpg',
+      'labels': [
+        'tagged'
+      ],
+      'calendarSummary': 'Every first day of the month',
+      'location': {
+        'description': 'Or not to be.',
+        'name': 'This is the place to be',
+        'address': {
+          'addressCountry': 'BE',
+          'addressLocality': 'Leuven',
+          'postalCode': 3000,
+          'streetAddress': 'Sluisstraat 79'
+        },
+        'bookingInfo': {
+          'priceCurrency': 'EUR',
+          'description': 'No need to pay anything',
+          'name': 'Free',
+          'price': 0
+        },
+        'terms': [
+          {
+            'label': 'Cycling',
+            'domain': 'activities',
+            'id': '10.0.0.1'
+          }
+        ]
+      },
+      'organizer': {
+        'name': 'STUK',
+        'address': {
+          'addressCountry': 'BE',
+          'addressLocality': 'Leuven',
+          'postalCode': 3000,
+          'streetAddress': 'Sluisstraat 79'
+        },
+        'email': 'info@stuk.be',
+        'phone': [
+          '016 320 300'
+        ]
+      },
+      'bookingInfo': {
+        'priceCurrency': 'EUR',
+        'description': 'No need to pay anything',
+        'name': 'Free',
+        'price': 0
+      },
+      'terms': [
+        {
+          'label': 'Cycling',
+          'domain': 'activities',
+          'id': '10.0.0.1'
+        }
+      ],
+      'creator': 'evenementen@stad.diksmuide.be',
+      'created': '2015-05-07T12:02:53+00:00',
+      'modified': '2015-05-07T12:02:53+00:00',
+      'publisher': 'Invoerders Algemeen ',
+      'endDate': '2015-05-07T12:02:53+00:00',
+      'startDate': '2015-05-07T12:02:53+00:00',
+      'calendarType': 'permanent',
+      'typicalAgeRange': '+18',
+      'performer': [
+        {
+          'name': 'Sindicato Sonico'
+        }
+      ],
+      'sameAs': [
+        'http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043'
+      ]
+    };
+
+    $httpBackend
+      .expectGET(baseUrl + 'variations/' + variationId)
+      .respond(JSON.stringify(response));
+    service
+      .getVariation(variationId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // getDashboardItems
+  xit('should get dashboard items', function(done){
+    var response = [];
+
+    $httpBackend
+      .expectGET(baseUrl + 'dashboard/items')
+      .respond(JSON.stringify(response));
+    service
+      .getDashboardItems()
+      .then();
+
+    $httpBackend.flush();
+
+    $httpBackend
+      .expectGET(baseUrl + 'dashboard/items?page=23')
+      .respond(JSON.stringify(response));
+    service
+      .getDashboardItems(23)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // uploadMedia
+  it('should upload Media', function(){
+    var imageFile = 'imagefile';
+    var description = 'Image by Dirk';
+    var copyrightHolder = 'Dirk Dirkington';
+    var expectedConfig = {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer undefined'
+      },
+      params: {},
+      url: baseUrl + 'images',
+      fields: {
+        description: description,
+        copyrightHolder: copyrightHolder
+      },
+      file: imageFile
+    };
+
+    service
+      .uploadMedia(imageFile, description, copyrightHolder);
+
+    expect(Upload.upload).toHaveBeenCalledWith(expectedConfig);
+  });
+
+  // getMedia
+  it('should get media', function(done){
+    var imageId = '04C47992-B01E-4EE4-96ED-289F22638324';
+    var response = {
+      '@id': 'http://culudb-silex.dev:8080/images/04C47992-B01E-4EE4-96ED-289F22638324',
+      '@type': 'schema:MediaObject',
+      'contentUrl': 'http://culudb-silex.dev:8080/media/de305d54-75b4-431b-adb2-eb6b9e546014.png',
+      'thumbnailUrl': 'http://culudb-silex.dev:8080/media/de305d54-75b4-431b-adb2-eb6b9e546014.png',
+      'description': 'Allemaal Roze konijnen',
+      'copyrightHolder': 'Toto het roze konijn'
+    };
+
+    $httpBackend
+      .expectGET(baseUrl + 'media/' + imageId)
+      .respond();
+    service
+      .getMedia(imageId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // createLabel
+  it('should create a public visible label', function(done){
+    var name = 'Bloso';
+    var expectedBody = {
+      name: name,
+      visibility: 'visible',
+      privacy: 'public'
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectPOST(baseUrl + 'labels/', expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .createLabel(name, true, false)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+  it('should create a private visible label', function(done){
+    var name = 'Bloso';
+    var expectedBody = {
+      name: name,
+      visibility: 'visible',
+      privacy: 'private'
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectPOST(baseUrl + 'labels/', expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .createLabel(name, true, true)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+  it('should create a private invisible label', function(done){
+    var name = 'Bloso';
+    var expectedBody = {
+      name: name,
+      visibility: 'invisible',
+      privacy: 'private'
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectPOST(baseUrl + 'labels/', expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .createLabel(name, false, true)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+  it('should create a private invisible label with parent', function(done){
+    var name = 'Bloso';
+    var expectedBody = {
+      name: name,
+      visibility: 'invisible',
+      privacy: 'private',
+      parentId: '3aad5023-84e2-4ba9-b1ce-201cee64504c'
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectPOST(baseUrl + 'labels/', expectedBody)
+      .respond(JSON.stringify(response));
+    service
+      .createLabel(name, false, true, '3aad5023-84e2-4ba9-b1ce-201cee64504c')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // updateLabel
+  it('should update a label', function(done){
+    var labelId = '3aad5023-84e2-4ba9-b1ce-201cee64504c';
+    var command = {
+      command: 'MakePublic'
+    };
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectPATCH(baseUrl + 'labels/' + labelId, command)
+      .respond(JSON.stringify(response));
+    service
+      .updateLabel(labelId, 'MakePublic')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // deleteLabel
+  it('should delete a label', function(done){
+    var labelId = '3aad5023-84e2-4ba9-b1ce-201cee64504c';
+    var response = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'labels/' + labelId)
+      .respond(JSON.stringify(response));
+    service
+      .deleteLabel(labelId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // getLabelById
+  it('should get a label', function(done){
+    var labelId = '3aad5023-84e2-4ba9-b1ce-201cee64504c';
+    var response = {
+      uuid: '3aad5023-84e2-4ba9-b1ce-201cee64504c',
+      name: 'Bloso',
+      privacy: 'public',
+      visibility: 'visible'
+    };
+
+    $httpBackend
+      .expectGET(baseUrl + 'labels/' + labelId)
+      .respond(JSON.stringify(response));
+    service
+      .getLabelById(labelId)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // findLabels
+  it('should find labels based on a query', function(done){
+    var query = 'labelquery';
+    var response = {
+      itemsPerPage: 30,
+      totalItems: 3652,
+      member: [
+        {
+          uuid: '3aad5023-84e2-4ba9-b1ce-201cee64504c',
+          name: 'Bloso',
+          privacy: 'public',
+          visibility: 'visible'
+        }
+      ]
+    };
+
+    $httpBackend
+      .expectGET(baseUrl + 'labels/?query=labelquery&limit=30&start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findLabels(query)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+  it('should find labels based on a query with variable start and limit', function(done){
+    var query = 'labelquery';
+    var response = {
+      itemsPerPage: 1,
+      totalItems: 3652,
+      member: [
+        {
+          uuid: '3aad5023-84e2-4ba9-b1ce-201cee64504c',
+          name: 'Bloso',
+          privacy: 'public',
+          visibility: 'visible'
+        }
+      ]
+    };
+
+    $httpBackend
+      .expectGET(baseUrl + 'labels/?query=labelquery&limit=1&start=2')
+      .respond(JSON.stringify(response));
+    service
+      .findLabels(query, 1, 2)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
 
   it('should get a list of roles from the api', function (done) {
     var expectedRoles = {
