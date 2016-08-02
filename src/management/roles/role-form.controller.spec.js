@@ -53,7 +53,8 @@ describe('Controller: Roles Form', function() {
         "email": "alberto@email.es",
         "username": "El Pistolero"
       }
-    ]
+    ],
+    "labels": []
   };
 
   var allPermissions = [
@@ -84,7 +85,8 @@ describe('Controller: Roles Form', function() {
       'addUserToRole',
       'updateRoleName',
       'updateRoleConstraint',
-      'addLabelToRole'
+      'addLabelToRole',
+      'getRoleLabels'
     ]);
 
     PermissionManager = jasmine.createSpyObj('PermissionManager', ['getAll']);
@@ -110,6 +112,7 @@ describe('Controller: Roles Form', function() {
   function getMockups() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve(rolePermissions));
     RoleManager.getRoleUsers.and.returnValue($q.resolve(roleUsers));
+    RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
   }
@@ -356,6 +359,7 @@ describe('Controller: Roles Form', function() {
   it('should show a loading error', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve(rolePermissions));
     RoleManager.getRoleUsers.and.returnValue($q.resolve(roleUsers));
+    RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.reject());
 
@@ -370,6 +374,7 @@ describe('Controller: Roles Form', function() {
   it('should add a label to a role', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
+    RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.reject());
     RoleManager.addLabelToRole.and.returnValue($q.resolve());

@@ -11707,10 +11707,7 @@ function RoleFormController(
         .then(function (labels) {
           editor.role.labels = labels;
         }, function() {
-          editor.role.labels = [{
-      id: 'label-uuid',
-      name: 'Mijn label'
-    }];
+          editor.role.labels = [];
         })
         .finally(function () {
           editor.loadedRoleLabels = true;
