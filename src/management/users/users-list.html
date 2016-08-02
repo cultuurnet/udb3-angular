@@ -1,0 +1,70 @@
+<div class="page-header">
+    <h1>Gebruikers</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <udb-query-search-bar search-label="Zoeken op email"
+                              on-change="rlc.queryChanged(query)"
+        ></udb-query-search-bar>
+    </div>
+    <div class="col-md-1">
+        <i ng-show="rlc.loading" class="fa fa-circle-o-notch fa-spin"></i>
+    </div>
+    <div class="col-md-2">
+        <a class="btn btn-primary" ui-sref="split.manageUsers.create" ui-sref-opts="{reload:true}">
+            <i class="fa fa-plus-circle"></i> Gebruiker toevoegen
+        </a>
+    </div>
+</div>
+
+<div class="row" ng-cloak>
+    <div class="col-md-12">
+        <p ng-show="rlc.query.length < rlc.minQueryLength">
+            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.
+        </p>
+        <p ng-show="rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0">
+            Geen gebruikers gevonden.
+        </p>
+        <div class="query-search-result users-results"
+             ng-class="{'loading-search-result': rlc.loading}"
+             ng-show="rlc.searchResult.totalItems > 0">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>E-mail</th>
+                        <th>Nick</th>
+                        <th>Rol</th>
+                        <th>Opties</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="user in rlc.searchResult.member">
+                        <td ng-bind="::user.email"></td>
+                        <td ng-bind="::user.username"></td>
+                        <td ng-bind="::user.role"></td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Bewerken <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a ui-sref="split.manageUsers.edit({id: user.uuid})" ui-sref-opts="{reload:true}">Bewerken</a></li>
+                                    <li><a href ng-click="rlc.openDeleteConfirmModal(user)">Verwijderen</a></li>
+                                </ul>
+                            </div>
+                            </td>
+                    </tr>
+                    </tbody>
+                </table>
+            <div class="panel-footer">
+                <uib-pagination
+                        total-items="rlc.searchResult.totalItems"
+                        ng-model="rlc.page"
+                        items-per-page="rlc.searchResult.itemsPerPage"
+                        max-size="10"
+                        ng-change="rlc.pageChanged(rlc.page)">
+                </uib-pagination>
+            </div>
+        </div>
+    </div>
+</div>
