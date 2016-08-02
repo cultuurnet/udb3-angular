@@ -376,7 +376,7 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
-    RoleManager.get.and.returnValue($q.reject());
+    RoleManager.get.and.returnValue($q.resolve(role));
     RoleManager.addLabelToRole.and.returnValue($q.resolve());
 
     var label = {
@@ -429,6 +429,61 @@ describe('Controller: Roles Form', function() {
     expect(RoleManager.create).toHaveBeenCalledWith('Test123');
     expect(editor.role['@id']).toEqual('uuid-test123');
     expect(editor.originalRole['@id']).toEqual('uuid-test123');
+  });
+
+  it('should load the role labels', function() {
+    var labels = [{
+      id: 'label-uuid',
+      name: 'Mijn label'
+    }];
+    RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
+    RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
+    RoleManager.getRoleLabels.and.returnValue($q.resolve(labels));
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.resolve(role));
+
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    expect(RoleManager.getRoleLabels).toHaveBeenCalledWith(id);
+    expect(editor.role.labels).toEqual(labels);
+  });
+
+  it('should init the role labels list on load failure', function() {
+    RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
+    RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
+    RoleManager.getRoleLabels.and.returnValue($q.reject());
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.resolve(role));
+
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    expect(RoleManager.getRoleLabels).toHaveBeenCalledWith(id);
+    expect(editor.role.labels).toEqual([]);
+  });
+
+  it('should init the role users list on load failure', function() {
+    RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
+    RoleManager.getRoleUsers.and.returnValue($q.reject());
+    RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.resolve(role));
+
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    expect(RoleManager.getRoleUsers).toHaveBeenCalledWith(id);
+    expect(editor.role.users).toEqual([]);
   });
 
 });
