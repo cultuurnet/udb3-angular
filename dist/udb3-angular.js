@@ -15740,12 +15740,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/job-logo.directive.html',
     "<div id=\"indicator\" class=\"{{jl.getState()}}\">\n" +
-    "  <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"40\"\n" +
-    "       height=\"50\">\n" +
-    "    <g class=\"bell\" transform=\"matrix(-0.01442308,0,0,-0.01339286,25.381434,42.571382)\">\n" +
-    "      <path\n" +
-    "         d=\"m 912,-160 q 0,16 -16,16 -59,0 -101.5,42.5 Q 752,-59 752,0 752,16 736,16 720,16 720,0 720,-73 771.5,-124.5 823,-176 896,-176 q 16,0 16,16 z m 816,288 q 0,-52 -38,-90 -38,-38 -90,-38 h -448 q 0,-106 -75,-181 -75,-75 -181,-75 -106,0 -181,75 -75,75 -75,181 H 192 q -52,0 -90,38 -38,38 -38,90 50,42 91,88 41,46 85,119.5 44,73.5 74.5,158.5 30.5,85 50,206 19.5,121 19.5,260 0,152 117,282.5 117,130.5 307,158.5 -8,19 -8,39 0,40 28,68 28,28 68,28 40,0 68,-28 28,-28 28,-68 0,-20 -8,-39 190,-28 307,-158.5 117,-130.5 117,-282.5 0,-139 19.5,-260 19.5,-121 50,-206 30.5,-85 74.5,-158.5 44,-73.5 85,-119.5 41,-46 91,-88 z\" />\n" +
-    "    </g>\n" +
+    "  <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
     "    <g class=\"warning\">\n" +
     "      <circle cx=\"20\" cy=\"40\" r=\"10\" id=\"warning-background\"></circle>\n" +
     "      <circle fill=\"#ED1C24\" cx=\"20\" cy=\"40\" r=\"8\" id=\"warning-circle\"></circle>\n" +
