@@ -18285,14 +18285,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een role mag maximum 255 tekens bevatten.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een role moet uit minstens 3 tekens bestaan.</p>\n" +
     "\n" +
-    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "                  ng-if=\"!editor.role['@id']\"\n" +
-    "                  type=\"button\"\n" +
-    "                  class=\"btn btn-primary\"\n" +
-    "                  ng-click=\"editor.createRole()\">\n" +
-    "                  Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "                </button>\n" +
     "            </div>\n" +
+    "            <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "              ng-if=\"!editor.role['@id']\"\n" +
+    "              type=\"button\"\n" +
+    "              class=\"btn btn-primary\"\n" +
+    "              ng-click=\"editor.createRole()\">\n" +
+    "              Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\" ng-show=\"editor.role['@id']\">\n" +
@@ -18315,12 +18315,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <uib-tab heading=\"Permissies\">\n" +
     "            <div class=\"row\">\n" +
     "              <div class=\"col-md-11\">\n" +
-    "                <!--\n" +
-    "                <udb-query-search-bar search-label=\"Zoeken op naam\" ng-model=\"permissionSearch\"\n" +
-    "                  on-change=\"llc.queryChanged(query)\"\n" +
-    "                ></udb-query-search-bar>\n" +
-    "                -->\n" +
-    "                <input placeholder=\"Zoeken op naam\" ng-model=\"permissionSearch\">\n" +
+    "                  <input class=\"form-control permission-searchbar\" placeholder=\"Zoeken op naam\" ng-model=\"permissionSearch\">\n" +
     "              </div>\n" +
     "              <div class=\"col-md-1\">\n" +
     "                <i ng-show=\"!editor.loadedRolePermissions\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +

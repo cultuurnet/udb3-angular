@@ -25,14 +25,14 @@
                 <p class="help-block" ng-if="editor.form.name.$error.maxlength">Een role mag maximum 255 tekens bevatten.</p>
                 <p class="help-block" ng-if="editor.form.name.$error.minlength">Een role moet uit minstens 3 tekens bestaan.</p>
 
-                <button ng-disabled="!editor.form.$valid || editor.saving"
-                  ng-if="!editor.role['@id']"
-                  type="button"
-                  class="btn btn-primary"
-                  ng-click="editor.createRole()">
-                  Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
-                </button>
             </div>
+            <button ng-disabled="!editor.form.$valid || editor.saving"
+              ng-if="!editor.role['@id']"
+              type="button"
+              class="btn btn-primary"
+              ng-click="editor.createRole()">
+              Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+            </button>
         </div>
     </div>
     <div class="row" ng-show="editor.role['@id']">
@@ -55,12 +55,7 @@
           <uib-tab heading="Permissies">
             <div class="row">
               <div class="col-md-11">
-                <!--
-                <udb-query-search-bar search-label="Zoeken op naam" ng-model="permissionSearch"
-                  on-change="llc.queryChanged(query)"
-                ></udb-query-search-bar>
-                -->
-                <input placeholder="Zoeken op naam" ng-model="permissionSearch">
+                  <input class="form-control permission-searchbar" placeholder="Zoeken op naam" ng-model="permissionSearch">
               </div>
               <div class="col-md-1">
                 <i ng-show="!editor.loadedRolePermissions" class="fa fa-circle-o-notch fa-spin"></i>
