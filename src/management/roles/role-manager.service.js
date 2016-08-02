@@ -2,7 +2,7 @@
 
 /**
  * @typedef {Object} Role
- * @property {string}   id
+ * @property {string}   uuid
  * @property {string}   name
  */
 
@@ -24,7 +24,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q) {
+function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   var service = this;
 
   /**
@@ -54,6 +54,15 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.getRolePermissions = function(roleId) {
     return udbApi.getRolePermissions(roleId);
+  };
+
+  /**
+   * @param {string|uuid} roleId
+   *  The name or uuid of a role.
+   * @return {Promise.<Role>}
+   */
+  service.getRoleUsers = function(roleId) {
+    return udbApi.getRoleUsers(roleId);
   };
 
   /**
@@ -92,6 +101,19 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * @param {string} userId
+   *  The id of the user
+   * @param {string} roleId
+   *  roleId for the role
+   * @return {Promise}
+   */
+  service.addUserToRole = function(userId, roleId) {
+    return udbApi
+      .addUserToRole(userId, roleId)
+      .then(logRoleJob);
+  };
+
+  /**
    * @param {uuid} roleId
    * @param {string} name
    * @return {Promise}
@@ -111,6 +133,23 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q) {
     return udbApi
       .updateRoleConstraint(roleId, constraint)
       .then(logRoleJob);
+  };
+
+  /**
+   * @param {Role} role
+   * @return {Promise}
+   */
+  service.deleteRole = function (role) {
+    function logDeleteJob(jobData) {
+      var job = new DeleteRoleJob(jobData.commandId, role);
+      jobLogger.addJob(job);
+
+      return $q.resolve(job);
+    }
+
+    return udbApi
+      .removeRole(role.uuid)
+      .then(logDeleteJob);
   };
 
   /**
