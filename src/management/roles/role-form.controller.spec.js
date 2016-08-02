@@ -88,7 +88,7 @@ describe('Controller: Roles Form', function() {
     ]);
 
     PermissionManager = jasmine.createSpyObj('PermissionManager', ['getAll']);
-    Usermanager = jasmine.createSpyObj('UserManager', ['find']);
+    Usermanager = jasmine.createSpyObj('UserManager', ['find', 'findUserWithEmail']);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
   }));
 
@@ -256,6 +256,74 @@ describe('Controller: Roles Form', function() {
     editor.save();
 
     expect(RoleManager.addUserToRole).toHaveBeenCalled();
+  });
+
+  it('should add a user to a role list', function() {
+    getMockups();
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+
+    $scope.$digest();
+    editor.role.users = [];
+
+    Usermanager.findUserWithEmail.and.returnValue($q.resolve({
+      "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+      "email": "blub@example.com",
+      "username": "El Pistolero"
+    }));
+
+    editor.form = {
+        email: {
+        $setViewValue: function (blub) {},
+        $setPristine: function (blub) {},
+        $render: function () {}
+      }
+    };
+    editor.email = "blub@example.com";
+    editor.addUser();
+    $scope.$digest();
+
+    expect(Usermanager.findUserWithEmail).toHaveBeenCalledWith("blub@example.com");
+    expect(editor.role.users.length).toEqual(1);
+  });
+
+  it('should it should not add the same user twice', function() {
+    getMockups();
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+
+    $scope.$digest();
+    editor.role.users = [
+      {
+        "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+        "email": "blub@example.com",
+        "username": "El Pistolero"
+      }
+    ];
+
+    Usermanager.findUserWithEmail.and.returnValue($q.resolve({
+      "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+      "email": "blub@example.com",
+      "username": "El Pistolero"
+    }));
+
+    editor.form = {
+        email: {
+        $setViewValue: function (blub) {},
+        $setPristine: function (blub) {},
+        $render: function () {}
+      }
+    };
+    editor.email = "blub@example.com";
+    editor.addUser();
+    $scope.$digest();
+
+    expect(Usermanager.findUserWithEmail).toHaveBeenCalledWith("blub@example.com");
+    expect(editor.role.users.length).toEqual(1);
   });
 
   it('should throw an error when the user is already signed to the role', function() {

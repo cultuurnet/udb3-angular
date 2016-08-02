@@ -11763,17 +11763,23 @@ function RoleFormController(
     UserManager.findUserWithEmail(email)
       .then(function(user) {
         var uuid = user.uuid;
+        var userExists = false;
+
         angular.forEach(editor.role.users, function(roleUser) {
-          if (roleUser.uuid !== uuid) {
-            editor.role.users.push(user);
-            editor.form.email.$setViewValue('');
-            editor.form.email.$setPristine(true);
-            editor.form.email.$render();
-          }
-          else {
-            userAlreadyAdded();
+          if (roleUser.uuid === uuid) {
+            userExists = true;
           }
         });
+
+        if (!userExists) {
+          editor.role.users.push(user);
+          editor.form.email.$setViewValue('');
+          editor.form.email.$setPristine(true);
+          editor.form.email.$render();
+        }
+        else {
+          userAlreadyAdded();
+        }
       }, showProblem);
 
     editor.addingUser = false;
@@ -18311,10 +18317,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "    <div class=\"row\" ng-show=\"editor.role['@id']\">\n" +
     "      <div class=\"col-md-12\">\n" +
-    "        <uib-tabset>\n" +
+    "        <uib-tabset class=\"role-form-tabset\">\n" +
     "          <uib-tab heading=\"Permissies\">\n" +
     "            <div class=\"row\">\n" +
-    "              <div class=\"col-md-11\">\n" +
+    "              <div class=\"col-md-6\">\n" +
     "                  <input class=\"form-control permission-searchbar\" placeholder=\"Zoeken op naam\" ng-model=\"permissionSearch\">\n" +
     "              </div>\n" +
     "              <div class=\"col-md-1\">\n" +
@@ -18334,13 +18340,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Leden\">\n" +
     "              <div class=\"row\">\n" +
-    "                  <div class=\"col-md-11\">\n" +
-    "                          <label>Voeg lid toe</label>\n" +
+    "                  <div class=\"col-md-11 form-inline\">\n" +
+    "                          <label class=\"control-label\">Voeg lid toe</label>\n" +
     "                          <input placeholder=\"E-mailadres\"\n" +
     "                                 id=\"email\"\n" +
     "                                 type=\"email\"\n" +
     "                                 name=\"email\"\n" +
-    "                                 data-ng-model=\"editor.email\" />\n" +
+    "                                 data-ng-model=\"editor.email\"\n" +
+    "                                 class=\"form-control\" />\n" +
     "                          <button type=\"submit\"\n" +
     "                                  class=\"btn btn-primary\"\n" +
     "                                  ng-click=\"editor.addUser()\"\n" +

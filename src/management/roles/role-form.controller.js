@@ -195,17 +195,23 @@ function RoleFormController(
     UserManager.findUserWithEmail(email)
       .then(function(user) {
         var uuid = user.uuid;
+        var userExists = false;
+
         angular.forEach(editor.role.users, function(roleUser) {
-          if (roleUser.uuid !== uuid) {
-            editor.role.users.push(user);
-            editor.form.email.$setViewValue('');
-            editor.form.email.$setPristine(true);
-            editor.form.email.$render();
-          }
-          else {
-            userAlreadyAdded();
+          if (roleUser.uuid === uuid) {
+            userExists = true;
           }
         });
+
+        if (!userExists) {
+          editor.role.users.push(user);
+          editor.form.email.$setViewValue('');
+          editor.form.email.$setPristine(true);
+          editor.form.email.$render();
+        }
+        else {
+          userAlreadyAdded();
+        }
       }, showProblem);
 
     editor.addingUser = false;

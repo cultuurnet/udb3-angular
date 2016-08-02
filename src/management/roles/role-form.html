@@ -51,10 +51,10 @@
     </div>
     <div class="row" ng-show="editor.role['@id']">
       <div class="col-md-12">
-        <uib-tabset>
+        <uib-tabset class="role-form-tabset">
           <uib-tab heading="Permissies">
             <div class="row">
-              <div class="col-md-11">
+              <div class="col-md-6">
                   <input class="form-control permission-searchbar" placeholder="Zoeken op naam" ng-model="permissionSearch">
               </div>
               <div class="col-md-1">
@@ -74,13 +74,14 @@
           </uib-tab>
           <uib-tab heading="Leden">
               <div class="row">
-                  <div class="col-md-11">
-                          <label>Voeg lid toe</label>
+                  <div class="col-md-11 form-inline">
+                          <label class="control-label">Voeg lid toe</label>
                           <input placeholder="E-mailadres"
                                  id="email"
                                  type="email"
                                  name="email"
-                                 data-ng-model="editor.email" />
+                                 data-ng-model="editor.email"
+                                 class="form-control" />
                           <button type="submit"
                                   class="btn btn-primary"
                                   ng-click="editor.addUser()"
