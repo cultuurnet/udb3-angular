@@ -18902,10 +18902,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/query-editor-modal.html',
     "<div class=\"modal-header\">\n" +
-    "  <h2>Geavanceerde zoekopdracht bouwer</h2>\n" +
+    "  <h2 class=\"modal-title\">Geavanceerde zoekopdracht bouwer</h2>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
+    "\n" +
+    "  <div class=\"udb-query-editor-header\">\n" +
+    "    <!-- udb-query-editor-header -->\n" +
+    "  </div>\n" +
+    "\n" +
     "  <div class=\"udb-query-editor\">\n" +
     "    <div class=\"panel panel-default\" ng-repeat=\"rootGroup in qe.groupedQueryTree.nodes\">\n" +
     "\n" +
@@ -18948,17 +18953,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
+    "    <p>\n" +
+    "      <a type=\"button\" class=\"btn btn-link\" ng-click=\"qe.addGroup()\">\n" +
+    "        <i class=\"fa fa-plus-circle\"></i> Groep toevoegen\n" +
+    "      </a>\n" +
+    "    </p>\n" +
+    "\n" +
     "    <div class=\"modal-footer\">\n" +
-    "      <button type=\"button\" class=\"pull-left btn btn-default\" ng-click=\"qe.addGroup()\">\n" +
-    "        Groep toevoegen\n" +
-    "      </button>\n" +
-    "      <div class=\"pull-right\">\n" +
-    "        <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
-    "          Annuleren\n" +
-    "        </a>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\">\n" +
-    "          Zoeken\n" +
-    "        </button>\n" +
+    "      <div class=\"row\">\n" +
+    "\n" +
+    "        <div class=\"pull-right\">\n" +
+    "          <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
+    "            Annuleren\n" +
+    "          </a>\n" +
+    "          <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\">\n" +
+    "            Zoeken\n" +
+    "          </button>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
