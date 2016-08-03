@@ -86,7 +86,8 @@ describe('Controller: Roles Form', function() {
       'updateRoleName',
       'updateRoleConstraint',
       'addLabelToRole',
-      'getRoleLabels'
+      'getRoleLabels',
+      'removeLabelFromRole'
     ]);
 
     PermissionManager = jasmine.createSpyObj('PermissionManager', ['getAll']);
@@ -508,6 +509,44 @@ describe('Controller: Roles Form', function() {
     expect(editor.role.permissions).toEqual({});
     expect($uibModal.open).toHaveBeenCalled();
     expect(editor.errorMessage).toEqual('De permissies van deze rol konden niet geladen worden. Problem.');
+  });
+
+  it('should delete a label from the role', function() {
+    var labels = [{
+      id: 'uuid',
+      name: 'bloso',
+      privacy: 'public',
+      visibility: 'invisible'
+    },
+    {
+      id: 'uuid2',
+      name: 'blabla',
+      privacy: 'private',
+      visibility: 'invisible'
+    }];
+
+    RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
+    RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
+    RoleManager.getRoleLabels.and.returnValue($q.resolve(labels));
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.resolve(role));
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    RoleManager.removeLabelFromRole.and.returnValue($q.resolve({commandId:'blub'}));
+    editor.removeLabel(labels[0]);
+    $scope.$digest();
+
+    expect(RoleManager.removeLabelFromRole).toHaveBeenCalledWith(id, 'uuid');
+    expect(editor.role.labels).toEqual([{
+      id: 'uuid2',
+      name: 'blabla',
+      privacy: 'private',
+      visibility: 'invisible'
+    }]);
   });
 
 });

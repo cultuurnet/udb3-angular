@@ -11614,6 +11614,7 @@ function RoleFormController(
   editor.addUser = addUser;
   editor.addLabel = addLabel;
   editor.createRole = createRole;
+  editor.removeLabel = removeLabel;
 
   var roleId = $stateParams.id;
 
@@ -11780,6 +11781,20 @@ function RoleFormController(
       .addLabelToRole(roleId, label.id)
       .then(function () {
         editor.role.labels.push(label);
+      }, showProblem)
+      .finally(function() {
+        editor.saving = false;
+      });
+  }
+
+  function removeLabel(label) {
+    editor.saving = true;
+
+    RoleManager
+      .removeLabelFromRole(roleId, label.id)
+      .then(function () {
+        var pos = editor.role.labels.indexOf(label);
+        editor.role.labels.splice(pos, 1);
       }, showProblem)
       .finally(function() {
         editor.saving = false;
@@ -11995,6 +12010,10 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   service.getRoleLabels = function(roleId) {
     return udbApi
       .getRoleLabels(roleId);
+  };
+
+  service.removeLabelFromRole = function(roleId, labelId) {
+    return $q.resolve({commandId: 'blub'});
   };
 
   /**
@@ -18434,14 +18453,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <thead>\n" +
     "                      <tr>\n" +
     "                          <th>Toegevoegde labels</th>\n" +
-    "                          <!--<th>Verwijderen</th>-->\n" +
+    "                          <th>Verwijderen</th>\n" +
     "                          <th></th>\n" +
     "                      </tr>\n" +
     "                    </thead>\n" +
     "                    <tbody>\n" +
     "                      <tr ng-repeat=\"label in editor.role.labels\">\n" +
     "                          <td ng-bind=\"::label.name\"></td>\n" +
-    "                          <!--<td><a href>Lidmaatschap verwijderen</a></td>-->\n" +
+    "                          <td><a href ng-click=\"editor.removeLabel(label)\">Lidmaatschap verwijderen</a></td>\n" +
     "                          <td><span class=\"text-danger\" ng-if=\"label.privacy === 'public'\">Dit label is niet voorbehouden</span></td>\n" +
     "                      </tr>\n" +
     "                    </tbody>\n" +

@@ -46,6 +46,7 @@ function RoleFormController(
   editor.addUser = addUser;
   editor.addLabel = addLabel;
   editor.createRole = createRole;
+  editor.removeLabel = removeLabel;
 
   var roleId = $stateParams.id;
 
@@ -212,6 +213,20 @@ function RoleFormController(
       .addLabelToRole(roleId, label.id)
       .then(function () {
         editor.role.labels.push(label);
+      }, showProblem)
+      .finally(function() {
+        editor.saving = false;
+      });
+  }
+
+  function removeLabel(label) {
+    editor.saving = true;
+
+    RoleManager
+      .removeLabelFromRole(roleId, label.id)
+      .then(function () {
+        var pos = editor.role.labels.indexOf(label);
+        editor.role.labels.splice(pos, 1);
       }, showProblem)
       .finally(function() {
         editor.saving = false;

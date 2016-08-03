@@ -155,6 +155,10 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
       .getRoleLabels(roleId);
   };
 
+  service.removeLabelFromRole = function(roleId, labelId) {
+    return $q.resolve({commandId: 'blub'});
+  };
+
   /**
    * @param {Role} role
    * @return {Promise}
