@@ -25,7 +25,8 @@ describe('Service: Role Manager', function () {
       'removePermissionFromRole',
       'addUserToRole',
       'updateRoleName',
-      'updateRoleConstraint'
+      'updateRoleConstraint',
+      'removeLabelFromRole'
     ]);
     $provide.provider('udbApi', {
       $get: function () {
@@ -316,6 +317,25 @@ describe('Service: Role Manager', function () {
     service
       .addLabelToRole('blub-id')
       .then(assertJob);
+
+    $scope.$apply();
+  });
+
+  it('should remove a label from a role', function(done) {
+    var expectedCommandId = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    udbApi.removeLabelFromRole.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertCommand(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+      .removeLabelFromRole('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'label-id')
+      .then(assertCommand);
 
     $scope.$apply();
   });
