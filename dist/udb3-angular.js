@@ -18435,12 +18435,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                      <tr>\n" +
     "                          <th>Toegevoegde labels</th>\n" +
     "                          <!--<th>Verwijderen</th>-->\n" +
+    "                          <th></th>\n" +
     "                      </tr>\n" +
     "                    </thead>\n" +
     "                    <tbody>\n" +
     "                      <tr ng-repeat=\"label in editor.role.labels\">\n" +
     "                          <td ng-bind=\"::label.name\"></td>\n" +
-    "                          <!--<td><a href=\"#\">Lidmaatschap verwijderen</a></td>-->\n" +
+    "                          <!--<td><a href>Lidmaatschap verwijderen</a></td>-->\n" +
+    "                          <td><span class=\"text-danger\" ng-if=\"label.privacy === 'public'\">Dit label is niet voorbehouden</span></td>\n" +
     "                      </tr>\n" +
     "                    </tbody>\n" +
     "                </table>\n" +

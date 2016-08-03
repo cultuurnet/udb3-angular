@@ -150,12 +150,14 @@
                       <tr>
                           <th>Toegevoegde labels</th>
                           <!--<th>Verwijderen</th>-->
+                          <th></th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr ng-repeat="label in editor.role.labels">
                           <td ng-bind="::label.name"></td>
-                          <!--<td><a href="#">Lidmaatschap verwijderen</a></td>-->
+                          <!--<td><a href>Lidmaatschap verwijderen</a></td>-->
+                          <td><span class="text-danger" ng-if="label.privacy === 'public'">Dit label is niet voorbehouden</span></td>
                       </tr>
                     </tbody>
                 </table>
