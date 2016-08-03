@@ -360,7 +360,7 @@ describe('Controller: Roles Form', function() {
     RoleManager.addLabelToRole.and.returnValue($q.resolve());
 
     var label = {
-      id: 'label-uuid',
+      uuid: 'label-uuid',
       name: 'Mijn label'
     };
 
@@ -372,7 +372,7 @@ describe('Controller: Roles Form', function() {
     editor.addLabel(label);
     $scope.$digest();
 
-    expect(RoleManager.addLabelToRole).toHaveBeenCalledWith(id, label.id);
+    expect(RoleManager.addLabelToRole).toHaveBeenCalledWith(id, label.uuid);
   });
 
   it('should load all permissions without a roleId', function() {
