@@ -11777,7 +11777,7 @@ function RoleFormController(
     editor.saving = true;
 
     RoleManager
-      .addLabelToRole(roleId, label.uuid)
+      .addLabelToRole(roleId, label.id)
       .then(function () {
         editor.role.labels.push(label);
       }, showProblem)
