@@ -87,7 +87,8 @@ describe('Controller: Roles Form', function() {
       'updateRoleConstraint',
       'addLabelToRole',
       'getRoleLabels',
-      'removeLabelFromRole'
+      'removeLabelFromRole',
+      'removeUserFromRole'
     ]);
 
     PermissionManager = jasmine.createSpyObj('PermissionManager', ['getAll']);
@@ -546,6 +547,41 @@ describe('Controller: Roles Form', function() {
       name: 'blabla',
       privacy: 'private',
       visibility: 'invisible'
+    }]);
+  });
+
+  it('should delete a user from the role', function() {
+    var users = [{
+      "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
+      "email": "alberto@email.es",
+      "username": "El Pistolero"
+    },
+    {
+      "uuid": "7f072ba8-c510-40ac-b387-51f582650e27",
+      "email": "gertie@email.es",
+      "username": "Gertie"
+    }];
+
+    RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
+    RoleManager.getRoleUsers.and.returnValue($q.resolve(users));
+    RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.resolve(role));
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    RoleManager.removeUserFromRole.and.returnValue($q.resolve({commandId:'blub'}));
+    editor.removeUser(users[0]);
+    $scope.$digest();
+
+    expect(RoleManager.removeUserFromRole).toHaveBeenCalledWith(id, '6f072ba8-c510-40ac-b387-51f582650e27');
+    expect(editor.role.users).toEqual([{
+      "uuid": "7f072ba8-c510-40ac-b387-51f582650e27",
+      "email": "gertie@email.es",
+      "username": "Gertie"
     }]);
   });
 

@@ -47,11 +47,10 @@ function RoleFormController(
   editor.addLabel = addLabel;
   editor.createRole = createRole;
   editor.removeLabel = removeLabel;
+  editor.removeUser = removeUser;
 
   var roleId = $stateParams.id;
 
-  // @todo delete label
-  // @todo delete user
   // @todo opsplitsen form in kleine eventsourced stukken aka bye bye submit button
 
   function init() {
@@ -227,6 +226,20 @@ function RoleFormController(
       .then(function () {
         var pos = editor.role.labels.indexOf(label);
         editor.role.labels.splice(pos, 1);
+      }, showProblem)
+      .finally(function() {
+        editor.saving = false;
+      });
+  }
+
+  function removeUser(user) {
+    editor.saving = true;
+
+    RoleManager
+      .removeUserFromRole(roleId, user.uuid)
+      .then(function () {
+        var pos = editor.role.users.indexOf(user);
+        editor.role.users.splice(pos, 1);
       }, showProblem)
       .finally(function() {
         editor.saving = false;

@@ -109,13 +109,13 @@
                         <thead>
                           <tr>
                               <th>E-mailadres</th>
-                              <!--<th>Verwijderen</th>-->
+                              <th>Verwijderen</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr ng-repeat="user in editor.role.users">
                               <td ng-bind="::user.email"></td>
-                              <!--<td><a href="#">Lidmaatschap verwijderen</a></td>-->
+                              <td><a href ng-click="editor.removeUser(user)">Lidmaatschap verwijderen</a></td>
                           </tr>
                         </tbody>
                     </table>
