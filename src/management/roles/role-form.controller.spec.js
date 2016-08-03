@@ -234,50 +234,25 @@ describe('Controller: Roles Form', function() {
   });
 
   it('should add a user to a role', function() {
-    getMockups();
+    var user = [{
+      uuid: '6f072ba8-c510-40ac-b387-51f582650e27',
+      email: 'alberto@email.es',
+      username: 'El Pistolero'
+    }];
+
+    RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
+    RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
+    RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.resolve(role));
 
     $stateParams = { "id": id };
 
     var editor = getController();
-
-    var addUsers = [
-      {
-        "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
-        "email": "alberto@email.es",
-        "username": "El Pistolero"
-      },
-      {
-        "uuid": "123456",
-        "email": "alberto2@email.es",
-        "username": "El Pistolerosss"
-      }
-    ];
-
     $scope.$digest();
-    editor.role.users = addUsers;
 
+    Usermanager.findUserWithEmail.and.returnValue($q.resolve(user));
     RoleManager.addUserToRole.and.returnValue($q.resolve());
-
-    editor.save();
-
-    expect(RoleManager.addUserToRole).toHaveBeenCalled();
-  });
-
-  it('should add a user to a role list', function() {
-    getMockups();
-
-    $stateParams = { "id": id };
-
-    var editor = getController();
-
-    $scope.$digest();
-    editor.role.users = [];
-
-    Usermanager.findUserWithEmail.and.returnValue($q.resolve({
-      "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
-      "email": "blub@example.com",
-      "username": "El Pistolero"
-    }));
 
     editor.form = {
         email: {
@@ -286,11 +261,12 @@ describe('Controller: Roles Form', function() {
         $render: function () {}
       }
     };
-    editor.email = "blub@example.com";
+    editor.email = 'alberto@email.es';
     editor.addUser();
     $scope.$digest();
 
-    expect(Usermanager.findUserWithEmail).toHaveBeenCalledWith("blub@example.com");
+    expect(RoleManager.addUserToRole).toHaveBeenCalledWith(user.uuid, id);
+    expect(Usermanager.findUserWithEmail).toHaveBeenCalledWith('alberto@email.es');
     expect(editor.role.users.length).toEqual(1);
   });
 
@@ -552,14 +528,14 @@ describe('Controller: Roles Form', function() {
 
   it('should delete a user from the role', function() {
     var users = [{
-      "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
-      "email": "alberto@email.es",
-      "username": "El Pistolero"
+      uuid: '6f072ba8-c510-40ac-b387-51f582650e27',
+      email: 'alberto@email.es',
+      username: 'El Pistolero'
     },
     {
-      "uuid": "7f072ba8-c510-40ac-b387-51f582650e27",
-      "email": "gertie@email.es",
-      "username": "Gertie"
+      uuid: '7f072ba8-c510-40ac-b387-51f582650e27',
+      email: 'gertie@email.es',
+      username: 'Gertie'
     }];
 
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));

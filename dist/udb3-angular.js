@@ -11787,12 +11787,6 @@ function RoleFormController(
         promisses.push(RoleManager.removePermissionFromRole(key, roleId));
       }
     });
-    Object.keys(editor.role.users).forEach(function(key) {
-      // user added
-      if (editor.role.users[key] && !editor.originalRole.users[key]) {
-        promisses.push(RoleManager.addUserToRole(editor.role.users[key].uuid, roleId));
-      }
-    });
 
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
@@ -11842,33 +11836,41 @@ function RoleFormController(
 
   function addUser() {
     editor.addingUser = true;
-    var email = editor.email;
+    var userAdded = false;
 
-    UserManager.findUserWithEmail(email)
+    UserManager
+      .findUserWithEmail(editor.email)
       .then(function(user) {
-        var uuid = user.uuid;
         var userExists = false;
+        userAdded = user;
 
         angular.forEach(editor.role.users, function(roleUser) {
-          if (roleUser.uuid === uuid) {
+          if (roleUser.uuid === user.uuid) {
             userExists = true;
           }
         });
 
-        if (!userExists) {
-          editor.role.users.push(user);
-          editor.form.email.$setViewValue('');
-          editor.form.email.$setPristine(true);
-          editor.form.email.$render();
-        }
-        else {
-          showProblem({
+        if (userExists) {
+          return $q.reject({
             title: 'De gebruiker hangt al aan deze rol.'
           });
+        } else {
+          return user;
         }
-      }, showProblem);
-
-    editor.addingUser = false;
+      })
+      .then(function(user) {
+        return RoleManager.addUserToRole(user.uuid, roleId);
+      })
+      .then(function() {
+        editor.role.users.push(userAdded);
+        editor.form.email.$setViewValue('');
+        editor.form.email.$setPristine(true);
+        editor.form.email.$render();
+      })
+      .catch(showProblem)
+      .finally(function() {
+        editor.addingUser = false;
+      });
   }
 
   /**
@@ -18484,16 +18486,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <div class=\"col-md-12\" ng-hide=\"editor.role.users.length\">\n" +
     "                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.\n" +
     "                  </div>\n" +
-    "              </div>\n" +
-    "              <div class=\"row\">\n" +
-    "                <div class=\"col-md-12\">\n" +
-    "                  <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "                    type=\"button\"\n" +
-    "                    class=\"btn btn-primary\"\n" +
-    "                    ng-click=\"editor.save()\">\n" +
-    "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "                  </button>\n" +
-    "                </div>\n" +
     "              </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Labels\">\n" +
