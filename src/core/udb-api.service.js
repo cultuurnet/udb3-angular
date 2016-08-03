@@ -833,7 +833,7 @@ function UdbApi(
   this.getRoleById = function (roleId) {
     return $http
       .get(appConfig.baseUrl + 'roles/' + roleId, defaultApiConfig)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**

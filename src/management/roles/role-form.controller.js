@@ -30,16 +30,17 @@ function RoleFormController(
   editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
-    permissions: [],
+    permissions: {},
     users: [],
     labels: []
   };
   editor.permissions = [];
   editor.originalRole = {
-    permissions: [],
+    permissions: {},
     users: [],
     labels: []
   };
+  editor.errorMessage = false;
 
   editor.save = save;
   editor.addUser = addUser;
@@ -48,8 +49,6 @@ function RoleFormController(
 
   var roleId = $stateParams.id;
 
-  // @todo error falende role/users
-  // @todo error falende role/labels
   // @todo delete label
   // @todo delete user
   // @todo opsplitsen form in kleine eventsourced stukken aka bye bye submit button
@@ -59,6 +58,7 @@ function RoleFormController(
       .then(function() {
         return roleId ? loadRole(roleId) : $q.resolve();
       })
+      .catch(showProblem) // stop loading when there's an error
       .finally(function() {
         // done loading role
         editor.loadedRole = true;
@@ -73,7 +73,15 @@ function RoleFormController(
       .get(roleId)
       .then(function(role) {
         editor.role = jsonLDLangFilter(role, 'nl');
-      }, showLoadingError)
+
+        editor.role.permissions = {};
+        editor.role.users = [];
+        editor.role.labels = [];
+      }, function(problem) {
+        problem.detail = problem.title;
+        problem.title = 'De rol kon niet gevonden worden.';
+        return $q.reject(problem);
+      })
       .then(function() {
         return getRolePermissions(roleId);
       })
@@ -89,62 +97,60 @@ function RoleFormController(
       });
   }
 
-  function showLoadingError () {
-    editor.loadingError = 'Rol niet gevonden!';
-  }
-
   function getRolePermissions(roleId) {
     return RoleManager
-        .getRolePermissions(roleId)
-        .then(function(rolePermissions) {
+      .getRolePermissions(roleId)
+      .then(function(rolePermissions) {
 
-          // loaded all permissions & permissions linked to role
-          editor.role.permissions = {};
-          angular.forEach(rolePermissions, function(permission, key) {
-            editor.role.permissions[permission.key] = true;
-          });
+        // loaded all permissions & permissions linked to role
+        editor.role.permissions = {};
+        angular.forEach(rolePermissions, function(permission, key) {
+          editor.role.permissions[permission.key] = true;
+        });
 
-          return rolePermissions;
-        }, showProblem);
+        return rolePermissions;
+      }, function(problem) {
+        problem.detail = problem.title;
+        problem.title = 'De permissies van deze rol konden niet geladen worden.';
+        return $q.reject(problem);
+      });
   }
 
   function getAllRolePermissions() {
     return PermissionManager
-        .getAll()
-        .then(function(retrievedPermissions) {
-          editor.permissions = retrievedPermissions;
-          return retrievedPermissions;
-        }, showProblem);
+      .getAll()
+      .then(function(retrievedPermissions) {
+        editor.permissions = retrievedPermissions;
+        return retrievedPermissions;
+      }, function(problem) {
+        problem.detail = problem.title;
+        problem.title = 'De permissie lijst kon niet geladen worden.';
+        return $q.reject(problem);
+      });
   }
 
   function loadRoleUsers(roleId) {
-    return $q.resolve(
-      RoleManager
+    return RoleManager
       .getRoleUsers(roleId)
-        .then(function (users) {
-          editor.role.users = users;
-        }, function() {
-          editor.role.users = [];
-        })
-        .finally(function () {
-          editor.loadedRoleUsers = true;
-        })
-    );
+      .then(function (users) {
+        editor.role.users = users;
+      }, function(problem) {
+        problem.detail = problem.title;
+        problem.title = 'De leden van deze rol konden niet geladen worden.';
+        return $q.reject(problem);
+      });
   }
 
   function loadRoleLabels(roleId) {
-    return $q.resolve(
-      RoleManager
+    return RoleManager
       .getRoleLabels(roleId)
-        .then(function (labels) {
-          editor.role.labels = labels;
-        }, function() {
-          editor.role.labels = [];
-        })
-        .finally(function () {
-          editor.loadedRoleLabels = true;
-        })
-    );
+      .then(function (labels) {
+        editor.role.labels = labels;
+      }, function(problem) {
+        problem.detail = problem.title;
+        problem.title = 'De labels van deze rol konden niet geladen worden.';
+        return $q.reject(problem);
+      });
   }
 
   function roleCreated (response) {
@@ -205,9 +211,6 @@ function RoleFormController(
     RoleManager
       .addLabelToRole(roleId, label.id)
       .then(function () {
-        if (!editor.role.labels) {
-          editor.role.labels = [];
-        }
         editor.role.labels.push(label);
       }, showProblem)
       .finally(function() {
@@ -237,7 +240,9 @@ function RoleFormController(
           editor.form.email.$render();
         }
         else {
-          userAlreadyAdded();
+          showProblem({
+            title: 'De gebruiker hangt al aan deze rol.'
+          });
         }
       }, showProblem);
 
@@ -248,21 +253,8 @@ function RoleFormController(
    * @param {ApiProblem} problem
    */
   function showProblem(problem) {
-    var modalInstance = $uibModal.open(
-      {
-        templateUrl: 'templates/unexpected-error-modal.html',
-        controller: 'UnexpectedErrorModalController',
-        size: 'sm',
-        resolve: {
-          errorMessage: function() {
-            return problem.title + ' ' + problem.detail;
-          }
-        }
-      }
-    );
-  }
+    editor.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
 
-  function userAlreadyAdded() {
     var modalInstance = $uibModal.open(
       {
         templateUrl: 'templates/unexpected-error-modal.html',
@@ -270,7 +262,7 @@ function RoleFormController(
         size: 'sm',
         resolve: {
           errorMessage: function() {
-            return 'De gebruiker hangt al aan deze rol.';
+            return editor.errorMessage;
           }
         }
       }

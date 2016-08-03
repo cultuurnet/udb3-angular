@@ -292,7 +292,7 @@ describe('Controller: Roles Form', function() {
     expect(editor.role.users.length).toEqual(1);
   });
 
-  it('should it should not add the same user twice', function() {
+  it('should it should not add the same user twice to the list', function() {
     getMockups();
 
     $stateParams = { "id": id };
@@ -327,33 +327,8 @@ describe('Controller: Roles Form', function() {
 
     expect(Usermanager.findUserWithEmail).toHaveBeenCalledWith("blub@example.com");
     expect(editor.role.users.length).toEqual(1);
-  });
-
-  it('should throw an error when the user is already signed to the role', function() {
-    getMockups();
-
-    var modalInstance = $uibModal.open(
-      {
-        templateUrl: 'templates/unexpected-error-modal.html',
-        controller: 'UnexpectedErrorModalController',
-        size: 'sm',
-        resolve: {
-          errorMessage: function() {
-            return 'De gebruiker hangt al aan deze rol.';
-          }
-        }
-      }
-    );
-
-    $stateParams = { "id": id };
-
-    var editor = getController();
-
-    $scope.$digest();
-    editor.role.users = roleUsers;
-    $uibModal.open.and.returnValue(modalInstance);
-
     expect($uibModal.open).toHaveBeenCalled();
+    expect(editor.errorMessage).toEqual('De gebruiker hangt al aan deze rol.');
   });
 
   it('should show a loading error', function() {
@@ -361,14 +336,19 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRoleUsers.and.returnValue($q.resolve(roleUsers));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
-    RoleManager.get.and.returnValue($q.reject());
+    RoleManager.get.and.returnValue($q.reject({
+      title: 'Could not be found.'
+    }));
 
     $stateParams = { "id": id };
 
     var editor = getController();
     $scope.$digest();
 
-    expect(editor.loadingError).toEqual('Rol niet gevonden!');
+    expect($uibModal.open).toHaveBeenCalled();
+    expect(editor.errorMessage).toEqual(
+      'De rol kon niet gevonden worden. Could not be found.'
+    );
   });
 
   it('should add a label to a role', function() {
@@ -455,7 +435,9 @@ describe('Controller: Roles Form', function() {
   it('should init the role labels list on load failure', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
-    RoleManager.getRoleLabels.and.returnValue($q.reject());
+    RoleManager.getRoleLabels.and.returnValue($q.reject({
+      title: 'Problem.'
+    }));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
 
@@ -467,11 +449,15 @@ describe('Controller: Roles Form', function() {
 
     expect(RoleManager.getRoleLabels).toHaveBeenCalledWith(id);
     expect(editor.role.labels).toEqual([]);
+    expect($uibModal.open).toHaveBeenCalled();
+    expect(editor.errorMessage).toEqual('De labels van deze rol konden niet geladen worden. Problem.');
   });
 
   it('should init the role users list on load failure', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
-    RoleManager.getRoleUsers.and.returnValue($q.reject());
+    RoleManager.getRoleUsers.and.returnValue($q.reject({
+      title: 'Problem.'
+    }));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
@@ -484,6 +470,44 @@ describe('Controller: Roles Form', function() {
 
     expect(RoleManager.getRoleUsers).toHaveBeenCalledWith(id);
     expect(editor.role.users).toEqual([]);
+    expect($uibModal.open).toHaveBeenCalled();
+    expect(editor.errorMessage).toEqual('De leden van deze rol konden niet geladen worden. Problem.');
+  });
+
+  it('should show an error on permission list failure', function() {
+    PermissionManager.getAll.and.returnValue($q.reject({
+      title: 'Problem.'
+    }));
+
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    expect(PermissionManager.getAll).toHaveBeenCalled();
+    expect(editor.permissions).toEqual([]);
+    expect($uibModal.open).toHaveBeenCalled();
+    expect(editor.errorMessage).toEqual('De permissie lijst kon niet geladen worden. Problem.');
+  });
+
+  it('should show an error on role permission list failure', function() {
+    RoleManager.getRolePermissions.and.returnValue($q.reject({
+      title: 'Problem.'
+    }));
+    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
+    RoleManager.get.and.returnValue($q.resolve(role));
+
+
+    $stateParams = { "id": id };
+
+    var editor = getController();
+    $scope.$digest();
+
+    expect(RoleManager.getRolePermissions).toHaveBeenCalled();
+    expect(editor.role.permissions).toEqual({});
+    expect($uibModal.open).toHaveBeenCalled();
+    expect(editor.errorMessage).toEqual('De permissies van deze rol konden niet geladen worden. Problem.');
   });
 
 });
