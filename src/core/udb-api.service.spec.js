@@ -671,4 +671,25 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should remove a label from a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertCommand(command) {
+      expect(command).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/uuid1-role/labels/uuid2-label')
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .removeLabelFromRole('uuid1-role', 'uuid2-label')
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
 });

@@ -1057,6 +1057,19 @@ function UdbApi(
   };
 
   /**
+   * @param {string} roleId
+   *  roleId for the role
+   * @param {string} labelId
+   *  The id of the label to be removed
+   * @return {Promise}
+   */
+  this.removeLabelFromRole = function (roleId, labelId) {
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, {}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */

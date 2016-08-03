@@ -137,8 +137,8 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
 
   /**
    * @param {uuid} roleId
-   * @param {string} labelId
-   * @return {Promise}
+   * @param {uuid} labelId
+   * @return {Promise.<BaseJob>}
    */
   service.addLabelToRole = function(roleId, labelId) {
     return udbApi
@@ -155,6 +155,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
       .getRoleLabels(roleId);
   };
 
+  /**
+   * @param {uuid} roleId
+   * @param {uuid} labelId
+   * @return {Promise.<BaseJob>}
+   */
   service.removeLabelFromRole = function(roleId, labelId) {
     return udbApi
       .removeLabelFromRole(roleId, labelId)

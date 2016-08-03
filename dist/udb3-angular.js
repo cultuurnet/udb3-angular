@@ -3647,6 +3647,19 @@ function UdbApi(
   };
 
   /**
+   * @param {string} roleId
+   *  roleId for the role
+   * @param {string} labelId
+   *  The id of the label to be removed
+   * @return {Promise}
+   */
+  this.removeLabelFromRole = function (roleId, labelId) {
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, {}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -11994,8 +12007,8 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
 
   /**
    * @param {uuid} roleId
-   * @param {string} labelId
-   * @return {Promise}
+   * @param {uuid} labelId
+   * @return {Promise.<BaseJob>}
    */
   service.addLabelToRole = function(roleId, labelId) {
     return udbApi
@@ -12012,6 +12025,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
       .getRoleLabels(roleId);
   };
 
+  /**
+   * @param {uuid} roleId
+   * @param {uuid} labelId
+   * @return {Promise.<BaseJob>}
+   */
   service.removeLabelFromRole = function(roleId, labelId) {
     return udbApi
       .removeLabelFromRole(roleId, labelId)
