@@ -96,6 +96,9 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     })
     .subscribe();
 
+  page$
+    .subscribe(rlc.updateSearchResultViewer);
+
   $scope.$on('$viewContentLoaded', function() {
     rlc.updateSearchResultViewer();
   });

@@ -66,6 +66,9 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
     })
     .subscribe();
 
+  page$
+    .subscribe(llc.updateSearchResultViewer);
+
   $scope.$on('$viewContentLoaded', function() {
     LabelManager.find('', itemsPerPage, 0)
       .then(function(results) {
