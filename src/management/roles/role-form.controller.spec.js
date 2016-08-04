@@ -207,8 +207,10 @@ describe('Controller: Roles Form', function() {
     RoleManager.addPermissionToRole.and.returnValue($q.resolve());
 
     editor.updatePermission('ORGANISATIES_BEHERER');
+    $scope.$digest();
 
     expect(RoleManager.addPermissionToRole).toHaveBeenCalled();
+    expect(editor.loadedRolePermissions).toEqual(true);
   });
 
   it('should remove a permission from a role', function() {
@@ -226,8 +228,10 @@ describe('Controller: Roles Form', function() {
     RoleManager.removePermissionFromRole.and.returnValue($q.resolve());
 
     editor.updatePermission('AANBOD_BEWERKEN');
+    $scope.$digest();
 
     expect(RoleManager.removePermissionFromRole).toHaveBeenCalled();
+    expect(editor.loadedRolePermissions).toEqual(true);
   });
 
   it('should add a user to a role', function() {
