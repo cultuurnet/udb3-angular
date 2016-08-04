@@ -3175,3 +3175,9 @@ img.offer-image-thumbnail {
 .role-form-tabset .tab-pane {
   padding-top: 1ex;
 }
+udb-search-label i.caret {
+  display: none;
+}
+.form-group udb-search-label input {
+  max-width: none;
+}
