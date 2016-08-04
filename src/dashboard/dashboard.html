@@ -1,55 +1,68 @@
 <h1 class="title" id="page-title">
   Welkom, <span ng-bind="dash.username"></span>
 </h1>
+
 <div class="text-center" ng-show="dash.pagedItemViewer.loading">
   <i class="fa fa-circle-o-notch fa-spin"></i>
 </div>
 
+<div class="udb-dashboard-header">
+  <!-- udb-dashboard-header -->
+</div>
+
 <div ng-cloak ng-show="!dash.pagedItemViewer.loading">
-  <div class="panel panel-default no-new no-data" ng-hide="dash.pagedItemViewer.events.length">
-    <div class="panel-body text-center">
-      <p class="text-center">Je hebt nog geen items toegevoegd.
-        <span ng-if="dash.toggleAddOffer"><br/><a href="event">Een activiteit of monument toevoegen?</a></span>
-      </p>
-    </div>
-  </div>
 
-  <div ng-show="dash.pagedItemViewer.events.length">
+  <div class="row udb-dashboard">
+    <div class="col-xs-12">
 
-    <div class="clearfix">
-      <p class="invoer-title"><span class="block-header">Recent</span>
-        <span class="pull-right" ng-if="dash.toggleAddOffer">
-          <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> Toevoegen</a>
-        </span>
-      </p>
-    </div>
+      <div class="panel panel-default no-new no-data" ng-hide="dash.pagedItemViewer.events.length">
+        <div class="panel-body text-center">
+          <p class="text-center">Je hebt nog geen items toegevoegd.
+            <span ng-if="dash.toggleAddOffer"><br/><a href="event">Een activiteit of monument toevoegen?</a></span>
+          </p>
+        </div>
+      </div>
 
-    <div class="panel panel-default">
-      <table class="table">
-        <tbody>
-          <tr udb-dashboard-event-item
-              ng-if="event['@type'] === 'Event'"
-              class="dashboard-item" ng-class="{'deleting': event.showDeleted}"
-              ng-repeat-start="event in dash.pagedItemViewer.events">
-          </tr>
-          <tr udb-dashboard-place-item
-              ng-if="event['@type'] === 'Place'"
-              class="dashboard-item" ng-class="{'deleting': event.showDeleted}"
-              ng-repeat-end>
-          </tr>
-        </tbody>
-      </table>
-      <div class="panel-footer">
-        <uib-pagination
-          total-items="dash.pagedItemViewer.totalItems"
-          ng-model="dash.pagedItemViewer.currentPage"
-          items-per-page="dash.pagedItemViewer.pageSize"
-          ng-show="dash.pagedItemViewer.totalItems > 0"
-          max-size="10"
-          ng-change="dash.updateItemViewer()">
-        </uib-pagination>
+      <div ng-show="dash.pagedItemViewer.events.length">
+
+        <div class="clearfix">
+          <p class="invoer-title"><span class="block-header">Recent</span>
+            <span class="pull-right" ng-if="dash.toggleAddOffer">
+              <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> Toevoegen</a>
+            </span>
+          </p>
+        </div>
+
+        <div class="panel panel-default">
+          <table class="table">
+            <tbody>
+              <tr udb-dashboard-event-item
+                  ng-if="event['@type'] === 'Event'"
+                  class="dashboard-item" ng-class="{'deleting': event.showDeleted}"
+                  ng-repeat-start="event in dash.pagedItemViewer.events">
+              </tr>
+              <tr udb-dashboard-place-item
+                  ng-if="event['@type'] === 'Place'"
+                  class="dashboard-item" ng-class="{'deleting': event.showDeleted}"
+                  ng-repeat-end>
+              </tr>
+            </tbody>
+          </table>
+          <div class="panel-footer">
+            <uib-pagination
+              total-items="dash.pagedItemViewer.totalItems"
+              ng-model="dash.pagedItemViewer.currentPage"
+              items-per-page="dash.pagedItemViewer.pageSize"
+              ng-show="dash.pagedItemViewer.totalItems > 0"
+              max-size="10"
+              ng-change="dash.updateItemViewer()">
+            </uib-pagination>
+          </div>
+
+        </div>
       </div>
 
     </div>
   </div>
+
 </div>

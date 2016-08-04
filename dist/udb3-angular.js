@@ -15821,69 +15821,77 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<h1 class=\"title\" id=\"page-title\">\n" +
     "  Welkom, <span ng-bind=\"dash.username\"></span>\n" +
     "</h1>\n" +
+    "\n" +
     "<div class=\"text-center\" ng-show=\"dash.pagedItemViewer.loading\">\n" +
     "  <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
+    "<div class=\"udb-dashboard-header\">\n" +
+    "  <!-- udb-dashboard-header -->\n" +
+    "</div>\n" +
+    "\n" +
     "<div ng-cloak ng-show=\"!dash.pagedItemViewer.loading\">\n" +
-    "  <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
-    "    <div class=\"panel-body text-center\">\n" +
-    "      <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
-    "        <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of monument toevoegen?</a></span>\n" +
-    "      </p>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
     "\n" +
-    "  <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
+    "  <div class=\"row udb-dashboard\">\n" +
+    "    <div class=\"col-xs-12\">\n" +
     "\n" +
-    "    <div class=\"clearfix\">\n" +
-    "      <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
-    "        <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
-    "          <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
-    "        </span>\n" +
-    "      </p>\n" +
-    "    </div>\n" +
+    "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
+    "        <div class=\"panel-body text-center\">\n" +
+    "          <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
+    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of monument toevoegen?</a></span>\n" +
+    "          </p>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "\n" +
-    "    <div class=\"panel panel-default\">\n" +
-    "      <table class=\"table\">\n" +
-    "        <tbody>\n" +
-    "          <tr udb-dashboard-event-item\n" +
-    "              ng-if=\"event['@type'] === 'Event'\"\n" +
-    "              class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
-    "              ng-repeat-start=\"event in dash.pagedItemViewer.events\">\n" +
-    "          </tr>\n" +
-    "          <tr udb-dashboard-place-item\n" +
-    "              ng-if=\"event['@type'] === 'Place'\"\n" +
-    "              class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
-    "              ng-repeat-end>\n" +
-    "          </tr>\n" +
-    "        </tbody>\n" +
-    "      </table>\n" +
-    "      <div class=\"panel-footer\">\n" +
-    "        <uib-pagination\n" +
-    "          total-items=\"dash.pagedItemViewer.totalItems\"\n" +
-    "          ng-model=\"dash.pagedItemViewer.currentPage\"\n" +
-    "          items-per-page=\"dash.pagedItemViewer.pageSize\"\n" +
-    "          ng-show=\"dash.pagedItemViewer.totalItems > 0\"\n" +
-    "          max-size=\"10\"\n" +
-    "          ng-change=\"dash.updateItemViewer()\">\n" +
-    "        </uib-pagination>\n" +
+    "      <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
+    "\n" +
+    "        <div class=\"clearfix\">\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
+    "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
+    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
+    "            </span>\n" +
+    "          </p>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"panel panel-default\">\n" +
+    "          <table class=\"table\">\n" +
+    "            <tbody>\n" +
+    "              <tr udb-dashboard-event-item\n" +
+    "                  ng-if=\"event['@type'] === 'Event'\"\n" +
+    "                  class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
+    "                  ng-repeat-start=\"event in dash.pagedItemViewer.events\">\n" +
+    "              </tr>\n" +
+    "              <tr udb-dashboard-place-item\n" +
+    "                  ng-if=\"event['@type'] === 'Place'\"\n" +
+    "                  class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
+    "                  ng-repeat-end>\n" +
+    "              </tr>\n" +
+    "            </tbody>\n" +
+    "          </table>\n" +
+    "          <div class=\"panel-footer\">\n" +
+    "            <uib-pagination\n" +
+    "              total-items=\"dash.pagedItemViewer.totalItems\"\n" +
+    "              ng-model=\"dash.pagedItemViewer.currentPage\"\n" +
+    "              items-per-page=\"dash.pagedItemViewer.pageSize\"\n" +
+    "              ng-show=\"dash.pagedItemViewer.totalItems > 0\"\n" +
+    "              max-size=\"10\"\n" +
+    "              ng-change=\"dash.updateItemViewer()\">\n" +
+    "            </uib-pagination>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "\n" +
     "</div>\n"
   );
 
 
   $templateCache.put('templates/job-logo.directive.html',
     "<div id=\"indicator\" class=\"{{jl.getState()}}\">\n" +
-    "  <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"40\"\n" +
-    "       height=\"50\">\n" +
-    "    <g class=\"bell\" transform=\"matrix(-0.01442308,0,0,-0.01339286,25.381434,42.571382)\">\n" +
-    "      <path\n" +
-    "         d=\"m 912,-160 q 0,16 -16,16 -59,0 -101.5,42.5 Q 752,-59 752,0 752,16 736,16 720,16 720,0 720,-73 771.5,-124.5 823,-176 896,-176 q 16,0 16,16 z m 816,288 q 0,-52 -38,-90 -38,-38 -90,-38 h -448 q 0,-106 -75,-181 -75,-75 -181,-75 -106,0 -181,75 -75,75 -75,181 H 192 q -52,0 -90,38 -38,38 -38,90 50,42 91,88 41,46 85,119.5 44,73.5 74.5,158.5 30.5,85 50,206 19.5,121 19.5,260 0,152 117,282.5 117,130.5 307,158.5 -8,19 -8,39 0,40 28,68 28,28 68,28 40,0 68,-28 28,-28 28,-68 0,-20 -8,-39 190,-28 307,-158.5 117,-130.5 117,-282.5 0,-139 19.5,-260 19.5,-121 50,-206 30.5,-85 74.5,-158.5 44,-73.5 85,-119.5 41,-46 91,-88 z\" />\n" +
-    "    </g>\n" +
+    "  <svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
     "    <g class=\"warning\">\n" +
     "      <circle cx=\"20\" cy=\"40\" r=\"10\" id=\"warning-background\"></circle>\n" +
     "      <circle fill=\"#ED1C24\" cx=\"20\" cy=\"40\" r=\"8\" id=\"warning-circle\"></circle>\n" +
@@ -15961,15 +15969,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/failed-job.template.html',
     "<p>\n" +
-    "  <button type=\"button\" class=\"close udb-hide-job-button\" ng-click=\"hideJob(job)\" aria-label=\"Close\">\n" +
-    "    <span aria-hidden=\"true\">×</span>\n" +
-    "  </button>\n" +
+    "  <a class=\"udb-hide-job-button\" ng-click=\"hideJob(job)\">\n" +
+    "    <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n" +
+    "  </a>\n" +
     "  <ins>\n" +
     "    <span am-time-ago=\"::job.getLogDateByState()\"></span>\n" +
     "  </ins>\n" +
     "  <span ng-bind=\"job.getDescription()\"></span>\n" +
-    "</p>\n" +
-    "\n"
+    "</p>\n"
   );
 
 
@@ -15980,6 +15987,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "         <div class=\"col-sm-12\">\n" +
     "            <button type=\"button\" class=\"close\" ng-click=\"logger.hideJobLog()\"><span aria-hidden=\"true\">&times;</span></button>\n" +
     "         </div>\n" +
+    "         <div class=\"col-sm-12\">\n" +
+    "           <div class=\"udb-job-log-header-message\">\n" +
+    "             <!-- udb-job-log-header-message -->\n" +
+    "           </div>\n" +
+    "         </div>\n" +
     "     </div>\n" +
     " </div>\n" +
     "  <div class=\"row\">\n" +
@@ -15987,7 +15999,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"udb-job-block udb-job-block-ready\">\n" +
     "        <p class=\"udb-job-title\">Geëxporteerde documenten</p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
-    "          <li class=\"alert repeat-animation\" ng-repeat=\"job in logger.getFinishedExportJobs()\">\n" +
+    "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getFinishedExportJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
     "          </li>\n" +
     "        </ul>\n" +
@@ -15996,7 +16008,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"udb-job-block udb-job-block-errors\">\n" +
     "        <p class=\"udb-job-title\">Meldingen <span class=\"badge\" ng-bind=\"logger.getFailedJobs().length\"></span></p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
-    "          <li class=\"alert repeat-animation\" ng-repeat=\"job in logger.getFailedJobs()\">\n" +
+    "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getFailedJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
     "          </li>\n" +
     "        </ul>\n" +
@@ -16005,11 +16017,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"udb-job-block udb-job-block-pending\">\n" +
     "        <p class=\"udb-job-title\">Bezig</p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
-    "          <li class=\"alert repeat-animation\" ng-repeat=\"job in logger.getQueuedJobs()\">\n" +
+    "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getQueuedJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
+    "\n" +
+    "      <div class=\"udb-job-log-footer-message\">\n" +
+    "        <!-- udb-job-log-footer-message -->\n" +
+    "      </div>\n" +
+    "\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
@@ -19017,10 +19034,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/query-editor-modal.html',
     "<div class=\"modal-header\">\n" +
-    "  <h2>Geavanceerde zoekopdracht bouwer</h2>\n" +
+    "  <h2 class=\"modal-title\">Geavanceerde zoekopdracht bouwer</h2>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
+    "\n" +
+    "  <div class=\"udb-query-editor-header\">\n" +
+    "    <!-- udb-query-editor-header -->\n" +
+    "  </div>\n" +
+    "\n" +
     "  <div class=\"udb-query-editor\">\n" +
     "    <div class=\"panel panel-default\" ng-repeat=\"rootGroup in qe.groupedQueryTree.nodes\">\n" +
     "\n" +
@@ -19063,17 +19085,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
+    "    <p>\n" +
+    "      <a type=\"button\" class=\"btn btn-link\" ng-click=\"qe.addGroup()\">\n" +
+    "        <i class=\"fa fa-plus-circle\"></i> Groep toevoegen\n" +
+    "      </a>\n" +
+    "    </p>\n" +
+    "\n" +
     "    <div class=\"modal-footer\">\n" +
-    "      <button type=\"button\" class=\"pull-left btn btn-default\" ng-click=\"qe.addGroup()\">\n" +
-    "        Groep toevoegen\n" +
-    "      </button>\n" +
-    "      <div class=\"pull-right\">\n" +
-    "        <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
-    "          Annuleren\n" +
-    "        </a>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\">\n" +
-    "          Zoeken\n" +
-    "        </button>\n" +
+    "      <div class=\"row\">\n" +
+    "\n" +
+    "        <div class=\"pull-right\">\n" +
+    "          <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
+    "            Annuleren\n" +
+    "          </a>\n" +
+    "          <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\">\n" +
+    "            Zoeken\n" +
+    "          </button>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
