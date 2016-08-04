@@ -77,6 +77,18 @@ describe('Controller: Roles List', function() {
     var sub = searchResult$.subscribe(assertLoadingEnded);
   });
 
+  it('should not search for items when the query is less then 3 characters', function() {
+    var deferredSearchResult = $q.defer();
+    var searchResult$ = Rx.Observable.fromPromise(deferredSearchResult.promise);
+    spyOn(searchResultGenerator.prototype, 'getSearchResult$').and.returnValue(searchResult$);
+    var controller = getRolesListController();
+
+    expect(controller.loading).toEqual(false);
+
+    controller.queryChanged('');
+    expect(controller.loading).toEqual(true);
+  });
+
   it('should call update search result viewer after delete modal close', function () {
     var deferredSearchResult = $q.defer();
     var searchResult$ = Rx.Observable.fromPromise(deferredSearchResult.promise);
