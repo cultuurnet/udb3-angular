@@ -5,11 +5,11 @@
 <div class="row">
     <div class="col-md-9">
         <udb-query-search-bar search-label="Zoeken op email"
-                              on-change="rlc.queryChanged(query)"
+                              on-change="ulc.queryChanged(query)"
         ></udb-query-search-bar>
     </div>
     <div class="col-md-1">
-        <i ng-show="rlc.loading" class="fa fa-circle-o-notch fa-spin"></i>
+        <i ng-show="ulc.loading" class="fa fa-circle-o-notch fa-spin"></i>
     </div>
     <div class="col-md-2">
         <a class="btn btn-primary" ui-sref="split.manageUsers.create" ui-sref-opts="{reload:true}">
@@ -20,15 +20,15 @@
 
 <div class="row" ng-cloak>
     <div class="col-md-12">
-        <p ng-show="rlc.query.length < rlc.minQueryLength">
+        <p ng-show="ulc.query.length < ulc.minQueryLength">
             Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.
         </p>
-        <p ng-show="rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0">
+        <p ng-show="ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0">
             Geen gebruikers gevonden.
         </p>
         <div class="query-search-result users-results"
-             ng-class="{'loading-search-result': rlc.loading}"
-             ng-show="rlc.searchResult.totalItems > 0">
+             ng-class="{'loading-search-result': ulc.loading}"
+             ng-show="ulc.searchResult.totalItems > 0">
                 <table class="table table-hover table-striped">
                     <thead>
                     <tr>
@@ -39,7 +39,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="user in rlc.searchResult.member">
+                    <tr ng-repeat="user in ulc.searchResult.member">
                         <td ng-bind="::user.email"></td>
                         <td ng-bind="::user.username"></td>
                         <td ng-bind="::user.role"></td>
@@ -49,7 +49,7 @@
                                     Bewerken <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <li><a ui-sref="split.manageUsers.edit({id: user.uuid})" ui-sref-opts="{reload:true}">Bewerken</a></li>
-                                    <li><a href ng-click="rlc.openDeleteConfirmModal(user)">Verwijderen</a></li>
+                                    <li><a href ng-click="ulc.openDeleteConfirmModal(user)">Verwijderen</a></li>
                                 </ul>
                             </div>
                             </td>
@@ -58,11 +58,11 @@
                 </table>
             <div class="panel-footer">
                 <uib-pagination
-                        total-items="rlc.searchResult.totalItems"
-                        ng-model="rlc.page"
-                        items-per-page="rlc.searchResult.itemsPerPage"
+                        total-items="ulc.searchResult.totalItems"
+                        ng-model="ulc.page"
+                        items-per-page="ulc.searchResult.itemsPerPage"
                         max-size="10"
-                        ng-change="rlc.pageChanged(rlc.page)">
+                        ng-change="ulc.pageChanged(ulc.page)">
                 </uib-pagination>
             </div>
         </div>

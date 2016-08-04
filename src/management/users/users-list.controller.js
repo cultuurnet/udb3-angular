@@ -12,15 +12,15 @@ angular
 
 /* @ngInject */
 function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal) {
-  var rlc = this;
+  var ulc = this;
 
-  rlc.query = '';
+  ulc.query = '';
 
   var itemsPerPage = 10;
   var minQueryLength = 3;
-  var query$ = rx.createObservableFunction(rlc, 'queryChanged');
+  var query$ = rx.createObservableFunction(ulc, 'queryChanged');
   var filteredQuery$ = query$.filter(ignoreShortQueries);
-  var page$ = rx.createObservableFunction(rlc, 'pageChanged');
+  var page$ = rx.createObservableFunction(ulc, 'pageChanged');
   var searchResultGenerator = new SearchResultGenerator(UserManager, filteredQuery$, page$, itemsPerPage);
   var searchResult$ = searchResultGenerator.getSearchResult$();
 
@@ -29,7 +29,7 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
    * @return {boolean}
    */
   function ignoreShortQueries(query) {
-    if (rlc.query === '') {
+    if (ulc.query === '') {
       return true;
     }
     else {
@@ -41,24 +41,24 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
    * @param {PagedCollection} searchResult
    */
   function showSearchResult(searchResult) {
-    rlc.searchResult = searchResult;
-    rlc.loading = false;
+    ulc.searchResult = searchResult;
+    ulc.loading = false;
   }
 
   function updateSearchResultViewer() {
-    rlc.loading = true;
-    UserManager.find(rlc.query, itemsPerPage, rlc.page)
+    ulc.loading = true;
+    UserManager.find(ulc.query, itemsPerPage, ulc.page)
       .then(function(results) {
-        rlc.searchResult = results;
-        rlc.loading = false;
+        ulc.searchResult = results;
+        ulc.loading = false;
       });
   }
-  rlc.updateSearchResultViewer = updateSearchResultViewer;
+  ulc.updateSearchResultViewer = updateSearchResultViewer;
 
   function updateSearchResultViewerOnJobFeedback(job) {
     job.task.promise.then(updateSearchResultViewer);
   }
-  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
+  ulc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
 
   function openDeleteConfirmModal(user) {
     var modalInstance = $uibModal.open({
@@ -72,16 +72,16 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       });
     modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
   }
-  rlc.openDeleteConfirmModal = openDeleteConfirmModal;
+  ulc.openDeleteConfirmModal = openDeleteConfirmModal;
 
-  rlc.loading = false;
-  rlc.query = '';
-  rlc.page = 0;
-  rlc.minQueryLength = minQueryLength;
+  ulc.loading = false;
+  ulc.query = '';
+  ulc.page = 0;
+  ulc.minQueryLength = minQueryLength;
 
   query$
     .safeApply($scope, function (query) {
-      rlc.query = query;
+      ulc.query = query;
     })
     .subscribe();
 
@@ -92,11 +92,11 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
   filteredQuery$
     .merge(page$)
     .safeApply($scope, function () {
-      rlc.loading = true;
+      ulc.loading = true;
     })
     .subscribe();
 
   $scope.$on('$viewContentLoaded', function() {
-    rlc.updateSearchResultViewer();
+    ulc.updateSearchResultViewer();
   });
 }
