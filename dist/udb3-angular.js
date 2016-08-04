@@ -11610,7 +11610,6 @@ function RoleFormController(
   PermissionManager,
   UserManager,
   $uibModal,
-  $state,
   $stateParams,
   jsonLDLangFilter,
   $q
@@ -11635,18 +11634,21 @@ function RoleFormController(
     labels: []
   };
   editor.errorMessage = false;
+  editor.editName = false;
+  editor.editConstraint = false;
 
-  editor.save = save;
   editor.addUser = addUser;
   editor.addLabel = addLabel;
   editor.createRole = createRole;
   editor.removeLabel = removeLabel;
   editor.removeUser = removeUser;
   editor.updatePermission = updatePermission;
+  editor.updateName = updateName;
+  editor.updateConstraint = updateConstraint;
 
   var roleId = $stateParams.id;
 
-  // @todo opsplitsen form in kleine eventsourced stukken aka bye bye submit button
+  // @todo save newly saved value to copied role
 
   function init() {
     getAllRolePermissions()
@@ -11765,23 +11767,32 @@ function RoleFormController(
     }
   }
 
-  function save() {
-    editor.saving = true;
-    var promisses = [];
-
-    // go over the changes from the original role
-    // name changed
-    if (editor.originalRole.name !== editor.role.name) {
-      promisses.push(RoleManager.updateRoleName(roleId, editor.role.name));
-    }
-    // constraint changed
+  function updateConstraint() {
     if (editor.originalRole.constraint !== editor.role.constraint) {
-      promisses.push(RoleManager.updateRoleConstraint(roleId, editor.role.constraint));
+      editor.saving = true;
+      RoleManager
+        .updateRoleConstraint(roleId, editor.role.constraint)
+        .then(function() {
+          editor.editConstraint = false;
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        });
     }
+  }
 
-    $q.all(promisses).then(function() {
-      $state.go('split.manageRoles.list', {reload:true});
-    }).catch(showProblem);
+  function updateName() {
+    if (editor.originalRole.name !== editor.role.name) {
+      editor.saving = true;
+      RoleManager
+        .updateRoleName(roleId, editor.role.name)
+        .then(function() {
+          editor.editName = false;
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        });
+    }
   }
 
   function updatePermission(key) {
@@ -11909,7 +11920,7 @@ function RoleFormController(
 
   init();
 }
-RoleFormController.$inject = ["RoleManager", "PermissionManager", "UserManager", "$uibModal", "$state", "$stateParams", "jsonLDLangFilter", "$q"];
+RoleFormController.$inject = ["RoleManager", "PermissionManager", "UserManager", "$uibModal", "$stateParams", "jsonLDLangFilter", "$q"];
 
 // Source: src/management/roles/role-manager.service.js
 /**
@@ -18404,7 +18415,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<form name=\"editor.form\" class=\"css-form\" novalidate>\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-6\">\n" +
-    "            <div class=\"form-group\" udb-form-group>\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editName && editor.role.name\">\n" +
+    "              <label class=\"control-label\">Naam</label>\n" +
+    "              <p><span ng-bind=\"editor.role.name\"></span>\n" +
+    "              <a href ng-click=\"editor.editName = true\">Wijzigen</a></p>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"editor.editName || !editor.role.name\">\n" +
     "                <label class=\"control-label\" for=\"label-name-field\">Naam</label>\n" +
     "                <input id=\"label-name-field\"\n" +
     "                       class=\"form-control\"\n" +
@@ -18427,11 +18443,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              ng-click=\"editor.createRole()\">\n" +
     "              Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
     "            </button>\n" +
+    "\n" +
+    "            <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "              ng-if=\"editor.editName\"\n" +
+    "              type=\"button\"\n" +
+    "              class=\"btn btn-primary\"\n" +
+    "              ng-click=\"editor.updateName()\">\n" +
+    "              Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\" ng-show=\"editor.role['@id']\">\n" +
     "        <div class=\"col-md-12\">\n" +
-    "            <div class=\"form-group\" udb-form-group>\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraint\">\n" +
+    "              <label class=\"control-label\">Bewerkrecht</label>\n" +
+    "              <p><span ng-bind=\"editor.role.constraint\"></span>\n" +
+    "              <a href ng-click=\"editor.editConstraint = true\">Wijzigen</a></p>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"editor.editConstraint\">\n" +
     "                <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht</label>\n" +
     "                <input id=\"label-name-field\"\n" +
     "                       class=\"form-control\"\n" +
@@ -18444,7 +18473,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
     "              type=\"button\"\n" +
     "              class=\"btn btn-primary\"\n" +
-    "              ng-click=\"editor.save()\">\n" +
+    "              ng-if=\"editor.editConstraint\"\n" +
+    "              ng-click=\"editor.updateConstraint()\">\n" +
     "              Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
     "            </button>\n" +
     "        </div>\n" +

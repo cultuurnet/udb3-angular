@@ -6,7 +6,6 @@ describe('Controller: Roles Form', function() {
     PermissionManager,
     Usermanager,
     $uibModal,
-    $state,
     $stateParams,
     jsonLDLangFilter,
     $q,
@@ -103,7 +102,6 @@ describe('Controller: Roles Form', function() {
         PermissionManager: PermissionManager,
         UserManager: Usermanager,
         $uibModal: $uibModal,
-        $state: $state,
         $stateParams: $stateParams,
         jsonLDLangFilter: jsonLDLangFilter,
         $q: $q
@@ -167,9 +165,12 @@ describe('Controller: Roles Form', function() {
     editor.role.name = "Andere naam";
     RoleManager.updateRoleName.and.returnValue($q.resolve());
 
-    editor.save();
+    editor.updateName();
+    $scope.$digest();
 
-    expect(RoleManager.updateRoleName).toHaveBeenCalled();
+    expect(RoleManager.updateRoleName).toHaveBeenCalledWith(id, "Andere naam");
+    expect(editor.editName).toEqual(false);
+    expect(editor.saving).toEqual(false);
   });
 
   it('should update the constraint of the role', function() {
@@ -183,9 +184,12 @@ describe('Controller: Roles Form', function() {
     editor.role.constraint = "Ander constraint";
     RoleManager.updateRoleConstraint.and.returnValue($q.resolve());
 
-    editor.save();
+    editor.updateConstraint();
+    $scope.$digest();
 
-    expect(RoleManager.updateRoleConstraint).toHaveBeenCalled();
+    expect(RoleManager.updateRoleConstraint).toHaveBeenCalledWith(id, "Ander constraint");
+    expect(editor.editConstraint).toEqual(false);
+    expect(editor.saving).toEqual(false);
   });
 
   it('should add a permission to a role', function() {

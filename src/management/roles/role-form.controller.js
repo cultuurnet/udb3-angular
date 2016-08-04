@@ -16,7 +16,6 @@ function RoleFormController(
   PermissionManager,
   UserManager,
   $uibModal,
-  $state,
   $stateParams,
   jsonLDLangFilter,
   $q
@@ -41,18 +40,21 @@ function RoleFormController(
     labels: []
   };
   editor.errorMessage = false;
+  editor.editName = false;
+  editor.editConstraint = false;
 
-  editor.save = save;
   editor.addUser = addUser;
   editor.addLabel = addLabel;
   editor.createRole = createRole;
   editor.removeLabel = removeLabel;
   editor.removeUser = removeUser;
   editor.updatePermission = updatePermission;
+  editor.updateName = updateName;
+  editor.updateConstraint = updateConstraint;
 
   var roleId = $stateParams.id;
 
-  // @todo opsplitsen form in kleine eventsourced stukken aka bye bye submit button
+  // @todo save newly saved value to copied role
 
   function init() {
     getAllRolePermissions()
@@ -171,23 +173,32 @@ function RoleFormController(
     }
   }
 
-  function save() {
-    editor.saving = true;
-    var promisses = [];
-
-    // go over the changes from the original role
-    // name changed
-    if (editor.originalRole.name !== editor.role.name) {
-      promisses.push(RoleManager.updateRoleName(roleId, editor.role.name));
-    }
-    // constraint changed
+  function updateConstraint() {
     if (editor.originalRole.constraint !== editor.role.constraint) {
-      promisses.push(RoleManager.updateRoleConstraint(roleId, editor.role.constraint));
+      editor.saving = true;
+      RoleManager
+        .updateRoleConstraint(roleId, editor.role.constraint)
+        .then(function() {
+          editor.editConstraint = false;
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        });
     }
+  }
 
-    $q.all(promisses).then(function() {
-      $state.go('split.manageRoles.list', {reload:true});
-    }).catch(showProblem);
+  function updateName() {
+    if (editor.originalRole.name !== editor.role.name) {
+      editor.saving = true;
+      RoleManager
+        .updateRoleName(roleId, editor.role.name)
+        .then(function() {
+          editor.editName = false;
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        });
+    }
   }
 
   function updatePermission(key) {
