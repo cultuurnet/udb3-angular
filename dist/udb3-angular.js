@@ -11320,8 +11320,6 @@ angular
 function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   var llc = this;
 
-  llc.query = '';
-
   var itemsPerPage = 10;
   var minQueryLength = 3;
   var query$ = rx.createObservableFunction(llc, 'queryChanged');
@@ -11352,6 +11350,7 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   }
 
   llc.loading = false;
+  llc.query = '';
   llc.page = 0;
   llc.minQueryLength = minQueryLength;
 
@@ -11371,16 +11370,6 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
       llc.loading = true;
     })
     .subscribe();
-
-  page$
-    .subscribe(llc.updateSearchResultViewer);
-
-  $scope.$on('$viewContentLoaded', function() {
-    LabelManager.find('', itemsPerPage, 0)
-      .then(function(results) {
-        llc.searchResult = results;
-      });
-  });
 }
 LabelsListController.$inject = ["SearchResultGenerator", "rx", "$scope", "LabelManager"];
 
@@ -12034,13 +12023,12 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
   var rlc = this;
-
-  rlc.query = '';
 
   var itemsPerPage = 10;
   var minQueryLength = 3;
+
   var query$ = rx.createObservableFunction(rlc, 'queryChanged');
   var filteredQuery$ = query$.filter(ignoreShortQueries);
   var page$ = rx.createObservableFunction(rlc, 'pageChanged');
@@ -12048,6 +12036,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   var searchResult$ = searchResultGenerator.getSearchResult$();
 
   /**
+   * Filter applied on query-stream to ignore too short queries
    * @param {string} query
    * @return {boolean}
    */
@@ -12068,21 +12057,6 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     rlc.loading = false;
   }
 
-  function updateSearchResultViewer() {
-    rlc.loading = true;
-    RoleManager.find(rlc.query, itemsPerPage, rlc.page)
-      .then(function(results) {
-        rlc.searchResult = results;
-        rlc.loading = false;
-      });
-  }
-  rlc.updateSearchResultViewer = updateSearchResultViewer;
-
-  function updateSearchResultViewerOnJobFeedback(job) {
-    job.task.promise.then(updateSearchResultViewer);
-  }
-  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
-
   function openDeleteConfirmModal(role) {
     var modalInstance = $uibModal.open({
         templateUrl: 'templates/role-delete-confirm-modal.html',
@@ -12093,7 +12067,8 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
           }
         }
       });
-    modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
+    modalInstance.result.then($state.reload);
+    // TODO: $state.reload isn't the best way to do it, better have another stream
   }
   rlc.openDeleteConfirmModal = openDeleteConfirmModal;
 
@@ -12118,15 +12093,8 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
-
-  page$
-    .subscribe(rlc.updateSearchResultViewer);
-
-  $scope.$on('$viewContentLoaded', function() {
-    rlc.updateSearchResultViewer();
-  });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state"];
 
 // Source: src/management/roles/unique-role.directive.js
 angular
@@ -12184,7 +12152,7 @@ function SearchResultGenerator(rx) {
   var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage) {
     this.searchService = searchService;
     this.itemsPerPage = itemsPerPage;
-    this.query$ = query$.debounce(300);
+    this.query$ = query$.debounce(300).startWith(0);
     this.offset$ = page$.map(pageToOffset(itemsPerPage)).startWith(0);
 
     this.searchParameters$ = rx.Observable.combineLatest(
