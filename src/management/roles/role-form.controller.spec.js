@@ -197,16 +197,12 @@ describe('Controller: Roles Form', function() {
 
     $scope.$digest();
     editor.role.permissions = {
-      "AANBOD_BEWERKEN": true,
-      "AANBOD_INVOEREN": true,
-      "AANBOD_MODEREREN": true,
-      "AANBOD_VERWIJDEREN": true,
       "ORGANISATIES_BEHERER": true
     };
 
     RoleManager.addPermissionToRole.and.returnValue($q.resolve());
 
-    editor.save();
+    editor.updatePermission('ORGANISATIES_BEHERER');
 
     expect(RoleManager.addPermissionToRole).toHaveBeenCalled();
   });
@@ -220,15 +216,12 @@ describe('Controller: Roles Form', function() {
 
     $scope.$digest();
     editor.role.permissions = {
-      "AANBOD_BEWERKEN": true,
-      "AANBOD_INVOEREN": true,
-      "AANBOD_MODEREREN": true,
-      "AANBOD_VERWIJDEREN": false
+      "AANBOD_BEWERKEN": false
     };
 
     RoleManager.removePermissionFromRole.and.returnValue($q.resolve());
 
-    editor.save();
+    editor.updatePermission('AANBOD_BEWERKEN');
 
     expect(RoleManager.removePermissionFromRole).toHaveBeenCalled();
   });

@@ -11642,6 +11642,7 @@ function RoleFormController(
   editor.createRole = createRole;
   editor.removeLabel = removeLabel;
   editor.removeUser = removeUser;
+  editor.updatePermission = updatePermission;
 
   var roleId = $stateParams.id;
 
@@ -11777,20 +11778,33 @@ function RoleFormController(
     if (editor.originalRole.constraint !== editor.role.constraint) {
       promisses.push(RoleManager.updateRoleConstraint(roleId, editor.role.constraint));
     }
-    Object.keys(editor.role.permissions).forEach(function(key) {
-      // permission added
-      if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
-        promisses.push(RoleManager.addPermissionToRole(key, roleId));
-      }
-      // permission removed
-      if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
-        promisses.push(RoleManager.removePermissionFromRole(key, roleId));
-      }
-    });
 
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
+  }
+
+  function updatePermission(key) {
+    // permission added
+    if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
+      editor.loadedRolePermissions = false;
+      RoleManager
+        .addPermissionToRole(key, roleId)
+        .catch(showProblem)
+        .finally(function() {
+          editor.loadedRolePermissions = true;
+        });
+    }
+    // permission removed
+    if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
+      editor.loadedRolePermissions = false;
+      RoleManager
+        .removePermissionFromRole(key, roleId)
+        .catch(showProblem)
+        .finally(function() {
+          editor.loadedRolePermissions = true;
+        });
+    }
   }
 
   function addLabel(label) {
@@ -18427,6 +18441,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       ng-model=\"editor.role.constraint\"\n" +
     "                       ng-disabled=\"editor.saving\">\n" +
     "            </div>\n" +
+    "            <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "              type=\"button\"\n" +
+    "              class=\"btn btn-primary\"\n" +
+    "              ng-click=\"editor.save()\">\n" +
+    "              Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\" ng-show=\"editor.role['@id']\">\n" +
@@ -18441,25 +18461,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <i ng-show=\"!editor.loadedRolePermissions\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "              </div>\n" +
     "            </div>\n" +
-    "            <div class=\"row\">\n" +
-    "              <div class=\"col-md-12\">\n" +
+    "            <div class=\"col-md-12\">\n" +
     "                <div class=\"checkbox\" ng-repeat=\"role in editor.permissions | filter: permissionSearch\">\n" +
-    "                    <label>\n" +
-    "                        <input type=\"checkbox\"\n" +
-    "                          ng-model=\"editor.role.permissions[role.key]\"> <strong ng-bind=\"::role.name\"></strong>\n" +
-    "                    </label>\n" +
+    "                  <label>\n" +
+    "                      <input type=\"checkbox\"\n" +
+    "                        ng-model=\"editor.role.permissions[role.key]\" ng-change=\"editor.updatePermission(role.key)\"> <strong ng-bind=\"::role.name\"></strong>\n" +
+    "                  </label>\n" +
     "                </div>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"row\">\n" +
-    "              <div class=\"col-md-12\">\n" +
-    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "                  type=\"button\"\n" +
-    "                  class=\"btn btn-primary\"\n" +
-    "                  ng-click=\"editor.save()\">\n" +
-    "                  Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "                </button>\n" +
-    "              </div>\n" +
     "            </div>\n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Leden\">\n" +

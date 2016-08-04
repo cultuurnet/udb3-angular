@@ -48,6 +48,7 @@ function RoleFormController(
   editor.createRole = createRole;
   editor.removeLabel = removeLabel;
   editor.removeUser = removeUser;
+  editor.updatePermission = updatePermission;
 
   var roleId = $stateParams.id;
 
@@ -183,20 +184,33 @@ function RoleFormController(
     if (editor.originalRole.constraint !== editor.role.constraint) {
       promisses.push(RoleManager.updateRoleConstraint(roleId, editor.role.constraint));
     }
-    Object.keys(editor.role.permissions).forEach(function(key) {
-      // permission added
-      if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
-        promisses.push(RoleManager.addPermissionToRole(key, roleId));
-      }
-      // permission removed
-      if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
-        promisses.push(RoleManager.removePermissionFromRole(key, roleId));
-      }
-    });
 
     $q.all(promisses).then(function() {
       $state.go('split.manageRoles.list', {reload:true});
     }).catch(showProblem);
+  }
+
+  function updatePermission(key) {
+    // permission added
+    if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
+      editor.loadedRolePermissions = false;
+      RoleManager
+        .addPermissionToRole(key, roleId)
+        .catch(showProblem)
+        .finally(function() {
+          editor.loadedRolePermissions = true;
+        });
+    }
+    // permission removed
+    if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
+      editor.loadedRolePermissions = false;
+      RoleManager
+        .removePermissionFromRole(key, roleId)
+        .catch(showProblem)
+        .finally(function() {
+          editor.loadedRolePermissions = true;
+        });
+    }
   }
 
   function addLabel(label) {

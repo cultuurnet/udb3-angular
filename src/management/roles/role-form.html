@@ -47,6 +47,12 @@
                        ng-model="editor.role.constraint"
                        ng-disabled="editor.saving">
             </div>
+            <button ng-disabled="!editor.form.$valid || editor.saving"
+              type="button"
+              class="btn btn-primary"
+              ng-click="editor.save()">
+              Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+            </button>
         </div>
     </div>
     <div class="row" ng-show="editor.role['@id']">
@@ -61,25 +67,13 @@
                 <i ng-show="!editor.loadedRolePermissions" class="fa fa-circle-o-notch fa-spin"></i>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-12">
+            <div class="col-md-12">
                 <div class="checkbox" ng-repeat="role in editor.permissions | filter: permissionSearch">
-                    <label>
-                        <input type="checkbox"
-                          ng-model="editor.role.permissions[role.key]"> <strong ng-bind="::role.name"></strong>
-                    </label>
+                  <label>
+                      <input type="checkbox"
+                        ng-model="editor.role.permissions[role.key]" ng-change="editor.updatePermission(role.key)"> <strong ng-bind="::role.name"></strong>
+                  </label>
                 </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <button ng-disabled="!editor.form.$valid || editor.saving"
-                  type="button"
-                  class="btn btn-primary"
-                  ng-click="editor.save()">
-                  Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
-                </button>
-              </div>
             </div>
           </uib-tab>
           <uib-tab heading="Leden">
