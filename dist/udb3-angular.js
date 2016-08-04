@@ -3655,7 +3655,7 @@ function UdbApi(
    */
   this.removeLabelFromRole = function (roleId, labelId) {
     return $http
-      .delete(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, {}, defaultApiConfig)
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -3668,7 +3668,7 @@ function UdbApi(
    */
   this.removeUserFromRole = function (roleId, userId) {
     return $http
-      .delete(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, {}, defaultApiConfig)
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
