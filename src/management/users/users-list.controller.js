@@ -96,6 +96,9 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
     })
     .subscribe();
 
+  page$
+    .subscribe(ulc.updateSearchResultViewer);
+
   $scope.$on('$viewContentLoaded', function() {
     ulc.updateSearchResultViewer();
   });
