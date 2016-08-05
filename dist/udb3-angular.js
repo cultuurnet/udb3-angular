@@ -12067,7 +12067,9 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
           }
         }
       });
-    modalInstance.result.then($state.reload);
+    modalInstance.result.then(function() {
+      $state.reload();
+    });
     // TODO: $state.reload isn't the best way to do it, better have another stream
   }
   rlc.openDeleteConfirmModal = openDeleteConfirmModal;
