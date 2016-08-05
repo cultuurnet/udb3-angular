@@ -54,8 +54,6 @@ function RoleFormController(
 
   var roleId = $stateParams.id;
 
-  // @todo save newly saved value to copied role
-
   function init() {
     getAllRolePermissions()
       .then(function() {
@@ -63,7 +61,7 @@ function RoleFormController(
       })
       .catch(showProblem) // stop loading when there's an error
       .finally(function() {
-        // done loading role
+        // no matter what resest loading indicators
         editor.loadedRole = true;
         editor.loadedRolePermissions = true;
         editor.loadedRoleUsers = true;
@@ -93,10 +91,6 @@ function RoleFormController(
       })
       .then(function () {
         return loadRoleLabels(roleId);
-      })
-      .finally(function() {
-        // save a copy of the original role before changes
-        editor.originalRole = _.cloneDeep(editor.role);
       });
   }
 
@@ -104,8 +98,6 @@ function RoleFormController(
     return RoleManager
       .getRolePermissions(roleId)
       .then(function(rolePermissions) {
-
-        // loaded all permissions & permissions linked to role
         editor.role.permissions = {};
         angular.forEach(rolePermissions, function(permission, key) {
           editor.role.permissions[permission.key] = true;
@@ -174,36 +166,32 @@ function RoleFormController(
   }
 
   function updateConstraint() {
-    if (editor.originalRole.constraint !== editor.role.constraint) {
-      editor.saving = true;
-      RoleManager
-        .updateRoleConstraint(roleId, editor.role.constraint)
-        .then(function() {
-          editor.editConstraint = false;
-        }, showProblem)
-        .finally(function() {
-          editor.saving = false;
-        });
-    }
+    editor.saving = true;
+    RoleManager
+      .updateRoleConstraint(roleId, editor.role.constraint)
+      .then(function() {
+        editor.editConstraint = false;
+      }, showProblem)
+      .finally(function() {
+        editor.saving = false;
+      });
   }
 
   function updateName() {
-    if (editor.originalRole.name !== editor.role.name) {
-      editor.saving = true;
-      RoleManager
-        .updateRoleName(roleId, editor.role.name)
-        .then(function() {
-          editor.editName = false;
-        }, showProblem)
-        .finally(function() {
-          editor.saving = false;
-        });
-    }
+    editor.saving = true;
+    RoleManager
+      .updateRoleName(roleId, editor.role.name)
+      .then(function() {
+        editor.editName = false;
+      }, showProblem)
+      .finally(function() {
+        editor.saving = false;
+      });
   }
 
   function updatePermission(key) {
     // permission added
-    if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
+    if (editor.role.permissions[key] === true) {
       editor.loadedRolePermissions = false;
       RoleManager
         .addPermissionToRole(key, roleId)
@@ -213,7 +201,7 @@ function RoleFormController(
         });
     }
     // permission removed
-    if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
+    if (editor.role.permissions[key] === false) {
       editor.loadedRolePermissions = false;
       RoleManager
         .removePermissionFromRole(key, roleId)
