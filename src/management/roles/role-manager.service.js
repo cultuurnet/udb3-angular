@@ -136,6 +136,48 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   };
 
   /**
+   * @param {uuid} roleId
+   * @param {uuid} labelId
+   * @return {Promise.<BaseJob>}
+   */
+  service.addLabelToRole = function(roleId, labelId) {
+    return udbApi
+      .addLabelToRole(roleId, labelId)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @return {Promise}
+   */
+  service.getRoleLabels = function(roleId) {
+    return udbApi
+      .getRoleLabels(roleId);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {uuid} labelId
+   * @return {Promise.<BaseJob>}
+   */
+  service.removeLabelFromRole = function(roleId, labelId) {
+    return udbApi
+      .removeLabelFromRole(roleId, labelId)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {uuid} userId
+   * @return {Promise.<BaseJob>}
+   */
+  service.removeUserFromRole = function(roleId, userId) {
+    return udbApi
+      .removeUserFromRole(roleId, userId)
+      .then(logRoleJob);
+  };
+
+  /**
    * @param {Role} role
    * @return {Promise}
    */
@@ -158,18 +200,6 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   function logRoleJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function createNewRoleJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    job.roleId = commandInfo.roleId;
     jobLogger.addJob(job);
 
     return $q.resolve(job);

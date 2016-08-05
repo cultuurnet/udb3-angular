@@ -229,6 +229,115 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should get a list of roles from the api', function (done) {
+    var expectedRoles = {
+      "itemsPerPage": 10,
+      "member": [
+        {
+          "uuid": "3",
+          "name": "test rol 3"
+        },
+        {
+          "uuid": "1",
+          "name": "test rol"
+        },
+        {
+          "uuid": "2",
+          "name": "test rol 2"
+        }
+      ],
+      "totalItems": "3"
+    };
+
+    function assertRoles (rolesList) {
+      expect(rolesList).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/?limit=12&query=joske&start=5')
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .findRoles('joske', 12, 5)
+      .then(assertRoles);
+
+    $httpBackend.flush();
+  });
+
+  it('should get the details of a role from the api', function (done) {
+    var expectedRole = {
+      'uuid': 1,
+      'name': 'test role',
+      'constraint': '',
+      'permissions': [],
+      'members': []
+    };
+
+    function assertRole (role) {
+      expect(role).toEqual(expectedRole);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1')
+      .respond(JSON.stringify(expectedRole));
+
+    service
+      .getRoleById(1)
+      .then(assertRole);
+
+    $httpBackend.flush();
+  });
+
+  it('should get the labels of a role', function (done) {
+    var expectedLabels = [
+      {
+        "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+        "name": "Bloso",
+        "visibility": "visible",
+        "privacy": "public",
+        "parentUuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c"
+      }
+    ];
+
+    function assertLabels (labels) {
+      expect(labels).toEqual(expectedLabels);
+      done();
+    }
+
+    $httpBackend
+      .expectGET(baseUrl + 'roles/1/labels/')
+      .respond(JSON.stringify(expectedLabels));
+
+    service
+      .getRoleLabels(1)
+      .then(assertLabels);
+
+    $httpBackend.flush();
+  });
+
+  it('should add a label to a role', function (done) {
+    var command = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertCommand (result) {
+      expect(result).toEqual(command);
+      done();
+    }
+
+    $httpBackend
+      .expectPUT(baseUrl + 'roles/1/labels/2')
+      .respond(JSON.stringify(command));
+
+    service
+      .addLabelToRole(1, 2)
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
+
   it('should create a role', function(done) {
     var expectedRoleId = {
       "roleId": "0823f57e-a6bd-450a-b4f5-8459b4b11043"
@@ -559,6 +668,48 @@ describe('Service: UDB3 Api', function () {
     service
       .removeRole('blub')
       .then(function(){}, assertFailure);
+
+    $httpBackend.flush();
+  });
+
+  it('should remove a label from a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertCommand(command) {
+      expect(command).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/uuid1-role/labels/uuid2-label')
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .removeLabelFromRole('uuid1-role', 'uuid2-label')
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
+
+  it('should remove a user from a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertCommand(command) {
+      expect(command).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectDELETE(baseUrl + 'roles/uuid1-role/users/uuid2-user')
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .removeUserFromRole('uuid1-role', 'uuid2-user')
+      .then(assertCommand);
 
     $httpBackend.flush();
   });
