@@ -18384,12 +18384,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<form name=\"editor.form\" class=\"css-form\" novalidate>\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-6\">\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editName && editor.role.name\">\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editName && editor.role.name && editor.role['@id']\">\n" +
     "              <label class=\"control-label\">Naam</label>\n" +
     "              <p><span ng-bind=\"editor.role.name\"></span>\n" +
     "              <a href ng-click=\"editor.editName = true\">Wijzigen</a></p>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"editor.editName || !editor.role.name\">\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"editor.editName || !editor.role['@id']\">\n" +
     "                <label class=\"control-label\" for=\"label-name-field\">Naam</label>\n" +
     "                <input id=\"label-name-field\"\n" +
     "                       class=\"form-control\"\n" +

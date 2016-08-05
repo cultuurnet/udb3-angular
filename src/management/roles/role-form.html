@@ -10,12 +10,12 @@
 <form name="editor.form" class="css-form" novalidate>
     <div class="row">
         <div class="col-md-6">
-            <div class="form-group" udb-form-group ng-if="!editor.editName && editor.role.name">
+            <div class="form-group" udb-form-group ng-if="!editor.editName && editor.role.name && editor.role['@id']">
               <label class="control-label">Naam</label>
               <p><span ng-bind="editor.role.name"></span>
               <a href ng-click="editor.editName = true">Wijzigen</a></p>
             </div>
-            <div class="form-group" udb-form-group ng-if="editor.editName || !editor.role.name">
+            <div class="form-group" udb-form-group ng-if="editor.editName || !editor.role['@id']">
                 <label class="control-label" for="label-name-field">Naam</label>
                 <input id="label-name-field"
                        class="form-control"
