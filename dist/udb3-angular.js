@@ -12263,7 +12263,7 @@ angular
   .service('UserManager', UserManager);
 
 /* @ngInject */
-function UserManager(udbApi) {
+function UserManager(udbApi, $q) {
   var service = this;
 
   /**
@@ -12287,7 +12287,90 @@ function UserManager(udbApi) {
     return udbApi.findUserWithEmail(email);
   };
 }
-UserManager.$inject = ["udbApi"];
+UserManager.$inject = ["udbApi", "$q"];
+
+// Source: src/management/users/users-list.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:UsersListController
+ * @description
+ * # UsersListController
+ */
+angular
+  .module('udb.management.users')
+  .controller('UsersListController', UsersListController);
+
+/* @ngInject */
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+  var rlc = this;
+
+  var itemsPerPage = 10;
+  var minQueryLength = 3;
+
+  var query$ = rx.createObservableFunction(rlc, 'queryChanged');
+  var filteredQuery$ = query$.filter(ignoreShortQueries);
+  var page$ = rx.createObservableFunction(rlc, 'pageChanged');
+  var searchResultGenerator = new SearchResultGenerator(UserManager, filteredQuery$, page$, itemsPerPage);
+  var searchResult$ = searchResultGenerator.getSearchResult$();
+
+  /**
+   * @param {string} query
+   * @return {boolean}
+   */
+  function ignoreShortQueries(query) {
+    if (rlc.query === '') {
+      return true;
+    }
+    else {
+      return query.length >= minQueryLength;
+    }
+  }
+
+  /**
+   * @param {PagedCollection} searchResult
+   */
+  function showSearchResult(searchResult) {
+    rlc.searchResult = searchResult;
+    rlc.loading = false;
+  }
+
+  function openDeleteConfirmModal(user) {
+    var modalInstance = $uibModal.open({
+        templateUrl: 'templates/user-delete-confirm-modal.html',
+        controller: 'UserDeleteConfirmModalCtrl',
+        resolve: {
+          item: function () {
+            return user;
+          }
+        }
+      });
+    modalInstance.result.then($state.reload);
+  }
+  rlc.openDeleteConfirmModal = openDeleteConfirmModal;
+
+  rlc.loading = false;
+  rlc.query = '';
+  rlc.page = 0;
+  rlc.minQueryLength = minQueryLength;
+
+  query$
+    .safeApply($scope, function (query) {
+      rlc.query = query;
+    })
+    .subscribe();
+
+  searchResult$
+    .safeApply($scope, showSearchResult)
+    .subscribe();
+
+  filteredQuery$
+    .merge(page$)
+    .safeApply($scope, function () {
+      rlc.loading = true;
+    })
+    .subscribe();
+}
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state"];
 
 // Source: src/media/create-image-job.factory.js
 /**
@@ -18490,6 +18573,82 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                </ul>\n" +
     "                            </div>\n" +
     "                            </td>\n" +
+    "                    </tr>\n" +
+    "                    </tbody>\n" +
+    "                </table>\n" +
+    "            <div class=\"panel-footer\">\n" +
+    "                <uib-pagination\n" +
+    "                        total-items=\"rlc.searchResult.totalItems\"\n" +
+    "                        ng-model=\"rlc.page\"\n" +
+    "                        items-per-page=\"rlc.searchResult.itemsPerPage\"\n" +
+    "                        max-size=\"10\"\n" +
+    "                        ng-change=\"rlc.pageChanged(rlc.page)\">\n" +
+    "                </uib-pagination>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/users-list.html',
+    "<div class=\"page-header\">\n" +
+    "    <h1>Gebruikers</h1>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-9\">\n" +
+    "        <udb-query-search-bar search-label=\"Zoeken op email\"\n" +
+    "                              on-change=\"rlc.queryChanged(query)\"\n" +
+    "        ></udb-query-search-bar>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-1\">\n" +
+    "        <i ng-show=\"rlc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-2\">\n" +
+    "        <a class=\"btn btn-primary\" ui-sref=\"split.manageUsers.create\" ui-sref-opts=\"{reload:true}\">\n" +
+    "            <i class=\"fa fa-plus-circle\"></i> Gebruiker toevoegen\n" +
+    "        </a>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\" ng-cloak>\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <p ng-show=\"rlc.query.length < rlc.minQueryLength\">\n" +
+    "            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.\n" +
+    "        </p>\n" +
+    "        <p ng-show=\"rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0\">\n" +
+    "            Geen gebruikers gevonden.\n" +
+    "        </p>\n" +
+    "        <div class=\"query-search-result users-results\"\n" +
+    "             ng-class=\"{'loading-search-result': rlc.loading}\"\n" +
+    "             ng-show=\"rlc.searchResult.totalItems > 0\">\n" +
+    "                <table class=\"table table-hover table-striped\">\n" +
+    "                    <thead>\n" +
+    "                    <tr>\n" +
+    "                        <th>E-mail</th>\n" +
+    "                        <th>Nick</th>\n" +
+    "                        <th>Rol</th>\n" +
+    "                        <th>Opties</th>\n" +
+    "                    </tr>\n" +
+    "                    </thead>\n" +
+    "                    <tbody>\n" +
+    "                    <tr ng-repeat=\"user in rlc.searchResult.member\">\n" +
+    "                        <td ng-bind=\"::user.email\"></td>\n" +
+    "                        <td ng-bind=\"::user.username\"></td>\n" +
+    "                        <td ng-bind=\"::user.role\"></td>\n" +
+    "                        <td>\n" +
+    "                          <!-- not yet required\n" +
+    "                            <div class=\"btn-group\">\n" +
+    "                                <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+    "                                    Bewerken <span class=\"caret\"></span></button>\n" +
+    "                                <ul class=\"dropdown-menu\">\n" +
+    "                                    <li><a ui-sref=\"split.manageUsers.edit({id: user.uuid})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
+    "                                    <li><a href ng-click=\"rlc.openDeleteConfirmModal(user)\">Verwijderen</a></li>\n" +
+    "                                </ul>\n" +
+    "                            </div>\n" +
+    "                            -->\n" +
+    "                        </td>\n" +
     "                    </tr>\n" +
     "                    </tbody>\n" +
     "                </table>\n" +
