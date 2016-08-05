@@ -11,13 +11,12 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal) {
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
   var rlc = this;
-
-  rlc.query = '';
 
   var itemsPerPage = 10;
   var minQueryLength = 3;
+
   var query$ = rx.createObservableFunction(rlc, 'queryChanged');
   var filteredQuery$ = query$.filter(ignoreShortQueries);
   var page$ = rx.createObservableFunction(rlc, 'pageChanged');
@@ -45,21 +44,6 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
     rlc.loading = false;
   }
 
-  function updateSearchResultViewer() {
-    rlc.loading = true;
-    UserManager.find(rlc.query, itemsPerPage, rlc.page)
-      .then(function(results) {
-        rlc.searchResult = results;
-        rlc.loading = false;
-      });
-  }
-  rlc.updateSearchResultViewer = updateSearchResultViewer;
-
-  function updateSearchResultViewerOnJobFeedback(job) {
-    job.task.promise.then(updateSearchResultViewer);
-  }
-  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
-
   function openDeleteConfirmModal(user) {
     var modalInstance = $uibModal.open({
         templateUrl: 'templates/user-delete-confirm-modal.html',
@@ -70,7 +54,7 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
           }
         }
       });
-    modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
+    modalInstance.result.then($state.reload);
   }
   rlc.openDeleteConfirmModal = openDeleteConfirmModal;
 
@@ -95,8 +79,4 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       rlc.loading = true;
     })
     .subscribe();
-
-  $scope.$on('$viewContentLoaded', function() {
-    rlc.updateSearchResultViewer();
-  });
 }
