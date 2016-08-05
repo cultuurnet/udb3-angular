@@ -11,13 +11,12 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
   var rlc = this;
-
-  rlc.query = '';
 
   var itemsPerPage = 10;
   var minQueryLength = 3;
+
   var query$ = rx.createObservableFunction(rlc, 'queryChanged');
   var filteredQuery$ = query$.filter(ignoreShortQueries);
   var page$ = rx.createObservableFunction(rlc, 'pageChanged');
@@ -25,6 +24,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   var searchResult$ = searchResultGenerator.getSearchResult$();
 
   /**
+   * Filter applied on query-stream to ignore too short queries
    * @param {string} query
    * @return {boolean}
    */
@@ -45,21 +45,6 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     rlc.loading = false;
   }
 
-  function updateSearchResultViewer() {
-    rlc.loading = true;
-    RoleManager.find(rlc.query, itemsPerPage, rlc.page)
-      .then(function(results) {
-        rlc.searchResult = results;
-        rlc.loading = false;
-      });
-  }
-  rlc.updateSearchResultViewer = updateSearchResultViewer;
-
-  function updateSearchResultViewerOnJobFeedback(job) {
-    job.task.promise.then(updateSearchResultViewer);
-  }
-  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
-
   function openDeleteConfirmModal(role) {
     var modalInstance = $uibModal.open({
         templateUrl: 'templates/role-delete-confirm-modal.html',
@@ -70,7 +55,10 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
           }
         }
       });
-    modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
+    modalInstance.result.then(function() {
+      $state.reload();
+    });
+    // TODO: $state.reload isn't the best way to do it, better have another stream
   }
   rlc.openDeleteConfirmModal = openDeleteConfirmModal;
 
@@ -95,8 +83,4 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
-
-  $scope.$on('$viewContentLoaded', function() {
-    rlc.updateSearchResultViewer();
-  });
 }
