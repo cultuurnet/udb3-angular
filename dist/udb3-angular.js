@@ -4558,6 +4558,11 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
     var currentLocation = $location.absUrl(),
         authUrl = appConfig.authUrl;
 
+    // remove cookies
+    $cookieStore.remove('token');
+    $cookieStore.remove('user');
+
+    // redirect to login page
     authUrl += '?destination=' + currentLocation;
     $window.location.href = authUrl;
   };
@@ -11315,8 +11320,6 @@ angular
 function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   var llc = this;
 
-  llc.query = '';
-
   var itemsPerPage = 10;
   var minQueryLength = 3;
   var query$ = rx.createObservableFunction(llc, 'queryChanged');
@@ -11347,6 +11350,7 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   }
 
   llc.loading = false;
+  llc.query = '';
   llc.page = 0;
   llc.minQueryLength = minQueryLength;
 
@@ -11366,13 +11370,6 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
       llc.loading = true;
     })
     .subscribe();
-
-  $scope.$on('$viewContentLoaded', function() {
-    LabelManager.find('', itemsPerPage, 0)
-      .then(function(results) {
-        llc.searchResult = results;
-      });
-  });
 }
 LabelsListController.$inject = ["SearchResultGenerator", "rx", "$scope", "LabelManager"];
 
@@ -12026,13 +12023,12 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
   var rlc = this;
-
-  rlc.query = '';
 
   var itemsPerPage = 10;
   var minQueryLength = 3;
+
   var query$ = rx.createObservableFunction(rlc, 'queryChanged');
   var filteredQuery$ = query$.filter(ignoreShortQueries);
   var page$ = rx.createObservableFunction(rlc, 'pageChanged');
@@ -12040,6 +12036,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   var searchResult$ = searchResultGenerator.getSearchResult$();
 
   /**
+   * Filter applied on query-stream to ignore too short queries
    * @param {string} query
    * @return {boolean}
    */
@@ -12060,21 +12057,6 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     rlc.loading = false;
   }
 
-  function updateSearchResultViewer() {
-    rlc.loading = true;
-    RoleManager.find(rlc.query, itemsPerPage, rlc.page)
-      .then(function(results) {
-        rlc.searchResult = results;
-        rlc.loading = false;
-      });
-  }
-  rlc.updateSearchResultViewer = updateSearchResultViewer;
-
-  function updateSearchResultViewerOnJobFeedback(job) {
-    job.task.promise.then(updateSearchResultViewer);
-  }
-  rlc.updateSearchResultViewerOnJobFeedback = updateSearchResultViewerOnJobFeedback;
-
   function openDeleteConfirmModal(role) {
     var modalInstance = $uibModal.open({
         templateUrl: 'templates/role-delete-confirm-modal.html',
@@ -12085,7 +12067,8 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
           }
         }
       });
-    modalInstance.result.then(updateSearchResultViewerOnJobFeedback);
+    modalInstance.result.then($state.reload);
+    // TODO: $state.reload isn't the best way to do it, better have another stream
   }
   rlc.openDeleteConfirmModal = openDeleteConfirmModal;
 
@@ -12110,12 +12093,8 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
-
-  $scope.$on('$viewContentLoaded', function() {
-    rlc.updateSearchResultViewer();
-  });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state"];
 
 // Source: src/management/roles/unique-role.directive.js
 angular
@@ -12173,7 +12152,7 @@ function SearchResultGenerator(rx) {
   var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage) {
     this.searchService = searchService;
     this.itemsPerPage = itemsPerPage;
-    this.query$ = query$.debounce(300);
+    this.query$ = query$.debounce(300).startWith(0);
     this.offset$ = page$.map(pageToOffset(itemsPerPage)).startWith(0);
 
     this.searchParameters$ = rx.Observable.combineLatest(
@@ -15683,57 +15662,70 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<h1 class=\"title\" id=\"page-title\">\n" +
     "  Welkom, <span ng-bind=\"dash.username\"></span>\n" +
     "</h1>\n" +
+    "\n" +
     "<div class=\"text-center\" ng-show=\"dash.pagedItemViewer.loading\">\n" +
     "  <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
+    "<div class=\"udb-dashboard-header\">\n" +
+    "  <!-- udb-dashboard-header -->\n" +
+    "</div>\n" +
+    "\n" +
     "<div ng-cloak ng-show=\"!dash.pagedItemViewer.loading\">\n" +
-    "  <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
-    "    <div class=\"panel-body text-center\">\n" +
-    "      <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
-    "        <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of monument toevoegen?</a></span>\n" +
-    "      </p>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
     "\n" +
-    "  <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
+    "  <div class=\"row udb-dashboard\">\n" +
+    "    <div class=\"col-xs-12\">\n" +
     "\n" +
-    "    <div class=\"clearfix\">\n" +
-    "      <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
-    "        <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
-    "          <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
-    "        </span>\n" +
-    "      </p>\n" +
-    "    </div>\n" +
+    "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
+    "        <div class=\"panel-body text-center\">\n" +
+    "          <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
+    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of monument toevoegen?</a></span>\n" +
+    "          </p>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "\n" +
-    "    <div class=\"panel panel-default\">\n" +
-    "      <table class=\"table\">\n" +
-    "        <tbody>\n" +
-    "          <tr udb-dashboard-event-item\n" +
-    "              ng-if=\"event['@type'] === 'Event'\"\n" +
-    "              class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
-    "              ng-repeat-start=\"event in dash.pagedItemViewer.events\">\n" +
-    "          </tr>\n" +
-    "          <tr udb-dashboard-place-item\n" +
-    "              ng-if=\"event['@type'] === 'Place'\"\n" +
-    "              class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
-    "              ng-repeat-end>\n" +
-    "          </tr>\n" +
-    "        </tbody>\n" +
-    "      </table>\n" +
-    "      <div class=\"panel-footer\">\n" +
-    "        <uib-pagination\n" +
-    "          total-items=\"dash.pagedItemViewer.totalItems\"\n" +
-    "          ng-model=\"dash.pagedItemViewer.currentPage\"\n" +
-    "          items-per-page=\"dash.pagedItemViewer.pageSize\"\n" +
-    "          ng-show=\"dash.pagedItemViewer.totalItems > 0\"\n" +
-    "          max-size=\"10\"\n" +
-    "          ng-change=\"dash.updateItemViewer()\">\n" +
-    "        </uib-pagination>\n" +
+    "      <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
+    "\n" +
+    "        <div class=\"clearfix\">\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
+    "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
+    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
+    "            </span>\n" +
+    "          </p>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"panel panel-default\">\n" +
+    "          <table class=\"table\">\n" +
+    "            <tbody>\n" +
+    "              <tr udb-dashboard-event-item\n" +
+    "                  ng-if=\"event['@type'] === 'Event'\"\n" +
+    "                  class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
+    "                  ng-repeat-start=\"event in dash.pagedItemViewer.events\">\n" +
+    "              </tr>\n" +
+    "              <tr udb-dashboard-place-item\n" +
+    "                  ng-if=\"event['@type'] === 'Place'\"\n" +
+    "                  class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
+    "                  ng-repeat-end>\n" +
+    "              </tr>\n" +
+    "            </tbody>\n" +
+    "          </table>\n" +
+    "          <div class=\"panel-footer\">\n" +
+    "            <uib-pagination\n" +
+    "              total-items=\"dash.pagedItemViewer.totalItems\"\n" +
+    "              ng-model=\"dash.pagedItemViewer.currentPage\"\n" +
+    "              items-per-page=\"dash.pagedItemViewer.pageSize\"\n" +
+    "              ng-show=\"dash.pagedItemViewer.totalItems > 0\"\n" +
+    "              max-size=\"10\"\n" +
+    "              ng-change=\"dash.updateItemViewer()\">\n" +
+    "            </uib-pagination>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "\n" +
     "</div>\n"
   );
 
@@ -15818,15 +15810,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/failed-job.template.html',
     "<p>\n" +
-    "  <button type=\"button\" class=\"close udb-hide-job-button\" ng-click=\"hideJob(job)\" aria-label=\"Close\">\n" +
-    "    <span aria-hidden=\"true\">×</span>\n" +
-    "  </button>\n" +
+    "  <a class=\"udb-hide-job-button\" ng-click=\"hideJob(job)\">\n" +
+    "    <i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i>\n" +
+    "  </a>\n" +
     "  <ins>\n" +
     "    <span am-time-ago=\"::job.getLogDateByState()\"></span>\n" +
     "  </ins>\n" +
     "  <span ng-bind=\"job.getDescription()\"></span>\n" +
-    "</p>\n" +
-    "\n"
+    "</p>\n"
   );
 
 
@@ -15837,6 +15828,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "         <div class=\"col-sm-12\">\n" +
     "            <button type=\"button\" class=\"close\" ng-click=\"logger.hideJobLog()\"><span aria-hidden=\"true\">&times;</span></button>\n" +
     "         </div>\n" +
+    "         <div class=\"col-sm-12\">\n" +
+    "           <div class=\"udb-job-log-header-message\">\n" +
+    "             <!-- udb-job-log-header-message -->\n" +
+    "           </div>\n" +
+    "         </div>\n" +
     "     </div>\n" +
     " </div>\n" +
     "  <div class=\"row\">\n" +
@@ -15844,7 +15840,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"udb-job-block udb-job-block-ready\">\n" +
     "        <p class=\"udb-job-title\">Geëxporteerde documenten</p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
-    "          <li class=\"alert repeat-animation\" ng-repeat=\"job in logger.getFinishedExportJobs()\">\n" +
+    "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getFinishedExportJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
     "          </li>\n" +
     "        </ul>\n" +
@@ -15853,7 +15849,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"udb-job-block udb-job-block-errors\">\n" +
     "        <p class=\"udb-job-title\">Meldingen <span class=\"badge\" ng-bind=\"logger.getFailedJobs().length\"></span></p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
-    "          <li class=\"alert repeat-animation\" ng-repeat=\"job in logger.getFailedJobs()\">\n" +
+    "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getFailedJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
     "          </li>\n" +
     "        </ul>\n" +
@@ -15862,11 +15858,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"udb-job-block udb-job-block-pending\">\n" +
     "        <p class=\"udb-job-title\">Bezig</p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
-    "          <li class=\"alert repeat-animation\" ng-repeat=\"job in logger.getQueuedJobs()\">\n" +
+    "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getQueuedJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
+    "\n" +
+    "      <div class=\"udb-job-log-footer-message\">\n" +
+    "        <!-- udb-job-log-footer-message -->\n" +
+    "      </div>\n" +
+    "\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +

@@ -69,20 +69,4 @@ describe('Controller: Labels List', function() {
 
     var sub = searchResult$.subscribe(assertLoadingEnded);
   });
-
-  it('should load the label list on $viewContentLoaded', function () {
-    var controller = $controller(
-      'LabelsListController', {
-        SearchResultGenerator: searchResultGenerator,
-        $scope: $scope,
-        LabelManager: LabelManager
-      }
-    );
-
-    LabelManager.find.and.returnValue($q.resolve(pagedSearchResult));
-
-    $scope.$broadcast('$viewContentLoaded');
-
-    expect(LabelManager.find).toHaveBeenCalledWith('', 10, 0);
-  });
 });

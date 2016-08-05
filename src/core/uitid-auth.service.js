@@ -31,6 +31,11 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
     var currentLocation = $location.absUrl(),
         authUrl = appConfig.authUrl;
 
+    // remove cookies
+    $cookieStore.remove('token');
+    $cookieStore.remove('user');
+
+    // redirect to login page
     authUrl += '?destination=' + currentLocation;
     $window.location.href = authUrl;
   };
