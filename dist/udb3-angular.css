@@ -1965,9 +1965,17 @@ input + .alert {
 .udb-job-log.shown {
   left: 0;
 }
-.udb-job-log .alert {
+.udb-alert {
   margin: 0;
-  padding: 0;
+  padding: 0 30px 0 0;
+  position: relative;
+}
+.udb-hide-job-button {
+  position: absolute;
+  right: 0;
+}
+.udb-hide-job-button:hover {
+  cursor: pointer;
 }
 .udb-job-title {
   text-transform: uppercase;

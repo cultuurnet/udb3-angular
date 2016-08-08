@@ -7,7 +7,8 @@ describe('Controller: Users List', function() {
     $controller,
     searchResultGenerator,
     UserManager,
-    $uibModal;
+    $uibModal,
+    $state;
 
   var pagedSearchResult = {
     '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
@@ -35,6 +36,7 @@ describe('Controller: Users List', function() {
     searchResultGenerator = _SearchResultGenerator_;
     UserManager = jasmine.createSpyObj('UserManager', ['find']);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
+    $state = jasmine.createSpyObj('$state', ['reload']);
   }));
 
   function getUsersListController() {
@@ -43,7 +45,8 @@ describe('Controller: Users List', function() {
         SearchResultGenerator: searchResultGenerator,
         $scope: $scope,
         UserManager: UserManager,
-        $uibModal: $uibModal
+        $uibModal: $uibModal,
+        $state: $state
       }
     );
   }
@@ -74,30 +77,33 @@ describe('Controller: Users List', function() {
     var sub = searchResult$.subscribe(assertLoadingEnded);
   });
 
-  it('should load the users list on $viewContentLoaded', function () {
-    var rlc = getUsersListController();
+  it('should not search for items when the query is less then 3 characters', function() {
+    var deferredSearchResult = $q.defer();
+    var searchResult$ = Rx.Observable.fromPromise(deferredSearchResult.promise);
+    spyOn(searchResultGenerator.prototype, 'getSearchResult$').and.returnValue(searchResult$);
+    var controller = getUsersListController();
 
-    UserManager.find.and.returnValue($q.resolve(pagedSearchResult));
+    expect(controller.loading).toEqual(false);
 
-    $scope.$broadcast('$viewContentLoaded');
-    $scope.$digest();
-
-    expect(UserManager.find).toHaveBeenCalledWith('', 10, 0);
-    expect(rlc.searchResult).toEqual(pagedSearchResult);
+    controller.queryChanged('');
+    expect(controller.loading).toEqual(true);
   });
 
+
   it('should call update search result viewer after delete modal close', function () {
-    var rlc = getUsersListController();
+    var deferredSearchResult = $q.defer();
+    var searchResult$ = Rx.Observable.fromPromise(deferredSearchResult.promise);
+    spyOn(searchResultGenerator.prototype, 'getSearchResult$').and.returnValue(searchResult$);
+
+    var ulc = getUsersListController();
 
     UserManager.find.and.returnValue($q.resolve(pagedSearchResult));
     var job = { task: { promise: $q.resolve() }};
     $uibModal.open.and.returnValue({ result: $q.resolve(job) });
-    spyOn(rlc, 'updateSearchResultViewerOnJobFeedback').and.callThrough();
 
-    rlc.openDeleteConfirmModal({id: 'blub', name: 'blub'});
+    ulc.openDeleteConfirmModal({id: 'blub', name: 'blub'});
     $scope.$digest();
 
-    expect(UserManager.find).toHaveBeenCalledWith('', 10, 0);
-    expect(rlc.searchResult).toEqual(pagedSearchResult);
+    expect($state.reload).toHaveBeenCalled();
   });
 });
