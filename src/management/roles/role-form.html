@@ -1,0 +1,176 @@
+<div class="page-header">
+    <h1>Roles</h1>
+</div>
+<h2>Role bewerken</h2>
+
+<div ng-show="!editor.loadedRole && !editor.loadingError">
+    <i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
+
+<form name="editor.form" class="css-form" novalidate>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group" udb-form-group ng-if="!editor.editName && editor.role.name && editor.role['@id']">
+              <label class="control-label">Naam</label>
+              <p><span ng-bind="editor.role.name"></span>
+              <a href ng-click="editor.editName = true">Wijzigen</a></p>
+            </div>
+            <div class="form-group" udb-form-group ng-if="editor.editName || !editor.role['@id']">
+                <label class="control-label" for="label-name-field">Naam</label>
+                <input id="label-name-field"
+                       class="form-control"
+                       name="name"
+                       type="text"
+                       ng-minlength="3"
+                       ng-required="true"
+                       ng-maxlength="255"
+                       ng-model="editor.role.name"
+                       ng-disabled="editor.saving">
+                <p class="help-block" ng-if="editor.form.name.$error.required">Een role naam is verplicht.</p>
+                <p class="help-block" ng-if="editor.form.name.$error.maxlength">Een role mag maximum 255 tekens bevatten.</p>
+                <p class="help-block" ng-if="editor.form.name.$error.minlength">Een role moet uit minstens 3 tekens bestaan.</p>
+
+            </div>
+            <button ng-disabled="!editor.form.$valid || editor.saving"
+              ng-if="!editor.role['@id']"
+              type="button"
+              class="btn btn-primary"
+              ng-click="editor.createRole()">
+              Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+            </button>
+
+            <button ng-disabled="!editor.form.$valid || editor.saving"
+              ng-if="editor.editName"
+              type="button"
+              class="btn btn-primary"
+              ng-click="editor.updateName()">
+              Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row" ng-show="editor.role['@id']">
+        <div class="col-md-12">
+            <div class="form-group" udb-form-group ng-if="!editor.editConstraint">
+              <label class="control-label">Bewerkrecht</label>
+              <p><span ng-bind="editor.role.constraint"></span>
+              <a href ng-click="editor.editConstraint = true">Wijzigen</a></p>
+            </div>
+            <div class="form-group" udb-form-group ng-if="editor.editConstraint">
+                <label class="control-label" for="label-name-field">Bewerkrecht</label>
+                <input id="label-name-field"
+                       class="form-control"
+                       name="constraint"
+                       type="text"
+                       ng-maxlength="255"
+                       ng-model="editor.role.constraint"
+                       ng-disabled="editor.saving">
+            </div>
+            <button ng-disabled="!editor.form.$valid || editor.saving"
+              type="button"
+              class="btn btn-primary"
+              ng-if="editor.editConstraint"
+              ng-click="editor.updateConstraint()">
+              Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row" ng-show="editor.role['@id']">
+      <div class="col-md-12">
+        <uib-tabset class="role-form-tabset">
+          <uib-tab heading="Permissies">
+            <div class="row">
+              <div class="col-md-6">
+                  <input class="form-control permission-searchbar" placeholder="Zoeken op naam" ng-model="permissionSearch">
+              </div>
+              <div class="col-md-1">
+                <i ng-show="!editor.loadedRolePermissions" class="fa fa-circle-o-notch fa-spin"></i>
+              </div>
+            </div>
+            <div class="col-md-12">
+                <div class="checkbox" ng-repeat="role in editor.permissions | filter: permissionSearch">
+                  <label>
+                      <input type="checkbox"
+                        ng-model="editor.role.permissions[role.key]" ng-change="editor.updatePermission(role.key)"> <strong ng-bind="::role.name"></strong>
+                  </label>
+                </div>
+            </div>
+          </uib-tab>
+          <uib-tab heading="Leden">
+              <div class="row">
+                  <div class="col-md-11 form-inline">
+                          <label class="control-label">Voeg lid toe</label>
+                          <input placeholder="E-mailadres"
+                                 id="email"
+                                 type="email"
+                                 name="email"
+                                 data-ng-model="editor.email"
+                                 class="form-control" />
+                          <button type="submit"
+                                  class="btn btn-primary"
+                                  ng-click="editor.addUser()"
+                                  ng-disabled="!editor.form.$valid || editor.addingUser">
+                              Toevoegen <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.addingUser"></i>
+                          </button>
+                  </div>
+                  <div class="col-md-1">
+                      <i ng-show="!editor.loadedRoleUsers" class="fa fa-circle-o-notch fa-spin"></i>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-12" ng-show="editor.role.users.length && editor.loadedRoleUsers">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                              <th>E-mailadres</th>
+                              <th>Verwijderen</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr ng-repeat="user in editor.role.users">
+                              <td ng-bind="::user.email"></td>
+                              <td><a href ng-click="editor.removeUser(user)">Lidmaatschap verwijderen</a></td>
+                          </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-12" ng-hide="editor.role.users.length">
+                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.
+                  </div>
+              </div>
+          </uib-tab>
+          <uib-tab heading="Labels">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label class="control-label">Voeg een label toe</label>
+                <udb-search-label role="editor.role"
+                                  label-added="editor.addLabel(label)">
+              </div>
+            </div><!-- /row -->
+            <div class="row">
+              <div class="col-md-12" ng-show="editor.role.labels.length && editor.loadedRoleLabels">
+                <table class="table">
+                    <thead>
+                      <tr>
+                          <th>Toegevoegde labels</th>
+                          <th>Verwijderen</th>
+                          <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="label in editor.role.labels">
+                          <td ng-bind="::label.name"></td>
+                          <td><a href ng-click="editor.removeLabel(label)">Lidmaatschap verwijderen</a></td>
+                          <td><span class="text-danger" ng-if="label.privacy === 'public'">Dit label is niet voorbehouden</span></td>
+                      </tr>
+                    </tbody>
+                </table>
+              </div>
+              <div class="col-md-12" ng-hide="editor.role.labels.length">
+                  Er hangen nog geen labels aan deze rol.
+              </div>
+            </div><!-- /row -->
+          </uib-tab>
+        </uib-tabset>
+      </div>
+    </div>
+</form>

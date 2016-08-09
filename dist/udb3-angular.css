@@ -1965,9 +1965,17 @@ input + .alert {
 .udb-job-log.shown {
   left: 0;
 }
-.udb-job-log .alert {
+.udb-alert {
   margin: 0;
-  padding: 0;
+  padding: 0 30px 0 0;
+  position: relative;
+}
+.udb-hide-job-button {
+  position: absolute;
+  right: 0;
+}
+.udb-hide-job-button:hover {
+  cursor: pointer;
 }
 .udb-job-title {
   text-transform: uppercase;
@@ -3171,4 +3179,13 @@ img.offer-image-thumbnail {
 }
 [udb-form-group].has-error .help-block {
   display: block;
+}
+.role-form-tabset .tab-pane {
+  padding-top: 1ex;
+}
+udb-search-label i.caret {
+  display: none;
+}
+.form-group udb-search-label input {
+  max-width: none;
 }

@@ -16,6 +16,8 @@ describe('Service: Role Manager', function () {
       'removeRole',
       'findRoles',
       'getRoleById',
+      'getRoleLabels',
+      'addLabelToRole',
       'getRolePermissions',
       'getRoleUsers',
       'createRole',
@@ -23,7 +25,9 @@ describe('Service: Role Manager', function () {
       'removePermissionFromRole',
       'addUserToRole',
       'updateRoleName',
-      'updateRoleConstraint'
+      'updateRoleConstraint',
+      'removeLabelFromRole',
+      'removeUserFromRole'
     ]);
     $provide.provider('udbApi', {
       $get: function () {
@@ -274,5 +278,93 @@ describe('Service: Role Manager', function () {
       .then(assertJobCreation);
 
     $scope.$apply();
-  })
+  });
+
+  it('should fetch the role labels', function (done) {
+    var labels = [
+      {
+        "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+        "name": "Bloso",
+        "visibility": "visible",
+        "privacy": "public",
+        "parentUuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c"
+      }
+    ];
+    udbApi.getRoleLabels.and.returnValue($q.resolve(labels));
+
+    function assertLabels (labels) {
+      expect(labels).toEqual(labels);
+      done();
+    }
+
+    service
+      .getRoleLabels('blub-id')
+      .then(assertLabels);
+
+    $scope.$apply();
+  });
+
+  it('should add a label to a role', function (done) {
+    var command = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+    udbApi.addLabelToRole.and.returnValue($q.resolve(command));
+
+    function assertJob (job) {
+      expect(job.id).toEqual(command.commandId);
+      done();
+    }
+
+    service
+      .addLabelToRole('blub-id')
+      .then(assertJob);
+
+    $scope.$apply();
+  });
+
+  it('should remove a label from a role', function(done) {
+    var expectedCommandId = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    udbApi.removeLabelFromRole.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertCommand(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      expect(udbApi.removeLabelFromRole).toHaveBeenCalledWith(
+        '0823f57e-a6bd-450a-b4f5-8459b4b11043',
+        'label-id'
+      );
+      done();
+    }
+
+    service
+      .removeLabelFromRole('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'label-id')
+      .then(assertCommand);
+
+    $scope.$apply();
+  });
+
+  it('should remove a user from a role', function(done) {
+    var expectedCommandId = {
+      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
+    };
+
+    udbApi.removeUserFromRole.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertCommand(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      expect(udbApi.removeUserFromRole).toHaveBeenCalledWith(
+        '0823f57e-a6bd-450a-b4f5-8459b4b11043',
+        'user-id'
+      );
+      done();
+    }
+
+    service
+      .removeUserFromRole('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'user-id')
+      .then(assertCommand);
+
+    $scope.$apply();
+  });
 });
