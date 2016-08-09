@@ -833,7 +833,7 @@ function UdbApi(
   this.getRoleById = function (roleId) {
     return $http
       .get(appConfig.baseUrl + 'roles/' + roleId, defaultApiConfig)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -1029,6 +1029,56 @@ function UdbApi(
   this.removeRole = function (roleId) {
     return $http
       .delete(appConfig.baseUrl + 'roles/' + roleId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} roleId
+   *  roleId for the role to retrieve labels for
+   * @return {Promise.Array<Permission>}
+   */
+  this.getRoleLabels = function (roleId) {
+    return $http
+      .get(appConfig.baseUrl + 'roles/' + roleId + '/labels/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} roleId
+   *  roleId for the role
+   * @param {string} labelId
+   *  The id of the label to be added
+   * @return {Promise}
+   */
+  this.addLabelToRole = function (roleId, labelId) {
+    return $http
+      .put(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, {}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} roleId
+   *  roleId for the role
+   * @param {string} labelId
+   *  The id of the label to be removed
+   * @return {Promise}
+   */
+  this.removeLabelFromRole = function (roleId, labelId) {
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/labels/' + labelId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} roleId
+   *  roleId for the role
+   * @param {string} userId
+   *  The id of the user to be removed
+   * @return {Promise}
+   */
+  this.removeUserFromRole = function (roleId, userId) {
+    return $http
+      .delete(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
