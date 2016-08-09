@@ -2998,6 +2998,7 @@ function UdbApi(
    *   Value to save
    */
   this.updateProperty = function(offerLocation, property, value) {
+    // TODO: having both in path and updateData is duplicate
     var updateData = {};
     updateData[property] = value;
     var path = offerPropertyPaths[property] ? offerPropertyPaths[property] : property;
@@ -3036,6 +3037,11 @@ function UdbApi(
     );
   };
 
+  /**
+   * @param {EventFormData} offer
+   *
+   * @return {Promise.<URL>}
+   */
   this.deleteOffer = function (offer) {
     return $http['delete'](
       offer['@id'],
@@ -3116,6 +3122,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
+    // TODO: swagger docs describes different path:
+    // /api/1.0/organizer
     return $http.post(
       appConfig.baseApiUrl + 'organizer',
       organizer,
@@ -3325,7 +3333,7 @@ function UdbApi(
       },
       file: imageFile
     };
-    var config = Object.assign(defaultApiConfig, uploadOptions);
+    var config = _.assign(defaultApiConfig, uploadOptions);
 
     return Upload.upload(config);
   };
@@ -11590,6 +11598,96 @@ function PermissionManager(udbApi) {
 }
 PermissionManager.$inject = ["udbApi"];
 
+// Source: src/management/roles/role-creator.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:RoleCreatorController
+ * @description
+ * # RoleCreatorController
+ */
+angular
+  .module('udb.management.roles')
+  .controller('RoleCreatorController', RoleCreatorController);
+
+/** @ngInject */
+function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state, $q) {
+  var creator = this;
+  creator.creating = false;
+  creator.create = create;
+  creator.loadedPermissions = false;
+  creator.role = {
+    name: '',
+    constraint: '',
+    permissions: {}
+  };
+
+  function loadPermissions () {
+    PermissionManager
+      .getAll().then(function(permissions) {
+        creator.permissions = permissions;
+      }, showProblem)
+      .finally(function() {
+        creator.loadedPermissions = true;
+      });
+  }
+  loadPermissions();
+
+  function create() {
+    function goToOverview() {
+      $state.go('split.manageRoles.list', {reload:true});
+    }
+
+    function roleCreated (createdRole) {
+      var roleId = createdRole.roleId;
+      // role is created
+      var promisses = [];
+
+      // update constraint if not empty
+      if (creator.role.constraint.length > 0) {
+        promisses.push(RoleManager.updateRoleConstraint(roleId, creator.role.constraint));
+      }
+
+      // set all permissions for the role in parallel
+      Object.keys(creator.role.permissions).forEach(function(permissionKey) {
+        promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
+      });
+
+      // when done we can return to overview or show error
+      $q.all(promisses).then(function() {
+        goToOverview();
+      }).catch(showProblem);
+    }
+
+    creator.creating = true;
+    RoleManager
+      .create(creator.role.name)
+      .then(roleCreated, showProblem)
+      .finally(function () {
+        creator.creating = false;
+      });
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return problem.title + ' ' + problem.detail;
+          }
+        }
+      }
+    );
+    $state.go('split.manageRoles.list', {reload:true});
+  }
+}
+RoleCreatorController.$inject = ["RoleManager", "PermissionManager", "$uibModal", "$state", "$q"];
+
 // Source: src/management/roles/role-form.controller.js
 /**
  * @ngdoc function
@@ -18553,7 +18651,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/roles-list.html',
     "<div class=\"page-header\">\n" +
-    "    <h1>Rollen</h1>\n" +
+    "    <h1>Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
