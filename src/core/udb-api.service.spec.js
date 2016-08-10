@@ -815,12 +815,15 @@ describe('Service: UDB3 Api', function () {
   });
 
   // findEventsAtPlace
-  xit('should find events at a place', function(done){
+  it('should find events at a place', function(done){
     // TODO: not sure about this one
     // cannot find any documentation for it in the swagger.json
     var placeLocation = 'http://culudb-silex.dev/place/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
-    var response = {};
-    var expectedResponse = {};
+    var response = {
+      "events": [
+        "7616a359-b95c-48c0-9981-502732b8d957"
+      ]
+    };
 
     $httpBackend
       .expectGET(placeLocation + '/events')
@@ -1145,8 +1148,17 @@ describe('Service: UDB3 Api', function () {
   });
 
   // getDashboardItems
-  xit('should get dashboard items', function(done){
-    var response = [];
+  it('should get dashboard items', function(done){
+    var response = {
+      "itemsPerPage": 30,
+      "totalItems": 1,
+      "member": [
+        {
+          "id": "http://udb-silex.dev/event/7616a359-b95c-48c0-9981-502732b8d957",
+          "type": "Event"
+        }
+      ]
+    };
 
     $httpBackend
       .expectGET(baseUrl + 'dashboard/items')
