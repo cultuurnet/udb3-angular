@@ -229,7 +229,7 @@ describe('Service: LuceneQueryBuilder', function () {
     };
 
     var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
-    expect(queryString).toBe('city:Leuven OR city:Tienen AND category_eventtype_name:Concert');
+    expect(queryString).toBe('(city:Leuven OR city:Tienen) AND category_eventtype_name:Concert');
   });
 
   it('Combines AND groups with multiple fields', function () {
