@@ -216,7 +216,7 @@ function RoleFormController(
     editor.saving = true;
 
     RoleManager
-      .addLabelToRole(roleId, label.id)
+      .addLabelToRole(roleId, label.uuid)
       .then(function () {
         editor.role.labels.push(label);
       }, showProblem)
@@ -229,7 +229,7 @@ function RoleFormController(
     editor.saving = true;
 
     RoleManager
-      .removeLabelFromRole(roleId, label.id)
+      .removeLabelFromRole(roleId, label.uuid)
       .then(function () {
         var pos = editor.role.labels.indexOf(label);
         editor.role.labels.splice(pos, 1);

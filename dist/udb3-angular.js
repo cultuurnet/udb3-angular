@@ -11139,7 +11139,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
    * @param {ApiProblem} problem
    */
   function showProblem(problem) {
-    loadLabel(editor.label.id);
+    loadLabel(editor.label.uuid);
     var modalInstance = $uibModal.open(
       {
         templateUrl: 'templates/unexpected-error-modal.html',
@@ -11283,7 +11283,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.copy = function (label) {
     return udbApi
-      .createLabel(label.name, label.isVisible, label.isPrivate, label.id)
+      .createLabel(label.name, label.isVisible, label.isPrivate, label.uuid)
       .then(createNewLabelJob);
   };
 
@@ -11293,7 +11293,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.delete = function (label) {
     return udbApi
-      .deleteLabel(label.id)
+      .deleteLabel(label.uuid)
       .then(logLabelJob);
   };
 
@@ -11303,7 +11303,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makeInvisible = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakeInvisible')
+      .updateLabel(label.uuid, 'MakeInvisible')
       .then(logLabelJob);
   };
 
@@ -11313,7 +11313,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makeVisible = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakeVisible')
+      .updateLabel(label.uuid, 'MakeVisible')
       .then(logLabelJob);
   };
 
@@ -11324,7 +11324,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makePrivate = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakePrivate')
+      .updateLabel(label.uuid, 'MakePrivate')
       .then(logLabelJob);
   };
 
@@ -11334,7 +11334,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makePublic = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakePublic')
+      .updateLabel(label.uuid, 'MakePublic')
       .then(logLabelJob);
   };
 
@@ -12109,7 +12109,7 @@ function RoleFormController(
     editor.saving = true;
 
     RoleManager
-      .addLabelToRole(roleId, label.id)
+      .addLabelToRole(roleId, label.uuid)
       .then(function () {
         editor.role.labels.push(label);
       }, showProblem)
@@ -12122,7 +12122,7 @@ function RoleFormController(
     editor.saving = true;
 
     RoleManager
-      .removeLabelFromRole(roleId, label.id)
+      .removeLabelFromRole(roleId, label.uuid)
       .then(function () {
         var pos = editor.role.labels.indexOf(label);
         editor.role.labels.splice(pos, 1);
@@ -18625,7 +18625,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <td ng-bind=\"::(label.visibility === 'invisible' ? 'Verborgen' : '')\"></td>\n" +
     "                        <td ng-bind=\"::(label.privacy === 'private' ? 'Voorbehouden' : '')\"></td>\n" +
     "                        <td>\n" +
-    "                            <a ui-sref=\"split.manageLabels.edit({id: label.id})\">Bewerken</a>\n" +
+    "                            <a ui-sref=\"split.manageLabels.edit({id: label.uuid})\">Bewerken</a>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                    </tbody>\n" +

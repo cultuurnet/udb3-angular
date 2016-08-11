@@ -62,7 +62,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.copy = function (label) {
     return udbApi
-      .createLabel(label.name, label.isVisible, label.isPrivate, label.id)
+      .createLabel(label.name, label.isVisible, label.isPrivate, label.uuid)
       .then(createNewLabelJob);
   };
 
@@ -72,7 +72,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.delete = function (label) {
     return udbApi
-      .deleteLabel(label.id)
+      .deleteLabel(label.uuid)
       .then(logLabelJob);
   };
 
@@ -82,7 +82,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makeInvisible = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakeInvisible')
+      .updateLabel(label.uuid, 'MakeInvisible')
       .then(logLabelJob);
   };
 
@@ -92,7 +92,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makeVisible = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakeVisible')
+      .updateLabel(label.uuid, 'MakeVisible')
       .then(logLabelJob);
   };
 
@@ -103,7 +103,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makePrivate = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakePrivate')
+      .updateLabel(label.uuid, 'MakePrivate')
       .then(logLabelJob);
   };
 
@@ -113,7 +113,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makePublic = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakePublic')
+      .updateLabel(label.uuid, 'MakePublic')
       .then(logLabelJob);
   };
 
