@@ -62,7 +62,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
    * @param {ApiProblem} problem
    */
   function showProblem(problem) {
-    loadLabel(editor.label.id);
+    loadLabel(editor.label.uuid);
     var modalInstance = $uibModal.open(
       {
         templateUrl: 'templates/unexpected-error-modal.html',

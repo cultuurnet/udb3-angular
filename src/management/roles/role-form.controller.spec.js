@@ -339,7 +339,7 @@ describe('Controller: Roles Form', function() {
     RoleManager.addLabelToRole.and.returnValue($q.resolve());
 
     var label = {
-      id: 'label-uuid',
+      uuid: 'label-uuid',
       name: 'Mijn label'
     };
 
@@ -351,7 +351,7 @@ describe('Controller: Roles Form', function() {
     editor.addLabel(label);
     $scope.$digest();
 
-    expect(RoleManager.addLabelToRole).toHaveBeenCalledWith(id, label.id);
+    expect(RoleManager.addLabelToRole).toHaveBeenCalledWith(id, label.uuid);
   });
 
   it('should load all permissions without a roleId', function() {
@@ -392,7 +392,7 @@ describe('Controller: Roles Form', function() {
 
   it('should load the role labels', function() {
     var labels = [{
-      id: 'label-uuid',
+      uuid: 'label-uuid',
       name: 'Mijn label'
     }];
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
@@ -491,13 +491,13 @@ describe('Controller: Roles Form', function() {
 
   it('should delete a label from the role', function() {
     var labels = [{
-      id: 'uuid',
+      uuid: 'uuid',
       name: 'bloso',
       privacy: 'public',
       visibility: 'invisible'
     },
     {
-      id: 'uuid2',
+      uuid: 'uuid2',
       name: 'blabla',
       privacy: 'private',
       visibility: 'invisible'
@@ -520,7 +520,7 @@ describe('Controller: Roles Form', function() {
 
     expect(RoleManager.removeLabelFromRole).toHaveBeenCalledWith(id, 'uuid');
     expect(editor.role.labels).toEqual([{
-      id: 'uuid2',
+      uuid: 'uuid2',
       name: 'blabla',
       privacy: 'private',
       visibility: 'invisible'
