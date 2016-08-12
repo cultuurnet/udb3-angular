@@ -19166,10 +19166,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
     "        <div>\n" +
     "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
-    "            <span ng-if=\"!label.id\"> (nieuw label toevoegen)</span>\n" +
+    "            <span ng-if=\"!label.uuid\"> (nieuw label toevoegen)</span>\n" +
     "        </div>\n" +
     "    </ui-select-choices>\n" +
-    "</ui-select>"
+    "</ui-select>\n"
   );
 
 
@@ -19437,10 +19437,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
     "        <div>\n" +
     "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
-    "            <span ng-if=\"!label.id\"> (nieuw label toevoegen)</span>\n" +
+    "            <span ng-if=\"!label.uuid\"> (nieuw label toevoegen)</span>\n" +
     "        </div>\n" +
     "    </ui-select-choices>\n" +
-    "</ui-select>"
+    "</ui-select>\n"
   );
 
 
