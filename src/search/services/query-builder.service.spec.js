@@ -229,7 +229,7 @@ describe('Service: LuceneQueryBuilder', function () {
     };
 
     var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
-    expect(queryString).toBe('city:Leuven OR city:Tienen AND category_eventtype_name:Concert');
+    expect(queryString).toBe('(city:Leuven OR city:Tienen) AND category_eventtype_name:Concert');
   });
 
   it('Combines AND groups with multiple fields', function () {
@@ -385,5 +385,88 @@ describe('Service: LuceneQueryBuilder', function () {
 
     var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('(city:Gent OR city:Ledeberg) NOT (city:Ledeberg AND !category_eventtype_name:"Cursus of workshop")');
+  });
+
+  it('Combines leading OR fields followed by OR', function () {
+    var groupedTree = {
+      "type": "root",
+      "nodes": [
+        {
+          "type": "group",
+          "operator": "OR",
+          "nodes": [
+            {
+              "field": "city",
+              "term": "Leuven",
+              "fieldType": "string",
+              "transformer": "="
+            },
+            {
+              "field": "city",
+              "term": "Tienen",
+              "fieldType": "string",
+              "transformer": "="
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "operator": "OR",
+          "nodes": [
+            {
+              "field": "category_eventtype_name",
+              "term": "Concert",
+              "fieldType": "term",
+              "transformer": "="
+            }
+          ]
+        }
+      ]
+    };
+
+    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    expect(queryString).toBe('(city:Leuven OR city:Tienen) OR category_eventtype_name:Concert');
+  });
+
+  it('Combines leading OR fields followed by AND', function () {
+    var groupedTree = {
+      "type": "root",
+      "nodes": [
+        {
+          "type": "group",
+          "operator": "OR",
+          "nodes": [
+            {
+              "field": "title",
+              "term": "a",
+              "fieldType": "tokenized-string",
+              "transformer": "+"
+            },
+            {
+              "field": "title",
+              "term": "b",
+              "fieldType": "tokenized-string",
+              "transformer": "+"
+            },
+            {
+              "type": "group",
+              "operator": "AND",
+              "nodes": [
+                {
+                  "field": "city",
+                  "term": "c",
+                  "fieldType": "string",
+                  "transformer": "="
+                }
+              ]
+            }
+          ],
+          "treeGroupId": "1"
+        }
+      ]
+    };
+
+    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    expect(queryString).toBe('(title:a OR title:b) AND city:c');
   });
 });

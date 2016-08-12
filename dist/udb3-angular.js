@@ -14402,6 +14402,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
             }
 
             nodeString += printTreeField(field);
+
+            var nextIndex = fieldIndex + 1;
+            if (fieldIndex && nextIndex < group.nodes.length && group.nodes[nextIndex].type === 'group') {
+              nodeString = '(' + nodeString + ')';
+            }
           }
         });
 
