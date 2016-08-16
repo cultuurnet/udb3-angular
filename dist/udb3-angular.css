@@ -2455,14 +2455,6 @@ input + .alert {
 .twitter-typeahead .place-suggestion:hover {
   border-bottom: 1px solid #dddddd;
 }
-.twitter-typeahead:after {
-  position: absolute;
-  font-family: "FontAwesome";
-  content: "\f002";
-  right: 12px;
-  top: 6px;
-  color: #999;
-}
 .udb-translation-info {
   font-size: 30px;
   font-weight: bold;
