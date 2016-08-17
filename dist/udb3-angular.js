@@ -11392,10 +11392,31 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    llc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    llc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    llc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      llc.searchResult = {};
+    } else {
+      clearProblem();
+      llc.searchResult = searchResult;
+    }
+
     llc.loading = false;
   }
 
@@ -12154,10 +12175,31 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    rlc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    rlc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    rlc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      rlc.searchResult = {};
+    } else {
+      clearProblem();
+      rlc.searchResult = searchResult;
+    }
+
     rlc.loading = false;
   }
 
@@ -18407,19 +18449,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                              on-change=\"llc.queryChanged(query)\"\n" +
     "        ></udb-query-search-bar>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-1\">\n" +
+    "    <div class=\"col-md-1 text-right\">\n" +
     "        <i ng-show=\"llc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"row\" ng-cloak>\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
-    "        <p ng-show=\"llc.query.length < llc.minQueryLength\">\n" +
-    "            Schrijf een zoekopdracht in het veld hierboven om labels te tonen.\n" +
-    "        </p>\n" +
-    "        <p ng-show=\"llc.query.length >= llc.minQueryLength && llc.searchResult.totalItems === 0\">\n" +
+    "        <div class=\"alert alert-info\" role=\"alert\" ng-show=\"llc.query.length < llc.minQueryLength\">\n" +
+    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om labels te zoeken.</p>\n" +
+    "            <p>Laat het veld leeg om alle labels op te vragen in alfabetische volgorde.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"llc.query.length >= llc.minQueryLength && llc.searchResult.totalItems === 0\"\n" +
+    "             class=\"alert alert-warning\" role=\"alert\">\n" +
     "            Geen labels gevonden.\n" +
-    "        </p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"llc.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
+    "            <br>\n" +
+    "            <strong ng-bind=\"llc.problem.title\"></strong>\n" +
+    "        </div>\n" +
     "        <div class=\"query-search-result\"\n" +
     "             ng-class=\"{'loading-search-result': llc.loading}\"\n" +
     "             ng-show=\"llc.searchResult.totalItems > 0\">\n" +
@@ -18681,21 +18730,28 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"col-md-1\">\n" +
     "        <i ng-show=\"rlc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-2\">\n" +
+    "    <div class=\"col-md-2 text-right\">\n" +
     "        <a class=\"btn btn-primary\" ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">\n" +
     "            <i class=\"fa fa-plus-circle\"></i> Rol toevoegen\n" +
     "        </a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"row\" ng-cloak>\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
-    "        <p ng-show=\"rlc.query.length < rlc.minQueryLength\">\n" +
-    "            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.\n" +
-    "        </p>\n" +
-    "        <p ng-show=\"rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0\">\n" +
-    "            Geen rollen gevonden.\n" +
-    "        </p>\n" +
+    "        <div class=\"alert alert-info\" role=\"alert\" ng-show=\"rlc.query.length < rlc.minQueryLength\">\n" +
+    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.</p>\n" +
+    "            <p>Laat het veld leeg om alle rollen op te vragen in alfabetische volgorde.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0\"\n" +
+    "             class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <p>Geen rollen gevonden.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"rlc.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
+    "            <br>\n" +
+    "            <strong ng-bind=\"rlc.problem.title\"></strong>\n" +
+    "        </div>\n" +
     "        <div class=\"query-search-result roles-results\"\n" +
     "             ng-class=\"{'loading-search-result': rlc.loading}\"\n" +
     "             ng-show=\"rlc.searchResult.totalItems > 0\">\n" +
@@ -18787,7 +18843,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"col-md-12\">\n" +
     "        <div class=\"alert alert-info\" ng-show=\"ulc.query.length < ulc.minQueryLength\" role=\"alert\">\n" +
     "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.</p>\n" +
-    "            <p>Laat het veld leeg om de volledige lijst te tonen in de volgorde dat de gebruikers zijn aangemaakt.</p>\n" +
+    "            <p>Laat het veld leeg om alle gebruikers op te vragen in de volgorde dat ze zijn aangemaakt.</p>\n" +
     "        </div>\n" +
     "        <div ng-show=\"ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0\"\n" +
     "             class=\"alert alert-warning\" role=\"alert\">\n" +

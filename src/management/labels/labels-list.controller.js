@@ -36,10 +36,31 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    llc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    llc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    llc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      llc.searchResult = {};
+    } else {
+      clearProblem();
+      llc.searchResult = searchResult;
+    }
+
     llc.loading = false;
   }
 
