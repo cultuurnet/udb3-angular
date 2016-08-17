@@ -15,6 +15,7 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
   var ulc = this;
 
   ulc.query = '';
+  ulc.problem = false;
 
   var itemsPerPage = 10;
   var minQueryLength = 3;
@@ -39,10 +40,31 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    ulc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    ulc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    ulc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      ulc.searchResult = {};
+    } else {
+      clearProblem();
+      ulc.searchResult = searchResult;
+    }
+
     ulc.loading = false;
   }
 

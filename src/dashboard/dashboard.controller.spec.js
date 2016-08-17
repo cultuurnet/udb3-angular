@@ -51,7 +51,7 @@ describe('Controller: Dashboard', function () {
 
   it('should greet the active user when the dashboard loads', function () {
     var controller = getController(activeUser, []);
-    $scope.$digest();
+      $scope.$digest();
 
     expect(controller.username).toEqual('dirk');
   });

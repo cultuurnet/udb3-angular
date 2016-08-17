@@ -24,7 +24,7 @@ function SearchResultGenerator(rx) {
   var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage) {
     this.searchService = searchService;
     this.itemsPerPage = itemsPerPage;
-    this.query$ = query$.debounce(300).startWith(0);
+    this.query$ = query$.debounce(300).startWith('');
     this.offset$ = page$.map(pageToOffset(itemsPerPage)).startWith(0);
 
     this.searchParameters$ = rx.Observable.combineLatest(
@@ -57,20 +57,29 @@ function SearchResultGenerator(rx) {
 
   /**
    * @param {{query: *, offset: *}} searchParameters
-   * @return {Promise.<PagedCollection>}
+   * @return {Observable.<PagedCollection|Object>}
    */
   SearchResultGenerator.prototype.find = function (searchParameters) {
     var generator = this;
 
-    return generator.searchService
-      .find(searchParameters.query, generator.itemsPerPage, searchParameters.offset);
+    return rx.Observable
+      .fromPromise(
+        generator.searchService.find(
+          searchParameters.query,
+          generator.itemsPerPage,
+          searchParameters.offset
+        )
+      )
+      .catch(function(searchError) {
+        return rx.Observable.just({error : searchError});
+      });
   };
 
   SearchResultGenerator.prototype.getSearchResult$ = function () {
     var generator = this;
 
     return generator.searchParameters$
-      .selectMany(generator.find.bind(generator));
+      .flatMap(generator.find.bind(generator));
   };
 
   return (SearchResultGenerator);

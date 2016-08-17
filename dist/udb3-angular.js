@@ -12305,7 +12305,7 @@ function SearchResultGenerator(rx) {
   var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage) {
     this.searchService = searchService;
     this.itemsPerPage = itemsPerPage;
-    this.query$ = query$.debounce(300).startWith(0);
+    this.query$ = query$.debounce(300).startWith('');
     this.offset$ = page$.map(pageToOffset(itemsPerPage)).startWith(0);
 
     this.searchParameters$ = rx.Observable.combineLatest(
@@ -12338,20 +12338,29 @@ function SearchResultGenerator(rx) {
 
   /**
    * @param {{query: *, offset: *}} searchParameters
-   * @return {Promise.<PagedCollection>}
+   * @return {Observable.<PagedCollection|Object>}
    */
   SearchResultGenerator.prototype.find = function (searchParameters) {
     var generator = this;
 
-    return generator.searchService
-      .find(searchParameters.query, generator.itemsPerPage, searchParameters.offset);
+    return rx.Observable
+      .fromPromise(
+        generator.searchService.find(
+          searchParameters.query,
+          generator.itemsPerPage,
+          searchParameters.offset
+        )
+      )
+      .catch(function(searchError) {
+        return rx.Observable.just({error : searchError});
+      });
   };
 
   SearchResultGenerator.prototype.getSearchResult$ = function () {
     var generator = this;
 
     return generator.searchParameters$
-      .selectMany(generator.find.bind(generator));
+      .flatMap(generator.find.bind(generator));
   };
 
   return (SearchResultGenerator);
@@ -12458,6 +12467,7 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
   var ulc = this;
 
   ulc.query = '';
+  ulc.problem = false;
 
   var itemsPerPage = 10;
   var minQueryLength = 3;
@@ -12482,10 +12492,31 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    ulc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    ulc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    ulc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      ulc.searchResult = {};
+    } else {
+      clearProblem();
+      ulc.searchResult = searchResult;
+    }
+
     ulc.loading = false;
   }
 
@@ -18745,21 +18776,28 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"col-md-1\">\n" +
     "        <i ng-show=\"ulc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-2\">\n" +
+    "    <div class=\"col-md-2 text-right\">\n" +
     "        <a class=\"btn btn-primary\" ui-sref=\"split.manageUsers.create\" ui-sref-opts=\"{reload:true}\">\n" +
     "            <i class=\"fa fa-plus-circle\"></i> Gebruiker toevoegen\n" +
     "        </a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"row\" ng-cloak>\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
-    "        <p ng-show=\"ulc.query.length < ulc.minQueryLength\">\n" +
-    "            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.\n" +
-    "        </p>\n" +
-    "        <p ng-show=\"ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0\">\n" +
-    "            Geen gebruikers gevonden.\n" +
-    "        </p>\n" +
+    "        <div class=\"alert alert-info\" ng-show=\"ulc.query.length < ulc.minQueryLength\" role=\"alert\">\n" +
+    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.</p>\n" +
+    "            <p>Laat het veld leeg om de volledige lijst te tonen in de volgorde dat de gebruikers zijn aangemaakt.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0\"\n" +
+    "             class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <p>Geen gebruikers gevonden.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"ulc.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
+    "            <br>\n" +
+    "            <strong ng-bind=\"ulc.problem.title\"></strong>\n" +
+    "        </div>\n" +
     "        <div class=\"query-search-result users-results\"\n" +
     "             ng-class=\"{'loading-search-result': ulc.loading}\"\n" +
     "             ng-show=\"ulc.searchResult.totalItems > 0\">\n" +
