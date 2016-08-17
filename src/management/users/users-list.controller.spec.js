@@ -63,9 +63,6 @@ describe('Controller: Users List', function() {
       done();
     }
 
-    // The controller should not look for items when it loads
-    expect(controller.loading).toEqual(false);
-
     // When the query changes the controller start looking for items
     controller.queryChanged('dirk');
     expect(controller.loading).toEqual(true);
@@ -82,9 +79,7 @@ describe('Controller: Users List', function() {
     var searchResult$ = Rx.Observable.fromPromise(deferredSearchResult.promise);
     spyOn(searchResultGenerator.prototype, 'getSearchResult$').and.returnValue(searchResult$);
     var controller = getUsersListController();
-
-    expect(controller.loading).toEqual(false);
-
+    
     controller.queryChanged('');
     expect(controller.loading).toEqual(true);
   });

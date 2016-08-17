@@ -14,11 +14,15 @@ angular
 function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
   var ulc = this;
 
-  ulc.query = '';
-  ulc.problem = false;
-
   var itemsPerPage = 10;
   var minQueryLength = 3;
+
+  ulc.query = '';
+  ulc.problem = false;
+  ulc.loading = true;
+  ulc.query = '';
+  ulc.page = 0;
+  ulc.minQueryLength = minQueryLength;
 
   var query$ = rx.createObservableFunction(ulc, 'queryChanged');
   var filteredQuery$ = query$.filter(ignoreShortQueries);
@@ -81,11 +85,6 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
     modalInstance.result.then($state.reload);
   }
   ulc.openDeleteConfirmModal = openDeleteConfirmModal;
-
-  ulc.loading = false;
-  ulc.query = '';
-  ulc.page = 0;
-  ulc.minQueryLength = minQueryLength;
 
   query$
     .safeApply($scope, function (query) {
