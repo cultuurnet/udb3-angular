@@ -14,7 +14,7 @@ angular
 function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
   var ulc = this;
 
-  var itemsPerPage = 10;
+  var itemsPerPage = 20;
   var minQueryLength = 3;
 
   ulc.query = '';
