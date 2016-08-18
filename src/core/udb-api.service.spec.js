@@ -565,11 +565,11 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-      .expectGET(baseUrl + 'users/?limit=30&query=test&start=0')
+      .expectGET(baseUrl + 'users/?limit=30&email=dirk&start=0')
       .respond(JSON.stringify(expectedUsers));
 
     service
-      .findUsers('test',30,0)
+      .findUsersByEmail('dirk',30,0)
       .then(assertUsers);
 
     $httpBackend.flush();

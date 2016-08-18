@@ -3578,17 +3578,17 @@ function UdbApi(
   };
 
   /**
-   * @param {string} query
-   *  Matches case-insensitive and any part of a label.
+   * @param {string} email
+   *  The email or part of the email of the user(s) to search (case-insensitive).
    * @param {Number} [limit]
    *  The limit of results per page.
    * @param {Number} [start]
    * @return {Promise.<PagedCollection>}
    */
-  this.findUsers = function (query, limit, start) {
+  this.findUsersByEmail = function (email, limit, start) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = {
-      query: query,
+      email: email ? email : '',
       limit: limit ? limit : 30,
       start: start ? start : 0
     };
@@ -12471,14 +12471,15 @@ function UserManager(udbApi, $q) {
   var service = this;
 
   /**
-   * @param {string} query
+   * @param {string} email
+   *  The email or part of the email of the user(s) to search (case-insensitive).
    * @param {int} limit
    * @param {int} start
    *
    * @return {Promise.<PagedCollection>}
    */
-  service.find = function (query, limit, start) {
-    return udbApi.findUsers(query, limit, start);
+  service.find = function (email, limit, start) {
+    return udbApi.findUsersByEmail(email, limit, start);
   };
 
   /**

@@ -13,7 +13,7 @@ describe('Service: User Manager', function () {
     $provide.constant('appConfig', appConfig);
 
     udbApi = jasmine.createSpyObj('udbApi', [
-      'findUsers',
+      'findUsersByEmail',
       'findUserWithEmail'
     ]);
 
@@ -43,7 +43,7 @@ describe('Service: User Manager', function () {
         }
       ]
     };
-    udbApi.findUsers.and.returnValue($q.resolve(expectedUsers));
+    udbApi.findUsersByEmail.and.returnValue($q.resolve(expectedUsers));
 
     function assertUsers (users) {
       expect(users).toEqual(expectedUsers);
@@ -51,7 +51,7 @@ describe('Service: User Manager', function () {
     }
 
     service
-      .find('test', 30, 0)
+      .find('bert', 30, 0)
       .then(assertUsers);
 
     $scope.$apply();
