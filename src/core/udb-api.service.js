@@ -989,7 +989,7 @@ function UdbApi(
 
   /**
    * @param {string} email
-   *  The email or part of the email of the user(s) to search (case-insensitive).
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {Number} [limit]
    *  The limit of results per page.
    * @param {Number} [start]

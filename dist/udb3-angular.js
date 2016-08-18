@@ -3579,7 +3579,7 @@ function UdbApi(
 
   /**
    * @param {string} email
-   *  The email or part of the email of the user(s) to search (case-insensitive).
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {Number} [limit]
    *  The limit of results per page.
    * @param {Number} [start]
@@ -12472,7 +12472,7 @@ function UserManager(udbApi, $q) {
 
   /**
    * @param {string} email
-   *  The email or part of the email of the user(s) to search (case-insensitive).
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {int} limit
    * @param {int} start
    *
@@ -18842,7 +18842,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <div class=\"alert alert-info\" ng-show=\"ulc.query.length < ulc.minQueryLength\" role=\"alert\">\n" +
-    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.</p>\n" +
+    "            <p>Schrijf een geldig email-adres in het veld hierboven om gebruikers te zoeken.</p>\n" +
+    "            <p>Gebruik de wildcard <strong>*</strong> om naar meerdere gebruikers van hetzelfde domein te zoeken, e.g. <strong>dirk*@cultuurnet.be</strong></p>\n" +
     "            <p>Laat het veld leeg om alle gebruikers op te vragen in de volgorde dat ze zijn aangemaakt.</p>\n" +
     "        </div>\n" +
     "        <div ng-show=\"ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0\"\n" +

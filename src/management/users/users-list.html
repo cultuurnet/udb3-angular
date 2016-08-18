@@ -21,7 +21,8 @@
 <div class="row search-result-block" ng-cloak>
     <div class="col-md-12">
         <div class="alert alert-info" ng-show="ulc.query.length < ulc.minQueryLength" role="alert">
-            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om gebruikers te zoeken.</p>
+            <p>Schrijf een geldig email-adres in het veld hierboven om gebruikers te zoeken.</p>
+            <p>Gebruik de wildcard <strong>*</strong> om naar meerdere gebruikers van hetzelfde domein te zoeken, e.g. <strong>dirk*@cultuurnet.be</strong></p>
             <p>Laat het veld leeg om alle gebruikers op te vragen in de volgorde dat ze zijn aangemaakt.</p>
         </div>
         <div ng-show="ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0"

@@ -24,7 +24,7 @@ function UserManager(udbApi, $q) {
 
   /**
    * @param {string} email
-   *  The email or part of the email of the user(s) to search (case-insensitive).
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {int} limit
    * @param {int} start
    *
