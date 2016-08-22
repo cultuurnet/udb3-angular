@@ -18711,8 +18711,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div ng-show=\"editor.label\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-6\">\n" +
-    "                <label for=\"label-name-field\">Naam</label>\n" +
-    "                <input id=\"label-name-field\" type=\"text\" ng-model=\"editor.label.name\" ng-disabled=\"editor.renaming\">\n" +
+    "                <div class=\"form-group\" udb-form-group>\n" +
+    "                    <label for=\"label-name-field\">Naam</label>\n" +
+    "                    <input id=\"label-name-field\"\n" +
+    "                           type=\"text\"\n" +
+    "                           name=\"name\"\n" +
+    "                           ng-model=\"editor.label.name\"\n" +
+    "                           ng-minlength=\"3\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-maxlength=\"255\"\n" +
+    "                           ng-disabled=\"editor.renaming\">\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
