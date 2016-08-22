@@ -50,16 +50,7 @@
                         <td ng-bind="::user.email"></td>
                         <td ng-bind="::user.username"></td>
                         <td>
-                          <!-- not yet required
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Bewerken <span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li><a ui-sref="split.manageUsers.edit({id: user.uuid})" ui-sref-opts="{reload:true}">Bewerken</a></li>
-                                    <li><a href ng-click="ulc.openDeleteConfirmModal(user)">Verwijderen</a></li>
-                                </ul>
-                            </div>
-                            -->
+                            <button type="button" ui-sref="management.users.edit({id: user.uuid})" class="btn btn-default">Bewerken</button>
                         </td>
                     </tr>
                     </tbody>

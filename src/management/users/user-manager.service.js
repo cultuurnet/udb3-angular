@@ -43,4 +43,28 @@ function UserManager(udbApi, $q) {
   service.findUserWithEmail = function(email) {
     return udbApi.findUserWithEmail(email);
   };
+
+  /**
+   * @param {string} userId
+   *
+   * @returns {Promise.<User>}
+   */
+  service.get = function(userId) {
+    return udbApi.getUser(userId);
+  };
+
+  /**
+   * @param {string} userId
+   *
+   * @return {Promise.<Role[]>}
+   */
+  service.getRoles = function (userId) {
+    return udbApi
+      .getUserRoles(userId)
+      .then(function (rolesData) {
+        return _.map(rolesData, function (roleData) {
+          return {uuid: roleData['@id'], name: roleData.name.nl};
+        });
+      });
+  };
 }

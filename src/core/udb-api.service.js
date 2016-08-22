@@ -1091,6 +1091,28 @@ function UdbApi(
   };
 
   /**
+   * @param {string} userId
+   *
+   * @returns {Promise.<User>}
+   */
+  this.getUser = function(userId) {
+    return $http
+      .get(appConfig.baseUrl + 'users/' + userId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} userId
+   *
+   * @return {Promise.<Object[]>}
+   */
+  this.getUserRoles = function (userId) {
+    return $http
+      .get(appConfig.baseUrl + 'users/' + userId + '/roles/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */

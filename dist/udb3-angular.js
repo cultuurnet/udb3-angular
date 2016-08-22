@@ -3681,6 +3681,28 @@ function UdbApi(
   };
 
   /**
+   * @param {string} userId
+   *
+   * @returns {Promise.<User>}
+   */
+  this.getUser = function(userId) {
+    return $http
+      .get(appConfig.baseUrl + 'users/' + userId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} userId
+   *
+   * @return {Promise.<Object[]>}
+   */
+  this.getUserRoles = function (userId) {
+    return $http
+      .get(appConfig.baseUrl + 'users/' + userId + '/roles/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -12749,6 +12771,96 @@ function SearchService($q) {
 }
 SearchService.$inject = ["$q"];
 
+// Source: src/management/users/user-editor.controller.js
+/**
+ * @typedef {Object} RoleAction
+ * @property {Role} item
+ * @property {ActionCallback} perform
+ *  The API action that has to be performed for this action.
+ */
+
+/**
+ * @callback ActionCallback
+ * @param {Promise.<BaseJob>} job
+ */
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:UserEditorController
+ * @description
+ * # UserEditorController
+ */
+angular
+  .module('udb.management.users')
+  .controller('UserEditorController', UserEditorController);
+
+/* @ngInject */
+function UserEditorController(UserManager, $stateParams, RoleManager) {
+  var editor = this;
+  var userId = $stateParams.id;
+
+  loadUser(userId);
+
+  function loadUser(userId) {
+    UserManager
+      .get(userId)
+      .then(showUser);
+
+    UserManager
+      .getRoles(userId)
+      .then(showUserRoles);
+  }
+
+  /**
+   * @param {User} user
+   */
+  function showUser(user) {
+    editor.user = user;
+  }
+
+  /**
+   * @param {Role[]} roles
+   */
+  function showUserRoles(roles) {
+    editor.roles = roles;
+  }
+
+  /**
+   * @param {Role} role
+   */
+  editor.deleteRole = function (role) {
+    var deleteAction = {
+      role: role,
+      perform: _.once(function () {
+        return RoleManager.removeUserFromRole(role.id, userId);
+      })
+    };
+
+    editor.queueAction(deleteAction);
+  };
+
+  /**
+   * @param {RoleAction} action
+   */
+  editor.queueAction = function (action) {
+    var currentActions = editor.actions ? editor.actions : [];
+    currentActions.push(action);
+    editor.actions = currentActions;
+  };
+
+  /**
+   * @param {Role} role
+   */
+  editor.roleHasActions = function(role) {
+    return _.find(editor.actions, {
+      role: {
+        uuid: role.uuid
+      }
+    });
+  };
+}
+UserEditorController.$inject = ["UserManager", "$stateParams", "RoleManager"];
+
 // Source: src/management/users/user-manager.service.js
 /**
  * @typedef {Object} User
@@ -12792,6 +12904,30 @@ function UserManager(udbApi, $q) {
    */
   service.findUserWithEmail = function(email) {
     return udbApi.findUserWithEmail(email);
+  };
+
+  /**
+   * @param {string} userId
+   *
+   * @returns {Promise.<User>}
+   */
+  service.get = function(userId) {
+    return udbApi.getUser(userId);
+  };
+
+  /**
+   * @param {string} userId
+   *
+   * @return {Promise.<Role[]>}
+   */
+  service.getRoles = function (userId) {
+    return udbApi
+      .getUserRoles(userId)
+      .then(function (rolesData) {
+        return _.map(rolesData, function (roleData) {
+          return {uuid: roleData['@id'], name: roleData.name.nl};
+        });
+      });
   };
 }
 UserManager.$inject = ["udbApi", "$q"];
@@ -19345,6 +19481,74 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/user-editor.html',
+    "<div class=\"page-header\">\n" +
+    "    <h1>Gebruikers</h1>\n" +
+    "</div>\n" +
+    "<h2>Gebruiker bewerken</h2>\n" +
+    "\n" +
+    "<div ng-show=\"!editor.user && !editor.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"editor.user\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>E-mailadres</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.user.email\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Nick</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.user.username\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<br>\n" +
+    "<div class=\"panel panel-primary\">\n" +
+    "    <div class=\"panel-heading\">\n" +
+    "        <h3 class=\"panel-title\">Rollen</h3>\n" +
+    "    </div>\n" +
+    "    <div class=\"panel-body\">\n" +
+    "        <p ng-show=\"editor.roles && editor.roles.length === 0\">\n" +
+    "            Er zijn nog geen rollen toegekend aan deze gebruiker.\n" +
+    "        </p>\n" +
+    "    </div>\n" +
+    "    <ul class=\"list-group\" ng-show=\"editor.roles\">\n" +
+    "        <li class=\"list-group-item\" ng-repeat=\"role in editor.roles\" ng-class=\"{'disabled': editor.roleHasActions(role)}\">\n" +
+    "            <a ui-sref=\"split.manageRoles.edit({id: role.uuid})\" ng-bind=\"role.name\"></a>\n" +
+    "            <button type=\"button\" class=\"btn btn-link pull-right\"\n" +
+    "                    ng-disabled=\"editor.roleHasActions(role)\"\n" +
+    "                    ng-click=\"editor.deleteRole(role)\">Verwijderen</button>\n" +
+    "        </li>\n" +
+    "    </ul>\n" +
+    "    <div class=\"panel-footer\" ng-show=\"!editor.roles && !editor.rolesLoadingError\">\n" +
+    "        <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-12 text-right\">\n" +
+    "        <button ng-disabled=\"editor.actions.length === 0 || editor.saving\"\n" +
+    "                type=\"button\"\n" +
+    "                class=\"btn btn-primary\"\n" +
+    "                ng-click=\"editor.save()\">\n" +
+    "            Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "        </button>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"editor.loadingError\">\n" +
+    "    <span ng-bind=\"editor.loadingError\"></span>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/users-list.html',
     "<div class=\"page-header\">\n" +
     "    <h1>Gebruikers</h1>\n" +
@@ -19398,16 +19602,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <td ng-bind=\"::user.email\"></td>\n" +
     "                        <td ng-bind=\"::user.username\"></td>\n" +
     "                        <td>\n" +
-    "                          <!-- not yet required\n" +
-    "                            <div class=\"btn-group\">\n" +
-    "                                <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
-    "                                    Bewerken <span class=\"caret\"></span></button>\n" +
-    "                                <ul class=\"dropdown-menu\">\n" +
-    "                                    <li><a ui-sref=\"split.manageUsers.edit({id: user.uuid})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
-    "                                    <li><a href ng-click=\"ulc.openDeleteConfirmModal(user)\">Verwijderen</a></li>\n" +
-    "                                </ul>\n" +
-    "                            </div>\n" +
-    "                            -->\n" +
+    "                            <button type=\"button\" ui-sref=\"management.users.edit({id: user.uuid})\" class=\"btn btn-default\">Bewerken</button>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                    </tbody>\n" +

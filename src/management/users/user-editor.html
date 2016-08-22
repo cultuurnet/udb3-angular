@@ -1,0 +1,64 @@
+<div class="page-header">
+    <h1>Gebruikers</h1>
+</div>
+<h2>Gebruiker bewerken</h2>
+
+<div ng-show="!editor.user && !editor.loadingError">
+    <i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
+
+<div ng-show="editor.user">
+    <div class="row">
+        <div class="col-md-3">
+            <span>E-mailadres</span>
+        </div>
+        <div class="col-md-9">
+            <span ng-bind="editor.user.email"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <span>Nick</span>
+        </div>
+        <div class="col-md-9">
+            <span ng-bind="editor.user.username"></span>
+        </div>
+    </div>
+</div>
+<br>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Rollen</h3>
+    </div>
+    <div class="panel-body">
+        <p ng-show="editor.roles && editor.roles.length === 0">
+            Er zijn nog geen rollen toegekend aan deze gebruiker.
+        </p>
+    </div>
+    <ul class="list-group" ng-show="editor.roles">
+        <li class="list-group-item" ng-repeat="role in editor.roles" ng-class="{'disabled': editor.roleHasActions(role)}">
+            <a ui-sref="split.manageRoles.edit({id: role.uuid})" ng-bind="role.name"></a>
+            <button type="button" class="btn btn-link pull-right"
+                    ng-disabled="editor.roleHasActions(role)"
+                    ng-click="editor.deleteRole(role)">Verwijderen</button>
+        </li>
+    </ul>
+    <div class="panel-footer" ng-show="!editor.roles && !editor.rolesLoadingError">
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button ng-disabled="editor.actions.length === 0 || editor.saving"
+                type="button"
+                class="btn btn-primary"
+                ng-click="editor.save()">
+            Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+        </button>
+    </div>
+</div>
+
+<div ng-show="editor.loadingError">
+    <span ng-bind="editor.loadingError"></span>
+</div>
