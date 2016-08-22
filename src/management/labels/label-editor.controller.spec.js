@@ -162,7 +162,7 @@ describe('Controller: Labels Editor', function() {
 
   it('should update a label\'s visibility to visible', function() {
     var invisibleLabel = {
-      "id":"1d470df5-75c8-4a93-a70e-61c383263738",
+      "uuid":"1d470df5-75c8-4a93-a70e-61c383263738",
       "name":"Blub",
       "visibility":"invisible",
       "privacy":"private"
@@ -183,7 +183,7 @@ describe('Controller: Labels Editor', function() {
 
   it('should rename a label', function() {
     var newLabel = {
-      "id":"new-id",
+      "uuid":"new-id",
       "name":"Coco",
       "visibility":"visible",
       "privacy":"public"
@@ -202,6 +202,7 @@ describe('Controller: Labels Editor', function() {
     $scope.$digest();
 
     expect(LabelManager.copy).toHaveBeenCalled();
+    expect(LabelManager.get).toHaveBeenCalledWith("new-id");
     expect(editor.label).toEqual(newLabel);
   });
 

@@ -2998,6 +2998,7 @@ function UdbApi(
    *   Value to save
    */
   this.updateProperty = function(offerLocation, property, value) {
+    // TODO: having both in path and updateData is duplicate
     var updateData = {};
     updateData[property] = value;
     var path = offerPropertyPaths[property] ? offerPropertyPaths[property] : property;
@@ -3036,6 +3037,11 @@ function UdbApi(
     );
   };
 
+  /**
+   * @param {EventFormData} offer
+   *
+   * @return {Promise.<URL>}
+   */
   this.deleteOffer = function (offer) {
     return $http['delete'](
       offer['@id'],
@@ -3116,6 +3122,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
+    // TODO: swagger docs describes different path:
+    // /api/1.0/organizer
     return $http.post(
       appConfig.baseApiUrl + 'organizer',
       organizer,
@@ -3325,7 +3333,7 @@ function UdbApi(
       },
       file: imageFile
     };
-    var config = Object.assign(defaultApiConfig, uploadOptions);
+    var config = _.assign(defaultApiConfig, uploadOptions);
 
     return Upload.upload(config);
   };
@@ -11131,7 +11139,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
    * @param {ApiProblem} problem
    */
   function showProblem(problem) {
-    loadLabel(editor.label.id);
+    loadLabel(editor.label.uuid);
     var modalInstance = $uibModal.open(
       {
         templateUrl: 'templates/unexpected-error-modal.html',
@@ -11275,7 +11283,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.copy = function (label) {
     return udbApi
-      .createLabel(label.name, label.isVisible, label.isPrivate, label.id)
+      .createLabel(label.name, label.isVisible, label.isPrivate, label.uuid)
       .then(createNewLabelJob);
   };
 
@@ -11285,7 +11293,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.delete = function (label) {
     return udbApi
-      .deleteLabel(label.id)
+      .deleteLabel(label.uuid)
       .then(logLabelJob);
   };
 
@@ -11295,7 +11303,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makeInvisible = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakeInvisible')
+      .updateLabel(label.uuid, 'MakeInvisible')
       .then(logLabelJob);
   };
 
@@ -11305,7 +11313,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makeVisible = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakeVisible')
+      .updateLabel(label.uuid, 'MakeVisible')
       .then(logLabelJob);
   };
 
@@ -11316,7 +11324,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makePrivate = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakePrivate')
+      .updateLabel(label.uuid, 'MakePrivate')
       .then(logLabelJob);
   };
 
@@ -11326,7 +11334,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    */
   service.makePublic = function (label) {
     return udbApi
-      .updateLabel(label.id, 'MakePublic')
+      .updateLabel(label.uuid, 'MakePublic')
       .then(logLabelJob);
   };
 
@@ -11611,6 +11619,300 @@ function PermissionManager(udbApi) {
 }
 PermissionManager.$inject = ["udbApi"];
 
+// Source: src/management/roles/role-creator.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:RoleCreatorController
+ * @description
+ * # RoleCreatorController
+ */
+angular
+  .module('udb.management.roles')
+  .controller('RoleCreatorController', RoleCreatorController);
+
+/** @ngInject */
+function RoleCreatorController(RoleManager, PermissionManager, $uibModal, $state, $q) {
+  var creator = this;
+  creator.creating = false;
+  creator.create = create;
+  creator.loadedPermissions = false;
+  creator.role = {
+    name: '',
+    constraint: '',
+    permissions: {}
+  };
+
+  function loadPermissions () {
+    PermissionManager
+      .getAll().then(function(permissions) {
+        creator.permissions = permissions;
+      }, showProblem)
+      .finally(function() {
+        creator.loadedPermissions = true;
+      });
+  }
+  loadPermissions();
+
+  function create() {
+    function goToOverview() {
+      $state.go('split.manageRoles.list', {reload:true});
+    }
+
+    function roleCreated (createdRole) {
+      var roleId = createdRole.roleId;
+      // role is created
+      var promisses = [];
+
+      // update constraint if not empty
+      if (creator.role.constraint.length > 0) {
+        promisses.push(RoleManager.updateRoleConstraint(roleId, creator.role.constraint));
+      }
+
+      // set all permissions for the role in parallel
+      Object.keys(creator.role.permissions).forEach(function(permissionKey) {
+        promisses.push(RoleManager.addPermissionToRole(permissionKey, roleId));
+      });
+
+      // when done we can return to overview or show error
+      $q.all(promisses).then(function() {
+        goToOverview();
+      }).catch(showProblem);
+    }
+
+    creator.creating = true;
+    RoleManager
+      .create(creator.role.name)
+      .then(roleCreated, showProblem)
+      .finally(function () {
+        creator.creating = false;
+      });
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return problem.title + ' ' + problem.detail;
+          }
+        }
+      }
+    );
+    $state.go('split.manageRoles.list', {reload:true});
+  }
+}
+RoleCreatorController.$inject = ["RoleManager", "PermissionManager", "$uibModal", "$state", "$q"];
+
+// Source: src/management/roles/role-editor.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:RoleEditorController
+ * @description
+ * # RoleEditorController
+ */
+angular
+  .module('udb.management.roles')
+  .controller('RoleEditorController', RoleEditorController);
+
+/** @ngInject */
+function RoleEditorController(
+  RoleManager,
+  PermissionManager,
+  UserManager,
+  $uibModal,
+  $state,
+  $stateParams,
+  jsonLDLangFilter,
+  $q
+) {
+  var editor = this;
+  editor.saving = false;
+  editor.save = save;
+  editor.addUser = addUser;
+  editor.loadedRole = false;
+  editor.loadedRolePermissions = false;
+  editor.loadedRoleUsers = false;
+  editor.addingUser = false;
+  editor.role = {};
+
+  var roleId = $stateParams.id;
+  var permissions, rolePermissions;
+
+  function loadRole(roleId) {
+    RoleManager
+      .get(roleId)
+      .then(function(role) {
+        editor.role = jsonLDLangFilter(role, 'nl');
+      }, showLoadingError)
+      .then(function() {
+        return loadRolePermissions(roleId);
+      })
+      .then(function () {
+        return loadRoleUsers(roleId);
+      })
+      .finally(function() {
+        // save a copy of the original role before changes
+        editor.originalRole = _.cloneDeep(editor.role);
+        // done loading role
+        editor.loadedRole = true;
+      });
+  }
+  function showLoadingError () {
+    editor.loadingError = 'Rol niet gevonden!';
+  }
+
+  function getRolePermissions(roleId) {
+    return RoleManager
+        .getRolePermissions(roleId)
+        .then(function(permissions) {
+          rolePermissions = permissions;
+          return rolePermissions;
+        }, showProblem);
+  }
+
+  function getAllRolePermissions() {
+    return PermissionManager
+        .getAll()
+        .then(function(retrievedPermissions) {
+          permissions = retrievedPermissions;
+          return permissions;
+        }, showProblem);
+  }
+
+  function loadRolePermissions(roleId) {
+    var promisses = [];
+    promisses.push(
+      getRolePermissions(roleId)
+    );
+    promisses.push(
+      getAllRolePermissions()
+    );
+    return $q.all(promisses).then(function() {
+      // loaded all permissions & permissions linked to role
+      editor.role.permissions = {};
+      angular.forEach(rolePermissions, function(permission, key) {
+        editor.role.permissions[permission.key] = true;
+      });
+      editor.permissions = permissions;
+      editor.loadedRolePermissions = true;
+    });
+  }
+
+  function loadRoleUsers(roleId) {
+    return $q.resolve(
+      RoleManager
+      .getRoleUsers(roleId)
+        .then(function (users) {
+          editor.role.users = users;
+        }, function() {
+          editor.role.users = [];
+        })
+        .finally(function () {
+          editor.loadedRoleUsers = true;
+        })
+    );
+  }
+
+  loadRole(roleId);
+
+  function save() {
+    editor.saving = true;
+    var promisses = [];
+    // go over the changes from the original role
+    // name changed
+    if (editor.originalRole.name !== editor.role.name) {
+      promisses.push(RoleManager.updateRoleName(roleId, editor.role.name));
+    }
+    // constraint changed
+    if (editor.originalRole.constraint !== editor.role.constraint) {
+      promisses.push(RoleManager.updateRoleConstraint(roleId, editor.role.constraint));
+    }
+    Object.keys(editor.role.permissions).forEach(function(key) {
+      // permission added
+      if (editor.role.permissions[key] === true && !editor.originalRole.permissions[key]) {
+        promisses.push(RoleManager.addPermissionToRole(key, roleId));
+      }
+      // permission removed
+      if (editor.role.permissions[key] === false && editor.originalRole.permissions[key] === true) {
+        promisses.push(RoleManager.removePermissionFromRole(key, roleId));
+      }
+    });
+    Object.keys(editor.role.users).forEach(function(key) {
+      // user added
+      if (editor.role.users[key] && !editor.originalRole.users[key]) {
+        promisses.push(RoleManager.addUserToRole(editor.role.users[key].uuid, roleId));
+      }
+    });
+
+    $q.all(promisses).then(function() {
+      $state.go('split.manageRoles.list', {reload:true});
+    }).catch(showProblem);
+  }
+
+  function addUser() {
+    editor.addingUser = true;
+    var email = editor.email;
+
+    UserManager.findUserWithEmail(email)
+      .then(function(user) {
+        var uuid = user.uuid;
+        angular.forEach(editor.role.users, function(roleUser) {
+          if (roleUser.uuid !== uuid) {
+            editor.role.users.push(user);
+            editor.form.email.$setViewValue('');
+            editor.form.email.$setPristine(true);
+            editor.form.email.$render();
+          }
+          else {
+            userAlreadyAdded();
+          }
+        });
+      }, showProblem);
+
+    editor.addingUser = false;
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return problem.title + ' ' + problem.detail;
+          }
+        }
+      }
+    );
+  }
+
+  function userAlreadyAdded() {
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return 'De gebruiker hangt al aan deze rol.';
+          }
+        }
+      }
+    );
+  }
+}
+RoleEditorController.$inject = ["RoleManager", "PermissionManager", "UserManager", "$uibModal", "$state", "$stateParams", "jsonLDLangFilter", "$q"];
+
 // Source: src/management/roles/role-form.controller.js
 /**
  * @ngdoc function
@@ -11828,7 +12130,7 @@ function RoleFormController(
     editor.saving = true;
 
     RoleManager
-      .addLabelToRole(roleId, label.id)
+      .addLabelToRole(roleId, label.uuid)
       .then(function () {
         editor.role.labels.push(label);
       }, showProblem)
@@ -11841,7 +12143,7 @@ function RoleFormController(
     editor.saving = true;
 
     RoleManager
-      .removeLabelFromRole(roleId, label.id)
+      .removeLabelFromRole(roleId, label.uuid)
       .then(function () {
         var pos = editor.role.labels.indexOf(label);
         editor.role.labels.splice(pos, 1);
@@ -14258,6 +14560,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
             }
 
             nodeString += printTreeField(field);
+
+            var nextIndex = fieldIndex + 1;
+            if (fieldIndex && nextIndex < group.nodes.length && group.nodes[nextIndex].type === 'group') {
+              nodeString = '(' + nodeString + ')';
+            }
           }
         });
 
@@ -18488,7 +18795,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <td ng-bind=\"::(label.visibility === 'invisible' ? 'Verborgen' : '')\"></td>\n" +
     "                        <td ng-bind=\"::(label.privacy === 'private' ? 'Voorbehouden' : '')\"></td>\n" +
     "                        <td>\n" +
-    "                            <a ui-sref=\"split.manageLabels.edit({id: label.id})\">Bewerken</a>\n" +
+    "                            <a ui-sref=\"split.manageLabels.edit({id: label.uuid})\">Bewerken</a>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                    </tbody>\n" +
@@ -18533,6 +18840,226 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    Definitief verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/role-creator.html',
+    "<div class=\"page-header\">\n" +
+    "    <h1>Roles</h1>\n" +
+    "</div>\n" +
+    "<h2>Role Toevoegen</h2>\n" +
+    "\n" +
+    "<form name=\"creator.form\" class=\"css-form\" novalidate>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-6\">\n" +
+    "            <div class=\"form-group\" udb-form-group>\n" +
+    "                <label class=\"control-label\" for=\"label-name-field\">Naam</label>\n" +
+    "                <input id=\"label-name-field\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"name\"\n" +
+    "                       type=\"text\"\n" +
+    "                       ng-minlength=\"3\"\n" +
+    "                       ng-required=\"true\"\n" +
+    "                       ng-maxlength=\"255\"\n" +
+    "                       ng-model=\"creator.role.name\"\n" +
+    "                       ng-model-options=\"{debounce: 300}\"\n" +
+    "                       ng-disabled=\"creator.creating\">\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een role naam is verplicht.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een role moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een role mag maximum 255 tekens bevatten.</p>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-12\">\n" +
+    "            <div class=\"form-group\" udb-form-group>\n" +
+    "                <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht</label>\n" +
+    "                <input id=\"label-name-field\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"constraint\"\n" +
+    "                       type=\"text\"\n" +
+    "                       ng-maxlength=\"255\"\n" +
+    "                       ng-model=\"creator.role.constraint\"\n" +
+    "                       ng-model-options=\"{debounce: 300}\"\n" +
+    "                       ng-disabled=\"creator.creating\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-md-12\">\n" +
+    "        <uib-tabset>\n" +
+    "          <uib-tab heading=\"Permissies\">\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-11\">\n" +
+    "                <input placeholder=\"Zoeken op naam\" ng-model=\"permissionSearch\">\n" +
+    "              </div>\n" +
+    "              <div class=\"col-md-1\">\n" +
+    "                <i ng-show=\"!creator.loadedPermissions\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-12\">\n" +
+    "            <div class=\"checkbox\" ng-repeat=\"role in creator.permissions | filter: permissionSearch\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\"\n" +
+    "                      ng-model=\"creator.role.permissions[role.key]\"> <strong ng-bind=\"::role.name\"></strong>\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "          </uib-tab>\n" +
+    "          <uib-tab heading=\"Leden\">\n" +
+    "            Leden\n" +
+    "          </uib-tab>\n" +
+    "          <uib-tab heading=\"Labels\">\n" +
+    "            Labels\n" +
+    "          </uib-tab>\n" +
+    "        </uib-tabset>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-md-12\">\n" +
+    "        <button ng-disabled=\"!creator.form.$valid || creator.creating\"\n" +
+    "          type=\"button\"\n" +
+    "          class=\"btn btn-primary\"\n" +
+    "          ng-click=\"creator.create()\">\n" +
+    "          Aanmaken <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"creator.creating\"></i>\n" +
+    "        </button>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "</form>\n"
+  );
+
+
+  $templateCache.put('templates/role-editor.html',
+    "<div class=\"page-header\">\n" +
+    "    <h1>Roles</h1>\n" +
+    "</div>\n" +
+    "<h2>Role bewerken</h2>\n" +
+    "\n" +
+    "<div ng-show=\"!editor.role && !editor.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<form name=\"editor.form\" class=\"css-form\" novalidate>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-6\">\n" +
+    "            <div class=\"form-group\" udb-form-group>\n" +
+    "                <label class=\"control-label\" for=\"label-name-field\">Naam</label>\n" +
+    "                <input id=\"label-name-field\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"name\"\n" +
+    "                       type=\"text\"\n" +
+    "                       ng-required=\"true\"\n" +
+    "                       ng-maxlength=\"255\"\n" +
+    "                       ng-model=\"editor.role.name\"\n" +
+    "                       ng-disabled=\"editor.saving\">\n" +
+    "                <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een role naam is verplicht.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een role mag maximum 255 tekens bevatten.</p>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-12\">\n" +
+    "            <div class=\"form-group\" udb-form-group>\n" +
+    "                <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht</label>\n" +
+    "                <input id=\"label-name-field\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"constraint\"\n" +
+    "                       type=\"text\"\n" +
+    "                       ng-maxlength=\"255\"\n" +
+    "                       ng-model=\"editor.role.constraint\"\n" +
+    "                       ng-disabled=\"editor.saving\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-md-12\">\n" +
+    "        <uib-tabset>\n" +
+    "          <uib-tab heading=\"Permissies\">\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-11\">\n" +
+    "                <!--\n" +
+    "                <udb-query-search-bar search-label=\"Zoeken op naam\" ng-model=\"permissionSearch\"\n" +
+    "                  on-change=\"llc.queryChanged(query)\"\n" +
+    "                ></udb-query-search-bar>\n" +
+    "                -->\n" +
+    "                <input placeholder=\"Zoeken op naam\" ng-model=\"permissionSearch\">\n" +
+    "              </div>\n" +
+    "              <div class=\"col-md-1\">\n" +
+    "                <i ng-show=\"!editor.loadedRolePermissions\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-12\">\n" +
+    "                <div class=\"checkbox\" ng-repeat=\"role in editor.permissions | filter: permissionSearch\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\"\n" +
+    "                          ng-model=\"editor.role.permissions[role.key]\"> <strong ng-bind=\"::role.name\"></strong>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "          </uib-tab>\n" +
+    "          <uib-tab heading=\"Leden\">\n" +
+    "              <div class=\"row\">\n" +
+    "                  <div class=\"col-md-11\">\n" +
+    "                          <label>Voeg lid toe</label>\n" +
+    "                          <input placeholder=\"E-mailadres\"\n" +
+    "                                 id=\"email\"\n" +
+    "                                 type=\"email\"\n" +
+    "                                 name=\"email\"\n" +
+    "                                 data-ng-model=\"editor.email\" />\n" +
+    "                          <button type=\"submit\"\n" +
+    "                                  class=\"btn btn-primary\"\n" +
+    "                                  ng-click=\"editor.addUser()\"\n" +
+    "                                  ng-disabled=\"!editor.form.$valid || editor.addingUser\">\n" +
+    "                              Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.addingUser\"></i>\n" +
+    "                          </button>\n" +
+    "                  </div>\n" +
+    "                  <div class=\"col-md-1\">\n" +
+    "                      <i ng-show=\"!editor.loadedRoleUsers\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                  </div>\n" +
+    "              </div>\n" +
+    "              <div class=\"row\">\n" +
+    "                  <div class=\"col-md-12\" ng-show=\"editor.role.users.length && editor.loadedRoleUsers\">\n" +
+    "                      <table class=\"table\">\n" +
+    "                          <thead>\n" +
+    "                            <tr>\n" +
+    "                                <th>E-mailadres</th>\n" +
+    "                                <!--<th>Verwijderen</th>-->\n" +
+    "                            </tr>\n" +
+    "                          </thead>\n" +
+    "                          <tbody>\n" +
+    "                            <tr ng-repeat=\"user in editor.role.users\">\n" +
+    "                                <td ng-bind=\"::user.email\"></td>\n" +
+    "                                <!--<td><a href=\"#\">Lidmaatschap verwijderen</a></td>-->\n" +
+    "                            </tr>\n" +
+    "                          </tbody>\n" +
+    "                      </table>\n" +
+    "                  </div>\n" +
+    "                  <div class=\"col-md-12\" ng-hide=\"editor.role.users.length\">\n" +
+    "                      Er hangen nog geen gebruikers aan deze rol. Voeg een gebruiker aan deze rol toe door zijn/haar e-mailadres hierboven in te geven.\n" +
+    "                  </div>\n" +
+    "              </div>\n" +
+    "          </uib-tab>\n" +
+    "          <uib-tab heading=\"Labels\">\n" +
+    "            Labels\n" +
+    "          </uib-tab>\n" +
+    "        </uib-tabset>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-md-12\">\n" +
+    "        <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "          type=\"button\"\n" +
+    "          class=\"btn btn-primary\"\n" +
+    "          ng-click=\"editor.save()\">\n" +
+    "          Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "        </button>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "</form>\n"
   );
 
 
@@ -18718,7 +19245,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/roles-list.html',
     "<div class=\"page-header\">\n" +
-    "    <h1>Rollen</h1>\n" +
+    "    <h1>Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
@@ -18811,10 +19338,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
     "        <div>\n" +
     "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
-    "            <span ng-if=\"!label.id\"> (nieuw label toevoegen)</span>\n" +
+    "            <span ng-if=\"!label.uuid\"> (nieuw label toevoegen)</span>\n" +
     "        </div>\n" +
     "    </ui-select-choices>\n" +
-    "</ui-select>"
+    "</ui-select>\n"
   );
 
 
@@ -19164,10 +19691,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
     "        <div>\n" +
     "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
-    "            <span ng-if=\"!label.id\"> (nieuw label toevoegen)</span>\n" +
+    "            <span ng-if=\"!label.uuid\"> (nieuw label toevoegen)</span>\n" +
     "        </div>\n" +
     "    </ui-select-choices>\n" +
-    "</ui-select>"
+    "</ui-select>\n"
   );
 
 
