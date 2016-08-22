@@ -42,7 +42,6 @@
                     <tr>
                         <th>E-mail</th>
                         <th>Nick</th>
-                        <th>Rol</th>
                         <th>Opties</th>
                     </tr>
                     </thead>
@@ -50,7 +49,6 @@
                     <tr ng-repeat="user in ulc.searchResult.member">
                         <td ng-bind="::user.email"></td>
                         <td ng-bind="::user.username"></td>
-                        <td ng-bind="::user.role"></td>
                         <td>
                           <!-- not yet required
                             <div class="btn-group">

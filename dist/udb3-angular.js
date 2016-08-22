@@ -18863,7 +18863,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <tr>\n" +
     "                        <th>E-mail</th>\n" +
     "                        <th>Nick</th>\n" +
-    "                        <th>Rol</th>\n" +
     "                        <th>Opties</th>\n" +
     "                    </tr>\n" +
     "                    </thead>\n" +
@@ -18871,7 +18870,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <tr ng-repeat=\"user in ulc.searchResult.member\">\n" +
     "                        <td ng-bind=\"::user.email\"></td>\n" +
     "                        <td ng-bind=\"::user.username\"></td>\n" +
-    "                        <td ng-bind=\"::user.role\"></td>\n" +
     "                        <td>\n" +
     "                          <!-- not yet required\n" +
     "                            <div class=\"btn-group\">\n" +
