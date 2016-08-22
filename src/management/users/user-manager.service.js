@@ -19,18 +19,19 @@ angular
   .service('UserManager', UserManager);
 
 /* @ngInject */
-function UserManager(udbApi) {
+function UserManager(udbApi, $q) {
   var service = this;
 
   /**
-   * @param {string} query
+   * @param {string} email
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {int} limit
    * @param {int} start
    *
    * @return {Promise.<PagedCollection>}
    */
-  service.find = function (query, limit, start) {
-    return udbApi.findUsers(query, limit, start);
+  service.find = function (email, limit, start) {
+    return udbApi.findUsersByEmail(email, limit, start);
   };
 
   /**

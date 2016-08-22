@@ -57,20 +57,29 @@ function SearchResultGenerator(rx) {
 
   /**
    * @param {{query: *, offset: *}} searchParameters
-   * @return {Promise.<PagedCollection>}
+   * @return {Observable.<PagedCollection|Object>}
    */
   SearchResultGenerator.prototype.find = function (searchParameters) {
     var generator = this;
 
-    return generator.searchService
-      .find(searchParameters.query, generator.itemsPerPage, searchParameters.offset);
+    return rx.Observable
+      .fromPromise(
+        generator.searchService.find(
+          searchParameters.query,
+          generator.itemsPerPage,
+          searchParameters.offset
+        )
+      )
+      .catch(function(searchError) {
+        return rx.Observable.just({error : searchError});
+      });
   };
 
   SearchResultGenerator.prototype.getSearchResult$ = function () {
     var generator = this;
 
     return generator.searchParameters$
-      .selectMany(generator.find.bind(generator));
+      .flatMap(generator.find.bind(generator));
   };
 
   return (SearchResultGenerator);

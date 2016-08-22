@@ -11,21 +11,28 @@
     <div class="col-md-1">
         <i ng-show="rlc.loading" class="fa fa-circle-o-notch fa-spin"></i>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2 text-right">
         <a class="btn btn-primary" ui-sref="split.manageRoles.create" ui-sref-opts="{reload:true}">
             <i class="fa fa-plus-circle"></i> Rol toevoegen
         </a>
     </div>
 </div>
 
-<div class="row" ng-cloak>
+<div class="row search-result-block" ng-cloak>
     <div class="col-md-12">
-        <p ng-show="rlc.query.length < rlc.minQueryLength">
-            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.
-        </p>
-        <p ng-show="rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0">
-            Geen rollen gevonden.
-        </p>
+        <div class="alert alert-info" role="alert" ng-show="rlc.query.length < rlc.minQueryLength">
+            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.</p>
+            <p>Laat het veld leeg om alle rollen op te vragen in alfabetische volgorde.</p>
+        </div>
+        <div ng-show="rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0"
+             class="alert alert-warning" role="alert">
+            <p>Geen rollen gevonden.</p>
+        </div>
+        <div ng-show="rlc.problem" class="alert alert-warning" role="alert">
+            <span>Er ging iets mis tijdens het zoeken:</span>
+            <br>
+            <strong ng-bind="rlc.problem.title"></strong>
+        </div>
         <div class="query-search-result roles-results"
              ng-class="{'loading-search-result': rlc.loading}"
              ng-show="rlc.searchResult.totalItems > 0">

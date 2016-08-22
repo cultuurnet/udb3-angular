@@ -38,10 +38,31 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    rlc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    rlc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    rlc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      rlc.searchResult = {};
+    } else {
+      clearProblem();
+      rlc.searchResult = searchResult;
+    }
+
     rlc.loading = false;
   }
 

@@ -996,17 +996,17 @@ function UdbApi(
   };
 
   /**
-   * @param {string} query
-   *  Matches case-insensitive and any part of a label.
+   * @param {string} email
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {Number} [limit]
    *  The limit of results per page.
    * @param {Number} [start]
    * @return {Promise.<PagedCollection>}
    */
-  this.findUsers = function (query, limit, start) {
+  this.findUsersByEmail = function (email, limit, start) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = {
-      query: query,
+      email: email ? email : '',
       limit: limit ? limit : 30,
       start: start ? start : 0
     };

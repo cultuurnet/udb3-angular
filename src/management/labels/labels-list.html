@@ -8,19 +8,26 @@
                               on-change="llc.queryChanged(query)"
         ></udb-query-search-bar>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-1 text-right">
         <i ng-show="llc.loading" class="fa fa-circle-o-notch fa-spin"></i>
     </div>
 </div>
 
-<div class="row" ng-cloak>
+<div class="row search-result-block" ng-cloak>
     <div class="col-md-12">
-        <p ng-show="llc.query.length < llc.minQueryLength">
-            Schrijf een zoekopdracht in het veld hierboven om labels te tonen.
-        </p>
-        <p ng-show="llc.query.length >= llc.minQueryLength && llc.searchResult.totalItems === 0">
+        <div class="alert alert-info" role="alert" ng-show="llc.query.length < llc.minQueryLength">
+            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om labels te zoeken.</p>
+            <p>Laat het veld leeg om alle labels op te vragen in alfabetische volgorde.</p>
+        </div>
+        <div ng-show="llc.query.length >= llc.minQueryLength && llc.searchResult.totalItems === 0"
+             class="alert alert-warning" role="alert">
             Geen labels gevonden.
-        </p>
+        </div>
+        <div ng-show="llc.problem" class="alert alert-warning" role="alert">
+            <span>Er ging iets mis tijdens het zoeken:</span>
+            <br>
+            <strong ng-bind="llc.problem.title"></strong>
+        </div>
         <div class="query-search-result"
              ng-class="{'loading-search-result': llc.loading}"
              ng-show="llc.searchResult.totalItems > 0">

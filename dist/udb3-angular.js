@@ -3586,17 +3586,17 @@ function UdbApi(
   };
 
   /**
-   * @param {string} query
-   *  Matches case-insensitive and any part of a label.
+   * @param {string} email
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {Number} [limit]
    *  The limit of results per page.
    * @param {Number} [start]
    * @return {Promise.<PagedCollection>}
    */
-  this.findUsers = function (query, limit, start) {
+  this.findUsersByEmail = function (email, limit, start) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = {
-      query: query,
+      email: email ? email : '',
       limit: limit ? limit : 30,
       start: start ? start : 0
     };
@@ -11400,10 +11400,31 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    llc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    llc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    llc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      llc.searchResult = {};
+    } else {
+      clearProblem();
+      llc.searchResult = searchResult;
+    }
+
     llc.loading = false;
   }
 
@@ -12456,10 +12477,31 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
   }
 
   /**
-   * @param {PagedCollection} searchResult
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    rlc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    rlc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
    */
   function showSearchResult(searchResult) {
-    rlc.searchResult = searchResult;
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      rlc.searchResult = {};
+    } else {
+      clearProblem();
+      rlc.searchResult = searchResult;
+    }
+
     rlc.loading = false;
   }
 
@@ -12640,20 +12682,29 @@ function SearchResultGenerator(rx) {
 
   /**
    * @param {{query: *, offset: *}} searchParameters
-   * @return {Promise.<PagedCollection>}
+   * @return {Observable.<PagedCollection|Object>}
    */
   SearchResultGenerator.prototype.find = function (searchParameters) {
     var generator = this;
 
-    return generator.searchService
-      .find(searchParameters.query, generator.itemsPerPage, searchParameters.offset);
+    return rx.Observable
+      .fromPromise(
+        generator.searchService.find(
+          searchParameters.query,
+          generator.itemsPerPage,
+          searchParameters.offset
+        )
+      )
+      .catch(function(searchError) {
+        return rx.Observable.just({error : searchError});
+      });
   };
 
   SearchResultGenerator.prototype.getSearchResult$ = function () {
     var generator = this;
 
     return generator.searchParameters$
-      .selectMany(generator.find.bind(generator));
+      .flatMap(generator.find.bind(generator));
   };
 
   return (SearchResultGenerator);
@@ -12718,18 +12769,19 @@ angular
   .service('UserManager', UserManager);
 
 /* @ngInject */
-function UserManager(udbApi) {
+function UserManager(udbApi, $q) {
   var service = this;
 
   /**
-   * @param {string} query
+   * @param {string} email
+   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
    * @param {int} limit
    * @param {int} start
    *
    * @return {Promise.<PagedCollection>}
    */
-  service.find = function (query, limit, start) {
-    return udbApi.findUsers(query, limit, start);
+  service.find = function (email, limit, start) {
+    return udbApi.findUsersByEmail(email, limit, start);
   };
 
   /**
@@ -12742,7 +12794,113 @@ function UserManager(udbApi) {
     return udbApi.findUserWithEmail(email);
   };
 }
-UserManager.$inject = ["udbApi"];
+UserManager.$inject = ["udbApi", "$q"];
+
+// Source: src/management/users/users-list.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:UsersListController
+ * @description
+ * # UsersListController
+ */
+angular
+  .module('udb.management.users')
+  .controller('UsersListController', UsersListController);
+
+/* @ngInject */
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+  var ulc = this;
+
+  var itemsPerPage = 20;
+  var minQueryLength = 3;
+
+  ulc.query = '';
+  ulc.problem = false;
+  ulc.loading = true;
+  ulc.query = '';
+  ulc.page = 0;
+  ulc.minQueryLength = minQueryLength;
+
+  var query$ = rx.createObservableFunction(ulc, 'queryChanged');
+  var filteredQuery$ = query$.filter(ignoreShortQueries);
+  var page$ = rx.createObservableFunction(ulc, 'pageChanged');
+  var searchResultGenerator = new SearchResultGenerator(UserManager, filteredQuery$, page$, itemsPerPage);
+  var searchResult$ = searchResultGenerator.getSearchResult$();
+
+  /**
+   * @param {string} query
+   * @return {boolean}
+   */
+  function ignoreShortQueries(query) {
+    if (ulc.query === '') {
+      return true;
+    }
+    else {
+      return query.length >= minQueryLength;
+    }
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    ulc.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    ulc.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
+   */
+  function showSearchResult(searchResult) {
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      ulc.searchResult = {};
+    } else {
+      clearProblem();
+      ulc.searchResult = searchResult;
+    }
+
+    ulc.loading = false;
+  }
+
+  function openDeleteConfirmModal(user) {
+    var modalInstance = $uibModal.open({
+        templateUrl: 'templates/user-delete-confirm-modal.html',
+        controller: 'UserDeleteConfirmModalCtrl',
+        resolve: {
+          item: function () {
+            return user;
+          }
+        }
+      });
+    modalInstance.result.then($state.reload);
+  }
+  ulc.openDeleteConfirmModal = openDeleteConfirmModal;
+
+  query$
+    .safeApply($scope, function (query) {
+      ulc.query = query;
+    })
+    .subscribe();
+
+  searchResult$
+    .safeApply($scope, showSearchResult)
+    .subscribe();
+
+  filteredQuery$
+    .merge(page$)
+    .safeApply($scope, function () {
+      ulc.loading = true;
+    })
+    .subscribe();
+}
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state"];
 
 // Source: src/media/create-image-job.factory.js
 /**
@@ -18598,19 +18756,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                              on-change=\"llc.queryChanged(query)\"\n" +
     "        ></udb-query-search-bar>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-1\">\n" +
+    "    <div class=\"col-md-1 text-right\">\n" +
     "        <i ng-show=\"llc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"row\" ng-cloak>\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
-    "        <p ng-show=\"llc.query.length < llc.minQueryLength\">\n" +
-    "            Schrijf een zoekopdracht in het veld hierboven om labels te tonen.\n" +
-    "        </p>\n" +
-    "        <p ng-show=\"llc.query.length >= llc.minQueryLength && llc.searchResult.totalItems === 0\">\n" +
+    "        <div class=\"alert alert-info\" role=\"alert\" ng-show=\"llc.query.length < llc.minQueryLength\">\n" +
+    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om labels te zoeken.</p>\n" +
+    "            <p>Laat het veld leeg om alle labels op te vragen in alfabetische volgorde.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"llc.query.length >= llc.minQueryLength && llc.searchResult.totalItems === 0\"\n" +
+    "             class=\"alert alert-warning\" role=\"alert\">\n" +
     "            Geen labels gevonden.\n" +
-    "        </p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"llc.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
+    "            <br>\n" +
+    "            <strong ng-bind=\"llc.problem.title\"></strong>\n" +
+    "        </div>\n" +
     "        <div class=\"query-search-result\"\n" +
     "             ng-class=\"{'loading-search-result': llc.loading}\"\n" +
     "             ng-show=\"llc.searchResult.totalItems > 0\">\n" +
@@ -19092,21 +19257,28 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"col-md-1\">\n" +
     "        <i ng-show=\"rlc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-2\">\n" +
+    "    <div class=\"col-md-2 text-right\">\n" +
     "        <a class=\"btn btn-primary\" ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">\n" +
     "            <i class=\"fa fa-plus-circle\"></i> Rol toevoegen\n" +
     "        </a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"row\" ng-cloak>\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
-    "        <p ng-show=\"rlc.query.length < rlc.minQueryLength\">\n" +
-    "            Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.\n" +
-    "        </p>\n" +
-    "        <p ng-show=\"rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0\">\n" +
-    "            Geen rollen gevonden.\n" +
-    "        </p>\n" +
+    "        <div class=\"alert alert-info\" role=\"alert\" ng-show=\"rlc.query.length < rlc.minQueryLength\">\n" +
+    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om rollen te zoeken.</p>\n" +
+    "            <p>Laat het veld leeg om alle rollen op te vragen in alfabetische volgorde.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"rlc.query.length >= rlc.minQueryLength && rlc.searchResult.totalItems === 0\"\n" +
+    "             class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <p>Geen rollen gevonden.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"rlc.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
+    "            <br>\n" +
+    "            <strong ng-bind=\"rlc.problem.title\"></strong>\n" +
+    "        </div>\n" +
     "        <div class=\"query-search-result roles-results\"\n" +
     "             ng-class=\"{'loading-search-result': rlc.loading}\"\n" +
     "             ng-show=\"rlc.searchResult.totalItems > 0\">\n" +
@@ -19170,6 +19342,88 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "    </ui-select-choices>\n" +
     "</ui-select>\n"
+  );
+
+
+  $templateCache.put('templates/users-list.html',
+    "<div class=\"page-header\">\n" +
+    "    <h1>Gebruikers</h1>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-9\">\n" +
+    "        <udb-query-search-bar search-label=\"Zoeken op email\"\n" +
+    "                              on-change=\"ulc.queryChanged(query)\"\n" +
+    "        ></udb-query-search-bar>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-1\">\n" +
+    "        <i ng-show=\"ulc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-2 text-right\">\n" +
+    "        <a class=\"btn btn-primary\" ui-sref=\"split.manageUsers.create\" ui-sref-opts=\"{reload:true}\">\n" +
+    "            <i class=\"fa fa-plus-circle\"></i> Gebruiker toevoegen\n" +
+    "        </a>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <div class=\"alert alert-info\" ng-show=\"ulc.query.length < ulc.minQueryLength\" role=\"alert\">\n" +
+    "            <p>Schrijf een geldig email-adres in het veld hierboven om gebruikers te zoeken.</p>\n" +
+    "            <p>Gebruik de wildcard <strong>*</strong> om naar meerdere gebruikers van hetzelfde domein te zoeken, e.g. <strong>dirk*@cultuurnet.be</strong></p>\n" +
+    "            <p>Laat het veld leeg om alle gebruikers op te vragen in de volgorde dat ze zijn aangemaakt.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0\"\n" +
+    "             class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <p>Geen gebruikers gevonden.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"ulc.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
+    "            <br>\n" +
+    "            <strong ng-bind=\"ulc.problem.title\"></strong>\n" +
+    "        </div>\n" +
+    "        <div class=\"query-search-result users-results\"\n" +
+    "             ng-class=\"{'loading-search-result': ulc.loading}\"\n" +
+    "             ng-show=\"ulc.searchResult.totalItems > 0\">\n" +
+    "                <table class=\"table table-hover table-striped\">\n" +
+    "                    <thead>\n" +
+    "                    <tr>\n" +
+    "                        <th>E-mail</th>\n" +
+    "                        <th>Nick</th>\n" +
+    "                        <th>Opties</th>\n" +
+    "                    </tr>\n" +
+    "                    </thead>\n" +
+    "                    <tbody>\n" +
+    "                    <tr ng-repeat=\"user in ulc.searchResult.member\">\n" +
+    "                        <td ng-bind=\"::user.email\"></td>\n" +
+    "                        <td ng-bind=\"::user.username\"></td>\n" +
+    "                        <td>\n" +
+    "                          <!-- not yet required\n" +
+    "                            <div class=\"btn-group\">\n" +
+    "                                <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+    "                                    Bewerken <span class=\"caret\"></span></button>\n" +
+    "                                <ul class=\"dropdown-menu\">\n" +
+    "                                    <li><a ui-sref=\"split.manageUsers.edit({id: user.uuid})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
+    "                                    <li><a href ng-click=\"ulc.openDeleteConfirmModal(user)\">Verwijderen</a></li>\n" +
+    "                                </ul>\n" +
+    "                            </div>\n" +
+    "                            -->\n" +
+    "                        </td>\n" +
+    "                    </tr>\n" +
+    "                    </tbody>\n" +
+    "                </table>\n" +
+    "            <div class=\"panel-footer\">\n" +
+    "                <uib-pagination\n" +
+    "                        total-items=\"ulc.searchResult.totalItems\"\n" +
+    "                        ng-model=\"ulc.page\"\n" +
+    "                        items-per-page=\"ulc.searchResult.itemsPerPage\"\n" +
+    "                        max-size=\"10\"\n" +
+    "                        ng-change=\"ulc.pageChanged(ulc.page)\">\n" +
+    "                </uib-pagination>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n"
   );
 
 

@@ -3157,6 +3157,9 @@ img.offer-image-thumbnail {
   opacity: 0.4;
   pointer-events: none;
 }
+.search-result-block {
+  margin-top: 1em;
+}
 .query-search-result .table {
   margin-bottom: 0px;
 }

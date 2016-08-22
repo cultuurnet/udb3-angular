@@ -1,0 +1,78 @@
+<div class="page-header">
+    <h1>Gebruikers</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+        <udb-query-search-bar search-label="Zoeken op email"
+                              on-change="ulc.queryChanged(query)"
+        ></udb-query-search-bar>
+    </div>
+    <div class="col-md-1">
+        <i ng-show="ulc.loading" class="fa fa-circle-o-notch fa-spin"></i>
+    </div>
+    <div class="col-md-2 text-right">
+        <a class="btn btn-primary" ui-sref="split.manageUsers.create" ui-sref-opts="{reload:true}">
+            <i class="fa fa-plus-circle"></i> Gebruiker toevoegen
+        </a>
+    </div>
+</div>
+
+<div class="row search-result-block" ng-cloak>
+    <div class="col-md-12">
+        <div class="alert alert-info" ng-show="ulc.query.length < ulc.minQueryLength" role="alert">
+            <p>Schrijf een geldig email-adres in het veld hierboven om gebruikers te zoeken.</p>
+            <p>Gebruik de wildcard <strong>*</strong> om naar meerdere gebruikers van hetzelfde domein te zoeken, e.g. <strong>dirk*@cultuurnet.be</strong></p>
+            <p>Laat het veld leeg om alle gebruikers op te vragen in de volgorde dat ze zijn aangemaakt.</p>
+        </div>
+        <div ng-show="ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0"
+             class="alert alert-warning" role="alert">
+            <p>Geen gebruikers gevonden.</p>
+        </div>
+        <div ng-show="ulc.problem" class="alert alert-warning" role="alert">
+            <span>Er ging iets mis tijdens het zoeken:</span>
+            <br>
+            <strong ng-bind="ulc.problem.title"></strong>
+        </div>
+        <div class="query-search-result users-results"
+             ng-class="{'loading-search-result': ulc.loading}"
+             ng-show="ulc.searchResult.totalItems > 0">
+                <table class="table table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>E-mail</th>
+                        <th>Nick</th>
+                        <th>Opties</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="user in ulc.searchResult.member">
+                        <td ng-bind="::user.email"></td>
+                        <td ng-bind="::user.username"></td>
+                        <td>
+                          <!-- not yet required
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Bewerken <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a ui-sref="split.manageUsers.edit({id: user.uuid})" ui-sref-opts="{reload:true}">Bewerken</a></li>
+                                    <li><a href ng-click="ulc.openDeleteConfirmModal(user)">Verwijderen</a></li>
+                                </ul>
+                            </div>
+                            -->
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            <div class="panel-footer">
+                <uib-pagination
+                        total-items="ulc.searchResult.totalItems"
+                        ng-model="ulc.page"
+                        items-per-page="ulc.searchResult.itemsPerPage"
+                        max-size="10"
+                        ng-change="ulc.pageChanged(ulc.page)">
+                </uib-pagination>
+            </div>
+        </div>
+    </div>
+</div>
