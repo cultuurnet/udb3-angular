@@ -13622,18 +13622,24 @@ function LabelSelectComponent(offerLabeller) {
   select.availableLabels = [];
   select.suggestLabels = suggestLabels;
   select.createLabel = createLabel;
+  select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 2;
+  select.minimumInputLength = 3;
+  select.maxInputLength = 255;
   select.findDelay = 300;
+
+  function areLengthCriteriaMet(length) {
+    return (length >= select.minimumInputLength && length <= select.maxInputLength);
+  }
 
   function createLabel(labelName) {
     var similarLabel = _.find(select.labels, function (existingLabel) {
       return existingLabel.name.toUpperCase() === labelName.toUpperCase();
     });
-    if (!similarLabel) {
+    if (!similarLabel && select.areLengthCriteriaMet(labelName.length)) {
       return {name:labelName};
     }
   }
@@ -19690,13 +19696,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "           on-select=\"select.labelAdded({label: $item})\"\n" +
     "           on-remove=\"select.labelRemoved({label: $item})\">\n" +
     "    <ui-select-match placeholder=\"Voeg een label toe...\">{{$item.name}}</ui-select-match>\n" +
-    "    <ui-select-no-choice ng-show=\"$select.search.length >= select.minimumInputLength &&\">\n" +
+    "    <ui-select-no-choice ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\">\n" +
     "        <div class=\"udb-label-select-refreshing\" style=\"padding: 3px 20px\">\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Suggesties laden\n" +
     "        </div>\n" +
     "    </ui-select-no-choice>\n" +
     "    <ui-select-choices repeat=\"label in select.availableLabels track by label.name\"\n" +
-    "                       ng-show=\"$select.search.length >= select.minimumInputLength &&\"\n" +
+    "                       ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\"\n" +
     "                       ui-disable-choice=\"select.refreshing\"\n" +
     "                       refresh=\"select.suggestLabels($select.search)\"\n" +
     "                       refresh-delay=\"0\"\n" +
