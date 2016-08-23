@@ -2629,6 +2629,11 @@ UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorM
  */
 
 /**
+ * @typedef {Object} CommandInfo
+ * @property {string} commandId
+ */
+
+/**
  * @readonly
  * @enum {string}
  */
@@ -11946,7 +11951,18 @@ angular
   .module('udb.management.roles')
   .controller('RoleFormController', RoleFormController);
 
-/** @ngInject */
+/**
+ * @ngInject
+ * @constructor
+ *
+ * @param {RoleManager} RoleManager
+ * @param {PermissionManager} PermissionManager
+ * @param {UserManager} UserManager
+ * @param {Object} $uibModal
+ * @param {Object} $stateParams
+ * @param {Object} jsonLDLangFilter
+ * @param {Object} $q
+ */
 function RoleFormController(
   RoleManager,
   PermissionManager,
@@ -11957,6 +11973,7 @@ function RoleFormController(
   $q
 ) {
   var editor = this;
+  var roleId = $stateParams.id;
 
   editor.saving = false;
   editor.loadedRole = false;
@@ -11965,6 +11982,7 @@ function RoleFormController(
   editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
+    uuid: roleId,
     permissions: {},
     users: [],
     labels: []
@@ -11987,8 +12005,6 @@ function RoleFormController(
   editor.updatePermission = updatePermission;
   editor.updateName = updateName;
   editor.updateConstraint = updateConstraint;
-
-  var roleId = $stateParams.id;
 
   function init() {
     getAllRolePermissions()
@@ -12176,10 +12192,12 @@ function RoleFormController(
   }
 
   function removeUser(user) {
+    var role = _.pick(editor.role, ['uuid', 'name', 'constraint']);
+
     editor.saving = true;
 
     RoleManager
-      .removeUserFromRole(roleId, user.uuid)
+      .removeUserFromRole(role, user)
       .then(function () {
         var pos = editor.role.users.indexOf(user);
         editor.role.users.splice(pos, 1);
@@ -12213,8 +12231,9 @@ function RoleFormController(
           return user;
         }
       })
-      .then(function(user) {
-        return RoleManager.addUserToRole(user.uuid, roleId);
+      .then(function(users) {
+        var role = _.pick(editor.role, ['uuid', 'name', 'constraint']);
+        return RoleManager.addUserToRole(users[0], role);
       })
       .then(function() {
         editor.role.users.push(userAdded);
@@ -12257,6 +12276,7 @@ RoleFormController.$inject = ["RoleManager", "PermissionManager", "UserManager",
  * @typedef {Object} Role
  * @property {string}   uuid
  * @property {string}   name
+ * @property {string}   constraint
  */
 
 /**
@@ -12277,7 +12297,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
+function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob) {
   var service = this;
 
   /**
@@ -12354,16 +12374,16 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   };
 
   /**
-   * @param {string} userId
-   *  The id of the user
-   * @param {string} roleId
-   *  roleId for the role
-   * @return {Promise}
+   * @param {User} user
+   *  The user you want to add a role to
+   * @param {Role} role
+   *  The role you want added to the user
+   * @return {Promise.<UserRoleJob>}
    */
-  service.addUserToRole = function(userId, roleId) {
+  service.addUserToRole = function(user, role) {
     return udbApi
-      .addUserToRole(userId, roleId)
-      .then(logRoleJob);
+      .addUserToRole(user.uuid, role.uuid)
+      .then(userRoleJobCreator(user, role));
   };
 
   /**
@@ -12420,14 +12440,14 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   };
 
   /**
-   * @param {uuid} roleId
-   * @param {uuid} userId
-   * @return {Promise.<BaseJob>}
+   * @param {Role} role
+   * @param {User} user
+   * @return {Promise.<UserRoleJob>}
    */
-  service.removeUserFromRole = function(roleId, userId) {
+  service.removeUserFromRole = function(role, user) {
     return udbApi
-      .removeUserFromRole(roleId, userId)
-      .then(logRoleJob);
+      .removeUserFromRole(role.uuid, user.uuid)
+      .then(userRoleJobCreator(user, role));
   };
 
   /**
@@ -12457,8 +12477,27 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
 
     return $q.resolve(job);
   }
+
+  /**
+   * Returns a callable function that takes a command info and returns a user role job promise.
+   *
+   * @param {User} user
+   * @param {Role} role
+   */
+  function userRoleJobCreator(user, role) {
+    /**
+     * @param {CommandInfo} commandInfo
+     * @return {Promise.<UserRoleJob>}
+     */
+    return function(commandInfo) {
+      var job = new UserRoleJob(commandInfo.commandId, user, role);
+      jobLogger.addJob(job);
+
+      return $q.resolve(job);
+    };
+  }
 }
-RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob"];
+RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob", "UserRoleJob"];
 
 // Source: src/management/roles/roles-list.controller.js
 /**
@@ -12781,7 +12820,7 @@ SearchService.$inject = ["$q"];
 
 /**
  * @callback ActionCallback
- * @param {Promise.<BaseJob>} job
+ * @param {Promise.<UserRoleJob>} job
  */
 
 /**
@@ -12795,7 +12834,7 @@ angular
   .controller('UserEditorController', UserEditorController);
 
 /* @ngInject */
-function UserEditorController(UserManager, $stateParams, RoleManager) {
+function UserEditorController(UserManager, RoleManager, $stateParams, $q) {
   var editor = this;
   var userId = $stateParams.id;
 
@@ -12829,37 +12868,138 @@ function UserEditorController(UserManager, $stateParams, RoleManager) {
    * @param {Role} role
    */
   editor.deleteRole = function (role) {
-    var deleteAction = {
+    var deleteRoleAction = {
       role: role,
+      style: 'list-group-item-danger',
       perform: _.once(function () {
-        return RoleManager.removeUserFromRole(role.id, userId);
-      })
+        return RoleManager
+          .removeUserFromRole(role, editor.user)
+          .then(returnTaskPromise);
+      }),
+      undo: function () {
+        console.log('¯\\_(ツ)_/¯');
+      }
     };
 
-    editor.queueAction(deleteAction);
+    editor.queueAction(deleteRoleAction);
   };
+
+  function returnTaskPromise(job) {
+    return $q.when(job.task.promise);
+  }
 
   /**
    * @param {RoleAction} action
    */
   editor.queueAction = function (action) {
     var currentActions = editor.actions ? editor.actions : [];
-    currentActions.push(action);
-    editor.actions = currentActions;
+
+    if (!editor.getRoleAction(action.role)) {
+      currentActions.push(action);
+      editor.actions = currentActions;
+    }
   };
 
   /**
    * @param {Role} role
    */
-  editor.roleHasActions = function(role) {
+  editor.getRoleStyle = function(role) {
+    var action = editor.getRoleAction(role);
+
+    return action ? action.style : null;
+  };
+
+  /**
+   * @param {Role} role
+   */
+  editor.getRoleAction =  function (role) {
     return _.find(editor.actions, {
       role: {
         uuid: role.uuid
       }
     });
   };
+
+  /**
+   * @param {string} roleName
+   * @return {Promise.<Role[]>}
+   */
+  editor.lookupRoles = function (roleName) {
+    return RoleManager
+      .find(roleName, 20)
+      .then(function (pagedRoleCollection) {
+        return _.reject(pagedRoleCollection.member, function (role) {
+          return _.find(editor.roles, {uuid: role.uuid});
+        });
+      });
+  };
+
+  /**
+   * @param {Role} role
+   */
+  editor.addRole = function (role) {
+    if (_.find(editor.roles, {uuid: role.uuid})) {
+      return; // do nothing when the user already has the role
+    }
+
+    editor.roles.push(role);
+    editor.roleLookupName = '';
+
+    var addRoleAction = {
+      role: role,
+      style: 'list-group-item-success',
+      perform: _.once(function () {
+        return RoleManager
+          .addUserToRole(editor.user, role)
+          .then(returnTaskPromise);
+      }),
+      undo: function () {
+        editor.roles = _.reject(editor.roles, {uuid: role.uuid});
+      }
+    };
+
+    editor.queueAction(addRoleAction);
+  };
+
+  editor.save = function() {
+    editor.saving = true;
+    var actionPromises = _.map(editor.actions, performAction);
+
+    $q.all(actionPromises)
+      .then(function () {
+        loadUser(userId);
+        editor.saving = false;
+        editor.actions = [];
+      });
+  };
+
+  /**
+   * @param {RoleAction} action
+   */
+  function performAction(action) {
+    return action
+      .perform()
+      .catch(action.undo);
+  }
+
+  /**
+   * @param {Role} role
+   */
+  editor.undoAction = function(role) {
+    var action = editor.getRoleAction(role);
+    action.undo();
+
+    editor.actions = _.reject(
+      editor.actions,
+      {
+        role: {
+          uuid: role.uuid
+        }
+      }
+    );
+  };
 }
-UserEditorController.$inject = ["UserManager", "$stateParams", "RoleManager"];
+UserEditorController.$inject = ["UserManager", "RoleManager", "$stateParams", "$q"];
 
 // Source: src/management/users/user-manager.service.js
 /**
@@ -12931,6 +13071,77 @@ function UserManager(udbApi, $q) {
   };
 }
 UserManager.$inject = ["udbApi", "$q"];
+
+// Source: src/management/users/user-role-job.factory.js
+/**
+ * @ngdoc service
+ * @name udb.management.users.UserRoleJob
+ * @description
+ * # User Role Job
+ * This Is the factory that creates a user role job
+ */
+angular
+  .module('udb.management.users')
+  .factory('UserRoleJob', UserRoleJobFactory);
+
+/* @ngInject */
+function UserRoleJobFactory(BaseJob, JobStates, $q) {
+
+  /**
+   * @class UserRoleJob
+   * @constructor
+   * @param {string} commandId
+   * @param {User} user
+   * @param {Role} role
+   */
+  var UserRoleJob = function (commandId, user, role) {
+    BaseJob.call(this, commandId);
+
+    this.role = role;
+    this.user = user;
+    this.task = $q.defer();
+  };
+
+  UserRoleJob.prototype = Object.create(BaseJob.prototype);
+  UserRoleJob.prototype.constructor = UserRoleJob;
+
+  UserRoleJob.prototype.finish = function () {
+    BaseJob.prototype.finish.call(this);
+
+    if (this.state !== JobStates.FAILED) {
+      this.task.resolve();
+    }
+  };
+
+  UserRoleJob.prototype.fail = function () {
+    BaseJob.prototype.fail.call(this);
+
+    this.task.reject();
+  };
+
+  UserRoleJob.prototype.getDescription = function () {
+    var job = this,
+      description;
+
+    var failedDescriptionTemplate = _.template(
+      'Het toekennen of verwijderen van de rol: "${role.name}" is mislukt voor "${user.username}".'
+    );
+    var descriptionTemplate = _.template(
+      'Toevoegen of verwijderen van de rol: "${role.name}" voor gebruiker "${user.username}".'
+    );
+
+    if (this.state === JobStates.FAILED) {
+      description = failedDescriptionTemplate(job);
+    } else {
+      description = descriptionTemplate(job);
+    }
+
+    return description;
+  };
+
+  return (UserRoleJob);
+}
+UserRoleJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
 
 // Source: src/management/users/users-list.controller.js
 /**
@@ -19515,16 +19726,38 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <h3 class=\"panel-title\">Rollen</h3>\n" +
     "    </div>\n" +
     "    <div class=\"panel-body\">\n" +
+    "        <form class=\"form-inline\" role=\"search\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"role-lookup\">Rol toevoegen</label>\n" +
+    "                <input type=\"text\"\n" +
+    "                       id=\"role-lookup\"\n" +
+    "                       class=\"form-control uib-typeahead\"\n" +
+    "                       placeholder=\"rol naam\"\n" +
+    "                       ng-model=\"editor.roleLookupName\"\n" +
+    "                       ng-disabled=\"editor.saving\"\n" +
+    "                       uib-typeahead=\"role.name for role in editor.lookupRoles($viewValue)\"\n" +
+    "                       typeahead-loading=\"editor.lookingForRoles\"\n" +
+    "                       typeahead-on-select=\"editor.addRole($item)\"\n" +
+    "                       typeahead-min-length=\"3\"\n" +
+    "                       typeahead-template-url=\"templates/user-role-suggestion.html\"/>\n" +
+    "            </div>\n" +
+    "        </form>\n" +
+    "\n" +
     "        <p ng-show=\"editor.roles && editor.roles.length === 0\">\n" +
     "            Er zijn nog geen rollen toegekend aan deze gebruiker.\n" +
     "        </p>\n" +
     "    </div>\n" +
     "    <ul class=\"list-group\" ng-show=\"editor.roles\">\n" +
-    "        <li class=\"list-group-item\" ng-repeat=\"role in editor.roles\" ng-class=\"{'disabled': editor.roleHasActions(role)}\">\n" +
+    "        <li class=\"list-group-item\" ng-repeat=\"role in editor.roles\" ng-class=\"editor.getRoleStyle(role)\">\n" +
     "            <a ui-sref=\"split.manageRoles.edit({id: role.uuid})\" ng-bind=\"role.name\"></a>\n" +
     "            <button type=\"button\" class=\"btn btn-link pull-right\"\n" +
-    "                    ng-disabled=\"editor.roleHasActions(role)\"\n" +
+    "                    ng-if=\"!editor.getRoleStyle(role)\"\n" +
     "                    ng-click=\"editor.deleteRole(role)\">Verwijderen</button>\n" +
+    "            <button type=\"button\" class=\"btn btn-link pull-right\"\n" +
+    "                    ng-if=\"editor.getRoleStyle(role)\"\n" +
+    "                    ng-click=\"editor.undoAction(role)\">\n" +
+    "                <i class=\"fa fa-undo\" aria-hidden=\"true\"></i>\n" +
+    "            </button>\n" +
     "        </li>\n" +
     "    </ul>\n" +
     "    <div class=\"panel-footer\" ng-show=\"!editor.roles && !editor.rolesLoadingError\">\n" +
@@ -19546,6 +19779,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div ng-show=\"editor.loadingError\">\n" +
     "    <span ng-bind=\"editor.loadingError\"></span>\n" +
     "</div>"
+  );
+
+
+  $templateCache.put('templates/user-role-suggestion.html',
+    "<a href tabindex=\"-1\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></a>"
   );
 
 

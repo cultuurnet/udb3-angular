@@ -39,6 +39,11 @@
  */
 
 /**
+ * @typedef {Object} CommandInfo
+ * @property {string} commandId
+ */
+
+/**
  * @readonly
  * @enum {string}
  */

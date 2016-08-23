@@ -235,11 +235,17 @@ describe('Controller: Roles Form', function() {
   });
 
   it('should add a user to a role', function() {
-    var user = [{
+    var users = [{
       uuid: '6f072ba8-c510-40ac-b387-51f582650e27',
       email: 'alberto@email.es',
       username: 'El Pistolero'
     }];
+
+    var expectedRole = {
+      "uuid": id,
+      "name": "Beheerder west-vlaanderen",
+      "constraint": "city:leuven"
+    };
 
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
@@ -252,7 +258,7 @@ describe('Controller: Roles Form', function() {
     var editor = getController();
     $scope.$digest();
 
-    Usermanager.findUserWithEmail.and.returnValue($q.resolve(user));
+    Usermanager.findUserWithEmail.and.returnValue($q.resolve(users));
     RoleManager.addUserToRole.and.returnValue($q.resolve());
 
     editor.form = {
@@ -266,7 +272,7 @@ describe('Controller: Roles Form', function() {
     editor.addUser();
     $scope.$digest();
 
-    expect(RoleManager.addUserToRole).toHaveBeenCalledWith(user.uuid, id);
+    expect(RoleManager.addUserToRole).toHaveBeenCalledWith(users[0], expectedRole);
     expect(Usermanager.findUserWithEmail).toHaveBeenCalledWith('alberto@email.es');
     expect(editor.role.users.length).toEqual(1);
   });
@@ -539,6 +545,18 @@ describe('Controller: Roles Form', function() {
       username: 'Gertie'
     }];
 
+    var expectedRole = {
+      "uuid": id,
+      "name": "Beheerder west-vlaanderen",
+      "constraint": "city:leuven"
+    };
+
+    var expectedUser = {
+      uuid: '6f072ba8-c510-40ac-b387-51f582650e27',
+      email: 'alberto@email.es',
+      username: 'El Pistolero'
+    };
+
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve(users));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
@@ -554,7 +572,7 @@ describe('Controller: Roles Form', function() {
     editor.removeUser(users[0]);
     $scope.$digest();
 
-    expect(RoleManager.removeUserFromRole).toHaveBeenCalledWith(id, '6f072ba8-c510-40ac-b387-51f582650e27');
+    expect(RoleManager.removeUserFromRole).toHaveBeenCalledWith(expectedRole, expectedUser);
     expect(editor.role.users).toEqual([{
       "uuid": "7f072ba8-c510-40ac-b387-51f582650e27",
       "email": "gertie@email.es",

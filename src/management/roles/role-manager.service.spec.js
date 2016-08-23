@@ -346,6 +346,16 @@ describe('Service: Role Manager', function () {
   });
 
   it('should remove a user from a role', function(done) {
+    var user = {
+      'uuid': '6f072ba8-c510-40ac-b387-51f582650e27',
+      'email': 'alberto@email.es',
+      'username': 'El Pistolero'
+    };
+    var role = {
+      'uuid': '4bd7dc40-4571-4469-b52c-c5481885bc27',
+      'name': 'godmode',
+      'constraint': '*:*'
+    };
     var expectedCommandId = {
       commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
     };
@@ -355,14 +365,14 @@ describe('Service: Role Manager', function () {
     function assertCommand(job) {
       expect(job.id).toEqual(expectedCommandId.commandId);
       expect(udbApi.removeUserFromRole).toHaveBeenCalledWith(
-        '0823f57e-a6bd-450a-b4f5-8459b4b11043',
-        'user-id'
+        '4bd7dc40-4571-4469-b52c-c5481885bc27',
+        '6f072ba8-c510-40ac-b387-51f582650e27'
       );
       done();
     }
 
     service
-      .removeUserFromRole('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'user-id')
+      .removeUserFromRole(role, user)
       .then(assertCommand);
 
     $scope.$apply();

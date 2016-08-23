@@ -4,6 +4,7 @@
  * @typedef {Object} Role
  * @property {string}   uuid
  * @property {string}   name
+ * @property {string}   constraint
  */
 
 /**
@@ -24,7 +25,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
+function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob) {
   var service = this;
 
   /**
@@ -101,16 +102,16 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   };
 
   /**
-   * @param {string} userId
-   *  The id of the user
-   * @param {string} roleId
-   *  roleId for the role
-   * @return {Promise}
+   * @param {User} user
+   *  The user you want to add a role to
+   * @param {Role} role
+   *  The role you want added to the user
+   * @return {Promise.<UserRoleJob>}
    */
-  service.addUserToRole = function(userId, roleId) {
+  service.addUserToRole = function(user, role) {
     return udbApi
-      .addUserToRole(userId, roleId)
-      .then(logRoleJob);
+      .addUserToRole(user.uuid, role.uuid)
+      .then(userRoleJobCreator(user, role));
   };
 
   /**
@@ -167,14 +168,14 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   };
 
   /**
-   * @param {uuid} roleId
-   * @param {uuid} userId
-   * @return {Promise.<BaseJob>}
+   * @param {Role} role
+   * @param {User} user
+   * @return {Promise.<UserRoleJob>}
    */
-  service.removeUserFromRole = function(roleId, userId) {
+  service.removeUserFromRole = function(role, user) {
     return udbApi
-      .removeUserFromRole(roleId, userId)
-      .then(logRoleJob);
+      .removeUserFromRole(role.uuid, user.uuid)
+      .then(userRoleJobCreator(user, role));
   };
 
   /**
@@ -203,5 +204,24 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
     jobLogger.addJob(job);
 
     return $q.resolve(job);
+  }
+
+  /**
+   * Returns a callable function that takes a command info and returns a user role job promise.
+   *
+   * @param {User} user
+   * @param {Role} role
+   */
+  function userRoleJobCreator(user, role) {
+    /**
+     * @param {CommandInfo} commandInfo
+     * @return {Promise.<UserRoleJob>}
+     */
+    return function(commandInfo) {
+      var job = new UserRoleJob(commandInfo.commandId, user, role);
+      jobLogger.addJob(job);
+
+      return $q.resolve(job);
+    };
   }
 }

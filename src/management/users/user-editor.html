@@ -31,16 +31,38 @@
         <h3 class="panel-title">Rollen</h3>
     </div>
     <div class="panel-body">
+        <form class="form-inline" role="search">
+            <div class="form-group">
+                <label for="role-lookup">Rol toevoegen</label>
+                <input type="text"
+                       id="role-lookup"
+                       class="form-control uib-typeahead"
+                       placeholder="rol naam"
+                       ng-model="editor.roleLookupName"
+                       ng-disabled="editor.saving"
+                       uib-typeahead="role.name for role in editor.lookupRoles($viewValue)"
+                       typeahead-loading="editor.lookingForRoles"
+                       typeahead-on-select="editor.addRole($item)"
+                       typeahead-min-length="3"
+                       typeahead-template-url="templates/user-role-suggestion.html"/>
+            </div>
+        </form>
+
         <p ng-show="editor.roles && editor.roles.length === 0">
             Er zijn nog geen rollen toegekend aan deze gebruiker.
         </p>
     </div>
     <ul class="list-group" ng-show="editor.roles">
-        <li class="list-group-item" ng-repeat="role in editor.roles" ng-class="{'disabled': editor.roleHasActions(role)}">
+        <li class="list-group-item" ng-repeat="role in editor.roles" ng-class="editor.getRoleStyle(role)">
             <a ui-sref="split.manageRoles.edit({id: role.uuid})" ng-bind="role.name"></a>
             <button type="button" class="btn btn-link pull-right"
-                    ng-disabled="editor.roleHasActions(role)"
+                    ng-if="!editor.getRoleStyle(role)"
                     ng-click="editor.deleteRole(role)">Verwijderen</button>
+            <button type="button" class="btn btn-link pull-right"
+                    ng-if="editor.getRoleStyle(role)"
+                    ng-click="editor.undoAction(role)">
+                <i class="fa fa-undo" aria-hidden="true"></i>
+            </button>
         </li>
     </ul>
     <div class="panel-footer" ng-show="!editor.roles && !editor.rolesLoadingError">

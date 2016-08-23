@@ -10,7 +10,18 @@ angular
   .module('udb.management.roles')
   .controller('RoleFormController', RoleFormController);
 
-/** @ngInject */
+/**
+ * @ngInject
+ * @constructor
+ *
+ * @param {RoleManager} RoleManager
+ * @param {PermissionManager} PermissionManager
+ * @param {UserManager} UserManager
+ * @param {Object} $uibModal
+ * @param {Object} $stateParams
+ * @param {Object} jsonLDLangFilter
+ * @param {Object} $q
+ */
 function RoleFormController(
   RoleManager,
   PermissionManager,
@@ -21,6 +32,7 @@ function RoleFormController(
   $q
 ) {
   var editor = this;
+  var roleId = $stateParams.id;
 
   editor.saving = false;
   editor.loadedRole = false;
@@ -29,6 +41,7 @@ function RoleFormController(
   editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
+    uuid: roleId,
     permissions: {},
     users: [],
     labels: []
@@ -51,8 +64,6 @@ function RoleFormController(
   editor.updatePermission = updatePermission;
   editor.updateName = updateName;
   editor.updateConstraint = updateConstraint;
-
-  var roleId = $stateParams.id;
 
   function init() {
     getAllRolePermissions()
@@ -240,10 +251,12 @@ function RoleFormController(
   }
 
   function removeUser(user) {
+    var role = _.pick(editor.role, ['uuid', 'name', 'constraint']);
+
     editor.saving = true;
 
     RoleManager
-      .removeUserFromRole(roleId, user.uuid)
+      .removeUserFromRole(role, user)
       .then(function () {
         var pos = editor.role.users.indexOf(user);
         editor.role.users.splice(pos, 1);
@@ -277,8 +290,9 @@ function RoleFormController(
           return user;
         }
       })
-      .then(function(user) {
-        return RoleManager.addUserToRole(user.uuid, roleId);
+      .then(function(users) {
+        var role = _.pick(editor.role, ['uuid', 'name', 'constraint']);
+        return RoleManager.addUserToRole(users[0], role);
       })
       .then(function() {
         editor.role.users.push(userAdded);
