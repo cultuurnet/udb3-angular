@@ -3,18 +3,13 @@
 </div>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-11">
         <udb-query-search-bar search-label="Zoeken op email"
                               on-change="ulc.queryChanged(query)"
         ></udb-query-search-bar>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-1 text-right">
         <i ng-show="ulc.loading" class="fa fa-circle-o-notch fa-spin"></i>
-    </div>
-    <div class="col-md-2 text-right">
-        <a class="btn btn-primary" ui-sref="split.manageUsers.create" ui-sref-opts="{reload:true}">
-            <i class="fa fa-plus-circle"></i> Gebruiker toevoegen
-        </a>
     </div>
 </div>
 

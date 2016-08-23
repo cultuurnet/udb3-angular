@@ -19742,7 +19742,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       typeahead-template-url=\"templates/user-role-suggestion.html\"/>\n" +
     "            </div>\n" +
     "        </form>\n" +
-    "\n" +
+    "        <br>\n" +
     "        <p ng-show=\"editor.roles && editor.roles.length === 0\">\n" +
     "            Er zijn nog geen rollen toegekend aan deze gebruiker.\n" +
     "        </p>\n" +
@@ -19793,18 +19793,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
-    "    <div class=\"col-md-9\">\n" +
+    "    <div class=\"col-md-11\">\n" +
     "        <udb-query-search-bar search-label=\"Zoeken op email\"\n" +
     "                              on-change=\"ulc.queryChanged(query)\"\n" +
     "        ></udb-query-search-bar>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-1\">\n" +
+    "    <div class=\"col-md-1 text-right\">\n" +
     "        <i ng-show=\"ulc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
-    "    </div>\n" +
-    "    <div class=\"col-md-2 text-right\">\n" +
-    "        <a class=\"btn btn-primary\" ui-sref=\"split.manageUsers.create\" ui-sref-opts=\"{reload:true}\">\n" +
-    "            <i class=\"fa fa-plus-circle\"></i> Gebruiker toevoegen\n" +
-    "        </a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
