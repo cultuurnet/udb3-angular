@@ -13594,7 +13594,7 @@ angular
   });
 
 /** @ngInject */
-function LabelSelectComponent(offerLabeller) {
+function LabelSelectComponent(offerLabeller, $q) {
   var select = this;
   /** @type {Label[]} */
   select.availableLabels = [];
@@ -13608,6 +13608,7 @@ function LabelSelectComponent(offerLabeller) {
   select.minimumInputLength = 3;
   select.maxInputLength = 255;
   select.findDelay = 300;
+  select.refreshing = false;
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
@@ -13623,23 +13624,23 @@ function LabelSelectComponent(offerLabeller) {
   }
 
   function findSuggestions(name) {
-    offerLabeller
+    return offerLabeller
       .getSuggestions(name, 6)
       .then(function(labels) {
         labels.push({name: name});
         setAvailableLabels(labels);
+        return $q.resolve();
       })
       .finally(function () {
         select.refreshing = false;
       });
   }
 
-  var delayedFindSuggestions = _.debounce(findSuggestions, select.findDelay);
-
   function suggestLabels(name) {
     select.refreshing = true;
     setAvailableLabels([]);
-    delayedFindSuggestions(name);
+    // returning the promise for testing purposes
+    return findSuggestions(name);
   }
 
   /** @param {Label[]} labels */
@@ -13654,7 +13655,7 @@ function LabelSelectComponent(offerLabeller) {
       .value();
   }
 }
-LabelSelectComponent.$inject = ["offerLabeller"];
+LabelSelectComponent.$inject = ["offerLabeller", "$q"];
 
 // Source: src/search/components/query-editor-daterangepicker.directive.js
 /**
@@ -19683,7 +19684,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\"\n" +
     "                       ui-disable-choice=\"select.refreshing\"\n" +
     "                       refresh=\"select.suggestLabels($select.search)\"\n" +
-    "                       refresh-delay=\"0\"\n" +
+    "                       refresh-delay=\"300\"\n" +
     "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
     "        <div>\n" +
     "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +

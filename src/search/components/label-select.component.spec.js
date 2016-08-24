@@ -1,17 +1,20 @@
 'use strict';
 
 describe('Label Select Component', function() {
-  var $componentController;
+  var $componentController, offerLabeller, $q, $scope;
   var bindings = {offer: {labels: ['Wolverine', 'Deadpool']}};
 
   beforeEach(module('udb.search'));
-  beforeEach(inject(function(_$componentController_) {
+  beforeEach(inject(function(_$componentController_, _$q_, $rootScope) {
     $componentController = _$componentController_;
+    offerLabeller = jasmine.createSpyObj('offerLabeller', ['getSuggestions']);
+    $q = _$q_;
+    $scope = $rootScope.$new();
   }));
 
   function getComponentController(bindings) {
     // Here we are passing actual bindings to the component
-    return $componentController('udbLabelSelect', null, bindings);
+    return $componentController('udbLabelSelect', {'offerLabeller': offerLabeller}, bindings);
   }
 
   it('should expose a `offer` object', function() {
@@ -57,5 +60,41 @@ describe('Label Select Component', function() {
     // needs to be less than or equal to 255
     var bigLabel = 'turnip greens yarrow ricebean rutabaga endive cauliflower sea lettuce kohlrabi amaranth water spinach avocado daikon napa cabbage asparagus winter purslane kale celery potato scallion desert raisin horseradish spinach carrot soko Lotus root water spinach fennel';
     expect(ctrl.createLabel(bigLabel)).toBe(undefined);
+  });
+
+  it('should find suggestions according to supplied search string', function(done) {
+    var ctrl = getComponentController(bindings);
+
+    expect(ctrl.availableLabels).toEqual([]);
+    expect(ctrl.refreshing).toBe(false);
+
+    var suggestions = [{name: 'one'}, {name: 'two'}];
+    offerLabeller.getSuggestions.and.returnValue($q.resolve(suggestions));
+
+    ctrl.suggestLabels('Blub').then(function() {
+      expect(offerLabeller.getSuggestions).toHaveBeenCalledWith('Blub', 6);
+      expect(ctrl.availableLabels).toEqual([{name: 'one'}, {name: 'two'}, {name: 'Blub'}]);
+      done();
+    });
+    expect(ctrl.refreshing).toEqual(true);
+    $scope.$digest();
+  });
+
+  it('should find do not suggest something twice', function(done) {
+    var ctrl = getComponentController(bindings);
+
+    expect(ctrl.availableLabels).toEqual([]);
+    expect(ctrl.refreshing).toBe(false);
+
+    var suggestions = [{name: 'one', uuid: 'uuid1'}, {name: 'two', uuid: 'uuid2'}];
+    offerLabeller.getSuggestions.and.returnValue($q.resolve(suggestions));
+
+    ctrl.suggestLabels('one').then(function() {
+      expect(offerLabeller.getSuggestions).toHaveBeenCalledWith('one', 6);
+      expect(ctrl.availableLabels).toEqual([{name: 'one', uuid: 'uuid1'}, {name: 'two', uuid: 'uuid2'}]);
+      done();
+    });
+    expect(ctrl.refreshing).toEqual(true);
+    $scope.$digest();
   });
 });

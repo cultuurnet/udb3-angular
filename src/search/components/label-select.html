@@ -15,7 +15,7 @@
                        ng-show="select.areLengthCriteriaMet($select.search.length) &&"
                        ui-disable-choice="select.refreshing"
                        refresh="select.suggestLabels($select.search)"
-                       refresh-delay="0"
+                       refresh-delay="300"
                        minimum-input-length="{{select.minimumInputLength}}">
         <div>
             <span ng-bind-html="label.name | highlight: $select.search"></span>

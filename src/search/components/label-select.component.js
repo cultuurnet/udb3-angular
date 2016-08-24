@@ -14,7 +14,7 @@ angular
   });
 
 /** @ngInject */
-function LabelSelectComponent(offerLabeller) {
+function LabelSelectComponent(offerLabeller, $q) {
   var select = this;
   /** @type {Label[]} */
   select.availableLabels = [];
@@ -28,6 +28,7 @@ function LabelSelectComponent(offerLabeller) {
   select.minimumInputLength = 3;
   select.maxInputLength = 255;
   select.findDelay = 300;
+  select.refreshing = false;
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
@@ -43,23 +44,23 @@ function LabelSelectComponent(offerLabeller) {
   }
 
   function findSuggestions(name) {
-    offerLabeller
+    return offerLabeller
       .getSuggestions(name, 6)
       .then(function(labels) {
         labels.push({name: name});
         setAvailableLabels(labels);
+        return $q.resolve();
       })
       .finally(function () {
         select.refreshing = false;
       });
   }
 
-  var delayedFindSuggestions = _.debounce(findSuggestions, select.findDelay);
-
   function suggestLabels(name) {
     select.refreshing = true;
     setAvailableLabels([]);
-    delayedFindSuggestions(name);
+    // returning the promise for testing purposes
+    return findSuggestions(name);
   }
 
   /** @param {Label[]} labels */
