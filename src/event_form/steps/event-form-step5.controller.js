@@ -99,6 +99,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
   $scope.openBookingPeriodModal = openBookingPeriodModal;
+  $scope.showBookingOption = showBookingOption;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -511,6 +512,22 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     }
   }
 
+  function showBookingOption(contactInfo) {
+    var type = contactInfo.type;
+    var value = contactInfo.value;
+
+    /*if (type === 'url') {
+      return $scope.bookingModel.url === value;
+    }
+    else if (type === 'phone') {
+      return $scope.bookingModel.phone === value;
+    }
+    else if (type === 'email') {
+      return $scope.bookingModel.email === value;
+    }*/
+    return true;
+  }
+
   /**
    * Toggle the booking type and check if info should be deleted.
    */
@@ -773,10 +790,24 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.contactInfo = _.flatten(
       _.map(EventFormData.contactPoint, function (contactInfo, type) {
         return _.contains(ContactInfoTypeEnum, type) ? _.map(contactInfo, function (contactInfoItem) {
-          return {type: type, value: contactInfoItem};
+          return {type: type, value: contactInfoItem, booking: false};
         }) : [];
       })
     );
+
+    angular.forEach($scope.contactInfo, function(item, key) {
+      if (item.type === 'url' && EventFormData.bookingInfo.url === item.value) {
+        $scope.contactInfo[key].booking = true;
+      }
+
+      else if (item.type === 'phone' && EventFormData.bookingInfo.url === item.value) {
+        $scope.contactInfo[key].booking = true;
+      }
+
+      if (item.type === 'email' && EventFormData.bookingInfo.url === item.value) {
+        $scope.contactInfo[key].booking = true;
+      }
+    });
 
     // Set correct css class for contact info.
     if ($scope.contactInfo.length > 0) {

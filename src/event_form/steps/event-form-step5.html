@@ -454,6 +454,30 @@
                                ng-change="validateInfo(); saveContactInfo();"
                                ng-model-options="{ updateOn: 'blur' }"/>
                         <span class="help-block" ng-hide="infoErrorMessage === ''" ng-bind="infoErrorMessage"></span>
+
+                          <div class="checkbox">
+                              <label ng-show="info.type === 'url' && showBookingOption(info)">
+                                  <input type="checkbox"
+                                         class="reservatie-website-check reservatie-check"
+                                         ng-model="info.booking"
+                                         ng-click="toggleBookingType('website')">
+                                  Gebruik voor reservatie
+                              </label>
+                              <label ng-show="info.type === 'phone' && showBookingOption(info)">
+                                  <input type="checkbox"
+                                         class="reservatie-telefoon-check reservatie-check"
+                                         ng-model="info.booking"
+                                         ng-change="toggleBookingType('phone')">
+                                  Gebruik voor reservatie
+                              </label>
+                              <label ng-show="info.type === 'email' && showBookingOption(info)">
+                                  <input type="checkbox"
+                                         class="reservatie-email-check reservatie-check"
+                                         ng-model="info.booking"
+                                         ng-change="toggleBookingType('email')">
+                                  Gebruik voor reservatie
+                              </label>
+                          </div>
                       </td>
                       <td>
                         <button type="button" class="close" aria-label="Close" ng-click="deleteContactInfo(key)">

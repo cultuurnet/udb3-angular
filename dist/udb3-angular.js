@@ -9833,6 +9833,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
   $scope.openBookingPeriodModal = openBookingPeriodModal;
+  $scope.showBookingOption = showBookingOption;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -10245,6 +10246,22 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     }
   }
 
+  function showBookingOption(contactInfo) {
+    var type = contactInfo.type;
+    var value = contactInfo.value;
+
+    /*if (type === 'url') {
+      return $scope.bookingModel.url === value;
+    }
+    else if (type === 'phone') {
+      return $scope.bookingModel.phone === value;
+    }
+    else if (type === 'email') {
+      return $scope.bookingModel.email === value;
+    }*/
+    return true;
+  }
+
   /**
    * Toggle the booking type and check if info should be deleted.
    */
@@ -10507,10 +10524,24 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.contactInfo = _.flatten(
       _.map(EventFormData.contactPoint, function (contactInfo, type) {
         return _.contains(ContactInfoTypeEnum, type) ? _.map(contactInfo, function (contactInfoItem) {
-          return {type: type, value: contactInfoItem};
+          return {type: type, value: contactInfoItem, booking: false};
         }) : [];
       })
     );
+
+    angular.forEach($scope.contactInfo, function(item, key) {
+      if (item.type === 'url' && EventFormData.bookingInfo.url === item.value) {
+        $scope.contactInfo[key].booking = true;
+      }
+
+      else if (item.type === 'phone' && EventFormData.bookingInfo.url === item.value) {
+        $scope.contactInfo[key].booking = true;
+      }
+
+      if (item.type === 'email' && EventFormData.bookingInfo.url === item.value) {
+        $scope.contactInfo[key].booking = true;
+      }
+    });
 
     // Set correct css class for contact info.
     if ($scope.contactInfo.length > 0) {
@@ -18343,6 +18374,30 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                               ng-change=\"validateInfo(); saveContactInfo();\"\n" +
     "                               ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
     "                        <span class=\"help-block\" ng-hide=\"infoErrorMessage === ''\" ng-bind=\"infoErrorMessage\"></span>\n" +
+    "\n" +
+    "                          <div class=\"checkbox\">\n" +
+    "                              <label ng-show=\"info.type === 'url' && showBookingOption(info)\">\n" +
+    "                                  <input type=\"checkbox\"\n" +
+    "                                         class=\"reservatie-website-check reservatie-check\"\n" +
+    "                                         ng-model=\"info.booking\"\n" +
+    "                                         ng-click=\"toggleBookingType('website')\">\n" +
+    "                                  Gebruik voor reservatie\n" +
+    "                              </label>\n" +
+    "                              <label ng-show=\"info.type === 'phone' && showBookingOption(info)\">\n" +
+    "                                  <input type=\"checkbox\"\n" +
+    "                                         class=\"reservatie-telefoon-check reservatie-check\"\n" +
+    "                                         ng-model=\"info.booking\"\n" +
+    "                                         ng-change=\"toggleBookingType('phone')\">\n" +
+    "                                  Gebruik voor reservatie\n" +
+    "                              </label>\n" +
+    "                              <label ng-show=\"info.type === 'email' && showBookingOption(info)\">\n" +
+    "                                  <input type=\"checkbox\"\n" +
+    "                                         class=\"reservatie-email-check reservatie-check\"\n" +
+    "                                         ng-model=\"info.booking\"\n" +
+    "                                         ng-change=\"toggleBookingType('email')\">\n" +
+    "                                  Gebruik voor reservatie\n" +
+    "                              </label>\n" +
+    "                          </div>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
     "                        <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteContactInfo(key)\">\n" +
