@@ -12764,13 +12764,7 @@ function UserManager(udbApi, $q) {
    * @return {Promise.<Role[]>}
    */
   service.getRoles = function (userId) {
-    return udbApi
-      .getUserRoles(userId)
-      .then(function (rolesData) {
-        return _.map(rolesData, function (roleData) {
-          return {uuid: roleData['@id'], name: roleData.name.nl};
-        });
-      });
+    return udbApi.getUserRoles(userId);
   };
 }
 UserManager.$inject = ["udbApi", "$q"];
