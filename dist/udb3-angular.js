@@ -18906,12 +18906,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<form name=\"editor.form\" class=\"css-form\" novalidate>\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-6\">\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editName && editor.role.name && editor.role['@id']\">\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editName && editor.role.name && editor.role['uuid']\">\n" +
     "              <label class=\"control-label\">Naam</label>\n" +
     "              <p><span ng-bind=\"editor.role.name\"></span>\n" +
     "              <a href ng-click=\"editor.editName = true\">Wijzigen</a></p>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"editor.editName || !editor.role['@id']\">\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"editor.editName || !editor.role['uuid']\">\n" +
     "                <label class=\"control-label\" for=\"label-name-field\">Naam</label>\n" +
     "                <input id=\"label-name-field\"\n" +
     "                       class=\"form-control\"\n" +
@@ -18928,7 +18928,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "            </div>\n" +
     "            <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "              ng-if=\"!editor.role['@id']\"\n" +
+    "              ng-if=\"!editor.role['uuid']\"\n" +
     "              type=\"button\"\n" +
     "              class=\"btn btn-primary\"\n" +
     "              ng-click=\"editor.createRole()\">\n" +
@@ -18944,7 +18944,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <div class=\"row\" ng-show=\"editor.role['@id']\">\n" +
+    "    <div class=\"row\" ng-show=\"editor.role['uuid']\">\n" +
     "        <div class=\"col-md-12\">\n" +
     "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraint\">\n" +
     "              <label class=\"control-label\">Bewerkrecht</label>\n" +
@@ -18970,7 +18970,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <div class=\"row\" ng-show=\"editor.role['@id']\">\n" +
+    "    <div class=\"row\" ng-show=\"editor.role['uuid']\">\n" +
     "      <div class=\"col-md-12\">\n" +
     "        <uib-tabset class=\"role-form-tabset\">\n" +
     "          <uib-tab heading=\"Permissies\">\n" +
