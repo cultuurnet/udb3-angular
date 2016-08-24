@@ -19,7 +19,6 @@ angular
  * @param {UserManager} UserManager
  * @param {Object} $uibModal
  * @param {Object} $stateParams
- * @param {Object} jsonLDLangFilter
  * @param {Object} $q
  */
 function RoleFormController(
@@ -28,7 +27,6 @@ function RoleFormController(
   UserManager,
   $uibModal,
   $stateParams,
-  jsonLDLangFilter,
   $q
 ) {
   var editor = this;
@@ -41,7 +39,6 @@ function RoleFormController(
   editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
-    uuid: roleId,
     permissions: {},
     users: [],
     labels: []
@@ -84,7 +81,7 @@ function RoleFormController(
     return RoleManager
       .get(roleId)
       .then(function(role) {
-        editor.role = jsonLDLangFilter(role, 'nl');
+        editor.role = role;
 
         editor.role.permissions = {};
         editor.role.users = [];
@@ -290,9 +287,9 @@ function RoleFormController(
           return user;
         }
       })
-      .then(function(users) {
+      .then(function(user) {
         var role = _.pick(editor.role, ['uuid', 'name', 'constraint']);
-        return RoleManager.addUserToRole(users[0], role);
+        return RoleManager.addUserToRole(user, role);
       })
       .then(function() {
         editor.role.users.push(userAdded);

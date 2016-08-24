@@ -7,7 +7,6 @@ describe('Controller: Roles Form', function() {
     Usermanager,
     $uibModal,
     $stateParams,
-    jsonLDLangFilter,
     $q,
     $rootScope,
     $scope,
@@ -32,7 +31,7 @@ describe('Controller: Roles Form', function() {
 
   var role = {
     "uuid": id,
-    "name": { nl:"Beheerder west-vlaanderen" },
+    "name": "Beheerder west-vlaanderen",
     "constraint": "city:leuven"
   };
 
@@ -66,12 +65,11 @@ describe('Controller: Roles Form', function() {
   beforeEach(module('udb.management'));
   beforeEach(module('udb.management.roles'));
 
-  beforeEach(inject(function(_$rootScope_, _$q_, _$controller_, $injector) {
+  beforeEach(inject(function(_$rootScope_, _$q_, _$controller_) {
     $controller = _$controller_;
     $q = _$q_;
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
-    jsonLDLangFilter = $injector.get('jsonLDLangFilter');
 
     RoleManager = jasmine.createSpyObj('RoleManager', [
       'find',
@@ -103,7 +101,6 @@ describe('Controller: Roles Form', function() {
         UserManager: Usermanager,
         $uibModal: $uibModal,
         $stateParams: $stateParams,
-        jsonLDLangFilter: jsonLDLangFilter,
         $q: $q
       }
     );
@@ -114,7 +111,7 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRoleUsers.and.returnValue($q.resolve(roleUsers));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
     PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
-    RoleManager.get.and.returnValue($q.resolve(role));
+    RoleManager.get.and.returnValue($q.resolve(angular.copy(role)));
   }
 
   it('should load a role', function() {
@@ -235,11 +232,11 @@ describe('Controller: Roles Form', function() {
   });
 
   it('should add a user to a role', function() {
-    var users = [{
+    var user = {
       uuid: '6f072ba8-c510-40ac-b387-51f582650e27',
       email: 'alberto@email.es',
       username: 'El Pistolero'
-    }];
+    };
 
     var expectedRole = {
       "uuid": id,
@@ -258,7 +255,7 @@ describe('Controller: Roles Form', function() {
     var editor = getController();
     $scope.$digest();
 
-    Usermanager.findUserWithEmail.and.returnValue($q.resolve(users));
+    Usermanager.findUserWithEmail.and.returnValue($q.resolve(user));
     RoleManager.addUserToRole.and.returnValue($q.resolve());
 
     editor.form = {
@@ -272,7 +269,7 @@ describe('Controller: Roles Form', function() {
     editor.addUser();
     $scope.$digest();
 
-    expect(RoleManager.addUserToRole).toHaveBeenCalledWith(users[0], expectedRole);
+    expect(RoleManager.addUserToRole).toHaveBeenCalledWith(user, expectedRole);
     expect(Usermanager.findUserWithEmail).toHaveBeenCalledWith('alberto@email.es');
     expect(editor.role.users.length).toEqual(1);
   });
