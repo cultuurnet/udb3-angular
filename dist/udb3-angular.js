@@ -10289,43 +10289,52 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     else {
       return false;
     }
-
-    /*if (type === 'url') {
-      return $scope.bookingModel.url === value;
-    }
-    else if (type === 'phone') {
-      return $scope.bookingModel.phone === value;
-    }
-    else if (type === 'email') {
-      return $scope.bookingModel.email === value;
-    }*/
   }
 
   /**
    * Toggle the booking type and check if info should be deleted.
    */
-  function toggleBookingType(type) {
+  function toggleBookingType(contactItem, index) {
 
     var saveNeeded = false;
-    if ($scope.bookingModel.url && !$scope.viaWebsite) {
-      $scope.bookingModel.url = '';
-      $scope.editBookingUrl = true;
+    if (contactItem.type === 'url') {
+      if (contactItem.booking) {
+        $scope.bookingModel.url = contactItem.value;
+        $scope.editBookingUrl = true;
+      }
+      else if (!contactItem.booking) {
+        $scope.bookingModel.url = '';
+        $scope.editBookingUrl = false;
+      }
       saveNeeded = true;
     }
 
-    if ($scope.bookingModel.phone && !$scope.viaPhone) {
-      $scope.bookingModel.phone = '';
-      $scope.editBookingPhone = true;
+    if (contactItem.type === 'phone') {
+      if (contactItem.booking) {
+        $scope.bookingModel.phone = contactItem.value;
+        $scope.editBookingPhone = true;
+      }
+      else if (!contactItem.booking) {
+        $scope.bookingModel.phone = '';
+        $scope.editBookingPhone = false;
+      }
       saveNeeded = true;
     }
 
-    if ($scope.bookingModel.email && !$scope.viaEmail) {
-      $scope.bookingModel.email = '';
-      $scope.editBookingEmail = true;
+    if (contactItem.type === 'email') {
+      if (contactItem.booking) {
+        $scope.bookingModel.email = contactItem.value;
+        $scope.editBookingEmail = true;
+      }
+      else if (!contactItem.booking) {
+        $scope.bookingModel.email = '';
+        $scope.editBookingEmail = false;
+      }
       saveNeeded = true;
     }
 
     if (saveNeeded) {
+      deleteContactInfo(index);
       saveBookingType();
     }
 
@@ -18418,11 +18427,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                  <input type=\"checkbox\"\n" +
     "                                         class=\"reservatie-website-check reservatie-check\"\n" +
     "                                         ng-model=\"info.booking\"\n" +
-    "                                         ng-click=\"toggleBookingType('website')\">\n" +
+    "                                         ng-click=\"toggleBookingType(info, key)\">\n" +
     "                                  Gebruik voor reservatie\n" +
     "                              </label>\n" +
     "                              <div class=\"reservatie-website-info reservatie-info\"\n" +
-    "                                   ng-show=\"info.booking\">\n" +
+    "                                   ng-show=\"info.type === 'url' && info.booking\">\n" +
     "\n" +
     "                                <div class=\"reservatie-info-stap2\" ng-hide=\"editBookingUrl\">\n" +
     "                                  <div class=\"weergave\">\n" +
@@ -18441,14 +18450,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                  <input type=\"checkbox\"\n" +
     "                                         class=\"reservatie-telefoon-check reservatie-check\"\n" +
     "                                         ng-model=\"info.booking\"\n" +
-    "                                         ng-change=\"toggleBookingType('phone')\">\n" +
+    "                                         ng-change=\"toggleBookingType(info, key)\">\n" +
     "                                  Gebruik voor reservatie\n" +
     "                              </label>\n" +
     "                              <label ng-show=\"info.type === 'email' && showBookingOption(info)\">\n" +
     "                                  <input type=\"checkbox\"\n" +
     "                                         class=\"reservatie-email-check reservatie-check\"\n" +
     "                                         ng-model=\"info.booking\"\n" +
-    "                                         ng-change=\"toggleBookingType('email')\">\n" +
+    "                                         ng-change=\"toggleBookingType(info, key)\">\n" +
     "                                  Gebruik voor reservatie\n" +
     "                              </label>\n" +
     "                          </div>\n" +

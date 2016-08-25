@@ -560,7 +560,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   /**
    * Toggle the booking type and check if info should be deleted.
    */
-  function toggleBookingType(contactItem) {
+  function toggleBookingType(contactItem, index) {
 
     var saveNeeded = false;
     if (contactItem.type === 'url') {
@@ -601,6 +601,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     if (saveNeeded) {
       saveBookingType();
+      deleteContactInfo(index);
     }
 
   }

@@ -460,11 +460,11 @@
                                   <input type="checkbox"
                                          class="reservatie-website-check reservatie-check"
                                          ng-model="info.booking"
-                                         ng-click="toggleBookingType('website')">
+                                         ng-click="toggleBookingType(info, key)">
                                   Gebruik voor reservatie
                               </label>
                               <div class="reservatie-website-info reservatie-info"
-                                   ng-show="info.booking">
+                                   ng-show="info.type === 'url' && info.booking">
 
                                 <div class="reservatie-info-stap2" ng-hide="editBookingUrl">
                                   <div class="weergave">
@@ -483,14 +483,14 @@
                                   <input type="checkbox"
                                          class="reservatie-telefoon-check reservatie-check"
                                          ng-model="info.booking"
-                                         ng-change="toggleBookingType('phone')">
+                                         ng-change="toggleBookingType(info, key)">
                                   Gebruik voor reservatie
                               </label>
                               <label ng-show="info.type === 'email' && showBookingOption(info)">
                                   <input type="checkbox"
                                          class="reservatie-email-check reservatie-check"
                                          ng-model="info.booking"
-                                         ng-change="toggleBookingType('email')">
+                                         ng-change="toggleBookingType(info, key)">
                                   Gebruik voor reservatie
                               </label>
                           </div>
