@@ -516,16 +516,45 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     var type = contactInfo.type;
     var value = contactInfo.value;
 
-    /*if (type === 'url') {
-      return $scope.bookingModel.url === value;
+    // check if there is already a phone used for bookings.
+    if (type === 'phone') {
+      if (!$scope.bookingModel.phone) {
+        return true;
+      }
+      else if ($scope.bookingModel.phone === value) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
-    else if (type === 'phone') {
-      return $scope.bookingModel.phone === value;
+    // check if there is already a url used for bookings.
+    else if (type === 'url') {
+      if (!$scope.bookingModel.url) {
+        return true;
+      }
+      else if ($scope.bookingModel.url === value) {
+        return true;
+      }
+      else {
+        return false;
+      }
     }
+    // check if there is already a email used for bookings.
     else if (type === 'email') {
-      return $scope.bookingModel.email === value;
-    }*/
-    return true;
+      if (!$scope.bookingModel.email) {
+        return true;
+      }
+      else if ($scope.bookingModel.email === value) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
   }
 
   /**

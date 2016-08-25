@@ -10250,7 +10250,45 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     var type = contactInfo.type;
     var value = contactInfo.value;
 
-    // check if there is already a phone, email or url which is used for
+    // check if there is already a phone used for bookings.
+    if (type === 'phone') {
+      if (!$scope.bookingModel.phone) {
+        return true;
+      }
+      else if ($scope.bookingModel.phone === value) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    // check if there is already a url used for bookings.
+    else if (type === 'url') {
+      if (!$scope.bookingModel.url) {
+        return true;
+      }
+      else if ($scope.bookingModel.url === value) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    // check if there is already a email used for bookings.
+    else if (type === 'email') {
+      if (!$scope.bookingModel.email) {
+        return true;
+      }
+      else if ($scope.bookingModel.email === value) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+    else {
+      return false;
+    }
 
     /*if (type === 'url') {
       return $scope.bookingModel.url === value;
@@ -10261,7 +10299,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     else if (type === 'email') {
       return $scope.bookingModel.email === value;
     }*/
-    return true;
   }
 
   /**
@@ -18397,12 +18434,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                          <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
     "                                          <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
     "                                      </select>\n" +
-    "                                        <!--<span>\n" +
-    "                                          <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{bookingModel.url}}\"\n" +
-    "                                             ng-bind=\"bookingModel.urlLabel\"></a>\n" +
-    "                                          <a class=\"btn btn-link\" href=\"#\" ng-click=\"enableWebsitePreview()\" data-toggle=\"modal\"\n" +
-    "                                             data-target=\"#extra-tickets-website-weergave\">Wijzigen</a>\n" +
-    "                                        </span>-->\n" +
     "                                  </div>\n" +
     "                                </div>\n" +
     "                              </div>\n" +
