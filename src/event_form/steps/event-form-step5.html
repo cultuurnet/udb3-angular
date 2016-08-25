@@ -463,6 +463,22 @@
                                          ng-click="toggleBookingType('website')">
                                   Gebruik voor reservatie
                               </label>
+                              <div class="reservatie-website-info reservatie-info"
+                                   ng-show="info.booking">
+
+                                <div class="reservatie-info-stap2" ng-hide="editBookingUrl">
+                                  <div class="weergave">
+                                      <p><strong>Hoe mag deze link verschijnen?</strong></p>
+                                      <select ng-model="bookingModel.urlLabel"
+                                              ng-change="saveWebsitePreview()">
+                                          <option value="Koop tickets">Koop tickets</option>
+                                          <option value="Reserveer plaatsen">Reserveer plaatsen</option>
+                                          <option value="Controleer beschikbaarheid">Controleer beschikbaarheid</option>
+                                          <option value="Schrijf je in">Schrijf je in</option>
+                                      </select>
+                                  </div>
+                                </div>
+                              </div>
                               <label ng-show="info.type === 'phone' && showBookingOption(info)">
                                   <input type="checkbox"
                                          class="reservatie-telefoon-check reservatie-check"

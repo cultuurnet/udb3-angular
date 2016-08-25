@@ -10250,6 +10250,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     var type = contactInfo.type;
     var value = contactInfo.value;
 
+    // check if there is already a phone, email or url which is used for
+
     /*if (type === 'url') {
       return $scope.bookingModel.url === value;
     }
@@ -10529,19 +10531,18 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       })
     );
 
-    angular.forEach($scope.contactInfo, function(item, key) {
-      if (item.type === 'url' && EventFormData.bookingInfo.url === item.value) {
-        $scope.contactInfo[key].booking = true;
-      }
+    // III-963 put booking items into the contactInfo array
+    if (EventFormData.bookingInfo.url) {
+      $scope.contactInfo.push({type: 'url', value: EventFormData.bookingInfo.url, booking: true});
+    }
 
-      else if (item.type === 'phone' && EventFormData.bookingInfo.url === item.value) {
-        $scope.contactInfo[key].booking = true;
-      }
+    if (EventFormData.bookingInfo.phone) {
+      $scope.contactInfo.push({type: 'phone', value: EventFormData.bookingInfo.phone, booking: true});
+    }
 
-      if (item.type === 'email' && EventFormData.bookingInfo.url === item.value) {
-        $scope.contactInfo[key].booking = true;
-      }
-    });
+    if (EventFormData.bookingInfo.email) {
+      $scope.contactInfo.push({type: 'email', value: EventFormData.bookingInfo.email, booking: true});
+    }
 
     // Set correct css class for contact info.
     if ($scope.contactInfo.length > 0) {
@@ -18383,6 +18384,28 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                         ng-click=\"toggleBookingType('website')\">\n" +
     "                                  Gebruik voor reservatie\n" +
     "                              </label>\n" +
+    "                              <div class=\"reservatie-website-info reservatie-info\"\n" +
+    "                                   ng-show=\"info.booking\">\n" +
+    "\n" +
+    "                                <div class=\"reservatie-info-stap2\" ng-hide=\"editBookingUrl\">\n" +
+    "                                  <div class=\"weergave\">\n" +
+    "                                      <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
+    "                                      <select ng-model=\"bookingModel.urlLabel\"\n" +
+    "                                              ng-change=\"saveWebsitePreview()\">\n" +
+    "                                          <option value=\"Koop tickets\">Koop tickets</option>\n" +
+    "                                          <option value=\"Reserveer plaatsen\">Reserveer plaatsen</option>\n" +
+    "                                          <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
+    "                                          <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
+    "                                      </select>\n" +
+    "                                        <!--<span>\n" +
+    "                                          <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{bookingModel.url}}\"\n" +
+    "                                             ng-bind=\"bookingModel.urlLabel\"></a>\n" +
+    "                                          <a class=\"btn btn-link\" href=\"#\" ng-click=\"enableWebsitePreview()\" data-toggle=\"modal\"\n" +
+    "                                             data-target=\"#extra-tickets-website-weergave\">Wijzigen</a>\n" +
+    "                                        </span>-->\n" +
+    "                                  </div>\n" +
+    "                                </div>\n" +
+    "                              </div>\n" +
     "                              <label ng-show=\"info.type === 'phone' && showBookingOption(info)\">\n" +
     "                                  <input type=\"checkbox\"\n" +
     "                                         class=\"reservatie-telefoon-check reservatie-check\"\n" +
