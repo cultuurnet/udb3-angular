@@ -432,14 +432,17 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
       // Copy all data to the correct contactpoint property.
       for (var i = 0; i < $scope.contactInfo.length; i++) {
-        if ($scope.contactInfo[i].type === 'url') {
-          EventFormData.contactPoint.url.push($scope.contactInfo[i].value);
-        }
-        else if ($scope.contactInfo[i].type === 'phone') {
-          EventFormData.contactPoint.phone.push($scope.contactInfo[i].value);
-        }
-        else if ($scope.contactInfo[i].type === 'email') {
-          EventFormData.contactPoint.email.push($scope.contactInfo[i].value);
+        // Don't save the contactInfo with the attribute booking = true.
+        if (!$scope.contactInfo[i].booking) {
+          if ($scope.contactInfo[i].type === 'url') {
+            EventFormData.contactPoint.url.push($scope.contactInfo[i].value);
+          }
+          else if ($scope.contactInfo[i].type === 'phone') {
+            EventFormData.contactPoint.phone.push($scope.contactInfo[i].value);
+          }
+          else if ($scope.contactInfo[i].type === 'email') {
+            EventFormData.contactPoint.email.push($scope.contactInfo[i].value);
+          }
         }
       }
 
@@ -560,7 +563,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   /**
    * Toggle the booking type and check if info should be deleted.
    */
-  function toggleBookingType(contactItem, index) {
+  function toggleBookingType(contactItem) {
 
     var saveNeeded = false;
     if (contactItem.type === 'url') {
@@ -601,7 +604,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     if (saveNeeded) {
       saveBookingType();
-      deleteContactInfo(index);
     }
 
   }
