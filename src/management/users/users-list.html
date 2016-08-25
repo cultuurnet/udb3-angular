@@ -3,18 +3,13 @@
 </div>
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-11">
         <udb-query-search-bar search-label="Zoeken op email"
                               on-change="ulc.queryChanged(query)"
         ></udb-query-search-bar>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-1 text-right">
         <i ng-show="ulc.loading" class="fa fa-circle-o-notch fa-spin"></i>
-    </div>
-    <div class="col-md-2 text-right">
-        <a class="btn btn-primary" ui-sref="split.manageUsers.create" ui-sref-opts="{reload:true}">
-            <i class="fa fa-plus-circle"></i> Gebruiker toevoegen
-        </a>
     </div>
 </div>
 
@@ -50,16 +45,7 @@
                         <td ng-bind="::user.email"></td>
                         <td ng-bind="::user.username"></td>
                         <td>
-                          <!-- not yet required
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Bewerken <span class="caret"></span></button>
-                                <ul class="dropdown-menu">
-                                    <li><a ui-sref="split.manageUsers.edit({id: user.uuid})" ui-sref-opts="{reload:true}">Bewerken</a></li>
-                                    <li><a href ng-click="ulc.openDeleteConfirmModal(user)">Verwijderen</a></li>
-                                </ul>
-                            </div>
-                            -->
+                            <button type="button" ui-sref="management.users.edit({id: user.uuid})" class="btn btn-default">Bewerken</button>
                         </td>
                     </tr>
                     </tbody>

@@ -10,17 +10,27 @@ angular
   .module('udb.management.roles')
   .controller('RoleFormController', RoleFormController);
 
-/** @ngInject */
+/**
+ * @ngInject
+ * @constructor
+ *
+ * @param {RoleManager} RoleManager
+ * @param {PermissionManager} PermissionManager
+ * @param {UserManager} UserManager
+ * @param {Object} $uibModal
+ * @param {Object} $stateParams
+ * @param {Object} $q
+ */
 function RoleFormController(
   RoleManager,
   PermissionManager,
   UserManager,
   $uibModal,
   $stateParams,
-  jsonLDLangFilter,
   $q
 ) {
   var editor = this;
+  var roleId = $stateParams.id;
 
   editor.saving = false;
   editor.loadedRole = false;
@@ -52,8 +62,6 @@ function RoleFormController(
   editor.updateName = updateName;
   editor.updateConstraint = updateConstraint;
 
-  var roleId = $stateParams.id;
-
   function init() {
     getAllRolePermissions()
       .then(function() {
@@ -73,7 +81,7 @@ function RoleFormController(
     return RoleManager
       .get(roleId)
       .then(function(role) {
-        editor.role = jsonLDLangFilter(role, 'nl');
+        editor.role = role;
 
         editor.role.permissions = {};
         editor.role.users = [];
@@ -150,8 +158,8 @@ function RoleFormController(
 
   function roleCreated (response) {
     roleId = response.roleId;
-    editor.role['@id'] = roleId;
-    editor.originalRole['@id'] = roleId;
+    editor.role.id = roleId;
+    editor.originalRole.id = roleId;
   }
 
   function createRole() {
@@ -240,10 +248,12 @@ function RoleFormController(
   }
 
   function removeUser(user) {
+    var role = _.pick(editor.role, ['uuid', 'name', 'constraint']);
+
     editor.saving = true;
 
     RoleManager
-      .removeUserFromRole(roleId, user.uuid)
+      .removeUserFromRole(role, user)
       .then(function () {
         var pos = editor.role.users.indexOf(user);
         editor.role.users.splice(pos, 1);
@@ -278,7 +288,8 @@ function RoleFormController(
         }
       })
       .then(function(user) {
-        return RoleManager.addUserToRole(user.uuid, roleId);
+        var role = _.pick(editor.role, ['uuid', 'name', 'constraint']);
+        return RoleManager.addUserToRole(user, role);
       })
       .then(function() {
         editor.role.users.push(userAdded);
