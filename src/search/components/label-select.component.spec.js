@@ -62,6 +62,16 @@ describe('Label Select Component', function() {
     expect(ctrl.createLabel(bigLabel)).toBe(undefined);
   });
 
+  it('should remove a semicolon from a label when adding a label', function() {
+    var ctrl = getComponentController(bindings);
+
+    // removes last semicolon
+    expect(ctrl.createLabel('spinazie pesto;')).toEqual({name:'spinazie pesto'});
+
+    // removes stray semicolons (this should never be needed)
+    expect(ctrl.createLabel('spinazie; pesto; komkommer;')).toEqual({name:'spinazie pesto komkommer'});
+  });
+
   it('should find suggestions according to supplied search string', function(done) {
     var ctrl = getComponentController(bindings);
 

@@ -35,6 +35,11 @@ function LabelSelectComponent(offerLabeller, $q) {
   }
 
   function createLabel(labelName) {
+    // strip semi-colon, which doesn't get stripped automatically
+    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
+    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
+    labelName = labelName.replace(/;/g, '').trim();
+
     var similarLabel = _.find(select.labels, function (existingLabel) {
       return existingLabel.name.toUpperCase() === labelName.toUpperCase();
     });

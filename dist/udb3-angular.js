@@ -13615,6 +13615,9 @@ function LabelSelectComponent(offerLabeller, $q) {
   }
 
   function createLabel(labelName) {
+    // strip semi-colon, which doesn't get stripped automatically
+    labelName = labelName.replace(/;/g, '').trim();
+
     var similarLabel = _.find(select.labels, function (existingLabel) {
       return existingLabel.name.toUpperCase() === labelName.toUpperCase();
     });
@@ -19667,11 +19670,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/label-select.html',
+    "<!-- adding a '.' to the token list due to: https://github.com/angular-ui/ui-select/issues/1151 -->\n" +
     "<ui-select multiple\n" +
     "           tagging=\"select.createLabel\"\n" +
     "           ng-model=\"select.labels\"\n" +
     "           reset-search-input=\"true\"\n" +
-    "           tagging-tokens=\"ENTER|;\"\n" +
+    "           tagging-tokens=\"ENTER|;|.\"\n" +
     "           on-select=\"select.labelAdded({label: $item})\"\n" +
     "           on-remove=\"select.labelRemoved({label: $item})\">\n" +
     "    <ui-select-match placeholder=\"Voeg een label toe...\">{{$item.name}}</ui-select-match>\n" +
