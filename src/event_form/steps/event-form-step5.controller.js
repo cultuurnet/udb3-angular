@@ -100,6 +100,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.enableWebsitePreview = enableWebsitePreview;
   $scope.openBookingPeriodModal = openBookingPeriodModal;
   $scope.showBookingOption = showBookingOption;
+  $scope.deleteBookingInfo = deleteBookingInfo;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -705,6 +706,16 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   /**
+   * Delete a given contact info item.
+   */
+  function deleteBookingInfo(element, index) {
+    $scope.contactInfo[index].booking = false;
+    toggleBookingType(element);
+
+    $scope.contactInfo.splice(index, 1);
+  }
+
+  /**
    * Saves the booking info
    */
   function saveBookingInfo() {
@@ -847,15 +858,54 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     // III-963 put booking items into the contactInfo array
     if (EventFormData.bookingInfo.url) {
+      /*var index;
+      var found = $scope.contactInfo.some(function (element, key) {
+        if (element.value === EventFormData.bookingInfo.url) {
+          index = key;
+          return true;
+        }
+      });
+
+      if (found) {
+        $scope.contactInfo.splice(index, 1);
+      }
+      else {*/
       $scope.contactInfo.push({type: 'url', value: EventFormData.bookingInfo.url, booking: true});
+      //}
     }
 
     if (EventFormData.bookingInfo.phone) {
+      /*var index;
+      var found = $scope.contactInfo.some(function (element, key) {
+        if (element.value === EventFormData.bookingInfo.phone) {
+          index = key;
+          return true;
+        }
+      });
+
+      if (found) {
+        $scope.contactInfo.splice(index, 1);
+      }
+      else {*/
       $scope.contactInfo.push({type: 'phone', value: EventFormData.bookingInfo.phone, booking: true});
+      //}
     }
 
     if (EventFormData.bookingInfo.email) {
+      /*var index;
+      var found = $scope.contactInfo.some(function (element, key) {
+        if (element.value === EventFormData.bookingInfo.email) {
+          index = key;
+          return true;
+        }
+      });
+
+      if (found) {
+        $scope.contactInfo.splice(index, 1);
+      }
+      else {*/
       $scope.contactInfo.push({type: 'email', value: EventFormData.bookingInfo.email, booking: true});
+      //}
     }
 
     // Set correct css class for contact info.

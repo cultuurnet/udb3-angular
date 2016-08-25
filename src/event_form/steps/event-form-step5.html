@@ -496,7 +496,10 @@
                           </div>
                       </td>
                       <td>
-                        <button type="button" class="close" aria-label="Close" ng-click="deleteContactInfo(key)">
+                        <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteContactInfo(key)">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <button ng-if="info.booking" type="button" class="close" aria-label="Close" ng-click="deleteBookingInfo(info, key)">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </td>
