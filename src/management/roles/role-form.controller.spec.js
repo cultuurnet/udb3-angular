@@ -389,8 +389,8 @@ describe('Controller: Roles Form', function() {
     $scope.$digest();
 
     expect(RoleManager.create).toHaveBeenCalledWith('Test123');
-    expect(editor.role['@id']).toEqual('uuid-test123');
-    expect(editor.originalRole['@id']).toEqual('uuid-test123');
+    expect(editor.role.id).toEqual('uuid-test123');
+    expect(editor.originalRole.id).toEqual('uuid-test123');
   });
 
   it('should load the role labels', function() {

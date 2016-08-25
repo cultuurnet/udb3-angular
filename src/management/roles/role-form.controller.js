@@ -158,8 +158,8 @@ function RoleFormController(
 
   function roleCreated (response) {
     roleId = response.roleId;
-    editor.role['@id'] = roleId;
-    editor.originalRole['@id'] = roleId;
+    editor.role.id = roleId;
+    editor.originalRole.id = roleId;
   }
 
   function createRole() {
