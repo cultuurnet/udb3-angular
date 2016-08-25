@@ -11430,6 +11430,28 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
 }
 LabelsListController.$inject = ["SearchResultGenerator", "rx", "$scope", "LabelManager"];
 
+// Source: src/management/labels/semicolon-label-check.directive.js
+angular
+  .module('udb.management.labels')
+  .directive('udbSemicolonLabelCheck', SemicolonLabelCheckDirective);
+
+/** @ngInject */
+function SemicolonLabelCheckDirective($q) {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, element, attrs, controller) {
+
+      function hasNoSemicolons(name) {
+        return (name.indexOf(';') === -1);
+      }
+
+      controller.$validators.semicolonLabel = hasNoSemicolons;
+    }
+  };
+}
+SemicolonLabelCheckDirective.$inject = ["$q"];
+
 // Source: src/management/labels/unique-label.directive.js
 angular
   .module('udb.management.labels')
@@ -13616,6 +13638,8 @@ function LabelSelectComponent(offerLabeller, $q) {
 
   function createLabel(labelName) {
     // strip semi-colon, which doesn't get stripped automatically
+    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
+    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
     labelName = labelName.replace(/;/g, '').trim();
 
     var similarLabel = _.find(select.labels, function (existingLabel) {
@@ -18643,6 +18667,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       name=\"name\"\n" +
     "                       type=\"text\"\n" +
     "                       udb-unique-label\n" +
+    "                       udb-semicolon-label-check\n" +
     "                       ng-minlength=\"3\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
@@ -18653,6 +18678,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -18702,8 +18728,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <div class=\"form-group\" udb-form-group>\n" +
     "                    <label for=\"label-name-field\">Naam</label>\n" +
     "                    <input id=\"label-name-field\"\n" +
+    "                           class=\"form-control\"\n" +
     "                           type=\"text\"\n" +
     "                           name=\"name\"\n" +
+    "                           udb-semicolon-label-check\n" +
     "                           ng-model=\"editor.label.name\"\n" +
     "                           ng-minlength=\"3\"\n" +
     "                           ng-required=\"true\"\n" +
@@ -18712,6 +18740,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
