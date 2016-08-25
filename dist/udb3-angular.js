@@ -5981,31 +5981,9 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       return pagedSearchResults.member;
     }
 
-    function returnRecentLabels() {
-      return udbApi
-        .getRecentLabels()
-        .then(function (labelNames) {
-          return _.chain(labelNames)
-            .map(function (labelName) {
-              return {name: labelName, id: labelName};
-            })
-            .take(max)
-            .value();
-        });
-    }
-
-    function returnSuggestions(pagedSearchResults) {
-      if (pagedSearchResults.totalItems === 0) {
-        return returnRecentLabels();
-      } else {
-        return returnSimilarLabels(pagedSearchResults);
-
-      }
-    }
-
     return udbApi
       .findLabels(labelName, max)
-      .then(returnSuggestions, returnRecentLabels);
+      .then(returnSimilarLabels);
   };
 }
 OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
@@ -11805,8 +11783,8 @@ function RoleFormController(
 
   function roleCreated (response) {
     roleId = response.roleId;
-    editor.role['@id'] = roleId;
-    editor.originalRole['@id'] = roleId;
+    editor.role.id = roleId;
+    editor.originalRole.id = roleId;
   }
 
   function createRole() {
