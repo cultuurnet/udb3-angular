@@ -1,8 +1,9 @@
+<!-- adding a '.' to the token list due to: https://github.com/angular-ui/ui-select/issues/1151 -->
 <ui-select multiple
            tagging="select.createLabel"
            ng-model="select.labels"
            reset-search-input="true"
-           tagging-tokens="ENTER|;"
+           tagging-tokens="ENTER|;|."
            on-select="select.labelAdded({label: $item})"
            on-remove="select.labelRemoved({label: $item})">
     <ui-select-match placeholder="Voeg een label toe...">{{$item.name}}</ui-select-match>
