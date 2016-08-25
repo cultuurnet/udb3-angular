@@ -795,19 +795,18 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       })
     );
 
-    angular.forEach($scope.contactInfo, function(item, key) {
-      if (item.type === 'url' && EventFormData.bookingInfo.url === item.value) {
-        $scope.contactInfo[key].booking = true;
-      }
+    // III-963 put booking items into the contactInfo array
+    if (EventFormData.bookingInfo.url) {
+      $scope.contactInfo.push({type: 'url', value: EventFormData.bookingInfo.url, booking: true});
+    }
 
-      else if (item.type === 'phone' && EventFormData.bookingInfo.url === item.value) {
-        $scope.contactInfo[key].booking = true;
-      }
+    if (EventFormData.bookingInfo.phone) {
+      $scope.contactInfo.push({type: 'phone', value: EventFormData.bookingInfo.phone, booking: true});
+    }
 
-      if (item.type === 'email' && EventFormData.bookingInfo.url === item.value) {
-        $scope.contactInfo[key].booking = true;
-      }
-    });
+    if (EventFormData.bookingInfo.email) {
+      $scope.contactInfo.push({type: 'email', value: EventFormData.bookingInfo.email, booking: true});
+    }
 
     // Set correct css class for contact info.
     if ($scope.contactInfo.length > 0) {
