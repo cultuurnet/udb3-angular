@@ -39,6 +39,11 @@
  */
 
 /**
+ * @typedef {Object} CommandInfo
+ * @property {string} commandId
+ */
+
+/**
  * @readonly
  * @enum {string}
  */
@@ -1087,6 +1092,28 @@ function UdbApi(
   this.removeUserFromRole = function (roleId, userId) {
     return $http
       .delete(appConfig.baseUrl + 'roles/' + roleId + '/users/' + userId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} userId
+   *
+   * @returns {Promise.<User>}
+   */
+  this.getUser = function(userId) {
+    return $http
+      .get(appConfig.baseUrl + 'users/' + userId, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} userId
+   *
+   * @return {Promise.<Object[]>}
+   */
+  this.getUserRoles = function (userId) {
+    return $http
+      .get(appConfig.baseUrl + 'users/' + userId + '/roles/', defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
