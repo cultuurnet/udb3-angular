@@ -560,24 +560,42 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   /**
    * Toggle the booking type and check if info should be deleted.
    */
-  function toggleBookingType(type) {
+  function toggleBookingType(contactItem) {
 
     var saveNeeded = false;
-    if ($scope.bookingModel.url && !$scope.viaWebsite) {
-      $scope.bookingModel.url = '';
-      $scope.editBookingUrl = true;
+    if (contactItem.type === 'url') {
+      if (contactItem.booking) {
+        $scope.bookingModel.url = contactItem.value;
+        $scope.editBookingUrl = true;
+      }
+      else if (!contactItem.booking) {
+        $scope.bookingModel.url = '';
+        $scope.editBookingUrl = false;
+      }
       saveNeeded = true;
     }
 
-    if ($scope.bookingModel.phone && !$scope.viaPhone) {
-      $scope.bookingModel.phone = '';
-      $scope.editBookingPhone = true;
+    if (contactItem.type === 'phone') {
+      if (contactItem.booking) {
+        $scope.bookingModel.phone = contactItem.value;
+        $scope.editBookingPhone = true;
+      }
+      else if (!contactItem.booking) {
+        $scope.bookingModel.phone = '';
+        $scope.editBookingPhone = false;
+      }
       saveNeeded = true;
     }
 
-    if ($scope.bookingModel.email && !$scope.viaEmail) {
-      $scope.bookingModel.email = '';
-      $scope.editBookingEmail = true;
+    if (contactItem.type === 'email') {
+      if (contactItem.booking) {
+        $scope.bookingModel.email = contactItem.value;
+        $scope.editBookingEmail = true;
+      }
+      else if (!contactItem.booking) {
+        $scope.bookingModel.email = '';
+        $scope.editBookingEmail = false;
+      }
       saveNeeded = true;
     }
 
