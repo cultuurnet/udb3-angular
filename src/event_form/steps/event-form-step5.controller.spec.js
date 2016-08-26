@@ -220,11 +220,11 @@ describe('Controller: event form step 5', function () {
     EventFormData.id = 1;
     stepController = getController();
     var expectedContactInfo = [
-      {type:'email', value:'foo@bar.com'},
-      {type:'phone', value:'016985682'},
-      {type:'url', value:'http://foo.com'},
-      {type:'url', value:'http://bar.com'},
-      {type:'url', value:'https://foobar.com'}
+      {type:'email', value:'foo@bar.com', booking: false},
+      {type:'phone', value:'016985682', booking: false},
+      {type:'url', value:'http://foo.com', booking: false},
+      {type:'url', value:'http://bar.com', booking: false},
+      {type:'url', value:'https://foobar.com', booking: false}
     ];
 
     expect(scope.contactInfo).toEqual(expectedContactInfo);
