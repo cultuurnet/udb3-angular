@@ -18467,7 +18467,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                              <div class=\"reservatie-website-info reservatie-info\"\n" +
     "                                   ng-show=\"info.type === 'url' && info.booking\">\n" +
     "\n" +
-    "                                <div class=\"reservatie-info-stap2\" ng-hide=\"editBookingUrl\">\n" +
+    "                                <div class=\"reservatie-info-stap2\">\n" +
     "                                  <div class=\"weergave\">\n" +
     "                                      <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
     "                                      <select ng-model=\"bookingModel.urlLabel\"\n" +
