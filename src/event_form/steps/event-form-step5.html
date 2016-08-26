@@ -380,26 +380,6 @@
               </div>
             </div>
           </div>
-          <div class="row extra-tickets-periode">
-            <div class="extra-task">
-              <div class="col-sm-8 col-sm-offset-3" ng-hide="eventFormData.bookingInfo.availabilityStarts">
-                <a class="reservatie-periode-toevoegen" href="#" ng-click="openBookingPeriodModal()">
-                    Reservatieperiode toevoegen
-                </a>
-              </div>
-              <div class="col-sm-8 col-sm-offset-3" ng-show="eventFormData.bookingInfo.availabilityStarts">
-                <span>
-                  <span>Van </span>
-                  <span ng-bind="eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'"></span>
-                  <span> tot </span>
-                  <span ng-bind="eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'"></span>
-                  <a class="reservatie-periode-toevoegen" href="#" ng-click="openBookingPeriodModal()">
-                      Reservatieperiode wijzigen
-                  </a>
-                </span>
-              </div>
-            </div>
-          </div>
 
           <div class="alert alert-danger" ng-show="bookingInfoError">
             Er ging iets fout bij het bewaren van de info.
@@ -512,6 +492,27 @@
                   </table>
                 </form>
               </section>
+
+                <div class="row extra-tickets-periode">
+                    <div class="extra-task">
+                        <div class="col-sm-8 col-sm-offset-3" ng-hide="eventFormData.bookingInfo.availabilityStarts">
+                            <a class="btn btn-primary reservatie-periode-toevoegen" href="#" ng-click="openBookingPeriodModal()">
+                                Reservatieperiode toevoegen
+                            </a>
+                        </div>
+                        <div class="col-sm-8 col-sm-offset-3" ng-show="eventFormData.bookingInfo.availabilityStarts">
+                            <span>
+                              <span>Van </span>
+                              <span ng-bind="eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'"></span>
+                              <span> tot </span>
+                              <span ng-bind="eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'"></span>
+                              <a class="btn btn-primary reservatie-periode-toevoegen" href="#" ng-click="openBookingPeriodModal()">
+                                  Reservatieperiode wijzigen
+                              </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
               <div ng-show="contactInfoError" class="alert alert-danger">
                 Er ging iets fout bij het opslaan van de contact info.

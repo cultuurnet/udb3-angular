@@ -18381,26 +18381,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </div>\n" +
     "            </div>\n" +
     "          </div>\n" +
-    "          <div class=\"row extra-tickets-periode\">\n" +
-    "            <div class=\"extra-task\">\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\" ng-hide=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
-    "                <a class=\"reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
-    "                    Reservatieperiode toevoegen\n" +
-    "                </a>\n" +
-    "              </div>\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\" ng-show=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
-    "                <span>\n" +
-    "                  <span>Van </span>\n" +
-    "                  <span ng-bind=\"eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'\"></span>\n" +
-    "                  <span> tot </span>\n" +
-    "                  <span ng-bind=\"eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'\"></span>\n" +
-    "                  <a class=\"reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
-    "                      Reservatieperiode wijzigen\n" +
-    "                  </a>\n" +
-    "                </span>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
     "\n" +
     "          <div class=\"alert alert-danger\" ng-show=\"bookingInfoError\">\n" +
     "            Er ging iets fout bij het bewaren van de info.\n" +
@@ -18513,6 +18493,27 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </table>\n" +
     "                </form>\n" +
     "              </section>\n" +
+    "\n" +
+    "                <div class=\"row extra-tickets-periode\">\n" +
+    "                    <div class=\"extra-task\">\n" +
+    "                        <div class=\"col-sm-8 col-sm-offset-3\" ng-hide=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
+    "                            <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
+    "                                Reservatieperiode toevoegen\n" +
+    "                            </a>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-sm-8 col-sm-offset-3\" ng-show=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
+    "                            <span>\n" +
+    "                              <span>Van </span>\n" +
+    "                              <span ng-bind=\"eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'\"></span>\n" +
+    "                              <span> tot </span>\n" +
+    "                              <span ng-bind=\"eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'\"></span>\n" +
+    "                              <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
+    "                                  Reservatieperiode wijzigen\n" +
+    "                              </a>\n" +
+    "                            </span>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
     "\n" +
     "              <div ng-show=\"contactInfoError\" class=\"alert alert-danger\">\n" +
     "                Er ging iets fout bij het opslaan van de contact info.\n" +
