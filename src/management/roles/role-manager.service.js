@@ -76,28 +76,28 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
   };
 
   /**
-   * @param {string} permissionKey
-   *  The key for the permission
+   * @param {RolePermission} permission
+   *  The permission to add to the role
    * @param {string} roleId
    *  roleId for the role
    * @return {Promise}
    */
-  service.addPermissionToRole = function(permissionKey, roleId) {
+  service.addPermissionToRole = function(permission, roleId) {
     return udbApi
-      .addPermissionToRole(permissionKey, roleId)
+      .addPermissionToRole(permission, roleId)
       .then(logRoleJob);
   };
 
   /**
-   * @param {string} permissionKey
+   * @param {RolePermission} permission
    *  The key for the permission
    * @param {string} roleId
    *  roleId for the role
    * @return {Promise}
    */
-  service.removePermissionFromRole = function(permissionKey, roleId) {
+  service.removePermissionFromRole = function(permission, roleId) {
     return udbApi
-      .removePermissionFromRole(permissionKey, roleId)
+      .removePermissionFromRole(permission, roleId)
       .then(logRoleJob);
   };
 
