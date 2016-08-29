@@ -265,6 +265,21 @@ describe('Controller: event form step 5', function () {
     expect(uibModal.open).toHaveBeenCalled();
   });
 
+  it('should save the organizer for the event', function () {
+    eventCrud.updateOrganizer.and.returnValue($q.resolve());
+
+    var organizer = new UdbOrganizer();
+    spyOn(EventFormData, 'organizer');
+
+    stepController.saveOrganizer(organizer);
+    scope.$apply();
+
+    expect(EventFormData.organizer).toEqual(organizer);
+    expect(stepController.eventFormSaved).toHaveBeenCalled();
+    expect(scope.organizerCssClass).toEqual('state-complete');
+    expect(scope.savingOrganizer).toBeFalsy();
+  });
+
   it('should initialize with an "adult" age range when the min age is over 18', function () {
     EventFormData.typicalAgeRange = '21-';
     EventFormData.id = 1;
