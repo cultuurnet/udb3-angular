@@ -291,6 +291,21 @@ describe('Controller: event form step 5', function () {
     expect(scope.contactInfo).toEqual(expectedContactInfo);
   });
 
+  xit('should delete contact info from the contactInfo array', function () {
+    var expectedContactInfo = [{type: 'phone', value: '1234567890', booking: false}];
+    scope.contacInfo = [
+      {type: 'phone', value: '1234567890', booking: false},
+      {type: 'phone', value: '0987654321', booking: false}
+    ];
+    spyOn(scope, 'saveContactInfo');
+
+    scope.deleteContactInfo(1);
+    scope.$apply();
+
+    expect(scope.contacInfo).toEqual(expectedContactInfo);
+    expect(scope.saveContactInfo).toHaveBeenCalled();
+  });
+
   it('should initialize with an "adult" age range when the min age is over 18', function () {
     EventFormData.typicalAgeRange = '21-';
     EventFormData.id = 1;
