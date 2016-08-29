@@ -17437,7 +17437,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/reservation-modal.html',
     "<div class=\"modal-content\">\n" +
     "  <div class=\"modal-header\">\n" +
-    "    <button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
+    "    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" ng-click=\"cancel()\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
     "    <h4 class=\"modal-title\">Reservatieperiode</h4>\n" +
     "  </div>\n" +
