@@ -165,6 +165,14 @@ describe('Controller: event form step 5', function () {
     expect(scope.ageRange).toEqual(AgeRange.ALL);
   });
 
+  it('should rest the age selection', function () {
+    scope.resetAgeRange();
+
+    expect(scope.ageRange).toEqual(null);
+    expect(scope.minAge).toEqual(null);
+    expect(scope.ageCssClass).toEqual('state-incomplete');
+  });
+
   it('should suggest creating a new organizer when looking for one yields no results', function () {
     udbOrganizers.suggestOrganizers.and.returnValue($q.resolve([]));
 
