@@ -160,6 +160,11 @@ describe('Controller: event form step 5', function () {
     }
   });
 
+  it('should set the ageRange to all ages', function () {
+    scope.setAllAges();
+    expect(scope.ageRange).toEqual(AgeRange.ALL);
+  });
+
   it('should suggest creating a new organizer when looking for one yields no results', function () {
     udbOrganizers.suggestOrganizers.and.returnValue($q.resolve([]));
 
