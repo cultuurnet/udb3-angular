@@ -20,6 +20,7 @@ describe('Controller: event form step 5', function () {
     $q = $injector.get('$q');
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['suggestOrganizers']);
     eventCrud = jasmine.createSpyObj('eventCrud', [
+      'updateDescription',
       'updateOrganizer',
       'updateTypicalAgeRange',
       'deleteTypicalAgeRange',
@@ -27,6 +28,7 @@ describe('Controller: event form step 5', function () {
       'selectMainImage'
     ]);
     stepController = getController();
+    spyOn(stepController, 'eventFormSaved');
   }));
 
   function getController() {
@@ -37,6 +39,50 @@ describe('Controller: event form step 5', function () {
       eventCrud: eventCrud
     });
   }
+
+  it('should save a description and toggle the state-complete class', function () {
+    scope.description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dui at dolor pretium consequat sit amet a erat. Quisque pretium dolor sed arcu fringilla elementum. Donec sodales vestibulum nibh, ut imperdiet est luctus sed. Sed vitae faucibus orci, rhoncus interdum eros. Aliquam commodo turpis sed metus tempus, vel mollis mi elementum. Donec finibus interdum magna non tristique. Praesent viverra ullamcorper nulla in tristique.';
+    spyOn(EventFormData, 'setDescription');
+
+    eventCrud.updateDescription.and.returnValue($q.resolve());
+
+    scope.saveDescription();
+    scope.$apply();
+
+    expect(EventFormData.setDescription).toHaveBeenCalled();
+    expect(scope.savingDescription).toBeFalsy();
+    expect(stepController.eventFormSaved).toHaveBeenCalled();
+    expect(scope.descriptionCssClass).toEqual('state-complete');
+  });
+
+  it('should save a description and toggle the state-incomplete class', function () {
+    scope.description = '';
+    spyOn(EventFormData, 'setDescription');
+
+    eventCrud.updateDescription.and.returnValue($q.resolve());
+
+    scope.saveDescription();
+    scope.$apply();
+
+    expect(EventFormData.setDescription).toHaveBeenCalled();
+    expect(scope.savingDescription).toBeFalsy();
+    expect(stepController.eventFormSaved).toHaveBeenCalled();
+    expect(scope.descriptionCssClass).toEqual('state-incomplete');
+  });
+
+  it('should handle the error when save a description fails', function () {
+    scope.description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dui at dolor pretium consequat sit amet a erat. Quisque pretium dolor sed arcu fringilla elementum. Donec sodales vestibulum nibh, ut imperdiet est luctus sed. Sed vitae faucibus orci, rhoncus interdum eros. Aliquam commodo turpis sed metus tempus, vel mollis mi elementum. Donec finibus interdum magna non tristique. Praesent viverra ullamcorper nulla in tristique.';
+    spyOn(EventFormData, 'setDescription');
+
+    eventCrud.updateDescription.and.returnValue($q.reject());
+
+    scope.saveDescription();
+    scope.$apply();
+
+    expect(EventFormData.setDescription).toHaveBeenCalled();
+    expect(scope.savingDescription).toBeFalsy();
+    expect(scope.descriptionError).toBeTruthy();
+  });
 
   it('should set the right form data and save it when all ages is selected', function () {
     spyOn(scope, 'saveAgeRange');
