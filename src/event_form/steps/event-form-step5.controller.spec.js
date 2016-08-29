@@ -4,7 +4,7 @@ describe('Controller: event form step 5', function () {
 
   beforeEach(module('udb.event-form'));
 
-  var $controller, stepController, scope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud;
+  var $controller, stepController, scope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal;
   var AgeRange = {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
     'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
@@ -18,6 +18,7 @@ describe('Controller: event form step 5', function () {
     EventFormData = $injector.get('EventFormData');
     UdbOrganizer = $injector.get('UdbOrganizer');
     $q = $injector.get('$q');
+    uibModal = $injector.get('$uibModal');
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['suggestOrganizers']);
     eventCrud = jasmine.createSpyObj('eventCrud', [
       'updateDescription',
@@ -36,6 +37,7 @@ describe('Controller: event form step 5', function () {
       $scope: scope,
       EventFormData: EventFormData,
       udbOrganizers: udbOrganizers,
+      $uibModal: uibModal,
       eventCrud: eventCrud
     });
   }
@@ -247,6 +249,20 @@ describe('Controller: event form step 5', function () {
 
     expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
     expect(stepController.showAsyncOrganizerError).toHaveBeenCalled();
+  });
+
+  it('should open the organizer\'s modal', function () {
+    var fakeModal = {
+      result: {
+        then: function() {}
+      }
+    };
+
+    spyOn(uibModal, 'open').and.returnValue(fakeModal);
+    scope.openOrganizerModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
   });
 
   it('should initialize with an "adult" age range when the min age is over 18', function () {
