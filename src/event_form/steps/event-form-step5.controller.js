@@ -407,7 +407,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.contactInfoCssClass = 'state-filling';
     }
 
-    $scope.contactInfo.push({type: ContactInfoTypeEnum.PHONE, value: ''});
+    $scope.contactInfo.push({type: ContactInfoTypeEnum.PHONE, value: '', booking: false});
   }
 
   /**

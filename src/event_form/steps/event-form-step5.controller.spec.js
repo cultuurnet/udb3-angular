@@ -280,6 +280,17 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingOrganizer).toBeFalsy();
   });
 
+  it('should add contact info to the contactInfo array', function () {
+    var expectedContactInfo = [{type: 'phone', value: '', booking: false}];
+    scope.contacInfo = [];
+
+    scope.addContactInfo();
+    scope.$apply();
+
+    expect(scope.contactInfoCssClass).toEqual('state-filling');
+    expect(scope.contactInfo).toEqual(expectedContactInfo);
+  });
+
   it('should initialize with an "adult" age range when the min age is over 18', function () {
     EventFormData.typicalAgeRange = '21-';
     EventFormData.id = 1;
