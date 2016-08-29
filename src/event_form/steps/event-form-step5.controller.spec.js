@@ -209,6 +209,13 @@ describe('Controller: event form step 5', function () {
     expect(stepController.saveOrganizer).toHaveBeenCalledWith(organizer);
   });
 
+  it('should set the correct variables on a Async Organiser Error', function () {
+    stepController.showAsyncOrganizerError();
+
+    expect(scope.organizerError).toBeTruthy();
+    expect(scope.savingOrganizer).toBeFalsy();
+  });
+
   it('should persist the organizer for the active event when saving', function () {
     eventCrud.updateOrganizer.and.returnValue($q.resolve());
     var organizer = new UdbOrganizer();
