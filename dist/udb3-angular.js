@@ -5824,29 +5824,58 @@ angular
   .controller('OfferLabelModalCtrl', OfferLabelModalCtrl);
 
 /* @ngInject */
-function OfferLabelModalCtrl($scope, $uibModalInstance, udbApi) {
-  var labelPromise = udbApi.getRecentLabels();
+function OfferLabelModalCtrl($uibModalInstance, udbApi) {
+  var lmc = this;
+  // ui-select can't get to this scope variable unless you reference it from the $parent scope.
+  // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
+  lmc.labels = [];
+  lmc.close = close;
+  lmc.ok = ok;
+  lmc.labelNames = '';
+  lmc.labelSelection = [];
+  lmc.alert = false;
+  lmc.minimumInputLength = 3;
+  lmc.maxInputLength = 255;
 
-  var ok = function () {
+  udbApi
+    .getRecentLabels()
+    .then(function (labels) {
+      lmc.labelSelection = _.map(labels, function (label) {
+        return {'name': label, 'selected': false};
+      });
+    });
+
+  function ok() {
+    // reset error msg
+    lmc.alert = false;
+
     // Get the labels selected by checkbox
-    var checkedLabels = $scope.labelSelection.filter(function (label) {
+    var checkedLabels = lmc.labelSelection.filter(function (label) {
       return label.selected;
     }).map(function (label) {
       return label.name;
     });
 
     //add the labels
-    var inputLabels = parseLabelInput($scope.labelNames);
+    var inputLabels = parseLabelInput(lmc.labelNames);
+
+    if (lmc.alert) {
+      return;
+    }
 
     // join arrays and remove doubles
     var labels = _.union(checkedLabels, inputLabels);
 
     $uibModalInstance.close(labels);
-  };
+  }
 
-  var close = function () {
+  function close() {
     $uibModalInstance.dismiss('cancel');
-  };
+  }
+
+  function areLengthCriteriaMet(length) {
+    return (length >= lmc.minimumInputLength && length <= lmc.maxInputLength);
+  }
 
   function parseLabelInput(stringWithLabels) {
     //split sting into array of labels
@@ -5860,23 +5889,18 @@ function OfferLabelModalCtrl($scope, $uibModalInstance, udbApi) {
     // remove empty strings
     labels = _.without(labels, '');
 
+    var i;
+    for (i = 0; i < labels.length; i++) {
+      if (!areLengthCriteriaMet(labels[i].length)) {
+        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        break;
+      }
+    }
+
     return labels;
   }
-
-  labelPromise.then(function (labels) {
-    $scope.availableLabels = labels;
-    $scope.labelSelection = _.map(labels, function (label) {
-      return {'name': label, 'selected': false};
-    });
-  });
-  // ui-select can't get to this scope variable unless you reference it from the $parent scope.
-  // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
-  $scope.labels = [];
-  $scope.close = close;
-  $scope.ok = ok;
-  $scope.labelNames = '';
 }
-OfferLabelModalCtrl.$inject = ["$scope", "$uibModalInstance", "udbApi"];
+OfferLabelModalCtrl.$inject = ["$uibModalInstance", "udbApi"];
 
 // Source: src/entry/labelling/offer-labeller.service.js
 /**
@@ -15981,7 +16005,8 @@ function Search(
 
     var modal = $uibModal.open({
       templateUrl: 'templates/offer-label-modal.html',
-      controller: 'OfferLabelModalCtrl'
+      controller: 'OfferLabelModalCtrl',
+      controllerAs: 'lmc'
     });
 
     modal.result.then(function (labels) {
@@ -16009,7 +16034,8 @@ function Search(
     if (queryBuilder.isValid(query)) {
       var modal = $uibModal.open({
         templateUrl: 'templates/offer-label-modal.html',
-        controller: 'OfferLabelModalCtrl'
+        controller: 'OfferLabelModalCtrl',
+        controllerAs: 'lmc'
       });
 
       modal.result.then(function (labels) {
@@ -16444,17 +16470,22 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/offer-label-modal.html',
-    "<div class=\"modal-body\">\n" +
+    "<div class=\"modal-body offer-label-modal\">\n" +
     "\n" +
-    "  <label>Labels</label>\n" +
+    "  <h2>Labels</h2>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-lg-12\">\n" +
-    "      <input type=\"text\" ng-model=\"labelNames\" class=\"form-control\"/>\n" +
+    "      <input type=\"text\"\n" +
+    "             class=\"form-control\"\n" +
+    "             ng-model=\"lmc.labelNames\"\n" +
+    "             name=\"labels\" />\n" +
+    "      <p class=\"help-block\">Een puntkomma start een nieuw label. <br />\n" +
+    "        <span class=\"lmc-alert text-danger\" ng-if=\"lmc.alert\" ng-bind=\"lmc.alert\"><</span></p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"col-lg-12\">\n" +
-    "      <div class=\"checkbox\" ng-repeat=\"label in labelSelection\">\n" +
+    "      <div class=\"checkbox\" ng-repeat=\"label in lmc.labelSelection\">\n" +
     "        <label>\n" +
     "          <input type=\"checkbox\" ng-model=\"label.selected\"/>\n" +
     "          <span ng-bind=\"label.name\"></span>\n" +
@@ -16465,8 +16496,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button class=\"btn btn-default\" ng-click=\"close()\">Annuleren</button>\n" +
-    "  <button class=\"btn btn-primary\" ng-click=\"ok()\">Label</button>\n" +
+    "  <button class=\"btn btn-default\" ng-click=\"lmc.close()\">Annuleren</button>\n" +
+    "  <button class=\"btn btn-primary\" ng-click=\"lmc.ok()\">Label</button>\n" +
     "</div>\n"
   );
 
