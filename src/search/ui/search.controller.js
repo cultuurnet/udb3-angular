@@ -224,7 +224,7 @@ function Search(
 
   // Because the uib pagination directive is messed up and overrides the initial page to 1,
   // you have to silence and revert it.
-  var initialChangeSilenced = false;
+  var initialChangeSilenced = $scope.currentPage === 1;
   $scope.pageChanged = function () {
     var newPageNumber = $scope.currentPage;
 
