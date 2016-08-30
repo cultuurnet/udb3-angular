@@ -27,7 +27,8 @@ describe('Controller: event form step 5', function () {
       'deleteTypicalAgeRange',
       'deleteOfferOrganizer',
       'selectMainImage',
-      'updateContactPoint'
+      'updateContactPoint',
+      'updateFacilities'
     ]);
     stepController = getController();
     spyOn(stepController, 'eventFormSaved');
@@ -373,6 +374,43 @@ describe('Controller: event form step 5', function () {
     //expect(scope.facilitiesCssClass).toEqual('state-complete');
     expect(scope.selectedFacilities).toEqual(EventFormData.facilities);
     expect(scope.facilitiesInapplicable).toBeFalsy();
+  });
+
+  it('should set the facilities on inapplicable', function () {
+    scope.setFacilitiesInapplicable();
+
+    expect(scope.facilitiesInapplicable).toBeTruthy();
+    expect(scope.facilitiesCssClass).toEqual('state-complete');
+  });
+
+  it('should remove all facilities and set it to inapplicable', function () {
+    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
+
+    eventCrud.updateFacilities.and.returnValue($q.resolve());
+
+    scope.setFacilitiesInapplicable();
+    scope.$apply();
+
+    expect(scope.facilitiesError).toBeFalsy();
+    expect(EventFormData.facilities).toEqual([]);
+
+    expect(scope.savingFacilities).toBeFalsy();
+    expect(scope.facilitiesInapplicable).toBeTruthy();
+    expect(scope.facilitiesCssClass).toEqual('state-complete');
+  });
+
+  it('should remove all facilities and handle the error', function () {
+    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
+
+    eventCrud.updateFacilities.and.returnValue($q.reject('pakot'));
+
+    scope.setFacilitiesInapplicable();
+    scope.$apply();
+
+    expect(EventFormData.facilities).toEqual([]);
+
+    expect(scope.savingFacilities).toBeFalsy();
+    expect(scope.facilitiesError).toBeTruthy();
   });
 
   it('should initialize with an "adult" age range when the min age is over 18', function () {
