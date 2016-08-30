@@ -4,7 +4,7 @@ describe('Controller: event form step 5', function () {
 
   beforeEach(module('udb.event-form'));
 
-  var $controller, stepController, scope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance;
+  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance;
   var AgeRange = {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
     'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
@@ -15,6 +15,7 @@ describe('Controller: event form step 5', function () {
   beforeEach(inject(function ($rootScope, $injector) {
     $controller = $injector.get('$controller');
     scope = $rootScope.$new();
+    rootScope = $rootScope;
     EventFormData = $injector.get('EventFormData');
     UdbOrganizer = $injector.get('UdbOrganizer');
     $q = $injector.get('$q');
@@ -31,7 +32,6 @@ describe('Controller: event form step 5', function () {
       'updateFacilities'
     ]);
     stepController = getController();
-    spyOn(stepController, 'eventFormSaved');
     modalInstance = jasmine.createSpyObj('modalInstance', ['close', 'dismiss', 'result.then']);
   }));
 
@@ -39,15 +39,17 @@ describe('Controller: event form step 5', function () {
     return $controller('EventFormStep5Controller', {
       $scope: scope,
       EventFormData: EventFormData,
+      eventCrud: eventCrud,
       udbOrganizers: udbOrganizers,
       $uibModal: uibModal,
-      eventCrud: eventCrud
+      $rootScope: rootScope
     });
   }
 
   it('should save a description and toggle the state-complete class', function () {
     scope.description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dui at dolor pretium consequat sit amet a erat. Quisque pretium dolor sed arcu fringilla elementum. Donec sodales vestibulum nibh, ut imperdiet est luctus sed. Sed vitae faucibus orci, rhoncus interdum eros. Aliquam commodo turpis sed metus tempus, vel mollis mi elementum. Donec finibus interdum magna non tristique. Praesent viverra ullamcorper nulla in tristique.';
     spyOn(EventFormData, 'setDescription');
+    spyOn(stepController, 'eventFormSaved');
 
     eventCrud.updateDescription.and.returnValue($q.resolve());
 
@@ -63,6 +65,7 @@ describe('Controller: event form step 5', function () {
   it('should save a description and toggle the state-incomplete class', function () {
     scope.description = '';
     spyOn(EventFormData, 'setDescription');
+    spyOn(stepController, 'eventFormSaved');
 
     eventCrud.updateDescription.and.returnValue($q.resolve());
 
@@ -178,6 +181,14 @@ describe('Controller: event form step 5', function () {
     expect(scope.ageCssClass).toEqual('state-incomplete');
   });
 
+  it('should save the EventForm', function() {
+    spyOn(rootScope, '$emit');
+
+    stepController.eventFormSaved();
+
+    expect(rootScope.$emit).toHaveBeenCalledWith('eventFormSaved', EventFormData);
+  });
+
   it('should suggest creating a new organizer when looking for one yields no results', function () {
     udbOrganizers.suggestOrganizers.and.returnValue($q.resolve([]));
 
@@ -273,6 +284,7 @@ describe('Controller: event form step 5', function () {
 
     var organizer = new UdbOrganizer();
     spyOn(EventFormData, 'organizer');
+    spyOn(stepController, 'eventFormSaved');
 
     stepController.saveOrganizer(organizer);
     scope.$apply();
@@ -332,6 +344,7 @@ describe('Controller: event form step 5', function () {
     ];
 
     eventCrud.updateContactPoint.and.returnValue($q.resolve());
+    spyOn(stepController, 'eventFormSaved');
 
     scope.saveContactInfo();
     scope.$apply();
