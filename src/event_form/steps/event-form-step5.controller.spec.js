@@ -26,7 +26,8 @@ describe('Controller: event form step 5', function () {
       'updateTypicalAgeRange',
       'deleteTypicalAgeRange',
       'deleteOfferOrganizer',
-      'selectMainImage'
+      'selectMainImage',
+      'updateContactPoint'
     ]);
     stepController = getController();
     spyOn(stepController, 'eventFormSaved');
@@ -304,6 +305,51 @@ describe('Controller: event form step 5', function () {
 
     expect(scope.contacInfo).toEqual(expectedContactInfo);
     expect(scope.saveContactInfo).toHaveBeenCalled();
+  });
+
+  it('should save the contact info', function () {
+    scope.contactInfoForm = {};
+    scope.contactInfoForm.$valid = true;
+
+    var expectedContactPoints = {
+      url: ['http://cultuurnet.be'],
+      phone: ['1234567890'],
+      email: ['info@mail.com']
+    };
+
+    scope.contactInfo = [
+      {type: 'phone', value: '1234567890', booking: false},
+      {type: 'phone', value: '0987654321', booking: true},
+      {type: 'url', value: 'http://cultuurnet.be', booking: false},
+      {type: 'url', value: 'http://google.be', booking: true},
+      {type: 'email', value: 'info@mail.com', booking: false},
+      {type: 'email', value: 'dude@sweet.com', booking: true}
+    ];
+
+    eventCrud.updateContactPoint.and.returnValue($q.resolve());
+
+    scope.saveContactInfo();
+    scope.$apply();
+
+    expect(EventFormData.contactPoint).toEqual(expectedContactPoints);
+    expect(eventCrud.updateContactPoint).toHaveBeenCalled();
+    expect(stepController.eventFormSaved).toHaveBeenCalled();
+    expect(scope.contactInfoCssClass).toEqual('state-complete');
+    expect(scope.savingContactInfo).toBeFalsy();
+  });
+
+  it('should handle the eroor when saving the contact info goes wrong', function () {
+    scope.contactInfoForm = {};
+    scope.contactInfoForm.$valid = true;
+
+    eventCrud.updateContactPoint.and.returnValue($q.reject('KAPUTSKI!'));
+
+    scope.saveContactInfo();
+    scope.$apply();
+
+    expect(eventCrud.updateContactPoint).toHaveBeenCalled();
+    expect(scope.contactInfoError).toBeTruthy();
+    expect(scope.savingContactInfo).toBeFalsy();
   });
 
   it('should initialize with an "adult" age range when the min age is over 18', function () {
