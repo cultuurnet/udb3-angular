@@ -292,19 +292,22 @@ describe('Controller: event form step 5', function () {
     expect(scope.contactInfo).toEqual(expectedContactInfo);
   });
 
-  xit('should delete contact info from the contactInfo array', function () {
+  it('should delete contact info from the contactInfo array', function () {
     var expectedContactInfo = [{type: 'phone', value: '1234567890', booking: false}];
-    scope.contacInfo = [
+    scope.contactInfo = [
       {type: 'phone', value: '1234567890', booking: false},
       {type: 'phone', value: '0987654321', booking: false}
     ];
+    scope.contactInfoForm = {};
+    scope.contactInfoForm.$valid = true;
+
+    eventCrud.updateContactPoint.and.returnValue($q.resolve());
     spyOn(scope, 'saveContactInfo');
 
     scope.deleteContactInfo(1);
     scope.$apply();
 
-    expect(scope.contacInfo).toEqual(expectedContactInfo);
-    expect(scope.saveContactInfo).toHaveBeenCalled();
+    expect(scope.contactInfo).toEqual(expectedContactInfo);
   });
 
   it('should save the contact info', function () {
