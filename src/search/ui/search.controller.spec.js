@@ -114,37 +114,11 @@ describe('Controller: Search', function() {
     expect($scope.currentPage).toEqual(5);
   });
 
-  it('should load initial query parameters from the URI params', function () {
+  it('should load the right page when one is specified in the URI query parameters', function () {
     $location.search.and.returnValue({query: 'city:"Brussel"', page: 5});
-    spyOn(searchHelper, 'setQueryString').and.callThrough();
-
     var controller = getController();
 
-    expect(searchHelper.setQueryString).toHaveBeenCalledWith('city:"Brussel"');
-    expect($scope.activeQuery.queryString).toEqual('city:"Brussel"');
-  });
-
-  it('should initialize with an existing query set on the search helper', function () {
-    searchHelper.setQueryString('city:"Brussel"');
-
-    var controller = getController();
-
-    expect($scope.activeQuery.queryString).toEqual('city:"Brussel"');
-  });
-
-  it('should use the params in the URI even when there is an existing query set on the search helper', function () {
-    searchHelper.setQueryString('city:"Brussel"');
-    $location.search.and.returnValue({query: 'city:"Leuven"', page: 5});
-
-    var controller = getController();
-
-    expect($scope.activeQuery.queryString).toEqual('city:"Leuven"');
-  });
-
-
-  it('should initialize with an empty search when there is no existing query or query params', function () {
-    var controller = getController();
-
-    expect($scope.activeQuery.queryString).toEqual('');
+    expect($scope.currentPage).toEqual(5);
+    expect($scope.resultViewer.currentPage).toEqual(5);
   });
 });
