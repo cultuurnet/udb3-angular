@@ -4,7 +4,7 @@ describe('Controller: event form step 5', function () {
 
   beforeEach(module('udb.event-form'));
 
-  var $controller, stepController, scope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal;
+  var $controller, stepController, scope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance;
   var AgeRange = {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
     'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
@@ -31,6 +31,7 @@ describe('Controller: event form step 5', function () {
     ]);
     stepController = getController();
     spyOn(stepController, 'eventFormSaved');
+    modalInstance = jasmine.createSpyObj('modalInstance', ['close', 'dismiss', 'result.then']);
   }));
 
   function getController() {
@@ -341,7 +342,7 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingContactInfo).toBeFalsy();
   });
 
-  it('should handle the eroor when saving the contact info goes wrong', function () {
+  it('should handle the error when saving the contact info goes wrong', function () {
     scope.contactInfoForm = {};
     scope.contactInfoForm.$valid = true;
 
@@ -353,6 +354,25 @@ describe('Controller: event form step 5', function () {
     expect(eventCrud.updateContactPoint).toHaveBeenCalled();
     expect(scope.contactInfoError).toBeTruthy();
     expect(scope.savingContactInfo).toBeFalsy();
+  });
+
+  it('should open the facilities modal', function () {
+    var fakeModal = {
+      result: {
+        then: function() {},
+        dismiss: function() {}
+      }
+    };
+
+    spyOn(uibModal, 'open').and.returnValue(fakeModal);
+
+    scope.openFacilitiesModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    //expect(scope.facilitiesCssClass).toEqual('state-complete');
+    expect(scope.selectedFacilities).toEqual(EventFormData.facilities);
+    expect(scope.facilitiesInapplicable).toBeFalsy();
   });
 
   it('should initialize with an "adult" age range when the min age is over 18', function () {
