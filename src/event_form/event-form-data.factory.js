@@ -70,7 +70,7 @@ function EventFormDataFactory() {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
@@ -234,7 +234,7 @@ function EventFormDataFactory() {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''

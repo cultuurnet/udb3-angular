@@ -103,7 +103,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.calendarType = '';
     this.openinghours = [];
     this.address = {
-      'addressCountry' : '',
+      'addressCountry' : 'BE',
       'addressLocality' : '',
       'postalCode' : '',
       'streetAddress' : ''

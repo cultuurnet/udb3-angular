@@ -4351,7 +4351,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.calendarType = '';
     this.openinghours = [];
     this.address = {
-      'addressCountry' : '',
+      'addressCountry' : 'BE',
       'addressLocality' : '',
       'postalCode' : '',
       'streetAddress' : ''
@@ -8058,7 +8058,7 @@ function EventFormDataFactory() {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
@@ -8222,7 +8222,7 @@ function EventFormDataFactory() {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
@@ -9478,7 +9478,7 @@ function EventFormStep3Controller(
 
     // Reset only the street/number data of the location.
     var location = EventFormData.getLocation();
-    location.address.addressCountry = '';
+    location.address.addressCountry = 'BE';
     location.address.streetAddress = '';
     EventFormData.setLocation(location);
 
@@ -9513,7 +9513,7 @@ function EventFormStep3Controller(
   };
 
   controller.init = function (EventFormData) {
-    if (EventFormData.location.address.addressCountry) {
+    if (EventFormData.location.address.streetAddress) {
       var location = EventFormData.location;
 
       $scope.selectedCity = location.address.addressLocality;

@@ -132,7 +132,7 @@ describe('Controller: event form step 3', function (){
       'id' : 182,
       'name': 'De Hoorn',
       'address': {
-        'addressCountry': 'Belgium',
+        'addressCountry': 'BE',
         'addressLocality': 'Leuven',
         'postalCode': '3000',
         'streetAddress': 'Sluisstraat 79'
