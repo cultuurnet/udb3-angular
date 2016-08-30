@@ -14,7 +14,7 @@ describe('Controller: event form step 5', function () {
 
   beforeEach(inject(function ($rootScope, $injector) {
     $controller = $injector.get('$controller');
-    scope = $rootScope;
+    scope = $rootScope.$new();
     EventFormData = $injector.get('EventFormData');
     UdbOrganizer = $injector.get('UdbOrganizer');
     $q = $injector.get('$q');
@@ -411,6 +411,70 @@ describe('Controller: event form step 5', function () {
 
     expect(scope.savingFacilities).toBeFalsy();
     expect(scope.facilitiesError).toBeTruthy();
+  });
+
+  it('should set the right toggle for the booking option', function () {
+    var contactInfos = [
+      {type: 'phone', value: '1234567890', booking: false},
+      {type: 'phone', value: '0987654321', booking: true},
+      {type: 'url', value: 'http://cultuurnet.be', booking: false},
+      {type: 'url', value: 'http://google.be', booking: true},
+      {type: 'email', value: 'info@mail.com', booking: false},
+      {type: 'email', value: 'dude@sweet.com', booking: true},
+      {type: '', value: 'invalid contact type', booking: false}
+    ];
+
+    scope.bookingModel = {
+      phone: '0987654321',
+      url: 'http://google.be',
+      email: 'dude@sweet.com'
+    };
+
+    for (var contactInfo in contactInfos) {
+      scope.showBookingOption(contactInfo);
+      scope.$apply();
+
+      if (!contactInfo.type) {
+        expect(scope.showBookingOption(contactInfo)).toBeFalsy();
+      }
+      else {
+        if (contactInfo.type === 'phone') {
+          if (!scope.bookingModel.phone) {
+            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
+          }
+          else if (scope.bookingModel.phone === contactInfo.value) {
+            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
+          }
+          else {
+            expect(scope.showBookingOption(contactInfo)).toBeFalsy();
+          }
+        }
+
+        else if (contactInfo.type === 'url') {
+          if (!scope.bookingModel.url) {
+            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
+          }
+          else if (scope.bookingModel.url === contactInfo.value) {
+            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
+          }
+          else {
+            expect(scope.showBookingOption(contactInfo)).toBeFalsy();
+          }
+        }
+
+        if (contactInfo.type === 'email') {
+          if (!scope.bookingModel.email) {
+            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
+          }
+          else if (scope.bookingModel.email === contactInfo.value) {
+            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
+          }
+          else {
+            expect(scope.showBookingOption(contactInfo)).toBeFalsy();
+          }
+        }
+      }
+    }
   });
 
   it('should initialize with an "adult" age range when the min age is over 18', function () {
