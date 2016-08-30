@@ -16803,6 +16803,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
     "      <p id=\"add-date-label\">Dag toevoegen</p>\n" +
+    "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
     "    </a>\n" +
     "  </div>\n" +
     "</div>"
