@@ -9856,7 +9856,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Booking info vars.
   $scope.toggleBookingType = toggleBookingType;
   $scope.saveBookingType = saveBookingType;
-  $scope.validateBookingType = validateBookingType;
   $scope.saveBookingInfo = saveBookingInfo;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
@@ -10372,42 +10371,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   /**
-   * Validates a booking type.
-   */
-  function validateBookingType(type) {
-
-    if (type === 'website') {
-      // Valid url?
-      $scope.step5TicketsForm.url.$setValidity('url', true);
-      if (!URL_REGEXP.test($scope.bookingModel.url)) {
-        $scope.step5TicketsForm.url.$setValidity('url', false);
-      }
-
-      $scope.bookingModel.urlRequired = true;
-      $scope.bookingModel.emailRequired = false;
-      $scope.bookingModel.phoneRequired = false;
-    }
-    else if (type === 'email') {
-      $scope.bookingModel.emailRequired = true;
-      $scope.bookingModel.urlRequired = false;
-      $scope.bookingModel.phoneRequired = false;
-    }
-    else if (type === 'phone') {
-      $scope.bookingModel.phoneRequired = true;
-      $scope.bookingModel.emailRequired = false;
-      $scope.bookingModel.urlRequired = false;
-    }
-
-    // Forms are automatically known in scope.
-    if (!$scope.step5TicketsForm.$valid) {
-      return;
-    }
-
-    saveBookingType(type);
-
-  }
-
-  /**
    * Temporarily save a booking type.
    */
   function saveBookingType(type) {
@@ -10513,15 +10476,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     var phone = $scope.bookingModel.phone;
     var email = $scope.bookingModel.email;
 
-    var foundUrl = $scope.contactInfo.some(function (element, key) {
+    var foundUrl = $scope.contactInfo.some(function (element) {
       return element.value === url;
     });
 
-    var foundPhone = $scope.contactInfo.some(function (element, key) {
+    var foundPhone = $scope.contactInfo.some(function (element) {
       return element.value === phone;
     });
 
-    var foundEmail = $scope.contactInfo.some(function (element, key) {
+    var foundEmail = $scope.contactInfo.some(function (element) {
       return element.value === email;
     });
 
@@ -18230,208 +18193,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "\n" +
-    "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
-    "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
-    "            <div class=\"extra-task state-incomplete\">\n" +
-    "              <div class=\"col-sm-3\">\n" +
-    "                <em class=\"extra-task-label\">Reservatie</em>\n" +
-    "                <span> </span>\n" +
-    "                <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingBookingInfo\"></i>\n" +
-    "              </div>\n" +
-    "              <div class=\"col-sm-8\">\n" +
-    "                <section class=\"state incomplete\">\n" +
-    "\n" +
-    "                  <div class=\"checkbox\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"checkbox\"\n" +
-    "                             class=\"reservatie-website-check reservatie-check\"\n" +
-    "                             ng-model=\"viaWebsite\"\n" +
-    "                             ng-click=\"toggleBookingType('website')\">\n" +
-    "                      Via website\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"reservatie-website-info reservatie-info\" ng-show=\"viaWebsite\">\n" +
-    "                    <div class=\"reservatie-info-stap1\" ng-show=\"editBookingUrl\">\n" +
-    "                      <div class=\"form-inline\">\n" +
-    "                        <label>URL voor reservaties</label><br>\n" +
-    "                        <div class=\"form-group\">\n" +
-    "                          <input type=\"text\"\n" +
-    "                                 class=\"form-control\"\n" +
-    "                                 ng-model-options=\"{ updateOn: 'blur' }\"\n" +
-    "                                 udb-http-prefix\n" +
-    "                                 name=\"url\"\n" +
-    "                                 ng-model=\"bookingModel.url\"\n" +
-    "                                 ng-required=\"viaWebsite\">\n" +
-    "                          <span class=\"help-block\" ng-show=\"bookingModel.urlRequired && !step5TicketsForm.url.$valid\">\n" +
-    "                            Gelieve een geldig formaat te gebruiken\n" +
-    "                          </span>\n" +
-    "                        </div>\n" +
-    "                        <a class=\"btn btn-primary reservatie-info-stap1-controleren\" ng-click=\"validateBookingType('website')\">\n" +
-    "                          Opslaan\n" +
-    "                        </a>\n" +
-    "                      </div>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"reservatie-info-stap2\" ng-hide=\"editBookingUrl\">\n" +
-    "                      <span>\n" +
-    "                        <span ng-bind=\"eventFormData.bookingInfo.url\"></span>\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"editBookingUrl = true\">Wijzigen</a>\n" +
-    "                      </span>\n" +
-    "                      <div class=\"weergave\">\n" +
-    "                        <p><small class=\"text-muted\">VOORBEELDWEERGAVE</small></p>\n" +
-    "                        <span>\n" +
-    "                          <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{bookingModel.url}}\"\n" +
-    "                             ng-bind=\"bookingModel.urlLabel\"></a>\n" +
-    "                          <a class=\"btn btn-link\" href=\"#\" ng-click=\"enableWebsitePreview()\" data-toggle=\"modal\"\n" +
-    "                             data-target=\"#extra-tickets-website-weergave\">Wijzigen</a>\n" +
-    "                        </span>\n" +
-    "                      </div>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                </section>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "          <div class=\"modal fade\" id=\"extra-tickets-website-weergave\" aria-hidden=\"true\" ng-show=\"websitePreviewEnabled\">\n" +
-    "            <div class=\"modal-dialog\">\n" +
-    "              <div class=\"modal-content\">\n" +
-    "                <div class=\"modal-header\">\n" +
-    "                  <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n" +
-    "                    <span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
-    "                  </button>\n" +
-    "                  <h4 class=\"modal-title\">Weergave</h4>\n" +
-    "                </div>\n" +
-    "                <div class=\"modal-body\">\n" +
-    "                  <label>Kies een passend actie-label voor deze link</label>\n" +
-    "\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios1\"\n" +
-    "                             value=\"Koop tickets\" checked=\"\">\n" +
-    "                      Koop tickets\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios2\"\n" +
-    "                             value=\"Reserveer plaatsen\">\n" +
-    "                      Reserveer plaatsen\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios3\"\n" +
-    "                             value=\"Controleer beschikbaarheid\">\n" +
-    "                      Controleer beschikbaarheid\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios4\"\n" +
-    "                             value=\"Schrijf je in\">\n" +
-    "                      Schrijf je in\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label><input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios5\"\n" +
-    "                                  value=\"Andere\">Andere</label>\n" +
-    "                    <input type=\"text\" class=\"form-control\" ng-show=\"bookingModel.urlLabel === 'Andere'\"\n" +
-    "                           ng-model=\"bookingModel.urlLabelCustom\">\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"modal-footer\">\n" +
-    "                  <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">\n" +
-    "                    Annuleren\n" +
-    "                  </button>\n" +
-    "                  <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
-    "                          data-target=\"#extra-tickets-website-weergave\" ng-click=\"saveWebsitePreview()\">\n" +
-    "                    Bevestigen\n" +
-    "                  </button>\n" +
-    "                </div>\n" +
-    "              </div><!-- /.modal-content -->\n" +
-    "            </div><!-- /.modal-dialog -->\n" +
-    "          </div>\n" +
-    "          <div class=\"row extra-tickets-telefoon\">\n" +
-    "            <div class=\"extra-task state-incomplete\">\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\">\n" +
-    "                <div class=\"checkbox\">\n" +
-    "                  <label>\n" +
-    "                    <input type=\"checkbox\" class=\"reservatie-telefoon-check reservatie-check\" ng-model=\"viaPhone\"\n" +
-    "                           ng-change=\"toggleBookingType('phone')\">\n" +
-    "                    Via telefoon\n" +
-    "                  </label>\n" +
-    "                </div>\n" +
-    "                <div class=\"reservatie-telefoon-info reservatie-info\" ng-show=\"viaPhone\">\n" +
-    "                  <div class=\"reservatie-telefoon-filling\" ng-show=\"editBookingPhone\">\n" +
-    "\n" +
-    "                    <label>Telefoonnummer voor reservaties</label><br>\n" +
-    "\n" +
-    "                    <div class=\"form-inline\">\n" +
-    "                      <input type=\"text\" class=\"form-control\" name=\"phone\" ng-model=\"bookingModel.phone\"\n" +
-    "                             ng-required=\"viaPhone\">\n" +
-    "                      <span class=\"help-block\"\n" +
-    "                            ng-show=\"bookingModel.phoneRequired && step5TicketsForm.phone.$error.required\">\n" +
-    "                        Gelieve een geldig formaat te gebruiken\n" +
-    "                      </span>\n" +
-    "                      <a class=\"btn btn-primary reservatie-telefoon-opslaan\" ng-click=\"validateBookingType('phone')\">\n" +
-    "                        Opslaan\n" +
-    "                      </a>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"reservatie-telefoon-complete\" ng-hide=\"editBookingPhone\">\n" +
-    "                    <span>\n" +
-    "                      <span ng-bind=\"bookingModel.phone\"></span>\n" +
-    "                      <a class=\"btn btn-link\" ng-click=\"editBookingPhone = true\">Wijzigen</a>\n" +
-    "                    </span>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "          <div class=\"row extra-tickets-email\">\n" +
-    "            <div class=\"extra-task state-incomplete\">\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\">\n" +
-    "                <div class=\"checkbox\">\n" +
-    "                  <label>\n" +
-    "                    <input type=\"checkbox\" class=\"reservatie-email-check reservatie-check\" ng-model=\"viaEmail\"\n" +
-    "                           ng-change=\"toggleBookingType('email')\">\n" +
-    "                    Via e-mail\n" +
-    "                  </label>\n" +
-    "                </div>\n" +
-    "                <div class=\"reservatie-email-info reservatie-info\" ng-show=\"viaEmail\">\n" +
-    "                  <div class=\"reservatie-email-filling\" ng-show=\"editBookingEmail\">\n" +
-    "                    <label>E-mailadres voor reservaties</label><br>\n" +
-    "\n" +
-    "                    <div class=\"form-inline\">\n" +
-    "                      <input type=\"email\"\n" +
-    "                             class=\"form-control\"\n" +
-    "                             name=\"email\"\n" +
-    "                             ng-model=\"bookingModel.email\"\n" +
-    "                             ng-required=\"viaEmail\">\n" +
-    "                      <span class=\"help-block\" ng-show=\"bookingModel.emailRequired && !step5TicketsForm.email.$valid\">\n" +
-    "                        Gelieve een geldig formaat te gebruiken\n" +
-    "                      </span>\n" +
-    "                      <a class=\"btn btn-primary reservatie-email-opslaan\" ng-click=\"validateBookingType('email')\">\n" +
-    "                        Opslaan\n" +
-    "                      </a>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"reservatie-email-complete\" ng-hide=\"editBookingEmail\">\n" +
-    "                    <span>\n" +
-    "                      <span ng-bind=\"bookingModel.email\"></span>\n" +
-    "                      <a class=\"btn btn-link\" ng-click=\"editBookingEmail = true\">Wijzigen</a>\n" +
-    "                    </span>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "\n" +
-    "          <div class=\"alert alert-danger\" ng-show=\"bookingInfoError\">\n" +
-    "            Er ging iets fout bij het bewaren van de info.\n" +
-    "          </div>\n" +
-    "\n" +
-    "        </form>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
     "          <div class=\"extra-task meer-info\" ng-class=\"contactInfoCssClass\">\n" +

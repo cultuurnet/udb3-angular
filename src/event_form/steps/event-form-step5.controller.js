@@ -95,7 +95,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Booking info vars.
   $scope.toggleBookingType = toggleBookingType;
   $scope.saveBookingType = saveBookingType;
-  $scope.validateBookingType = validateBookingType;
   $scope.saveBookingInfo = saveBookingInfo;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
@@ -607,42 +606,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     if (saveNeeded) {
       saveBookingType();
     }
-
-  }
-
-  /**
-   * Validates a booking type.
-   */
-  function validateBookingType(type) {
-
-    if (type === 'website') {
-      // Valid url?
-      $scope.step5TicketsForm.url.$setValidity('url', true);
-      if (!URL_REGEXP.test($scope.bookingModel.url)) {
-        $scope.step5TicketsForm.url.$setValidity('url', false);
-      }
-
-      $scope.bookingModel.urlRequired = true;
-      $scope.bookingModel.emailRequired = false;
-      $scope.bookingModel.phoneRequired = false;
-    }
-    else if (type === 'email') {
-      $scope.bookingModel.emailRequired = true;
-      $scope.bookingModel.urlRequired = false;
-      $scope.bookingModel.phoneRequired = false;
-    }
-    else if (type === 'phone') {
-      $scope.bookingModel.phoneRequired = true;
-      $scope.bookingModel.emailRequired = false;
-      $scope.bookingModel.urlRequired = false;
-    }
-
-    // Forms are automatically known in scope.
-    if (!$scope.step5TicketsForm.$valid) {
-      return;
-    }
-
-    saveBookingType(type);
 
   }
 
