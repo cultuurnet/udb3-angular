@@ -476,68 +476,104 @@ describe('Controller: event form step 5', function () {
     expect(scope.facilitiesError).toBeTruthy();
   });
 
-  it('should set the right toggle for the booking option', function () {
+  it('should set the right toggle for the booking option "phone"', function () {
     var contactInfos = [
       {type: 'phone', value: '1234567890', booking: false},
-      {type: 'phone', value: '0987654321', booking: true},
-      {type: 'url', value: 'http://cultuurnet.be', booking: false},
-      {type: 'url', value: 'http://google.be', booking: true},
-      {type: 'email', value: 'info@mail.com', booking: false},
-      {type: 'email', value: 'dude@sweet.com', booking: true},
-      {type: '', value: 'invalid contact type', booking: false}
+      {type: 'phone', value: '0987654321', booking: true}
     ];
-
     scope.bookingModel = {
       phone: '0987654321',
       url: 'http://google.be',
       email: 'dude@sweet.com'
     };
 
-    for (var contactInfo in contactInfos) {
-      scope.showBookingOption(contactInfo);
-      scope.$apply();
+    scope.showBookingOption(contactInfos[0]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
 
-      if (!contactInfo.type) {
-        expect(scope.showBookingOption(contactInfo)).toBeFalsy();
-      }
-      else {
-        if (contactInfo.type === 'phone') {
-          if (!scope.bookingModel.phone) {
-            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
-          }
-          else if (scope.bookingModel.phone === contactInfo.value) {
-            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
-          }
-          else {
-            expect(scope.showBookingOption(contactInfo)).toBeFalsy();
-          }
-        }
+    scope.showBookingOption(contactInfos[1]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[1])).toBeTruthy();
+  });
 
-        else if (contactInfo.type === 'url') {
-          if (!scope.bookingModel.url) {
-            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
-          }
-          else if (scope.bookingModel.url === contactInfo.value) {
-            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
-          }
-          else {
-            expect(scope.showBookingOption(contactInfo)).toBeFalsy();
-          }
-        }
+  it('should set the right toggle for the booking option "url"', function () {
+    var contactInfos = [
+      {type: 'url', value: 'http://cultuurnet.be', booking: false},
+      {type: 'url', value: 'http://google.be', booking: true},
+    ];
+    scope.bookingModel = {
+      phone: '0987654321',
+      url: 'http://google.be',
+      email: 'dude@sweet.com'
+    };
 
-        if (contactInfo.type === 'email') {
-          if (!scope.bookingModel.email) {
-            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
-          }
-          else if (scope.bookingModel.email === contactInfo.value) {
-            expect(scope.showBookingOption(contactInfo)).toBeTruthy();
-          }
-          else {
-            expect(scope.showBookingOption(contactInfo)).toBeFalsy();
-          }
-        }
-      }
-    }
+    scope.showBookingOption(contactInfos[0]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
+
+    scope.showBookingOption(contactInfos[1]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[1])).toBeTruthy();
+  });
+
+  it('should set the right toggle for the booking option "email"', function () {
+    var contactInfos = [
+      {type: 'email', value: 'info@mail.com', booking: false},
+      {type: 'email', value: 'dude@sweet.com', booking: true},
+    ];
+    scope.bookingModel = {
+      phone: '0987654321',
+      url: 'http://google.be',
+      email: 'dude@sweet.com'
+    };
+
+    scope.showBookingOption(contactInfos[0]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
+
+    scope.showBookingOption(contactInfos[1]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[1])).toBeTruthy();
+  });
+
+  it('should set the right toggle when the booking option is invalid', function () {
+    var contactInfos = [
+      {type: '', value: 'invalid contact type', booking: false}
+    ];
+    scope.bookingModel = {
+      phone: '0987654321',
+      url: 'http://google.be',
+      email: 'dude@sweet.com'
+    };
+
+    scope.showBookingOption(contactInfos[0]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
+  });
+
+  it('should set the right toggle when there is nothing in the bookingModel', function () {
+    var contactInfos = [
+      {type: 'phone', value: '0987654321', booking: true},
+      {type: 'url', value: 'http://google.be', booking: true},
+      {type: 'email', value: 'dude@sweet.com', booking: true}
+    ];
+    scope.bookingModel = {
+      phone: '',
+      url: '',
+      email: ''
+    };
+
+    scope.showBookingOption(contactInfos[0]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[0])).toBeTruthy();
+
+    scope.showBookingOption(contactInfos[1]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[1])).toBeTruthy();
+
+    scope.showBookingOption(contactInfos[2]);
+    scope.$apply();
+    expect(scope.showBookingOption(contactInfos[2])).toBeTruthy();
   });
 
   it('should toogle the booking type and check if info should be deleted.', function () {
