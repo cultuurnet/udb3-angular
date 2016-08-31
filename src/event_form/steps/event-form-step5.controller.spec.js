@@ -266,17 +266,45 @@ describe('Controller: event form step 5', function () {
   });
 
   it('should open the organizer\'s modal', function () {
-    var fakeModal = {
-      result: {
-        then: function() {}
-      }
-    };
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.resolve()
+    });
+    spyOn(stepController, 'saveOrganizer');
 
-    spyOn(uibModal, 'open').and.returnValue(fakeModal);
     scope.openOrganizerModal();
     scope.$apply();
 
     expect(uibModal.open).toHaveBeenCalled();
+    expect(stepController.saveOrganizer).toHaveBeenCalled();
+  });
+
+  it('should fail in opening the organizer\'s modal and set the state to incomplete', function () {
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.reject()
+    });
+
+    scope.openOrganizerModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    expect(scope.organizer).toEqual('');
+    expect(scope.emptyOrganizerAutocomplete).toBeFalsy();
+    expect(scope.organizerCssClass).toEqual('state-incomplete');
+  });
+
+  it('should fail in opening the organizer\'s modal and set the state to complete', function () {
+    EventFormData.organizer.id = '1234567890-0987654321';
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.reject()
+    });
+
+    scope.openOrganizerModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    expect(scope.organizer).toEqual('');
+    expect(scope.emptyOrganizerAutocomplete).toBeFalsy();
+    expect(scope.organizerCssClass).toEqual('state-complete');
   });
 
   it('should save the organizer for the event', function () {
