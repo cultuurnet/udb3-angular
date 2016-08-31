@@ -670,6 +670,22 @@ describe('Controller: event form step 5', function () {
     expect(scope.editBookingUrl).toBeFalsy();
   });
 
+  it('should delete a given contact info item', function () {
+    scope.contactInfo = [
+      {type: 'phone', value: '1234567890', booking: false},
+      {type: 'phone', value: '0987654321', booking: true},
+      {type: 'url', value: 'http://cultuurnet.be', booking: false},
+      {type: 'url', value: 'http://google.be', booking: true},
+      {type: 'email', value: 'info@mail.com', booking: false},
+      {type: 'email', value: 'dude@sweet.com', booking: true}
+    ];
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+
+    scope.deleteBookingInfo({type: 'phone', value: '0987654321', booking: true}, 1);
+
+    expect(scope.contactInfo[1].booking).toBeFalsy();
+  });
+
   it('should initialize with an "adult" age range when the min age is over 18', function () {
     EventFormData.typicalAgeRange = '21-';
     EventFormData.id = 1;
