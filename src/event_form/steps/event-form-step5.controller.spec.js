@@ -544,6 +544,23 @@ describe('Controller: event form step 5', function () {
     }
   });
 
+  it('should save the website preview settings', function () {
+    scope.bookingModel = {
+      urlLabel: 'Dit is een url label'
+    };
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+
+    scope.saveWebsitePreview();
+
+    expect(EventFormData.bookingInfo.urlLabel).toEqual(scope.bookingModel.urlLabel);
+  });
+
+  it('should enable the website preview modal', function () {
+    scope.enableWebsitePreview();
+
+    expect(scope.websitePreviewEnabled).toBeTruthy();
+  });
+
   it('should temporarily save the booking type "phone"', function () {
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
     scope.saveBookingType('phone');
