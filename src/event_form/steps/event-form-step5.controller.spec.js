@@ -543,6 +543,64 @@ describe('Controller: event form step 5', function () {
     }
   });
 
+  xit('should validate the booking type "website"', function () {
+    scope.bookingModel.url = 'http://google.be';
+
+    spyOn(scope, 'saveBookingType');
+
+    scope.validateBookingType('website');
+    scope.$apply();
+
+    //expect(scope.step5TicketsForm.url.$setValidity).toHaveBeenCalledWith('url', true);
+    expect(scope.bookingModel.urlRequired).toBeTruthy();
+    expect(scope.bookingModel.emailRequired).toBeFalsy();
+    expect(scope.bookingModel.phoneRequired).toBeFalsy();
+    expect(scope.saveBookingType).toHaveBeenCalled();
+  });
+
+  xit('should not validate the booking type "website"', function () {
+    scope.bookingModel.url = 'emailadres@url';
+
+    spyOn(scope, 'saveBookingType');
+
+    scope.validateBookingType('website');
+    scope.$apply();
+
+    //expect(scope.step5TicketsForm.url.$setValidity).toHaveBeenCalledWith('url', true);
+    expect(scope.bookingModel.urlRequired).toBeTruthy();
+    expect(scope.bookingModel.emailRequired).toBeFalsy();
+    expect(scope.bookingModel.phoneRequired).toBeFalsy();
+    expect(scope.saveBookingType).toHaveBeenCalled();
+  });
+
+  xit('should validate the booking type "email"', function () {
+    scope.bookingModel.email = 'info@mail.be';
+
+    spyOn(scope, 'saveBookingType');
+
+    scope.validateBookingType('email');
+    scope.$apply();
+
+    expect(scope.bookingModel.urlRequired).toBeFalsy();
+    expect(scope.bookingModel.emailRequired).toBeTruthy();
+    expect(scope.bookingModel.phoneRequired).toBeFalsy();
+    expect(scope.saveBookingType).toHaveBeenCalled();
+  });
+
+  xit('should validate the booking type "phone"', function () {
+    scope.bookingModel.phone = '1234567890';
+
+    spyOn(scope, 'saveBookingType');
+
+    scope.validateBookingType('phone');
+    scope.$apply();
+
+    expect(scope.bookingModel.urlRequired).toBeFalsy();
+    expect(scope.bookingModel.emailRequired).toBeFalsy();
+    expect(scope.bookingModel.phoneRequired).toBeTruthy();
+    expect(scope.saveBookingType).toHaveBeenCalled();
+  });
+
   it('should initialize with an "adult" age range when the min age is over 18', function () {
     EventFormData.typicalAgeRange = '21-';
     EventFormData.id = 1;
