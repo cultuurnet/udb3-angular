@@ -636,58 +636,6 @@ describe('Controller: event form step 5', function () {
     expect(scope.editBookingEmail).toBeTruthy();
   });
 
-  it('should toogle the booking type and check if info should be deleted.', function () {
-    var contactInfos = [
-      {type: 'phone', value: '1234567890', booking: false},
-      {type: 'phone', value: '0987654321', booking: true},
-      {type: 'url', value: 'http://cultuurnet.be', booking: false},
-      {type: 'url', value: 'http://google.be', booking: true},
-      {type: 'email', value: 'info@mail.com', booking: false},
-      {type: 'email', value: 'dude@sweet.com', booking: true}
-    ];
-    spyOn(scope, 'saveBookingType');
-
-    for (var contactInfo in contactInfos) {
-      scope.toggleBookingType(contactInfo);
-      scope.$apply();
-
-      if (contactInfo.type === 'url') {
-        if (contactInfo.booking) {
-          expect(scope.bookingModel.url).toEqual(contactInfo.value);
-          expect(scope.editBookingUrl).toBeTruthy();
-        }
-        else {
-          expect(scope.bookingModel.url).toEqual('');
-          expect(scope.editBookingUrl).toBeFalsy();
-        }
-      }
-
-      if (contactInfo.type === 'phone') {
-        if (contactInfo.booking) {
-          expect(scope.bookingModel.phone).toEqual(contactInfo.value);
-          expect(scope.editBookingPhone).toBeTruthy();
-        }
-        else {
-          expect(scope.bookingModel.phone).toEqual('');
-          expect(scope.editBookingPhone).toBeFalsy();
-        }
-      }
-
-      if (contactInfo.type === 'email') {
-        if (contactInfo.booking) {
-          expect(scope.bookingModel.email).toEqual(contactInfo.value);
-          expect(scope.editBookingEmail).toBeTruthy();
-        }
-        else {
-          expect(scope.bookingModel.email).toEqual('');
-          expect(scope.editBookingEmail).toBeFalsy();
-        }
-      }
-
-      //expect(scope.saveBookingType).toHaveBeenCalled();
-    }
-  });
-
   it('should save the website preview settings', function () {
     scope.bookingModel = {
       urlLabel: 'Dit is een url label'
