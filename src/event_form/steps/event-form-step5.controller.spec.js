@@ -33,7 +33,6 @@ describe('Controller: event form step 5', function () {
       'updateBookingInfo'
     ]);
     stepController = getController();
-    modalInstance = jasmine.createSpyObj('modalInstance', ['close', 'dismiss', 'result.then']);
   }));
 
   function getController() {
@@ -559,6 +558,45 @@ describe('Controller: event form step 5', function () {
     scope.enableWebsitePreview();
 
     expect(scope.websitePreviewEnabled).toBeTruthy();
+  });
+
+  it('should open the booking period modal', function () {
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.resolve()
+    });
+
+    scope.openBookingPeriodModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    expect(scope.bookingInfoCssClass).toEqual('state-complete');
+    expect(scope.bookingPeriodPreviewEnabled).toBeTruthy();
+  });
+
+  it('should fail in opening the booking period modal and set preview to true', function () {
+    EventFormData.bookingInfo.availabilityStarts = 'start-datum';
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.reject()
+    });
+
+    scope.openBookingPeriodModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    expect(scope.bookingPeriodPreviewEnabled).toBeTruthy();
+  });
+
+  it('should fail in opening the booking period modal and set preview to false', function () {
+    EventFormData.bookingInfo.availabilityStarts = '';
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.reject()
+    });
+
+    scope.openBookingPeriodModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    expect(scope.bookingPeriodPreviewEnabled).toBeFalsy();
   });
 
   it('should temporarily save the booking type "phone"', function () {
