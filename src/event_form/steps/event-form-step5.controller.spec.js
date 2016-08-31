@@ -686,6 +686,40 @@ describe('Controller: event form step 5', function () {
     expect(scope.contactInfo[1].booking).toBeFalsy();
   });
 
+  it('should save the booking info', function () {
+    scope.bookingModel = {
+      url: 'http://google.be',
+      phone: '1234567890',
+      email: 'info@mail.com'
+    };
+    scope.contactInfoForm = {};
+
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+
+    scope.saveBookingInfo();
+    scope.$apply();
+
+    expect(scope.bookingInfoCssClass).toEqual('state-complete');
+    expect(scope.savingBookingInfo).toBeFalsy();
+    expect(scope.bookingInfoError).toBeFalsy();
+  });
+
+  it('should fail in saving the booking info', function () {
+    scope.bookingModel = {
+      url: 'http://google.be',
+      phone: '1234567890',
+      email: 'info@mail.com'
+    };
+
+    eventCrud.updateBookingInfo.and.returnValue($q.reject());
+
+    scope.saveBookingInfo();
+    scope.$apply();
+
+    expect(scope.savingBookingInfo).toBeFalsy();
+    expect(scope.bookingInfoError).toBeTruthy();
+  });
+
   it('should initialize with an "adult" age range when the min age is over 18', function () {
     EventFormData.typicalAgeRange = '21-';
     EventFormData.id = 1;
