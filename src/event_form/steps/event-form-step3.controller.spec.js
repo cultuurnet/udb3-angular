@@ -178,4 +178,65 @@ describe('Controller: event form step 3', function (){
 
     expect(eventCrud.updateMajorInfo).toHaveBeenCalled();
   });
+
+  it('should not update location info when street address changes are not confirmed', function () {
+    spyOn(stepController, 'getLocations');
+    EventFormData.setLocation(getExampleLocation());
+    stepController.init(EventFormData);
+
+    scope.changeStreetAddress();
+
+    expect(EventFormData.location).toEqual(getExampleLocation());
+    expect(scope.placeStreetAddress).toEqual('');
+  });
+
+  it('should update the location info when street address changes are confirmed', function () {
+    spyOn(stepController, 'getLocations');
+    var expectedLocationInfo = {
+      'id' : null,
+      'name': '',
+      'address': {
+        'addressCountry': 'BE',
+        'addressLocality': 'Leuven',
+        'postalCode': '3000',
+        'streetAddress': 'Kerkstraat 69'
+      }
+    };
+
+    EventFormData.setLocation(getExampleLocation());
+    stepController.init(EventFormData);
+
+    scope.changeStreetAddress();
+    scope.step3Form = {
+      $valid: true
+    };
+    scope.setStreetAddress('Kerkstraat 69');
+
+    expect(EventFormData.location).toEqual(expectedLocationInfo);
+  });
+
+  it('should ask if the street address is still correct when changing the city', function () {
+    spyOn(stepController, 'getLocations');
+    EventFormData.setLocation(getExampleLocation());
+    stepController.init(EventFormData);
+
+    scope.changeCitySelection();
+
+    expect(scope.placeStreetAddress).toEqual('');
+  });
+
+  function getExampleLocation() {
+    var location = {
+      'id' : null,
+      'name': '',
+      'address': {
+        'addressCountry': 'BE',
+        'addressLocality': 'Leuven',
+        'postalCode': '3000',
+        'streetAddress': 'Sluisstraat 79'
+      }
+    };
+
+    return _.cloneDeep(location);
+  }
 });

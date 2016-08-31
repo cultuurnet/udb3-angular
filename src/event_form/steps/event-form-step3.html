@@ -84,7 +84,7 @@
     </div>
 
     <div id="waar-plaats" class="clearfix" ng-show="eventFormData.isPlace && selectedCity !== ''">
-      <div class="plaats-adres-ingeven" ng-hide="selectedLocation.address.streetAddress">
+      <div class="plaats-adres-ingeven" ng-hide="placeStreetAddress">
         <div class="row">
           <div class="col-xs-12">
             <div class="form-group" ng-class="{'has-error' : showValidation && step3Form.street.$error.required }">
@@ -92,8 +92,8 @@
               <input class="form-control"
                      id="straat"
                      name="street"
-                     ng-model="placeStreetAddress"
-                     placeholder=""
+                     ng-model="newStreetAddress"
+                     placeholder="Kerkstraat 1"
                      type="text"
                      required />
               <span class="help-block" ng-show="showValidation && step3Form.street.$error.required">
@@ -102,12 +102,12 @@
             </div>
           </div>
         </div>
-        <a class="btn btn-primary plaats-ok" ng-click="setStreetAddress()">OK</a>
+        <a class="btn btn-primary plaats-ok" ng-click="setStreetAddress(newStreetAddress)">OK</a>
       </div>
 
-      <div class="plaats-adres-resultaat" ng-show="selectedLocation.address.streetAddress">
+      <div class="plaats-adres-resultaat" ng-show="placeStreetAddress">
         <span>
-          <span class="btn-chosen" ng-bind="selectedLocation.address.streetAddress"></span>
+          <span class="btn-chosen" ng-bind="eventFormData.location.address.streetAddress"></span>
           <a class="btn btn-link plaats-adres-wijzigen" ng-click="changeStreetAddress()">Wijzigen</a>
         </span>
       </div>

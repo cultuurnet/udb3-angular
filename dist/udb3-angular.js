@@ -9187,6 +9187,21 @@ function EventFormStep3Controller(
 
   var controller = this;
 
+  function getEmptyLocation() {
+    var emptyLocation = {
+      'id' : null,
+      'name': '',
+      'address': {
+        'addressCountry': 'BE',
+        'addressLocality': '',
+        'postalCode': '',
+        'streetAddress': ''
+      }
+    };
+
+    return _.cloneDeep(emptyLocation);
+  }
+
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
@@ -9251,11 +9266,11 @@ function EventFormStep3Controller(
 
     // Location has a name => an event.
     if (EventFormData.location.name) {
-      $scope.selectedLocation = EventFormData.location;
+      $scope.selectedLocation = angular.copy(EventFormData.location);
     }
     else {
       $scope.placeStreetAddress = EventFormData.location.address.streetAddress;
-      $scope.selectedLocation = EventFormData.location;
+      $scope.selectedLocation = angular.copy(EventFormData.location);
     }
   }
 
@@ -9267,11 +9282,15 @@ function EventFormStep3Controller(
     var zipcode = $item.zip,
         name = $item.name;
 
-    EventFormData.resetLocation();
-    var location = $scope.eventFormData.getLocation();
-    location.address.postalCode = zipcode;
-    location.address.addressLocality = name;
-    EventFormData.setLocation(location);
+    var currentLocation = $scope.eventFormData.getLocation();
+    var newLocationInfo = {
+      address: {
+        postalCode: zipcode,
+        addressLocality: name
+      }
+    };
+    var newLocation = _.merge(getEmptyLocation(), currentLocation, newLocationInfo);
+    EventFormData.setLocation(newLocation);
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
@@ -9289,7 +9308,7 @@ function EventFormStep3Controller(
   function changeCitySelection() {
     EventFormData.resetLocation();
     $scope.selectedCity = '';
-    $scope.selectedLocation = undefined;
+    $scope.placeStreetAddress = '';
     $scope.cityAutocompleteTextField = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
@@ -9333,7 +9352,6 @@ function EventFormStep3Controller(
     location.name = '';
     EventFormData.setLocation(location);
 
-    //$scope.selectedCity = '';
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
     $scope.locationsSearched = false;
@@ -9445,7 +9463,7 @@ function EventFormStep3Controller(
         }
       };
       EventFormData.setLocation(location);
-      $scope.selectedLocation = location;
+      $scope.selectedLocation = angular.copy(location);
 
       controller.stepCompleted();
     }
@@ -9454,19 +9472,25 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
-  function setStreetAddress() {
+  /**
+   * @param {string} streetAddress
+   */
+  function setStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
     if (!$scope.step3Form.$valid) {
       return;
     }
 
-    var location = EventFormData.getLocation();
-    location.address.addressCountry = 'BE';
-    location.address.streetAddress = $scope.placeStreetAddress;
-    EventFormData.setLocation(location);
-
-    $scope.selectedLocation = location;
+    var currentLocation = EventFormData.getLocation();
+    var newLocationInfo = {
+      address: {
+        streetAddress: streetAddress
+      }
+    };
+    var newLocation = _.merge(getEmptyLocation(), currentLocation, newLocationInfo);
+    EventFormData.setLocation(newLocation);
+    $scope.placeStreetAddress = streetAddress;
 
     controller.stepCompleted();
   }
@@ -9475,18 +9499,9 @@ function EventFormStep3Controller(
    * Change StreetAddress
    */
   function changeStreetAddress() {
-
-    // Reset only the street/number data of the location.
-    var location = EventFormData.getLocation();
-    location.address.addressCountry = 'BE';
-    location.address.streetAddress = '';
-    EventFormData.setLocation(location);
-
-    $scope.selectedLocation = undefined;
-
+    $scope.newStreetAddress = $scope.placeStreetAddress ? $scope.placeStreetAddress : '';
+    $scope.placeStreetAddress = '';
     controller.stepUncompleted();
-
-    setMajorInfoChanged();
   }
 
   /**
@@ -17803,7 +17818,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div id=\"waar-plaats\" class=\"clearfix\" ng-show=\"eventFormData.isPlace && selectedCity !== ''\">\n" +
-    "      <div class=\"plaats-adres-ingeven\" ng-hide=\"selectedLocation.address.streetAddress\">\n" +
+    "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
@@ -17811,8 +17826,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
-    "                     ng-model=\"placeStreetAddress\"\n" +
-    "                     placeholder=\"\"\n" +
+    "                     ng-model=\"newStreetAddress\"\n" +
+    "                     placeholder=\"Kerkstraat 1\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
     "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
@@ -17821,12 +17836,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setStreetAddress()\">OK</a>\n" +
+    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setStreetAddress(newStreetAddress)\">OK</a>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"plaats-adres-resultaat\" ng-show=\"selectedLocation.address.streetAddress\">\n" +
+    "      <div class=\"plaats-adres-resultaat\" ng-show=\"placeStreetAddress\">\n" +
     "        <span>\n" +
-    "          <span class=\"btn-chosen\" ng-bind=\"selectedLocation.address.streetAddress\"></span>\n" +
+    "          <span class=\"btn-chosen\" ng-bind=\"eventFormData.location.address.streetAddress\"></span>\n" +
     "          <a class=\"btn btn-link plaats-adres-wijzigen\" ng-click=\"changeStreetAddress()\">Wijzigen</a>\n" +
     "        </span>\n" +
     "      </div>\n" +
