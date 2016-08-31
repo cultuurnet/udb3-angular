@@ -741,6 +741,35 @@ describe('Controller: event form step 5', function () {
     expect(scope.removeDuplicateContactBooking).toBeTruthy();
   });
 
+  it('should open the image upload modal', function () {
+    spyOn(uibModal, 'open');
+
+    scope.openUploadImageModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+  });
+
+  it('should open the modal to edit an image', function () {
+    var image = {};
+    spyOn(uibModal, 'open');
+
+    scope.editImage(image);
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+  });
+
+  it('should open the modal to remove an image', function () {
+    var image = {};
+    spyOn(uibModal, 'open');
+
+    scope.removeImage(image);
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+  });
+
   it('should initialize with an "adult" age range when the min age is over 18', function () {
     EventFormData.typicalAgeRange = '21-';
     EventFormData.id = 1;
