@@ -576,6 +576,66 @@ describe('Controller: event form step 5', function () {
     expect(scope.showBookingOption(contactInfos[2])).toBeTruthy();
   });
 
+  it('should toggle the booking type for url', function () {
+    var contactInfos = [
+      {type: 'url', value: 'http://cultuurnet.be', booking: false},
+      {type: 'url', value: 'http://google.be', booking: true}
+    ];
+    scope.contactInfoForm = {};
+    spyOn(scope, 'saveBookingType');
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+
+    scope.toggleBookingType(contactInfos[0]);
+    scope.$digest();
+    expect(scope.bookingModel.url).toEqual('');
+    expect(scope.editBookingUrl).toBeFalsy();
+
+    scope.toggleBookingType(contactInfos[1]);
+    scope.$digest();
+    expect(scope.bookingModel.url).toEqual(contactInfos[1].value);
+    expect(scope.editBookingUrl).toBeTruthy();
+  });
+
+  it('should toggle the booking type for phone', function () {
+    var contactInfos = [
+      {type: 'phone', value: '1234567890', booking: false},
+      {type: 'phone', value: '0987654321', booking: true}
+    ];
+    scope.contactInfoForm = {};
+    spyOn(scope, 'saveBookingType');
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+
+    scope.toggleBookingType(contactInfos[0]);
+    scope.$digest();
+    expect(scope.bookingModel.phone).toEqual('');
+    expect(scope.editBookingPhone).toBeFalsy();
+
+    scope.toggleBookingType(contactInfos[1]);
+    scope.$digest();
+    expect(scope.bookingModel.phone).toEqual(contactInfos[1].value);
+    expect(scope.editBookingPhone).toBeTruthy();
+  });
+
+  it('should toggle the booking type for email', function () {
+    var contactInfos = [
+      {type: 'email', value: 'info@mail.com', booking: false},
+      {type: 'email', value: 'dude@sweet.com', booking: true}
+    ];
+    scope.contactInfoForm = {};
+    spyOn(scope, 'saveBookingType');
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+
+    scope.toggleBookingType(contactInfos[0]);
+    scope.$digest();
+    expect(scope.bookingModel.email).toEqual('');
+    expect(scope.editBookingEmail).toBeFalsy();
+
+    scope.toggleBookingType(contactInfos[1]);
+    scope.$digest();
+    expect(scope.bookingModel.email).toEqual(contactInfos[1].value);
+    expect(scope.editBookingEmail).toBeTruthy();
+  });
+
   it('should toogle the booking type and check if info should be deleted.', function () {
     var contactInfos = [
       {type: 'phone', value: '1234567890', booking: false},
@@ -586,7 +646,6 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
     spyOn(scope, 'saveBookingType');
-    scope.saveNeeded = true;
 
     for (var contactInfo in contactInfos) {
       scope.toggleBookingType(contactInfo);
