@@ -791,10 +791,22 @@ describe('Controller: event form step 5', function () {
   it('should initialize with an "teens" age range when only for 18 year olds', function () {
     EventFormData.typicalAgeRange = 18;
     EventFormData.id = 1;
+    EventFormData.facilities = ['f1', 'f2', 'f3'];
     stepController = getController();
 
     expect(scope.ageRange).toEqual(AgeRange.TEENS);
     expect(scope.minAge).toEqual(18);
+    expect(scope.selectedFacilities).toEqual(EventFormData.facilities);
+    expect(scope.facilitiesInapplicable).toBeFalsy();
+  });
+
+  it('should initialize with an "teens" age range between 12-18 years', function () {
+    EventFormData.typicalAgeRange = '12-18';
+    EventFormData.id = 1;
+    stepController = getController();
+
+    expect(scope.ageRange).toEqual(AgeRange.TEENS);
+    expect(scope.minAge).toEqual(12);
   });
 
   it('should fill out existing contact info when editing an event', function () {
@@ -804,6 +816,11 @@ describe('Controller: event form step 5', function () {
       url: ['http://foo.com', 'http://bar.com', 'https://foobar.com'],
       dude: ['sweet']
     };
+    EventFormData.bookingInfo = {
+      url: 'http://google.be',
+      phone: '1234567890',
+      email: 'info@mail.com'
+    };
     EventFormData.id = 1;
     stepController = getController();
     var expectedContactInfo = [
@@ -811,10 +828,14 @@ describe('Controller: event form step 5', function () {
       {type:'phone', value:'016985682', booking: false},
       {type:'url', value:'http://foo.com', booking: false},
       {type:'url', value:'http://bar.com', booking: false},
-      {type:'url', value:'https://foobar.com', booking: false}
+      {type:'url', value:'https://foobar.com', booking: false},
+      {type:'url', value:'http://google.be', booking: true},
+      {type:'phone', value:'1234567890', booking: true},
+      {type:'email', value:'info@mail.com', booking: true}
     ];
 
     expect(scope.contactInfo).toEqual(expectedContactInfo);
+    expect(scope.bookingInfoCssClass).toEqual('state-complete');
   });
 
   it('should update the image order when selecting a new main image', function () {
