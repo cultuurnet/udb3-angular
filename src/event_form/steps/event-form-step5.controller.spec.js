@@ -371,22 +371,44 @@ describe('Controller: event form step 5', function () {
   });
 
   it('should open the facilities modal', function () {
-    var fakeModal = {
-      result: {
-        then: function() {},
-        dismiss: function() {}
-      }
-    };
-
-    spyOn(uibModal, 'open').and.returnValue(fakeModal);
+    EventFormData.facilities = [];
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.resolve()
+    });
 
     scope.openFacilitiesModal();
     scope.$apply();
 
     expect(uibModal.open).toHaveBeenCalled();
-    //expect(scope.facilitiesCssClass).toEqual('state-complete');
+    expect(scope.facilitiesCssClass).toEqual('state-complete');
     expect(scope.selectedFacilities).toEqual(EventFormData.facilities);
-    expect(scope.facilitiesInapplicable).toBeFalsy();
+    expect(scope.facilitiesInapplicable).toBeTruthy();
+  });
+
+  it('should fail in opening the facilities modal and set the state to incomplete', function () {
+    EventFormData.facilities = [];
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.reject()
+    });
+
+    scope.openFacilitiesModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    expect(scope.facilitiesCssClass).toEqual('state-incomplete');
+  });
+
+  it('should fail in opening the facilities modal and set the state to complete', function () {
+    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
+    spyOn(uibModal, 'open').and.returnValue({
+      result: $q.reject()
+    });
+
+    scope.openFacilitiesModal();
+    scope.$apply();
+
+    expect(uibModal.open).toHaveBeenCalled();
+    expect(scope.facilitiesCssClass).toEqual('state-complete');
   });
 
   it('should set the facilities on inapplicable', function () {
