@@ -20,12 +20,25 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
     queryTree = null;
   };
 
-  this.setQueryString = function (queryString) {
+  /**
+   *
+   * @param {string} queryString
+   * @param {boolean} forceUpdate
+   *  Set to true to emit a "searchQueryChanged" even if the query has not changed.
+   *  A possible use-case is navigating back to the search page and reloading the same query.
+   */
+  this.setQueryString = function (queryString, forceUpdate) {
+    var newQuery = false;
+
     if (!query || query.queryString !== queryString) {
-      var newQuery = LuceneQueryBuilder.createQuery(queryString);
+      newQuery = LuceneQueryBuilder.createQuery(queryString);
       LuceneQueryBuilder.isValid(newQuery);
       this.setQuery(newQuery);
       queryTree = null;
+    }
+
+    if (query && !newQuery && forceUpdate) {
+      this.setQuery(query);
     }
   };
 
