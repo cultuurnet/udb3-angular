@@ -29,7 +29,8 @@ describe('Controller: event form step 5', function () {
       'deleteOfferOrganizer',
       'selectMainImage',
       'updateContactPoint',
-      'updateFacilities'
+      'updateFacilities',
+      'updateBookingInfo'
     ]);
     stepController = getController();
     modalInstance = jasmine.createSpyObj('modalInstance', ['close', 'dismiss', 'result.then']);
@@ -599,6 +600,27 @@ describe('Controller: event form step 5', function () {
     expect(scope.bookingModel.emailRequired).toBeFalsy();
     expect(scope.bookingModel.phoneRequired).toBeTruthy();
     expect(scope.saveBookingType).toHaveBeenCalled();
+  });
+
+  it('should temporarily save the booking type "phone"', function () {
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+    scope.saveBookingType('phone');
+
+    expect(scope.editBookingPhone).toBeFalsy();
+  });
+
+  it('should temporarily save the booking type "email"', function () {
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+    scope.saveBookingType('email');
+
+    expect(scope.editBookingEmail).toBeFalsy();
+  });
+
+  it('should temporarily save the booking type "website"', function () {
+    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+    scope.saveBookingType('website');
+
+    expect(scope.editBookingUrl).toBeFalsy();
   });
 
   it('should initialize with an "adult" age range when the min age is over 18', function () {

@@ -9857,6 +9857,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.toggleBookingType = toggleBookingType;
   $scope.saveBookingType = saveBookingType;
   $scope.validateBookingType = validateBookingType;
+  $scope.saveBookingInfo = saveBookingInfo;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
   $scope.openBookingPeriodModal = openBookingPeriodModal;
@@ -10168,7 +10169,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.contactInfoCssClass = 'state-filling';
     }
 
-    $scope.contactInfo.push({type: ContactInfoTypeEnum.PHONE, value: ''});
+    $scope.contactInfo.push({type: ContactInfoTypeEnum.PHONE, value: '', booking: false});
   }
 
   /**

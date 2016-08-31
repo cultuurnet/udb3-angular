@@ -96,6 +96,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.toggleBookingType = toggleBookingType;
   $scope.saveBookingType = saveBookingType;
   $scope.validateBookingType = validateBookingType;
+  $scope.saveBookingInfo = saveBookingInfo;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
   $scope.openBookingPeriodModal = openBookingPeriodModal;
@@ -751,15 +752,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     var phone = $scope.bookingModel.phone;
     var email = $scope.bookingModel.email;
 
-    var foundUrl = $scope.contactInfo.some(function (element, key) {
+    var foundUrl = $scope.contactInfo.some(function (element) {
       return element.value === url;
     });
 
-    var foundPhone = $scope.contactInfo.some(function (element, key) {
+    var foundPhone = $scope.contactInfo.some(function (element) {
       return element.value === phone;
     });
 
-    var foundEmail = $scope.contactInfo.some(function (element, key) {
+    var foundEmail = $scope.contactInfo.some(function (element) {
       return element.value === email;
     });
 
