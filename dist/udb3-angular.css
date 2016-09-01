@@ -3063,6 +3063,9 @@ input + .alert {
 #locatie-kiezer {
   min-height: 100px;
 }
+form[name="contactInfoForm"] table {
+  border: 1px solid #dddddd;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;

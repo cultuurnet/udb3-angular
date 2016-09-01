@@ -18294,21 +18294,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "                <div class=\"row extra-tickets-periode\">\n" +
     "                    <div class=\"extra-task\">\n" +
-    "                        <div class=\"col-sm-8 col-sm-offset-3\" ng-hide=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
+    "                        <div class=\"col-sm-12\" ng-hide=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
     "                            <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
     "                                Reservatieperiode toevoegen\n" +
     "                            </a>\n" +
     "                        </div>\n" +
-    "                        <div class=\"col-sm-8 col-sm-offset-3\" ng-show=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
-    "                            <span>\n" +
-    "                              <span>Van </span>\n" +
-    "                              <span ng-bind=\"eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'\"></span>\n" +
-    "                              <span> tot </span>\n" +
-    "                              <span ng-bind=\"eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'\"></span>\n" +
-    "                              <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
-    "                                  Reservatieperiode wijzigen\n" +
-    "                              </a>\n" +
-    "                            </span>\n" +
+    "                        <div class=\"col-sm-12\" ng-show=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
+    "                            <div class=\"booking-period\">\n" +
+    "                                <span>\n" +
+    "                                  <span>Van </span>\n" +
+    "                                  <span ng-bind=\"eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'\"></span>\n" +
+    "                                  <span> tot </span>\n" +
+    "                                  <span ng-bind=\"eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'\"></span>\n" +
+    "                                  <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
+    "                                      Reservatieperiode wijzigen\n" +
+    "                                  </a>\n" +
+    "                                </span>\n" +
+    "                            </div>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
