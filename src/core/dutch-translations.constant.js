@@ -336,6 +336,13 @@ angular.module('udb.core')
     },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
-    }
+    },
+    'AANBOD_INVOEREN': 'Aanbod invoeren',
+    'AANBOD_BEWERKEN': 'Aanbod bewerken',
+    'AANBOD_MODEREREN': 'Aanbod modereren',
+    'AANBOD_VERWIJDEREN': 'Aanbod verwijderen',
+    'ORGANISATIES_BEHEREN': 'Organisaties beheren',
+    'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
+    'LABELS_BEHEREN': 'Labels beheren'
   }
 );

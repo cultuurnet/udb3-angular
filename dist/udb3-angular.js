@@ -2561,7 +2561,14 @@ angular.module('udb.core')
     },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
-    }
+    },
+    'AANBOD_INVOEREN': 'Aanbod invoeren',
+    'AANBOD_BEWERKEN': 'Aanbod bewerken',
+    'AANBOD_MODEREREN': 'Aanbod modereren',
+    'AANBOD_VERWIJDEREN': 'Aanbod verwijderen',
+    'ORGANISATIES_BEHEREN': 'Organisaties beheren',
+    'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
+    'LABELS_BEHEREN': 'Labels beheren'
   }
 );
 
@@ -7583,97 +7590,6 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
 })();
 
-// Source: src/event_form/components/reservation-modal/reservation-modal.controller.js
-/**
- * @ngdoc function
- * @name udbApp.controller:EventFormReservationModalController
- * @description
- * # EventFormImageUploadController
- * Modal for setting the reservation period.
- */
-angular
-  .module('udb.event-form')
-  .controller('EventFormReservationModalController', EventFormReservationModalController);
-
-/* @ngInject */
-function EventFormReservationModalController($scope, $uibModalInstance, EventFormData, eventCrud, appConfig) {
-
-  // Scope vars.
-  $scope.eventFormData = EventFormData;
-  $scope.showStartDateRequired = false;
-  $scope.showEndDateRequired = false;
-  $scope.saving = false;
-  $scope.errorMessage = '';
-  $scope.calendarHighlight = appConfig.calendarHighlight;
-
-  // Scope functions.
-  $scope.cancel = cancel;
-  $scope.save = save;
-
-  var initialStartDate = EventFormData.bookingInfo.availabilityStarts;
-  var initialEndDate = EventFormData.bookingInfo.availabilityEnds;
-
-  /**
-   * Cancel the modal.
-   */
-  function cancel() {
-    EventFormData.bookingInfo.availabilityStarts = initialStartDate;
-    EventFormData.bookingInfo.availabilityEnds = initialEndDate;
-    $uibModalInstance.dismiss('cancel');
-  }
-
-  /**
-   * Save the period.
-   */
-  function save() {
-
-    $scope.errorMessage = '';
-
-    $scope.showStartDateRequired = false;
-    if (!EventFormData.bookingInfo.availabilityStarts) {
-      $scope.showStartDateRequired = true;
-    }
-
-    $scope.showEndDateRequired = false;
-    if (!EventFormData.bookingInfo.availabilityEnds) {
-      $scope.showEndDateRequired = true;
-    }
-
-    if ($scope.showStartDateRequired || $scope.showEndDateRequired) {
-      return;
-    }
-
-    if (EventFormData.bookingInfo.availabilityStarts > EventFormData.bookingInfo.availabilityEnds) {
-      $scope.errorMessage = 'De gekozen einddatum moet na de startdatum vallen.';
-      return;
-    }
-
-    $scope.saving = true;
-
-    // Make sure all default values are set.
-    EventFormData.bookingInfo = angular.extend({}, {
-      url : '',
-      urlLabel : 'Reserveer plaatsen',
-      email : '',
-      phone : '',
-      availabilityStarts : '',
-      availabilityEnds : ''
-    }, EventFormData.bookingInfo);
-
-    var promise = eventCrud.updateBookingInfo(EventFormData);
-    promise.then(function() {
-      $scope.saving = false;
-      $uibModalInstance.close();
-    }, function() {
-      $scope.saving = false;
-      $scope.errorMessage = 'Er ging iets fout bij het bewaren van de info.';
-    });
-
-  }
-
-}
-EventFormReservationModalController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig"];
-
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
 /**
  * @ngdoc function
@@ -11782,40 +11698,43 @@ function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
 }
 DeleteRoleJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
 
-// Source: src/management/roles/permission-manager.service.js
-/**
- * @typedef {Object} Permission
- * @property {string} key
- * @property {string} name
- */
+// Source: src/management/roles/permission.constant.js
+/* jshint sub: true */
 
 /**
  * @ngdoc service
- * @name udb.management.permissions
+ * @name udb.management.roles.Permission
  * @description
- * # Permission Manager
- * This service allows you to lookup permissions and perform actions on them.
+ * # Permission
+ * All the possible job states defined as a constant
  */
 angular
   .module('udb.management.roles')
-  .service('PermissionManager', PermissionManager);
-
-/* @ngInject */
-function PermissionManager(udbApi) {
-  var service = this;
-
-  /**
-   * @param {string} permissionIdentifier
-   *  The key for the permission
-   * @return {Promise.Array<Permission>}
-   */
-  service.getAll = function() {
-    return udbApi.getPermissions();
-  };
-}
-PermissionManager.$inject = ["udbApi"];
+  .constant('RolePermission',
+    /**
+     * Enum for permissions
+     * @readonly
+     * @name RolePermission
+     * @enum {string}
+     */
+    {
+      'AANBOD_INVOEREN': 'AANBOD_INVOEREN',
+      'AANBOD_BEWERKEN': 'AANBOD_BEWERKEN',
+      'AANBOD_MODEREREN': 'AANBOD_MODEREREN',
+      'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',
+      'ORGANISATIES_BEHEREN': 'ORGANISATIES_BEHEREN',
+      'GEBRUIKERS_BEHEREN': 'GEBRUIKERS_BEHEREN',
+      'LABELS_BEHEREN': 'LABELS_BEHEREN'
+    }
+  );
 
 // Source: src/management/roles/role-form.controller.js
+/**
+ * @typedef {Object} TranslatedPermission
+ * @property {RolePermission} key
+ * @property {string} name
+ */
+
 /**
  * @ngdoc function
  * @name udbApp.controller:RoleFormController
@@ -11831,19 +11750,21 @@ angular
  * @constructor
  *
  * @param {RoleManager} RoleManager
- * @param {PermissionManager} PermissionManager
  * @param {UserManager} UserManager
  * @param {Object} $uibModal
  * @param {Object} $stateParams
  * @param {Object} $q
+ * @param {Function} $translate
+ * @param {RolePermission} RolePermission
  */
 function RoleFormController(
   RoleManager,
-  PermissionManager,
   UserManager,
   $uibModal,
   $stateParams,
-  $q
+  $q,
+  $translate,
+  RolePermission
 ) {
   var editor = this;
   var roleId = $stateParams.id;
@@ -11855,13 +11776,16 @@ function RoleFormController(
   editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
-    permissions: {},
+    permissions: [],
     users: [],
     labels: []
   };
-  editor.permissions = [];
+  /**
+   * @type {TranslatedPermission[]}
+   */
+  editor.availablePermissions = [];
   editor.originalRole = {
-    permissions: {},
+    permissions: [],
     users: [],
     labels: []
   };
@@ -11880,7 +11804,8 @@ function RoleFormController(
 
   function init() {
     getAllRolePermissions()
-      .then(function() {
+      .then(function(permissions) {
+        editor.availablePermissions = permissions;
         return roleId ? loadRole(roleId) : $q.resolve();
       })
       .catch(showProblem) // stop loading when there's an error
@@ -11899,16 +11824,12 @@ function RoleFormController(
       .then(function(role) {
         editor.role = role;
 
-        editor.role.permissions = {};
         editor.role.users = [];
         editor.role.labels = [];
       }, function(problem) {
         problem.detail = problem.title;
         problem.title = 'De rol kon niet gevonden worden.';
         return $q.reject(problem);
-      })
-      .then(function() {
-        return getRolePermissions(roleId);
       })
       .then(function () {
         return loadRoleUsers(roleId);
@@ -11918,34 +11839,23 @@ function RoleFormController(
       });
   }
 
-  function getRolePermissions(roleId) {
-    return RoleManager
-      .getRolePermissions(roleId)
-      .then(function(rolePermissions) {
-        editor.role.permissions = {};
-        angular.forEach(rolePermissions, function(permission, key) {
-          editor.role.permissions[permission.key] = true;
-        });
-
-        return rolePermissions;
-      }, function(problem) {
-        problem.detail = problem.title;
-        problem.title = 'De permissies van deze rol konden niet geladen worden.';
-        return $q.reject(problem);
-      });
-  }
-
+  /**
+   * @return {TranslatedPermission[]}
+   */
   function getAllRolePermissions() {
-    return PermissionManager
-      .getAll()
-      .then(function(retrievedPermissions) {
-        editor.permissions = retrievedPermissions;
-        return retrievedPermissions;
-      }, function(problem) {
-        problem.detail = problem.title;
-        problem.title = 'De permissie lijst kon niet geladen worden.';
-        return $q.reject(problem);
+    var permissionIds = _.values(RolePermission);
+
+    function formatTranslatedPermissions(translations) {
+      return _.map(translations, function (translation, translationId) {
+        return {
+          key: translationId,
+          name: translation
+        };
       });
+    }
+
+    return $translate(permissionIds)
+      .then(formatTranslatedPermissions);
   }
 
   function loadRoleUsers(roleId) {
@@ -12013,22 +11923,29 @@ function RoleFormController(
       });
   }
 
-  function updatePermission(key) {
+  /**
+   *
+   * @param {RolePermission} permission
+   */
+  function updatePermission(permission) {
+    var hasPermission = editor.role.permissions.indexOf(permission) > -1;
+
     // permission added
-    if (editor.role.permissions[key] === true) {
+    if (!hasPermission) {
       editor.loadedRolePermissions = false;
       RoleManager
-        .addPermissionToRole(key, roleId)
+        .addPermissionToRole(permission, roleId)
         .catch(showProblem)
         .finally(function() {
           editor.loadedRolePermissions = true;
         });
     }
+
     // permission removed
-    if (editor.role.permissions[key] === false) {
+    if (hasPermission) {
       editor.loadedRolePermissions = false;
       RoleManager
-        .removePermissionFromRole(key, roleId)
+        .removePermissionFromRole(permission, roleId)
         .catch(showProblem)
         .finally(function() {
           editor.loadedRolePermissions = true;
@@ -12141,7 +12058,7 @@ function RoleFormController(
 
   init();
 }
-RoleFormController.$inject = ["RoleManager", "PermissionManager", "UserManager", "$uibModal", "$stateParams", "$q"];
+RoleFormController.$inject = ["RoleManager", "UserManager", "$uibModal", "$stateParams", "$q", "$translate", "RolePermission"];
 
 // Source: src/management/roles/role-manager.service.js
 /**
@@ -12220,28 +12137,28 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
   };
 
   /**
-   * @param {string} permissionKey
-   *  The key for the permission
+   * @param {RolePermission} permission
+   *  The permission to add to the role
    * @param {string} roleId
    *  roleId for the role
    * @return {Promise}
    */
-  service.addPermissionToRole = function(permissionKey, roleId) {
+  service.addPermissionToRole = function(permission, roleId) {
     return udbApi
-      .addPermissionToRole(permissionKey, roleId)
+      .addPermissionToRole(permission, roleId)
       .then(logRoleJob);
   };
 
   /**
-   * @param {string} permissionKey
+   * @param {RolePermission} permission
    *  The key for the permission
    * @param {string} roleId
    *  roleId for the role
    * @return {Promise}
    */
-  service.removePermissionFromRole = function(permissionKey, roleId) {
+  service.removePermissionFromRole = function(permission, roleId) {
     return udbApi
-      .removePermissionFromRole(permissionKey, roleId)
+      .removePermissionFromRole(permission, roleId)
       .then(logRoleJob);
   };
 
@@ -17548,51 +17465,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/reservation-modal.html',
-    "<div class=\"modal-content\">\n" +
-    "  <div class=\"modal-header\">\n" +
-    "    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" ng-click=\"cancel()\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
-    "    </button>\n" +
-    "    <h4 class=\"modal-title\">Reservatieperiode</h4>\n" +
-    "  </div>\n" +
-    "  <div class=\"modal-body\">\n" +
-    "    <div class=\"row\">\n" +
-    "      <div class=\"form-group col-md-6 col-sm-12\" ng-class=\"{'has-error' : showStartDateRequired }\">\n" +
-    "        <div class=\"add-date\">\n" +
-    "          <label>Reserveren van</label>\n" +
-    "          <div udb-datepicker\n" +
-    "               highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "               highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
-    "               ng-model=\"eventFormData.bookingInfo.availabilityStarts\"></div>\n" +
-    "          <span class=\"help-block\" ng-show=\"showStartDateRequired\">Gelieve een start datum te kiezen</span>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"form-group col-md-6 col-sm-12\" ng-class=\"{'has-error' : showEndDateRequired }\">\n" +
-    "        <div class=\"add-date\">\n" +
-    "          <label>Tot</label>\n" +
-    "          <div udb-datepicker\n" +
-    "               highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "               highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
-    "               ng-model=\"eventFormData.bookingInfo.availabilityEnds\"></div>\n" +
-    "          <span class=\"help-block\" ng-show=\"showEndDateRequired\">Gelieve een eind datum te kiezen</span>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
-    "    </div>\n" +
-    "\n" +
-    "  </div>\n" +
-    "  <div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"save()\">\n" +
-    "      Bevestigen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
-    "    </button>\n" +
-    "  </div>\n" +
-    "</div>"
-  );
-
-
   $templateCache.put('templates/reservation-period.html',
     "<div class=\"col-sm-12\" ng-hide=\"haveBookingPeriod\">\n" +
     "    <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"changeHaveBookingPeriod()\">\n" +
@@ -19006,10 +18878,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-md-12\">\n" +
-    "                <div class=\"checkbox\" ng-repeat=\"role in editor.permissions | filter: permissionSearch\">\n" +
+    "                <div class=\"checkbox\" ng-repeat=\"permission in editor.availablePermissions | filter: permissionSearch\">\n" +
     "                  <label>\n" +
-    "                      <input type=\"checkbox\"\n" +
-    "                        ng-model=\"editor.role.permissions[role.key]\" ng-change=\"editor.updatePermission(role.key)\"> <strong ng-bind=\"::role.name\"></strong>\n" +
+    "                        <input  type=\"checkbox\"\n" +
+    "                                name=\"editor.role.permissions[]\"\n" +
+    "                                value=\"{{permission.key}}\"\n" +
+    "                                ng-checked=\"editor.role.permissions.indexOf(permission.key) > -1\"\n" +
+    "                                ng-click=\"editor.updatePermission(permission.key)\"\n" +
+    "                        > <strong ng-bind=\"permission.name\"></strong>\n" +
     "                  </label>\n" +
     "                </div>\n" +
     "            </div>\n" +
