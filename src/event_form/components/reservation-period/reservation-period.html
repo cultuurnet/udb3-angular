@@ -1,0 +1,35 @@
+<div class="col-sm-12" ng-hide="haveBookingPeriod">
+    <a class="btn btn-primary reservatie-periode-toevoegen" href="#" ng-click="changeHaveBookingPeriod()">
+        Reservatieperiode toevoegen
+    </a>
+</div>
+<div class="col-sm-12" ng-show="haveBookingPeriod">
+    <div class="booking-period">
+        <form name="bookingPeriod">
+            <table class="table">
+                <tr>
+                    <td>
+                        <label>Van</label>
+                        <input name="bookingStartDate"
+                               type="date"
+                               ng-model="availabilityStarts"
+                               ng-change="saveBookingPeriod()" />
+                    </td>
+                    <td>
+                        <label>Tot</label>
+                        <input name="bookingEndDate"
+                               type="date"
+                               ng-model="availabilityEnds"
+                               ng-change="saveBookingPeriod()" />
+                    </td>
+                    <td>
+                        <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteBookingPeriod()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+</div>

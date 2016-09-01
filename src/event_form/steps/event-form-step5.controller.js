@@ -99,7 +99,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.removeDuplicateContactBooking = removeDuplicateContactBooking;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
-  $scope.openBookingPeriodModal = openBookingPeriodModal;
   $scope.showBookingOption = showBookingOption;
   $scope.deleteBookingInfo = deleteBookingInfo;
 
@@ -644,30 +643,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function enableWebsitePreview() {
     $scope.websitePreviewEnabled = true;
-  }
-
-  /**
-   * Open the booking period modal.
-   */
-  function openBookingPeriodModal() {
-
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController'
-    });
-
-    modalInstance.result.then(function () {
-      $scope.bookingInfoCssClass = 'state-complete';
-      $scope.bookingPeriodPreviewEnabled = true;
-    }, function () {
-      if (EventFormData.bookingInfo.availabilityStarts) {
-        $scope.bookingPeriodPreviewEnabled = true;
-      }
-      else {
-        $scope.bookingPeriodPreviewEnabled = false;
-      }
-    });
-
   }
 
   /**

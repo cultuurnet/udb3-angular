@@ -7674,6 +7674,134 @@ function EventFormReservationModalController($scope, $uibModalInstance, EventFor
 }
 EventFormReservationModalController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig"];
 
+// Source: src/event_form/components/reservation-period/reservation-period.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:ReservationPeriodController
+ * @description
+ * # ReservationPeriodController
+ */
+angular
+  .module('udb.event-form')
+  .controller('ReservationPeriodController', ReservationPeriodController);
+
+/* @ngInject */
+function ReservationPeriodController($scope, EventFormData, eventCrud, $uibModal, $rootScope) {
+
+  var controller = this;
+
+  $scope.haveBookingPeriod = false;
+  $scope.bookingPeriodInfoCssClass = 'state-incomplete';
+  $scope.savingBookingPeriodInfo = false;
+  $scope.bookingPeriodInfoError = false;
+  $scope.availabilityStarts = '';
+  $scope.availabilityEnds = '';
+
+  $scope.openBookingPeriodModal = openBookingPeriodModal;
+  $scope.saveBookingPeriod = saveBookingPeriod;
+  $scope.deleteBookingPeriod = deleteBookingPeriod;
+  $scope.changeHaveBookingPeriod = changeHaveBookingPeriod;
+
+  initBookingPeriodForm();
+
+  /**
+   * Open the booking period modal.
+   */
+  function openBookingPeriodModal() {
+
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/reservation-modal.html',
+      controller: 'EventFormReservationModalController'
+    });
+
+    modalInstance.result.then(function () {
+      $scope.bookingInfoCssClass = 'state-complete';
+      $scope.bookingPeriodPreviewEnabled = true;
+    }, function () {
+      if (EventFormData.bookingInfo.availabilityStarts) {
+        $scope.bookingPeriodPreviewEnabled = true;
+      }
+      else {
+        $scope.bookingPeriodPreviewEnabled = false;
+      }
+    });
+  }
+
+  controller.bookingPeriodSaved = function () {
+    $rootScope.$emit('bookingPeriodSaved', EventFormData);
+  };
+
+  function saveBookingPeriod() {
+    EventFormData.bookingInfo.availabilityStarts = $scope.availabilityStarts;
+    EventFormData.bookingInfo.availabilityEnds = $scope.availabilityEnds;
+
+    $scope.savingBookingPeriodInfo = true;
+    $scope.bookingPeriodInfoError = false;
+
+    var promise = eventCrud.updateBookingInfo(EventFormData);
+    promise.then(function() {
+      controller.bookingPeriodSaved();
+      $scope.bookingPeriodInfoCssClass = 'state-complete';
+      $scope.savingBookingPeriodInfo = false;
+      $scope.bookingPeriodInfoError = false;
+    }, function() {
+      $scope.savingBookingPeriodInfo = false;
+      $scope.bookingPeriodInfoError = true;
+    });
+  }
+
+  function deleteBookingPeriod() {
+    $scope.availabilityStarts = '';
+    $scope.availabilityEnds = '';
+    $scope.haveBookingPeriod = false;
+    saveBookingPeriod();
+  }
+
+  function changeHaveBookingPeriod() {
+    if (!$scope.haveBookingPeriod) {
+      $scope.haveBookingPeriod = true;
+    }
+  }
+
+  function initBookingPeriodForm() {
+    if (EventFormData.bookingInfo.availabilityStarts ||
+      EventFormData.bookingInfo.availabilityEnds) {
+      $scope.haveBookingPeriod = true;
+    }
+
+    if (EventFormData.bookingInfo.availabilityStarts) {
+      $scope.availabilityStarts = new Date(EventFormData.bookingInfo.availabilityStarts);
+    }
+
+    if (EventFormData.bookingInfo.availabilityEnds) {
+      $scope.availabilityEnds = new Date(EventFormData.bookingInfo.availabilityEnds);
+    }
+  }
+}
+ReservationPeriodController.$inject = ["$scope", "EventFormData", "eventCrud", "$uibModal", "$rootScope"];
+
+// Source: src/event_form/components/reservation-period/reservation-period.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event_form.directive:udbReservationPeriod
+ * @description
+ * # reservation period selection for event form
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbReservationPeriod', ReservationPeriodDirective);
+
+/* @ngInject */
+function ReservationPeriodDirective() {
+
+  return {
+    restrict: 'AE',
+    controller: 'ReservationPeriodController',
+    templateUrl: 'templates/reservation-period.html'
+  };
+
+}
+
 // Source: src/event_form/components/save-time-tracker/save-time-tracker.directive.js
 /**
  * @ngdoc directive
@@ -9860,7 +9988,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.removeDuplicateContactBooking = removeDuplicateContactBooking;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
-  $scope.openBookingPeriodModal = openBookingPeriodModal;
   $scope.showBookingOption = showBookingOption;
   $scope.deleteBookingInfo = deleteBookingInfo;
 
@@ -10405,30 +10532,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function enableWebsitePreview() {
     $scope.websitePreviewEnabled = true;
-  }
-
-  /**
-   * Open the booking period modal.
-   */
-  function openBookingPeriodModal() {
-
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController'
-    });
-
-    modalInstance.result.then(function () {
-      $scope.bookingInfoCssClass = 'state-complete';
-      $scope.bookingPeriodPreviewEnabled = true;
-    }, function () {
-      if (EventFormData.bookingInfo.availabilityStarts) {
-        $scope.bookingPeriodPreviewEnabled = true;
-      }
-      else {
-        $scope.bookingPeriodPreviewEnabled = false;
-      }
-    });
-
   }
 
   /**
@@ -17479,6 +17582,45 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/reservation-period.html',
+    "<div class=\"col-sm-12\" ng-hide=\"haveBookingPeriod\">\n" +
+    "    <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"changeHaveBookingPeriod()\">\n" +
+    "        Reservatieperiode toevoegen\n" +
+    "    </a>\n" +
+    "</div>\n" +
+    "<div class=\"col-sm-12\" ng-show=\"haveBookingPeriod\">\n" +
+    "    <div class=\"booking-period\">\n" +
+    "        <form name=\"bookingPeriod\">\n" +
+    "            <table class=\"table\">\n" +
+    "                <tr>\n" +
+    "                    <td>\n" +
+    "                        <label>Van</label>\n" +
+    "                        <input name=\"bookingStartDate\"\n" +
+    "                               type=\"date\"\n" +
+    "                               ng-model=\"availabilityStarts\"\n" +
+    "                               ng-change=\"saveBookingPeriod()\" />\n" +
+    "                    </td>\n" +
+    "                    <td>\n" +
+    "                        <label>Tot</label>\n" +
+    "                        <input name=\"bookingEndDate\"\n" +
+    "                               type=\"date\"\n" +
+    "                               ng-model=\"availabilityEnds\"\n" +
+    "                               ng-change=\"saveBookingPeriod()\" />\n" +
+    "                    </td>\n" +
+    "                    <td>\n" +
+    "                        <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
+    "                            <span aria-hidden=\"true\">&times;</span>\n" +
+    "                        </button>\n" +
+    "                    </td>\n" +
+    "                </tr>\n" +
+    "            </table>\n" +
+    "        </form>\n" +
+    "\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-preview.directive.html',
     "<div class=\"panel panel-default preview\">\n" +
     "\n" +
@@ -18294,24 +18436,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "                <div class=\"row extra-tickets-periode\">\n" +
     "                    <div class=\"extra-task\">\n" +
-    "                        <div class=\"col-sm-12\" ng-hide=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
-    "                            <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
-    "                                Reservatieperiode toevoegen\n" +
-    "                            </a>\n" +
-    "                        </div>\n" +
-    "                        <div class=\"col-sm-12\" ng-show=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
-    "                            <div class=\"booking-period\">\n" +
-    "                                <span>\n" +
-    "                                  <span>Van </span>\n" +
-    "                                  <span ng-bind=\"eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'\"></span>\n" +
-    "                                  <span> tot </span>\n" +
-    "                                  <span ng-bind=\"eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'\"></span>\n" +
-    "                                  <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
-    "                                      Reservatieperiode wijzigen\n" +
-    "                                  </a>\n" +
-    "                                </span>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
+    "                        <udb-reservation-period></udb-reservation-period>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +

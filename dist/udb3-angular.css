@@ -3063,7 +3063,8 @@ input + .alert {
 #locatie-kiezer {
   min-height: 100px;
 }
-form[name="contactInfoForm"] table {
+form[name="contactInfoForm"] table,
+form[name="bookingPeriod"] table {
   border: 1px solid #dddddd;
 }
 .muted td {
