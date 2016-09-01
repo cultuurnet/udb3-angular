@@ -11495,6 +11495,8 @@ function UniqueLabelDirective(LabelManager, $q) {
 }
 UniqueLabelDirective.$inject = ["LabelManager", "$q"];
 
+// Source: src/management/moderation/moderation-list.controller.js
+
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 
 /**
@@ -18832,6 +18834,32 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </uib-pagination>\n" +
     "            </div>\n" +
     "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/moderation-list.html',
+    "<div class=\"page-header\">\n" +
+    "    <h1>Valideren</h1>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <div class=\"form-inline\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label>Valideer als</label>\n" +
+    "                <select class=\"form-control\">\n" +
+    "                    <option>blub </option>\n" +
+    "                </select>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "\n" +
     "    </div>\n" +
     "</div>\n"
   );
