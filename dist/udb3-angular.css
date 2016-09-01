@@ -2464,6 +2464,7 @@ input + .alert {
   margin-bottom: 1em;
 }
 .offer-form {
+  margin-bottom: 100px;
   /*  .multiselect-container > li > a > label {
     margin: 0;
     height: 100%;
