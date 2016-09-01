@@ -3,7 +3,6 @@
 describe('Controller: Roles Form', function() {
   var
     RoleManager,
-    PermissionManager,
     Usermanager,
     $uibModal,
     $stateParams,
@@ -32,19 +31,25 @@ describe('Controller: Roles Form', function() {
   var role = {
     "uuid": id,
     "name": "Beheerder west-vlaanderen",
-    "constraint": "city:leuven"
+    "constraint": "city:leuven",
+    "permissions": [
+      "AANBOD_BEWERKEN",
+      "AANBOD_INVOEREN",
+      "AANBOD_MODEREREN",
+      "AANBOD_VERWIJDEREN"
+    ]
   };
 
   var expectedRole = {
     "uuid": id,
     "name": "Beheerder west-vlaanderen",
     "constraint": "city:leuven",
-    "permissions": {
-      "AANBOD_BEWERKEN": true,
-      "AANBOD_INVOEREN": true,
-      "AANBOD_MODEREREN": true,
-      "AANBOD_VERWIJDEREN": true
-    },
+    "permissions": [
+      "AANBOD_BEWERKEN",
+      "AANBOD_INVOEREN",
+      "AANBOD_MODEREREN",
+      "AANBOD_VERWIJDEREN"
+    ],
     "users": [
       {
         "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
@@ -56,11 +61,16 @@ describe('Controller: Roles Form', function() {
   };
 
   var allPermissions = [
-    {
-      "key": "MANAGE_USERS",
-      "name": "Gebruikers beheren"
-    }
+    { key: 'AANBOD_INVOEREN', name: 'AANBOD_INVOEREN' },
+    { key: 'AANBOD_BEWERKEN', name: 'AANBOD_BEWERKEN' },
+    { key: 'AANBOD_MODEREREN', name: 'AANBOD_MODEREREN' },
+    { key: 'AANBOD_VERWIJDEREN', name: 'AANBOD_VERWIJDEREN' },
+    { key: 'ORGANISATIES_BEHEREN', name: 'ORGANISATIES_BEHEREN' },
+    { key: 'GEBRUIKERS_BEHEREN', name: 'GEBRUIKERS_BEHEREN' },
+    { key: 'LABELS_BEHEREN', name: 'LABELS_BEHEREN' }
   ];
+
+
 
   beforeEach(module('udb.management'));
   beforeEach(module('udb.management.roles'));
@@ -85,10 +95,9 @@ describe('Controller: Roles Form', function() {
       'addLabelToRole',
       'getRoleLabels',
       'removeLabelFromRole',
-      'removeUserFromRole'
+      'removeUserFromRole',
     ]);
 
-    PermissionManager = jasmine.createSpyObj('PermissionManager', ['getAll']);
     Usermanager = jasmine.createSpyObj('UserManager', ['find', 'findUserWithEmail']);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
   }));
@@ -97,7 +106,6 @@ describe('Controller: Roles Form', function() {
     return $controller(
       'RoleFormController', {
         RoleManager: RoleManager,
-        PermissionManager: PermissionManager,
         UserManager: Usermanager,
         $uibModal: $uibModal,
         $stateParams: $stateParams,
@@ -110,7 +118,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve(rolePermissions));
     RoleManager.getRoleUsers.and.returnValue($q.resolve(roleUsers));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(angular.copy(role)));
   }
 
@@ -135,8 +142,7 @@ describe('Controller: Roles Form', function() {
     var editor = getController();
 
     $scope.$digest();
-    expect(PermissionManager.getAll).toHaveBeenCalled();
-    expect(editor.permissions).toEqual(allPermissions);
+    expect(editor.availablePermissions).toEqual(allPermissions);
   });
 
   it('should load the role permissions', function() {
@@ -147,7 +153,6 @@ describe('Controller: Roles Form', function() {
     var editor = getController();
 
     $scope.$digest();
-    expect(RoleManager.getRolePermissions).toHaveBeenCalled();
     expect(editor.role.permissions).toEqual(expectedRole.permissions);
   });
 
@@ -197,16 +202,16 @@ describe('Controller: Roles Form', function() {
     var editor = getController();
 
     $scope.$digest();
-    editor.role.permissions = {
-      "ORGANISATIES_BEHERER": true
-    };
+    editor.role.permissions = [
+      "ORGANISATIES_BEHEREN"
+    ];
 
     RoleManager.addPermissionToRole.and.returnValue($q.resolve());
 
-    editor.updatePermission('ORGANISATIES_BEHERER');
+    editor.updatePermission('AANBOD_BEWERKEN');
     $scope.$digest();
 
-    expect(RoleManager.addPermissionToRole).toHaveBeenCalled();
+    expect(RoleManager.addPermissionToRole).toHaveBeenCalledWith('AANBOD_BEWERKEN', id);
     expect(editor.loadedRolePermissions).toEqual(true);
   });
 
@@ -218,16 +223,16 @@ describe('Controller: Roles Form', function() {
     var editor = getController();
 
     $scope.$digest();
-    editor.role.permissions = {
-      "AANBOD_BEWERKEN": false
-    };
+    editor.role.permissions = [
+      "AANBOD_BEWERKEN"
+    ];
 
     RoleManager.removePermissionFromRole.and.returnValue($q.resolve());
 
     editor.updatePermission('AANBOD_BEWERKEN');
     $scope.$digest();
 
-    expect(RoleManager.removePermissionFromRole).toHaveBeenCalled();
+    expect(RoleManager.removePermissionFromRole).toHaveBeenCalledWith('AANBOD_BEWERKEN', id);
     expect(editor.loadedRolePermissions).toEqual(true);
   });
 
@@ -247,7 +252,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
 
     $stateParams = { "id": id };
@@ -317,7 +321,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve(rolePermissions));
     RoleManager.getRoleUsers.and.returnValue($q.resolve(roleUsers));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.reject({
       title: 'Could not be found.'
     }));
@@ -337,7 +340,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
     RoleManager.addLabelToRole.and.returnValue($q.resolve());
 
@@ -358,7 +360,6 @@ describe('Controller: Roles Form', function() {
   });
 
   it('should load all permissions without a roleId', function() {
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
 
     $stateParams = {};
 
@@ -368,12 +369,10 @@ describe('Controller: Roles Form', function() {
     expect(RoleManager.get).not.toHaveBeenCalled();
     expect(RoleManager.getRolePermissions).not.toHaveBeenCalled();
     expect(RoleManager.getRoleUsers).not.toHaveBeenCalled();
-    expect(PermissionManager.getAll).toHaveBeenCalled();
-    expect(editor.permissions).toEqual(allPermissions);
+    expect(editor.availablePermissions).toEqual(allPermissions);
   });
 
   it('should create a role when no roleId specified', function() {
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.create.and.returnValue($q.resolve({
       roleId: 'uuid-test123'
     }));
@@ -401,7 +400,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
     RoleManager.getRoleLabels.and.returnValue($q.resolve(labels));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
 
 
@@ -420,7 +418,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRoleLabels.and.returnValue($q.reject({
       title: 'Problem.'
     }));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
 
 
@@ -441,9 +438,7 @@ describe('Controller: Roles Form', function() {
       title: 'Problem.'
     }));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
-
 
     $stateParams = { "id": id };
 
@@ -454,42 +449,6 @@ describe('Controller: Roles Form', function() {
     expect(editor.role.users).toEqual([]);
     expect($uibModal.open).toHaveBeenCalled();
     expect(editor.errorMessage).toEqual('De leden van deze rol konden niet geladen worden. Problem.');
-  });
-
-  it('should show an error on permission list failure', function() {
-    PermissionManager.getAll.and.returnValue($q.reject({
-      title: 'Problem.'
-    }));
-
-
-    $stateParams = { "id": id };
-
-    var editor = getController();
-    $scope.$digest();
-
-    expect(PermissionManager.getAll).toHaveBeenCalled();
-    expect(editor.permissions).toEqual([]);
-    expect($uibModal.open).toHaveBeenCalled();
-    expect(editor.errorMessage).toEqual('De permissie lijst kon niet geladen worden. Problem.');
-  });
-
-  it('should show an error on role permission list failure', function() {
-    RoleManager.getRolePermissions.and.returnValue($q.reject({
-      title: 'Problem.'
-    }));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
-    RoleManager.get.and.returnValue($q.resolve(role));
-
-
-    $stateParams = { "id": id };
-
-    var editor = getController();
-    $scope.$digest();
-
-    expect(RoleManager.getRolePermissions).toHaveBeenCalled();
-    expect(editor.role.permissions).toEqual({});
-    expect($uibModal.open).toHaveBeenCalled();
-    expect(editor.errorMessage).toEqual('De permissies van deze rol konden niet geladen worden. Problem.');
   });
 
   it('should delete a label from the role', function() {
@@ -509,7 +468,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve([]));
     RoleManager.getRoleLabels.and.returnValue($q.resolve(labels));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
 
     $stateParams = { "id": id };
@@ -557,7 +515,6 @@ describe('Controller: Roles Form', function() {
     RoleManager.getRolePermissions.and.returnValue($q.resolve([]));
     RoleManager.getRoleUsers.and.returnValue($q.resolve(users));
     RoleManager.getRoleLabels.and.returnValue($q.resolve([]));
-    PermissionManager.getAll.and.returnValue($q.resolve(allPermissions));
     RoleManager.get.and.returnValue($q.resolve(role));
 
     $stateParams = { "id": id };
