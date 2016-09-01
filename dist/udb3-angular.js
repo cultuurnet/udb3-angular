@@ -15280,12 +15280,25 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
     queryTree = null;
   };
 
-  this.setQueryString = function (queryString) {
+  /**
+   *
+   * @param {string} queryString
+   * @param {boolean} forceUpdate
+   *  Set to true to emit a "searchQueryChanged" even if the query has not changed.
+   *  A possible use-case is navigating back to the search page and reloading the same query.
+   */
+  this.setQueryString = function (queryString, forceUpdate) {
+    var newQuery = false;
+
     if (!query || query.queryString !== queryString) {
-      var newQuery = LuceneQueryBuilder.createQuery(queryString);
+      newQuery = LuceneQueryBuilder.createQuery(queryString);
       LuceneQueryBuilder.isValid(newQuery);
       this.setQuery(newQuery);
       queryTree = null;
+    }
+
+    if (query && !newQuery && forceUpdate) {
+      this.setQuery(query);
     }
   };
 
@@ -16144,7 +16157,7 @@ function Search(
 
   // Because the uib pagination directive is messed up and overrides the initial page to 1,
   // you have to silence and revert it.
-  var initialChangeSilenced = false;
+  var initialChangeSilenced = $scope.currentPage === 1;
   $scope.pageChanged = function () {
     var newPageNumber = $scope.currentPage;
 
@@ -16185,30 +16198,7 @@ function Search(
     $scope.$on('$destroy', stopEditingQueryListener);
   });
 
-  function init() {
-    var existingQuery = searchHelper.getQuery();
-    var searchParams = getQueryStringFromParams();
-
-    initListeners();
-
-    // If the user loads the search page with a query URI param it should be parsed and set for the initial search.
-    // Make sure the queryChanged listener is hooked up else the initial search will not trigger an update.
-    if (searchParams) {
-      searchHelper.setQueryString(searchParams);
-    }
-
-    // If the search helper already holds an existing query it won't react to the setQueryString so we force an update.
-    if (existingQuery && (!searchParams || existingQuery.queryString === searchParams)) {
-      updateQuery(existingQuery);
-    }
-
-    // If there is no existing query or search params we still want to load some results to show.
-    if (!searchParams && !existingQuery) {
-      searchHelper.setQueryString('');
-    }
-  }
-
-  init();
+  initListeners();
 }
 Search.$inject = ["$scope", "udbApi", "LuceneQueryBuilder", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate"];
 
