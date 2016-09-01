@@ -7696,8 +7696,10 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $uibModal
   $scope.bookingPeriodInfoError = false;
   $scope.availabilityStarts = '';
   $scope.availabilityEnds = '';
+  $scope.errorMessage = '';
 
   $scope.openBookingPeriodModal = openBookingPeriodModal;
+  $scope.validateBookingPeriod = validateBookingPeriod;
   $scope.saveBookingPeriod = saveBookingPeriod;
   $scope.deleteBookingPeriod = deleteBookingPeriod;
   $scope.changeHaveBookingPeriod = changeHaveBookingPeriod;
@@ -7730,6 +7732,15 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $uibModal
   controller.bookingPeriodSaved = function () {
     $rootScope.$emit('bookingPeriodSaved', EventFormData);
   };
+
+  function validateBookingPeriod() {
+    if ($scope.availabilityStarts > $scope.availabilityEnds) {
+      $scope.errorMessage = 'De gekozen einddatum moet na de startdatum vallen.';
+      return;
+    }
+    $scope.errorMessage = '';
+    saveBookingPeriod();
+  }
 
   function saveBookingPeriod() {
     EventFormData.bookingInfo.availabilityStarts = $scope.availabilityStarts;
@@ -17590,6 +17601,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "<div class=\"col-sm-12\" ng-show=\"haveBookingPeriod\">\n" +
     "    <div class=\"booking-period\">\n" +
+    "        <p><strong>Reservatie periode</strong></p>\n" +
+    "        <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
+    "        </div>\n" +
     "        <form name=\"bookingPeriod\">\n" +
     "            <table class=\"table\">\n" +
     "                <tr>\n" +
@@ -17598,14 +17612,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <input name=\"bookingStartDate\"\n" +
     "                               type=\"date\"\n" +
     "                               ng-model=\"availabilityStarts\"\n" +
-    "                               ng-change=\"saveBookingPeriod()\" />\n" +
+    "                               ng-change=\"validateBookingPeriod()\" />\n" +
     "                    </td>\n" +
     "                    <td>\n" +
     "                        <label>Tot</label>\n" +
     "                        <input name=\"bookingEndDate\"\n" +
     "                               type=\"date\"\n" +
     "                               ng-model=\"availabilityEnds\"\n" +
-    "                               ng-change=\"saveBookingPeriod()\" />\n" +
+    "                               ng-change=\"validateBookingPeriod()\" />\n" +
     "                    </td>\n" +
     "                    <td>\n" +
     "                        <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
@@ -18434,11 +18448,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </form>\n" +
     "              </section>\n" +
     "\n" +
-    "                <div class=\"row extra-tickets-periode\">\n" +
-    "                    <div class=\"extra-task\">\n" +
-    "                        <udb-reservation-period></udb-reservation-period>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
+    "              <div class=\"row extra-tickets-periode\">\n" +
+    "                  <div class=\"extra-task\">\n" +
+    "                      <udb-reservation-period></udb-reservation-period>\n" +
+    "                  </div>\n" +
+    "              </div>\n" +
     "\n" +
     "              <div ng-show=\"contactInfoError\" class=\"alert alert-danger\">\n" +
     "                Er ging iets fout bij het opslaan van de contact info.\n" +

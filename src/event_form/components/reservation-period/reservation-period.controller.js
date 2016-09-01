@@ -21,8 +21,10 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $uibModal
   $scope.bookingPeriodInfoError = false;
   $scope.availabilityStarts = '';
   $scope.availabilityEnds = '';
+  $scope.errorMessage = '';
 
   $scope.openBookingPeriodModal = openBookingPeriodModal;
+  $scope.validateBookingPeriod = validateBookingPeriod;
   $scope.saveBookingPeriod = saveBookingPeriod;
   $scope.deleteBookingPeriod = deleteBookingPeriod;
   $scope.changeHaveBookingPeriod = changeHaveBookingPeriod;
@@ -55,6 +57,15 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $uibModal
   controller.bookingPeriodSaved = function () {
     $rootScope.$emit('bookingPeriodSaved', EventFormData);
   };
+
+  function validateBookingPeriod() {
+    if ($scope.availabilityStarts > $scope.availabilityEnds) {
+      $scope.errorMessage = 'De gekozen einddatum moet na de startdatum vallen.';
+      return;
+    }
+    $scope.errorMessage = '';
+    saveBookingPeriod();
+  }
 
   function saveBookingPeriod() {
     EventFormData.bookingInfo.availabilityStarts = $scope.availabilityStarts;

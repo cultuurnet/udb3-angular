@@ -5,6 +5,9 @@
 </div>
 <div class="col-sm-12" ng-show="haveBookingPeriod">
     <div class="booking-period">
+        <p><strong>Reservatie periode</strong></p>
+        <div class="alert alert-danger" ng-if="errorMessage" ng-bind="::errorMessage">
+        </div>
         <form name="bookingPeriod">
             <table class="table">
                 <tr>
@@ -13,14 +16,14 @@
                         <input name="bookingStartDate"
                                type="date"
                                ng-model="availabilityStarts"
-                               ng-change="saveBookingPeriod()" />
+                               ng-change="validateBookingPeriod()" />
                     </td>
                     <td>
                         <label>Tot</label>
                         <input name="bookingEndDate"
                                type="date"
                                ng-model="availabilityEnds"
-                               ng-change="saveBookingPeriod()" />
+                               ng-change="validateBookingPeriod()" />
                     </td>
                     <td>
                         <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteBookingPeriod()">
