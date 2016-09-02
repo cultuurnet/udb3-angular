@@ -335,9 +335,7 @@ describe('Controller: event form step 5', function () {
   });
 
   it('should delete contact info from the contactInfo array', function () {
-    var expectedContactInfo = [{type: 'phone', value: '1234567890', booking: false}];
     scope.contactInfo = [
-      {type: 'phone', value: '1234567890', booking: false},
       {type: 'phone', value: '0987654321', booking: false}
     ];
     scope.contactInfoForm = {};
@@ -346,10 +344,11 @@ describe('Controller: event form step 5', function () {
     eventCrud.updateContactPoint.and.returnValue($q.resolve());
     spyOn(scope, 'saveContactInfo');
 
-    scope.deleteContactInfo(1);
+    scope.deleteContactInfo(0);
     scope.$apply();
 
-    expect(scope.contactInfo).toEqual(expectedContactInfo);
+    expect(scope.contactInfo).toEqual([]);
+    expect(scope.contactInfoCssClass).toEqual('state-incomplete');
   });
 
   it('should save the contact info', function () {
