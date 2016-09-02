@@ -314,7 +314,7 @@ angular.module('udb.core')
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
-      'terms.eventtype': 'Soort aanbod',
+      'terms.eventtype': 'Type',
       'created': 'Datum aangemaakt',
       'modified': 'Datum laatste aanpassing',
       'publisher': 'Auteur',
@@ -330,7 +330,7 @@ angular.module('udb.core')
       'what': 'Wat',
       'where': 'Waar',
       'when': 'Wanneer',
-      'input-information': 'Invoerders-informatie',
+      'input-information': 'Invoerdersinformatie',
       'translations': 'Vertalingen',
       'other': 'Andere'
     },
