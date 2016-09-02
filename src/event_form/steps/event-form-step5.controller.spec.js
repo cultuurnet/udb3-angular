@@ -653,6 +653,7 @@ describe('Controller: event form step 5', function () {
     expect(scope.websitePreviewEnabled).toBeTruthy();
   });
 
+
   it('should temporarily save the booking type "phone"', function () {
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
     scope.saveBookingType('phone');

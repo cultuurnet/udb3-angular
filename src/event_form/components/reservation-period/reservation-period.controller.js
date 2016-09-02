@@ -11,7 +11,7 @@ angular
   .controller('ReservationPeriodController', ReservationPeriodController);
 
 /* @ngInject */
-function ReservationPeriodController($scope, EventFormData, eventCrud, $uibModal, $rootScope) {
+function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
@@ -23,36 +23,13 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $uibModal
   $scope.availabilityEnds = '';
   $scope.errorMessage = '';
 
-  $scope.openBookingPeriodModal = openBookingPeriodModal;
   $scope.validateBookingPeriod = validateBookingPeriod;
   $scope.saveBookingPeriod = saveBookingPeriod;
   $scope.deleteBookingPeriod = deleteBookingPeriod;
   $scope.changeHaveBookingPeriod = changeHaveBookingPeriod;
+  $scope.initBookingPeriodForm = initBookingPeriodForm;
 
   initBookingPeriodForm();
-
-  /**
-   * Open the booking period modal.
-   */
-  function openBookingPeriodModal() {
-
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController'
-    });
-
-    modalInstance.result.then(function () {
-      $scope.bookingInfoCssClass = 'state-complete';
-      $scope.bookingPeriodPreviewEnabled = true;
-    }, function () {
-      if (EventFormData.bookingInfo.availabilityStarts) {
-        $scope.bookingPeriodPreviewEnabled = true;
-      }
-      else {
-        $scope.bookingPeriodPreviewEnabled = false;
-      }
-    });
-  }
 
   controller.bookingPeriodSaved = function () {
     $rootScope.$emit('bookingPeriodSaved', EventFormData);
