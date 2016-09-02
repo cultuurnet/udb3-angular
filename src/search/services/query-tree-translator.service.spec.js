@@ -27,7 +27,7 @@ describe('Service: QueryTreeTranslator', function () {
   it('should translate dutch query fields', function () {
     var queryTree = {
         left: {
-          field: 'locatie',
+          field: 'locatie (naam)',
           term: 'Tienen'
         }
       };
