@@ -12,18 +12,47 @@
             <table class="table">
                 <tr>
                     <td>
-                        <label>Van</label>
-                        <input name="bookingStartDate"
-                               type="date"
-                               ng-model="availabilityStarts"
-                               ng-change="validateBookingPeriod()" />
+                        <p><label>Van</label></p>
+                        <div class="row">
+                            <div class="col-xs-9 npr">
+                                <input name="bookingStartDate"
+                                       class="form-control"
+                                       type="text"
+                                       uib-datepicker-popup="dd/MM/yyyy"
+                                       datepicker-options="dateOptions"
+                                       ng-model="availabilityStarts"
+                                       ng-change="validateBookingPeriod()"
+                                       is-open="popup1.opened"
+                                       show-button-bar="false"
+                                       ng-required="true" />
+                            </div>
+                            <div class="col-xs-3 npl">
+                                <button type="button" class="btn btn-default" ng-click="open1()"><i class="fa fa-calendar" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        <label>Tot</label>
-                        <input name="bookingEndDate"
-                               type="date"
-                               ng-model="availabilityEnds"
-                               ng-change="validateBookingPeriod()" />
+                        <p><label>Tot</label></p>
+                        <div class="row">
+                            <div class="col-xs-9 npr">
+                                <input name="bookingEndDate"
+                                       type="text"
+                                       class="form-control"
+                                       type="text"
+                                       uib-datepicker-popup="dd/MM/yyyy"
+                                       datepicker-options="dateOptions"
+                                       ng-model="availabilityEnds"
+                                       ng-change="validateBookingPeriod()"
+                                       is-open="popup2.opened"
+                                       show-button-bar="false"
+                                       ng-required="true" />
+                            </div>
+                            <div class="col-xs-3 npl">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open2()"><i class="fa fa-calendar" aria-hidden="true"></i></button>
+                                </span>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteBookingPeriod()">

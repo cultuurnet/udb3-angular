@@ -22,12 +22,27 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
   $scope.availabilityStarts = '';
   $scope.availabilityEnds = '';
   $scope.errorMessage = '';
+  $scope.popup1 = {
+    opened: false
+  };
+
+  $scope.popup2 = {
+    opened: false
+  };
 
   $scope.validateBookingPeriod = validateBookingPeriod;
   $scope.saveBookingPeriod = saveBookingPeriod;
   $scope.deleteBookingPeriod = deleteBookingPeriod;
   $scope.changeHaveBookingPeriod = changeHaveBookingPeriod;
   $scope.initBookingPeriodForm = initBookingPeriodForm;
+
+  // Options for the datepicker
+  $scope.dateOptions = {
+    formatYear: 'yyyy',
+    maxDate: new Date(2020, 5, 22),
+    minDate: new Date(),
+    startingDay: 1
+  };
 
   initBookingPeriodForm();
 
@@ -75,6 +90,14 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
       $scope.haveBookingPeriod = true;
     }
   }
+
+  $scope.open1 = function() {
+    $scope.popup1.opened = true;
+  };
+
+  $scope.open2 = function() {
+    $scope.popup2.opened = true;
+  };
 
   function initBookingPeriodForm() {
     if (EventFormData.bookingInfo.availabilityStarts ||

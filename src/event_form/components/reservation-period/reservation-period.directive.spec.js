@@ -17,7 +17,7 @@ describe('Directive: Save time tracker', function () {
 
   it('should not show the reservation period directive', function () {
     var element = getElement();
-    
+
     expect(element).toEqual(element);
   });
 });

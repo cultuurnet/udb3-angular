@@ -7613,12 +7613,27 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
   $scope.availabilityStarts = '';
   $scope.availabilityEnds = '';
   $scope.errorMessage = '';
+  $scope.popup1 = {
+    opened: false
+  };
+
+  $scope.popup2 = {
+    opened: false
+  };
 
   $scope.validateBookingPeriod = validateBookingPeriod;
   $scope.saveBookingPeriod = saveBookingPeriod;
   $scope.deleteBookingPeriod = deleteBookingPeriod;
   $scope.changeHaveBookingPeriod = changeHaveBookingPeriod;
   $scope.initBookingPeriodForm = initBookingPeriodForm;
+
+  // Options for the datepicker
+  $scope.dateOptions = {
+    formatYear: 'yyyy',
+    maxDate: new Date(2020, 5, 22),
+    minDate: new Date(),
+    startingDay: 1
+  };
 
   initBookingPeriodForm();
 
@@ -7666,6 +7681,14 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
       $scope.haveBookingPeriod = true;
     }
   }
+
+  $scope.open1 = function() {
+    $scope.popup1.opened = true;
+  };
+
+  $scope.open2 = function() {
+    $scope.popup2.opened = true;
+  };
 
   function initBookingPeriodForm() {
     if (EventFormData.bookingInfo.availabilityStarts ||
@@ -17457,18 +17480,47 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <table class=\"table\">\n" +
     "                <tr>\n" +
     "                    <td>\n" +
-    "                        <label>Van</label>\n" +
-    "                        <input name=\"bookingStartDate\"\n" +
-    "                               type=\"date\"\n" +
-    "                               ng-model=\"availabilityStarts\"\n" +
-    "                               ng-change=\"validateBookingPeriod()\" />\n" +
+    "                        <p><label>Van</label></p>\n" +
+    "                        <div class=\"row\">\n" +
+    "                            <div class=\"col-xs-9 npr\">\n" +
+    "                                <input name=\"bookingStartDate\"\n" +
+    "                                       class=\"form-control\"\n" +
+    "                                       type=\"text\"\n" +
+    "                                       uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "                                       datepicker-options=\"dateOptions\"\n" +
+    "                                       ng-model=\"availabilityStarts\"\n" +
+    "                                       ng-change=\"validateBookingPeriod()\"\n" +
+    "                                       is-open=\"popup1.opened\"\n" +
+    "                                       show-button-bar=\"false\"\n" +
+    "                                       ng-required=\"true\" />\n" +
+    "                            </div>\n" +
+    "                            <div class=\"col-xs-3 npl\">\n" +
+    "                                <button type=\"button\" class=\"btn btn-default\" ng-click=\"open1()\"><i class=\"fa fa-calendar\" aria-hidden=\"true\"></i></button>\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
     "                    </td>\n" +
     "                    <td>\n" +
-    "                        <label>Tot</label>\n" +
-    "                        <input name=\"bookingEndDate\"\n" +
-    "                               type=\"date\"\n" +
-    "                               ng-model=\"availabilityEnds\"\n" +
-    "                               ng-change=\"validateBookingPeriod()\" />\n" +
+    "                        <p><label>Tot</label></p>\n" +
+    "                        <div class=\"row\">\n" +
+    "                            <div class=\"col-xs-9 npr\">\n" +
+    "                                <input name=\"bookingEndDate\"\n" +
+    "                                       type=\"text\"\n" +
+    "                                       class=\"form-control\"\n" +
+    "                                       type=\"text\"\n" +
+    "                                       uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "                                       datepicker-options=\"dateOptions\"\n" +
+    "                                       ng-model=\"availabilityEnds\"\n" +
+    "                                       ng-change=\"validateBookingPeriod()\"\n" +
+    "                                       is-open=\"popup2.opened\"\n" +
+    "                                       show-button-bar=\"false\"\n" +
+    "                                       ng-required=\"true\" />\n" +
+    "                            </div>\n" +
+    "                            <div class=\"col-xs-3 npl\">\n" +
+    "                                <span class=\"input-group-btn\">\n" +
+    "                                    <button type=\"button\" class=\"btn btn-default\" ng-click=\"open2()\"><i class=\"fa fa-calendar\" aria-hidden=\"true\"></i></button>\n" +
+    "                                </span>\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
     "                    </td>\n" +
     "                    <td>\n" +
     "                        <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
