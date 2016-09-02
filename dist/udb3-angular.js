@@ -17292,10 +17292,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"modal-body\">\n" +
     "  <form name=\"placeForm\" class=\"css-form\">\n" +
     "    <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "      <label>Titel</label>\n" +
+    "      <label>Naam locatie</label>\n" +
     "      <input class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "      <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        Titel is een verplicht veld.\n" +
+    "        De naam van de locatie is een verplicht veld.\n" +
     "      </span>\n" +
     "    </div>\n" +
     "\n" +
@@ -17322,7 +17322,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <label>Straat en nummer</label>\n" +
     "          <input class=\"form-control\"\n" +
     "                 id=\"locatie-straat\"\n" +
-    "                 placeholder=\"Straat en nummer\"\n" +
     "                 name=\"address_streetAddress\"\n" +
     "                 type=\"text\"\n" +
     "                 ng-model=\"newPlace.address.streetAddress\"\n" +
@@ -17352,7 +17351,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
     "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
