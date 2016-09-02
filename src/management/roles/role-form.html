@@ -87,10 +87,14 @@
               </div>
             </div>
             <div class="col-md-12">
-                <div class="checkbox" ng-repeat="role in editor.permissions | filter: permissionSearch">
+                <div class="checkbox" ng-repeat="permission in editor.availablePermissions | filter: permissionSearch">
                   <label>
-                      <input type="checkbox"
-                        ng-model="editor.role.permissions[role.key]" ng-change="editor.updatePermission(role.key)"> <strong ng-bind="::role.name"></strong>
+                        <input  type="checkbox"
+                                name="editor.role.permissions[]"
+                                value="{{permission.key}}"
+                                ng-checked="editor.role.permissions.indexOf(permission.key) > -1"
+                                ng-click="editor.updatePermission(permission.key)"
+                        > <strong ng-bind="permission.name"></strong>
                   </label>
                 </div>
             </div>
