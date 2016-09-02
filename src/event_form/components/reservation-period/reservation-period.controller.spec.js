@@ -106,6 +106,18 @@ describe('Controller: reservation period directive', function () {
     expect(scope.haveBookingPeriod).toBeTruthy();
   });
 
+  it ('should open popup 1', function () {
+    scope.open1();
+
+    expect(scope.popup1.opened).toBeTruthy();
+  });
+
+  it ('should open popup 2', function () {
+    scope.open2();
+
+    expect(scope.popup2.opened).toBeTruthy();
+  });
+
   it ('should initialize the booking period form', function () {
     EventFormData.bookingInfo.availabilityEnds = '02/09/2016';
     EventFormData.bookingInfo.availabilityStarts = '02/07/2016';
