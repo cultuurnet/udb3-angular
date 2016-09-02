@@ -7699,9 +7699,15 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
     if (EventFormData.bookingInfo.availabilityStarts) {
       $scope.availabilityStarts = new Date(EventFormData.bookingInfo.availabilityStarts);
     }
+    else {
+      $scope.availabilityStarts = new Date();
+    }
 
     if (EventFormData.bookingInfo.availabilityEnds) {
       $scope.availabilityEnds = new Date(EventFormData.bookingInfo.availabilityEnds);
+    }
+    else {
+      $scope.availabilityEnds = new Date();
     }
   }
 }
@@ -10231,6 +10237,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function deleteContactInfo(index) {
     $scope.contactInfo.splice(index, 1);
+
+    if (_.isEmpty($scope.contactInfo)) {
+      $scope.contactInfoCssClass = 'state-incomplete';
+    }
+
     saveContactInfo();
   }
 
@@ -10266,7 +10277,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       var promise = eventCrud.updateContactPoint(EventFormData);
       promise.then(function() {
         controller.eventFormSaved();
-        $scope.contactInfoCssClass = 'state-complete';
+        if (!_.isEmpty($scope.contactInfo)) {
+          $scope.contactInfoCssClass = 'state-complete';
+        }
         $scope.savingContactInfo = false;
       }, function() {
         $scope.contactInfoError = true;
@@ -18349,7 +18362,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </form>\n" +
     "              </section>\n" +
     "\n" +
-    "              <div class=\"row extra-tickets-periode\">\n" +
+    "              <div class=\"row extra-tickets-periode\"\n" +
+    "                   ng-show=\"bookingModel.url ||\n" +
+    "                   bookingModel.phone ||\n" +
+    "                   bookingModel.email\">\n" +
     "                  <div class=\"extra-task\">\n" +
     "                      <udb-reservation-period></udb-reservation-period>\n" +
     "                  </div>\n" +

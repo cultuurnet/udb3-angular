@@ -415,6 +415,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function deleteContactInfo(index) {
     $scope.contactInfo.splice(index, 1);
+
+    if (_.isEmpty($scope.contactInfo)) {
+      $scope.contactInfoCssClass = 'state-incomplete';
+    }
+
     saveContactInfo();
   }
 
@@ -450,7 +455,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       var promise = eventCrud.updateContactPoint(EventFormData);
       promise.then(function() {
         controller.eventFormSaved();
-        $scope.contactInfoCssClass = 'state-complete';
+        if (!_.isEmpty($scope.contactInfo)) {
+          $scope.contactInfoCssClass = 'state-complete';
+        }
         $scope.savingContactInfo = false;
       }, function() {
         $scope.contactInfoError = true;

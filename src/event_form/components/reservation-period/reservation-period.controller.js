@@ -108,9 +108,15 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
     if (EventFormData.bookingInfo.availabilityStarts) {
       $scope.availabilityStarts = new Date(EventFormData.bookingInfo.availabilityStarts);
     }
+    else {
+      $scope.availabilityStarts = new Date();
+    }
 
     if (EventFormData.bookingInfo.availabilityEnds) {
       $scope.availabilityEnds = new Date(EventFormData.bookingInfo.availabilityEnds);
+    }
+    else {
+      $scope.availabilityEnds = new Date();
     }
   }
 }
