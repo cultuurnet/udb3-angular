@@ -11,7 +11,7 @@ describe('Service: QueryTreeTranslator', function () {
         LOCATION_LABEL: 'location'
       },
       nl: {
-        LOCATION_LABEL: 'locatie'
+        LOCATION_LABEL: 'locatie (naam)'
       }
     };
 
