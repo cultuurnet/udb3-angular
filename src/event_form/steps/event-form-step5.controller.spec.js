@@ -683,7 +683,17 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'info@mail.com', booking: false},
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+    var expectedBookingInfoFormData = {
+      "url": "http://google.be",
+      "urlLabel": "Reserveer plaatsen",
+      "email": "dude@sweet.com"
+    };
+
+    eventCrud.updateBookingInfo
+      .and.returnValue($q.resolve())
+      .and.callFake(function(evenFormData) {
+        expect(evenFormData.bookingInfo).toEqual(expectedBookingInfoFormData);
+      });
 
     scope.deleteBookingInfo({type: 'phone', value: '0987654321', booking: true}, 1);
 
