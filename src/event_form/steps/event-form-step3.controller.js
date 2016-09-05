@@ -170,6 +170,7 @@ function EventFormStep3Controller(
     var location = EventFormData.getLocation();
     location.id = $model;
     location.name = $label;
+    location.address = selectedLocation.address;
     EventFormData.setLocation(location);
 
     controller.stepCompleted();
