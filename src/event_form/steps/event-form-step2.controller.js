@@ -12,7 +12,7 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig, $location, $anchorScroll) {
   var controller = this;
 
   // Scope vars.
@@ -36,6 +36,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
+  $scope.scrollToBottom = scrollToBottom;
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -218,4 +219,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   controller.clearPeriodicRangeError = function () {
     controller.periodicRangeError = false;
   };
+
+  function scrollToBottom (where) {
+    $location.hash(where);
+    $anchorScroll();
+  }
 }

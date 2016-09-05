@@ -8952,7 +8952,7 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig, $location, $anchorScroll) {
   var controller = this;
 
   // Scope vars.
@@ -8976,6 +8976,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
+  $scope.scrollToBottom = scrollToBottom;
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9158,8 +9159,13 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   controller.clearPeriodicRangeError = function () {
     controller.periodicRangeError = false;
   };
+
+  function scrollToBottom (where) {
+    $location.hash(where);
+    $anchorScroll();
+  }
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig", "$location", "$anchorScroll"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -9182,7 +9188,9 @@ function EventFormStep3Controller(
     $uibModal,
     cities,
     Levenshtein,
-    eventCrud
+    eventCrud,
+    $location,
+    $anchorScroll
 ) {
 
   var controller = this;
@@ -9242,6 +9250,8 @@ function EventFormStep3Controller(
       return new Levenshtein(value, city.zip + '' + city.name);
     };
   };
+
+  $scope.scrollToBottom = scrollToBottom;
 
   // Default values
   if (EventFormData.location && EventFormData.location.address && EventFormData.location.address.postalCode) {
@@ -9500,6 +9510,7 @@ function EventFormStep3Controller(
 
   controller.stepCompleted = function () {
     EventFormData.showStep(4);
+    scrollToBottom('titel');
 
     if (EventFormData.id) {
       eventCrud.updateMajorInfo(EventFormData);
@@ -9523,9 +9534,14 @@ function EventFormStep3Controller(
     }
   };
 
+  function scrollToBottom (where) {
+    $location.hash(where);
+    $anchorScroll();
+  }
+
   controller.init(EventFormData);
 }
-EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud"];
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$location", "$anchorScroll"];
 
 // Source: src/event_form/steps/event-form-step4.controller.js
 /**
@@ -9548,7 +9564,9 @@ function EventFormStep4Controller(
   SearchResultViewer,
   eventCrud,
   $rootScope,
-  $uibModal
+  $uibModal,
+  $location,
+  $anchorScroll
 ) {
 
   var controller = this;
@@ -9572,6 +9590,7 @@ function EventFormStep4Controller(
   $scope.resultViewer = new SearchResultViewer();
   $scope.eventTitleChanged = eventTitleChanged;
   $scope.previewSuggestedItem = previewSuggestedItem;
+  $scope.scrollToBottom = scrollToBottom;
 
   // Check if we need to show the leave warning
   window.onbeforeunload = function (event) {
@@ -9705,6 +9724,7 @@ function EventFormStep4Controller(
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
       EventFormData.showStep(5);
+      scrollToBottom('extra');
 
     }, showMajorInfoError);
 
@@ -9757,8 +9777,13 @@ function EventFormStep4Controller(
       }
     });
   }
+
+  function scrollToBottom (where) {
+    $location.hash(where);
+    $anchorScroll();
+  }
 }
-EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
+EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal", "$location", "$anchorScroll"];
 
 // Source: src/event_form/steps/event-form-step5.controller.js
 /**
@@ -17677,7 +17702,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div class=\"wanneerkiezer\" ng-show=\"eventFormData.activeCalendarType === ''\">\n" +
     "            <ul class=\"list-inline button-list\">\n" +
     "              <li ng-repeat=\"calendarLabel in ::calendarLabels\" ng-hide=\"eventFormData.isPlace && calendarLabel.eventOnly\">\n" +
-    "                <button class=\"btn btn-default\" ng-bind=\"::calendarLabel.label\" ng-click=\"setCalendarType(calendarLabel.id)\"></button>\n" +
+    "                <button\n" +
+    "                        class=\"btn btn-default\"\n" +
+    "                        ng-bind=\"::calendarLabel.label\"\n" +
+    "                        ng-click=\"setCalendarType(calendarLabel.id); scrollToBottom('wanneer');\"></button>\n" +
     "              </li>\n" +
     "            </ul>\n" +
     "          </div>\n" +
@@ -17727,6 +17755,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   class=\"form-control uib-typeahead\"\n" +
     "                   placeholder=\"Gemeente of postcode\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
+    "                   ng-focus=\"scrollToBottom('waar')\"\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
     "                   typeahead-min-length=\"3\"\n" +
@@ -17755,6 +17784,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     placeholder=\"Locatie\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
+    "                     ng-focus=\"scrollToBottom('waar')\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
@@ -17860,7 +17890,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
-    "          ng-click=\"validateEvent(true)\"\n" +
+    "          ng-click=\"validateEvent(true);\"\n" +
     "          ng-class=\"{'disabled': eventFormData.name.nl === ''}\">\n" +
     "        Doorgaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
