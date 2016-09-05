@@ -639,7 +639,18 @@ describe('Controller: event form step 5', function () {
     scope.bookingModel = {
       urlLabel: 'Dit is een url label'
     };
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+    var expectedBookingInfoFormData = {
+      "url": "http://google.be",
+      "urlLabel": "Dit is een url label",
+      "email": "info@mail.com",
+      "phone": "1234567890"
+    };
+
+    eventCrud.updateBookingInfo
+      .and.returnValue($q.resolve())
+      .and.callFake(function(evenFormData) {
+        expect(evenFormData.bookingInfo).toEqual(expectedBookingInfoFormData);
+      });
 
     scope.saveWebsitePreview();
 
