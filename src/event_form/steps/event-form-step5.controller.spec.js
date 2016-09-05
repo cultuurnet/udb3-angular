@@ -697,8 +697,18 @@ describe('Controller: event form step 5', function () {
       email: 'info@mail.com'
     };
     scope.contactInfoForm = {};
+    var expectedBookingInfoFormData = {
+      "url": "http://google.be",
+      "urlLabel": "Reserveer plaatsen",
+      "email": "info@mail.com",
+      "phone": "1234567890"
+    };
 
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
+    eventCrud.updateBookingInfo
+      .and.returnValue($q.resolve())
+      .and.callFake(function(evenFormData) {
+        expect(evenFormData.bookingInfo).toEqual(expectedBookingInfoFormData);
+      });
 
     scope.saveBookingInfo();
     scope.$apply();
