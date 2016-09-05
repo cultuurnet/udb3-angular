@@ -11830,8 +11830,9 @@ function RoleFormController(
 
   function roleCreated (response) {
     roleId = response.roleId;
-    editor.role.id = roleId;
-    editor.originalRole.id = roleId;
+    // set uuid because a GET role would have a uuid as well
+    editor.role.uuid = roleId;
+    editor.originalRole.uuid = roleId;
   }
 
   function createRole() {
