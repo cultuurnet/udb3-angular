@@ -11,8 +11,23 @@
     <div ng-show="editor.label">
         <div class="row">
             <div class="col-md-6">
-                <label for="label-name-field">Naam</label>
-                <input id="label-name-field" type="text" ng-model="editor.label.name" ng-disabled="editor.renaming">
+                <div class="form-group" udb-form-group>
+                    <label for="label-name-field">Naam</label>
+                    <input id="label-name-field"
+                           class="form-control"
+                           type="text"
+                           name="name"
+                           udb-semicolon-label-check
+                           ng-model="editor.label.name"
+                           ng-minlength="3"
+                           ng-required="true"
+                           ng-maxlength="255"
+                           ng-disabled="editor.renaming">
+                    <p class="help-block" ng-if="editor.form.name.$error.required">Een label naam is verplicht.</p>
+                    <p class="help-block" ng-if="editor.form.name.$error.minlength">Een label moet uit minstens 3 tekens bestaan.</p>
+                    <p class="help-block" ng-if="editor.form.name.$error.maxlength">Een label mag maximum 255 tekens bevatten.</p>
+                    <p class="help-block" ng-if="editor.form.name.$error.semicolonLabel">Een label naam mag geen puntkomma bevatten.</p>
+                </div>
             </div>
         </div>
         <div class="row">
