@@ -392,6 +392,22 @@ describe('Controller: Roles Form', function() {
     expect(editor.originalRole.uuid).toEqual('uuid-test123');
   });
 
+  it('should not create a role when a uuid specified', function() {
+    $stateParams = {};
+
+    var editor = getController();
+    $scope.$digest();
+
+    editor.role.uuid = "uuid";
+    editor.role.name = 'Test123';
+    editor.createRole();
+
+    $scope.$digest();
+
+    expect(RoleManager.create).not.toHaveBeenCalledWith('Test123');
+    expect(editor.role.uuid).toEqual('uuid');
+  });
+
   it('should load the role labels', function() {
     var labels = [{
       uuid: 'label-uuid',
