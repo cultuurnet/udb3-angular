@@ -11836,7 +11836,7 @@ function RoleFormController(
   }
 
   function createRole() {
-    if (!editor.role.id && editor.role.name) {
+    if (!editor.role.uuid && editor.role.name) {
       RoleManager
         .create(editor.role.name)
         .then(roleCreated, showProblem)
