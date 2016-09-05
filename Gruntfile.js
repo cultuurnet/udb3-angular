@@ -246,6 +246,20 @@ module.exports = function (grunt) {
             },
             'angular-i18n': {
               'main': 'angular-locale_nl-be.js'
+            },
+            'moment': {
+              'main': [
+                'moment.js',
+                'locale/nl.js'
+              ]
+            },
+            'bootstrap-datepicker': {
+              'main': [
+                'js/bootstrap-datepicker.js',
+                'js/locales/bootstrap-datepicker.nl-BE.js',
+                'css/datepicker.css',
+                'css/datepicker3.css'
+              ]
             }
           }
         }
