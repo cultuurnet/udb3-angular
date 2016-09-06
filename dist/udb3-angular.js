@@ -224,6 +224,14 @@ angular
   ]);
 /**
  * @ngdoc module
+ * @name udb.management.moderation
+ * @description
+ * # Moderation Management Module
+ */
+angular
+  .module('udb.management.moderation', []);
+/**
+ * @ngdoc module
  * @name udb.management
  * @description
  * # Management Module
@@ -233,7 +241,8 @@ angular
     'udb.core',
     'udb.management.labels',
     'udb.management.roles',
-    'udb.management.users'
+    'udb.management.users',
+    'udb.management.moderation'
   ]);
 
 angular.module('peg', []).factory('LuceneQueryParser', function () {
@@ -11542,6 +11551,109 @@ function UniqueLabelDirective(LabelManager, $q) {
 UniqueLabelDirective.$inject = ["LabelManager", "$q"];
 
 // Source: src/management/moderation/moderation-list.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:ModerationListController
+ * @description
+ * # ModerationListController
+ */
+angular
+  .module('udb.management.moderation')
+  .controller('ModerationListController', ModerationListController);
+
+/**
+ * @ngInject
+ * @constructor
+ *
+ * @param {ModerationManager} ModerationManager
+ * @param {Object} $uibModal
+ * @param {RolePermission} RolePermission
+ */
+function ModerationListController(ModerationManager, $uibModal, RolePermission) {
+  var moderator = this;
+
+  moderator.roles = [];
+
+  moderator.loading = true;
+  moderator.selectedRole = false;
+  moderator.errorMessage = false;
+
+  moderator.showModerationContent = showModerationContent;
+
+  ModerationManager
+    .getMyRoles()
+    .then(function(roles) {
+      // only show roles with moderator permission
+      moderator.roles = _.filter(roles, function(role) {
+        var canModerate = _.filter(role.permissions, function(permission) {
+          return permission === RolePermission.AANBOD_MODEREREN;
+        });
+        return canModerate.length > 0 ? true : false;
+      });
+    })
+    .catch(showProblem) // stop loading when there's an error
+    .finally(function() {
+      moderator.loading = false;
+    });
+
+  function showModerationContent(role) {
+    console.log(role);
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    moderator.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
+
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return moderator.errorMessage;
+          }
+        }
+      }
+    );
+  }
+}
+ModerationListController.$inject = ["ModerationManager", "$uibModal", "RolePermission"];
+
+// Source: src/management/moderation/moderation-manager.service.js
+/**
+ * @ngdoc service
+ * @name udb.management.moderation
+ * @description
+ * # Moderation Manager
+ * This service allows you to lookup moderation lists and approve/reject/... Offers.
+ */
+angular
+  .module('udb.management.moderation')
+  .service('ModerationManager', ModerationManager);
+
+/* @ngInject */
+function ModerationManager(udbApi) {
+  var service = this;
+
+  /**
+   * @param {string} query
+   * @param {int} limit
+   * @param {int} start
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  service.getMyRoles = function() {
+    return udbApi
+      .getMe()
+      .then(function(user) {
+        return udbApi.getUserRoles(user.id);
+      });
+  };
+}
+ModerationManager.$inject = ["udbApi"];
 
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 
@@ -18925,13 +19037,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <h1>Valideren</h1>\n" +
     "</div>\n" +
     "\n" +
+    "<div ng-show=\"moderator.loading && !moderator.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <div class=\"form-inline\">\n" +
     "            <div class=\"form-group\">\n" +
     "                <label>Valideer als</label>\n" +
-    "                <select class=\"form-control\">\n" +
-    "                    <option>blub </option>\n" +
+    "                <select class=\"form-control\"\n" +
+    "                        name=\"role\"\n" +
+    "                        ng-change=\"moderator.showModerationContent\"\n" +
+    "                        ng-model=\"moderator.selectedRole\">\n" +
+    "                        <option ng-repeat=\"role in moderator.roles\" ng-value=\"role\">{{role.name}}</option>\n" +
     "                </select>\n" +
     "            </div>\n" +
     "        </div>\n" +
