@@ -10520,15 +10520,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     var phone = $scope.bookingModel.phone;
     var email = $scope.bookingModel.email;
 
-    var foundUrl = $scope.contactInfo.some(function (element) {
+    $scope.contactInfo.some(function (element) {
       return element.value === url;
     });
 
-    var foundPhone = $scope.contactInfo.some(function (element) {
+    $scope.contactInfo.some(function (element) {
       return element.value === phone;
     });
 
-    var foundEmail = $scope.contactInfo.some(function (element) {
+    $scope.contactInfo.some(function (element) {
       return element.value === email;
     });
 
