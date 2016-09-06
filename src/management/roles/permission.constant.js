@@ -19,7 +19,7 @@ angular
      * @enum {string}
      */
     {
-      'AANBOD_INVOEREN': 'AANBOD_INVOEREN',
+      // removed 'AANBOD_INVOEREN' see III-1315
       'AANBOD_BEWERKEN': 'AANBOD_BEWERKEN',
       'AANBOD_MODEREREN': 'AANBOD_MODEREREN',
       'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',

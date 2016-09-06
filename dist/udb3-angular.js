@@ -1899,7 +1899,7 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 angular
   .module('udb.core')
   .constant('authorization', {
-    'createOffer' : 'AANBOD_INVOEREN',
+    // remove AANBOD_INVOEREN see 1315
     'editOffer': 'AANBOD_BEWERKEN',
     'moderateOffer': 'AANBOD_MODEREREN',
     'removeOffer': 'AANBOD_VERWIJDEREN',
@@ -11664,7 +11664,7 @@ angular
      * @enum {string}
      */
     {
-      'AANBOD_INVOEREN': 'AANBOD_INVOEREN',
+      // removed 'AANBOD_INVOEREN' see III-1315
       'AANBOD_BEWERKEN': 'AANBOD_BEWERKEN',
       'AANBOD_MODEREREN': 'AANBOD_MODEREREN',
       'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',
