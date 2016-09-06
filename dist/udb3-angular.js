@@ -17489,7 +17489,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <p><strong>Reservatie periode</strong></p>\n" +
     "        <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
     "        </div>\n" +
-    "        <form name=\"bookingPeriod\">\n" +
+    "        <form name=\"bookingPeriod\" class=\"booking-period\">\n" +
     "            <table class=\"table\">\n" +
     "                <tr>\n" +
     "                    <td>\n" +
@@ -18272,7 +18272,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "\n" +
     "              <section class=\"state filling complete\">\n" +
-    "                <form name=\"contactInfoForm\">\n" +
+    "                <form name=\"contactInfoForm\" class=\"contact-info\">\n" +
     "                  <table class=\"table\">\n" +
     "                    <tr ng-repeat=\"(key, info) in contactInfo\"\n" +
     "                        ng-model=\"info\"\n" +

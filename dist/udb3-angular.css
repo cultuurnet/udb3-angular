@@ -3063,8 +3063,8 @@ input + .alert {
 #locatie-kiezer {
   min-height: 100px;
 }
-form[name="contactInfoForm"] table,
-form[name="bookingPeriod"] table {
+form.contact-info table,
+form.booking-period table {
   border: 1px solid #dddddd;
 }
 .npr {
