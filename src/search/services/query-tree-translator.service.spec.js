@@ -11,7 +11,7 @@ describe('Service: QueryTreeTranslator', function () {
         LOCATION_LABEL: 'location'
       },
       nl: {
-        LOCATION_LABEL: 'locatie'
+        LOCATION_LABEL: 'locatie (naam)'
       }
     };
 
@@ -27,7 +27,7 @@ describe('Service: QueryTreeTranslator', function () {
   it('should translate dutch query fields', function () {
     var queryTree = {
         left: {
-          field: 'locatie',
+          field: 'locatie (naam)',
           term: 'Tienen'
         }
       };

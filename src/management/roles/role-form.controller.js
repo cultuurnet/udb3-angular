@@ -1,6 +1,12 @@
 'use strict';
 
 /**
+ * @typedef {Object} TranslatedPermission
+ * @property {RolePermission} key
+ * @property {string} name
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:RoleFormController
  * @description
@@ -15,19 +21,21 @@ angular
  * @constructor
  *
  * @param {RoleManager} RoleManager
- * @param {PermissionManager} PermissionManager
  * @param {UserManager} UserManager
  * @param {Object} $uibModal
  * @param {Object} $stateParams
  * @param {Object} $q
+ * @param {Function} $translate
+ * @param {RolePermission} RolePermission
  */
 function RoleFormController(
   RoleManager,
-  PermissionManager,
   UserManager,
   $uibModal,
   $stateParams,
-  $q
+  $q,
+  $translate,
+  RolePermission
 ) {
   var editor = this;
   var roleId = $stateParams.id;
@@ -39,13 +47,16 @@ function RoleFormController(
   editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
-    permissions: {},
+    permissions: [],
     users: [],
     labels: []
   };
-  editor.permissions = [];
+  /**
+   * @type {TranslatedPermission[]}
+   */
+  editor.availablePermissions = [];
   editor.originalRole = {
-    permissions: {},
+    permissions: [],
     users: [],
     labels: []
   };
@@ -64,7 +75,8 @@ function RoleFormController(
 
   function init() {
     getAllRolePermissions()
-      .then(function() {
+      .then(function(permissions) {
+        editor.availablePermissions = permissions;
         return roleId ? loadRole(roleId) : $q.resolve();
       })
       .catch(showProblem) // stop loading when there's an error
@@ -83,16 +95,12 @@ function RoleFormController(
       .then(function(role) {
         editor.role = role;
 
-        editor.role.permissions = {};
         editor.role.users = [];
         editor.role.labels = [];
       }, function(problem) {
         problem.detail = problem.title;
         problem.title = 'De rol kon niet gevonden worden.';
         return $q.reject(problem);
-      })
-      .then(function() {
-        return getRolePermissions(roleId);
       })
       .then(function () {
         return loadRoleUsers(roleId);
@@ -102,34 +110,23 @@ function RoleFormController(
       });
   }
 
-  function getRolePermissions(roleId) {
-    return RoleManager
-      .getRolePermissions(roleId)
-      .then(function(rolePermissions) {
-        editor.role.permissions = {};
-        angular.forEach(rolePermissions, function(permission, key) {
-          editor.role.permissions[permission.key] = true;
-        });
-
-        return rolePermissions;
-      }, function(problem) {
-        problem.detail = problem.title;
-        problem.title = 'De permissies van deze rol konden niet geladen worden.';
-        return $q.reject(problem);
-      });
-  }
-
+  /**
+   * @return {TranslatedPermission[]}
+   */
   function getAllRolePermissions() {
-    return PermissionManager
-      .getAll()
-      .then(function(retrievedPermissions) {
-        editor.permissions = retrievedPermissions;
-        return retrievedPermissions;
-      }, function(problem) {
-        problem.detail = problem.title;
-        problem.title = 'De permissie lijst kon niet geladen worden.';
-        return $q.reject(problem);
+    var permissionIds = _.values(RolePermission);
+
+    function formatTranslatedPermissions(translations) {
+      return _.map(translations, function (translation, translationId) {
+        return {
+          key: translationId,
+          name: translation
+        };
       });
+    }
+
+    return $translate(permissionIds)
+      .then(formatTranslatedPermissions);
   }
 
   function loadRoleUsers(roleId) {
@@ -158,12 +155,13 @@ function RoleFormController(
 
   function roleCreated (response) {
     roleId = response.roleId;
-    editor.role.id = roleId;
-    editor.originalRole.id = roleId;
+    // set uuid because a GET role would have a uuid as well
+    editor.role.uuid = roleId;
+    editor.originalRole.uuid = roleId;
   }
 
   function createRole() {
-    if (!editor.role.id && editor.role.name) {
+    if (!editor.role.uuid && editor.role.name) {
       RoleManager
         .create(editor.role.name)
         .then(roleCreated, showProblem)
@@ -197,22 +195,29 @@ function RoleFormController(
       });
   }
 
-  function updatePermission(key) {
+  /**
+   *
+   * @param {RolePermission} permission
+   */
+  function updatePermission(permission) {
+    var hasPermission = editor.role.permissions.indexOf(permission) > -1;
+
     // permission added
-    if (editor.role.permissions[key] === true) {
+    if (!hasPermission) {
       editor.loadedRolePermissions = false;
       RoleManager
-        .addPermissionToRole(key, roleId)
+        .addPermissionToRole(permission, roleId)
         .catch(showProblem)
         .finally(function() {
           editor.loadedRolePermissions = true;
         });
     }
+
     // permission removed
-    if (editor.role.permissions[key] === false) {
+    if (hasPermission) {
       editor.loadedRolePermissions = false;
       RoleManager
-        .removePermissionFromRole(key, roleId)
+        .removePermissionFromRole(permission, roleId)
         .catch(showProblem)
         .finally(function() {
           editor.loadedRolePermissions = true;
