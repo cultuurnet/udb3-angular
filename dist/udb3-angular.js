@@ -2539,7 +2539,7 @@ angular.module('udb.core')
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
-      'terms.eventtype': 'Soort aanbod',
+      'terms.eventtype': 'Type',
       'created': 'Datum aangemaakt',
       'modified': 'Datum laatste aanpassing',
       'publisher': 'Auteur',
@@ -2555,7 +2555,7 @@ angular.module('udb.core')
       'what': 'Wat',
       'where': 'Waar',
       'when': 'Wanneer',
-      'input-information': 'Invoerders-informatie',
+      'input-information': 'Invoerdersinformatie',
       'translations': 'Vertalingen',
       'other': 'Andere'
     },
@@ -5831,29 +5831,58 @@ angular
   .controller('OfferLabelModalCtrl', OfferLabelModalCtrl);
 
 /* @ngInject */
-function OfferLabelModalCtrl($scope, $uibModalInstance, udbApi) {
-  var labelPromise = udbApi.getRecentLabels();
+function OfferLabelModalCtrl($uibModalInstance, udbApi) {
+  var lmc = this;
+  // ui-select can't get to this scope variable unless you reference it from the $parent scope.
+  // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
+  lmc.labels = [];
+  lmc.close = close;
+  lmc.ok = ok;
+  lmc.labelNames = '';
+  lmc.labelSelection = [];
+  lmc.alert = false;
+  lmc.minimumInputLength = 3;
+  lmc.maxInputLength = 255;
 
-  var ok = function () {
+  udbApi
+    .getRecentLabels()
+    .then(function (labels) {
+      lmc.labelSelection = _.map(labels, function (label) {
+        return {'name': label, 'selected': false};
+      });
+    });
+
+  function ok() {
+    // reset error msg
+    lmc.alert = false;
+
     // Get the labels selected by checkbox
-    var checkedLabels = $scope.labelSelection.filter(function (label) {
+    var checkedLabels = lmc.labelSelection.filter(function (label) {
       return label.selected;
     }).map(function (label) {
       return label.name;
     });
 
     //add the labels
-    var inputLabels = parseLabelInput($scope.labelNames);
+    var inputLabels = parseLabelInput(lmc.labelNames);
+
+    if (lmc.alert) {
+      return;
+    }
 
     // join arrays and remove doubles
     var labels = _.union(checkedLabels, inputLabels);
 
     $uibModalInstance.close(labels);
-  };
+  }
 
-  var close = function () {
+  function close() {
     $uibModalInstance.dismiss('cancel');
-  };
+  }
+
+  function areLengthCriteriaMet(length) {
+    return (length >= lmc.minimumInputLength && length <= lmc.maxInputLength);
+  }
 
   function parseLabelInput(stringWithLabels) {
     //split sting into array of labels
@@ -5867,23 +5896,18 @@ function OfferLabelModalCtrl($scope, $uibModalInstance, udbApi) {
     // remove empty strings
     labels = _.without(labels, '');
 
+    var i;
+    for (i = 0; i < labels.length; i++) {
+      if (!areLengthCriteriaMet(labels[i].length)) {
+        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        break;
+      }
+    }
+
     return labels;
   }
-
-  labelPromise.then(function (labels) {
-    $scope.availableLabels = labels;
-    $scope.labelSelection = _.map(labels, function (label) {
-      return {'name': label, 'selected': false};
-    });
-  });
-  // ui-select can't get to this scope variable unless you reference it from the $parent scope.
-  // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
-  $scope.labels = [];
-  $scope.close = close;
-  $scope.ok = ok;
-  $scope.labelNames = '';
 }
-OfferLabelModalCtrl.$inject = ["$scope", "$uibModalInstance", "udbApi"];
+OfferLabelModalCtrl.$inject = ["$uibModalInstance", "udbApi"];
 
 // Source: src/entry/labelling/offer-labeller.service.js
 /**
@@ -11464,6 +11488,28 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
 }
 LabelsListController.$inject = ["SearchResultGenerator", "rx", "$scope", "LabelManager"];
 
+// Source: src/management/labels/semicolon-label-check.directive.js
+angular
+  .module('udb.management.labels')
+  .directive('udbSemicolonLabelCheck', SemicolonLabelCheckDirective);
+
+/** @ngInject */
+function SemicolonLabelCheckDirective($q) {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, element, attrs, controller) {
+
+      function hasNoSemicolons(name) {
+        return (name.indexOf(';') === -1);
+      }
+
+      controller.$validators.semicolonLabel = hasNoSemicolons;
+    }
+  };
+}
+SemicolonLabelCheckDirective.$inject = ["$q"];
+
 // Source: src/management/labels/unique-label.directive.js
 angular
   .module('udb.management.labels')
@@ -13648,46 +13694,58 @@ angular
   });
 
 /** @ngInject */
-function LabelSelectComponent(offerLabeller) {
+function LabelSelectComponent(offerLabeller, $q) {
   var select = this;
   /** @type {Label[]} */
   select.availableLabels = [];
   select.suggestLabels = suggestLabels;
   select.createLabel = createLabel;
+  select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 2;
+  select.minimumInputLength = 3;
+  select.maxInputLength = 255;
   select.findDelay = 300;
+  select.refreshing = false;
+
+  function areLengthCriteriaMet(length) {
+    return (length >= select.minimumInputLength && length <= select.maxInputLength);
+  }
 
   function createLabel(labelName) {
+    // strip semi-colon, which doesn't get stripped automatically
+    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
+    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
+    labelName = labelName.replace(/;/g, '').trim();
+
     var similarLabel = _.find(select.labels, function (existingLabel) {
       return existingLabel.name.toUpperCase() === labelName.toUpperCase();
     });
-    if (!similarLabel) {
+    if (!similarLabel && select.areLengthCriteriaMet(labelName.length)) {
       return {name:labelName};
     }
   }
 
   function findSuggestions(name) {
-    offerLabeller
+    return offerLabeller
       .getSuggestions(name, 6)
       .then(function(labels) {
         labels.push({name: name});
         setAvailableLabels(labels);
+        return $q.resolve();
       })
       .finally(function () {
         select.refreshing = false;
       });
   }
 
-  var delayedFindSuggestions = _.debounce(findSuggestions, select.findDelay);
-
   function suggestLabels(name) {
     select.refreshing = true;
     setAvailableLabels([]);
-    delayedFindSuggestions(name);
+    // returning the promise for testing purposes
+    return findSuggestions(name);
   }
 
   /** @param {Label[]} labels */
@@ -13702,7 +13760,7 @@ function LabelSelectComponent(offerLabeller) {
       .value();
   }
 }
-LabelSelectComponent.$inject = ["offerLabeller"];
+LabelSelectComponent.$inject = ["offerLabeller", "$q"];
 
 // Source: src/search/components/query-editor-daterangepicker.directive.js
 /**
@@ -14976,41 +15034,41 @@ angular
     },
     nl: {
       'TYPE' : 'type',
-      'CDBID' : 'cdbid',
+      'CDBID' : 'identificatiecode (CDBID)',
       'TITLE' : 'titel',
       'KEYWORDS' : 'label',
-      'CITY' : 'gemeente',
-      'ORGANISER_KEYWORDS': 'organisatie-label',
+      'CITY' : 'gemeente (naam)',
+      'ORGANISER_KEYWORDS': 'label organisatie',
       'ZIPCODE' : 'postcode',
       'COUNTRY' : 'land',
-      'PHYSICAL_GIS' : 'geo',
+      'PHYSICAL_GIS' : 'geo-coördinaten',
       'CATEGORY_NAME' : 'categorie',
-      'AGEFROM' : 'leeftijd-vanaf',
+      'AGEFROM' : 'leeftijd vanaf',
       'DETAIL_LANG' : 'vertaling',
       'PRICE' : 'prijs',
-      'STARTDATE' : 'start-datum',
-      'ENDDATE' : 'eind-datum',
-      'ORGANISER_LABEL' : 'organisatie',
-      'LOCATION_LABEL' : 'locatie',
+      'STARTDATE' : 'startdatum',
+      'ENDDATE' : 'einddatum',
+      'ORGANISER_LABEL' : 'organisatie (naam)',
+      'LOCATION_LABEL' : 'locatie (naam)',
       'EXTERNALID' : 'externalid',
-      'LASTUPDATED' : 'laatst-aangepast',
-      'LASTUPDATEDBY' : 'laatst-aangepast-door',
-      'CREATIONDATE' : 'gecreeerd',
-      'CREATEDBY' : 'gecreeerd-door',
+      'LASTUPDATED' : 'laatst aangepast',
+      'LASTUPDATEDBY' : 'laatst aangepast door',
+      'CREATIONDATE' : 'gecreëerd',
+      'CREATEDBY' : 'gecreëerd door',
       'PERMANENT' : 'permanent',
       'DATETYPE' : 'wanneer',
-      'CATEGORY_EVENTTYPE_NAME' : 'event-type',
+      'CATEGORY_EVENTTYPE_NAME' : 'type',
       'CATEGORY_THEME_NAME' : 'thema',
-      'CATEGORY_FACILITY_NAME' : 'voorziening',
+      'CATEGORY_FACILITY_NAME' : 'voorzieningen',
       'CATEGORY_TARGETAUDIENCE_NAME' : 'doelgroep',
-      'CATEGORY_FLANDERSREGION_NAME' : 'gebied',
+      'CATEGORY_FLANDERSREGION_NAME' : 'regio / gemeente',
       'CATEGORY_PUBLICSCOPE_NAME' : 'publieksbereik',
-      'LIKE_COUNT' : 'aantal-likes',
-      'RECOMMEND_COUNT' : 'keren-aanbevolen',
-      'ATTEND_COUNT' : 'aantal-ik-ga',
-      'COMMENT_COUNT' : 'aantal-commentaar',
-      'PRIVATE' : 'prive',
-      'AVAILABLEFROM' : 'datum-beschikbaar'
+      'LIKE_COUNT' : 'aantal keer \'geliket\'',
+      'RECOMMEND_COUNT' : 'aantal keer aanbevolen',
+      'ATTEND_COUNT' : 'aantal keer \'ik ga hierheen\'',
+      'COMMENT_COUNT' : 'aantal reacties',
+      'PRIVATE' : 'privé',
+      'AVAILABLEFROM' : 'datum beschikbaar'
     }
   });
 
@@ -15970,7 +16028,8 @@ function Search(
 
     var modal = $uibModal.open({
       templateUrl: 'templates/offer-label-modal.html',
-      controller: 'OfferLabelModalCtrl'
+      controller: 'OfferLabelModalCtrl',
+      controllerAs: 'lmc'
     });
 
     modal.result.then(function (labels) {
@@ -15998,7 +16057,8 @@ function Search(
     if (queryBuilder.isValid(query)) {
       var modal = $uibModal.open({
         templateUrl: 'templates/offer-label-modal.html',
-        controller: 'OfferLabelModalCtrl'
+        controller: 'OfferLabelModalCtrl',
+        controllerAs: 'lmc'
       });
 
       modal.result.then(function (labels) {
@@ -16410,17 +16470,22 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/offer-label-modal.html',
-    "<div class=\"modal-body\">\n" +
+    "<div class=\"modal-body offer-label-modal\">\n" +
     "\n" +
-    "  <label>Labels</label>\n" +
+    "  <h2>Labels</h2>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-lg-12\">\n" +
-    "      <input type=\"text\" ng-model=\"labelNames\" class=\"form-control\"/>\n" +
+    "      <input type=\"text\"\n" +
+    "             class=\"form-control\"\n" +
+    "             ng-model=\"lmc.labelNames\"\n" +
+    "             name=\"labels\" />\n" +
+    "      <p class=\"help-block\">Een puntkomma start een nieuw label. <br />\n" +
+    "        <span class=\"lmc-alert text-danger\" ng-if=\"lmc.alert\" ng-bind=\"lmc.alert\"><</span></p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"col-lg-12\">\n" +
-    "      <div class=\"checkbox\" ng-repeat=\"label in labelSelection\">\n" +
+    "      <div class=\"checkbox\" ng-repeat=\"label in lmc.labelSelection\">\n" +
     "        <label>\n" +
     "          <input type=\"checkbox\" ng-model=\"label.selected\"/>\n" +
     "          <span ng-bind=\"label.name\"></span>\n" +
@@ -16431,8 +16496,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button class=\"btn btn-default\" ng-click=\"close()\">Annuleren</button>\n" +
-    "  <button class=\"btn btn-primary\" ng-click=\"ok()\">Label</button>\n" +
+    "  <button class=\"btn btn-default\" ng-click=\"lmc.close()\">Annuleren</button>\n" +
+    "  <button class=\"btn btn-primary\" ng-click=\"lmc.ok()\">Label</button>\n" +
     "</div>\n"
   );
 
@@ -17294,10 +17359,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"modal-body\">\n" +
     "  <form name=\"placeForm\" class=\"css-form\">\n" +
     "    <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "      <label>Titel</label>\n" +
+    "      <label>Naam locatie</label>\n" +
     "      <input class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "      <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        Titel is een verplicht veld.\n" +
+    "        De naam van de locatie is een verplicht veld.\n" +
     "      </span>\n" +
     "    </div>\n" +
     "\n" +
@@ -17324,7 +17389,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <label>Straat en nummer</label>\n" +
     "          <input class=\"form-control\"\n" +
     "                 id=\"locatie-straat\"\n" +
-    "                 placeholder=\"Straat en nummer\"\n" +
     "                 name=\"address_streetAddress\"\n" +
     "                 type=\"text\"\n" +
     "                 ng-model=\"newPlace.address.streetAddress\"\n" +
@@ -17354,7 +17418,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
     "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
@@ -18678,6 +18742,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       name=\"name\"\n" +
     "                       type=\"text\"\n" +
     "                       udb-unique-label\n" +
+    "                       udb-semicolon-label-check\n" +
     "                       ng-minlength=\"3\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
@@ -18688,6 +18753,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -18734,8 +18800,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div ng-show=\"editor.label\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-6\">\n" +
-    "                <label for=\"label-name-field\">Naam</label>\n" +
-    "                <input id=\"label-name-field\" type=\"text\" ng-model=\"editor.label.name\" ng-disabled=\"editor.renaming\">\n" +
+    "                <div class=\"form-group\" udb-form-group>\n" +
+    "                    <label for=\"label-name-field\">Naam</label>\n" +
+    "                    <input id=\"label-name-field\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           type=\"text\"\n" +
+    "                           name=\"name\"\n" +
+    "                           udb-semicolon-label-check\n" +
+    "                           ng-model=\"editor.label.name\"\n" +
+    "                           ng-minlength=\"3\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-maxlength=\"255\"\n" +
+    "                           ng-disabled=\"editor.renaming\">\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
@@ -19584,24 +19665,25 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/label-select.html',
+    "<!-- adding a '.' to the token list due to: https://github.com/angular-ui/ui-select/issues/1151 -->\n" +
     "<ui-select multiple\n" +
     "           tagging=\"select.createLabel\"\n" +
     "           ng-model=\"select.labels\"\n" +
     "           reset-search-input=\"true\"\n" +
-    "           tagging-tokens=\"ENTER|;\"\n" +
+    "           tagging-tokens=\"ENTER|;|.\"\n" +
     "           on-select=\"select.labelAdded({label: $item})\"\n" +
     "           on-remove=\"select.labelRemoved({label: $item})\">\n" +
     "    <ui-select-match placeholder=\"Voeg een label toe...\">{{$item.name}}</ui-select-match>\n" +
-    "    <ui-select-no-choice ng-show=\"$select.search.length >= select.minimumInputLength &&\">\n" +
+    "    <ui-select-no-choice ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\">\n" +
     "        <div class=\"udb-label-select-refreshing\" style=\"padding: 3px 20px\">\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Suggesties laden\n" +
     "        </div>\n" +
     "    </ui-select-no-choice>\n" +
     "    <ui-select-choices repeat=\"label in select.availableLabels track by label.name\"\n" +
-    "                       ng-show=\"$select.search.length >= select.minimumInputLength &&\"\n" +
+    "                       ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\"\n" +
     "                       ui-disable-choice=\"select.refreshing\"\n" +
     "                       refresh=\"select.suggestLabels($select.search)\"\n" +
-    "                       refresh-delay=\"0\"\n" +
+    "                       refresh-delay=\"300\"\n" +
     "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
     "        <div>\n" +
     "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
