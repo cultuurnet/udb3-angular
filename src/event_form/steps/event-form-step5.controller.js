@@ -524,48 +524,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function showBookingOption(contactInfo) {
+    var types = ['url', 'phone', 'email'];
     var type = contactInfo.type;
     var value = contactInfo.value;
 
-    // check if there is already a phone used for bookings.
-    if (type === 'phone') {
-      if (!$scope.bookingModel.phone) {
-        return true;
-      }
-      else if ($scope.bookingModel.phone === value) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    // check if there is already a url used for bookings.
-    else if (type === 'url') {
-      if (!$scope.bookingModel.url) {
-        return true;
-      }
-      else if ($scope.bookingModel.url === value) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    // check if there is already a email used for bookings.
-    else if (type === 'email') {
-      if (!$scope.bookingModel.email) {
-        return true;
-      }
-      else if ($scope.bookingModel.email === value) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-    else {
-      return false;
-    }
+    return _.includes(types, type) && (!$scope.bookingModel[type] || $scope.bookingModel[type] === value);
   }
 
   /**
