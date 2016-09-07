@@ -11512,7 +11512,7 @@ function SemicolonLabelCheckDirective($q) {
     link: function (scope, element, attrs, controller) {
 
       function hasNoSemicolons(name) {
-        return (name.indexOf(';') === -1);
+        return name === undefined || (name.indexOf(';') === -1);
       }
 
       controller.$validators.semicolonLabel = hasNoSemicolons;
