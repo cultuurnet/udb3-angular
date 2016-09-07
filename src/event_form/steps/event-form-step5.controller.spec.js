@@ -587,12 +587,10 @@ describe('Controller: event form step 5', function () {
     scope.toggleBookingType(contactInfos[0]);
     scope.$digest();
     expect(scope.bookingModel.url).toEqual('');
-    expect(scope.editBookingUrl).toBeFalsy();
 
     scope.toggleBookingType(contactInfos[1]);
     scope.$digest();
     expect(scope.bookingModel.url).toEqual(contactInfos[1].value);
-    expect(scope.editBookingUrl).toBeTruthy();
   });
 
   it('should toggle the booking type for phone', function () {
@@ -607,12 +605,10 @@ describe('Controller: event form step 5', function () {
     scope.toggleBookingType(contactInfos[0]);
     scope.$digest();
     expect(scope.bookingModel.phone).toEqual('');
-    expect(scope.editBookingPhone).toBeFalsy();
 
     scope.toggleBookingType(contactInfos[1]);
     scope.$digest();
     expect(scope.bookingModel.phone).toEqual(contactInfos[1].value);
-    expect(scope.editBookingPhone).toBeTruthy();
   });
 
   it('should toggle the booking type for email', function () {
@@ -627,24 +623,29 @@ describe('Controller: event form step 5', function () {
     scope.toggleBookingType(contactInfos[0]);
     scope.$digest();
     expect(scope.bookingModel.email).toEqual('');
-    expect(scope.editBookingEmail).toBeFalsy();
 
     scope.toggleBookingType(contactInfos[1]);
     scope.$digest();
     expect(scope.bookingModel.email).toEqual(contactInfos[1].value);
-    expect(scope.editBookingEmail).toBeTruthy();
   });
 
   it('should save the website preview settings', function () {
+    EventFormData.bookingInfo.availabilityStarts = new Date();
+    EventFormData.bookingInfo.availabilityEnds = new Date();
+    EventFormData.bookingInfo.urlLabel = 'Dit is een url label';
+
     scope.bookingModel = {
       urlLabel: 'Dit is een url label'
     };
     var expectedBookingInfoFormData = {
-      "url": "http://google.be",
+      "url": "",
       "urlLabel": "Dit is een url label",
-      "email": "info@mail.com",
-      "phone": "1234567890"
+      "email": "",
+      "phone": "",
+      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
+      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
     };
+    spyOn(scope, 'saveWebsitePreview');
 
     eventCrud.updateBookingInfo
       .and.returnValue($q.resolve())
@@ -694,21 +695,40 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'info@mail.com', booking: false},
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
-    var expectedBookingInfoFormData = {
-      "url": "http://google.be",
-      "urlLabel": "Reserveer plaatsen",
-      "email": "dude@sweet.com"
+
+    var deleteItem = {type: 'phone', value: '0987654321', booking: true};
+
+    EventFormData.bookingInfo = {
+      url : '',
+      urlLabel : 'Reserveer plaatsen',
+      email : '',
+      phone : '0987654321',
+      availabilityStarts : new Date(),
+      availabilityEnds : new Date()
     };
+
+    scope.bookingModel = {
+      urlLabel: 'Reserveer plaatsen'
+    };
+
+    var expectedBookingInfoFormData = {
+      "url": "",
+      "urlLabel": "Reserveer plaatsen",
+      "email": "",
+      "phone": "0987654321",
+      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
+      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
+    };
+
+    spyOn(scope, 'deleteBookingInfo').and.callFake(function () {
+      expect(scope.toggleBookingType).toHaveBeenCalled();
+    });
 
     eventCrud.updateBookingInfo
       .and.returnValue($q.resolve())
       .and.callFake(function(evenFormData) {
         expect(evenFormData.bookingInfo).toEqual(expectedBookingInfoFormData);
       });
-
-    scope.deleteBookingInfo({type: 'phone', value: '0987654321', booking: true}, 1);
-
-    expect(scope.contactInfo[1].booking).toBeFalsy();
   });
 
   it('should save the booking info', function () {
@@ -718,12 +738,19 @@ describe('Controller: event form step 5', function () {
       email: 'info@mail.com'
     };
     scope.contactInfoForm = {};
+    EventFormData.bookingInfo.availabilityEnds = new Date();
+    EventFormData.bookingInfo.availabilityStarts = new Date();
+
     var expectedBookingInfoFormData = {
       "url": "http://google.be",
       "urlLabel": "Reserveer plaatsen",
       "email": "info@mail.com",
-      "phone": "1234567890"
+      "phone": "1234567890",
+      "availabilityStarts": EventFormData.bookingInfo.availabilityStarts,
+      "availabilityEnds": EventFormData.bookingInfo.availabilityEnds
     };
+
+    spyOn(scope, 'saveBookingInfo');
 
     eventCrud.updateBookingInfo
       .and.returnValue($q.resolve())
@@ -734,7 +761,7 @@ describe('Controller: event form step 5', function () {
     scope.saveBookingInfo();
     scope.$apply();
 
-    expect(scope.bookingInfoCssClass).toEqual('state-complete');
+    expect(scope.bookingInfoCssClass).toEqual('state-incomplete');
     expect(scope.savingBookingInfo).toBeFalsy();
     expect(scope.bookingInfoError).toBeFalsy();
   });
