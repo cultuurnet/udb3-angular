@@ -7498,10 +7498,11 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories) {
+  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
 
     $scope.categories = categories;
     $scope.location = location;
+    $scope.title = title;
 
     // Scope vars.
     $scope.newPlace = getDefaultPlace();
@@ -7519,7 +7520,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
      */
     function getDefaultPlace() {
       return {
-        name: '',
+        name: $scope.title,
         eventType: '',
         address: {
           addressCountry: 'BE',
@@ -7621,7 +7622,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
 })();
 
@@ -9461,6 +9462,9 @@ function EventFormStep3Controller(
         },
         categories: function () {
           return $scope.categories;
+        },
+        title: function () {
+          return $scope.locationAutocompleteTextField;
         }
       }
     });
