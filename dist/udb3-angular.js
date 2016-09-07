@@ -3757,16 +3757,10 @@ function UdbApi(
    */
   function returnApiProblem(errorResponse) {
     if (errorResponse) {
-      // If the error response does not contain the proper data, make some up generic problem.
-      var error = errorResponse.data ? errorResponse.data : {
-        type: appConfig.baseUrl + 'problem',
-        title: 'Something went wrong.',
-        detail: 'We failed to perform the requested action!'
-      };
       var problem = {
-        type: new URL(error.type),
-        title: error.title,
-        detail: error.detail,
+        type: new URL(_.get(errorResponse, 'data.type', appConfig.baseUrl + 'problem')),
+        title: _.get(errorResponse, 'data.title', 'Something went wrong.'),
+        detail: _.get(errorResponse, 'data.detail', 'We failed to perform the requested action!'),
         status: errorResponse.status
       };
 
@@ -4700,8 +4694,25 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
     $cookieStore.put('token', token);
   };
 
+  /**
+   * @return {string|undefined}
+   *  The JWToken of the currently logged in user or undefined.
+   */
   this.getToken = function () {
-    return $cookieStore.get('token');
+    var service = this;
+    var currentToken = $cookieStore.get('token');
+
+    // check if a new JWT is set in the search parameters and parse it
+    var queryParameters = $location.search();
+    var newToken = queryParameters.jwt;
+
+    if (newToken && newToken !== currentToken) {
+      currentToken = newToken;
+      service.setToken(newToken);
+      $location.search('jwt', null);
+    }
+
+    return currentToken;
   };
 
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
@@ -11538,7 +11549,7 @@ function SemicolonLabelCheckDirective($q) {
     link: function (scope, element, attrs, controller) {
 
       function hasNoSemicolons(name) {
-        return (name.indexOf(';') === -1);
+        return name === undefined || (name.indexOf(';') === -1);
       }
 
       controller.$validators.semicolonLabel = hasNoSemicolons;
@@ -12036,12 +12047,13 @@ function RoleFormController(
 
   function roleCreated (response) {
     roleId = response.roleId;
-    editor.role.id = roleId;
-    editor.originalRole.id = roleId;
+    // set uuid because a GET role would have a uuid as well
+    editor.role.uuid = roleId;
+    editor.originalRole.uuid = roleId;
   }
 
   function createRole() {
-    if (!editor.role.id && editor.role.name) {
+    if (!editor.role.uuid && editor.role.name) {
       RoleManager
         .create(editor.role.name)
         .then(roleCreated, showProblem)
@@ -17071,11 +17083,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"add-date\">\n" +
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
-    "      <p id=\"add-date-label\">Dag toevoegen</p>\n" +
+    "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
     "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
     "    </a>\n" +
     "  </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
