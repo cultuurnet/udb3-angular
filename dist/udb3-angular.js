@@ -10346,51 +10346,24 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function showBookingOption(contactInfo) {
-    var types = ['url', 'phone', 'email'];
     var type = contactInfo.type;
     var value = contactInfo.value;
 
-    return _.includes(types, type) && (!$scope.bookingModel[type] || $scope.bookingModel[type] === value);
+    return _.includes(ContactInfoTypeEnum, type) && (!$scope.bookingModel[type] || $scope.bookingModel[type] === value);
   }
 
   /**
    * Toggle the booking type and check if info should be deleted.
    */
   function toggleBookingType(contactItem) {
-
     var saveNeeded = false;
-    if (contactItem.type === 'url') {
-      if (contactItem.booking) {
-        $scope.bookingModel.url = contactItem.value;
-        $scope.editBookingUrl = true;
-      }
-      else if (!contactItem.booking) {
-        $scope.bookingModel.url = '';
-        $scope.editBookingUrl = false;
-      }
-      saveNeeded = true;
-    }
 
-    if (contactItem.type === 'phone') {
+    if (_.includes(ContactInfoTypeEnum, contactItem.type)) {
       if (contactItem.booking) {
-        $scope.bookingModel.phone = contactItem.value;
-        $scope.editBookingPhone = true;
+        $scope.bookingModel[contactItem.type] = contactItem.value;
       }
       else if (!contactItem.booking) {
-        $scope.bookingModel.phone = '';
-        $scope.editBookingPhone = false;
-      }
-      saveNeeded = true;
-    }
-
-    if (contactItem.type === 'email') {
-      if (contactItem.booking) {
-        $scope.bookingModel.email = contactItem.value;
-        $scope.editBookingEmail = true;
-      }
-      else if (!contactItem.booking) {
-        $scope.bookingModel.email = '';
-        $scope.editBookingEmail = false;
+        $scope.bookingModel[contactItem.type] = '';
       }
       saveNeeded = true;
     }
