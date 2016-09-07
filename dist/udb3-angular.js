@@ -18240,44 +18240,44 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                               ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
     "                        <span class=\"help-block\" ng-hide=\"infoErrorMessage === ''\" ng-bind=\"infoErrorMessage\"></span>\n" +
     "\n" +
-    "                          <div class=\"checkbox\">\n" +
-    "                              <label ng-show=\"info.type === 'url' && showBookingOption(info)\">\n" +
-    "                                  <input type=\"checkbox\"\n" +
-    "                                         class=\"reservatie-website-check reservatie-check\"\n" +
-    "                                         ng-model=\"info.booking\"\n" +
-    "                                         ng-click=\"toggleBookingType(info)\">\n" +
-    "                                  Gebruik voor reservatie\n" +
-    "                              </label>\n" +
-    "                              <div class=\"reservatie-website-info reservatie-info\"\n" +
-    "                                   ng-show=\"info.type === 'url' && info.booking\">\n" +
+    "                          <div class=\"booking-options\"\n" +
+    "                               ng-show=\"showBookingOption(info)\">\n" +
+    "                              <div class=\"checkbox\"\n" +
+    "                                   ng-switch-when=\"url\">\n" +
+    "                                  <label>\n" +
+    "                                      <input type=\"checkbox\"\n" +
+    "                                             class=\"reservatie-website-check reservatie-check\"\n" +
+    "                                             ng-model=\"info.booking\"\n" +
+    "                                             ng-click=\"toggleBookingType(info)\">\n" +
+    "                                      Gebruik voor reservatie\n" +
+    "                                  </label>\n" +
+    "                                  <div class=\"reservatie-website-info reservatie-info\"\n" +
+    "                                       ng-show=\"info.booking\">\n" +
     "\n" +
-    "                                <div class=\"reservatie-info-stap2\">\n" +
-    "                                  <div class=\"weergave\">\n" +
-    "                                      <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
-    "                                      <select ng-model=\"bookingModel.urlLabel\"\n" +
-    "                                              ng-change=\"saveWebsitePreview()\">\n" +
-    "                                          <option value=\"Koop tickets\">Koop tickets</option>\n" +
-    "                                          <option value=\"Reserveer plaatsen\">Reserveer plaatsen</option>\n" +
-    "                                          <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
-    "                                          <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
-    "                                      </select>\n" +
+    "                                    <div class=\"reservatie-info-stap2\">\n" +
+    "                                      <div class=\"weergave\">\n" +
+    "                                          <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
+    "                                          <select ng-model=\"bookingModel.urlLabel\"\n" +
+    "                                                  ng-change=\"saveWebsitePreview()\">\n" +
+    "                                              <option value=\"Koop tickets\">Koop tickets</option>\n" +
+    "                                              <option value=\"Reserveer plaatsen\">Reserveer plaatsen</option>\n" +
+    "                                              <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
+    "                                              <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
+    "                                          </select>\n" +
+    "                                      </div>\n" +
+    "                                    </div>\n" +
     "                                  </div>\n" +
-    "                                </div>\n" +
     "                              </div>\n" +
-    "                              <label ng-show=\"info.type === 'phone' && showBookingOption(info)\">\n" +
-    "                                  <input type=\"checkbox\"\n" +
-    "                                         class=\"reservatie-telefoon-check reservatie-check\"\n" +
-    "                                         ng-model=\"info.booking\"\n" +
-    "                                         ng-change=\"toggleBookingType(info)\">\n" +
-    "                                  Gebruik voor reservatie\n" +
-    "                              </label>\n" +
-    "                              <label ng-show=\"info.type === 'email' && showBookingOption(info)\">\n" +
-    "                                  <input type=\"checkbox\"\n" +
-    "                                         class=\"reservatie-email-check reservatie-check\"\n" +
-    "                                         ng-model=\"info.booking\"\n" +
-    "                                         ng-change=\"toggleBookingType(info)\">\n" +
-    "                                  Gebruik voor reservatie\n" +
-    "                              </label>\n" +
+    "                              <div class=\"checkbox\"\n" +
+    "                                   ng-switch-default>\n" +
+    "                                  <label>\n" +
+    "                                      <input type=\"checkbox\"\n" +
+    "                                             class=\"reservatie-telefoon-check reservatie-check\"\n" +
+    "                                             ng-model=\"info.booking\"\n" +
+    "                                             ng-change=\"toggleBookingType(info)\">\n" +
+    "                                      Gebruik voor reservatie\n" +
+    "                                  </label>\n" +
+    "                              </div>\n" +
     "                          </div>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
