@@ -7,4 +7,6 @@
  * # Moderation Management Module
  */
 angular
-  .module('udb.management.moderation', []);
+  .module('udb.management.moderation', [
+    'rx'
+  ]);

@@ -41,7 +41,7 @@ describe('Service: Moderation Manager', function () {
     udbApi = jasmine.createSpyObj('udbApi', [
       'getMe',
       'getUserRoles',
-      'findEvents'
+      'findEventsWithLimit'
     ]);
     $provide.provider('udbApi', {
       $get: function () {
@@ -75,32 +75,32 @@ describe('Service: Moderation Manager', function () {
   });
 
   it('should fetch the moderation items for a given role', function (done) {
-    udbApi.findEvents.and.returnValue($q.resolve(events));
+    udbApi.findEventsWithLimit.and.returnValue($q.resolve(events));
 
     function assertResultset (result) {
-      expect(udbApi.findEvents).toHaveBeenCalledWith('city:leuven AND wfstatus="readyforvalidation"', 0);
+      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith('city:leuven AND wfstatus="readyforvalidation"', 0, 10);
       expect(result).toEqual(events);
       done();
     }
 
     service
-      .findModerationItems('city:leuven', 0)
+      .find('city:leuven', 10, 0)
       .then(assertResultset);
 
     $scope.$apply();
   });
 
   it('should fetch all readyforvalidation offers when an empty constraint is given', function (done) {
-    udbApi.findEvents.and.returnValue($q.resolve(events));
+    udbApi.findEventsWithLimit.and.returnValue($q.resolve(events));
 
     function assertResultset (result) {
-      expect(udbApi.findEvents).toHaveBeenCalledWith('wfstatus="readyforvalidation"', 0);
+      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith('wfstatus="readyforvalidation"', 0, 10);
       expect(result).toEqual(events);
       done();
     }
 
     service
-      .findModerationItems('', 0)
+      .find('', 10, 0)
       .then(assertResultset);
 
     $scope.$apply();

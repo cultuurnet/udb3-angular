@@ -226,6 +226,18 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // findEventsWithLimit
+  it('should find events when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'search?query=searchquery&start=0&limit=30')
+      .respond(JSON.stringify(response));
+    service
+      .findEventsWithLimit('searchquery', 0, 30)
+      .then(done);
+    $httpBackend.flush();
+  });
+
   // getOffer
   it('should retrieve offers from api when not in cache', function (done) {
     var offerLocation = 'http://foobar/event/0823f57e-a6bd-450a-b4f5-8459b4b11043';

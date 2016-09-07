@@ -18,8 +18,23 @@ angular
  * @param {Object} $uibModal
  * @param {RolePermission} RolePermission
  */
-function ModerationListController(ModerationManager, $uibModal, RolePermission) {
+function ModerationListController(
+  ModerationManager,
+  $uibModal,
+  RolePermission,
+  SearchResultGenerator,
+  rx,
+  $scope
+) {
   var moderator = this;
+
+  var itemsPerPage = 10;
+
+  // configure observables for searching items
+  var query$ = rx.createObservableFunction(moderator, 'queryChanged');
+  var page$ = rx.createObservableFunction(moderator, 'pageChanged');
+  var searchResultGenerator = new SearchResultGenerator(ModerationManager, query$, page$, itemsPerPage);
+  var searchResult$ = searchResultGenerator.getSearchResult$();
 
   moderator.roles = [];
 
@@ -27,8 +42,11 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
   moderator.selectedRole = false;
   moderator.errorMessage = false;
 
-  moderator.showModerationContent = showModerationContent;
+  moderator.searchResult = {};
 
+  moderator.findModerationContent = findModerationContent;
+
+  // load the current user's moderation roles
   ModerationManager
     .getMyRoles()
     .then(filterModeratorRoles)
@@ -36,6 +54,18 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
     .finally(function() {
       moderator.loading = false;
     });
+
+  // show search results
+  searchResult$
+    .safeApply($scope, showSearchResult)
+    .subscribe();
+
+  // show loading screen on query change
+  query$
+    .safeApply($scope, function () {
+      moderator.loading = true;
+    })
+    .subscribe();
 
   function filterModeratorRoles(roles) {
     // only show roles with moderator permission
@@ -47,20 +77,28 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
     });
   }
 
-  function showModerationContent(roleId) {
-    var currentRole = _.find(moderator.roleId, function(role) {
+  function findModerationContent(roleId) {
+    var currentRole = _.find(moderator.roles, function(role) {
       return role.uuid === roleId;
     });
 
-    ModerationManager
-      .findModerationItems(currentRole.constraint, 0)
-      .then(function(searchResults) {
-        // TODO show items
-      })
-      .catch(showProblem)
-      .finally(function() {
-        // TODO stop spinner
-      });
+    moderator.queryChanged(currentRole.constraint);
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
+   */
+  function showSearchResult(searchResult) {
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      moderator.searchResult = {};
+    } else {
+      moderator.searchResult = searchResult;
+    }
+
+    moderator.loading = false;
   }
 
   /**

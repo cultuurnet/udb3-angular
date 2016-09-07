@@ -229,7 +229,9 @@ angular
  * # Moderation Management Module
  */
 angular
-  .module('udb.management.moderation', []);
+  .module('udb.management.moderation', [
+    'rx'
+  ]);
 /**
  * @ngdoc module
  * @name udb.management
@@ -2739,6 +2741,32 @@ function UdbApi(
     var offset = start || 0,
         searchParams = {
           start: offset
+        };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.query = queryString;
+    }
+
+    return $http
+      .get(apiUrl + 'search', requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} queryString - The query used to find events.
+   * @param {number} [start] - From which event offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
+    var offset = start || 0,
+        limit = itemsPerPage || 30,
+        searchParams = {
+          start: offset,
+          limit: limit
         };
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.params = searchParams;
@@ -11569,8 +11597,23 @@ angular
  * @param {Object} $uibModal
  * @param {RolePermission} RolePermission
  */
-function ModerationListController(ModerationManager, $uibModal, RolePermission) {
+function ModerationListController(
+  ModerationManager,
+  $uibModal,
+  RolePermission,
+  SearchResultGenerator,
+  rx,
+  $scope
+) {
   var moderator = this;
+
+  var itemsPerPage = 10;
+
+  // configure observables for searching items
+  var query$ = rx.createObservableFunction(moderator, 'queryChanged');
+  var page$ = rx.createObservableFunction(moderator, 'pageChanged');
+  var searchResultGenerator = new SearchResultGenerator(ModerationManager, query$, page$, itemsPerPage);
+  var searchResult$ = searchResultGenerator.getSearchResult$();
 
   moderator.roles = [];
 
@@ -11578,8 +11621,11 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
   moderator.selectedRole = false;
   moderator.errorMessage = false;
 
-  moderator.showModerationContent = showModerationContent;
+  moderator.searchResult = {};
 
+  moderator.findModerationContent = findModerationContent;
+
+  // load the current user's moderation roles
   ModerationManager
     .getMyRoles()
     .then(filterModeratorRoles)
@@ -11587,6 +11633,18 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
     .finally(function() {
       moderator.loading = false;
     });
+
+  // show search results
+  searchResult$
+    .safeApply($scope, showSearchResult)
+    .subscribe();
+
+  // show loading screen on query change
+  query$
+    .safeApply($scope, function () {
+      moderator.loading = true;
+    })
+    .subscribe();
 
   function filterModeratorRoles(roles) {
     // only show roles with moderator permission
@@ -11598,20 +11656,28 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
     });
   }
 
-  function showModerationContent(roleId) {
-    var currentRole = _.find(moderator.roleId, function(role) {
+  function findModerationContent(roleId) {
+    var currentRole = _.find(moderator.roles, function(role) {
       return role.uuid === roleId;
     });
 
-    ModerationManager
-      .findModerationItems(currentRole.constraint, 0)
-      .then(function(searchResults) {
-        // TODO show items
-      })
-      .catch(showProblem)
-      .finally(function() {
-        // TODO stop spinner
-      });
+    moderator.queryChanged(currentRole.constraint);
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
+   */
+  function showSearchResult(searchResult) {
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      moderator.searchResult = {};
+    } else {
+      moderator.searchResult = searchResult;
+    }
+
+    moderator.loading = false;
   }
 
   /**
@@ -11634,7 +11700,7 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
     );
   }
 }
-ModerationListController.$inject = ["ModerationManager", "$uibModal", "RolePermission"];
+ModerationListController.$inject = ["ModerationManager", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope"];
 
 // Source: src/management/moderation/moderation-manager.service.js
 /**
@@ -11653,11 +11719,7 @@ function ModerationManager(udbApi) {
   var service = this;
 
   /**
-   * @param {string} query
-   * @param {int} limit
-   * @param {int} start
-   *
-   * @return {Promise.<PagedCollection>}
+   * @return {Promise.<Role[]>}
    */
   service.getMyRoles = function() {
     return udbApi
@@ -11667,11 +11729,20 @@ function ModerationManager(udbApi) {
       });
   };
 
-  service.findModerationItems = function(queryString, start) {
+  /**
+   * Find moderation items
+   *
+   * @param {string} queryString
+   * @param {int} itemsPerPage
+   * @param {int} offset
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  service.find = function(queryString, itemsPerPage, offset) {
     queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus="readyforvalidation"';
 
     return udbApi
-      .findEvents(queryString, start);
+      .findEventsWithLimit(queryString, offset, itemsPerPage);
   };
 }
 ModerationManager.$inject = ["udbApi"];
@@ -19069,7 +19140,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <label>Valideer als</label>\n" +
     "                <select class=\"form-control\"\n" +
     "                        name=\"role\"\n" +
-    "                        ng-change=\"moderator.showModerationContent(moderator.selectedRole)\"\n" +
+    "                        ng-change=\"moderator.findModerationContent(moderator.selectedRole)\"\n" +
     "                        ng-model=\"moderator.selectedRole\">\n" +
     "                        <option ng-repeat=\"role in moderator.roles\" ng-value=\"role.uuid\">{{role.name}}</option>\n" +
     "                </select>\n" +

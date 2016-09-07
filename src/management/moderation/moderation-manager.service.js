@@ -27,15 +27,18 @@ function ModerationManager(udbApi) {
   };
 
   /**
+   * Find moderation items
+   *
    * @param {string} queryString
-   * @param {int} start
+   * @param {int} itemsPerPage
+   * @param {int} offset
    *
    * @return {Promise.<PagedCollection>}
    */
-  service.findModerationItems = function(queryString, start) {
+  service.find = function(queryString, itemsPerPage, offset) {
     queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus="readyforvalidation"';
 
     return udbApi
-      .findEvents(queryString, start);
+      .findEventsWithLimit(queryString, offset, itemsPerPage);
   };
 }
