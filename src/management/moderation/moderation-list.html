@@ -13,9 +13,9 @@
                 <label>Valideer als</label>
                 <select class="form-control"
                         name="role"
-                        ng-change="moderator.showModerationContent"
+                        ng-change="moderator.showModerationContent(moderator.selectedRole)"
                         ng-model="moderator.selectedRole">
-                        <option ng-repeat="role in moderator.roles" ng-value="role">{{role.name}}</option>
+                        <option ng-repeat="role in moderator.roles" ng-value="role.uuid">{{role.name}}</option>
                 </select>
             </div>
         </div>

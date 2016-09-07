@@ -2749,7 +2749,7 @@ function UdbApi(
 
     return $http
       .get(apiUrl + 'search', requestOptions)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -11582,22 +11582,36 @@ function ModerationListController(ModerationManager, $uibModal, RolePermission) 
 
   ModerationManager
     .getMyRoles()
-    .then(function(roles) {
-      // only show roles with moderator permission
-      moderator.roles = _.filter(roles, function(role) {
-        var canModerate = _.filter(role.permissions, function(permission) {
-          return permission === RolePermission.AANBOD_MODEREREN;
-        });
-        return canModerate.length > 0 ? true : false;
-      });
-    })
+    .then(filterModeratorRoles)
     .catch(showProblem) // stop loading when there's an error
     .finally(function() {
       moderator.loading = false;
     });
 
-  function showModerationContent(role) {
-    console.log(role);
+  function filterModeratorRoles(roles) {
+    // only show roles with moderator permission
+    moderator.roles = _.filter(roles, function(role) {
+      var canModerate = _.filter(role.permissions, function(permission) {
+        return permission === RolePermission.AANBOD_MODEREREN;
+      });
+      return canModerate.length > 0 ? true : false;
+    });
+  }
+
+  function showModerationContent(roleId) {
+    var currentRole = _.find(moderator.roleId, function(role) {
+      return role.uuid === roleId;
+    });
+
+    ModerationManager
+      .findModerationItems(currentRole.constraint, 0)
+      .then(function(searchResults) {
+        // TODO show items
+      })
+      .catch(showProblem)
+      .finally(function() {
+        // TODO stop spinner
+      });
   }
 
   /**
@@ -11651,6 +11665,13 @@ function ModerationManager(udbApi) {
       .then(function(user) {
         return udbApi.getUserRoles(user.id);
       });
+  };
+
+  service.findModerationItems = function(queryString, start) {
+    queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus="readyforvalidation"';
+
+    return udbApi
+      .findEvents(queryString, start);
   };
 }
 ModerationManager.$inject = ["udbApi"];
@@ -19048,9 +19069,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <label>Valideer als</label>\n" +
     "                <select class=\"form-control\"\n" +
     "                        name=\"role\"\n" +
-    "                        ng-change=\"moderator.showModerationContent\"\n" +
+    "                        ng-change=\"moderator.showModerationContent(moderator.selectedRole)\"\n" +
     "                        ng-model=\"moderator.selectedRole\">\n" +
-    "                        <option ng-repeat=\"role in moderator.roles\" ng-value=\"role\">{{role.name}}</option>\n" +
+    "                        <option ng-repeat=\"role in moderator.roles\" ng-value=\"role.uuid\">{{role.name}}</option>\n" +
     "                </select>\n" +
     "            </div>\n" +
     "        </div>\n" +

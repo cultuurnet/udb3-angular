@@ -143,7 +143,7 @@ function UdbApi(
 
     return $http
       .get(apiUrl + 'search', requestOptions)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**

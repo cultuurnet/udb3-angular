@@ -16,11 +16,7 @@ function ModerationManager(udbApi) {
   var service = this;
 
   /**
-   * @param {string} query
-   * @param {int} limit
-   * @param {int} start
-   *
-   * @return {Promise.<PagedCollection>}
+   * @return {Promise.<Role[]>}
    */
   service.getMyRoles = function() {
     return udbApi
@@ -28,5 +24,18 @@ function ModerationManager(udbApi) {
       .then(function(user) {
         return udbApi.getUserRoles(user.id);
       });
+  };
+
+  /**
+   * @param {string} queryString
+   * @param {int} start
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  service.findModerationItems = function(queryString, start) {
+    queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus="readyforvalidation"';
+
+    return udbApi
+      .findEvents(queryString, start);
   };
 }
