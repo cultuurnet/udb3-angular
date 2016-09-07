@@ -18048,7 +18048,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
-    "                <div ng-bind-html=\"eventFormData.description.nl\"></div>\n" +
+    "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
     "                <a class=\"btn btn-link\" ng-click=\"descriptionCssClass = 'state-filling'\">Wijzigen</a>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
