@@ -7317,12 +7317,14 @@ function EventFormOrganizerModalController(
   eventCrud,
   cities,
   Levenshtein,
-  $q
+  $q,
+  organizerName
 ) {
 
   var controller = this;
 
   // Scope vars.
+  $scope.organizer = organizerName;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
@@ -7331,7 +7333,7 @@ function EventFormOrganizerModalController(
   $scope.selectedCity = '';
 
   $scope.newOrganizer = {
-    name : '',
+    name : $scope.organizer,
     address : {
       streetAddress : '',
       locality : '',
@@ -7482,7 +7484,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
@@ -10162,7 +10164,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-organizer-modal.html',
-      controller: 'EventFormOrganizerModalController'
+      controller: 'EventFormOrganizerModalController',
+      resolve: {
+        organizerName: function () {
+          return $scope.organizer;
+        }
+      }
     });
 
     function updateOrganizerInfo () {
