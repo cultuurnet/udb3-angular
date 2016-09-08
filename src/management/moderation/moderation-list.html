@@ -26,5 +26,17 @@
     <div class="col-md-12" ng-repeat="offer in moderator.searchResult.member">
         <udb-moderation-offer ng-hide="moc.loading" offer-id="{{offer['@id']}}" offer-type="{{offer['@type']}}">
         </udb-moderation-offer>
+
+    </div>
+    <div class="col-md-12"
+        <div class="panel-footer">
+            <uib-pagination
+                    total-items="moderator.searchResult.totalItems"
+                    ng-model="moderator.page"
+                    items-per-page="moderator.searchResult.itemsPerPage"
+                    max-size="10"
+                    ng-change="moderator.pageChanged(moderator.page)">
+            </uib-pagination>
+        </div>
     </div>
 </div>
