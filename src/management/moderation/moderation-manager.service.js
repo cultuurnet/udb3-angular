@@ -41,4 +41,13 @@ function ModerationManager(udbApi) {
     return udbApi
       .findEventsWithLimit(queryString, offset, itemsPerPage);
   };
+
+  /**
+   * @param {string} offerId
+   *
+   * @return {Promise.<Offer>}
+   */
+  service.getModerationOffer = function(offerId) {
+    return udbApi.getOffer(new URL(offerId));
+  };
 }

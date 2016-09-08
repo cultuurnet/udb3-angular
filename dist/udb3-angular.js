@@ -11589,6 +11589,51 @@ function UniqueLabelDirective(LabelManager, $q) {
 }
 UniqueLabelDirective.$inject = ["LabelManager", "$q"];
 
+// Source: src/management/moderation/components/moderation-offer.component.js
+/**
+ * @ngdoc component
+ * @name udb.search.directive:udbSearchBar
+ * @description
+ * # udbQuerySearchBar
+ */
+angular
+  .module('udb.management.moderation')
+  .component('udbModerationOffer', {
+    templateUrl: 'templates/moderation-offer.html',
+    controller: ModerationOfferComponent,
+    controllerAs: 'moc',
+    bindings: {
+      offerId: '@',
+      offerType: '@'
+    }
+  });
+
+/* @ngInject */
+function ModerationOfferComponent(ModerationManager, jsonLDLangFilter) {
+  var moc = this;
+  var defaultLanguage = 'nl';
+
+  moc.loading = true;
+  moc.offer = {};
+
+  // fetch offer
+  ModerationManager
+    .getModerationOffer(moc.offerId)
+    .then(function(offer) {
+      offer.updateTranslationState();
+      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+    })
+    .catch(showError)
+    .finally(function() {
+      moc.loading = false;
+    });
+
+  function showError(problem) {
+    moc.error = problem || 'Dit aanbod kon niet geladen worden.';
+  }
+}
+ModerationOfferComponent.$inject = ["ModerationManager", "jsonLDLangFilter"];
+
 // Source: src/management/moderation/moderation-list.controller.js
 /**
  * @ngdoc function
@@ -11754,6 +11799,15 @@ function ModerationManager(udbApi) {
 
     return udbApi
       .findEventsWithLimit(queryString, offset, itemsPerPage);
+  };
+
+  /**
+   * @param {string} offerId
+   *
+   * @return {Promise.<Offer>}
+   */
+  service.getModerationOffer = function(offerId) {
+    return udbApi.getOffer(new URL(offerId));
   };
 }
 ModerationManager.$inject = ["udbApi"];
@@ -19136,6 +19190,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/moderation-offer.html',
+    "<div>\n" +
+    "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
+    "    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "    <p ng-bind=\"moc.offer.description\"></p>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/moderation-list.html',
     "<div class=\"page-header\">\n" +
     "    <h1>Valideren</h1>\n" +
@@ -19162,8 +19225,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div class=\"row search-result-block\" ng-cloak>\n" +
-    "    <div class=\"col-md-12\">\n" +
-    "\n" +
+    "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
+    "        <udb-moderation-offer ng-hide=\"moc.loading\" offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
+    "        </udb-moderation-offer>\n" +
     "    </div>\n" +
     "</div>\n"
   );

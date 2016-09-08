@@ -31,6 +31,108 @@ describe('Service: Moderation Manager', function () {
     ]
   };
 
+  var offer = {
+    "@id": "http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043",
+    "name": {
+      "nl": "Nederlands",
+      "de": "Deutch",
+      "en": "English",
+      "fr": "Français"
+    },
+    "description": {
+      "nl": "Nederlands",
+      "de": "Deutch",
+      "en": "English",
+      "fr": "Français"
+    },
+    "available": "2015-05-07T12:02:53+00:00",
+    "image": "http://media.uitdatabank.be/20150416/153cfa0f-0d22-451e-bfd1-490b7c4ef109.jpg",
+    "labels": [
+      "tagged"
+    ],
+    "calendarSummary": "Every first day of the month",
+    "location": {
+      "description": {
+        "nl": "Nederlands",
+        "de": "Deutch",
+        "en": "English",
+        "fr": "Français"
+      },
+      "name": {
+        "nl": "Nederlands",
+        "de": "Deutch",
+        "en": "English",
+        "fr": "Français"
+      },
+      "address": {
+        "addressCountry": "BE",
+        "addressLocality": "Leuven",
+        "postalCode": 3000,
+        "streetAddress": "Sluisstraat 79"
+      },
+      "bookingInfo": {
+        "priceCurrency": "EUR",
+        "description": "No need to pay anything",
+        "name": "Free",
+        "price": 0
+      },
+      "terms": [
+        {
+          "label": "Cycling",
+          "domain": "activities",
+          "id": "10.0.0.1"
+        }
+      ],
+      "workflowStatus": "DRAFT"
+    },
+    "organizer": {
+      "name": "STUK",
+      "address": {
+        "addressCountry": "BE",
+        "addressLocality": "Leuven",
+        "postalCode": 3000,
+        "streetAddress": "Sluisstraat 79"
+      },
+      "email": "info@stuk.be",
+      "phone": [
+        "016 320 300"
+      ]
+    },
+    "bookingInfo": {
+      "priceCurrency": "EUR",
+      "description": "No need to pay anything",
+      "name": "Free",
+      "price": 0
+    },
+    "terms": [
+      {
+        "label": "Cycling",
+        "domain": "activities",
+        "id": "10.0.0.1"
+      }
+    ],
+    "creator": "evenementen@stad.diksmuide.be",
+    "created": "2015-05-07T12:02:53+00:00",
+    "modified": "2015-05-07T12:02:53+00:00",
+    "publisher": "Invoerders Algemeen ",
+    "endDate": "2015-05-07T12:02:53+00:00",
+    "startDate": "2015-05-07T12:02:53+00:00",
+    "calendarType": "permanent",
+    "typicalAgeRange": "+18",
+    "performer": [
+      {
+        "name": "Sindicato Sonico"
+      }
+    ],
+    "sameAs": [
+      "http://www.uitinvlaanderen.be/agenda/e/zomerse-vrijdagen-den-engel/0823f57e-a6bd-450a-b4f5-8459b4b11043"
+    ],
+    "seeAlso": [
+      "www.leuven.be"
+    ],
+    "workflowStatus": "DRAFT"
+  };
+
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
       baseUrl: baseUrl
@@ -41,7 +143,8 @@ describe('Service: Moderation Manager', function () {
     udbApi = jasmine.createSpyObj('udbApi', [
       'getMe',
       'getUserRoles',
-      'findEventsWithLimit'
+      'findEventsWithLimit',
+      'getOffer'
     ]);
     $provide.provider('udbApi', {
       $get: function () {
@@ -101,6 +204,22 @@ describe('Service: Moderation Manager', function () {
 
     service
       .find('', 10, 0)
+      .then(assertResultset);
+
+    $scope.$apply();
+  });
+
+  it('should get the info of all individual offers', function (done) {
+    udbApi.getOffer.and.returnValue($q.resolve(offer));
+
+    function assertResultset (result) {
+      expect(udbApi.getOffer).toHaveBeenCalledWith(new URL('http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043'));
+      expect(result).toEqual(offer);
+      done();
+    }
+
+    service
+      .getModerationOffer('http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043')
       .then(assertResultset);
 
     $scope.$apply();

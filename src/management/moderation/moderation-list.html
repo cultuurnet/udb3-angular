@@ -23,7 +23,8 @@
 </div>
 
 <div class="row search-result-block" ng-cloak>
-    <div class="col-md-12">
-
+    <div class="col-md-12" ng-repeat="offer in moderator.searchResult.member">
+        <udb-moderation-offer ng-hide="moc.loading" offer-id="{{offer['@id']}}" offer-type="{{offer['@type']}}">
+        </udb-moderation-offer>
     </div>
 </div>
