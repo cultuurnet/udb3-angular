@@ -19194,7 +19194,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div>\n" +
     "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
     "    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
-    "    <p ng-bind=\"moc.offer.description\"></p>\n" +
+    "    <p ng-bind-html=\"moc.offer.description\"></p>\n" +
     "</div>"
   );
 
@@ -19228,6 +19228,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
     "        <udb-moderation-offer ng-hide=\"moc.loading\" offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
     "        </udb-moderation-offer>\n" +
+    "\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-12\"\n" +
+    "        <div class=\"panel-footer\">\n" +
+    "            <uib-pagination\n" +
+    "                    total-items=\"moderator.searchResult.totalItems\"\n" +
+    "                    ng-model=\"moderator.page\"\n" +
+    "                    items-per-page=\"moderator.searchResult.itemsPerPage\"\n" +
+    "                    max-size=\"10\"\n" +
+    "                    ng-change=\"moderator.pageChanged(moderator.page)\">\n" +
+    "            </uib-pagination>\n" +
+    "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
   );
