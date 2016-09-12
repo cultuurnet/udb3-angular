@@ -23,6 +23,12 @@
 </div>
 
 <div class="row search-result-block" ng-cloak>
+    <div class="col-md-12">
+        <p class="rv-item-counter">
+            <ng-pluralize count="moderator.searchResult.totalItems"
+                          when="{1: '1 resultaat', other: '{} resultaten'}"></ng-pluralize>
+        </p>
+    </div>
     <div class="col-md-12" ng-repeat="offer in moderator.searchResult.member">
         <udb-moderation-offer ng-hide="moc.loading" offer-id="{{offer['@id']}}" offer-type="{{offer['@type']}}">
         </udb-moderation-offer>

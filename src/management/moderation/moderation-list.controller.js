@@ -24,17 +24,13 @@ function ModerationListController(
   RolePermission,
   SearchResultGenerator,
   rx,
-  $scope
+  $scope,
+  $q
 ) {
   var moderator = this;
 
+  var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-
-  // configure observables for searching items
-  var query$ = rx.createObservableFunction(moderator, 'queryChanged');
-  var page$ = rx.createObservableFunction(moderator, 'pageChanged');
-  var searchResultGenerator = new SearchResultGenerator(ModerationManager, query$, page$, itemsPerPage);
-  var searchResult$ = searchResultGenerator.getSearchResult$();
 
   moderator.roles = [];
 
@@ -50,31 +46,55 @@ function ModerationListController(
   ModerationManager
     .getMyRoles()
     .then(filterModeratorRoles)
+    .then(configureObservables)
     .catch(showProblem) // stop loading when there's an error
     .finally(function() {
       moderator.loading = false;
     });
 
-  // show search results
-  searchResult$
-    .safeApply($scope, showSearchResult)
-    .subscribe();
+  function configureObservables(currentRole) {
+    // configure observables for searching items
+    query$ = rx.createObservableFunction(moderator, 'queryChanged');
+    page$ = rx.createObservableFunction(moderator, 'pageChanged');
+    searchResultGenerator = new SearchResultGenerator(
+      ModerationManager, query$, page$, itemsPerPage, currentRole.constraint
+    );
+    searchResult$ = searchResultGenerator.getSearchResult$();
 
-  // show loading screen on query change
-  query$
-    .safeApply($scope, function () {
-      moderator.loading = true;
-    })
-    .subscribe();
+    // show search results
+    searchResult$
+      .safeApply($scope, showSearchResult)
+      .subscribe();
+
+    // show loading screen on query change
+    query$
+      .safeApply($scope, function () {
+        moderator.loading = true;
+      })
+      .subscribe();
+
+    return $q.resolve();
+  }
 
   function filterModeratorRoles(roles) {
     // only show roles with moderator permission
-    moderator.roles = _.filter(roles, function(role) {
+    var filteredRoles = _.filter(roles, function(role) {
       var canModerate = _.filter(role.permissions, function(permission) {
         return permission === RolePermission.AANBOD_MODEREREN;
       });
       return canModerate.length > 0 ? true : false;
     });
+
+    if (filteredRoles.length) {
+      moderator.roles = filteredRoles;
+      moderator.selectedRole = filteredRoles[0].uuid;
+
+      return $q.resolve(filteredRoles[0]);
+    }
+
+    // when no roles were found aka no current role is set
+    // don't bother continueing
+    return $q.reject({title:'Er is huidig geen moderator rol gekoppeld aan jouw gebruiker.'});
   }
 
   function findModerationContent(roleId) {

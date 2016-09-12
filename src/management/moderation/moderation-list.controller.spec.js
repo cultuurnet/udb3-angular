@@ -92,6 +92,37 @@ describe('Controller: Moderation List', function() {
     );
   });
 
+  it('should notify the user when no roles with moderator right were found', function() {
+    Moderationmanager.getMyRoles.and.returnValue($q.resolve([
+    {
+      "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+      "name": "Editor Leuven",
+      "constraint": "city:leuven",
+      "permissions": [
+        "AANBOD_INVOEREN"
+      ]
+    },
+    {
+      "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
+      "name": "Beheerder Leuven",
+      "constraint": "city:leuven",
+      "permissions": [
+        "GEBRUIKERS_BEHEREN"
+      ]
+    }
+  ]));
+
+    var moderator = getController();
+
+    $scope.$digest();
+
+    expect($uibModal.open).toHaveBeenCalled();
+    expect(moderator.errorMessage).toEqual(
+      'Er is huidig geen moderator rol gekoppeld aan jouw gebruiker.'
+    );
+    expect(moderator.selectedRole).toBe(false);
+  });
+
   it('should find the moderation items of a role', function(done) {
     var pagedSearchResult = {
       "itemsPerPage": 30,
@@ -110,12 +141,13 @@ describe('Controller: Moderation List', function() {
     var moderator = getController();
     $scope.$digest();
 
-    function assertLoadingEnded() {
+    function assertSeachResults() {
       expect(moderator.loading).toEqual(false);
+      expect(moderator.searchResult).toEqual(pagedSearchResult);
       sub.dispose();
       done();
     }
-    var sub = searchResult$.subscribe(assertLoadingEnded);
+    var sub = searchResult$.subscribe(assertSeachResults);
 
     moderator
       .findModerationContent('3aad5023-84e2-4ba9-b1ce-201cee64504c');

@@ -11659,17 +11659,13 @@ function ModerationListController(
   RolePermission,
   SearchResultGenerator,
   rx,
-  $scope
+  $scope,
+  $q
 ) {
   var moderator = this;
 
+  var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-
-  // configure observables for searching items
-  var query$ = rx.createObservableFunction(moderator, 'queryChanged');
-  var page$ = rx.createObservableFunction(moderator, 'pageChanged');
-  var searchResultGenerator = new SearchResultGenerator(ModerationManager, query$, page$, itemsPerPage);
-  var searchResult$ = searchResultGenerator.getSearchResult$();
 
   moderator.roles = [];
 
@@ -11685,31 +11681,55 @@ function ModerationListController(
   ModerationManager
     .getMyRoles()
     .then(filterModeratorRoles)
+    .then(configureObservables)
     .catch(showProblem) // stop loading when there's an error
     .finally(function() {
       moderator.loading = false;
     });
 
-  // show search results
-  searchResult$
-    .safeApply($scope, showSearchResult)
-    .subscribe();
+  function configureObservables(currentRole) {
+    // configure observables for searching items
+    query$ = rx.createObservableFunction(moderator, 'queryChanged');
+    page$ = rx.createObservableFunction(moderator, 'pageChanged');
+    searchResultGenerator = new SearchResultGenerator(
+      ModerationManager, query$, page$, itemsPerPage, currentRole.constraint
+    );
+    searchResult$ = searchResultGenerator.getSearchResult$();
 
-  // show loading screen on query change
-  query$
-    .safeApply($scope, function () {
-      moderator.loading = true;
-    })
-    .subscribe();
+    // show search results
+    searchResult$
+      .safeApply($scope, showSearchResult)
+      .subscribe();
+
+    // show loading screen on query change
+    query$
+      .safeApply($scope, function () {
+        moderator.loading = true;
+      })
+      .subscribe();
+
+    return $q.resolve();
+  }
 
   function filterModeratorRoles(roles) {
     // only show roles with moderator permission
-    moderator.roles = _.filter(roles, function(role) {
+    var filteredRoles = _.filter(roles, function(role) {
       var canModerate = _.filter(role.permissions, function(permission) {
         return permission === RolePermission.AANBOD_MODEREREN;
       });
       return canModerate.length > 0 ? true : false;
     });
+
+    if (filteredRoles.length) {
+      moderator.roles = filteredRoles;
+      moderator.selectedRole = filteredRoles[0].uuid;
+
+      return $q.resolve(filteredRoles[0]);
+    }
+
+    // when no roles were found aka no current role is set
+    // don't bother continueing
+    return $q.reject({title:'Er is huidig geen moderator rol gekoppeld aan jouw gebruiker.'});
   }
 
   function findModerationContent(roleId) {
@@ -11732,6 +11752,17 @@ function ModerationListController(
     } else {
       moderator.searchResult = searchResult;
     }
+
+    // TODO remove TEST DATA!
+    /*moderator.searchResult = {
+      'itemsPerPage':10,
+      'totalItems':23,
+      'member':[
+        {'@id':'http://udb-silex.dev/place/3aad5023-84e2-4ba9-b1ce-201cee64504c', '@type':'Place'},
+        {'@id':'http://udb-silex.dev/place/1c6b14fa-5a80-4b5c-bb10-3e94d185ea63', '@type':'Place'},
+        {'@id':'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62', '@type':'Event'}
+      ]
+    };*/
 
     moderator.loading = false;
   }
@@ -11756,7 +11787,7 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationManager", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope"];
+ModerationListController.$inject = ["ModerationManager", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
 
 // Source: src/management/moderation/moderation-manager.service.js
 /**
@@ -12714,10 +12745,11 @@ function SearchResultGenerator(rx) {
    * @param {Observable} page$
    * @param {Number} itemsPerPage
    */
-  var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage) {
+  var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage, start) {
+    start = start || '';
     this.searchService = searchService;
     this.itemsPerPage = itemsPerPage;
-    this.query$ = query$.debounce(300).startWith('');
+    this.query$ = query$.debounce(300).startWith(start);
     this.offset$ = page$.map(pageToOffset(itemsPerPage)).startWith(0);
 
     this.searchParameters$ = rx.Observable.combineLatest(
@@ -19225,6 +19257,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div class=\"row search-result-block\" ng-cloak>\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <p class=\"rv-item-counter\">\n" +
+    "            <ng-pluralize count=\"moderator.searchResult.totalItems\"\n" +
+    "                          when=\"{1: '1 resultaat', other: '{} resultaten'}\"></ng-pluralize>\n" +
+    "        </p>\n" +
+    "    </div>\n" +
     "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
     "        <udb-moderation-offer ng-hide=\"moc.loading\" offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
     "        </udb-moderation-offer>\n" +
