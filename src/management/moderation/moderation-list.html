@@ -30,11 +30,10 @@
         </p>
     </div>
     <div class="col-md-12" ng-repeat="offer in moderator.searchResult.member">
-        <udb-moderation-offer ng-hide="moc.loading" offer-id="{{offer['@id']}}" offer-type="{{offer['@type']}}">
+        <udb-moderation-offer offer-id="{{offer['@id']}}" offer-type="{{offer['@type']}}">
         </udb-moderation-offer>
-
     </div>
-    <div class="col-md-12"
+    <div class="col-md-12">
         <div class="panel-footer">
             <uib-pagination
                     total-items="moderator.searchResult.totalItems"

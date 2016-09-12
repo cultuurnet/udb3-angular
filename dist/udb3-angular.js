@@ -19207,10 +19207,37 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<div>\n" +
+    "<article class=\"moderation-offer\">\n" +
     "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
-    "    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
-    "    <p ng-bind-html=\"moc.offer.description\"></p>\n" +
+    "    <div class=\"text-info\" ng-show=\"moc.loading\"><i class=\"fa fa-circle-o-notch fa-spin\"></i> Moderatie aanbod \"{{moc.offerId}}\" wordt geladen.</div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-hide=\"moc-loading\">\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <header class=\"udb-short-info\">\n" +
+    "                <span class=\"udb-category\" ng-bind=\"moc.offer.type.label\"></span>\n" +
+    "                <span class=\"udb-short-info-seperator\" ng-show=\"moc.offer.type.label && moc.offer.theme.label\"> • </span>\n" +
+    "                <span class=\"udb-theme\" ng-bind=\"moc.offer.theme.label\"></span>\n" +
+    "\n" +
+    "                <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "            </header>\n" +
+    "\n" +
+    "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\"/>\n" +
+    "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
+    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "        <div class=\"col-md-6 text-right\">\n" +
+    "            <button type=\"submit\" class=\"btn btn-success btn-moderation\">\n" +
+    "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
+    "            <button type=\"submit\" class=\"btn btn-danger btn-moderation\">\n" +
+    "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
+    "        </div>\n" +
+    "    </footer>\n" +
     "</div>"
   );
 
@@ -19248,11 +19275,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </p>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
-    "        <udb-moderation-offer ng-hide=\"moc.loading\" offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
+    "        <udb-moderation-offer offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
     "        </udb-moderation-offer>\n" +
-    "\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-12\"\n" +
+    "    <div class=\"col-md-12\">\n" +
     "        <div class=\"panel-footer\">\n" +
     "            <uib-pagination\n" +
     "                    total-items=\"moderator.searchResult.totalItems\"\n" +

@@ -1,0 +1,55 @@
+udb-moderation-offer {
+    .moderation-offer {
+        border: 1px solid @udb-gray-light;
+        background: #f5f5f5;
+        padding: 1em;
+        margin-bottom: 1em;
+        min-height: 300px;
+
+        h2 {
+            margin-top: 12px;
+        }
+
+        div.content {
+            height: 150px;
+            overflow-y: auto;
+        }
+
+        img {
+            max-height: 200px;
+            max-width: 200px;
+            margin-top: 7px;
+        }
+
+        .no-img {
+            height: 200px;
+            width: 200px;
+            border: 1px solid @udb-gray-light;
+            color: darken(@udb-gray-light, 15%);
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 7px;
+        }
+
+        footer {
+            color: lighten(@udb-gray-dark, 10%);
+            margin-top: 2ex;
+
+            .btn-moderation {
+                margin-left: 1em;
+
+                i {
+                    margin-right: 12px;
+                }
+
+                i.text-danger {
+                    color: darken(@brand-danger, 20%);
+                }
+
+                i.text-success {
+                    color: darken(@brand-success, 20%);
+                }
+            }
+        }
+    }
+}

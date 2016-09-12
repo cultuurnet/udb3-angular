@@ -3185,3 +3185,47 @@ udb-search-label i.caret {
 .form-group udb-search-label input {
   max-width: none;
 }
+udb-moderation-offer .moderation-offer {
+  border: 1px solid #dddddd;
+  background: #f5f5f5;
+  padding: 1em;
+  margin-bottom: 1em;
+  min-height: 300px;
+}
+udb-moderation-offer .moderation-offer h2 {
+  margin-top: 12px;
+}
+udb-moderation-offer .moderation-offer div.content {
+  height: 150px;
+  overflow-y: auto;
+}
+udb-moderation-offer .moderation-offer img {
+  max-height: 200px;
+  max-width: 200px;
+  margin-top: 7px;
+}
+udb-moderation-offer .moderation-offer .no-img {
+  height: 200px;
+  width: 200px;
+  border: 1px solid #dddddd;
+  color: #b7b7b7;
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 7px;
+}
+udb-moderation-offer .moderation-offer footer {
+  color: #919191;
+  margin-top: 2ex;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation {
+  margin-left: 1em;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation i {
+  margin-right: 12px;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation i.text-danger {
+  color: #a02622;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation i.text-success {
+  color: #357935;
+}
