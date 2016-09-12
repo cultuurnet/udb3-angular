@@ -120,7 +120,7 @@ describe('Controller: Moderation List', function() {
     expect(moderator.errorMessage).toEqual(
       'Er is huidig geen moderator rol gekoppeld aan jouw gebruiker.'
     );
-    expect(moderator.selectedRole).toBe(false);
+    expect(moderator.selectedRole).toEqual({});
   });
 
   it('should find the moderation items of a role', function(done) {
@@ -150,7 +150,7 @@ describe('Controller: Moderation List', function() {
     var sub = searchResult$.subscribe(assertSeachResults);
 
     moderator
-      .findModerationContent('3aad5023-84e2-4ba9-b1ce-201cee64504c');
+      .findModerationContent({uuid:'3aad5023-84e2-4ba9-b1ce-201cee64504c', constraint:'city:leuven'});
 
     $scope.$digest();
     expect(moderator.loading).toEqual(true);

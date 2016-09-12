@@ -35,9 +35,8 @@ function ModerationListController(
   moderator.roles = [];
 
   moderator.loading = true;
-  moderator.selectedRole = false;
   moderator.errorMessage = false;
-
+  moderator.selectedRole = {};
   moderator.searchResult = {};
 
   moderator.findModerationContent = findModerationContent;
@@ -87,9 +86,9 @@ function ModerationListController(
 
     if (filteredRoles.length) {
       moderator.roles = filteredRoles;
-      moderator.selectedRole = filteredRoles[0].uuid;
+      moderator.selectedRole = moderator.roles[0];
 
-      return $q.resolve(filteredRoles[0]);
+      return $q.resolve(moderator.selectedRole);
     }
 
     // when no roles were found aka no current role is set
@@ -97,11 +96,7 @@ function ModerationListController(
     return $q.reject({title:'Er is huidig geen moderator rol gekoppeld aan jouw gebruiker.'});
   }
 
-  function findModerationContent(roleId) {
-    var currentRole = _.find(moderator.roles, function(role) {
-      return role.uuid === roleId;
-    });
-
+  function findModerationContent(currentRole) {
     moderator.queryChanged(currentRole.constraint);
   }
 

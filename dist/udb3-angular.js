@@ -11670,9 +11670,8 @@ function ModerationListController(
   moderator.roles = [];
 
   moderator.loading = true;
-  moderator.selectedRole = false;
   moderator.errorMessage = false;
-
+  moderator.selectedRole = {};
   moderator.searchResult = {};
 
   moderator.findModerationContent = findModerationContent;
@@ -11722,9 +11721,9 @@ function ModerationListController(
 
     if (filteredRoles.length) {
       moderator.roles = filteredRoles;
-      moderator.selectedRole = filteredRoles[0].uuid;
+      moderator.selectedRole = moderator.roles[0];
 
-      return $q.resolve(filteredRoles[0]);
+      return $q.resolve(moderator.selectedRole);
     }
 
     // when no roles were found aka no current role is set
@@ -11732,11 +11731,7 @@ function ModerationListController(
     return $q.reject({title:'Er is huidig geen moderator rol gekoppeld aan jouw gebruiker.'});
   }
 
-  function findModerationContent(roleId) {
-    var currentRole = _.find(moderator.roles, function(role) {
-      return role.uuid === roleId;
-    });
-
+  function findModerationContent(currentRole) {
     moderator.queryChanged(currentRole.constraint);
   }
 
@@ -11752,17 +11747,6 @@ function ModerationListController(
     } else {
       moderator.searchResult = searchResult;
     }
-
-    // TODO remove TEST DATA!
-    /*moderator.searchResult = {
-      'itemsPerPage':10,
-      'totalItems':23,
-      'member':[
-        {'@id':'http://udb-silex.dev/place/3aad5023-84e2-4ba9-b1ce-201cee64504c', '@type':'Place'},
-        {'@id':'http://udb-silex.dev/place/1c6b14fa-5a80-4b5c-bb10-3e94d185ea63', '@type':'Place'},
-        {'@id':'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62', '@type':'Event'}
-      ]
-    };*/
 
     moderator.loading = false;
   }
@@ -19248,8 +19232,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <select class=\"form-control\"\n" +
     "                        name=\"role\"\n" +
     "                        ng-change=\"moderator.findModerationContent(moderator.selectedRole)\"\n" +
-    "                        ng-model=\"moderator.selectedRole\">\n" +
-    "                        <option ng-repeat=\"role in moderator.roles\" ng-value=\"role.uuid\">{{role.name}}</option>\n" +
+    "                        ng-model=\"moderator.selectedRole\"\n" +
+    "                        ng-options=\"role.name for role in moderator.roles track by role.uuid\">\n" +
     "                </select>\n" +
     "            </div>\n" +
     "        </div>\n" +
