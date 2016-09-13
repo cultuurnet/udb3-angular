@@ -177,6 +177,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         });
       }
 
+      if (jsonPlace.workflowStatus) {
+        this.workflowStatus = jsonPlace.workflowStatus;
+      }
     },
 
     /**

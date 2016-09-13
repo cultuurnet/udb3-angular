@@ -3941,6 +3941,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.available) {
         this.available = jsonEvent.available;
       }
+      if (jsonEvent.workflowStatus) {
+        this.workflowStatus = jsonEvent.workflowStatus;
+      }
     },
 
     /**
@@ -4463,6 +4466,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         });
       }
 
+      if (jsonPlace.workflowStatus) {
+        this.workflowStatus = jsonPlace.workflowStatus;
+      }
     },
 
     /**
@@ -11620,12 +11626,16 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationManager, jsonLDLangFilter) {
+function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWorkflowStatus) {
   var moc = this;
   var defaultLanguage = 'nl';
 
   moc.loading = true;
   moc.offer = {};
+
+  moc.isReadyForValidation = isReadyForValidation;
+  moc.isApproved = isApproved;
+  moc.isRejected = isRejected;
 
   // fetch offer
   ModerationManager
@@ -11642,8 +11652,20 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter) {
   function showError(problem) {
     moc.error = problem || 'Dit aanbod kon niet geladen worden.';
   }
+
+  function isReadyForValidation() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
+  }
+
+  function isApproved() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.APPROVED;
+  }
+
+  function isRejected() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.REJECTED;
+  }
 }
-ModerationOfferComponent.$inject = ["ModerationManager", "jsonLDLangFilter"];
+ModerationOfferComponent.$inject = ["ModerationManager", "jsonLDLangFilter", "OfferWorkflowStatus"];
 
 // Source: src/management/moderation/moderation-list.controller.js
 /**
@@ -11837,6 +11859,34 @@ function ModerationManager(udbApi) {
   };
 }
 ModerationManager.$inject = ["udbApi"];
+
+// Source: src/management/moderation/workflow.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.management.moderation.OfferWorkflowStatus
+ * @description
+ * # OfferWorkflowStatus
+ * All the possible workflow states defined as a constant
+ */
+angular
+  .module('udb.management.moderation')
+  .constant('OfferWorkflowStatus',
+    /**
+     * Enum for workflowStatus
+     * @readonly
+     * @name OfferWorkflowStatus
+     * @enum {string}
+     */
+    {
+      'DRAFT': 'DRAFT',
+      'READY_FOR_VALIDATION': 'READY_FOR_VALIDATION',
+      'APPROVED': 'APPROVED',
+      'REJECTED': 'REJECTED',
+      'DELETED': 'DELETED'
+    }
+  );
 
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 
@@ -19243,10 +19293,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
     "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
     "        <div class=\"col-md-6 text-right\">\n" +
-    "            <button type=\"submit\" class=\"btn btn-success btn-moderation\">\n" +
+    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\">\n" +
     "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
-    "            <button type=\"submit\" class=\"btn btn-danger btn-moderation\">\n" +
+    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\">\n" +
     "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
+    "\n" +
+    "            <span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
+    "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
     "        </div>\n" +
     "    </footer>\n" +
     "</div>"

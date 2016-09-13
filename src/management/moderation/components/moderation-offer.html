@@ -23,10 +23,13 @@
     <footer class="row" ng-hide="moc.loading">
         <div class="col-md-6">Toegevoegd door {{moc.offer.creator}}</div>
         <div class="col-md-6 text-right">
-            <button type="submit" class="btn btn-success btn-moderation">
+            <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-success btn-moderation">
                 <i class="fa fa-flag text-success"></i>Goedkeuren</button>
-            <button type="submit" class="btn btn-danger btn-moderation">
+            <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-danger btn-moderation">
                 <i class="fa fa-flag text-danger"></i>Afkeuren</button>
+
+            <span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation"><i class="fa fa-flag"></i>Goedgekeurd</span>
+            <span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>Afgekeurd</span>
         </div>
     </footer>
 </div>

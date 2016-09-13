@@ -19,12 +19,16 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationManager, jsonLDLangFilter) {
+function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWorkflowStatus) {
   var moc = this;
   var defaultLanguage = 'nl';
 
   moc.loading = true;
   moc.offer = {};
+
+  moc.isReadyForValidation = isReadyForValidation;
+  moc.isApproved = isApproved;
+  moc.isRejected = isRejected;
 
   // fetch offer
   ModerationManager
@@ -40,5 +44,17 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter) {
 
   function showError(problem) {
     moc.error = problem || 'Dit aanbod kon niet geladen worden.';
+  }
+
+  function isReadyForValidation() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
+  }
+
+  function isApproved() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.APPROVED;
+  }
+
+  function isRejected() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.REJECTED;
   }
 }
