@@ -32,10 +32,7 @@ function listItems(
 
   return $q
     .all([globalPermissionListItems, moderationListItems])
-    .then(function (lists) {
-      var list =  _.flatten(lists);
-      return list;
-    });
+    .then(_.flatten);
 
   /**
    * @param {Role[]} roles
