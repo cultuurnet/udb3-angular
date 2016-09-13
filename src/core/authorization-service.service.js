@@ -82,4 +82,21 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
 
     return deferredHasPermission.promise;
   };
+
+  /**
+   * @return RolePermission[]
+   */
+  this.getPermissions = function () {
+    /**
+     * @return RolePermission[]
+     * TODO: The API response is not up to spec and contains a list of {key, value} objects
+     */
+    function fixAPIResponse(permissions) {
+      return _.map(permissions, 'key');
+    }
+
+    return udbApi
+      .getMyPermissions()
+      .then(fixAPIResponse);
+  };
 }

@@ -1982,6 +1982,23 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
 
     return deferredHasPermission.promise;
   };
+
+  /**
+   * @return RolePermission[]
+   */
+  this.getPermissions = function () {
+    /**
+     * @return RolePermission[]
+     * TODO: The API response is not up to spec and contains a list of {key, value} objects
+     */
+    function fixAPIResponse(permissions) {
+      return _.map(permissions, 'key');
+    }
+
+    return udbApi
+      .getMyPermissions()
+      .then(fixAPIResponse);
+  };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
 
@@ -11606,6 +11623,194 @@ function UniqueLabelDirective(LabelManager, $q) {
 }
 UniqueLabelDirective.$inject = ["LabelManager", "$q"];
 
+// Source: src/management/list-item-defaults.factory.js
+/**
+ * @typedef {Object} ManagementListItem
+ * @property {string} name
+ * @property {RolePermission} permission
+ * @property {number} notificationCount
+ * @property {number} index
+ * @property {string} sref
+ * @property {string} icon
+ */
+
+/**
+ * @ngdoc service
+ * @name udb.management.listItemDefaults
+ * @description
+ * # Management list item defaults
+ * These are the defaut values for the list items you can show in the app side bar.
+ */
+angular
+  .module('udb.management')
+  .factory('managementListItemDefaults', listItemDefaults);
+
+/**
+ * @ngInject
+ * @return {ManagementListItem[]}
+ */
+function listItemDefaults(RolePermission) {
+  return [
+    {
+      name: 'valideren',
+      permission: RolePermission.AANBOD_MODEREREN,
+      notificationCount: 0,
+      index: 1,
+      sref: 'management.moderation.list',
+      icon: 'fa-flag'
+    },
+    {
+      name: 'Gebruikers',
+      permission: RolePermission.GEBRUIKERS_BEHEREN,
+      notificationCount: 0,
+      index: 2,
+      sref: 'management.users.list',
+      icon: 'fa-user'
+    },
+    {
+      name: 'Rollen',
+      permission: RolePermission.GEBRUIKERS_BEHEREN,
+      notificationCount: 0,
+      index: 3,
+      sref: 'split.manageRoles.list',
+      icon: 'fa-users'
+    },
+    {
+      name: 'Labels',
+      permission: RolePermission.LABELS_BEHEREN,
+      notificationCount: 0,
+      index: 4,
+      sref: 'split.manageLabels.list',
+      icon: 'fa-tag'
+    },
+    {
+      name: 'Organisaties',
+      permission: RolePermission.ORGANISATIES_BEHEREN,
+      notificationCount: 0,
+      index: 5,
+      sref: 'split.manageOrganisations',
+      icon: 'fa-slideshare'
+    }
+  ];
+}
+listItemDefaults.$inject = ["RolePermission"];
+
+// Source: src/management/list-items.factory.js
+/**
+ * @ngdoc service
+ * @name udb.management.listItems
+ * @description
+ * # Management list items
+ * Return the management list items to show in the sidebar as  a promise.
+ */
+angular
+  .module('udb.management')
+  .factory('managementListItems', listItems);
+
+/**
+ * @ngInject
+ * @return {Promise.<ManagementListItem[]>}
+ */
+function listItems(
+  RolePermission,
+  authorizationService,
+  ModerationManager,
+  $q,
+  managementListItemDefaults
+) {
+  var globalPermissionListItems = authorizationService
+    .getPermissions()
+    .then(generateListItems);
+
+  var moderationListItems = ModerationManager
+    .getMyRoles()
+    .then(generateModerationListItems);
+
+  return $q
+    .all([globalPermissionListItems, moderationListItems])
+    .then(function (lists) {
+      var list =  _.flatten(lists);
+      return list;
+    });
+
+  /**
+   * @param {Role[]} roles
+   * @return {number}
+   */
+  function countOffersWaitingForValidation(roles) {
+    var query = '';
+
+    _.forEach(roles, function(role) {
+      if (role.constraint) {
+        query += (query ? ' OR ' : '') + role.constraint;
+      }
+    });
+    query = '(' + query + ')';
+
+    return ModerationManager
+      .find(query, 10, 0)
+      .then(function(searchResult) {
+        return searchResult.totalItems;
+      });
+  }
+
+  /**
+   *
+   * @param {number} waitingOfferCount
+   * @return {ManagementListItem}
+   */
+  function generateModerationListItem(waitingOfferCount) {
+    var defaultModerationListItem = _.find(
+      managementListItemDefaults,
+      {permission: RolePermission.AANBOD_MODEREREN}
+    );
+
+    var moderationListItem = angular.copy(defaultModerationListItem);
+    moderationListItem.notificationCount = waitingOfferCount;
+
+    return moderationListItem;
+  }
+
+  /**
+   * @param {Role[]} userRoles
+   * @return {Promise.<ManagementListItem[]>}
+   */
+  function generateModerationListItems(userRoles) {
+    var deferredListItems = $q.defer();
+
+    var moderationRoles = _.filter(userRoles, function(role) {
+      return _.includes(role.permissions, RolePermission.AANBOD_MODEREREN);
+    });
+
+    if (moderationRoles.length > 0) {
+      countOffersWaitingForValidation(moderationRoles)
+        .then(generateModerationListItem)
+        .then(function(moderationListItem) {
+          deferredListItems.resolve([moderationListItem]);
+        });
+    } else {
+      deferredListItems.resolve([]);
+    }
+
+    return deferredListItems.promise;
+  }
+
+  /**
+   * @param {RolePermission[]} userPermissions
+   * @return {Promise.<ManagementListItem[]>}
+   */
+  function generateListItems(userPermissions) {
+    var globalUserPermissions = _.without(userPermissions, RolePermission.AANBOD_MODEREREN);
+
+    var listItems = _.filter(managementListItemDefaults, function (listItem) {
+      return _.includes(globalUserPermissions, listItem.permission);
+    });
+
+    return $q.resolve(listItems);
+  }
+}
+listItems.$inject = ["RolePermission", "authorizationService", "ModerationManager", "$q", "managementListItemDefaults"];
+
 // Source: src/management/moderation/components/moderation-offer.component.js
 /**
  * @ngdoc component
@@ -12360,6 +12565,7 @@ RoleFormController.$inject = ["RoleManager", "UserManager", "$uibModal", "$state
  * @property {string}   uuid
  * @property {string}   name
  * @property {string}   constraint
+ * @property {RolePermission[]} permissions
  */
 
 /**
