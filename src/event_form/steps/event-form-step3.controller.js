@@ -257,6 +257,9 @@ function EventFormStep3Controller(
         },
         categories: function () {
           return $scope.categories;
+        },
+        title: function () {
+          return $scope.locationAutocompleteTextField;
         }
       }
     });

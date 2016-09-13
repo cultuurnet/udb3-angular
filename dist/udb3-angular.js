@@ -7354,12 +7354,14 @@ function EventFormOrganizerModalController(
   eventCrud,
   cities,
   Levenshtein,
-  $q
+  $q,
+  organizerName
 ) {
 
   var controller = this;
 
   // Scope vars.
+  $scope.organizer = organizerName;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
@@ -7368,7 +7370,7 @@ function EventFormOrganizerModalController(
   $scope.selectedCity = '';
 
   $scope.newOrganizer = {
-    name : '',
+    name : $scope.organizer,
     address : {
       streetAddress : '',
       locality : '',
@@ -7519,7 +7521,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
@@ -7535,10 +7537,11 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories) {
+  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
 
     $scope.categories = categories;
     $scope.location = location;
+    $scope.title = title;
 
     // Scope vars.
     $scope.newPlace = getDefaultPlace();
@@ -7556,7 +7559,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
      */
     function getDefaultPlace() {
       return {
-        name: '',
+        name: $scope.title,
         eventType: '',
         address: {
           addressCountry: 'BE',
@@ -7658,7 +7661,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
 })();
 
@@ -9498,6 +9501,9 @@ function EventFormStep3Controller(
         },
         categories: function () {
           return $scope.categories;
+        },
+        title: function () {
+          return $scope.locationAutocompleteTextField;
         }
       }
     });
@@ -10195,7 +10201,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-organizer-modal.html',
-      controller: 'EventFormOrganizerModalController'
+      controller: 'EventFormOrganizerModalController',
+      resolve: {
+        organizerName: function () {
+          return $scope.organizer;
+        }
+      }
     });
 
     function updateOrganizerInfo () {
