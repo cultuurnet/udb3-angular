@@ -90,7 +90,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
       } else {
         reject(reason);
       }
-    })
+    });
   }
 
   /**

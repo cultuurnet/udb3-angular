@@ -3769,6 +3769,24 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} offerUrl
+   * @param {string} domainModel
+   * @param {string} reason (optional)
+   */
+  this.patchOffer = function (offerUrl, domainModel, reason) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=' + domainModel;
+
+    var updateData = {
+      'reason': reason
+    };
+
+    return $http
+      .patch(offerUrl, (reason ? updateData : {}), requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -11828,16 +11846,20 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWorkflowStatus) {
+function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
   var defaultLanguage = 'nl';
 
   moc.loading = true;
   moc.offer = {};
+  moc.sendingJob = false;
+  moc.error = false;
 
   moc.isReadyForValidation = isReadyForValidation;
   moc.isApproved = isApproved;
   moc.isRejected = isRejected;
+  moc.approve = approve;
+  moc.askForRejectionReasons = askForRejectionReasons;
 
   // fetch offer
   ModerationManager
@@ -11846,13 +11868,13 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
     })
-    .catch(showError)
+    .catch(showLoadingError)
     .finally(function() {
       moc.loading = false;
     });
 
-  function showError(problem) {
-    moc.error = problem || 'Dit aanbod kon niet geladen worden.';
+  function showLoadingError(problem) {
+    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
   }
 
   function isReadyForValidation() {
@@ -11866,8 +11888,91 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function isRejected() {
     return moc.offer.workflowStatus === OfferWorkflowStatus.REJECTED;
   }
+
+  function approve() {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationManager
+      .approveOffer(moc.offer)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  function askForRejectionReasons() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/reject-offer-confirm-modal.html',
+      controller: 'RejectOfferConfirmModalCtrl'
+    });
+
+    modalInstance.result.then(function(reason) {
+      if (reason === 'DUPLICATE') {
+        duplicate();
+      } else if (reason === 'INAPPROPRIATE') {
+        inappropriate();
+      } else {
+        reject(reason);
+      }
+    });
+  }
+
+  /**
+   * an offer can be rejected without a reason added.
+   */
+  function reject(reason) {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationManager
+      .rejectOffer(moc.offer, reason)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  function duplicate() {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationManager
+      .duplicateOffer(moc.offer)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  function inappropriate() {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationManager
+      .inappropriateOffer(moc.offer)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
+  }
 }
-ModerationOfferComponent.$inject = ["ModerationManager", "jsonLDLangFilter", "OfferWorkflowStatus"];
+ModerationOfferComponent.$inject = ["ModerationManager", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
 
 // Source: src/management/moderation/moderation-list.controller.js
 /**
@@ -12021,7 +12126,7 @@ angular
   .service('ModerationManager', ModerationManager);
 
 /* @ngInject */
-function ModerationManager(udbApi) {
+function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) {
   var service = this;
 
   /**
@@ -12059,8 +12164,63 @@ function ModerationManager(udbApi) {
   service.getModerationOffer = function(offerId) {
     return udbApi.getOffer(new URL(offerId));
   };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.approveOffer = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'Approve')
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.rejectOffer = function(offer, reason) {
+    return udbApi
+      .patchOffer(offer['@id'], 'Reject', reason)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.duplicateOffer = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'FlagAsDuplicate')
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.inappropriateOffer = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'FlagAsInappropriate')
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logRoleJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
 }
-ModerationManager.$inject = ["udbApi"];
+ModerationManager.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
 
 // Source: src/management/moderation/workflow.constant.js
 /* jshint sub: true */
@@ -19496,9 +19656,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
     "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
     "        <div class=\"col-md-6 text-right\">\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\">\n" +
+    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
     "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\">\n" +
+    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
     "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
     "\n" +
     "            <span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
