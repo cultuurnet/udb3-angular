@@ -2011,4 +2011,58 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should approve an offer', function(done) {
+    var offerUrl = 'http//www.example.com/event/blub';
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+    var headers = {
+      'Content-Type': 'application/ld+json;domain-model=Approve',
+      "Authorization":"Bearer undefined",
+      "Accept":"application/json, text/plain, */*"
+    };
+
+    function assertCommand(command) {
+      expect(command).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expect('PATCH', offerUrl, {}, headers, {})
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .patchOffer(offerUrl, 'Approve')
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
+
+  it('should reject an offer with reason', function(done) {
+    var offerUrl = 'http//www.example.com/event/blub';
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+    var headers = {
+      'Content-Type': 'application/ld+json;domain-model=Reject',
+      "Authorization":"Bearer undefined",
+      "Accept":"application/json, text/plain, */*"
+    };
+
+    function assertCommand(command) {
+      expect(command).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expect('PATCH', offerUrl, {reason:'aint got no time for this'}, headers, {})
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .patchOffer(offerUrl, 'Reject', 'aint got no time for this')
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
 });

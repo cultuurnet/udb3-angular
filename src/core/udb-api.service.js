@@ -1144,6 +1144,24 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} offerUrl
+   * @param {string} domainModel
+   * @param {string} reason (optional)
+   */
+  this.patchOffer = function (offerUrl, domainModel, reason) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=' + domainModel;
+
+    var updateData = {
+      'reason': reason
+    };
+
+    return $http
+      .patch(offerUrl, (reason ? updateData : {}), requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
