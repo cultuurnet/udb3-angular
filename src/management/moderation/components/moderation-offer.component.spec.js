@@ -2,7 +2,7 @@
 
 describe('Component: Moderation Offer', function () {
 
-  var $rootScope, $scope, $componentController, $q, moderationManager, UdbEvent;
+  var $rootScope, $scope, $componentController, $q, moderationManager, UdbEvent, $uibModal;
 
   beforeEach(module('udb.management'));
   beforeEach(module('udb.management.moderation'));
@@ -107,7 +107,7 @@ describe('Component: Moderation Offer', function () {
     "seeAlso": [
       "www.leuven.be"
     ],
-    "workflowStatus": "DRAFT"
+    "workflowStatus": "READY_FOR_VALIDATION"
   };
 
   beforeEach(inject(function (_$rootScope_, $compile, _$componentController_, _$q_, _UdbEvent_){
@@ -117,14 +117,22 @@ describe('Component: Moderation Offer', function () {
     $q = _$q_;
     UdbEvent = _UdbEvent_;
 
-    moderationManager = jasmine.createSpyObj('ModerationManager', ['getModerationOffer'])
+    moderationManager = jasmine.createSpyObj('ModerationManager', [
+      'getModerationOffer',
+      'approveOffer',
+      'rejectOffer',
+      'duplicateOffer',
+      'inappropriateOffer'
+    ]);
+    $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
   }));
 
   function getController() {
     return $componentController(
       'udbModerationOffer',
       {
-        'ModerationManager': moderationManager
+        'ModerationManager': moderationManager,
+        '$uibModal': $uibModal
       },
       {
         offerId: 'http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043',
@@ -156,5 +164,110 @@ describe('Component: Moderation Offer', function () {
     );
     expect(controller.loading).toEqual(false);
     expect(controller.error).toEqual('Dit aanbod kon niet geladen worden.');
+  });
+
+  it('should determine if an offer is READY_FOR_VALIDATION', function() {
+    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
+
+    var controller = getController();
+    $scope.$digest();
+
+    expect(controller.isReadyForValidation()).toEqual(true);
+    expect(controller.isApproved()).toEqual(false);
+    expect(controller.isRejected()).toEqual(false);
+  });
+
+  it('should determine if an offer is APPROVED', function() {
+    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
+
+    var controller = getController();
+    $scope.$digest();
+
+    controller.offer.workflowStatus = 'APPROVED';
+
+    expect(controller.isReadyForValidation()).toEqual(false);
+    expect(controller.isApproved()).toEqual(true);
+    expect(controller.isRejected()).toEqual(false);
+  });
+
+  it('should determine if an offer is REJECTED', function() {
+    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
+
+    var controller = getController();
+    $scope.$digest();
+
+    controller.offer.workflowStatus = 'REJECTED';
+
+    expect(controller.isReadyForValidation()).toEqual(false);
+    expect(controller.isApproved()).toEqual(false);
+    expect(controller.isRejected()).toEqual(true);
+  });
+
+  it('should approve an offer', function() {
+    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
+    moderationManager.approveOffer.and.returnValue($q.resolve());
+
+    var controller = getController();
+    $scope.$digest();
+
+    expect(controller.offer.workflowStatus).toEqual('READY_FOR_VALIDATION');
+
+    controller.approve();
+    $scope.$digest();
+
+    expect(moderationManager.approveOffer).toHaveBeenCalled();
+    expect(controller.offer.workflowStatus).toEqual('APPROVED');
+    expect(controller.sendingJob).toEqual(false);
+  });
+
+  it('should ask for rejection reasons before rejecting', function() {
+    $uibModal.open.and.returnValue({ result: $q.resolve('Mijn reden.') });
+    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
+    moderationManager.rejectOffer.and.returnValue($q.resolve());
+
+    var controller = getController();
+    $scope.$digest();
+
+    controller.askForRejectionReasons();
+    $scope.$digest();
+
+    expect(moderationManager.rejectOffer).toHaveBeenCalled();
+    expect(controller.offer.workflowStatus).toEqual('REJECTED');
+    expect(controller.sendingJob).toEqual(false);
+    expect(controller.error).toEqual(false);
+  });
+
+  it('should mark as duplicate offer', function() {
+    $uibModal.open.and.returnValue({ result: $q.resolve('DUPLICATE') });
+    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
+    moderationManager.duplicateOffer.and.returnValue($q.resolve());
+
+    var controller = getController();
+    $scope.$digest();
+
+    controller.askForRejectionReasons();
+    $scope.$digest();
+
+    expect(moderationManager.duplicateOffer).toHaveBeenCalled();
+    expect(controller.offer.workflowStatus).toEqual('REJECTED');
+    expect(controller.sendingJob).toEqual(false);
+    expect(controller.error).toEqual(false);
+  });
+
+  it('should mark as inappropriate offer', function() {
+    $uibModal.open.and.returnValue({ result: $q.resolve('INAPPROPRIATE') });
+    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
+    moderationManager.inappropriateOffer.and.returnValue($q.resolve());
+
+    var controller = getController();
+    $scope.$digest();
+
+    controller.askForRejectionReasons();
+    $scope.$digest();
+
+    expect(moderationManager.inappropriateOffer).toHaveBeenCalled();
+    expect(controller.offer.workflowStatus).toEqual('REJECTED');
+    expect(controller.sendingJob).toEqual(false);
+    expect(controller.error).toEqual(false);
   });
 });
