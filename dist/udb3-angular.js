@@ -11974,6 +11974,60 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
 }
 ModerationOfferComponent.$inject = ["ModerationManager", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
 
+// Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:RoleDeleteConfirmModalCtrl
+ * @description
+ * # RoleDeleteConfirmModalCtrl
+ * Modal to delete a role.
+ */
+angular
+  .module('udb.management.moderation')
+  .controller('RejectOfferConfirmModalCtrl', RejectOfferConfirmModalCtrl);
+
+/* @ngInject */
+function RejectOfferConfirmModalCtrl($scope, $uibModalInstance, $q) {
+
+  $scope.cancel = cancel;
+  $scope.reject = reject;
+  $scope.response = {};
+
+  /**
+   * Delete the role.
+   */
+  function reject() {
+    var answer;
+    $scope.error = false;
+
+    // if no type chosen or the reason hasn't been filled in for OTHER
+    if (!$scope.response.type ||
+          ($scope.response.type === 'OTHER' &&
+            (!$scope.response.reason || !$scope.response.reason.length))) {
+      $scope.error = 'Gelieve een reden op te geven.';
+      return;
+    }
+
+    if ($scope.response.type === 'OTHER') {
+      answer = $scope.response.reason;
+    } else {
+      answer = $scope.response.type;
+    }
+
+    $uibModalInstance.close($q.resolve(answer));
+  }
+
+  /**
+   * Cancel, modal dismiss.
+   */
+  function cancel() {
+    $uibModalInstance.dismiss();
+  }
+
+}
+RejectOfferConfirmModalCtrl.$inject = ["$scope", "$uibModalInstance", "$q"];
+
 // Source: src/management/moderation/moderation-list.controller.js
 /**
  * @ngdoc function
@@ -19665,6 +19719,50 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
     "        </div>\n" +
     "    </footer>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/reject-offer-confirm-modal.html',
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"row\">\n" +
+    "\n" +
+    "      <div class=\"col-xs-12\">\n" +
+    "        <p>Duid de reden aan voor het afkeuren van dit aanbod:</p>\n" +
+    "\n" +
+    "        <form>\n" +
+    "          <div class=\"checkbox\">\n" +
+    "            <label>\n" +
+    "              <input type=\"radio\" name=\"type\" ng-model=\"response.type\" value=\"DUPLICATE\"> Dit aanbod bestaat al.\n" +
+    "            </label>\n" +
+    "          </div>\n" +
+    "\n" +
+    "          <div class=\"checkbox\">\n" +
+    "            <label>\n" +
+    "              <input type=\"radio\" name=\"type\" ng-model=\"response.type\" value=\"INAPPROPRIATE\"> Dit aanbod heeft een ongepaste inhoud.\n" +
+    "            </label>\n" +
+    "          </div>\n" +
+    "\n" +
+    "          <div class=\"checkbox\">\n" +
+    "            <label>\n" +
+    "              <input type=\"radio\" name=\"type\" ng-model=\"response.type\" value=\"OTHER\"> Andere, specifieer:\n" +
+    "              <input type=\"text\" name=\"reason\" ng-model=\"response.reason\">\n" +
+    "            </label>\n" +
+    "          </div>\n" +
+    "        </form>\n" +
+    "\n" +
+    "        <div class=\"text-danger\" ng-show=\"error\" ng-bind=\"error\"></div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">\n" +
+    "    Annuleren\n" +
+    "  </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"reject()\">\n" +
+    "    Aanbod afkeuren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  </button>\n" +
     "</div>"
   );
 
