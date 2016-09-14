@@ -12,7 +12,7 @@ angular
   .service('ModerationManager', ModerationManager);
 
 /* @ngInject */
-function ModerationManager(udbApi) {
+function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) {
   var service = this;
 
   /**
@@ -50,4 +50,59 @@ function ModerationManager(udbApi) {
   service.getModerationOffer = function(offerId) {
     return udbApi.getOffer(new URL(offerId));
   };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.approveOffer = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'Approve')
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.rejectOffer = function(offer, reason) {
+    return udbApi
+      .patchOffer(offer['@id'], 'Reject', reason)
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.duplicateOffer = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'FlagAsDuplicate')
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.inappropriateOffer = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'FlagAsInappropriate')
+      .then(logRoleJob);
+  };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logRoleJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
 }

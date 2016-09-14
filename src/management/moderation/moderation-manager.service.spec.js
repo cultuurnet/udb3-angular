@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: Moderation Manager', function () {
-  var udbApi, $q, service, $scope;
+  var udbApi, $q, service, $scope, jobLogger;
 
   var baseUrl = 'http://example.com/';
 
@@ -130,7 +130,7 @@ describe('Service: Moderation Manager', function () {
     "seeAlso": [
       "www.leuven.be"
     ],
-    "workflowStatus": "DRAFT"
+    "workflowStatus": "READY_FOR_VALIDATION"
   };
 
   beforeEach(module('udb.core', function ($provide) {
@@ -144,11 +144,23 @@ describe('Service: Moderation Manager', function () {
       'getMe',
       'getUserRoles',
       'findEventsWithLimit',
-      'getOffer'
+      'getOffer',
+      'patchOffer'
     ]);
+
+    jobLogger = jasmine.createSpyObj('jobLogger', [
+      'addJob'
+    ]);
+
     $provide.provider('udbApi', {
       $get: function () {
         return udbApi;
+      }
+    });
+
+    $provide.provider('jobLogger', {
+      $get: function () {
+        return jobLogger;
       }
     });
   }));
@@ -221,6 +233,126 @@ describe('Service: Moderation Manager', function () {
     service
       .getModerationOffer('http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043')
       .then(assertResultset);
+
+    $scope.$apply();
+  });
+
+  it('should approve an offer', function(done) {
+    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
+    var offer = {
+      '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
+    };
+
+    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+
+    function assertCommand(baseJob) {
+      expect(udbApi.patchOffer).toHaveBeenCalledWith(
+        'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
+        'Approve'
+      );
+      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
+      expect(jobLogger.addJob).toHaveBeenCalled();
+      done();
+    }
+
+    service
+      .approveOffer(offer)
+      .then(assertCommand);
+
+    $scope.$apply();
+  });
+
+  it('should reject an offer with reason', function(done) {
+    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
+    var offer = {
+      '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
+    };
+
+    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+
+    function assertCommand(baseJob) {
+      expect(udbApi.patchOffer).toHaveBeenCalledWith(
+        'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
+        'Reject',
+        'Mijn reden.'
+      );
+      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
+      expect(jobLogger.addJob).toHaveBeenCalled();
+      done();
+    }
+
+    service
+      .rejectOffer(offer, 'Mijn reden.')
+      .then(assertCommand);
+
+    $scope.$apply();
+  });
+
+  it('should mark an offer as duplicate', function(done) {
+    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
+    var offer = {
+      '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
+    };
+
+    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+
+    function assertCommand(baseJob) {
+      expect(udbApi.patchOffer).toHaveBeenCalledWith(
+        'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
+        'FlagAsDuplicate'
+      );
+      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
+      expect(jobLogger.addJob).toHaveBeenCalled();
+      done();
+    }
+
+    service
+      .duplicateOffer(offer)
+      .then(assertCommand);
+
+    $scope.$apply();
+  });
+
+  it('should mark an offer as inappropriate', function(done) {
+    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
+    var offer = {
+      '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
+    };
+
+    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+
+    function assertCommand(baseJob) {
+      expect(udbApi.patchOffer).toHaveBeenCalledWith(
+        'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
+        'FlagAsInappropriate'
+      );
+      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
+      expect(jobLogger.addJob).toHaveBeenCalled();
+      done();
+    }
+
+    service
+      .inappropriateOffer(offer)
+      .then(assertCommand);
+
+    $scope.$apply();
+  });
+
+  it('should notify patch offer errors', function(done) {
+    var offer = {
+      '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
+    };
+
+    udbApi.patchOffer.and.returnValue($q.reject({title:'Big problem!'}));
+
+    function assertProblem(problem) {
+      expect(problem).toEqual({title:'Big problem!'});
+      done();
+    }
+
+    service
+      .inappropriateOffer(offer)
+      .catch(assertProblem);
 
     $scope.$apply();
   });
