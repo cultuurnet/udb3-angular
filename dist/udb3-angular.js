@@ -11732,7 +11732,7 @@ angular
 function listItems(
   RolePermission,
   authorizationService,
-  ModerationManager,
+  ModerationService,
   $q,
   managementListItemDefaults
 ) {
@@ -11740,7 +11740,7 @@ function listItems(
     .getPermissions()
     .then(generateListItems);
 
-  var moderationListItems = ModerationManager
+  var moderationListItems = ModerationService
     .getMyRoles()
     .then(generateModerationListItems);
 
@@ -11762,7 +11762,7 @@ function listItems(
     });
     query = '(' + query + ')';
 
-    return ModerationManager
+    return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
         return searchResult.totalItems;
@@ -11824,7 +11824,7 @@ function listItems(
     return $q.resolve(listItems);
   }
 }
-listItems.$inject = ["RolePermission", "authorizationService", "ModerationManager", "$q", "managementListItemDefaults"];
+listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults"];
 
 // Source: src/management/moderation/components/moderation-offer.component.js
 /**
@@ -11846,7 +11846,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -11862,7 +11862,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   moc.askForRejectionReasons = askForRejectionReasons;
 
   // fetch offer
-  ModerationManager
+  ModerationService
     .getModerationOffer(moc.offerId)
     .then(function(offer) {
       offer.updateTranslationState();
@@ -11892,7 +11892,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function approve() {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .approve(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
@@ -11934,7 +11934,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function rejectWithReason(reason) {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .reject(moc.offer, reason)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
@@ -11948,7 +11948,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function flagAsDuplicate() {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .flagAsDuplicate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
@@ -11962,7 +11962,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function flagAsInappropriate() {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .flagAsInappropriate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
@@ -11980,7 +11980,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 }
-ModerationOfferComponent.$inject = ["ModerationManager", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
+ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
 
@@ -12051,12 +12051,12 @@ angular
  * @ngInject
  * @constructor
  *
- * @param {ModerationManager} ModerationManager
+ * @param {ModerationService} ModerationService
  * @param {Object} $uibModal
  * @param {RolePermission} RolePermission
  */
 function ModerationListController(
-  ModerationManager,
+  ModerationService,
   $uibModal,
   RolePermission,
   SearchResultGenerator,
@@ -12079,7 +12079,7 @@ function ModerationListController(
   moderator.findModerationContent = findModerationContent;
 
   // load the current user's moderation roles
-  ModerationManager
+  ModerationService
     .getMyRoles()
     .then(filterModeratorRoles)
     .then(configureObservables)
@@ -12093,7 +12093,7 @@ function ModerationListController(
     query$ = rx.createObservableFunction(moderator, 'queryChanged');
     page$ = rx.createObservableFunction(moderator, 'pageChanged');
     searchResultGenerator = new SearchResultGenerator(
-      ModerationManager, query$, page$, itemsPerPage, currentRole.constraint
+      ModerationService, query$, page$, itemsPerPage, currentRole.constraint
     );
     searchResult$ = searchResultGenerator.getSearchResult$();
 
@@ -12173,9 +12173,9 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationManager", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
 
-// Source: src/management/moderation/moderation-manager.service.js
+// Source: src/management/moderation/moderation.service.js
 /**
  * @ngdoc service
  * @name udb.management.moderation
@@ -12185,10 +12185,10 @@ ModerationListController.$inject = ["ModerationManager", "$uibModal", "RolePermi
  */
 angular
   .module('udb.management.moderation')
-  .service('ModerationManager', ModerationManager);
+  .service('ModerationService', ModerationService);
 
 /* @ngInject */
-function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) {
+function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) {
   var service = this;
 
   /**
@@ -12282,7 +12282,7 @@ function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
     return $q.resolve(job);
   }
 }
-ModerationManager.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
+ModerationService.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
 
 // Source: src/management/moderation/workflow.constant.js
 /* jshint sub: true */

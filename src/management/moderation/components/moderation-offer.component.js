@@ -19,7 +19,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -35,7 +35,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   moc.askForRejectionReasons = askForRejectionReasons;
 
   // fetch offer
-  ModerationManager
+  ModerationService
     .getModerationOffer(moc.offerId)
     .then(function(offer) {
       offer.updateTranslationState();
@@ -65,7 +65,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function approve() {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .approve(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
@@ -107,7 +107,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function rejectWithReason(reason) {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .reject(moc.offer, reason)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
@@ -121,7 +121,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function flagAsDuplicate() {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .flagAsDuplicate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
@@ -135,7 +135,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
   function flagAsInappropriate() {
     moc.sendingJob = true;
     moc.error = false;
-    ModerationManager
+    ModerationService
       .flagAsInappropriate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;

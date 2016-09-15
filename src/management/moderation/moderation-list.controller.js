@@ -14,12 +14,12 @@ angular
  * @ngInject
  * @constructor
  *
- * @param {ModerationManager} ModerationManager
+ * @param {ModerationService} ModerationService
  * @param {Object} $uibModal
  * @param {RolePermission} RolePermission
  */
 function ModerationListController(
-  ModerationManager,
+  ModerationService,
   $uibModal,
   RolePermission,
   SearchResultGenerator,
@@ -42,7 +42,7 @@ function ModerationListController(
   moderator.findModerationContent = findModerationContent;
 
   // load the current user's moderation roles
-  ModerationManager
+  ModerationService
     .getMyRoles()
     .then(filterModeratorRoles)
     .then(configureObservables)
@@ -56,7 +56,7 @@ function ModerationListController(
     query$ = rx.createObservableFunction(moderator, 'queryChanged');
     page$ = rx.createObservableFunction(moderator, 'pageChanged');
     searchResultGenerator = new SearchResultGenerator(
-      ModerationManager, query$, page$, itemsPerPage, currentRole.constraint
+      ModerationService, query$, page$, itemsPerPage, currentRole.constraint
     );
     searchResult$ = searchResultGenerator.getSearchResult$();
 

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Service: Moderation Manager', function () {
+describe('Service: Moderation Service', function () {
   var udbApi, $q, service, $scope, jobLogger;
 
   var baseUrl = 'http://example.com/';
@@ -165,8 +165,8 @@ describe('Service: Moderation Manager', function () {
     });
   }));
 
-  beforeEach(inject(function (ModerationManager, $rootScope, _$q_) {
-    service = ModerationManager;
+  beforeEach(inject(function (ModerationService, $rootScope, _$q_) {
+    service = ModerationService;
     $scope = $rootScope.$new();
     $q = _$q_;
   }));

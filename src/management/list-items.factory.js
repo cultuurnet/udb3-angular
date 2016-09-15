@@ -18,7 +18,7 @@ angular
 function listItems(
   RolePermission,
   authorizationService,
-  ModerationManager,
+  ModerationService,
   $q,
   managementListItemDefaults
 ) {
@@ -26,7 +26,7 @@ function listItems(
     .getPermissions()
     .then(generateListItems);
 
-  var moderationListItems = ModerationManager
+  var moderationListItems = ModerationService
     .getMyRoles()
     .then(generateModerationListItems);
 
@@ -48,7 +48,7 @@ function listItems(
     });
     query = '(' + query + ')';
 
-    return ModerationManager
+    return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
         return searchResult.totalItems;

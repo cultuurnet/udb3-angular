@@ -5,7 +5,7 @@ describe('Controller: Moderation List', function() {
     $q,
     $scope,
     $controller,
-    Moderationmanager,
+    moderationService,
     $uibModal,
     searchResultGenerator,
     deferredSearchResult,
@@ -39,7 +39,7 @@ describe('Controller: Moderation List', function() {
     $scope = $rootScope.$new();
     searchResultGenerator = _SearchResultGenerator_;
 
-    Moderationmanager = jasmine.createSpyObj('ModerationManager', ['getMyRoles']);
+    moderationService = jasmine.createSpyObj('ModerationService', ['getMyRoles']);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
 
     deferredSearchResult = $q.defer();
@@ -50,7 +50,7 @@ describe('Controller: Moderation List', function() {
   function getController() {
     return $controller(
       'ModerationListController', {
-        ModerationManager: Moderationmanager,
+        ModerationService: moderationService,
         $uibModal: $uibModal,
         SearchResultGenerator: searchResultGenerator,
         $scope: $scope
@@ -59,13 +59,13 @@ describe('Controller: Moderation List', function() {
   }
 
   it('should load the roles of the current user', function() {
-    Moderationmanager.getMyRoles.and.returnValue($q.resolve(roles));
+    moderationService.getMyRoles.and.returnValue($q.resolve(roles));
 
     var moderator = getController();
 
     $scope.$digest();
 
-    expect(Moderationmanager.getMyRoles).toHaveBeenCalled();
+    expect(moderationService.getMyRoles).toHaveBeenCalled();
     expect(moderator.roles).toEqual([{
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Moderator Leuven",
@@ -77,7 +77,7 @@ describe('Controller: Moderation List', function() {
   });
 
   it('should set an error with detail on failure to load the roles of a user', function() {
-    Moderationmanager.getMyRoles.and.returnValue($q.reject({
+    moderationService.getMyRoles.and.returnValue($q.reject({
       title:'What are you doing?',
       detail:'Detail'
     }));
@@ -93,7 +93,7 @@ describe('Controller: Moderation List', function() {
   });
 
   it('should notify the user when no roles with moderator right were found', function() {
-    Moderationmanager.getMyRoles.and.returnValue($q.resolve([
+    moderationService.getMyRoles.and.returnValue($q.resolve([
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Editor Leuven",
@@ -135,7 +135,7 @@ describe('Controller: Moderation List', function() {
       ]
     };
 
-    Moderationmanager.getMyRoles.and.returnValue($q.resolve(roles));
+    moderationService.getMyRoles.and.returnValue($q.resolve(roles));
     deferredSearchResult.resolve(pagedSearchResult);
 
     var moderator = getController();
@@ -157,7 +157,7 @@ describe('Controller: Moderation List', function() {
   });
 
   xit('should show an error on faild moderation items search', function(done) {
-    Moderationmanager.getMyRoles.and.returnValue($q.resolve(roles));
+    moderationService.getMyRoles.and.returnValue($q.resolve(roles));
     deferredSearchResult.reject({title:'Error 404', detail:'not found'});
 
     var moderator = getController();

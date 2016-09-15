@@ -9,10 +9,10 @@
  */
 angular
   .module('udb.management.moderation')
-  .service('ModerationManager', ModerationManager);
+  .service('ModerationService', ModerationService);
 
 /* @ngInject */
-function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) {
+function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) {
   var service = this;
 
   /**

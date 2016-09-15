@@ -117,7 +117,7 @@ describe('Component: Moderation Offer', function () {
     $q = _$q_;
     UdbEvent = _UdbEvent_;
 
-    moderationManager = jasmine.createSpyObj('ModerationManager', [
+    moderationManager = jasmine.createSpyObj('ModerationService', [
       'getModerationOffer',
       'approve',
       'reject',
@@ -131,7 +131,7 @@ describe('Component: Moderation Offer', function () {
     return $componentController(
       'udbModerationOffer',
       {
-        'ModerationManager': moderationManager,
+        'ModerationService': moderationManager,
         '$uibModal': $uibModal
       },
       {
