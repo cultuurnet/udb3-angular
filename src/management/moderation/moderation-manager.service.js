@@ -56,7 +56,7 @@ function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    *
    * @return {Promise.<BaseJob>}
    */
-  service.approveOffer = function(offer) {
+  service.approve = function(offer) {
     return udbApi
       .patchOffer(offer['@id'], 'Approve')
       .then(logRoleJob);
@@ -67,7 +67,7 @@ function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    *
    * @return {Promise.<BaseJob>}
    */
-  service.rejectOffer = function(offer, reason) {
+  service.reject = function(offer, reason) {
     return udbApi
       .patchOffer(offer['@id'], 'Reject', reason)
       .then(logRoleJob);
@@ -78,7 +78,7 @@ function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    *
    * @return {Promise.<BaseJob>}
    */
-  service.duplicateOffer = function(offer) {
+  service.flagAsDuplicate = function(offer) {
     return udbApi
       .patchOffer(offer['@id'], 'FlagAsDuplicate')
       .then(logRoleJob);
@@ -89,7 +89,7 @@ function ModerationManager(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    *
    * @return {Promise.<BaseJob>}
    */
-  service.inappropriateOffer = function(offer) {
+  service.flagAsInappropriate = function(offer) {
     return udbApi
       .patchOffer(offer['@id'], 'FlagAsInappropriate')
       .then(logRoleJob);

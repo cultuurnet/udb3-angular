@@ -66,7 +66,7 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
     moc.sendingJob = true;
     moc.error = false;
     ModerationManager
-      .approveOffer(moc.offer)
+      .approve(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
       })
@@ -82,25 +82,33 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
       controller: 'RejectOfferConfirmModalCtrl'
     });
 
-    modalInstance.result.then(function(reason) {
-      if (reason === 'DUPLICATE') {
-        duplicate();
-      } else if (reason === 'INAPPROPRIATE') {
-        inappropriate();
-      } else {
-        reject(reason);
-      }
-    });
+    modalInstance.result.then(reject);
+  }
+
+  /**
+   * @param {string} reason
+   *  DUPLICATE
+   *  INAPPROPRIATE
+   *  or a custom reason
+   */
+  function reject(reason) {
+    if (reason === 'DUPLICATE') {
+      flagAsDuplicate();
+    } else if (reason === 'INAPPROPRIATE') {
+      flagAsInappropriate();
+    } else {
+      rejectWithReason(reason);
+    }
   }
 
   /**
    * an offer can be rejected without a reason added.
    */
-  function reject(reason) {
+  function rejectWithReason(reason) {
     moc.sendingJob = true;
     moc.error = false;
     ModerationManager
-      .rejectOffer(moc.offer, reason)
+      .reject(moc.offer, reason)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
@@ -110,11 +118,11 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
       });
   }
 
-  function duplicate() {
+  function flagAsDuplicate() {
     moc.sendingJob = true;
     moc.error = false;
     ModerationManager
-      .duplicateOffer(moc.offer)
+      .flagAsDuplicate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
@@ -124,11 +132,11 @@ function ModerationOfferComponent(ModerationManager, jsonLDLangFilter, OfferWork
       });
   }
 
-  function inappropriate() {
+  function flagAsInappropriate() {
     moc.sendingJob = true;
     moc.error = false;
     ModerationManager
-      .inappropriateOffer(moc.offer)
+      .flagAsInappropriate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })

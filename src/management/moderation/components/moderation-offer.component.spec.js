@@ -119,10 +119,10 @@ describe('Component: Moderation Offer', function () {
 
     moderationManager = jasmine.createSpyObj('ModerationManager', [
       'getModerationOffer',
-      'approveOffer',
-      'rejectOffer',
-      'duplicateOffer',
-      'inappropriateOffer'
+      'approve',
+      'reject',
+      'flagAsDuplicate',
+      'flagAsInappropriate'
     ]);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
   }));
@@ -205,7 +205,7 @@ describe('Component: Moderation Offer', function () {
 
   it('should approve an offer', function() {
     moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
-    moderationManager.approveOffer.and.returnValue($q.resolve());
+    moderationManager.approve.and.returnValue($q.resolve());
 
     var controller = getController();
     $scope.$digest();
@@ -215,7 +215,7 @@ describe('Component: Moderation Offer', function () {
     controller.approve();
     $scope.$digest();
 
-    expect(moderationManager.approveOffer).toHaveBeenCalled();
+    expect(moderationManager.approve).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('APPROVED');
     expect(controller.sendingJob).toEqual(false);
   });
@@ -223,7 +223,7 @@ describe('Component: Moderation Offer', function () {
   it('should ask for rejection reasons before rejecting', function() {
     $uibModal.open.and.returnValue({ result: $q.resolve('Mijn reden.') });
     moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
-    moderationManager.rejectOffer.and.returnValue($q.resolve());
+    moderationManager.reject.and.returnValue($q.resolve());
 
     var controller = getController();
     $scope.$digest();
@@ -231,7 +231,7 @@ describe('Component: Moderation Offer', function () {
     controller.askForRejectionReasons();
     $scope.$digest();
 
-    expect(moderationManager.rejectOffer).toHaveBeenCalled();
+    expect(moderationManager.reject).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('REJECTED');
     expect(controller.sendingJob).toEqual(false);
     expect(controller.error).toEqual(false);
@@ -240,7 +240,7 @@ describe('Component: Moderation Offer', function () {
   it('should mark as duplicate offer', function() {
     $uibModal.open.and.returnValue({ result: $q.resolve('DUPLICATE') });
     moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
-    moderationManager.duplicateOffer.and.returnValue($q.resolve());
+    moderationManager.flagAsDuplicate.and.returnValue($q.resolve());
 
     var controller = getController();
     $scope.$digest();
@@ -248,7 +248,7 @@ describe('Component: Moderation Offer', function () {
     controller.askForRejectionReasons();
     $scope.$digest();
 
-    expect(moderationManager.duplicateOffer).toHaveBeenCalled();
+    expect(moderationManager.flagAsDuplicate).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('REJECTED');
     expect(controller.sendingJob).toEqual(false);
     expect(controller.error).toEqual(false);
@@ -257,7 +257,7 @@ describe('Component: Moderation Offer', function () {
   it('should mark as inappropriate offer', function() {
     $uibModal.open.and.returnValue({ result: $q.resolve('INAPPROPRIATE') });
     moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
-    moderationManager.inappropriateOffer.and.returnValue($q.resolve());
+    moderationManager.flagAsInappropriate.and.returnValue($q.resolve());
 
     var controller = getController();
     $scope.$digest();
@@ -265,7 +265,7 @@ describe('Component: Moderation Offer', function () {
     controller.askForRejectionReasons();
     $scope.$digest();
 
-    expect(moderationManager.inappropriateOffer).toHaveBeenCalled();
+    expect(moderationManager.flagAsInappropriate).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('REJECTED');
     expect(controller.sendingJob).toEqual(false);
     expect(controller.error).toEqual(false);

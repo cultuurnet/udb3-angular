@@ -237,7 +237,7 @@ describe('Service: Moderation Manager', function () {
     $scope.$apply();
   });
 
-  it('should approve an offer', function(done) {
+  it('should dispatch an "Approve" command when approving an offer', function(done) {
     var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
@@ -256,13 +256,13 @@ describe('Service: Moderation Manager', function () {
     }
 
     service
-      .approveOffer(offer)
+      .approve(offer)
       .then(assertCommand);
 
     $scope.$apply();
   });
 
-  it('should reject an offer with reason', function(done) {
+  it('should dispatch a "Reject" command with a reason when rejecting an offer', function(done) {
     var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
@@ -282,13 +282,13 @@ describe('Service: Moderation Manager', function () {
     }
 
     service
-      .rejectOffer(offer, 'Mijn reden.')
+      .reject(offer, 'Mijn reden.')
       .then(assertCommand);
 
     $scope.$apply();
   });
 
-  it('should mark an offer as duplicate', function(done) {
+  it('should dispatch a "FlagAsDuplicate" command when flagging an offer as duplicate', function(done) {
     var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
@@ -307,13 +307,13 @@ describe('Service: Moderation Manager', function () {
     }
 
     service
-      .duplicateOffer(offer)
+      .flagAsDuplicate(offer)
       .then(assertCommand);
 
     $scope.$apply();
   });
 
-  it('should mark an offer as inappropriate', function(done) {
+  it('should should dispatch a "FlagAsInappropriate" command when flagging and offer as inappropriate', function(done) {
     var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
@@ -332,7 +332,7 @@ describe('Service: Moderation Manager', function () {
     }
 
     service
-      .inappropriateOffer(offer)
+      .flagAsInappropriate(offer)
       .then(assertCommand);
 
     $scope.$apply();
@@ -351,7 +351,7 @@ describe('Service: Moderation Manager', function () {
     }
 
     service
-      .inappropriateOffer(offer)
+      .flagAsInappropriate(offer)
       .catch(assertProblem);
 
     $scope.$apply();
