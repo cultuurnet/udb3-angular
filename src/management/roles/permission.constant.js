@@ -19,7 +19,6 @@ angular
      * @enum {string}
      */
     {
-      // removed 'AANBOD_INVOEREN' see III-1315
       'AANBOD_BEWERKEN': 'AANBOD_BEWERKEN',
       'AANBOD_MODEREREN': 'AANBOD_MODEREREN',
       'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',
