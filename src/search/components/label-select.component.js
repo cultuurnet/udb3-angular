@@ -14,46 +14,58 @@ angular
   });
 
 /** @ngInject */
-function LabelSelectComponent(offerLabeller) {
+function LabelSelectComponent(offerLabeller, $q) {
   var select = this;
   /** @type {Label[]} */
   select.availableLabels = [];
   select.suggestLabels = suggestLabels;
   select.createLabel = createLabel;
+  select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 2;
+  select.minimumInputLength = 3;
+  select.maxInputLength = 255;
   select.findDelay = 300;
+  select.refreshing = false;
+
+  function areLengthCriteriaMet(length) {
+    return (length >= select.minimumInputLength && length <= select.maxInputLength);
+  }
 
   function createLabel(labelName) {
+    // strip semi-colon, which doesn't get stripped automatically
+    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
+    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
+    labelName = labelName.replace(/;/g, '').trim();
+
     var similarLabel = _.find(select.labels, function (existingLabel) {
       return existingLabel.name.toUpperCase() === labelName.toUpperCase();
     });
-    if (!similarLabel) {
+    if (!similarLabel && select.areLengthCriteriaMet(labelName.length)) {
       return {name:labelName};
     }
   }
 
   function findSuggestions(name) {
-    offerLabeller
+    return offerLabeller
       .getSuggestions(name, 6)
       .then(function(labels) {
         labels.push({name: name});
         setAvailableLabels(labels);
+        return $q.resolve();
       })
       .finally(function () {
         select.refreshing = false;
       });
   }
 
-  var delayedFindSuggestions = _.debounce(findSuggestions, select.findDelay);
-
   function suggestLabels(name) {
     select.refreshing = true;
     setAvailableLabels([]);
-    delayedFindSuggestions(name);
+    // returning the promise for testing purposes
+    return findSuggestions(name);
   }
 
   /** @param {Label[]} labels */
