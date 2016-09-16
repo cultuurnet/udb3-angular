@@ -17822,10 +17822,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                   typeahead-min-length=\"2\"\n" +
-    "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                   autocomplete=\"false\"\n" +
-    "                   />\n" +
+    "                   typeahead-min-length=\"3\"\n" +
+    "                   typeahead-template-url=\"templates/city-suggestion.html\"/>\n" +
     "          </span>\n" +
     "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
     "            Er was een probleem tijdens het ophalen van de steden\n" +
