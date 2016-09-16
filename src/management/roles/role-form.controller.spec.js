@@ -15,7 +15,6 @@ describe('Controller: Roles Form', function() {
 
   var rolePermissions = [
     {key: "AANBOD_BEWERKEN", name: "Aanbod bewerken"},
-    {key: "AANBOD_INVOEREN", name: "Aanbod invoeren"},
     {key: "AANBOD_MODEREREN", name: "Aanbod modereren"},
     {key: "AANBOD_VERWIJDEREN", name: "Aanbod verwijderen"}
   ];
@@ -34,7 +33,6 @@ describe('Controller: Roles Form', function() {
     "constraint": "city:leuven",
     "permissions": [
       "AANBOD_BEWERKEN",
-      "AANBOD_INVOEREN",
       "AANBOD_MODEREREN",
       "AANBOD_VERWIJDEREN"
     ]
@@ -46,7 +44,6 @@ describe('Controller: Roles Form', function() {
     "constraint": "city:leuven",
     "permissions": [
       "AANBOD_BEWERKEN",
-      "AANBOD_INVOEREN",
       "AANBOD_MODEREREN",
       "AANBOD_VERWIJDEREN"
     ],
@@ -61,7 +58,6 @@ describe('Controller: Roles Form', function() {
   };
 
   var allPermissions = [
-    { key: 'AANBOD_INVOEREN', name: 'AANBOD_INVOEREN' },
     { key: 'AANBOD_BEWERKEN', name: 'AANBOD_BEWERKEN' },
     { key: 'AANBOD_MODEREREN', name: 'AANBOD_MODEREREN' },
     { key: 'AANBOD_VERWIJDEREN', name: 'AANBOD_VERWIJDEREN' },
