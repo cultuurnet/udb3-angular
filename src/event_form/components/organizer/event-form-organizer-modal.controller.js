@@ -50,6 +50,7 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
+  $scope.useFirstOrganizerFound = useFirstOrganizerFound;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
@@ -62,6 +63,14 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
+  }
+
+  /**
+   * Use the first organizer found in the event form.
+   */
+  function useFirstOrganizerFound() {
+    $scope.$parent.selectOrganizer($scope.firstOrganizerFound);
+    cancel();
   }
 
   /**
@@ -104,7 +113,6 @@ function EventFormOrganizerModalController(
     }, function() {
       $scope.websiteError = true;
       $scope.showWebsiteValidation = false;
-
     });
   }
 
