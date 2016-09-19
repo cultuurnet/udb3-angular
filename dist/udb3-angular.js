@@ -4228,12 +4228,12 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
   /**
    * Search for duplicate organizers.
    */
-  this.searchDuplicates = function(title, postalCode) {
+  this.searchDuplicates = function(website) {
 
     var duplicates = $q.defer();
 
     var request = $http.get(
-      appConfig.baseApiUrl + 'organizer/search-duplicates/' + title + '?postalcode=' + postalCode
+      appConfig.baseApiUrl + 'organizers/?website=' + website
     );
 
     request.success(function(jsonData) {
@@ -7324,14 +7324,17 @@ function EventFormOrganizerModalController(
 
   // Scope vars.
   $scope.organizer = organizerName;
+  $scope.organizersWebsiteFound = false;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
   $scope.selectedCity = '';
 
   $scope.newOrganizer = {
+    website: '',
     name : $scope.organizer,
     address : {
       streetAddress : '',
@@ -7346,6 +7349,7 @@ function EventFormOrganizerModalController(
   $scope.cancel = cancel;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  $scope.validateWebsite = validateWebsite;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -7375,6 +7379,33 @@ function EventFormOrganizerModalController(
   }
 
   /**
+   * Validate the website of new organizer.
+   */
+  function validateWebsite() {
+    $scope.showWebsiteValidation = true;
+
+    if (!$scope.organizerForm.website.$valid) {
+      return;
+    }
+
+    var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
+
+    promise.then(function (data) {
+
+      // Set the results for the duplicates modal,
+      if (data.length > 0) {
+        $scope.organizersWebsiteFound = true;
+        $scope.firstOrganizerFound = data.member[0];
+        $scope.showWebsiteValidation = false;
+      }
+    }, function() {
+      $scope.websiteError = true;
+      $scope.showWebsiteValidation = false;
+
+    });
+  }
+
+  /**
    * Validate the new organizer.
    */
   function validateNewOrganizer() {
@@ -7385,7 +7416,7 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.name, $scope.newOrganizer.address.postalCode);
+    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
@@ -17215,6 +17246,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"css-form\">\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }\">\n" +
+    "            <label>Website</label>\n" +
+    "            <input type=\"url\"\n" +
+    "                   name=\"website\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   ng-model=\"newOrganizer.website\"\n" +
+    "                   ng-blur=\"validateWebsite()\"\n" +
+    "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
+    "            <p class=\"help-block\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
+    "            <p class=\"error help-block\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie \\'<span ng-bind=\"firstOrganizerFound.name\"></span>\\'. Geef een unieke website of <a ng-click=\"cancel()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "        </div>\n" +
+    "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
     "        <label>Naam</label>\n" +
     "        <input type=\"text\" name=\"name\" class=\"form-control\" ng-model=\"newOrganizer.name\" required>\n" +

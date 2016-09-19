@@ -38,12 +38,12 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
   /**
    * Search for duplicate organizers.
    */
-  this.searchDuplicates = function(title, postalCode) {
+  this.searchDuplicates = function(website) {
 
     var duplicates = $q.defer();
 
     var request = $http.get(
-      appConfig.baseApiUrl + 'organizer/search-duplicates/' + title + '?postalcode=' + postalCode
+      appConfig.baseApiUrl + 'organizers/?website=' + website
     );
 
     request.success(function(jsonData) {

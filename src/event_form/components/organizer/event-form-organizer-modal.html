@@ -8,6 +8,18 @@
 
   <section ng-hide="organizersFound">
     <form name="organizerForm" class="css-form">
+        <div class="form-group" ng-class="{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }">
+            <label>Website</label>
+            <input type="url"
+                   name="website"
+                   class="form-control"
+                   ng-model="newOrganizer.website"
+                   ng-blur="validateWebsite()"
+                   required> <i class="fa fa-circle-o-notch fa-spin" ng-show="showWebsiteValidation"></i>
+            <p class="help-block" ng-hide="organizersWebsiteFound">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>
+            <p class="error help-block" ng-show="organizersWebsiteFound">Dit adres is al gebruikt door de organisatie \'<span ng-bind="firstOrganizerFound.name"></span>\'. Geef een unieke website of <a ng-click="cancel()">gebruik <span ng-bind="firstOrganizerFound.name"></span> als organisatie</a>.</p>
+        </div>
+
       <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
         <label>Naam</label>
         <input type="text" name="name" class="form-control" ng-model="newOrganizer.name" required>

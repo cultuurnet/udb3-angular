@@ -27,14 +27,17 @@ function EventFormOrganizerModalController(
 
   // Scope vars.
   $scope.organizer = organizerName;
+  $scope.organizersWebsiteFound = false;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
   $scope.selectedCity = '';
 
   $scope.newOrganizer = {
+    website: '',
     name : $scope.organizer,
     address : {
       streetAddress : '',
@@ -49,6 +52,7 @@ function EventFormOrganizerModalController(
   $scope.cancel = cancel;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  $scope.validateWebsite = validateWebsite;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -78,6 +82,33 @@ function EventFormOrganizerModalController(
   }
 
   /**
+   * Validate the website of new organizer.
+   */
+  function validateWebsite() {
+    $scope.showWebsiteValidation = true;
+
+    if (!$scope.organizerForm.website.$valid) {
+      return;
+    }
+
+    var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
+
+    promise.then(function (data) {
+
+      // Set the results for the duplicates modal,
+      if (data.length > 0) {
+        $scope.organizersWebsiteFound = true;
+        $scope.firstOrganizerFound = data.member[0];
+        $scope.showWebsiteValidation = false;
+      }
+    }, function() {
+      $scope.websiteError = true;
+      $scope.showWebsiteValidation = false;
+
+    });
+  }
+
+  /**
    * Validate the new organizer.
    */
   function validateNewOrganizer() {
@@ -88,7 +119,7 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.name, $scope.newOrganizer.address.postalCode);
+    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
