@@ -147,9 +147,10 @@ function EventFormOrganizerModalController(
 
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
