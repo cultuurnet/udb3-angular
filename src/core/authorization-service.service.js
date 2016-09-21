@@ -10,7 +10,6 @@
 angular
   .module('udb.core')
   .constant('authorization', {
-    'createOffer' : 'AANBOD_INVOEREN',
     'editOffer': 'AANBOD_BEWERKEN',
     'moderateOffer': 'AANBOD_MODEREREN',
     'removeOffer': 'AANBOD_VERWIJDEREN',
