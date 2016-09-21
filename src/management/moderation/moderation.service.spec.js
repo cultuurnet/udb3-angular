@@ -16,10 +16,6 @@ describe('Service: Moderation Service', function () {
     }
   ];
 
-  var me = {
-    "id": "6f072ba8-c510-40ac-b387-51f582650e27"
-  };
-
   var events = {
     "itemsPerPage": 30,
     "totalItems": 3562,
@@ -141,8 +137,7 @@ describe('Service: Moderation Service', function () {
     $provide.constant('appConfig', appConfig);
 
     udbApi = jasmine.createSpyObj('udbApi', [
-      'getMe',
-      'getUserRoles',
+      'getMyRoles',
       'findEventsWithLimit',
       'getOffer',
       'patchOffer'
@@ -172,12 +167,10 @@ describe('Service: Moderation Service', function () {
   }));
 
   it('should return my roles', function (done) {
-    udbApi.getUserRoles.and.returnValue($q.resolve(roles));
-    udbApi.getMe.and.returnValue($q.resolve(me));
+    udbApi.getMyRoles.and.returnValue($q.resolve(roles));
 
     function assertResultset (result) {
-      expect(udbApi.getMe).toHaveBeenCalled();
-      expect(udbApi.getUserRoles).toHaveBeenCalledWith(me.id);
+      expect(udbApi.getMyRoles).toHaveBeenCalled();
       expect(result).toEqual(roles);
       done();
     }

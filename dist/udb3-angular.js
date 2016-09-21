@@ -3768,6 +3768,15 @@ function UdbApi(
   };
 
   /**
+   * @return {Promise.<Object[]>}
+   */
+  this.getMyRoles = function () {
+    return $http
+      .get(appConfig.baseUrl + 'user/roles/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} offerUrl
    * @param {string} domainModel
    * @param {string} reason (optional)
@@ -12194,11 +12203,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<Role[]>}
    */
   service.getMyRoles = function() {
-    return udbApi
-      .getMe()
-      .then(function(user) {
-        return udbApi.getUserRoles(user.id);
-      });
+    return udbApi.getMyRoles();
   };
 
   /**

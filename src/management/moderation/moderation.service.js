@@ -19,11 +19,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<Role[]>}
    */
   service.getMyRoles = function() {
-    return udbApi
-      .getMe()
-      .then(function(user) {
-        return udbApi.getUserRoles(user.id);
-      });
+    return udbApi.getMyRoles();
   };
 
   /**
