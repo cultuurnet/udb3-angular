@@ -17977,8 +17977,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <label>Beschrijving</label>\n" +
-    "                  <textarea class=\"form-control\" ng-model=\"description\"></textarea>\n" +
+    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\"></textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
