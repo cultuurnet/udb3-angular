@@ -11670,7 +11670,7 @@ angular
 function listItemDefaults(RolePermission) {
   return [
     {
-      name: 'valideren',
+      name: 'Valideren',
       permission: RolePermission.AANBOD_MODEREREN,
       notificationCount: 0,
       index: 1,
