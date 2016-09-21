@@ -18661,10 +18661,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/label-creator.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels</h1>\n" +
-    "</div>\n" +
-    "<h2>Label Toevoegen</h2>\n" +
+    "<h1 class=\"title\">Label toevoegen</h1>\n" +
     "\n" +
     "<form name=\"creator.form\" class=\"css-form\" novalidate>\n" +
     "    <div class=\"row\">\n" +
@@ -18714,15 +18711,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</form>"
+    "</form>\n"
   );
 
 
   $templateCache.put('templates/label-editor.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels</h1>\n" +
-    "</div>\n" +
-    "<h2>Label bewerken</h2>\n" +
+    "<h1 class=\"title\">Label bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.label && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -18767,9 +18761,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/labels-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-11\">\n" +
@@ -18865,10 +18857,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/role-form.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Roles</h1>\n" +
-    "</div>\n" +
-    "<h2>Role bewerken</h2>\n" +
+    "<h1 class=\"title\">Role bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.loadedRole && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -19049,9 +19038,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/roles-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
@@ -19151,10 +19138,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/user-editor.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Gebruikers</h1>\n" +
-    "</div>\n" +
-    "<h2>Gebruiker bewerken</h2>\n" +
+    "<h1 class=\"title\">Gebruiker bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.user && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -19236,7 +19220,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div ng-show=\"editor.loadingError\">\n" +
     "    <span ng-bind=\"editor.loadingError\"></span>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
@@ -19246,9 +19230,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/users-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Gebruikers</h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Gebruikers</h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-11\">\n" +

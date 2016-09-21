@@ -2092,7 +2092,6 @@ input + .alert {
 .rv-result-viewer {
   clear: both;
   position: relative;
-  margin: 30px 0;
   min-height: 300px;
 }
 .rv-search-results.loading {
