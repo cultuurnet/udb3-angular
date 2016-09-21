@@ -29,7 +29,7 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
     }
 
     $http
-      .get(appConfig.baseApiUrl + 'organizer/suggest/' + value)
+      .get(appConfig.baseUrl + 'organizers/suggest/' + value)
       .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
@@ -43,7 +43,7 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
     var duplicates = $q.defer();
 
     var request = $http.get(
-      appConfig.baseApiUrl + 'organizers/?website=' + website
+      appConfig.baseUrl + 'organizers/?website=' + website
     );
 
     request.success(function(jsonData) {

@@ -190,7 +190,7 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       } else {
         var organizerRequest  = $http.get(
-          appConfig.baseApiUrl + 'organizer/' + organizerId,
+          appConfig.baseUrl + 'organizers/' + organizerId,
           defaultApiConfig
         );
 
@@ -540,7 +540,7 @@ function UdbApi(
     // TODO: swagger docs describes different path:
     // /api/1.0/organizer
     return $http.post(
-      appConfig.baseApiUrl + 'organizer',
+      appConfig.baseUrl + 'organizers',
       organizer,
       defaultApiConfig
     );

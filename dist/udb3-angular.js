@@ -2786,7 +2786,7 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       } else {
         var organizerRequest  = $http.get(
-          appConfig.baseApiUrl + 'organizer/' + organizerId,
+          appConfig.baseUrl + 'organizers/' + organizerId,
           defaultApiConfig
         );
 
@@ -3136,7 +3136,7 @@ function UdbApi(
     // TODO: swagger docs describes different path:
     // /api/1.0/organizer
     return $http.post(
-      appConfig.baseApiUrl + 'organizer',
+      appConfig.baseUrl + 'organizers',
       organizer,
       defaultApiConfig
     );
@@ -4219,7 +4219,7 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
     }
 
     $http
-      .get(appConfig.baseApiUrl + 'organizer/suggest/' + value)
+      .get(appConfig.baseUrl + 'organizers/suggest/' + value)
       .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
@@ -4233,7 +4233,7 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
     var duplicates = $q.defer();
 
     var request = $http.get(
-      appConfig.baseApiUrl + 'organizers/?website=' + website
+      appConfig.baseUrl + 'organizers/?website=' + website
     );
 
     request.success(function(jsonData) {
