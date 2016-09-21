@@ -11760,7 +11760,7 @@ function listItems(
         query += (query ? ' OR ' : '') + role.constraint;
       }
     });
-    query = '(' + query + ')';
+    query = (query ? '(' + query + ')' : '');
 
     return ModerationService
       .find(query, 10, 0)

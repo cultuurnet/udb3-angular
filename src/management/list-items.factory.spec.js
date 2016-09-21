@@ -117,4 +117,78 @@ describe('Factory: List Items', function () {
     $scope.$digest();
   });
 
+  it('should not query for empty braces', function(done) {
+    inject(function($injector, $rootScope, _$q_) {
+      $q = _$q_;
+      $scope = $rootScope.$new();
+
+      authorizationService.getPermissions.and.returnValue($q.resolve(permissions));
+      ModerationService.getMyRoles.and.returnValue($q.resolve([
+        {
+          "uuid": "89cd17af-d72a-42ec-8897-6159a7a62a21",
+          "name": "Bugsquashers Leuven",
+          "permissions": [
+            "AANBOD_BEWERKEN",
+            "AANBOD_MODEREREN",
+            "AANBOD_VERWIJDEREN"
+          ],
+        }
+      ]));
+      ModerationService.find.and.returnValue($q.resolve(resultset));
+
+      managementListItems = $injector.get('managementListItems');
+    });
+
+    function testServicesCalled(listItems) {
+      expect(ModerationService.find).toHaveBeenCalledWith('', 10, 0);
+      done();
+    }
+
+    managementListItems
+      .then(testServicesCalled);
+    $scope.$digest();
+  });
+
+  it('should handle an empty constraint amongst others', function(done) {
+    inject(function($injector, $rootScope, _$q_) {
+      $q = _$q_;
+      $scope = $rootScope.$new();
+
+      authorizationService.getPermissions.and.returnValue($q.resolve(permissions));
+      ModerationService.getMyRoles.and.returnValue($q.resolve([
+        {
+          "uuid": "89cd17af-d72a-42ec-8897-6159a7a62a21",
+          "name": "Bugsquashers Leuven",
+          "permissions": [
+            "AANBOD_BEWERKEN",
+            "AANBOD_MODEREREN",
+            "AANBOD_VERWIJDEREN"
+          ],
+          "constraint": "city:leuven"
+        },
+        {
+          "uuid": "89cd17af-d72a-42ec-8897-6159a7a62a22",
+          "name": "Testers",
+          "permissions": [
+            "AANBOD_BEWERKEN",
+            "AANBOD_MODEREREN",
+            "AANBOD_VERWIJDEREN"
+          ]
+        }
+      ]));
+      ModerationService.find.and.returnValue($q.resolve(resultset));
+
+      managementListItems = $injector.get('managementListItems');
+    });
+
+    function testServicesCalled(listItems) {
+      expect(ModerationService.find).toHaveBeenCalledWith('(city:leuven)', 10, 0);
+      done();
+    }
+
+    managementListItems
+      .then(testServicesCalled);
+    $scope.$digest();
+  });
+
 });
