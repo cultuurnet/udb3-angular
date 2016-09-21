@@ -2065,4 +2065,33 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should fetch the roles of the current user', function(done) {
+    var url = 'http://foo.bar/user/roles/';
+    var expectedRoles = [
+      {
+        "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+        "name": "Beheerder west-vlaanderen",
+        "constraint": "city:leuven",
+        "permissions": [
+          "GEBRUIKERS_BEHEREN"
+        ]
+      }
+    ];
+
+    function assertRoles(roles) {
+      expect(roles).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expect('GET', url)
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .getMyRoles()
+      .then(assertRoles);
+
+    $httpBackend.flush();
+  });
 });
