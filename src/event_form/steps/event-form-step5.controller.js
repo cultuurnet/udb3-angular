@@ -355,7 +355,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-organizer-modal.html',
-      controller: 'EventFormOrganizerModalController'
+      controller: 'EventFormOrganizerModalController',
+      resolve: {
+        organizerName: function () {
+          return $scope.organizer;
+        }
+      }
     });
 
     function updateOrganizerInfo () {
