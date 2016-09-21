@@ -7332,9 +7332,10 @@ function EventFormOrganizerModalController(
   $scope.showValidation = false;
   $scope.organizers = [];
   $scope.selectedCity = '';
+  $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
-    website: '',
+    website: 'http://',
     name : $scope.organizer,
     address : {
       streetAddress : '',
@@ -7347,6 +7348,7 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
+  $scope.useFirstOrganizerFound = useFirstOrganizerFound;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
@@ -7359,6 +7361,14 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
+  }
+
+  /**
+   * Use the first organizer found in the event form.
+   */
+  function useFirstOrganizerFound() {
+    $scope.$parent.selectOrganizer($scope.firstOrganizerFound);
+    cancel();
   }
 
   /**
@@ -7385,23 +7395,28 @@ function EventFormOrganizerModalController(
     $scope.showWebsiteValidation = true;
 
     if (!$scope.organizerForm.website.$valid) {
+      $scope.showWebsiteValidation = false;
       return;
     }
 
     var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
 
     promise.then(function (data) {
-
       // Set the results for the duplicates modal,
       if (data.length > 0) {
         $scope.organizersWebsiteFound = true;
         $scope.firstOrganizerFound = data.member[0];
         $scope.showWebsiteValidation = false;
       }
+      else {
+        $scope.showWebsiteValidation = false;
+        if ($scope.newOrganizer.name) {
+          $scope.disableSubmit = false;
+        }
+      }
     }, function() {
       $scope.websiteError = true;
       $scope.showWebsiteValidation = false;
-
     });
   }
 
@@ -7416,31 +7431,7 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
-    // resolve for now, will re-introduce duplicate detection later on
-    var promise = $q.resolve([]);
-
-    $scope.error = false;
-    $scope.saving = true;
-
-    promise.then(function (data) {
-
-      // Set the results for the duplicates modal,
-      if (data.length > 0) {
-        $scope.organizersFound = true;
-        $scope.organizers = data;
-        $scope.saving = false;
-      }
-      // or save the event immediately if no duplicates were found.
-      else {
-        saveOrganizer();
-      }
-
-    }, function() {
-      $scope.error = true;
-      $scope.saving = false;
-    });
-
+    saveOrganizer();
   }
 
   /**
@@ -17252,10 +17243,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   name=\"website\"\n" +
     "                   class=\"form-control\"\n" +
     "                   ng-model=\"newOrganizer.website\"\n" +
-    "                   ng-blur=\"validateWebsite()\"\n" +
+    "                   ng-change=\"validateWebsite()\"\n" +
     "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
     "            <p class=\"help-block\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
-    "            <p class=\"error help-block\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie \\'<span ng-bind=\"firstOrganizerFound.name\"></span>\\'. Geef een unieke website of <a ng-click=\"cancel()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "            <p class=\"error help-block\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie \\'<span ng-bind=\"firstOrganizerFound.name\"></span>\\'. Geef een unieke website of <a ng-click=\"useFirstOrganizerFound()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
@@ -17402,7 +17393,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "<div class=\"modal-footer\" ng-hide=\"organizersFound\">\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
-    "  <button type=\"button\" class=\"btn btn-primary organisator-toevoegen-bewaren\" ng-click=\"validateNewOrganizer()\">\n" +
+    "  <button type=\"button\"\n" +
+    "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "          ng-disabled=\"disableSubmit\"\n" +
+    "          ng-click=\"validateNewOrganizer()\">\n" +
     "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"

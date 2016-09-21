@@ -35,9 +35,10 @@ function EventFormOrganizerModalController(
   $scope.showValidation = false;
   $scope.organizers = [];
   $scope.selectedCity = '';
+  $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
-    website: '',
+    website: 'http://',
     name : $scope.organizer,
     address : {
       streetAddress : '',
@@ -97,18 +98,24 @@ function EventFormOrganizerModalController(
     $scope.showWebsiteValidation = true;
 
     if (!$scope.organizerForm.website.$valid) {
+      $scope.showWebsiteValidation = false;
       return;
     }
 
     var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
 
     promise.then(function (data) {
-
       // Set the results for the duplicates modal,
       if (data.length > 0) {
         $scope.organizersWebsiteFound = true;
         $scope.firstOrganizerFound = data.member[0];
         $scope.showWebsiteValidation = false;
+      }
+      else {
+        $scope.showWebsiteValidation = false;
+        if ($scope.newOrganizer.name) {
+          $scope.disableSubmit = false;
+        }
       }
     }, function() {
       $scope.websiteError = true;
@@ -127,31 +134,7 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
-    // resolve for now, will re-introduce duplicate detection later on
-    var promise = $q.resolve([]);
-
-    $scope.error = false;
-    $scope.saving = true;
-
-    promise.then(function (data) {
-
-      // Set the results for the duplicates modal,
-      if (data.length > 0) {
-        $scope.organizersFound = true;
-        $scope.organizers = data;
-        $scope.saving = false;
-      }
-      // or save the event immediately if no duplicates were found.
-      else {
-        saveOrganizer();
-      }
-
-    }, function() {
-      $scope.error = true;
-      $scope.saving = false;
-    });
-
+    saveOrganizer();
   }
 
   /**
