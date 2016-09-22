@@ -2695,6 +2695,9 @@ input + .alert {
 .offer-form .extra-contact {
   margin-bottom: 0.5em;
 }
+.offer-form .description-text {
+  white-space: pre-line;
+}
 .offer-form .udb3-data-table {
   table-layout: fixed;
 }
@@ -3118,6 +3121,7 @@ h2.block-header {
 }
 .event-detail-description {
   color: black;
+  white-space: pre-line;
 }
 img.offer-image-thumbnail {
   max-width: 400px;
