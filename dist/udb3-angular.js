@@ -9634,30 +9634,30 @@ function EventFormStep4Controller(
 
     // First check if all data is correct.
     $scope.infoMissing = false;
-    var missingInfo = [];
+    $scope.missingInfo = [];
+
+    if (!EventFormData.type.id) {
+      $scope.missingInfo.push('Kies een type in <a href="#wat" class="alert-link">stap 1</a>.');
+    }
+
     if (EventFormData.calendarType === 'single' && EventFormData.timestamps[0].date === '') {
-      missingInfo.push('timestamp missing');
+      $scope.missingInfo.push('Kies een datum in <a href="#wanneer" class="alert-link">stap 2</a>.');
     }
     else if (EventFormData.calendarType === 'periodic' &&
       (EventFormData.startDate === '' || EventFormData.endDate === '')
     ) {
-      missingInfo.push('start or end date missing');
-    }
-
-    if (!EventFormData.type.id) {
-      missingInfo.push('event type missing');
+      $scope.missingInfo.push('Kies een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>.');
     }
 
     if (EventFormData.isEvent && !EventFormData.location.id) {
-      missingInfo.push('place missing for event');
+      $scope.missingInfo.push('Kies een plaats in <a href="#waar" class="alert-link">stap 3</a>.');
     }
     else if (EventFormData.isPlace && !EventFormData.location.address.streetAddress) {
-      missingInfo.push('location missing for place');
+      $scope.missingInfo.push('Kies een locatie in <a href="#waar" class="alert-link">stap 3</a>.');
     }
 
-    if (missingInfo.length > 0) {
+    if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
-      console.log(missingInfo);
       return;
     }
 
@@ -17951,6 +17951,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </p>\n" +
     "      </div>\n" +
     "    </div>\n" +
+    "\n" +
+    "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
+    "      <strong>Vul alle info in vooraleer je kan opslaan:</strong>\n" +
+    "      <ul>\n" +
+    "        <li ng-repeat=\"error in missingInfo\" ng-bind-html=\"error\">\n" +
+    "          {{error}}\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "      Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.\n" +
+    "    </div>\n" +
+    "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-click=\"validateEvent(true)\"\n" +
@@ -18001,13 +18015,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </li>\n" +
     "    </ul>\n" +
     "\n" +
-    "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
-    "      Gelieve alle info in te vullen vooraleer je kan opslaan.\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "      Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.\n" +
-    "    </div>\n" +
     "  </section>\n" +
     "\n" +
     "</div>\n"

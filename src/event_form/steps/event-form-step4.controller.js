@@ -59,30 +59,30 @@ function EventFormStep4Controller(
 
     // First check if all data is correct.
     $scope.infoMissing = false;
-    var missingInfo = [];
+    $scope.missingInfo = [];
+
+    if (!EventFormData.type.id) {
+      $scope.missingInfo.push('Kies een type in <a href="#wat" class="alert-link">stap 1</a>.');
+    }
+
     if (EventFormData.calendarType === 'single' && EventFormData.timestamps[0].date === '') {
-      missingInfo.push('timestamp missing');
+      $scope.missingInfo.push('Kies een datum in <a href="#wanneer" class="alert-link">stap 2</a>.');
     }
     else if (EventFormData.calendarType === 'periodic' &&
       (EventFormData.startDate === '' || EventFormData.endDate === '')
     ) {
-      missingInfo.push('start or end date missing');
-    }
-
-    if (!EventFormData.type.id) {
-      missingInfo.push('event type missing');
+      $scope.missingInfo.push('Kies een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>.');
     }
 
     if (EventFormData.isEvent && !EventFormData.location.id) {
-      missingInfo.push('place missing for event');
+      $scope.missingInfo.push('Kies een plaats in <a href="#waar" class="alert-link">stap 3</a>.');
     }
     else if (EventFormData.isPlace && !EventFormData.location.address.streetAddress) {
-      missingInfo.push('location missing for place');
+      $scope.missingInfo.push('Kies een locatie in <a href="#waar" class="alert-link">stap 3</a>.');
     }
 
-    if (missingInfo.length > 0) {
+    if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
-      console.log(missingInfo);
       return;
     }
 
