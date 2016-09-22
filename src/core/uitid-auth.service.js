@@ -44,8 +44,25 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
     $cookieStore.put('token', token);
   };
 
+  /**
+   * @return {string|undefined}
+   *  The JWToken of the currently logged in user or undefined.
+   */
   this.getToken = function () {
-    return $cookieStore.get('token');
+    var service = this;
+    var currentToken = $cookieStore.get('token');
+
+    // check if a new JWT is set in the search parameters and parse it
+    var queryParameters = $location.search();
+    var newToken = queryParameters.jwt;
+
+    if (newToken && newToken !== currentToken) {
+      currentToken = newToken;
+      service.setToken(newToken);
+      $location.search('jwt', null);
+    }
+
+    return currentToken;
   };
 
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
