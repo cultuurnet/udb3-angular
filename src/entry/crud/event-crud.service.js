@@ -44,8 +44,10 @@ function EventCrud(
       return eventFormData;
     };
 
+    var majorInfo = _.omit(eventFormData, _.isEmpty);
+
     return udbApi
-      .createOffer(type, eventFormData)
+      .createOffer(type, majorInfo)
       .then(updateEventFormData);
   };
 
@@ -87,8 +89,10 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
+    var majorInfo = _.omit(eventFormData, _.isEmpty);
+
     udbApi
-      .updateMajorInfo(eventFormData.apiUrl, eventFormData)
+      .updateMajorInfo(eventFormData.apiUrl, majorInfo)
       .then(jobCreatorFactory(eventFormData, 'updateItem'));
   };
 
