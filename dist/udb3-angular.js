@@ -1971,7 +1971,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
     var deferredHasPermission = $q.defer();
 
     function findPermission(permissionList) {
-      var foundPermission = _.find(permissionList, function(p) { return p.key === permission; });
+      var foundPermission = _.find(permissionList, function(p) { return p === permission; });
       deferredHasPermission.resolve(foundPermission ? true : false);
     }
 
@@ -1986,17 +1986,8 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
    * @return RolePermission[]
    */
   this.getPermissions = function () {
-    /**
-     * @return RolePermission[]
-     * TODO: The API response is not up to spec and contains a list of {key, value} objects
-     */
-    function fixAPIResponse(permissions) {
-      return _.map(permissions, 'key');
-    }
-
     return udbApi
-      .getMyPermissions()
-      .then(fixAPIResponse);
+      .getMyPermissions();
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
