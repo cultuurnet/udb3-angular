@@ -21,6 +21,14 @@ textarea.resize-vertical {
 .dashboard-item .dropdown {
   min-width: 120px;
 }
+.title {
+  margin: 0;
+  line-height: 56px;
+  font-weight: 300;
+  color: #333333;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 30px;
+}
 /*!
  *  Font Awesome 4.2.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
@@ -1704,7 +1712,8 @@ textarea.resize-vertical {
 label.checkbox > [type="checkbox"] {
   margin-top: 6px;
 }
-.form-group input {
+.form-group input,
+.form-group select {
   max-width: 450px;
 }
 input + .alert {
@@ -2084,7 +2093,6 @@ input + .alert {
 .rv-result-viewer {
   clear: both;
   position: relative;
-  margin: 30px 0;
   min-height: 300px;
 }
 .rv-search-results.loading {
@@ -2687,6 +2695,9 @@ input + .alert {
 .offer-form .extra-contact {
   margin-bottom: 0.5em;
 }
+.offer-form .description-text {
+  white-space: pre-line;
+}
 .offer-form .udb3-data-table {
   table-layout: fixed;
 }
@@ -3110,6 +3121,7 @@ h2.block-header {
 }
 .event-detail-description {
   color: black;
+  white-space: pre-line;
 }
 img.offer-image-thumbnail {
   max-width: 400px;

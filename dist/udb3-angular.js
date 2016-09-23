@@ -1899,7 +1899,6 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 angular
   .module('udb.core')
   .constant('authorization', {
-    'createOffer' : 'AANBOD_INVOEREN',
     'editOffer': 'AANBOD_BEWERKEN',
     'moderateOffer': 'AANBOD_MODEREREN',
     'removeOffer': 'AANBOD_VERWIJDEREN',
@@ -2539,7 +2538,7 @@ angular.module('udb.core')
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
-      'terms.eventtype': 'Soort aanbod',
+      'terms.eventtype': 'Type',
       'created': 'Datum aangemaakt',
       'modified': 'Datum laatste aanpassing',
       'publisher': 'Auteur',
@@ -2555,13 +2554,20 @@ angular.module('udb.core')
       'what': 'Wat',
       'where': 'Waar',
       'when': 'Wanneer',
-      'input-information': 'Invoerders-informatie',
+      'input-information': 'Invoerdersinformatie',
       'translations': 'Vertalingen',
       'other': 'Andere'
     },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
-    }
+    },
+    'AANBOD_INVOEREN': 'Aanbod invoeren',
+    'AANBOD_BEWERKEN': 'Aanbod bewerken',
+    'AANBOD_MODEREREN': 'Aanbod modereren',
+    'AANBOD_VERWIJDEREN': 'Aanbod verwijderen',
+    'ORGANISATIES_BEHEREN': 'Organisaties beheren',
+    'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
+    'LABELS_BEHEREN': 'Labels beheren'
   }
 );
 
@@ -3713,16 +3719,10 @@ function UdbApi(
    */
   function returnApiProblem(errorResponse) {
     if (errorResponse) {
-      // If the error response does not contain the proper data, make some up generic problem.
-      var error = errorResponse.data ? errorResponse.data : {
-        type: appConfig.baseUrl + 'problem',
-        title: 'Something went wrong.',
-        detail: 'We failed to perform the requested action!'
-      };
       var problem = {
-        type: new URL(error.type),
-        title: error.title,
-        detail: error.detail,
+        type: new URL(_.get(errorResponse, 'data.type', appConfig.baseUrl + 'problem')),
+        title: _.get(errorResponse, 'data.title', 'Something went wrong.'),
+        detail: _.get(errorResponse, 'data.detail', 'We failed to perform the requested action!'),
         status: errorResponse.status
       };
 
@@ -4656,8 +4656,25 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
     $cookieStore.put('token', token);
   };
 
+  /**
+   * @return {string|undefined}
+   *  The JWToken of the currently logged in user or undefined.
+   */
   this.getToken = function () {
-    return $cookieStore.get('token');
+    var service = this;
+    var currentToken = $cookieStore.get('token');
+
+    // check if a new JWT is set in the search parameters and parse it
+    var queryParameters = $location.search();
+    var newToken = queryParameters.jwt;
+
+    if (newToken && newToken !== currentToken) {
+      currentToken = newToken;
+      service.setToken(newToken);
+      $location.search('jwt', null);
+    }
+
+    return currentToken;
   };
 
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
@@ -5828,29 +5845,58 @@ angular
   .controller('OfferLabelModalCtrl', OfferLabelModalCtrl);
 
 /* @ngInject */
-function OfferLabelModalCtrl($scope, $uibModalInstance, udbApi) {
-  var labelPromise = udbApi.getRecentLabels();
+function OfferLabelModalCtrl($uibModalInstance, udbApi) {
+  var lmc = this;
+  // ui-select can't get to this scope variable unless you reference it from the $parent scope.
+  // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
+  lmc.labels = [];
+  lmc.close = close;
+  lmc.ok = ok;
+  lmc.labelNames = '';
+  lmc.labelSelection = [];
+  lmc.alert = false;
+  lmc.minimumInputLength = 3;
+  lmc.maxInputLength = 255;
 
-  var ok = function () {
+  udbApi
+    .getRecentLabels()
+    .then(function (labels) {
+      lmc.labelSelection = _.map(labels, function (label) {
+        return {'name': label, 'selected': false};
+      });
+    });
+
+  function ok() {
+    // reset error msg
+    lmc.alert = false;
+
     // Get the labels selected by checkbox
-    var checkedLabels = $scope.labelSelection.filter(function (label) {
+    var checkedLabels = lmc.labelSelection.filter(function (label) {
       return label.selected;
     }).map(function (label) {
       return label.name;
     });
 
     //add the labels
-    var inputLabels = parseLabelInput($scope.labelNames);
+    var inputLabels = parseLabelInput(lmc.labelNames);
+
+    if (lmc.alert) {
+      return;
+    }
 
     // join arrays and remove doubles
     var labels = _.union(checkedLabels, inputLabels);
 
     $uibModalInstance.close(labels);
-  };
+  }
 
-  var close = function () {
+  function close() {
     $uibModalInstance.dismiss('cancel');
-  };
+  }
+
+  function areLengthCriteriaMet(length) {
+    return (length >= lmc.minimumInputLength && length <= lmc.maxInputLength);
+  }
 
   function parseLabelInput(stringWithLabels) {
     //split sting into array of labels
@@ -5864,23 +5910,18 @@ function OfferLabelModalCtrl($scope, $uibModalInstance, udbApi) {
     // remove empty strings
     labels = _.without(labels, '');
 
+    var i;
+    for (i = 0; i < labels.length; i++) {
+      if (!areLengthCriteriaMet(labels[i].length)) {
+        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        break;
+      }
+    }
+
     return labels;
   }
-
-  labelPromise.then(function (labels) {
-    $scope.availableLabels = labels;
-    $scope.labelSelection = _.map(labels, function (label) {
-      return {'name': label, 'selected': false};
-    });
-  });
-  // ui-select can't get to this scope variable unless you reference it from the $parent scope.
-  // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
-  $scope.labels = [];
-  $scope.close = close;
-  $scope.ok = ok;
-  $scope.labelNames = '';
 }
-OfferLabelModalCtrl.$inject = ["$scope", "$uibModalInstance", "udbApi"];
+OfferLabelModalCtrl.$inject = ["$uibModalInstance", "udbApi"];
 
 // Source: src/entry/labelling/offer-labeller.service.js
 /**
@@ -7279,12 +7320,14 @@ function EventFormOrganizerModalController(
   eventCrud,
   cities,
   Levenshtein,
-  $q
+  $q,
+  organizerName
 ) {
 
   var controller = this;
 
   // Scope vars.
+  $scope.organizer = organizerName;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
@@ -7293,7 +7336,7 @@ function EventFormOrganizerModalController(
   $scope.selectedCity = '';
 
   $scope.newOrganizer = {
-    name : '',
+    name : $scope.organizer,
     address : {
       streetAddress : '',
       locality : '',
@@ -7444,7 +7487,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
@@ -7460,10 +7503,11 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories) {
+  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
 
     $scope.categories = categories;
     $scope.location = location;
+    $scope.title = title;
 
     // Scope vars.
     $scope.newPlace = getDefaultPlace();
@@ -7481,7 +7525,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
      */
     function getDefaultPlace() {
       return {
-        name: '',
+        name: $scope.title,
         eventType: '',
         address: {
           addressCountry: 'BE',
@@ -7583,7 +7627,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
 })();
 
@@ -9442,6 +9486,9 @@ function EventFormStep3Controller(
         },
         categories: function () {
           return $scope.categories;
+        },
+        title: function () {
+          return $scope.locationAutocompleteTextField;
         }
       }
     });
@@ -10136,7 +10183,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-organizer-modal.html',
-      controller: 'EventFormOrganizerModalController'
+      controller: 'EventFormOrganizerModalController',
+      resolve: {
+        organizerName: function () {
+          return $scope.organizer;
+        }
+      }
     });
 
     function updateOrganizerInfo () {
@@ -11477,6 +11529,28 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
 }
 LabelsListController.$inject = ["SearchResultGenerator", "rx", "$scope", "LabelManager"];
 
+// Source: src/management/labels/semicolon-label-check.directive.js
+angular
+  .module('udb.management.labels')
+  .directive('udbSemicolonLabelCheck', SemicolonLabelCheckDirective);
+
+/** @ngInject */
+function SemicolonLabelCheckDirective($q) {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, element, attrs, controller) {
+
+      function hasNoSemicolons(name) {
+        return name === undefined || (name.indexOf(';') === -1);
+      }
+
+      controller.$validators.semicolonLabel = hasNoSemicolons;
+    }
+  };
+}
+SemicolonLabelCheckDirective.$inject = ["$q"];
+
 // Source: src/management/labels/unique-label.directive.js
 angular
   .module('udb.management.labels')
@@ -11611,40 +11685,42 @@ function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
 }
 DeleteRoleJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
 
-// Source: src/management/roles/permission-manager.service.js
-/**
- * @typedef {Object} Permission
- * @property {string} key
- * @property {string} name
- */
+// Source: src/management/roles/permission.constant.js
+/* jshint sub: true */
 
 /**
  * @ngdoc service
- * @name udb.management.permissions
+ * @name udb.management.roles.Permission
  * @description
- * # Permission Manager
- * This service allows you to lookup permissions and perform actions on them.
+ * # Permission
+ * All the possible job states defined as a constant
  */
 angular
   .module('udb.management.roles')
-  .service('PermissionManager', PermissionManager);
-
-/* @ngInject */
-function PermissionManager(udbApi) {
-  var service = this;
-
-  /**
-   * @param {string} permissionIdentifier
-   *  The key for the permission
-   * @return {Promise.Array<Permission>}
-   */
-  service.getAll = function() {
-    return udbApi.getPermissions();
-  };
-}
-PermissionManager.$inject = ["udbApi"];
+  .constant('RolePermission',
+    /**
+     * Enum for permissions
+     * @readonly
+     * @name RolePermission
+     * @enum {string}
+     */
+    {
+      'AANBOD_BEWERKEN': 'AANBOD_BEWERKEN',
+      'AANBOD_MODEREREN': 'AANBOD_MODEREREN',
+      'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',
+      'ORGANISATIES_BEHEREN': 'ORGANISATIES_BEHEREN',
+      'GEBRUIKERS_BEHEREN': 'GEBRUIKERS_BEHEREN',
+      'LABELS_BEHEREN': 'LABELS_BEHEREN'
+    }
+  );
 
 // Source: src/management/roles/role-form.controller.js
+/**
+ * @typedef {Object} TranslatedPermission
+ * @property {RolePermission} key
+ * @property {string} name
+ */
+
 /**
  * @ngdoc function
  * @name udbApp.controller:RoleFormController
@@ -11660,19 +11736,21 @@ angular
  * @constructor
  *
  * @param {RoleManager} RoleManager
- * @param {PermissionManager} PermissionManager
  * @param {UserManager} UserManager
  * @param {Object} $uibModal
  * @param {Object} $stateParams
  * @param {Object} $q
+ * @param {Function} $translate
+ * @param {RolePermission} RolePermission
  */
 function RoleFormController(
   RoleManager,
-  PermissionManager,
   UserManager,
   $uibModal,
   $stateParams,
-  $q
+  $q,
+  $translate,
+  RolePermission
 ) {
   var editor = this;
   var roleId = $stateParams.id;
@@ -11684,13 +11762,16 @@ function RoleFormController(
   editor.loadedRoleLabels = false;
   editor.addingUser = false;
   editor.role = {
-    permissions: {},
+    permissions: [],
     users: [],
     labels: []
   };
-  editor.permissions = [];
+  /**
+   * @type {TranslatedPermission[]}
+   */
+  editor.availablePermissions = [];
   editor.originalRole = {
-    permissions: {},
+    permissions: [],
     users: [],
     labels: []
   };
@@ -11709,7 +11790,8 @@ function RoleFormController(
 
   function init() {
     getAllRolePermissions()
-      .then(function() {
+      .then(function(permissions) {
+        editor.availablePermissions = permissions;
         return roleId ? loadRole(roleId) : $q.resolve();
       })
       .catch(showProblem) // stop loading when there's an error
@@ -11728,16 +11810,12 @@ function RoleFormController(
       .then(function(role) {
         editor.role = role;
 
-        editor.role.permissions = {};
         editor.role.users = [];
         editor.role.labels = [];
       }, function(problem) {
         problem.detail = problem.title;
         problem.title = 'De rol kon niet gevonden worden.';
         return $q.reject(problem);
-      })
-      .then(function() {
-        return getRolePermissions(roleId);
       })
       .then(function () {
         return loadRoleUsers(roleId);
@@ -11747,34 +11825,23 @@ function RoleFormController(
       });
   }
 
-  function getRolePermissions(roleId) {
-    return RoleManager
-      .getRolePermissions(roleId)
-      .then(function(rolePermissions) {
-        editor.role.permissions = {};
-        angular.forEach(rolePermissions, function(permission, key) {
-          editor.role.permissions[permission.key] = true;
-        });
-
-        return rolePermissions;
-      }, function(problem) {
-        problem.detail = problem.title;
-        problem.title = 'De permissies van deze rol konden niet geladen worden.';
-        return $q.reject(problem);
-      });
-  }
-
+  /**
+   * @return {TranslatedPermission[]}
+   */
   function getAllRolePermissions() {
-    return PermissionManager
-      .getAll()
-      .then(function(retrievedPermissions) {
-        editor.permissions = retrievedPermissions;
-        return retrievedPermissions;
-      }, function(problem) {
-        problem.detail = problem.title;
-        problem.title = 'De permissie lijst kon niet geladen worden.';
-        return $q.reject(problem);
+    var permissionIds = _.values(RolePermission);
+
+    function formatTranslatedPermissions(translations) {
+      return _.map(translations, function (translation, translationId) {
+        return {
+          key: translationId,
+          name: translation
+        };
       });
+    }
+
+    return $translate(permissionIds)
+      .then(formatTranslatedPermissions);
   }
 
   function loadRoleUsers(roleId) {
@@ -11803,12 +11870,13 @@ function RoleFormController(
 
   function roleCreated (response) {
     roleId = response.roleId;
-    editor.role.id = roleId;
-    editor.originalRole.id = roleId;
+    // set uuid because a GET role would have a uuid as well
+    editor.role.uuid = roleId;
+    editor.originalRole.uuid = roleId;
   }
 
   function createRole() {
-    if (!editor.role.id && editor.role.name) {
+    if (!editor.role.uuid && editor.role.name) {
       RoleManager
         .create(editor.role.name)
         .then(roleCreated, showProblem)
@@ -11842,22 +11910,29 @@ function RoleFormController(
       });
   }
 
-  function updatePermission(key) {
+  /**
+   *
+   * @param {RolePermission} permission
+   */
+  function updatePermission(permission) {
+    var hasPermission = editor.role.permissions.indexOf(permission) > -1;
+
     // permission added
-    if (editor.role.permissions[key] === true) {
+    if (!hasPermission) {
       editor.loadedRolePermissions = false;
       RoleManager
-        .addPermissionToRole(key, roleId)
+        .addPermissionToRole(permission, roleId)
         .catch(showProblem)
         .finally(function() {
           editor.loadedRolePermissions = true;
         });
     }
+
     // permission removed
-    if (editor.role.permissions[key] === false) {
+    if (hasPermission) {
       editor.loadedRolePermissions = false;
       RoleManager
-        .removePermissionFromRole(key, roleId)
+        .removePermissionFromRole(permission, roleId)
         .catch(showProblem)
         .finally(function() {
           editor.loadedRolePermissions = true;
@@ -11970,7 +12045,7 @@ function RoleFormController(
 
   init();
 }
-RoleFormController.$inject = ["RoleManager", "PermissionManager", "UserManager", "$uibModal", "$stateParams", "$q"];
+RoleFormController.$inject = ["RoleManager", "UserManager", "$uibModal", "$stateParams", "$q", "$translate", "RolePermission"];
 
 // Source: src/management/roles/role-manager.service.js
 /**
@@ -12049,28 +12124,28 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
   };
 
   /**
-   * @param {string} permissionKey
-   *  The key for the permission
+   * @param {RolePermission} permission
+   *  The permission to add to the role
    * @param {string} roleId
    *  roleId for the role
    * @return {Promise}
    */
-  service.addPermissionToRole = function(permissionKey, roleId) {
+  service.addPermissionToRole = function(permission, roleId) {
     return udbApi
-      .addPermissionToRole(permissionKey, roleId)
+      .addPermissionToRole(permission, roleId)
       .then(logRoleJob);
   };
 
   /**
-   * @param {string} permissionKey
+   * @param {RolePermission} permission
    *  The key for the permission
    * @param {string} roleId
    *  roleId for the role
    * @return {Promise}
    */
-  service.removePermissionFromRole = function(permissionKey, roleId) {
+  service.removePermissionFromRole = function(permission, roleId) {
     return udbApi
-      .removePermissionFromRole(permissionKey, roleId)
+      .removePermissionFromRole(permission, roleId)
       .then(logRoleJob);
   };
 
@@ -13658,46 +13733,58 @@ angular
   });
 
 /** @ngInject */
-function LabelSelectComponent(offerLabeller) {
+function LabelSelectComponent(offerLabeller, $q) {
   var select = this;
   /** @type {Label[]} */
   select.availableLabels = [];
   select.suggestLabels = suggestLabels;
   select.createLabel = createLabel;
+  select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 2;
+  select.minimumInputLength = 3;
+  select.maxInputLength = 255;
   select.findDelay = 300;
+  select.refreshing = false;
+
+  function areLengthCriteriaMet(length) {
+    return (length >= select.minimumInputLength && length <= select.maxInputLength);
+  }
 
   function createLabel(labelName) {
+    // strip semi-colon, which doesn't get stripped automatically
+    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
+    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
+    labelName = labelName.replace(/;/g, '').trim();
+
     var similarLabel = _.find(select.labels, function (existingLabel) {
       return existingLabel.name.toUpperCase() === labelName.toUpperCase();
     });
-    if (!similarLabel) {
+    if (!similarLabel && select.areLengthCriteriaMet(labelName.length)) {
       return {name:labelName};
     }
   }
 
   function findSuggestions(name) {
-    offerLabeller
+    return offerLabeller
       .getSuggestions(name, 6)
       .then(function(labels) {
         labels.push({name: name});
         setAvailableLabels(labels);
+        return $q.resolve();
       })
       .finally(function () {
         select.refreshing = false;
       });
   }
 
-  var delayedFindSuggestions = _.debounce(findSuggestions, select.findDelay);
-
   function suggestLabels(name) {
     select.refreshing = true;
     setAvailableLabels([]);
-    delayedFindSuggestions(name);
+    // returning the promise for testing purposes
+    return findSuggestions(name);
   }
 
   /** @param {Label[]} labels */
@@ -13712,7 +13799,7 @@ function LabelSelectComponent(offerLabeller) {
       .value();
   }
 }
-LabelSelectComponent.$inject = ["offerLabeller"];
+LabelSelectComponent.$inject = ["offerLabeller", "$q"];
 
 // Source: src/search/components/query-editor-daterangepicker.directive.js
 /**
@@ -14986,41 +15073,41 @@ angular
     },
     nl: {
       'TYPE' : 'type',
-      'CDBID' : 'cdbid',
+      'CDBID' : 'identificatiecode (CDBID)',
       'TITLE' : 'titel',
       'KEYWORDS' : 'label',
-      'CITY' : 'gemeente',
-      'ORGANISER_KEYWORDS': 'organisatie-label',
+      'CITY' : 'gemeente (naam)',
+      'ORGANISER_KEYWORDS': 'label organisatie',
       'ZIPCODE' : 'postcode',
       'COUNTRY' : 'land',
-      'PHYSICAL_GIS' : 'geo',
+      'PHYSICAL_GIS' : 'geo-coördinaten',
       'CATEGORY_NAME' : 'categorie',
-      'AGEFROM' : 'leeftijd-vanaf',
+      'AGEFROM' : 'leeftijd vanaf',
       'DETAIL_LANG' : 'vertaling',
       'PRICE' : 'prijs',
-      'STARTDATE' : 'start-datum',
-      'ENDDATE' : 'eind-datum',
-      'ORGANISER_LABEL' : 'organisatie',
-      'LOCATION_LABEL' : 'locatie',
+      'STARTDATE' : 'startdatum',
+      'ENDDATE' : 'einddatum',
+      'ORGANISER_LABEL' : 'organisatie (naam)',
+      'LOCATION_LABEL' : 'locatie (naam)',
       'EXTERNALID' : 'externalid',
-      'LASTUPDATED' : 'laatst-aangepast',
-      'LASTUPDATEDBY' : 'laatst-aangepast-door',
-      'CREATIONDATE' : 'gecreeerd',
-      'CREATEDBY' : 'gecreeerd-door',
+      'LASTUPDATED' : 'laatst aangepast',
+      'LASTUPDATEDBY' : 'laatst aangepast door',
+      'CREATIONDATE' : 'gecreëerd',
+      'CREATEDBY' : 'gecreëerd door',
       'PERMANENT' : 'permanent',
       'DATETYPE' : 'wanneer',
-      'CATEGORY_EVENTTYPE_NAME' : 'event-type',
+      'CATEGORY_EVENTTYPE_NAME' : 'type',
       'CATEGORY_THEME_NAME' : 'thema',
-      'CATEGORY_FACILITY_NAME' : 'voorziening',
+      'CATEGORY_FACILITY_NAME' : 'voorzieningen',
       'CATEGORY_TARGETAUDIENCE_NAME' : 'doelgroep',
-      'CATEGORY_FLANDERSREGION_NAME' : 'gebied',
+      'CATEGORY_FLANDERSREGION_NAME' : 'regio / gemeente',
       'CATEGORY_PUBLICSCOPE_NAME' : 'publieksbereik',
-      'LIKE_COUNT' : 'aantal-likes',
-      'RECOMMEND_COUNT' : 'keren-aanbevolen',
-      'ATTEND_COUNT' : 'aantal-ik-ga',
-      'COMMENT_COUNT' : 'aantal-commentaar',
-      'PRIVATE' : 'prive',
-      'AVAILABLEFROM' : 'datum-beschikbaar'
+      'LIKE_COUNT' : 'aantal keer \'geliket\'',
+      'RECOMMEND_COUNT' : 'aantal keer aanbevolen',
+      'ATTEND_COUNT' : 'aantal keer \'ik ga hierheen\'',
+      'COMMENT_COUNT' : 'aantal reacties',
+      'PRIVATE' : 'privé',
+      'AVAILABLEFROM' : 'datum beschikbaar'
     }
   });
 
@@ -15223,12 +15310,25 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
     queryTree = null;
   };
 
-  this.setQueryString = function (queryString) {
+  /**
+   *
+   * @param {string} queryString
+   * @param {boolean} forceUpdate
+   *  Set to true to emit a "searchQueryChanged" even if the query has not changed.
+   *  A possible use-case is navigating back to the search page and reloading the same query.
+   */
+  this.setQueryString = function (queryString, forceUpdate) {
+    var newQuery = false;
+
     if (!query || query.queryString !== queryString) {
-      var newQuery = LuceneQueryBuilder.createQuery(queryString);
+      newQuery = LuceneQueryBuilder.createQuery(queryString);
       LuceneQueryBuilder.isValid(newQuery);
       this.setQuery(newQuery);
       queryTree = null;
+    }
+
+    if (query && !newQuery && forceUpdate) {
+      this.setQuery(query);
     }
   };
 
@@ -15967,7 +16067,8 @@ function Search(
 
     var modal = $uibModal.open({
       templateUrl: 'templates/offer-label-modal.html',
-      controller: 'OfferLabelModalCtrl'
+      controller: 'OfferLabelModalCtrl',
+      controllerAs: 'lmc'
     });
 
     modal.result.then(function (labels) {
@@ -15995,7 +16096,8 @@ function Search(
     if (queryBuilder.isValid(query)) {
       var modal = $uibModal.open({
         templateUrl: 'templates/offer-label-modal.html',
-        controller: 'OfferLabelModalCtrl'
+        controller: 'OfferLabelModalCtrl',
+        controllerAs: 'lmc'
       });
 
       modal.result.then(function (labels) {
@@ -16087,7 +16189,7 @@ function Search(
 
   // Because the uib pagination directive is messed up and overrides the initial page to 1,
   // you have to silence and revert it.
-  var initialChangeSilenced = false;
+  var initialChangeSilenced = $scope.currentPage === 1;
   $scope.pageChanged = function () {
     var newPageNumber = $scope.currentPage;
 
@@ -16128,30 +16230,7 @@ function Search(
     $scope.$on('$destroy', stopEditingQueryListener);
   });
 
-  function init() {
-    var existingQuery = searchHelper.getQuery();
-    var searchParams = getQueryStringFromParams();
-
-    initListeners();
-
-    // If the user loads the search page with a query URI param it should be parsed and set for the initial search.
-    // Make sure the queryChanged listener is hooked up else the initial search will not trigger an update.
-    if (searchParams) {
-      searchHelper.setQueryString(searchParams);
-    }
-
-    // If the search helper already holds an existing query it won't react to the setQueryString so we force an update.
-    if (existingQuery && (!searchParams || existingQuery.queryString === searchParams)) {
-      updateQuery(existingQuery);
-    }
-
-    // If there is no existing query or search params we still want to load some results to show.
-    if (!searchParams && !existingQuery) {
-      searchHelper.setQueryString('');
-    }
-  }
-
-  init();
+  initListeners();
 }
 Search.$inject = ["$scope", "udbApi", "LuceneQueryBuilder", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate"];
 
@@ -16430,17 +16509,22 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/offer-label-modal.html',
-    "<div class=\"modal-body\">\n" +
+    "<div class=\"modal-body offer-label-modal\">\n" +
     "\n" +
-    "  <label>Labels</label>\n" +
+    "  <h2>Labels</h2>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-lg-12\">\n" +
-    "      <input type=\"text\" ng-model=\"labelNames\" class=\"form-control\"/>\n" +
+    "      <input type=\"text\"\n" +
+    "             class=\"form-control\"\n" +
+    "             ng-model=\"lmc.labelNames\"\n" +
+    "             name=\"labels\" />\n" +
+    "      <p class=\"help-block\">Een puntkomma start een nieuw label. <br />\n" +
+    "        <span class=\"lmc-alert text-danger\" ng-if=\"lmc.alert\" ng-bind=\"lmc.alert\"><</span></p>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"col-lg-12\">\n" +
-    "      <div class=\"checkbox\" ng-repeat=\"label in labelSelection\">\n" +
+    "      <div class=\"checkbox\" ng-repeat=\"label in lmc.labelSelection\">\n" +
     "        <label>\n" +
     "          <input type=\"checkbox\" ng-model=\"label.selected\"/>\n" +
     "          <span ng-bind=\"label.name\"></span>\n" +
@@ -16451,8 +16535,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button class=\"btn btn-default\" ng-click=\"close()\">Annuleren</button>\n" +
-    "  <button class=\"btn btn-primary\" ng-click=\"ok()\">Label</button>\n" +
+    "  <button class=\"btn btn-default\" ng-click=\"lmc.close()\">Annuleren</button>\n" +
+    "  <button class=\"btn btn-primary\" ng-click=\"lmc.ok()\">Label</button>\n" +
     "</div>\n"
   );
 
@@ -16822,11 +16906,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"add-date\">\n" +
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
-    "      <p id=\"add-date-label\">Dag toevoegen</p>\n" +
+    "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
     "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
     "    </a>\n" +
     "  </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
@@ -17314,10 +17398,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"modal-body\">\n" +
     "  <form name=\"placeForm\" class=\"css-form\">\n" +
     "    <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "      <label>Titel</label>\n" +
+    "      <label>Naam locatie</label>\n" +
     "      <input class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "      <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        Titel is een verplicht veld.\n" +
+    "        De naam van de locatie is een verplicht veld.\n" +
     "      </span>\n" +
     "    </div>\n" +
     "\n" +
@@ -17344,7 +17428,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <label>Straat en nummer</label>\n" +
     "          <input class=\"form-control\"\n" +
     "                 id=\"locatie-straat\"\n" +
-    "                 placeholder=\"Straat en nummer\"\n" +
     "                 name=\"address_streetAddress\"\n" +
     "                 type=\"text\"\n" +
     "                 ng-model=\"newPlace.address.streetAddress\"\n" +
@@ -17374,7 +17457,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
     "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
@@ -17994,7 +18077,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
-    "                <div ng-bind-html=\"eventFormData.description.nl\"></div>\n" +
+    "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
     "                <a class=\"btn btn-link\" ng-click=\"descriptionCssClass = 'state-filling'\">Wijzigen</a>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
@@ -18683,10 +18766,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/label-creator.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels</h1>\n" +
-    "</div>\n" +
-    "<h2>Label Toevoegen</h2>\n" +
+    "<h1 class=\"title\">Label toevoegen</h1>\n" +
     "\n" +
     "<form name=\"creator.form\" class=\"css-form\" novalidate>\n" +
     "    <div class=\"row\">\n" +
@@ -18698,6 +18778,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       name=\"name\"\n" +
     "                       type=\"text\"\n" +
     "                       udb-unique-label\n" +
+    "                       udb-semicolon-label-check\n" +
     "                       ng-minlength=\"3\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
@@ -18708,6 +18789,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -18736,15 +18818,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</form>"
+    "</form>\n"
   );
 
 
   $templateCache.put('templates/label-editor.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels</h1>\n" +
-    "</div>\n" +
-    "<h2>Label bewerken</h2>\n" +
+    "<h1 class=\"title\">Label bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.label && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -18754,8 +18833,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div ng-show=\"editor.label\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-6\">\n" +
-    "                <label for=\"label-name-field\">Naam</label>\n" +
-    "                <input id=\"label-name-field\" type=\"text\" ng-model=\"editor.label.name\" ng-disabled=\"editor.renaming\">\n" +
+    "                <div class=\"form-group\" udb-form-group>\n" +
+    "                    <label for=\"label-name-field\">Naam</label>\n" +
+    "                    <input id=\"label-name-field\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           type=\"text\"\n" +
+    "                           name=\"name\"\n" +
+    "                           udb-semicolon-label-check\n" +
+    "                           ng-model=\"editor.label.name\"\n" +
+    "                           ng-minlength=\"3\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-maxlength=\"255\"\n" +
+    "                           ng-disabled=\"editor.renaming\">\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
@@ -18789,9 +18883,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/labels-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-11\">\n" +
@@ -18887,10 +18979,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/role-form.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Roles</h1>\n" +
-    "</div>\n" +
-    "<h2>Role bewerken</h2>\n" +
+    "<h1 class=\"title\">Role bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.loadedRole && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -18976,10 +19065,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-md-12\">\n" +
-    "                <div class=\"checkbox\" ng-repeat=\"role in editor.permissions | filter: permissionSearch\">\n" +
+    "                <div class=\"checkbox\" ng-repeat=\"permission in editor.availablePermissions | filter: permissionSearch\">\n" +
     "                  <label>\n" +
-    "                      <input type=\"checkbox\"\n" +
-    "                        ng-model=\"editor.role.permissions[role.key]\" ng-change=\"editor.updatePermission(role.key)\"> <strong ng-bind=\"::role.name\"></strong>\n" +
+    "                        <input  type=\"checkbox\"\n" +
+    "                                name=\"editor.role.permissions[]\"\n" +
+    "                                value=\"{{permission.key}}\"\n" +
+    "                                ng-checked=\"editor.role.permissions.indexOf(permission.key) > -1\"\n" +
+    "                                ng-click=\"editor.updatePermission(permission.key)\"\n" +
+    "                        > <strong ng-bind=\"permission.name\"></strong>\n" +
     "                  </label>\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -19067,9 +19160,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/roles-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
@@ -19169,10 +19260,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/user-editor.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Gebruikers</h1>\n" +
-    "</div>\n" +
-    "<h2>Gebruiker bewerken</h2>\n" +
+    "<h1 class=\"title\">Gebruiker bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.user && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -19254,7 +19342,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div ng-show=\"editor.loadingError\">\n" +
     "    <span ng-bind=\"editor.loadingError\"></span>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
@@ -19264,9 +19352,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/users-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Gebruikers</h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Gebruikers</h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-11\">\n" +
@@ -19574,24 +19660,25 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/label-select.html',
+    "<!-- adding a '.' to the token list due to: https://github.com/angular-ui/ui-select/issues/1151 -->\n" +
     "<ui-select multiple\n" +
     "           tagging=\"select.createLabel\"\n" +
     "           ng-model=\"select.labels\"\n" +
     "           reset-search-input=\"true\"\n" +
-    "           tagging-tokens=\"ENTER|;\"\n" +
+    "           tagging-tokens=\"ENTER|;|.\"\n" +
     "           on-select=\"select.labelAdded({label: $item})\"\n" +
     "           on-remove=\"select.labelRemoved({label: $item})\">\n" +
     "    <ui-select-match placeholder=\"Voeg een label toe...\">{{$item.name}}</ui-select-match>\n" +
-    "    <ui-select-no-choice ng-show=\"$select.search.length >= select.minimumInputLength &&\">\n" +
+    "    <ui-select-no-choice ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\">\n" +
     "        <div class=\"udb-label-select-refreshing\" style=\"padding: 3px 20px\">\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Suggesties laden\n" +
     "        </div>\n" +
     "    </ui-select-no-choice>\n" +
     "    <ui-select-choices repeat=\"label in select.availableLabels track by label.name\"\n" +
-    "                       ng-show=\"$select.search.length >= select.minimumInputLength &&\"\n" +
+    "                       ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\"\n" +
     "                       ui-disable-choice=\"select.refreshing\"\n" +
     "                       refresh=\"select.suggestLabels($select.search)\"\n" +
-    "                       refresh-delay=\"0\"\n" +
+    "                       refresh-delay=\"300\"\n" +
     "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
     "        <div>\n" +
     "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
@@ -19860,7 +19947,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/search-bar.directive.html',
-    "<h1>Zoeken</h1>\n" +
+    "<h1 class=\"title\">Zoeken</h1>\n" +
     "<form class=\"navbar-form navbar-left udb-header-search\" role=\"search\"\n" +
     "      ng-class=\"{'has-errors': sb.hasErrors, 'is-editing': sb.isEditing}\">\n" +
     "  <div class=\"form-group has-warning has-feedback\">\n" +

@@ -104,7 +104,8 @@ function Search(
 
     var modal = $uibModal.open({
       templateUrl: 'templates/offer-label-modal.html',
-      controller: 'OfferLabelModalCtrl'
+      controller: 'OfferLabelModalCtrl',
+      controllerAs: 'lmc'
     });
 
     modal.result.then(function (labels) {
@@ -132,7 +133,8 @@ function Search(
     if (queryBuilder.isValid(query)) {
       var modal = $uibModal.open({
         templateUrl: 'templates/offer-label-modal.html',
-        controller: 'OfferLabelModalCtrl'
+        controller: 'OfferLabelModalCtrl',
+        controllerAs: 'lmc'
       });
 
       modal.result.then(function (labels) {
@@ -224,7 +226,7 @@ function Search(
 
   // Because the uib pagination directive is messed up and overrides the initial page to 1,
   // you have to silence and revert it.
-  var initialChangeSilenced = false;
+  var initialChangeSilenced = $scope.currentPage === 1;
   $scope.pageChanged = function () {
     var newPageNumber = $scope.currentPage;
 
@@ -265,28 +267,5 @@ function Search(
     $scope.$on('$destroy', stopEditingQueryListener);
   });
 
-  function init() {
-    var existingQuery = searchHelper.getQuery();
-    var searchParams = getQueryStringFromParams();
-
-    initListeners();
-
-    // If the user loads the search page with a query URI param it should be parsed and set for the initial search.
-    // Make sure the queryChanged listener is hooked up else the initial search will not trigger an update.
-    if (searchParams) {
-      searchHelper.setQueryString(searchParams);
-    }
-
-    // If the search helper already holds an existing query it won't react to the setQueryString so we force an update.
-    if (existingQuery && (!searchParams || existingQuery.queryString === searchParams)) {
-      updateQuery(existingQuery);
-    }
-
-    // If there is no existing query or search params we still want to load some results to show.
-    if (!searchParams && !existingQuery) {
-      searchHelper.setQueryString('');
-    }
-  }
-
-  init();
+  initListeners();
 }

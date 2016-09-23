@@ -314,7 +314,7 @@ angular.module('udb.core')
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
-      'terms.eventtype': 'Soort aanbod',
+      'terms.eventtype': 'Type',
       'created': 'Datum aangemaakt',
       'modified': 'Datum laatste aanpassing',
       'publisher': 'Auteur',
@@ -330,12 +330,19 @@ angular.module('udb.core')
       'what': 'Wat',
       'where': 'Waar',
       'when': 'Wanneer',
-      'input-information': 'Invoerders-informatie',
+      'input-information': 'Invoerdersinformatie',
       'translations': 'Vertalingen',
       'other': 'Andere'
     },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
-    }
+    },
+    'AANBOD_INVOEREN': 'Aanbod invoeren',
+    'AANBOD_BEWERKEN': 'Aanbod bewerken',
+    'AANBOD_MODEREREN': 'Aanbod modereren',
+    'AANBOD_VERWIJDEREN': 'Aanbod verwijderen',
+    'ORGANISATIES_BEHEREN': 'Organisaties beheren',
+    'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
+    'LABELS_BEHEREN': 'Labels beheren'
   }
 );

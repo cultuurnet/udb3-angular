@@ -1123,16 +1123,10 @@ function UdbApi(
    */
   function returnApiProblem(errorResponse) {
     if (errorResponse) {
-      // If the error response does not contain the proper data, make some up generic problem.
-      var error = errorResponse.data ? errorResponse.data : {
-        type: appConfig.baseUrl + 'problem',
-        title: 'Something went wrong.',
-        detail: 'We failed to perform the requested action!'
-      };
       var problem = {
-        type: new URL(error.type),
-        title: error.title,
-        detail: error.detail,
+        type: new URL(_.get(errorResponse, 'data.type', appConfig.baseUrl + 'problem')),
+        title: _.get(errorResponse, 'data.title', 'Something went wrong.'),
+        detail: _.get(errorResponse, 'data.detail', 'We failed to perform the requested action!'),
         status: errorResponse.status
       };
 
