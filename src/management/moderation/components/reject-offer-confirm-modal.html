@@ -1,0 +1,40 @@
+<div class="modal-body">
+    <div class="row">
+
+      <div class="col-xs-12">
+        <p>Duid de reden aan voor het afkeuren van dit aanbod:</p>
+
+        <form>
+          <div class="checkbox">
+            <label>
+              <input type="radio" name="type" ng-model="response.type" value="DUPLICATE"> Dit aanbod bestaat al.
+            </label>
+          </div>
+
+          <div class="checkbox">
+            <label>
+              <input type="radio" name="type" ng-model="response.type" value="INAPPROPRIATE"> Dit aanbod heeft een ongepaste inhoud.
+            </label>
+          </div>
+
+          <div class="checkbox">
+            <label>
+              <input type="radio" name="type" ng-model="response.type" value="OTHER"> Andere, specifieer:
+              <input type="text" name="reason" ng-model="response.reason">
+            </label>
+          </div>
+        </form>
+
+        <div class="text-danger" ng-show="error" ng-bind="error"></div>
+      </div>
+
+    </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="cancel()">
+    Annuleren
+  </button>
+  <button type="button" class="btn btn-primary" ng-click="reject()">
+    Aanbod afkeuren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+  </button>
+</div>
