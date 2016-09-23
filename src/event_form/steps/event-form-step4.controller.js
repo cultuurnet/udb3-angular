@@ -76,8 +76,8 @@ function EventFormStep4Controller(
     if (EventFormData.isEvent && !EventFormData.location.id) {
       missingInfo.push('place missing for event');
     }
-    else if (EventFormData.isPlace && !EventFormData.location.address.streetAddress) {
-      missingInfo.push('location missing for place');
+    else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
+      missingInfo.push('address missing for place');
     }
 
     if (missingInfo.length > 0) {
@@ -153,7 +153,7 @@ function EventFormStep4Controller(
       /*jshint camelcase: false */
       return {
         text: EventFormData.name.nl,
-        zipcode: location.address.postalCode,
+        zipcode: EventFormData.address.postalCode,
         keywords: 'UDB3 place'
       };
     }

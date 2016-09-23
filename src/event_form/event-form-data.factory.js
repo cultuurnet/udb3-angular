@@ -66,6 +66,7 @@ function EventFormDataFactory() {
         nl : ''
       };
       this.description = {};
+      // Events have a location
       this.location = {
         'id' : null,
         'name': '',
@@ -75,6 +76,13 @@ function EventFormDataFactory() {
           'postalCode': '',
           'streetAddress': ''
         }
+      };
+      // Places only have an address
+      this.address = {
+        'addressCountry': 'BE',
+        'addressLocality': '',
+        'postalCode': '',
+        'streetAddress': ''
       };
       this.place = {};
       /** @type {EventType} */

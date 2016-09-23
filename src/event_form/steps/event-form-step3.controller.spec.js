@@ -126,7 +126,7 @@ describe('Controller: event form step 3', function (){
     expect(scope.locationAutoCompleteError).toEqual(true);
   });
 
-  it('should set the location when initializing with form data that has already has one', function () {
+  it('should set the location when initializing with event form data', function () {
     spyOn(stepController, 'getLocations');
     var location = {
       'id' : 182,
@@ -143,9 +143,25 @@ describe('Controller: event form step 3', function (){
     stepController.init(EventFormData);
 
     expect(scope.selectedCity).toEqual('Leuven');
-    expect(scope.placeStreetAddress).toEqual('Sluisstraat 79');
     expect(scope.selectedLocation).toEqual(location);
     expect(stepController.getLocations).toHaveBeenCalledWith('3000');
+  });
+
+  it('should set the address when initializing with place form data', function () {
+    spyOn(stepController, 'getLocations');
+    var address = {
+      'addressCountry': 'BE',
+      'addressLocality': 'Leuven',
+      'postalCode': '3000',
+      'streetAddress': 'Sluisstraat 79'
+    };
+
+    EventFormData.address = address;
+    EventFormData.isPlace = true;
+    stepController.init(EventFormData);
+
+    expect(scope.selectedCity).toEqual('Leuven');
+    expect(scope.placeStreetAddress).toEqual('Sluisstraat 79');
   });
 
   it('should hide the next step when this step becomes incomplete and the event is not yet created', function () {
@@ -184,35 +200,32 @@ describe('Controller: event form step 3', function (){
     EventFormData.setLocation(getExampleLocation());
     stepController.init(EventFormData);
 
-    scope.changeStreetAddress();
+    scope.changePlaceStreetAddress();
 
     expect(EventFormData.location).toEqual(getExampleLocation());
     expect(scope.placeStreetAddress).toEqual('');
   });
 
-  it('should update the location info when street address changes are confirmed', function () {
+  it('should update the address info when street changes are confirmed', function () {
     spyOn(stepController, 'getLocations');
-    var expectedLocationInfo = {
-      'id' : null,
-      'name': '',
-      'address': {
-        'addressCountry': 'BE',
-        'addressLocality': 'Leuven',
-        'postalCode': '3000',
-        'streetAddress': 'Kerkstraat 69'
-      }
+    var expectedAddress = {
+      'addressCountry': 'BE',
+      'addressLocality': 'Leuven',
+      'postalCode': '3000',
+      'streetAddress': 'Kerkstraat 69'
     };
 
-    EventFormData.setLocation(getExampleLocation());
+    EventFormData.address = getExampleLocation().address;
+    EventFormData.isPlace = true;
     stepController.init(EventFormData);
 
-    scope.changeStreetAddress();
+    scope.changePlaceStreetAddress();
     scope.step3Form = {
       $valid: true
     };
-    scope.setStreetAddress('Kerkstraat 69');
+    scope.setPlaceStreetAddress('Kerkstraat 69');
 
-    expect(EventFormData.location).toEqual(expectedLocationInfo);
+    expect(EventFormData.address).toEqual(expectedAddress);
   });
 
   it('should ask if the street address is still correct when changing the city', function () {
