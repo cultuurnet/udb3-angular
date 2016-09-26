@@ -9931,6 +9931,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description vars.
   $scope.description = EventFormData.getDescription('nl');
+  $scope.focusDescription = false;
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -10000,6 +10001,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.selectedFacilities = [];
 
   // Description functions.
+  $scope.alterDescription = alterDescription;
   $scope.saveDescription = saveDescription;
 
   // Age range functions.
@@ -10039,12 +10041,21 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   initEditForm();
 
   /**
+   * Alter description: used for adding and editing the description.
+   */
+  function alterDescription() {
+    $scope.descriptionCssClass = 'state-filling';
+    $scope.focusDescription = true;
+  }
+
+  /**
    * Save the description.
    */
   function saveDescription() {
 
     $scope.savingDescription = true;
     $scope.descriptionError = false;
+    $scope.focusDescription = false;
 
     EventFormData.setDescription($scope.description, 'nl');
 
@@ -18803,7 +18814,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <section class=\"state incomplete\">\n" +
     "                <div class=\"row\">\n" +
     "                  <div class=\"col-sm-6\">\n" +
-    "                    <a class=\"btn btn-default to-filling\" ng-click=\"descriptionCssClass = 'state-filling'\">\n" +
+    "                    <a class=\"btn btn-default to-filling\" ng-click=\"alterDescription()\">\n" +
     "                      Tekst toevoegen\n" +
     "                    </a>\n" +
     "                  </div>\n" +
@@ -18811,12 +18822,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
     "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
-    "                <a class=\"btn btn-link\" ng-click=\"descriptionCssClass = 'state-filling'\">Wijzigen</a>\n" +
+    "                <a class=\"btn btn-link\" ng-click=\"alterDescription()\">Wijzigen</a>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <label>Beschrijving</label>\n" +
-    "                  <textarea class=\"form-control\" ng-model=\"description\"></textarea>\n" +
+    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" focus-if=\"focusDescription\"></textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
