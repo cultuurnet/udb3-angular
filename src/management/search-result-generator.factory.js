@@ -21,10 +21,11 @@ function SearchResultGenerator(rx) {
    * @param {Observable} page$
    * @param {Number} itemsPerPage
    */
-  var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage) {
+  var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage, start) {
+    start = start || '';
     this.searchService = searchService;
     this.itemsPerPage = itemsPerPage;
-    this.query$ = query$.debounce(300).startWith('');
+    this.query$ = query$.debounce(300).startWith(start);
     this.offset$ = page$.map(pageToOffset(itemsPerPage)).startWith(0);
 
     this.searchParameters$ = rx.Observable.combineLatest(
