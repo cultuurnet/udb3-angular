@@ -7522,9 +7522,10 @@ function EventFormOrganizerModalController(
 
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -9348,9 +9349,10 @@ function EventFormStep3Controller(
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -17996,8 +17998,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     ng-model=\"cityAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                     typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                     typeahead-min-length=\"3\"\n" +
-    "                     typeahead-template-url=\"templates/city-suggestion.html\">\n" +
+    "                     typeahead-min-length=\"2\"\n" +
+    "                     typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                     autocomplete=\"off\">\n" +
     "            </span>\n" +
     "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
     "              Er was een probleem tijdens het ophalen van de steden\n" +
@@ -18569,8 +18572,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                   typeahead-min-length=\"3\"\n" +
-    "                   typeahead-template-url=\"templates/city-suggestion.html\"/>\n" +
+    "                   typeahead-min-length=\"2\"\n" +
+    "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                   autocomplete=\"off\" />\n" +
     "          </span>\n" +
     "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
     "            Er was een probleem tijdens het ophalen van de steden\n" +
