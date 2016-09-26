@@ -2567,7 +2567,12 @@ angular.module('udb.core')
     'AANBOD_VERWIJDEREN': 'Aanbod verwijderen',
     'ORGANISATIES_BEHEREN': 'Organisaties beheren',
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
-    'LABELS_BEHEREN': 'Labels beheren'
+    'LABELS_BEHEREN': 'Labels beheren',
+    'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
+    'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
+    'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',
+    'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
+    'location missing for place': 'Koos je locatie in <a href="#waar" class="alert-link">stap 3</a>?'
   }
 );
 
@@ -9637,23 +9642,23 @@ function EventFormStep4Controller(
     $scope.missingInfo = [];
 
     if (!EventFormData.type.id) {
-      $scope.missingInfo.push('Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?');
+      $scope.missingInfo.push('event type missing');
     }
 
     if (EventFormData.calendarType === 'single' && EventFormData.timestamps[0].date === '') {
-      $scope.missingInfo.push('Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?');
+      $scope.missingInfo.push('timestamp missing');
     }
     else if (EventFormData.calendarType === 'periodic' &&
       (EventFormData.startDate === '' || EventFormData.endDate === '')
     ) {
-      $scope.missingInfo.push('Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?');
+      $scope.missingInfo.push('start or end date missing');
     }
 
     if (EventFormData.isEvent && !EventFormData.location.id) {
-      $scope.missingInfo.push('Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?');
+      $scope.missingInfo.push('place missing for event');
     }
     else if (EventFormData.isPlace && !EventFormData.location.address.streetAddress) {
-      $scope.missingInfo.push('Koos je locatie in <a href="#waar" class="alert-link">stap 3</a>?');
+      $scope.missingInfo.push('location missing for place');
     }
 
     if ($scope.missingInfo.length > 0) {
@@ -17955,7 +17960,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
     "      <strong>Je vulde niet alle verplichte informatie in:</strong>\n" +
     "      <ul>\n" +
-    "        <li ng-repeat=\"error in missingInfo\" ng-bind-html=\"error\">\n" +
+    "        <li ng-repeat=\"error in missingInfo\" ng-bind-html=\"error\" translate>\n" +
     "          {{error}}\n" +
     "        </li>\n" +
     "      </ul>\n" +
