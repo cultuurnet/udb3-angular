@@ -5,6 +5,7 @@
  * @property {string}   uuid
  * @property {string}   name
  * @property {string}   constraint
+ * @property {RolePermission[]} permissions
  */
 
 /**
