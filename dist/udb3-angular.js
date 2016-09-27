@@ -9311,9 +9311,7 @@ function EventFormStep3Controller(
     $uibModal,
     cities,
     Levenshtein,
-    eventCrud,
-    $location,
-    $anchorScroll
+    eventCrud
 ) {
 
   var controller = this;
@@ -9374,8 +9372,6 @@ function EventFormStep3Controller(
       return new Levenshtein(value, city.zip + '' + city.name);
     };
   };
-
-  $scope.scrollToBottom = scrollToBottom;
 
   // Default values
   if (EventFormData.location && EventFormData.location.address && EventFormData.location.address.postalCode) {
@@ -9637,7 +9633,6 @@ function EventFormStep3Controller(
 
   controller.stepCompleted = function () {
     EventFormData.showStep(4);
-    scrollToBottom('titel');
 
     if (EventFormData.id) {
       eventCrud.updateMajorInfo(EventFormData);
@@ -9661,14 +9656,9 @@ function EventFormStep3Controller(
     }
   };
 
-  function scrollToBottom (where) {
-    $location.hash(where);
-    $anchorScroll();
-  }
-
   controller.init(EventFormData);
 }
-EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$location", "$anchorScroll"];
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud"];
 
 // Source: src/event_form/steps/event-form-step4.controller.js
 /**
@@ -18609,7 +18599,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   class=\"form-control uib-typeahead\"\n" +
     "                   placeholder=\"Gemeente of postcode\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
-    "                   ng-focus=\"scrollToBottom('waar')\"\n" +
+    "                   focus-if=\"eventFormData.showStep3\"\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
     "                   typeahead-min-length=\"2\"\n" +
@@ -18639,7 +18629,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     placeholder=\"Locatie\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
-    "                     ng-focus=\"scrollToBottom('waar')\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +

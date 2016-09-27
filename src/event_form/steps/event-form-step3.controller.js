@@ -20,9 +20,7 @@ function EventFormStep3Controller(
     $uibModal,
     cities,
     Levenshtein,
-    eventCrud,
-    $location,
-    $anchorScroll
+    eventCrud
 ) {
 
   var controller = this;
@@ -83,8 +81,6 @@ function EventFormStep3Controller(
       return new Levenshtein(value, city.zip + '' + city.name);
     };
   };
-
-  $scope.scrollToBottom = scrollToBottom;
 
   // Default values
   if (EventFormData.location && EventFormData.location.address && EventFormData.location.address.postalCode) {
@@ -346,7 +342,6 @@ function EventFormStep3Controller(
 
   controller.stepCompleted = function () {
     EventFormData.showStep(4);
-    scrollToBottom('titel');
 
     if (EventFormData.id) {
       eventCrud.updateMajorInfo(EventFormData);
@@ -369,11 +364,6 @@ function EventFormStep3Controller(
       $scope.selectedLocation = location;
     }
   };
-
-  function scrollToBottom (where) {
-    $location.hash(where);
-    $anchorScroll();
-  }
 
   controller.init(EventFormData);
 }
