@@ -17766,7 +17766,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
-    "                     typeahead-template-url=\"templates/place-suggestion.html\"/>\n" +
+    "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
+    "                     focus-if=\"!loadingPlaces\"/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
