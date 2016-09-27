@@ -18691,9 +18691,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <section id=\"titel\" ng-show=\"eventFormData.showStep4\">\n" +
     "\n" +
     "    <h2 class=\"title-border\"><span class=\"number\">4</span> <span>Basisgegevens</span></h2>\n" +
-    "    <label>Vul een titel in</label>\n" +
+    "\n" +
     "    <div class=\"row\">\n" +
-    "      <div class=\"col-xs-12 col-md-4\">\n" +
+    "      <div class=\"col-md-8 col-lg-7\">\n" +
+    "        <label ng-show=\"eventFormData.isEvent\">Naam van het evenement </label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</strong></label>\n" +
+    "\n" +
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
     "                 class=\"form-control\"\n" +
@@ -18701,18 +18704,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\">\n" +
     "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"col-xs-12 col-md-8\">\n" +
-    "       <ul>\n" +
-    "        <li><small>Gebruik een <strong>sprekende titel</strong> voor een activiteit (bv. \"Fietsen langs kappelletjes\", \"De Sage van de Eenhoorn\")</small></li>\n" +
-    "        <li><small>Gebruik de <strong>officiële benaming</strong> voor een locatie (bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\")</small></li>\n" +
-    "      </ul>\n" +
     "\n" +
-    "        <p class=\"text-block\">\n" +
-    "          <small>Een uitgebreide beschrijving kan je in stap 5 toevoegen.</small>\n" +
-    "        </p>\n" +
+    "        <div class=\"help-block\">\n" +
+    "          <p>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kappelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\">Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".</span>\n" +
+    "            Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.\n" +
+    "          </p>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
+    "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-click=\"validateEvent(true)\"\n" +
