@@ -5569,6 +5569,24 @@ function EventCrud(
   };
 
   /**
+   * @param {EventFormData} offer
+   * @param {string} jobName
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  service.publishOffer = function(offer, jobName) {
+    return udbApi
+      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .then(function (response) {
+        var job = new EventCrudJob(response.commandId, offer, jobName);
+
+        jobLogger.addJob(job);
+
+        return $q.resolve(job);
+      });
+  };
+
+  /**
    * @param {Object} event Angular event object
    * @param {EventFormData} eventFormData
    */
@@ -8837,6 +8855,26 @@ function EventFormStep5Directive() {
   };
 }
 
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbEventFormPublish
+ * @description
+ * # udb event form publish directive
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbEventFormPublish', EventFormPublishDirective);
+
+/* @ngInject */
+function EventFormPublishDirective() {
+  return {
+    templateUrl: 'templates/event-form-publish.html',
+    restrict: 'EA',
+    controller: 'EventFormPublishController',
+    controllerAs: 'efpc'
+  };
+}
+
 // Source: src/event_form/http-prefix.directive.js
 angular
   .module('udb.event-form')
@@ -8868,6 +8906,50 @@ function HttpPrefixDirective() {
     }
   };
 }
+
+// Source: src/event_form/steps/event-form-publish.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormStep3Controller
+ * @description
+ * # EventFormStep3Controller
+ * Step 3 of the event form
+ */
+angular
+  .module('udb.event-form')
+  .controller('EventFormPublishController', EventFormPublishController);
+
+/* @ngInject */
+function EventFormPublishController(
+    $scope,
+    EventFormData,
+    eventCrud
+) {
+
+  var controller = this;
+
+  controller.publish = publish;
+
+  // Scope vars.
+  // main storage for event form.
+  $scope.eventFormData = EventFormData;
+
+  function publish() {
+    eventCrud
+      .publishOffer(EventFormData, 'Publish offer')
+      .then(function(job) {
+        job.task.promise.then(redirectToDetailPage, function() {
+          // TODO error occured, everyone is sad
+        });
+      });
+  }
+
+  function redirectToDetailPage(offerLocation) {
+    // TODO redirect to edit
+    console.log('this was published.');
+  }
+}
+EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
@@ -18441,6 +18523,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-form-publish.html',
+    "<div class=\"event-validation\">\n" +
+    "    <p>Automatisch bewaard om 13:25 uur.</p>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\">Publiceren</button>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-form-step1.html',
     "<div ng-controller=\"EventFormStep1Controller as EventFormStep1\">\n" +
     "  <a name=\"wat\"></a>\n" +
@@ -19341,10 +19431,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <udb-event-form-step4></udb-event-form-step4>\n" +
     "  <udb-event-form-step5></udb-event-form-step5>\n" +
     "\n" +
-    "  <div class=\"event-validation\">\n" +
-    "    <p>Automatisch bewaard om 13:25 uur.</p>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\">Publiceren</button>\n" +
-    "  </div>\n" +
+    "  <udb-event-form-publish></udb-event-form-publish>\n" +
+    "\n" +
     "  <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "</div>\n"
   );

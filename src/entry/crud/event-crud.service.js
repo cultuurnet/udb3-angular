@@ -289,6 +289,24 @@ function EventCrud(
   };
 
   /**
+   * @param {EventFormData} offer
+   * @param {string} jobName
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  service.publishOffer = function(offer, jobName) {
+    return udbApi
+      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .then(function (response) {
+        var job = new EventCrudJob(response.commandId, offer, jobName);
+
+        jobLogger.addJob(job);
+
+        return $q.resolve(job);
+      });
+  };
+
+  /**
    * @param {Object} event Angular event object
    * @param {EventFormData} eventFormData
    */
