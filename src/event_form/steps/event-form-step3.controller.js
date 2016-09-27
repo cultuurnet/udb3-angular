@@ -1,6 +1,12 @@
 'use strict';
 
 /**
+ * @typedef {Object} City
+ * @property {string} zip
+ * @property {string} name
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep3Controller
  * @description
@@ -97,22 +103,28 @@ function EventFormStep3Controller(
   };
 
   /**
-   * Select City.
+   * @param {City} city
+   * @param {string} $label
    */
-  controller.selectCity = function ($item, $label) {
+  controller.selectCity = function (city, $label) {
 
-    var zipcode = $item.zip,
-        name = $item.name;
+    var zipcode = city.zip,
+        name = city.name;
 
-    var currentLocation = $scope.eventFormData.getLocation();
-    var newLocationInfo = {
-      address: {
-        postalCode: zipcode,
-        addressLocality: name
-      }
+    var newAddressInfo = {
+      postalCode: zipcode,
+      addressLocality: name
     };
-    var newLocation = _.merge(getEmptyLocation(), currentLocation, newLocationInfo);
-    EventFormData.setLocation(newLocation);
+
+    if (EventFormData.isPlace) {
+      var currentAddress = $scope.eventFormData.address;
+      $scope.eventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
+    } else { //assume an event
+      var newLocationInfo = {address: newAddressInfo};
+      var currentLocation = $scope.eventFormData.getLocation();
+      var newLocation = _.merge(getEmptyLocation(), currentLocation, newLocationInfo);
+      EventFormData.setLocation(newLocation);
+    }
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;

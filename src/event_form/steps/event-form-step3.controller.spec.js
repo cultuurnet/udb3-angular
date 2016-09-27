@@ -35,6 +35,61 @@ describe('Controller: event form step 3', function (){
     expect(stepController.getLocations).toHaveBeenCalledWith(zipcode);
   });
 
+  it('should update the event form address when a city is selected for a place', function () {
+    spyOn(stepController, 'getLocations');
+    var address = {
+      'addressCountry': 'BE',
+      'addressLocality': 'Tienen',
+      'postalCode': '3300',
+      'streetAddress': 'Sluisstraat 79'
+    };
+
+    var expectedAddress = {
+      'addressCountry': 'BE',
+      'addressLocality': 'Leuven',
+      'postalCode': '3000',
+      'streetAddress': 'Sluisstraat 79'
+    };
+
+    EventFormData.address = address;
+    EventFormData.isPlace = true;
+    stepController.init(EventFormData);
+
+    stepController.selectCity({zip: '3000', name: 'Leuven'}, '3300 Leuven');
+    expect(EventFormData.address).toEqual(expectedAddress);
+  });
+
+  it('should update the event form location when a city is selected for an event', function () {
+    spyOn(stepController, 'getLocations');
+    var location = {
+      'id' : 'd955afda-86ed-4047-b0c3-9f52e8dd2298',
+      'name': 'De Hoorn',
+      'address': {
+        'addressCountry': 'BE',
+        'addressLocality': 'Leuven',
+        'postalCode': '3000',
+        'streetAddress': 'Sluisstraat 79'
+      }
+    };
+
+    var expectedLocation = {
+      'id' : 'd955afda-86ed-4047-b0c3-9f52e8dd2298',
+      'name': 'De Hoorn',
+      'address': {
+        'addressCountry': 'BE',
+        'addressLocality': 'Brussel',
+        'postalCode': '1000',
+        'streetAddress': 'Sluisstraat 79'
+      }
+    };
+
+    EventFormData.setLocation(location);
+    stepController.init(EventFormData);
+
+    stepController.selectCity({zip: '1000', name: 'Brussel'}, '1000 Brussel');
+    expect(EventFormData.getLocation()).toEqual(expectedLocation);
+  });
+
   it('should return a list of places in a city filtered by address', function () {
     var filterString = 'straat';
     var cityFilter = stepController.filterCityLocations(filterString);
