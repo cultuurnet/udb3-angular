@@ -19,12 +19,14 @@ function EventFormOrganizerModalController(
   eventCrud,
   cities,
   Levenshtein,
-  $q
+  $q,
+  organizerName
 ) {
 
   var controller = this;
 
   // Scope vars.
+  $scope.organizer = organizerName;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
@@ -33,7 +35,7 @@ function EventFormOrganizerModalController(
   $scope.selectedCity = '';
 
   $scope.newOrganizer = {
-    name : '',
+    name : $scope.organizer,
     address : {
       streetAddress : '',
       locality : '',
@@ -145,9 +147,10 @@ function EventFormOrganizerModalController(
 
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;

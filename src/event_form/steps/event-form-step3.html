@@ -20,8 +20,9 @@
                    ng-model="cityAutocompleteTextField"
                    uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
                    typeahead-on-select="selectCity($item, $label)"
-                   typeahead-min-length="3"
-                   typeahead-template-url="templates/city-suggestion.html"/>
+                   typeahead-min-length="2"
+                   typeahead-template-url="templates/city-suggestion.html"
+                   autocomplete="off" />
           </span>
           <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
             Er was een probleem tijdens het ophalen van de steden
@@ -49,7 +50,8 @@
                      uib-typeahead="location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50"
                      typeahead-on-select="selectLocation($item, $model, $label)"
                      typeahead-min-length="3"
-                     typeahead-template-url="templates/place-suggestion.html"/>
+                     typeahead-template-url="templates/place-suggestion.html"
+                     focus-if="!loadingPlaces"/>
               <div class="plaats-adres-resultaat dropdown-menu-no-results"
                    ng-show="(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched">
                 <div class="panel panel-default text-center">

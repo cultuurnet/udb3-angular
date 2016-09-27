@@ -1,0 +1,47 @@
+<div class="page-header">
+    <h1>Valideren</h1>
+</div>
+
+<div ng-show="moderator.loading && !moderator.loadingError">
+    <i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-inline">
+            <div class="form-group">
+                <label>Valideer als</label>
+                <select class="form-control"
+                        name="role"
+                        ng-change="moderator.findModerationContent(moderator.selectedRole)"
+                        ng-model="moderator.selectedRole"
+                        ng-options="role.name for role in moderator.roles track by role.uuid">
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row search-result-block" ng-cloak>
+    <div class="col-md-12">
+        <p class="rv-item-counter">
+            <ng-pluralize count="moderator.searchResult.totalItems"
+                          when="{1: '1 resultaat', other: '{} resultaten'}"></ng-pluralize>
+        </p>
+    </div>
+    <div class="col-md-12" ng-repeat="offer in moderator.searchResult.member">
+        <udb-moderation-offer offer-id="{{offer['@id']}}" offer-type="{{offer['@type']}}">
+        </udb-moderation-offer>
+    </div>
+    <div class="col-md-12">
+        <div class="panel-footer">
+            <uib-pagination
+                    total-items="moderator.searchResult.totalItems"
+                    ng-model="moderator.page"
+                    items-per-page="moderator.searchResult.itemsPerPage"
+                    max-size="10"
+                    ng-change="moderator.pageChanged(moderator.page)">
+            </uib-pagination>
+        </div>
+    </div>
+</div>

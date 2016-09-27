@@ -13,10 +13,11 @@
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories) {
+  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
 
     $scope.categories = categories;
     $scope.location = location;
+    $scope.title = title;
 
     // Scope vars.
     $scope.newPlace = getDefaultPlace();
@@ -34,7 +35,7 @@
      */
     function getDefaultPlace() {
       return {
-        name: '',
+        name: $scope.title,
         eventType: '',
         address: {
           addressCountry: 'BE',

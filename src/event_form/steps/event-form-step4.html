@@ -4,28 +4,31 @@
   <section id="titel" ng-show="eventFormData.showStep4">
 
     <h2 class="title-border"><span class="number">4</span> <span>Basisgegevens</span></h2>
-    <label>Vul een titel in</label>
+
     <div class="row">
-      <div class="col-xs-12 col-md-4">
+      <div class="col-md-8 col-lg-7">
+        <label ng-show="eventFormData.isEvent">Naam van het evenement </label>
+        <label ng-show="eventFormData.isPlace">Naam van de locatie</strong></label>
+
         <div class="form-group-lg">
           <input type="text"
                  class="form-control"
                  ng-model="eventFormData.name.nl"
                  ng-model-options="titleInputOptions"
-                 ng-change="eventTitleChanged()">
+                 ng-change="eventTitleChanged()"
+                 focus-if="eventFormData.showStep4">
+        </div>
+
+        <div class="help-block">
+          <p>
+            <span ng-show="eventFormData.isEvent">Gebruik een <strong>sprekende titel</strong>, bv. "Fietsen langs kappelletjes", "De Sage van de Eenhoorn".</span>
+            <span ng-show="eventFormData.isPlace">Gebruik de <strong>officiële benaming</strong>, bv. "Gravensteen", "Abdijsite Herkenrode", "Cultuurcentrum De Werf".</span>
+            Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.
+          </p>
         </div>
       </div>
-      <div class="col-xs-12 col-md-8">
-       <ul>
-        <li><small>Gebruik een <strong>sprekende titel</strong> voor een activiteit (bv. "Fietsen langs kappelletjes", "De Sage van de Eenhoorn")</small></li>
-        <li><small>Gebruik de <strong>officiële benaming</strong> voor een locatie (bv. "Gravensteen", "Abdijsite Herkenrode", "Cultuurcentrum De Werf")</small></li>
-      </ul>
-
-        <p class="text-block">
-          <small>Een uitgebreide beschrijving kan je in stap 5 toevoegen.</small>
-        </p>
-      </div>
     </div>
+
     <p ng-show="eventFormData.id === ''">
       <a class="btn btn-primary titel-doorgaan"
           ng-click="validateEvent(true)"
