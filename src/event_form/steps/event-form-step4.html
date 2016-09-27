@@ -15,7 +15,8 @@
                  class="form-control"
                  ng-model="eventFormData.name.nl"
                  ng-model-options="titleInputOptions"
-                 ng-change="eventTitleChanged()">
+                 ng-change="eventTitleChanged()"
+                 focus-if="eventFormData.showStep4">
         </div>
 
         <div class="help-block">

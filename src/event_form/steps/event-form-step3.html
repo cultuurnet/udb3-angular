@@ -50,7 +50,8 @@
                      uib-typeahead="location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50"
                      typeahead-on-select="selectLocation($item, $model, $label)"
                      typeahead-min-length="3"
-                     typeahead-template-url="templates/place-suggestion.html"/>
+                     typeahead-template-url="templates/place-suggestion.html"
+                     focus-if="!loadingPlaces"/>
               <div class="plaats-adres-resultaat dropdown-menu-no-results"
                    ng-show="(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched">
                 <div class="panel panel-default text-center">
