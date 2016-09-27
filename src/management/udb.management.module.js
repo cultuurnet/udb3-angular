@@ -11,5 +11,6 @@ angular
     'udb.core',
     'udb.management.labels',
     'udb.management.roles',
-    'udb.management.users'
+    'udb.management.users',
+    'udb.management.moderation'
   ]);

@@ -224,6 +224,16 @@ angular
   ]);
 /**
  * @ngdoc module
+ * @name udb.management.moderation
+ * @description
+ * # Moderation Management Module
+ */
+angular
+  .module('udb.management.moderation', [
+    'rx'
+  ]);
+/**
+ * @ngdoc module
  * @name udb.management
  * @description
  * # Management Module
@@ -233,7 +243,8 @@ angular
     'udb.core',
     'udb.management.labels',
     'udb.management.roles',
-    'udb.management.users'
+    'udb.management.users',
+    'udb.management.moderation'
   ]);
 
 angular.module('peg', []).factory('LuceneQueryParser', function () {
@@ -1960,7 +1971,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
     var deferredHasPermission = $q.defer();
 
     function findPermission(permissionList) {
-      var foundPermission = _.find(permissionList, function(p) { return p.key === permission; });
+      var foundPermission = _.find(permissionList, function(p) { return p === permission; });
       deferredHasPermission.resolve(foundPermission ? true : false);
     }
 
@@ -1969,6 +1980,14 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
       .then(findPermission, deferredHasPermission.reject);
 
     return deferredHasPermission.promise;
+  };
+
+  /**
+   * @return RolePermission[]
+   */
+  this.getPermissions = function () {
+    return udbApi
+      .getMyPermissions();
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
@@ -2739,7 +2758,33 @@ function UdbApi(
 
     return $http
       .get(apiUrl + 'search', requestOptions)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} queryString - The query used to find events.
+   * @param {number} [start] - From which event offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
+    var offset = start || 0,
+        limit = itemsPerPage || 30,
+        searchParams = {
+          start: offset,
+          limit: limit
+        };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.query = queryString;
+    }
+
+    return $http
+      .get(apiUrl + 'search', requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -3714,6 +3759,33 @@ function UdbApi(
   };
 
   /**
+   * @return {Promise.<Object[]>}
+   */
+  this.getMyRoles = function () {
+    return $http
+      .get(appConfig.baseUrl + 'user/roles/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {URL} offerUrl
+   * @param {string} domainModel
+   * @param {string} reason (optional)
+   */
+  this.patchOffer = function (offerUrl, domainModel, reason) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=' + domainModel;
+
+    var updateData = {
+      'reason': reason
+    };
+
+    return $http
+      .patch(offerUrl, (reason ? updateData : {}), requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -3902,6 +3974,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       }
       if (jsonEvent.available) {
         this.available = jsonEvent.available;
+      }
+      if (jsonEvent.workflowStatus) {
+        this.workflowStatus = jsonEvent.workflowStatus;
       }
     },
 
@@ -4425,6 +4500,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         });
       }
 
+      if (jsonPlace.workflowStatus) {
+        this.workflowStatus = jsonPlace.workflowStatus;
+      }
     },
 
     /**
@@ -7444,9 +7522,10 @@ function EventFormOrganizerModalController(
 
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -9278,9 +9357,10 @@ function EventFormStep3Controller(
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -9876,6 +9956,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description vars.
   $scope.description = EventFormData.getDescription('nl');
+  $scope.focusDescription = false;
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -9945,6 +10026,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.selectedFacilities = [];
 
   // Description functions.
+  $scope.alterDescription = alterDescription;
   $scope.saveDescription = saveDescription;
 
   // Age range functions.
@@ -9984,12 +10066,21 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   initEditForm();
 
   /**
+   * Alter description: used for adding and editing the description.
+   */
+  function alterDescription() {
+    $scope.descriptionCssClass = 'state-filling';
+    $scope.focusDescription = true;
+  }
+
+  /**
    * Save the description.
    */
   function saveDescription() {
 
     $scope.savingDescription = true;
     $scope.descriptionError = false;
+    $scope.focusDescription = false;
 
     EventFormData.setDescription($scope.description, 'nl');
 
@@ -11587,6 +11678,673 @@ function UniqueLabelDirective(LabelManager, $q) {
 }
 UniqueLabelDirective.$inject = ["LabelManager", "$q"];
 
+// Source: src/management/list-item-defaults.factory.js
+/**
+ * @typedef {Object} ManagementListItem
+ * @property {string} name
+ * @property {RolePermission} permission
+ * @property {number} notificationCount
+ * @property {number} index
+ * @property {string} sref
+ * @property {string} icon
+ */
+
+/**
+ * @ngdoc service
+ * @name udb.management.listItemDefaults
+ * @description
+ * # Management list item defaults
+ * These are the defaut values for the list items you can show in the app side bar.
+ */
+angular
+  .module('udb.management')
+  .factory('managementListItemDefaults', listItemDefaults);
+
+/**
+ * @ngInject
+ * @return {ManagementListItem[]}
+ */
+function listItemDefaults(RolePermission) {
+  return [
+    {
+      name: 'Valideren',
+      permission: RolePermission.AANBOD_MODEREREN,
+      notificationCount: 0,
+      index: 1,
+      sref: 'management.moderation.list',
+      icon: 'fa-flag'
+    },
+    {
+      name: 'Gebruikers',
+      permission: RolePermission.GEBRUIKERS_BEHEREN,
+      notificationCount: 0,
+      index: 2,
+      sref: 'management.users.list',
+      icon: 'fa-user'
+    },
+    {
+      name: 'Rollen',
+      permission: RolePermission.GEBRUIKERS_BEHEREN,
+      notificationCount: 0,
+      index: 3,
+      sref: 'split.manageRoles.list',
+      icon: 'fa-users'
+    },
+    {
+      name: 'Labels',
+      permission: RolePermission.LABELS_BEHEREN,
+      notificationCount: 0,
+      index: 4,
+      sref: 'split.manageLabels.list',
+      icon: 'fa-tag'
+    },
+    {
+      name: 'Organisaties',
+      permission: RolePermission.ORGANISATIES_BEHEREN,
+      notificationCount: 0,
+      index: 5,
+      sref: 'split.manageOrganisations',
+      icon: 'fa-slideshare'
+    }
+  ];
+}
+listItemDefaults.$inject = ["RolePermission"];
+
+// Source: src/management/list-items.factory.js
+/**
+ * @ngdoc service
+ * @name udb.management.listItems
+ * @description
+ * # Management list items
+ * Return the management list items to show in the sidebar as  a promise.
+ */
+angular
+  .module('udb.management')
+  .factory('managementListItems', listItems);
+
+/**
+ * @ngInject
+ * @return {Promise.<ManagementListItem[]>}
+ */
+function listItems(
+  RolePermission,
+  authorizationService,
+  ModerationService,
+  $q,
+  managementListItemDefaults
+) {
+  var globalPermissionListItems = authorizationService
+    .getPermissions()
+    .then(generateListItems);
+
+  var moderationListItems = ModerationService
+    .getMyRoles()
+    .then(generateModerationListItems);
+
+  return $q
+    .all([globalPermissionListItems, moderationListItems])
+    .then(_.flatten);
+
+  /**
+   * @param {Role[]} roles
+   * @return {number}
+   */
+  function countOffersWaitingForValidation(roles) {
+    var query = '';
+
+    _.forEach(roles, function(role) {
+      if (role.constraint) {
+        query += (query ? ' OR ' : '') + role.constraint;
+      }
+    });
+    query = (query ? '(' + query + ')' : '');
+
+    return ModerationService
+      .find(query, 10, 0)
+      .then(function(searchResult) {
+        return searchResult.totalItems;
+      });
+  }
+
+  /**
+   *
+   * @param {number} waitingOfferCount
+   * @return {ManagementListItem}
+   */
+  function generateModerationListItem(waitingOfferCount) {
+    var defaultModerationListItem = _.find(
+      managementListItemDefaults,
+      {permission: RolePermission.AANBOD_MODEREREN}
+    );
+
+    var moderationListItem = angular.copy(defaultModerationListItem);
+    moderationListItem.notificationCount = waitingOfferCount;
+
+    return moderationListItem;
+  }
+
+  /**
+   * @param {Role[]} userRoles
+   * @return {Promise.<ManagementListItem[]>}
+   */
+  function generateModerationListItems(userRoles) {
+    var deferredListItems = $q.defer();
+
+    var moderationRoles = _.filter(userRoles, function(role) {
+      return _.includes(role.permissions, RolePermission.AANBOD_MODEREREN);
+    });
+
+    if (moderationRoles.length > 0) {
+      countOffersWaitingForValidation(moderationRoles)
+        .then(generateModerationListItem)
+        .then(function(moderationListItem) {
+          deferredListItems.resolve([moderationListItem]);
+        });
+    } else {
+      deferredListItems.resolve([]);
+    }
+
+    return deferredListItems.promise;
+  }
+
+  /**
+   * @param {RolePermission[]} userPermissions
+   * @return {Promise.<ManagementListItem[]>}
+   */
+  function generateListItems(userPermissions) {
+    var globalUserPermissions = _.without(userPermissions, RolePermission.AANBOD_MODEREREN);
+
+    var listItems = _.filter(managementListItemDefaults, function (listItem) {
+      return _.includes(globalUserPermissions, listItem.permission);
+    });
+
+    return $q.resolve(listItems);
+  }
+}
+listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults"];
+
+// Source: src/management/moderation/components/moderation-offer.component.js
+/**
+ * @ngdoc component
+ * @name udb.search.directive:udbSearchBar
+ * @description
+ * # udbQuerySearchBar
+ */
+angular
+  .module('udb.management.moderation')
+  .component('udbModerationOffer', {
+    templateUrl: 'templates/moderation-offer.html',
+    controller: ModerationOfferComponent,
+    controllerAs: 'moc',
+    bindings: {
+      offerId: '@',
+      offerType: '@'
+    }
+  });
+
+/* @ngInject */
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
+  var moc = this;
+  var defaultLanguage = 'nl';
+
+  moc.loading = true;
+  moc.offer = {};
+  moc.sendingJob = false;
+  moc.error = false;
+
+  moc.isReadyForValidation = isReadyForValidation;
+  moc.isApproved = isApproved;
+  moc.isRejected = isRejected;
+  moc.approve = approve;
+  moc.askForRejectionReasons = askForRejectionReasons;
+
+  // fetch offer
+  ModerationService
+    .getModerationOffer(moc.offerId)
+    .then(function(offer) {
+      offer.updateTranslationState();
+      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+    })
+    .catch(showLoadingError)
+    .finally(function() {
+      moc.loading = false;
+    });
+
+  function showLoadingError(problem) {
+    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
+
+  function isReadyForValidation() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
+  }
+
+  function isApproved() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.APPROVED;
+  }
+
+  function isRejected() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.REJECTED;
+  }
+
+  function approve() {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationService
+      .approve(moc.offer)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  function askForRejectionReasons() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/reject-offer-confirm-modal.html',
+      controller: 'RejectOfferConfirmModalCtrl'
+    });
+
+    modalInstance.result.then(reject);
+  }
+
+  /**
+   * @param {string} reason
+   *  DUPLICATE
+   *  INAPPROPRIATE
+   *  or a custom reason
+   */
+  function reject(reason) {
+    if (reason === 'DUPLICATE') {
+      flagAsDuplicate();
+    } else if (reason === 'INAPPROPRIATE') {
+      flagAsInappropriate();
+    } else {
+      rejectWithReason(reason);
+    }
+  }
+
+  /**
+   * an offer can be rejected without a reason added.
+   */
+  function rejectWithReason(reason) {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationService
+      .reject(moc.offer, reason)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  function flagAsDuplicate() {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationService
+      .flagAsDuplicate(moc.offer)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  function flagAsInappropriate() {
+    moc.sendingJob = true;
+    moc.error = false;
+    ModerationService
+      .flagAsInappropriate(moc.offer)
+      .then(function() {
+        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      })
+      .catch(showProblem)
+      .finally(function() {
+        moc.sendingJob = false;
+      });
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
+  }
+}
+ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
+
+// Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:RoleDeleteConfirmModalCtrl
+ * @description
+ * # RoleDeleteConfirmModalCtrl
+ * Modal to delete a role.
+ */
+angular
+  .module('udb.management.moderation')
+  .controller('RejectOfferConfirmModalCtrl', RejectOfferConfirmModalCtrl);
+
+/* @ngInject */
+function RejectOfferConfirmModalCtrl($scope, $uibModalInstance, $q) {
+
+  $scope.cancel = cancel;
+  $scope.reject = reject;
+  $scope.response = {};
+
+  /**
+   * Delete the role.
+   */
+  function reject() {
+    var answer;
+    $scope.error = false;
+
+    // if no type chosen or the reason hasn't been filled in for OTHER
+    if (!$scope.response.type ||
+          ($scope.response.type === 'OTHER' &&
+            (!$scope.response.reason || !$scope.response.reason.length))) {
+      $scope.error = 'Gelieve een reden op te geven.';
+      return;
+    }
+
+    if ($scope.response.type === 'OTHER') {
+      answer = $scope.response.reason;
+    } else {
+      answer = $scope.response.type;
+    }
+
+    $uibModalInstance.close($q.resolve(answer));
+  }
+
+  /**
+   * Cancel, modal dismiss.
+   */
+  function cancel() {
+    $uibModalInstance.dismiss();
+  }
+
+}
+RejectOfferConfirmModalCtrl.$inject = ["$scope", "$uibModalInstance", "$q"];
+
+// Source: src/management/moderation/moderation-list.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:ModerationListController
+ * @description
+ * # ModerationListController
+ */
+angular
+  .module('udb.management.moderation')
+  .controller('ModerationListController', ModerationListController);
+
+/**
+ * @ngInject
+ * @constructor
+ *
+ * @param {ModerationService} ModerationService
+ * @param {Object} $uibModal
+ * @param {RolePermission} RolePermission
+ */
+function ModerationListController(
+  ModerationService,
+  $uibModal,
+  RolePermission,
+  SearchResultGenerator,
+  rx,
+  $scope,
+  $q
+) {
+  var moderator = this;
+
+  var query$, page$, searchResultGenerator, searchResult$;
+  var itemsPerPage = 10;
+
+  moderator.roles = [];
+
+  moderator.loading = true;
+  moderator.errorMessage = false;
+  moderator.selectedRole = {};
+  moderator.searchResult = {};
+
+  moderator.findModerationContent = findModerationContent;
+
+  // load the current user's moderation roles
+  ModerationService
+    .getMyRoles()
+    .then(filterModeratorRoles)
+    .then(configureObservables)
+    .catch(showProblem) // stop loading when there's an error
+    .finally(function() {
+      moderator.loading = false;
+    });
+
+  function configureObservables(currentRole) {
+    // configure observables for searching items
+    query$ = rx.createObservableFunction(moderator, 'queryChanged');
+    page$ = rx.createObservableFunction(moderator, 'pageChanged');
+    searchResultGenerator = new SearchResultGenerator(
+      ModerationService, query$, page$, itemsPerPage, currentRole.constraint
+    );
+    searchResult$ = searchResultGenerator.getSearchResult$();
+
+    // show search results
+    searchResult$
+      .safeApply($scope, showSearchResult)
+      .subscribe();
+
+    // show loading screen on query change
+    query$
+      .safeApply($scope, function () {
+        moderator.loading = true;
+      })
+      .subscribe();
+
+    return $q.resolve();
+  }
+
+  function filterModeratorRoles(roles) {
+    // only show roles with moderator permission
+    var filteredRoles = _.filter(roles, function(role) {
+      var canModerate = _.filter(role.permissions, function(permission) {
+        return permission === RolePermission.AANBOD_MODEREREN;
+      });
+      return canModerate.length > 0 ? true : false;
+    });
+
+    if (filteredRoles.length) {
+      moderator.roles = filteredRoles;
+      moderator.selectedRole = moderator.roles[0];
+
+      return $q.resolve(moderator.selectedRole);
+    }
+
+    // when no roles were found aka no current role is set
+    // don't bother continueing
+    return $q.reject({title:'Er is huidig geen moderator rol gekoppeld aan jouw gebruiker.'});
+  }
+
+  function findModerationContent(currentRole) {
+    moderator.queryChanged(currentRole.constraint);
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
+   */
+  function showSearchResult(searchResult) {
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      moderator.searchResult = {};
+    } else {
+      moderator.searchResult = searchResult;
+    }
+
+    moderator.loading = false;
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    moderator.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
+
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return moderator.errorMessage;
+          }
+        }
+      }
+    );
+  }
+}
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
+
+// Source: src/management/moderation/moderation.service.js
+/**
+ * @ngdoc service
+ * @name udb.management.moderation
+ * @description
+ * # Moderation Manager
+ * This service allows you to lookup moderation lists and approve/reject/... Offers.
+ */
+angular
+  .module('udb.management.moderation')
+  .service('ModerationService', ModerationService);
+
+/* @ngInject */
+function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) {
+  var service = this;
+
+  /**
+   * @return {Promise.<Role[]>}
+   */
+  service.getMyRoles = function() {
+    return udbApi.getMyRoles();
+  };
+
+  /**
+   * Find moderation items
+   *
+   * @param {string} queryString
+   * @param {int} itemsPerPage
+   * @param {int} offset
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  service.find = function(queryString, itemsPerPage, offset) {
+    queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus="readyforvalidation"';
+
+    return udbApi
+      .findEventsWithLimit(queryString, offset, itemsPerPage);
+  };
+
+  /**
+   * @param {string} offerId
+   *
+   * @return {Promise.<Offer>}
+   */
+  service.getModerationOffer = function(offerId) {
+    return udbApi.getOffer(new URL(offerId));
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.approve = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'Approve')
+      .then(logModerationJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.reject = function(offer, reason) {
+    return udbApi
+      .patchOffer(offer['@id'], 'Reject', reason)
+      .then(logModerationJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.flagAsDuplicate = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'FlagAsDuplicate')
+      .then(logModerationJob);
+  };
+
+  /**
+   * @param {UdbPlace|UdbEvent} offer
+   *
+   * @return {Promise.<BaseJob>}
+   */
+  service.flagAsInappropriate = function(offer) {
+    return udbApi
+      .patchOffer(offer['@id'], 'FlagAsInappropriate')
+      .then(logModerationJob);
+  };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logModerationJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
+}
+ModerationService.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
+
+// Source: src/management/moderation/workflow.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.management.moderation.OfferWorkflowStatus
+ * @description
+ * # OfferWorkflowStatus
+ * All the possible workflow states defined as a constant
+ */
+angular
+  .module('udb.management.moderation')
+  .constant('OfferWorkflowStatus',
+    /**
+     * Enum for workflowStatus
+     * @readonly
+     * @name OfferWorkflowStatus
+     * @enum {string}
+     */
+    {
+      'DRAFT': 'DRAFT',
+      'READY_FOR_VALIDATION': 'READY_FOR_VALIDATION',
+      'APPROVED': 'APPROVED',
+      'REJECTED': 'REJECTED',
+      'DELETED': 'DELETED'
+    }
+  );
+
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 
 /**
@@ -12058,6 +12816,7 @@ RoleFormController.$inject = ["RoleManager", "UserManager", "$uibModal", "$state
  * @property {string}   uuid
  * @property {string}   name
  * @property {string}   constraint
+ * @property {RolePermission[]} permissions
  */
 
 /**
@@ -12488,10 +13247,11 @@ function SearchResultGenerator(rx) {
    * @param {Observable} page$
    * @param {Number} itemsPerPage
    */
-  var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage) {
+  var SearchResultGenerator = function (searchService, query$, page$, itemsPerPage, start) {
+    start = start || '';
     this.searchService = searchService;
     this.itemsPerPage = itemsPerPage;
-    this.query$ = query$.debounce(300).startWith('');
+    this.query$ = query$.debounce(300).startWith(start);
     this.offset$ = page$.map(pageToOffset(itemsPerPage)).startWith(0);
 
     this.searchParameters$ = rx.Observable.combineLatest(
@@ -17274,8 +18034,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     ng-model=\"cityAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                     typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                     typeahead-min-length=\"3\"\n" +
-    "                     typeahead-template-url=\"templates/city-suggestion.html\">\n" +
+    "                     typeahead-min-length=\"2\"\n" +
+    "                     typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                     autocomplete=\"off\">\n" +
     "            </span>\n" +
     "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
     "              Er was een probleem tijdens het ophalen van de steden\n" +
@@ -17851,8 +18612,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-focus=\"scrollToBottom('waar')\"\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                   typeahead-min-length=\"3\"\n" +
-    "                   typeahead-template-url=\"templates/city-suggestion.html\"/>\n" +
+    "                   typeahead-min-length=\"2\"\n" +
+    "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                   autocomplete=\"off\" />\n" +
     "          </span>\n" +
     "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
     "            Er was een probleem tijdens het ophalen van de steden\n" +
@@ -17881,7 +18643,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
-    "                     typeahead-template-url=\"templates/place-suggestion.html\"/>\n" +
+    "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
+    "                     focus-if=\"!loadingPlaces\"/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
@@ -17959,28 +18722,31 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <section id=\"titel\" ng-show=\"eventFormData.showStep4\">\n" +
     "\n" +
     "    <h2 class=\"title-border\"><span class=\"number\">4</span> <span>Basisgegevens</span></h2>\n" +
-    "    <label>Vul een titel in</label>\n" +
+    "\n" +
     "    <div class=\"row\">\n" +
-    "      <div class=\"col-xs-12 col-md-4\">\n" +
+    "      <div class=\"col-md-8 col-lg-7\">\n" +
+    "        <label ng-show=\"eventFormData.isEvent\">Naam van het evenement </label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</strong></label>\n" +
+    "\n" +
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
     "                 class=\"form-control\"\n" +
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
-    "                 ng-change=\"eventTitleChanged()\">\n" +
+    "                 ng-change=\"eventTitleChanged()\"\n" +
+    "                 focus-if=\"eventFormData.showStep4\">\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"help-block\">\n" +
+    "          <p>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kappelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\">Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".</span>\n" +
+    "            Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.\n" +
+    "          </p>\n" +
     "        </div>\n" +
     "      </div>\n" +
-    "      <div class=\"col-xs-12 col-md-8\">\n" +
-    "       <ul>\n" +
-    "        <li><small>Gebruik een <strong>sprekende titel</strong> voor een activiteit (bv. \"Fietsen langs kappelletjes\", \"De Sage van de Eenhoorn\")</small></li>\n" +
-    "        <li><small>Gebruik de <strong>officiële benaming</strong> voor een locatie (bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\")</small></li>\n" +
-    "      </ul>\n" +
-    "\n" +
-    "        <p class=\"text-block\">\n" +
-    "          <small>Een uitgebreide beschrijving kan je in stap 5 toevoegen.</small>\n" +
-    "        </p>\n" +
-    "      </div>\n" +
     "    </div>\n" +
+    "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-click=\"validateEvent(true);\"\n" +
@@ -18080,20 +18846,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <section class=\"state incomplete\">\n" +
     "                <div class=\"row\">\n" +
     "                  <div class=\"col-sm-6\">\n" +
-    "                    <a class=\"btn btn-default to-filling\" ng-click=\"descriptionCssClass = 'state-filling'\">\n" +
+    "                    <a class=\"btn btn-default to-filling\" ng-click=\"alterDescription()\">\n" +
     "                      Tekst toevoegen\n" +
     "                    </a>\n" +
     "                  </div>\n" +
     "                </div>\n" +
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
-    "                <div ng-bind-html=\"eventFormData.description.nl\"></div>\n" +
-    "                <a class=\"btn btn-link\" ng-click=\"descriptionCssClass = 'state-filling'\">Wijzigen</a>\n" +
+    "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
+    "                <a class=\"btn btn-link\" ng-click=\"alterDescription()\">Wijzigen</a>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <label>Beschrijving</label>\n" +
-    "                  <textarea class=\"form-control\" ng-model=\"description\"></textarea>\n" +
+    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" focus-if=\"focusDescription\"></textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
@@ -18776,10 +19541,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/label-creator.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels</h1>\n" +
-    "</div>\n" +
-    "<h2>Label Toevoegen</h2>\n" +
+    "<h1 class=\"title\">Label toevoegen</h1>\n" +
     "\n" +
     "<form name=\"creator.form\" class=\"css-form\" novalidate>\n" +
     "    <div class=\"row\">\n" +
@@ -18831,15 +19593,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </button>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</form>"
+    "</form>\n"
   );
 
 
   $templateCache.put('templates/label-editor.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels</h1>\n" +
-    "</div>\n" +
-    "<h2>Label bewerken</h2>\n" +
+    "<h1 class=\"title\">Label bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.label && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -18899,9 +19658,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/labels-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Labels <small><a ui-sref=\"split.manageLabels.create\">toevoegen</a></small></h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-11\">\n" +
@@ -18969,6 +19726,140 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/moderation-offer.html',
+    "<article class=\"moderation-offer\">\n" +
+    "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
+    "    <div class=\"text-info\" ng-show=\"moc.loading\"><i class=\"fa fa-circle-o-notch fa-spin\"></i> Moderatie aanbod \"{{moc.offerId}}\" wordt geladen.</div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-hide=\"moc-loading\">\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <header class=\"udb-short-info\">\n" +
+    "                <span class=\"udb-category\" ng-bind=\"moc.offer.type.label\"></span>\n" +
+    "                <span class=\"udb-short-info-seperator\" ng-show=\"moc.offer.type.label && moc.offer.theme.label\"> • </span>\n" +
+    "                <span class=\"udb-theme\" ng-bind=\"moc.offer.theme.label\"></span>\n" +
+    "\n" +
+    "                <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "            </header>\n" +
+    "\n" +
+    "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\"/>\n" +
+    "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
+    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "        <div class=\"col-md-6 text-right\">\n" +
+    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
+    "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
+    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
+    "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
+    "\n" +
+    "            <span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
+    "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "        </div>\n" +
+    "    </footer>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/reject-offer-confirm-modal.html',
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"row\">\n" +
+    "\n" +
+    "      <div class=\"col-xs-12\">\n" +
+    "        <p>Duid de reden aan voor het afkeuren van dit aanbod:</p>\n" +
+    "\n" +
+    "        <form>\n" +
+    "          <div class=\"checkbox\">\n" +
+    "            <label>\n" +
+    "              <input type=\"radio\" name=\"type\" ng-model=\"response.type\" value=\"DUPLICATE\"> Dit aanbod bestaat al.\n" +
+    "            </label>\n" +
+    "          </div>\n" +
+    "\n" +
+    "          <div class=\"checkbox\">\n" +
+    "            <label>\n" +
+    "              <input type=\"radio\" name=\"type\" ng-model=\"response.type\" value=\"INAPPROPRIATE\"> Dit aanbod heeft een ongepaste inhoud.\n" +
+    "            </label>\n" +
+    "          </div>\n" +
+    "\n" +
+    "          <div class=\"checkbox\">\n" +
+    "            <label>\n" +
+    "              <input type=\"radio\" name=\"type\" ng-model=\"response.type\" value=\"OTHER\"> Andere, specifieer:\n" +
+    "              <input type=\"text\" name=\"reason\" ng-model=\"response.reason\">\n" +
+    "            </label>\n" +
+    "          </div>\n" +
+    "        </form>\n" +
+    "\n" +
+    "        <div class=\"text-danger\" ng-show=\"error\" ng-bind=\"error\"></div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">\n" +
+    "    Annuleren\n" +
+    "  </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"reject()\">\n" +
+    "    Aanbod afkeuren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  </button>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/moderation-list.html',
+    "<div class=\"page-header\">\n" +
+    "    <h1>Valideren</h1>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"moderator.loading && !moderator.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <div class=\"form-inline\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label>Valideer als</label>\n" +
+    "                <select class=\"form-control\"\n" +
+    "                        name=\"role\"\n" +
+    "                        ng-change=\"moderator.findModerationContent(moderator.selectedRole)\"\n" +
+    "                        ng-model=\"moderator.selectedRole\"\n" +
+    "                        ng-options=\"role.name for role in moderator.roles track by role.uuid\">\n" +
+    "                </select>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <p class=\"rv-item-counter\">\n" +
+    "            <ng-pluralize count=\"moderator.searchResult.totalItems\"\n" +
+    "                          when=\"{1: '1 resultaat', other: '{} resultaten'}\"></ng-pluralize>\n" +
+    "        </p>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
+    "        <udb-moderation-offer offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
+    "        </udb-moderation-offer>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <div class=\"panel-footer\">\n" +
+    "            <uib-pagination\n" +
+    "                    total-items=\"moderator.searchResult.totalItems\"\n" +
+    "                    ng-model=\"moderator.page\"\n" +
+    "                    items-per-page=\"moderator.searchResult.itemsPerPage\"\n" +
+    "                    max-size=\"10\"\n" +
+    "                    ng-change=\"moderator.pageChanged(moderator.page)\">\n" +
+    "            </uib-pagination>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/role-delete-confirm-modal.html',
     "<div class=\"modal-body\">\n" +
     "    <div class=\"row\">\n" +
@@ -18997,10 +19888,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/role-form.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Roles</h1>\n" +
-    "</div>\n" +
-    "<h2>Role bewerken</h2>\n" +
+    "<h1 class=\"title\">Role bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.loadedRole && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -19181,9 +20069,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/roles-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Rollen <small><a ui-sref=\"split.manageRoles.create\" ui-sref-opts=\"{reload:true}\">toevoegen</a></small></h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-9\">\n" +
@@ -19283,10 +20169,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/user-editor.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Gebruikers</h1>\n" +
-    "</div>\n" +
-    "<h2>Gebruiker bewerken</h2>\n" +
+    "<h1 class=\"title\">Gebruiker bewerken</h1>\n" +
     "\n" +
     "<div ng-show=\"!editor.user && !editor.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -19368,7 +20251,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div ng-show=\"editor.loadingError\">\n" +
     "    <span ng-bind=\"editor.loadingError\"></span>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
@@ -19378,9 +20261,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/users-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Gebruikers</h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Gebruikers</h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-11\">\n" +
@@ -19975,7 +20856,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/search-bar.directive.html',
-    "<h1>Zoeken</h1>\n" +
+    "<h1 class=\"title\">Zoeken</h1>\n" +
     "<form class=\"navbar-form navbar-left udb-header-search\" role=\"search\"\n" +
     "      ng-class=\"{'has-errors': sb.hasErrors, 'is-editing': sb.isEditing}\">\n" +
     "  <div class=\"form-group has-warning has-feedback\">\n" +
