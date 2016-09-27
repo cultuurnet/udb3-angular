@@ -19341,6 +19341,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <udb-event-form-step4></udb-event-form-step4>\n" +
     "  <udb-event-form-step5></udb-event-form-step5>\n" +
     "\n" +
+    "  <div class=\"event-validation\">\n" +
+    "    <p>Automatisch bewaard om 13:25 uur.</p>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\">Publiceren</button>\n" +
+    "  </div>\n" +
     "  <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "</div>\n"
   );

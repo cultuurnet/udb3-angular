@@ -3013,6 +3013,17 @@ input + .alert {
 .offer-form a {
   text-decoration: underline;
 }
+.offer-form .event-validation {
+  background-color: #ffffff;
+  padding: 1em;
+  padding-top: 2em;
+  margin-left: -1em;
+  margin-top: 2em;
+  margin-right: -1em;
+}
+.offer-form .event-validation p {
+  color: #626262;
+}
 .event-type-choser-label {
   background-repeat: no-repeat;
   background-position: top center;
