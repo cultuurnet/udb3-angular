@@ -42,8 +42,9 @@
                      ng-model="cityAutocompleteTextField"
                      uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
                      typeahead-on-select="selectCity($item, $label)"
-                     typeahead-min-length="3"
-                     typeahead-template-url="templates/city-suggestion.html">
+                     typeahead-min-length="2"
+                     typeahead-template-url="templates/city-suggestion.html"
+                     autocomplete="off">
             </span>
             <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
               Er was een probleem tijdens het ophalen van de steden
