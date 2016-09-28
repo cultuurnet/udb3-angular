@@ -93,6 +93,19 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.bookingPeriodShowValidation = false;
   $scope.bookingInfoCssClass = 'state-incomplete';
 
+  // Price info vars.
+  $scope.editPrice = false;
+  $scope.priceError = false;
+  $scope.invalidPrice = false;
+  $scope.savingPrice = false;
+  $scope.price = [];
+  $scope.editingPrice = editingPrice;
+  $scope.setPriceItemFree = setPriceItemFree;
+  $scope.deletePriceItem = deletePriceItem;
+  $scope.addPriceItem = addPriceItem;
+  $scope.cancelEditPrice = cancelEditPrice;
+  $scope.savePrice = savePrice;
+
   // Booking info vars.
   $scope.toggleBookingType = toggleBookingType;
   $scope.saveBookingType = saveBookingType;
@@ -412,6 +425,46 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       .updateOrganizer(EventFormData)
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
   };
+
+  function editingPrice() {
+    $scope.editPrice = true;
+
+    if ($scope.price.length === 0) {
+      $scope.price = [
+        {
+          category: 'base',
+          priceCurrency: 'EUR',
+          price: ''
+        }
+      ];
+    }
+  }
+
+  function setPriceItemFree(key) {
+    $scope.price[key].price = 0;
+  }
+
+  function deletePriceItem(key) {
+    $scope.price.splice(key, 1);
+  }
+
+  function addPriceItem() {
+    var priceItem = {
+      category: 'tariff',
+      name: '',
+      priceCurrency: 'EUR',
+      price: ''
+    };
+    $scope.price.push(priceItem);
+  }
+
+  function cancelEditPrice() {
+    $scope.editPrice = false;
+  }
+
+  function savePrice() {
+
+  }
 
   /**
    * Add an additional field to fill out contact info. Show the fields when none were shown before.

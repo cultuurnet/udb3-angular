@@ -194,32 +194,45 @@
 
               <span>
                 <section>
-                  <a class="btn btn-default to-filling" ng-click="priceCssClass = 'state-filling'">
+                  <a class="btn btn-default to-filling"
+                     ng-show="!editPrice"
+                     ng-click="priceCssClass = 'state-filling'; editingPrice()">
                     Prijzen toevoegen
                   </a>
                 </section>
-                <a class="btn btn-link" ng-click="setBasePriceFree()">Gratis</a>
+                <a class="btn btn-link"
+                   ng-show="!editPrice"
+                   ng-click="setPriceItemFree(0)">Gratis</a>
               </span>
-              <form name="priceForm">
+              <form name="priceForm"
+                    ng-show="editPrice">
                 <table class="table">
                   <div class="form-group">
-                    <tr>
-                      <td>
-                        <input type="text"
-                               class="form-control" />
+                    <tr ng-repeat="(key, priceInfo) in price"
+                        ng-model="priceInfo">
+                      <td ng-switch on="priceInfo.category">
+                        <span ng-switch-when="base">
+                          Basistarief
+                        </span>
+                        <span ng-switch-default>
+                          <input type="text"
+                                 class="form-control"
+                                 ng-model="priceInfo.name" />
+                        </span>
                       </td>
                       <td>
                         <input type="number"
-                               class="form-control" />
+                               class="form-control"
+                               ng-model="priceInfo.price" />
                       </td>
                       <td>
                         euro
                       </td>
                       <td>
-                        <a class="btn btn-link" ng-click="setPriceItemFree()">Gratis</a>
+                        <a class="btn btn-link" ng-click="setPriceItemFree(key)">Gratis</a>
                       </td>
                       <td>
-                        <span aria-hidden="true" ng-click="deletePriceItem()">&times;</span>
+                        <span aria-hidden="true" ng-click="deletePriceItem(key)">&times;</span>
                       </td>
                     </tr>
                     <tr>

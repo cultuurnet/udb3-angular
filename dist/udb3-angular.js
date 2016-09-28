@@ -9981,6 +9981,19 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.bookingPeriodShowValidation = false;
   $scope.bookingInfoCssClass = 'state-incomplete';
 
+  // Price info vars.
+  $scope.editPrice = false;
+  $scope.priceError = false;
+  $scope.invalidPrice = false;
+  $scope.savingPrice = false;
+  $scope.price = [];
+  $scope.editingPrice = editingPrice;
+  $scope.setPriceItemFree = setPriceItemFree;
+  $scope.deletePriceItem = deletePriceItem;
+  $scope.addPriceItem = addPriceItem;
+  $scope.cancelEditPrice = cancelEditPrice;
+  $scope.savePrice = savePrice;
+
   // Booking info vars.
   $scope.toggleBookingType = toggleBookingType;
   $scope.saveBookingType = saveBookingType;
@@ -10300,6 +10313,46 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       .updateOrganizer(EventFormData)
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
   };
+
+  function editingPrice() {
+    $scope.editPrice = true;
+
+    if ($scope.price.length === 0) {
+      $scope.price = [
+        {
+          category: 'base',
+          priceCurrency: 'EUR',
+          price: ''
+        }
+      ];
+    }
+  }
+
+  function setPriceItemFree(key) {
+    $scope.price[key].price = 0;
+  }
+
+  function deletePriceItem(key) {
+    $scope.price.splice(key, 1);
+  }
+
+  function addPriceItem() {
+    var priceItem = {
+      category: 'tariff',
+      name: '',
+      priceCurrency: 'EUR',
+      price: ''
+    };
+    $scope.price.push(priceItem);
+  }
+
+  function cancelEditPrice() {
+    $scope.editPrice = false;
+  }
+
+  function savePrice() {
+
+  }
 
   /**
    * Add an additional field to fill out contact info. Show the fields when none were shown before.
@@ -18977,32 +19030,45 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "              <span>\n" +
     "                <section>\n" +
-    "                  <a class=\"btn btn-default to-filling\" ng-click=\"priceCssClass = 'state-filling'\">\n" +
+    "                  <a class=\"btn btn-default to-filling\"\n" +
+    "                     ng-show=\"!editPrice\"\n" +
+    "                     ng-click=\"priceCssClass = 'state-filling'; editingPrice()\">\n" +
     "                    Prijzen toevoegen\n" +
     "                  </a>\n" +
     "                </section>\n" +
-    "                <a class=\"btn btn-link\" ng-click=\"setBasePriceFree()\">Gratis</a>\n" +
+    "                <a class=\"btn btn-link\"\n" +
+    "                   ng-show=\"!editPrice\"\n" +
+    "                   ng-click=\"setPriceItemFree(0)\">Gratis</a>\n" +
     "              </span>\n" +
-    "              <form name=\"priceForm\">\n" +
+    "              <form name=\"priceForm\"\n" +
+    "                    ng-show=\"editPrice\">\n" +
     "                <table class=\"table\">\n" +
     "                  <div class=\"form-group\">\n" +
-    "                    <tr>\n" +
-    "                      <td>\n" +
-    "                        <input type=\"text\"\n" +
-    "                               class=\"form-control\" />\n" +
+    "                    <tr ng-repeat=\"(key, priceInfo) in price\"\n" +
+    "                        ng-model=\"priceInfo\">\n" +
+    "                      <td ng-switch on=\"priceInfo.category\">\n" +
+    "                        <span ng-switch-when=\"base\">\n" +
+    "                          Basistarief\n" +
+    "                        </span>\n" +
+    "                        <span ng-switch-default>\n" +
+    "                          <input type=\"text\"\n" +
+    "                                 class=\"form-control\"\n" +
+    "                                 ng-model=\"priceInfo.name\" />\n" +
+    "                        </span>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
     "                        <input type=\"number\"\n" +
-    "                               class=\"form-control\" />\n" +
+    "                               class=\"form-control\"\n" +
+    "                               ng-model=\"priceInfo.price\" />\n" +
     "                      </td>\n" +
     "                      <td>\n" +
     "                        euro\n" +
     "                      </td>\n" +
     "                      <td>\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"setPriceItemFree()\">Gratis</a>\n" +
+    "                        <a class=\"btn btn-link\" ng-click=\"setPriceItemFree(key)\">Gratis</a>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
-    "                        <span aria-hidden=\"true\" ng-click=\"deletePriceItem()\">&times;</span>\n" +
+    "                        <span aria-hidden=\"true\" ng-click=\"deletePriceItem(key)\">&times;</span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                    <tr>\n" +
