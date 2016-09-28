@@ -36,7 +36,7 @@ function EventFormPublishController(
     }
 
     eventCrud
-      .publishOffer(EventFormData, 'Publish offer')
+      .publishOffer(EventFormData, 'publishOffer')
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)

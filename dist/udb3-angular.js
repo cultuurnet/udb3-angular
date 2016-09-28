@@ -5271,6 +5271,9 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
       case 'updateMajorInfo':
         return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
 
+      case 'publishOffer':
+        return 'Aanbod publiceren: "' + this.item.name.nl + '".';
+
     }
 
   };
@@ -8946,7 +8949,7 @@ function EventFormPublishController(
     }
 
     eventCrud
-      .publishOffer(EventFormData, 'Publish offer')
+      .publishOffer(EventFormData, 'publishOffer')
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
