@@ -54,7 +54,7 @@ function EventFormPublishController(
   }
 
   function redirectToDetailPage(offerLocation) {
-    // TODO redirect to edit
-    console.log('this was published.');
+    // not ideal, probably needs a different solution for OMD
+    $state.go('split.footer.event', {id: EventFormData.id});
   }
 }
