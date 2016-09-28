@@ -32,10 +32,7 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
 
   EventCrudJob.prototype.finish = function () {
     BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve(this.item.apiUrl);
-    }
+    this.task.resolve(this.item.apiUrl);
   };
 
   EventCrudJob.prototype.fail = function () {
@@ -79,9 +76,6 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
 
       case 'updateFacilities':
         return 'Voorzieningen aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateBookingInfo':
-        return 'Boeking info aanpassen: "' + this.item.name.nl + '".';
 
       case 'addImage':
         return 'Afbeelding toevoegen: "' + this.item.name.nl + '".';
