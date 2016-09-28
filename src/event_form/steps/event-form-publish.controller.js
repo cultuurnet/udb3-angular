@@ -15,7 +15,10 @@ angular
 function EventFormPublishController(
     $scope,
     EventFormData,
-    eventCrud
+    eventCrud,
+    OfferWorkflowStatus,
+    $q,
+    $state
 ) {
 
   var controller = this;
@@ -27,13 +30,27 @@ function EventFormPublishController(
   $scope.eventFormData = EventFormData;
 
   function publish() {
+    if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
+      redirectToDetailPage(EventFormData.apiUrl);
+      return;
+    }
+
     eventCrud
       .publishOffer(EventFormData, 'Publish offer')
       .then(function(job) {
-        job.task.promise.then(redirectToDetailPage, function() {
-          // TODO error occured, everyone is sad
-        });
+        job.task.promise
+          .then(setEventAsReadyForValidation)
+          .then(redirectToDetailPage)
+          .catch(function() {
+            // TODO error occured, everyone is sad
+          });
       });
+  }
+
+  function setEventAsReadyForValidation(offerLocation) {
+    EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
+
+    return $q.resolve(offerLocation);
   }
 
   function redirectToDetailPage(offerLocation) {
