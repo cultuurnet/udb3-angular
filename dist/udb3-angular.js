@@ -5580,7 +5580,7 @@ function EventCrud(
       .then(function (response) {
         var job = new EventCrudJob(response.commandId, offer, jobName);
 
-        jobLogger.addJob(job);
+        addJobAndInvalidateCache(jobLogger, job);
 
         return $q.resolve(job);
       });
@@ -8231,6 +8231,7 @@ function EventFormDataFactory() {
       this.mediaObjects = [];
       this.image = [];
       this.additionalData = {};
+      this.workflowStatus = 'DRAFT';
     },
 
     /**
@@ -8641,7 +8642,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'facilities',
       'image',
       'additionalData',
-      'apiUrl'
+      'apiUrl',
+      'workflowStatus'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -8923,7 +8925,10 @@ angular
 function EventFormPublishController(
     $scope,
     EventFormData,
-    eventCrud
+    eventCrud,
+    OfferWorkflowStatus,
+    $q,
+    $state
 ) {
 
   var controller = this;
@@ -8935,21 +8940,35 @@ function EventFormPublishController(
   $scope.eventFormData = EventFormData;
 
   function publish() {
+    if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
+      redirectToDetailPage(EventFormData.apiUrl);
+      return;
+    }
+
     eventCrud
       .publishOffer(EventFormData, 'Publish offer')
       .then(function(job) {
-        job.task.promise.then(redirectToDetailPage, function() {
-          // TODO error occured, everyone is sad
-        });
+        job.task.promise
+          .then(setEventAsReadyForValidation)
+          .then(redirectToDetailPage)
+          .catch(function() {
+            // TODO error occured, everyone is sad
+          });
       });
   }
 
+  function setEventAsReadyForValidation(offerLocation) {
+    EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
+
+    return $q.resolve(offerLocation);
+  }
+
   function redirectToDetailPage(offerLocation) {
-    // TODO redirect to edit
-    console.log('this was published.');
+    // not ideal, probably needs a different solution for OMD
+    $state.go('split.footer.event', {id: EventFormData.id});
   }
 }
-EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud"];
+EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$state"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
@@ -18525,7 +18544,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-form-publish.html',
     "<div class=\"event-validation\">\n" +
-    "    <p>Automatisch bewaard om 13:25 uur.</p>\n" +
+    "    <p ng-hide=\"true\">Automatisch bewaard om 13:25 uur.</p>\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\">Publiceren</button>\n" +
     "</div>"
   );

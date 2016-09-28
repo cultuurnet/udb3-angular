@@ -300,7 +300,7 @@ function EventCrud(
       .then(function (response) {
         var job = new EventCrudJob(response.commandId, offer, jobName);
 
-        jobLogger.addJob(job);
+        addJobAndInvalidateCache(jobLogger, job);
 
         return $q.resolve(job);
       });
