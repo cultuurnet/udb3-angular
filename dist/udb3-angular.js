@@ -18967,6 +18967,74 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
+    "        <div class=\"row extra-prijs\">\n" +
+    "          <div class=\"extra-task\" ng-class=\"priceCssClass\">\n" +
+    "            <div class=\"col-sm-3\">\n" +
+    "              <em class=\"extra-task-label\">Prijs</em>\n" +
+    "                <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingPrice\"></i>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-8\">\n" +
+    "\n" +
+    "              <span>\n" +
+    "                <section>\n" +
+    "                  <a class=\"btn btn-default to-filling\" ng-click=\"priceCssClass = 'state-filling'\">\n" +
+    "                    Prijzen toevoegen\n" +
+    "                  </a>\n" +
+    "                </section>\n" +
+    "                <a class=\"btn btn-link\" ng-click=\"setBasePriceFree()\">Gratis</a>\n" +
+    "              </span>\n" +
+    "              <form name=\"priceForm\">\n" +
+    "                <table class=\"table\">\n" +
+    "                  <div class=\"form-group\">\n" +
+    "                    <tr>\n" +
+    "                      <td>\n" +
+    "                        <input type=\"text\"\n" +
+    "                               class=\"form-control\" />\n" +
+    "                      </td>\n" +
+    "                      <td>\n" +
+    "                        <input type=\"number\"\n" +
+    "                               class=\"form-control\" />\n" +
+    "                      </td>\n" +
+    "                      <td>\n" +
+    "                        euro\n" +
+    "                      </td>\n" +
+    "                      <td>\n" +
+    "                        <a class=\"btn btn-link\" ng-click=\"setPriceItemFree()\">Gratis</a>\n" +
+    "                      </td>\n" +
+    "                      <td>\n" +
+    "                        <span aria-hidden=\"true\" ng-click=\"deletePriceItem()\">&times;</span>\n" +
+    "                      </td>\n" +
+    "                    </tr>\n" +
+    "                    <tr>\n" +
+    "                      <td colspan=\"5\">\n" +
+    "                        <a class=\"btn btn-link\" ng-click=\"addPriceItem()\">Tarief toevoegen</a>\n" +
+    "                      </td>\n" +
+    "                    </tr>\n" +
+    "                    <tr>\n" +
+    "                      <td colspan=\"5\">\n" +
+    "                        <a class=\"btn btn-default\" ng-click=\"cancelEditPrice()\">\n" +
+    "                          Annuleren\n" +
+    "                        </a>\n" +
+    "                        <a class=\"btn btn-primary\" ng-click=\"savePrice()\">\n" +
+    "                          Bewaren\n" +
+    "                        </a>\n" +
+    "                      </td>\n" +
+    "                    </tr>\n" +
+    "                  </div>\n" +
+    "                </table>\n" +
+    "              </form>\n" +
+    "\n" +
+    "              <div ng-show=\"priceError\" class=\"alert alert-danger\">\n" +
+    "                Er ging iets fout bij het opslaan van de prijs.\n" +
+    "              </div>\n" +
+    "              <div ng-show=\"invalidPrice\" class=\"alert alert-danger\">\n" +
+    "                Gelieve een geldige prijs in te voeren.\n" +
+    "              </div>\n" +
+    "\n" +
+    "            </div>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
     "            <div class=\"extra-task state-incomplete\">\n" +

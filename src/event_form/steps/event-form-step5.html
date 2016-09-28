@@ -184,6 +184,74 @@
           </div>
         </div>
 
+        <div class="row extra-prijs">
+          <div class="extra-task" ng-class="priceCssClass">
+            <div class="col-sm-3">
+              <em class="extra-task-label">Prijs</em>
+                <i class="fa fa-circle-o-notch fa-spin" ng-show="savingPrice"></i>
+            </div>
+            <div class="col-sm-8">
+
+              <span>
+                <section>
+                  <a class="btn btn-default to-filling" ng-click="priceCssClass = 'state-filling'">
+                    Prijzen toevoegen
+                  </a>
+                </section>
+                <a class="btn btn-link" ng-click="setBasePriceFree()">Gratis</a>
+              </span>
+              <form name="priceForm">
+                <table class="table">
+                  <div class="form-group">
+                    <tr>
+                      <td>
+                        <input type="text"
+                               class="form-control" />
+                      </td>
+                      <td>
+                        <input type="number"
+                               class="form-control" />
+                      </td>
+                      <td>
+                        euro
+                      </td>
+                      <td>
+                        <a class="btn btn-link" ng-click="setPriceItemFree()">Gratis</a>
+                      </td>
+                      <td>
+                        <span aria-hidden="true" ng-click="deletePriceItem()">&times;</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="5">
+                        <a class="btn btn-link" ng-click="addPriceItem()">Tarief toevoegen</a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="5">
+                        <a class="btn btn-default" ng-click="cancelEditPrice()">
+                          Annuleren
+                        </a>
+                        <a class="btn btn-primary" ng-click="savePrice()">
+                          Bewaren
+                        </a>
+                      </td>
+                    </tr>
+                  </div>
+                </table>
+              </form>
+
+              <div ng-show="priceError" class="alert alert-danger">
+                Er ging iets fout bij het opslaan van de prijs.
+              </div>
+              <div ng-show="invalidPrice" class="alert alert-danger">
+                Gelieve een geldige prijs in te voeren.
+              </div>
+
+            </div>
+          </div>
+        </div>
+
         <form name="step5TicketsForm" class="css-form">
           <div class="row extra-tickets-website" ng-class="bookingInfoCssClass">
             <div class="extra-task state-incomplete">
