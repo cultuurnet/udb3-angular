@@ -23,7 +23,7 @@ function AutoScroll($document) {
       return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     };
 
-    element.on('click focus', scrollToTarget);
+    element.on('click focusin', scrollToTarget);
 
     function scrollToTarget(event) {
       $document.scrollTo(event.target, 0, scrollDuration, easeInOutQuad);

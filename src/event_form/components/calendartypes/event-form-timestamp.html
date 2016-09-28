@@ -28,7 +28,7 @@
                 typeahead-on-select="EventFormStep2.eventTimingChanged()"
                 typeahead-editable="false"
                 placeholder="Bv. 08:00"
-                focus-if="timestamp.showStartHour">
+                udb-auto-scroll>
           </div>
         </div>
         <div class="col-xs-6 einduur" ng-show="timestamp.showStartHour">
@@ -49,7 +49,7 @@
                 typeahead-on-select="EventFormStep2.eventTimingChanged()"
                 typeahead-editable="false"
                 placeholder="Bv. 23:00"
-                focus-if="timestamp.showEndHour">
+                udb-auto-scroll>
           </div>
         </div>
       </div>

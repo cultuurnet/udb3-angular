@@ -6989,7 +6989,7 @@ function AutoScroll($document) {
       return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     };
 
-    element.on('click focus', scrollToTarget);
+    element.on('click focusin', scrollToTarget);
 
     function scrollToTarget(event) {
       $document.scrollTo(event.target, 0, scrollDuration, easeInOutQuad);
@@ -17660,7 +17660,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 08:00\"\n" +
-    "                focus-if=\"timestamp.showStartHour\">\n" +
+    "                udb-auto-scroll>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -17681,7 +17681,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
-    "                focus-if=\"timestamp.showEndHour\">\n" +
+    "                udb-auto-scroll>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -18757,7 +18757,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
-    "                 focus-if=\"eventFormData.showStep4\">\n" +
+    "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"help-block\">\n" +
@@ -18881,7 +18881,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" focus-if=\"focusDescription\"></textarea>\n" +
+    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll></textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
