@@ -89,7 +89,8 @@ angular
     'udb.entry',
     'udb.search',
     'ngFileUpload',
-    'duScroll'
+    'duScroll',
+    'focus-if'
   ]);
 
 /**
@@ -17660,7 +17661,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 08:00\"\n" +
-    "                udb-auto-scroll>\n" +
+    "                focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -17681,7 +17682,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
-    "                udb-auto-scroll>\n" +
+    "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +

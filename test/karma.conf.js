@@ -65,6 +65,7 @@ module.exports = function(config) {
       'bower_components/rxjs/dist/rx.all.js',
       'bower_components/rx-angular/dist/rx.angular.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
+      'bower_components/ng-focus-if/focusIf.js',
       'bower_components/angular-scroll/angular-scroll.js',
       'src/**/*.module.js',
       'src/**/*.js',
