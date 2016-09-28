@@ -14,5 +14,5 @@ angular
     'udb.entry',
     'udb.search',
     'ngFileUpload',
-    'focus-if'
+    'duScroll'
   ]);

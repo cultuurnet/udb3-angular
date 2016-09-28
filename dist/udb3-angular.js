@@ -89,7 +89,7 @@ angular
     'udb.entry',
     'udb.search',
     'ngFileUpload',
-    'focus-if'
+    'duScroll'
   ]);
 
 /**
@@ -6964,6 +6964,39 @@ function EventDetail(
   }
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
+
+// Source: src/event_form/components/auto-scroll.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbAutoScroll
+ * @description
+ * auto scrolls to the attached element when focused.
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbAutoScroll', AutoScroll);
+
+/* @ngInject */
+function AutoScroll($document) {
+  return {
+    restrict: 'A',
+    link: link
+  };
+
+  function link(scope, element) {
+    var scrollDuration = 1000;
+    var easeInOutQuad = function (t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    element.on('click focus', scrollToTarget);
+
+    function scrollToTarget(event) {
+      $document.scrollTo(event.target, 0, scrollDuration, easeInOutQuad);
+    }
+  }
+}
+AutoScroll.$inject = ["$document"];
 
 // Source: src/event_form/components/calendartypes/event-form-period.directive.js
 /**
@@ -18549,7 +18582,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <button\n" +
     "                        class=\"btn btn-default\"\n" +
     "                        ng-bind=\"::calendarLabel.label\"\n" +
-    "                        ng-click=\"setCalendarType(calendarLabel.id); scrollToBottom('wanneer');\"></button>\n" +
+    "                        udb-auto-scroll\n" +
+    "                        ng-click=\"setCalendarType(calendarLabel.id);\"></button>\n" +
     "              </li>\n" +
     "            </ul>\n" +
     "          </div>\n" +
@@ -18599,7 +18633,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   class=\"form-control uib-typeahead\"\n" +
     "                   placeholder=\"Gemeente of postcode\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
-    "                   focus-if=\"eventFormData.showStep3\"\n" +
+    "                   udb-auto-scroll\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
     "                   typeahead-min-length=\"2\"\n" +
@@ -18633,7 +18667,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
-    "                     focus-if=\"!loadingPlaces\"/>\n" +
+    "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
