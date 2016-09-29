@@ -18,6 +18,7 @@
                    class="form-control uib-typeahead"
                    placeholder="Gemeente of postcode"
                    ng-model="cityAutocompleteTextField"
+                   udb-auto-scroll
                    uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
                    typeahead-on-select="selectCity($item, $label)"
                    typeahead-min-length="2"
@@ -51,7 +52,7 @@
                      typeahead-on-select="selectLocation($item, $model, $label)"
                      typeahead-min-length="3"
                      typeahead-template-url="templates/place-suggestion.html"
-                     focus-if="!loadingPlaces"/>
+                     udb-auto-scroll/>
               <div class="plaats-adres-resultaat dropdown-menu-no-results"
                    ng-show="(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched">
                 <div class="panel panel-default text-center">

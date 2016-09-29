@@ -2472,6 +2472,7 @@ input + .alert {
   margin-bottom: 1em;
 }
 .offer-form {
+  margin-bottom: 33vw;
   /*  .multiselect-container > li > a > label {
     margin: 0;
     height: 100%;

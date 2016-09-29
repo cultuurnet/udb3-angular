@@ -16,7 +16,7 @@
                  ng-model="eventFormData.name.nl"
                  ng-model-options="titleInputOptions"
                  ng-change="eventTitleChanged()"
-                 focus-if="eventFormData.showStep4">
+                 udb-auto-scroll>
         </div>
 
         <div class="help-block">
@@ -31,7 +31,7 @@
 
     <p ng-show="eventFormData.id === ''">
       <a class="btn btn-primary titel-doorgaan"
-          ng-click="validateEvent(true)"
+          ng-click="validateEvent(true);"
           ng-class="{'disabled': eventFormData.name.nl === ''}">
         Doorgaan <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
       </a>
