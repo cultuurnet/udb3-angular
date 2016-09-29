@@ -3959,6 +3959,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         this.price = parseFloat(jsonEvent.bookingInfo[0].price);
       }
       this.pricing = getPricing(jsonEvent);
+      this.priceInfo = jsonEvent.priceInfo || [];
       this.publisher = jsonEvent.publisher || '';
       this.created = new Date(jsonEvent.created);
       this.modified = new Date(jsonEvent.modified);
@@ -5472,7 +5473,7 @@ function EventCrud(
    */
   service.updatePriceInfo = function(item) {
     return udbApi
-      .updatePriceInfo(item.apiUrl, item)
+      .updatePriceInfo(item.apiUrl, item.price)
       .then(function (response) {
         var jobData = response.data;
         var job = new EventCrudJob(jobData.commandId, item, 'updatePirceInfo');
@@ -8239,6 +8240,7 @@ function EventFormDataFactory() {
       this.mediaObjects = [];
       this.image = [];
       this.additionalData = {};
+      this.priceInfo = [];
     },
 
     /**
@@ -8646,6 +8648,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'organizer',
       'bookingInfo',
       'contactPoint',
+      'priceInfo',
       'facilities',
       'image',
       'additionalData',
@@ -10384,7 +10387,13 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function savePrice() {
     $scope.savingPrice = true;
 
+    // Check for empty names and prices in $scope.price array
+    /*angular.forEach($scope.price, function(value, key) {
+      return _.contains(value.name, '' && value.price, '') ? $scope.price.splice(key, 1) : '';
+    });*/
+
     EventFormData.price = $scope.price;
+    $scope.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
@@ -10622,7 +10631,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController',
+      controller: 'EventFormReservationModalController'
     });
 
     modalInstance.result.then(function () {
@@ -10806,6 +10815,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.facilitiesInapplicable = false;
       }
 
+    }
+
+    if (EventFormData.priceInfo) {
+      $scope.price = EventFormData.priceInfo;
+      $scope.priceCssClass = 'state-complete';
     }
 
   }
@@ -19073,18 +19087,42 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
     "\n" +
-    "              <span>\n" +
+    "              <div ng-show=\"price.length == 0\">\n" +
     "                <section>\n" +
     "                  <a class=\"btn btn-default to-filling\"\n" +
     "                     ng-show=\"!editPrice\"\n" +
     "                     ng-click=\"priceCssClass = 'state-filling'; editingPrice()\">\n" +
     "                    Prijzen toevoegen\n" +
     "                  </a>\n" +
+    "                  <a class=\"btn btn-link\"\n" +
+    "                     ng-show=\"!editPrice\"\n" +
+    "                     ng-click=\"setPriceItemFree(0)\">Gratis</a>\n" +
     "                </section>\n" +
-    "                <a class=\"btn btn-link\"\n" +
-    "                   ng-show=\"!editPrice\"\n" +
-    "                   ng-click=\"setPriceItemFree(0)\">Gratis</a>\n" +
-    "              </span>\n" +
+    "              </div>\n" +
+    "              <div ng-show=\"price.length > 0 && !editPrice\">\n" +
+    "                <table class=\"table\">\n" +
+    "                  <thead>\n" +
+    "                    <td>Prijzen</td>\n" +
+    "                    <td>\n" +
+    "                      <a class=\"btn btn-default pull-right\" ng-click=\"editingPrice()\">\n" +
+    "                      Wijzigen\n" +
+    "                    </a>\n" +
+    "                    </td>\n" +
+    "                  </thead>\n" +
+    "                  <tr ng-repeat=\"(key, priceInfo) in price\"\n" +
+    "                      ng-model=\"priceInfo\">\n" +
+    "                    <td>{{priceInfo.name}}</td>\n" +
+    "                    <td>\n" +
+    "                      <span ng-if=\"priceInfo.price == 0\">\n" +
+    "                        Gratis\n" +
+    "                      </span>\n" +
+    "                      <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                        {{priceInfo.price}} euro\n" +
+    "                      </span>\n" +
+    "                    </td>\n" +
+    "                  </tr>\n" +
+    "                </table>\n" +
+    "              </div>\n" +
     "              <form name=\"priceForm\"\n" +
     "                    ng-show=\"editPrice\">\n" +
     "                <table class=\"table\">\n" +

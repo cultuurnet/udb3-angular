@@ -470,7 +470,13 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function savePrice() {
     $scope.savingPrice = true;
 
+    // Check for empty names and prices in $scope.price array
+    /*angular.forEach($scope.price, function(value, key) {
+      return _.contains(value.name, '' && value.price, '') ? $scope.price.splice(key, 1) : '';
+    });*/
+
     EventFormData.price = $scope.price;
+    $scope.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
@@ -708,7 +714,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController',
+      controller: 'EventFormReservationModalController'
     });
 
     modalInstance.result.then(function () {
@@ -892,6 +898,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.facilitiesInapplicable = false;
       }
 
+    }
+
+    if (EventFormData.priceInfo) {
+      $scope.price = EventFormData.priceInfo;
+      $scope.priceCssClass = 'state-complete';
     }
 
   }
