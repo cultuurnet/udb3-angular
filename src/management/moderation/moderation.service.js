@@ -32,7 +32,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(queryString, itemsPerPage, offset) {
-    queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus:"readyforvalidation"';
+    queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]';
 
     return udbApi
       .findEventsWithLimit(queryString, offset, itemsPerPage);
