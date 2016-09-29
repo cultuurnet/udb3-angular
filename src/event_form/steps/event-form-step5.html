@@ -220,28 +220,36 @@
                                  ng-model="priceInfo.name" />
                         </span>
                       </td>
-                      <td>
-                        <input type="number"
+                      <td ng-switch on="priceInfo.price">
+                        <span ng-switch-when="0">
+                          Gratis
+                        </span>
+                        <span ng-switch-default>
+                          <input type="number"
                                class="form-control"
                                ng-model="priceInfo.price" />
+                          euro
+                        </span>
                       </td>
-                      <td>
-                        euro
-                      </td>
-                      <td>
-                        <a class="btn btn-link" ng-click="setPriceItemFree(key)">Gratis</a>
+                      <td ng-switch on="priceInfo.price">
+                        <a class="btn btn-link"
+                           ng-click="unsetPriceItemFree(key)"
+                           ng-switch-when="0">Prijs invoeren</a>
+                        <a class="btn btn-link"
+                           ng-click="setPriceItemFree(key)"
+                           ng-switch-default>Gratis</a>
                       </td>
                       <td>
                         <span aria-hidden="true" ng-click="deletePriceItem(key)">&times;</span>
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="5">
+                      <td colspan="4">
                         <a class="btn btn-link" ng-click="addPriceItem()">Tarief toevoegen</a>
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="5">
+                      <td colspan="4">
                         <a class="btn btn-default" ng-click="cancelEditPrice()">
                           Annuleren
                         </a>

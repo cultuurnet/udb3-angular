@@ -100,6 +100,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.savingPrice = false;
   $scope.price = [];
   $scope.editingPrice = editingPrice;
+  $scope.unsetPriceItemFree = unsetPriceItemFree;
   $scope.setPriceItemFree = setPriceItemFree;
   $scope.deletePriceItem = deletePriceItem;
   $scope.addPriceItem = addPriceItem;
@@ -440,6 +441,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     }
   }
 
+  function unsetPriceItemFree(key) {
+    $scope.price[key].price = '';
+  }
+
   function setPriceItemFree(key) {
     $scope.price[key].price = 0;
   }
@@ -463,7 +468,21 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function savePrice() {
+    $scope.savingPrice = true;
 
+    EventFormData.price = $scope.price;
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      controller.eventFormSaved();
+      if (!_.isEmpty($scope.price)) {
+        $scope.priceCssClass = 'state-complete';
+      }
+      $scope.savingPrice = false;
+    }, function () {
+      $scope.priceError = true;
+      $scope.savingPrice = false;
+    });
   }
 
   /**

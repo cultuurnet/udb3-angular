@@ -3066,6 +3066,14 @@ function UdbApi(
     );
   };
 
+  this.updatePriceInfo = function(offerLocation, price) {
+    return $http.put(
+      offerLocation + '/priceInfo',
+      price,
+      defaultApiConfig
+    );
+  };
+
   /**
    * @param {URL} offerLocation
    * @param {string} label
@@ -5455,6 +5463,24 @@ function EventCrud(
 
     return jobCreator;
   }
+
+  /**
+   * Update the price info and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updatePriceInfo = function(item) {
+    return udbApi
+      .updatePriceInfo(item.apiUrl, item)
+      .then(function (response) {
+        var jobData = response.data;
+        var job = new EventCrudJob(jobData.commandId, item, 'updatePirceInfo');
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
+  };
 
   /**
    * Update the contact point and add it to the job logger.
@@ -9988,6 +10014,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.savingPrice = false;
   $scope.price = [];
   $scope.editingPrice = editingPrice;
+  $scope.unsetPriceItemFree = unsetPriceItemFree;
   $scope.setPriceItemFree = setPriceItemFree;
   $scope.deletePriceItem = deletePriceItem;
   $scope.addPriceItem = addPriceItem;
@@ -10328,6 +10355,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     }
   }
 
+  function unsetPriceItemFree(key) {
+    $scope.price[key].price = '';
+  }
+
   function setPriceItemFree(key) {
     $scope.price[key].price = 0;
   }
@@ -10351,7 +10382,21 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function savePrice() {
+    $scope.savingPrice = true;
 
+    EventFormData.price = $scope.price;
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      controller.eventFormSaved();
+      if (!_.isEmpty($scope.price)) {
+        $scope.priceCssClass = 'state-complete';
+      }
+      $scope.savingPrice = false;
+    }, function () {
+      $scope.priceError = true;
+      $scope.savingPrice = false;
+    });
   }
 
   /**
@@ -19056,28 +19101,36 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                 ng-model=\"priceInfo.name\" />\n" +
     "                        </span>\n" +
     "                      </td>\n" +
-    "                      <td>\n" +
-    "                        <input type=\"number\"\n" +
+    "                      <td ng-switch on=\"priceInfo.price\">\n" +
+    "                        <span ng-switch-when=\"0\">\n" +
+    "                          Gratis\n" +
+    "                        </span>\n" +
+    "                        <span ng-switch-default>\n" +
+    "                          <input type=\"number\"\n" +
     "                               class=\"form-control\"\n" +
     "                               ng-model=\"priceInfo.price\" />\n" +
+    "                          euro\n" +
+    "                        </span>\n" +
     "                      </td>\n" +
-    "                      <td>\n" +
-    "                        euro\n" +
-    "                      </td>\n" +
-    "                      <td>\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"setPriceItemFree(key)\">Gratis</a>\n" +
+    "                      <td ng-switch on=\"priceInfo.price\">\n" +
+    "                        <a class=\"btn btn-link\"\n" +
+    "                           ng-click=\"unsetPriceItemFree(key)\"\n" +
+    "                           ng-switch-when=\"0\">Prijs invoeren</a>\n" +
+    "                        <a class=\"btn btn-link\"\n" +
+    "                           ng-click=\"setPriceItemFree(key)\"\n" +
+    "                           ng-switch-default>Gratis</a>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
     "                        <span aria-hidden=\"true\" ng-click=\"deletePriceItem(key)\">&times;</span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                    <tr>\n" +
-    "                      <td colspan=\"5\">\n" +
+    "                      <td colspan=\"4\">\n" +
     "                        <a class=\"btn btn-link\" ng-click=\"addPriceItem()\">Tarief toevoegen</a>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                    <tr>\n" +
-    "                      <td colspan=\"5\">\n" +
+    "                      <td colspan=\"4\">\n" +
     "                        <a class=\"btn btn-default\" ng-click=\"cancelEditPrice()\">\n" +
     "                          Annuleren\n" +
     "                        </a>\n" +
