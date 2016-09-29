@@ -8931,16 +8931,14 @@ function EventFormPublishController(
   var controller = this;
 
   controller.publish = publish;
+  controller.preview = preview;
+  controller.isDraft = isDraft;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
   function publish() {
     controller.error = '';
-    if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
-      redirectToDetailPage();
-      return;
-    }
 
     eventCrud
       .publishOffer(EventFormData, 'publishOffer')
@@ -8962,6 +8960,14 @@ function EventFormPublishController(
 
   function redirectToDetailPage() {
     $location.path('/event/' + EventFormData.id);
+  }
+
+  function preview() {
+    redirectToDetailPage();
+  }
+
+  function isDraft(status) {
+    return (status === OfferWorkflowStatus.DRAFT);
   }
 }
 EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
@@ -18541,8 +18547,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/event-form-publish.html',
     "<div class=\"event-validation\" ng-if=\"efpc.eventFormData.showStep5\">\n" +
     "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
-    "    <p ng-hide=\"true\">Automatisch bewaard om 13:25 uur.</p>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\">Publiceren</button>\n" +
+    "\n" +
+    "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
+    "\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Voorbeeld bekijken</button>\n" +
     "</div>"
   );
 
@@ -19448,8 +19457,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <udb-event-form-step5></udb-event-form-step5>\n" +
     "\n" +
     "  <udb-event-form-publish></udb-event-form-publish>\n" +
-    "\n" +
-    "  <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "</div>\n"
   );
 

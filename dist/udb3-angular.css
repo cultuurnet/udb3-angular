@@ -1720,9 +1720,7 @@ input + .alert {
   margin-top: .5em;
 }
 .save-time-tracker {
-  border-top: 1px solid #cccccc;
   color: #777777;
-  margin-top: 3em;
   padding-bottom: 1em;
   padding-top: 1em;
 }
@@ -3020,9 +3018,6 @@ input + .alert {
   margin-left: -1em;
   margin-top: 2em;
   margin-right: -1em;
-}
-.offer-form .event-validation p {
-  color: #626262;
 }
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;

@@ -1,5 +1,8 @@
 <div class="event-validation" ng-if="efpc.eventFormData.showStep5">
     <div class="text-danger" ng-if="efpc.error" ng-bind="efpc.error"></div>
-    <p ng-hide="true">Automatisch bewaard om 13:25 uur.</p>
-    <button type="submit" class="btn btn-success" ng-click="efpc.publish()">Publiceren</button>
+
+    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>
+
+    <button type="submit" class="btn btn-success" ng-click="efpc.publish()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus)">Publiceren</button>
+    <button type="submit" class="btn btn-success" ng-click="efpc.preview()" ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)">Voorbeeld bekijken</button>
 </div>

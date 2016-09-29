@@ -24,16 +24,14 @@ function EventFormPublishController(
   var controller = this;
 
   controller.publish = publish;
+  controller.preview = preview;
+  controller.isDraft = isDraft;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
   function publish() {
     controller.error = '';
-    if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
-      redirectToDetailPage();
-      return;
-    }
 
     eventCrud
       .publishOffer(EventFormData, 'publishOffer')
@@ -55,5 +53,13 @@ function EventFormPublishController(
 
   function redirectToDetailPage() {
     $location.path('/event/' + EventFormData.id);
+  }
+
+  function preview() {
+    redirectToDetailPage();
+  }
+
+  function isDraft(status) {
+    return (status === OfferWorkflowStatus.DRAFT);
   }
 }

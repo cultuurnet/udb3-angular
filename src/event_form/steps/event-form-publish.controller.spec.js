@@ -46,7 +46,7 @@ describe('Controller: Event Form Publish', function () {
     expect($location.path).toHaveBeenCalledWith('/event/da86358c-d52c-429b-89c6-7adffd64ab55');
   });
 
-  it('should not publish an offer twice', function () {
+  it('should preview an offer when published', function () {
     var job = {
       task: {
         promise: $q.resolve()
@@ -57,18 +57,14 @@ describe('Controller: Event Form Publish', function () {
     EventFormData.id = 'da86358c-d52c-429b-89c6-7adffd64ab55';
     EventFormData.workflowStatus = 'READY_FOR_VALIDATION';
 
-    spyOn(EventFormData, 'workflowStatus');
-
     var controller = getController();
-    controller.publish();
+    controller.preview();
 
     $scope.$digest();
-
-    expect(EventFormData.workflowStatus).not.toHaveBeenCalled();
     expect($location.path).toHaveBeenCalledWith('/event/da86358c-d52c-429b-89c6-7adffd64ab55');
   });
 
-  it('should publish an offer when not published already', function () {
+  it('should display publish errors', function () {
     var job = {
       task: {
         promise: $q.reject()
@@ -85,5 +81,15 @@ describe('Controller: Event Form Publish', function () {
     $scope.$digest();
 
     expect(controller.error).toEqual('Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.');
+  });
+
+  it('should detect a draft workflowStatus', function () {
+    var controller = getController();
+    expect(controller.isDraft('DRAFT')).toEqual(true);
+  });
+
+  it('should detect a different workflowStatus', function () {
+    var controller = getController();
+    expect(controller.isDraft('READY_FOR_VALIDATION')).toEqual(false);
   });
 });
