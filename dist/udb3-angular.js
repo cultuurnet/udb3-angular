@@ -8938,7 +8938,7 @@ function EventFormPublishController(
 
   function publish() {
     if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
-      redirectToDetailPage(EventFormData.apiUrl);
+      redirectToDetailPage();
       return;
     }
 
@@ -8954,13 +8954,13 @@ function EventFormPublishController(
       });
   }
 
-  function setEventAsReadyForValidation(offerLocation) {
+  function setEventAsReadyForValidation() {
     EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
 
-    return $q.resolve(offerLocation);
+    return $q.resolve();
   }
 
-  function redirectToDetailPage(offerLocation) {
+  function redirectToDetailPage() {
     $location.path('/event/' + EventFormData.id);
   }
 }
