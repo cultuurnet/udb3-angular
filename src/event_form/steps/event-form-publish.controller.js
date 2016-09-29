@@ -25,9 +25,8 @@ function EventFormPublishController(
 
   controller.publish = publish;
 
-  // Scope vars.
   // main storage for event form.
-  $scope.eventFormData = EventFormData;
+  controller.eventFormData = EventFormData;
 
   function publish() {
     if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {

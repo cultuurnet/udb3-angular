@@ -8932,9 +8932,8 @@ function EventFormPublishController(
 
   controller.publish = publish;
 
-  // Scope vars.
   // main storage for event form.
-  $scope.eventFormData = EventFormData;
+  controller.eventFormData = EventFormData;
 
   function publish() {
     if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
@@ -18539,7 +18538,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-form-publish.html',
-    "<div class=\"event-validation\">\n" +
+    "<div class=\"event-validation\" ng-if=\"efpc.eventFormData.showStep5\">\n" +
     "    <p ng-hide=\"true\">Automatisch bewaard om 13:25 uur.</p>\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\">Publiceren</button>\n" +
     "</div>"
