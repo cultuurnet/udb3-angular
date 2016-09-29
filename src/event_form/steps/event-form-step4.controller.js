@@ -73,6 +73,9 @@ function EventFormStep4Controller(
     ) {
       $scope.missingInfo.push('start or end date missing');
     }
+    else if (EventFormData.calendarType === '') {
+      $scope.missingInfo.push('when missing');
+    }
 
     if (EventFormData.isEvent && !EventFormData.location.id) {
       $scope.missingInfo.push('place missing for event');

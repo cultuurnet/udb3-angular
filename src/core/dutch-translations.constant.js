@@ -347,7 +347,8 @@ angular.module('udb.core')
     'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
     'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',
+    'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
-    'location missing for place': 'Koos je locatie in <a href="#waar" class="alert-link">stap 3</a>?'
+    'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
   }
 );
