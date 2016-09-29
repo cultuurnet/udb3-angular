@@ -8925,7 +8925,7 @@ function EventFormPublishController(
     eventCrud,
     OfferWorkflowStatus,
     $q,
-    $state
+    $location
 ) {
 
   var controller = this;
@@ -8961,11 +8961,10 @@ function EventFormPublishController(
   }
 
   function redirectToDetailPage(offerLocation) {
-    // not ideal, probably needs a different solution for OMD
-    $state.go('split.footer.event', {id: EventFormData.id});
+    $location.path('/event/' + EventFormData.id);
   }
 }
-EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$state"];
+EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
