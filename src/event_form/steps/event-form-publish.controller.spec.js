@@ -67,4 +67,23 @@ describe('Controller: Event Form Publish', function () {
     expect(EventFormData.workflowStatus).not.toHaveBeenCalled();
     expect($location.path).toHaveBeenCalledWith('/event/da86358c-d52c-429b-89c6-7adffd64ab55');
   });
+
+  it('should publish an offer when not published already', function () {
+    var job = {
+      task: {
+        promise: $q.reject()
+      }
+    };
+    eventCrud.publishOffer.and.returnValue($q.resolve(job));
+    EventFormData.init();
+    EventFormData.id = 'da86358c-d52c-429b-89c6-7adffd64ab55';
+    expect(EventFormData.workflowStatus).toEqual('DRAFT');
+
+    var controller = getController();
+    controller.publish();
+
+    $scope.$digest();
+
+    expect(controller.error).toEqual('Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.');
+  });
 });
