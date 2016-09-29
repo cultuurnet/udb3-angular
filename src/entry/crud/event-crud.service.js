@@ -184,7 +184,7 @@ function EventCrud(
    */
   service.updatePriceInfo = function(item) {
     return udbApi
-      .updatePriceInfo(item.apiUrl, item)
+      .updatePriceInfo(item.apiUrl, item.price)
       .then(function (response) {
         var jobData = response.data;
         var job = new EventCrudJob(jobData.commandId, item, 'updatePirceInfo');
