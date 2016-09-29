@@ -26,7 +26,7 @@ function AutoScroll($document) {
     element.on('click focusin', scrollToTarget);
 
     function scrollToTarget(event) {
-      $document.scrollTo(event.target, 0, scrollDuration, easeInOutQuad);
+      $document.scrollTo(event.target, 100, scrollDuration, easeInOutQuad);
     }
   }
 }

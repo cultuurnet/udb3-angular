@@ -20,9 +20,7 @@ function EventFormStep4Controller(
   SearchResultViewer,
   eventCrud,
   $rootScope,
-  $uibModal,
-  $location,
-  $anchorScroll
+  $uibModal
 ) {
 
   var controller = this;
@@ -46,7 +44,6 @@ function EventFormStep4Controller(
   $scope.resultViewer = new SearchResultViewer();
   $scope.eventTitleChanged = eventTitleChanged;
   $scope.previewSuggestedItem = previewSuggestedItem;
-  $scope.scrollToBottom = scrollToBottom;
 
   // Check if we need to show the leave warning
   window.onbeforeunload = function (event) {
@@ -180,7 +177,6 @@ function EventFormStep4Controller(
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
       EventFormData.showStep(5);
-      scrollToBottom('extra');
 
     }, showMajorInfoError);
 
@@ -234,8 +230,4 @@ function EventFormStep4Controller(
     });
   }
 
-  function scrollToBottom (where) {
-    $location.hash(where);
-    $anchorScroll();
-  }
 }

@@ -6993,7 +6993,7 @@ function AutoScroll($document) {
     element.on('click focusin', scrollToTarget);
 
     function scrollToTarget(event) {
-      $document.scrollTo(event.target, 0, scrollDuration, easeInOutQuad);
+      $document.scrollTo(event.target, 100, scrollDuration, easeInOutQuad);
     }
   }
 }
@@ -9109,7 +9109,7 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig, $location, $anchorScroll) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) {
   var controller = this;
 
   // Scope vars.
@@ -9133,7 +9133,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig, 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
-  $scope.scrollToBottom = scrollToBottom;
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9317,12 +9316,8 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig, 
     controller.periodicRangeError = false;
   };
 
-  function scrollToBottom (where) {
-    $location.hash(where);
-    $anchorScroll();
-  }
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig", "$location", "$anchorScroll"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -9715,9 +9710,7 @@ function EventFormStep4Controller(
   SearchResultViewer,
   eventCrud,
   $rootScope,
-  $uibModal,
-  $location,
-  $anchorScroll
+  $uibModal
 ) {
 
   var controller = this;
@@ -9741,7 +9734,6 @@ function EventFormStep4Controller(
   $scope.resultViewer = new SearchResultViewer();
   $scope.eventTitleChanged = eventTitleChanged;
   $scope.previewSuggestedItem = previewSuggestedItem;
-  $scope.scrollToBottom = scrollToBottom;
 
   // Check if we need to show the leave warning
   window.onbeforeunload = function (event) {
@@ -9875,7 +9867,6 @@ function EventFormStep4Controller(
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
       EventFormData.showStep(5);
-      scrollToBottom('extra');
 
     }, showMajorInfoError);
 
@@ -9929,12 +9920,8 @@ function EventFormStep4Controller(
     });
   }
 
-  function scrollToBottom (where) {
-    $location.hash(where);
-    $anchorScroll();
-  }
 }
-EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal", "$location", "$anchorScroll"];
+EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
 
 // Source: src/event_form/steps/event-form-step5.controller.js
 /**
