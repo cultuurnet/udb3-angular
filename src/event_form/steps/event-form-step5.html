@@ -192,18 +192,42 @@
             </div>
             <div class="col-sm-8">
 
-              <span>
+              <div ng-show="price.length == 0">
                 <section>
                   <a class="btn btn-default to-filling"
                      ng-show="!editPrice"
                      ng-click="priceCssClass = 'state-filling'; editingPrice()">
                     Prijzen toevoegen
                   </a>
+                  <a class="btn btn-link"
+                     ng-show="!editPrice"
+                     ng-click="setPriceItemFree(0)">Gratis</a>
                 </section>
-                <a class="btn btn-link"
-                   ng-show="!editPrice"
-                   ng-click="setPriceItemFree(0)">Gratis</a>
-              </span>
+              </div>
+              <div ng-show="price.length > 0 && !editPrice">
+                <table class="table">
+                  <thead>
+                    <td>Prijzen</td>
+                    <td>
+                      <a class="btn btn-default pull-right" ng-click="editingPrice()">
+                      Wijzigen
+                    </a>
+                    </td>
+                  </thead>
+                  <tr ng-repeat="(key, priceInfo) in price"
+                      ng-model="priceInfo">
+                    <td>{{priceInfo.name}}</td>
+                    <td>
+                      <span ng-if="priceInfo.price == 0">
+                        Gratis
+                      </span>
+                      <span ng-if="priceInfo.price != 0">
+                        {{priceInfo.price}} euro
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
               <form name="priceForm"
                     ng-show="editPrice">
                 <table class="table">
