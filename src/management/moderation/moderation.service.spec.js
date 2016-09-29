@@ -186,7 +186,7 @@ describe('Service: Moderation Service', function () {
     udbApi.findEventsWithLimit.and.returnValue($q.resolve(events));
 
     function assertResultset (result) {
-      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith('city:leuven AND wfstatus="readyforvalidation"', 0, 10);
+      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith('city:leuven AND wfstatus:"readyforvalidation"', 0, 10);
       expect(result).toEqual(events);
       done();
     }
@@ -202,7 +202,7 @@ describe('Service: Moderation Service', function () {
     udbApi.findEventsWithLimit.and.returnValue($q.resolve(events));
 
     function assertResultset (result) {
-      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith('wfstatus="readyforvalidation"', 0, 10);
+      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith('wfstatus:"readyforvalidation"', 0, 10);
       expect(result).toEqual(events);
       done();
     }
