@@ -3024,6 +3024,9 @@ input + .alert {
 .offer-form .event-validation p {
   color: #626262;
 }
+.offer-form .event-validation div.text-danger {
+  margin-bottom: 1ex;
+}
 .event-type-choser-label {
   background-repeat: no-repeat;
   background-position: top center;

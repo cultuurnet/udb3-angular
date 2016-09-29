@@ -1,4 +1,5 @@
 <div class="event-validation" ng-if="efpc.eventFormData.showStep5">
+    <div class="text-danger" ng-if="efpc.error" ng-bind="efpc.error"></div>
     <p ng-hide="true">Automatisch bewaard om 13:25 uur.</p>
     <button type="submit" class="btn btn-success" ng-click="efpc.publish()">Publiceren</button>
 </div>

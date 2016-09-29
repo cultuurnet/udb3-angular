@@ -29,6 +29,7 @@ function EventFormPublishController(
   controller.eventFormData = EventFormData;
 
   function publish() {
+    controller.error = '';
     if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
       redirectToDetailPage();
       return;
@@ -41,7 +42,7 @@ function EventFormPublishController(
           .then(setEventAsReadyForValidation)
           .then(redirectToDetailPage)
           .catch(function() {
-            // TODO error occured, everyone is sad
+            controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
           });
       });
   }

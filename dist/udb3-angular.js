@@ -8936,6 +8936,7 @@ function EventFormPublishController(
   controller.eventFormData = EventFormData;
 
   function publish() {
+    controller.error = '';
     if (EventFormData.workflowStatus !== OfferWorkflowStatus.DRAFT) {
       redirectToDetailPage();
       return;
@@ -8948,7 +8949,7 @@ function EventFormPublishController(
           .then(setEventAsReadyForValidation)
           .then(redirectToDetailPage)
           .catch(function() {
-            // TODO error occured, everyone is sad
+            controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
           });
       });
   }
@@ -18539,6 +18540,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-form-publish.html',
     "<div class=\"event-validation\" ng-if=\"efpc.eventFormData.showStep5\">\n" +
+    "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
     "    <p ng-hide=\"true\">Automatisch bewaard om 13:25 uur.</p>\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\">Publiceren</button>\n" +
     "</div>"
