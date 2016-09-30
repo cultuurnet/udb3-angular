@@ -10022,6 +10022,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.deletePriceItem = deletePriceItem;
   $scope.addPriceItem = addPriceItem;
   $scope.cancelEditPrice = cancelEditPrice;
+  $scope.validatePrice = validatePrice;
   $scope.savePrice = savePrice;
 
   // Booking info vars.
@@ -10381,16 +10382,29 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function cancelEditPrice() {
+    // Remove empty objects form the price array
+    angular.forEach($scope.price, function(priceInfo, key) {
+      if (priceInfo.name === '' && priceInfo.price === '') {
+        $scope.price.splice(key, 1);
+      }
+    });
+
     $scope.editPrice = false;
+    $scope.invalidPrice = false;
+    $scope.priceError = false;
+  }
+
+  function validatePrice() {
+    if ($scope.priceForm.$valid) {
+      savePrice();
+    }
+    else {
+      $scope.invalidPrice = true;
+    }
   }
 
   function savePrice() {
     $scope.savingPrice = true;
-
-    // Check for empty names and prices in $scope.price array
-    /*angular.forEach($scope.price, function(value, key) {
-      return _.contains(value.name, '' && value.price, '') ? $scope.price.splice(key, 1) : '';
-    });*/
 
     EventFormData.price = $scope.price;
     $scope.editPrice = false;
@@ -19124,7 +19138,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </table>\n" +
     "              </div>\n" +
     "              <form name=\"priceForm\"\n" +
-    "                    ng-show=\"editPrice\">\n" +
+    "                    ng-show=\"editPrice\"\n" +
+    "                    novalidate >\n" +
     "                <table class=\"table\">\n" +
     "                  <div class=\"form-group\">\n" +
     "                    <tr ng-repeat=\"(key, priceInfo) in price\"\n" +
@@ -19133,20 +19148,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <span ng-switch-when=\"base\">\n" +
     "                          Basistarief\n" +
     "                        </span>\n" +
-    "                        <span ng-switch-default>\n" +
+    "                        <span ng-switch-default\n" +
+    "                              ng-class=\"'has-error': priceInfo.name.$invalid\">\n" +
     "                          <input type=\"text\"\n" +
     "                                 class=\"form-control\"\n" +
-    "                                 ng-model=\"priceInfo.name\" />\n" +
+    "                                 ng-model=\"priceInfo.name\"\n" +
+    "                                 required />\n" +
     "                        </span>\n" +
     "                      </td>\n" +
     "                      <td ng-switch on=\"priceInfo.price\">\n" +
     "                        <span ng-switch-when=\"0\">\n" +
     "                          Gratis\n" +
     "                        </span>\n" +
-    "                        <span ng-switch-default>\n" +
+    "                        <span ng-switch-default\n" +
+    "                              ng-class=\"'has-error': priceInfo.price.$invalid\">\n" +
     "                          <input type=\"number\"\n" +
     "                               class=\"form-control\"\n" +
-    "                               ng-model=\"priceInfo.price\" />\n" +
+    "                               ng-model=\"priceInfo.price\"\n" +
+    "                               required />\n" +
     "                          euro\n" +
     "                        </span>\n" +
     "                      </td>\n" +
@@ -19172,7 +19191,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <a class=\"btn btn-default\" ng-click=\"cancelEditPrice()\">\n" +
     "                          Annuleren\n" +
     "                        </a>\n" +
-    "                        <a class=\"btn btn-primary\" ng-click=\"savePrice()\">\n" +
+    "                        <a class=\"btn btn-primary\"\n" +
+    "                           ng-click=\"validatePrice()\">\n" +
     "                          Bewaren\n" +
     "                        </a>\n" +
     "                      </td>\n" +
@@ -19185,7 +19205,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                Er ging iets fout bij het opslaan van de prijs.\n" +
     "              </div>\n" +
     "              <div ng-show=\"invalidPrice\" class=\"alert alert-danger\">\n" +
-    "                Gelieve een geldige prijs in te voeren.\n" +
+    "                Gelieve een geldige prijs en omschrijving in te voeren.\n" +
     "              </div>\n" +
     "\n" +
     "            </div>\n" +

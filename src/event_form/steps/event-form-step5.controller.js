@@ -105,6 +105,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.deletePriceItem = deletePriceItem;
   $scope.addPriceItem = addPriceItem;
   $scope.cancelEditPrice = cancelEditPrice;
+  $scope.validatePrice = validatePrice;
   $scope.savePrice = savePrice;
 
   // Booking info vars.
@@ -464,16 +465,29 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function cancelEditPrice() {
+    // Remove empty objects form the price array
+    angular.forEach($scope.price, function(priceInfo, key) {
+      if (priceInfo.name === '' && priceInfo.price === '') {
+        $scope.price.splice(key, 1);
+      }
+    });
+
     $scope.editPrice = false;
+    $scope.invalidPrice = false;
+    $scope.priceError = false;
+  }
+
+  function validatePrice() {
+    if ($scope.priceForm.$valid) {
+      savePrice();
+    }
+    else {
+      $scope.invalidPrice = true;
+    }
   }
 
   function savePrice() {
     $scope.savingPrice = true;
-
-    // Check for empty names and prices in $scope.price array
-    /*angular.forEach($scope.price, function(value, key) {
-      return _.contains(value.name, '' && value.price, '') ? $scope.price.splice(key, 1) : '';
-    });*/
 
     EventFormData.price = $scope.price;
     $scope.editPrice = false;
