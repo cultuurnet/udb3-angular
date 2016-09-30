@@ -10015,6 +10015,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.priceError = false;
   $scope.invalidPrice = false;
   $scope.savingPrice = false;
+  $scope.formPriceSubmitted = false;
   $scope.price = [];
   $scope.editingPrice = editingPrice;
   $scope.unsetPriceItemFree = unsetPriceItemFree;
@@ -10384,7 +10385,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function cancelEditPrice() {
     // Remove empty objects form the price array
     angular.forEach($scope.price, function(priceInfo, key) {
-      if (priceInfo.name === '' && priceInfo.price === '') {
+      if (priceInfo.name === '' || priceInfo.price === '') {
         $scope.price.splice(key, 1);
       }
     });
@@ -10392,9 +10393,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.editPrice = false;
     $scope.invalidPrice = false;
     $scope.priceError = false;
+    $scope.formPriceSubmitted = false;
   }
 
   function validatePrice() {
+    $scope.formPriceSubmitted = true;
     if ($scope.priceForm.$valid) {
       savePrice();
     }
@@ -10416,9 +10419,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.priceCssClass = 'state-complete';
       }
       $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
     }, function () {
       $scope.priceError = true;
       $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
     });
   }
 
@@ -19143,16 +19148,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <table class=\"table\">\n" +
     "                  <div class=\"form-group\">\n" +
     "                    <tr ng-repeat=\"(key, priceInfo) in price\"\n" +
-    "                        ng-model=\"priceInfo\">\n" +
+    "                        ng-model=\"priceInfo\"\n" +
+    "                        ng-form=\"priceInfoForm\">\n" +
     "                      <td ng-switch on=\"priceInfo.category\">\n" +
     "                        <span ng-switch-when=\"base\">\n" +
     "                          Basistarief\n" +
     "                        </span>\n" +
-    "                        <span ng-switch-default\n" +
-    "                              ng-class=\"'has-error': priceInfo.name.$invalid\">\n" +
+    "                        <span ng-switch-default>\n" +
     "                          <input type=\"text\"\n" +
     "                                 class=\"form-control\"\n" +
+    "                                 name=\"name\"\n" +
     "                                 ng-model=\"priceInfo.name\"\n" +
+    "                                 ng-class=\"{ 'has-error': priceInfoForm.name.$invalid && formPriceSubmitted}\"\n" +
     "                                 required />\n" +
     "                        </span>\n" +
     "                      </td>\n" +
@@ -19160,11 +19167,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <span ng-switch-when=\"0\">\n" +
     "                          Gratis\n" +
     "                        </span>\n" +
-    "                        <span ng-switch-default\n" +
-    "                              ng-class=\"'has-error': priceInfo.price.$invalid\">\n" +
+    "                        <span ng-switch-default>\n" +
     "                          <input type=\"number\"\n" +
     "                               class=\"form-control\"\n" +
+    "                               name=\"price\"\n" +
     "                               ng-model=\"priceInfo.price\"\n" +
+    "                               ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
     "                               required />\n" +
     "                          euro\n" +
     "                        </span>\n" +

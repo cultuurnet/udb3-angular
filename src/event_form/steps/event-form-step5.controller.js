@@ -98,6 +98,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.priceError = false;
   $scope.invalidPrice = false;
   $scope.savingPrice = false;
+  $scope.formPriceSubmitted = false;
   $scope.price = [];
   $scope.editingPrice = editingPrice;
   $scope.unsetPriceItemFree = unsetPriceItemFree;
@@ -467,7 +468,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function cancelEditPrice() {
     // Remove empty objects form the price array
     angular.forEach($scope.price, function(priceInfo, key) {
-      if (priceInfo.name === '' && priceInfo.price === '') {
+      if (priceInfo.name === '' || priceInfo.price === '') {
         $scope.price.splice(key, 1);
       }
     });
@@ -475,9 +476,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.editPrice = false;
     $scope.invalidPrice = false;
     $scope.priceError = false;
+    $scope.formPriceSubmitted = false;
   }
 
   function validatePrice() {
+    $scope.formPriceSubmitted = true;
     if ($scope.priceForm.$valid) {
       savePrice();
     }
@@ -499,9 +502,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.priceCssClass = 'state-complete';
       }
       $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
     }, function () {
       $scope.priceError = true;
       $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
     });
   }
 

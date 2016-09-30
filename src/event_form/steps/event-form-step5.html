@@ -234,16 +234,18 @@
                 <table class="table">
                   <div class="form-group">
                     <tr ng-repeat="(key, priceInfo) in price"
-                        ng-model="priceInfo">
+                        ng-model="priceInfo"
+                        ng-form="priceInfoForm">
                       <td ng-switch on="priceInfo.category">
                         <span ng-switch-when="base">
                           Basistarief
                         </span>
-                        <span ng-switch-default
-                              ng-class="'has-error': priceInfo.name.$invalid">
+                        <span ng-switch-default>
                           <input type="text"
                                  class="form-control"
+                                 name="name"
                                  ng-model="priceInfo.name"
+                                 ng-class="{ 'has-error': priceInfoForm.name.$invalid && formPriceSubmitted}"
                                  required />
                         </span>
                       </td>
@@ -251,11 +253,12 @@
                         <span ng-switch-when="0">
                           Gratis
                         </span>
-                        <span ng-switch-default
-                              ng-class="'has-error': priceInfo.price.$invalid">
+                        <span ng-switch-default>
                           <input type="number"
                                class="form-control"
+                               name="price"
                                ng-model="priceInfo.price"
+                               ng-class="{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}"
                                required />
                           euro
                         </span>
