@@ -89,6 +89,7 @@ angular
     'udb.entry',
     'udb.search',
     'ngFileUpload',
+    'duScroll',
     'focus-if'
   ]);
 
@@ -6993,6 +6994,39 @@ function EventDetail(
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
 
+// Source: src/event_form/components/auto-scroll.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbAutoScroll
+ * @description
+ * auto scrolls to the attached element when focused.
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbAutoScroll', AutoScroll);
+
+/* @ngInject */
+function AutoScroll($document) {
+  return {
+    restrict: 'A',
+    link: link
+  };
+
+  function link(scope, element) {
+    var scrollDuration = 1000;
+    var easeInOutQuad = function (t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    element.on('click focusin', scrollToTarget);
+
+    function scrollToTarget(event) {
+      $document.scrollTo(event.target, 100, scrollDuration, easeInOutQuad);
+    }
+  }
+}
+AutoScroll.$inject = ["$document"];
+
 // Source: src/event_form/components/calendartypes/event-form-period.directive.js
 /**
  * @ngdoc directive
@@ -9311,6 +9345,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   controller.clearPeriodicRangeError = function () {
     controller.periodicRangeError = false;
   };
+
 }
 EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig"];
 
@@ -9914,6 +9949,7 @@ function EventFormStep4Controller(
       }
     });
   }
+
 }
 EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
 
@@ -12352,7 +12388,8 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(queryString, itemsPerPage, offset) {
-    queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus="readyforvalidation"';
+    var moderationFilter = 'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]';
+    queryString = (queryString ? queryString + ' AND ' : '') + moderationFilter;
 
     return udbApi
       .findEventsWithLimit(queryString, offset, itemsPerPage);
@@ -18663,7 +18700,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div class=\"wanneerkiezer\" ng-show=\"eventFormData.activeCalendarType === ''\">\n" +
     "            <ul class=\"list-inline button-list\">\n" +
     "              <li ng-repeat=\"calendarLabel in ::calendarLabels\" ng-hide=\"eventFormData.isPlace && calendarLabel.eventOnly\">\n" +
-    "                <button class=\"btn btn-default\" ng-bind=\"::calendarLabel.label\" ng-click=\"setCalendarType(calendarLabel.id)\"></button>\n" +
+    "                <button\n" +
+    "                        class=\"btn btn-default\"\n" +
+    "                        ng-bind=\"::calendarLabel.label\"\n" +
+    "                        udb-auto-scroll\n" +
+    "                        ng-click=\"setCalendarType(calendarLabel.id);\"></button>\n" +
     "              </li>\n" +
     "            </ul>\n" +
     "          </div>\n" +
@@ -18713,6 +18754,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   class=\"form-control uib-typeahead\"\n" +
     "                   placeholder=\"Gemeente of postcode\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
+    "                   udb-auto-scroll\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
     "                   typeahead-min-length=\"2\"\n" +
@@ -18746,7 +18788,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
-    "                     focus-if=\"!loadingPlaces\"/>\n" +
+    "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
@@ -18836,7 +18878,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
-    "                 focus-if=\"eventFormData.showStep4\">\n" +
+    "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"help-block\">\n" +
@@ -18851,7 +18893,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
-    "          ng-click=\"validateEvent(true)\"\n" +
+    "          ng-click=\"validateEvent(true);\"\n" +
     "          ng-class=\"{'disabled': eventFormData.name.nl === ''}\">\n" +
     "        Doorgaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
@@ -18960,7 +19002,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" focus-if=\"focusDescription\"></textarea>\n" +
+    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll></textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
