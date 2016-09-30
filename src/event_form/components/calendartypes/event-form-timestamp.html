@@ -21,12 +21,10 @@
           </label>
           <div class="beginuur-invullen" ng-show="timestamp.showStartHour">
             <input
-                udb-time-autocomplete
-                ng-model="timestamp.startHour"
+                type="time"
+                ng-model="timestamp.startHourAsDate"
+                ng-change="hoursChanged(timestamp)"
                 class="form-control uur"
-                uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
-                typeahead-on-select="EventFormStep2.eventTimingChanged()"
-                typeahead-editable="false"
                 placeholder="Bv. 08:00"
                 focus-if="timestamp.showStartHour">
           </div>
@@ -42,12 +40,10 @@
           </label>
           <div class="einduur-invullen" ng-show="timestamp.showEndHour">
             <input
-                udb-time-autocomplete
-                ng-model="timestamp.endHour"
+                type="time"
+                ng-model="timestamp.endHourAsDate"
+                ng-change="hoursChanged(timestamp)"
                 class="form-control uur"
-                uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
-                typeahead-on-select="EventFormStep2.eventTimingChanged()"
-                typeahead-editable="false"
                 placeholder="Bv. 23:00"
                 focus-if="timestamp.showEndHour">
           </div>

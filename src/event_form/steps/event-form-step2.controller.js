@@ -33,6 +33,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.addTimestamp = addTimestamp;
   $scope.toggleStartHour = controller.toggleStartHour;
   $scope.toggleEndHour = toggleEndHour;
+  $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
@@ -98,6 +99,18 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   }
 
+  function hoursChanged(timestamp) {
+    if (timestamp.showStartHour) {
+      var startHourAsDate = moment(timestamp.startHourAsDate);
+      timestamp.startHour = startHourAsDate.format('HH:mm');
+    }
+    if (timestamp.showEndHour) {
+      var endHourAsDate = moment(timestamp.endHourAsDate);
+      timestamp.endHour = endHourAsDate.format('HH:mm');
+    }
+    controller.eventTimingChanged();
+  }
+
   /**
    * Init the calendar for the current selected calendar type.
    */
@@ -132,7 +145,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Add a single date to the item.
    */
   function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
+    EventFormData.addTimestamp('', '', '', '', '');
   }
 
   /**

@@ -172,8 +172,11 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     startHour = startHour === '00:00' ? '' : startHour;
     endHour = endHour === '00:00' ? '' : endHour;
 
+    var startHourAsDate = moment(startDateString).toDate();
+    var endHourAsDate = moment(endDateString).toDate();
+
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
-    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);
+    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
 

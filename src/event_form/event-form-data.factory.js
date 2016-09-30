@@ -259,12 +259,14 @@ function EventFormDataFactory() {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addTimestamp: function(date, startHour, endHour) {
+    addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
 
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
+        'startHourAsDate' : startHourAsDate,
         'endHour' : endHour,
+        'endHourAsDate' : endHourAsDate,
         'showStartHour' : startHour !== '',
         'showEndHour' : endHour !== '',
       });
