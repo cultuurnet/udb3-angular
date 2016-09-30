@@ -3,18 +3,9 @@
 describe('AuthorizationService: ', function () {
   var $q, udbApi, authorizationService, deferredPermissions, $scope;
   var permissionsList = [
-    {
-      'key': "SWIMMINGPOOL",
-      'name': "Blubblub"
-    },
-    {
-      'key': 'BBQ',
-      'name': 'Hothothot'
-    },
-    {
-      'key': 'WINE_CELLAR',
-      'name': 'glugglug'
-    }
+    'SWIMMINGPOOL',
+    'BBQ',
+    'WINE_CELLAR'
   ];
 
   beforeEach(module('udb.core', function($provide) {
