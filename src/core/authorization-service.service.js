@@ -10,7 +10,6 @@
 angular
   .module('udb.core')
   .constant('authorization', {
-    'createOffer' : 'AANBOD_INVOEREN',
     'editOffer': 'AANBOD_BEWERKEN',
     'moderateOffer': 'AANBOD_MODEREREN',
     'removeOffer': 'AANBOD_VERWIJDEREN',
@@ -72,7 +71,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
     var deferredHasPermission = $q.defer();
 
     function findPermission(permissionList) {
-      var foundPermission = _.find(permissionList, function(p) { return p.key === permission; });
+      var foundPermission = _.find(permissionList, function(p) { return p === permission; });
       deferredHasPermission.resolve(foundPermission ? true : false);
     }
 
@@ -81,5 +80,13 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
       .then(findPermission, deferredHasPermission.reject);
 
     return deferredHasPermission.promise;
+  };
+
+  /**
+   * @return RolePermission[]
+   */
+  this.getPermissions = function () {
+    return udbApi
+      .getMyPermissions();
   };
 }
