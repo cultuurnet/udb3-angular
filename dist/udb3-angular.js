@@ -8254,12 +8254,14 @@ function EventFormDataFactory() {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addTimestamp: function(date, startHour, endHour) {
+    addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
 
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
+        'startHourAsDate' : startHourAsDate,
         'endHour' : endHour,
+        'endHourAsDate' : endHourAsDate,
         'showStartHour' : startHour !== '',
         'showEndHour' : endHour !== '',
       });
@@ -8269,12 +8271,14 @@ function EventFormDataFactory() {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addOpeningHour: function(dayOfWeek, opens, closes) {
+    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
 
       this.openingHours.push({
         'dayOfWeek' : dayOfWeek,
         'opens' : opens,
+        'opensAsDate': opensAsDate,
         'closes' : closes,
+        'closesAsDate' : closesAsDate,
         'label' : ''
       });
 
@@ -8586,8 +8590,11 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     startHour = startHour === '00:00' ? '' : startHour;
     endHour = endHour === '00:00' ? '' : endHour;
 
+    var startHourAsDate = moment(startDateString).toDate();
+    var endHourAsDate = moment(endDateString).toDate();
+
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
-    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);
+    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
 
@@ -8857,7 +8864,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
       if (EventFormData.openingHours.length === 0) {
-        EventFormData.addOpeningHour('', '', '');
+        EventFormData.addOpeningHour('', '', '', '', '');
       }
       EventFormData.showStep(3);
 
@@ -8980,6 +8987,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.addTimestamp = addTimestamp;
   $scope.toggleStartHour = controller.toggleStartHour;
   $scope.toggleEndHour = toggleEndHour;
+  $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
@@ -9029,11 +9037,11 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     }
 
     if (EventFormData.calendarType === 'periodic') {
-      EventFormData.addOpeningHour('', '', '');
+      EventFormData.addOpeningHour('', '', '', '', '');
     }
 
     if (EventFormData.calendarType === 'permanent') {
-      EventFormData.addOpeningHour('', '', '');
+      EventFormData.addOpeningHour('', '', '', '', '');
       controller.eventTimingChanged();
     }
 
@@ -9043,6 +9051,22 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       EventFormData.majorInfoChanged = true;
     }
 
+  }
+
+  /**
+   * Change listener on the start- and openinghours
+   * Save the date-object and label formatted HH:MM
+   */
+  function hoursChanged(timestamp) {
+    if (timestamp.showStartHour) {
+      var startHourAsDate = moment(timestamp.startHourAsDate);
+      timestamp.startHour = startHourAsDate.format('HH:mm');
+    }
+    if (timestamp.showEndHour) {
+      var endHourAsDate = moment(timestamp.endHourAsDate);
+      timestamp.endHour = endHourAsDate.format('HH:mm');
+    }
+    controller.eventTimingChanged();
   }
 
   /**
@@ -9079,7 +9103,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Add a single date to the item.
    */
   function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
+    EventFormData.addTimestamp('', '', '', '', '');
   }
 
   /**
@@ -9134,6 +9158,14 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Save the opening hours.
    */
   function saveOpeningHours() {
+    $scope.hasOpeningHours = true;
+    controller.eventTimingChanged();
+  }
+
+  /**
+   * Change listener for opening hours.
+   */
+  function openingHoursChanged() {
     $scope.hasOpeningHours = true;
     controller.eventTimingChanged();
   }
@@ -16759,12 +16791,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
     "            <input\n" +
-    "                udb-time-autocomplete\n" +
-    "                ng-model=\"timestamp.startHour\"\n" +
+    "                type=\"time\"\n" +
+    "                ng-model=\"timestamp.startHourAsDate\"\n" +
+    "                ng-change=\"hoursChanged(timestamp)\"\n" +
     "                class=\"form-control uur\"\n" +
-    "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
-    "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 08:00\"\n" +
     "                focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
@@ -16780,12 +16810,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
     "            <input\n" +
-    "                udb-time-autocomplete\n" +
-    "                ng-model=\"timestamp.endHour\"\n" +
+    "                type=\"time\"\n" +
+    "                ng-model=\"timestamp.endHourAsDate\"\n" +
+    "                ng-change=\"hoursChanged(timestamp)\"\n" +
     "                class=\"form-control uur\"\n" +
-    "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
-    "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
     "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +
@@ -16804,7 +16832,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
     "    </a>\n" +
     "  </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
@@ -17075,21 +17103,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </select>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <input udb-time-autocomplete\n" +
-    "                  ng-model=\"openingHour.opens\"\n" +
+    "              <input type=\"time\"\n" +
+    "                  ng-model=\"openingHour.opensAsDate\"\n" +
     "                  class=\"form-control\"\n" +
-    "                  uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                  typeahead-editable=\"false\">\n" +
+    "                  ng-change=\"openingHoursChanged(openingHour)\">\n" +
     "            </td>\n" +
     "            <td>\n" +
     "              &nbsp;-&nbsp;\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <input udb-time-autocomplete\n" +
-    "                     ng-model=\"openingHour.closes\"\n" +
+    "              <input type=\"time\"\n" +
+    "                     ng-model=\"openingHour.closesAsDate\"\n" +
     "                     class=\"form-control\"\n" +
-    "                     uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                     typeahead-editable=\"false\">\n" +
+    "                     ng-change=\"openingHoursChanged(openingHour)\">\n" +
     "            </td>\n" +
     "            <td>\n" +
     "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"eventFormData.removeOpeningHour(i)\">\n" +
@@ -17098,7 +17124,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"eventFormData.addOpeningHour('', '' , '')\">\n" +
+    "        <a class=\"btn btn-link btn-plus\" ng-click=\"eventFormData.addOpeningHour('', '' , '', '', '')\">\n" +
     "          Meer openingstijden toevoegen\n" +
     "        </a>\n" +
     "      </div>\n" +
@@ -17114,7 +17140,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "  <!-- /.modal-dialog -->\n" +
     "</div>\n" +
-    "<!-- /.modal -->"
+    "<!-- /.modal -->\n"
   );
 
 

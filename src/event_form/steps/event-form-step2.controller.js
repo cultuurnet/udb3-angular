@@ -83,11 +83,11 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     }
 
     if (EventFormData.calendarType === 'periodic') {
-      EventFormData.addOpeningHour('', '', '');
+      EventFormData.addOpeningHour('', '', '', '', '');
     }
 
     if (EventFormData.calendarType === 'permanent') {
-      EventFormData.addOpeningHour('', '', '');
+      EventFormData.addOpeningHour('', '', '', '', '');
       controller.eventTimingChanged();
     }
 
@@ -99,6 +99,10 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   }
 
+  /**
+   * Change listener on the start- and openinghours
+   * Save the date-object and label formatted HH:MM
+   */
   function hoursChanged(timestamp) {
     if (timestamp.showStartHour) {
       var startHourAsDate = moment(timestamp.startHourAsDate);
@@ -200,6 +204,14 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Save the opening hours.
    */
   function saveOpeningHours() {
+    $scope.hasOpeningHours = true;
+    controller.eventTimingChanged();
+  }
+
+  /**
+   * Change listener for opening hours.
+   */
+  function openingHoursChanged() {
     $scope.hasOpeningHours = true;
     controller.eventTimingChanged();
   }

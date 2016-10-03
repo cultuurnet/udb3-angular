@@ -63,21 +63,19 @@
               </select>
             </td>
             <td>
-              <input udb-time-autocomplete
-                  ng-model="openingHour.opens"
+              <input type="time"
+                  ng-model="openingHour.opensAsDate"
                   class="form-control"
-                  uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
-                  typeahead-editable="false">
+                  ng-change="openingHoursChanged(openingHour)">
             </td>
             <td>
               &nbsp;-&nbsp;
             </td>
             <td>
-              <input udb-time-autocomplete
-                     ng-model="openingHour.closes"
+              <input type="time"
+                     ng-model="openingHour.closesAsDate"
                      class="form-control"
-                     uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
-                     typeahead-editable="false">
+                     ng-change="openingHoursChanged(openingHour)">
             </td>
             <td>
               <button type="button" class="close" aria-label="Close" ng-click="eventFormData.removeOpeningHour(i)">
@@ -86,7 +84,7 @@
             </td>
           </tr>
         </table>
-        <a class="btn btn-link btn-plus" ng-click="eventFormData.addOpeningHour('', '' , '')">
+        <a class="btn btn-link btn-plus" ng-click="eventFormData.addOpeningHour('', '' , '', '', '')">
           Meer openingstijden toevoegen
         </a>
       </div>
