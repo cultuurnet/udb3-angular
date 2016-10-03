@@ -36,6 +36,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
+  $scope.openingHoursChanged = openingHoursChanged;
   $scope.eventTimingChanged = controller.eventTimingChanged;
 
   // Mapping between machine name of days and real output.
@@ -135,6 +136,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     for (var i = 0; i < EventFormData.openingHours.length; i++) {
       saveOpeningHourDaySelection(i, EventFormData.openingHours[i].dayOfWeek);
     }
+    console.log('test');
   }
 
   /**
@@ -196,6 +198,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       }
     }
 
+    EventFormData.openingHours[index].opensAsDate = moment(EventFormData.openingHours[index].opens, 'HH:mm').toDate();
+    EventFormData.openingHours[index].closesAsDate = moment(EventFormData.openingHours[index].closes, 'HH:mm').toDate();
+
     EventFormData.openingHours[index].label = humanValues.join(', ');
 
   }
@@ -211,9 +216,11 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   /**
    * Change listener for opening hours.
    */
-  function openingHoursChanged() {
-    $scope.hasOpeningHours = true;
-    controller.eventTimingChanged();
+  function openingHoursChanged(openingHour) {
+    var opensAsDate = moment(openingHour.opensAsDate);
+    openingHour.opens = opensAsDate.format('HH:mm');
+    var closesAsDate = moment(openingHour.closesAsDate);
+    openingHour.closes = closesAsDate.format('HH:mm');
   }
 
   /**

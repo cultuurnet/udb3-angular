@@ -49,10 +49,11 @@
             <td>
               <select class="selectpicker"
                       multiple
-                      udb-multiselect
+
                       start-label="Kies dag(en)"
                       ng-model="openingHour.dayOfWeek"
-                      ng-change="saveOpeningHourDaySelection(i, openingHour.dayOfWeek)">
+                      ng-change="saveOpeningHourDaySelection(i, openingHour.dayOfWeek)"
+                      udb-multiselect>
                 <option value="monday">maandag</option>
                 <option value="tuesday">dinsdag</option>
                 <option value="wednesday">woensdag</option>
