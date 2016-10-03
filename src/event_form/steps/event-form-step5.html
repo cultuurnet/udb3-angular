@@ -201,7 +201,7 @@
                   </a>
                   <a class="btn btn-link"
                      ng-show="!editPrice"
-                     ng-click="setPriceItemFree(0)">Gratis</a>
+                     ng-click="editingPrice(true)">Gratis</a>
                 </section>
               </div>
               <div ng-show="price.length > 0 && !editPrice">
@@ -254,7 +254,7 @@
                           Gratis
                         </span>
                         <span ng-switch-default>
-                          <input type="number"
+                          <input type="text"
                                class="form-control"
                                name="price"
                                ng-model="priceInfo.price"

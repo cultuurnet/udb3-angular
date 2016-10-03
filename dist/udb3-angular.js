@@ -10053,6 +10053,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.invalidPrice = false;
   $scope.savingPrice = false;
   $scope.formPriceSubmitted = false;
+  var originalPrice = [];
   $scope.price = [];
   $scope.editingPrice = editingPrice;
   $scope.unsetPriceItemFree = unsetPriceItemFree;
@@ -10383,13 +10384,30 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
   };
 
-  function editingPrice() {
-    $scope.editPrice = true;
+  function editingPrice(firstItem) {
+    if (firstItem === undefined) {
+      firstItem = false;
+    }
 
-    if ($scope.price.length === 0) {
+    $scope.editPrice = true;
+    originalPrice = _.clone($scope.price);
+
+    if (firstItem && $scope.price.length === 0) {
       $scope.price = [
         {
           category: 'base',
+          name: 'Basisprijs',
+          priceCurrency: 'EUR',
+          price: 0
+        }
+      ];
+    }
+
+    else if ($scope.price.length === 0) {
+      $scope.price = [
+        {
+          category: 'base',
+          name: 'Basisprijs',
           priceCurrency: 'EUR',
           price: ''
         }
@@ -10420,12 +10438,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function cancelEditPrice() {
-    // Remove empty objects form the price array
-    angular.forEach($scope.price, function(priceInfo, key) {
-      if (priceInfo.name === '' || priceInfo.price === '') {
-        $scope.price.splice(key, 1);
-      }
-    });
+    $scope.price = originalPrice;
+    originalPrice = [];
 
     $scope.editPrice = false;
     $scope.invalidPrice = false;
@@ -19158,7 +19172,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </a>\n" +
     "                  <a class=\"btn btn-link\"\n" +
     "                     ng-show=\"!editPrice\"\n" +
-    "                     ng-click=\"setPriceItemFree(0)\">Gratis</a>\n" +
+    "                     ng-click=\"editingPrice(true)\">Gratis</a>\n" +
     "                </section>\n" +
     "              </div>\n" +
     "              <div ng-show=\"price.length > 0 && !editPrice\">\n" +
@@ -19211,7 +19225,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                          Gratis\n" +
     "                        </span>\n" +
     "                        <span ng-switch-default>\n" +
-    "                          <input type=\"number\"\n" +
+    "                          <input type=\"text\"\n" +
     "                               class=\"form-control\"\n" +
     "                               name=\"price\"\n" +
     "                               ng-model=\"priceInfo.price\"\n" +
