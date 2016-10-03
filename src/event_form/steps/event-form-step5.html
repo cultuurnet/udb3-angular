@@ -272,7 +272,9 @@
                            ng-switch-default>Gratis</a>
                       </td>
                       <td>
-                        <span aria-hidden="true" ng-click="deletePriceItem(key)">&times;</span>
+                        <span aria-hidden="true"
+                              ng-click="deletePriceItem(key)"
+                              ng-if="showPriceDelete(key)">&times;</span>
                       </td>
                     </tr>
                     <tr>

@@ -10059,6 +10059,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.unsetPriceItemFree = unsetPriceItemFree;
   $scope.setPriceItemFree = setPriceItemFree;
   $scope.deletePriceItem = deletePriceItem;
+  $scope.showPriceDelete = showPriceDelete;
   $scope.addPriceItem = addPriceItem;
   $scope.cancelEditPrice = cancelEditPrice;
   $scope.validatePrice = validatePrice;
@@ -10425,6 +10426,20 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   function deletePriceItem(key) {
     $scope.price.splice(key, 1);
+  }
+
+  function showPriceDelete(key) {
+    if (key !== 0) {
+      return true;
+    }
+
+    else if (key === 0 && $scope.price.length === 1) {
+      return true;
+    }
+
+    else {
+      return false;
+    }
   }
 
   function addPriceItem() {
@@ -19243,7 +19258,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           ng-switch-default>Gratis</a>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
-    "                        <span aria-hidden=\"true\" ng-click=\"deletePriceItem(key)\">&times;</span>\n" +
+    "                        <span aria-hidden=\"true\"\n" +
+    "                              ng-click=\"deletePriceItem(key)\"\n" +
+    "                              ng-if=\"showPriceDelete(key)\">&times;</span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                    <tr>\n" +
