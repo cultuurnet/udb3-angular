@@ -19230,12 +19230,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                 required />\n" +
     "                        </span>\n" +
     "                      </td>\n" +
-    "                      <td ng-switch on=\"priceInfo.price\">\n" +
-    "                        <span ng-switch-when=\"0\">\n" +
+    "                      <td>\n" +
+    "                        <span ng-if=\"priceInfo.price === 0\">\n" +
     "                          Gratis\n" +
     "                        </span>\n" +
-    "                        <span ng-switch-default>\n" +
-    "                          <input type=\"text\"\n" +
+    "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
+    "                          <input type=\"number\"\n" +
     "                               class=\"form-control\"\n" +
     "                               name=\"price\"\n" +
     "                               ng-model=\"priceInfo.price\"\n" +
