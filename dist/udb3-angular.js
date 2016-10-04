@@ -5282,6 +5282,9 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
       case 'updateMajorInfo':
         return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
 
+      case 'updatePriceInfo':
+        return 'Prijsinformatie aanpassen: "' + this.item.name.nl + '".';
+
     }
 
   };
@@ -5478,7 +5481,7 @@ function EventCrud(
       .updatePriceInfo(item.apiUrl, item.price)
       .then(function (response) {
         var jobData = response.data;
-        var job = new EventCrudJob(jobData.commandId, item, 'updatePirceInfo');
+        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
         addJobAndInvalidateCache(jobLogger, job);
 
         return $q.resolve(job);
