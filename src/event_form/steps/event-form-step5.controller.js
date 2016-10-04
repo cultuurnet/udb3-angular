@@ -475,17 +475,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   function showPriceDelete(key) {
-    if (key !== 0) {
-      return true;
-    }
+    return key !== 0;
 
-    else if (key === 0 && $scope.price.length === 1) {
+    // TODO when BE can accept empty price array
+    /*else if (key === 0 && $scope.price.length === 1) {
       return true;
-    }
-
-    else {
-      return false;
-    }
+    }*/
   }
 
   function addPriceItem() {
