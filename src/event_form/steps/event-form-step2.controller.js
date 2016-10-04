@@ -105,15 +105,16 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Save the date-object and label formatted HH:MM
    */
   function hoursChanged(timestamp) {
-    if (timestamp.showStartHour) {
+    if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
       var startHourAsDate = moment(timestamp.startHourAsDate);
       timestamp.startHour = startHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
     }
-    if (timestamp.showEndHour) {
+    if (timestamp.showEndHour && angular.isDate(timestamp.endHourAsDate)) {
       var endHourAsDate = moment(timestamp.endHourAsDate);
       timestamp.endHour = endHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
     }
-    controller.eventTimingChanged();
   }
 
   /**
@@ -136,7 +137,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     for (var i = 0; i < EventFormData.openingHours.length; i++) {
       saveOpeningHourDaySelection(i, EventFormData.openingHours[i].dayOfWeek);
     }
-    console.log('test');
   }
 
   /**
@@ -164,7 +164,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     // If we hide the textfield, empty all other time fields.
     if (!timestamp.showStartHour) {
       timestamp.startHour = '';
+      timestamp.startHourAsDate = '';
       timestamp.endHour = '';
+      timestamp.endHourAsDate = '';
       timestamp.showEndHour = false;
       controller.eventTimingChanged();
     }
@@ -180,6 +182,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     // If we hide the textfield, empty also the input.
     if (!timestamp.showEndHour) {
       timestamp.endHour = '';
+      timestamp.endHourAsDate = '';
       controller.eventTimingChanged();
     }
 

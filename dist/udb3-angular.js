@@ -8669,23 +8669,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     var startDate = moment(startDateString);
     var endDate = moment(endDateString);
 
-    var startHour = '';
-    startHour = startDate.hours() <= 9 ? '0' + startDate.hours() : startDate.hours();
-    if (startDate.minutes() <= 9) {
-      startHour += ':0' + startDate.minutes();
-    }
-    else {
-      startHour += ':' + startDate.minutes();
-    }
-
-    var endHour = '';
-    endHour = endDate.hours() <= 9 ? '0' + endDate.hours() : endDate.hours();
-    if (endDate.minutes() <= 9) {
-      endHour += ':0' + endDate.minutes();
-    }
-    else {
-      endHour += ':' + endDate.minutes();
-    }
+    var startHour = startDate.format('HH:mm');
+    var endHour = endDate.format('HH:mm');
 
     startHour = startHour === '00:00' ? '' : startHour;
     endHour = endHour === '00:00' ? '' : endHour;
@@ -9159,15 +9144,16 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Save the date-object and label formatted HH:MM
    */
   function hoursChanged(timestamp) {
-    if (timestamp.showStartHour) {
+    if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
       var startHourAsDate = moment(timestamp.startHourAsDate);
       timestamp.startHour = startHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
     }
-    if (timestamp.showEndHour) {
+    if (timestamp.showEndHour && angular.isDate(timestamp.endHourAsDate)) {
       var endHourAsDate = moment(timestamp.endHourAsDate);
       timestamp.endHour = endHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
     }
-    controller.eventTimingChanged();
   }
 
   /**
@@ -9190,7 +9176,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     for (var i = 0; i < EventFormData.openingHours.length; i++) {
       saveOpeningHourDaySelection(i, EventFormData.openingHours[i].dayOfWeek);
     }
-    console.log('test');
   }
 
   /**
@@ -9218,7 +9203,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     // If we hide the textfield, empty all other time fields.
     if (!timestamp.showStartHour) {
       timestamp.startHour = '';
+      timestamp.startHourAsDate = '';
       timestamp.endHour = '';
+      timestamp.endHourAsDate = '';
       timestamp.showEndHour = false;
       controller.eventTimingChanged();
     }
@@ -9234,6 +9221,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     // If we hide the textfield, empty also the input.
     if (!timestamp.showEndHour) {
       timestamp.endHour = '';
+      timestamp.endHourAsDate = '';
       controller.eventTimingChanged();
     }
 
@@ -17932,7 +17920,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <td>\n" +
     "              <select class=\"selectpicker\"\n" +
     "                      multiple\n" +
-    "\n" +
     "                      start-label=\"Kies dag(en)\"\n" +
     "                      ng-model=\"openingHour.dayOfWeek\"\n" +
     "                      ng-change=\"saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\"\n" +
