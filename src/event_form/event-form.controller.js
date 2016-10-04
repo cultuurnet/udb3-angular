@@ -94,7 +94,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'facilities',
       'image',
       'additionalData',
-      'apiUrl'
+      'apiUrl',
+      'workflowStatus'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {

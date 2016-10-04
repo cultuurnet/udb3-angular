@@ -125,3 +125,23 @@ function EventFormStep5Directive() {
     restrict: 'EA',
   };
 }
+
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbEventFormPublish
+ * @description
+ * # udb event form publish directive
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbEventFormPublish', EventFormPublishDirective);
+
+/* @ngInject */
+function EventFormPublishDirective() {
+  return {
+    templateUrl: 'templates/event-form-publish.html',
+    restrict: 'EA',
+    controller: 'EventFormPublishController',
+    controllerAs: 'efpc'
+  };
+}

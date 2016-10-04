@@ -103,6 +103,7 @@ function EventFormDataFactory() {
       this.image = [];
       this.additionalData = {};
       this.priceInfo = [];
+      this.workflowStatus = 'DRAFT';
     },
 
     /**

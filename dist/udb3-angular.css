@@ -1720,9 +1720,7 @@ input + .alert {
   margin-top: .5em;
 }
 .save-time-tracker {
-  border-top: 1px solid #cccccc;
   color: #777777;
-  margin-top: 3em;
   padding-bottom: 1em;
   padding-top: 1em;
 }
@@ -3016,6 +3014,17 @@ input + .alert {
 }
 .offer-form input.has-error {
   border: 1px solid #f3453f;
+}
+.offer-form .event-validation {
+  background-color: #ffffff;
+  padding: 1em;
+  padding-top: 2em;
+  margin-left: -1em;
+  margin-top: 2em;
+  margin-right: -1em;
+}
+.offer-form .event-validation div.text-danger {
+  margin-bottom: 1ex;
 }
 .event-type-choser-label {
   background-repeat: no-repeat;
