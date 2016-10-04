@@ -5215,10 +5215,7 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
 
   EventCrudJob.prototype.finish = function () {
     BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve(this.item.apiUrl);
-    }
+    this.task.resolve(this.item.apiUrl);
   };
 
   EventCrudJob.prototype.fail = function () {
@@ -5263,9 +5260,6 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
       case 'updateFacilities':
         return 'Voorzieningen aanpassen: "' + this.item.name.nl + '".';
 
-      case 'updateBookingInfo':
-        return 'Boeking info aanpassen: "' + this.item.name.nl + '".';
-
       case 'addImage':
         return 'Afbeelding toevoegen: "' + this.item.name.nl + '".';
 
@@ -5277,6 +5271,9 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
 
       case 'updateMajorInfo':
         return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
+
+      case 'publishOffer':
+        return 'Aanbod publiceren: "' + this.item.name.nl + '".';
 
     }
 
@@ -5573,6 +5570,24 @@ function EventCrud(
     return udbApi
       .selectMainImage(item.apiUrl, imageId)
       .then(jobCreatorFactory(item, 'selectMainImage'));
+  };
+
+  /**
+   * @param {EventFormData} offer
+   * @param {string} jobName
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  service.publishOffer = function(offer, jobName) {
+    return udbApi
+      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .then(function (response) {
+        var job = new EventCrudJob(response.commandId, offer, jobName);
+
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
   };
 
   /**
@@ -8253,6 +8268,7 @@ function EventFormDataFactory() {
       this.mediaObjects = [];
       this.image = [];
       this.additionalData = {};
+      this.workflowStatus = 'DRAFT';
     },
 
     /**
@@ -8663,7 +8679,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'facilities',
       'image',
       'additionalData',
-      'apiUrl'
+      'apiUrl',
+      'workflowStatus'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -8877,6 +8894,26 @@ function EventFormStep5Directive() {
   };
 }
 
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbEventFormPublish
+ * @description
+ * # udb event form publish directive
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbEventFormPublish', EventFormPublishDirective);
+
+/* @ngInject */
+function EventFormPublishDirective() {
+  return {
+    templateUrl: 'templates/event-form-publish.html',
+    restrict: 'EA',
+    controller: 'EventFormPublishController',
+    controllerAs: 'efpc'
+  };
+}
+
 // Source: src/event_form/http-prefix.directive.js
 angular
   .module('udb.event-form')
@@ -8908,6 +8945,72 @@ function HttpPrefixDirective() {
     }
   };
 }
+
+// Source: src/event_form/steps/event-form-publish.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormStep3Controller
+ * @description
+ * # EventFormStep3Controller
+ * Step 3 of the event form
+ */
+angular
+  .module('udb.event-form')
+  .controller('EventFormPublishController', EventFormPublishController);
+
+/* @ngInject */
+function EventFormPublishController(
+    $scope,
+    EventFormData,
+    eventCrud,
+    OfferWorkflowStatus,
+    $q,
+    $location
+) {
+
+  var controller = this;
+
+  controller.publish = publish;
+  controller.preview = preview;
+  controller.isDraft = isDraft;
+
+  // main storage for event form.
+  controller.eventFormData = EventFormData;
+
+  function publish() {
+    controller.error = '';
+
+    eventCrud
+      .publishOffer(EventFormData, 'publishOffer')
+      .then(function(job) {
+        job.task.promise
+          .then(setEventAsReadyForValidation)
+          .then(redirectToDetailPage)
+          .catch(function() {
+            controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
+          });
+      });
+  }
+
+  function setEventAsReadyForValidation() {
+    EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
+
+    return $q.resolve();
+  }
+
+  function redirectToDetailPage() {
+    $location.path('/event/' + EventFormData.id);
+  }
+
+  function preview() {
+    redirectToDetailPage();
+  }
+
+  function isDraft(status) {
+    return (status === OfferWorkflowStatus.DRAFT);
+  }
+}
+EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
@@ -18487,6 +18590,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-form-publish.html',
+    "<div class=\"event-validation\" ng-if=\"efpc.eventFormData.showStep5\">\n" +
+    "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
+    "\n" +
+    "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
+    "\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Voorbeeld bekijken</button>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-form-step1.html',
     "<div ng-controller=\"EventFormStep1Controller as EventFormStep1\">\n" +
     "  <a name=\"wat\"></a>\n" +
@@ -19398,7 +19513,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <udb-event-form-step4></udb-event-form-step4>\n" +
     "  <udb-event-form-step5></udb-event-form-step5>\n" +
     "\n" +
-    "  <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
+    "  <udb-event-form-publish></udb-event-form-publish>\n" +
     "</div>\n"
   );
 
