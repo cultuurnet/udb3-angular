@@ -257,8 +257,7 @@ module.exports = function (grunt) {
               'main': [
                 'js/bootstrap-datepicker.js',
                 'js/locales/bootstrap-datepicker.nl-BE.js',
-                '/dist/css/bootstrap-datepicker.css',
-                '/dist/css/bootstrap-datepicker3.css'
+                '/dist/css/bootstrap-datepicker.css'
               ]
             }
           }
