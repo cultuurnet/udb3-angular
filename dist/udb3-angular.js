@@ -235,6 +235,16 @@ angular
   ]);
 /**
  * @ngdoc module
+ * @name udb.management.organizers
+ * @description
+ * # Organizers Management Module
+ */
+angular
+  .module('udb.management.organizers', [
+    'rx'
+  ]);
+/**
+ * @ngdoc module
  * @name udb.management
  * @description
  * # Management Module
@@ -245,7 +255,8 @@ angular
     'udb.management.labels',
     'udb.management.roles',
     'udb.management.users',
-    'udb.management.moderation'
+    'udb.management.moderation',
+    'udb.management.organizers'
   ]);
 
 angular.module('peg', []).factory('LuceneQueryParser', function () {
@@ -12472,6 +12483,67 @@ angular
     }
   );
 
+// Source: src/management/organizers/organizer-detail.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerEditorController
+ * @description
+ * # OrganizerEditorController
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizerDetailController', OrganizerDetailController);
+
+/* @ngInject */
+function OrganizerDetailController(OrganizerManager, $stateParams, $q) {
+  var editor = this;
+  var organizerId = $stateParams.id;
+
+  loadOrganizer(organizerId);
+
+  function loadOrganizer(organizerId) {
+    OrganizerManager
+      .get(organizerId)
+      .then(showOrganizer);
+  }
+
+  /**
+   * @param {Organizer} organizer
+   */
+  function showOrganizer(organizer) {
+    editor.organizer = organizer;
+  }
+
+}
+OrganizerDetailController.$inject = ["OrganizerManager", "$stateParams", "$q"];
+
+// Source: src/management/organizers/organizer-manager.service.js
+/**
+ * @ngdoc service
+ * @name udb.management.organizers
+ * @description
+ * # Organizer Manager
+ * This service allows you to lookup organizers and perform actions on them.
+ */
+angular
+  .module('udb.management.organizers')
+  .service('OrganizerManager', OrganizerManager);
+
+/* @ngInject */
+function OrganizerManager(udbApi) {
+  var service = this;
+
+  /**
+   * @param {string} organizerId
+   *
+   * @returns {Promise.<Organizer>}
+   */
+  service.get = function(organizerId) {
+    return udbApi.getOrganizerById(organizerId);
+  };
+}
+OrganizerManager.$inject = ["udbApi"];
+
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 
 /**
@@ -20003,6 +20075,86 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </uib-pagination>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organizer-detail.html',
+    "<h1 class=\"title\">{{editor.organizer.name}}</h1>\n" +
+    "\n" +
+    "<div ng-show=\"!editor.organizer && !editor.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"editor.organizer\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Naam</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.name\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Straat + nr</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.address.streetAddress\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Postcode</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.address.postalCode\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Gemeente</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.address.addressLocality\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Website</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.url\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Telefoonnummer</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.phone\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>E-mailadres</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.email\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-3\">\n" +
+    "            <span>Labels</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <span ng-bind=\"editor.organizer.labels\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"editor.loadingError\">\n" +
+    "    <span ng-bind=\"editor.loadingError\"></span>\n" +
     "</div>\n"
   );
 
