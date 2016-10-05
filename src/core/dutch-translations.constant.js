@@ -310,6 +310,7 @@ angular.module('udb.core')
       'address': 'Adres',
       'organizer': 'Organisator',
       'bookingInfo.price': 'Prijsinformatie',
+      'kansentarief': 'Kansentarief',
       'bookingInfo.url': 'Ticket link',
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',

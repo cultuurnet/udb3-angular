@@ -2555,6 +2555,7 @@ angular.module('udb.core')
       'address': 'Adres',
       'organizer': 'Organisator',
       'bookingInfo.price': 'Prijsinformatie',
+      'kansentarief': 'Kansentarief',
       'bookingInfo.url': 'Ticket link',
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
@@ -10969,6 +10970,7 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'address', include: true, sortable: false, excludable: true},
     {name: 'organizer', include: false, sortable: false, excludable: true},
     {name: 'bookingInfo.price', include: true, sortable: false, excludable: true},
+    {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
     {name: 'bookingInfo.url', include: false, sortable: false, excludable: true},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
@@ -11214,7 +11216,7 @@ angular
    * @enum {string}
    */
   {
-    OOXML:{
+    OOXML: {
       type: 'ooxml',
       extension: 'xlsx',
       label: 'Office Open XML (Excel)',
@@ -19549,7 +19551,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <h5>Kies de gewenste velden</h5>\n" +
     "\n" +
     "      <div class=\"export-field-selection\">\n" +
-    "        <div class=\"checkbox\" ng-repeat=\"property in ::exporter.eventProperties\">\n" +
+    "        <div class=\"checkbox\"\n" +
+    "             ng-repeat=\"property in ::exporter.eventProperties\"\n" +
+    "             ng-show=\"!property.format || property.format.type === exporter.format\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\" ng-model=\"property.include\" name=\"eventExportFields\"\n" +
     "                   ng-disabled=\"!property.excludable\">\n" +
