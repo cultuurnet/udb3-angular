@@ -8,5 +8,6 @@
  */
 angular
   .module('udb.management.organizers', [
-    'rx'
+    'rx',
+    'ngTagsInput'
   ]);
