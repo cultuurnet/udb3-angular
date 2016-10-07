@@ -241,7 +241,8 @@ angular
  */
 angular
   .module('udb.management.organizers', [
-    'rx'
+    'rx',
+    'ngTagsInput'
   ]);
 /**
  * @ngdoc module
@@ -2851,7 +2852,7 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       } else {
         var organizerRequest  = $http.get(
-          appConfig.baseApiUrl + 'organizer/' + organizerId,
+          appConfig.baseUrl + 'organizer/' + organizerId,
           defaultApiConfig
         );
 
@@ -2865,6 +2866,14 @@ function UdbApi(
 
       return deferredOrganizer.promise;
     };
+
+  this.addLabelToOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId
@@ -4278,6 +4287,7 @@ function UdbOrganizerFactory() {
       this.email = jsonOrganizer.email || [];
       this.phone = jsonOrganizer.phone || [];
       this.url = jsonOrganizer.url || [];
+      this.labels = jsonOrganizer.labels || [];
     }
   };
 
@@ -12486,18 +12496,24 @@ angular
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
  * @ngdoc function
- * @name udbApp.controller:OrganizerEditorController
+ * @name udbApp.controller:OrganizerDetailController
  * @description
- * # OrganizerEditorController
+ * # OrganizerDetailController
  */
 angular
   .module('udb.management.organizers')
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $stateParams, $q) {
-  var editor = this;
+function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
+  var controller = this;
   var organizerId = $stateParams.id;
+
+  controller.saving = false;
+  controller.searchedLabels = [];
+
+  controller.addLabel = addLabel;
+  controller.searchLabels = searchLabels;
 
   loadOrganizer(organizerId);
 
@@ -12511,11 +12527,61 @@ function OrganizerDetailController(OrganizerManager, $stateParams, $q) {
    * @param {Organizer} organizer
    */
   function showOrganizer(organizer) {
-    editor.organizer = organizer;
+    controller.organizer = organizer;
+    mapLabels(organizer.labels);
+  }
+
+  function addLabel(label) {
+    controller.saving = true;
+
+    OrganizerManager
+      .addLabelToOrganizer(organizerId, label.uuid)
+      .then(function () {
+        controller.organizer.labels.push(label);
+      }, showProblem)
+      .finally(function() {
+        controller.saving = false;
+      });
+  }
+
+  function searchLabels(query) {
+    LabelManager
+      .find(query, 6, 0)
+      .then(function (labels) {
+        console.log(labels);
+      }, showProblem);
+  }
+
+  function mapLabels(labels) {
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i].hasOwnProperty('name')) {
+        labels[i].text = labels[i].name;
+      }
+    }
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    controller.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
+
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return controller.errorMessage;
+          }
+        }
+      }
+    );
   }
 
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "$stateParams", "$q"];
+OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams"];
 
 // Source: src/management/organizers/organizer-manager.service.js
 /**
@@ -12540,6 +12606,10 @@ function OrganizerManager(udbApi) {
    */
   service.get = function(organizerId) {
     return udbApi.getOrganizerById(organizerId);
+  };
+
+  service.addLabelToOrganizer = function(organizerId, labelUuid) {
+    return udbApi.addLabelToOrganizer(organizerId, labelUuid);
   };
 }
 OrganizerManager.$inject = ["udbApi"];
@@ -20080,81 +20150,85 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organizer-detail.html',
-    "<h1 class=\"title\">{{editor.organizer.name}}</h1>\n" +
+    "<h1 class=\"title\">{{odc.organizer.name}}</h1>\n" +
     "\n" +
-    "<div ng-show=\"!editor.organizer && !editor.loadingError\">\n" +
+    "<div ng-show=\"!odc.organizer && !odc.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-show=\"editor.organizer\">\n" +
+    "<div ng-show=\"odc.organizer\">\n" +
     "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>Naam</span>\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Naam</strong></span>\n" +
     "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.name\"></span>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.name\"></span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>Straat + nr</span>\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Straat + nr</strong></span>\n" +
     "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.address.streetAddress\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>Postcode</span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.address.postalCode\"></span>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.streetAddress\"></span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>Gemeente</span>\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Postcode</strong></span>\n" +
     "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.address.addressLocality\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>Website</span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.url\"></span>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.postalCode\"></span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>Telefoonnummer</span>\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Gemeente</strong></span>\n" +
     "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.phone\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>E-mailadres</span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.email\"></span>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-3\">\n" +
-    "            <span>Labels</span>\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Website</strong></span>\n" +
     "        </div>\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <span ng-bind=\"editor.organizer.labels\"></span>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.url\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Telefoonnummer</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.phone\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>E-mailadres</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.email\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Labels</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <tags-input ng-model=\"odc.organizer.labels\"\n" +
+    "                        placeholder=\"voeg een label toe\">\n" +
+    "              <auto-complete source=\"odc.searchLabels($query)\"\n" +
+    "                             ></auto-complete>\n" +
+    "            </tags-input>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-show=\"editor.loadingError\">\n" +
-    "    <span ng-bind=\"editor.loadingError\"></span>\n" +
+    "<div ng-show=\"odc.loadingError\">\n" +
+    "    <span ng-bind=\"odc.loadingError\"></span>\n" +
     "</div>\n"
   );
 

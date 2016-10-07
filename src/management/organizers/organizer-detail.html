@@ -1,76 +1,80 @@
-<h1 class="title">{{editor.organizer.name}}</h1>
+<h1 class="title">{{odc.organizer.name}}</h1>
 
-<div ng-show="!editor.organizer && !editor.loadingError">
+<div ng-show="!odc.organizer && !odc.loadingError">
     <i class="fa fa-circle-o-notch fa-spin"></i>
 </div>
 
-<div ng-show="editor.organizer">
+<div ng-show="odc.organizer">
     <div class="row">
-        <div class="col-md-3">
-            <span>Naam</span>
+        <div class="col-md-2">
+            <span><strong>Naam</strong></span>
         </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.name"></span>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.name"></span>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
-            <span>Straat + nr</span>
+        <div class="col-md-2">
+            <span><strong>Straat + nr</strong></span>
         </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.address.streetAddress"></span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <span>Postcode</span>
-        </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.address.postalCode"></span>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.address.streetAddress"></span>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
-            <span>Gemeente</span>
+        <div class="col-md-2">
+            <span><strong>Postcode</strong></span>
         </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.address.addressLocality"></span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <span>Website</span>
-        </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.url"></span>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.address.postalCode"></span>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
-            <span>Telefoonnummer</span>
+        <div class="col-md-2">
+            <span><strong>Gemeente</strong></span>
         </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.phone"></span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
-            <span>E-mailadres</span>
-        </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.email"></span>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.address.addressLocality"></span>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
-            <span>Labels</span>
+        <div class="col-md-2">
+            <span><strong>Website</strong></span>
         </div>
-        <div class="col-md-9">
-            <span ng-bind="editor.organizer.labels"></span>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.url"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Telefoonnummer</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.phone"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>E-mailadres</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.email"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Labels</strong></span>
+        </div>
+        <div class="col-md-10">
+            <tags-input ng-model="odc.organizer.labels"
+                        placeholder="voeg een label toe">
+              <auto-complete source="odc.searchLabels($query)"
+                             ></auto-complete>
+            </tags-input>
         </div>
     </div>
 </div>
 
-<div ng-show="editor.loadingError">
-    <span ng-bind="editor.loadingError"></span>
+<div ng-show="odc.loadingError">
+    <span ng-bind="odc.loadingError"></span>
 </div>
