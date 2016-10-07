@@ -23,4 +23,8 @@ function OrganizerManager(udbApi) {
   service.get = function(organizerId) {
     return udbApi.getOrganizerById(organizerId);
   };
+
+  service.addLabelToOrganizer = function(organizerId, labelUuid) {
+    return udbApi.addLabelToOrganizer(organizerId, labelUuid);
+  };
 }

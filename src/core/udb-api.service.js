@@ -216,7 +216,7 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       } else {
         var organizerRequest  = $http.get(
-          appConfig.baseApiUrl + 'organizer/' + organizerId,
+          appConfig.baseUrl + 'organizer/' + organizerId,
           defaultApiConfig
         );
 
@@ -230,6 +230,14 @@ function UdbApi(
 
       return deferredOrganizer.promise;
     };
+
+  this.addLabelToOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId
