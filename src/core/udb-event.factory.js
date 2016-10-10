@@ -170,6 +170,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.available) {
         this.available = jsonEvent.available;
       }
+      if (jsonEvent.workflowStatus) {
+        this.workflowStatus = jsonEvent.workflowStatus;
+      }
     },
 
     /**

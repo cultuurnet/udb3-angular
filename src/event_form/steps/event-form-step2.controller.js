@@ -228,4 +228,5 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   controller.clearPeriodicRangeError = function () {
     controller.periodicRangeError = false;
   };
+
 }

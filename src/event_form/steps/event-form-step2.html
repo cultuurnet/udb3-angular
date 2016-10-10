@@ -15,7 +15,11 @@
           <div class="wanneerkiezer" ng-show="eventFormData.activeCalendarType === ''">
             <ul class="list-inline button-list">
               <li ng-repeat="calendarLabel in ::calendarLabels" ng-hide="eventFormData.isPlace && calendarLabel.eventOnly">
-                <button class="btn btn-default" ng-bind="::calendarLabel.label" ng-click="setCalendarType(calendarLabel.id)"></button>
+                <button
+                        class="btn btn-default"
+                        ng-bind="::calendarLabel.label"
+                        udb-auto-scroll
+                        ng-click="setCalendarType(calendarLabel.id);"></button>
               </li>
             </ul>
           </div>
