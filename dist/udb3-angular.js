@@ -19339,7 +19339,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        Gratis\n" +
     "                      </span>\n" +
     "                      <span ng-if=\"priceInfo.price != 0\">\n" +
-    "                        {{priceInfo.price}} euro\n" +
+    "                        {{priceInfo.price | currency}} euro\n" +
     "                      </span>\n" +
     "                    </td>\n" +
     "                  </tr>\n" +
