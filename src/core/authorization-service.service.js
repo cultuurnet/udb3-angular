@@ -20,13 +20,14 @@ angular
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
-function AuthorizationService($q, uitidAuth, udbApi, $location) {
+function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
   this.isLoggedIn = function () {
     var deferred = $q.defer();
 
     var deferredUser = udbApi.getMe();
     deferredUser.then(
       function (user) {
+        $rootScope.$emit('userLoggedIn', user);
         deferred.resolve(user);
       },
       function () {
@@ -71,7 +72,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
     var deferredHasPermission = $q.defer();
 
     function findPermission(permissionList) {
-      var foundPermission = _.find(permissionList, function(p) { return p.key === permission; });
+      var foundPermission = _.find(permissionList, function(p) { return p === permission; });
       deferredHasPermission.resolve(foundPermission ? true : false);
     }
 
@@ -80,5 +81,13 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
       .then(findPermission, deferredHasPermission.reject);
 
     return deferredHasPermission.promise;
+  };
+
+  /**
+   * @return RolePermission[]
+   */
+  this.getPermissions = function () {
+    return udbApi
+      .getMyPermissions();
   };
 }

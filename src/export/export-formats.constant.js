@@ -18,7 +18,7 @@ angular
    * @enum {string}
    */
   {
-    OOXML:{
+    OOXML: {
       type: 'ooxml',
       extension: 'xlsx',
       label: 'Office Open XML (Excel)',

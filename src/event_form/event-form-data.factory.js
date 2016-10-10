@@ -110,6 +110,7 @@ function EventFormDataFactory() {
       this.mediaObjects = [];
       this.image = [];
       this.additionalData = {};
+      this.workflowStatus = 'DRAFT';
     },
 
     /**

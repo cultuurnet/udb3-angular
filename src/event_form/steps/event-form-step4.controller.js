@@ -59,30 +59,33 @@ function EventFormStep4Controller(
 
     // First check if all data is correct.
     $scope.infoMissing = false;
-    var missingInfo = [];
+    $scope.missingInfo = [];
+
+    if (!EventFormData.type.id) {
+      $scope.missingInfo.push('event type missing');
+    }
+
     if (EventFormData.calendarType === 'single' && EventFormData.timestamps[0].date === '') {
-      missingInfo.push('timestamp missing');
+      $scope.missingInfo.push('timestamp missing');
     }
     else if (EventFormData.calendarType === 'periodic' &&
       (EventFormData.startDate === '' || EventFormData.endDate === '')
     ) {
-      missingInfo.push('start or end date missing');
+      $scope.missingInfo.push('start or end date missing');
     }
-
-    if (!EventFormData.type.id) {
-      missingInfo.push('event type missing');
+    else if (EventFormData.calendarType === '') {
+      $scope.missingInfo.push('when missing');
     }
 
     if (EventFormData.isEvent && !EventFormData.location.id) {
-      missingInfo.push('place missing for event');
+      $scope.missingInfo.push('place missing for event');
     }
     else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
-      missingInfo.push('address missing for place');
+      $scope.missingInfo.push('address missing for place');
     }
 
-    if (missingInfo.length > 0) {
+    if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
-      console.log(missingInfo);
       return;
     }
 
@@ -229,4 +232,5 @@ function EventFormStep4Controller(
       }
     });
   }
+
 }

@@ -117,4 +117,9 @@ describe('Factory: Event form data', function () {
     EventFormData.selectMainImage(newMainImage);
     expect(EventFormData.mediaObjects).toEqual([newMainImage, oldMainImage]);
   }));
+
+  it('should init with workflowStatus DRAFT', inject(function (EventFormData) {
+    EventFormData.init();
+    expect(EventFormData.workflowStatus).toEqual('DRAFT');
+  }));
 });
