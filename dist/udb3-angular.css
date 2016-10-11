@@ -2567,6 +2567,10 @@ input + .alert {
 .offer-form .datepicker .table-condensed > tfoot > tr > td {
   padding: 0;
 }
+.offer-form .datepicker table tr td.active.active {
+  background-color: #337ab7;
+  background-image: none;
+}
 .offer-form #add-date-plus {
   display: block;
   margin: 0 auto;

@@ -2114,7 +2114,20 @@ function udbCalendarSummary() {
        */
       function loadDatePicker() {
 
+        var lastSelectedYear;
+        var lastSelectedMonth;
+
+        if (scope.lastSelectedDate) {
+          lastSelectedYear = scope.lastSelectedDate.getFullYear();
+          lastSelectedMonth = scope.lastSelectedDate.getMonth();
+        } else {
+          var today = new Date();
+          lastSelectedYear = today.getFullYear();
+          lastSelectedMonth = today.getMonth();
+        }
+
         var options = {
+          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
@@ -2179,6 +2192,12 @@ function udbCalendarSummary() {
             }
           }
         });
+
+        // Watch for any changes from outside the directive and refresh
+        scope.$watch(attrs.ngModel, function () {
+          elem.multiselect('refresh');
+        });
+
       }
 
     };
@@ -9426,6 +9445,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
   $scope.hasOpeningHours = EventFormData.openingHours.length > 0;
+  $scope.lastSelectedDate = '';
 
   // Scope functions
   $scope.setCalendarType = setCalendarType;
@@ -9436,6 +9456,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
+  $scope.dateChosen = dateChosen;
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9496,6 +9517,14 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       EventFormData.majorInfoChanged = true;
     }
 
+  }
+
+  /**
+   * Change listener to the datepicker. Last choice is stored.
+   */
+  function dateChosen(timestamp) {
+    $scope.lastSelectedDate = timestamp;
+    controller.eventTimingChanged();
   }
 
   /**
@@ -17937,7 +17966,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <section class=\"add-date\">\n" +
     "\n" +
     "      <div udb-datepicker\n" +
-    "           ng-change=\"EventFormStep2.eventTimingChanged()\"\n" +
+    "           ng-change=\"dateChosen(timestamp.date)\"\n" +
     "           highlight-date=\"{{calendarHighlight.date}}\"\n" +
     "           highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
     "           ng-model=\"timestamp.date\"></div>\n" +
