@@ -50,7 +50,8 @@
             <tr ng-repeat="(key, priceInfo) in $ctrl.price"
                 ng-model="priceInfo"
                 ng-form="priceInfoForm">
-              <td ng-switch on="priceInfo.category">
+              <td ng-switch on="priceInfo.category"
+                  class="col-xs-4">
                 <span ng-switch-when="base">
                   Basistarief
                 </span>
@@ -64,7 +65,7 @@
                          required />
                 </span>
               </td>
-              <td>
+              <td class="col-xs-4">
                 <span ng-if="priceInfo.price === 0">
                   Gratis
                 </span>
@@ -79,7 +80,8 @@
                   euro
                 </span>
               </td>
-              <td ng-switch on="priceInfo.price">
+              <td ng-switch on="priceInfo.price"
+                  class="col-xs-3">
                 <a class="btn btn-link"
                    ng-click="$ctrl.unsetPriceItemFree(key)"
                    ng-switch-when="0">Prijs invoeren</a>
@@ -87,7 +89,7 @@
                    ng-click="$ctrl.setPriceItemFree(key)"
                    ng-switch-default>Gratis</a>
               </td>
-              <td>
+              <td class="col-xs-1">
                 <span aria-hidden="true"
                       ng-click="$ctrl.deletePriceItem(key)"
                       ng-if="$ctrl.showPriceDelete(key)">&times;</span>

@@ -18642,7 +18642,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
     "                ng-model=\"priceInfo\"\n" +
     "                ng-form=\"priceInfoForm\">\n" +
-    "              <td ng-switch on=\"priceInfo.category\">\n" +
+    "              <td ng-switch on=\"priceInfo.category\"\n" +
+    "                  class=\"col-xs-4\">\n" +
     "                <span ng-switch-when=\"base\">\n" +
     "                  Basistarief\n" +
     "                </span>\n" +
@@ -18656,7 +18657,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                         required />\n" +
     "                </span>\n" +
     "              </td>\n" +
-    "              <td>\n" +
+    "              <td class=\"col-xs-4\">\n" +
     "                <span ng-if=\"priceInfo.price === 0\">\n" +
     "                  Gratis\n" +
     "                </span>\n" +
@@ -18671,7 +18672,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  euro\n" +
     "                </span>\n" +
     "              </td>\n" +
-    "              <td ng-switch on=\"priceInfo.price\">\n" +
+    "              <td ng-switch on=\"priceInfo.price\"\n" +
+    "                  class=\"col-xs-3\">\n" +
     "                <a class=\"btn btn-link\"\n" +
     "                   ng-click=\"$ctrl.unsetPriceItemFree(key)\"\n" +
     "                   ng-switch-when=\"0\">Prijs invoeren</a>\n" +
@@ -18679,7 +18681,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-click=\"$ctrl.setPriceItemFree(key)\"\n" +
     "                   ng-switch-default>Gratis</a>\n" +
     "              </td>\n" +
-    "              <td>\n" +
+    "              <td class=\"col-xs-1\">\n" +
     "                <span aria-hidden=\"true\"\n" +
     "                      ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
     "                      ng-if=\"$ctrl.showPriceDelete(key)\">&times;</span>\n" +
