@@ -93,24 +93,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.bookingPeriodShowValidation = false;
   $scope.bookingInfoCssClass = 'state-incomplete';
 
-  // Price info vars.
-  $scope.editPrice = false;
-  $scope.priceError = false;
-  $scope.invalidPrice = false;
-  $scope.savingPrice = false;
-  $scope.formPriceSubmitted = false;
-  var originalPrice = [];
-  $scope.price = [];
-  $scope.editingPrice = editingPrice;
-  $scope.unsetPriceItemFree = unsetPriceItemFree;
-  $scope.setPriceItemFree = setPriceItemFree;
-  $scope.deletePriceItem = deletePriceItem;
-  $scope.showPriceDelete = showPriceDelete;
-  $scope.addPriceItem = addPriceItem;
-  $scope.cancelEditPrice = cancelEditPrice;
-  $scope.validatePrice = validatePrice;
-  $scope.savePrice = savePrice;
-
   // Booking info vars.
   $scope.toggleBookingType = toggleBookingType;
   $scope.saveBookingType = saveBookingType;
@@ -430,111 +412,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       .updateOrganizer(EventFormData)
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
   };
-
-  function editingPrice(firstItem) {
-    if (firstItem === undefined) {
-      firstItem = false;
-    }
-
-    $scope.editPrice = true;
-    originalPrice = _.clone($scope.price);
-
-    if (firstItem && $scope.price.length === 0) {
-      $scope.price = [
-        {
-          category: 'base',
-          name: 'Basisprijs',
-          priceCurrency: 'EUR',
-          price: 0
-        }
-      ];
-    }
-
-    else if ($scope.price.length === 0) {
-      $scope.price = [
-        {
-          category: 'base',
-          name: 'Basisprijs',
-          priceCurrency: 'EUR',
-          price: ''
-        }
-      ];
-    }
-  }
-
-  function unsetPriceItemFree(key) {
-    $scope.price[key].price = '';
-  }
-
-  function setPriceItemFree(key) {
-    $scope.price[key].price = 0;
-  }
-
-  function deletePriceItem(key) {
-    $scope.price.splice(key, 1);
-  }
-
-  function showPriceDelete(key) {
-    return key !== 0;
-
-    // TODO when BE can accept empty price array
-    /*else if (key === 0 && $scope.price.length === 1) {
-      return true;
-    }*/
-  }
-
-  function addPriceItem() {
-    var priceItem = {
-      category: 'tariff',
-      name: '',
-      priceCurrency: 'EUR',
-      price: ''
-    };
-    $scope.price.push(priceItem);
-  }
-
-  function cancelEditPrice() {
-    $scope.price = originalPrice;
-    originalPrice = [];
-
-    $scope.editPrice = false;
-    $scope.invalidPrice = false;
-    $scope.priceError = false;
-    $scope.formPriceSubmitted = false;
-  }
-
-  function validatePrice() {
-    $scope.formPriceSubmitted = true;
-    if ($scope.priceForm.$valid) {
-      $scope.priceError = false;
-      $scope.invalidPrice = false;
-      savePrice();
-    }
-    else {
-      $scope.invalidPrice = true;
-    }
-  }
-
-  function savePrice() {
-    $scope.savingPrice = true;
-
-    EventFormData.price = $scope.price;
-    $scope.editPrice = false;
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      controller.eventFormSaved();
-      if (!_.isEmpty($scope.price)) {
-        $scope.priceCssClass = 'state-complete';
-      }
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
-    }, function () {
-      $scope.priceError = true;
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
-    });
-  }
 
   /**
    * Add an additional field to fill out contact info. Show the fields when none were shown before.
