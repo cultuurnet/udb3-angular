@@ -73,6 +73,7 @@
                        class="form-control"
                        name="price"
                        ng-model="priceInfo.price"
+                       ng-model-options="{ updateOn: 'blur' }"
                        ng-class="{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}"
                        required />
                   euro

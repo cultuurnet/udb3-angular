@@ -18636,6 +18636,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       class=\"form-control\"\n" +
     "                       name=\"price\"\n" +
     "                       ng-model=\"priceInfo.price\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\"\n" +
     "                       ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
     "                       required />\n" +
     "                  euro\n" +
