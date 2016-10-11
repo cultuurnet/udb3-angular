@@ -10577,6 +10577,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function validatePrice() {
     $scope.formPriceSubmitted = true;
     if ($scope.priceForm.$valid) {
+      $scope.priceError = false;
+      $scope.invalidPrice = false;
       savePrice();
     }
     else {
