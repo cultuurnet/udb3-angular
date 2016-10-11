@@ -39,6 +39,8 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
   controller.validatePrice = validatePrice;
   controller.savePrice = savePrice;
 
+  init();
+
   function editingPrice(firstItem) {
     if (firstItem === undefined) {
       firstItem = false;
@@ -143,5 +145,14 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
       controller.savingPrice = false;
       controller.formPriceSubmitted = false;
     });
+  }
+
+  function init() {
+    if (controller.price.length) {
+      controller.priceCssClass = 'state-complete';
+    }
+    else {
+      controller.priceCssClass = '';
+    }
   }
 }

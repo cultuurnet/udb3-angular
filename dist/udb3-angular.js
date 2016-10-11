@@ -7834,6 +7834,8 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
   controller.validatePrice = validatePrice;
   controller.savePrice = savePrice;
 
+  init();
+
   function editingPrice(firstItem) {
     if (firstItem === undefined) {
       firstItem = false;
@@ -7907,22 +7909,18 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
   }
 
   function validatePrice() {
-    console.log('validate');
     controller.formPriceSubmitted = true;
     if ($scope.priceForm.$valid) {
-      console.log('v_true');
       controller.priceError = false;
       controller.invalidPrice = false;
       savePrice();
     }
     else {
-      console.log('v_false');
       controller.invalidPrice = true;
     }
   }
 
   function savePrice() {
-    console.log('save');
     controller.savingPrice = true;
 
     EventFormData.price = controller.price;
@@ -7942,6 +7940,15 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
       controller.savingPrice = false;
       controller.formPriceSubmitted = false;
     });
+  }
+
+  function init() {
+    if (controller.price.length) {
+      controller.priceCssClass = 'state-complete';
+    }
+    else {
+      controller.priceCssClass = '';
+    }
   }
 }
 PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "appConfig", "$rootScope"];
@@ -18555,7 +18562,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/priceInfo.html',
     "<div class=\"row extra-prijs\">\n" +
-    "  <div class=\"extra-task\" ng-class=\"priceCssClass\">\n" +
+    "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
     "    <div class=\"col-sm-3\">\n" +
     "      <em class=\"extra-task-label\">Prijs</em>\n" +
     "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingPrice\"></i>\n" +
