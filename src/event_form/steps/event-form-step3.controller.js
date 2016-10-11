@@ -64,9 +64,10 @@ function EventFormStep3Controller(
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -257,6 +258,9 @@ function EventFormStep3Controller(
         },
         categories: function () {
           return $scope.categories;
+        },
+        title: function () {
+          return $scope.locationAutocompleteTextField;
         }
       }
     });

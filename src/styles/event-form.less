@@ -1,5 +1,6 @@
 .offer-form {
   @border-color: @udb-gray-light;
+  margin-bottom: 33vw;
 
   .alert {
     margin-top: 10px;
@@ -91,7 +92,10 @@
   .datepicker .table-condensed > tbody > tr > td,
   .datepicker .table-condensed > tfoot > tr > td {
     padding: 0;
-
+  }
+  .datepicker table tr td.active.active {
+    background-color: @link-color;
+    background-image: none;
   }
   #add-date-plus {
     display: block;
@@ -224,6 +228,10 @@
   .extra-prijs,
   .extra-contact {
     margin-bottom: 0.5em;
+  }
+
+  .description-text {
+    white-space: pre-line;
   }
 
   .udb3-data-table {
@@ -558,6 +566,19 @@
   }
   a {
     text-decoration: underline;
+  }
+
+  .event-validation {
+    background-color: @white;
+    padding: 1em;
+    padding-top: 2em;
+    margin-left: -1em;
+    margin-top: 2em;
+    margin-right: -1em;
+
+    div.text-danger {
+      margin-bottom: 1ex;
+    }
   }
 }
 

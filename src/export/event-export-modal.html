@@ -27,7 +27,9 @@
       <h5>Kies de gewenste velden</h5>
 
       <div class="export-field-selection">
-        <div class="checkbox" ng-repeat="property in ::exporter.eventProperties">
+        <div class="checkbox"
+             ng-repeat="property in ::exporter.eventProperties"
+             ng-show="!property.format || property.format.type === exporter.format">
           <label>
             <input type="checkbox" ng-model="property.include" name="eventExportFields"
                    ng-disabled="!property.excludable">
