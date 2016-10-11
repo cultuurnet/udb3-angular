@@ -19402,13 +19402,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </tr>\n" +
     "                    <tr>\n" +
     "                      <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-default\" ng-click=\"cancelEditPrice()\">\n" +
-    "                          Annuleren\n" +
-    "                        </a>\n" +
-    "                        <a class=\"btn btn-primary\"\n" +
-    "                           ng-click=\"validatePrice()\">\n" +
-    "                          Bewaren\n" +
-    "                        </a>\n" +
+    "                        <div class=\"pull-right\">\n" +
+    "                          <a class=\"btn btn-default\" ng-click=\"cancelEditPrice()\">\n" +
+    "                            Annuleren\n" +
+    "                          </a>\n" +
+    "                          <a class=\"btn btn-primary\"\n" +
+    "                             ng-click=\"validatePrice()\">\n" +
+    "                            Bewaren\n" +
+    "                          </a>\n" +
+    "                        </div>  \n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </div>\n" +
