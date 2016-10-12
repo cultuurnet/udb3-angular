@@ -274,8 +274,8 @@ function EventFormDataFactory() {
         'date' : date,
         'startHour' : startHour,
         'endHour' : endHour,
-        'showStartHour' : startHour !== '',
-        'showEndHour' : endHour !== '',
+        'showStartHour' : !!startHour,
+        'showEndHour' : (endHour && endHour !== startHour)
       });
 
     },
