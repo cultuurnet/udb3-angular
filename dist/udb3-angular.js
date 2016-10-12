@@ -5394,7 +5394,9 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = _.omit(eventFormData, _.isEmpty);
+    var majorInfo = _.pick(eventFormData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
