@@ -133,7 +133,6 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
-      //controller.eventFormSaved();
       $rootScope.$emit('eventFormSaved', EventFormData);
       if (!_.isEmpty(controller.price)) {
         controller.priceCssClass = 'state-complete';
