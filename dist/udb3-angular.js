@@ -2867,12 +2867,32 @@ function UdbApi(
       return deferredOrganizer.promise;
     };
 
+  /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
   this.addLabelToOrganizer = function(organizerId, labelId) {
     var requestConfig = defaultApiConfig;
 
     return $http
       .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
       .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
+  this.deleteLabelFromOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, requestConfig)
+        .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -12510,11 +12530,11 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   var organizerId = $stateParams.id;
 
   controller.organizerLabels = [];
-  controller.foundLabels = [];
   controller.labelSaving = false;
   controller.searchedLabels = [];
 
   controller.addLabel = addLabel;
+  controller.deleteLabel = deleteLabel;
   controller.searchLabels = searchLabels;
 
   loadOrganizer(organizerId);
@@ -12531,10 +12551,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   function showOrganizer(organizer) {
     controller.organizer = organizer;
     mapLabels(organizer.labels);
+    controller.organizerLabels = angular.copy(organizer.labels);
   }
 
   function addLabel(label) {
-    console.log(label);
     controller.labelSaving = true;
 
     OrganizerManager
@@ -12545,12 +12565,23 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
       });
   }
 
+  function deleteLabel(label) {
+    controller.labelSaving = true;
+
+    OrganizerManager
+        .deleteLabelFromOrganizer(organizerId, label.uuid)
+        .catch(showProblem)
+        .finally(function() {
+          controller.labelSaving = false;
+        });
+  }
+
   function searchLabels(query) {
     return LabelManager
         .find(query, 6, 0)
-        .then(function(response) {
-          return $q.resolve(mapLabels(response.member));
-        });
+        .then(function (labels) {
+          return mapLabels(labels.member);
+        }, showProblem);
   }
 
   function mapLabels(labels) {
@@ -12580,6 +12611,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
         }
       }
     );
+    controller.organizer.labels = angular.copy(controller.organizerLabels);
   }
 
 }
@@ -12610,8 +12642,24 @@ function OrganizerManager(udbApi) {
     return udbApi.getOrganizerById(organizerId);
   };
 
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi.addLabelToOrganizer(organizerId, labelUuid);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
+  service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
+    return udbApi.deleteLabelFromOrganizer(organizerId, labelUuid);
   };
 }
 OrganizerManager.$inject = ["udbApi"];
@@ -20223,6 +20271,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-md-10\">\n" +
     "            <tags-input ng-model=\"odc.organizer.labels\"\n" +
     "                        on-tag-added=\"odc.addLabel($tag)\"\n" +
+    "                        on-tag-removed=\"odc.deleteLabel($tag)\"\n" +
     "                        placeholder=\"voeg een label toe\">\n" +
     "              <auto-complete source=\"odc.searchLabels($query)\"\n" +
     "                             ></auto-complete>\n" +

@@ -69,6 +69,7 @@
         <div class="col-md-10">
             <tags-input ng-model="odc.organizer.labels"
                         on-tag-added="odc.addLabel($tag)"
+                        on-tag-removed="odc.deleteLabel($tag)"
                         placeholder="voeg een label toe">
               <auto-complete source="odc.searchLabels($query)"
                              ></auto-complete>

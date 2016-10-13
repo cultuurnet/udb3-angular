@@ -24,7 +24,23 @@ function OrganizerManager(udbApi) {
     return udbApi.getOrganizerById(organizerId);
   };
 
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi.addLabelToOrganizer(organizerId, labelUuid);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
+  service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
+    return udbApi.deleteLabelFromOrganizer(organizerId, labelUuid);
   };
 }

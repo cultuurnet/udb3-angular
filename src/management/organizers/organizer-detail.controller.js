@@ -16,11 +16,11 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   var organizerId = $stateParams.id;
 
   controller.organizerLabels = [];
-  controller.foundLabels = [];
   controller.labelSaving = false;
   controller.searchedLabels = [];
 
   controller.addLabel = addLabel;
+  controller.deleteLabel = deleteLabel;
   controller.searchLabels = searchLabels;
 
   loadOrganizer(organizerId);
@@ -37,10 +37,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   function showOrganizer(organizer) {
     controller.organizer = organizer;
     mapLabels(organizer.labels);
+    controller.organizerLabels = angular.copy(organizer.labels);
   }
 
   function addLabel(label) {
-    console.log(label);
     controller.labelSaving = true;
 
     OrganizerManager
@@ -51,12 +51,23 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
       });
   }
 
+  function deleteLabel(label) {
+    controller.labelSaving = true;
+
+    OrganizerManager
+        .deleteLabelFromOrganizer(organizerId, label.uuid)
+        .catch(showProblem)
+        .finally(function() {
+          controller.labelSaving = false;
+        });
+  }
+
   function searchLabels(query) {
     return LabelManager
         .find(query, 6, 0)
-        .then(function(response) {
-          return $q.resolve(mapLabels(response.member));
-        });
+        .then(function (labels) {
+          return mapLabels(labels.member);
+        }, showProblem);
   }
 
   function mapLabels(labels) {
@@ -86,6 +97,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
         }
       }
     );
+    controller.organizer.labels = angular.copy(controller.organizerLabels);
   }
 
 }
