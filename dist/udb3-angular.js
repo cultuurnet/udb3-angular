@@ -18638,7 +18638,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <section>\n" +
     "          <a class=\"btn btn-default to-filling\"\n" +
     "             ng-show=\"!$ctrl.editPrice\"\n" +
-    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; editingPrice()\">\n" +
+    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.editingPrice()\">\n" +
     "            Prijzen toevoegen\n" +
     "          </a>\n" +
     "          <a class=\"btn btn-link\"\n" +
