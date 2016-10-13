@@ -45,7 +45,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.uuid)
-      .catch(showProblem)
+      .then(removeFromCache, showProblem)
       .finally(function() {
         controller.labelSaving = false;
       });
@@ -56,7 +56,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
     OrganizerManager
         .deleteLabelFromOrganizer(organizerId, label.uuid)
-        .catch(showProblem)
+        .then(removeFromCache, showProblem)
         .finally(function() {
           controller.labelSaving = false;
         });
@@ -77,6 +77,11 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
       }
     }
     return labels;
+  }
+
+  function removeFromCache() {
+    OrganizerManager
+        .removeOrganizerFromCache(organizerId);
   }
 
   /**

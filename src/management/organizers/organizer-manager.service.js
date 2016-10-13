@@ -43,4 +43,12 @@ function OrganizerManager(udbApi) {
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi.deleteLabelFromOrganizer(organizerId, labelUuid);
   };
+
+  /**
+   * Removes an organizer from the cache.
+   * @param {string} organizerId
+   */
+  service.removeOrganizerFromCache = function(organizerId) {
+    udbApi.removeItemFromCache(organizerId);
+  };
 }

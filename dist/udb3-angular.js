@@ -12525,7 +12525,7 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams, $q) {
+function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams, udbApi, $q) {
   var controller = this;
   var organizerId = $stateParams.id;
 
@@ -12559,7 +12559,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.uuid)
-      .catch(showProblem)
+      .then(removeFromCache, showProblem)
       .finally(function() {
         controller.labelSaving = false;
       });
@@ -12570,7 +12570,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
     OrganizerManager
         .deleteLabelFromOrganizer(organizerId, label.uuid)
-        .catch(showProblem)
+        .then(removeFromCache, showProblem)
         .finally(function() {
           controller.labelSaving = false;
         });
@@ -12591,6 +12591,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
       }
     }
     return labels;
+  }
+
+  function removeFromCache() {
+    udbApi.removeItemFromCache(organizerId);
   }
 
   /**
@@ -12615,7 +12619,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams", "$q"];
+OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams", "udbApi", "$q"];
 
 // Source: src/management/organizers/organizer-manager.service.js
 /**
@@ -12660,6 +12664,14 @@ function OrganizerManager(udbApi) {
    */
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi.deleteLabelFromOrganizer(organizerId, labelUuid);
+  };
+
+  /**
+   * Removes an organizer from the cache.
+   * @param {string} organizerId
+   */
+  service.removeOrganizerFromCache = function(organizerId) {
+    udbApi.removeItemFromCache(organizerId);
   };
 }
 OrganizerManager.$inject = ["udbApi"];
