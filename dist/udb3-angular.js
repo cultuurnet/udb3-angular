@@ -3149,7 +3149,7 @@ function UdbApi(
    */
   this.createOffer = function (type, offer) {
     return $http.post(
-      appConfig.baseApiUrl + type,
+      appConfig.baseUrl + type,
       offer,
       defaultApiConfig
     ).then(function(response) {
@@ -4463,7 +4463,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.calendarType = '';
     this.openinghours = [];
     this.address = {
-      'addressCountry' : '',
+      'addressCountry' : 'BE',
       'addressLocality' : '',
       'postalCode' : '',
       'streetAddress' : ''
@@ -5362,8 +5362,10 @@ function EventCrud(
       return eventFormData;
     };
 
+    var majorInfo = _.omit(eventFormData, _.isEmpty);
+
     return udbApi
-      .createOffer(type, eventFormData)
+      .createOffer(type, majorInfo)
       .then(updateEventFormData);
   };
 
@@ -5405,8 +5407,12 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
+    var majorInfo = _.pick(eventFormData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+
     udbApi
-      .updateMajorInfo(eventFormData.apiUrl, eventFormData)
+      .updateMajorInfo(eventFormData.apiUrl, majorInfo)
       .then(jobCreatorFactory(eventFormData, 'updateItem'));
   };
 
@@ -8442,15 +8448,23 @@ function EventFormDataFactory() {
         nl : ''
       };
       this.description = {};
+      // Events have a location
       this.location = {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
         }
+      };
+      // Places only have an address
+      this.address = {
+        'addressCountry': 'BE',
+        'addressLocality': '',
+        'postalCode': '',
+        'streetAddress': ''
       };
       this.place = {};
       /** @type {EventType} */
@@ -8612,7 +8626,7 @@ function EventFormDataFactory() {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
@@ -8643,8 +8657,8 @@ function EventFormDataFactory() {
         'date' : date,
         'startHour' : startHour,
         'endHour' : endHour,
-        'showStartHour' : startHour !== '',
-        'showEndHour' : endHour !== '',
+        'showStartHour' : !!startHour,
+        'showEndHour' : (endHour && endHour !== startHour)
       });
 
     },
@@ -8861,11 +8875,9 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       EventFormData.isPlace = true;
       copyItemDataToFormData(offer);
 
-      // Places only have an address, form uses location property.
+      // Places only have an address
       if (offer.address) {
-        EventFormData.location = {
-          address : offer.address
-        };
+        EventFormData.address = offer.address;
       }
     }
   }
@@ -9652,6 +9664,12 @@ EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "ap
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
+ * @typedef {Object} City
+ * @property {string} zip
+ * @property {string} name
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep3Controller
  * @description
@@ -9675,6 +9693,21 @@ function EventFormStep3Controller(
 ) {
 
   var controller = this;
+
+  function getEmptyLocation() {
+    var emptyLocation = {
+      'id' : null,
+      'name': '',
+      'address': {
+        'addressCountry': 'BE',
+        'addressLocality': '',
+        'postalCode': '',
+        'streetAddress': ''
+      }
+    };
+
+    return _.cloneDeep(emptyLocation);
+  }
 
   // Scope vars.
   // main storage for event form.
@@ -9710,8 +9743,8 @@ function EventFormStep3Controller(
   $scope.cities = cities;
   $scope.changeCitySelection = changeCitySelection;
   $scope.changeLocationSelection = changeLocationSelection;
-  $scope.setStreetAddress = setStreetAddress;
-  $scope.changeStreetAddress = changeStreetAddress;
+  $scope.setPlaceStreetAddress = setPlaceStreetAddress;
+  $scope.changePlaceStreetAddress = changePlaceStreetAddress;
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
@@ -9733,35 +9766,29 @@ function EventFormStep3Controller(
     };
   };
 
-  // Default values
-  if (EventFormData.location && EventFormData.location.address && EventFormData.location.address.postalCode) {
-
-    $scope.selectedCity = EventFormData.location.address.postalCode +
-      ' ' + EventFormData.location.address.addressLocality;
-
-    // Location has a name => an event.
-    if (EventFormData.location.name) {
-      $scope.selectedLocation = EventFormData.location;
-    }
-    else {
-      $scope.placeStreetAddress = EventFormData.location.address.streetAddress;
-      $scope.selectedLocation = EventFormData.location;
-    }
-  }
-
   /**
-   * Select City.
+   * @param {City} city
+   * @param {string} $label
    */
-  controller.selectCity = function ($item, $label) {
+  controller.selectCity = function (city, $label) {
 
-    var zipcode = $item.zip,
-        name = $item.name;
+    var zipcode = city.zip,
+        name = city.name;
 
-    EventFormData.resetLocation();
-    var location = $scope.eventFormData.getLocation();
-    location.address.postalCode = zipcode;
-    location.address.addressLocality = name;
-    EventFormData.setLocation(location);
+    var newAddressInfo = {
+      postalCode: zipcode,
+      addressLocality: name
+    };
+
+    if (EventFormData.isPlace) {
+      var currentAddress = $scope.eventFormData.address;
+      $scope.eventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
+    } else { //assume an event
+      var newLocationInfo = {address: newAddressInfo};
+      var currentLocation = $scope.eventFormData.getLocation();
+      var newLocation = _.merge(getEmptyLocation(), currentLocation, newLocationInfo);
+      EventFormData.setLocation(newLocation);
+    }
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
@@ -9779,7 +9806,7 @@ function EventFormStep3Controller(
   function changeCitySelection() {
     EventFormData.resetLocation();
     $scope.selectedCity = '';
-    $scope.selectedLocation = undefined;
+    $scope.placeStreetAddress = '';
     $scope.cityAutocompleteTextField = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
@@ -9803,6 +9830,7 @@ function EventFormStep3Controller(
     var location = EventFormData.getLocation();
     location.id = $model;
     location.name = $label;
+    location.address = selectedLocation.address;
     EventFormData.setLocation(location);
 
     controller.stepCompleted();
@@ -9823,7 +9851,6 @@ function EventFormStep3Controller(
     location.name = '';
     EventFormData.setLocation(location);
 
-    //$scope.selectedCity = '';
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
     $scope.locationsSearched = false;
@@ -9938,7 +9965,7 @@ function EventFormStep3Controller(
         }
       };
       EventFormData.setLocation(location);
-      $scope.selectedLocation = location;
+      $scope.selectedLocation = angular.copy(location);
 
       controller.stepCompleted();
     }
@@ -9947,19 +9974,25 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
-  function setStreetAddress() {
+  /**
+   * Set the street address for a Place.
+   *
+   * @param {string} streetAddress
+   */
+  function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
     if (!$scope.step3Form.$valid) {
       return;
     }
 
-    var location = EventFormData.getLocation();
-    location.address.addressCountry = 'BE';
-    location.address.streetAddress = $scope.placeStreetAddress;
-    EventFormData.setLocation(location);
+    var currentAddress = EventFormData.address;
+    var newAddressInfo = {
+      streetAddress: streetAddress
+    };
 
-    $scope.selectedLocation = location;
+    EventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
+    $scope.placeStreetAddress = streetAddress;
 
     controller.stepCompleted();
   }
@@ -9967,19 +10000,10 @@ function EventFormStep3Controller(
   /**
    * Change StreetAddress
    */
-  function changeStreetAddress() {
-
-    // Reset only the street/number data of the location.
-    var location = EventFormData.getLocation();
-    location.address.addressCountry = '';
-    location.address.streetAddress = '';
-    EventFormData.setLocation(location);
-
-    $scope.selectedLocation = undefined;
-
+  function changePlaceStreetAddress() {
+    $scope.newPlaceStreetAddress = $scope.placeStreetAddress ? $scope.placeStreetAddress : '';
+    $scope.placeStreetAddress = '';
     controller.stepUncompleted();
-
-    setMajorInfoChanged();
   }
 
   /**
@@ -10006,13 +10030,26 @@ function EventFormStep3Controller(
   };
 
   controller.init = function (EventFormData) {
-    if (EventFormData.location.address.addressCountry) {
-      var location = EventFormData.location;
+    var address;
 
-      $scope.selectedCity = location.address.addressLocality;
-      controller.getLocations(location.address.postalCode);
-      $scope.placeStreetAddress = location.address.streetAddress;
-      $scope.selectedLocation = location;
+    // Set location data when the form data contains an Event with a location
+    if (EventFormData.isEvent && EventFormData.location.name) {
+      address = _.get(EventFormData, 'location.address');
+      controller.getLocations(address.postalCode);
+      if (EventFormData.location.name) {
+        $scope.selectedLocation = angular.copy(EventFormData.location);
+      }
+    }
+
+    // Set the address when the form contains Place address info
+    if (EventFormData.isPlace && EventFormData.address.postalCode) {
+      address = EventFormData.address;
+
+      $scope.placeStreetAddress = address.streetAddress;
+    }
+
+    if (address) {
+      $scope.selectedCity = address.addressLocality;
     }
   };
 
@@ -10101,8 +10138,8 @@ function EventFormStep4Controller(
     if (EventFormData.isEvent && !EventFormData.location.id) {
       $scope.missingInfo.push('place missing for event');
     }
-    else if (EventFormData.isPlace && !EventFormData.location.address.streetAddress) {
-      $scope.missingInfo.push('location missing for place');
+    else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
+      $scope.missingInfo.push('address missing for place');
     }
 
     if ($scope.missingInfo.length > 0) {
@@ -10177,7 +10214,7 @@ function EventFormStep4Controller(
       /*jshint camelcase: false */
       return {
         text: EventFormData.name.nl,
-        zipcode: location.address.postalCode,
+        zipcode: EventFormData.address.postalCode,
         keywords: 'UDB3 place'
       };
     }
@@ -19099,8 +19136,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-12\">\n" +
-    "        <label for=\"gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">Kies een gemeente</label>\n" +
-    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
+    "        <label for=\"gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity\">Kies een gemeente</label>\n" +
+    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity\">\n" +
     "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "            <input type=\"text\"\n" +
     "                   id=\"gemeente-autocomplete\"\n" +
@@ -19118,14 +19155,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Er was een probleem tijdens het ophalen van de steden\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity !== ''\">\n" +
+    "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity\">\n" +
     "          <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"selectedCity\"></span>\n" +
     "          <a href=\"\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div id=\"waar-evenement\" class=\"clearfix\" ng-show=\"eventFormData.isEvent && selectedCity !== ''\">\n" +
+    "    <div id=\"waar-evenement\" class=\"clearfix\" ng-show=\"eventFormData.isEvent && selectedCity\">\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-xs-12\">\n" +
     "          <label id=\"locatie-label\" ng-show=\"!selectedLocation\">\n" +
@@ -19175,8 +19212,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div id=\"waar-plaats\" class=\"clearfix\" ng-show=\"eventFormData.isPlace && selectedCity !== ''\">\n" +
-    "      <div class=\"plaats-adres-ingeven\" ng-hide=\"selectedLocation.address.streetAddress\">\n" +
+    "    <div id=\"waar-plaats\" class=\"clearfix\" ng-show=\"eventFormData.isPlace && selectedCity\">\n" +
+    "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
@@ -19184,8 +19221,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
-    "                     ng-model=\"placeStreetAddress\"\n" +
-    "                     placeholder=\"\"\n" +
+    "                     ng-model=\"newPlaceStreetAddress\"\n" +
+    "                     placeholder=\"Kerkstraat 1\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
     "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
@@ -19194,13 +19231,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setStreetAddress()\">OK</a>\n" +
+    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setPlaceStreetAddress(newPlaceStreetAddress)\">OK</a>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"plaats-adres-resultaat\" ng-show=\"selectedLocation.address.streetAddress\">\n" +
+    "      <div class=\"plaats-adres-resultaat\" ng-show=\"placeStreetAddress\">\n" +
     "        <span>\n" +
-    "          <span class=\"btn-chosen\" ng-bind=\"selectedLocation.address.streetAddress\"></span>\n" +
-    "          <a class=\"btn btn-link plaats-adres-wijzigen\" ng-click=\"changeStreetAddress()\">Wijzigen</a>\n" +
+    "          <span class=\"btn-chosen\" ng-bind=\"eventFormData.address.streetAddress\"></span>\n" +
+    "          <a class=\"btn btn-link plaats-adres-wijzigen\" ng-click=\"changePlaceStreetAddress()\">Wijzigen</a>\n" +
     "        </span>\n" +
     "      </div>\n" +
     "    </div>\n" +
