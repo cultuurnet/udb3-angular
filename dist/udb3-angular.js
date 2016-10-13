@@ -9032,7 +9032,7 @@ function EventFormPublishController(
   }
 
   function redirectToDetailPage() {
-    $location.path('/event/' + EventFormData.id);
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id);
   }
 
   function preview() {
