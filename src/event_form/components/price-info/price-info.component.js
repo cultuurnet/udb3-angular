@@ -47,7 +47,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
     }
 
     controller.editPrice = true;
-    originalPrice = _.clone(controller.price);
+    originalPrice = angular.copy(controller.price);
 
     if (firstItem && controller.price.length === 0) {
       controller.price = [
@@ -88,8 +88,11 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
     return key !== 0;
 
     // TODO when BE can accept empty price array
-    /*else if (key === 0 && controller.price.length === 1) {
+    /*if (key === 0 && controller.price.length === 1) {
       return true;
+    }
+    else {
+      return false
     }*/
   }
 
@@ -104,7 +107,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
   }
 
   function cancelEditPrice() {
-    controller.price = originalPrice;
+    controller.price = angular.copy(originalPrice);
     originalPrice = [];
 
     controller.editPrice = false;
