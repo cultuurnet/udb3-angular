@@ -3094,6 +3094,14 @@ function UdbApi(
     );
   };
 
+  this.updatePriceInfo = function(offerLocation, price) {
+    return $http.put(
+      offerLocation + '/priceInfo',
+      price,
+      defaultApiConfig
+    );
+  };
+
   /**
    * @param {URL} offerLocation
    * @param {string} label
@@ -3979,6 +3987,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         this.price = parseFloat(jsonEvent.bookingInfo[0].price);
       }
       this.pricing = getPricing(jsonEvent);
+      this.priceInfo = jsonEvent.priceInfo || [];
       this.publisher = jsonEvent.publisher || '';
       this.created = new Date(jsonEvent.created);
       this.modified = new Date(jsonEvent.modified);
@@ -4483,6 +4492,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.endDate = jsonPlace.endDate;
       this.openingHours = jsonPlace.openingHours || [];
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
+      this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
       this.contactPoint = jsonPlace.contactPoint || {};
       if (jsonPlace.organizer) {
@@ -5293,6 +5303,9 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
       case 'updateMajorInfo':
         return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
 
+      case 'updatePriceInfo':
+        return 'Prijsinformatie aanpassen: "' + this.item.name.nl + '".';
+
       case 'publishOffer':
         return 'Aanbod publiceren: "' + this.item.name.nl + '".';
 
@@ -5486,6 +5499,24 @@ function EventCrud(
 
     return jobCreator;
   }
+
+  /**
+   * Update the price info and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updatePriceInfo = function(item) {
+    return udbApi
+      .updatePriceInfo(item.apiUrl, item.price)
+      .then(function (response) {
+        var jobData = response.data;
+        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
+  };
 
   /**
    * Update the contact point and add it to the job logger.
@@ -7788,6 +7819,167 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
 })();
 
+// Source: src/event_form/components/price-info/price-info.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormPriceInfoController
+ * @description
+ * # EventFormImageUploadController
+ * Modal for setting the reservation period.
+ */
+angular
+  .module('udb.event-form')
+  .component('priceInfo', {
+    templateUrl: 'templates/priceInfo.html',
+    controller: PriceInfoComponent,
+    bindings: {
+      price: '<'
+    }
+  });
+
+/* @ngInject */
+function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootScope) {
+
+  var controller = this;
+
+  // Price info vars.
+  controller.editPrice = false;
+  controller.priceError = false;
+  controller.invalidPrice = false;
+  controller.savingPrice = false;
+  controller.formPriceSubmitted = false;
+  var originalPrice = [];
+  controller.editingPrice = editingPrice;
+  controller.unsetPriceItemFree = unsetPriceItemFree;
+  controller.setPriceItemFree = setPriceItemFree;
+  controller.deletePriceItem = deletePriceItem;
+  controller.showPriceDelete = showPriceDelete;
+  controller.addPriceItem = addPriceItem;
+  controller.cancelEditPrice = cancelEditPrice;
+  controller.validatePrice = validatePrice;
+  controller.savePrice = savePrice;
+
+  init();
+
+  function editingPrice(firstItem) {
+    if (firstItem === undefined) {
+      firstItem = false;
+    }
+
+    controller.editPrice = true;
+    originalPrice = angular.copy(controller.price);
+
+    if (firstItem && controller.price.length === 0) {
+      controller.price = [
+        {
+          category: 'base',
+          name: 'Basisprijs',
+          priceCurrency: 'EUR',
+          price: 0
+        }
+      ];
+    }
+
+    else if (controller.price.length === 0) {
+      controller.price = [
+        {
+          category: 'base',
+          name: 'Basisprijs',
+          priceCurrency: 'EUR',
+          price: ''
+        }
+      ];
+    }
+  }
+
+  function unsetPriceItemFree(key) {
+    controller.price[key].price = '';
+  }
+
+  function setPriceItemFree(key) {
+    controller.price[key].price = 0;
+  }
+
+  function deletePriceItem(key) {
+    controller.price.splice(key, 1);
+  }
+
+  function showPriceDelete(key) {
+    return key !== 0;
+
+    // TODO when BE can accept empty price array
+    /*if (key === 0 && controller.price.length === 1) {
+      return true;
+    }
+    else {
+      return false
+    }*/
+  }
+
+  function addPriceItem() {
+    var priceItem = {
+      category: 'tariff',
+      name: '',
+      priceCurrency: 'EUR',
+      price: ''
+    };
+    controller.price.push(priceItem);
+  }
+
+  function cancelEditPrice() {
+    controller.price = angular.copy(originalPrice);
+    originalPrice = [];
+
+    controller.editPrice = false;
+    controller.invalidPrice = false;
+    controller.priceError = false;
+    controller.formPriceSubmitted = false;
+  }
+
+  function validatePrice() {
+    controller.formPriceSubmitted = true;
+    if ($scope.priceForm.$valid) {
+      controller.priceError = false;
+      controller.invalidPrice = false;
+      savePrice();
+    }
+    else {
+      controller.invalidPrice = true;
+    }
+  }
+
+  function savePrice() {
+    controller.savingPrice = true;
+
+    EventFormData.price = controller.price;
+    controller.editPrice = false;
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      $rootScope.$emit('eventFormSaved', EventFormData);
+      if (!_.isEmpty(controller.price)) {
+        controller.priceCssClass = 'state-complete';
+      }
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
+    }, function () {
+      controller.priceError = true;
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
+    });
+  }
+
+  function init() {
+    if (controller.price.length) {
+      controller.priceCssClass = 'state-complete';
+    }
+    else {
+      controller.priceCssClass = '';
+    }
+  }
+}
+PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "appConfig", "$rootScope"];
+
 // Source: src/event_form/components/reservation-modal/reservation-modal.controller.js
 /**
  * @ngdoc function
@@ -8303,6 +8495,7 @@ function EventFormDataFactory() {
       this.mediaObjects = [];
       this.image = [];
       this.additionalData = {};
+      this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
     },
 
@@ -8709,6 +8902,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'organizer',
       'bookingInfo',
       'contactPoint',
+      'priceInfo',
       'facilities',
       'image',
       'additionalData',
@@ -10740,7 +10934,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController',
+      controller: 'EventFormReservationModalController'
     });
 
     modalInstance.result.then(function () {
@@ -10924,6 +11118,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.facilitiesInapplicable = false;
       }
 
+    }
+
+    if (EventFormData.priceInfo) {
+      $scope.price = EventFormData.priceInfo;
+      $scope.priceCssClass = 'state-complete';
     }
 
   }
@@ -18429,6 +18628,139 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/priceInfo.html',
+    "<div class=\"row extra-prijs\">\n" +
+    "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
+    "    <div class=\"col-sm-3\">\n" +
+    "      <em class=\"extra-task-label\">Prijs</em>\n" +
+    "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingPrice\"></i>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-8\">\n" +
+    "\n" +
+    "      <div ng-show=\"$ctrl.price.length == 0\">\n" +
+    "        <section>\n" +
+    "          <a class=\"btn btn-default to-filling\"\n" +
+    "             ng-show=\"!$ctrl.editPrice\"\n" +
+    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.editingPrice()\">\n" +
+    "            Prijzen toevoegen\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-link\"\n" +
+    "             ng-show=\"!$ctrl.editPrice\"\n" +
+    "             ng-click=\"$ctrl.editingPrice(true)\">Gratis</a>\n" +
+    "        </section>\n" +
+    "      </div>\n" +
+    "      <div ng-show=\"$ctrl.price.length > 0 && !$ctrl.editPrice\">\n" +
+    "        <table class=\"table\">\n" +
+    "          <thead>\n" +
+    "            <td>Prijzen</td>\n" +
+    "            <td>\n" +
+    "              <a class=\"btn btn-default pull-right\" ng-click=\"$ctrl.editingPrice()\">\n" +
+    "              Wijzigen\n" +
+    "            </a>\n" +
+    "            </td>\n" +
+    "          </thead>\n" +
+    "          <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
+    "              ng-model=\"priceInfo\">\n" +
+    "            <td>{{priceInfo.name}}</td>\n" +
+    "            <td>\n" +
+    "              <span ng-if=\"priceInfo.price == 0\">\n" +
+    "                Gratis\n" +
+    "              </span>\n" +
+    "              <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                {{priceInfo.price | currency}} euro\n" +
+    "              </span>\n" +
+    "            </td>\n" +
+    "          </tr>\n" +
+    "        </table>\n" +
+    "      </div>\n" +
+    "      <form name=\"priceForm\"\n" +
+    "            ng-show=\"$ctrl.editPrice\"\n" +
+    "            novalidate >\n" +
+    "        <table class=\"table\">\n" +
+    "          <div class=\"form-group\">\n" +
+    "            <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
+    "                ng-model=\"priceInfo\"\n" +
+    "                ng-form=\"priceInfoForm\">\n" +
+    "              <td ng-switch on=\"priceInfo.category\"\n" +
+    "                  class=\"col-xs-4\">\n" +
+    "                <span ng-switch-when=\"base\">\n" +
+    "                  Basistarief\n" +
+    "                </span>\n" +
+    "                <span ng-switch-default>\n" +
+    "                  <input type=\"text\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         name=\"name\"\n" +
+    "                         placeholder=\"Doelgroep\"\n" +
+    "                         ng-model=\"priceInfo.name\"\n" +
+    "                         ng-class=\"{ 'has-error': priceInfoForm.name.$invalid && formPriceSubmitted}\"\n" +
+    "                         required />\n" +
+    "                </span>\n" +
+    "              </td>\n" +
+    "              <td class=\"col-xs-4\">\n" +
+    "                <span ng-if=\"priceInfo.price === 0\">\n" +
+    "                  Gratis\n" +
+    "                </span>\n" +
+    "                <span ng-if=\"priceInfo.price !== 0\">\n" +
+    "                  <input type=\"number\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"price\"\n" +
+    "                       ng-model=\"priceInfo.price\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\"\n" +
+    "                       ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
+    "                       required />\n" +
+    "                  euro\n" +
+    "                </span>\n" +
+    "              </td>\n" +
+    "              <td ng-switch on=\"priceInfo.price\"\n" +
+    "                  class=\"col-xs-3\">\n" +
+    "                <a class=\"btn btn-link\"\n" +
+    "                   ng-click=\"$ctrl.unsetPriceItemFree(key)\"\n" +
+    "                   ng-switch-when=\"0\">Prijs invoeren</a>\n" +
+    "                <a class=\"btn btn-link\"\n" +
+    "                   ng-click=\"$ctrl.setPriceItemFree(key)\"\n" +
+    "                   ng-switch-default>Gratis</a>\n" +
+    "              </td>\n" +
+    "              <td class=\"col-xs-1\">\n" +
+    "                <span aria-hidden=\"true\"\n" +
+    "                      ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
+    "                      ng-if=\"$ctrl.showPriceDelete(key)\">&times;</span>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td colspan=\"4\">\n" +
+    "                <a class=\"btn btn-link\" ng-click=\"$ctrl.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td colspan=\"4\">\n" +
+    "                <div class=\"pull-right\">\n" +
+    "                  <a class=\"btn btn-default\" ng-click=\"$ctrl.cancelEditPrice()\">\n" +
+    "                    Annuleren\n" +
+    "                  </a>\n" +
+    "                  <a class=\"btn btn-primary\"\n" +
+    "                     ng-click=\"$ctrl.validatePrice()\">\n" +
+    "                    Bewaren\n" +
+    "                  </a>\n" +
+    "                </div>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "          </div>\n" +
+    "        </table>\n" +
+    "      </form>\n" +
+    "\n" +
+    "      <div ng-show=\"$ctrl.priceError\" class=\"alert alert-danger\">\n" +
+    "        Er ging iets fout bij het opslaan van de prijs.\n" +
+    "      </div>\n" +
+    "      <div ng-show=\"$ctrl.invalidPrice\" class=\"alert alert-danger\">\n" +
+    "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
+    "      </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/reservation-modal.html',
     "<div class=\"modal-content\">\n" +
     "  <div class=\"modal-header\">\n" +
@@ -19207,6 +19539,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
+    "\n" +
+    "        <price-info price=\"price\"></price-info>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +

@@ -3016,6 +3016,9 @@ input + .alert {
 .offer-form a {
   text-decoration: underline;
 }
+.offer-form input.has-error {
+  border: 1px solid #f3453f;
+}
 .offer-form .event-validation {
   background-color: #ffffff;
   padding: 1em;

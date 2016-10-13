@@ -89,6 +89,9 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
       case 'updateMajorInfo':
         return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
 
+      case 'updatePriceInfo':
+        return 'Prijsinformatie aanpassen: "' + this.item.name.nl + '".';
+
       case 'publishOffer':
         return 'Aanbod publiceren: "' + this.item.name.nl + '".';
 

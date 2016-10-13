@@ -183,6 +183,24 @@ function EventCrud(
   }
 
   /**
+   * Update the price info and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updatePriceInfo = function(item) {
+    return udbApi
+      .updatePriceInfo(item.apiUrl, item.price)
+      .then(function (response) {
+        var jobData = response.data;
+        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
+  };
+
+  /**
    * Update the contact point and add it to the job logger.
    *
    * @param {EventFormData} item

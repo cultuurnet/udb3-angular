@@ -88,6 +88,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'organizer',
       'bookingInfo',
       'contactPoint',
+      'priceInfo',
       'facilities',
       'image',
       'additionalData',

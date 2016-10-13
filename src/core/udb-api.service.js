@@ -451,6 +451,14 @@ function UdbApi(
     );
   };
 
+  this.updatePriceInfo = function(offerLocation, price) {
+    return $http.put(
+      offerLocation + '/priceInfo',
+      price,
+      defaultApiConfig
+    );
+  };
+
   /**
    * @param {URL} offerLocation
    * @param {string} label
