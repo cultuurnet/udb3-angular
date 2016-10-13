@@ -17840,11 +17840,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tr>\n" +
     "              <td><strong>Beschrijving</strong></td>\n" +
     "              <td>\n" +
-    "                <div ng-if=\"eventIsEditable\">\n" +
-    "                  <div ng-bind-html=\"event.description\" onbeforesave=\"updateDescription($data)\" class=\"event-detail-description\"\n" +
-    "                       editable-textarea=\"event.description\" e-rows=\"6\" e-cols=\"33\"></div>\n" +
-    "                </div>\n" +
-    "                <i ng-if=\"!eventIsEditable\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                <div ng-bind-html=\"event.description\" class=\"event-detail-description\"></div>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
@@ -20937,11 +20933,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <tr>\n" +
     "                <td><strong>Beschrijving</strong></td>\n" +
     "                <td>\n" +
-    "                  <div ng-if=\"placeIsEditable\">\n" +
-    "                    <div ng-bind-html=\"place.description\" onbeforesave=\"updateDescription($data)\" class=\"event-detail-description\"\n" +
-    "                         editable-textarea=\"place.description\" e-rows=\"6\" e-cols=\"33\"></div>\n" +
-    "                  </div>\n" +
-    "                  <i ng-if=\"!placeIsEditable\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                  <div ng-bind-html=\"place.description\" class=\"event-detail-description\"></div>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
@@ -21589,13 +21581,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && eventCtrl.editable\">\n" +
-    "          <div ng-bind-html=\"event.description\" class=\"udb-description\" onbeforesave=\"eventCtrl.updateDescription($data)\"\n" +
-    "               editable-textarea=\"event.description\" e-rows=\"6\" e-cols=\"66\"></div>\n" +
-    "        </div>\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && !eventCtrl.editable\"\n" +
-    "             class=\"event-description-loading-indicator\">\n" +
-    "          <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
+    "          <div ng-bind-html=\"event.description\" class=\"udb-description\"></div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +
@@ -21749,13 +21736,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && placeCtrl.editable\">\n" +
-    "          <div ng-bind-html=\"event.description\" class=\"udb-description\" onbeforesave=\"placeCtrl.updateDescription($data)\"\n" +
-    "               editable-textarea=\"event.description\" e-rows=\"6\" e-cols=\"66\"></div>\n" +
-    "        </div>\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && !placeCtrl.editable\"\n" +
-    "             class=\"event-description-loading-indicator\">\n" +
-    "          <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
+    "          <div ng-bind-html=\"event.description\" class=\"udb-description\"></div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +
