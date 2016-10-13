@@ -636,7 +636,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController',
+      controller: 'EventFormReservationModalController'
     });
 
     modalInstance.result.then(function () {
@@ -820,6 +820,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.facilitiesInapplicable = false;
       }
 
+    }
+
+    if (EventFormData.priceInfo) {
+      $scope.price = EventFormData.priceInfo;
+      $scope.priceCssClass = 'state-complete';
     }
 
   }
