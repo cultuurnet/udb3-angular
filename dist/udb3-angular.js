@@ -12511,7 +12511,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
   controller.organizerLabels = [];
   controller.foundLabels = [];
-  controller.saving = false;
+  controller.labelSaving = false;
   controller.searchedLabels = [];
 
   controller.addLabel = addLabel;
@@ -12534,15 +12534,14 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
   function addLabel(label) {
-    controller.saving = true;
+    console.log(label);
+    controller.labelSaving = true;
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.uuid)
-      .then(function () {
-        controller.organizer.labels.push(label);
-      }, showProblem)
+      .catch(showProblem)
       .finally(function() {
-        controller.saving = false;
+        controller.labelSaving = false;
       });
   }
 
@@ -20219,9 +20218,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-2\">\n" +
     "            <span><strong>Labels</strong></span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-10\">\n" +
     "            <tags-input ng-model=\"odc.organizer.labels\"\n" +
+    "                        on-tag-added=\"odc.addLabel($tag)\"\n" +
     "                        placeholder=\"voeg een label toe\">\n" +
     "              <auto-complete source=\"odc.searchLabels($query)\"\n" +
     "                             ></auto-complete>\n" +

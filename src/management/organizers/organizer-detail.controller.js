@@ -17,7 +17,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
   controller.organizerLabels = [];
   controller.foundLabels = [];
-  controller.saving = false;
+  controller.labelSaving = false;
   controller.searchedLabels = [];
 
   controller.addLabel = addLabel;
@@ -40,15 +40,14 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
   function addLabel(label) {
-    controller.saving = true;
+    console.log(label);
+    controller.labelSaving = true;
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.uuid)
-      .then(function () {
-        controller.organizer.labels.push(label);
-      }, showProblem)
+      .catch(showProblem)
       .finally(function() {
-        controller.saving = false;
+        controller.labelSaving = false;
       });
   }
 

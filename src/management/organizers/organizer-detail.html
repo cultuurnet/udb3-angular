@@ -64,9 +64,11 @@
     <div class="row">
         <div class="col-md-2">
             <span><strong>Labels</strong></span>
+            <i class="fa fa-circle-o-notch fa-spin" ng-show="labelSaving"></i>
         </div>
         <div class="col-md-10">
             <tags-input ng-model="odc.organizer.labels"
+                        on-tag-added="odc.addLabel($tag)"
                         placeholder="voeg een label toe">
               <auto-complete source="odc.searchLabels($query)"
                              ></auto-complete>
