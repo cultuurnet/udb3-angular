@@ -63,9 +63,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   function mapLabels(labels) {
     for (var i = 0; i < labels.length; i++) {
       if (labels[i].hasOwnProperty('name')) {
-        labels[i].text = labels[i].name;
+        labels[i].text = angular.copy(labels[i].name);
       }
     }
+    return labels;
   }
 
   /**

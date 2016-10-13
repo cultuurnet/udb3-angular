@@ -12547,12 +12547,6 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
   function searchLabels(query) {
-    console.log(
-        LabelManager
-        .find(query, 6, 0)
-        .then(function(response) {
-          return mapLabels(response.member);
-        }));
     return LabelManager
         .find(query, 6, 0)
         .then(function(response) {
@@ -12563,9 +12557,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   function mapLabels(labels) {
     for (var i = 0; i < labels.length; i++) {
       if (labels[i].hasOwnProperty('name')) {
-        labels[i].text = labels[i].name;
+        labels[i].text = angular.copy(labels[i].name);
       }
     }
+    return labels;
   }
 
   /**
