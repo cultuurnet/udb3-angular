@@ -12505,10 +12505,12 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
+function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams, $q) {
   var controller = this;
   var organizerId = $stateParams.id;
 
+  controller.organizerLabels = [];
+  controller.foundLabels = [];
   controller.saving = false;
   controller.searchedLabels = [];
 
@@ -12545,11 +12547,17 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
   function searchLabels(query) {
-    LabelManager
-      .find(query, 6, 0)
-      .then(function (labels) {
-        console.log(labels);
-      }, showProblem);
+    console.log(
+        LabelManager
+        .find(query, 6, 0)
+        .then(function(response) {
+          return mapLabels(response.member);
+        }));
+    return LabelManager
+        .find(query, 6, 0)
+        .then(function(response) {
+          return $q.resolve(mapLabels(response.member));
+        });
   }
 
   function mapLabels(labels) {
@@ -12581,7 +12589,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams"];
+OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams", "$q"];
 
 // Source: src/management/organizers/organizer-manager.service.js
 /**
