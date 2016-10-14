@@ -11,7 +11,7 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
+function UdbOrganizers($q, $http, appConfig, UdbOrganizer, udbApi) {
 
   /**
    * Get the organizers that match the searched value.
@@ -39,19 +39,7 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
    * Search for duplicate organizers.
    */
   this.searchDuplicates = function(website) {
-
-    var duplicates = $q.defer();
-
-    var request = $http.get(
-      appConfig.baseUrl + 'organizers/?website=' + website
-    );
-
-    request.success(function(jsonData) {
-      duplicates.resolve(jsonData);
-    });
-
-    return duplicates.promise;
-
+    return udbApi.searchDuplicateOrganizers(website);
   };
 
 }

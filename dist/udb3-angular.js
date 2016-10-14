@@ -2846,6 +2846,12 @@ function UdbApi(
       return deferredOrganizer.promise;
     };
 
+  this.searchDuplicateOrganizers = function(website) {
+    return $http
+      .get(appConfig.baseUrl + 'organizers/?website=' + website, defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
   /**
    * @param {URL} eventId
    * @return {*}
@@ -4276,7 +4282,7 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
+function UdbOrganizers($q, $http, appConfig, UdbOrganizer, udbApi) {
 
   /**
    * Get the organizers that match the searched value.
@@ -4304,23 +4310,11 @@ function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
    * Search for duplicate organizers.
    */
   this.searchDuplicates = function(website) {
-
-    var duplicates = $q.defer();
-
-    var request = $http.get(
-      appConfig.baseUrl + 'organizers/?website=' + website
-    );
-
-    request.success(function(jsonData) {
-      duplicates.resolve(jsonData);
-    });
-
-    return duplicates.promise;
-
+    return udbApi.searchDuplicateOrganizers(website);
   };
 
 }
-UdbOrganizers.$inject = ["$q", "$http", "appConfig", "UdbOrganizer"];
+UdbOrganizers.$inject = ["$q", "$http", "appConfig", "UdbOrganizer", "udbApi"];
 
 // Source: src/core/udb-place.factory.js
 /**
@@ -7477,25 +7471,25 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
-
-    promise.then(function (data) {
-      // Set the results for the duplicates modal,
-      if (data.length > 0) {
-        $scope.organizersWebsiteFound = true;
-        $scope.firstOrganizerFound = data.member[0];
-        $scope.showWebsiteValidation = false;
-      }
-      else {
-        $scope.showWebsiteValidation = false;
-        if ($scope.newOrganizer.name) {
-          $scope.disableSubmit = false;
-        }
-      }
-    }, function() {
-      $scope.websiteError = true;
-      $scope.showWebsiteValidation = false;
-    });
+    udbOrganizers
+        .searchDuplicates($scope.newOrganizer.website)
+        .then(function (data) {
+          // Set the results for the duplicates modal,
+          if (data.totalItems > 0) {
+            $scope.organizersWebsiteFound = true;
+            $scope.firstOrganizerFound = data.member[0];
+            $scope.showWebsiteValidation = false;
+          }
+          else {
+            $scope.showWebsiteValidation = false;
+            if ($scope.newOrganizer.name) {
+              $scope.disableSubmit = false;
+            }
+          }
+        }, function() {
+          $scope.websiteError = true;
+          $scope.showWebsiteValidation = false;
+        });
   }
 
   /**

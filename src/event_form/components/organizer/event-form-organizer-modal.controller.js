@@ -102,25 +102,25 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.website);
-
-    promise.then(function (data) {
-      // Set the results for the duplicates modal,
-      if (data.length > 0) {
-        $scope.organizersWebsiteFound = true;
-        $scope.firstOrganizerFound = data.member[0];
-        $scope.showWebsiteValidation = false;
-      }
-      else {
-        $scope.showWebsiteValidation = false;
-        if ($scope.newOrganizer.name) {
-          $scope.disableSubmit = false;
-        }
-      }
-    }, function() {
-      $scope.websiteError = true;
-      $scope.showWebsiteValidation = false;
-    });
+    udbOrganizers
+        .searchDuplicates($scope.newOrganizer.website)
+        .then(function (data) {
+          // Set the results for the duplicates modal,
+          if (data.totalItems > 0) {
+            $scope.organizersWebsiteFound = true;
+            $scope.firstOrganizerFound = data.member[0];
+            $scope.showWebsiteValidation = false;
+          }
+          else {
+            $scope.showWebsiteValidation = false;
+            if ($scope.newOrganizer.name) {
+              $scope.disableSubmit = false;
+            }
+          }
+        }, function() {
+          $scope.websiteError = true;
+          $scope.showWebsiteValidation = false;
+        });
   }
 
   /**

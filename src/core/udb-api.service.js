@@ -231,6 +231,12 @@ function UdbApi(
       return deferredOrganizer.promise;
     };
 
+  this.searchDuplicateOrganizers = function(website) {
+    return $http
+      .get(appConfig.baseUrl + 'organizers/?website=' + website, defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
   /**
    * @param {URL} eventId
    * @return {*}
