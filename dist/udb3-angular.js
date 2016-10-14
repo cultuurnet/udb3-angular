@@ -23,6 +23,7 @@ angular
     'udb.saved-searches',
     'udb.media',
     'udb.management',
+    'udb.uitpas',
     'btford.socket-io',
     'pascalprecht.translate'
   ])
@@ -1900,6 +1901,15 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
   };
 })()
 });
+/**
+ * @ngdoc module
+ * @name udb.uitpas
+ * @description
+ * The UDB UiTPAS module
+ */
+angular
+  .module('udb.uitpas', []);
+
 // Source: src/core/authorization-service.service.js
 /**
  * @ngdoc service
@@ -17413,6 +17423,61 @@ function searchDirective() {
   return search;
 }
 
+// Source: src/uitpas/organisation-suggestion.component.js
+angular
+  .module('udb.uitpas')
+  .component('uitpasOrganisationSuggestion', {
+    template:
+    '<a>' +
+      '<span class="organisation-name" ng-bind="::os.organisation.name"></span> ' +
+      '<small ng-if="::os.isUitpas" class="label label-default uitpas-tag">UiTPAS</small>' +
+    '</a>',
+    controller: OrganisationSuggestionController,
+    controllerAs: 'os',
+    bindings: {
+      organisation: '<'
+    }
+  });
+
+/* @ngInject */
+function OrganisationSuggestionController(UitpasLabels) {
+  var os = this;
+
+  os.isUitpas = !_.isEmpty(_.intersection(os.organisation.labels, _.values(UitpasLabels)));
+}
+OrganisationSuggestionController.$inject = ["UitpasLabels"];
+
+// Source: src/uitpas/uitpas-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.entry.uitpasLabels
+ * @description
+ * # UiTPAS Labels
+ * All the known UiTPAS labels that link an organizer to card-systems
+ */
+angular
+  .module('udb.uitpas')
+  .constant('UitpasLabels',
+  /**
+   * Enum for UiTPAS labels
+   * @readonly
+   * @enum {string}
+   */
+  {
+    'PASPARTOE': 'Paspartoe',
+    'UITPAS': 'UiTPAS',
+    'UITPAS_GENT': 'UiTPAS Gent',
+    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
+    'UITPAS_REGIO_AALST': 'UiTPAS regio Aalst',
+    'UITPAS_DENDER': 'UiTPAS Dender',
+    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
+    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
+    'UITPAS_KEMPEN': 'UiTPAS Kempen',
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen'
+  });
+
 // Source: .tmp/udb3-angular.templates.js
 angular.module('udb.core').run(['$templateCache', function($templateCache) {
 $templateCache.put('templates/calendar-summary.directive.html',
@@ -19518,7 +19583,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
-    "                             typeahead-template-url=\"templates/organizer-typeahead-template.html\"/>\n" +
+    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"/>\n" +
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
@@ -21897,6 +21962,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <i class=\"fa fa-circle-o-notch fa-spin\"></i> Zoeken…\n" +
     "    </div>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
+    "<uitpas-organisation-suggestion organisation=\"match.model\"></uitpas-organisation-suggestion>"
   );
 
 }]);
