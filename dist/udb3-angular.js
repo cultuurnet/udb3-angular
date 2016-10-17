@@ -4305,6 +4305,7 @@ function UdbOrganizerFactory() {
       this.email = jsonOrganizer.email || [];
       this.phone = jsonOrganizer.phone || [];
       this.url = jsonOrganizer.url || [];
+      this.labels = jsonOrganizer.labels || [];
     }
   };
 
@@ -17423,29 +17424,48 @@ function searchDirective() {
   return search;
 }
 
-// Source: src/uitpas/organisation-suggestion.component.js
+// Source: src/uitpas/organisation-suggestion.controller.js
+/**
+ * @ngdoc directive
+ * @name udb.search.controller:OfferController
+ * @description
+ * # OfferController
+ */
 angular
   .module('udb.uitpas')
-  .component('uitpasOrganisationSuggestion', {
-    template:
-    '<a>' +
-      '<span class="organisation-name" ng-bind="::os.organisation.name"></span> ' +
-      '<small ng-if="::os.isUitpas" class="label label-default uitpas-tag">UiTPAS</small>' +
-    '</a>',
-    controller: OrganisationSuggestionController,
-    controllerAs: 'os',
-    bindings: {
-      organisation: '<'
-    }
-  });
+  .controller('OrganisationSuggestionController', OrganisationSuggestionController);
 
 /* @ngInject */
-function OrganisationSuggestionController(UitpasLabels) {
-  var os = this;
+function OrganisationSuggestionController($scope, UitpasLabels) {
+  var controller = this;
+  controller.organisation = $scope.organisation;
+  controller.query = $scope.query;
 
-  os.isUitpas = !_.isEmpty(_.intersection(os.organisation.labels, _.values(UitpasLabels)));
+  controller.isUitpas = !_.isEmpty(_.intersection(
+    _.pluck($scope.organisation.labels, 'name'),
+    _.values(UitpasLabels)
+  ));
 }
-OrganisationSuggestionController.$inject = ["UitpasLabels"];
+OrganisationSuggestionController.$inject = ["$scope", "UitpasLabels"];
+
+// Source: src/uitpas/organisation-suggestion.directive.js
+angular
+  .module('udb.uitpas')
+  .directive('uitpasOrganisationSuggestion', uitpasOrganisationSuggestion);
+
+/* @ngInject */
+function uitpasOrganisationSuggestion() {
+  return {
+    templateUrl: 'templates/organisation-suggestion.directive.html',
+    controller: 'OrganisationSuggestionController',
+    controllerAs: 'os',
+    scope: {
+      organisation: '<',
+      query: '<'
+    },
+    restrict: 'A'
+  };
+}
 
 // Source: src/uitpas/uitpas-labels.constant.js
 /* jshint sub: true */
@@ -21965,8 +21985,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/organisation-suggestion.directive.html',
+    "<span class=\"organisation-name\" ng-bind-html=\"::os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
+    "<small ng-if=\"::os.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+  );
+
+
   $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
-    "<uitpas-organisation-suggestion organisation=\"match.model\"></uitpas-organisation-suggestion>"
+    "<a uitpas-organisation-suggestion organisation=\"match.model\" query=\"query\"></a>"
   );
 
 }]);
