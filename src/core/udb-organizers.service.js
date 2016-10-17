@@ -11,47 +11,29 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, $http, appConfig, UdbOrganizer) {
+function UdbOrganizers($q, udbApi, UdbOrganizer) {
 
   /**
-   * Get the organizers that match the searched value.
+   * @param {string} name
+   *  The name of the organizer to fuzzy search against.
+   *
+   * @return {Promise.<UdbOrganizer[]>}
    */
-  this.suggestOrganizers = function(value) {
+  this.suggestOrganizers = function(name) {
     var deferredOrganizer = $q.defer();
 
-    function returnOrganizerSuggestions(pagedOrganizersResponse) {
-      var jsonOrganizers = pagedOrganizersResponse.data.member;
-      var organizers = _.map(jsonOrganizers, function (jsonOrganizer) {
+    function returnOrganizerSuggestions(pagedOrganizers) {
+      var organizers = _.map(pagedOrganizers.member, function (jsonOrganizer) {
         return new UdbOrganizer(jsonOrganizer);
       });
 
       deferredOrganizer.resolve(organizers);
     }
 
-    $http
-      .get(appConfig.baseApiUrl + 'organizer/suggest/' + value)
+    udbApi
+      .findOrganisations(10, 0, null, name)
       .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
   };
-
-  /**
-   * Search for duplicate organizers.
-   */
-  this.searchDuplicates = function(title, postalCode) {
-
-    var duplicates = $q.defer();
-
-    var request = $http.get(
-      appConfig.baseApiUrl + 'organizer/search-duplicates/' + title + '?postalcode=' + postalCode
-    );
-
-    request.success(function(jsonData) {
-      duplicates.resolve(jsonData);
-    });
-
-    return duplicates.promise;
-
-  };
-
 }
