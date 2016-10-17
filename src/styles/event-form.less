@@ -97,8 +97,8 @@
     display: block;
     margin: 0 auto;
     text-align: center;
-    padding-top: 30px;
-    font-size: 7em;
+    font-size: 5em;
+    line-height: 1;
     text-decoration: none !important;
   }
   .add-date-link:hover,
@@ -113,8 +113,14 @@
     text-decoration: underline;
   }
   #add-date-tip {
-    padding-top: 30px;
+    font-style: italic;
     color: #999;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 15px;
+    margin: 0;
   }
   .add-date-link,
   .add-date-link:focus *,
@@ -129,7 +135,7 @@
     overflow: hidden;
     padding: 0;
     width: 100%;
-
+    position: relative;
   }
   .day {
     height: 30px;
