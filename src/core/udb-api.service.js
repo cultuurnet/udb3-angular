@@ -208,33 +208,50 @@ function UdbApi(
 
   // TODO: Give organizers their own cache instead of using offer?
   this.getOrganizerById = function(organizerId) {
-      var deferredOrganizer = $q.defer();
+    var deferredOrganizer = $q.defer();
 
-      var organizer = offerCache.get(organizerId);
+    var organizer = offerCache.get(organizerId);
 
-      if (organizer) {
+    if (organizer) {
+      deferredOrganizer.resolve(organizer);
+    } else {
+      var organizerRequest  = $http.get(
+        appConfig.baseUrl + 'organizers/' + organizerId,
+        defaultApiConfig
+      );
+
+      organizerRequest.success(function(jsonOrganizer) {
+        var organizer = new UdbOrganizer();
+        organizer.parseJson(jsonOrganizer);
+        offerCache.put(organizerId, organizer);
         deferredOrganizer.resolve(organizer);
-      } else {
-        var organizerRequest  = $http.get(
-          appConfig.baseUrl + 'organizers/' + organizerId,
-          defaultApiConfig
-        );
+      });
+    }
 
-        organizerRequest.success(function(jsonOrganizer) {
-          var organizer = new UdbOrganizer();
-          organizer.parseJson(jsonOrganizer);
-          offerCache.put(organizerId, organizer);
-          deferredOrganizer.resolve(organizer);
-        });
-      }
+    return deferredOrganizer.promise;
+  };
 
-      return deferredOrganizer.promise;
+  /**
+   * @param {number} start
+   * @param {number} limit
+   * @param {string|null} website
+   * @param {string|null} name
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  this.findOrganisations = function(start, limit, website, name) {
+    var params = {
+      limit: limit ? limit : 10,
+      start: start ? start : 0
     };
+    if (website) { params.website = website; }
+    if (name) { params.name = name; }
 
-  this.searchDuplicateOrganizers = function(website) {
+    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+
     return $http
-      .get(appConfig.baseUrl + 'organizers/?website=' + website, defaultApiConfig)
-      .then(returnUnwrappedData);
+        .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+        .then(returnUnwrappedData);
   };
 
   /**

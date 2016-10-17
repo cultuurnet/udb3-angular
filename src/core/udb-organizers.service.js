@@ -11,35 +11,31 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, $http, appConfig, UdbOrganizer, udbApi) {
+function UdbOrganizers($q, UdbOrganizer, udbApi) {
 
   /**
-   * Get the organizers that match the searched value.
+   * @param {string} name
+   *  The name of the organizer to fuzzy search against.
+   *
+   * @return {Promise.<UdbOrganizer[]>}
    */
-  this.suggestOrganizers = function(value) {
+
+  this.suggestOrganizers = function(name) {
     var deferredOrganizer = $q.defer();
 
-    function returnOrganizerSuggestions(pagedOrganizersResponse) {
-      var jsonOrganizers = pagedOrganizersResponse.data.member;
-      var organizers = _.map(jsonOrganizers, function (jsonOrganizer) {
+    function returnOrganizerSuggestions(pagedOrganizers) {
+      var organizers = _.map(pagedOrganizers.member, function (jsonOrganizer) {
         return new UdbOrganizer(jsonOrganizer);
       });
 
       deferredOrganizer.resolve(organizers);
     }
 
-    $http
-      .get(appConfig.baseUrl + 'organizers/suggest/' + value)
-      .then(returnOrganizerSuggestions);
+    udbApi
+        .findOrganisations(10, 0, null, name)
+        .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
-  };
-
-  /**
-   * Search for duplicate organizers.
-   */
-  this.searchDuplicates = function(website) {
-    return udbApi.searchDuplicateOrganizers(website);
   };
 
 }
