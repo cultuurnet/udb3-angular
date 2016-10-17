@@ -32,10 +32,15 @@ function UdbOrganizers($q, UdbOrganizer, udbApi) {
     }
 
     udbApi
-        .findOrganisations(10, 0, null, name)
+        .findOrganisations(0, 10, null, name)
         .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
+  };
+
+  this.findOrganizersWebsite = function(website) {
+    return udbApi
+        .findOrganisations(0, 10, website, null);
   };
 
 }

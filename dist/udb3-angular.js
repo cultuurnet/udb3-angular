@@ -2823,33 +2823,50 @@ function UdbApi(
 
   // TODO: Give organizers their own cache instead of using offer?
   this.getOrganizerById = function(organizerId) {
-      var deferredOrganizer = $q.defer();
+    var deferredOrganizer = $q.defer();
 
-      var organizer = offerCache.get(organizerId);
+    var organizer = offerCache.get(organizerId);
 
-      if (organizer) {
+    if (organizer) {
+      deferredOrganizer.resolve(organizer);
+    } else {
+      var organizerRequest  = $http.get(
+        appConfig.baseUrl + 'organizers/' + organizerId,
+        defaultApiConfig
+      );
+
+      organizerRequest.success(function(jsonOrganizer) {
+        var organizer = new UdbOrganizer();
+        organizer.parseJson(jsonOrganizer);
+        offerCache.put(organizerId, organizer);
         deferredOrganizer.resolve(organizer);
-      } else {
-        var organizerRequest  = $http.get(
-          appConfig.baseUrl + 'organizers/' + organizerId,
-          defaultApiConfig
-        );
+      });
+    }
 
-        organizerRequest.success(function(jsonOrganizer) {
-          var organizer = new UdbOrganizer();
-          organizer.parseJson(jsonOrganizer);
-          offerCache.put(organizerId, organizer);
-          deferredOrganizer.resolve(organizer);
-        });
-      }
+    return deferredOrganizer.promise;
+  };
 
-      return deferredOrganizer.promise;
+  /**
+   * @param {number} start
+   * @param {number} limit
+   * @param {string|null} website
+   * @param {string|null} name
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  this.findOrganisations = function(start, limit, website, name) {
+    var params = {
+      limit: limit ? limit : 10,
+      start: start ? start : 0
     };
+    if (website) { params.website = website; }
+    if (name) { params.name = name; }
 
-  this.searchDuplicateOrganizers = function(website) {
+    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+
     return $http
-      .get(appConfig.baseUrl + 'organizers/?website=' + website, defaultApiConfig)
-      .then(returnUnwrappedData);
+        .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+        .then(returnUnwrappedData);
   };
 
   /**
@@ -4282,39 +4299,40 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, $http, appConfig, UdbOrganizer, udbApi) {
+function UdbOrganizers($q, UdbOrganizer, udbApi) {
 
   /**
-   * Get the organizers that match the searched value.
+   * @param {string} name
+   *  The name of the organizer to fuzzy search against.
+   *
+   * @return {Promise.<UdbOrganizer[]>}
    */
-  this.suggestOrganizers = function(value) {
+
+  this.suggestOrganizers = function(name) {
     var deferredOrganizer = $q.defer();
 
-    function returnOrganizerSuggestions(pagedOrganizersResponse) {
-      var jsonOrganizers = pagedOrganizersResponse.data.member;
-      var organizers = _.map(jsonOrganizers, function (jsonOrganizer) {
+    function returnOrganizerSuggestions(pagedOrganizers) {
+      var organizers = _.map(pagedOrganizers.member, function (jsonOrganizer) {
         return new UdbOrganizer(jsonOrganizer);
       });
 
       deferredOrganizer.resolve(organizers);
     }
 
-    $http
-      .get(appConfig.baseUrl + 'organizers/suggest/' + value)
-      .then(returnOrganizerSuggestions);
+    udbApi
+        .findOrganisations(0, 10, null, name)
+        .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
   };
 
-  /**
-   * Search for duplicate organizers.
-   */
-  this.searchDuplicates = function(website) {
-    return udbApi.searchDuplicateOrganizers(website);
+  this.findOrganizersWebsite = function(website) {
+    return udbApi
+        .findOrganisations(0, 10, website, null);
   };
 
 }
-UdbOrganizers.$inject = ["$q", "$http", "appConfig", "UdbOrganizer", "udbApi"];
+UdbOrganizers.$inject = ["$q", "UdbOrganizer", "udbApi"];
 
 // Source: src/core/udb-place.factory.js
 /**
@@ -7472,7 +7490,7 @@ function EventFormOrganizerModalController(
     }
 
     udbOrganizers
-        .searchDuplicates($scope.newOrganizer.website)
+        .findOrganizersWebsite($scope.newOrganizer.website)
         .then(function (data) {
           // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
@@ -18001,6 +18019,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
     "            <p class=\"help-block\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
     "            <p class=\"error help-block\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie \\'<span ng-bind=\"firstOrganizerFound.name\"></span>\\'. Geef een unieke website of <a ng-click=\"useFirstOrganizerFound()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "            <p class=\"error help-block\" ng-show=\"organizersWebsiteRegex\">Gelieve een geldige url in te geven.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +

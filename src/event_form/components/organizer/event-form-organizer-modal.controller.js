@@ -103,7 +103,7 @@ function EventFormOrganizerModalController(
     }
 
     udbOrganizers
-        .searchDuplicates($scope.newOrganizer.website)
+        .findOrganizersWebsite($scope.newOrganizer.website)
         .then(function (data) {
           // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
