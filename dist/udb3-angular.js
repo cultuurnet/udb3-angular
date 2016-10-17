@@ -18022,7 +18022,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <section>\n" +
     "                <div class=\"form-group clearfix\" ng-hide=\"ageRange === AgeRange.ALL\">\n" +
     "                  <div class=\"row\">\n" +
-    "                    <div class=\"col-xs-8\">\n" +
+    "                    <div class=\"col-xs-7\">\n" +
     "                      <select class=\"form-control leeftijd-incomplete-select\"\n" +
     "                              ng-change=\"ageRangeChanged(ageRange)\"\n" +
     "                              ng-model=\"ageRange\"\n" +
@@ -18030,7 +18030,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <option value=\"\">Kies een leeftijdscategorie</option>\n" +
     "                      </select>\n" +
     "                    </div>\n" +
-    "                    <div class=\"col-xs-4\">\n" +
+    "                    <div class=\"col-xs-5\">\n" +
     "                      <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
     "                    </div>\n" +
     "                  </div>\n" +
