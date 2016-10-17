@@ -2564,8 +2564,8 @@ input + .alert {
   display: block;
   margin: 0 auto;
   text-align: center;
-  padding-top: 30px;
-  font-size: 7em;
+  font-size: 5em;
+  line-height: 1;
   text-decoration: none !important;
 }
 .offer-form .add-date-link:hover,
@@ -2579,8 +2579,14 @@ input + .alert {
   text-decoration: underline;
 }
 .offer-form #add-date-tip {
-  padding-top: 30px;
+  font-style: italic;
   color: #999;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 15px;
+  margin: 0;
 }
 .offer-form .add-date-link,
 .offer-form .add-date-link:focus *,
@@ -2594,6 +2600,7 @@ input + .alert {
   overflow: hidden;
   padding: 0;
   width: 100%;
+  position: relative;
 }
 .offer-form .day {
   height: 30px;
@@ -2999,7 +3006,7 @@ input + .alert {
 .offer-form .main-image .select-main-image {
   display: none;
 }
-.offer-form a {
+.offer-form a:not(.btn) {
   text-decoration: underline;
 }
 .event-type-choser-label {
@@ -3062,6 +3069,9 @@ input + .alert {
 #gemeente-kiezer,
 #locatie-kiezer {
   min-height: 100px;
+}
+#titel .help-block {
+  max-width: 450px;
 }
 .muted td {
   background-color: #EDEDED;
