@@ -187,7 +187,7 @@ describe('Service: Moderation Service', function () {
 
     function assertResultset (result) {
       expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith(
-        'city:leuven AND wfstatus:"readyforvalidation" AND startdate:[NOW TO *]',
+        '(city:leuven) AND wfstatus:"readyforvalidation" AND startdate:[NOW TO *]',
         0,
         10
       );
