@@ -4367,7 +4367,7 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
     }
 
     udbApi
-      .findOrganisations(10, 0, null, name)
+      .findOrganisations(0, 10, null, name)
       .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
