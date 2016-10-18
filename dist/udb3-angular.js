@@ -17482,7 +17482,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "    <ul uib-dropdown-menu role=\"menu\">\n" +
     "      <li role=\"menuitem\">\n" +
-    "        <a ui-sref=\"split.footer.event.preview({ id: event.id })\">Voorbeeld</a>\n" +
+    "        <a ng-href=\"{{ ::event.url + '/preview' }}\">Voorbeeld</a>\n" +
     "      </li>\n" +
     "      <li class=\"divider\"></li>\n" +
     "      <li role=\"menuitem\">\n" +
