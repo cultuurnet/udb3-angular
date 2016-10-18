@@ -26,6 +26,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
   $scope.hasOpeningHours = EventFormData.openingHours.length > 0;
+  $scope.lastSelectedDate = '';
 
   // Scope functions
   $scope.setCalendarType = setCalendarType;
@@ -36,6 +37,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
+  $scope.dateChosen = dateChosen;
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -96,6 +98,14 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       EventFormData.majorInfoChanged = true;
     }
 
+  }
+
+  /**
+   * Change listener to the datepicker. Last choice is stored.
+   */
+  function dateChosen(timestamp) {
+    $scope.lastSelectedDate = timestamp;
+    controller.eventTimingChanged();
   }
 
   /**
@@ -218,4 +228,5 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   controller.clearPeriodicRangeError = function () {
     controller.periodicRangeError = false;
   };
+
 }

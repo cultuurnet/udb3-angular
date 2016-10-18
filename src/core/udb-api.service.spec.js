@@ -663,6 +663,36 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  // updatePriceInfo
+  it('should update the price info of an event or place', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var price = [
+      {
+        "category": 'base',
+        "name": 'Basisprijs',
+        "priceCurrency": 'EUR',
+        "price": 2
+      },
+      {
+        "category": 'tariff',
+        "name": 'Bijkomende prijs',
+        "priceCurrency": 'EUR',
+        "price": 3
+      }
+    ];
+
+    $httpBackend
+      .expectPUT(offerLocation + '/priceInfo', price)
+      .respond();
+
+    service
+      .updatePriceInfo(offerLocation, price)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
   it('should update properties using delimiter-seperated instead of CamelCase', function(done){
     var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
     var propertyName = 'typicalAgeRange';

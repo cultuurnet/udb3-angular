@@ -15,7 +15,8 @@
                  class="form-control"
                  ng-model="eventFormData.name.nl"
                  ng-model-options="titleInputOptions"
-                 ng-change="eventTitleChanged()">
+                 ng-change="eventTitleChanged()"
+                 udb-auto-scroll>
         </div>
 
         <div class="help-block">
@@ -28,9 +29,22 @@
       </div>
     </div>
 
+    <div class="alert alert-warning" ng-show="infoMissing">
+      <strong>Je vulde niet alle verplichte informatie in:</strong>
+      <ul>
+        <li ng-repeat="error in missingInfo" ng-bind-html="error" translate>
+          {{error}}
+        </li>
+      </ul>
+    </div>
+
+    <div class="alert alert-danger" ng-show="error">
+      Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.
+    </div>
+
     <p ng-show="eventFormData.id === ''">
       <a class="btn btn-primary titel-doorgaan"
-          ng-click="validateEvent(true)"
+          ng-click="validateEvent(true);"
           ng-class="{'disabled': eventFormData.name.nl === ''}">
         Doorgaan <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
       </a>
@@ -78,13 +92,6 @@
       </li>
     </ul>
 
-    <div class="alert alert-warning" ng-show="infoMissing">
-      Gelieve alle info in te vullen vooraleer je kan opslaan.
-    </div>
-
-    <div class="alert alert-danger" ng-show="error">
-      Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.
-    </div>
   </section>
 
 </div>

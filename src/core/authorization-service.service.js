@@ -20,13 +20,14 @@ angular
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
-function AuthorizationService($q, uitidAuth, udbApi, $location) {
+function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
   this.isLoggedIn = function () {
     var deferred = $q.defer();
 
     var deferredUser = udbApi.getMe();
     deferredUser.then(
       function (user) {
+        $rootScope.$emit('userLoggedIn', user);
         deferred.resolve(user);
       },
       function () {

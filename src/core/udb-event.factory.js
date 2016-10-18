@@ -146,6 +146,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         this.price = parseFloat(jsonEvent.bookingInfo[0].price);
       }
       this.pricing = getPricing(jsonEvent);
+      this.priceInfo = jsonEvent.priceInfo || [];
       this.publisher = jsonEvent.publisher || '';
       this.created = new Date(jsonEvent.created);
       this.modified = new Date(jsonEvent.modified);

@@ -32,6 +32,12 @@
             }
           }
         });
+
+        // Watch for any changes from outside the directive and refresh
+        scope.$watch(attrs.ngModel, function () {
+          elem.multiselect('refresh');
+        });
+
       }
 
     };

@@ -45,7 +45,7 @@
               </section>
               <section class="state filling">
                 <div class="form-group">
-                  <textarea class="form-control" ng-model="description" rows="6" focus-if="focusDescription"></textarea>
+                  <textarea class="form-control" ng-model="description" rows="6" udb-auto-scroll></textarea>
                   <div class="tip" ng-switch="eventFormData.eventType">
                     <p ng-switch-when="0.17.0.0.0">
                       Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>
@@ -183,6 +183,8 @@
             </div>
           </div>
         </div>
+
+        <price-info price="price"></price-info>
 
         <form name="step5TicketsForm" class="css-form">
           <div class="row extra-tickets-website" ng-class="bookingInfoCssClass">

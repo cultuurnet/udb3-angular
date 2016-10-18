@@ -89,6 +89,7 @@ angular
     'udb.entry',
     'udb.search',
     'ngFileUpload',
+    'duScroll',
     'focus-if'
   ]);
 
@@ -1920,13 +1921,14 @@ angular
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
-function AuthorizationService($q, uitidAuth, udbApi, $location) {
+function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
   this.isLoggedIn = function () {
     var deferred = $q.defer();
 
     var deferredUser = udbApi.getMe();
     deferredUser.then(
       function (user) {
+        $rootScope.$emit('userLoggedIn', user);
         deferred.resolve(user);
       },
       function () {
@@ -1990,7 +1992,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location) {
       .getMyPermissions();
   };
 }
-AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location"];
+AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope"];
 
 // Source: src/core/city-autocomplete.service.js
 /**
@@ -2112,7 +2114,20 @@ function udbCalendarSummary() {
        */
       function loadDatePicker() {
 
+        var lastSelectedYear;
+        var lastSelectedMonth;
+
+        if (scope.lastSelectedDate) {
+          lastSelectedYear = scope.lastSelectedDate.getFullYear();
+          lastSelectedMonth = scope.lastSelectedDate.getMonth();
+        } else {
+          var today = new Date();
+          lastSelectedYear = today.getFullYear();
+          lastSelectedMonth = today.getMonth();
+        }
+
         var options = {
+          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
@@ -2177,6 +2192,12 @@ function udbCalendarSummary() {
             }
           }
         });
+
+        // Watch for any changes from outside the directive and refresh
+        scope.$watch(attrs.ngModel, function () {
+          elem.multiselect('refresh');
+        });
+
       }
 
     };
@@ -2553,6 +2574,7 @@ angular.module('udb.core')
       'address': 'Adres',
       'organizer': 'Organisator',
       'bookingInfo.price': 'Prijsinformatie',
+      'kansentarief': 'Kansentarief',
       'bookingInfo.url': 'Ticket link',
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
@@ -2586,7 +2608,13 @@ angular.module('udb.core')
     'AANBOD_VERWIJDEREN': 'Aanbod verwijderen',
     'ORGANISATIES_BEHEREN': 'Organisaties beheren',
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
-    'LABELS_BEHEREN': 'Labels beheren'
+    'LABELS_BEHEREN': 'Labels beheren',
+    'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
+    'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
+    'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',
+    'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
+    'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
+    'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
   }
 );
 
@@ -3089,6 +3117,14 @@ function UdbApi(
     );
   };
 
+  this.updatePriceInfo = function(offerLocation, price) {
+    return $http.put(
+      offerLocation + '/priceInfo',
+      price,
+      defaultApiConfig
+    );
+  };
+
   /**
    * @param {URL} offerLocation
    * @param {string} label
@@ -3136,7 +3172,7 @@ function UdbApi(
    */
   this.createOffer = function (type, offer) {
     return $http.post(
-      appConfig.baseApiUrl + type,
+      appConfig.baseUrl + type,
       offer,
       defaultApiConfig
     ).then(function(response) {
@@ -3974,6 +4010,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         this.price = parseFloat(jsonEvent.bookingInfo[0].price);
       }
       this.pricing = getPricing(jsonEvent);
+      this.priceInfo = jsonEvent.priceInfo || [];
       this.publisher = jsonEvent.publisher || '';
       this.created = new Date(jsonEvent.created);
       this.modified = new Date(jsonEvent.modified);
@@ -4438,7 +4475,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.calendarType = '';
     this.openinghours = [];
     this.address = {
-      'addressCountry' : '',
+      'addressCountry' : 'BE',
       'addressLocality' : '',
       'postalCode' : '',
       'streetAddress' : ''
@@ -4467,6 +4504,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.endDate = jsonPlace.endDate;
       this.openingHours = jsonPlace.openingHours || [];
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
+      this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
       this.contactPoint = jsonPlace.contactPoint || {};
       if (jsonPlace.organizer) {
@@ -5220,10 +5258,7 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
 
   EventCrudJob.prototype.finish = function () {
     BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve(this.item.apiUrl);
-    }
+    this.task.resolve(this.item.apiUrl);
   };
 
   EventCrudJob.prototype.fail = function () {
@@ -5268,9 +5303,6 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
       case 'updateFacilities':
         return 'Voorzieningen aanpassen: "' + this.item.name.nl + '".';
 
-      case 'updateBookingInfo':
-        return 'Boeking info aanpassen: "' + this.item.name.nl + '".';
-
       case 'addImage':
         return 'Afbeelding toevoegen: "' + this.item.name.nl + '".';
 
@@ -5282,6 +5314,12 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
 
       case 'updateMajorInfo':
         return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
+
+      case 'updatePriceInfo':
+        return 'Prijsinformatie aanpassen: "' + this.item.name.nl + '".';
+
+      case 'publishOffer':
+        return 'Aanbod publiceren: "' + this.item.name.nl + '".';
 
     }
 
@@ -5336,8 +5374,10 @@ function EventCrud(
       return eventFormData;
     };
 
+    var majorInfo = _.omit(eventFormData, _.isEmpty);
+
     return udbApi
-      .createOffer(type, eventFormData)
+      .createOffer(type, majorInfo)
       .then(updateEventFormData);
   };
 
@@ -5379,8 +5419,12 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
+    var majorInfo = _.pick(eventFormData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+
     udbApi
-      .updateMajorInfo(eventFormData.apiUrl, eventFormData)
+      .updateMajorInfo(eventFormData.apiUrl, majorInfo)
       .then(jobCreatorFactory(eventFormData, 'updateItem'));
   };
 
@@ -5467,6 +5511,24 @@ function EventCrud(
 
     return jobCreator;
   }
+
+  /**
+   * Update the price info and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updatePriceInfo = function(item) {
+    return udbApi
+      .updatePriceInfo(item.apiUrl, item.price)
+      .then(function (response) {
+        var jobData = response.data;
+        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
+  };
 
   /**
    * Update the contact point and add it to the job logger.
@@ -5578,6 +5640,24 @@ function EventCrud(
     return udbApi
       .selectMainImage(item.apiUrl, imageId)
       .then(jobCreatorFactory(item, 'selectMainImage'));
+  };
+
+  /**
+   * @param {EventFormData} offer
+   * @param {string} jobName
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  service.publishOffer = function(offer, jobName) {
+    return udbApi
+      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .then(function (response) {
+        var job = new EventCrudJob(response.commandId, offer, jobName);
+
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
   };
 
   /**
@@ -6977,6 +7057,39 @@ function EventDetail(
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
 
+// Source: src/event_form/components/auto-scroll.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbAutoScroll
+ * @description
+ * auto scrolls to the attached element when focused.
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbAutoScroll', AutoScroll);
+
+/* @ngInject */
+function AutoScroll($document) {
+  return {
+    restrict: 'A',
+    link: link
+  };
+
+  function link(scope, element) {
+    var scrollDuration = 1000;
+    var easeInOutQuad = function (t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    };
+
+    element.on('click focusin', scrollToTarget);
+
+    function scrollToTarget(event) {
+      $document.scrollTo(event.target, 100, scrollDuration, easeInOutQuad);
+    }
+  }
+}
+AutoScroll.$inject = ["$document"];
+
 // Source: src/event_form/components/calendartypes/event-form-period.directive.js
 /**
  * @ngdoc directive
@@ -7740,6 +7853,167 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
 })();
 
+// Source: src/event_form/components/price-info/price-info.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormPriceInfoController
+ * @description
+ * # EventFormImageUploadController
+ * Modal for setting the reservation period.
+ */
+angular
+  .module('udb.event-form')
+  .component('priceInfo', {
+    templateUrl: 'templates/priceInfo.html',
+    controller: PriceInfoComponent,
+    bindings: {
+      price: '<'
+    }
+  });
+
+/* @ngInject */
+function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootScope) {
+
+  var controller = this;
+
+  // Price info vars.
+  controller.editPrice = false;
+  controller.priceError = false;
+  controller.invalidPrice = false;
+  controller.savingPrice = false;
+  controller.formPriceSubmitted = false;
+  var originalPrice = [];
+  controller.editingPrice = editingPrice;
+  controller.unsetPriceItemFree = unsetPriceItemFree;
+  controller.setPriceItemFree = setPriceItemFree;
+  controller.deletePriceItem = deletePriceItem;
+  controller.showPriceDelete = showPriceDelete;
+  controller.addPriceItem = addPriceItem;
+  controller.cancelEditPrice = cancelEditPrice;
+  controller.validatePrice = validatePrice;
+  controller.savePrice = savePrice;
+
+  init();
+
+  function editingPrice(firstItem) {
+    if (firstItem === undefined) {
+      firstItem = false;
+    }
+
+    controller.editPrice = true;
+    originalPrice = angular.copy(controller.price);
+
+    if (firstItem && controller.price.length === 0) {
+      controller.price = [
+        {
+          category: 'base',
+          name: 'Basisprijs',
+          priceCurrency: 'EUR',
+          price: 0
+        }
+      ];
+    }
+
+    else if (controller.price.length === 0) {
+      controller.price = [
+        {
+          category: 'base',
+          name: 'Basisprijs',
+          priceCurrency: 'EUR',
+          price: ''
+        }
+      ];
+    }
+  }
+
+  function unsetPriceItemFree(key) {
+    controller.price[key].price = '';
+  }
+
+  function setPriceItemFree(key) {
+    controller.price[key].price = 0;
+  }
+
+  function deletePriceItem(key) {
+    controller.price.splice(key, 1);
+  }
+
+  function showPriceDelete(key) {
+    return key !== 0;
+
+    // TODO when BE can accept empty price array
+    /*if (key === 0 && controller.price.length === 1) {
+      return true;
+    }
+    else {
+      return false
+    }*/
+  }
+
+  function addPriceItem() {
+    var priceItem = {
+      category: 'tariff',
+      name: '',
+      priceCurrency: 'EUR',
+      price: ''
+    };
+    controller.price.push(priceItem);
+  }
+
+  function cancelEditPrice() {
+    controller.price = angular.copy(originalPrice);
+    originalPrice = [];
+
+    controller.editPrice = false;
+    controller.invalidPrice = false;
+    controller.priceError = false;
+    controller.formPriceSubmitted = false;
+  }
+
+  function validatePrice() {
+    controller.formPriceSubmitted = true;
+    if ($scope.priceForm.$valid) {
+      controller.priceError = false;
+      controller.invalidPrice = false;
+      savePrice();
+    }
+    else {
+      controller.invalidPrice = true;
+    }
+  }
+
+  function savePrice() {
+    controller.savingPrice = true;
+
+    EventFormData.price = controller.price;
+    controller.editPrice = false;
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      $rootScope.$emit('eventFormSaved', EventFormData);
+      if (!_.isEmpty(controller.price)) {
+        controller.priceCssClass = 'state-complete';
+      }
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
+    }, function () {
+      controller.priceError = true;
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
+    });
+  }
+
+  function init() {
+    if (controller.price.length) {
+      controller.priceCssClass = 'state-complete';
+    }
+    else {
+      controller.priceCssClass = '';
+    }
+  }
+}
+PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "appConfig", "$rootScope"];
+
 // Source: src/event_form/components/reservation-modal/reservation-modal.controller.js
 /**
  * @ngdoc function
@@ -8211,15 +8485,23 @@ function EventFormDataFactory() {
         nl : ''
       };
       this.description = {};
+      // Events have a location
       this.location = {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
         }
+      };
+      // Places only have an address
+      this.address = {
+        'addressCountry': 'BE',
+        'addressLocality': '',
+        'postalCode': '',
+        'streetAddress': ''
       };
       this.place = {};
       /** @type {EventType} */
@@ -8247,6 +8529,8 @@ function EventFormDataFactory() {
       this.mediaObjects = [];
       this.image = [];
       this.additionalData = {};
+      this.priceInfo = [];
+      this.workflowStatus = 'DRAFT';
     },
 
     /**
@@ -8379,7 +8663,7 @@ function EventFormDataFactory() {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
@@ -8410,8 +8694,8 @@ function EventFormDataFactory() {
         'date' : date,
         'startHour' : startHour,
         'endHour' : endHour,
-        'showStartHour' : startHour !== '',
-        'showEndHour' : endHour !== '',
+        'showStartHour' : !!startHour,
+        'showEndHour' : (endHour && endHour !== startHour)
       });
 
     },
@@ -8628,11 +8912,9 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       EventFormData.isPlace = true;
       copyItemDataToFormData(offer);
 
-      // Places only have an address, form uses location property.
+      // Places only have an address
       if (offer.address) {
-        EventFormData.location = {
-          address : offer.address
-        };
+        EventFormData.address = offer.address;
       }
     }
   }
@@ -8654,10 +8936,12 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'organizer',
       'bookingInfo',
       'contactPoint',
+      'priceInfo',
       'facilities',
       'image',
       'additionalData',
-      'apiUrl'
+      'apiUrl',
+      'workflowStatus'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -8871,6 +9155,26 @@ function EventFormStep5Directive() {
   };
 }
 
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbEventFormPublish
+ * @description
+ * # udb event form publish directive
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbEventFormPublish', EventFormPublishDirective);
+
+/* @ngInject */
+function EventFormPublishDirective() {
+  return {
+    templateUrl: 'templates/event-form-publish.html',
+    restrict: 'EA',
+    controller: 'EventFormPublishController',
+    controllerAs: 'efpc'
+  };
+}
+
 // Source: src/event_form/http-prefix.directive.js
 angular
   .module('udb.event-form')
@@ -8902,6 +9206,72 @@ function HttpPrefixDirective() {
     }
   };
 }
+
+// Source: src/event_form/steps/event-form-publish.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormStep3Controller
+ * @description
+ * # EventFormStep3Controller
+ * Step 3 of the event form
+ */
+angular
+  .module('udb.event-form')
+  .controller('EventFormPublishController', EventFormPublishController);
+
+/* @ngInject */
+function EventFormPublishController(
+    $scope,
+    EventFormData,
+    eventCrud,
+    OfferWorkflowStatus,
+    $q,
+    $location
+) {
+
+  var controller = this;
+
+  controller.publish = publish;
+  controller.preview = preview;
+  controller.isDraft = isDraft;
+
+  // main storage for event form.
+  controller.eventFormData = EventFormData;
+
+  function publish() {
+    controller.error = '';
+
+    eventCrud
+      .publishOffer(EventFormData, 'publishOffer')
+      .then(function(job) {
+        job.task.promise
+          .then(setEventAsReadyForValidation)
+          .then(redirectToDetailPage)
+          .catch(function() {
+            controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
+          });
+      });
+  }
+
+  function setEventAsReadyForValidation() {
+    EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
+
+    return $q.resolve();
+  }
+
+  function redirectToDetailPage() {
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id);
+  }
+
+  function preview() {
+    redirectToDetailPage();
+  }
+
+  function isDraft(status) {
+    return (status === OfferWorkflowStatus.DRAFT);
+  }
+}
+EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
@@ -9123,6 +9493,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
   $scope.hasOpeningHours = EventFormData.openingHours.length > 0;
+  $scope.lastSelectedDate = '';
 
   // Scope functions
   $scope.setCalendarType = setCalendarType;
@@ -9133,6 +9504,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
+  $scope.dateChosen = dateChosen;
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9193,6 +9565,14 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       EventFormData.majorInfoChanged = true;
     }
 
+  }
+
+  /**
+   * Change listener to the datepicker. Last choice is stored.
+   */
+  function dateChosen(timestamp) {
+    $scope.lastSelectedDate = timestamp;
+    controller.eventTimingChanged();
   }
 
   /**
@@ -9315,10 +9695,17 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   controller.clearPeriodicRangeError = function () {
     controller.periodicRangeError = false;
   };
+
 }
 EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
+/**
+ * @typedef {Object} City
+ * @property {string} zip
+ * @property {string} name
+ */
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep3Controller
@@ -9343,6 +9730,21 @@ function EventFormStep3Controller(
 ) {
 
   var controller = this;
+
+  function getEmptyLocation() {
+    var emptyLocation = {
+      'id' : null,
+      'name': '',
+      'address': {
+        'addressCountry': 'BE',
+        'addressLocality': '',
+        'postalCode': '',
+        'streetAddress': ''
+      }
+    };
+
+    return _.cloneDeep(emptyLocation);
+  }
 
   // Scope vars.
   // main storage for event form.
@@ -9378,8 +9780,8 @@ function EventFormStep3Controller(
   $scope.cities = cities;
   $scope.changeCitySelection = changeCitySelection;
   $scope.changeLocationSelection = changeLocationSelection;
-  $scope.setStreetAddress = setStreetAddress;
-  $scope.changeStreetAddress = changeStreetAddress;
+  $scope.setPlaceStreetAddress = setPlaceStreetAddress;
+  $scope.changePlaceStreetAddress = changePlaceStreetAddress;
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
@@ -9401,35 +9803,29 @@ function EventFormStep3Controller(
     };
   };
 
-  // Default values
-  if (EventFormData.location && EventFormData.location.address && EventFormData.location.address.postalCode) {
-
-    $scope.selectedCity = EventFormData.location.address.postalCode +
-      ' ' + EventFormData.location.address.addressLocality;
-
-    // Location has a name => an event.
-    if (EventFormData.location.name) {
-      $scope.selectedLocation = EventFormData.location;
-    }
-    else {
-      $scope.placeStreetAddress = EventFormData.location.address.streetAddress;
-      $scope.selectedLocation = EventFormData.location;
-    }
-  }
-
   /**
-   * Select City.
+   * @param {City} city
+   * @param {string} $label
    */
-  controller.selectCity = function ($item, $label) {
+  controller.selectCity = function (city, $label) {
 
-    var zipcode = $item.zip,
-        name = $item.name;
+    var zipcode = city.zip,
+        name = city.name;
 
-    EventFormData.resetLocation();
-    var location = $scope.eventFormData.getLocation();
-    location.address.postalCode = zipcode;
-    location.address.addressLocality = name;
-    EventFormData.setLocation(location);
+    var newAddressInfo = {
+      postalCode: zipcode,
+      addressLocality: name
+    };
+
+    if (EventFormData.isPlace) {
+      var currentAddress = $scope.eventFormData.address;
+      $scope.eventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
+    } else { //assume an event
+      var newLocationInfo = {address: newAddressInfo};
+      var currentLocation = $scope.eventFormData.getLocation();
+      var newLocation = _.merge(getEmptyLocation(), currentLocation, newLocationInfo);
+      EventFormData.setLocation(newLocation);
+    }
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
@@ -9447,7 +9843,7 @@ function EventFormStep3Controller(
   function changeCitySelection() {
     EventFormData.resetLocation();
     $scope.selectedCity = '';
-    $scope.selectedLocation = undefined;
+    $scope.placeStreetAddress = '';
     $scope.cityAutocompleteTextField = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
@@ -9471,6 +9867,7 @@ function EventFormStep3Controller(
     var location = EventFormData.getLocation();
     location.id = $model;
     location.name = $label;
+    location.address = selectedLocation.address;
     EventFormData.setLocation(location);
 
     controller.stepCompleted();
@@ -9491,7 +9888,6 @@ function EventFormStep3Controller(
     location.name = '';
     EventFormData.setLocation(location);
 
-    //$scope.selectedCity = '';
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
     $scope.locationsSearched = false;
@@ -9606,7 +10002,7 @@ function EventFormStep3Controller(
         }
       };
       EventFormData.setLocation(location);
-      $scope.selectedLocation = location;
+      $scope.selectedLocation = angular.copy(location);
 
       controller.stepCompleted();
     }
@@ -9615,19 +10011,25 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
-  function setStreetAddress() {
+  /**
+   * Set the street address for a Place.
+   *
+   * @param {string} streetAddress
+   */
+  function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
     if (!$scope.step3Form.$valid) {
       return;
     }
 
-    var location = EventFormData.getLocation();
-    location.address.addressCountry = 'BE';
-    location.address.streetAddress = $scope.placeStreetAddress;
-    EventFormData.setLocation(location);
+    var currentAddress = EventFormData.address;
+    var newAddressInfo = {
+      streetAddress: streetAddress
+    };
 
-    $scope.selectedLocation = location;
+    EventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
+    $scope.placeStreetAddress = streetAddress;
 
     controller.stepCompleted();
   }
@@ -9635,19 +10037,10 @@ function EventFormStep3Controller(
   /**
    * Change StreetAddress
    */
-  function changeStreetAddress() {
-
-    // Reset only the street/number data of the location.
-    var location = EventFormData.getLocation();
-    location.address.addressCountry = '';
-    location.address.streetAddress = '';
-    EventFormData.setLocation(location);
-
-    $scope.selectedLocation = undefined;
-
+  function changePlaceStreetAddress() {
+    $scope.newPlaceStreetAddress = $scope.placeStreetAddress ? $scope.placeStreetAddress : '';
+    $scope.placeStreetAddress = '';
     controller.stepUncompleted();
-
-    setMajorInfoChanged();
   }
 
   /**
@@ -9674,13 +10067,26 @@ function EventFormStep3Controller(
   };
 
   controller.init = function (EventFormData) {
-    if (EventFormData.location.address.addressCountry) {
-      var location = EventFormData.location;
+    var address;
 
-      $scope.selectedCity = location.address.addressLocality;
-      controller.getLocations(location.address.postalCode);
-      $scope.placeStreetAddress = location.address.streetAddress;
-      $scope.selectedLocation = location;
+    // Set location data when the form data contains an Event with a location
+    if (EventFormData.isEvent && EventFormData.location.name) {
+      address = _.get(EventFormData, 'location.address');
+      controller.getLocations(address.postalCode);
+      if (EventFormData.location.name) {
+        $scope.selectedLocation = angular.copy(EventFormData.location);
+      }
+    }
+
+    // Set the address when the form contains Place address info
+    if (EventFormData.isPlace && EventFormData.address.postalCode) {
+      address = EventFormData.address;
+
+      $scope.placeStreetAddress = address.streetAddress;
+    }
+
+    if (address) {
+      $scope.selectedCity = address.addressLocality;
     }
   };
 
@@ -9748,30 +10154,33 @@ function EventFormStep4Controller(
 
     // First check if all data is correct.
     $scope.infoMissing = false;
-    var missingInfo = [];
+    $scope.missingInfo = [];
+
+    if (!EventFormData.type.id) {
+      $scope.missingInfo.push('event type missing');
+    }
+
     if (EventFormData.calendarType === 'single' && EventFormData.timestamps[0].date === '') {
-      missingInfo.push('timestamp missing');
+      $scope.missingInfo.push('timestamp missing');
     }
     else if (EventFormData.calendarType === 'periodic' &&
       (EventFormData.startDate === '' || EventFormData.endDate === '')
     ) {
-      missingInfo.push('start or end date missing');
+      $scope.missingInfo.push('start or end date missing');
     }
-
-    if (!EventFormData.type.id) {
-      missingInfo.push('event type missing');
+    else if (EventFormData.calendarType === '') {
+      $scope.missingInfo.push('when missing');
     }
 
     if (EventFormData.isEvent && !EventFormData.location.id) {
-      missingInfo.push('place missing for event');
+      $scope.missingInfo.push('place missing for event');
     }
-    else if (EventFormData.isPlace && !EventFormData.location.address.streetAddress) {
-      missingInfo.push('location missing for place');
+    else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
+      $scope.missingInfo.push('address missing for place');
     }
 
-    if (missingInfo.length > 0) {
+    if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
-      console.log(missingInfo);
       return;
     }
 
@@ -9842,7 +10251,7 @@ function EventFormStep4Controller(
       /*jshint camelcase: false */
       return {
         text: EventFormData.name.nl,
-        zipcode: location.address.postalCode,
+        zipcode: EventFormData.address.postalCode,
         keywords: 'UDB3 place'
       };
     }
@@ -9918,6 +10327,7 @@ function EventFormStep4Controller(
       }
     });
   }
+
 }
 EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
 
@@ -10558,7 +10968,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController',
+      controller: 'EventFormReservationModalController'
     });
 
     modalInstance.result.then(function () {
@@ -10744,6 +11154,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     }
 
+    if (EventFormData.priceInfo) {
+      $scope.price = EventFormData.priceInfo;
+      $scope.priceCssClass = 'state-complete';
+    }
+
   }
 
 }
@@ -10854,6 +11269,7 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'address', include: true, sortable: false, excludable: true},
     {name: 'organizer', include: false, sortable: false, excludable: true},
     {name: 'bookingInfo.price', include: true, sortable: false, excludable: true},
+    {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
     {name: 'bookingInfo.url', include: false, sortable: false, excludable: true},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
@@ -11099,7 +11515,7 @@ angular
    * @enum {string}
    */
   {
-    OOXML:{
+    OOXML: {
       type: 'ooxml',
       extension: 'xlsx',
       label: 'Office Open XML (Excel)',
@@ -12254,7 +12670,8 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(queryString, itemsPerPage, offset) {
-    queryString = (queryString ? queryString + ' AND ' : '') + 'wfstatus="readyforvalidation"';
+    var moderationFilter = 'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]';
+    queryString = (queryString ? queryString + ' AND ' : '') + moderationFilter;
 
     return udbApi
       .findEventsWithLimit(queryString, offset, itemsPerPage);
@@ -17457,11 +17874,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tr>\n" +
     "              <td><strong>Beschrijving</strong></td>\n" +
     "              <td>\n" +
-    "                <div ng-if=\"eventIsEditable\">\n" +
-    "                  <div ng-bind-html=\"event.description\" onbeforesave=\"updateDescription($data)\" class=\"event-detail-description\"\n" +
-    "                       editable-textarea=\"event.description\" e-rows=\"6\" e-cols=\"33\"></div>\n" +
-    "                </div>\n" +
-    "                <i ng-if=\"!eventIsEditable\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                <div ng-bind-html=\"event.description\" class=\"event-detail-description\"></div>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
@@ -17622,7 +18035,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <section class=\"add-date\">\n" +
     "\n" +
     "      <div udb-datepicker\n" +
-    "           ng-change=\"EventFormStep2.eventTimingChanged()\"\n" +
+    "           ng-change=\"dateChosen(timestamp.date)\"\n" +
     "           highlight-date=\"{{calendarHighlight.date}}\"\n" +
     "           highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
     "           ng-model=\"timestamp.date\"></div>\n" +
@@ -18019,7 +18432,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
     "            <p class=\"help-block\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
     "            <p class=\"error help-block\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie \\'<span ng-bind=\"firstOrganizerFound.name\"></span>\\'. Geef een unieke website of <a ng-click=\"useFirstOrganizerFound()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
-    "            <p class=\"error help-block\" ng-show=\"organizersWebsiteRegex\">Gelieve een geldige url in te geven.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
@@ -18261,6 +18673,139 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/priceInfo.html',
+    "<div class=\"row extra-prijs\">\n" +
+    "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
+    "    <div class=\"col-sm-3\">\n" +
+    "      <em class=\"extra-task-label\">Prijs</em>\n" +
+    "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingPrice\"></i>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-8\">\n" +
+    "\n" +
+    "      <div ng-show=\"$ctrl.price.length == 0\">\n" +
+    "        <section>\n" +
+    "          <a class=\"btn btn-default to-filling\"\n" +
+    "             ng-show=\"!$ctrl.editPrice\"\n" +
+    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.editingPrice()\">\n" +
+    "            Prijzen toevoegen\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-link\"\n" +
+    "             ng-show=\"!$ctrl.editPrice\"\n" +
+    "             ng-click=\"$ctrl.editingPrice(true)\">Gratis</a>\n" +
+    "        </section>\n" +
+    "      </div>\n" +
+    "      <div ng-show=\"$ctrl.price.length > 0 && !$ctrl.editPrice\">\n" +
+    "        <table class=\"table\">\n" +
+    "          <thead>\n" +
+    "            <td>Prijzen</td>\n" +
+    "            <td>\n" +
+    "              <a class=\"btn btn-default pull-right\" ng-click=\"$ctrl.editingPrice()\">\n" +
+    "              Wijzigen\n" +
+    "            </a>\n" +
+    "            </td>\n" +
+    "          </thead>\n" +
+    "          <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
+    "              ng-model=\"priceInfo\">\n" +
+    "            <td>{{priceInfo.name}}</td>\n" +
+    "            <td>\n" +
+    "              <span ng-if=\"priceInfo.price == 0\">\n" +
+    "                Gratis\n" +
+    "              </span>\n" +
+    "              <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                {{priceInfo.price | currency}} euro\n" +
+    "              </span>\n" +
+    "            </td>\n" +
+    "          </tr>\n" +
+    "        </table>\n" +
+    "      </div>\n" +
+    "      <form name=\"priceForm\"\n" +
+    "            ng-show=\"$ctrl.editPrice\"\n" +
+    "            novalidate >\n" +
+    "        <table class=\"table\">\n" +
+    "          <div class=\"form-group\">\n" +
+    "            <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
+    "                ng-model=\"priceInfo\"\n" +
+    "                ng-form=\"priceInfoForm\">\n" +
+    "              <td ng-switch on=\"priceInfo.category\"\n" +
+    "                  class=\"col-xs-4\">\n" +
+    "                <span ng-switch-when=\"base\">\n" +
+    "                  Basistarief\n" +
+    "                </span>\n" +
+    "                <span ng-switch-default>\n" +
+    "                  <input type=\"text\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         name=\"name\"\n" +
+    "                         placeholder=\"Doelgroep\"\n" +
+    "                         ng-model=\"priceInfo.name\"\n" +
+    "                         ng-class=\"{ 'has-error': priceInfoForm.name.$invalid && formPriceSubmitted}\"\n" +
+    "                         required />\n" +
+    "                </span>\n" +
+    "              </td>\n" +
+    "              <td class=\"col-xs-4\">\n" +
+    "                <span ng-if=\"priceInfo.price === 0\">\n" +
+    "                  Gratis\n" +
+    "                </span>\n" +
+    "                <span ng-if=\"priceInfo.price !== 0\">\n" +
+    "                  <input type=\"number\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"price\"\n" +
+    "                       ng-model=\"priceInfo.price\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\"\n" +
+    "                       ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
+    "                       required />\n" +
+    "                  euro\n" +
+    "                </span>\n" +
+    "              </td>\n" +
+    "              <td ng-switch on=\"priceInfo.price\"\n" +
+    "                  class=\"col-xs-3\">\n" +
+    "                <a class=\"btn btn-link\"\n" +
+    "                   ng-click=\"$ctrl.unsetPriceItemFree(key)\"\n" +
+    "                   ng-switch-when=\"0\">Prijs invoeren</a>\n" +
+    "                <a class=\"btn btn-link\"\n" +
+    "                   ng-click=\"$ctrl.setPriceItemFree(key)\"\n" +
+    "                   ng-switch-default>Gratis</a>\n" +
+    "              </td>\n" +
+    "              <td class=\"col-xs-1\">\n" +
+    "                <span aria-hidden=\"true\"\n" +
+    "                      ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
+    "                      ng-if=\"$ctrl.showPriceDelete(key)\">&times;</span>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td colspan=\"4\">\n" +
+    "                <a class=\"btn btn-link\" ng-click=\"$ctrl.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td colspan=\"4\">\n" +
+    "                <div class=\"pull-right\">\n" +
+    "                  <a class=\"btn btn-default\" ng-click=\"$ctrl.cancelEditPrice()\">\n" +
+    "                    Annuleren\n" +
+    "                  </a>\n" +
+    "                  <a class=\"btn btn-primary\"\n" +
+    "                     ng-click=\"$ctrl.validatePrice()\">\n" +
+    "                    Bewaren\n" +
+    "                  </a>\n" +
+    "                </div>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "          </div>\n" +
+    "        </table>\n" +
+    "      </form>\n" +
+    "\n" +
+    "      <div ng-show=\"$ctrl.priceError\" class=\"alert alert-danger\">\n" +
+    "        Er ging iets fout bij het opslaan van de prijs.\n" +
+    "      </div>\n" +
+    "      <div ng-show=\"$ctrl.invalidPrice\" class=\"alert alert-danger\">\n" +
+    "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
+    "      </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/reservation-modal.html',
     "<div class=\"modal-content\">\n" +
     "  <div class=\"modal-header\">\n" +
@@ -18491,6 +19036,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-form-publish.html',
+    "<div class=\"event-validation\" ng-if=\"efpc.eventFormData.showStep5\">\n" +
+    "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
+    "\n" +
+    "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
+    "\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Voorbeeld bekijken</button>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-form-step1.html',
     "<div ng-controller=\"EventFormStep1Controller as EventFormStep1\">\n" +
     "  <a name=\"wat\"></a>\n" +
@@ -18581,7 +19138,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div class=\"wanneerkiezer\" ng-show=\"eventFormData.activeCalendarType === ''\">\n" +
     "            <ul class=\"list-inline button-list\">\n" +
     "              <li ng-repeat=\"calendarLabel in ::calendarLabels\" ng-hide=\"eventFormData.isPlace && calendarLabel.eventOnly\">\n" +
-    "                <button class=\"btn btn-default\" ng-bind=\"::calendarLabel.label\" ng-click=\"setCalendarType(calendarLabel.id)\"></button>\n" +
+    "                <button\n" +
+    "                        class=\"btn btn-default\"\n" +
+    "                        ng-bind=\"::calendarLabel.label\"\n" +
+    "                        udb-auto-scroll\n" +
+    "                        ng-click=\"setCalendarType(calendarLabel.id);\"></button>\n" +
     "              </li>\n" +
     "            </ul>\n" +
     "          </div>\n" +
@@ -18623,14 +19184,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-12\">\n" +
-    "        <label for=\"gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">Kies een gemeente</label>\n" +
-    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
+    "        <label for=\"gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity\">Kies een gemeente</label>\n" +
+    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity\">\n" +
     "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "            <input type=\"text\"\n" +
     "                   id=\"gemeente-autocomplete\"\n" +
     "                   class=\"form-control uib-typeahead\"\n" +
     "                   placeholder=\"Gemeente of postcode\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
+    "                   udb-auto-scroll\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
     "                   typeahead-min-length=\"2\"\n" +
@@ -18641,14 +19203,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Er was een probleem tijdens het ophalen van de steden\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity !== ''\">\n" +
+    "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity\">\n" +
     "          <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"selectedCity\"></span>\n" +
     "          <a href=\"\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div id=\"waar-evenement\" class=\"clearfix\" ng-show=\"eventFormData.isEvent && selectedCity !== ''\">\n" +
+    "    <div id=\"waar-evenement\" class=\"clearfix\" ng-show=\"eventFormData.isEvent && selectedCity\">\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-xs-12\">\n" +
     "          <label id=\"locatie-label\" ng-show=\"!selectedLocation\">\n" +
@@ -18663,7 +19225,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
-    "                     typeahead-template-url=\"templates/place-suggestion.html\"/>\n" +
+    "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
+    "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
@@ -18697,8 +19260,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div id=\"waar-plaats\" class=\"clearfix\" ng-show=\"eventFormData.isPlace && selectedCity !== ''\">\n" +
-    "      <div class=\"plaats-adres-ingeven\" ng-hide=\"selectedLocation.address.streetAddress\">\n" +
+    "    <div id=\"waar-plaats\" class=\"clearfix\" ng-show=\"eventFormData.isPlace && selectedCity\">\n" +
+    "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
@@ -18706,8 +19269,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
-    "                     ng-model=\"placeStreetAddress\"\n" +
-    "                     placeholder=\"\"\n" +
+    "                     ng-model=\"newPlaceStreetAddress\"\n" +
+    "                     placeholder=\"Kerkstraat 1\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
     "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
@@ -18716,13 +19279,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setStreetAddress()\">OK</a>\n" +
+    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setPlaceStreetAddress(newPlaceStreetAddress)\">OK</a>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"plaats-adres-resultaat\" ng-show=\"selectedLocation.address.streetAddress\">\n" +
+    "      <div class=\"plaats-adres-resultaat\" ng-show=\"placeStreetAddress\">\n" +
     "        <span>\n" +
-    "          <span class=\"btn-chosen\" ng-bind=\"selectedLocation.address.streetAddress\"></span>\n" +
-    "          <a class=\"btn btn-link plaats-adres-wijzigen\" ng-click=\"changeStreetAddress()\">Wijzigen</a>\n" +
+    "          <span class=\"btn-chosen\" ng-bind=\"eventFormData.address.streetAddress\"></span>\n" +
+    "          <a class=\"btn btn-link plaats-adres-wijzigen\" ng-click=\"changePlaceStreetAddress()\">Wijzigen</a>\n" +
     "        </span>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -18752,7 +19315,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 class=\"form-control\"\n" +
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
-    "                 ng-change=\"eventTitleChanged()\">\n" +
+    "                 ng-change=\"eventTitleChanged()\"\n" +
+    "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"help-block\">\n" +
@@ -18765,9 +19329,22 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
+    "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
+    "      <strong>Je vulde niet alle verplichte informatie in:</strong>\n" +
+    "      <ul>\n" +
+    "        <li ng-repeat=\"error in missingInfo\" ng-bind-html=\"error\" translate>\n" +
+    "          {{error}}\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "      Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.\n" +
+    "    </div>\n" +
+    "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
-    "          ng-click=\"validateEvent(true)\"\n" +
+    "          ng-click=\"validateEvent(true);\"\n" +
     "          ng-class=\"{'disabled': eventFormData.name.nl === ''}\">\n" +
     "        Doorgaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
@@ -18815,13 +19392,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </li>\n" +
     "    </ul>\n" +
     "\n" +
-    "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
-    "      Gelieve alle info in te vullen vooraleer je kan opslaan.\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "      Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.\n" +
-    "    </div>\n" +
     "  </section>\n" +
     "\n" +
     "</div>\n"
@@ -18876,7 +19446,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" focus-if=\"focusDescription\"></textarea>\n" +
+    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll></textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
@@ -19014,6 +19584,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
+    "\n" +
+    "        <price-info price=\"price\"></price-info>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
@@ -19389,7 +19961,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <udb-event-form-step4></udb-event-form-step4>\n" +
     "  <udb-event-form-step5></udb-event-form-step5>\n" +
     "\n" +
-    "  <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
+    "  <udb-event-form-publish></udb-event-form-publish>\n" +
     "</div>\n"
   );
 
@@ -19424,7 +19996,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <h5>Kies de gewenste velden</h5>\n" +
     "\n" +
     "      <div class=\"export-field-selection\">\n" +
-    "        <div class=\"checkbox\" ng-repeat=\"property in ::exporter.eventProperties\">\n" +
+    "        <div class=\"checkbox\"\n" +
+    "             ng-repeat=\"property in ::exporter.eventProperties\"\n" +
+    "             ng-show=\"!property.format || property.format.type === exporter.format\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\" ng-model=\"property.include\" name=\"eventExportFields\"\n" +
     "                   ng-disabled=\"!property.excludable\">\n" +
@@ -20408,11 +20982,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <tr>\n" +
     "                <td><strong>Beschrijving</strong></td>\n" +
     "                <td>\n" +
-    "                  <div ng-if=\"placeIsEditable\">\n" +
-    "                    <div ng-bind-html=\"place.description\" onbeforesave=\"updateDescription($data)\" class=\"event-detail-description\"\n" +
-    "                         editable-textarea=\"place.description\" e-rows=\"6\" e-cols=\"33\"></div>\n" +
-    "                  </div>\n" +
-    "                  <i ng-if=\"!placeIsEditable\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                  <div ng-bind-html=\"place.description\" class=\"event-detail-description\"></div>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
@@ -21060,13 +21630,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && eventCtrl.editable\">\n" +
-    "          <div ng-bind-html=\"event.description\" class=\"udb-description\" onbeforesave=\"eventCtrl.updateDescription($data)\"\n" +
-    "               editable-textarea=\"event.description\" e-rows=\"6\" e-cols=\"66\"></div>\n" +
-    "        </div>\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && !eventCtrl.editable\"\n" +
-    "             class=\"event-description-loading-indicator\">\n" +
-    "          <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
+    "          <div ng-bind-html=\"event.description\" class=\"udb-description\"></div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +
@@ -21220,13 +21785,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && placeCtrl.editable\">\n" +
-    "          <div ng-bind-html=\"event.description\" class=\"udb-description\" onbeforesave=\"placeCtrl.updateDescription($data)\"\n" +
-    "               editable-textarea=\"event.description\" e-rows=\"6\" e-cols=\"66\"></div>\n" +
-    "        </div>\n" +
-    "        <div ng-if=\"resultViewer.eventProperties.description.visible && !placeCtrl.editable\"\n" +
-    "             class=\"event-description-loading-indicator\">\n" +
-    "          <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
+    "          <div ng-bind-html=\"event.description\" class=\"udb-description\"></div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +

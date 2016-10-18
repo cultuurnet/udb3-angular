@@ -7,6 +7,7 @@ describe('Factory: List Items', function () {
     'AANBOD_BEWERKEN',
     'AANBOD_MODEREREN',
     'AANBOD_VERWIJDEREN',
+    'ORGANISATIES_BEHEREN'
   ];
 
   var roles = [
@@ -101,6 +102,14 @@ describe('Factory: List Items', function () {
       expect(ModerationService.find).toHaveBeenCalledWith('(city:leuven)', 10, 0);
       expect(listItems).toEqual([
         {
+          name: 'Organisaties',
+          permission: 'ORGANISATIES_BEHEREN',
+          notificationCount: 0,
+          index: 5,
+          sref: 'split.manageOrganisations',
+          icon: 'fa-slideshare'
+        },
+        {
           name: 'Valideren',
           permission: 'AANBOD_MODEREREN',
           notificationCount: 387380,
@@ -183,6 +192,36 @@ describe('Factory: List Items', function () {
 
     function testServicesCalled(listItems) {
       expect(ModerationService.find).toHaveBeenCalledWith('(city:leuven)', 10, 0);
+      done();
+    }
+
+    managementListItems
+      .then(testServicesCalled);
+    $scope.$digest();
+  });
+
+  it('should show results even without a role attachted to my user', function(done) {
+    inject(function($injector, $rootScope, _$q_) {
+      $q = _$q_;
+      $scope = $rootScope.$new();
+
+      authorizationService.getPermissions.and.returnValue($q.resolve(permissions));
+      ModerationService.getMyRoles.and.returnValue($q.resolve([]));
+
+      managementListItems = $injector.get('managementListItems');
+    });
+
+    function testServicesCalled(listItems) {
+      expect(listItems).toEqual([
+        {
+          name: 'Organisaties',
+          permission: 'ORGANISATIES_BEHEREN',
+          notificationCount: 0,
+          index: 5,
+          sref: 'split.manageOrganisations',
+          icon: 'fa-slideshare'
+        }
+      ]);
       done();
     }
 

@@ -474,6 +474,14 @@ function UdbApi(
     );
   };
 
+  this.updatePriceInfo = function(offerLocation, price) {
+    return $http.put(
+      offerLocation + '/priceInfo',
+      price,
+      defaultApiConfig
+    );
+  };
+
   /**
    * @param {URL} offerLocation
    * @param {string} label
@@ -521,7 +529,7 @@ function UdbApi(
    */
   this.createOffer = function (type, offer) {
     return $http.post(
-      appConfig.baseApiUrl + type,
+      appConfig.baseUrl + type,
       offer,
       defaultApiConfig
     ).then(function(response) {
