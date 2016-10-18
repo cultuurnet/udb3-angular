@@ -43,7 +43,7 @@ describe('Controller: Event Form Publish', function () {
     $scope.$digest();
 
     expect(EventFormData.workflowStatus).toEqual('READY_FOR_VALIDATION');
-    expect($location.path).toHaveBeenCalledWith('/event/da86358c-d52c-429b-89c6-7adffd64ab55');
+    expect($location.path).toHaveBeenCalledWith('/event/da86358c-d52c-429b-89c6-7adffd64ab55/published');
   });
 
   it('should preview an offer when published', function () {
@@ -61,7 +61,7 @@ describe('Controller: Event Form Publish', function () {
     controller.preview();
 
     $scope.$digest();
-    expect($location.path).toHaveBeenCalledWith('/event/da86358c-d52c-429b-89c6-7adffd64ab55');
+    expect($location.path).toHaveBeenCalledWith('/event/da86358c-d52c-429b-89c6-7adffd64ab55/saved');
   });
 
   it('should display publish errors', function () {
