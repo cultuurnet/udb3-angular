@@ -88,7 +88,6 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.name, $scope.newOrganizer.address.postalCode);
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
