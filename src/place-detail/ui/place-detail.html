@@ -61,11 +61,7 @@
               <tr>
                 <td><strong>Beschrijving</strong></td>
                 <td>
-                  <div ng-if="placeIsEditable">
-                    <div ng-bind-html="place.description" onbeforesave="updateDescription($data)" class="event-detail-description"
-                         editable-textarea="place.description" e-rows="6" e-cols="33"></div>
-                  </div>
-                  <i ng-if="!placeIsEditable" class="fa fa-circle-o-notch fa-spin"></i>
+                  <div ng-bind-html="place.description" class="event-detail-description"></div>
                 </td>
               </tr>
               <tr>

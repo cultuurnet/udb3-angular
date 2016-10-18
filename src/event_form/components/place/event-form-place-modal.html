@@ -4,10 +4,10 @@
 <div class="modal-body">
   <form name="placeForm" class="css-form">
     <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.name.$error.required }">
-      <label>Titel</label>
+      <label>Naam locatie</label>
       <input class="form-control" type="text" ng-model="newPlace.name" name="name" required>
       <span class="help-block" ng-show="showValidation && placeForm.name.$error.required">
-        Titel is een verplicht veld.
+        De naam van de locatie is een verplicht veld.
       </span>
     </div>
 
@@ -34,7 +34,6 @@
           <label>Straat en nummer</label>
           <input class="form-control"
                  id="locatie-straat"
-                 placeholder="Straat en nummer"
                  name="address_streetAddress"
                  type="text"
                  ng-model="newPlace.address.streetAddress"

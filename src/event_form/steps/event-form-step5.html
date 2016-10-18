@@ -33,20 +33,19 @@
               <section class="state incomplete">
                 <div class="row">
                   <div class="col-sm-6">
-                    <a class="btn btn-default to-filling" ng-click="descriptionCssClass = 'state-filling'">
+                    <a class="btn btn-default to-filling" ng-click="alterDescription()">
                       Tekst toevoegen
                     </a>
                   </div>
                 </div>
               </section>
               <section class="state complete">
-                <div ng-bind-html="eventFormData.description.nl"></div>
-                <a class="btn btn-link" ng-click="descriptionCssClass = 'state-filling'">Wijzigen</a>
+                <div ng-bind-html="eventFormData.description.nl" class="description-text"></div>
+                <a class="btn btn-link" ng-click="alterDescription()">Wijzigen</a>
               </section>
               <section class="state filling">
                 <div class="form-group">
-                  <label>Beschrijving</label>
-                  <textarea class="form-control" ng-model="description"></textarea>
+                  <textarea class="form-control" ng-model="description" rows="6" udb-auto-scroll></textarea>
                   <div class="tip" ng-switch="eventFormData.eventType">
                     <p ng-switch-when="0.17.0.0.0">
                       Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>
@@ -184,6 +183,8 @@
             </div>
           </div>
         </div>
+
+        <price-info price="price"></price-info>
 
         <form name="step5TicketsForm" class="css-form">
           <div class="row extra-tickets-website" ng-class="bookingInfoCssClass">

@@ -103,7 +103,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.calendarType = '';
     this.openinghours = [];
     this.address = {
-      'addressCountry' : '',
+      'addressCountry' : 'BE',
       'addressLocality' : '',
       'postalCode' : '',
       'streetAddress' : ''
@@ -132,6 +132,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.endDate = jsonPlace.endDate;
       this.openingHours = jsonPlace.openingHours || [];
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
+      this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
       this.contactPoint = jsonPlace.contactPoint || {};
       if (jsonPlace.organizer) {
@@ -177,6 +178,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         });
       }
 
+      if (jsonPlace.workflowStatus) {
+        this.workflowStatus = jsonPlace.workflowStatus;
+      }
     },
 
     /**
