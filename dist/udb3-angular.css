@@ -3022,10 +3022,11 @@ input + .alert {
 .offer-form .event-validation {
   background-color: #ffffff;
   padding: 1em;
-  padding-top: 2em;
-  margin-left: -1em;
-  margin-top: 2em;
-  margin-right: -1em;
+  position: fixed;
+  bottom: 0;
+  margin-left: -15px;
+  border-top: 1px solid #dddddd;
+  width: 100%;
 }
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
