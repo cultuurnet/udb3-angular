@@ -52,11 +52,11 @@ function EventFormPublishController(
   }
 
   function redirectToDetailPage() {
-    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id);
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id + '/published');
   }
 
   function preview() {
-    redirectToDetailPage();
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id + '/saved');
   }
 
   function isDraft(status) {

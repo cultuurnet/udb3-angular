@@ -7004,7 +7004,16 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/event/' + $scope.eventId.split('/').pop() + '/edit');
+    var eventId;
+    // When an event is published $scope.eventId is empty,
+    // so get the eventId straight from the current url.
+    if (_.isEmpty($scope.eventId)) {
+      eventId = $location.url().split('/')[2];
+    }
+    else {
+      eventId = $scope.eventId.split('/').pop();
+    }
+    $location.path('/event/' + eventId + '/edit');
   };
 
   function goToDashboard() {
@@ -9241,11 +9250,11 @@ function EventFormPublishController(
   }
 
   function redirectToDetailPage() {
-    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id);
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id + '/published');
   }
 
   function preview() {
-    redirectToDetailPage();
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id + '/saved');
   }
 
   function isDraft(status) {
@@ -14461,7 +14470,16 @@ function PlaceDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/place/' + $scope.placeId.split('/').pop() + '/edit');
+    var placeId;
+    // When a place is published $scope.placeId is empty,
+    // so get the placeId straight from the current url.
+    if (_.isEmpty($scope.placeId)) {
+      placeId = $location.url().split('/')[2];
+    }
+    else {
+      placeId = $scope.placeId.split('/').pop();
+    }
+    $location.path('/place/' + placeId + '/edit');
   };
 
   $scope.updateDescription = function(description) {
@@ -17573,7 +17591,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "    <ul uib-dropdown-menu role=\"menu\">\n" +
     "      <li role=\"menuitem\">\n" +
-    "        <a ng-href=\"{{ ::event.url }}\">Voorbeeld</a>\n" +
+    "        <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
     "      </li>\n" +
     "      <li class=\"divider\"></li>\n" +
     "      <li role=\"menuitem\">\n" +
@@ -19085,7 +19103,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Voorbeeld bekijken</button>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
     "</div>"
   );
 
