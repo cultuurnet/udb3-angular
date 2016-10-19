@@ -315,6 +315,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Auto-complete callback for organizers.
    * @param {String} value
    *  Suggest organizers based off of this value.
+   *
+   * @return {UdbOrganizer[]}
    */
   function getOrganizers(value) {
     function suggestExistingOrNewOrganiser (organizers) {
