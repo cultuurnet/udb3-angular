@@ -33,7 +33,20 @@
        */
       function loadDatePicker() {
 
+        var lastSelectedYear;
+        var lastSelectedMonth;
+
+        if (scope.lastSelectedDate) {
+          lastSelectedYear = scope.lastSelectedDate.getFullYear();
+          lastSelectedMonth = scope.lastSelectedDate.getMonth();
+        } else {
+          var today = new Date();
+          lastSelectedYear = today.getFullYear();
+          lastSelectedMonth = today.getMonth();
+        }
+
         var options = {
+          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {

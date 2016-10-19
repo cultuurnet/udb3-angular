@@ -66,15 +66,23 @@ function EventFormDataFactory() {
         nl : ''
       };
       this.description = {};
+      // Events have a location
       this.location = {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
         }
+      };
+      // Places only have an address
+      this.address = {
+        'addressCountry': 'BE',
+        'addressLocality': '',
+        'postalCode': '',
+        'streetAddress': ''
       };
       this.place = {};
       /** @type {EventType} */
@@ -102,6 +110,8 @@ function EventFormDataFactory() {
       this.mediaObjects = [];
       this.image = [];
       this.additionalData = {};
+      this.priceInfo = [];
+      this.workflowStatus = 'DRAFT';
     },
 
     /**
@@ -234,7 +244,7 @@ function EventFormDataFactory() {
         'id' : null,
         'name': '',
         'address': {
-          'addressCountry': '',
+          'addressCountry': 'BE',
           'addressLocality': '',
           'postalCode': '',
           'streetAddress': ''
@@ -265,10 +275,10 @@ function EventFormDataFactory() {
         'date' : date,
         'startHour' : startHour,
         'startHourAsDate' : startHourAsDate,
-        'endHour' : endHour,
         'endHourAsDate' : endHourAsDate,
-        'showStartHour' : startHour !== '',
-        'showEndHour' : endHour !== '',
+        'endHour' : endHour,
+        'showStartHour' : !!startHour,
+        'showEndHour' : (endHour && endHour !== startHour)
       });
 
     },

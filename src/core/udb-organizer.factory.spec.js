@@ -22,7 +22,17 @@ describe('Factory: UDB Organizer', function () {
       'phone': [
         '+32 476 838982'
       ],
-      'url': []
+      'url': [],
+      'labels': [
+        {
+          name: 'green',
+          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
+        },
+        {
+          name: 'UiTPAS',
+          uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
+        }
+      ]
     };
     var jsonOrganizer = {
       '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
@@ -41,6 +51,16 @@ describe('Factory: UDB Organizer', function () {
       ],
       'phone': [
         '+32 476 838982'
+      ],
+      labels: [
+        {
+          name: 'green',
+          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
+        },
+        {
+          name: 'UiTPAS',
+          uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
+        }
       ]
     };
 

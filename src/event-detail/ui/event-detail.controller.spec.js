@@ -157,7 +157,7 @@ describe('Controller: Event Detail', function() {
     $scope = $rootScope.$new();
     eventId = 'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc';
     udbApi = $injector.get('udbApi');
-    $location = jasmine.createSpyObj('$location', ['path']);
+    $location = jasmine.createSpyObj('$location', ['path', 'url']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     variationRepository = $injector.get('variationRepository');
     offerEditor = $injector.get('offerEditor');
@@ -294,6 +294,25 @@ describe('Controller: Event Detail', function() {
     $scope.$digest();
 
     expect($location.path).toHaveBeenCalledWith('/dashboard');
+  });
+
+  it('should redirect to the edit page with a known eventId', function () {
+    $scope.eventId = 'event/de84f1c4-d335-470a-924d-624982b87098';
+
+    $scope.openEditPage();
+    $scope.$digest();
+
+    expect($location.path).toHaveBeenCalledWith('/event/de84f1c4-d335-470a-924d-624982b87098/edit');
+  });
+
+  it('should redirect to the edit page without a known eventId', function () {
+    $scope.eventId = {};
+    $location.url.and.returnValue('/event/de84f1c4-d335-470a-924d-624982b87098/saved');
+
+    $scope.openEditPage();
+    $scope.$digest();
+
+    expect($location.path).toHaveBeenCalledWith('/event/de84f1c4-d335-470a-924d-624982b87098/edit');
   });
 
 

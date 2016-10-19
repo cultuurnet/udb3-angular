@@ -44,8 +44,10 @@ function EventCrud(
       return eventFormData;
     };
 
+    var majorInfo = _.omit(eventFormData, _.isEmpty);
+
     return udbApi
-      .createOffer(type, eventFormData)
+      .createOffer(type, majorInfo)
       .then(updateEventFormData);
   };
 
@@ -87,8 +89,12 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
+    var majorInfo = _.pick(eventFormData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+
     udbApi
-      .updateMajorInfo(eventFormData.apiUrl, eventFormData)
+      .updateMajorInfo(eventFormData.apiUrl, majorInfo)
       .then(jobCreatorFactory(eventFormData, 'updateItem'));
   };
 
@@ -175,6 +181,24 @@ function EventCrud(
 
     return jobCreator;
   }
+
+  /**
+   * Update the price info and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updatePriceInfo = function(item) {
+    return udbApi
+      .updatePriceInfo(item.apiUrl, item.price)
+      .then(function (response) {
+        var jobData = response.data;
+        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
+  };
 
   /**
    * Update the contact point and add it to the job logger.
@@ -286,6 +310,24 @@ function EventCrud(
     return udbApi
       .selectMainImage(item.apiUrl, imageId)
       .then(jobCreatorFactory(item, 'selectMainImage'));
+  };
+
+  /**
+   * @param {EventFormData} offer
+   * @param {string} jobName
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  service.publishOffer = function(offer, jobName) {
+    return udbApi
+      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .then(function (response) {
+        var job = new EventCrudJob(response.commandId, offer, jobName);
+
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
   };
 
   /**

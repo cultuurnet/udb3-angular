@@ -1720,9 +1720,7 @@ input + .alert {
   margin-top: .5em;
 }
 .save-time-tracker {
-  border-top: 1px solid #cccccc;
   color: #777777;
-  margin-top: 3em;
   padding-bottom: 1em;
   padding-top: 1em;
 }
@@ -2569,6 +2567,10 @@ input + .alert {
 .offer-form .datepicker .table-condensed > tfoot > tr > td {
   padding: 0;
 }
+.offer-form .datepicker table tr td.active.active {
+  background-color: #337ab7;
+  background-image: none;
+}
 .offer-form #add-date-plus {
   display: block;
   margin: 0 auto;
@@ -3013,6 +3015,21 @@ input + .alert {
 }
 .offer-form a {
   text-decoration: underline;
+}
+.offer-form input.has-error {
+  border: 1px solid #f3453f;
+}
+.offer-form .event-validation {
+  background-color: #ffffff;
+  padding: 1em;
+  position: fixed;
+  bottom: 0;
+  margin-left: -15px;
+  border-top: 1px solid #dddddd;
+  width: 100%;
+}
+.offer-form .event-validation div.text-danger {
+  margin-bottom: 1ex;
 }
 .event-type-choser-label {
   background-repeat: no-repeat;
