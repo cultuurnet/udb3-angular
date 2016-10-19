@@ -597,7 +597,7 @@ function UdbApi(
     // TODO: swagger docs describes different path:
     // /api/1.0/organizer
     return $http.post(
-      appConfig.baseUrl + 'organizers',
+      appConfig.baseUrl + 'organizers/',
       organizer,
       defaultApiConfig
     );

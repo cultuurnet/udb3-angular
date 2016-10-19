@@ -3240,7 +3240,7 @@ function UdbApi(
     // TODO: swagger docs describes different path:
     // /api/1.0/organizer
     return $http.post(
-      appConfig.baseUrl + 'organizers',
+      appConfig.baseUrl + 'organizers/',
       organizer,
       defaultApiConfig
     );
@@ -7542,9 +7542,9 @@ function EventFormOrganizerModalController(
     name : $scope.organizer,
     address : {
       streetAddress : '',
-      locality : '',
+      addressLocality : '',
       postalCode: '',
-      country : 'BE'
+      addressCountry : 'BE'
     },
     contact: []
   };
@@ -7605,6 +7605,7 @@ function EventFormOrganizerModalController(
     udbOrganizers
         .findOrganizersWebsite($scope.newOrganizer.website)
         .then(function (data) {
+          console.log(data);
           // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
             $scope.organizersWebsiteFound = true;
@@ -7693,7 +7694,7 @@ function EventFormOrganizerModalController(
    */
   controller.selectCity = function ($item, $label) {
     $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.locality = $item.name;
+    $scope.newOrganizer.address.addressLocality = $item.name;
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;

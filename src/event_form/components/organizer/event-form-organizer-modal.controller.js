@@ -42,9 +42,9 @@ function EventFormOrganizerModalController(
     name : $scope.organizer,
     address : {
       streetAddress : '',
-      locality : '',
+      addressLocality : '',
       postalCode: '',
-      country : 'BE'
+      addressCountry : 'BE'
     },
     contact: []
   };
@@ -193,7 +193,7 @@ function EventFormOrganizerModalController(
    */
   controller.selectCity = function ($item, $label) {
     $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.locality = $item.name;
+    $scope.newOrganizer.address.addressLocality = $item.name;
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
