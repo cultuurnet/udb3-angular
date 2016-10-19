@@ -7004,7 +7004,16 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/event/' + $scope.eventId.split('/').pop() + '/edit');
+    var eventId;
+    // When an event is published $scope.eventId is empty,
+    // so get the eventId straight from the current url.
+    if (_.isEmpty($scope.eventId)) {
+      eventId = $location.url().split('/')[2];
+    }
+    else {
+      eventId = $scope.eventId.split('/').pop();
+    }
+    $location.path('/event/' + eventId + '/edit');
   };
 
   function goToDashboard() {
@@ -14461,7 +14470,16 @@ function PlaceDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/place/' + $scope.placeId.split('/').pop() + '/edit');
+    var placeId;
+    // When a place is published $scope.placeId is empty,
+    // so get the placeId straight from the current url.
+    if (_.isEmpty($scope.placeId)) {
+      placeId = $location.url().split('/')[2];
+    }
+    else {
+      placeId = $scope.placeId.split('/').pop();
+    }
+    $location.path('/place/' + placeId + '/edit');
   };
 
   $scope.updateDescription = function(description) {
