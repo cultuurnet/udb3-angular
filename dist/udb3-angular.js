@@ -7601,19 +7601,20 @@ function EventFormOrganizerModalController(
       $scope.showWebsiteValidation = false;
       return;
     }
-
     udbOrganizers
         .findOrganizersWebsite($scope.newOrganizer.website)
         .then(function (data) {
-          console.log(data);
           // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
             $scope.organizersWebsiteFound = true;
             $scope.firstOrganizerFound = data.member[0];
             $scope.showWebsiteValidation = false;
+            $scope.disableSubmit = true;
           }
           else {
             $scope.showWebsiteValidation = false;
+            $scope.organizersWebsiteFound = false;
+            $scope.firstOrganizerFound = '';
             if ($scope.newOrganizer.name) {
               $scope.disableSubmit = false;
             }
@@ -18430,9 +18431,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   class=\"form-control\"\n" +
     "                   ng-model=\"newOrganizer.website\"\n" +
     "                   ng-change=\"validateWebsite()\"\n" +
+    "                   autocomplete=\"off\"\n" +
     "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
-    "            <p class=\"help-block\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
-    "            <p class=\"error help-block\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie \\'<span ng-bind=\"firstOrganizerFound.name\"></span>\\'. Geef een unieke website of <a ng-click=\"useFirstOrganizerFound()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "            <p class=\"alert alert-info\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
+    "            <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"useFirstOrganizerFound()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +

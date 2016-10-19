@@ -101,7 +101,6 @@ function EventFormOrganizerModalController(
       $scope.showWebsiteValidation = false;
       return;
     }
-
     udbOrganizers
         .findOrganizersWebsite($scope.newOrganizer.website)
         .then(function (data) {
@@ -110,9 +109,12 @@ function EventFormOrganizerModalController(
             $scope.organizersWebsiteFound = true;
             $scope.firstOrganizerFound = data.member[0];
             $scope.showWebsiteValidation = false;
+            $scope.disableSubmit = true;
           }
           else {
             $scope.showWebsiteValidation = false;
+            $scope.organizersWebsiteFound = false;
+            $scope.firstOrganizerFound = '';
             if ($scope.newOrganizer.name) {
               $scope.disableSubmit = false;
             }

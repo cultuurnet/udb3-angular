@@ -15,9 +15,10 @@
                    class="form-control"
                    ng-model="newOrganizer.website"
                    ng-change="validateWebsite()"
+                   autocomplete="off"
                    required> <i class="fa fa-circle-o-notch fa-spin" ng-show="showWebsiteValidation"></i>
-            <p class="help-block" ng-hide="organizersWebsiteFound">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>
-            <p class="error help-block" ng-show="organizersWebsiteFound">Dit adres is al gebruikt door de organisatie \'<span ng-bind="firstOrganizerFound.name"></span>\'. Geef een unieke website of <a ng-click="useFirstOrganizerFound()">gebruik <span ng-bind="firstOrganizerFound.name"></span> als organisatie</a>.</p>
+            <p class="alert alert-info" ng-hide="organizersWebsiteFound">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>
+            <p class="alert alert-warning" ng-show="organizersWebsiteFound">Dit adres is al gebruikt door de organisatie '<span ng-bind="firstOrganizerFound.name"></span>'. Geef een unieke website of <a ng-click="useFirstOrganizerFound()">gebruik <span ng-bind="firstOrganizerFound.name"></span> als organisatie</a>.</p>
         </div>
 
       <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
