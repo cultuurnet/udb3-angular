@@ -16,6 +16,7 @@ function EventFormOrganizerModalController(
   $scope,
   $uibModalInstance,
   udbOrganizers,
+  UdbOrganizer,
   eventCrud,
   cities,
   Levenshtein,
@@ -51,7 +52,6 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.useFirstOrganizerFound = useFirstOrganizerFound;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
@@ -64,14 +64,6 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
-  }
-
-  /**
-   * Use the first organizer found in the event form.
-   */
-  function useFirstOrganizerFound() {
-    $scope.$parent.selectOrganizer($scope.firstOrganizerFound);
-    cancel();
   }
 
   /**
@@ -107,7 +99,7 @@ function EventFormOrganizerModalController(
           // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
             $scope.organizersWebsiteFound = true;
-            $scope.firstOrganizerFound = data.member[0];
+            $scope.firstOrganizerFound = new UdbOrganizer(data.member[0]);
             $scope.showWebsiteValidation = false;
             $scope.disableSubmit = true;
           }

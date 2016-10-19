@@ -7516,6 +7516,7 @@ function EventFormOrganizerModalController(
   $scope,
   $uibModalInstance,
   udbOrganizers,
+  UdbOrganizer,
   eventCrud,
   cities,
   Levenshtein,
@@ -7551,7 +7552,6 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.useFirstOrganizerFound = useFirstOrganizerFound;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
@@ -7564,14 +7564,6 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
-  }
-
-  /**
-   * Use the first organizer found in the event form.
-   */
-  function useFirstOrganizerFound() {
-    $scope.$parent.selectOrganizer($scope.firstOrganizerFound);
-    cancel();
   }
 
   /**
@@ -7607,7 +7599,7 @@ function EventFormOrganizerModalController(
           // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
             $scope.organizersWebsiteFound = true;
-            $scope.firstOrganizerFound = data.member[0];
+            $scope.firstOrganizerFound = new UdbOrganizer(data.member[0]);
             $scope.showWebsiteValidation = false;
             $scope.disableSubmit = true;
           }
@@ -7711,7 +7703,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
@@ -18434,7 +18426,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   autocomplete=\"off\"\n" +
     "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
     "            <p class=\"alert alert-info\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
-    "            <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"useFirstOrganizerFound()\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "            <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"selectOrganizer(firstOrganizerFound)\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
