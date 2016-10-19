@@ -128,7 +128,30 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    saveOrganizer();
+    // resolve for now, will re-introduce duplicate detection later on
+    var promise = $q.resolve([]);
+
+    $scope.error = false;
+    $scope.saving = true;
+
+    promise.then(function (data) {
+
+      // Set the results for the duplicates modal,
+      if (data.length > 0) {
+        $scope.organizersFound = true;
+        $scope.organizers = data;
+        $scope.saving = false;
+      }
+      // or save the event immediately if no duplicates were found.
+      else {
+        saveOrganizer();
+      }
+
+    }, function() {
+      $scope.error = true;
+      $scope.saving = false;
+    });
+
   }
 
   /**

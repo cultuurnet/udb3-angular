@@ -23,6 +23,7 @@ angular
     'udb.saved-searches',
     'udb.media',
     'udb.management',
+    'udb.uitpas',
     'btford.socket-io',
     'pascalprecht.translate'
   ])
@@ -1900,6 +1901,15 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
   };
 })()
 });
+/**
+ * @ngdoc module
+ * @name udb.uitpas
+ * @description
+ * The UDB UiTPAS module
+ */
+angular
+  .module('udb.uitpas', []);
+
 // Source: src/core/authorization-service.service.js
 /**
  * @ngdoc service
@@ -2859,8 +2869,7 @@ function UdbApi(
       deferredOrganizer.resolve(organizer);
     } else {
       var organizerRequest  = $http.get(
-        appConfig.baseUrl + 'organizers/' + organizerId,
-        defaultApiConfig
+        appConfig.baseUrl + 'organizers/' + organizerId, defaultApiConfig
       );
 
       organizerRequest.success(function(jsonOrganizer) {
@@ -2870,7 +2879,6 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       });
     }
-
     return deferredOrganizer.promise;
   };
 
@@ -2893,8 +2901,8 @@ function UdbApi(
     var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
 
     return $http
-        .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
-        .then(returnUnwrappedData);
+      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .then(returnUnwrappedData);
   };
 
   /**
@@ -4318,6 +4326,7 @@ function UdbOrganizerFactory() {
       this.email = jsonOrganizer.email || [];
       this.phone = jsonOrganizer.phone || [];
       this.url = jsonOrganizer.url || [];
+      this.labels = jsonOrganizer.labels || [];
     }
   };
 
@@ -4336,7 +4345,7 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, UdbOrganizer, udbApi) {
+function UdbOrganizers($q, udbApi, UdbOrganizer) {
 
   /**
    * @param {string} name
@@ -4344,7 +4353,6 @@ function UdbOrganizers($q, UdbOrganizer, udbApi) {
    *
    * @return {Promise.<UdbOrganizer[]>}
    */
-
   this.suggestOrganizers = function(name) {
     var deferredOrganizer = $q.defer();
 
@@ -4357,8 +4365,8 @@ function UdbOrganizers($q, UdbOrganizer, udbApi) {
     }
 
     udbApi
-        .findOrganisations(0, 10, null, name)
-        .then(returnOrganizerSuggestions);
+      .findOrganisations(0, 10, null, name)
+      .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
   };
@@ -4369,7 +4377,7 @@ function UdbOrganizers($q, UdbOrganizer, udbApi) {
   };
 
 }
-UdbOrganizers.$inject = ["$q", "UdbOrganizer", "udbApi"];
+UdbOrganizers.$inject = ["$q", "udbApi", "UdbOrganizer"];
 
 // Source: src/core/udb-place.factory.js
 /**
@@ -7000,7 +7008,16 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/event/' + $scope.eventId.split('/').pop() + '/edit');
+    var eventId;
+    // When an event is published $scope.eventId is empty,
+    // so get the eventId straight from the current url.
+    if (_.isEmpty($scope.eventId)) {
+      eventId = $location.url().split('/')[2];
+    }
+    else {
+      eventId = $scope.eventId.split('/').pop();
+    }
+    $location.path('/event/' + eventId + '/edit');
   };
 
   function goToDashboard() {
@@ -7628,7 +7645,30 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    saveOrganizer();
+    // resolve for now, will re-introduce duplicate detection later on
+    var promise = $q.resolve([]);
+
+    $scope.error = false;
+    $scope.saving = true;
+
+    promise.then(function (data) {
+
+      // Set the results for the duplicates modal,
+      if (data.length > 0) {
+        $scope.organizersFound = true;
+        $scope.organizers = data;
+        $scope.saving = false;
+      }
+      // or save the event immediately if no duplicates were found.
+      else {
+        saveOrganizer();
+      }
+
+    }, function() {
+      $scope.error = true;
+      $scope.saving = false;
+    });
+
   }
 
   /**
@@ -9254,11 +9294,11 @@ function EventFormPublishController(
   }
 
   function redirectToDetailPage() {
-    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id);
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id + '/published');
   }
 
   function preview() {
-    redirectToDetailPage();
+    $location.path('/' + EventFormData.getType() + '/' + EventFormData.id + '/saved');
   }
 
   function isDraft(status) {
@@ -10641,6 +10681,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Auto-complete callback for organizers.
    * @param {String} value
    *  Suggest organizers based off of this value.
+   *
+   * @return {UdbOrganizer[]}
    */
   function getOrganizers(value) {
     function suggestExistingOrNewOrganiser (organizers) {
@@ -12665,7 +12707,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.find = function(queryString, itemsPerPage, offset) {
     var moderationFilter = 'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]';
-    queryString = (queryString ? queryString + ' AND ' : '') + moderationFilter;
+    queryString = (queryString ? '(' + queryString + ')' + ' AND ' : '') + moderationFilter;
 
     return udbApi
       .findEventsWithLimit(queryString, offset, itemsPerPage);
@@ -14472,7 +14514,16 @@ function PlaceDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/place/' + $scope.placeId.split('/').pop() + '/edit');
+    var placeId;
+    // When a place is published $scope.placeId is empty,
+    // so get the placeId straight from the current url.
+    if (_.isEmpty($scope.placeId)) {
+      placeId = $location.url().split('/')[2];
+    }
+    else {
+      placeId = $scope.placeId.split('/').pop();
+    }
+    $location.path('/place/' + placeId + '/edit');
   };
 
   $scope.updateDescription = function(description) {
@@ -17441,6 +17492,80 @@ function searchDirective() {
   return search;
 }
 
+// Source: src/uitpas/organisation-suggestion.controller.js
+/**
+ * @ngdoc directive
+ * @name udb.search.controller:OfferController
+ * @description
+ * # OfferController
+ */
+angular
+  .module('udb.uitpas')
+  .controller('OrganisationSuggestionController', OrganisationSuggestionController);
+
+/* @ngInject */
+function OrganisationSuggestionController($scope, UitpasLabels) {
+  var controller = this;
+  controller.organisation = $scope.organisation;
+  controller.query = $scope.query;
+
+  controller.isUitpas = !_.isEmpty(_.intersection(
+    _.pluck($scope.organisation.labels, 'name'),
+    _.values(UitpasLabels)
+  ));
+}
+OrganisationSuggestionController.$inject = ["$scope", "UitpasLabels"];
+
+// Source: src/uitpas/organisation-suggestion.directive.js
+angular
+  .module('udb.uitpas')
+  .directive('uitpasOrganisationSuggestion', uitpasOrganisationSuggestion);
+
+/* @ngInject */
+function uitpasOrganisationSuggestion() {
+  return {
+    templateUrl: 'templates/organisation-suggestion.directive.html',
+    controller: 'OrganisationSuggestionController',
+    controllerAs: 'os',
+    scope: {
+      organisation: '<',
+      query: '<'
+    },
+    restrict: 'A'
+  };
+}
+
+// Source: src/uitpas/uitpas-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.entry.uitpasLabels
+ * @description
+ * # UiTPAS Labels
+ * All the known UiTPAS labels that link an organizer to card-systems
+ */
+angular
+  .module('udb.uitpas')
+  .constant('UitpasLabels',
+  /**
+   * Enum for UiTPAS labels
+   * @readonly
+   * @enum {string}
+   */
+  {
+    'PASPARTOE': 'Paspartoe',
+    'UITPAS': 'UiTPAS',
+    'UITPAS_GENT': 'UiTPAS Gent',
+    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
+    'UITPAS_REGIO_AALST': 'UiTPAS regio Aalst',
+    'UITPAS_DENDER': 'UiTPAS Dender',
+    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
+    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
+    'UITPAS_KEMPEN': 'UiTPAS Kempen',
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen'
+  });
+
 // Source: .tmp/udb3-angular.templates.js
 angular.module('udb.core').run(['$templateCache', function($templateCache) {
 $templateCache.put('templates/calendar-summary.directive.html',
@@ -17510,7 +17635,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "    <ul uib-dropdown-menu role=\"menu\">\n" +
     "      <li role=\"menuitem\">\n" +
-    "        <a ng-href=\"{{ ::event.url }}\">Voorbeeld</a>\n" +
+    "        <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
     "      </li>\n" +
     "      <li class=\"divider\"></li>\n" +
     "      <li role=\"menuitem\">\n" +
@@ -19038,7 +19163,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Voorbeeld bekijken</button>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
     "</div>"
   );
 
@@ -19558,7 +19683,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
-    "                             typeahead-template-url=\"templates/organizer-typeahead-template.html\"/>\n" +
+    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"/>\n" +
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
@@ -21923,6 +22048,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <i class=\"fa fa-circle-o-notch fa-spin\"></i> Zoeken…\n" +
     "    </div>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organisation-suggestion.directive.html',
+    "<span class=\"organisation-name\" ng-bind-html=\"::os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
+    "<small ng-if=\"::os.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+  );
+
+
+  $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
+    "<a uitpas-organisation-suggestion organisation=\"match.model\" query=\"query\"></a>"
   );
 
 }]);

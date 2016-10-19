@@ -216,8 +216,7 @@ function UdbApi(
       deferredOrganizer.resolve(organizer);
     } else {
       var organizerRequest  = $http.get(
-        appConfig.baseUrl + 'organizers/' + organizerId,
-        defaultApiConfig
+        appConfig.baseUrl + 'organizers/' + organizerId, defaultApiConfig
       );
 
       organizerRequest.success(function(jsonOrganizer) {
@@ -227,7 +226,6 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       });
     }
-
     return deferredOrganizer.promise;
   };
 
@@ -250,8 +248,8 @@ function UdbApi(
     var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
 
     return $http
-        .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
-        .then(returnUnwrappedData);
+      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .then(returnUnwrappedData);
   };
 
   /**

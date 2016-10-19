@@ -11,7 +11,7 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, UdbOrganizer, udbApi) {
+function UdbOrganizers($q, udbApi, UdbOrganizer) {
 
   /**
    * @param {string} name
@@ -19,7 +19,6 @@ function UdbOrganizers($q, UdbOrganizer, udbApi) {
    *
    * @return {Promise.<UdbOrganizer[]>}
    */
-
   this.suggestOrganizers = function(name) {
     var deferredOrganizer = $q.defer();
 
@@ -32,8 +31,8 @@ function UdbOrganizers($q, UdbOrganizer, udbApi) {
     }
 
     udbApi
-        .findOrganisations(0, 10, null, name)
-        .then(returnOrganizerSuggestions);
+      .findOrganisations(0, 10, null, name)
+      .then(returnOrganizerSuggestions);
 
     return deferredOrganizer.promise;
   };
