@@ -592,8 +592,6 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
-    // TODO: swagger docs describes different path:
-    // /api/1.0/organizer
     return $http.post(
       appConfig.baseUrl + 'organizers/',
       organizer,
