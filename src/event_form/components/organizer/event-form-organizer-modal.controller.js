@@ -179,15 +179,16 @@ function EventFormOrganizerModalController(
       delete organizer.address;
     }
 
-    var promise = eventCrud.createOrganizer(organizer);
-    promise.then(function(jsonResponse) {
-      $scope.newOrganizer.id = jsonResponse.data.organizerId;
-      selectOrganizer($scope.newOrganizer);
-      $scope.saving = false;
-    }, function() {
-      $scope.error = true;
-      $scope.saving = false;
-    });
+    eventCrud
+      .createOrganizer(organizer)
+      .then(function(jsonResponse) {
+        $scope.newOrganizer.id = jsonResponse.data.organizerId;
+        selectOrganizer($scope.newOrganizer);
+        $scope.saving = false;
+      }, function() {
+        $scope.error = true;
+        $scope.saving = false;
+      });
   }
 
   // Scope functions.
