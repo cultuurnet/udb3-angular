@@ -114,7 +114,16 @@ function PlaceDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/place/' + $scope.placeId.split('/').pop() + '/edit');
+    var placeId;
+    // When a place is published $scope.placeId is empty,
+    // so get the placeId straight from the current url.
+    if (_.isEmpty($scope.placeId)) {
+      placeId = $location.url().split('/')[2];
+    }
+    else {
+      placeId = $scope.placeId.split('/').pop();
+    }
+    $location.path('/place/' + placeId + '/edit');
   };
 
   $scope.updateDescription = function(description) {

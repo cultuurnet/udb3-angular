@@ -315,6 +315,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Auto-complete callback for organizers.
    * @param {String} value
    *  Suggest organizers based off of this value.
+   *
+   * @return {UdbOrganizer[]}
    */
   function getOrganizers(value) {
     function suggestExistingOrNewOrganiser (organizers) {
@@ -636,7 +638,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController',
+      controller: 'EventFormReservationModalController'
     });
 
     modalInstance.result.then(function () {
@@ -820,6 +822,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.facilitiesInapplicable = false;
       }
 
+    }
+
+    if (EventFormData.priceInfo) {
+      $scope.price = EventFormData.priceInfo;
+      $scope.priceCssClass = 'state-complete';
     }
 
   }

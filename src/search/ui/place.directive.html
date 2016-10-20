@@ -135,13 +135,8 @@
         <img ng-if="event.image" ng-src="{{event.image}}" alt="{{event.name}}" class="img-responsive">
       </div>
       <div ng-class="resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'">
-        <div ng-if="resultViewer.eventProperties.description.visible && placeCtrl.editable">
-          <div ng-bind-html="event.description" class="udb-description" onbeforesave="placeCtrl.updateDescription($data)"
-               editable-textarea="event.description" e-rows="6" e-cols="66"></div>
-        </div>
-        <div ng-if="resultViewer.eventProperties.description.visible && !placeCtrl.editable"
-             class="event-description-loading-indicator">
-          <i class="fa fa-circle-o-notch fa-spin"></i>
+        <div ng-if="resultViewer.eventProperties.description.visible">
+          <div ng-bind-html="event.description" class="udb-description"></div>
         </div>
 
         <div ng-if="resultViewer.eventProperties.labels.visible && event.labels" class="udb-labels">

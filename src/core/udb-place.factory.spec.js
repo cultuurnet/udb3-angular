@@ -31,6 +31,20 @@ describe('Factory: UdbPlace', function () {
         price: 0,
         priceCurrency: "EUR"
       },
+      priceInfo: [
+        {
+          category: 'base',
+          name: 'Basisprijs',
+          priceCurrency: 'EUR',
+          price: 2
+        },
+        {
+          category: 'tariff',
+          name: 'Bijkomende prijs',
+          priceCurrency: 'EUR',
+          price: 3
+        }
+      ],
       terms: [
         {
           label: "Vlaamse Ardennen",

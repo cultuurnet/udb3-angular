@@ -10,8 +10,8 @@
 
     <div class="row">
       <div class="col-xs-12">
-        <label for="gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity !== ''">Kies een gemeente</label>
-        <div id="gemeente-kiezer" ng-hide="selectedCity !== ''">
+        <label for="gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity">Kies een gemeente</label>
+        <div id="gemeente-kiezer" ng-hide="selectedCity">
           <span style="position: relative; display: inline-block; direction: ltr;" class="twitter-typeahead">
             <input type="text"
                    id="gemeente-autocomplete"
@@ -29,14 +29,14 @@
             Er was een probleem tijdens het ophalen van de steden
           </div>
         </div>
-        <div id="gemeente-gekozen" ng-show="selectedCity !== ''">
+        <div id="gemeente-gekozen" ng-show="selectedCity">
           <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="selectedCity"></span>
           <a href="" class="btn btn-default btn-link" ng-click="changeCitySelection()">Wijzigen</a>
         </div>
       </div>
     </div>
 
-    <div id="waar-evenement" class="clearfix" ng-show="eventFormData.isEvent && selectedCity !== ''">
+    <div id="waar-evenement" class="clearfix" ng-show="eventFormData.isEvent && selectedCity">
       <div class="row">
         <div class="col-xs-12">
           <label id="locatie-label" ng-show="!selectedLocation">
@@ -86,8 +86,8 @@
       </div>
     </div>
 
-    <div id="waar-plaats" class="clearfix" ng-show="eventFormData.isPlace && selectedCity !== ''">
-      <div class="plaats-adres-ingeven" ng-hide="selectedLocation.address.streetAddress">
+    <div id="waar-plaats" class="clearfix" ng-show="eventFormData.isPlace && selectedCity">
+      <div class="plaats-adres-ingeven" ng-hide="placeStreetAddress">
         <div class="row">
           <div class="col-xs-12">
             <div class="form-group" ng-class="{'has-error' : showValidation && step3Form.street.$error.required }">
@@ -95,8 +95,8 @@
               <input class="form-control"
                      id="straat"
                      name="street"
-                     ng-model="placeStreetAddress"
-                     placeholder=""
+                     ng-model="newPlaceStreetAddress"
+                     placeholder="Kerkstraat 1"
                      type="text"
                      required />
               <span class="help-block" ng-show="showValidation && step3Form.street.$error.required">
@@ -105,13 +105,13 @@
             </div>
           </div>
         </div>
-        <a class="btn btn-primary plaats-ok" ng-click="setStreetAddress()">OK</a>
+        <a class="btn btn-primary plaats-ok" ng-click="setPlaceStreetAddress(newPlaceStreetAddress)">OK</a>
       </div>
 
-      <div class="plaats-adres-resultaat" ng-show="selectedLocation.address.streetAddress">
+      <div class="plaats-adres-resultaat" ng-show="placeStreetAddress">
         <span>
-          <span class="btn-chosen" ng-bind="selectedLocation.address.streetAddress"></span>
-          <a class="btn btn-link plaats-adres-wijzigen" ng-click="changeStreetAddress()">Wijzigen</a>
+          <span class="btn-chosen" ng-bind="eventFormData.address.streetAddress"></span>
+          <a class="btn btn-link plaats-adres-wijzigen" ng-click="changePlaceStreetAddress()">Wijzigen</a>
         </span>
       </div>
     </div>
