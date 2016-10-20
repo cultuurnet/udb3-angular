@@ -2762,6 +2762,7 @@ function UdbApi(
     var offer = offerCache.get(id);
 
     if (offer) {
+      console.log(offer);
       offerCache.remove(id);
     }
   };
@@ -12815,7 +12816,7 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams, $q) {
+function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, BaseJob, $uibModal, $stateParams, $q) {
   var controller = this;
   var organizerId = $stateParams.id;
 
@@ -12849,7 +12850,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.uuid)
-      .then(removeFromCache, showProblem)
+      .then(function(commandInfo) {
+        logOrganizerLabelJob(commandInfo);
+        removeFromCache();
+      }, showProblem)
       .finally(function() {
         controller.labelSaving = false;
       });
@@ -12860,7 +12864,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
 
     OrganizerManager
         .deleteLabelFromOrganizer(organizerId, label.uuid)
-        .then(removeFromCache, showProblem)
+        .then(function(commandInfo) {
+          logOrganizerLabelJob(commandInfo);
+          removeFromCache();
+        }, showProblem)
         .finally(function() {
           controller.labelSaving = false;
         });
@@ -12909,8 +12916,19 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
     controller.organizer.labels = angular.copy(controller.organizerLabels);
   }
 
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logOrganizerLabelJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
+
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams", "$q"];
+OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "jobLogger", "BaseJob", "$uibModal", "$stateParams", "$q"];
 
 // Source: src/management/organizers/organizer-manager.service.js
 /**
