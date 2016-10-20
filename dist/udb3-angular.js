@@ -7686,7 +7686,17 @@ function EventFormOrganizerModalController(
     $scope.saving = true;
     $scope.error = false;
 
-    var promise = eventCrud.createOrganizer($scope.newOrganizer);
+    var organizer = _.clone($scope.newOrganizer);
+    // remove the address when it's empty
+    if (
+      !organizer.address.streetAddress &&
+      !organizer.address.addressLocality &&
+      !organizer.address.postalCode
+    ) {
+      delete organizer.address;
+    }
+
+    var promise = eventCrud.createOrganizer(organizer);
     promise.then(function(jsonResponse) {
       $scope.newOrganizer.id = jsonResponse.data.organizerId;
       selectOrganizer($scope.newOrganizer);
