@@ -20,13 +20,11 @@
             Beginuur
           </label>
           <div class="beginuur-invullen" ng-show="timestamp.showStartHour">
-            <input
-                type="time"
-                ng-model="timestamp.startHourAsDate"
-                ng-change="hoursChanged(timestamp)"
-                class="form-control uur"
-                placeholder="Bv. 08:00"
-                focus-if="timestamp.showStartHour">
+            <udb-time
+              ng-model="timestamp.startHourAsDate"
+              on-change="hoursChanged(timestamp)"
+              placeholder="Bv. 08:00"
+              focus-if="timestamp.showStartHour">
           </div>
         </div>
         <div class="col-xs-6 einduur" ng-show="timestamp.showStartHour">
@@ -39,11 +37,9 @@
             Einduur
           </label>
           <div class="einduur-invullen" ng-show="timestamp.showEndHour">
-            <input
-                type="time"
+            <udb-time
                 ng-model="timestamp.endHourAsDate"
-                ng-change="hoursChanged(timestamp)"
-                class="form-control uur"
+                ng-change="$ctrl.hoursChanged(timestamp)"
                 placeholder="Bv. 23:00"
                 focus-if="timestamp.showEndHour">
           </div>

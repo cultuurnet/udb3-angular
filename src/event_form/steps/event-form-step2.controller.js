@@ -34,7 +34,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.addTimestamp = addTimestamp;
   $scope.toggleStartHour = controller.toggleStartHour;
   $scope.toggleEndHour = toggleEndHour;
-  $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.openingHoursChanged = openingHoursChanged;
@@ -100,23 +99,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       EventFormData.majorInfoChanged = true;
     }
 
-  }
-
-  /**
-   * Change listener on the start- and openinghours
-   * Save the date-object and label formatted HH:MM
-   */
-  function hoursChanged(timestamp) {
-    if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
-      var startHourAsDate = moment(timestamp.startHourAsDate);
-      timestamp.startHour = startHourAsDate.format('HH:mm');
-      controller.eventTimingChanged();
-    }
-    if (timestamp.showEndHour && angular.isDate(timestamp.endHourAsDate)) {
-      var endHourAsDate = moment(timestamp.endHourAsDate);
-      timestamp.endHour = endHourAsDate.format('HH:mm');
-      controller.eventTimingChanged();
-    }
   }
 
   /**

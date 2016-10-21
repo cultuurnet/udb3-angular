@@ -2215,6 +2215,55 @@ function udbCalendarSummary() {
 
 })();
 
+// Source: src/core/components/time/time.component.js
+/**
+ * @ngdoc component
+ * @name udb.search.directive:udbSearchBar
+ * @description
+ * # udbQuerySearchBar
+ */
+angular
+  .module('udb.core')
+  .component('udbTime', {
+    template: '<input type="time" class="form-control uur">',
+    controller: TimeComponent,
+    bindings: {
+      timestamp: '&'
+    }
+  });
+
+/* @ngInject */
+function TimeComponent($rootScope, EventFormData) {
+  var tc = this;
+
+  tc.hoursChanged = hoursChanged;
+
+  /**
+  * Change listener on the start- and openinghours
+  * Save the date-object and label formatted HH:MM
+  */
+  function hoursChanged(timestamp) {
+    console.log(timestamp);
+    if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
+      var startHourAsDate = moment(timestamp.startHourAsDate);
+      timestamp.startHour = startHourAsDate.format('HH:mm');
+      eventTimingChanged();
+    }
+    if (timestamp.showEndHour && angular.isDate(timestamp.endHourAsDate)) {
+      var endHourAsDate = moment(timestamp.endHourAsDate);
+      timestamp.endHour = endHourAsDate.format('HH:mm');
+      eventTimingChanged();
+    }
+  }
+
+  function eventTimingChanged() {
+    if (EventFormData.id) {
+      $rootScope.$emit('eventTimingChanged', EventFormData);
+    }
+  }
+}
+TimeComponent.$inject = ["$rootScope", "EventFormData"];
+
 // Source: src/core/dutch-translations.constant.js
 /**
  * @ngdoc service
@@ -9427,7 +9476,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.addTimestamp = addTimestamp;
   $scope.toggleStartHour = controller.toggleStartHour;
   $scope.toggleEndHour = toggleEndHour;
-  $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.openingHoursChanged = openingHoursChanged;
@@ -9493,23 +9541,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       EventFormData.majorInfoChanged = true;
     }
 
-  }
-
-  /**
-   * Change listener on the start- and openinghours
-   * Save the date-object and label formatted HH:MM
-   */
-  function hoursChanged(timestamp) {
-    if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
-      var startHourAsDate = moment(timestamp.startHourAsDate);
-      timestamp.startHour = startHourAsDate.format('HH:mm');
-      controller.eventTimingChanged();
-    }
-    if (timestamp.showEndHour && angular.isDate(timestamp.endHourAsDate)) {
-      var endHourAsDate = moment(timestamp.endHourAsDate);
-      timestamp.endHour = endHourAsDate.format('HH:mm');
-      controller.eventTimingChanged();
-    }
   }
 
   /**
@@ -17530,6 +17561,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/time.html',
+    "<input type=\"time\"\n" +
+    "       class=\"form-control uur\">"
+  );
+
+
   $templateCache.put('templates/unexpected-error-modal.html',
     "<div class=\"modal-body\">\n" +
     "  <p ng-bind=\"errorMessage\"></p>\n" +
@@ -18097,13 +18134,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Beginuur\n" +
     "          </label>\n" +
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
-    "            <input\n" +
-    "                type=\"time\"\n" +
-    "                ng-model=\"timestamp.startHourAsDate\"\n" +
-    "                ng-change=\"hoursChanged(timestamp)\"\n" +
-    "                class=\"form-control uur\"\n" +
-    "                placeholder=\"Bv. 08:00\"\n" +
-    "                focus-if=\"timestamp.showStartHour\">\n" +
+    "            <udb-time\n" +
+    "              timestamp=\"timestamp\"\n" +
+    "              ng-model=\"timestamp.startHourAsDate\"\n" +
+    "              ng-change=\"$ctrl.hoursChanged(timestamp)\"\n" +
+    "              placeholder=\"Bv. 08:00\"\n" +
+    "              focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -18116,11 +18152,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Einduur\n" +
     "          </label>\n" +
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
-    "            <input\n" +
-    "                type=\"time\"\n" +
+    "            <udb-time\n" +
+    "                timestamp=\"timestamp\"\n" +
     "                ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                ng-change=\"hoursChanged(timestamp)\"\n" +
-    "                class=\"form-control uur\"\n" +
+    "                ng-change=\"$ctrl.hoursChanged(timestamp)\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
     "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +
