@@ -17573,7 +17573,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/dashboard-item.directive.html',
     "<td>\n" +
     "  <strong>\n" +
-    "    <a ng-href=\"{{ ::event.url }}\" ng-bind=\"::event.name\"></a>\n" +
+    "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <br/>\n" +
     "  <small>\n" +
