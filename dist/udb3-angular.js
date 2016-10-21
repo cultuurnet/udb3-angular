@@ -18268,64 +18268,64 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "<div class=\"col-sm-12\" ng-show=\"haveBookingPeriod\">\n" +
     "    <div class=\"booking-period\">\n" +
-    "        <p><strong>Reservatie periode</strong></p>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-lg-11\">\n" +
+    "                <p><strong>Reservatie periode</strong></p>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-lg-1\">\n" +
+    "                <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
+    "                    <span aria-hidden=\"true\">&times;</span>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
     "        <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
     "        </div>\n" +
     "        <form name=\"bookingPeriod\" class=\"booking-period\">\n" +
-    "            <table class=\"table\">\n" +
-    "                <tr>\n" +
-    "                    <td>\n" +
-    "                        <p><label>Van</label></p>\n" +
-    "                        <div class=\"row\">\n" +
-    "                            <div class=\"col-xs-9 npr\">\n" +
-    "                                <input name=\"bookingStartDate\"\n" +
-    "                                       class=\"form-control\"\n" +
-    "                                       type=\"text\"\n" +
-    "                                       uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
-    "                                       datepicker-options=\"dateOptions\"\n" +
-    "                                       ng-model=\"availabilityStarts\"\n" +
-    "                                       ng-change=\"validateBookingPeriod()\"\n" +
-    "                                       is-open=\"popup1.opened\"\n" +
-    "                                       show-button-bar=\"false\"\n" +
-    "                                       ng-required=\"true\" />\n" +
-    "                            </div>\n" +
-    "                            <div class=\"col-xs-3 npl\">\n" +
-    "                                <button type=\"button\" class=\"btn btn-default\" ng-click=\"open1()\"><i class=\"fa fa-calendar\" aria-hidden=\"true\"></i></button>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "                    </td>\n" +
-    "                    <td>\n" +
-    "                        <p><label>Tot</label></p>\n" +
-    "                        <div class=\"row\">\n" +
-    "                            <div class=\"col-xs-9 npr\">\n" +
-    "                                <input name=\"bookingEndDate\"\n" +
-    "                                       type=\"text\"\n" +
-    "                                       class=\"form-control\"\n" +
-    "                                       type=\"text\"\n" +
-    "                                       uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
-    "                                       datepicker-options=\"dateOptions\"\n" +
-    "                                       ng-model=\"availabilityEnds\"\n" +
-    "                                       ng-change=\"validateBookingPeriod()\"\n" +
-    "                                       is-open=\"popup2.opened\"\n" +
-    "                                       show-button-bar=\"false\"\n" +
-    "                                       ng-required=\"true\" />\n" +
-    "                            </div>\n" +
-    "                            <div class=\"col-xs-3 npl\">\n" +
-    "                                <span class=\"input-group-btn\">\n" +
-    "                                    <button type=\"button\" class=\"btn btn-default\" ng-click=\"open2()\"><i class=\"fa fa-calendar\" aria-hidden=\"true\"></i></button>\n" +
-    "                                </span>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "                    </td>\n" +
-    "                    <td>\n" +
-    "                        <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
-    "                            <span aria-hidden=\"true\">&times;</span>\n" +
-    "                        </button>\n" +
-    "                    </td>\n" +
-    "                </tr>\n" +
-    "            </table>\n" +
-    "        </form>\n" +
     "\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-lg-6\">\n" +
+    "                    <div class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\">Van</span>\n" +
+    "                        <input name=\"bookingStartDate\"\n" +
+    "                               class=\"form-control\"\n" +
+    "                               type=\"text\"\n" +
+    "                               uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "                               datepicker-options=\"dateOptions\"\n" +
+    "                               ng-model=\"availabilityStarts\"\n" +
+    "                               ng-change=\"validateBookingPeriod()\"\n" +
+    "                               is-open=\"popup1.opened\"\n" +
+    "                               show-button-bar=\"false\"\n" +
+    "                               ng-required=\"true\" />\n" +
+    "                        <span class=\"input-group-btn\">\n" +
+    "                            <button type=\"button\" class=\"btn btn-default\" ng-click=\"open1()\">\n" +
+    "                                <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n" +
+    "                            </button>\n" +
+    "                        </span>\n" +
+    "                    </div><!-- /input-group -->\n" +
+    "                </div><!-- /.col-lg-6 -->\n" +
+    "                <div class=\"col-lg-6\">\n" +
+    "                    <div class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\">Tot</span>\n" +
+    "                        <input name=\"bookingEndDate\"\n" +
+    "                               type=\"text\"\n" +
+    "                               class=\"form-control\"\n" +
+    "                               type=\"text\"\n" +
+    "                               uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "                               datepicker-options=\"dateOptions\"\n" +
+    "                               ng-model=\"availabilityEnds\"\n" +
+    "                               ng-change=\"validateBookingPeriod()\"\n" +
+    "                               is-open=\"popup2.opened\"\n" +
+    "                               show-button-bar=\"false\"\n" +
+    "                               ng-required=\"true\" />\n" +
+    "                        <span class=\"input-group-btn\">\n" +
+    "                            <button type=\"button\" class=\"btn btn-default\" ng-click=\"open2()\">\n" +
+    "                                <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n" +
+    "                            </button>\n" +
+    "                          </span>\n" +
+    "                    </div><!-- /input-group -->\n" +
+    "                </div><!-- /.col-lg-6 -->\n" +
+    "            </div><!-- /.row -->\n" +
+    "        </form>\n" +
     "    </div>\n" +
     "</div>"
   );
