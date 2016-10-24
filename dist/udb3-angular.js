@@ -5360,6 +5360,15 @@ function EventCrud(
   var service = this;
 
   /**
+   * @param {EventFormData} formData
+   */
+  function pickMajorInfoFromFormData(formData) {
+    return _.pick(formData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+  }
+
+  /**
    * Creates a new offer and add the job to the logger.
    *
    * @param {EventFormData}  eventFormData
@@ -5380,7 +5389,7 @@ function EventCrud(
       return eventFormData;
     };
 
-    var majorInfo = _.omit(eventFormData, _.isEmpty);
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     return udbApi
       .createOffer(type, majorInfo)
@@ -5425,9 +5434,7 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = _.pick(eventFormData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
-    });
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
