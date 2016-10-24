@@ -98,12 +98,12 @@ function EventFormStep4Controller(
       $scope.resultViewer.loading = true;
       $scope.duplicatesSearched = true;
 
-      promise.then(function (data) {
+      promise.then(function (pagedDuplicates) {
 
         // Set the results for the duplicates modal,
-        if (data.totalItems > 0) {
+        if (pagedDuplicates.totalItems > 0) {
           $scope.saving = false;
-          $scope.resultViewer.setResults(data);
+          $scope.resultViewer.setResults(pagedDuplicates);
         }
         // or save the event immediataly if no duplicates were found.
         else {
