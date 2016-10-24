@@ -253,6 +253,47 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId of the organizer
+   *
+   * @return {Promise}
+   */
+  this.findOrganisationsCardSystems = function(organizerId) {
+    return $http
+        .get(appConfig.baseUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
+        //.then(returnUnwrappedData);
+        .then(function() {
+          return {
+            id: 4,
+            name: 'UiTPAS Regio Aalst',
+            distributionKeys: [
+              {
+                id: 1,
+                name: 'CC De Werf - 1,5 EUR / dag'
+              },
+              {
+                id: 2,
+                name: 'CC De Werf - 3 EUR / dag'
+              }
+            ]
+          },
+          {
+            id: 5,
+            name: 'UiTPAS Dender',
+            distributionKeys: [
+              {
+                id: 1,
+                name: 'Dender - 1,5 EUR / dag'
+              },
+              {
+                id: 2,
+                name: 'Dender - 3 EUR / dag'
+              }
+            ]
+          };
+        });
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */

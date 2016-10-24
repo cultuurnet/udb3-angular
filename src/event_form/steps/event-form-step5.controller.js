@@ -424,16 +424,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Open the UiTPAS modal.
    */
   function openUitpasModal() {
-    /*var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-organizer-modal.html',
-      controller: 'EventFormOrganizerModalController',
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-uitpas-modal.html',
+      controller: 'EventFormUitpasModalController',
       resolve: {
-        organizerName: function () {
-          return $scope.organizer;
+        organizer: function () {
+          return EventFormData.organizer;
         }
       }
-    });*/
-    console.log('uitpas modal');
+    });
   }
 
   /**

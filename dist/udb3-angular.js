@@ -2906,6 +2906,47 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId of the organizer
+   *
+   * @return {Promise}
+   */
+  this.findOrganisationsCardSystems = function(organizerId) {
+    return $http
+        .get(appConfig.baseUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
+        //.then(returnUnwrappedData);
+        .then(function() {
+          return {
+            id: 4,
+            name: 'UiTPAS Regio Aalst',
+            distributionKeys: [
+              {
+                id: 1,
+                name: 'CC De Werf - 1,5 EUR / dag'
+              },
+              {
+                id: 2,
+                name: 'CC De Werf - 3 EUR / dag'
+              }
+            ]
+          },
+          {
+            id: 5,
+            name: 'UiTPAS Dender',
+            distributionKeys: [
+              {
+                id: 1,
+                name: 'Dender - 1,5 EUR / dag'
+              },
+              {
+                id: 2,
+                name: 'Dender - 3 EUR / dag'
+              }
+            ]
+          };
+        });
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */
@@ -4380,6 +4421,11 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
   this.findOrganizersWebsite = function(website) {
     return udbApi
         .findOrganisations(0, 10, website, null);
+  };
+
+  this.findOrganizersCardsystem = function(organizerId) {
+    return udbApi
+        .findOrganisationsCardSystems(organizerId);
   };
 
 }
@@ -8372,6 +8418,29 @@ function udbPlaceSuggestion() {
 
 })();
 
+// Source: src/event_form/components/uitpas-modal/event-form-uitpas-modal.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormUitpasModalController
+ * @description
+ * # EventFormUitpasModalController
+ * Modal for setting the uitpas cardsystem and destribution key.
+ */
+angular
+    .module('udb.event-form')
+    .controller('EventFormUitpasModalController', EventFormUitpasModalController);
+
+/* @ngInject */
+function EventFormUitpasModalController($scope, $uibModalInstance, organizer, udbOrganizers) {
+  $scope.organizer = organizer;
+  getCardsystems(organizer.id);
+
+  function getCardsystems(organizerId) {
+    $scope.cardSystems = udbOrganizers.findOrganizersCardsystem(organizerId);
+  }
+}
+EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizer", "udbOrganizers"];
+
 // Source: src/event_form/components/validators/contact-info-validation.directive.js
 /**
 * @ngdoc directive
@@ -10819,16 +10888,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Open the UiTPAS modal.
    */
   function openUitpasModal() {
-    /*var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-organizer-modal.html',
-      controller: 'EventFormOrganizerModalController',
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-uitpas-modal.html',
+      controller: 'EventFormUitpasModalController',
       resolve: {
-        organizerName: function () {
-          return $scope.organizer;
+        organizer: function () {
+          return EventFormData.organizer;
         }
       }
-    });*/
-    console.log('uitpas modal');
+    });
   }
 
   /**
@@ -19218,6 +19286,41 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"previousSuggestion()\">Vorige</button>\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"nextSuggestion()\">Volgende</button>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/event-form-uitpas-modal.html',
+    "<div class=\"modal-content\">\n" +
+    "    <div class=\"modal-header\">\n" +
+    "        <button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
+    "        </button>\n" +
+    "        <h4 class=\"modal-title\">UiTPAS-informatie</h4>\n" +
+    "    </div>\n" +
+    "    <div class=\"modal-body\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"form-group col-md-6 col-sm-12\">\n" +
+    "                <div class=\"card-system\">\n" +
+    "                    <label>Kaartsysteem</label>\n" +
+    "\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group col-md-6 col-sm-12\" ng-class=\"{'has-error' : showEndDateRequired }\">\n" +
+    "                <div class=\"add-date\">\n" +
+    "                    <label>Tot</label>\n" +
+    "                    <div udb-datepicker\n" +
+    "                         highlight-date=\"{{calendarHighlight.date}}\"\n" +
+    "                         highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
+    "                         ng-model=\"eventFormData.bookingInfo.availabilityEnds\"></div>\n" +
+    "                    <span class=\"help-block\" ng-show=\"showEndDateRequired\">Gelieve een eind datum te kiezen</span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
+    "        </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "<div>"
   );
 
 

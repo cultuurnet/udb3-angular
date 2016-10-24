@@ -42,4 +42,9 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
         .findOrganisations(0, 10, website, null);
   };
 
+  this.findOrganizersCardsystem = function(organizerId) {
+    return udbApi
+        .findOrganisationsCardSystems(organizerId);
+  };
+
 }
