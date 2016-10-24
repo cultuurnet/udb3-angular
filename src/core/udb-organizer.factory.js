@@ -12,7 +12,13 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory() {
+function UdbOrganizerFactory(UitpasLabels) {
+
+  function isUitpas(labels) {
+    return !_.isEmpty(_.intersection(
+        _.pluck(labels, 'name'),
+        _.values(UitpasLabels)));
+  }
 
   /**
    * @class UdbOrganizer
@@ -36,6 +42,7 @@ function UdbOrganizerFactory() {
       this.phone = jsonOrganizer.phone || [];
       this.url = jsonOrganizer.url || [];
       this.labels = jsonOrganizer.labels || [];
+      this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
   };
 

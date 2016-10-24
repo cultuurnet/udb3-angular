@@ -4301,7 +4301,13 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory() {
+function UdbOrganizerFactory(UitpasLabels) {
+
+  function isUitpas(labels) {
+    return !_.isEmpty(_.intersection(
+        _.pluck(labels, 'name'),
+        _.values(UitpasLabels)));
+  }
 
   /**
    * @class UdbOrganizer
@@ -4325,11 +4331,13 @@ function UdbOrganizerFactory() {
       this.phone = jsonOrganizer.phone || [];
       this.url = jsonOrganizer.url || [];
       this.labels = jsonOrganizer.labels || [];
+      this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
   };
 
   return (UdbOrganizer);
 }
+UdbOrganizerFactory.$inject = ["UitpasLabels"];
 
 // Source: src/core/udb-organizers.service.js
 /**
@@ -10444,6 +10452,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
+  $scope.uitpasOrganizer = false;
 
   // Booking & tickets vars.
   $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
@@ -17517,11 +17526,6 @@ function OrganisationSuggestionController($scope, UitpasLabels) {
   var controller = this;
   controller.organisation = $scope.organisation;
   controller.query = $scope.query;
-
-  controller.isUitpas = !_.isEmpty(_.intersection(
-    _.pluck($scope.organisation.labels, 'name'),
-    _.values(UitpasLabels)
-  ));
 }
 OrganisationSuggestionController.$inject = ["$scope", "UitpasLabels"];
 
@@ -22083,7 +22087,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/organisation-suggestion.directive.html',
     "<span class=\"organisation-name\" ng-bind-html=\"::os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
-    "<small ng-if=\"::os.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+    "<small ng-if=\"::os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
   );
 
 

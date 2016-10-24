@@ -69,6 +69,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
+  $scope.uitpasOrganizer = false;
 
   // Booking & tickets vars.
   $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
