@@ -105,7 +105,7 @@ function EventFormStep4Controller(
           $scope.saving = false;
           $scope.resultViewer.setResults(pagedDuplicates);
         }
-        // or save the event immediataly if no duplicates were found.
+        // or save the event immediately if no duplicates were found.
         else {
           createOffer();
         }
