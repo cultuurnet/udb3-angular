@@ -5368,6 +5368,15 @@ function EventCrud(
   var service = this;
 
   /**
+   * @param {EventFormData} formData
+   */
+  function pickMajorInfoFromFormData(formData) {
+    return _.pick(formData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+  }
+
+  /**
    * Creates a new offer and add the job to the logger.
    *
    * @param {EventFormData}  eventFormData
@@ -5388,7 +5397,7 @@ function EventCrud(
       return eventFormData;
     };
 
-    var majorInfo = _.omit(eventFormData, _.isEmpty);
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     return udbApi
       .createOffer(type, majorInfo)
@@ -5433,9 +5442,7 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = _.pick(eventFormData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
-    });
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
@@ -10235,37 +10242,42 @@ function EventFormStep4Controller(
       return;
     }
 
-    if (!ignoreDuplicates) {
-      $scope.saving = true;
-      $scope.error = false;
-
-      var promise = findDuplicates(EventFormData);
-
-      $scope.resultViewer.loading = true;
-      $scope.duplicatesSearched = true;
-
-      promise.then(function (data) {
-
-        // Set the results for the duplicates modal,
-        if (data.totalItems > 0) {
-          $scope.saving = false;
-          $scope.resultViewer.setResults(data);
-        }
-        // or save the event immediataly if no duplicates were found.
-        else {
-          createOffer();
-        }
-
-      }, function() {
-        // Error while saving.
-        $scope.error = true;
-        $scope.saving = false;
-      });
+    if (ignoreDuplicates) {
+      createOffer();
     }
+    else {
+      suggestExistingOffers(EventFormData);
+    }
+
+  }
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function suggestExistingOffers(formData) {
+    $scope.saving = true;
+    $scope.error = false;
+
+    $scope.resultViewer.loading = true;
+    $scope.duplicatesSearched = true;
+
+    findDuplicates(formData).then(showDuplicates, showMajorInfoError);
+  }
+
+  /**
+   * @param {PagedCollection} pagedDuplicates
+   */
+  function showDuplicates(pagedDuplicates) {
+
+    // Set the results for the duplicates modal,
+    if (pagedDuplicates.totalItems > 0) {
+      $scope.saving = false;
+      $scope.resultViewer.setResults(pagedDuplicates);
+    }
+    // or save the event immediately if no duplicates were found.
     else {
       createOffer();
     }
-
   }
 
   function findDuplicates(data) {
@@ -17522,12 +17534,12 @@ angular
   .controller('OrganisationSuggestionController', OrganisationSuggestionController);
 
 /* @ngInject */
-function OrganisationSuggestionController($scope, UitpasLabels) {
+function OrganisationSuggestionController($scope) {
   var controller = this;
   controller.organisation = $scope.organisation;
   controller.query = $scope.query;
 }
-OrganisationSuggestionController.$inject = ["$scope", "UitpasLabels"];
+OrganisationSuggestionController.$inject = ["$scope"];
 
 // Source: src/uitpas/organisation-suggestion.directive.js
 angular
