@@ -2705,6 +2705,7 @@ input + .alert {
   margin-bottom: 0.5em;
 }
 .offer-form .description-text {
+  margin-top: 3px;
   white-space: pre-line;
 }
 .offer-form .udb3-data-table {
