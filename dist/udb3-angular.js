@@ -2228,7 +2228,7 @@ angular
     template: '<input type="time" class="form-control uur">',
     controller: TimeComponent,
     bindings: {
-      timestamp: '&'
+      onChange: '&'
     }
   });
 
@@ -18135,9 +18135,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
     "            <udb-time\n" +
-    "              timestamp=\"timestamp\"\n" +
     "              ng-model=\"timestamp.startHourAsDate\"\n" +
-    "              ng-change=\"$ctrl.hoursChanged(timestamp)\"\n" +
+    "              on-change=\"tc.hoursChanged(timestamp)\"\n" +
     "              placeholder=\"Bv. 08:00\"\n" +
     "              focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
@@ -18153,9 +18152,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
     "            <udb-time\n" +
-    "                timestamp=\"timestamp\"\n" +
     "                ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                ng-change=\"$ctrl.hoursChanged(timestamp)\"\n" +
+    "                on-change=\"tc.hoursChanged(timestamp)\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
     "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +

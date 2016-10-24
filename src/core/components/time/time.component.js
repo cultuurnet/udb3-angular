@@ -19,8 +19,8 @@ angular
 /* @ngInject */
 function TimeComponent($rootScope, EventFormData) {
   var tc = this;
-  
-  tc.change = hoursChanged;
+
+  tc.hoursChanged = hoursChanged;
 
   /**
   * Change listener on the start- and openinghours
