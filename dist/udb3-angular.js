@@ -2860,8 +2860,7 @@ function UdbApi(
       deferredOrganizer.resolve(organizer);
     } else {
       var organizerRequest  = $http.get(
-        appConfig.baseApiUrl + 'organizer/' + organizerId,
-        defaultApiConfig
+        appConfig.baseUrl + 'organizers/' + organizerId, defaultApiConfig
       );
 
       organizerRequest.success(function(jsonOrganizer) {
@@ -2871,7 +2870,6 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       });
     }
-
     return deferredOrganizer.promise;
   };
 
@@ -3238,10 +3236,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
-    // TODO: swagger docs describes different path:
-    // /api/1.0/organizer
     return $http.post(
-      appConfig.baseApiUrl + 'organizer',
+      appConfig.baseUrl + 'organizers/',
       organizer,
       defaultApiConfig
     );
@@ -4365,6 +4361,12 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
 
     return deferredOrganizer.promise;
   };
+
+  this.findOrganizersWebsite = function(website) {
+    return udbApi
+        .findOrganisations(0, 10, website, null);
+  };
+
 }
 UdbOrganizers.$inject = ["$q", "udbApi", "UdbOrganizer"];
 
@@ -7522,6 +7524,7 @@ function EventFormOrganizerModalController(
   $scope,
   $uibModalInstance,
   udbOrganizers,
+  UdbOrganizer,
   eventCrud,
   cities,
   Levenshtein,
@@ -7533,20 +7536,24 @@ function EventFormOrganizerModalController(
 
   // Scope vars.
   $scope.organizer = organizerName;
+  $scope.organizersWebsiteFound = false;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
   $scope.selectedCity = '';
+  $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
+    website: 'http://',
     name : $scope.organizer,
     address : {
       streetAddress : '',
-      locality : '',
+      addressLocality : '',
       postalCode: '',
-      country : 'BE'
+      addressCountry : 'BE'
     },
     contact: []
   };
@@ -7555,6 +7562,7 @@ function EventFormOrganizerModalController(
   $scope.cancel = cancel;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  $scope.validateWebsite = validateWebsite;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -7581,6 +7589,40 @@ function EventFormOrganizerModalController(
    */
   function deleteOrganizerContactInfo(index) {
     $scope.newOrganizer.contact.splice(index, 1);
+  }
+
+  /**
+   * Validate the website of new organizer.
+   */
+  function validateWebsite() {
+    $scope.showWebsiteValidation = true;
+
+    if (!$scope.organizerForm.website.$valid) {
+      $scope.showWebsiteValidation = false;
+      return;
+    }
+    udbOrganizers
+        .findOrganizersWebsite($scope.newOrganizer.website)
+        .then(function (data) {
+          // Set the results for the duplicates modal,
+          if (data.totalItems > 0) {
+            $scope.organizersWebsiteFound = true;
+            $scope.firstOrganizerFound = new UdbOrganizer(data.member[0]);
+            $scope.showWebsiteValidation = false;
+            $scope.disableSubmit = true;
+          }
+          else {
+            $scope.showWebsiteValidation = false;
+            $scope.organizersWebsiteFound = false;
+            $scope.firstOrganizerFound = '';
+            if ($scope.newOrganizer.name) {
+              $scope.disableSubmit = false;
+            }
+          }
+        }, function() {
+          $scope.websiteError = true;
+          $scope.showWebsiteValidation = false;
+        });
   }
 
   /**
@@ -7635,15 +7677,26 @@ function EventFormOrganizerModalController(
     $scope.saving = true;
     $scope.error = false;
 
-    var promise = eventCrud.createOrganizer($scope.newOrganizer);
-    promise.then(function(jsonResponse) {
-      $scope.newOrganizer.id = jsonResponse.data.organizerId;
-      selectOrganizer($scope.newOrganizer);
-      $scope.saving = false;
-    }, function() {
-      $scope.error = true;
-      $scope.saving = false;
-    });
+    var organizer = _.clone($scope.newOrganizer);
+    // remove the address when it's empty
+    if (
+      !organizer.address.streetAddress &&
+      !organizer.address.addressLocality &&
+      !organizer.address.postalCode
+    ) {
+      delete organizer.address;
+    }
+
+    eventCrud
+      .createOrganizer(organizer)
+      .then(function(jsonResponse) {
+        $scope.newOrganizer.id = jsonResponse.data.organizerId;
+        selectOrganizer($scope.newOrganizer);
+        $scope.saving = false;
+      }, function() {
+        $scope.error = true;
+        $scope.saving = false;
+      });
   }
 
   // Scope functions.
@@ -7676,7 +7729,7 @@ function EventFormOrganizerModalController(
    */
   controller.selectCity = function ($item, $label) {
     $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.locality = $item.name;
+    $scope.newOrganizer.address.addressLocality = $item.name;
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
@@ -7692,7 +7745,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
@@ -18495,6 +18548,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"css-form\">\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }\">\n" +
+    "            <label>Website</label>\n" +
+    "            <input type=\"url\"\n" +
+    "                   name=\"website\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   ng-model=\"newOrganizer.website\"\n" +
+    "                   ng-change=\"validateWebsite()\"\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
+    "            <p class=\"alert alert-info\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
+    "            <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"selectOrganizer(firstOrganizerFound)\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "        </div>\n" +
+    "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
     "        <label>Naam</label>\n" +
     "        <input type=\"text\" name=\"name\" class=\"form-control\" ng-model=\"newOrganizer.name\" required>\n" +
@@ -18640,7 +18706,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "<div class=\"modal-footer\" ng-hide=\"organizersFound\">\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
-    "  <button type=\"button\" class=\"btn btn-primary organisator-toevoegen-bewaren\" ng-click=\"validateNewOrganizer()\">\n" +
+    "  <button type=\"button\"\n" +
+    "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "          ng-disabled=\"disableSubmit\"\n" +
+    "          ng-click=\"validateNewOrganizer()\">\n" +
     "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
@@ -18719,6 +18788,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/place-suggestion-popup.html',
+    "<ul class=\"dropdown-menu\" ng-show=\"isOpen() && !moveInProgress\" ng-style=\"{top: position().top+'px', left: position().left+'px'}\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
+    "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\">\n" +
+    "        <div uib-typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
+    "    </li>\n" +
+    "    <li>\n" +
+    "        <div class=\"panel panel-default text-center\">\n" +
+    "            <div class=\"panel-body\">\n" +
+    "                <p>Locatie niet gevonden?</p>\n" +
+    "                <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
+    "                        data-target=\"#waar-locatie-toevoegen\" ng-click=\"$parent.openPlaceModal()\">\n" +
+    "                    Een locatie toevoegen\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </li>\n" +
+    "</ul>"
   );
 
 
@@ -19284,6 +19373,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
+    "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
     "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +

@@ -299,7 +299,7 @@ describe('Service: UDB3 Api', function () {
       'name': 'STUK'
     };
     $httpBackend
-      .expectGET(baseUrl + 'organizer/' + organizerId)
+      .expectGET(baseUrl + 'organizers/' + organizerId)
       .respond(JSON.stringify(response));
     service
       .getOrganizerById(organizerId)
@@ -315,7 +315,7 @@ describe('Service: UDB3 Api', function () {
 
     // first time we expect a GET-call being made
     $httpBackend
-      .expectGET(baseUrl + 'organizer/' + organizerId)
+      .expectGET(baseUrl + 'organizers/' + organizerId)
       .respond(JSON.stringify(response));
     // check the todo about own cache for organizers
     spyOn(offerCache, 'put').and.callThrough();
@@ -888,7 +888,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectPOST(baseUrl + 'organizer', organizer)
+      .expectPOST(baseUrl + 'organizers/', organizer)
       .respond(JSON.stringify(response));
     service
       .createOrganizer(organizer)
