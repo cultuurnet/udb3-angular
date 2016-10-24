@@ -35,6 +35,7 @@ function UdbOrganizerFactory() {
       this.email = jsonOrganizer.email || [];
       this.phone = jsonOrganizer.phone || [];
       this.url = jsonOrganizer.url || [];
+      this.labels = jsonOrganizer.labels || [];
     }
   };
 

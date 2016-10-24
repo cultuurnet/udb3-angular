@@ -53,6 +53,20 @@ describe('Factory: UdbEvent', function () {
         "phone": ["016\/22.20.14"],
         "@type": "Organizer"
       },
+      "priceInfo": [
+        {
+          "category": 'base',
+          "name": 'Basisprijs',
+          "priceCurrency": 'EUR',
+          "price": 2
+        },
+        {
+          "category": 'tariff',
+          "name": 'Bijkomende prijs',
+          "priceCurrency": 'EUR',
+          "price": 3
+        }
+      ],
       "bookingInfo": [{"description": "Leden: \u20ac 4,00, niet-leden \u20ac 5,00", "currency": "EUR", "price": 5}],
       "terms": [
         {"label": "Drama", "domain": "theme", "id": "1.7.4.0.0"},

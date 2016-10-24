@@ -19,7 +19,6 @@ angular
      * @enum {string}
      */
     {
-      'AANBOD_INVOEREN': 'AANBOD_INVOEREN',
       'AANBOD_BEWERKEN': 'AANBOD_BEWERKEN',
       'AANBOD_MODEREREN': 'AANBOD_MODEREREN',
       'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',

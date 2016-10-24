@@ -21,6 +21,14 @@ textarea.resize-vertical {
 .dashboard-item .dropdown {
   min-width: 120px;
 }
+.title {
+  margin: 0;
+  line-height: 56px;
+  font-weight: 300;
+  color: #333333;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 30px;
+}
 /*!
  *  Font Awesome 4.2.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
@@ -1704,16 +1712,15 @@ textarea.resize-vertical {
 label.checkbox > [type="checkbox"] {
   margin-top: 6px;
 }
-.form-group input {
+.form-group input,
+.form-group select {
   max-width: 450px;
 }
 input + .alert {
   margin-top: .5em;
 }
 .save-time-tracker {
-  border-top: 1px solid #cccccc;
   color: #777777;
-  margin-top: 3em;
   padding-bottom: 1em;
   padding-top: 1em;
 }
@@ -2084,7 +2091,6 @@ input + .alert {
 .rv-result-viewer {
   clear: both;
   position: relative;
-  margin: 30px 0;
   min-height: 300px;
 }
 .rv-search-results.loading {
@@ -2464,6 +2470,7 @@ input + .alert {
   margin-bottom: 1em;
 }
 .offer-form {
+  margin-bottom: 33vw;
   /*  .multiselect-container > li > a > label {
     margin: 0;
     height: 100%;
@@ -2559,6 +2566,10 @@ input + .alert {
 .offer-form .datepicker .table-condensed > tbody > tr > td,
 .offer-form .datepicker .table-condensed > tfoot > tr > td {
   padding: 0;
+}
+.offer-form .datepicker table tr td.active.active {
+  background-color: #337ab7;
+  background-image: none;
 }
 .offer-form #add-date-plus {
   display: block;
@@ -2693,6 +2704,9 @@ input + .alert {
 .offer-form .extra-prijs,
 .offer-form .extra-contact {
   margin-bottom: 0.5em;
+}
+.offer-form .description-text {
+  white-space: pre-line;
 }
 .offer-form .udb3-data-table {
   table-layout: fixed;
@@ -3009,6 +3023,21 @@ input + .alert {
 .offer-form a:not(.btn) {
   text-decoration: underline;
 }
+.offer-form input.has-error {
+  border: 1px solid #f3453f;
+}
+.offer-form .event-validation {
+  background-color: #ffffff;
+  padding: 1em;
+  position: fixed;
+  bottom: 0;
+  margin-left: -15px;
+  border-top: 1px solid #dddddd;
+  width: 100%;
+}
+.offer-form .event-validation div.text-danger {
+  margin-bottom: 1ex;
+}
 .event-type-choser-label {
   background-repeat: no-repeat;
   background-position: top center;
@@ -3120,6 +3149,7 @@ h2.block-header {
 }
 .event-detail-description {
   color: black;
+  white-space: pre-line;
 }
 img.offer-image-thumbnail {
   max-width: 400px;
@@ -3193,4 +3223,49 @@ udb-search-label i.caret {
 }
 .form-group udb-search-label input {
   max-width: none;
+}
+udb-moderation-offer .moderation-offer {
+  border: 1px solid #dddddd;
+  background: #f5f5f5;
+  padding: 1em;
+  margin-bottom: 1em;
+  min-height: 300px;
+}
+udb-moderation-offer .moderation-offer h2 {
+  margin-top: 12px;
+}
+udb-moderation-offer .moderation-offer div.content {
+  height: 150px;
+  overflow-y: auto;
+  white-space: pre-line;
+}
+udb-moderation-offer .moderation-offer img {
+  max-height: 200px;
+  max-width: 200px;
+  margin-top: 7px;
+}
+udb-moderation-offer .moderation-offer .no-img {
+  height: 200px;
+  width: 200px;
+  border: 1px solid #dddddd;
+  color: #b7b7b7;
+  text-align: center;
+  padding-top: 20px;
+  margin-top: 7px;
+}
+udb-moderation-offer .moderation-offer footer {
+  color: #919191;
+  margin-top: 2ex;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation {
+  margin-left: 1em;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation i {
+  margin-right: 8px;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation i.text-danger {
+  color: #a02622;
+}
+udb-moderation-offer .moderation-offer footer .btn-moderation i.text-success {
+  color: #357935;
 }

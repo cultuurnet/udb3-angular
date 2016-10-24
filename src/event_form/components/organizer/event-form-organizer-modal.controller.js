@@ -16,29 +16,36 @@ function EventFormOrganizerModalController(
   $scope,
   $uibModalInstance,
   udbOrganizers,
+  UdbOrganizer,
   eventCrud,
   cities,
   Levenshtein,
-  $q
+  $q,
+  organizerName
 ) {
 
   var controller = this;
 
   // Scope vars.
+  $scope.organizer = organizerName;
+  $scope.organizersWebsiteFound = false;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
   $scope.selectedCity = '';
+  $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
-    name : '',
+    website: 'http://',
+    name : $scope.organizer,
     address : {
       streetAddress : '',
-      locality : '',
+      addressLocality : '',
       postalCode: '',
-      country : 'BE'
+      addressCountry : 'BE'
     },
     contact: []
   };
@@ -47,6 +54,7 @@ function EventFormOrganizerModalController(
   $scope.cancel = cancel;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  $scope.validateWebsite = validateWebsite;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -76,6 +84,40 @@ function EventFormOrganizerModalController(
   }
 
   /**
+   * Validate the website of new organizer.
+   */
+  function validateWebsite() {
+    $scope.showWebsiteValidation = true;
+
+    if (!$scope.organizerForm.website.$valid) {
+      $scope.showWebsiteValidation = false;
+      return;
+    }
+    udbOrganizers
+        .findOrganizersWebsite($scope.newOrganizer.website)
+        .then(function (data) {
+          // Set the results for the duplicates modal,
+          if (data.totalItems > 0) {
+            $scope.organizersWebsiteFound = true;
+            $scope.firstOrganizerFound = new UdbOrganizer(data.member[0]);
+            $scope.showWebsiteValidation = false;
+            $scope.disableSubmit = true;
+          }
+          else {
+            $scope.showWebsiteValidation = false;
+            $scope.organizersWebsiteFound = false;
+            $scope.firstOrganizerFound = '';
+            if ($scope.newOrganizer.name) {
+              $scope.disableSubmit = false;
+            }
+          }
+        }, function() {
+          $scope.websiteError = true;
+          $scope.showWebsiteValidation = false;
+        });
+  }
+
+  /**
    * Validate the new organizer.
    */
   function validateNewOrganizer() {
@@ -86,7 +128,6 @@ function EventFormOrganizerModalController(
       return;
     }
 
-    //var promise = udbOrganizers.searchDuplicates($scope.newOrganizer.name, $scope.newOrganizer.address.postalCode);
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
@@ -128,15 +169,26 @@ function EventFormOrganizerModalController(
     $scope.saving = true;
     $scope.error = false;
 
-    var promise = eventCrud.createOrganizer($scope.newOrganizer);
-    promise.then(function(jsonResponse) {
-      $scope.newOrganizer.id = jsonResponse.data.organizerId;
-      selectOrganizer($scope.newOrganizer);
-      $scope.saving = false;
-    }, function() {
-      $scope.error = true;
-      $scope.saving = false;
-    });
+    var organizer = _.clone($scope.newOrganizer);
+    // remove the address when it's empty
+    if (
+      !organizer.address.streetAddress &&
+      !organizer.address.addressLocality &&
+      !organizer.address.postalCode
+    ) {
+      delete organizer.address;
+    }
+
+    eventCrud
+      .createOrganizer(organizer)
+      .then(function(jsonResponse) {
+        $scope.newOrganizer.id = jsonResponse.data.organizerId;
+        selectOrganizer($scope.newOrganizer);
+        $scope.saving = false;
+      }, function() {
+        $scope.error = true;
+        $scope.saving = false;
+      });
   }
 
   // Scope functions.
@@ -145,9 +197,10 @@ function EventFormOrganizerModalController(
 
   $scope.filterCities = function(value) {
     return function (city) {
+      var length = value.length;
       var words = value.match(/\w+/g);
       var zipMatches = words.filter(function (word) {
-        return city.zip.indexOf(word) !== -1;
+        return city.zip.substring(0, length) === word;
       });
       var nameMatches = words.filter(function (word) {
         return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -168,7 +221,7 @@ function EventFormOrganizerModalController(
    */
   controller.selectCity = function ($item, $label) {
     $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.locality = $item.name;
+    $scope.newOrganizer.address.addressLocality = $item.name;
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
