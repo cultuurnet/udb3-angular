@@ -10464,7 +10464,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
-  $scope.uitpasOrganizer = false;
+
+  // Uitpas vars
+  $scope.uitpasCssClass = 'state-incomplete';
+  $scope.savingUitpas = false;
+  $scope.openUitpasModal = openUitpasModal;
 
   // Booking & tickets vars.
   $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
@@ -10810,6 +10814,22 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       .updateOrganizer(EventFormData)
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
   };
+
+  /**
+   * Open the UiTPAS modal.
+   */
+  function openUitpasModal() {
+    /*var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-organizer-modal.html',
+      controller: 'EventFormOrganizerModalController',
+      resolve: {
+        organizerName: function () {
+          return $scope.organizer;
+        }
+      }
+    });*/
+    console.log('uitpas modal');
+  }
 
   /**
    * Add an additional field to fill out contact info. Show the fields when none were shown before.
@@ -19752,6 +19772,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
+    "\n" +
+    "        <div class=\"row extra-uitpas\" ng-show=\"eventFormData.organizer.isUitpas\">\n" +
+    "          <div class=\"extra-task\" ng-class=\"uitpasCssClass\">\n" +
+    "            <div class=\"col-sm-3\">\n" +
+    "              <em class=\"extra-task-label\">UiTPAS</em>\n" +
+    "              <span> </span>\n" +
+    "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-9\">\n" +
+    "              <div class=\"alert alert-info\" ng-show=\"eventFormData.price.length === 0\">\n" +
+    "                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
+    "              </div>\n" +
+    "              <div ng-show=\"eventFormData.price.length !== 0\">\n" +
+    "                <button type='button' class='btn btn-primary' ng-click=\"openUitpasModal()\">\n" +
+    "                  UiTPAS-informatie toevoegen\n" +
+    "                </button>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +

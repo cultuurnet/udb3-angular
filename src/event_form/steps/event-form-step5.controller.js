@@ -69,7 +69,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
-  $scope.uitpasOrganizer = false;
+
+  // Uitpas vars
+  $scope.uitpasCssClass = 'state-incomplete';
+  $scope.savingUitpas = false;
+  $scope.openUitpasModal = openUitpasModal;
 
   // Booking & tickets vars.
   $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
@@ -415,6 +419,22 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       .updateOrganizer(EventFormData)
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
   };
+
+  /**
+   * Open the UiTPAS modal.
+   */
+  function openUitpasModal() {
+    /*var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-organizer-modal.html',
+      controller: 'EventFormOrganizerModalController',
+      resolve: {
+        organizerName: function () {
+          return $scope.organizer;
+        }
+      }
+    });*/
+    console.log('uitpas modal');
+  }
 
   /**
    * Add an additional field to fill out contact info. Show the fields when none were shown before.

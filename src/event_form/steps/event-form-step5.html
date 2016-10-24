@@ -186,6 +186,26 @@
 
         <price-info price="price"></price-info>
 
+        <div class="row extra-uitpas" ng-show="eventFormData.organizer.isUitpas">
+          <div class="extra-task" ng-class="uitpasCssClass">
+            <div class="col-sm-3">
+              <em class="extra-task-label">UiTPAS</em>
+              <span> </span>
+              <i class="fa fa-circle-o-notch fa-spin" ng-show="savingUitpas"></i>
+            </div>
+            <div class="col-sm-9">
+              <div class="alert alert-info" ng-show="eventFormData.price.length === 0">
+                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>
+              </div>
+              <div ng-show="eventFormData.price.length !== 0">
+                <button type='button' class='btn btn-primary' ng-click="openUitpasModal()">
+                  UiTPAS-informatie toevoegen
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <form name="step5TicketsForm" class="css-form">
           <div class="row extra-tickets-website" ng-class="bookingInfoCssClass">
             <div class="extra-task state-incomplete">
