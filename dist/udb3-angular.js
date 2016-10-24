@@ -18793,6 +18793,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/place-suggestion-popup.html',
+    "<ul class=\"dropdown-menu\" ng-show=\"isOpen() && !moveInProgress\" ng-style=\"{top: position().top+'px', left: position().left+'px'}\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
+    "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\">\n" +
+    "        <div uib-typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
+    "    </li>\n" +
+    "    <li>\n" +
+    "        <div class=\"panel panel-default text-center\">\n" +
+    "            <div class=\"panel-body\">\n" +
+    "                <p>Locatie niet gevonden?</p>\n" +
+    "                <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
+    "                        data-target=\"#waar-locatie-toevoegen\" ng-click=\"$parent.openPlaceModal()\">\n" +
+    "                    Een locatie toevoegen\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </li>\n" +
+    "</ul>"
+  );
+
+
   $templateCache.put('templates/place-suggestion.html',
     "<div class=\"place-suggestion\">\n" +
     "  <span class=\"place-suggestion-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
@@ -19355,6 +19375,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
+    "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
     "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +

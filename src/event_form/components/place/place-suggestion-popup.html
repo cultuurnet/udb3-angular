@@ -1,0 +1,16 @@
+<ul class="dropdown-menu" ng-show="isOpen() && !moveInProgress" ng-style="{top: position().top+'px', left: position().left+'px'}" role="listbox" aria-hidden="{{!isOpen()}}">
+    <li class="uib-typeahead-match" ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index, $event)" role="option" id="{{::match.id}}">
+        <div uib-typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>
+    </li>
+    <li>
+        <div class="panel panel-default text-center">
+            <div class="panel-body">
+                <p>Locatie niet gevonden?</p>
+                <button type="button" class="btn btn-primary" data-toggle="modal"
+                        data-target="#waar-locatie-toevoegen" ng-click="$parent.openPlaceModal()">
+                    Een locatie toevoegen
+                </button>
+            </div>
+        </div>
+    </li>
+</ul>
