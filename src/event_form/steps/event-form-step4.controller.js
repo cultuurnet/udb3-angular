@@ -89,37 +89,42 @@ function EventFormStep4Controller(
       return;
     }
 
-    if (!ignoreDuplicates) {
-      $scope.saving = true;
-      $scope.error = false;
-
-      var promise = findDuplicates(EventFormData);
-
-      $scope.resultViewer.loading = true;
-      $scope.duplicatesSearched = true;
-
-      promise.then(function (pagedDuplicates) {
-
-        // Set the results for the duplicates modal,
-        if (pagedDuplicates.totalItems > 0) {
-          $scope.saving = false;
-          $scope.resultViewer.setResults(pagedDuplicates);
-        }
-        // or save the event immediately if no duplicates were found.
-        else {
-          createOffer();
-        }
-
-      }, function() {
-        // Error while saving.
-        $scope.error = true;
-        $scope.saving = false;
-      });
+    if (ignoreDuplicates) {
+      createOffer();
     }
+    else {
+      suggestExistingOffers(EventFormData);
+    }
+
+  }
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function suggestExistingOffers(formData) {
+    $scope.saving = true;
+    $scope.error = false;
+
+    $scope.resultViewer.loading = true;
+    $scope.duplicatesSearched = true;
+
+    findDuplicates(formData).then(showDuplicates, showMajorInfoError);
+  }
+
+  /**
+   * @param {PagedCollection} pagedDuplicates
+   */
+  function showDuplicates(pagedDuplicates) {
+
+    // Set the results for the duplicates modal,
+    if (pagedDuplicates.totalItems > 0) {
+      $scope.saving = false;
+      $scope.resultViewer.setResults(pagedDuplicates);
+    }
+    // or save the event immediately if no duplicates were found.
     else {
       createOffer();
     }
-
   }
 
   function findDuplicates(data) {
