@@ -2225,25 +2225,26 @@ function udbCalendarSummary() {
 angular
   .module('udb.core')
   .component('udbTime', {
-    template: '<input type="time" class="form-control uur">',
-    controller: TimeComponent,
+    templateUrl: 'templates/time.html',
+    controller: TimeComponentController,
+    controllerAs: 'tcc',
     bindings: {
-      onChange: '&'
+      time: '=',
+      position: '<'
     }
   });
 
 /* @ngInject */
-function TimeComponent($rootScope, EventFormData) {
-  var tc = this;
+function TimeComponentController($rootScope, EventFormData) {
+  var tcc = this;
 
-  tc.hoursChanged = hoursChanged;
+  tcc.hoursChanged = hoursChanged;
 
   /**
   * Change listener on the start- and openinghours
   * Save the date-object and label formatted HH:MM
   */
   function hoursChanged(timestamp) {
-    console.log(timestamp);
     if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
       var startHourAsDate = moment(timestamp.startHourAsDate);
       timestamp.startHour = startHourAsDate.format('HH:mm');
@@ -2262,7 +2263,7 @@ function TimeComponent($rootScope, EventFormData) {
     }
   }
 }
-TimeComponent.$inject = ["$rootScope", "EventFormData"];
+TimeComponentController.$inject = ["$rootScope", "EventFormData"];
 
 // Source: src/core/dutch-translations.constant.js
 /**
@@ -17615,8 +17616,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/time.html',
-    "<input type=\"time\"\n" +
-    "       class=\"form-control uur\">"
+    "<input ng-if=\"tcc.position === 'start'\"\n" +
+    "       type=\"time\"\n" +
+    "       class=\"form-control uur\"\n" +
+    "       ng-model=\"timestamp.startHourAsDate\"\n" +
+    "       ng-change=\"tcc.hoursChanged(tcc.time)\">\n" +
+    "\n" +
+    "<input ng-if=\"tcc.position === 'end'\"\n" +
+    "       type=\"time\"\n" +
+    "       class=\"form-control uur\"\n" +
+    "       ng-model=\"timestamp.endHourAsDate\"\n" +
+    "       ng-change=\"tcc.hoursChanged(tcc.time)\">"
   );
 
 
@@ -18188,8 +18198,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
     "            <udb-time\n" +
-    "              ng-model=\"timestamp.startHourAsDate\"\n" +
-    "              on-change=\"tc.hoursChanged(timestamp)\"\n" +
+    "              time=\"timestamp\"\n" +
+    "              position=\"'start'\"\n" +
     "              placeholder=\"Bv. 08:00\"\n" +
     "              focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
@@ -18205,8 +18215,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
     "            <udb-time\n" +
-    "                ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                on-change=\"tc.hoursChanged(timestamp)\"\n" +
+    "                time=\"timestamp\"\n" +
+    "                position=\"'end'\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
     "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +

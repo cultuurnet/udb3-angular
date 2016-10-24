@@ -21,8 +21,8 @@
           </label>
           <div class="beginuur-invullen" ng-show="timestamp.showStartHour">
             <udb-time
-              ng-model="timestamp.startHourAsDate"
-              on-change="tc.hoursChanged(timestamp)"
+              time="timestamp"
+              position="'start'"
               placeholder="Bv. 08:00"
               focus-if="timestamp.showStartHour">
           </div>
@@ -38,8 +38,8 @@
           </label>
           <div class="einduur-invullen" ng-show="timestamp.showEndHour">
             <udb-time
-                ng-model="timestamp.endHourAsDate"
-                on-change="tc.hoursChanged(timestamp)"
+                time="timestamp"
+                position="'end'"
                 placeholder="Bv. 23:00"
                 focus-if="timestamp.showEndHour">
           </div>

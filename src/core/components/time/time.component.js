@@ -9,25 +9,26 @@
 angular
   .module('udb.core')
   .component('udbTime', {
-    template: '<input type="time" class="form-control uur">',
-    controller: TimeComponent,
+    templateUrl: 'templates/time.html',
+    controller: TimeComponentController,
+    controllerAs: 'tcc',
     bindings: {
-      onChange: '&'
+      time: '=',
+      position: '<'
     }
   });
 
 /* @ngInject */
-function TimeComponent($rootScope, EventFormData) {
-  var tc = this;
+function TimeComponentController($rootScope, EventFormData) {
+  var tcc = this;
 
-  tc.hoursChanged = hoursChanged;
+  tcc.hoursChanged = hoursChanged;
 
   /**
   * Change listener on the start- and openinghours
   * Save the date-object and label formatted HH:MM
   */
   function hoursChanged(timestamp) {
-    console.log(timestamp);
     if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
       var startHourAsDate = moment(timestamp.startHourAsDate);
       timestamp.startHour = startHourAsDate.format('HH:mm');

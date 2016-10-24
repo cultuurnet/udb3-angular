@@ -1,2 +1,11 @@
-<input type="time"
-       class="form-control uur">
+<input ng-if="tcc.position === 'start'"
+       type="time"
+       class="form-control uur"
+       ng-model="timestamp.startHourAsDate"
+       ng-change="tcc.hoursChanged(tcc.time)">
+
+<input ng-if="tcc.position === 'end'"
+       type="time"
+       class="form-control uur"
+       ng-model="timestamp.endHourAsDate"
+       ng-change="tcc.hoursChanged(tcc.time)">
