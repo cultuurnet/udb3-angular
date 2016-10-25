@@ -8433,16 +8433,16 @@ angular
 
 /* @ngInject */
 function EventFormUitpasModalController($scope, $uibModalInstance, organizer, udbOrganizers) {
-  var efumc = this;
-
   $scope.organizer = organizer;
   $scope.formData = {};
   $scope.disableSubmit = true;
+  $scope.saving = false;
 
   $scope.cancel = cancel;
   $scope.selectCardSystem = selectCardSystem;
   $scope.selectDistributionKey = selectDistributionKey;
   $scope.validateUitpasData = validateUitpasData;
+  $scope.saveUitpasData = saveUitpasData;
 
   getCardsystems(organizer.id);
 
@@ -8455,15 +8455,22 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
 
   function selectCardSystem(cardSystem) {
     $scope.selectedCardSystem = cardSystem;
+    validateUitpasData();
   }
 
-  function selectDistributionKey(index) {
-    $scope.selectedDistributionKey = $scope.selectedCardSystem.distributionKeys[index];
+  function selectDistributionKey() {
+    $scope.selectedDistributionKey = _.findWhere($scope.selectedCardSystem.distributionKeys, {id: $scope.formData.distributionKey});
+    validateUitpasData();
   }
 
   function validateUitpasData() {
     ($scope.selectedCardSystem !== undefined &&
     $scope.selectedDistributionKey !== undefined) ? $scope.disableSubmit = false : $scope.disableSubmit = true;
+  }
+
+  function saveUitpasData() {
+    $scope.saving = true;
+    $uibModalInstance.close();
   }
 
   function getCardsystems(organizerId) {
@@ -10938,6 +10945,18 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         }
       }
     });
+
+    function updateUitpasInfo () {
+      $scope.uitpasInfo = '';
+      if (EventFormData.uitpasInfo.id) {
+        $scope.uitpasCssClass = 'state-complete';
+      }
+      else {
+        $scope.uitpasCssClass = 'state-incomplete';
+      }
+    }
+
+    modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
   }
 
   /**
@@ -19355,11 +19374,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"distribution-key\">\n" +
     "                <label>Verdeelsleutel</label>\n" +
     "                <div class=\"distribution-key\">\n" +
-    "                    <select>\n" +
-    "                        <option ng-repeat=\"distributionKey in selectedCardSystem.distributionKeys\"\n" +
-    "                                value=\"{{distributionKey.name}}\"\n" +
-    "                                ng-model=\"$parent.formData.distributionKey\"\n" +
-    "                                ng-change=\"selectDistributionKey($index)\">{{distributionKey.name}}</option>\n" +
+    "                    <select ng-model=\"formData.distributionKey\"\n" +
+    "                            ng-options=\"distributionKey.id as distributionKey.name for distributionKey in selectedCardSystem.distributionKeys\"\n" +
+    "                            ng-change=\"selectDistributionKey()\">\n" +
+    "                        <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
     "                    </select>\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -19372,7 +19390,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button type=\"button\"\n" +
     "                class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "                ng-disabled=\"disableSubmit\"\n" +
-    "                ng-click=\"validateUitpasData()\">\n" +
+    "                ng-click=\"saveUitpasData()\">\n" +
     "            Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "        </button>\n" +
     "    </div>\n" +

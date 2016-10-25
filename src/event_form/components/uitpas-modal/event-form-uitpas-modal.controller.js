@@ -38,8 +38,8 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
     validateUitpasData();
   }
 
-  function selectDistributionKey(index) {
-    $scope.selectedDistributionKey = $scope.selectedCardSystem.distributionKeys[index];
+  function selectDistributionKey() {
+    $scope.selectedDistributionKey = _.findWhere($scope.selectedCardSystem.distributionKeys, {id: $scope.formData.distributionKey});
     validateUitpasData();
   }
 
