@@ -18,6 +18,7 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
   $scope.organizer = organizer;
   $scope.cancel = cancel;
   $scope.selectCardSystem = selectCardSystem;
+  $scope.selectDistributionKey = selectDistributionKey;
 
   getCardsystems(organizer.id);
 
@@ -30,6 +31,10 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
 
   function selectCardSystem(index) {
     $scope.selectedCardSystem = $scope.cardSystems[index];
+  }
+
+  function selectDistributionKey(index) {
+    $scope.selectedDistributionKey = $scope.selectedCardSystem.distributionKeys[index];
   }
 
   function getCardsystems(organizerId) {

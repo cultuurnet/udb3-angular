@@ -8438,6 +8438,7 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
   $scope.organizer = organizer;
   $scope.cancel = cancel;
   $scope.selectCardSystem = selectCardSystem;
+  $scope.selectDistributionKey = selectDistributionKey;
 
   getCardsystems(organizer.id);
 
@@ -8450,6 +8451,10 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
 
   function selectCardSystem(index) {
     $scope.selectedCardSystem = $scope.cardSystems[index];
+  }
+
+  function selectDistributionKey(index) {
+    $scope.selectedDistributionKey = $scope.selectedCardSystem.distributionKeys[index];
   }
 
   function getCardsystems(organizerId) {
@@ -19328,7 +19333,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"card-system\">\n" +
     "                <label>Kaartsysteem</label>\n" +
     "                <div class=\"radios\" ng-repeat=\"cardsystem in cardSystems\">\n" +
-    "                    <input type=\"radio\" ng-model=\"cardsystem.name\" ng-change=\"selectCardSystem($index)\"> {{cardsystem.name}}\n" +
+    "                    <input type=\"radio\"\n" +
+    "                           ng-model=\"cardsystem.name\"\n" +
+    "                           name=\"cardsystem.name\"\n" +
+    "                           ng-change=\"selectCardSystem($index)\"> {{cardsystem.name}}\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -19337,7 +19345,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <label>Verdeelsleutel</label>\n" +
     "                <div class=\"distribution-key\">\n" +
     "                    <select>\n" +
-    "                        <option ng-repeat=\"distributionKey in selectedCardSystem.distributionKeys\">{{distributionKey.name}}</option>\n" +
+    "                        <option ng-repeat=\"distributionKey in selectedCardSystem.distributionKeys\"\n" +
+    "                                ng-model=\"distributionKey.name\"\n" +
+    "                                ng-change=\"selectDistributionKey($index)\">{{distributionKey.name}}</option>\n" +
     "                    </select>\n" +
     "                </div>\n" +
     "            </div>\n" +

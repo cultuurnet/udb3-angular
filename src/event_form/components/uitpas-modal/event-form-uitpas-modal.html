@@ -9,7 +9,10 @@
             <div class="card-system">
                 <label>Kaartsysteem</label>
                 <div class="radios" ng-repeat="cardsystem in cardSystems">
-                    <input type="radio" ng-model="cardsystem.name" ng-change="selectCardSystem($index)"> {{cardsystem.name}}
+                    <input type="radio"
+                           ng-model="cardsystem.name"
+                           name="cardsystem.name"
+                           ng-change="selectCardSystem($index)"> {{cardsystem.name}}
                 </div>
             </div>
         </div>
@@ -18,7 +21,9 @@
                 <label>Verdeelsleutel</label>
                 <div class="distribution-key">
                     <select>
-                        <option ng-repeat="distributionKey in selectedCardSystem.distributionKeys">{{distributionKey.name}}</option>
+                        <option ng-repeat="distributionKey in selectedCardSystem.distributionKeys"
+                                ng-model="distributionKey.name"
+                                ng-change="selectDistributionKey($index)">{{distributionKey.name}}</option>
                     </select>
                 </div>
             </div>
