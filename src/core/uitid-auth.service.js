@@ -17,11 +17,16 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    * Log the active user out.
    */
   this.logout = function () {
-    $cookieStore.remove('token');
-    $cookieStore.remove('user');
+    this.removeCookies();
+
     // reset url
     $location.search('');
     $location.path('/');
+  };
+
+  this.removeCookies = function () {
+    $cookieStore.remove('token');
+    $cookieStore.remove('user');
   };
 
   /**
@@ -31,9 +36,18 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
     var currentLocation = $location.absUrl(),
         authUrl = appConfig.authUrl;
 
-    // remove cookies
-    $cookieStore.remove('token');
-    $cookieStore.remove('user');
+    this.removeCookies();
+
+    // redirect to login page
+    authUrl += '?destination=' + currentLocation;
+    $window.location.href = authUrl;
+  };
+
+  this.register = function () {
+    var currentLocation = $location.absUrl(),
+        authUrl = appConfig.registerUrl;
+
+    this.removeCookies();
 
     // redirect to login page
     authUrl += '?destination=' + currentLocation;
