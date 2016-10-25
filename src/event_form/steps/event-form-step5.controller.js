@@ -433,6 +433,18 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         }
       }
     });
+
+    function updateUitpasInfo () {
+      $scope.uitpasInfo = '';
+      if (EventFormData.uitpasInfo.id) {
+        $scope.uitpasCssClass = 'state-complete';
+      }
+      else {
+        $scope.uitpasCssClass = 'state-incomplete';
+      }
+    }
+
+    modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
   }
 
   /**

@@ -13,16 +13,16 @@ angular
 
 /* @ngInject */
 function EventFormUitpasModalController($scope, $uibModalInstance, organizer, udbOrganizers) {
-  var efumc = this;
-
   $scope.organizer = organizer;
   $scope.formData = {};
   $scope.disableSubmit = true;
+  $scope.saving = false;
 
   $scope.cancel = cancel;
   $scope.selectCardSystem = selectCardSystem;
   $scope.selectDistributionKey = selectDistributionKey;
   $scope.validateUitpasData = validateUitpasData;
+  $scope.saveUitpasData = saveUitpasData;
 
   getCardsystems(organizer.id);
 
@@ -35,15 +35,22 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
 
   function selectCardSystem(cardSystem) {
     $scope.selectedCardSystem = cardSystem;
+    validateUitpasData();
   }
 
   function selectDistributionKey(index) {
     $scope.selectedDistributionKey = $scope.selectedCardSystem.distributionKeys[index];
+    validateUitpasData();
   }
 
   function validateUitpasData() {
     ($scope.selectedCardSystem !== undefined &&
     $scope.selectedDistributionKey !== undefined) ? $scope.disableSubmit = false : $scope.disableSubmit = true;
+  }
+
+  function saveUitpasData() {
+    $scope.saving = true;
+    $uibModalInstance.close();
   }
 
   function getCardsystems(organizerId) {
