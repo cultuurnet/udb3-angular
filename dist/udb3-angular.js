@@ -2911,39 +2911,40 @@ function UdbApi(
    * @return {Promise}
    */
   this.findOrganisationsCardSystems = function(organizerId) {
-    return $http
+    /*return $http
         .get(appConfig.baseUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
-        //.then(returnUnwrappedData);
-        .then(function() {
-          return {
-            id: 4,
-            name: 'UiTPAS Regio Aalst',
-            distributionKeys: [
-              {
-                id: 1,
-                name: 'CC De Werf - 1,5 EUR / dag'
-              },
-              {
-                id: 2,
-                name: 'CC De Werf - 3 EUR / dag'
-              }
-            ]
+        .then(returnUnwrappedData);*/
+    var deferred = $q.defer();
+    deferred.resolve([
+      {
+        id: 4,
+        name: 'UiTPAS Regio Aalst',
+        distributionKeys: [
+          {
+            id: 1,
+            name: 'CC De Werf - 1,5 EUR / dag'
           },
           {
-            id: 5,
-            name: 'UiTPAS Dender',
-            distributionKeys: [
-              {
-                id: 1,
-                name: 'Dender - 1,5 EUR / dag'
-              },
-              {
-                id: 2,
-                name: 'Dender - 3 EUR / dag'
-              }
-            ]
-          };
-        });
+            id: 2,
+            name: 'CC De Werf - 3 EUR / dag'
+          }
+        ]
+      },
+      {
+        id: 5,
+        name: 'UiTPAS Dender',
+        distributionKeys: [
+          {
+            id: 1,
+            name: 'Dender - 1,5 EUR / dag'
+          },
+          {
+            id: 2,
+            name: 'Dender - 3 EUR / dag'
+          }
+        ]
+      }]);
+    return deferred.promise;
   };
 
   /**
@@ -8432,11 +8433,37 @@ angular
 
 /* @ngInject */
 function EventFormUitpasModalController($scope, $uibModalInstance, organizer, udbOrganizers) {
+  var efumc = this;
+
   $scope.organizer = organizer;
+  $scope.cancel = cancel;
+  $scope.selectCardSystem = selectCardSystem;
+
   getCardsystems(organizer.id);
 
+  /**
+   * Cancel the modal.
+   */
+  function cancel() {
+    $uibModalInstance.dismiss('cancel');
+  }
+
+  function selectCardSystem(index) {
+    $scope.selectedCardSystem = $scope.cardSystems[index];
+  }
+
   function getCardsystems(organizerId) {
-    $scope.cardSystems = udbOrganizers.findOrganizersCardsystem(organizerId);
+    function fetchCardSystems(response) {
+      $scope.cardSystems = response;
+    }
+
+    function errorHandling(error) {
+      console.log(error);
+    }
+
+    udbOrganizers
+        .findOrganizersCardsystem(organizerId)
+        .then(fetchCardSystems, errorHandling);
   }
 }
 EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizer", "udbOrganizers"];
@@ -19292,26 +19319,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/event-form-uitpas-modal.html',
     "<div class=\"modal-content\">\n" +
     "    <div class=\"modal-header\">\n" +
-    "        <button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
+    "        <button type=\"button\" class=\"close\" ng-click=\"cancel()\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
     "        </button>\n" +
     "        <h4 class=\"modal-title\">UiTPAS-informatie</h4>\n" +
     "    </div>\n" +
     "    <div class=\"modal-body\">\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"form-group col-md-6 col-sm-12\">\n" +
-    "                <div class=\"card-system\">\n" +
-    "                    <label>Kaartsysteem</label>\n" +
-    "\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <div class=\"card-system\">\n" +
+    "                <label>Kaartsysteem</label>\n" +
+    "                <div class=\"radios\" ng-repeat=\"cardsystem in cardSystems\">\n" +
+    "                    <input type=\"radio\" ng-model=\"cardsystem.name\" ng-change=\"selectCardSystem($index)\"> {{cardsystem.name}}\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group col-md-6 col-sm-12\" ng-class=\"{'has-error' : showEndDateRequired }\">\n" +
-    "                <div class=\"add-date\">\n" +
-    "                    <label>Tot</label>\n" +
-    "                    <div udb-datepicker\n" +
-    "                         highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "                         highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
-    "                         ng-model=\"eventFormData.bookingInfo.availabilityEnds\"></div>\n" +
-    "                    <span class=\"help-block\" ng-show=\"showEndDateRequired\">Gelieve een eind datum te kiezen</span>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\" ng-show=\"selectedCardSystem !== ''\">\n" +
+    "            <div class=\"distribution-key\">\n" +
+    "                <label>Verdeelsleutel</label>\n" +
+    "                <div class=\"distribution-key\">\n" +
+    "                    <select>\n" +
+    "                        <option ng-repeat=\"distributionKey in selectedCardSystem.distributionKeys\">{{distributionKey.name}}</option>\n" +
+    "                    </select>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -19320,7 +19347,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "    </div>\n" +
-    "<div>"
+    "</div>"
   );
 
 

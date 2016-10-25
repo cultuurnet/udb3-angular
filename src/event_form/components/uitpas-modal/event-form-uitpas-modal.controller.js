@@ -13,10 +13,36 @@ angular
 
 /* @ngInject */
 function EventFormUitpasModalController($scope, $uibModalInstance, organizer, udbOrganizers) {
+  var efumc = this;
+
   $scope.organizer = organizer;
+  $scope.cancel = cancel;
+  $scope.selectCardSystem = selectCardSystem;
+
   getCardsystems(organizer.id);
 
+  /**
+   * Cancel the modal.
+   */
+  function cancel() {
+    $uibModalInstance.dismiss('cancel');
+  }
+
+  function selectCardSystem(index) {
+    $scope.selectedCardSystem = $scope.cardSystems[index];
+  }
+
   function getCardsystems(organizerId) {
-    $scope.cardSystems = udbOrganizers.findOrganizersCardsystem(organizerId);
+    function fetchCardSystems(response) {
+      $scope.cardSystems = response;
+    }
+
+    function errorHandling(error) {
+      console.log(error);
+    }
+
+    udbOrganizers
+        .findOrganizersCardsystem(organizerId)
+        .then(fetchCardSystems, errorHandling);
   }
 }
