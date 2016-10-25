@@ -8436,9 +8436,13 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
   var efumc = this;
 
   $scope.organizer = organizer;
+  $scope.formData = {};
+  $scope.disableSubmit = true;
+
   $scope.cancel = cancel;
   $scope.selectCardSystem = selectCardSystem;
   $scope.selectDistributionKey = selectDistributionKey;
+  $scope.validateUitpasData = validateUitpasData;
 
   getCardsystems(organizer.id);
 
@@ -8449,12 +8453,17 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
     $uibModalInstance.dismiss('cancel');
   }
 
-  function selectCardSystem(index) {
-    $scope.selectedCardSystem = $scope.cardSystems[index];
+  function selectCardSystem(cardSystem) {
+    $scope.selectedCardSystem = cardSystem;
   }
 
   function selectDistributionKey(index) {
     $scope.selectedDistributionKey = $scope.selectedCardSystem.distributionKeys[index];
+  }
+
+  function validateUitpasData() {
+    ($scope.selectedCardSystem !== undefined &&
+    $scope.selectedDistributionKey !== undefined) ? $scope.disableSubmit = false : $scope.disableSubmit = true;
   }
 
   function getCardsystems(organizerId) {
@@ -19332,30 +19341,40 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"form-group\">\n" +
     "            <div class=\"card-system\">\n" +
     "                <label>Kaartsysteem</label>\n" +
-    "                <div class=\"radios\" ng-repeat=\"cardsystem in cardSystems\">\n" +
-    "                    <input type=\"radio\"\n" +
-    "                           ng-model=\"cardsystem.name\"\n" +
-    "                           name=\"cardsystem.name\"\n" +
-    "                           ng-change=\"selectCardSystem($index)\"> {{cardsystem.name}}\n" +
+    "                <div class=\"radios\">\n" +
+    "                    <span ng-repeat=\"cardsystem in cardSystems\">\n" +
+    "                        <input type=\"radio\"\n" +
+    "                               value=\"{{cardsystem.name}}\"\n" +
+    "                               ng-model=\"$parent.formData.cardSystem\"\n" +
+    "                               ng-change=\"selectCardSystem(cardsystem)\"> {{cardsystem.name}}<br />\n" +
+    "                    </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"form-group\" ng-show=\"selectedCardSystem !== ''\">\n" +
+    "        <div class=\"form-group\" ng-show=\"selectedCardSystem !== undefined\">\n" +
     "            <div class=\"distribution-key\">\n" +
     "                <label>Verdeelsleutel</label>\n" +
     "                <div class=\"distribution-key\">\n" +
     "                    <select>\n" +
     "                        <option ng-repeat=\"distributionKey in selectedCardSystem.distributionKeys\"\n" +
-    "                                ng-model=\"distributionKey.name\"\n" +
+    "                                value=\"{{distributionKey.name}}\"\n" +
+    "                                ng-model=\"$parent.formData.distributionKey\"\n" +
     "                                ng-change=\"selectDistributionKey($index)\">{{distributionKey.name}}</option>\n" +
     "                    </select>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
-    "        </div>\n" +
     "\n" +
+    "    </div>\n" +
+    "    <div class=\"modal-footer\">\n" +
+    "        <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "        <button type=\"button\"\n" +
+    "                class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "                ng-disabled=\"disableSubmit\"\n" +
+    "                ng-click=\"validateUitpasData()\">\n" +
+    "            Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        </button>\n" +
     "    </div>\n" +
     "</div>"
   );

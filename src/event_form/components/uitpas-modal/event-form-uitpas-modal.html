@@ -8,29 +8,39 @@
         <div class="form-group">
             <div class="card-system">
                 <label>Kaartsysteem</label>
-                <div class="radios" ng-repeat="cardsystem in cardSystems">
-                    <input type="radio"
-                           ng-model="cardsystem.name"
-                           name="cardsystem.name"
-                           ng-change="selectCardSystem($index)"> {{cardsystem.name}}
+                <div class="radios">
+                    <span ng-repeat="cardsystem in cardSystems">
+                        <input type="radio"
+                               value="{{cardsystem.name}}"
+                               ng-model="$parent.formData.cardSystem"
+                               ng-change="selectCardSystem(cardsystem)"> {{cardsystem.name}}<br />
+                    </span>
                 </div>
             </div>
         </div>
-        <div class="form-group" ng-show="selectedCardSystem !== ''">
+        <div class="form-group" ng-show="selectedCardSystem !== undefined">
             <div class="distribution-key">
                 <label>Verdeelsleutel</label>
                 <div class="distribution-key">
                     <select>
                         <option ng-repeat="distributionKey in selectedCardSystem.distributionKeys"
-                                ng-model="distributionKey.name"
+                                value="{{distributionKey.name}}"
+                                ng-model="$parent.formData.distributionKey"
                                 ng-change="selectDistributionKey($index)">{{distributionKey.name}}</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <div class="alert alert-danger" ng-if="errorMessage" ng-bind="::errorMessage">
-        </div>
 
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="cancel()">Annuleren</button>
+        <button type="button"
+                class="btn btn-primary organisator-toevoegen-bewaren"
+                ng-disabled="disableSubmit"
+                ng-click="validateUitpasData()">
+            Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+        </button>
     </div>
 </div>

@@ -16,9 +16,13 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
   var efumc = this;
 
   $scope.organizer = organizer;
+  $scope.formData = {};
+  $scope.disableSubmit = true;
+
   $scope.cancel = cancel;
   $scope.selectCardSystem = selectCardSystem;
   $scope.selectDistributionKey = selectDistributionKey;
+  $scope.validateUitpasData = validateUitpasData;
 
   getCardsystems(organizer.id);
 
@@ -29,12 +33,17 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
     $uibModalInstance.dismiss('cancel');
   }
 
-  function selectCardSystem(index) {
-    $scope.selectedCardSystem = $scope.cardSystems[index];
+  function selectCardSystem(cardSystem) {
+    $scope.selectedCardSystem = cardSystem;
   }
 
   function selectDistributionKey(index) {
     $scope.selectedDistributionKey = $scope.selectedCardSystem.distributionKeys[index];
+  }
+
+  function validateUitpasData() {
+    ($scope.selectedCardSystem !== undefined &&
+    $scope.selectedDistributionKey !== undefined) ? $scope.disableSubmit = false : $scope.disableSubmit = true;
   }
 
   function getCardsystems(organizerId) {
