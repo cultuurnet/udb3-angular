@@ -8521,7 +8521,9 @@ function EventFormUitpasModalController($scope,
 
     if ($scope.usedDistributionKey !== undefined) {
       $scope.formData.distributionKey = $scope.usedDistributionKey.id;
+      $scope.selectedDistributionKey = $scope.usedDistributionKey;
     }
+    validateUitpasData();
   }
 }
 EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizer", "cardSystem", "distributionKey", "udbOrganizers"];

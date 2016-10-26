@@ -83,6 +83,8 @@ function EventFormUitpasModalController($scope,
 
     if ($scope.usedDistributionKey !== undefined) {
       $scope.formData.distributionKey = $scope.usedDistributionKey.id;
+      $scope.selectedDistributionKey = $scope.usedDistributionKey;
     }
+    validateUitpasData();
   }
 }
