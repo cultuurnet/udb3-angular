@@ -226,9 +226,15 @@ function UdbApi(
    * @return {Promise}
    */
   this.updateEventUitpasData = function(uitpasData, cdbid) {
-    return $http
+    /*return $http
         .put(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', uitpasData, defaultApiConfig)
-        .then(returnUnwrappedData);
+        .then(returnUnwrappedData);*/
+
+    var deferred = $q.defer();
+    deferred.resolve({
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    });
+    return deferred.promise;
   };
 
   this.getOrganizerByLDId = function(organizerLDId) {
