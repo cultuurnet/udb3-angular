@@ -194,13 +194,22 @@
               <i class="fa fa-circle-o-notch fa-spin" ng-show="savingUitpas"></i>
             </div>
             <div class="col-sm-9">
-              <div class="alert alert-info" ng-show="eventFormData.price.length === 0">
-                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>
+              <div ng-show="!hasUitpasData">
+                <div class="alert alert-info" ng-show="eventFormData.price.length === 0">
+                  <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>
+                </div>
+                <div ng-show="eventFormData.price.length !== 0">
+                  <button type='button' class='btn btn-primary' ng-click="openUitpasModal()">
+                    UiTPAS-informatie toevoegen
+                  </button>
+                </div>
               </div>
-              <div ng-show="eventFormData.price.length !== 0">
-                <button type='button' class='btn btn-primary' ng-click="openUitpasModal()">
-                  UiTPAS-informatie toevoegen
-                </button>
+              <div ng-show="hasUitpasData">
+                <span>
+                  <span ng-bind="usedCardSystem.name"></span>
+                  <span ng-bind="usedDistributionKey.name"></span>
+                  <a class="btn btn-link" ng-click="openUitpasModal()" data-dismiss="modal">Wijzigen</a>
+                </span>
               </div>
             </div>
           </div>

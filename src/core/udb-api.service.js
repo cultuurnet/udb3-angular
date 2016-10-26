@@ -212,8 +212,8 @@ function UdbApi(
 
     var deferred = $q.defer();
     deferred.resolve({
-      "cardsystemId": "3",
-      "distributionKeyId": "7"
+      "cardsystemId": "4",
+      "distributionKeyId": "1"
     });
     return deferred.promise;
   };
@@ -276,7 +276,7 @@ function UdbApi(
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     /*return $http
-        .get(appConfig.baseUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
+        .get(appConfig.baseUrl + 'uitpas/organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
         .then(returnUnwrappedData);*/
     var deferred = $q.defer();
     deferred.resolve([

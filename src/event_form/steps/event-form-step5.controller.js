@@ -73,6 +73,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Uitpas vars
   $scope.uitpasCssClass = 'state-incomplete';
   $scope.savingUitpas = false;
+  $scope.hasUitpasData = false;
   $scope.openUitpasModal = openUitpasModal;
 
   // Booking & tickets vars.
@@ -861,6 +862,28 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.priceCssClass = 'state-complete';
     }
 
+    if (EventFormData.uitpasData) {
+      $scope.hasUitpasData = true;
+      $scope.uitpasCardSystemId = EventFormData.uitpasData.cardSystemId;
+      $scope.uitpasDistributionKeyId = EventFormData.uitpasData.distributionKeyId;
+      $scope.uitpasCssClass = 'state-complete';
+      if (EventFormData.organizer.id) {
+        fetchUitpasData(EventFormData.organizer.id);
+      }
+    }
+
+  }
+
+  function fetchUitpasData(organizerId) {
+
+    function matchCardSystem(response) {
+      $scope.usedCardSystem = _.findWhere(response, $scope.uitpasCardSystemId);
+      $scope.usedDistributionKey = _.findWhere($scope.usedCardSystem.distributionKeys, $scope.uitpasDistributionKeyId);
+    }
+
+    udbOrganizers
+        .findOrganizersCardsystem(organizerId)
+        .then(matchCardSystem);
   }
 
 }

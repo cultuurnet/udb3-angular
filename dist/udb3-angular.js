@@ -2853,6 +2853,23 @@ function UdbApi(
 
     return deferredOffer.promise;
   };
+  /**
+   * @param {string} cdbid of the event
+   *
+   * @return {Promise}
+   */
+  this.getEventUitpasData = function(cdbid) {
+    /*return $http
+        .get(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', defaultApiConfig)
+        .then(returnUnwrappedData);*/
+
+    var deferred = $q.defer();
+    deferred.resolve({
+      "cardsystemId": "4",
+      "distributionKeyId": "1"
+    });
+    return deferred.promise;
+  };
 
   this.getOrganizerByLDId = function(organizerLDId) {
     var organizerId = organizerLDId.split('/').pop();
@@ -2912,7 +2929,7 @@ function UdbApi(
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     /*return $http
-        .get(appConfig.baseUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
+        .get(appConfig.baseUrl + 'uitpas/organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
         .then(returnUnwrappedData);*/
     var deferred = $q.defer();
     deferred.resolve([
@@ -4086,6 +4103,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.uitpasData = {};
     },
 
     /**
@@ -9069,6 +9087,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     if (offerType === 'event') {
       EventFormData.isEvent = true;
       EventFormData.isPlace = false;
+      offer.uitpasData = getUitpasData(offer);
       copyItemDataToFormData(offer);
 
       // Copy location.
@@ -9095,6 +9114,14 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
   }
 
   /**
+   * Get the Uitpas Data for an event
+   */
+  function getUitpasData(offer) {
+    return udbApi
+        .getEventUitpasData(offer.id);
+  }
+
+  /**
    * Copy all item data to form data so it can be used for edting.
    * var {UdbEvent|UdbPlace} item
    */
@@ -9116,7 +9143,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'image',
       'additionalData',
       'apiUrl',
-      'workflowStatus'
+      'workflowStatus',
+      'uitpasData'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -10585,6 +10613,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Uitpas vars
   $scope.uitpasCssClass = 'state-incomplete';
   $scope.savingUitpas = false;
+  $scope.hasUitpasData = false;
   $scope.openUitpasModal = openUitpasModal;
 
   // Booking & tickets vars.
@@ -11373,6 +11402,28 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.priceCssClass = 'state-complete';
     }
 
+    if (EventFormData.uitpasData) {
+      $scope.hasUitpasData = true;
+      $scope.uitpasCardSystemId = EventFormData.uitpasData.cardSystemId;
+      $scope.uitpasDistributionKeyId = EventFormData.uitpasData.distributionKeyId;
+      $scope.uitpasCssClass = 'state-complete';
+      if (EventFormData.organizer.id) {
+        fetchUitpasData(EventFormData.organizer.id);
+      }
+    }
+
+  }
+
+  function fetchUitpasData(organizerId) {
+
+    function matchCardSystem(response) {
+      $scope.usedCardSystem = _.findWhere(response, $scope.uitpasCardSystemId);
+      $scope.usedDistributionKey = _.findWhere($scope.usedCardSystem.distributionKeys, $scope.uitpasDistributionKeyId);
+    }
+
+    udbOrganizers
+        .findOrganizersCardsystem(organizerId)
+        .then(matchCardSystem);
   }
 
 }
@@ -19958,13 +20009,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-9\">\n" +
-    "              <div class=\"alert alert-info\" ng-show=\"eventFormData.price.length === 0\">\n" +
-    "                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
+    "              <div ng-show=\"!hasUitpasData\">\n" +
+    "                <div class=\"alert alert-info\" ng-show=\"eventFormData.price.length === 0\">\n" +
+    "                  <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
+    "                </div>\n" +
+    "                <div ng-show=\"eventFormData.price.length !== 0\">\n" +
+    "                  <button type='button' class='btn btn-primary' ng-click=\"openUitpasModal()\">\n" +
+    "                    UiTPAS-informatie toevoegen\n" +
+    "                  </button>\n" +
+    "                </div>\n" +
     "              </div>\n" +
-    "              <div ng-show=\"eventFormData.price.length !== 0\">\n" +
-    "                <button type='button' class='btn btn-primary' ng-click=\"openUitpasModal()\">\n" +
-    "                  UiTPAS-informatie toevoegen\n" +
-    "                </button>\n" +
+    "              <div ng-show=\"hasUitpasData\">\n" +
+    "                <span>\n" +
+    "                  <span ng-bind=\"usedCardSystem.name\"></span>\n" +
+    "                  <span ng-bind=\"usedDistributionKey.name\"></span>\n" +
+    "                  <a class=\"btn btn-link close\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\" aria-label=\"Close\">\n" +
+    "                    <span aria-hidden=\"true\"> &times;</span>\n" +
+    "                  </a>\n" +
+    "                </span>\n" +
     "              </div>\n" +
     "            </div>\n" +
     "          </div>\n" +
