@@ -8450,8 +8450,15 @@ angular
     .controller('EventFormUitpasModalController', EventFormUitpasModalController);
 
 /* @ngInject */
-function EventFormUitpasModalController($scope, $uibModalInstance, organizer, udbOrganizers) {
+function EventFormUitpasModalController($scope,
+                                        $uibModalInstance,
+                                        organizer,
+                                        cardSystem,
+                                        distributionKey,
+                                        udbOrganizers) {
   $scope.organizer = organizer;
+  $scope.usedCardSystem = cardSystem;
+  $scope.usedDistributionKey = distributionKey;
   $scope.formData = {};
   $scope.disableSubmit = true;
   $scope.saving = false;
@@ -8463,6 +8470,7 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
   $scope.saveUitpasData = saveUitpasData;
 
   getCardsystems(organizer.id);
+  init();
 
   /**
    * Cancel the modal.
@@ -8504,8 +8512,19 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
         .findOrganizersCardsystem(organizerId)
         .then(fetchCardSystems, errorHandling);
   }
+
+  function init() {
+    if ($scope.usedCardSystem !== undefined) {
+      $scope.formData.cardSystem = $scope.usedCardSystem.name;
+      $scope.selectedCardSystem = $scope.usedCardSystem;
+    }
+
+    if ($scope.usedDistributionKey !== undefined) {
+      $scope.formData.distributionKey = $scope.usedDistributionKey.id;
+    }
+  }
 }
-EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizer", "udbOrganizers"];
+EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizer", "cardSystem", "distributionKey", "udbOrganizers"];
 
 // Source: src/event_form/components/validators/contact-info-validation.directive.js
 /**
@@ -10971,6 +10990,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       resolve: {
         organizer: function () {
           return EventFormData.organizer;
+        },
+        cardSystem: function () {
+          return $scope.usedCardSystem;
+        },
+        distributionKey: function () {
+          return $scope.usedDistributionKey;
         }
       }
     });
@@ -19421,7 +19446,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"form-group\" ng-show=\"selectedCardSystem !== undefined\">\n" +
+    "        <div class=\"form-group\" ng-show=\"formData.cardSystem\">\n" +
     "            <div class=\"distribution-key\">\n" +
     "                <label>Verdeelsleutel</label>\n" +
     "                <div class=\"distribution-key\">\n" +

@@ -12,8 +12,15 @@ angular
     .controller('EventFormUitpasModalController', EventFormUitpasModalController);
 
 /* @ngInject */
-function EventFormUitpasModalController($scope, $uibModalInstance, organizer, udbOrganizers) {
+function EventFormUitpasModalController($scope,
+                                        $uibModalInstance,
+                                        organizer,
+                                        cardSystem,
+                                        distributionKey,
+                                        udbOrganizers) {
   $scope.organizer = organizer;
+  $scope.usedCardSystem = cardSystem;
+  $scope.usedDistributionKey = distributionKey;
   $scope.formData = {};
   $scope.disableSubmit = true;
   $scope.saving = false;
@@ -25,6 +32,7 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
   $scope.saveUitpasData = saveUitpasData;
 
   getCardsystems(organizer.id);
+  init();
 
   /**
    * Cancel the modal.
@@ -65,5 +73,16 @@ function EventFormUitpasModalController($scope, $uibModalInstance, organizer, ud
     udbOrganizers
         .findOrganizersCardsystem(organizerId)
         .then(fetchCardSystems, errorHandling);
+  }
+
+  function init() {
+    if ($scope.usedCardSystem !== undefined) {
+      $scope.formData.cardSystem = $scope.usedCardSystem.name;
+      $scope.selectedCardSystem = $scope.usedCardSystem;
+    }
+
+    if ($scope.usedDistributionKey !== undefined) {
+      $scope.formData.distributionKey = $scope.usedDistributionKey.id;
+    }
   }
 }

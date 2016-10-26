@@ -431,6 +431,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       resolve: {
         organizer: function () {
           return EventFormData.organizer;
+        },
+        cardSystem: function () {
+          return $scope.usedCardSystem;
+        },
+        distributionKey: function () {
+          return $scope.usedDistributionKey;
         }
       }
     });
