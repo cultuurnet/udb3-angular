@@ -442,8 +442,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     });
 
     function updateUitpasInfo () {
-      $scope.uitpasInfo = '';
-      if (EventFormData.uitpasInfo.id) {
+      if (EventFormData.uitpasData.distributionKeyId) {
         $scope.uitpasCssClass = 'state-complete';
       }
       else {
@@ -453,6 +452,35 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
   }
+
+  /**
+   * Persist uitpasData for the active event.
+   * @param {Object} uitpasData
+   */
+  controller.saveUitpasData = function () {
+
+    function markUitpasDataAsCompleted() {
+      controller.eventFormSaved();
+      $scope.uitpasCssClass = 'state-complete';
+      $scope.savingUitpas = false;
+    }
+
+    var uitpasData = {
+      cardSystemId: EventFormData.uitpasData.cardSystemId,
+      distributionKeyId: EventFormData.uitpasData.distributionKeyId
+    };
+
+    EventFormData.uitpasData = uitpasData;
+    $scope.savingUitpas = true;
+    eventCrud
+        .updateEventUitpasData(EventFormData)
+        .then(markUitpasDataAsCompleted, controller.showAsyncUitpasError);
+  };
+
+  controller.showAsyncUitpasError = function() {
+    $scope.uitpasError = true;
+    $scope.savingUitpas = false;
+  };
 
   /**
    * Add an additional field to fill out contact info. Show the fields when none were shown before.

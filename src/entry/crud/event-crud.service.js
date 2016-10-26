@@ -171,6 +171,18 @@ function EventCrud(
   };
 
   /**
+   * Update UiTPAS info for the event.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updateEventUitpasData = function(item) {
+    return udbApi
+        .updateEventUitpasData(item.uitpasData, item.id)
+        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+  };
+
+  /**
    * @param {EventFormData} item
    * @param {string} jobName
    *

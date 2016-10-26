@@ -218,6 +218,19 @@ function UdbApi(
     return deferred.promise;
   };
 
+  /**
+   * Update UiTPAS info for an event.
+   * @param {Object} uitpasData
+   * @param {string} cdbid
+   *
+   * @return {Promise}
+   */
+  this.updateEventUitpasData = function(uitpasData, cdbid) {
+    return $http
+        .put(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', uitpasData, defaultApiConfig)
+        .then(returnUnwrappedData);
+  };
+
   this.getOrganizerByLDId = function(organizerLDId) {
     var organizerId = organizerLDId.split('/').pop();
     return this.getOrganizerById(organizerId);

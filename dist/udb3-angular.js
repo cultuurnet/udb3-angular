@@ -2871,6 +2871,19 @@ function UdbApi(
     return deferred.promise;
   };
 
+  /**
+   * Update UiTPAS info for an event.
+   * @param {Object} uitpasData
+   * @param {string} cdbid
+   *
+   * @return {Promise}
+   */
+  this.updateEventUitpasData = function(uitpasData, cdbid) {
+    return $http
+        .put(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', uitpasData, defaultApiConfig)
+        .then(returnUnwrappedData);
+  };
+
   this.getOrganizerByLDId = function(organizerLDId) {
     var organizerId = organizerLDId.split('/').pop();
     return this.getOrganizerById(organizerId);
@@ -5577,6 +5590,18 @@ function EventCrud(
     return udbApi
       .deleteOfferOrganizer(item.apiUrl, item.organizer.id)
       .then(jobCreatorFactory(item, 'deleteOrganizer'));
+  };
+
+  /**
+   * Update UiTPAS info for the event.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updateEventUitpasData = function(item) {
+    return udbApi
+        .updateEventUitpasData(item.uitpasData, item.id)
+        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
   };
 
   /**
@@ -11003,8 +11028,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     });
 
     function updateUitpasInfo () {
-      $scope.uitpasInfo = '';
-      if (EventFormData.uitpasInfo.id) {
+      if (EventFormData.uitpasData.distributionKeyId) {
         $scope.uitpasCssClass = 'state-complete';
       }
       else {
@@ -11014,6 +11038,35 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
   }
+
+  /**
+   * Persist uitpasData for the active event.
+   * @param {Object} uitpasData
+   */
+  controller.saveUitpasData = function () {
+
+    function markUitpasDataAsCompleted() {
+      controller.eventFormSaved();
+      $scope.uitpasCssClass = 'state-complete';
+      $scope.savingUitpas = false;
+    }
+
+    var uitpasData = {
+      cardSystemId: EventFormData.uitpasData.cardSystemId,
+      distributionKeyId: EventFormData.uitpasData.distributionKeyId
+    };
+
+    EventFormData.uitpasData = uitpasData;
+    $scope.savingUitpas = true;
+    eventCrud
+        .updateEventUitpasData(EventFormData)
+        .then(markUitpasDataAsCompleted, controller.showAsyncUitpasError);
+  };
+
+  controller.showAsyncUitpasError = function() {
+    $scope.uitpasError = true;
+    $scope.savingUitpas = false;
+  };
 
   /**
    * Add an additional field to fill out contact info. Show the fields when none were shown before.
@@ -20054,6 +20107,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <a class=\"btn btn-link\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\">Wijzigen</a>\n" +
     "                  </span>\n" +
     "                </span>\n" +
+    "              </div>\n" +
+    "              <div ng-show=\"uitpasError\" class=\"alert alert-danger\">\n" +
+    "                Er ging iets fout bij het opslaan van de UiTPAS info.\n" +
     "              </div>\n" +
     "            </div>\n" +
     "          </div>\n" +
