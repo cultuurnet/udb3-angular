@@ -19950,7 +19950,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
     "\n" +
-    "        <div class=\"row extra-uitpas\" ng-show=\"eventFormData.organizer.isUitpas\">\n" +
+    "        <div class=\"row extra-uitpas\" ng-show=\"eventFormData.organizer.isUitpas && eventFormData.isEvent\">\n" +
     "          <div class=\"extra-task\" ng-class=\"uitpasCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
     "              <em class=\"extra-task-label\">UiTPAS</em>\n" +
