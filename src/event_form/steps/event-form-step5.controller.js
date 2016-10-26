@@ -457,18 +457,13 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Persist uitpasData for the active event.
    * @param {Object} uitpasData
    */
-  controller.saveUitpasData = function () {
+  controller.saveUitpasData = function (uitpasData) {
 
     function markUitpasDataAsCompleted() {
       controller.eventFormSaved();
       $scope.uitpasCssClass = 'state-complete';
       $scope.savingUitpas = false;
     }
-
-    var uitpasData = {
-      cardSystemId: EventFormData.uitpasData.cardSystemId,
-      distributionKeyId: EventFormData.uitpasData.distributionKeyId
-    };
 
     EventFormData.uitpasData = uitpasData;
     $scope.savingUitpas = true;
@@ -853,6 +848,16 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.minAge = 1;
         $scope.ageRange = AgeRangeEnum.ALL;
       }
+
+      if (!angular.equals({}, EventFormData.uitpasData)) {
+        $scope.hasUitpasData = true;
+        $scope.uitpasCardSystemId = EventFormData.uitpasData.cardSystemId;
+        $scope.uitpasDistributionKeyId = EventFormData.uitpasData.distributionKeyId;
+        $scope.uitpasCssClass = 'state-complete';
+        if (EventFormData.organizer.id) {
+          fetchUitpasData(EventFormData.organizer.id);
+        }
+      }
     }
 
     $scope.contactInfo = _.flatten(
@@ -894,16 +899,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     if (EventFormData.priceInfo) {
       $scope.price = EventFormData.priceInfo;
       $scope.priceCssClass = 'state-complete';
-    }
-
-    if (EventFormData.uitpasData) {
-      $scope.hasUitpasData = true;
-      $scope.uitpasCardSystemId = EventFormData.uitpasData.cardSystemId;
-      $scope.uitpasDistributionKeyId = EventFormData.uitpasData.distributionKeyId;
-      $scope.uitpasCssClass = 'state-complete';
-      if (EventFormData.organizer.id) {
-        fetchUitpasData(EventFormData.organizer.id);
-      }
     }
 
   }
