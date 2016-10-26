@@ -200,11 +200,22 @@ function UdbApi(
 
     return deferredOffer.promise;
   };
-
+  /**
+   * @param {string} cdbid of the event
+   *
+   * @return {Promise}
+   */
   this.getEventUitpasData = function(cdbid) {
-    return $http
+    /*return $http
         .get(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', defaultApiConfig)
-        .then(returnUnwrappedData);
+        .then(returnUnwrappedData);*/
+
+    var deferred = $q.defer();
+    deferred.resolve({
+      "cardsystemId": "3",
+      "distributionKeyId": "7"
+    });
+    return deferred.promise;
   };
 
   this.getOrganizerByLDId = function(organizerLDId) {
