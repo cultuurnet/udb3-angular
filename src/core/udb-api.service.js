@@ -201,6 +201,12 @@ function UdbApi(
     return deferredOffer.promise;
   };
 
+  this.getEventUitpasData = function(cdbid) {
+    return $http
+        .get(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', defaultApiConfig)
+        .then(returnUnwrappedData);
+  };
+
   this.getOrganizerByLDId = function(organizerLDId) {
     var organizerId = organizerLDId.split('/').pop();
     return this.getOrganizerById(organizerId);
