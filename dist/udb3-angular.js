@@ -20019,13 +20019,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </button>\n" +
     "                </div>\n" +
     "              </div>\n" +
-    "              <div ng-show=\"hasUitpasData\">\n" +
+    "              <div class=\"row\" ng-show=\"hasUitpasData\">\n" +
     "                <span>\n" +
-    "                  <span ng-bind=\"usedCardSystem.name\"></span>\n" +
-    "                  <span ng-bind=\"usedDistributionKey.name\"></span>\n" +
-    "                  <a class=\"btn btn-link close\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\" aria-label=\"Close\">\n" +
-    "                    <span aria-hidden=\"true\"> &times;</span>\n" +
-    "                  </a>\n" +
+    "                  <span class=\"col-sm-4\" ng-bind=\"usedCardSystem.name\"></span>\n" +
+    "                  <span class=\"col-sm-5\" ng-bind=\"usedDistributionKey.name\"></span>\n" +
+    "                  <span class=\"col-sm-3\">\n" +
+    "                    <a class=\"btn btn-link\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\">Wijzigen</a>\n" +
+    "                  </span>\n" +
     "                </span>\n" +
     "              </div>\n" +
     "            </div>\n" +

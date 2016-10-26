@@ -204,11 +204,13 @@
                   </button>
                 </div>
               </div>
-              <div ng-show="hasUitpasData">
+              <div class="row" ng-show="hasUitpasData">
                 <span>
-                  <span ng-bind="usedCardSystem.name"></span>
-                  <span ng-bind="usedDistributionKey.name"></span>
-                  <a class="btn btn-link" ng-click="openUitpasModal()" data-dismiss="modal">Wijzigen</a>
+                  <span class="col-sm-4" ng-bind="usedCardSystem.name"></span>
+                  <span class="col-sm-5" ng-bind="usedDistributionKey.name"></span>
+                  <span class="col-sm-3">
+                    <a class="btn btn-link" ng-click="openUitpasModal()" data-dismiss="modal">Wijzigen</a>
+                  </span>
                 </span>
               </div>
             </div>
