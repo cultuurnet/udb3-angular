@@ -58,11 +58,12 @@ function EventFormUitpasModalController($scope,
 
   function saveUitpasData() {
     $scope.saving = true;
-    var uitpasData = {
-      cardSystemId: $scope.selectedCardSystem.id,
-      distributionKeyId: $scope.selectedDistributionKey.id
+
+    var uitpasFullData = {
+      usedCardSystem: $scope.selectedCardSystem,
+      usedDistributionKey: $scope.selectedDistributionKey
     };
-    $uibModalInstance.close(uitpasData);
+    $uibModalInstance.close(uitpasFullData);
   }
 
   function getCardsystems(organizerId) {

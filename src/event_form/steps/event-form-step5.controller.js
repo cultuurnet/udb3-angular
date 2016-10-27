@@ -457,7 +457,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Persist uitpasData for the active event.
    * @param {Object} uitpasData
    */
-  controller.saveUitpasData = function (uitpasData) {
+  controller.saveUitpasData = function (uitpasFullData) {
 
     function markUitpasDataAsCompleted() {
       controller.eventFormSaved();
@@ -465,7 +465,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.savingUitpas = false;
     }
 
-    EventFormData.uitpasData = uitpasData;
+    $scope.usedCardSystem = uitpasFullData.usedCardSystem;
+    $scope.usedDistributionKey = uitpasFullData.usedDistributionKey;
+
+    var strippedUitpasData = {
+      cardSystemId: $scope.usedCardSystem.id,
+      distributionKeyId: $scope.usedDistributionKey.id
+    };
+
+    EventFormData.uitpasData = strippedUitpasData;
     $scope.savingUitpas = true;
     eventCrud
         .updateEventUitpasData(EventFormData)
@@ -907,7 +915,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function matchCardSystem(response) {
       $scope.usedCardSystem = _.findWhere(response, $scope.uitpasCardSystemId);
-      $scope.usedDistributionKey = _.findWhere($scope.usedCardSystem.distributionKeys, $scope.uitpasDistributionKeyId);
+      $scope.usedDistributionKey = _.findWhere($scope.usedCardSystem.distributionKeys, { id: $scope.uitpasDistributionKeyId });
     }
 
     udbOrganizers

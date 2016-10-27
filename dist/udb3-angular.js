@@ -2865,8 +2865,8 @@ function UdbApi(
 
     var deferred = $q.defer();
     deferred.resolve({
-      "cardsystemId": "4",
-      "distributionKeyId": "1"
+      cardsystemId: '4',
+      distributionKeyId: '1'
     });
     return deferred.promise;
   };
@@ -2885,7 +2885,7 @@ function UdbApi(
 
     var deferred = $q.defer();
     deferred.resolve({
-      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+      commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
     });
     return deferred.promise;
   };
@@ -2953,29 +2953,29 @@ function UdbApi(
     var deferred = $q.defer();
     deferred.resolve([
       {
-        id: 4,
+        id: '4',
         name: 'UiTPAS Regio Aalst',
         distributionKeys: [
           {
-            id: 1,
+            id: '1',
             name: 'CC De Werf - 1,5 EUR / dag'
           },
           {
-            id: 2,
+            id: '2',
             name: 'CC De Werf - 3 EUR / dag'
           }
         ]
       },
       {
-        id: 5,
+        id: '5',
         name: 'UiTPAS Dender',
         distributionKeys: [
           {
-            id: 1,
+            id: '1',
             name: 'Dender - 1,5 EUR / dag'
           },
           {
-            id: 2,
+            id: '2',
             name: 'Dender - 3 EUR / dag'
           }
         ]
@@ -8527,11 +8527,12 @@ function EventFormUitpasModalController($scope,
 
   function saveUitpasData() {
     $scope.saving = true;
-    var uitpasData = {
-      cardSystemId: $scope.selectedCardSystem.id,
-      distributionKeyId: $scope.selectedDistributionKey.id
+
+    var uitpasFullData = {
+      usedCardSystem: $scope.selectedCardSystem,
+      usedDistributionKey: $scope.selectedDistributionKey
     };
-    $uibModalInstance.close(uitpasData);
+    $uibModalInstance.close(uitpasFullData);
   }
 
   function getCardsystems(organizerId) {
@@ -9143,7 +9144,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     if (offerType === 'event') {
       EventFormData.isEvent = true;
       EventFormData.isPlace = false;
-      offer.uitpasData = getUitpasData(offer);
+      EventFormData.uitpasData = {};
+      getUitpasData(offer);
       copyItemDataToFormData(offer);
 
       // Copy location.
@@ -9173,8 +9175,11 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
    * Get the Uitpas Data for an event
    */
   function getUitpasData(offer) {
-    return udbApi
-        .getEventUitpasData(offer.id);
+    udbApi
+        .getEventUitpasData(offer.id)
+        .then(function(data) {
+            EventFormData.uitpasData = data;
+        });
   }
 
   /**
@@ -9199,8 +9204,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'image',
       'additionalData',
       'apiUrl',
-      'workflowStatus',
-      'uitpasData'
+      'workflowStatus'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -11053,7 +11057,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Persist uitpasData for the active event.
    * @param {Object} uitpasData
    */
-  controller.saveUitpasData = function (uitpasData) {
+  controller.saveUitpasData = function (uitpasFullData) {
 
     function markUitpasDataAsCompleted() {
       controller.eventFormSaved();
@@ -11061,7 +11065,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.savingUitpas = false;
     }
 
-    EventFormData.uitpasData = uitpasData;
+    $scope.usedCardSystem = uitpasFullData.usedCardSystem;
+    $scope.usedDistributionKey = uitpasFullData.usedDistributionKey;
+
+    var strippedUitpasData = {
+      cardSystemId: $scope.usedCardSystem.id,
+      distributionKeyId: $scope.usedDistributionKey.id
+    };
+
+    EventFormData.uitpasData = strippedUitpasData;
     $scope.savingUitpas = true;
     eventCrud
         .updateEventUitpasData(EventFormData)
@@ -11503,7 +11515,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function matchCardSystem(response) {
       $scope.usedCardSystem = _.findWhere(response, $scope.uitpasCardSystemId);
-      $scope.usedDistributionKey = _.findWhere($scope.usedCardSystem.distributionKeys, $scope.uitpasDistributionKeyId);
+      $scope.usedDistributionKey = _.findWhere($scope.usedCardSystem.distributionKeys, { id: $scope.uitpasDistributionKeyId });
     }
 
     udbOrganizers

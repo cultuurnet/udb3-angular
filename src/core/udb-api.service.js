@@ -212,8 +212,8 @@ function UdbApi(
 
     var deferred = $q.defer();
     deferred.resolve({
-      "cardsystemId": "4",
-      "distributionKeyId": "1"
+      cardsystemId: '4',
+      distributionKeyId: '1'
     });
     return deferred.promise;
   };
@@ -232,7 +232,7 @@ function UdbApi(
 
     var deferred = $q.defer();
     deferred.resolve({
-      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+      commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
     });
     return deferred.promise;
   };
@@ -300,29 +300,29 @@ function UdbApi(
     var deferred = $q.defer();
     deferred.resolve([
       {
-        id: 4,
+        id: '4',
         name: 'UiTPAS Regio Aalst',
         distributionKeys: [
           {
-            id: 1,
+            id: '1',
             name: 'CC De Werf - 1,5 EUR / dag'
           },
           {
-            id: 2,
+            id: '2',
             name: 'CC De Werf - 3 EUR / dag'
           }
         ]
       },
       {
-        id: 5,
+        id: '5',
         name: 'UiTPAS Dender',
         distributionKeys: [
           {
-            id: 1,
+            id: '1',
             name: 'Dender - 1,5 EUR / dag'
           },
           {
-            id: 2,
+            id: '2',
             name: 'Dender - 3 EUR / dag'
           }
         ]

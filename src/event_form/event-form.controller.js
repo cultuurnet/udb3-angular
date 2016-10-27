@@ -46,7 +46,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     if (offerType === 'event') {
       EventFormData.isEvent = true;
       EventFormData.isPlace = false;
-      offer.uitpasData = getUitpasData(offer);
+      EventFormData.uitpasData = {};
+      getUitpasData(offer);
       copyItemDataToFormData(offer);
 
       // Copy location.
@@ -76,8 +77,11 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
    * Get the Uitpas Data for an event
    */
   function getUitpasData(offer) {
-    return udbApi
-        .getEventUitpasData(offer.id);
+    udbApi
+        .getEventUitpasData(offer.id)
+        .then(function(data) {
+            EventFormData.uitpasData = data;
+        });
   }
 
   /**
@@ -102,8 +106,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'image',
       'additionalData',
       'apiUrl',
-      'workflowStatus',
-      'uitpasData'
+      'workflowStatus'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
