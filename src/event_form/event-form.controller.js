@@ -80,7 +80,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     udbApi
         .getEventUitpasData(offer.id)
         .then(function(data) {
-            EventFormData.uitpasData = data;
+          EventFormData.uitpasData = data;
         });
   }
 

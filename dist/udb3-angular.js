@@ -8516,13 +8516,18 @@ function EventFormUitpasModalController($scope,
   }
 
   function selectDistributionKey() {
-    $scope.selectedDistributionKey = _.findWhere($scope.selectedCardSystem.distributionKeys, {id: $scope.formData.distributionKey});
+    $scope.selectedDistributionKey =
+        _.findWhere($scope.selectedCardSystem.distributionKeys, {id: $scope.formData.distributionKey});
     validateUitpasData();
   }
 
   function validateUitpasData() {
-    ($scope.selectedCardSystem !== undefined &&
-    $scope.selectedDistributionKey !== undefined) ? $scope.disableSubmit = false : $scope.disableSubmit = true;
+    if ($scope.selectedCardSystem !== undefined && $scope.selectedDistributionKey !== undefined) {
+      $scope.disableSubmit = false;
+    }
+    else {
+      $scope.disableSubmit = true;
+    }
   }
 
   function saveUitpasData() {
@@ -9178,7 +9183,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     udbApi
         .getEventUitpasData(offer.id)
         .then(function(data) {
-            EventFormData.uitpasData = data;
+          EventFormData.uitpasData = data;
         });
   }
 
@@ -11055,7 +11060,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   /**
    * Persist uitpasData for the active event.
-   * @param {Object} uitpasData
+   * @param {Object} uitpasFullData
    */
   controller.saveUitpasData = function (uitpasFullData) {
 
@@ -11515,7 +11520,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function matchCardSystem(response) {
       $scope.usedCardSystem = _.findWhere(response, $scope.uitpasCardSystemId);
-      $scope.usedDistributionKey = _.findWhere($scope.usedCardSystem.distributionKeys, { id: $scope.uitpasDistributionKeyId });
+      $scope.usedDistributionKey =
+          _.findWhere($scope.usedCardSystem.distributionKeys, {id: $scope.uitpasDistributionKeyId});
     }
 
     udbOrganizers

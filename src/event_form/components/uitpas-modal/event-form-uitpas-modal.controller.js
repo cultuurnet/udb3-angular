@@ -47,13 +47,18 @@ function EventFormUitpasModalController($scope,
   }
 
   function selectDistributionKey() {
-    $scope.selectedDistributionKey = _.findWhere($scope.selectedCardSystem.distributionKeys, {id: $scope.formData.distributionKey});
+    $scope.selectedDistributionKey =
+        _.findWhere($scope.selectedCardSystem.distributionKeys, {id: $scope.formData.distributionKey});
     validateUitpasData();
   }
 
   function validateUitpasData() {
-    ($scope.selectedCardSystem !== undefined &&
-    $scope.selectedDistributionKey !== undefined) ? $scope.disableSubmit = false : $scope.disableSubmit = true;
+    if ($scope.selectedCardSystem !== undefined && $scope.selectedDistributionKey !== undefined) {
+      $scope.disableSubmit = false;
+    }
+    else {
+      $scope.disableSubmit = true;
+    }
   }
 
   function saveUitpasData() {
