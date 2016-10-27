@@ -32,7 +32,8 @@ describe('Factory: UDB Organizer', function () {
           name: 'UiTPAS',
           uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
         }
-      ]
+      ],
+      'isUitpas': true
     };
     var jsonOrganizer = {
       '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
