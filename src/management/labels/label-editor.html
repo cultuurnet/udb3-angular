@@ -16,12 +16,12 @@
                            name="name"
                            udb-semicolon-label-check
                            ng-model="editor.label.name"
-                           ng-minlength="3"
+                           ng-minlength="2"
                            ng-required="true"
                            ng-maxlength="255"
                            ng-disabled="editor.renaming">
                     <p class="help-block" ng-if="editor.form.name.$error.required">Een label naam is verplicht.</p>
-                    <p class="help-block" ng-if="editor.form.name.$error.minlength">Een label moet uit minstens 3 tekens bestaan.</p>
+                    <p class="help-block" ng-if="editor.form.name.$error.minlength">Een label moet uit minstens 2 tekens bestaan.</p>
                     <p class="help-block" ng-if="editor.form.name.$error.maxlength">Een label mag maximum 255 tekens bevatten.</p>
                     <p class="help-block" ng-if="editor.form.name.$error.semicolonLabel">Een label naam mag geen puntkomma bevatten.</p>
                 </div>

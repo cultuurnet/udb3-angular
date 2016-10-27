@@ -6034,7 +6034,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
   lmc.labelNames = '';
   lmc.labelSelection = [];
   lmc.alert = false;
-  lmc.minimumInputLength = 3;
+  lmc.minimumInputLength = 2;
   lmc.maxInputLength = 255;
 
   udbApi
@@ -6092,7 +6092,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
     var i;
     for (i = 0; i < labels.length; i++) {
       if (!areLengthCriteriaMet(labels[i].length)) {
-        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        lmc.alert = 'Een label mag minimum 2 en maximum 255 karakters bevatten.';
         break;
       }
     }
@@ -15001,7 +15001,7 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 3;
+  select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;
@@ -20308,7 +20308,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       type=\"text\"\n" +
     "                       udb-unique-label\n" +
     "                       udb-semicolon-label-check\n" +
-    "                       ng-minlength=\"3\"\n" +
+    "                       ng-minlength=\"2\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
     "                       ng-model=\"creator.label.name\"\n" +
@@ -20316,7 +20316,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       ng-disabled=\"creator.creating\">\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.uniqueLabel\">Er bestaat al een label met deze naam.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "            </div>\n" +
@@ -20370,12 +20370,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           name=\"name\"\n" +
     "                           udb-semicolon-label-check\n" +
     "                           ng-model=\"editor.label.name\"\n" +
-    "                           ng-minlength=\"3\"\n" +
+    "                           ng-minlength=\"2\"\n" +
     "                           ng-required=\"true\"\n" +
     "                           ng-maxlength=\"255\"\n" +
     "                           ng-disabled=\"editor.renaming\">\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "                </div>\n" +
