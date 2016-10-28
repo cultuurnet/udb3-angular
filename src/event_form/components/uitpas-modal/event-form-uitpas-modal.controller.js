@@ -68,12 +68,13 @@ function EventFormUitpasModalController($scope,
 
   function saveUitpasData() {
     $scope.saving = true;
+    var usedDistributionKeys = [];
 
-    var uitpasFullData = {
-      usedCardSystem: $scope.selectedCardSystem,
-      usedDistributionKey: $scope.selectedDistributionKey
-    };
-    $uibModalInstance.close(uitpasFullData);
+    angular.forEach($scope.checkedCardSystems, function (cardSystem) {
+      usedDistributionKeys.push(cardSystem.distributionKeyId);
+    });
+
+    $uibModalInstance.close(usedDistributionKeys);
   }
 
   function init() {

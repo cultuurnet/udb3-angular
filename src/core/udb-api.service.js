@@ -225,9 +225,9 @@ function UdbApi(
    *
    * @return {Promise}
    */
-  this.updateEventUitpasData = function(uitpasData, cdbid) {
+  this.updateEventUitpasData = function(distributionKeys, cdbid) {
     /*return $http
-        .put(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', uitpasData, defaultApiConfig)
+        .put(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/distributionKeys', distributionKeys, defaultApiConfig)
         .then(returnUnwrappedData);*/
 
     var deferred = $q.defer();
