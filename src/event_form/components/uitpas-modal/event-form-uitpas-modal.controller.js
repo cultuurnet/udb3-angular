@@ -15,23 +15,20 @@ angular
 function EventFormUitpasModalController($scope,
                                         $uibModalInstance,
                                         organizer,
-                                        cardSystem,
-                                        distributionKey,
-                                        udbOrganizers) {
+                                        organizerCardSystems) {
   $scope.organizer = organizer;
-  $scope.usedCardSystem = cardSystem;
-  $scope.usedDistributionKey = distributionKey;
-  $scope.formData = {};
+  $scope.organizerCardSystems = organizerCardSystems;
+  $scope.checkedCardSystems = [];
+
   $scope.disableSubmit = true;
   $scope.saving = false;
 
   $scope.cancel = cancel;
-  $scope.selectCardSystem = selectCardSystem;
-  $scope.selectDistributionKey = selectDistributionKey;
-  $scope.validateUitpasData = validateUitpasData;
+  $scope.checkDistributionKeys = checkDistributionKeys;
+  $scope.removeUnsetCardSystems = removeUnsetCardSystems;
+  $scope.validate = validate;
   $scope.saveUitpasData = saveUitpasData;
 
-  getCardsystems(organizer.id);
   init();
 
   /**
@@ -41,24 +38,32 @@ function EventFormUitpasModalController($scope,
     $uibModalInstance.dismiss('cancel');
   }
 
-  function selectCardSystem(cardSystem) {
-    $scope.selectedCardSystem = cardSystem;
-    validateUitpasData();
+  function checkDistributionKeys(cardSystem, index) {
+    // if there is only one distribution key set it as active.
+    if(cardSystem.distributionKeys.length === 1) {
+      $scope.checkedCardSystems[index].distributionKeyId = cardSystem.distributionKeys[0].id;
+    }
+    validate();
+  }
+  
+  function removeUnsetCardSystems() {
+    angular.forEach($scope.checkedCardSystems, function (cardSystem, index) {
+      if (cardSystem.cardSystemId === 'unsetMe') {
+        $scope.checkedCardSystems.splice(index, 1);
+      }
+    });
   }
 
-  function selectDistributionKey() {
-    $scope.selectedDistributionKey =
-        _.findWhere($scope.selectedCardSystem.distributionKeys, {id: $scope.formData.distributionKey});
-    validateUitpasData();
-  }
+  function validate() {
+    var foundEmptyDistributionKey = false;
+    angular.forEach($scope.checkedCardSystems, function (cardSystem) {
+      if (cardSystem.distributionKeyId === undefined ||
+        cardSystem.distributionKeyId === '') {
+        foundEmptyDistributionKey = true;
+      }
+    });
 
-  function validateUitpasData() {
-    if ($scope.selectedCardSystem !== undefined && $scope.selectedDistributionKey !== undefined) {
-      $scope.disableSubmit = false;
-    }
-    else {
-      $scope.disableSubmit = true;
-    }
+    (foundEmptyDistributionKey || _.isEmpty($scope.checkedCardSystems)) ? $scope.disableSubmit = true : $scope.disableSubmit = false;
   }
 
   function saveUitpasData() {
@@ -71,30 +76,7 @@ function EventFormUitpasModalController($scope,
     $uibModalInstance.close(uitpasFullData);
   }
 
-  function getCardsystems(organizerId) {
-    function fetchCardSystems(response) {
-      $scope.cardSystems = response;
-    }
-
-    function errorHandling(error) {
-      console.log(error);
-    }
-
-    udbOrganizers
-        .findOrganizersCardsystem(organizerId)
-        .then(fetchCardSystems, errorHandling);
-  }
-
   function init() {
-    if ($scope.usedCardSystem !== undefined) {
-      $scope.formData.cardSystem = $scope.usedCardSystem.name;
-      $scope.selectedCardSystem = $scope.usedCardSystem;
-    }
 
-    if ($scope.usedDistributionKey !== undefined) {
-      $scope.formData.distributionKey = $scope.usedDistributionKey.id;
-      $scope.selectedDistributionKey = $scope.usedDistributionKey;
-    }
-    validateUitpasData();
   }
 }

@@ -300,7 +300,7 @@ function UdbApi(
     var deferred = $q.defer();
     deferred.resolve([
       {
-        id: '4',
+        id: '1',
         name: 'UiTPAS Regio Aalst',
         distributionKeys: [
           {
@@ -314,16 +314,12 @@ function UdbApi(
         ]
       },
       {
-        id: '5',
+        id: '2',
         name: 'UiTPAS Dender',
         distributionKeys: [
           {
-            id: '1',
+            id: '3',
             name: 'Dender - 1,5 EUR / dag'
-          },
-          {
-            id: '2',
-            name: 'Dender - 3 EUR / dag'
           }
         ]
       }]);

@@ -8,25 +8,32 @@
         <div class="form-group">
             <div class="card-system">
                 <label>Kaartsysteem</label>
-                <div class="radios">
-                    <span ng-repeat="cardsystem in cardSystems">
-                        <input type="radio"
-                               value="{{cardsystem.name}}"
-                               ng-model="$parent.formData.cardSystem"
-                               ng-change="selectCardSystem(cardsystem)"> {{cardsystem.name}}<br />
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="form-group" ng-show="formData.cardSystem">
-            <div class="distribution-key">
-                <label>Verdeelsleutel</label>
-                <div class="distribution-key">
-                    <select ng-model="formData.distributionKey"
-                            ng-options="distributionKey.id as distributionKey.name for distributionKey in selectedCardSystem.distributionKeys"
-                            ng-change="selectDistributionKey()">
-                        <option value="">--Selecteer een verdeelsleutel--</option>
-                    </select>
+                <div class="checkboxes">
+                    <table class="table">
+                        <tr ng-repeat="cardsystem in organizerCardSystems">
+                            <td class="col-sm-6">
+                                <input type="checkbox"
+                                   ng-model="$parent.checkedCardSystems[$index].cardSystemId"
+                                   ng-true-value="{{cardsystem.id}}"
+                                   ng-false-value="'unsetMe'"
+                                   ng-change="removeUnsetCardSystems(); checkDistributionKeys(cardsystem, $index)"> {{cardsystem.name}}
+                            </td>
+                            <td class="col-sm-6">
+                                    <span ng-show="checkedCardSystems[$index].cardSystemId == cardsystem.id">
+                                        <span ng-if="cardsystem.distributionKeys.length > 1">
+                                            <select ng-model="$parent.checkedCardSystems[$index].distributionKeyId"
+                                                    ng-change="validate()">
+                                                <option value="">--Selecteer een verdeelsleutel--</option>
+                                                <option ng-repeat="distributionKey in cardsystem.distributionKeys"
+                                                        value="{{distributionKey.id}}">
+                                                    {{distributionKey.name}}
+                                                </option>
+                                            </select>
+                                        </span>
+                                    </span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -36,7 +43,7 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="cancel()">Annuleren</button>
         <button type="button"
-                class="btn btn-primary organisator-toevoegen-bewaren"
+                class="btn btn-primary uitpas-info-bewaren"
                 ng-disabled="disableSubmit"
                 ng-click="saveUitpasData()">
             Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
