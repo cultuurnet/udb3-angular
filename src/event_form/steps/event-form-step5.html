@@ -185,40 +185,7 @@
         </div>
 
         <price-info price="price"></price-info>
-
-        <div class="row extra-uitpas" ng-show="eventFormData.organizer.isUitpas && eventFormData.isEvent">
-          <div class="extra-task" ng-class="uitpasCssClass">
-            <div class="col-sm-3">
-              <em class="extra-task-label">UiTPAS</em>
-              <span> </span>
-              <i class="fa fa-circle-o-notch fa-spin" ng-show="savingUitpas"></i>
-            </div>
-            <div class="col-sm-9">
-              <div ng-show="!hasUitpasData">
-                <div class="alert alert-info" ng-show="eventFormData.price.length === 0">
-                  <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>
-                </div>
-                <div ng-show="eventFormData.price.length !== 0">
-                  <button type='button' class='btn btn-primary' ng-click="openUitpasModal()">
-                    UiTPAS-informatie toevoegen
-                  </button>
-                </div>
-              </div>
-              <div class="row" ng-show="hasUitpasData">
-                <span>
-                  <span class="col-sm-4" ng-bind="usedCardSystem.name"></span>
-                  <span class="col-sm-5" ng-bind="usedDistributionKey.name"></span>
-                  <span class="col-sm-3">
-                    <a class="btn btn-link" ng-click="openUitpasModal()" data-dismiss="modal">Wijzigen</a>
-                  </span>
-                </span>
-              </div>
-              <div ng-show="uitpasError" class="alert alert-danger">
-                Er ging iets fout bij het opslaan van de UiTPAS info.
-              </div>
-            </div>
-          </div>
-        </div>
+        <uitpas-info organizer="eventFormData.organizer" price="price"></uitpas-info>
 
         <form name="step5TicketsForm" class="css-form">
           <div class="row extra-tickets-website" ng-class="bookingInfoCssClass">
