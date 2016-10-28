@@ -8543,6 +8543,7 @@ function UitpasInfoComponent($scope,
    */
   controller.saveUitpasData = function(checkedCardSystems) {
     controller.checkedCardSystems = checkedCardSystems;
+    checkHasUitpasData();
 
     function markUitpasDataAsCompleted() {
       $rootScope.$emit('eventFormSaved', EventFormData);
@@ -8568,6 +8569,10 @@ function UitpasInfoComponent($scope,
       .updateEventUitpasData(EventFormData)
       .then(markUitpasDataAsCompleted, showAsyncUitpasError);
   };
+
+  function checkHasUitpasData() {
+    (!_.isEmpty(controller.checkedCardSystems)) ? $scope.hasUitpasData = true : $scope.hasUitpasData = false;
+  }
 
   function init() {
     if (controller.organizer.isUitpas && EventFormData.isEvent) {
@@ -19548,14 +19553,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </button>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"row\" ng-show=\"hasUitpasData\">\n" +
-    "                <span>\n" +
-    "                  <span class=\"col-sm-4\" ng-bind=\"usedCardSystem.name\"></span>\n" +
-    "                  <span class=\"col-sm-5\" ng-bind=\"usedDistributionKey.name\"></span>\n" +
-    "                  <span class=\"col-sm-3\">\n" +
-    "                    <a class=\"btn btn-link\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\">Wijzigen</a>\n" +
-    "                  </span>\n" +
-    "                </span>\n" +
+    "            <div ng-show=\"hasUitpasData\">\n" +
+    "                <table class=\"table\">\n" +
+    "                    <tr>\n" +
+    "                        <td class=\"col-sm-4\"><strong>Kaartsysteem</strong></td>\n" +
+    "                        <td class=\"col-sm-5\"><strong>Verdeelsleutel</strong></td>\n" +
+    "                        <td class=\"col-sm-3\"><a class=\"btn btn-link\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\">Wijzigen</a></td>\n" +
+    "                    </tr>\n" +
+    "                    <tr ng-repeat=\"cardsystem in upic.checkedCardSystems\">\n" +
+    "                        <td>{{cardsystem.cardSystemName}}</td>\n" +
+    "                        <td>{{cardsystem.distributionKeyId}}</td>\n" +
+    "                    </tr>\n" +
+    "                </table>\n" +
     "            </div>\n" +
     "            <div ng-show=\"uitpasError\" class=\"alert alert-danger\">\n" +
     "                Er ging iets fout bij het opslaan van de UiTPAS info.\n" +

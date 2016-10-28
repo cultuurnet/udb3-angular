@@ -78,6 +78,7 @@ function UitpasInfoComponent($scope,
    */
   controller.saveUitpasData = function(checkedCardSystems) {
     controller.checkedCardSystems = checkedCardSystems;
+    checkHasUitpasData();
 
     function markUitpasDataAsCompleted() {
       $rootScope.$emit('eventFormSaved', EventFormData);
@@ -103,6 +104,10 @@ function UitpasInfoComponent($scope,
       .updateEventUitpasData(EventFormData)
       .then(markUitpasDataAsCompleted, showAsyncUitpasError);
   };
+
+  function checkHasUitpasData() {
+    (!_.isEmpty(controller.checkedCardSystems)) ? $scope.hasUitpasData = true : $scope.hasUitpasData = false;
+  }
 
   function init() {
     if (controller.organizer.isUitpas && EventFormData.isEvent) {

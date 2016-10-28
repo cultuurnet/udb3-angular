@@ -16,14 +16,18 @@
                     </button>
                 </div>
             </div>
-            <div class="row" ng-show="hasUitpasData">
-                <span>
-                  <span class="col-sm-4" ng-bind="usedCardSystem.name"></span>
-                  <span class="col-sm-5" ng-bind="usedDistributionKey.name"></span>
-                  <span class="col-sm-3">
-                    <a class="btn btn-link" ng-click="openUitpasModal()" data-dismiss="modal">Wijzigen</a>
-                  </span>
-                </span>
+            <div ng-show="hasUitpasData">
+                <table class="table">
+                    <tr>
+                        <td class="col-sm-4"><strong>Kaartsysteem</strong></td>
+                        <td class="col-sm-5"><strong>Verdeelsleutel</strong></td>
+                        <td class="col-sm-3"><a class="btn btn-link" ng-click="openUitpasModal()" data-dismiss="modal">Wijzigen</a></td>
+                    </tr>
+                    <tr ng-repeat="cardsystem in upic.checkedCardSystems">
+                        <td>{{cardsystem.cardSystemName}}</td>
+                        <td>{{cardsystem.distributionKeyId}}</td>
+                    </tr>
+                </table>
             </div>
             <div ng-show="uitpasError" class="alert alert-danger">
                 Er ging iets fout bij het opslaan van de UiTPAS info.
