@@ -20,7 +20,12 @@ angular
   });
 
 /* @ngInject */
-function UitpasInfoComponent($scope, EventFormData, udbOrganizers, $uibModal) {
+function UitpasInfoComponent($scope,
+                             $rootScope,
+                             EventFormData,
+                             udbOrganizers,
+                             eventCrud,
+                             $uibModal) {
 
   var controller = this;
 
@@ -66,6 +71,38 @@ function UitpasInfoComponent($scope, EventFormData, udbOrganizers, $uibModal) {
 
     modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
   }
+
+  /**
+   * Persist uitpasData for the active event.
+   * @param {Object} checkedCardSystems
+   */
+  controller.saveUitpasData = function(checkedCardSystems) {
+    controller.checkedCardSystems = checkedCardSystems;
+
+    function markUitpasDataAsCompleted() {
+      $rootScope.$emit('eventFormSaved', EventFormData);
+      $scope.uitpasCssClass = 'state-complete';
+      $scope.savingUitpas = false;
+    }
+
+    function showAsyncUitpasError() {
+      $scope.uitpasError = true;
+      $scope.savingUitpas = false;
+    }
+
+    var distributionKeys = [];
+    angular.forEach(checkedCardSystems, function(cardSystem) {
+      distributionKeys.push = cardSystem.distributionKeyId;
+    });
+
+    EventFormData.uitpasData = checkedCardSystems;
+    EventFormData.usedDistributionKeys = distributionKeys;
+
+    $scope.savingUitpas = true;
+    eventCrud
+      .updateEventUitpasData(EventFormData)
+      .then(markUitpasDataAsCompleted, showAsyncUitpasError);
+  };
 
   function init() {
     if (controller.organizer.isUitpas && EventFormData.isEvent) {

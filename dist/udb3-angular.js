@@ -2878,9 +2878,9 @@ function UdbApi(
    *
    * @return {Promise}
    */
-  this.updateEventUitpasData = function(uitpasData, cdbid) {
+  this.updateEventUitpasData = function(distributionKeys, cdbid) {
     /*return $http
-        .put(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', uitpasData, defaultApiConfig)
+        .put(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/distributionKeys', distributionKeys, defaultApiConfig)
         .then(returnUnwrappedData);*/
 
     var deferred = $q.defer();
@@ -5602,7 +5602,7 @@ function EventCrud(
    */
   service.updateEventUitpasData = function(item) {
     return udbApi
-        .updateEventUitpasData(item.uitpasData, item.id)
+        .updateEventUitpasData(item.usedDistributionKeys, item.id)
         .then(jobCreatorFactory(item, 'updateUitpasInfo'));
   };
 
@@ -8485,7 +8485,12 @@ angular
   });
 
 /* @ngInject */
-function UitpasInfoComponent($scope, EventFormData, udbOrganizers, $uibModal) {
+function UitpasInfoComponent($scope,
+                             $rootScope,
+                             EventFormData,
+                             udbOrganizers,
+                             eventCrud,
+                             $uibModal) {
 
   var controller = this;
 
@@ -8532,6 +8537,38 @@ function UitpasInfoComponent($scope, EventFormData, udbOrganizers, $uibModal) {
     modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
   }
 
+  /**
+   * Persist uitpasData for the active event.
+   * @param {Object} checkedCardSystems
+   */
+  controller.saveUitpasData = function(checkedCardSystems) {
+    controller.checkedCardSystems = checkedCardSystems;
+
+    function markUitpasDataAsCompleted() {
+      $rootScope.$emit('eventFormSaved', EventFormData);
+      $scope.uitpasCssClass = 'state-complete';
+      $scope.savingUitpas = false;
+    }
+
+    function showAsyncUitpasError() {
+      $scope.uitpasError = true;
+      $scope.savingUitpas = false;
+    }
+
+    var distributionKeys = [];
+    angular.forEach(checkedCardSystems, function(cardSystem) {
+      distributionKeys.push = cardSystem.distributionKeyId;
+    });
+
+    EventFormData.uitpasData = checkedCardSystems;
+    EventFormData.usedDistributionKeys = distributionKeys;
+
+    $scope.savingUitpas = true;
+    eventCrud
+      .updateEventUitpasData(EventFormData)
+      .then(markUitpasDataAsCompleted, showAsyncUitpasError);
+  };
+
   function init() {
     if (controller.organizer.isUitpas && EventFormData.isEvent) {
       $scope.showUitpasInfo = true;
@@ -8546,7 +8583,7 @@ function UitpasInfoComponent($scope, EventFormData, udbOrganizers, $uibModal) {
     }
   }
 }
-UitpasInfoComponent.$inject = ["$scope", "EventFormData", "udbOrganizers", "$uibModal"];
+UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData", "udbOrganizers", "eventCrud", "$uibModal"];
 // Source: src/event_form/components/uitpas-modal/event-form-uitpas-modal.controller.js
 /**
  * @ngdoc function
@@ -8572,7 +8609,7 @@ function EventFormUitpasModalController($scope,
   $scope.saving = false;
 
   $scope.cancel = cancel;
-  $scope.checkDistributionKeys = checkDistributionKeys;
+  $scope.setCardSystem = setCardSystem;
   $scope.removeUnsetCardSystems = removeUnsetCardSystems;
   $scope.validate = validate;
   $scope.saveUitpasData = saveUitpasData;
@@ -8586,7 +8623,9 @@ function EventFormUitpasModalController($scope,
     $uibModalInstance.dismiss('cancel');
   }
 
-  function checkDistributionKeys(cardSystem, index) {
+  function setCardSystem(cardSystem, index) {
+    $scope.checkedCardSystems[index].cardSystemName = cardSystem.name;
+
     // if there is only one distribution key set it as active.
     if(cardSystem.distributionKeys.length === 1) {
       $scope.checkedCardSystems[index].distributionKeyId = cardSystem.distributionKeys[0].id;
@@ -8617,11 +8656,7 @@ function EventFormUitpasModalController($scope,
   function saveUitpasData() {
     $scope.saving = true;
 
-    var uitpasFullData = {
-      usedCardSystem: $scope.selectedCardSystem,
-      usedDistributionKey: $scope.selectedDistributionKey
-    };
-    $uibModalInstance.close(uitpasFullData);
+    $uibModalInstance.close($scope.checkedCardSystems);
   }
 
   function init() {
@@ -10736,12 +10771,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
 
-  // Uitpas vars
-  $scope.uitpasCssClass = 'state-incomplete';
-  $scope.savingUitpas = false;
-  $scope.hasUitpasData = false;
-  $scope.openUitpasModal = openUitpasModal;
-
   // Booking & tickets vars.
   $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
   $scope.editBookingEmail = EventFormData.bookingInfo.email ? false : true;
@@ -11085,70 +11114,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     eventCrud
       .updateOrganizer(EventFormData)
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
-  };
-
-  /**
-   * Open the UiTPAS modal.
-   */
-  function openUitpasModal() {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-uitpas-modal.html',
-      controller: 'EventFormUitpasModalController',
-      resolve: {
-        organizer: function () {
-          return EventFormData.organizer;
-        },
-        cardSystem: function () {
-          return $scope.usedCardSystem;
-        },
-        distributionKey: function () {
-          return $scope.usedDistributionKey;
-        }
-      }
-    });
-
-    function updateUitpasInfo () {
-      if (EventFormData.uitpasData.distributionKeyId) {
-        $scope.uitpasCssClass = 'state-complete';
-      }
-      else {
-        $scope.uitpasCssClass = 'state-incomplete';
-      }
-    }
-
-    modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
-  }
-
-  /**
-   * Persist uitpasData for the active event.
-   * @param {Object} uitpasFullData
-   */
-  controller.saveUitpasData = function (uitpasFullData) {
-
-    function markUitpasDataAsCompleted() {
-      controller.eventFormSaved();
-      $scope.uitpasCssClass = 'state-complete';
-      $scope.savingUitpas = false;
-    }
-
-    $scope.usedCardSystem = uitpasFullData.usedCardSystem;
-    $scope.usedDistributionKey = uitpasFullData.usedDistributionKey;
-
-    var strippedUitpasData = {
-      cardSystemId: $scope.usedCardSystem.id,
-      distributionKeyId: $scope.usedDistributionKey.id
-    };
-
-    EventFormData.uitpasData = strippedUitpasData;
-    $scope.savingUitpas = true;
-    eventCrud
-        .updateEventUitpasData(EventFormData)
-        .then(markUitpasDataAsCompleted, controller.showAsyncUitpasError);
-  };
-
-  controller.showAsyncUitpasError = function() {
-    $scope.uitpasError = true;
-    $scope.savingUitpas = false;
   };
 
   /**
@@ -19620,7 +19585,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   ng-model=\"$parent.checkedCardSystems[$index].cardSystemId\"\n" +
     "                                   ng-true-value=\"{{cardsystem.id}}\"\n" +
     "                                   ng-false-value=\"'unsetMe'\"\n" +
-    "                                   ng-change=\"removeUnsetCardSystems(); checkDistributionKeys(cardsystem, $index)\"> {{cardsystem.name}}\n" +
+    "                                   ng-change=\"removeUnsetCardSystems(); setCardSystem(cardsystem, $index)\"> {{cardsystem.name}}\n" +
     "                            </td>\n" +
     "                            <td class=\"col-sm-6\">\n" +
     "                                    <span ng-show=\"checkedCardSystems[$index].cardSystemId == cardsystem.id\">\n" +
@@ -20209,40 +20174,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
-    "\n" +
-    "        <!--<div class=\"row extra-uitpas\" ng-show=\"eventFormData.organizer.isUitpas && eventFormData.isEvent\">\n" +
-    "          <div class=\"extra-task\" ng-class=\"uitpasCssClass\">\n" +
-    "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">UiTPAS</em>\n" +
-    "              <span> </span>\n" +
-    "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-sm-9\">\n" +
-    "              <div ng-show=\"!hasUitpasData\">\n" +
-    "                <div class=\"alert alert-info\" ng-show=\"eventFormData.price.length === 0\">\n" +
-    "                  <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
-    "                </div>\n" +
-    "                <div ng-show=\"eventFormData.price.length !== 0\">\n" +
-    "                  <button type='button' class='btn btn-primary' ng-click=\"openUitpasModal()\">\n" +
-    "                    UiTPAS-informatie toevoegen\n" +
-    "                  </button>\n" +
-    "                </div>\n" +
-    "              </div>\n" +
-    "              <div class=\"row\" ng-show=\"hasUitpasData\">\n" +
-    "                <span>\n" +
-    "                  <span class=\"col-sm-4\" ng-bind=\"usedCardSystem.name\"></span>\n" +
-    "                  <span class=\"col-sm-5\" ng-bind=\"usedDistributionKey.name\"></span>\n" +
-    "                  <span class=\"col-sm-3\">\n" +
-    "                    <a class=\"btn btn-link\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\">Wijzigen</a>\n" +
-    "                  </span>\n" +
-    "                </span>\n" +
-    "              </div>\n" +
-    "              <div ng-show=\"uitpasError\" class=\"alert alert-danger\">\n" +
-    "                Er ging iets fout bij het opslaan van de UiTPAS info.\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "        </div>-->\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +

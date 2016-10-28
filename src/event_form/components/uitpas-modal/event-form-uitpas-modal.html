@@ -16,7 +16,7 @@
                                    ng-model="$parent.checkedCardSystems[$index].cardSystemId"
                                    ng-true-value="{{cardsystem.id}}"
                                    ng-false-value="'unsetMe'"
-                                   ng-change="removeUnsetCardSystems(); checkDistributionKeys(cardsystem, $index)"> {{cardsystem.name}}
+                                   ng-change="removeUnsetCardSystems(); setCardSystem(cardsystem, $index)"> {{cardsystem.name}}
                             </td>
                             <td class="col-sm-6">
                                     <span ng-show="checkedCardSystems[$index].cardSystemId == cardsystem.id">

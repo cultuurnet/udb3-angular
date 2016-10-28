@@ -178,7 +178,7 @@ function EventCrud(
    */
   service.updateEventUitpasData = function(item) {
     return udbApi
-        .updateEventUitpasData(item.uitpasData, item.id)
+        .updateEventUitpasData(item.usedDistributionKeys, item.id)
         .then(jobCreatorFactory(item, 'updateUitpasInfo'));
   };
 

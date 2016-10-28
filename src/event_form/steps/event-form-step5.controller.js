@@ -70,12 +70,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
 
-  // Uitpas vars
-  $scope.uitpasCssClass = 'state-incomplete';
-  $scope.savingUitpas = false;
-  $scope.hasUitpasData = false;
-  $scope.openUitpasModal = openUitpasModal;
-
   // Booking & tickets vars.
   $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
   $scope.editBookingEmail = EventFormData.bookingInfo.email ? false : true;
@@ -419,70 +413,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     eventCrud
       .updateOrganizer(EventFormData)
       .then(markOrganizerAsCompleted, controller.showAsyncOrganizerError);
-  };
-
-  /**
-   * Open the UiTPAS modal.
-   */
-  function openUitpasModal() {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-uitpas-modal.html',
-      controller: 'EventFormUitpasModalController',
-      resolve: {
-        organizer: function () {
-          return EventFormData.organizer;
-        },
-        cardSystem: function () {
-          return $scope.usedCardSystem;
-        },
-        distributionKey: function () {
-          return $scope.usedDistributionKey;
-        }
-      }
-    });
-
-    function updateUitpasInfo () {
-      if (EventFormData.uitpasData.distributionKeyId) {
-        $scope.uitpasCssClass = 'state-complete';
-      }
-      else {
-        $scope.uitpasCssClass = 'state-incomplete';
-      }
-    }
-
-    modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
-  }
-
-  /**
-   * Persist uitpasData for the active event.
-   * @param {Object} uitpasFullData
-   */
-  controller.saveUitpasData = function (uitpasFullData) {
-
-    function markUitpasDataAsCompleted() {
-      controller.eventFormSaved();
-      $scope.uitpasCssClass = 'state-complete';
-      $scope.savingUitpas = false;
-    }
-
-    $scope.usedCardSystem = uitpasFullData.usedCardSystem;
-    $scope.usedDistributionKey = uitpasFullData.usedDistributionKey;
-
-    var strippedUitpasData = {
-      cardSystemId: $scope.usedCardSystem.id,
-      distributionKeyId: $scope.usedDistributionKey.id
-    };
-
-    EventFormData.uitpasData = strippedUitpasData;
-    $scope.savingUitpas = true;
-    eventCrud
-        .updateEventUitpasData(EventFormData)
-        .then(markUitpasDataAsCompleted, controller.showAsyncUitpasError);
-  };
-
-  controller.showAsyncUitpasError = function() {
-    $scope.uitpasError = true;
-    $scope.savingUitpas = false;
   };
 
   /**
