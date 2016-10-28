@@ -4780,24 +4780,24 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    */
   this.login = function () {
     var currentLocation = $location.absUrl(),
-        authUrl = appConfig.authUrl;
+        loginUrl = appConfig.authUrl + 'connect';
 
     this.removeCookies();
 
     // redirect to login page
-    authUrl += '?destination=' + currentLocation;
-    $window.location.href = authUrl;
+    loginUrl += '?destination=' + currentLocation;
+    $window.location.href = loginUrl;
   };
 
   this.register = function () {
     var currentLocation = $location.absUrl(),
-        authUrl = appConfig.registerUrl;
+        registrationUrl = appConfig.authUrl + 'register';
 
     this.removeCookies();
 
     // redirect to login page
-    authUrl += '?destination=' + currentLocation;
-    $window.location.href = authUrl;
+    registrationUrl += '?destination=' + currentLocation;
+    $window.location.href = registrationUrl;
   };
 
   this.setToken = function (token) {

@@ -3,7 +3,7 @@
 describe('Service: uitidAuth', function () {
 
   var $window, $location, $cookieStore, uitidAuth;
-  var appConfig = { authUrl: 'http://google.be', baseUrl: 'http://culudb-app.dev:8080/' };
+  var appConfig = { authUrl: 'http://google.be/', baseUrl: 'http://culudb-app.dev:8080/' };
   var token = 'blubblub';
 
   beforeEach(module('udb.core', function ($provide) {
@@ -44,7 +44,7 @@ describe('Service: uitidAuth', function () {
     spyOn($location, 'absUrl').and.returnValue(currentUrl);
 
     uitidAuth.login();
-    expect($window.location.href).toBe(appConfig.authUrl + '?destination=blah');
+    expect($window.location.href).toBe(appConfig.authUrl + 'connect?destination=blah');
   });
 
   it('should get a user from the cookieStore', function () {
