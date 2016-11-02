@@ -2422,15 +2422,19 @@ input + .alert {
   color: #999999;
 }
 .twitter-typeahead .dropdown-menu {
-  width: 422px;
+  width: 420px;
   margin-top: 0px;
-  padding: 8px 0;
+  padding: 0;
   background-color: #ffffff;
   border: 1px solid #cccccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  max-height: 150px;
+  max-height: 350px;
   overflow-y: auto;
+}
+.twitter-typeahead .panel {
+  margin: 0;
+  border: 0;
 }
 .twitter-typeahead .place-suggestion {
   padding: 6px 20px;
