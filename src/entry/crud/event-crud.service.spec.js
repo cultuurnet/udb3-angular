@@ -6,7 +6,13 @@ describe('Service: Event crud', function () {
 
   beforeEach(module('udb.entry', function ($provide) {
     logger = jasmine.createSpyObj('jobLogger', ['addJob']);
-    udbApi = jasmine.createSpyObj('udbApi', ['updateProperty', 'translateProperty', 'patchOffer']);
+    udbApi = jasmine.createSpyObj('udbApi', [
+      'updateProperty',
+      'translateProperty',
+      'patchOffer',
+      'createOffer',
+      'updateMajorInfo'
+    ]);
     udbApi.mainLanguage = 'nl';
 
     $provide.provider('jobLogger', {
@@ -109,5 +115,59 @@ describe('Service: Event crud', function () {
     $rootScope.$digest();
 
     expect(logger.addJob).toHaveBeenCalled();
+  });
+
+  it('should not throw away dates when picking major info from form-data when creating an offer', function () {
+    var formData = {
+      calendarType: 'periodic',
+      startDate: new Date('2013-03-01T00:00:00Z'),
+      endDate: new Date('2013-03-03T00:00:00Z')
+    };
+
+    var expectedInfo = {
+      calendarType: 'periodic',
+      startDate: new Date('2013-03-01T00:00:00Z'),
+      endDate: new Date('2013-03-03T00:00:00Z')
+    };
+
+    function assertMajorInfo() {
+      expect(udbApi.createOffer).toHaveBeenCalledWith('event', expectedInfo);
+    }
+
+    udbApi.createOffer.and.returnValue($q.resolve());
+
+    eventCrud
+      .createOffer(formData)
+      .then(assertMajorInfo);
+  });
+
+  it('should not throw away dates when picking major info from form-data when updating an offer', function (done) {
+    var offerLocation = new URL('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E');
+
+    var formData = {
+      apiUrl: offerLocation,
+      calendarType: 'periodic',
+      startDate: new Date('2013-03-01T00:00:00Z'),
+      endDate: new Date('2013-03-03T00:00:00Z')
+    };
+
+    var expectedInfo = {
+      calendarType: 'periodic',
+      startDate: new Date('2013-03-01T00:00:00Z'),
+      endDate: new Date('2013-03-03T00:00:00Z')
+    };
+
+
+    function assertMajorInfo() {
+      expect(udbApi.updateMajorInfo).toHaveBeenCalledWith(offerLocation, expectedInfo);
+      done();
+    }
+
+    udbApi.updateMajorInfo.and.returnValue($q.resolve(formData));
+
+    $rootScope.$emit('eventTimingChanged', formData);
+
+    $rootScope.$digest();
+    assertMajorInfo();
   });
 });
