@@ -8707,6 +8707,7 @@ function EventFormUitpasModalController($scope,
         $scope.checkedCardSystems.splice(index, 1);
       }
     });
+    validate();
   }
 
   function validate() {
