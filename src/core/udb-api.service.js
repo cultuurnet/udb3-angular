@@ -207,20 +207,19 @@ function UdbApi(
    */
   this.getEventUitpasData = function(cdbid) {
     /*return $http
-        .get(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/cardsystem', defaultApiConfig)
+        .get(appConfig.baseUrl + 'uitpas/event/' + cdbid + '/distributionKeys', defaultApiConfig)
         .then(returnUnwrappedData);*/
 
     var deferred = $q.defer();
-    deferred.resolve({
-      cardsystemId: '4',
-      distributionKeyId: '1'
-    });
+    deferred.resolve([
+      '1', '3'
+    ]);
     return deferred.promise;
   };
 
   /**
    * Update UiTPAS info for an event.
-   * @param {Object} uitpasData
+   * @param {Object} distributionKeys
    * @param {string} cdbid
    *
    * @return {Promise}

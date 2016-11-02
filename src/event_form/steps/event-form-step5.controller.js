@@ -786,16 +786,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.minAge = 1;
         $scope.ageRange = AgeRangeEnum.ALL;
       }
-
-      if (!angular.equals({}, EventFormData.uitpasData)) {
-        $scope.hasUitpasData = true;
-        $scope.uitpasCardSystemId = EventFormData.uitpasData.cardSystemId;
-        $scope.uitpasDistributionKeyId = EventFormData.uitpasData.distributionKeyId;
-        $scope.uitpasCssClass = 'state-complete';
-        if (EventFormData.organizer.id) {
-          fetchUitpasData(EventFormData.organizer.id);
-        }
-      }
     }
 
     $scope.contactInfo = _.flatten(
@@ -839,19 +829,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.priceCssClass = 'state-complete';
     }
 
-  }
-
-  function fetchUitpasData(organizerId) {
-
-    function matchCardSystem(response) {
-      $scope.usedCardSystem = _.findWhere(response, $scope.uitpasCardSystemId);
-      $scope.usedDistributionKey =
-          _.findWhere($scope.usedCardSystem.distributionKeys, {id: $scope.uitpasDistributionKeyId});
-    }
-
-    udbOrganizers
-        .findOrganizersCardsystem(organizerId)
-        .then(matchCardSystem);
   }
 
 }

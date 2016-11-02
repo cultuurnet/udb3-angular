@@ -46,8 +46,6 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     if (offerType === 'event') {
       EventFormData.isEvent = true;
       EventFormData.isPlace = false;
-      EventFormData.uitpasData = {};
-      getUitpasData(offer);
       copyItemDataToFormData(offer);
 
       // Copy location.
@@ -71,17 +69,6 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
         EventFormData.address = offer.address;
       }
     }
-  }
-
-  /**
-   * Get the Uitpas Data for an event
-   */
-  function getUitpasData(offer) {
-    udbApi
-        .getEventUitpasData(offer.id)
-        .then(function(data) {
-          EventFormData.uitpasData = data;
-        });
   }
 
   /**

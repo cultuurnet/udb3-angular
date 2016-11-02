@@ -15,10 +15,11 @@ angular
 function EventFormUitpasModalController($scope,
                                         $uibModalInstance,
                                         organizer,
-                                        organizerCardSystems) {
+                                        organizerCardSystems,
+                                        checkedCardSystems) {
   $scope.organizer = organizer;
   $scope.organizerCardSystems = organizerCardSystems;
-  $scope.checkedCardSystems = [];
+  $scope.checkedCardSystems = checkedCardSystems;
 
   $scope.disableSubmit = true;
   $scope.saving = false;
@@ -42,12 +43,12 @@ function EventFormUitpasModalController($scope,
     $scope.checkedCardSystems[index].cardSystemName = cardSystem.name;
 
     // if there is only one distribution key set it as active.
-    if(cardSystem.distributionKeys.length === 1) {
+    if (cardSystem.distributionKeys.length === 1) {
       $scope.checkedCardSystems[index].distributionKeyId = cardSystem.distributionKeys[0].id;
     }
     validate();
   }
-  
+
   function removeUnsetCardSystems() {
     angular.forEach($scope.checkedCardSystems, function (cardSystem, index) {
       if (cardSystem.cardSystemId === 'unsetMe') {
@@ -65,7 +66,12 @@ function EventFormUitpasModalController($scope,
       }
     });
 
-    (foundEmptyDistributionKey || _.isEmpty($scope.checkedCardSystems)) ? $scope.disableSubmit = true : $scope.disableSubmit = false;
+    if (foundEmptyDistributionKey || _.isEmpty($scope.checkedCardSystems)) {
+      $scope.disableSubmit = true;
+    }
+    else {
+      $scope.disableSubmit = false;
+    }
   }
 
   function saveUitpasData() {

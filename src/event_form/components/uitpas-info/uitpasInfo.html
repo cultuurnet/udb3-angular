@@ -23,9 +23,9 @@
                         <td class="col-sm-5"><strong>Verdeelsleutel</strong></td>
                         <td class="col-sm-3"><a class="btn btn-link" ng-click="openUitpasModal()" data-dismiss="modal">Wijzigen</a></td>
                     </tr>
-                    <tr ng-repeat="cardsystem in upic.checkedCardSystems">
+                    <tr ng-repeat="cardsystem in checkedCardSystems">
                         <td>{{cardsystem.cardSystemName}}</td>
-                        <td>{{cardsystem.distributionKeyId}}</td>
+                        <td>{{cardsystem.distributionKeyName}}</td>
                     </tr>
                 </table>
             </div>

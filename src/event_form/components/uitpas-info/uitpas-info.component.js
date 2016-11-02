@@ -15,7 +15,7 @@ angular
     controllerAs: 'upic',
     bindings: {
       organizer: '<',
-      price: '<'
+      uitpasData: '='
     }
   });
 
@@ -33,6 +33,7 @@ function UitpasInfoComponent($scope,
   $scope.uitpasCssClass = 'state-incomplete';
   $scope.savingUitpas = false;
   $scope.hasUitpasData = false;
+  $scope.checkedCardSystems = [];
   $scope.openUitpasModal = openUitpasModal;
 
   init();
@@ -50,6 +51,9 @@ function UitpasInfoComponent($scope,
         },
         organizerCardSystems: function () {
           return controller.organizerCardSystems;
+        },
+        checkedCardSystems: function () {
+          return $scope.checkedCardSystems;
         }/*,
         cardSystem: function () {
           return $scope.usedCardSystem;
@@ -61,7 +65,7 @@ function UitpasInfoComponent($scope,
     });
 
     function updateUitpasInfo () {
-      if (EventFormData.uitpasData.distributionKeyId) {
+      if (!_.isEmpty(EventFormData.usedDistributionKeys)) {
         $scope.uitpasCssClass = 'state-complete';
       }
       else {
@@ -106,7 +110,12 @@ function UitpasInfoComponent($scope,
   };
 
   function checkHasUitpasData() {
-    (!_.isEmpty(controller.checkedCardSystems)) ? $scope.hasUitpasData = true : $scope.hasUitpasData = false;
+    if (!_.isEmpty(controller.checkedCardSystems)) {
+      $scope.hasUitpasData = true;
+    }
+    else {
+      $scope.hasUitpasData = false;
+    }
   }
 
   function init() {
@@ -120,6 +129,37 @@ function UitpasInfoComponent($scope,
         .then(function(response) {
           controller.organizerCardSystems = response;
         });
+      getUitpasData(EventFormData.id);
     }
+  }
+
+  /**
+   * Get the Uitpas Data for an event
+   */
+  function getUitpasData(cdbid) {
+    eventCrud
+      .getEventUitpasData(cdbid)
+      .then(function(data) {
+        $scope.usedDistributionKeys = data;
+        EventFormData.usedDistributionKeys = data;
+        $scope.hasUitpasData = true;
+        reverseLookUp();
+      });
+  }
+
+  function reverseLookUp() {
+    angular.forEach(controller.organizerCardSystems, function (cardSystem, index) {
+      angular.forEach($scope.usedDistributionKeys, function(distributionKey) {
+        var tempDistKey = _.findWhere(cardSystem.distributionKeys, {id: distributionKey});
+        if (tempDistKey !== undefined) {
+          $scope.checkedCardSystems[index] = {
+            distributionKeyId: tempDistKey.id,
+            distributionKeyName: tempDistKey.name,
+            cardSystemId: cardSystem.id,
+            cardSystemName: cardSystem.name
+          };
+        }
+      });
+    });
   }
 }

@@ -183,6 +183,15 @@ function EventCrud(
   };
 
   /**
+   * Get the Uitpas data from an event.
+   * @param {string} cdbid
+   * @returns {Promise}
+   */
+  service.getEventUitpasData = function(cdbid) {
+    return udbApi.getEventUitpasData(cdbid);
+  };
+
+  /**
    * @param {EventFormData} item
    * @param {string} jobName
    *
