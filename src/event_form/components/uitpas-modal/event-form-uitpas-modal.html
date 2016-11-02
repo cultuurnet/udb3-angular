@@ -14,7 +14,7 @@
                             <td class="col-sm-6">
                                 <input type="checkbox"
                                    ng-model="$parent.checkedCardSystems[$index].cardSystemId"
-                                   ng-true-value="{{cardsystem.id}}"
+                                   ng-true-value="'{{cardsystem.id}}'"
                                    ng-false-value="'unsetMe'"
                                    ng-change="removeUnsetCardSystems(); setCardSystem(cardsystem, $index)"> {{cardsystem.name}}
                             </td>

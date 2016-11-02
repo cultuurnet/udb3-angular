@@ -2865,7 +2865,7 @@ function UdbApi(
 
     var deferred = $q.defer();
     deferred.resolve([
-      '1', '3'
+      '1c', '3e'
     ]);
     return deferred.promise;
   };
@@ -2952,25 +2952,25 @@ function UdbApi(
     var deferred = $q.defer();
     deferred.resolve([
       {
-        id: '1',
+        id: '1a',
         name: 'UiTPAS Regio Aalst',
         distributionKeys: [
           {
-            id: '1',
+            id: '1c',
             name: 'CC De Werf - 1,5 EUR / dag'
           },
           {
-            id: '2',
+            id: '2d',
             name: 'CC De Werf - 3 EUR / dag'
           }
         ]
       },
       {
-        id: '2',
+        id: '2b',
         name: 'UiTPAS Dender',
         distributionKeys: [
           {
-            id: '3',
+            id: '3e',
             name: 'Dender - 1,5 EUR / dag'
           }
         ]
@@ -19611,7 +19611,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                            <td class=\"col-sm-6\">\n" +
     "                                <input type=\"checkbox\"\n" +
     "                                   ng-model=\"$parent.checkedCardSystems[$index].cardSystemId\"\n" +
-    "                                   ng-true-value=\"{{cardsystem.id}}\"\n" +
+    "                                   ng-true-value=\"'{{cardsystem.id}}'\"\n" +
     "                                   ng-false-value=\"'unsetMe'\"\n" +
     "                                   ng-change=\"removeUnsetCardSystems(); setCardSystem(cardsystem, $index)\"> {{cardsystem.name}}\n" +
     "                            </td>\n" +
