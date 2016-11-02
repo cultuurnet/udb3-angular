@@ -14,6 +14,7 @@ angular
 function EventCrud(
   jobLogger,
   udbApi,
+  udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
   $rootScope ,
@@ -177,7 +178,7 @@ function EventCrud(
    * @returns {Promise.<EventCrudJob>}
    */
   service.updateEventUitpasData = function(item) {
-    return udbApi
+    return udbUitpasApi
         .updateEventUitpasData(item.usedDistributionKeys, item.id)
         .then(jobCreatorFactory(item, 'updateUitpasInfo'));
   };
@@ -188,7 +189,7 @@ function EventCrud(
    * @returns {Promise}
    */
   service.getEventUitpasData = function(cdbid) {
-    return udbApi.getEventUitpasData(cdbid);
+    return udbUitpasApi.getEventUitpasData(cdbid);
   };
 
   /**

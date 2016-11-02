@@ -8,7 +8,7 @@
  * Modal for setting the uitpas cardsystem and destribution key.
  */
 angular
-    .module('udb.event-form')
+    .module('udb.uitpas')
     .controller('EventFormUitpasModalController', EventFormUitpasModalController);
 
 /* @ngInject */

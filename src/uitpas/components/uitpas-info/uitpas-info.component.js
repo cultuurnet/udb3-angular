@@ -8,7 +8,7 @@
  * Component for setting UiTPAS info.
  */
 angular
-  .module('udb.event-form')
+  .module('udb.uitpas')
   .component('uitpasInfo', {
     templateUrl: 'templates/uitpasInfo.html',
     controller: UitpasInfoComponent,
