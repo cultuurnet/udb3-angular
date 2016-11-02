@@ -5360,6 +5360,15 @@ function EventCrud(
   var service = this;
 
   /**
+   * @param {EventFormData} formData
+   */
+  function pickMajorInfoFromFormData(formData) {
+    return _.pick(formData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+  }
+
+  /**
    * Creates a new offer and add the job to the logger.
    *
    * @param {EventFormData}  eventFormData
@@ -5380,7 +5389,7 @@ function EventCrud(
       return eventFormData;
     };
 
-    var majorInfo = _.omit(eventFormData, _.isEmpty);
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     return udbApi
       .createOffer(type, majorInfo)
@@ -5425,9 +5434,7 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = _.pick(eventFormData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
-    });
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
@@ -6027,7 +6034,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
   lmc.labelNames = '';
   lmc.labelSelection = [];
   lmc.alert = false;
-  lmc.minimumInputLength = 3;
+  lmc.minimumInputLength = 2;
   lmc.maxInputLength = 255;
 
   udbApi
@@ -6085,7 +6092,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
     var i;
     for (i = 0; i < labels.length; i++) {
       if (!areLengthCriteriaMet(labels[i].length)) {
-        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        lmc.alert = 'Een label mag minimum 2 en maximum 255 karakters bevatten.';
         break;
       }
     }
@@ -10227,37 +10234,42 @@ function EventFormStep4Controller(
       return;
     }
 
-    if (!ignoreDuplicates) {
-      $scope.saving = true;
-      $scope.error = false;
-
-      var promise = findDuplicates(EventFormData);
-
-      $scope.resultViewer.loading = true;
-      $scope.duplicatesSearched = true;
-
-      promise.then(function (data) {
-
-        // Set the results for the duplicates modal,
-        if (data.totalItems > 0) {
-          $scope.saving = false;
-          $scope.resultViewer.setResults(data);
-        }
-        // or save the event immediataly if no duplicates were found.
-        else {
-          createOffer();
-        }
-
-      }, function() {
-        // Error while saving.
-        $scope.error = true;
-        $scope.saving = false;
-      });
+    if (ignoreDuplicates) {
+      createOffer();
     }
+    else {
+      suggestExistingOffers(EventFormData);
+    }
+
+  }
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function suggestExistingOffers(formData) {
+    $scope.saving = true;
+    $scope.error = false;
+
+    $scope.resultViewer.loading = true;
+    $scope.duplicatesSearched = true;
+
+    findDuplicates(formData).then(showDuplicates, showMajorInfoError);
+  }
+
+  /**
+   * @param {PagedCollection} pagedDuplicates
+   */
+  function showDuplicates(pagedDuplicates) {
+
+    // Set the results for the duplicates modal,
+    if (pagedDuplicates.totalItems > 0) {
+      $scope.saving = false;
+      $scope.resultViewer.setResults(pagedDuplicates);
+    }
+    // or save the event immediately if no duplicates were found.
     else {
       createOffer();
     }
-
   }
 
   function findDuplicates(data) {
@@ -14989,7 +15001,7 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 3;
+  select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;
@@ -17626,7 +17638,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/dashboard-item.directive.html',
     "<td>\n" +
     "  <strong>\n" +
-    "    <a ng-href=\"{{ ::event.url }}\" ng-bind=\"::event.name\"></a>\n" +
+    "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <br/>\n" +
     "  <small>\n" +
@@ -20301,7 +20313,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       type=\"text\"\n" +
     "                       udb-unique-label\n" +
     "                       udb-semicolon-label-check\n" +
-    "                       ng-minlength=\"3\"\n" +
+    "                       ng-minlength=\"2\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
     "                       ng-model=\"creator.label.name\"\n" +
@@ -20309,7 +20321,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       ng-disabled=\"creator.creating\">\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.uniqueLabel\">Er bestaat al een label met deze naam.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "            </div>\n" +
@@ -20363,12 +20375,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           name=\"name\"\n" +
     "                           udb-semicolon-label-check\n" +
     "                           ng-model=\"editor.label.name\"\n" +
-    "                           ng-minlength=\"3\"\n" +
+    "                           ng-minlength=\"2\"\n" +
     "                           ng-required=\"true\"\n" +
     "                           ng-maxlength=\"255\"\n" +
     "                           ng-disabled=\"editor.renaming\">\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "                </div>\n" +

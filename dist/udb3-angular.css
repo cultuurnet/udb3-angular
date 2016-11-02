@@ -2427,7 +2427,6 @@ input + .alert {
   padding: 0;
   background-color: #ffffff;
   border: 1px solid #cccccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   max-height: 350px;
   overflow-y: auto;
@@ -2435,6 +2434,9 @@ input + .alert {
 .twitter-typeahead .panel {
   margin: 0;
   border: 0;
+}
+.twitter-typeahead .dropdown-menu-no-results .panel {
+  border: 1px solid #cccccc;
 }
 .twitter-typeahead .place-suggestion {
   padding: 6px 20px;
