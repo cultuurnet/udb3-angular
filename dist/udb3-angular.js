@@ -8488,6 +8488,7 @@ angular
     controllerAs: 'upic',
     bindings: {
       organizer: '<',
+      price: '<',
       uitpasData: '='
     }
   });
@@ -8527,13 +8528,7 @@ function UitpasInfoComponent($scope,
         },
         checkedCardSystems: function () {
           return $scope.checkedCardSystems;
-        }/*,
-        cardSystem: function () {
-          return $scope.usedCardSystem;
-        },
-        distributionKey: function () {
-          return $scope.usedDistributionKey;
-        }*/
+        }
       }
     });
 
@@ -8635,6 +8630,10 @@ function UitpasInfoComponent($scope,
       });
     });
   }
+
+  $rootScope.$on('eventOrganizerSelected', function () {
+    init();
+  });
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData", "udbOrganizers", "eventCrud", "$uibModal"];
 
@@ -11152,6 +11151,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function markOrganizerAsCompleted() {
       controller.eventFormSaved();
+      $rootScope.$emit('eventOrganizerSelected', organizer);
       $scope.organizerCssClass = 'state-complete';
       $scope.savingOrganizer = false;
     }
@@ -20201,7 +20201,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
-    "        <uitpas-info organizer=\"eventFormData.organizer\"></uitpas-info>\n" +
+    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +

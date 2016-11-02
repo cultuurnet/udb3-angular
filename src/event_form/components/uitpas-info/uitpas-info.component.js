@@ -15,6 +15,7 @@ angular
     controllerAs: 'upic',
     bindings: {
       organizer: '<',
+      price: '<',
       uitpasData: '='
     }
   });
@@ -54,13 +55,7 @@ function UitpasInfoComponent($scope,
         },
         checkedCardSystems: function () {
           return $scope.checkedCardSystems;
-        }/*,
-        cardSystem: function () {
-          return $scope.usedCardSystem;
-        },
-        distributionKey: function () {
-          return $scope.usedDistributionKey;
-        }*/
+        }
       }
     });
 
@@ -162,4 +157,8 @@ function UitpasInfoComponent($scope,
       });
     });
   }
+
+  $rootScope.$on('eventOrganizerSelected', function () {
+    init();
+  });
 }

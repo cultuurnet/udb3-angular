@@ -404,6 +404,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function markOrganizerAsCompleted() {
       controller.eventFormSaved();
+      $rootScope.$emit('eventOrganizerSelected', organizer);
       $scope.organizerCssClass = 'state-complete';
       $scope.savingOrganizer = false;
     }
