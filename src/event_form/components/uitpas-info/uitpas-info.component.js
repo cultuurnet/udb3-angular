@@ -117,6 +117,9 @@ function UitpasInfoComponent($scope,
     if (controller.organizer.isUitpas && EventFormData.isEvent) {
       $scope.showUitpasInfo = true;
     }
+    else {
+      $scope.showUitpasInfo = false;
+    }
 
     if ($scope.showUitpasInfo) {
       udbOrganizers
@@ -126,6 +129,13 @@ function UitpasInfoComponent($scope,
         });
       getUitpasData(EventFormData.id);
     }
+  }
+
+  function reset() {
+    controller.organizer = {};
+    $scope.checkedCardSystems = [];
+    init();
+    controller.saveUitpasData($scope.checkedCardSystems);
   }
 
   /**
@@ -160,5 +170,9 @@ function UitpasInfoComponent($scope,
 
   $rootScope.$on('eventOrganizerSelected', function () {
     init();
+  });
+
+  $rootScope.$on('eventOrganizerDeleted', function () {
+    reset();
   });
 }
