@@ -1908,7 +1908,9 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
  * The UDB UiTPAS module
  */
 angular
-  .module('udb.uitpas', []);
+  .module('udb.uitpas', [
+    'ui.bootstrap'
+  ]);
 
 // Source: src/core/authorization-service.service.js
 /**
@@ -17781,29 +17783,13 @@ function EventFormUitpasModalController($scope,
   }
 
   function removeUnsetCardSystems() {
-    angular.forEach($scope.checkedCardSystems, function (cardSystem, index) {
-      if (cardSystem.cardSystemId === 'unsetMe') {
-        $scope.checkedCardSystems.splice(index, 1);
-      }
-    });
+    $scope.checkedCardSystems = _.reject($scope.checkedCardSystems, {cardSystemId: 'unsetMe'});
     validate();
   }
 
+  var systemsWithoutKeySelected = _($scope.checkedCardSystems).reject('distributionKeyId');
   function validate() {
-    var foundEmptyDistributionKey = false;
-    angular.forEach($scope.checkedCardSystems, function (cardSystem) {
-      if (cardSystem.distributionKeyId === undefined ||
-        cardSystem.distributionKeyId === '') {
-        foundEmptyDistributionKey = true;
-      }
-    });
-
-    if (foundEmptyDistributionKey || _.isEmpty($scope.checkedCardSystems)) {
-      $scope.disableSubmit = true;
-    }
-    else {
-      $scope.disableSubmit = false;
-    }
+    $scope.disableSubmit = _.isEmpty($scope.checkedCardSystems) || !_.isEmpty(systemsWithoutKeySelected.value());
   }
 
   function saveUitpasData() {
