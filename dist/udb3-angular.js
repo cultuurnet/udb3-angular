@@ -17857,6 +17857,22 @@ function uitpasOrganisationSuggestion() {
 }
 
 // Source: src/uitpas/udb-uitpas-api.service.js
+/**
+ * @typedef {Object} Cardsystem
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ * @property {DistributionKey[]} distributionKeys
+ */
+
+/**
+ * @typedef {Object} DistributionKey
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ *  the name of the key including the price, eg: "CC De Werf - 1,5 EUR / dag"
+ */
+
 angular
   .module('udb.uitpas')
   .service('udbUitpasApi', UdbUitpasApi);
@@ -17872,77 +17888,38 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
     params: {}
   };
   /**
-   * @param {string} cdbid of the event
+   * @param {string} eventId
    *
-   * @return {Promise}
+   * @return {Promise.<string[]>}
    */
-  this.getEventUitpasData = function(cdbid) {
+  this.getEventUitpasData = function(eventId) {
     return $http
-     .get(uitpasApiUrl + 'event/' + cdbid + '/distributionKeys', defaultApiConfig)
+     .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys', defaultApiConfig)
      .then(returnUnwrappedData);
-
-    /*var deferred = $q.defer();
-    deferred.resolve([
-      '1c', '3e'
-    ]);
-    return deferred.promise;*/
   };
 
   /**
    * Update UiTPAS info for an event.
-   * @param {Object} distributionKeys
-   * @param {string} cdbid
+   * @param {string[]} distributionKeys
+   * @param {string} eventId
    *
-   * @return {Promise}
+   * @return {Promise.<CommandInfo>}
    */
-  this.updateEventUitpasData = function(distributionKeys, cdbid) {
+  this.updateEventUitpasData = function(distributionKeys, eventId) {
     return $http
-     .put(uitpasApiUrl + 'event/' + cdbid + '/distributionKeys', distributionKeys, defaultApiConfig)
+     .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys', distributionKeys, defaultApiConfig)
      .then(returnUnwrappedData);
-
-    /*var deferred = $q.defer();
-    deferred.resolve({
-      commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
-    });
-    return deferred.promise;*/
   };
 
   /**
    * @param {string} organizerId of the organizer
    *
-   * @return {Promise}
+   * @return {Promise.<Cardsystem[]>}
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
      .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
      .then(returnUnwrappedData);
-    /*var deferred = $q.defer();
-    deferred.resolve([
-      {
-        id: '1a',
-        name: 'UiTPAS Regio Aalst',
-        distributionKeys: [
-          {
-            id: '1c',
-            name: 'CC De Werf - 1,5 EUR / dag'
-          },
-          {
-            id: '2d',
-            name: 'CC De Werf - 3 EUR / dag'
-          }
-        ]
-      },
-      {
-        id: '2b',
-        name: 'UiTPAS Dender',
-        distributionKeys: [
-          {
-            id: '3e',
-            name: 'Dender - 1,5 EUR / dag'
-          }
-        ]
-      }]);
-    return deferred.promise;*/
   };
 
   function returnUnwrappedData(response) {

@@ -37,7 +37,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.getEventUitpasData = function(eventId) {
     return $http
-     .get(uitpasApiUrl + 'event/' + eventId + '/distributionKeys', defaultApiConfig)
+     .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys', defaultApiConfig)
      .then(returnUnwrappedData);
   };
 
@@ -50,7 +50,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.updateEventUitpasData = function(distributionKeys, eventId) {
     return $http
-     .put(uitpasApiUrl + 'event/' + eventId + '/distributionKeys', distributionKeys, defaultApiConfig)
+     .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys', distributionKeys, defaultApiConfig)
      .then(returnUnwrappedData);
   };
 

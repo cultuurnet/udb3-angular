@@ -3,14 +3,12 @@
 describe('Service: UDB3 Uitpas Api', function () {
 
   var $httpBackend, $scope, service, uitidAuth;
-  var baseUrl = '';
 
-  beforeEach(module('udb.core'), function ($provide) {
-    var appConfig = {
-      baseUrl: baseUrl,
-      baseApiUrl: baseUrl
-    };
+  var appConfig = {
+    uitpasUrl: 'http://uit.pas/'
+  };
 
+  beforeEach(module('udb.core', function ($provide) {
     uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
 
     $provide.constant('appConfig', appConfig);
@@ -20,7 +18,7 @@ describe('Service: UDB3 Uitpas Api', function () {
         return uitidAuth;
       }
     });
-  });
+  }));
 
   beforeEach(inject(function (_$httpBackend_, udbUitpasApi, $rootScope) {
     $httpBackend = _$httpBackend_;
@@ -33,7 +31,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
-      .expectGET(baseUrl + 'uitpas/event/' + cdbid + '/distributionKeys')
+      .expectGET('http://uit.pas/events/' + cdbid + '/distributionKeys')
       .respond(JSON.stringify(response));
 
     service
@@ -48,7 +46,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
-      .expectPUT(baseUrl + 'uitpas/event/' + cdbid + '/distributionKeys')
+      .expectPUT('http://uit.pas/events/' + cdbid + '/distributionKeys')
       .respond(JSON.stringify(response));
 
     service
@@ -63,7 +61,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
-      .expectGET(baseUrl + 'uitpas/organizers/' + organizerId + '/cardsystems/')
+      .expectGET('http://uit.pas/organizers/' + organizerId + '/cardsystems/')
       .respond(JSON.stringify(response));
 
     service
