@@ -81,7 +81,7 @@ describe('Controller: Offer Label Modal', function() {
     expect($uibModalInstance.close).toHaveBeenCalledWith(['test1']);
   });
 
-  it('should not accept labels shorter than 3 chars', function() {
+  it('should not accept labels shorter than 2 chars', function() {
     udbApi.getRecentLabels.and.returnValue($q.resolve([]));
 
     var lmc = getController();
@@ -90,7 +90,7 @@ describe('Controller: Offer Label Modal', function() {
     lmc.labelNames = 't';
     lmc.ok();
 
-    expect(lmc.alert).toEqual('Een label mag minimum 3 en maximum 255 karakters bevatten.');
+    expect(lmc.alert).toEqual('Een label mag minimum 2 en maximum 255 karakters bevatten.');
     expect($uibModalInstance.close).not.toHaveBeenCalled();
   });
 
@@ -103,7 +103,7 @@ describe('Controller: Offer Label Modal', function() {
     lmc.labelNames = 'turnip greens yarrow ricebean rutabaga endive cauliflower sea lettuce kohlrabi amaranth water spinach avocado daikon napa cabbage asparagus winter purslane kale celery potato scallion desert raisin horseradish spinach carrot soko Lotus root water spinach fennel';
     lmc.ok();
 
-    expect(lmc.alert).toEqual('Een label mag minimum 3 en maximum 255 karakters bevatten.');
+    expect(lmc.alert).toEqual('Een label mag minimum 2 en maximum 255 karakters bevatten.');
     expect($uibModalInstance.close).not.toHaveBeenCalled();
   });
 
