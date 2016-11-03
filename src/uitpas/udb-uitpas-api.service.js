@@ -23,12 +23,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
     return $http
      .get(uitpasApiUrl + 'event/' + cdbid + '/distributionKeys', defaultApiConfig)
      .then(returnUnwrappedData);
-
-    /*var deferred = $q.defer();
-    deferred.resolve([
-      '1c', '3e'
-    ]);
-    return deferred.promise;*/
   };
 
   /**
@@ -42,12 +36,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
     return $http
      .put(uitpasApiUrl + 'event/' + cdbid + '/distributionKeys', distributionKeys, defaultApiConfig)
      .then(returnUnwrappedData);
-
-    /*var deferred = $q.defer();
-    deferred.resolve({
-      commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
-    });
-    return deferred.promise;*/
   };
 
   /**
@@ -59,33 +47,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
     return $http
      .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
      .then(returnUnwrappedData);
-    /*var deferred = $q.defer();
-    deferred.resolve([
-      {
-        id: '1a',
-        name: 'UiTPAS Regio Aalst',
-        distributionKeys: [
-          {
-            id: '1c',
-            name: 'CC De Werf - 1,5 EUR / dag'
-          },
-          {
-            id: '2d',
-            name: 'CC De Werf - 3 EUR / dag'
-          }
-        ]
-      },
-      {
-        id: '2b',
-        name: 'UiTPAS Dender',
-        distributionKeys: [
-          {
-            id: '3e',
-            name: 'Dender - 1,5 EUR / dag'
-          }
-        ]
-      }]);
-    return deferred.promise;*/
   };
 
   function returnUnwrappedData(response) {
