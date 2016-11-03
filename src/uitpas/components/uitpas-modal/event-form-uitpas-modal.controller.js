@@ -67,12 +67,7 @@ function EventFormUitpasModalController($scope,
       }
     });
 
-    if (foundEmptyDistributionKey || _.isEmpty($scope.checkedCardSystems)) {
-      $scope.disableSubmit = true;
-    }
-    else {
-      $scope.disableSubmit = false;
-    }
+    $scope.disableSubmit = foundEmptyDistributionKey || _.isEmpty($scope.checkedCardSystems)
   }
 
   function saveUitpasData() {
