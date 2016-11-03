@@ -20,15 +20,15 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    * @return {Promise}
    */
   this.getEventUitpasData = function(cdbid) {
-    /*return $http
+    return $http
      .get(uitpasApiUrl + 'uitpas/event/' + cdbid + '/distributionKeys', defaultApiConfig)
-     .then(returnUnwrappedData);*/
+     .then(returnUnwrappedData);
 
-    var deferred = $q.defer();
+    /*var deferred = $q.defer();
     deferred.resolve([
       '1c', '3e'
     ]);
-    return deferred.promise;
+    return deferred.promise;*/
   };
 
   /**
@@ -39,15 +39,15 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    * @return {Promise}
    */
   this.updateEventUitpasData = function(distributionKeys, cdbid) {
-    /*return $http
+    return $http
      .put(uitpasApiUrl + 'uitpas/event/' + cdbid + '/distributionKeys', distributionKeys, defaultApiConfig)
-     .then(returnUnwrappedData);*/
+     .then(returnUnwrappedData);
 
-    var deferred = $q.defer();
+    /*var deferred = $q.defer();
     deferred.resolve({
       commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
     });
-    return deferred.promise;
+    return deferred.promise;*/
   };
 
   /**
@@ -56,10 +56,10 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    * @return {Promise}
    */
   this.findOrganisationsCardSystems = function(organizerId) {
-    /*return $http
+    return $http
      .get(uitpasApiUrl + 'uitpas/organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
-     .then(returnUnwrappedData);*/
-    var deferred = $q.defer();
+     .then(returnUnwrappedData);
+    /*var deferred = $q.defer();
     deferred.resolve([
       {
         id: '1a',
@@ -85,7 +85,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
           }
         ]
       }]);
-    return deferred.promise;
+    return deferred.promise;*/
   };
 
   function returnUnwrappedData(response) {
