@@ -2,7 +2,7 @@
 
 describe('Service: Event crud', function () {
 
-  var eventCrud, $rootScope, $q, logger, udbApi;
+  var eventCrud, $rootScope, $q, logger, udbApi, udbUitpasApi;
 
   beforeEach(module('udb.entry', function ($provide) {
     logger = jasmine.createSpyObj('jobLogger', ['addJob']);
@@ -15,6 +15,11 @@ describe('Service: Event crud', function () {
     ]);
     udbApi.mainLanguage = 'nl';
 
+    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', [
+      'getEventUitpasData',
+      'updateEventUitpasData'
+    ]);
+
     $provide.provider('jobLogger', {
       $get: function () {
         return logger;
@@ -24,6 +29,12 @@ describe('Service: Event crud', function () {
     $provide.provider('udbApi', {
       $get: function () {
         return udbApi;
+      }
+    });
+
+    $provide.provider('udbUitpasApi', {
+      $get: function () {
+        return udbUitpasApi;
       }
     });
   }));
@@ -141,6 +152,26 @@ describe('Service: Event crud', function () {
       .then(assertMajorInfo);
   });
 
+  it('should update the UiTPAS info for an event', function () {
+    var formData = {
+      id: '217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      usedDistributionKeys: ['1', '3']
+    };
+
+    var expectedId = '217781E3-F644-4243-8D1C-1A55AB8EFA2E';
+    var expectedDistributionKeys = ['1', '3'];
+
+    function assertUitpasInfo() {
+      expect(udbUitpasApi.updateEventUitpasData).toHaveBeenCalledWith(expectedDistributionKeys, expectedId);
+    }
+
+    udbUitpasApi.updateEventUitpasData.and.returnValue($q.resolve());
+
+    eventCrud
+      .updateEventUitpasData(formData)
+      .then(assertUitpasInfo);
+  });
+
   it('should not throw away dates when picking major info from form-data when updating an offer', function (done) {
     var offerLocation = new URL('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E');
 
@@ -169,5 +200,28 @@ describe('Service: Event crud', function () {
 
     $rootScope.$digest();
     assertMajorInfo();
+  });
+
+  it('should get the UiTPAS info from an event', function () {
+    var cdbid = '217781E3-F644-4243-8D1C-1A55AB8EFA2E';
+
+    eventCrud.getEventUitpasData(cdbid);
+    expect(udbUitpasApi.getEventUitpasData).toHaveBeenCalledWith(cdbid);
+  });
+
+  it('should create a job when updating the UiTPAS info for an event', function () {
+    var formData = {
+      id : '217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      usedDistributionKeys : ['1', '3']
+    };
+
+    udbUitpasApi.updateEventUitpasData.and.returnValue($q.resolve({
+      commandId: 'D3F6B805-ECE7-4042-A495-35E26766512A'
+    }));
+
+    eventCrud.updateEventUitpasData(formData);
+    $rootScope.$digest();
+
+    expect(logger.addJob).toHaveBeenCalled();
   });
 });
