@@ -50,24 +50,13 @@ function EventFormUitpasModalController($scope,
   }
 
   function removeUnsetCardSystems() {
-    angular.forEach($scope.checkedCardSystems, function (cardSystem, index) {
-      if (cardSystem.cardSystemId === 'unsetMe') {
-        $scope.checkedCardSystems.splice(index, 1);
-      }
-    });
+    $scope.checkedCardSystems = _.reject($scope.checkedCardSystems, {cardSystemId: 'unsetMe'});
     validate();
   }
 
+  var systemsWithoutKeySelected = _($scope.checkedCardSystems).reject('distributionKeyId');
   function validate() {
-    var foundEmptyDistributionKey = false;
-    angular.forEach($scope.checkedCardSystems, function (cardSystem) {
-      if (cardSystem.distributionKeyId === undefined ||
-        cardSystem.distributionKeyId === '') {
-        foundEmptyDistributionKey = true;
-      }
-    });
-
-    $scope.disableSubmit = foundEmptyDistributionKey || _.isEmpty($scope.checkedCardSystems)
+    $scope.disableSubmit = _.isEmpty($scope.checkedCardSystems) || !_.isEmpty(systemsWithoutKeySelected.value());
   }
 
   function saveUitpasData() {
