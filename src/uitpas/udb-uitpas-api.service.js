@@ -5,7 +5,7 @@ angular
   .service('udbUitpasApi', UdbUitpasApi);
 
 function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
-  var uitpasApiUrl = '';
+  var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
   var defaultApiConfig = {
     withCredentials: true,
     headers: {
@@ -21,7 +21,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.getEventUitpasData = function(cdbid) {
     return $http
-     .get(uitpasApiUrl + 'uitpas/event/' + cdbid + '/distributionKeys', defaultApiConfig)
+     .get(uitpasApiUrl + 'event/' + cdbid + '/distributionKeys', defaultApiConfig)
      .then(returnUnwrappedData);
 
     /*var deferred = $q.defer();
@@ -40,7 +40,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.updateEventUitpasData = function(distributionKeys, cdbid) {
     return $http
-     .put(uitpasApiUrl + 'uitpas/event/' + cdbid + '/distributionKeys', distributionKeys, defaultApiConfig)
+     .put(uitpasApiUrl + 'event/' + cdbid + '/distributionKeys', distributionKeys, defaultApiConfig)
      .then(returnUnwrappedData);
 
     /*var deferred = $q.defer();
@@ -57,7 +57,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
-     .get(uitpasApiUrl + 'uitpas/organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
+     .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
      .then(returnUnwrappedData);
     /*var deferred = $q.defer();
     deferred.resolve([
