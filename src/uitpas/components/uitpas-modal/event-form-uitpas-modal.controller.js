@@ -12,11 +12,13 @@ angular
     .controller('EventFormUitpasModalController', EventFormUitpasModalController);
 
 /* @ngInject */
-function EventFormUitpasModalController($scope,
-                                        $uibModalInstance,
-                                        organizer,
-                                        organizerCardSystems,
-                                        checkedCardSystems) {
+function EventFormUitpasModalController(
+  $scope,
+  $uibModalInstance,
+  organizer,
+  organizerCardSystems,
+  checkedCardSystems
+) {
   $scope.organizer = organizer;
   $scope.organizerCardSystems = organizerCardSystems;
   $scope.checkedCardSystems = checkedCardSystems;

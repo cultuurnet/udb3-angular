@@ -21,13 +21,14 @@ angular
   });
 
 /* @ngInject */
-function UitpasInfoComponent($scope,
-                             $rootScope,
-                             EventFormData,
-                             udbOrganizers,
-                             eventCrud,
-                             $uibModal) {
-
+function UitpasInfoComponent(
+  $scope,
+  $rootScope,
+  EventFormData,
+  udbOrganizers,
+  eventCrud,
+  $uibModal
+) {
   var controller = this;
 
   $scope.showUitpasInfo = false;
