@@ -31,7 +31,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
-      .expectGET('http://uit.pas/events/' + cdbid + '/distributionKeys')
+      .expectGET('http://uit.pas/events/' + cdbid + '/distributionKeys/')
       .respond(JSON.stringify(response));
 
     service
@@ -46,7 +46,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
-      .expectPUT('http://uit.pas/events/' + cdbid + '/distributionKeys')
+      .expectPUT('http://uit.pas/events/' + cdbid + '/distributionKeys/')
       .respond(JSON.stringify(response));
 
     service
@@ -61,7 +61,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
-      .expectGET('http://uit.pas/organizers/' + organizerId + '/cardsystems/')
+      .expectGET('http://uit.pas/organizers/' + organizerId + '/cardSystems/')
       .respond(JSON.stringify(response));
 
     service

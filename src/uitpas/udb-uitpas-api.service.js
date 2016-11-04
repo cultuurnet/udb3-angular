@@ -37,8 +37,8 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.getEventUitpasData = function(eventId) {
     return $http
-     .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys', defaultApiConfig)
-     .then(returnUnwrappedData);
+      .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', defaultApiConfig)
+      .then(returnUnwrappedData);
   };
 
   /**
@@ -50,8 +50,8 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.updateEventUitpasData = function(distributionKeys, eventId) {
     return $http
-     .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys', distributionKeys, defaultApiConfig)
-     .then(returnUnwrappedData);
+      .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', distributionKeys, defaultApiConfig)
+      .then(returnUnwrappedData);
   };
 
   /**
@@ -61,8 +61,8 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
-     .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardsystems/', defaultApiConfig)
-     .then(returnUnwrappedData);
+      .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
+      .then(returnUnwrappedData);
   };
 
   function returnUnwrappedData(response) {
