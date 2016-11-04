@@ -17575,13 +17575,14 @@ angular
   });
 
 /* @ngInject */
-function UitpasInfoComponent($scope,
-                             $rootScope,
-                             EventFormData,
-                             udbOrganizers,
-                             eventCrud,
-                             $uibModal) {
-
+function UitpasInfoComponent(
+  $scope,
+  $rootScope,
+  EventFormData,
+  udbOrganizers,
+  eventCrud,
+  $uibModal
+) {
   var controller = this;
 
   $scope.showUitpasInfo = false;
@@ -17614,12 +17615,7 @@ function UitpasInfoComponent($scope,
     });
 
     function updateUitpasInfo () {
-      if (!_.isEmpty(EventFormData.usedDistributionKeys)) {
-        $scope.uitpasCssClass = 'state-complete';
-      }
-      else {
-        $scope.uitpasCssClass = 'state-incomplete';
-      }
+      $scope.uitpasCssClass = !_.isEmpty(EventFormData.usedDistributionKeys) ? 'state-complete' : 'state-incomplete';
     }
 
     modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
@@ -17627,7 +17623,7 @@ function UitpasInfoComponent($scope,
 
   /**
    * Persist uitpasData for the active event.
-   * @param {Object} checkedCardSystems
+   * @param {Cardsystem[]} checkedCardSystems
    */
   controller.saveUitpasData = function(checkedCardSystems) {
     controller.checkedCardSystems = checkedCardSystems;
@@ -17644,13 +17640,8 @@ function UitpasInfoComponent($scope,
       $scope.savingUitpas = false;
     }
 
-    var distributionKeys = [];
-    angular.forEach(checkedCardSystems, function(cardSystem) {
-      distributionKeys.push = cardSystem.distributionKeyId;
-    });
-
     EventFormData.uitpasData = checkedCardSystems;
-    EventFormData.usedDistributionKeys = distributionKeys;
+    EventFormData.usedDistributionKeys = _.map(checkedCardSystems, 'distributionKeyId');
 
     $scope.savingUitpas = true;
     eventCrud
@@ -17659,21 +17650,11 @@ function UitpasInfoComponent($scope,
   };
 
   function checkHasUitpasData() {
-    if (!_.isEmpty(controller.checkedCardSystems)) {
-      $scope.hasUitpasData = true;
-    }
-    else {
-      $scope.hasUitpasData = false;
-    }
+    $scope.hasUitpasData = !_.isEmpty(controller.checkedCardSystems);
   }
 
   function init() {
-    if (controller.organizer.isUitpas && EventFormData.isEvent) {
-      $scope.showUitpasInfo = true;
-    }
-    else {
-      $scope.showUitpasInfo = false;
-    }
+    $scope.showUitpasInfo = controller.organizer.isUitpas && EventFormData.isEvent;
 
     if ($scope.showUitpasInfo) {
       udbOrganizers
@@ -17722,13 +17703,9 @@ function UitpasInfoComponent($scope,
     });
   }
 
-  $rootScope.$on('eventOrganizerSelected', function () {
-    init();
-  });
+  $rootScope.$on('eventOrganizerSelected', init);
 
-  $rootScope.$on('eventOrganizerDeleted', function () {
-    reset();
-  });
+  $rootScope.$on('eventOrganizerDeleted', reset);
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData", "udbOrganizers", "eventCrud", "$uibModal"];
 
@@ -17745,12 +17722,12 @@ angular
     .controller('EventFormUitpasModalController', EventFormUitpasModalController);
 
 /* @ngInject */
-function EventFormUitpasModalController($scope,
-                                        $uibModalInstance,
-                                        organizer,
-                                        organizerCardSystems,
-                                        checkedCardSystems) {
-  $scope.organizer = organizer;
+function EventFormUitpasModalController(
+  $scope,
+  $uibModalInstance,
+  organizerCardSystems,
+  checkedCardSystems
+) {
   $scope.organizerCardSystems = organizerCardSystems;
   $scope.checkedCardSystems = checkedCardSystems;
 
@@ -17802,7 +17779,7 @@ function EventFormUitpasModalController($scope,
 
   }
 }
-EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizer", "organizerCardSystems", "checkedCardSystems"];
+EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizerCardSystems", "checkedCardSystems"];
 
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**

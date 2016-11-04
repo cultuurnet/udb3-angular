@@ -15,11 +15,9 @@ angular
 function EventFormUitpasModalController(
   $scope,
   $uibModalInstance,
-  organizer,
   organizerCardSystems,
   checkedCardSystems
 ) {
-  $scope.organizer = organizer;
   $scope.organizerCardSystems = organizerCardSystems;
   $scope.checkedCardSystems = checkedCardSystems;
 
