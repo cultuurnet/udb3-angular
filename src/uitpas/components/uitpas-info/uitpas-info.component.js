@@ -60,12 +60,7 @@ function UitpasInfoComponent($scope,
     });
 
     function updateUitpasInfo () {
-      if (!_.isEmpty(EventFormData.usedDistributionKeys)) {
-        $scope.uitpasCssClass = 'state-complete';
-      }
-      else {
-        $scope.uitpasCssClass = 'state-incomplete';
-      }
+      $scope.uitpasCssClass = !_.isEmpty(EventFormData.usedDistributionKeys) ? 'state-complete' : 'state-incomplete';
     }
 
     modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
@@ -105,21 +100,11 @@ function UitpasInfoComponent($scope,
   };
 
   function checkHasUitpasData() {
-    if (!_.isEmpty(controller.checkedCardSystems)) {
-      $scope.hasUitpasData = true;
-    }
-    else {
-      $scope.hasUitpasData = false;
-    }
+    $scope.hasUitpasData = !_.isEmpty(controller.checkedCardSystems);
   }
 
   function init() {
-    if (controller.organizer.isUitpas && EventFormData.isEvent) {
-      $scope.showUitpasInfo = true;
-    }
-    else {
-      $scope.showUitpasInfo = false;
-    }
+    $scope.showUitpasInfo = controller.organizer.isUitpas && EventFormData.isEvent;
 
     if ($scope.showUitpasInfo) {
       udbOrganizers
