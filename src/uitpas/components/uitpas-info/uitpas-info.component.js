@@ -153,11 +153,7 @@ function UitpasInfoComponent($scope,
     });
   }
 
-  $rootScope.$on('eventOrganizerSelected', function () {
-    init();
-  });
+  $rootScope.$on('eventOrganizerSelected', init);
 
-  $rootScope.$on('eventOrganizerDeleted', function () {
-    reset();
-  });
+  $rootScope.$on('eventOrganizerDeleted', reset);
 }
