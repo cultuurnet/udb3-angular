@@ -68,7 +68,7 @@ function UitpasInfoComponent($scope,
 
   /**
    * Persist uitpasData for the active event.
-   * @param {Object} checkedCardSystems
+   * @param {Cardsystem[]} checkedCardSystems
    */
   controller.saveUitpasData = function(checkedCardSystems) {
     controller.checkedCardSystems = checkedCardSystems;
@@ -85,13 +85,8 @@ function UitpasInfoComponent($scope,
       $scope.savingUitpas = false;
     }
 
-    var distributionKeys = [];
-    angular.forEach(checkedCardSystems, function(cardSystem) {
-      distributionKeys.push = cardSystem.distributionKeyId;
-    });
-
     EventFormData.uitpasData = checkedCardSystems;
-    EventFormData.usedDistributionKeys = distributionKeys;
+    EventFormData.usedDistributionKeys = _.map(checkedCardSystems, 'distributionKeyId');
 
     $scope.savingUitpas = true;
     eventCrud
