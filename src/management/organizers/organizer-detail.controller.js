@@ -37,7 +37,6 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
   function showOrganizer(organizer) {
     controller.organizer = organizer;
     mapLabels(organizer.labels);
-    controller.organizerLabels = angular.copy(organizer.labels);
   }
 
   function addLabel(label) {
@@ -47,10 +46,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
       .addLabelToOrganizer(organizerId, label.uuid)
       .then(function(commandInfo) {
         logOrganizerLabelJob(commandInfo);
-        removeFromCache();
       }, showProblem)
       .finally(function() {
         controller.labelSaving = false;
+        //removeFromCache();
       });
   }
 
@@ -61,10 +60,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
         .deleteLabelFromOrganizer(organizerId, label.uuid)
         .then(function(commandInfo) {
           logOrganizerLabelJob(commandInfo);
-          removeFromCache();
         }, showProblem)
         .finally(function() {
           controller.labelSaving = false;
+          //removeFromCache();
         });
   }
 
@@ -86,8 +85,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
   }
 
   function removeFromCache() {
-    OrganizerManager
-        .removeOrganizerFromCache(organizerId);
+    OrganizerManager.removeOrganizerFromCache(organizerId);
   }
 
   /**
