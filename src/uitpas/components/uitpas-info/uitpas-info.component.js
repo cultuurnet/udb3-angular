@@ -48,14 +48,11 @@ function UitpasInfoComponent(
       templateUrl: 'templates/event-form-uitpas-modal.html',
       controller: 'EventFormUitpasModalController',
       resolve: {
-        organizer: function () {
+        organisation: function () {
           return controller.organizer;
         },
-        organizerCardSystems: function () {
-          return controller.organizerCardSystems;
-        },
-        checkedCardSystems: function () {
-          return $scope.checkedCardSystems;
+        offerData: function () {
+          return EventFormData;
         }
       }
     });

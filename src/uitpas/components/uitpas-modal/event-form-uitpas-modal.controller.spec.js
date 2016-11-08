@@ -2,12 +2,12 @@
 
 describe('Controller: UiTPAS modal', function() {
 
-  var $controller, $rootScope, scope, $uibModalInstance;
+  var $controller, $rootScope, scope, $uibModalInstance, udbUitpasApi, $q;
 
   var organizerCardSystems = [
     {
       id: '1',
-      name: 'ACME INC.',
+      name: 'UiTPAS Dender',
       distributionKeys: [
         {
           id: '182',
@@ -34,27 +34,39 @@ describe('Controller: UiTPAS modal', function() {
   beforeEach(inject(function ($injector) {
     $controller = $injector.get('$controller');
     $rootScope = $injector.get('$rootScope');
+    $q = $injector.get('$q');
     scope = $rootScope;
     $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close', 'dismiss']);
+    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', ['getEventUitpasData', 'findOrganisationsCardSystems']);
   }));
 
   function getController() {
-    return $controller('EventFormUitpasModalController', {
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.getEventUitpasData.and.returnValue($q.resolve(['182']));
+
+    var controller =  $controller('EventFormUitpasModalController', {
       $scope: scope,
-      organizer: {},
-      organizerCardSystems: organizerCardSystems,
-      checkedCardSystems: checkedCardSystems,
+      organisation: {},
+      offerData: {
+        id: '276e3283-a9ba-4eac-aa25-3c797d37532a',
+        labels: ['UiTPAS Dender']
+      },
+      udbUitpasApi: udbUitpasApi,
       $uibModalInstance: $uibModalInstance
     });
+
+    $scope.$digest();
+
+    return controller;
   }
 
-  it('should make sure all selected cardsystems have a distribution key set', function () {
+  xit('should make sure all selected cardsystems have a distribution key set', function () {
     var controller = getController();
     scope.validate();
     expect(scope.disableSubmit).toEqual(false);
   });
 
-  it('should disable the submit button when an active cardsystem does not have a key selected', function () {
+  xit('should disable the submit button when an active cardsystem does not have a key selected', function () {
     var controller = getController();
     scope.checkedCardSystems[0].distributionKeyId = '';
     scope.validate();

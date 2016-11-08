@@ -8619,6 +8619,11 @@ function EventFormDataFactory() {
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
+
+      /**
+       * @type {string[]}
+       */
+      this.labels = [];
     },
 
     /**
@@ -9029,7 +9034,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'image',
       'additionalData',
       'apiUrl',
-      'workflowStatus'
+      'workflowStatus',
+      'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -17602,14 +17608,11 @@ function UitpasInfoComponent(
       templateUrl: 'templates/event-form-uitpas-modal.html',
       controller: 'EventFormUitpasModalController',
       resolve: {
-        organizer: function () {
+        organisation: function () {
           return controller.organizer;
         },
-        organizerCardSystems: function () {
-          return controller.organizerCardSystems;
-        },
-        checkedCardSystems: function () {
-          return $scope.checkedCardSystems;
+        offerData: function () {
+          return EventFormData;
         }
       }
     });
@@ -17725,12 +17728,12 @@ angular
 function EventFormUitpasModalController(
   $scope,
   $uibModalInstance,
-  organizerCardSystems,
-  checkedCardSystems
+  $q,
+  udbUitpasApi,
+  UitpasLabels,
+  organisation,
+  offerData
 ) {
-  $scope.organizerCardSystems = organizerCardSystems;
-  $scope.checkedCardSystems = checkedCardSystems;
-
   $scope.disableSubmit = true;
   $scope.saving = false;
 
@@ -17776,10 +17779,45 @@ function EventFormUitpasModalController(
   }
 
   function init() {
+    $q
+      .all([
+        udbUitpasApi.getEventUitpasData(offerData.id),
+        udbUitpasApi.findOrganisationsCardSystems(organisation.id)
+      ])
+      .then(function (uitpasInfo) {
+        var assignedDistributionKeys = uitpasInfo[0],
+            organisationCardSystems = uitpasInfo[1];
 
+        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
+          cardSystem.active = _.includes(offerData.labels, cardSystem.name);
+
+          cardSystem.assignedDistributionKey = _.find(
+            cardSystem.distributionKeys,
+            function(distributionKey) {
+              return _.includes(assignedDistributionKeys, distributionKey.id);
+            }
+          );
+
+          return cardSystem;
+        });
+
+        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
+
+        _.forEach(organisationLabels, function(organisationLabel) {
+          if (!_.find(availableCardSystems, {name: organisationLabel})) {
+            availableCardSystems.push({
+              name: organisationLabel,
+              active: true, //_.includes(offerData.labels, organisationLabel),
+              distributionKeys: []
+            });
+          }
+        });
+
+        $scope.availableCardSystems = availableCardSystems;
+      });
   }
 }
-EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "organizerCardSystems", "checkedCardSystems"];
+EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "$q", "udbUitpasApi", "UitpasLabels", "organisation", "offerData"];
 
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
@@ -20083,7 +20121,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
-    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
+    "        <uitpas-info offer-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
@@ -22477,42 +22515,39 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </button>\n" +
     "        <h4 class=\"modal-title\">UiTPAS-informatie</h4>\n" +
     "    </div>\n" +
+    "\n" +
     "    <div class=\"modal-body\">\n" +
     "        <div class=\"form-group\">\n" +
     "            <div class=\"card-system\">\n" +
-    "                <label>Kaartsysteem</label>\n" +
-    "                <div class=\"checkboxes\">\n" +
-    "                    <table class=\"table\">\n" +
-    "                        <tr ng-repeat=\"cardsystem in organizerCardSystems\">\n" +
-    "                            <td class=\"col-sm-6\">\n" +
+    "                <label>Kaartsystemen</label>\n" +
+    "\n" +
+    "                <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in ::availableCardSystems\">\n" +
+    "                    <div class=\"col-sm-6\">\n" +
+    "                        <div class=\"checkbox\">\n" +
+    "                            <label>\n" +
     "                                <input type=\"checkbox\"\n" +
-    "                                   ng-model=\"$parent.checkedCardSystems[$index].cardSystemId\"\n" +
-    "                                   ng-true-value=\"'{{cardsystem.id}}'\"\n" +
-    "                                   ng-false-value=\"'unsetMe'\"\n" +
-    "                                   ng-change=\"removeUnsetCardSystems(); setCardSystem(cardsystem, $index)\"> {{cardsystem.name}}\n" +
-    "                            </td>\n" +
-    "                            <td class=\"col-sm-6\">\n" +
-    "                                    <span ng-show=\"checkedCardSystems[$index].cardSystemId == cardsystem.id\">\n" +
-    "                                        <span ng-if=\"cardsystem.distributionKeys.length > 1\">\n" +
-    "                                            <select ng-model=\"$parent.checkedCardSystems[$index].distributionKeyId\"\n" +
-    "                                                    ng-change=\"validate()\">\n" +
-    "                                                <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
-    "                                                <option ng-repeat=\"distributionKey in cardsystem.distributionKeys\"\n" +
-    "                                                        value=\"{{distributionKey.id}}\">\n" +
-    "                                                    {{distributionKey.name}}\n" +
-    "                                                </option>\n" +
-    "                                            </select>\n" +
-    "                                        </span>\n" +
-    "                                    </span>\n" +
-    "                            </td>\n" +
-    "                        </tr>\n" +
-    "                    </table>\n" +
+    "                                       disabled=\"disabled\"\n" +
+    "                                       ng-model=\"cardSystem.active\"\n" +
+    "                                       ng-change=\"activeCardSystemsChanged()\"> <span ng-bind=\"::cardSystem.name\"></span>\n" +
+    "                            </label>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "\n" +
+    "\n" +
+    "                    <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
+    "                        <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
+    "                                ng-change=\"distributionKeyAssigned()\">\n" +
+    "                            <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
+    "                            <option ng-repeat=\"distributionKey in ::cardSystem.distributionKeys\"\n" +
+    "                                    ng-value=\"::distributionKey.id\" ng-bind=\"::distributionKey.name\">\n" +
+    "                            </option>\n" +
+    "                        </select>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "\n" +
-    "\n" +
     "    </div>\n" +
+    "\n" +
     "    <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
     "        <button type=\"button\"\n" +
