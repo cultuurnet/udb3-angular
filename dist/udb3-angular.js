@@ -17559,6 +17559,73 @@ function searchDirective() {
   return search;
 }
 
+// Source: src/uitpas/components/card-systems/card-system-selector.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:CardSystemSelector
+ * @description
+ * # CardSystemSelector
+ * Component for setting UiTPAS info.
+ */
+angular
+  .module('udb.uitpas')
+  .component('cardSystemSelector', {
+    templateUrl: 'templates/card-systems.html',
+    controller: CardSystemsController,
+    controllerAs: 'cardSystemSelector',
+    bindings: {
+      organisation: '<',
+      offerData: '<'
+    }
+  });
+
+/* @ngInject */
+function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
+  var controller = this;
+  var organisation = controller.organisation;
+  var offerData = controller.offerData;
+
+  controller.$onInit = function() {
+    $q
+      .all([
+        udbUitpasApi.getEventUitpasData(offerData.id),
+        udbUitpasApi.findOrganisationsCardSystems(organisation.id)
+      ])
+      .then(function (uitpasInfo) {
+        var assignedDistributionKeys = uitpasInfo[0],
+          organisationCardSystems = uitpasInfo[1];
+
+        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
+          cardSystem.active = _.includes(offerData.labels, cardSystem.name);
+
+          cardSystem.assignedDistributionKey = _.find(
+            cardSystem.distributionKeys,
+            function(distributionKey) {
+              return _.includes(assignedDistributionKeys, distributionKey.id);
+            }
+          );
+
+          return cardSystem;
+        });
+
+        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
+
+        _.forEach(organisationLabels, function(organisationLabel) {
+          if (!_.find(availableCardSystems, {name: organisationLabel})) {
+            availableCardSystems.push({
+              name: organisationLabel,
+              active: true, //_.includes(offerData.labels, organisationLabel),
+              distributionKeys: []
+            });
+          }
+        });
+
+        controller.availableCardSystems = availableCardSystems;
+      });
+  };
+}
+CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels"];
+
 // Source: src/uitpas/components/uitpas-info/uitpas-info.component.js
 /**
  * @ngdoc function
@@ -17586,8 +17653,7 @@ function UitpasInfoComponent(
   $rootScope,
   EventFormData,
   udbOrganizers,
-  eventCrud,
-  $uibModal
+  eventCrud
 ) {
   var controller = this;
 
@@ -17596,33 +17662,9 @@ function UitpasInfoComponent(
   $scope.savingUitpas = false;
   $scope.hasUitpasData = false;
   $scope.checkedCardSystems = [];
-  $scope.openUitpasModal = openUitpasModal;
+  controller.eventFormData = EventFormData;
 
-  init();
-
-  /**
-   * Open the UiTPAS modal.
-   */
-  function openUitpasModal() {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-uitpas-modal.html',
-      controller: 'EventFormUitpasModalController',
-      resolve: {
-        organisation: function () {
-          return controller.organizer;
-        },
-        offerData: function () {
-          return EventFormData;
-        }
-      }
-    });
-
-    function updateUitpasInfo () {
-      $scope.uitpasCssClass = !_.isEmpty(EventFormData.usedDistributionKeys) ? 'state-complete' : 'state-incomplete';
-    }
-
-    modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
-  }
+  controller.$onInit = init;
 
   /**
    * Persist uitpasData for the active event.
@@ -17710,114 +17752,7 @@ function UitpasInfoComponent(
 
   $rootScope.$on('eventOrganizerDeleted', reset);
 }
-UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData", "udbOrganizers", "eventCrud", "$uibModal"];
-
-// Source: src/uitpas/components/uitpas-modal/event-form-uitpas-modal.controller.js
-/**
- * @ngdoc function
- * @name udbApp.controller:EventFormUitpasModalController
- * @description
- * # EventFormUitpasModalController
- * Modal for setting the uitpas cardsystem and destribution key.
- */
-angular
-    .module('udb.uitpas')
-    .controller('EventFormUitpasModalController', EventFormUitpasModalController);
-
-/* @ngInject */
-function EventFormUitpasModalController(
-  $scope,
-  $uibModalInstance,
-  $q,
-  udbUitpasApi,
-  UitpasLabels,
-  organisation,
-  offerData
-) {
-  $scope.disableSubmit = true;
-  $scope.saving = false;
-
-  $scope.cancel = cancel;
-  $scope.setCardSystem = setCardSystem;
-  $scope.removeUnsetCardSystems = removeUnsetCardSystems;
-  $scope.validate = validate;
-  $scope.saveUitpasData = saveUitpasData;
-
-  init();
-
-  /**
-   * Cancel the modal.
-   */
-  function cancel() {
-    $uibModalInstance.dismiss('cancel');
-  }
-
-  function setCardSystem(cardSystem, index) {
-    $scope.checkedCardSystems[index].cardSystemName = cardSystem.name;
-
-    // if there is only one distribution key set it as active.
-    if (cardSystem.distributionKeys.length === 1) {
-      $scope.checkedCardSystems[index].distributionKeyId = cardSystem.distributionKeys[0].id;
-    }
-    validate();
-  }
-
-  function removeUnsetCardSystems() {
-    $scope.checkedCardSystems = _.reject($scope.checkedCardSystems, {cardSystemId: 'unsetMe'});
-    validate();
-  }
-
-  var systemsWithoutKeySelected = _($scope.checkedCardSystems).reject('distributionKeyId');
-  function validate() {
-    $scope.disableSubmit = _.isEmpty($scope.checkedCardSystems) || !_.isEmpty(systemsWithoutKeySelected.value());
-  }
-
-  function saveUitpasData() {
-    $scope.saving = true;
-
-    $uibModalInstance.close($scope.checkedCardSystems);
-  }
-
-  function init() {
-    $q
-      .all([
-        udbUitpasApi.getEventUitpasData(offerData.id),
-        udbUitpasApi.findOrganisationsCardSystems(organisation.id)
-      ])
-      .then(function (uitpasInfo) {
-        var assignedDistributionKeys = uitpasInfo[0],
-            organisationCardSystems = uitpasInfo[1];
-
-        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
-          cardSystem.active = _.includes(offerData.labels, cardSystem.name);
-
-          cardSystem.assignedDistributionKey = _.find(
-            cardSystem.distributionKeys,
-            function(distributionKey) {
-              return _.includes(assignedDistributionKeys, distributionKey.id);
-            }
-          );
-
-          return cardSystem;
-        });
-
-        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
-
-        _.forEach(organisationLabels, function(organisationLabel) {
-          if (!_.find(availableCardSystems, {name: organisationLabel})) {
-            availableCardSystems.push({
-              name: organisationLabel,
-              active: true, //_.includes(offerData.labels, organisationLabel),
-              distributionKeys: []
-            });
-          }
-        });
-
-        $scope.availableCardSystems = availableCardSystems;
-      });
-  }
-}
-EventFormUitpasModalController.$inject = ["$scope", "$uibModalInstance", "$q", "udbUitpasApi", "UitpasLabels", "organisation", "offerData"];
+UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData", "udbOrganizers", "eventCrud"];
 
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
@@ -22467,40 +22402,33 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/uitpasInfo.html',
-    "<div class=\"row extra-uitpas\" ng-show=\"showUitpasInfo\">\n" +
-    "    <div class=\"extra-task\" ng-class=\"uitpasCssClass\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\">UiTPAS</em>\n" +
-    "            <span> </span>\n" +
-    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "            <div ng-show=\"!hasUitpasData\">\n" +
-    "                <div class=\"alert alert-info\" ng-show=\"upic.price.length === 0\">\n" +
-    "                    <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
-    "                </div>\n" +
-    "                <div ng-show=\"upic.price.length !== 0\">\n" +
-    "                    <button type='button' class='btn btn-primary' ng-click=\"openUitpasModal()\">\n" +
-    "                        UiTPAS-informatie toevoegen\n" +
-    "                    </button>\n" +
+  $templateCache.put('templates/card-systems.html',
+    "<div class=\"form-group\">\n" +
+    "    <div class=\"card-system\">\n" +
+    "        <label>Kaartsystemen</label>\n" +
+    "\n" +
+    "        <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in cardSystemSelector.availableCardSystems\">\n" +
+    "            <div class=\"col-sm-6\">\n" +
+    "                <div class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\"\n" +
+    "                               disabled=\"disabled\"\n" +
+    "                               ng-model=\"cardSystem.active\"\n" +
+    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged()\">\n" +
+    "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
+    "                    </label>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div ng-show=\"hasUitpasData\">\n" +
-    "                <table class=\"table\">\n" +
-    "                    <tr>\n" +
-    "                        <td class=\"col-sm-4\"><strong>Kaartsysteem</strong></td>\n" +
-    "                        <td class=\"col-sm-5\"><strong>Verdeelsleutel</strong></td>\n" +
-    "                        <td class=\"col-sm-3\"><a class=\"btn btn-link\" ng-click=\"openUitpasModal()\" data-dismiss=\"modal\">Wijzigen</a></td>\n" +
-    "                    </tr>\n" +
-    "                    <tr ng-repeat=\"cardsystem in checkedCardSystems\">\n" +
-    "                        <td>{{cardsystem.cardSystemName}}</td>\n" +
-    "                        <td>{{cardsystem.distributionKeyName}}</td>\n" +
-    "                    </tr>\n" +
-    "                </table>\n" +
-    "            </div>\n" +
-    "            <div ng-show=\"uitpasError\" class=\"alert alert-danger\">\n" +
-    "                Er ging iets fout bij het opslaan van de UiTPAS info.\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
+    "                <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
+    "                        ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
+    "                    <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
+    "                    <option ng-repeat=\"distributionKey in ::cardSystem.distributionKeys\"\n" +
+    "                            ng-value=\"::distributionKey.id\" ng-bind=\"::distributionKey.name\">\n" +
+    "                    </option>\n" +
+    "                </select>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -22508,54 +22436,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/event-form-uitpas-modal.html',
-    "<div class=\"modal-content\">\n" +
-    "    <div class=\"modal-header\">\n" +
-    "        <button type=\"button\" class=\"close\" ng-click=\"cancel()\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
-    "        </button>\n" +
-    "        <h4 class=\"modal-title\">UiTPAS-informatie</h4>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"modal-body\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <div class=\"card-system\">\n" +
-    "                <label>Kaartsystemen</label>\n" +
-    "\n" +
-    "                <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in ::availableCardSystems\">\n" +
-    "                    <div class=\"col-sm-6\">\n" +
-    "                        <div class=\"checkbox\">\n" +
-    "                            <label>\n" +
-    "                                <input type=\"checkbox\"\n" +
-    "                                       disabled=\"disabled\"\n" +
-    "                                       ng-model=\"cardSystem.active\"\n" +
-    "                                       ng-change=\"activeCardSystemsChanged()\"> <span ng-bind=\"::cardSystem.name\"></span>\n" +
-    "                            </label>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "\n" +
-    "\n" +
-    "                    <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
-    "                        <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
-    "                                ng-change=\"distributionKeyAssigned()\">\n" +
-    "                            <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
-    "                            <option ng-repeat=\"distributionKey in ::cardSystem.distributionKeys\"\n" +
-    "                                    ng-value=\"::distributionKey.id\" ng-bind=\"::distributionKey.name\">\n" +
-    "                            </option>\n" +
-    "                        </select>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
+  $templateCache.put('templates/uitpasInfo.html',
+    "<div class=\"row extra-uitpas\" ng-if=\"showUitpasInfo\">\n" +
+    "    <div class=\"extra-task\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <em class=\"extra-task-label\">UiTPAS</em>\n" +
+    "            <span> </span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
     "        </div>\n" +
-    "    </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "                Aan dit aanbod hangt een UiTPAS organisatie dat het aan een of meerdere kaart-systemen koppelt.\n" +
+    "                Het is mogelijk dat deze systemen automatische een verdeel-sleutel aan je aanbod toekennen!\n" +
+    "            </div>\n" +
     "\n" +
-    "    <div class=\"modal-footer\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "        <button type=\"button\"\n" +
-    "                class=\"btn btn-primary uitpas-info-bewaren\"\n" +
-    "                ng-disabled=\"disableSubmit\"\n" +
-    "                ng-click=\"saveUitpasData()\">\n" +
-    "            Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
-    "        </button>\n" +
+    "            <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +
+    "            </card-system-selector>\n" +
+    "        </div>\n" +
     "    </div>\n" +
     "</div>"
   );

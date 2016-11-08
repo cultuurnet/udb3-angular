@@ -26,8 +26,7 @@ function UitpasInfoComponent(
   $rootScope,
   EventFormData,
   udbOrganizers,
-  eventCrud,
-  $uibModal
+  eventCrud
 ) {
   var controller = this;
 
@@ -36,33 +35,9 @@ function UitpasInfoComponent(
   $scope.savingUitpas = false;
   $scope.hasUitpasData = false;
   $scope.checkedCardSystems = [];
-  $scope.openUitpasModal = openUitpasModal;
+  controller.eventFormData = EventFormData;
 
-  init();
-
-  /**
-   * Open the UiTPAS modal.
-   */
-  function openUitpasModal() {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-uitpas-modal.html',
-      controller: 'EventFormUitpasModalController',
-      resolve: {
-        organisation: function () {
-          return controller.organizer;
-        },
-        offerData: function () {
-          return EventFormData;
-        }
-      }
-    });
-
-    function updateUitpasInfo () {
-      $scope.uitpasCssClass = !_.isEmpty(EventFormData.usedDistributionKeys) ? 'state-complete' : 'state-incomplete';
-    }
-
-    modalInstance.result.then(controller.saveUitpasData, updateUitpasInfo);
-  }
+  controller.$onInit = init;
 
   /**
    * Persist uitpasData for the active event.
