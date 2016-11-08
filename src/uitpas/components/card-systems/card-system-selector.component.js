@@ -36,14 +36,14 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
           organisationCardSystems = uitpasInfo[1];
 
         var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
-          cardSystem.active = _.includes(offerData.labels, cardSystem.name);
-
           cardSystem.assignedDistributionKey = _.find(
             cardSystem.distributionKeys,
             function(distributionKey) {
               return _.includes(assignedDistributionKeys, distributionKey.id);
             }
           );
+
+          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || cardSystem.assignedDistributionKey;
 
           return cardSystem;
         });
