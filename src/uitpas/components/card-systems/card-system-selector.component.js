@@ -63,4 +63,14 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
         controller.availableCardSystems = availableCardSystems;
       });
   };
+
+  controller.distributionKeyAssigned = function() {
+    var assignedKeys = _(controller.availableCardSystems)
+      .pluck('assignedDistributionKey')
+      .reject(_.isEmpty)
+      .values();
+
+    udbUitpasApi
+      .updateEventUitpasData(assignedKeys, offerData.id);
+  };
 }
