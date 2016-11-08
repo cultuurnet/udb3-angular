@@ -115,7 +115,7 @@ describe('Component: Uitpas Info', function () {
   }
 
   function getController() {
-    return $componentController('uitpasInfo',
+    var controller = $componentController('uitpasInfo',
     {
       $scope: $scope,
       $rootScope: $rootScope,
@@ -129,6 +129,10 @@ describe('Component: Uitpas Info', function () {
       price: price,
       uitpasData: []
     });
+
+    controller.$onInit();
+
+    return controller;
   }
 
   it('should initialize the uitpas info component when organizer is an uitpas organizer', function () {
