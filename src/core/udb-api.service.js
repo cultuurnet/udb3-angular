@@ -216,8 +216,7 @@ function UdbApi(
       deferredOrganizer.resolve(organizer);
     } else {
       var organizerRequest  = $http.get(
-        appConfig.baseUrl + 'organizer/' + organizerId,
-        defaultApiConfig
+        appConfig.baseUrl + 'organizers/' + organizerId, defaultApiConfig
       );
 
       organizerRequest.success(function(jsonOrganizer) {
@@ -227,7 +226,6 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       });
     }
-
     return deferredOrganizer.promise;
   };
 
@@ -622,10 +620,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
-    // TODO: swagger docs describes different path:
-    // /api/1.0/organizer
     return $http.post(
-      appConfig.baseApiUrl + 'organizer',
+      appConfig.baseUrl + 'organizers/',
       organizer,
       defaultApiConfig
     );

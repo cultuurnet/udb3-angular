@@ -25,7 +25,7 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 3;
+  select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;

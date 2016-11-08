@@ -1722,7 +1722,6 @@ input + .alert {
 .save-time-tracker {
   color: #777777;
   padding-bottom: 1em;
-  padding-top: 1em;
 }
 .footer {
   padding-top: 3em;
@@ -2423,15 +2422,21 @@ input + .alert {
   color: #999999;
 }
 .twitter-typeahead .dropdown-menu {
-  width: 422px;
+  width: 420px;
   margin-top: 0px;
-  padding: 8px 0;
+  padding: 0;
   background-color: #ffffff;
   border: 1px solid #cccccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  max-height: 150px;
+  max-height: 350px;
   overflow-y: auto;
+}
+.twitter-typeahead .panel {
+  margin: 0;
+  border: 0;
+}
+.twitter-typeahead .dropdown-menu-no-results .panel {
+  border: 1px solid #cccccc;
 }
 .twitter-typeahead .place-suggestion {
   padding: 6px 20px;
@@ -2575,8 +2580,8 @@ input + .alert {
   display: block;
   margin: 0 auto;
   text-align: center;
-  padding-top: 30px;
-  font-size: 7em;
+  font-size: 5em;
+  line-height: 1;
   text-decoration: none !important;
 }
 .offer-form .add-date-link:hover,
@@ -2590,8 +2595,14 @@ input + .alert {
   text-decoration: underline;
 }
 .offer-form #add-date-tip {
-  padding-top: 30px;
+  font-style: italic;
   color: #999;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 15px;
+  margin: 0;
 }
 .offer-form .add-date-link,
 .offer-form .add-date-link:focus *,
@@ -2605,6 +2616,7 @@ input + .alert {
   overflow: hidden;
   padding: 0;
   width: 100%;
+  position: relative;
 }
 .offer-form .day {
   height: 30px;
@@ -2699,6 +2711,7 @@ input + .alert {
   margin-bottom: 0.5em;
 }
 .offer-form .description-text {
+  margin-top: 3px;
   white-space: pre-line;
 }
 .offer-form .udb3-data-table {
@@ -3013,7 +3026,7 @@ input + .alert {
 .offer-form .main-image .select-main-image {
   display: none;
 }
-.offer-form a {
+.offer-form a:not(.btn) {
   text-decoration: underline;
 }
 .offer-form input.has-error {
@@ -3091,6 +3104,9 @@ input + .alert {
 #gemeente-kiezer,
 #locatie-kiezer {
   min-height: 100px;
+}
+#titel .help-block {
+  max-width: 450px;
 }
 .muted td {
   background-color: #EDEDED;

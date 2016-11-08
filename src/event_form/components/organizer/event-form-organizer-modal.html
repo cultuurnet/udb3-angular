@@ -8,6 +8,19 @@
 
   <section ng-hide="organizersFound">
     <form name="organizerForm" class="css-form">
+        <div class="form-group" ng-class="{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }">
+            <label>Website</label>
+            <input type="url"
+                   name="website"
+                   class="form-control"
+                   ng-model="newOrganizer.website"
+                   ng-change="validateWebsite()"
+                   autocomplete="off"
+                   required> <i class="fa fa-circle-o-notch fa-spin" ng-show="showWebsiteValidation"></i>
+            <p class="alert alert-info" ng-hide="organizersWebsiteFound">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>
+            <p class="alert alert-warning" ng-show="organizersWebsiteFound">Dit adres is al gebruikt door de organisatie '<span ng-bind="firstOrganizerFound.name"></span>'. Geef een unieke website of <a ng-click="selectOrganizer(firstOrganizerFound)">gebruik <span ng-bind="firstOrganizerFound.name"></span> als organisatie</a>.</p>
+        </div>
+
       <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
         <label>Naam</label>
         <input type="text" name="name" class="form-control" ng-model="newOrganizer.name" required>
@@ -153,7 +166,10 @@
 </div>
 <div class="modal-footer" ng-hide="organizersFound">
   <button type="button" class="btn btn-default" ng-click="cancel()">Sluiten</button>
-  <button type="button" class="btn btn-primary organisator-toevoegen-bewaren" ng-click="validateNewOrganizer()">
+  <button type="button"
+          class="btn btn-primary organisator-toevoegen-bewaren"
+          ng-disabled="disableSubmit"
+          ng-click="validateNewOrganizer()">
     Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>
 </div>

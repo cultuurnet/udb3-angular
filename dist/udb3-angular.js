@@ -2762,7 +2762,6 @@ function UdbApi(
     var offer = offerCache.get(id);
 
     if (offer) {
-      console.log(offer);
       offerCache.remove(id);
     }
   };
@@ -2882,8 +2881,7 @@ function UdbApi(
       deferredOrganizer.resolve(organizer);
     } else {
       var organizerRequest  = $http.get(
-        appConfig.baseUrl + 'organizer/' + organizerId,
-        defaultApiConfig
+        appConfig.baseUrl + 'organizers/' + organizerId, defaultApiConfig
       );
 
       organizerRequest.success(function(jsonOrganizer) {
@@ -2893,7 +2891,6 @@ function UdbApi(
         deferredOrganizer.resolve(organizer);
       });
     }
-
     return deferredOrganizer.promise;
   };
 
@@ -3288,10 +3285,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
-    // TODO: swagger docs describes different path:
-    // /api/1.0/organizer
     return $http.post(
-      appConfig.baseApiUrl + 'organizer',
+      appConfig.baseUrl + 'organizers/',
       organizer,
       defaultApiConfig
     );
@@ -4413,6 +4408,12 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
 
     return deferredOrganizer.promise;
   };
+
+  this.findOrganizersWebsite = function(website) {
+    return udbApi
+        .findOrganisations(0, 10, website, null);
+  };
+
 }
 UdbOrganizers.$inject = ["$q", "udbApi", "UdbOrganizer"];
 
@@ -5399,6 +5400,15 @@ function EventCrud(
   var service = this;
 
   /**
+   * @param {EventFormData} formData
+   */
+  function pickMajorInfoFromFormData(formData) {
+    return _.pick(formData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+  }
+
+  /**
    * Creates a new offer and add the job to the logger.
    *
    * @param {EventFormData}  eventFormData
@@ -5419,7 +5429,7 @@ function EventCrud(
       return eventFormData;
     };
 
-    var majorInfo = _.omit(eventFormData, _.isEmpty);
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     return udbApi
       .createOffer(type, majorInfo)
@@ -5464,9 +5474,7 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = _.pick(eventFormData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
-    });
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
@@ -6066,7 +6074,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
   lmc.labelNames = '';
   lmc.labelSelection = [];
   lmc.alert = false;
-  lmc.minimumInputLength = 3;
+  lmc.minimumInputLength = 2;
   lmc.maxInputLength = 255;
 
   udbApi
@@ -6124,7 +6132,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
     var i;
     for (i = 0; i < labels.length; i++) {
       if (!areLengthCriteriaMet(labels[i].length)) {
-        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        lmc.alert = 'Een label mag minimum 2 en maximum 255 karakters bevatten.';
         break;
       }
     }
@@ -7570,6 +7578,7 @@ function EventFormOrganizerModalController(
   $scope,
   $uibModalInstance,
   udbOrganizers,
+  UdbOrganizer,
   eventCrud,
   cities,
   Levenshtein,
@@ -7581,20 +7590,24 @@ function EventFormOrganizerModalController(
 
   // Scope vars.
   $scope.organizer = organizerName;
+  $scope.organizersWebsiteFound = false;
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
   $scope.selectedCity = '';
+  $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
+    website: 'http://',
     name : $scope.organizer,
     address : {
       streetAddress : '',
-      locality : '',
+      addressLocality : '',
       postalCode: '',
-      country : 'BE'
+      addressCountry : 'BE'
     },
     contact: []
   };
@@ -7603,6 +7616,7 @@ function EventFormOrganizerModalController(
   $scope.cancel = cancel;
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  $scope.validateWebsite = validateWebsite;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -7629,6 +7643,40 @@ function EventFormOrganizerModalController(
    */
   function deleteOrganizerContactInfo(index) {
     $scope.newOrganizer.contact.splice(index, 1);
+  }
+
+  /**
+   * Validate the website of new organizer.
+   */
+  function validateWebsite() {
+    $scope.showWebsiteValidation = true;
+
+    if (!$scope.organizerForm.website.$valid) {
+      $scope.showWebsiteValidation = false;
+      return;
+    }
+    udbOrganizers
+        .findOrganizersWebsite($scope.newOrganizer.website)
+        .then(function (data) {
+          // Set the results for the duplicates modal,
+          if (data.totalItems > 0) {
+            $scope.organizersWebsiteFound = true;
+            $scope.firstOrganizerFound = new UdbOrganizer(data.member[0]);
+            $scope.showWebsiteValidation = false;
+            $scope.disableSubmit = true;
+          }
+          else {
+            $scope.showWebsiteValidation = false;
+            $scope.organizersWebsiteFound = false;
+            $scope.firstOrganizerFound = '';
+            if ($scope.newOrganizer.name) {
+              $scope.disableSubmit = false;
+            }
+          }
+        }, function() {
+          $scope.websiteError = true;
+          $scope.showWebsiteValidation = false;
+        });
   }
 
   /**
@@ -7683,15 +7731,26 @@ function EventFormOrganizerModalController(
     $scope.saving = true;
     $scope.error = false;
 
-    var promise = eventCrud.createOrganizer($scope.newOrganizer);
-    promise.then(function(jsonResponse) {
-      $scope.newOrganizer.id = jsonResponse.data.organizerId;
-      selectOrganizer($scope.newOrganizer);
-      $scope.saving = false;
-    }, function() {
-      $scope.error = true;
-      $scope.saving = false;
-    });
+    var organizer = _.clone($scope.newOrganizer);
+    // remove the address when it's empty
+    if (
+      !organizer.address.streetAddress &&
+      !organizer.address.addressLocality &&
+      !organizer.address.postalCode
+    ) {
+      delete organizer.address;
+    }
+
+    eventCrud
+      .createOrganizer(organizer)
+      .then(function(jsonResponse) {
+        $scope.newOrganizer.id = jsonResponse.data.organizerId;
+        selectOrganizer($scope.newOrganizer);
+        $scope.saving = false;
+      }, function() {
+        $scope.error = true;
+        $scope.saving = false;
+      });
   }
 
   // Scope functions.
@@ -7724,7 +7783,7 @@ function EventFormOrganizerModalController(
    */
   controller.selectCity = function ($item, $label) {
     $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.locality = $item.name;
+    $scope.newOrganizer.address.addressLocality = $item.name;
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
@@ -7740,7 +7799,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
@@ -10215,37 +10274,42 @@ function EventFormStep4Controller(
       return;
     }
 
-    if (!ignoreDuplicates) {
-      $scope.saving = true;
-      $scope.error = false;
-
-      var promise = findDuplicates(EventFormData);
-
-      $scope.resultViewer.loading = true;
-      $scope.duplicatesSearched = true;
-
-      promise.then(function (data) {
-
-        // Set the results for the duplicates modal,
-        if (data.totalItems > 0) {
-          $scope.saving = false;
-          $scope.resultViewer.setResults(data);
-        }
-        // or save the event immediataly if no duplicates were found.
-        else {
-          createOffer();
-        }
-
-      }, function() {
-        // Error while saving.
-        $scope.error = true;
-        $scope.saving = false;
-      });
+    if (ignoreDuplicates) {
+      createOffer();
     }
+    else {
+      suggestExistingOffers(EventFormData);
+    }
+
+  }
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function suggestExistingOffers(formData) {
+    $scope.saving = true;
+    $scope.error = false;
+
+    $scope.resultViewer.loading = true;
+    $scope.duplicatesSearched = true;
+
+    findDuplicates(formData).then(showDuplicates, showMajorInfoError);
+  }
+
+  /**
+   * @param {PagedCollection} pagedDuplicates
+   */
+  function showDuplicates(pagedDuplicates) {
+
+    // Set the results for the duplicates modal,
+    if (pagedDuplicates.totalItems > 0) {
+      $scope.saving = false;
+      $scope.resultViewer.setResults(pagedDuplicates);
+    }
+    // or save the event immediately if no duplicates were found.
     else {
       createOffer();
     }
-
   }
 
   function findDuplicates(data) {
@@ -15158,7 +15222,7 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 3;
+  select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;
@@ -17795,7 +17859,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/dashboard-item.directive.html',
     "<td>\n" +
     "  <strong>\n" +
-    "    <a ng-href=\"{{ ::event.url }}\" ng-bind=\"::event.name\"></a>\n" +
+    "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <br/>\n" +
     "  <small>\n" +
@@ -18391,7 +18455,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
     "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
-    "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
+    "      <p id=\"add-date-tip\" class=\"muted\">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>\n" +
     "    </a>\n" +
     "  </div>\n" +
     "</div>\n"
@@ -18719,6 +18783,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"css-form\">\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }\">\n" +
+    "            <label>Website</label>\n" +
+    "            <input type=\"url\"\n" +
+    "                   name=\"website\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   ng-model=\"newOrganizer.website\"\n" +
+    "                   ng-change=\"validateWebsite()\"\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
+    "            <p class=\"alert alert-info\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
+    "            <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"selectOrganizer(firstOrganizerFound)\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "        </div>\n" +
+    "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
     "        <label>Naam</label>\n" +
     "        <input type=\"text\" name=\"name\" class=\"form-control\" ng-model=\"newOrganizer.name\" required>\n" +
@@ -18864,7 +18941,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "<div class=\"modal-footer\" ng-hide=\"organizersFound\">\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
-    "  <button type=\"button\" class=\"btn btn-primary organisator-toevoegen-bewaren\" ng-click=\"validateNewOrganizer()\">\n" +
+    "  <button type=\"button\"\n" +
+    "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "          ng-disabled=\"disableSubmit\"\n" +
+    "          ng-click=\"validateNewOrganizer()\">\n" +
     "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
@@ -18943,6 +19023,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/place-suggestion-popup.html',
+    "<ul class=\"dropdown-menu\" ng-show=\"isOpen() && !moveInProgress\" ng-style=\"{top: position().top+'px', left: position().left+'px'}\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
+    "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\">\n" +
+    "        <div uib-typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
+    "    </li>\n" +
+    "    <li>\n" +
+    "        <div class=\"panel panel-default text-center\">\n" +
+    "            <div class=\"panel-body\">\n" +
+    "                <p>Locatie niet gevonden?</p>\n" +
+    "                <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
+    "                        data-target=\"#waar-locatie-toevoegen\" ng-click=\"$parent.openPlaceModal()\">\n" +
+    "                    Een locatie toevoegen\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </li>\n" +
+    "</ul>"
   );
 
 
@@ -19508,6 +19608,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
+    "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
     "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
@@ -19724,7 +19825,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
     "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
-    "                <a class=\"btn btn-link\" ng-click=\"alterDescription()\">Wijzigen</a>\n" +
+    "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
@@ -19771,14 +19872,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"col-sm-8\">\n" +
     "              <section>\n" +
     "                <div class=\"form-group clearfix\" ng-hide=\"ageRange === AgeRange.ALL\">\n" +
-    "                  <select class=\"form-control leeftijd-incomplete-select\"\n" +
-    "                          ng-change=\"ageRangeChanged(ageRange)\"\n" +
-    "                          ng-model=\"ageRange\"\n" +
-    "                          ng-options=\"range.label for range in ageRanges\">\n" +
-    "                    <option value=\"\">Kies een leeftijdscategorie</option>\n" +
-    "                  </select>\n" +
-    "\n" +
-    "                  <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
+    "                  <div class=\"row\">\n" +
+    "                    <div class=\"col-xs-7\">\n" +
+    "                      <select class=\"form-control leeftijd-incomplete-select\"\n" +
+    "                              ng-change=\"ageRangeChanged(ageRange)\"\n" +
+    "                              ng-model=\"ageRange\"\n" +
+    "                              ng-options=\"range.label for range in ageRanges\">\n" +
+    "                        <option value=\"\">Kies een leeftijdscategorie</option>\n" +
+    "                      </select>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"col-xs-5\">\n" +
+    "                      <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
+    "                    </div>\n" +
+    "                  </div>\n" +
     "                </div>\n" +
     "                <div class=\"form-inline form-group\" ng-show=\"ageRange && ageRange !== AgeRange.ALL\">\n" +
     "                  <div class=\"form-group\">\n" +
@@ -20428,7 +20534,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       type=\"text\"\n" +
     "                       udb-unique-label\n" +
     "                       udb-semicolon-label-check\n" +
-    "                       ng-minlength=\"3\"\n" +
+    "                       ng-minlength=\"2\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
     "                       ng-model=\"creator.label.name\"\n" +
@@ -20436,7 +20542,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       ng-disabled=\"creator.creating\">\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.uniqueLabel\">Er bestaat al een label met deze naam.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "            </div>\n" +
@@ -20490,12 +20596,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           name=\"name\"\n" +
     "                           udb-semicolon-label-check\n" +
     "                           ng-model=\"editor.label.name\"\n" +
-    "                           ng-minlength=\"3\"\n" +
+    "                           ng-minlength=\"2\"\n" +
     "                           ng-required=\"true\"\n" +
     "                           ng-maxlength=\"255\"\n" +
     "                           ng-disabled=\"editor.renaming\">\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "                </div>\n" +
