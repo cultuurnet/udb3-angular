@@ -35,9 +35,20 @@ function UitpasInfoComponent(
   $scope.savingUitpas = false;
   $scope.hasUitpasData = false;
   $scope.checkedCardSystems = [];
-  controller.eventFormData = EventFormData;
+  controller.listeners = [];
+  controller.showCardSystems = false;
 
   controller.$onInit = init;
+  controller.$onDestroy = destroy;
+
+  /**
+   *
+   * @param {Object} angularEvent
+   * @param {EventFormData} offerData
+   */
+  controller.showCardSystemsIfPriceIsSelected = function(angularEvent, offerData) {
+    controller.showCardSystems = offerData.priceInfo && !!offerData.priceInfo.length;
+  };
 
   /**
    * Persist uitpasData for the active event.
@@ -72,7 +83,15 @@ function UitpasInfoComponent(
   }
 
   function init() {
-    $scope.showUitpasInfo = controller.organizer.isUitpas && EventFormData.isEvent;
+    controller.eventFormData = EventFormData;
+    $scope.showUitpasInfo = controller.organizer && controller.organizer.isUitpas && EventFormData.isEvent;
+    controller.showCardSystems = controller.price && !!controller.price.length;
+
+    controller.listeners = [
+      $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
+      $rootScope.$on('eventOrganizerSelected', reset),
+      $rootScope.$on('eventOrganizerDeleted', reset)
+    ];
 
     if ($scope.showUitpasInfo) {
       udbOrganizers
@@ -84,9 +103,14 @@ function UitpasInfoComponent(
     }
   }
 
+  function destroy() {
+    _.invoke(controller.listeners, 'call');
+  }
+
   function reset() {
-    controller.organizer = {};
+    controller.organizer = EventFormData.organizer;
     $scope.checkedCardSystems = [];
+    destroy();
     init();
     controller.saveUitpasData($scope.checkedCardSystems);
   }
@@ -120,8 +144,4 @@ function UitpasInfoComponent(
       });
     });
   }
-
-  $rootScope.$on('eventOrganizerSelected', init);
-
-  $rootScope.$on('eventOrganizerDeleted', reset);
 }

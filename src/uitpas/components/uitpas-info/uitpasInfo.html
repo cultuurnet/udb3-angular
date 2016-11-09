@@ -6,13 +6,19 @@
             <i class="fa fa-circle-o-notch fa-spin" ng-show="savingUitpas"></i>
         </div>
         <div class="col-sm-9">
-            <div class="alert alert-info" role="alert">
-                Aan dit aanbod hangt een UiTPAS organisatie dat het aan een of meerdere kaart-systemen koppelt.
-                Het is mogelijk dat deze systemen automatische een verdeel-sleutel aan je aanbod toekennen!
+            <div class="alert alert-info" ng-show="!upic.showCardSystems">
+                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>
             </div>
 
-            <card-system-selector organisation="upic.organizer" offer-data="upic.eventFormData">
-            </card-system-selector>
+            <div ng-if="upic.showCardSystems">
+                <div class="alert alert-info" role="alert">
+                    Aan dit aanbod hangt een UiTPAS organisatie dat het aan een of meerdere kaart-systemen koppelt.
+                    Het is mogelijk dat deze systemen automatische een verdeel-sleutel aan je aanbod toekennen!
+                </div>
+
+                <card-system-selector organisation="upic.organizer" offer-data="upic.eventFormData">
+                </card-system-selector>
+            </div>
         </div>
     </div>
 </div>

@@ -104,9 +104,6 @@ describe('Component: Uitpas Info', function () {
     eventCrud = jasmine.createSpyObj('eventCrud', ['updateEventUitpasData', 'getEventUitpasData']);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open', 'dismiss']);
     $q = $injector.get('$q');
-
-    spyOn($rootScope, '$emit');
-
     EventFormData.isEvent = true;
   }));
 
@@ -114,7 +111,7 @@ describe('Component: Uitpas Info', function () {
     return new UdbOrganizer(organizer);
   }
 
-  function getController() {
+  function getController(bindings) {
     var controller = $componentController('uitpasInfo',
     {
       $scope: $scope,
@@ -124,13 +121,15 @@ describe('Component: Uitpas Info', function () {
       eventCrud: eventCrud,
       $uibModal: $uibModal
     },
-    {
+    bindings || {
       organizer: getOrganizerObject(organizerJson),
       price: price,
       uitpasData: []
     });
 
-    controller.$onInit();
+    if (!bindings) {
+      controller.$onInit();
+    }
 
     return controller;
   }
@@ -166,6 +165,7 @@ describe('Component: Uitpas Info', function () {
 
   it('should fire an emit when saving the UiTPAS data', function () {
     eventCrud.updateEventUitpasData.and.returnValue($q.resolve([]));
+    spyOn($rootScope, '$emit');
     var controller = getController();
 
     controller.saveUitpasData(expectedCheckedCardSystems);
@@ -189,5 +189,65 @@ describe('Component: Uitpas Info', function () {
 
     expect($scope.uitpasError).toBeTruthy();
     expect($scope.savingUitpas).toBeFalsy();
+  });
+
+  it('should not show the card systems when pricing is unknown', function () {
+    var controller = getController({
+      organizer: getOrganizerObject(organizerJson),
+      price: [],
+      uitpasData: []
+    });
+
+    controller.$onInit();
+
+    expect(controller.showCardSystems).toEqual(false);
+  });
+
+  it('should show the card systems when pricing is free', function () {
+    var controller = getController({
+      organizer: getOrganizerObject(organizerJson),
+      price: [ {
+        "category": "base",
+        "name": "Senioren",
+        "price": 0
+      }],
+      uitpasData: []
+    });
+
+    controller.$onInit();
+
+    expect(controller.showCardSystems).toEqual(true);
+  });
+
+  it('should show the card systems when pricing is set', function (done) {
+    var controller = getController({
+      organizer: getOrganizerObject(organizerJson),
+      price: [],
+      uitpasData: []
+    });
+
+    var originalMethod = controller.showCardSystemsIfPriceIsSelected;
+    spyOn(controller, 'showCardSystemsIfPriceIsSelected')
+      .and.callFake(assertShown);
+
+    function assertShown() {
+      originalMethod.apply(this, arguments);
+      expect(controller.showCardSystems).toEqual(true);
+      done();
+    }
+
+    controller.$onInit();
+
+    expect(controller.showCardSystems).toEqual(false);
+
+    $rootScope.$emit('eventFormSaved', {
+      priceInfo: [{
+        "category": "base",
+        "name": "Senioren",
+        "price": 3
+      }]
+    });
+
+    $rootScope.$apply();
   });
 });

@@ -7960,7 +7960,7 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootScope) {
+function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
@@ -8100,7 +8100,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
     }
   }
 }
-PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "appConfig", "$rootScope"];
+PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/components/reservation-modal/reservation-modal.controller.js
 /**
@@ -10782,9 +10782,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function deleteOrganizer() {
     function resetOrganizer() {
       controller.eventFormSaved();
+      EventFormData.resetOrganizer();
       $rootScope.$emit('eventOrganizerDeleted', '');
       $scope.organizerCssClass = 'state-incomplete';
-      EventFormData.resetOrganizer();
       $scope.savingOrganizer = false;
     }
 
@@ -17672,9 +17672,20 @@ function UitpasInfoComponent(
   $scope.savingUitpas = false;
   $scope.hasUitpasData = false;
   $scope.checkedCardSystems = [];
-  controller.eventFormData = EventFormData;
+  controller.listeners = [];
+  controller.showCardSystems = false;
 
   controller.$onInit = init;
+  controller.$onDestroy = destroy;
+
+  /**
+   *
+   * @param {Object} angularEvent
+   * @param {EventFormData} offerData
+   */
+  controller.showCardSystemsIfPriceIsSelected = function(angularEvent, offerData) {
+    controller.showCardSystems = offerData.priceInfo && !!offerData.priceInfo.length;
+  };
 
   /**
    * Persist uitpasData for the active event.
@@ -17709,7 +17720,15 @@ function UitpasInfoComponent(
   }
 
   function init() {
-    $scope.showUitpasInfo = controller.organizer.isUitpas && EventFormData.isEvent;
+    controller.eventFormData = EventFormData;
+    $scope.showUitpasInfo = controller.organizer && controller.organizer.isUitpas && EventFormData.isEvent;
+    controller.showCardSystems = controller.price && !!controller.price.length;
+
+    controller.listeners = [
+      $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
+      $rootScope.$on('eventOrganizerSelected', reset),
+      $rootScope.$on('eventOrganizerDeleted', reset)
+    ];
 
     if ($scope.showUitpasInfo) {
       udbOrganizers
@@ -17721,9 +17740,14 @@ function UitpasInfoComponent(
     }
   }
 
+  function destroy() {
+    _.invoke(controller.listeners, 'call');
+  }
+
   function reset() {
-    controller.organizer = {};
+    controller.organizer = EventFormData.organizer;
     $scope.checkedCardSystems = [];
+    destroy();
     init();
     controller.saveUitpasData($scope.checkedCardSystems);
   }
@@ -17757,10 +17781,6 @@ function UitpasInfoComponent(
       });
     });
   }
-
-  $rootScope.$on('eventOrganizerSelected', init);
-
-  $rootScope.$on('eventOrganizerDeleted', reset);
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData", "udbOrganizers", "eventCrud"];
 
@@ -22455,13 +22475,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
-    "            <div class=\"alert alert-info\" role=\"alert\">\n" +
-    "                Aan dit aanbod hangt een UiTPAS organisatie dat het aan een of meerdere kaart-systemen koppelt.\n" +
-    "                Het is mogelijk dat deze systemen automatische een verdeel-sleutel aan je aanbod toekennen!\n" +
+    "            <div class=\"alert alert-info\" ng-show=\"!upic.showCardSystems\">\n" +
+    "                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
     "            </div>\n" +
     "\n" +
-    "            <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +
-    "            </card-system-selector>\n" +
+    "            <div ng-if=\"upic.showCardSystems\">\n" +
+    "                <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "                    Aan dit aanbod hangt een UiTPAS organisatie dat het aan een of meerdere kaart-systemen koppelt.\n" +
+    "                    Het is mogelijk dat deze systemen automatische een verdeel-sleutel aan je aanbod toekennen!\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +
+    "                </card-system-selector>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>"
