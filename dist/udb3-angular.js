@@ -18572,7 +18572,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
     "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
-    "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
+    "      <p id=\"add-date-tip\" class=\"muted\">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>\n" +
     "    </a>\n" +
     "  </div>\n" +
     "</div>\n"
@@ -19942,7 +19942,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
     "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
-    "                <a class=\"btn btn-link\" ng-click=\"alterDescription()\">Wijzigen</a>\n" +
+    "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
@@ -19989,14 +19989,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"col-sm-8\">\n" +
     "              <section>\n" +
     "                <div class=\"form-group clearfix\" ng-hide=\"ageRange === AgeRange.ALL\">\n" +
-    "                  <select class=\"form-control leeftijd-incomplete-select\"\n" +
-    "                          ng-change=\"ageRangeChanged(ageRange)\"\n" +
-    "                          ng-model=\"ageRange\"\n" +
-    "                          ng-options=\"range.label for range in ageRanges\">\n" +
-    "                    <option value=\"\">Kies een leeftijdscategorie</option>\n" +
-    "                  </select>\n" +
-    "\n" +
-    "                  <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
+    "                  <div class=\"row\">\n" +
+    "                    <div class=\"col-xs-7\">\n" +
+    "                      <select class=\"form-control leeftijd-incomplete-select\"\n" +
+    "                              ng-change=\"ageRangeChanged(ageRange)\"\n" +
+    "                              ng-model=\"ageRange\"\n" +
+    "                              ng-options=\"range.label for range in ageRanges\">\n" +
+    "                        <option value=\"\">Kies een leeftijdscategorie</option>\n" +
+    "                      </select>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"col-xs-5\">\n" +
+    "                      <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
+    "                    </div>\n" +
+    "                  </div>\n" +
     "                </div>\n" +
     "                <div class=\"form-inline form-group\" ng-show=\"ageRange && ageRange !== AgeRange.ALL\">\n" +
     "                  <div class=\"form-group\">\n" +
