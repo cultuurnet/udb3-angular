@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: Organizer manager Service', function () {
-  var udbApi, service, $scope, $q, fakeOrganizer, organizerId, labelId;
+  var udbApi, jobLogger, BaseJob, service, $scope, $q, fakeOrganizer, organizerId, labelId;
 
   organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
   labelId = '80f63f49-5de2-42ea-9642-59fc0400f2c5';
@@ -37,7 +37,13 @@ describe('Service: Organizer manager Service', function () {
     ]
   };
 
-  beforeEach(module('udb.management.organizers', function ($provide) {
+  beforeEach(module('udb.core', function ($provide) {
+    var appConfig = {
+      baseUrl: 'http://example.com/'
+    };
+
+    $provide.constant('appConfig', appConfig);
+
     udbApi = jasmine.createSpyObj('udbApi', [
       'getOrganizerById',
       'addLabelToOrganizer',
@@ -51,12 +57,22 @@ describe('Service: Organizer manager Service', function () {
         return udbApi;
       }
     });
+
+    jobLogger = jasmine.createSpyObj('jobLogger', ['addJob']);
+
+
+    $provide.provider('jobLogger', {
+      $get: function () {
+        return jobLogger;
+      }
+    })
   }));
 
-  beforeEach(inject(function (_OrganizerManager_, _$rootScope_, _$q_) {
-    service = _OrganizerManager_;
+  beforeEach(inject(function (OrganizerManager, _$rootScope_, _$q_, _BaseJob_) {
+    service = OrganizerManager;
     $scope = _$rootScope_.$new();
     $q = _$q_;
+    BaseJob = _BaseJob_;
   }));
 
   it('should get an organizer by a given ID', function (done) {
@@ -76,12 +92,15 @@ describe('Service: Organizer manager Service', function () {
   });
 
   it('should add a label to an organizer', function (done) {
-    var result = {commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'};
-    udbApi.addLabelToOrganizer.and.returnValue($q.resolve(result));
+    var expectedCommandId = {
+      commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
+    };
 
-    function assertOrganizerResult (result) {
+    udbApi.addLabelToOrganizer.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertOrganizerResult (job) {
       expect(udbApi.addLabelToOrganizer).toHaveBeenCalledWith(organizerId, labelId);
-      expect(result).toEqual(result);
+      expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
@@ -93,12 +112,15 @@ describe('Service: Organizer manager Service', function () {
   });
 
   it('should remove a label from an organizer', function (done) {
-    var result = {commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'};
-    udbApi.deleteLabelFromOrganizer.and.returnValue($q.resolve(result));
+    var expectedCommandId = {
+      commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
+    };
 
-    function assertOrganizerResult (result) {
+    udbApi.deleteLabelFromOrganizer.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertOrganizerResult (job) {
       expect(udbApi.deleteLabelFromOrganizer).toHaveBeenCalledWith(organizerId, labelId);
-      expect(result).toEqual(result);
+      expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 

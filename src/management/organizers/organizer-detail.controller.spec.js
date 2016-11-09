@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Controller: Organizer Detail', function() {
-  var OrganizerManager, LabelManager, jobLogger, BaseJob, $uibModal, $stateParams, $q, $controller, $scope, $rootScope;
+  var OrganizerManager, LabelManager, $uibModal, $stateParams, $q, $controller, $scope, $rootScope;
 
   var fakeOrganizer = {
     "name": "STUK",
@@ -48,12 +48,11 @@ describe('Controller: Organizer Detail', function() {
   beforeEach(module('udb.management'));
   beforeEach(module('udb.management.organizers'));
 
-  beforeEach(inject(function(_$rootScope_, _$q_, _$controller_, $injector) {
+  beforeEach(inject(function(_$rootScope_, _$q_, _$controller_) {
     $controller = _$controller_;
     $q = _$q_;
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
-    BaseJob = $injector.get('BaseJob');
 
     LabelManager = jasmine.createSpyObj('LabelManager', ['find']);
     OrganizerManager = jasmine.createSpyObj('OrganizerManager', [
@@ -61,7 +60,6 @@ describe('Controller: Organizer Detail', function() {
       'addLabelToOrganizer',
       'deleteLabelFromOrganizer'
     ]);
-    jobLogger = jasmine.createSpyObj('jobLogger', ['addJob']);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
 
     $stateParams = { "id": id };
@@ -72,11 +70,8 @@ describe('Controller: Organizer Detail', function() {
       'OrganizerDetailController', {
         OrganizerManager: OrganizerManager,
         LabelManager: LabelManager,
-        jobLogger: jobLogger,
-        BaseJob: BaseJob,
         $uibModal: $uibModal,
         $stateParams: $stateParams,
-        $q: $q,
         $scope: $scope
       }
     );

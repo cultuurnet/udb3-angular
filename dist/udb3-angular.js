@@ -12880,7 +12880,7 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, BaseJob, $uibModal, $stateParams, $q) {
+function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
   var controller = this;
   var organizerId = $stateParams.id;
 
@@ -12913,9 +12913,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.uuid)
-      .then(function(commandInfo) {
-        logOrganizerLabelJob(commandInfo);
-      }, showProblem)
+      .catch(showProblem)
       .finally(function() {
         controller.labelSaving = false;
         removeFromCache();
@@ -12927,9 +12925,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
 
     OrganizerManager
         .deleteLabelFromOrganizer(organizerId, label.uuid)
-        .then(function(commandInfo) {
-          logOrganizerLabelJob(commandInfo);
-        }, showProblem)
+        .catch(showProblem)
         .finally(function() {
           controller.labelSaving = false;
           removeFromCache();
@@ -12978,19 +12974,8 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
     controller.organizer.labels = angular.copy(controller.organizerLabels);
   }
 
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logOrganizerLabelJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
-
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "jobLogger", "BaseJob", "$uibModal", "$stateParams", "$q"];
+OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams"];
 
 // Source: src/management/organizers/organizer-manager.service.js
 /**
@@ -13005,7 +12990,7 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi) {
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   var service = this;
 
   /**
@@ -13024,7 +13009,9 @@ function OrganizerManager(udbApi) {
    * @returns {Promise}
    */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
-    return udbApi.addLabelToOrganizer(organizerId, labelUuid);
+    return udbApi
+      .addLabelToOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
   };
 
   /**
@@ -13034,7 +13021,9 @@ function OrganizerManager(udbApi) {
    * @returns {Promise}
    */
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
-    return udbApi.deleteLabelFromOrganizer(organizerId, labelUuid);
+    return udbApi
+      .deleteLabelFromOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
   };
 
   /**
@@ -13044,8 +13033,19 @@ function OrganizerManager(udbApi) {
   service.removeOrganizerFromCache = function(organizerId) {
     udbApi.removeItemFromCache(organizerId);
   };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logOrganizerLabelJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
 }
-OrganizerManager.$inject = ["udbApi"];
+OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
 
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 

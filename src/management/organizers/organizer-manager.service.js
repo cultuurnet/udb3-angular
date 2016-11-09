@@ -12,7 +12,7 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi) {
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   var service = this;
 
   /**
@@ -31,7 +31,9 @@ function OrganizerManager(udbApi) {
    * @returns {Promise}
    */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
-    return udbApi.addLabelToOrganizer(organizerId, labelUuid);
+    return udbApi
+      .addLabelToOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
   };
 
   /**
@@ -41,7 +43,9 @@ function OrganizerManager(udbApi) {
    * @returns {Promise}
    */
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
-    return udbApi.deleteLabelFromOrganizer(organizerId, labelUuid);
+    return udbApi
+      .deleteLabelFromOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
   };
 
   /**
@@ -51,4 +55,15 @@ function OrganizerManager(udbApi) {
   service.removeOrganizerFromCache = function(organizerId) {
     udbApi.removeItemFromCache(organizerId);
   };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logOrganizerLabelJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
 }
