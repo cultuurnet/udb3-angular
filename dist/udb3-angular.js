@@ -22486,8 +22486,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "            <div ng-if=\"upic.showCardSystems\">\n" +
     "                <div class=\"alert alert-info\" role=\"alert\">\n" +
-    "                    Aan dit aanbod hangt een UiTPAS organisatie dat het aan een of meerdere kaart-systemen koppelt.\n" +
-    "                    Het is mogelijk dat deze systemen automatische een verdeel-sleutel aan je aanbod toekennen!\n" +
+    "                    Dit is een UiTPAS activiteit.\n" +
     "                </div>\n" +
     "\n" +
     "                <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +
