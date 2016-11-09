@@ -12918,7 +12918,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
       }, showProblem)
       .finally(function() {
         controller.labelSaving = false;
-        //removeFromCache();
+        removeFromCache();
       });
   }
 
@@ -12932,7 +12932,7 @@ function OrganizerDetailController(OrganizerManager, LabelManager, jobLogger, Ba
         }, showProblem)
         .finally(function() {
           controller.labelSaving = false;
-          //removeFromCache();
+          removeFromCache();
         });
   }
 
