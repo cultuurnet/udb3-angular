@@ -131,7 +131,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
   function savePrice() {
     controller.savingPrice = true;
 
-    EventFormData.price = controller.price;
+    EventFormData.priceInfo = controller.price;
     controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);

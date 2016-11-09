@@ -5571,7 +5571,7 @@ function EventCrud(
    */
   service.updatePriceInfo = function(item) {
     return udbApi
-      .updatePriceInfo(item.apiUrl, item.price)
+      .updatePriceInfo(item.apiUrl, item.priceInfo)
       .then(function (response) {
         var jobData = response.data;
         var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
@@ -8073,7 +8073,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
   function savePrice() {
     controller.savingPrice = true;
 
-    EventFormData.price = controller.price;
+    EventFormData.priceInfo = controller.price;
     controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
