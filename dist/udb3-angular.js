@@ -2250,13 +2250,12 @@ function TimeComponentController($rootScope, EventFormData) {
     if (timestamp.showStartHour && tcc.position === 'start') {
       var startHourAsDate = moment(timestamp.startHourAsDate);
       timestamp.startHour = startHourAsDate.format('HH:mm');
-      eventTimingChanged();
     }
     if (timestamp.showEndHour && tcc.position === 'end') {
       var endHourAsDate = moment(timestamp.endHourAsDate);
       timestamp.endHour = endHourAsDate.format('HH:mm');
-      eventTimingChanged();
     }
+    eventTimingChanged();
   }
 
   function openingHoursChanged(openingHour) {
@@ -18532,10 +18531,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </select>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <!--<input type=\"time\"\n" +
-    "                  ng-model=\"openingHour.opensAsDate\"\n" +
-    "                  class=\"form-control\"\n" +
-    "                  ng-change=\"openingHoursChanged(openingHour)\">-->\n" +
     "\n" +
     "              <udb-time\n" +
     "                      time=\"openingHour\"\n" +
@@ -18547,10 +18542,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              &nbsp;-&nbsp;\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <!--<input type=\"time\"\n" +
-    "                     ng-model=\"openingHour.closesAsDate\"\n" +
-    "                     class=\"form-control\"\n" +
-    "                     ng-change=\"openingHoursChanged(openingHour)\">-->\n" +
     "\n" +
     "              <udb-time\n" +
     "                      time=\"openingHour\"\n" +
