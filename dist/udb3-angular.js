@@ -21319,7 +21319,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-link.directive.html',
-    "<a ng-href=\"{{ event.url }}\" ng-bind=\"::event.name\"></a>\n"
+    "<a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"::event.name\"></a>\n"
   );
 
 
@@ -21661,7 +21661,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span class=\"udb-theme\" ng-bind=\"event.theme.label\"></span>\n" +
     "    </div>\n" +
     "    <div class=\"udb-title\">\n" +
-    "      <a ng-href=\"{{ event.url }}\" ng-bind=\"event.name\"></a>\n" +
+    "      <a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"event.name\"></a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
@@ -21830,7 +21830,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span class=\"udb-theme\" ng-bind=\"event.theme.label\"></span>\n" +
     "    </div>\n" +
     "    <div class=\"udb-title\">\n" +
-    "      <a ng-href=\"{{ event.url }}\" ng-bind=\"event.name\"></a>\n" +
+    "      <a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"event.name\"></a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
