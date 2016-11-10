@@ -1,11 +1,26 @@
-<input ng-if="tcc.position === 'start'"
-       type="time"
-       class="form-control uur"
-       ng-model="timestamp.startHourAsDate"
-       ng-change="tcc.hoursChanged(tcc.time)">
+<span ng-if="tcc.method === 'timestamp'">
+    <input ng-if="tcc.position === 'start'"
+           type="time"
+           class="form-control uur"
+           ng-model="tcc.time.startHourAsDate"
+           ng-change="tcc.hoursChanged(tcc.time)">
 
-<input ng-if="tcc.position === 'end'"
-       type="time"
-       class="form-control uur"
-       ng-model="timestamp.endHourAsDate"
-       ng-change="tcc.hoursChanged(tcc.time)">
+    <input ng-if="tcc.position === 'end'"
+           type="time"
+           class="form-control uur"
+           ng-model="tcc.time.endHourAsDate"
+           ng-change="tcc.hoursChanged(tcc.time)">
+</span>
+<span ng-if="tcc.method === 'openinghour'">
+    <input ng-if="tcc.position === 'start'"
+           type="time"
+           class="form-control uur"
+           ng-model="tcc.time.opensAsDate"
+           ng-change="tcc.openingHoursChanged(tcc.time)">
+
+    <input ng-if="tcc.position === 'end'"
+           type="time"
+           class="form-control uur"
+           ng-model="tcc.time.closesAsDate"
+           ng-change="tcc.openingHoursChanged(tcc.time)">
+</span>

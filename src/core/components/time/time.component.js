@@ -14,7 +14,8 @@ angular
     controllerAs: 'tcc',
     bindings: {
       time: '=',
-      position: '<'
+      position: '<',
+      method: '<'
     }
   });
 
@@ -23,22 +24,29 @@ function TimeComponentController($rootScope, EventFormData) {
   var tcc = this;
 
   tcc.hoursChanged = hoursChanged;
+  tcc.openingHoursChanged = openingHoursChanged;
 
   /**
   * Change listener on the start- and openinghours
   * Save the date-object and label formatted HH:MM
   */
   function hoursChanged(timestamp) {
-    if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
+    if (timestamp.showStartHour && tcc.position === 'start') {
       var startHourAsDate = moment(timestamp.startHourAsDate);
       timestamp.startHour = startHourAsDate.format('HH:mm');
-      eventTimingChanged();
     }
-    if (timestamp.showEndHour && angular.isDate(timestamp.endHourAsDate)) {
+    if (timestamp.showEndHour && tcc.position === 'end') {
       var endHourAsDate = moment(timestamp.endHourAsDate);
       timestamp.endHour = endHourAsDate.format('HH:mm');
-      eventTimingChanged();
     }
+    eventTimingChanged();
+  }
+
+  function openingHoursChanged(openingHour) {
+    var opensAsDate = moment(openingHour.opensAsDate);
+    openingHour.opens = opensAsDate.format('HH:mm');
+    var closesAsDate = moment(openingHour.closesAsDate);
+    openingHour.closes = closesAsDate.format('HH:mm');
   }
 
   function eventTimingChanged() {

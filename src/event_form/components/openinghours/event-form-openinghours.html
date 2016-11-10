@@ -63,19 +63,31 @@
               </select>
             </td>
             <td>
-              <input type="time"
+              <!--<input type="time"
                   ng-model="openingHour.opensAsDate"
                   class="form-control"
-                  ng-change="openingHoursChanged(openingHour)">
+                  ng-change="openingHoursChanged(openingHour)">-->
+
+              <udb-time
+                      time="openingHour"
+                      position="'start'"
+                      method="'openinghour'"
+                      placeholder="Bv. 08:00">
             </td>
             <td>
               &nbsp;-&nbsp;
             </td>
             <td>
-              <input type="time"
+              <!--<input type="time"
                      ng-model="openingHour.closesAsDate"
                      class="form-control"
-                     ng-change="openingHoursChanged(openingHour)">
+                     ng-change="openingHoursChanged(openingHour)">-->
+
+              <udb-time
+                      time="openingHour"
+                      position="'end'"
+                      method="'openinghour'"
+                      placeholder="Bv. 08:00">
             </td>
             <td>
               <button type="button" class="close" aria-label="Close" ng-click="eventFormData.removeOpeningHour(i)">

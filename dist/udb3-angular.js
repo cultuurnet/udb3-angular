@@ -2230,7 +2230,8 @@ angular
     controllerAs: 'tcc',
     bindings: {
       time: '=',
-      position: '<'
+      position: '<',
+      method: '<'
     }
   });
 
@@ -2239,22 +2240,30 @@ function TimeComponentController($rootScope, EventFormData) {
   var tcc = this;
 
   tcc.hoursChanged = hoursChanged;
+  tcc.openingHoursChanged = openingHoursChanged;
 
   /**
   * Change listener on the start- and openinghours
   * Save the date-object and label formatted HH:MM
   */
   function hoursChanged(timestamp) {
-    if (timestamp.showStartHour && angular.isDate(timestamp.startHourAsDate)) {
+    if (timestamp.showStartHour && tcc.position === 'start') {
       var startHourAsDate = moment(timestamp.startHourAsDate);
       timestamp.startHour = startHourAsDate.format('HH:mm');
       eventTimingChanged();
     }
-    if (timestamp.showEndHour && angular.isDate(timestamp.endHourAsDate)) {
+    if (timestamp.showEndHour && tcc.position === 'end') {
       var endHourAsDate = moment(timestamp.endHourAsDate);
       timestamp.endHour = endHourAsDate.format('HH:mm');
       eventTimingChanged();
     }
+  }
+
+  function openingHoursChanged(openingHour) {
+    var opensAsDate = moment(openingHour.opensAsDate);
+    openingHour.opens = opensAsDate.format('HH:mm');
+    var closesAsDate = moment(openingHour.closesAsDate);
+    openingHour.closes = closesAsDate.format('HH:mm');
   }
 
   function eventTimingChanged() {
@@ -17616,17 +17625,32 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/time.html',
-    "<input ng-if=\"tcc.position === 'start'\"\n" +
-    "       type=\"time\"\n" +
-    "       class=\"form-control uur\"\n" +
-    "       ng-model=\"timestamp.startHourAsDate\"\n" +
-    "       ng-change=\"tcc.hoursChanged(tcc.time)\">\n" +
+    "<span ng-if=\"tcc.method === 'timestamp'\">\n" +
+    "    <input ng-if=\"tcc.position === 'start'\"\n" +
+    "           type=\"time\"\n" +
+    "           class=\"form-control uur\"\n" +
+    "           ng-model=\"tcc.time.startHourAsDate\"\n" +
+    "           ng-change=\"tcc.hoursChanged(tcc.time)\">\n" +
     "\n" +
-    "<input ng-if=\"tcc.position === 'end'\"\n" +
-    "       type=\"time\"\n" +
-    "       class=\"form-control uur\"\n" +
-    "       ng-model=\"timestamp.endHourAsDate\"\n" +
-    "       ng-change=\"tcc.hoursChanged(tcc.time)\">"
+    "    <input ng-if=\"tcc.position === 'end'\"\n" +
+    "           type=\"time\"\n" +
+    "           class=\"form-control uur\"\n" +
+    "           ng-model=\"tcc.time.endHourAsDate\"\n" +
+    "           ng-change=\"tcc.hoursChanged(tcc.time)\">\n" +
+    "</span>\n" +
+    "<span ng-if=\"tcc.method === 'openinghour'\">\n" +
+    "    <input ng-if=\"tcc.position === 'start'\"\n" +
+    "           type=\"time\"\n" +
+    "           class=\"form-control uur\"\n" +
+    "           ng-model=\"tcc.time.opensAsDate\"\n" +
+    "           ng-change=\"tcc.openingHoursChanged(tcc.time)\">\n" +
+    "\n" +
+    "    <input ng-if=\"tcc.position === 'end'\"\n" +
+    "           type=\"time\"\n" +
+    "           class=\"form-control uur\"\n" +
+    "           ng-model=\"tcc.time.closesAsDate\"\n" +
+    "           ng-change=\"tcc.openingHoursChanged(tcc.time)\">\n" +
+    "</span>"
   );
 
 
@@ -18200,6 +18224,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <udb-time\n" +
     "              time=\"timestamp\"\n" +
     "              position=\"'start'\"\n" +
+    "              method=\"'timestamp'\"\n" +
     "              placeholder=\"Bv. 08:00\"\n" +
     "              focus-if=\"timestamp.showStartHour\">\n" +
     "          </div>\n" +
@@ -18217,6 +18242,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <udb-time\n" +
     "                time=\"timestamp\"\n" +
     "                position=\"'end'\"\n" +
+    "                method=\"'timestamp'\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
     "                focus-if=\"timestamp.showEndHour\">\n" +
     "          </div>\n" +
@@ -18506,19 +18532,31 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </select>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <input type=\"time\"\n" +
+    "              <!--<input type=\"time\"\n" +
     "                  ng-model=\"openingHour.opensAsDate\"\n" +
     "                  class=\"form-control\"\n" +
-    "                  ng-change=\"openingHoursChanged(openingHour)\">\n" +
+    "                  ng-change=\"openingHoursChanged(openingHour)\">-->\n" +
+    "\n" +
+    "              <udb-time\n" +
+    "                      time=\"openingHour\"\n" +
+    "                      position=\"'start'\"\n" +
+    "                      method=\"'openinghour'\"\n" +
+    "                      placeholder=\"Bv. 08:00\">\n" +
     "            </td>\n" +
     "            <td>\n" +
     "              &nbsp;-&nbsp;\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <input type=\"time\"\n" +
+    "              <!--<input type=\"time\"\n" +
     "                     ng-model=\"openingHour.closesAsDate\"\n" +
     "                     class=\"form-control\"\n" +
-    "                     ng-change=\"openingHoursChanged(openingHour)\">\n" +
+    "                     ng-change=\"openingHoursChanged(openingHour)\">-->\n" +
+    "\n" +
+    "              <udb-time\n" +
+    "                      time=\"openingHour\"\n" +
+    "                      position=\"'end'\"\n" +
+    "                      method=\"'openinghour'\"\n" +
+    "                      placeholder=\"Bv. 08:00\">\n" +
     "            </td>\n" +
     "            <td>\n" +
     "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"eventFormData.removeOpeningHour(i)\">\n" +
