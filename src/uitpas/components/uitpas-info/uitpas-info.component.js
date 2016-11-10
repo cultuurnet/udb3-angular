@@ -84,13 +84,13 @@ function UitpasInfoComponent(
 
   function init() {
     controller.eventFormData = EventFormData;
-    $scope.showUitpasInfo = controller.organizer && controller.organizer.isUitpas && EventFormData.isEvent;
+    $scope.showUitpasInfo = _.get(controller, 'organizer.isUitpas', false) && EventFormData.isEvent;
     controller.showCardSystems = controller.price && !!controller.price.length;
 
     controller.listeners = [
       $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
-      $rootScope.$on('eventOrganizerSelected', reset),
-      $rootScope.$on('eventOrganizerDeleted', reset)
+      $rootScope.$on('eventOrganizerSelected', controller.reset),
+      $rootScope.$on('eventOrganizerDeleted', controller.reset)
     ];
 
     if ($scope.showUitpasInfo) {
@@ -107,13 +107,13 @@ function UitpasInfoComponent(
     _.invoke(controller.listeners, 'call');
   }
 
-  function reset() {
-    controller.organizer = EventFormData.organizer;
+  controller.reset = function (angularEvent, organizer) {
+    controller.organizer = organizer;
     $scope.checkedCardSystems = [];
     destroy();
     init();
     controller.saveUitpasData($scope.checkedCardSystems);
-  }
+  };
 
   /**
    * Get the Uitpas Data for an event

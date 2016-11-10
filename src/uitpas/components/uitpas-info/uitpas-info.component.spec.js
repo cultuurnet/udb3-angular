@@ -10,7 +10,7 @@ describe('Component: Uitpas Info', function () {
     udbOrganizers, UdbOrganizer, eventCrud, $uibModal, fakeModal, passedData, organizerJson;
 
   organizerJson = {
-    '@id': '357D5297-9E37-1DE9-62398987EA110D38',
+    '@id': 'http/du.de/organisation/357D5297-9E37-1DE9-62398987EA110D38',
     'name': 'Club Silo',
     'addresses': [
       {
@@ -105,12 +105,22 @@ describe('Component: Uitpas Info', function () {
     $uibModal = jasmine.createSpyObj('$uibModal', ['open', 'dismiss']);
     $q = $injector.get('$q');
     EventFormData.isEvent = true;
+
+    udbOrganizers.findOrganizersCardsystem.and.returnValue($q.resolve(organizerCardSystems));
+    eventCrud.getEventUitpasData.and.returnValue($q.resolve(usedDistributionKeys));
   }));
 
-  function getOrganizerObject(organizer) {
-    return new UdbOrganizer(organizer);
+  function getOrganizerObject() {
+    return new UdbOrganizer(organizerJson);
   }
 
+  /**
+   * Get the UiTPAS info component controller
+   *
+   * @param {Object} [bindings]
+   *  The bindings scoped above will be used by default if you don't provide any.
+   * @return {*}
+   */
   function getController(bindings) {
     var controller = $componentController('uitpasInfo',
     {
@@ -122,7 +132,7 @@ describe('Component: Uitpas Info', function () {
       $uibModal: $uibModal
     },
     bindings || {
-      organizer: getOrganizerObject(organizerJson),
+      organizer: getOrganizerObject(),
       price: price,
       uitpasData: []
     });
@@ -135,14 +145,11 @@ describe('Component: Uitpas Info', function () {
   }
 
   it('should initialize the uitpas info component when organizer is an uitpas organizer', function () {
-    udbOrganizers.findOrganizersCardsystem.and.returnValue($q.resolve(organizerCardSystems));
-    eventCrud.getEventUitpasData.and.returnValue($q.resolve(usedDistributionKeys));
-
     var controller = getController();
 
     $scope.$apply();
 
-    expect($scope.showUitpasInfo).toBeTruthy();
+    expect($scope.showUitpasInfo).toEqual(true);
     expect(controller.organizerCardSystems).toEqual(organizerCardSystems);
     expect($scope.usedDistributionKeys).toEqual(usedDistributionKeys);
     expect(EventFormData.usedDistributionKeys).toEqual(usedDistributionKeys);
@@ -151,16 +158,41 @@ describe('Component: Uitpas Info', function () {
   });
 
   it('should not further initialize when organizer is not an uitpas organizer', function () {
-    organizerJson = {
-      '@id': '357D5297-9E37-1DE9-62398987EA110D38',
-      'isUitpas': false
-    };
+    var organizer = new UdbOrganizer({
+      '@id': 'http/du.de/organisation/3bddd7e9-9d2c-4162-9210-67d7d88c0e45',
+      'name': 'Club Silo',
+      'addresses': [
+        {
+          addressCountry: 'BE',
+          addressLocality: 'Leuven',
+          postalCode: '3000',
+          streetAddress: 'Vaartkom 39'
+        }
+      ],
+      'email': [
+        'info@silo.be'
+      ],
+      'phone': [
+        '+32 476 838982'
+      ],
+      'url': [],
+      'labels': [
+        {
+          name: 'green',
+          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
+        }
+      ]
+    });
 
-    var controller = getController();
+    var controller = getController({
+      organizer: organizer,
+      price: [],
+      uitpasData: []
+    });
 
     $scope.$apply();
 
-    expect($scope.showUitpasInfo).toBeFalsy();
+    expect($scope.showUitpasInfo).toEqual(false);
   });
 
   it('should fire an emit when saving the UiTPAS data', function () {
@@ -193,7 +225,7 @@ describe('Component: Uitpas Info', function () {
 
   it('should not show the card systems when pricing is unknown', function () {
     var controller = getController({
-      organizer: getOrganizerObject(organizerJson),
+      organizer: getOrganizerObject(),
       price: [],
       uitpasData: []
     });
@@ -205,7 +237,7 @@ describe('Component: Uitpas Info', function () {
 
   it('should show the card systems when pricing is free', function () {
     var controller = getController({
-      organizer: getOrganizerObject(organizerJson),
+      organizer: getOrganizerObject(),
       price: [ {
         "category": "base",
         "name": "Senioren",
@@ -221,23 +253,19 @@ describe('Component: Uitpas Info', function () {
 
   it('should show the card systems when pricing is set', function (done) {
     var controller = getController({
-      organizer: getOrganizerObject(organizerJson),
+      organizer: getOrganizerObject(),
       price: [],
       uitpasData: []
     });
 
-    var originalMethod = controller.showCardSystemsIfPriceIsSelected;
-    spyOn(controller, 'showCardSystemsIfPriceIsSelected')
-      .and.callFake(assertShown);
-
-    function assertShown() {
-      originalMethod.apply(this, arguments);
+    function assertCardSystemsShown () {
       expect(controller.showCardSystems).toEqual(true);
       done();
     }
 
-    controller.$onInit();
+    assertPostHandling(controller, 'showCardSystemsIfPriceIsSelected', assertCardSystemsShown);
 
+    controller.$onInit();
     expect(controller.showCardSystems).toEqual(false);
 
     $rootScope.$emit('eventFormSaved', {
@@ -247,7 +275,49 @@ describe('Component: Uitpas Info', function () {
         "price": 3
       }]
     });
-
     $rootScope.$apply();
   });
+
+  it('should not show UiTPAS info after removing the UiTPAS organizer and price is still set', function (done) {
+    var controller = getController({
+      organizer: getOrganizerObject(),
+      price: [{
+        "category": "base",
+        "name": "Senioren",
+        "price": 3
+      }],
+      uitpasData: []
+    });
+    eventCrud.updateEventUitpasData.and.returnValue($q.reject());
+    assertPostHandling(controller, 'reset', assertUitpasInfoVisibility);
+
+    function assertUitpasInfoVisibility () {
+      expect($scope.showUitpasInfo).toEqual(false);
+      done();
+    }
+
+    controller.$onInit();
+    $scope.$apply();
+    expect($scope.showUitpasInfo).toEqual(true);
+
+    $rootScope.$emit('eventOrganizerDeleted', {});
+    $rootScope.$apply();
+  });
+
+  /**
+   *
+   * @param {Object} controller
+   * @param {string} handlerReference
+   * @param {Function} assertion
+   */
+  function assertPostHandling(controller, handlerReference, assertion) {
+    var originalMethod = controller[handlerReference];
+    spyOn(controller, handlerReference)
+      .and.callFake(mockHandler);
+
+    function mockHandler() {
+      originalMethod.apply(this, arguments);
+      assertion.apply(this, arguments);
+    }
+  }
 });

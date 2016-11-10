@@ -352,7 +352,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     function resetOrganizer() {
       controller.eventFormSaved();
       EventFormData.resetOrganizer();
-      $rootScope.$emit('eventOrganizerDeleted', '');
+      $rootScope.$emit('eventOrganizerDeleted', {});
       $scope.organizerCssClass = 'state-incomplete';
       $scope.savingOrganizer = false;
     }
