@@ -17588,7 +17588,11 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
   controller.$onInit = function() {
     $q
       .all([
-        udbUitpasApi.getEventUitpasData(offerData.id),
+        udbUitpasApi
+          .getEventUitpasData(offerData.id)
+          .catch(function () {
+            return $q.resolve([]);
+          }),
         udbUitpasApi.findOrganisationsCardSystems(organisation.id)
       ])
       .then(function (uitpasInfo) {
@@ -17603,7 +17607,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
             }
           );
 
-          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || cardSystem.assignedDistributionKey;
+          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
 
           return cardSystem;
         });
@@ -17626,7 +17630,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
 
   controller.distributionKeyAssigned = function() {
     var assignedKeys = _(controller.availableCardSystems)
-      .pluck('assignedDistributionKey')
+      .pluck('assignedDistributionKey.id')
       .reject(_.isEmpty)
       .values();
 
@@ -22458,11 +22462,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "            <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
     "                <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
+    "                        ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
     "                        ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
     "                    <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
-    "                    <option ng-repeat=\"distributionKey in ::cardSystem.distributionKeys\"\n" +
-    "                            ng-value=\"::distributionKey.id\" ng-bind=\"::distributionKey.name\">\n" +
-    "                    </option>\n" +
     "                </select>\n" +
     "            </div>\n" +
     "        </div>\n" +

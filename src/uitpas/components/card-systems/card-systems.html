@@ -18,11 +18,9 @@
 
             <div class="col-sm-6" ng-if="cardSystem.distributionKeys.length">
                 <select ng-model="cardSystem.assignedDistributionKey"
+                        ng-options="key as key.name for key in cardSystem.distributionKeys track by key.id"
                         ng-change="cardSystemSelector.distributionKeyAssigned()">
                     <option value="">--Selecteer een verdeelsleutel--</option>
-                    <option ng-repeat="distributionKey in ::cardSystem.distributionKeys"
-                            ng-value="::distributionKey.id" ng-bind="::distributionKey.name">
-                    </option>
                 </select>
             </div>
         </div>

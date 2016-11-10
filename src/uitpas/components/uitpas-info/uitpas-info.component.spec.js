@@ -7,7 +7,7 @@ describe('Component: Uitpas Info', function () {
   beforeEach(module('udb.uitpas'));
 
   var uitpasInfo, $q, $rootScope, $scope, $componentController, EventFormData,
-    udbOrganizers, UdbOrganizer, eventCrud, $uibModal, fakeModal, passedData, organizerJson;
+    udbOrganizers, UdbOrganizer, eventCrud, fakeModal, passedData, organizerJson;
 
   organizerJson = {
     '@id': 'http/du.de/organisation/357D5297-9E37-1DE9-62398987EA110D38',
@@ -102,7 +102,6 @@ describe('Component: Uitpas Info', function () {
     UdbOrganizer = $injector.get('UdbOrganizer');
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['findOrganizersCardsystem']);
     eventCrud = jasmine.createSpyObj('eventCrud', ['updateEventUitpasData', 'getEventUitpasData']);
-    $uibModal = jasmine.createSpyObj('$uibModal', ['open', 'dismiss']);
     $q = $injector.get('$q');
     EventFormData.isEvent = true;
 
@@ -128,8 +127,7 @@ describe('Component: Uitpas Info', function () {
       $rootScope: $rootScope,
       EventFormData: EventFormData,
       udbOrganizers: udbOrganizers,
-      eventCrud: eventCrud,
-      $uibModal: $uibModal
+      eventCrud: eventCrud
     },
     bindings || {
       organizer: getOrganizerObject(),

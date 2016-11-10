@@ -28,7 +28,11 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
   controller.$onInit = function() {
     $q
       .all([
-        udbUitpasApi.getEventUitpasData(offerData.id),
+        udbUitpasApi
+          .getEventUitpasData(offerData.id)
+          .catch(function () {
+            return $q.resolve([]);
+          }),
         udbUitpasApi.findOrganisationsCardSystems(organisation.id)
       ])
       .then(function (uitpasInfo) {
@@ -43,7 +47,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
             }
           );
 
-          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || cardSystem.assignedDistributionKey;
+          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
 
           return cardSystem;
         });
@@ -66,7 +70,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
 
   controller.distributionKeyAssigned = function() {
     var assignedKeys = _(controller.availableCardSystems)
-      .pluck('assignedDistributionKey')
+      .pluck('assignedDistributionKey.id')
       .reject(_.isEmpty)
       .values();
 
