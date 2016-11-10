@@ -140,4 +140,48 @@ describe('Component: Uitpas Info', function () {
     $scope.$digest();
     expect(controller.availableCardSystems).toEqual(expectedCardSystems);
   });
+
+  it('should show the assigned distribution keys retrieved from UiTPAS for each card systems ', function () {
+    udbUitpasApi.getEventUitpasData.and.returnValue($q.resolve(['182']));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    var controller = getComponentController();
+
+    var expectedCardSystems = [
+      {
+        id: '1',
+        name: 'ACME INC.',
+        distributionKeys: [
+          {
+            id: '182',
+            name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+          }
+        ],
+        assignedDistributionKey: {
+          id: '182',
+          name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+        },
+        active: true
+      },
+      {
+        id: '2',
+        name: 'foo bar balie',
+        distributionKeys: [
+          {
+            id: '194',
+            name: 'CC qwerty - 3 EUR / dag'
+          }
+        ],
+        assignedDistributionKey: undefined,
+        active: false
+      },
+      {
+        name: 'UiTPAS',
+        active: true,
+        distributionKeys: []
+      }
+    ];
+
+    $scope.$digest();
+    expect(controller.availableCardSystems).toEqual(expectedCardSystems);
+  });
 });
