@@ -4352,6 +4352,14 @@ function UdbOrganizerFactory(UitpasLabels) {
         _.values(UitpasLabels)));
   }
 
+  function getFirst(jsonOrganizer, path) {
+    return _
+      .chain(jsonOrganizer)
+      .get(path, [])
+      .first()
+      .value();
+  }
+
   /**
    * @class UdbOrganizer
    * @constructor
@@ -4377,14 +4385,6 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
   };
-
-  function getFirst(jsonOrganizer, path) {
-    return _
-      .chain(jsonOrganizer)
-      .get(path, [])
-      .first()
-      .value();
-  }
 
   return (UdbOrganizer);
 }
