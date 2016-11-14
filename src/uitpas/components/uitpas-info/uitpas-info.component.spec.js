@@ -7,7 +7,7 @@ describe('Component: Uitpas Info', function () {
   beforeEach(module('udb.uitpas'));
 
   var uitpasInfo, $q, $rootScope, $scope, $componentController, EventFormData,
-    udbOrganizers, UdbOrganizer, eventCrud, fakeModal, passedData, organizerJson;
+    udbOrganizers, UdbOrganizer, eventCrud, passedData, organizerJson;
 
   organizerJson = {
     '@id': 'http/du.de/organisation/357D5297-9E37-1DE9-62398987EA110D38',
@@ -55,58 +55,14 @@ describe('Component: Uitpas Info', function () {
     }
   ];
 
-  var organizerCardSystems = [
-    {
-      id: '1',
-      name: 'ACME INC.',
-      distributionKeys: [
-        {
-          id: '182',
-          name: 'CC Cultureel Centrum - 1,5 EUR / dag'
-        }
-      ]
-    },
-    {
-      id: '2',
-      name: 'foo bar balie',
-      distributionKeys: [
-        {
-          id: '194',
-          name: 'CC qwerty - 3 EUR / dag'
-        }
-      ]
-    }
-  ];
-
-  var usedDistributionKeys = ['182', '194'];
-
-  var expectedCheckedCardSystems = [
-    {
-      distributionKeyId: '182',
-      distributionKeyName: 'CC Cultureel Centrum - 1,5 EUR / dag',
-      cardSystemId: '1',
-      cardSystemName: 'ACME INC.'
-    },
-    { distributionKeyId: '194',
-      distributionKeyName: 'CC qwerty - 3 EUR / dag',
-      cardSystemId: '2',
-      cardSystemName: 'foo bar balie'
-    }
-  ];
-
   beforeEach(inject(function ($injector){
     $rootScope = $injector.get('$rootScope');
     $scope = $rootScope.$new();
     $componentController = $injector.get('$componentController');
     EventFormData = $injector.get('EventFormData');
     UdbOrganizer = $injector.get('UdbOrganizer');
-    udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['findOrganizersCardsystem']);
-    eventCrud = jasmine.createSpyObj('eventCrud', ['updateEventUitpasData', 'getEventUitpasData']);
     $q = $injector.get('$q');
     EventFormData.isEvent = true;
-
-    udbOrganizers.findOrganizersCardsystem.and.returnValue($q.resolve(organizerCardSystems));
-    eventCrud.getEventUitpasData.and.returnValue($q.resolve(usedDistributionKeys));
   }));
 
   function getOrganizerObject() {
@@ -125,14 +81,11 @@ describe('Component: Uitpas Info', function () {
     {
       $scope: $scope,
       $rootScope: $rootScope,
-      EventFormData: EventFormData,
-      udbOrganizers: udbOrganizers,
-      eventCrud: eventCrud
+      EventFormData: EventFormData
     },
     bindings || {
       organizer: getOrganizerObject(),
-      price: price,
-      uitpasData: []
+      price: price
     });
 
     if (!bindings) {
@@ -148,11 +101,7 @@ describe('Component: Uitpas Info', function () {
     $scope.$apply();
 
     expect($scope.showUitpasInfo).toEqual(true);
-    expect(controller.organizerCardSystems).toEqual(organizerCardSystems);
-    expect($scope.usedDistributionKeys).toEqual(usedDistributionKeys);
-    expect(EventFormData.usedDistributionKeys).toEqual(usedDistributionKeys);
-    expect($scope.hasUitpasData).toBeTruthy();
-    expect($scope.checkedCardSystems).toEqual(expectedCheckedCardSystems);
+    expect(controller.showCardSystems).toEqual(true);
   });
 
   it('should not further initialize when organizer is not an uitpas organizer', function () {
@@ -184,8 +133,7 @@ describe('Component: Uitpas Info', function () {
 
     var controller = getController({
       organizer: organizer,
-      price: [],
-      uitpasData: []
+      price: []
     });
 
     $scope.$apply();
@@ -193,39 +141,10 @@ describe('Component: Uitpas Info', function () {
     expect($scope.showUitpasInfo).toEqual(false);
   });
 
-  it('should fire an emit when saving the UiTPAS data', function () {
-    eventCrud.updateEventUitpasData.and.returnValue($q.resolve([]));
-    spyOn($rootScope, '$emit');
-    var controller = getController();
-
-    controller.saveUitpasData(expectedCheckedCardSystems);
-    $scope.$apply();
-
-    expect(controller.checkedCardSystems).toEqual(expectedCheckedCardSystems);
-    expect($scope.hasUitpasData).toBeTruthy();
-    expect(EventFormData.uitpasData).toEqual(expectedCheckedCardSystems);
-    expect(EventFormData.usedDistributionKeys).toEqual(['182', '194']);
-    expect($rootScope.$emit).toHaveBeenCalledWith('eventFormSaved', EventFormData);
-    expect($scope.uitpasCssClass).toEqual('state-complete');
-    expect($scope.savingUitpas).toBeFalsy();
-  });
-
-  it('should handle all errors when saving UiTPAS data failed', function () {
-    eventCrud.updateEventUitpasData.and.returnValue($q.reject());
-    var controller = getController();
-
-    controller.saveUitpasData(expectedCheckedCardSystems);
-    $scope.$apply();
-
-    expect($scope.uitpasError).toBeTruthy();
-    expect($scope.savingUitpas).toBeFalsy();
-  });
-
   it('should not show the card systems when pricing is unknown', function () {
     var controller = getController({
       organizer: getOrganizerObject(),
-      price: [],
-      uitpasData: []
+      price: []
     });
 
     controller.$onInit();
@@ -240,8 +159,7 @@ describe('Component: Uitpas Info', function () {
         "category": "base",
         "name": "Senioren",
         "price": 0
-      }],
-      uitpasData: []
+      }]
     });
 
     controller.$onInit();
@@ -252,8 +170,7 @@ describe('Component: Uitpas Info', function () {
   it('should show the card systems when pricing is set', function (done) {
     var controller = getController({
       organizer: getOrganizerObject(),
-      price: [],
-      uitpasData: []
+      price: []
     });
 
     function assertCardSystemsShown () {
@@ -273,32 +190,6 @@ describe('Component: Uitpas Info', function () {
         "price": 3
       }]
     });
-    $rootScope.$apply();
-  });
-
-  it('should not show UiTPAS info after removing the UiTPAS organizer and price is still set', function (done) {
-    var controller = getController({
-      organizer: getOrganizerObject(),
-      price: [{
-        "category": "base",
-        "name": "Senioren",
-        "price": 3
-      }],
-      uitpasData: []
-    });
-    eventCrud.updateEventUitpasData.and.returnValue($q.reject());
-    assertPostHandling(controller, 'reset', assertUitpasInfoVisibility);
-
-    function assertUitpasInfoVisibility () {
-      expect($scope.showUitpasInfo).toEqual(false);
-      done();
-    }
-
-    controller.$onInit();
-    $scope.$apply();
-    expect($scope.showUitpasInfo).toEqual(true);
-
-    $rootScope.$emit('eventOrganizerDeleted', {});
     $rootScope.$apply();
   });
 

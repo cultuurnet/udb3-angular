@@ -15,8 +15,7 @@ angular
     controllerAs: 'upic',
     bindings: {
       organizer: '<',
-      price: '<',
-      uitpasData: '='
+      price: '<'
     }
   });
 
@@ -24,16 +23,12 @@ angular
 function UitpasInfoComponent(
   $scope,
   $rootScope,
-  EventFormData,
-  udbOrganizers,
-  eventCrud
+  EventFormData
 ) {
   var controller = this;
 
   $scope.showUitpasInfo = false;
   $scope.uitpasCssClass = 'state-incomplete';
-  $scope.savingUitpas = false;
-  $scope.hasUitpasData = false;
   $scope.checkedCardSystems = [];
   controller.listeners = [];
   controller.showCardSystems = false;
@@ -50,37 +45,9 @@ function UitpasInfoComponent(
     controller.showCardSystems = offerData.priceInfo && !!offerData.priceInfo.length;
   };
 
-  /**
-   * Persist uitpasData for the active event.
-   * @param {Cardsystem[]} checkedCardSystems
-   */
-  controller.saveUitpasData = function(checkedCardSystems) {
-    controller.checkedCardSystems = checkedCardSystems;
-    checkHasUitpasData();
-
-    function markUitpasDataAsCompleted() {
-      $rootScope.$emit('eventFormSaved', EventFormData);
-      $scope.uitpasCssClass = 'state-complete';
-      $scope.savingUitpas = false;
-    }
-
-    function showAsyncUitpasError() {
-      $scope.uitpasError = true;
-      $scope.savingUitpas = false;
-    }
-
-    EventFormData.uitpasData = checkedCardSystems;
-    EventFormData.usedDistributionKeys = _.map(checkedCardSystems, 'distributionKeyId');
-
-    $scope.savingUitpas = true;
-    eventCrud
-      .updateEventUitpasData(EventFormData)
-      .then(markUitpasDataAsCompleted, showAsyncUitpasError);
+  controller.markUitpasDataAsCompleted = function () {
+    $scope.uitpasCssClass = 'state-complete';
   };
-
-  function checkHasUitpasData() {
-    $scope.hasUitpasData = !_.isEmpty(controller.checkedCardSystems);
-  }
 
   function init() {
     controller.eventFormData = EventFormData;
@@ -90,17 +57,9 @@ function UitpasInfoComponent(
     controller.listeners = [
       $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
       $rootScope.$on('eventOrganizerSelected', controller.reset),
-      $rootScope.$on('eventOrganizerDeleted', controller.reset)
+      $rootScope.$on('eventOrganizerDeleted', controller.reset),
+      $rootScope.$on('uitpasDataSaved', controller.markUitpasDataAsCompleted)
     ];
-
-    if ($scope.showUitpasInfo) {
-      udbOrganizers
-        .findOrganizersCardsystem(controller.organizer.id)
-        .then(function(response) {
-          controller.organizerCardSystems = response;
-        });
-      getUitpasData(EventFormData.id);
-    }
   }
 
   function destroy() {
@@ -114,34 +73,4 @@ function UitpasInfoComponent(
     init();
     controller.saveUitpasData($scope.checkedCardSystems);
   };
-
-  /**
-   * Get the Uitpas Data for an event
-   */
-  function getUitpasData(cdbid) {
-    eventCrud
-      .getEventUitpasData(cdbid)
-      .then(function(data) {
-        $scope.usedDistributionKeys = data;
-        EventFormData.usedDistributionKeys = data;
-        $scope.hasUitpasData = true;
-        reverseLookUp();
-      });
-  }
-
-  function reverseLookUp() {
-    angular.forEach(controller.organizerCardSystems, function (cardSystem, index) {
-      angular.forEach($scope.usedDistributionKeys, function(distributionKey) {
-        var tempDistKey = _.findWhere(cardSystem.distributionKeys, {id: distributionKey});
-        if (tempDistKey !== undefined) {
-          $scope.checkedCardSystems[index] = {
-            distributionKeyId: tempDistKey.id,
-            distributionKeyName: tempDistKey.name,
-            cardSystemId: cardSystem.id,
-            cardSystemName: cardSystem.name
-          };
-        }
-      });
-    });
-  }
 }

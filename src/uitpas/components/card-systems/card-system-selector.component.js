@@ -20,7 +20,7 @@ angular
   });
 
 /* @ngInject */
-function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
+function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   var controller = this;
   var organisation = controller.organisation;
   var offerData = controller.offerData;
@@ -75,6 +75,9 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
       .values();
 
     udbUitpasApi
-      .updateEventUitpasData(assignedKeys, offerData.id);
+      .updateEventUitpasData(assignedKeys, offerData.id)
+      .then(function () {
+        $rootScope.$emit('uitpasDataSaved');
+      });
   };
 }
