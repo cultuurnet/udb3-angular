@@ -7,4 +7,6 @@
  * The UDB UiTPAS module
  */
 angular
-  .module('udb.uitpas', []);
+  .module('udb.uitpas', [
+    'ui.bootstrap'
+  ]);

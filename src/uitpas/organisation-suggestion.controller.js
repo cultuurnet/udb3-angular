@@ -11,13 +11,8 @@ angular
   .controller('OrganisationSuggestionController', OrganisationSuggestionController);
 
 /* @ngInject */
-function OrganisationSuggestionController($scope, UitpasLabels) {
+function OrganisationSuggestionController($scope) {
   var controller = this;
   controller.organisation = $scope.organisation;
   controller.query = $scope.query;
-
-  controller.isUitpas = !_.isEmpty(_.intersection(
-    _.pluck($scope.organisation.labels, 'name'),
-    _.values(UitpasLabels)
-  ));
 }

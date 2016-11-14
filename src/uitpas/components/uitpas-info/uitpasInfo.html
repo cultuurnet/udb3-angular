@@ -1,0 +1,23 @@
+<div class="row extra-uitpas" ng-if="showUitpasInfo">
+    <div class="extra-task">
+        <div class="col-sm-3">
+            <em class="extra-task-label">UiTPAS</em>
+            <span> </span>
+            <i class="fa fa-circle-o-notch fa-spin" ng-show="savingUitpas"></i>
+        </div>
+        <div class="col-sm-9">
+            <div class="alert alert-info" ng-show="!upic.showCardSystems">
+                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>
+            </div>
+
+            <div ng-if="upic.showCardSystems">
+                <div class="alert alert-info" role="alert">
+                    Dit is een UiTPAS activiteit.
+                </div>
+
+                <card-system-selector organisation="upic.organizer" offer-data="upic.eventFormData">
+                </card-system-selector>
+            </div>
+        </div>
+    </div>
+</div>
