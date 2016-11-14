@@ -20497,7 +20497,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <span class=\"udb-short-info-seperator\" ng-show=\"moc.offer.type.label && moc.offer.theme.label\"> • </span>\n" +
     "                <span class=\"udb-theme\" ng-bind=\"moc.offer.theme.label\"></span>\n" +
     "\n" +
-    "                <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "                <a ng-href=\"{{ moc.offer.url  + '/preview' }}\">\n" +
+    "                    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "                </a>\n" +
     "            </header>\n" +
     "\n" +
     "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
