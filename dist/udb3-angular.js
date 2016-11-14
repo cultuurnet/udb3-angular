@@ -19380,7 +19380,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
-    "                     placeholder=\"Locatie\"\n" +
+    "                     placeholder=\"Naam of adres\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
