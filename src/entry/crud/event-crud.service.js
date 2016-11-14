@@ -14,6 +14,7 @@ angular
 function EventCrud(
   jobLogger,
   udbApi,
+  udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
   $rootScope ,
@@ -171,6 +172,27 @@ function EventCrud(
   };
 
   /**
+   * Update UiTPAS info for the event.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updateEventUitpasData = function(item) {
+    return udbUitpasApi
+        .updateEventUitpasData(item.usedDistributionKeys, item.id)
+        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+  };
+
+  /**
+   * Get the Uitpas data from an event.
+   * @param {string} cdbid
+   * @returns {Promise}
+   */
+  service.getEventUitpasData = function(cdbid) {
+    return udbUitpasApi.getEventUitpasData(cdbid);
+  };
+
+  /**
    * @param {EventFormData} item
    * @param {string} jobName
    *
@@ -197,7 +219,7 @@ function EventCrud(
    */
   service.updatePriceInfo = function(item) {
     return udbApi
-      .updatePriceInfo(item.apiUrl, item.price)
+      .updatePriceInfo(item.apiUrl, item.priceInfo)
       .then(function (response) {
         var jobData = response.data;
         var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');

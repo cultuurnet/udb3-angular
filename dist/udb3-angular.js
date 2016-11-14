@@ -1908,7 +1908,9 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
  * The UDB UiTPAS module
  */
 angular
-  .module('udb.uitpas', []);
+  .module('udb.uitpas', [
+    'ui.bootstrap'
+  ]);
 
 // Source: src/core/authorization-service.service.js
 /**
@@ -4044,6 +4046,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.uitpasData = {};
     },
 
     /**
@@ -4301,7 +4304,13 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory() {
+function UdbOrganizerFactory(UitpasLabels) {
+
+  function isUitpas(labels) {
+    return !_.isEmpty(_.intersection(
+        _.pluck(labels, 'name'),
+        _.values(UitpasLabels)));
+  }
 
   /**
    * @class UdbOrganizer
@@ -4325,11 +4334,13 @@ function UdbOrganizerFactory() {
       this.phone = jsonOrganizer.phone || [];
       this.url = jsonOrganizer.url || [];
       this.labels = jsonOrganizer.labels || [];
+      this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
   };
 
   return (UdbOrganizer);
 }
+UdbOrganizerFactory.$inject = ["UitpasLabels"];
 
 // Source: src/core/udb-organizers.service.js
 /**
@@ -4343,7 +4354,7 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, udbApi, UdbOrganizer) {
+function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
 
   /**
    * @param {string} name
@@ -4374,8 +4385,13 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
         .findOrganisations(0, 10, website, null);
   };
 
+  this.findOrganizersCardsystem = function(organizerId) {
+    return udbUitpasApi
+        .findOrganisationsCardSystems(organizerId);
+  };
+
 }
-UdbOrganizers.$inject = ["$q", "udbApi", "UdbOrganizer"];
+UdbOrganizers.$inject = ["$q", "udbApi", "udbUitpasApi", "UdbOrganizer"];
 
 // Source: src/core/udb-place.factory.js
 /**
@@ -5350,6 +5366,7 @@ angular
 function EventCrud(
   jobLogger,
   udbApi,
+  udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
   $rootScope ,
@@ -5507,6 +5524,27 @@ function EventCrud(
   };
 
   /**
+   * Update UiTPAS info for the event.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updateEventUitpasData = function(item) {
+    return udbUitpasApi
+        .updateEventUitpasData(item.usedDistributionKeys, item.id)
+        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+  };
+
+  /**
+   * Get the Uitpas data from an event.
+   * @param {string} cdbid
+   * @returns {Promise}
+   */
+  service.getEventUitpasData = function(cdbid) {
+    return udbUitpasApi.getEventUitpasData(cdbid);
+  };
+
+  /**
    * @param {EventFormData} item
    * @param {string} jobName
    *
@@ -5533,7 +5571,7 @@ function EventCrud(
    */
   service.updatePriceInfo = function(item) {
     return udbApi
-      .updatePriceInfo(item.apiUrl, item.price)
+      .updatePriceInfo(item.apiUrl, item.priceInfo)
       .then(function (response) {
         var jobData = response.data;
         var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
@@ -5699,7 +5737,7 @@ function EventCrud(
   $rootScope.$on('eventTimingChanged', updateMajorInfo);
   $rootScope.$on('eventTitleChanged', updateMajorInfo);
 }
-EventCrud.$inject = ["jobLogger", "udbApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
+EventCrud.$inject = ["jobLogger", "udbApi", "udbUitpasApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
 
 // Source: src/entry/delete/delete-offer-job.factory.js
 /**
@@ -7922,7 +7960,7 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootScope) {
+function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
@@ -8035,7 +8073,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
   function savePrice() {
     controller.savingPrice = true;
 
-    EventFormData.price = controller.price;
+    EventFormData.priceInfo = controller.price;
     controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
@@ -8062,7 +8100,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
     }
   }
 }
-PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "appConfig", "$rootScope"];
+PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/components/reservation-modal/reservation-modal.controller.js
 /**
@@ -8581,6 +8619,11 @@ function EventFormDataFactory() {
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
+
+      /**
+       * @type {string[]}
+       */
+      this.labels = [];
     },
 
     /**
@@ -8991,7 +9034,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'image',
       'additionalData',
       'apiUrl',
-      'workflowStatus'
+      'workflowStatus',
+      'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -10738,8 +10782,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function deleteOrganizer() {
     function resetOrganizer() {
       controller.eventFormSaved();
-      $scope.organizerCssClass = 'state-incomplete';
       EventFormData.resetOrganizer();
+      $rootScope.$emit('eventOrganizerDeleted', {});
+      $scope.organizerCssClass = 'state-incomplete';
       $scope.savingOrganizer = false;
     }
 
@@ -10791,6 +10836,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function markOrganizerAsCompleted() {
       controller.eventFormSaved();
+      $rootScope.$emit('eventOrganizerSelected', organizer);
       $scope.organizerCssClass = 'state-complete';
       $scope.savingOrganizer = false;
     }
@@ -17513,6 +17559,167 @@ function searchDirective() {
   return search;
 }
 
+// Source: src/uitpas/components/card-systems/card-system-selector.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:CardSystemSelector
+ * @description
+ * # CardSystemSelector
+ * Component for setting UiTPAS info.
+ */
+angular
+  .module('udb.uitpas')
+  .component('cardSystemSelector', {
+    templateUrl: 'templates/card-systems.html',
+    controller: CardSystemsController,
+    controllerAs: 'cardSystemSelector',
+    bindings: {
+      organisation: '<',
+      offerData: '<'
+    }
+  });
+
+/* @ngInject */
+function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
+  var controller = this;
+  var organisation = controller.organisation;
+  var offerData = controller.offerData;
+
+  controller.$onInit = function() {
+    $q
+      .all([
+        udbUitpasApi
+          .getEventUitpasData(offerData.id)
+          .catch(function () {
+            return $q.resolve([]);
+          }),
+        udbUitpasApi.findOrganisationsCardSystems(organisation.id)
+      ])
+      .then(function (uitpasInfo) {
+        var assignedDistributionKeys = uitpasInfo[0],
+          organisationCardSystems = uitpasInfo[1];
+
+        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
+          cardSystem.assignedDistributionKey = _.find(
+            cardSystem.distributionKeys,
+            function(distributionKey) {
+              return _.includes(assignedDistributionKeys, distributionKey.id);
+            }
+          );
+
+          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+
+          return cardSystem;
+        });
+
+        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
+
+        _.forEach(organisationLabels, function(organisationLabel) {
+          if (!_.find(availableCardSystems, {name: organisationLabel})) {
+            availableCardSystems.push({
+              name: organisationLabel,
+              active: true, //_.includes(offerData.labels, organisationLabel),
+              distributionKeys: []
+            });
+          }
+        });
+
+        controller.availableCardSystems = availableCardSystems;
+      });
+  };
+
+  controller.distributionKeyAssigned = function() {
+    var assignedKeys = _(controller.availableCardSystems)
+      .pluck('assignedDistributionKey.id')
+      .reject(_.isEmpty)
+      .values();
+
+    udbUitpasApi
+      .updateEventUitpasData(assignedKeys, offerData.id)
+      .then(function () {
+        $rootScope.$emit('uitpasDataSaved');
+      });
+  };
+}
+CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels", "$rootScope"];
+
+// Source: src/uitpas/components/uitpas-info/uitpas-info.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormUitpasInfoController
+ * @description
+ * # EventFormUitpasInfoController
+ * Component for setting UiTPAS info.
+ */
+angular
+  .module('udb.uitpas')
+  .component('uitpasInfo', {
+    templateUrl: 'templates/uitpasInfo.html',
+    controller: UitpasInfoComponent,
+    controllerAs: 'upic',
+    bindings: {
+      organizer: '<',
+      price: '<'
+    }
+  });
+
+/* @ngInject */
+function UitpasInfoComponent(
+  $scope,
+  $rootScope,
+  EventFormData
+) {
+  var controller = this;
+
+  $scope.showUitpasInfo = false;
+  $scope.uitpasCssClass = 'state-incomplete';
+  $scope.checkedCardSystems = [];
+  controller.listeners = [];
+  controller.showCardSystems = false;
+
+  controller.$onInit = init;
+  controller.$onDestroy = destroy;
+
+  /**
+   *
+   * @param {Object} angularEvent
+   * @param {EventFormData} offerData
+   */
+  controller.showCardSystemsIfPriceIsSelected = function(angularEvent, offerData) {
+    controller.showCardSystems = offerData.priceInfo && !!offerData.priceInfo.length;
+  };
+
+  controller.markUitpasDataAsCompleted = function () {
+    $scope.uitpasCssClass = 'state-complete';
+  };
+
+  function init() {
+    controller.eventFormData = EventFormData;
+    $scope.showUitpasInfo = _.get(controller, 'organizer.isUitpas', false) && EventFormData.isEvent;
+    controller.showCardSystems = controller.price && !!controller.price.length;
+
+    controller.listeners = [
+      $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
+      $rootScope.$on('eventOrganizerSelected', controller.reset),
+      $rootScope.$on('eventOrganizerDeleted', controller.reset),
+      $rootScope.$on('uitpasDataSaved', controller.markUitpasDataAsCompleted)
+    ];
+  }
+
+  function destroy() {
+    _.invoke(controller.listeners, 'call');
+  }
+
+  controller.reset = function (angularEvent, organizer) {
+    controller.organizer = organizer;
+    $scope.checkedCardSystems = [];
+    destroy();
+    init();
+    controller.saveUitpasData($scope.checkedCardSystems);
+  };
+}
+UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
+
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
  * @ngdoc directive
@@ -17525,17 +17732,12 @@ angular
   .controller('OrganisationSuggestionController', OrganisationSuggestionController);
 
 /* @ngInject */
-function OrganisationSuggestionController($scope, UitpasLabels) {
+function OrganisationSuggestionController($scope) {
   var controller = this;
   controller.organisation = $scope.organisation;
   controller.query = $scope.query;
-
-  controller.isUitpas = !_.isEmpty(_.intersection(
-    _.pluck($scope.organisation.labels, 'name'),
-    _.values(UitpasLabels)
-  ));
 }
-OrganisationSuggestionController.$inject = ["$scope", "UitpasLabels"];
+OrganisationSuggestionController.$inject = ["$scope"];
 
 // Source: src/uitpas/organisation-suggestion.directive.js
 angular
@@ -17555,6 +17757,78 @@ function uitpasOrganisationSuggestion() {
     restrict: 'A'
   };
 }
+
+// Source: src/uitpas/udb-uitpas-api.service.js
+/**
+ * @typedef {Object} Cardsystem
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ * @property {DistributionKey[]} distributionKeys
+ */
+
+/**
+ * @typedef {Object} DistributionKey
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ *  the name of the key including the price, eg: "CC De Werf - 1,5 EUR / dag"
+ */
+
+angular
+  .module('udb.uitpas')
+  .service('udbUitpasApi', UdbUitpasApi);
+
+function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
+  var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
+  var defaultApiConfig = {
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + uitidAuth.getToken()
+    },
+    params: {}
+  };
+  /**
+   * @param {string} eventId
+   *
+   * @return {Promise.<string[]>}
+   */
+  this.getEventUitpasData = function(eventId) {
+    return $http
+      .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * Update UiTPAS info for an event.
+   * @param {string[]} distributionKeys
+   * @param {string} eventId
+   *
+   * @return {Promise.<CommandInfo>}
+   */
+  this.updateEventUitpasData = function(distributionKeys, eventId) {
+    return $http
+      .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', distributionKeys, defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} organizerId of the organizer
+   *
+   * @return {Promise.<Cardsystem[]>}
+   */
+  this.findOrganisationsCardSystems = function(organizerId) {
+    return $http
+      .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
+  function returnUnwrappedData(response) {
+    return $q.resolve(response.data);
+  }
+}
+UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
 
 // Source: src/uitpas/uitpas-labels.constant.js
 /* jshint sub: true */
@@ -19753,6 +20027,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
+    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
@@ -22100,9 +22375,68 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/card-systems.html',
+    "<div class=\"form-group\">\n" +
+    "    <div class=\"card-system\">\n" +
+    "        <label>Kaartsystemen</label>\n" +
+    "\n" +
+    "        <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in cardSystemSelector.availableCardSystems\">\n" +
+    "            <div class=\"col-sm-6\">\n" +
+    "                <div class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\"\n" +
+    "                               disabled=\"disabled\"\n" +
+    "                               ng-model=\"cardSystem.active\"\n" +
+    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged()\">\n" +
+    "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
+    "                <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
+    "                        ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
+    "                        ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
+    "                    <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
+    "                </select>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/uitpasInfo.html',
+    "<div class=\"row extra-uitpas\" ng-if=\"showUitpasInfo\">\n" +
+    "    <div class=\"extra-task\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <em class=\"extra-task-label\">UiTPAS</em>\n" +
+    "            <span> </span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"alert alert-info\" ng-show=\"!upic.showCardSystems\">\n" +
+    "                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-if=\"upic.showCardSystems\">\n" +
+    "                <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "                    Dit is een UiTPAS activiteit.\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +
+    "                </card-system-selector>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/organisation-suggestion.directive.html',
     "<span class=\"organisation-name\" ng-bind-html=\"::os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
-    "<small ng-if=\"::os.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+    "<small ng-if=\"::os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
   );
 
 
