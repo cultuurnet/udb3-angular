@@ -43,7 +43,7 @@
           <div id="locatie-kiezer" ng-hide="selectedLocation || loadingPlaces">
             <span style="position: relative; display: block; direction: ltr;" class="twitter-typeahead">
               <input type="text" ng-change="locationSearched()"
-                     placeholder="Locatie"
+                     placeholder="Naam of adres"
                      class="form-control typeahead"
                      ng-model="locationAutocompleteTextField"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50"
