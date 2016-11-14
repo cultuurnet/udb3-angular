@@ -67,7 +67,7 @@ describe('Controller: Place Detail', function() {
     $scope = $rootScope.$new();
     placeId = 'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702';
     udbApi = $injector.get('udbApi');
-    $location = jasmine.createSpyObj('$location', ['path']);
+    $location = jasmine.createSpyObj('$location', ['path', 'url']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     variationRepository = $injector.get('variationRepository');
     offerEditor = $injector.get('offerEditor');
@@ -209,6 +209,25 @@ describe('Controller: Place Detail', function() {
     $scope.$digest();
 
     expect($location.path).toHaveBeenCalledWith('/dashboard');
+  });
+
+  it('should redirect to the edit page with a known placeId', function () {
+    $scope.placeId = 'place/de84f1c4-d335-470a-924d-624982b87098';
+
+    $scope.openEditPage();
+    $scope.$digest();
+
+    expect($location.path).toHaveBeenCalledWith('/place/de84f1c4-d335-470a-924d-624982b87098/edit');
+  });
+
+  it('should redirect to the edit page without a known placeId', function () {
+    $scope.placeId = {};
+    $location.url.and.returnValue('/place/de84f1c4-d335-470a-924d-624982b87098/saved');
+
+    $scope.openEditPage();
+    $scope.$digest();
+
+    expect($location.path).toHaveBeenCalledWith('/place/de84f1c4-d335-470a-924d-624982b87098/edit');
   });
 
   it('should update the place when adding a label', function () {

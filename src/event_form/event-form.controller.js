@@ -64,11 +64,9 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       EventFormData.isPlace = true;
       copyItemDataToFormData(offer);
 
-      // Places only have an address, form uses location property.
+      // Places only have an address
       if (offer.address) {
-        EventFormData.location = {
-          address : offer.address
-        };
+        EventFormData.address = offer.address;
       }
     }
   }
@@ -90,10 +88,12 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'organizer',
       'bookingInfo',
       'contactPoint',
+      'priceInfo',
       'facilities',
       'image',
       'additionalData',
-      'apiUrl'
+      'apiUrl',
+      'workflowStatus'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {

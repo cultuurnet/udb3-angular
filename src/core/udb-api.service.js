@@ -143,7 +143,33 @@ function UdbApi(
 
     return $http
       .get(apiUrl + 'search', requestOptions)
-      .then(returnUnwrappedData);
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} queryString - The query used to find events.
+   * @param {number} [start] - From which event offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
+    var offset = start || 0,
+        limit = itemsPerPage || 30,
+        searchParams = {
+          start: offset,
+          limit: limit
+        };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.query = queryString;
+    }
+
+    return $http
+      .get(apiUrl + 'search', requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -182,28 +208,49 @@ function UdbApi(
 
   // TODO: Give organizers their own cache instead of using offer?
   this.getOrganizerById = function(organizerId) {
-      var deferredOrganizer = $q.defer();
+    var deferredOrganizer = $q.defer();
 
-      var organizer = offerCache.get(organizerId);
+    var organizer = offerCache.get(organizerId);
 
-      if (organizer) {
+    if (organizer) {
+      deferredOrganizer.resolve(organizer);
+    } else {
+      var organizerRequest  = $http.get(
+        appConfig.baseUrl + 'organizers/' + organizerId, defaultApiConfig
+      );
+
+      organizerRequest.success(function(jsonOrganizer) {
+        var organizer = new UdbOrganizer();
+        organizer.parseJson(jsonOrganizer);
+        offerCache.put(organizerId, organizer);
         deferredOrganizer.resolve(organizer);
-      } else {
-        var organizerRequest  = $http.get(
-          appConfig.baseApiUrl + 'organizer/' + organizerId,
-          defaultApiConfig
-        );
+      });
+    }
+    return deferredOrganizer.promise;
+  };
 
-        organizerRequest.success(function(jsonOrganizer) {
-          var organizer = new UdbOrganizer();
-          organizer.parseJson(jsonOrganizer);
-          offerCache.put(organizerId, organizer);
-          deferredOrganizer.resolve(organizer);
-        });
-      }
-
-      return deferredOrganizer.promise;
+  /**
+   * @param {number} start
+   * @param {number} limit
+   * @param {string|null} website
+   * @param {string|null} name
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  this.findOrganisations = function(start, limit, website, name) {
+    var params = {
+      limit: limit ? limit : 10,
+      start: start ? start : 0
     };
+    if (website) { params.website = website; }
+    if (name) { params.name = name; }
+
+    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+
+    return $http
+      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .then(returnUnwrappedData);
+  };
 
   /**
    * @param {URL} eventId
@@ -425,6 +472,14 @@ function UdbApi(
     );
   };
 
+  this.updatePriceInfo = function(offerLocation, price) {
+    return $http.put(
+      offerLocation + '/priceInfo',
+      price,
+      defaultApiConfig
+    );
+  };
+
   /**
    * @param {URL} offerLocation
    * @param {string} label
@@ -472,7 +527,7 @@ function UdbApi(
    */
   this.createOffer = function (type, offer) {
     return $http.post(
-      appConfig.baseApiUrl + type,
+      appConfig.baseUrl + type,
       offer,
       defaultApiConfig
     ).then(function(response) {
@@ -537,10 +592,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
-    // TODO: swagger docs describes different path:
-    // /api/1.0/organizer
     return $http.post(
-      appConfig.baseApiUrl + 'organizer',
+      appConfig.baseUrl + 'organizers/',
       organizer,
       defaultApiConfig
     );
@@ -1118,21 +1171,42 @@ function UdbApi(
   };
 
   /**
+   * @return {Promise.<Object[]>}
+   */
+  this.getMyRoles = function () {
+    return $http
+      .get(appConfig.baseUrl + 'user/roles/', defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {URL} offerUrl
+   * @param {string} domainModel
+   * @param {string} reason (optional)
+   */
+  this.patchOffer = function (offerUrl, domainModel, reason) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=' + domainModel;
+
+    var updateData = {
+      'reason': reason
+    };
+
+    return $http
+      .patch(offerUrl, (reason ? updateData : {}), requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
   function returnApiProblem(errorResponse) {
     if (errorResponse) {
-      // If the error response does not contain the proper data, make some up generic problem.
-      var error = errorResponse.data ? errorResponse.data : {
-        type: appConfig.baseUrl + 'problem',
-        title: 'Something went wrong.',
-        detail: 'We failed to perform the requested action!'
-      };
       var problem = {
-        type: new URL(error.type),
-        title: error.title,
-        detail: error.detail,
+        type: new URL(_.get(errorResponse, 'data.type', appConfig.baseUrl + 'problem')),
+        title: _.get(errorResponse, 'data.title', 'Something went wrong.'),
+        detail: _.get(errorResponse, 'data.detail', 'We failed to perform the requested action!'),
         status: errorResponse.status
       };
 

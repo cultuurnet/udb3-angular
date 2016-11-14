@@ -226,6 +226,18 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // findEventsWithLimit
+  it('should find events when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'search?query=searchquery&start=0&limit=30')
+      .respond(JSON.stringify(response));
+    service
+      .findEventsWithLimit('searchquery', 0, 30)
+      .then(done);
+    $httpBackend.flush();
+  });
+
   // getOffer
   it('should retrieve offers from api when not in cache', function (done) {
     var offerLocation = 'http://foobar/event/0823f57e-a6bd-450a-b4f5-8459b4b11043';
@@ -287,7 +299,7 @@ describe('Service: UDB3 Api', function () {
       'name': 'STUK'
     };
     $httpBackend
-      .expectGET(baseUrl + 'organizer/' + organizerId)
+      .expectGET(baseUrl + 'organizers/' + organizerId)
       .respond(JSON.stringify(response));
     service
       .getOrganizerById(organizerId)
@@ -303,7 +315,7 @@ describe('Service: UDB3 Api', function () {
 
     // first time we expect a GET-call being made
     $httpBackend
-      .expectGET(baseUrl + 'organizer/' + organizerId)
+      .expectGET(baseUrl + 'organizers/' + organizerId)
       .respond(JSON.stringify(response));
     // check the todo about own cache for organizers
     spyOn(offerCache, 'put').and.callThrough();
@@ -651,6 +663,36 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  // updatePriceInfo
+  it('should update the price info of an event or place', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var price = [
+      {
+        "category": 'base',
+        "name": 'Basisprijs',
+        "priceCurrency": 'EUR',
+        "price": 2
+      },
+      {
+        "category": 'tariff',
+        "name": 'Bijkomende prijs',
+        "priceCurrency": 'EUR',
+        "price": 3
+      }
+    ];
+
+    $httpBackend
+      .expectPUT(offerLocation + '/priceInfo', price)
+      .respond();
+
+    service
+      .updatePriceInfo(offerLocation, price)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
   it('should update properties using delimiter-seperated instead of CamelCase', function(done){
     var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
     var propertyName = 'typicalAgeRange';
@@ -846,7 +888,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectPOST(baseUrl + 'organizer', organizer)
+      .expectPOST(baseUrl + 'organizers/', organizer)
       .respond(JSON.stringify(response));
     service
       .createOrganizer(organizer)
@@ -1996,6 +2038,89 @@ describe('Service: UDB3 Api', function () {
     service
       .removeUserFromRole('uuid1-role', 'uuid2-user')
       .then(assertCommand);
+
+    $httpBackend.flush();
+  });
+
+  it('should approve an offer', function(done) {
+    var offerUrl = 'http//www.example.com/event/blub';
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+    var headers = {
+      'Content-Type': 'application/ld+json;domain-model=Approve',
+      "Authorization":"Bearer undefined",
+      "Accept":"application/json, text/plain, */*"
+    };
+
+    function assertCommand(command) {
+      expect(command).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expect('PATCH', offerUrl, {}, headers, {})
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .patchOffer(offerUrl, 'Approve')
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
+
+  it('should reject an offer with reason', function(done) {
+    var offerUrl = 'http//www.example.com/event/blub';
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+    var headers = {
+      'Content-Type': 'application/ld+json;domain-model=Reject',
+      "Authorization":"Bearer undefined",
+      "Accept":"application/json, text/plain, */*"
+    };
+
+    function assertCommand(command) {
+      expect(command).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expect('PATCH', offerUrl, {reason:'aint got no time for this'}, headers, {})
+      .respond(JSON.stringify(expectedCommandId));
+
+    service
+      .patchOffer(offerUrl, 'Reject', 'aint got no time for this')
+      .then(assertCommand);
+
+    $httpBackend.flush();
+  });
+
+  it('should fetch the roles of the current user', function(done) {
+    var url = 'http://foo.bar/user/roles/';
+    var expectedRoles = [
+      {
+        "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+        "name": "Beheerder west-vlaanderen",
+        "constraint": "city:leuven",
+        "permissions": [
+          "GEBRUIKERS_BEHEREN"
+        ]
+      }
+    ];
+
+    function assertRoles(roles) {
+      expect(roles).toEqual(expectedRoles);
+      done();
+    }
+
+    $httpBackend
+      .expect('GET', url)
+      .respond(JSON.stringify(expectedRoles));
+
+    service
+      .getMyRoles()
+      .then(assertRoles);
 
     $httpBackend.flush();
   });

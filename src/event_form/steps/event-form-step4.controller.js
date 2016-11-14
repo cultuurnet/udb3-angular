@@ -59,64 +59,72 @@ function EventFormStep4Controller(
 
     // First check if all data is correct.
     $scope.infoMissing = false;
-    var missingInfo = [];
+    $scope.missingInfo = [];
+
+    if (!EventFormData.type.id) {
+      $scope.missingInfo.push('event type missing');
+    }
+
     if (EventFormData.calendarType === 'single' && EventFormData.timestamps[0].date === '') {
-      missingInfo.push('timestamp missing');
+      $scope.missingInfo.push('timestamp missing');
     }
     else if (EventFormData.calendarType === 'periodic' &&
       (EventFormData.startDate === '' || EventFormData.endDate === '')
     ) {
-      missingInfo.push('start or end date missing');
+      $scope.missingInfo.push('start or end date missing');
     }
-
-    if (!EventFormData.type.id) {
-      missingInfo.push('event type missing');
+    else if (EventFormData.calendarType === '') {
+      $scope.missingInfo.push('when missing');
     }
 
     if (EventFormData.isEvent && !EventFormData.location.id) {
-      missingInfo.push('place missing for event');
+      $scope.missingInfo.push('place missing for event');
     }
-    else if (EventFormData.isPlace && !EventFormData.location.address.streetAddress) {
-      missingInfo.push('location missing for place');
+    else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
+      $scope.missingInfo.push('address missing for place');
     }
 
-    if (missingInfo.length > 0) {
+    if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
-      console.log(missingInfo);
       return;
     }
 
-    if (!ignoreDuplicates) {
-      $scope.saving = true;
-      $scope.error = false;
-
-      var promise = findDuplicates(EventFormData);
-
-      $scope.resultViewer.loading = true;
-      $scope.duplicatesSearched = true;
-
-      promise.then(function (data) {
-
-        // Set the results for the duplicates modal,
-        if (data.totalItems > 0) {
-          $scope.saving = false;
-          $scope.resultViewer.setResults(data);
-        }
-        // or save the event immediataly if no duplicates were found.
-        else {
-          createOffer();
-        }
-
-      }, function() {
-        // Error while saving.
-        $scope.error = true;
-        $scope.saving = false;
-      });
+    if (ignoreDuplicates) {
+      createOffer();
     }
+    else {
+      suggestExistingOffers(EventFormData);
+    }
+
+  }
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function suggestExistingOffers(formData) {
+    $scope.saving = true;
+    $scope.error = false;
+
+    $scope.resultViewer.loading = true;
+    $scope.duplicatesSearched = true;
+
+    findDuplicates(formData).then(showDuplicates, showMajorInfoError);
+  }
+
+  /**
+   * @param {PagedCollection} pagedDuplicates
+   */
+  function showDuplicates(pagedDuplicates) {
+
+    // Set the results for the duplicates modal,
+    if (pagedDuplicates.totalItems > 0) {
+      $scope.saving = false;
+      $scope.resultViewer.setResults(pagedDuplicates);
+    }
+    // or save the event immediately if no duplicates were found.
     else {
       createOffer();
     }
-
   }
 
   function findDuplicates(data) {
@@ -153,7 +161,7 @@ function EventFormStep4Controller(
       /*jshint camelcase: false */
       return {
         text: EventFormData.name.nl,
-        zipcode: location.address.postalCode,
+        zipcode: EventFormData.address.postalCode,
         keywords: 'UDB3 place'
       };
     }
@@ -229,4 +237,5 @@ function EventFormStep4Controller(
       }
     });
   }
+
 }

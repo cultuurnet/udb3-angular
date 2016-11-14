@@ -1,7 +1,4 @@
-<div class="page-header">
-    <h1>Labels</h1>
-</div>
-<h2>Label Toevoegen</h2>
+<h1 class="title">Label toevoegen</h1>
 
 <form name="creator.form" class="css-form" novalidate>
     <div class="row">
@@ -13,7 +10,8 @@
                        name="name"
                        type="text"
                        udb-unique-label
-                       ng-minlength="3"
+                       udb-semicolon-label-check
+                       ng-minlength="2"
                        ng-required="true"
                        ng-maxlength="255"
                        ng-model="creator.label.name"
@@ -21,8 +19,9 @@
                        ng-disabled="creator.creating">
                 <p class="help-block" ng-if="creator.form.name.$error.uniqueLabel">Er bestaat al een label met deze naam.</p>
                 <p class="help-block" ng-if="creator.form.name.$error.required">Een label naam is verplicht.</p>
-                <p class="help-block" ng-if="creator.form.name.$error.minlength">Een label moet uit minstens 3 tekens bestaan.</p>
+                <p class="help-block" ng-if="creator.form.name.$error.minlength">Een label moet uit minstens 2 tekens bestaan.</p>
                 <p class="help-block" ng-if="creator.form.name.$error.maxlength">Een label mag maximum 255 tekens bevatten.</p>
+                <p class="help-block" ng-if="creator.form.name.$error.semicolonLabel">Een label naam mag geen puntkomma bevatten.</p>
             </div>
         </div>
     </div>
