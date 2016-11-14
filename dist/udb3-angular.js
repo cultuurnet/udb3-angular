@@ -4369,14 +4369,22 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
-      this.addresses = jsonOrganizer.addresses || [];
-      this.email = jsonOrganizer.email || [];
-      this.phone = jsonOrganizer.phone || [];
-      this.url = jsonOrganizer.url || [];
+      this.address = jsonOrganizer.address || [];
+      this.email = getFirst(jsonOrganizer, 'contactPoint.email');
+      this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
+      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
       this.labels = jsonOrganizer.labels || [];
       this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
   };
+
+  function getFirst(jsonOrganizer, path) {
+    return _
+      .chain(jsonOrganizer)
+      .get(path, [])
+      .first()
+      .value();
+  }
 
   return (UdbOrganizer);
 }
@@ -12311,7 +12319,7 @@ function listItemDefaults(RolePermission) {
       permission: RolePermission.ORGANISATIES_BEHEREN,
       notificationCount: 0,
       index: 5,
-      sref: 'split.manageOrganisations',
+      sref: 'management.organizers',
       icon: 'fa-slideshare'
     }
   ];
