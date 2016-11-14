@@ -17580,7 +17580,7 @@ angular
   });
 
 /* @ngInject */
-function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
+function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   var controller = this;
   var organisation = controller.organisation;
   var offerData = controller.offerData;
@@ -17635,10 +17635,13 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels) {
       .values();
 
     udbUitpasApi
-      .updateEventUitpasData(assignedKeys, offerData.id);
+      .updateEventUitpasData(assignedKeys, offerData.id)
+      .then(function () {
+        $rootScope.$emit('uitpasDataSaved');
+      });
   };
 }
-CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels"];
+CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels", "$rootScope"];
 
 // Source: src/uitpas/components/uitpas-info/uitpas-info.component.js
 /**
@@ -17656,8 +17659,7 @@ angular
     controllerAs: 'upic',
     bindings: {
       organizer: '<',
-      price: '<',
-      uitpasData: '='
+      price: '<'
     }
   });
 
@@ -17665,16 +17667,12 @@ angular
 function UitpasInfoComponent(
   $scope,
   $rootScope,
-  EventFormData,
-  udbOrganizers,
-  eventCrud
+  EventFormData
 ) {
   var controller = this;
 
   $scope.showUitpasInfo = false;
   $scope.uitpasCssClass = 'state-incomplete';
-  $scope.savingUitpas = false;
-  $scope.hasUitpasData = false;
   $scope.checkedCardSystems = [];
   controller.listeners = [];
   controller.showCardSystems = false;
@@ -17691,37 +17689,9 @@ function UitpasInfoComponent(
     controller.showCardSystems = offerData.priceInfo && !!offerData.priceInfo.length;
   };
 
-  /**
-   * Persist uitpasData for the active event.
-   * @param {Cardsystem[]} checkedCardSystems
-   */
-  controller.saveUitpasData = function(checkedCardSystems) {
-    controller.checkedCardSystems = checkedCardSystems;
-    checkHasUitpasData();
-
-    function markUitpasDataAsCompleted() {
-      $rootScope.$emit('eventFormSaved', EventFormData);
-      $scope.uitpasCssClass = 'state-complete';
-      $scope.savingUitpas = false;
-    }
-
-    function showAsyncUitpasError() {
-      $scope.uitpasError = true;
-      $scope.savingUitpas = false;
-    }
-
-    EventFormData.uitpasData = checkedCardSystems;
-    EventFormData.usedDistributionKeys = _.map(checkedCardSystems, 'distributionKeyId');
-
-    $scope.savingUitpas = true;
-    eventCrud
-      .updateEventUitpasData(EventFormData)
-      .then(markUitpasDataAsCompleted, showAsyncUitpasError);
+  controller.markUitpasDataAsCompleted = function () {
+    $scope.uitpasCssClass = 'state-complete';
   };
-
-  function checkHasUitpasData() {
-    $scope.hasUitpasData = !_.isEmpty(controller.checkedCardSystems);
-  }
 
   function init() {
     controller.eventFormData = EventFormData;
@@ -17731,17 +17701,9 @@ function UitpasInfoComponent(
     controller.listeners = [
       $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
       $rootScope.$on('eventOrganizerSelected', controller.reset),
-      $rootScope.$on('eventOrganizerDeleted', controller.reset)
+      $rootScope.$on('eventOrganizerDeleted', controller.reset),
+      $rootScope.$on('uitpasDataSaved', controller.markUitpasDataAsCompleted)
     ];
-
-    if ($scope.showUitpasInfo) {
-      udbOrganizers
-        .findOrganizersCardsystem(controller.organizer.id)
-        .then(function(response) {
-          controller.organizerCardSystems = response;
-        });
-      getUitpasData(EventFormData.id);
-    }
   }
 
   function destroy() {
@@ -17755,38 +17717,8 @@ function UitpasInfoComponent(
     init();
     controller.saveUitpasData($scope.checkedCardSystems);
   };
-
-  /**
-   * Get the Uitpas Data for an event
-   */
-  function getUitpasData(cdbid) {
-    eventCrud
-      .getEventUitpasData(cdbid)
-      .then(function(data) {
-        $scope.usedDistributionKeys = data;
-        EventFormData.usedDistributionKeys = data;
-        $scope.hasUitpasData = true;
-        reverseLookUp();
-      });
-  }
-
-  function reverseLookUp() {
-    angular.forEach(controller.organizerCardSystems, function (cardSystem, index) {
-      angular.forEach($scope.usedDistributionKeys, function(distributionKey) {
-        var tempDistKey = _.findWhere(cardSystem.distributionKeys, {id: distributionKey});
-        if (tempDistKey !== undefined) {
-          $scope.checkedCardSystems[index] = {
-            distributionKeyId: tempDistKey.id,
-            distributionKeyName: tempDistKey.name,
-            cardSystemId: cardSystem.id,
-            cardSystemName: cardSystem.name
-          };
-        }
-      });
-    });
-  }
 }
-UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData", "udbOrganizers", "eventCrud"];
+UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
 
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
@@ -19722,7 +19654,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
-    "                     placeholder=\"Locatie\"\n" +
+    "                     placeholder=\"Naam of adres\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
@@ -20095,7 +20027,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
-    "        <uitpas-info offer-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
+    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
@@ -20840,7 +20772,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <span class=\"udb-short-info-seperator\" ng-show=\"moc.offer.type.label && moc.offer.theme.label\"> • </span>\n" +
     "                <span class=\"udb-theme\" ng-bind=\"moc.offer.theme.label\"></span>\n" +
     "\n" +
-    "                <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "                <a ng-href=\"{{ moc.offer.url  + '/preview' }}\">\n" +
+    "                    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "                </a>\n" +
     "            </header>\n" +
     "\n" +
     "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
@@ -21662,7 +21596,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-link.directive.html',
-    "<a ng-href=\"{{ event.url }}\" ng-bind=\"::event.name\"></a>\n"
+    "<a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"::event.name\"></a>\n"
   );
 
 
@@ -22004,7 +21938,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span class=\"udb-theme\" ng-bind=\"event.theme.label\"></span>\n" +
     "    </div>\n" +
     "    <div class=\"udb-title\">\n" +
-    "      <a ng-href=\"{{ event.url }}\" ng-bind=\"event.name\"></a>\n" +
+    "      <a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"event.name\"></a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
@@ -22173,7 +22107,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span class=\"udb-theme\" ng-bind=\"event.theme.label\"></span>\n" +
     "    </div>\n" +
     "    <div class=\"udb-title\">\n" +
-    "      <a ng-href=\"{{ event.url }}\" ng-bind=\"event.name\"></a>\n" +
+    "      <a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"event.name\"></a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
