@@ -14,30 +14,31 @@ angular
 function udbTimeDirective() {
   return {
     restrict: 'AE',
-    requie: 'ngModel',
-    tempate: '<input type="time" class="form-control uur" required />',
+    require: 'ngModel',
+    template: '<input type="time" ng-model="ngModel" class="form-control uur" required />',
     link: link
   };
 
   function link (scope, element, attrs, ngModel) {
+    console.log(ngModel);
+    console.log(element);
 
-    ngModel.$render = function() {
+    /*ngModel.$render = function() {
       //element.html(formatter(ngModel.$viewValue));
       element.html(ngModel.$viewValue);
-    };
+    };*/
 
     function hoursChanged(timestamp) {
       return formatter(timestamp);
     }
 
     function formatter(timestamp) {
-      var hour = moment(timestamp);
+      //var hour = moment(timestamp);
       //attrs.destination = hour.format('HH:mm');
-      return hour.format('HH:mm');
+      return moment(timestamp).format('HH:mm');
     }
 
     ngModel.$formatters.push(formatter);
-
   }
 }
 })();
