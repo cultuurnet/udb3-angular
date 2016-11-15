@@ -84,15 +84,25 @@
               <td><strong>Organisator</strong></td>
               <td>{{event.organizer.name}}</td>
             </tr>
-            <tr class="rv-event-info-price" ng-class="{muted: event.pricing === 'unknown'}">
+            <tr class="rv-event-info-price" ng-class="{muted: !event.priceInfo.length}">
               <td><strong>Prijs</strong></td>
-              <td ng-switch="event.pricing">
-                <span ng-switch-when="free">Gratis</span>
-                <span ng-switch-when="payed">
-                  <i class="fa fa-eur meta icon"></i>
-                  <span ng-if="event.price" ng-bind="event.price | currency"></span>
-                </span>
-                <span ng-switch-when="unknown">Geen prijsinformatie</span>
+              <td ng-if="event.priceInfo.length">
+                <table class="table event-detail-price-table">
+                  <tr ng-repeat="priceInfo in event.priceInfo">
+                    <td>{{priceInfo.name}}</td>
+                    <td>
+                      <span ng-if="priceInfo.price == 0">
+                        Gratis
+                      </span>
+                      <span ng-if="priceInfo.price != 0">
+                        {{priceInfo.price | currency}} euro
+                      </span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td ng-if="!event.priceInfo.length">
+                Geen prijsinformatie
               </td>
             </tr>
             <tr>
