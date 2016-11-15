@@ -3161,6 +3161,9 @@ img.offer-image-thumbnail {
   max-width: 400px;
   max-height: 300px;
 }
+table.event-detail-price-table {
+  background-color: #fff !important;
+}
 .editable-click {
   border: 1px solid #eeeeee;
   padding: 15px;
