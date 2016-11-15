@@ -2215,63 +2215,49 @@ function udbCalendarSummary() {
 
 })();
 
-// Source: src/core/components/time/time.component.js
+// Source: src/core/components/time/time.directive.js
+(function () {
 /**
  * @ngdoc component
- * @name udb.search.directive:udbSearchBar
+ * @name udb.core.directive:udbTime
  * @description
- * # udbQuerySearchBar
+ * # udbTime
  */
-angular
+  angular
   .module('udb.core')
-  .component('udbTime', {
-    templateUrl: 'templates/time.html',
-    controller: TimeComponentController,
-    controllerAs: 'tcc',
-    bindings: {
-      time: '=',
-      position: '<',
-      method: '<'
-    }
-  });
+  .directive('udbTime', udbTimeDirective);
 
-/* @ngInject */
-function TimeComponentController($rootScope, EventFormData) {
-  var tcc = this;
+  function udbTimeDirective() {
 
-  tcc.hoursChanged = hoursChanged;
-  tcc.openingHoursChanged = openingHoursChanged;
+    return {
+      restrict: 'AE',
+      require: 'ngModel',
+      template: '<input type="time" class="form-control uur" required />',
+      link: link
+    };
 
-  /**
-  * Change listener on the start- and openinghours
-  * Save the date-object and label formatted HH:MM
-  */
-  function hoursChanged(timestamp) {
-    if (timestamp.showStartHour && tcc.position === 'start') {
-      var startHourAsDate = moment(timestamp.startHourAsDate);
-      timestamp.startHour = startHourAsDate.format('HH:mm');
-    }
-    if (timestamp.showEndHour && tcc.position === 'end') {
-      var endHourAsDate = moment(timestamp.endHourAsDate);
-      timestamp.endHour = endHourAsDate.format('HH:mm');
-    }
-    eventTimingChanged();
-  }
+    function link (scope, element, attrs, ngModel) {
 
-  function openingHoursChanged(openingHour) {
-    var opensAsDate = moment(openingHour.opensAsDate);
-    openingHour.opens = opensAsDate.format('HH:mm');
-    var closesAsDate = moment(openingHour.closesAsDate);
-    openingHour.closes = closesAsDate.format('HH:mm');
-  }
+      ngModel.$render = function() {
+        console.log(element.html(formatter(ngModel.$viewValue)));
+        element.html(formatter(ngModel.$viewValue));
+      };
 
-  function eventTimingChanged() {
-    if (EventFormData.id) {
-      $rootScope.$emit('eventTimingChanged', EventFormData);
+      function hoursChanged(timestamp) {
+        return formatter(timestamp);
+      }
+
+      function formatter(timestamp) {
+        var hour = moment(timestamp);
+        //attrs.destination = hour.format('HH:mm');
+        return hour.format('HH:mm');
+      }
+
+      ngModel.$formatters.push(formatter);
+
     }
   }
-}
-TimeComponentController.$inject = ["$rootScope", "EventFormData"];
+})();
 
 // Source: src/core/dutch-translations.constant.js
 /**
@@ -18221,11 +18207,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
     "            <udb-time\n" +
-    "              time=\"timestamp\"\n" +
-    "              position=\"'start'\"\n" +
-    "              method=\"'timestamp'\"\n" +
-    "              placeholder=\"Bv. 08:00\"\n" +
-    "              focus-if=\"timestamp.showStartHour\">\n" +
+    "                    ng-model=\"timestamp.startHourAsDate\"\n" +
+    "                    ng-change=\"hoursChanged(timestamp.startHourAsDate)\"\n" +
+    "                    destination=\"{{timestamp.startHour}}\"\n" +
+    "                    placeholder=\"Bv. 08:00\"\n" +
+    "                    focus-if=\"timestamp.showStartHour\"></udb-time>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -18239,11 +18225,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </label>\n" +
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
     "            <udb-time\n" +
-    "                time=\"timestamp\"\n" +
-    "                position=\"'end'\"\n" +
-    "                method=\"'timestamp'\"\n" +
-    "                placeholder=\"Bv. 23:00\"\n" +
-    "                focus-if=\"timestamp.showEndHour\">\n" +
+    "                    ng-model=\"timestamp.endHourAsDate\"\n" +
+    "                    ng-change=\"hoursChanged(timestamp.endHourAsDate)\"\n" +
+    "                    destination=\"{{timestamp.endHour}}\"\n" +
+    "                    placeholder=\"Bv. 23:00\"\n" +
+    "                    focus-if=\"timestamp.showEndHour\"></udb-time>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -18533,9 +18519,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <td>\n" +
     "\n" +
     "              <udb-time\n" +
-    "                      time=\"openingHour\"\n" +
-    "                      position=\"'start'\"\n" +
-    "                      method=\"'openinghour'\"\n" +
     "                      placeholder=\"Bv. 08:00\">\n" +
     "            </td>\n" +
     "            <td>\n" +
@@ -18544,9 +18527,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <td>\n" +
     "\n" +
     "              <udb-time\n" +
-    "                      time=\"openingHour\"\n" +
-    "                      position=\"'end'\"\n" +
-    "                      method=\"'openinghour'\"\n" +
     "                      placeholder=\"Bv. 08:00\">\n" +
     "            </td>\n" +
     "            <td>\n" +
