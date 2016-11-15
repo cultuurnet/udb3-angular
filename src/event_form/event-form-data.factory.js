@@ -112,6 +112,11 @@ function EventFormDataFactory() {
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
+
+      /**
+       * @type {string[]}
+       */
+      this.labels = [];
     },
 
     /**

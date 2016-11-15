@@ -22,7 +22,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
   lmc.labelNames = '';
   lmc.labelSelection = [];
   lmc.alert = false;
-  lmc.minimumInputLength = 3;
+  lmc.minimumInputLength = 2;
   lmc.maxInputLength = 255;
 
   udbApi
@@ -80,7 +80,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
     var i;
     for (i = 0; i < labels.length; i++) {
       if (!areLengthCriteriaMet(labels[i].length)) {
-        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        lmc.alert = 'Een label mag minimum 2 en maximum 255 karakters bevatten.';
         break;
       }
     }

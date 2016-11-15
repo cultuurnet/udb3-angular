@@ -174,6 +174,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.uitpasData = {};
     },
 
     /**

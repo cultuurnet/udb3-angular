@@ -14,6 +14,7 @@ angular
 function EventCrud(
   jobLogger,
   udbApi,
+  udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
   $rootScope ,
@@ -22,6 +23,15 @@ function EventCrud(
 ) {
 
   var service = this;
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function pickMajorInfoFromFormData(formData) {
+    return _.pick(formData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+  }
 
   /**
    * Creates a new offer and add the job to the logger.
@@ -44,7 +54,7 @@ function EventCrud(
       return eventFormData;
     };
 
-    var majorInfo = _.omit(eventFormData, _.isEmpty);
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     return udbApi
       .createOffer(type, majorInfo)
@@ -89,9 +99,7 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = _.pick(eventFormData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
-    });
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
@@ -164,6 +172,27 @@ function EventCrud(
   };
 
   /**
+   * Update UiTPAS info for the event.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updateEventUitpasData = function(item) {
+    return udbUitpasApi
+        .updateEventUitpasData(item.usedDistributionKeys, item.id)
+        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+  };
+
+  /**
+   * Get the Uitpas data from an event.
+   * @param {string} cdbid
+   * @returns {Promise}
+   */
+  service.getEventUitpasData = function(cdbid) {
+    return udbUitpasApi.getEventUitpasData(cdbid);
+  };
+
+  /**
    * @param {EventFormData} item
    * @param {string} jobName
    *
@@ -190,7 +219,7 @@ function EventCrud(
    */
   service.updatePriceInfo = function(item) {
     return udbApi
-      .updatePriceInfo(item.apiUrl, item.price)
+      .updatePriceInfo(item.apiUrl, item.priceInfo)
       .then(function (response) {
         var jobData = response.data;
         var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');

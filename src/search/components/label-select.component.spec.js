@@ -35,8 +35,8 @@ describe('Label Select Component', function() {
   it('should evalutate whether the length criteria are met', function() {
     var ctrl = getComponentController(bindings);
 
-    // needs to be higher than or equal to 3
-    expect(ctrl.areLengthCriteriaMet(2)).toBe(false);
+    // needs to be higher than or equal to 2
+    expect(ctrl.areLengthCriteriaMet(1)).toBe(false);
     // needs to be less than or equal to 255
     expect(ctrl.areLengthCriteriaMet(256)).toBe(false);
     expect(ctrl.areLengthCriteriaMet(45)).toBe(true);
@@ -55,8 +55,8 @@ describe('Label Select Component', function() {
   it('should not add a label that does not meet the length criteria', function() {
     var ctrl = getComponentController(bindings);
 
-    // needs to be higher or equal to 3
-    expect(ctrl.createLabel('wo')).toBe(undefined);
+    // needs to be higher or equal to 2
+    expect(ctrl.createLabel('w')).toBe(undefined);
     // needs to be less than or equal to 255
     var bigLabel = 'turnip greens yarrow ricebean rutabaga endive cauliflower sea lettuce kohlrabi amaranth water spinach avocado daikon napa cabbage asparagus winter purslane kale celery potato scallion desert raisin horseradish spinach carrot soko Lotus root water spinach fennel';
     expect(ctrl.createLabel(bigLabel)).toBe(undefined);
