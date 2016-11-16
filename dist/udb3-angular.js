@@ -22452,7 +22452,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
-    "<a uitpas-organisation-suggestion organisation=\"match.model\" query=\"query\"></a>"
+    "<a>\n" +
+    "    <span class=\"organisation-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
+    "    <small ng-if=\"match.model.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>\n" +
+    "</a>"
   );
 
 }]);
