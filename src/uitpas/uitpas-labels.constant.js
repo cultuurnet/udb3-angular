@@ -22,7 +22,7 @@ angular
     'UITPAS': 'UiTPAS',
     'UITPAS_GENT': 'UiTPAS Gent',
     'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS regio Aalst',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
     'UITPAS_DENDER': 'UiTPAS Dender',
     'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',

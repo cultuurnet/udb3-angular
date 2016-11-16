@@ -18080,7 +18080,7 @@ angular
     'UITPAS': 'UiTPAS',
     'UITPAS_GENT': 'UiTPAS Gent',
     'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS regio Aalst',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
     'UITPAS_DENDER': 'UiTPAS Dender',
     'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
@@ -18538,15 +18538,25 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <td><strong>Organisator</strong></td>\n" +
     "              <td>{{event.organizer.name}}</td>\n" +
     "            </tr>\n" +
-    "            <tr class=\"rv-event-info-price\" ng-class=\"{muted: event.pricing === 'unknown'}\">\n" +
+    "            <tr class=\"rv-event-info-price\" ng-class=\"{muted: !event.priceInfo.length}\">\n" +
     "              <td><strong>Prijs</strong></td>\n" +
-    "              <td ng-switch=\"event.pricing\">\n" +
-    "                <span ng-switch-when=\"free\">Gratis</span>\n" +
-    "                <span ng-switch-when=\"payed\">\n" +
-    "                  <i class=\"fa fa-eur meta icon\"></i>\n" +
-    "                  <span ng-if=\"event.price\" ng-bind=\"event.price | currency\"></span>\n" +
-    "                </span>\n" +
-    "                <span ng-switch-when=\"unknown\">Geen prijsinformatie</span>\n" +
+    "              <td ng-if=\"event.priceInfo.length\">\n" +
+    "                <table class=\"table event-detail-price-table\">\n" +
+    "                  <tr ng-repeat=\"priceInfo in event.priceInfo\">\n" +
+    "                    <td>{{priceInfo.name}}</td>\n" +
+    "                    <td>\n" +
+    "                      <span ng-if=\"priceInfo.price == 0\">\n" +
+    "                        Gratis\n" +
+    "                      </span>\n" +
+    "                      <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                        {{priceInfo.price | currency}} euro\n" +
+    "                      </span>\n" +
+    "                    </td>\n" +
+    "                  </tr>\n" +
+    "                </table>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"!event.priceInfo.length\">\n" +
+    "                Geen prijsinformatie\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
