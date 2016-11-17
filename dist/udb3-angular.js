@@ -20241,7 +20241,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
-    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"/>\n" +
+    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
+    "                             typeahead-wait-ms=\"300\"/>\n" +
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
@@ -22759,13 +22760,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organisation-suggestion.directive.html',
-    "<span class=\"organisation-name\" ng-bind-html=\"::os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
-    "<small ng-if=\"::os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+    "<span class=\"organisation-name\" ng-bind-html=\"os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
+    "<small ng-if=\"os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
   );
 
 
   $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
-    "<a uitpas-organisation-suggestion organisation=\"match.model\" query=\"query\"></a>"
+    "<a>\n" +
+    "    <span class=\"organisation-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
+    "    <small ng-if=\"match.model.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>\n" +
+    "</a>"
   );
 
 }]);

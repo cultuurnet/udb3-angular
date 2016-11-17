@@ -167,7 +167,8 @@
                              uib-typeahead="organizer for organizer in getOrganizers($viewValue)"
                              typeahead-on-select="selectOrganizer(organizer)"
                              typeahead-min-length="3"
-                             typeahead-template-url="templates/organisation-uitpas-typeahead-template.html"/>
+                             typeahead-template-url="templates/organisation-uitpas-typeahead-template.html"
+                             typeahead-wait-ms="300"/>
                       <div class="dropdown-menu-no-results text-center" ng-show="emptyOrganizerAutocomplete">
                         <div class="panel panel-default text-center">
                           <div class="panel-body">
