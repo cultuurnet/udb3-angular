@@ -2,10 +2,9 @@
 
 /**
  * @ngdoc service
- * @name udb.core.UdbTimestamps
+ * @name udb.core.UdbPlace
  * @description
- * # UdbTimestamps
- * Contains timestamps info for the calendar
+ * # UdbPlace
  */
 angular
   .module('udb.core')

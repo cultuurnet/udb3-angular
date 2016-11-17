@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name udb.core.UdbTimestamps
+ * @name udb.core.UdbOpeningHours
  * @description
  * # UdbOpeningHours
  * Contains the opening hours for 1 period / date of an offer.

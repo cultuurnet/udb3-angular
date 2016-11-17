@@ -4229,7 +4229,7 @@ UdbEventFactory.$inject = ["EventTranslationState", "UdbPlace", "UdbOrganizer"];
 // Source: src/core/udb-openinghours.factory.js
 /**
  * @ngdoc service
- * @name udb.core.UdbTimestamps
+ * @name udb.core.UdbOpeningHours
  * @description
  * # UdbOpeningHours
  * Contains the opening hours for 1 period / date of an offer.
@@ -4444,10 +4444,9 @@ UdbOrganizers.$inject = ["$q", "udbApi", "udbUitpasApi", "UdbOrganizer"];
 // Source: src/core/udb-place.factory.js
 /**
  * @ngdoc service
- * @name udb.core.UdbTimestamps
+ * @name udb.core.UdbPlace
  * @description
- * # UdbTimestamps
- * Contains timestamps info for the calendar
+ * # UdbPlace
  */
 angular
   .module('udb.core')
@@ -8836,7 +8835,7 @@ function EventFormDataFactory() {
         'startHour' : startHour,
         'endHour' : endHour,
         'showStartHour' : !!startHour,
-        'showEndHour' : (endHour && endHour !== startHour)
+        'showEndHour' : (endHour && endHour !== '23:59')
       });
 
     },
@@ -9160,7 +9159,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
 
     startHour = startHour === '00:00' ? '' : startHour;
-    endHour = endHour === '00:00' ? '' : endHour;
+    endHour = endHour === '00:00' ? '23:59' : endHour;
 
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);
@@ -9751,7 +9750,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Add a single date to the item.
    */
   function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
+    EventFormData.addTimestamp('', '', '23:59');
   }
 
   /**
@@ -9779,7 +9778,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
     // If we hide the textfield, empty also the input.
     if (!timestamp.showEndHour) {
-      timestamp.endHour = '';
+      timestamp.endHour = '23:59';
       controller.eventTimingChanged();
     }
 

@@ -281,7 +281,7 @@ function EventFormDataFactory() {
         'startHour' : startHour,
         'endHour' : endHour,
         'showStartHour' : !!startHour,
-        'showEndHour' : (endHour && endHour !== startHour)
+        'showEndHour' : (endHour && endHour !== '23:59')
       });
 
     },

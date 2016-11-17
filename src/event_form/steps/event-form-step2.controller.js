@@ -142,7 +142,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Add a single date to the item.
    */
   function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
+    EventFormData.addTimestamp('', '', '23:59');
   }
 
   /**
@@ -170,7 +170,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
     // If we hide the textfield, empty also the input.
     if (!timestamp.showEndHour) {
-      timestamp.endHour = '';
+      timestamp.endHour = '23:59';
       controller.eventTimingChanged();
     }
 
