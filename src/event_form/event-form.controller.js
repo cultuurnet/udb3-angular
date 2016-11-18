@@ -115,13 +115,22 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
-    // Set correct date object for start and end.
+    /**
+     * Set correct date object for start and end.
+     *
+     * The bootstrap datepicker can't handle dates with timing info.
+     * You have to reset the moment to 'start of day' else the date will not show up in the picker.
+     */
     if (item.startDate) {
-      EventFormData.startDate = moment(item.startDate).toDate();
+      EventFormData.startDate = moment(item.startDate)
+        .startOf('day')
+        .toDate();
     }
 
     if (item.endDate) {
-      EventFormData.endDate = moment(item.endDate).toDate();
+      EventFormData.endDate = moment(item.endDate)
+        .startOf('day')
+        .toDate();
     }
 
     // SubEvents are timestamps.
@@ -171,7 +180,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
 
     startHour = startHour === '00:00' ? '' : startHour;
-    endHour = endHour === '00:00' ? '' : endHour;
+    endHour = endHour === '00:00' ? '23:59' : endHour;
 
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);

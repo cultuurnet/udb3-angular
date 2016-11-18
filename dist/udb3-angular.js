@@ -4229,7 +4229,7 @@ UdbEventFactory.$inject = ["EventTranslationState", "UdbPlace", "UdbOrganizer"];
 // Source: src/core/udb-openinghours.factory.js
 /**
  * @ngdoc service
- * @name udb.core.UdbTimestamps
+ * @name udb.core.UdbOpeningHours
  * @description
  * # UdbOpeningHours
  * Contains the opening hours for 1 period / date of an offer.
@@ -4444,10 +4444,9 @@ UdbOrganizers.$inject = ["$q", "udbApi", "udbUitpasApi", "UdbOrganizer"];
 // Source: src/core/udb-place.factory.js
 /**
  * @ngdoc service
- * @name udb.core.UdbTimestamps
+ * @name udb.core.UdbPlace
  * @description
- * # UdbTimestamps
- * Contains timestamps info for the calendar
+ * # UdbPlace
  */
 angular
   .module('udb.core')
@@ -5434,27 +5433,48 @@ function EventCrud(
   }
 
   /**
+   * End the event right before midnight.
+   *
+   * This trick makes sure the availableTo attribute in CDBXML includes the last day.
+   *
+   * @param {EventFormData} formData
+   *
+   * @return {EventFormData}
+   *  Returns a new form data object with the updated end date
+   */
+  function endEventRightBeforeMidnight(formData) {
+    var endDate = formData.endDate;
+    var updatedFormData = _.cloneDeep(formData);
+
+    if (endDate) {
+      updatedFormData.endDate = new moment(endDate).endOf('day').toDate();
+    }
+
+    return updatedFormData;
+  }
+
+  /**
    * Creates a new offer and add the job to the logger.
    *
-   * @param {EventFormData}  eventFormData
+   * @param {EventFormData}  formData
    *  The form data required to create an offer.
    *
    * @return {Promise.<EventFormData>}
    */
-  service.createOffer = function (eventFormData) {
+  service.createOffer = function (formData) {
 
-    var type = eventFormData.isEvent ? 'event' : 'place';
+    var type = formData.isEvent ? 'event' : 'place';
 
     var updateEventFormData = function(url) {
-      eventFormData.apiUrl = url;
-      eventFormData.id = url.toString().split('/').pop();
+      formData.apiUrl = url;
+      formData.id = url.toString().split('/').pop();
 
-      offerLocator.add(eventFormData.id, eventFormData.apiUrl);
+      offerLocator.add(formData.id, formData.apiUrl);
 
-      return eventFormData;
+      return formData;
     };
 
-    var majorInfo = pickMajorInfoFromFormData(eventFormData);
+    var majorInfo = pickMajorInfoFromFormData(endEventRightBeforeMidnight(formData));
 
     return udbApi
       .createOffer(type, majorInfo)
@@ -5496,14 +5516,14 @@ function EventCrud(
 
   /**
    * Update the major info of an event / place.
-   * @param {EventFormData} eventFormData
+   * @param {EventFormData} formData
    */
-  service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = pickMajorInfoFromFormData(eventFormData);
+  service.updateMajorInfo = function(formData) {
+    var majorInfo = pickMajorInfoFromFormData(endEventRightBeforeMidnight(formData));
 
     udbApi
-      .updateMajorInfo(eventFormData.apiUrl, majorInfo)
-      .then(jobCreatorFactory(eventFormData, 'updateItem'));
+      .updateMajorInfo(formData.apiUrl, majorInfo)
+      .then(jobCreatorFactory(formData, 'updateItem'));
   };
 
   /**
@@ -8836,7 +8856,7 @@ function EventFormDataFactory() {
         'startHour' : startHour,
         'endHour' : endHour,
         'showStartHour' : !!startHour,
-        'showEndHour' : (endHour && endHour !== startHour)
+        'showEndHour' : (endHour && endHour !== '23:59')
       });
 
     },
@@ -9104,13 +9124,22 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
-    // Set correct date object for start and end.
+    /**
+     * Set correct date object for start and end.
+     *
+     * The bootstrap datepicker can't handle dates with timing info.
+     * You have to reset the moment to 'start of day' else the date will not show up in the picker.
+     */
     if (item.startDate) {
-      EventFormData.startDate = moment(item.startDate).toDate();
+      EventFormData.startDate = moment(item.startDate)
+        .startOf('day')
+        .toDate();
     }
 
     if (item.endDate) {
-      EventFormData.endDate = moment(item.endDate).toDate();
+      EventFormData.endDate = moment(item.endDate)
+        .startOf('day')
+        .toDate();
     }
 
     // SubEvents are timestamps.
@@ -9160,7 +9189,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
 
     startHour = startHour === '00:00' ? '' : startHour;
-    endHour = endHour === '00:00' ? '' : endHour;
+    endHour = endHour === '00:00' ? '23:59' : endHour;
 
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);
@@ -9751,7 +9780,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Add a single date to the item.
    */
   function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
+    EventFormData.addTimestamp('', '', '23:59');
   }
 
   /**
@@ -9779,7 +9808,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
     // If we hide the textfield, empty also the input.
     if (!timestamp.showEndHour) {
-      timestamp.endHour = '';
+      timestamp.endHour = '23:59';
       controller.eventTimingChanged();
     }
 

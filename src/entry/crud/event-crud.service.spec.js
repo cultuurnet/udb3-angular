@@ -138,7 +138,7 @@ describe('Service: Event crud', function () {
     var expectedInfo = {
       calendarType: 'periodic',
       startDate: new Date('2013-03-01T00:00:00Z'),
-      endDate: new Date('2013-03-03T00:00:00Z')
+      endDate: new moment('2013-03-03T00:00:00Z').endOf('day').toDate()
     };
 
     function assertMajorInfo() {
@@ -185,7 +185,7 @@ describe('Service: Event crud', function () {
     var expectedInfo = {
       calendarType: 'periodic',
       startDate: new Date('2013-03-01T00:00:00Z'),
-      endDate: new Date('2013-03-03T00:00:00Z')
+      endDate: new moment('2013-03-03T00:00:00Z').endOf('day').toDate()
     };
 
 
