@@ -19191,14 +19191,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  Gratis\n" +
     "                </span>\n" +
     "                <span ng-if=\"priceInfo.price !== 0\">\n" +
-    "                  <input type=\"number\"\n" +
+    "                  <div class=\"form-inline\">\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                      <input type=\"number\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"price\"\n" +
     "                       ng-model=\"priceInfo.price\"\n" +
     "                       ng-model-options=\"{ updateOn: 'blur' }\"\n" +
     "                       ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
     "                       required />\n" +
-    "                  euro\n" +
+    "                     </div>\n" +
+    "                     <div class=\"form-group\">\n" +
+    "                       euro\n" +
+    "                     </div>\n" +
+    "                  </div>\n" +
     "                </span>\n" +
     "              </td>\n" +
     "              <td ng-switch on=\"priceInfo.price\"\n" +
@@ -19211,9 +19217,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-switch-default>Gratis</a>\n" +
     "              </td>\n" +
     "              <td class=\"col-xs-1\">\n" +
-    "                <span aria-hidden=\"true\"\n" +
-    "                      ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
-    "                      ng-if=\"$ctrl.showPriceDelete(key)\">&times;</span>\n" +
+    "                <a aria-hidden=\"true\"\n" +
+    "                    ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
+    "                    ng-if=\"$ctrl.showPriceDelete(key)\" class=\"close\">&times;</a>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
@@ -19997,7 +20003,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <section class=\"state complete\">\n" +
     "                <span>\n" +
     "                  <span ng-bind=\"eventFormData.organizer.name\"></span>\n" +
-    "                  <a class=\"btn btn-link close\" ng-click=\"deleteOrganizer()\" data-dismiss=\"modal\" aria-label=\"Close\">\n" +
+    "                  <a class=\"close\" ng-click=\"deleteOrganizer()\">\n" +
     "                    <span aria-hidden=\"true\"> &times;</span>\n" +
     "                  </a>\n" +
     "                </span>\n" +

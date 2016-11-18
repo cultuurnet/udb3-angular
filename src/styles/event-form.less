@@ -233,10 +233,6 @@
     padding-bottom: 0.5em;
   }
 
-  .form-group .form-group {
-    padding-left: 20px;
-  }
-
   .tt-dataset-locaties em {
     font-style: normal;
     color: #004f94;
@@ -278,11 +274,7 @@
     margin-bottom: 0.5em;
   }
 
-  .extra-leeftijd .form-group {
-    margin: 0;
-  }
-
-  .extra-beschrijving a {
+  .extra-beschrijving a:not(.btn) {
     text-decoration: underline;
   }
 
@@ -293,6 +285,10 @@
 
   .udb3-data-table {
     table-layout: fixed;
+  }
+
+  .extra-prijs .table {
+    margin-bottom: 0;
   }
 
   .extra-task p,
@@ -319,7 +315,7 @@
     margin-top: 0.5em;
   }
 
-  .meer-info a {
+  .meer-info a:not(.btn) {
     text-decoration: underline;
     cursor: pointer;
   }
@@ -414,6 +410,17 @@
 
   .incomplete .btn-default:hover:before {
     color: #333;
+  }
+
+  .extra-leeftijd {
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    .form-inline {
+      margin: 10px 0;
+    }
   }
 
   .extra-task .fa {
