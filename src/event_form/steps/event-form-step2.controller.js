@@ -210,26 +210,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     }
   };
 
-  /**
-   * End the event right before midnight.
-   *
-   * This trick makes sure the availableTo attribute in CDBXML includes the last day.
-   * Assuming the end date is set!
-   *
-   * @param {EventFormData} EventFormData
-   *  The form data to mutate.
-   */
-  function endEventRightBeforeMidnight(EventFormData) {
-    var endDate = EventFormData.endDate;
-    if (endDate) {
-      endDate.setHours(23, 59);
-    }
-  }
-
   controller.periodicEventTimingChanged = function () {
     if (EventFormData.id) {
       if (EventFormData.hasValidPeriodicRange()) {
-        endEventRightBeforeMidnight(EventFormData);
         controller.clearPeriodicRangeError();
         $rootScope.$emit('eventTimingChanged', EventFormData);
       } else {

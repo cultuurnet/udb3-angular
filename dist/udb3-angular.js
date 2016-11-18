@@ -5433,27 +5433,48 @@ function EventCrud(
   }
 
   /**
+   * End the event right before midnight.
+   *
+   * This trick makes sure the availableTo attribute in CDBXML includes the last day.
+   *
+   * @param {EventFormData} formData
+   *
+   * @return {EventFormData}
+   *  Returns a new form data object with the updated end date
+   */
+  function endEventRightBeforeMidnight(formData) {
+    var endDate = formData.endDate;
+    var updatedFormData = _.cloneDeep(formData);
+
+    if (endDate) {
+      updatedFormData.endDate = new moment(endDate).endOf('day').toDate();
+    }
+
+    return updatedFormData;
+  }
+
+  /**
    * Creates a new offer and add the job to the logger.
    *
-   * @param {EventFormData}  eventFormData
+   * @param {EventFormData}  formData
    *  The form data required to create an offer.
    *
    * @return {Promise.<EventFormData>}
    */
-  service.createOffer = function (eventFormData) {
+  service.createOffer = function (formData) {
 
-    var type = eventFormData.isEvent ? 'event' : 'place';
+    var type = formData.isEvent ? 'event' : 'place';
 
     var updateEventFormData = function(url) {
-      eventFormData.apiUrl = url;
-      eventFormData.id = url.toString().split('/').pop();
+      formData.apiUrl = url;
+      formData.id = url.toString().split('/').pop();
 
-      offerLocator.add(eventFormData.id, eventFormData.apiUrl);
+      offerLocator.add(formData.id, formData.apiUrl);
 
-      return eventFormData;
+      return formData;
     };
 
-    var majorInfo = pickMajorInfoFromFormData(eventFormData);
+    var majorInfo = pickMajorInfoFromFormData(endEventRightBeforeMidnight(formData));
 
     return udbApi
       .createOffer(type, majorInfo)
@@ -5495,14 +5516,14 @@ function EventCrud(
 
   /**
    * Update the major info of an event / place.
-   * @param {EventFormData} eventFormData
+   * @param {EventFormData} formData
    */
-  service.updateMajorInfo = function(eventFormData) {
-    var majorInfo = pickMajorInfoFromFormData(eventFormData);
+  service.updateMajorInfo = function(formData) {
+    var majorInfo = pickMajorInfoFromFormData(endEventRightBeforeMidnight(formData));
 
     udbApi
-      .updateMajorInfo(eventFormData.apiUrl, majorInfo)
-      .then(jobCreatorFactory(eventFormData, 'updateItem'));
+      .updateMajorInfo(formData.apiUrl, majorInfo)
+      .then(jobCreatorFactory(formData, 'updateItem'));
   };
 
   /**
@@ -9827,26 +9848,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     }
   };
 
-  /**
-   * End the event right before midnight.
-   *
-   * This trick makes sure the availableTo attribute in CDBXML includes the last day.
-   * Assuming the end date is set!
-   *
-   * @param {EventFormData} EventFormData
-   *  The form data to mutate.
-   */
-  function endEventRightBeforeMidnight(EventFormData) {
-    var endDate = EventFormData.endDate;
-    if (endDate) {
-      endDate.setHours(23, 59);
-    }
-  }
-
   controller.periodicEventTimingChanged = function () {
     if (EventFormData.id) {
       if (EventFormData.hasValidPeriodicRange()) {
-        endEventRightBeforeMidnight(EventFormData);
         controller.clearPeriodicRangeError();
         $rootScope.$emit('eventTimingChanged', EventFormData);
       } else {
