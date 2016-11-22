@@ -236,6 +236,17 @@ angular
   ]);
 /**
  * @ngdoc module
+ * @name udb.management.organizers
+ * @description
+ * # Organizers Management Module
+ */
+angular
+  .module('udb.management.organizers', [
+    'rx',
+    'ngTagsInput'
+  ]);
+/**
+ * @ngdoc module
  * @name udb.management
  * @description
  * # Management Module
@@ -246,7 +257,8 @@ angular
     'udb.management.labels',
     'udb.management.roles',
     'udb.management.users',
-    'udb.management.moderation'
+    'udb.management.moderation',
+    'udb.management.organizers'
   ]);
 
 angular.module('peg', []).factory('LuceneQueryParser', function () {
@@ -2908,6 +2920,34 @@ function UdbApi(
   };
 
   /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
+  this.addLabelToOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
+  this.deleteLabelFromOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, requestConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */
@@ -4312,6 +4352,14 @@ function UdbOrganizerFactory(UitpasLabels) {
         _.values(UitpasLabels)));
   }
 
+  function getFirst(jsonOrganizer, path) {
+    return _
+      .chain(jsonOrganizer)
+      .get(path, [])
+      .first()
+      .value();
+  }
+
   /**
    * @class UdbOrganizer
    * @constructor
@@ -4329,10 +4377,10 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
-      this.addresses = jsonOrganizer.addresses || [];
-      this.email = jsonOrganizer.email || [];
-      this.phone = jsonOrganizer.phone || [];
-      this.url = jsonOrganizer.url || [];
+      this.address = jsonOrganizer.address || [];
+      this.email = getFirst(jsonOrganizer, 'contactPoint.email');
+      this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
+      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
       this.labels = jsonOrganizer.labels || [];
       this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
@@ -12271,7 +12319,7 @@ function listItemDefaults(RolePermission) {
       permission: RolePermission.ORGANISATIES_BEHEREN,
       notificationCount: 0,
       index: 5,
-      sref: 'split.manageOrganisations',
+      sref: 'management.organizers',
       icon: 'fa-slideshare'
     }
   ];
@@ -12873,6 +12921,185 @@ angular
       'DELETED': 'DELETED'
     }
   );
+
+// Source: src/management/organizers/organizer-detail.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerDetailController
+ * @description
+ * # OrganizerDetailController
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizerDetailController', OrganizerDetailController);
+
+/* @ngInject */
+function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
+  var controller = this;
+  var organizerId = $stateParams.id;
+
+  controller.organizerLabels = [];
+  controller.labelSaving = false;
+  controller.searchedLabels = [];
+
+  controller.addLabel = addLabel;
+  controller.deleteLabel = deleteLabel;
+  controller.searchLabels = searchLabels;
+
+  loadOrganizer(organizerId);
+
+  function loadOrganizer(organizerId) {
+    OrganizerManager
+      .get(organizerId)
+      .then(showOrganizer);
+  }
+
+  /**
+   * @param {Organizer} organizer
+   */
+  function showOrganizer(organizer) {
+    controller.organizer = organizer;
+    mapLabels(organizer.labels);
+  }
+
+  function addLabel(label) {
+    controller.labelSaving = true;
+
+    OrganizerManager
+      .addLabelToOrganizer(organizerId, label.uuid)
+      .catch(showProblem)
+      .finally(function() {
+        controller.labelSaving = false;
+        removeFromCache();
+      });
+  }
+
+  function deleteLabel(label) {
+    controller.labelSaving = true;
+
+    OrganizerManager
+        .deleteLabelFromOrganizer(organizerId, label.uuid)
+        .catch(showProblem)
+        .finally(function() {
+          controller.labelSaving = false;
+          removeFromCache();
+        });
+  }
+
+  function searchLabels(query) {
+    return LabelManager
+        .find(query, 6, 0)
+        .then(function (labels) {
+          return mapLabels(labels.member);
+        }, showProblem);
+  }
+
+  function mapLabels(labels) {
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i].hasOwnProperty('name')) {
+        labels[i].text = angular.copy(labels[i].name);
+      }
+    }
+    return labels;
+  }
+
+  function removeFromCache() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    controller.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
+
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return controller.errorMessage;
+          }
+        }
+      }
+    );
+    controller.organizer.labels = angular.copy(controller.organizerLabels);
+  }
+
+}
+OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams"];
+
+// Source: src/management/organizers/organizer-manager.service.js
+/**
+ * @ngdoc service
+ * @name udb.management.organizers
+ * @description
+ * # Organizer Manager
+ * This service allows you to lookup organizers and perform actions on them.
+ */
+angular
+  .module('udb.management.organizers')
+  .service('OrganizerManager', OrganizerManager);
+
+/* @ngInject */
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
+  var service = this;
+
+  /**
+   * @param {string} organizerId
+   *
+   * @returns {Promise.<Organizer>}
+   */
+  service.get = function(organizerId) {
+    return udbApi.getOrganizerById(organizerId);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
+  service.addLabelToOrganizer = function(organizerId, labelUuid) {
+    return udbApi
+      .addLabelToOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
+  service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
+    return udbApi
+      .deleteLabelFromOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
+  };
+
+  /**
+   * Removes an organizer from the cache.
+   * @param {string} organizerId
+   */
+  service.removeOrganizerFromCache = function(organizerId) {
+    udbApi.removeItemFromCache(organizerId);
+  };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logOrganizerLabelJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
+}
+OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
 
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 
@@ -20020,7 +20247,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
-    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"/>\n" +
+    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
+    "                             typeahead-wait-ms=\"300\"/>\n" +
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
@@ -20908,6 +21136,93 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </uib-pagination>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organizer-detail.html',
+    "<h1 class=\"title\">{{odc.organizer.name}}</h1>\n" +
+    "\n" +
+    "<div ng-show=\"!odc.organizer && !odc.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"odc.organizer\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Naam</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.name\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Straat + nr</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.streetAddress\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Postcode</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.postalCode\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Gemeente</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Website</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.url\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Telefoonnummer</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.phone\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>E-mailadres</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.email\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Labels</strong></span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <tags-input ng-model=\"odc.organizer.labels\"\n" +
+    "                        on-tag-added=\"odc.addLabel($tag)\"\n" +
+    "                        on-tag-removed=\"odc.deleteLabel($tag)\"\n" +
+    "                        placeholder=\"voeg een label toe\">\n" +
+    "              <auto-complete source=\"odc.searchLabels($query)\"\n" +
+    "                             ></auto-complete>\n" +
+    "            </tags-input>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"odc.loadingError\">\n" +
+    "    <span ng-bind=\"odc.loadingError\"></span>\n" +
     "</div>\n"
   );
 
@@ -22451,13 +22766,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organisation-suggestion.directive.html',
-    "<span class=\"organisation-name\" ng-bind-html=\"::os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
-    "<small ng-if=\"::os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+    "<span class=\"organisation-name\" ng-bind-html=\"os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
+    "<small ng-if=\"os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
   );
 
 
   $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
-    "<a uitpas-organisation-suggestion organisation=\"match.model\" query=\"query\"></a>"
+    "<a>\n" +
+    "    <span class=\"organisation-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
+    "    <small ng-if=\"match.model.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>\n" +
+    "</a>"
   );
 
 }]);
