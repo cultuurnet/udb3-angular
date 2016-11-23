@@ -64,7 +64,7 @@ function listItemDefaults(RolePermission) {
       permission: RolePermission.ORGANISATIES_BEHEREN,
       notificationCount: 0,
       index: 5,
-      sref: 'split.manageOrganisations',
+      sref: 'management.organizers',
       icon: 'fa-slideshare'
     }
   ];

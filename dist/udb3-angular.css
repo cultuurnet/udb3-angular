@@ -2476,16 +2476,15 @@ input + .alert {
 }
 .offer-form {
   margin-bottom: 33vw;
-  /*  .multiselect-container > li > a > label {
-    margin: 0;
-    height: 100%;
-    cursor: pointer;
-    font-weight: 400;
-    padding: 3px 20px 3px 40px;
-  }*/
 }
 .offer-form .alert {
   margin-top: 10px;
+}
+.offer-form .alert p {
+  line-height: inherit;
+}
+.offer-form .alert-link {
+  text-decoration: underline;
 }
 .offer-form #or-label {
   font-style: italic;
@@ -2504,6 +2503,12 @@ input + .alert {
 .offer-form #step3-list {
   line-height: 2.7em;
   margin-bottom: 1em;
+}
+.offer-form #step1-events a,
+.offer-form #step1-places a,
+.offer-form #step2-list a,
+.offer-form #step3-list a {
+  text-decoration: underline;
 }
 .offer-form .title-border {
   border-bottom: 1px solid #555555;
@@ -2669,9 +2674,6 @@ input + .alert {
 .offer-form .extra-row {
   padding-bottom: 0.5em;
 }
-.offer-form .form-group .form-group {
-  padding-left: 20px;
-}
 .offer-form .tt-dataset-locaties em {
   font-style: normal;
   color: #004f94;
@@ -2710,12 +2712,18 @@ input + .alert {
 .offer-form .extra-contact {
   margin-bottom: 0.5em;
 }
+.offer-form .extra-beschrijving a:not(.btn) {
+  text-decoration: underline;
+}
 .offer-form .description-text {
   margin-top: 3px;
   white-space: pre-line;
 }
 .offer-form .udb3-data-table {
   table-layout: fixed;
+}
+.offer-form .extra-prijs .table {
+  margin-bottom: 0;
 }
 .offer-form .extra-task p,
 .offer-form .udb3-data-table td {
@@ -2739,6 +2747,10 @@ input + .alert {
 }
 .offer-form .extra-tickets-website .checkbox {
   margin-top: 0.5em;
+}
+.offer-form .meer-info a:not(.btn) {
+  text-decoration: underline;
+  cursor: pointer;
 }
 .offer-form .extra-tickets .checkbox:first-child {
   margin-top: 1em;
@@ -2816,6 +2828,12 @@ input + .alert {
 .offer-form .incomplete .btn-default:hover:before {
   color: #333;
 }
+.offer-form .extra-leeftijd .form-group {
+  margin-bottom: 0;
+}
+.offer-form .extra-leeftijd .form-inline {
+  margin: 10px 0;
+}
 .offer-form .extra-task .fa {
   color: #777777;
   margin-left: 0.85em;
@@ -2839,6 +2857,7 @@ input + .alert {
   margin-bottom: 1em;
 }
 .offer-form .reservatie-periode-toevoegen {
+  text-decoration: underline;
   margin-bottom: 1em;
   display: block;
 }
@@ -3026,9 +3045,6 @@ input + .alert {
 .offer-form .main-image .select-main-image {
   display: none;
 }
-.offer-form a:not(.btn) {
-  text-decoration: underline;
-}
 .offer-form input.has-error {
   border: 1px solid #f3453f;
 }
@@ -3160,6 +3176,9 @@ h2.block-header {
 img.offer-image-thumbnail {
   max-width: 400px;
   max-height: 300px;
+}
+table.event-detail-price-table {
+  background-color: #fff !important;
 }
 .editable-click {
   border: 1px solid #eeeeee;

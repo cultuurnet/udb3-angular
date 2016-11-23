@@ -51,7 +51,6 @@ function udbTimeDirective() {
       scope.hour = formatter(ngModel.$modelValue);
     };
 
-
     console.log(ngModel);
     console.log(element);
   }

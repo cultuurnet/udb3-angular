@@ -253,6 +253,34 @@ function UdbApi(
   };
 
   /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
+  this.addLabelToOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
+  this.deleteLabelFromOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, requestConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */
