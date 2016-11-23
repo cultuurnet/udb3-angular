@@ -11,48 +11,22 @@ angular
   .module('udb.core')
   .directive('udbTime', udbTimeDirective);
 
-function udbTimeDirective() {
+function udbTimeDirective($timeout, $filter) {
   return {
-    restrict: 'AE',
+    restrict: 'A',
     require: 'ngModel',
-    template: '<input type="time" ng-model="hour" class="form-control uur" required />',
     link: link
   };
 
-  function link (scope, element, attrs, ngModel) {
+  function link (scope, elem, attr, ngModel) {
+    if( !ngModel )
+      return;
+    if( attr.type !== 'time' )
+      return;
 
-    scope.hour = ngModel.$viewValue;
-
-    function hoursChanged(timestamp) {
-      return formatter(timestamp);
-    }
-
-    ngModel.$parsers.push(function(date) {
-      //View -> Model
-      return moment(date).format('HH:mm');
+    ngModel.$formatters.unshift(function(value) {
+      return value.replace(/:\d{2}[.,]\d{3}$/, '');
     });
-
-    function formatter(timestamp) {
-      //var hour = moment(timestamp);
-      //attrs.destination = hour.format('HH:mm');
-      //Model -> View
-      return moment(timestamp).format('HH:mm');
-    }
-
-    ngModel.$formatters.push(formatter);
-
-    ngModel.$render = function() {
-      //element.html(formatter(ngModel.$viewValue));
-      //element.html(ngModel.$viewValue);
-      ngModel.$setViewValue(formatter(ngModel.$modelValue));
-    };
-
-    ngModel.$render = function() {
-      scope.hour = formatter(ngModel.$modelValue);
-    };
-
-    console.log(ngModel);
-    console.log(element);
   }
 }
 })();
