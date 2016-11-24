@@ -18160,36 +18160,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/time.html',
-    "<span ng-if=\"tcc.method === 'timestamp'\">\n" +
-    "    <input ng-if=\"tcc.position === 'start'\"\n" +
-    "           type=\"time\"\n" +
-    "           class=\"form-control uur\"\n" +
-    "           ng-model=\"tcc.time.startHourAsDate\"\n" +
-    "           ng-change=\"tcc.hoursChanged(tcc.time)\">\n" +
-    "\n" +
-    "    <input ng-if=\"tcc.position === 'end'\"\n" +
-    "           type=\"time\"\n" +
-    "           class=\"form-control uur\"\n" +
-    "           ng-model=\"tcc.time.endHourAsDate\"\n" +
-    "           ng-change=\"tcc.hoursChanged(tcc.time)\">\n" +
-    "</span>\n" +
-    "<span ng-if=\"tcc.method === 'openinghour'\">\n" +
-    "    <input ng-if=\"tcc.position === 'start'\"\n" +
-    "           type=\"time\"\n" +
-    "           class=\"form-control uur\"\n" +
-    "           ng-model=\"tcc.time.opensAsDate\"\n" +
-    "           ng-change=\"tcc.openingHoursChanged(tcc.time)\">\n" +
-    "\n" +
-    "    <input ng-if=\"tcc.position === 'end'\"\n" +
-    "           type=\"time\"\n" +
-    "           class=\"form-control uur\"\n" +
-    "           ng-model=\"tcc.time.closesAsDate\"\n" +
-    "           ng-change=\"tcc.openingHoursChanged(tcc.time)\">\n" +
-    "</span>"
-  );
-
-
   $templateCache.put('templates/unexpected-error-modal.html',
     "<div class=\"modal-body\">\n" +
     "  <p ng-bind=\"errorMessage\"></p>\n" +
