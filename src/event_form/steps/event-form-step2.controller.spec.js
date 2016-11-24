@@ -20,6 +20,7 @@ describe('Controller: event form step 2', function () {
     spyOn(stepController, 'eventTimingChanged');
 
     var timestamp = {
+      date: new Date(),
       startHour: '',
       endHour: '',
       showEndHour: true,
@@ -34,6 +35,7 @@ describe('Controller: event form step 2', function () {
     spyOn(stepController, 'eventTimingChanged');
 
     var timestamp = {
+      date: new Date(),
       startHour: '',
       endHour: '',
       showEndHour: false,
