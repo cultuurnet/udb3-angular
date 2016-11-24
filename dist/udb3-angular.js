@@ -2241,7 +2241,7 @@ angular
   .module('udb.core')
   .directive('udbTime', udbTimeDirective);
 
-function udbTimeDirective($timeout, $filter) {
+function udbTimeDirective() {
   return {
     restrict: 'A',
     require: 'ngModel',
@@ -2249,17 +2249,19 @@ function udbTimeDirective($timeout, $filter) {
   };
 
   function link (scope, elem, attr, ngModel) {
-    if( !ngModel )
+    if (!ngModel) {
       return;
-    if( attr.type !== 'time' )
+    }
+
+    if (attr.type !== 'time') {
       return;
+    }
 
     ngModel.$formatters.unshift(function(value) {
       return value.replace(/:\d{2}[.,]\d{3}$/, '');
     });
   }
 }
-udbTimeDirective.$inject = ["$timeout", "$filter"];
 })();
 
 // Source: src/core/dutch-translations.constant.js
@@ -9612,6 +9614,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.addTimestamp = addTimestamp;
   $scope.toggleStartHour = controller.toggleStartHour;
   $scope.toggleEndHour = toggleEndHour;
+  $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.openingHoursChanged = openingHoursChanged;
@@ -9679,6 +9682,35 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   }
 
+  function hoursChanged(timestamp) {
+    var startHourAsDate;
+    var endHourAsDate;
+    if (timestamp.showStartHour) {
+      if (timestamp.startHourAsDate !== undefined) {
+        startHourAsDate = moment(timestamp.startHourAsDate);
+      }
+      else {
+        startHourAsDate = moment(timestamp.startHourAsDate);
+        startHourAsDate.hours(0);
+        startHourAsDate.minutes(0);
+      }
+      timestamp.startHour = startHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
+    }
+
+    if (timestamp.showEndHour) {
+      // if the endhour is invalid, send starthour to backend.
+      if (timestamp.endHourAsDate !== undefined) {
+        endHourAsDate = moment(timestamp.endHourAsDate);
+      }
+      else {
+        endHourAsDate = startHourAsDate;
+      }
+      timestamp.endHour = endHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
+    }
+  }
+
   /**
    * Change listener to the datepicker. Last choice is stored.
    */
@@ -9738,6 +9770,8 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       timestamp.endHour = '';
       timestamp.endHourAsDate = '';
       timestamp.showEndHour = false;
+      timestamp.date.setHours(0);
+      timestamp.date.setMinutes(0);
       controller.eventTimingChanged();
     }
   };
@@ -18722,7 +18756,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   type=\"time\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.startHourAsDate\"\n" +
-    "                   ng-change=\"hoursChanged(timestamp.startHourAsDate)\"\n" +
+    "                   ng-change=\"hoursChanged(timestamp)\"\n" +
     "                   placeholder=\"Bv. 08:00\"\n" +
     "                   focus-if=\"timestamp.showStartHour\"/>\n" +
     "          </div>\n" +
@@ -18741,7 +18775,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   type=\"time\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                   ng-change=\"hoursChanged(timestamp.endHourAsDate)\"\n" +
+    "                   ng-change=\"hoursChanged(timestamp)\"\n" +
     "                   placeholder=\"Bv. 23:00\"\n" +
     "                   focus-if=\"timestamp.showEndHour\"/>\n" +
     "          </div>\n" +

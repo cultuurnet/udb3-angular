@@ -34,6 +34,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.addTimestamp = addTimestamp;
   $scope.toggleStartHour = controller.toggleStartHour;
   $scope.toggleEndHour = toggleEndHour;
+  $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.openingHoursChanged = openingHoursChanged;
@@ -101,6 +102,35 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   }
 
+  function hoursChanged(timestamp) {
+    var startHourAsDate;
+    var endHourAsDate;
+    if (timestamp.showStartHour) {
+      if (timestamp.startHourAsDate !== undefined) {
+        startHourAsDate = moment(timestamp.startHourAsDate);
+      }
+      else {
+        startHourAsDate = moment(timestamp.startHourAsDate);
+        startHourAsDate.hours(0);
+        startHourAsDate.minutes(0);
+      }
+      timestamp.startHour = startHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
+    }
+
+    if (timestamp.showEndHour) {
+      // if the endhour is invalid, send starthour to backend.
+      if (timestamp.endHourAsDate !== undefined) {
+        endHourAsDate = moment(timestamp.endHourAsDate);
+      }
+      else {
+        endHourAsDate = startHourAsDate;
+      }
+      timestamp.endHour = endHourAsDate.format('HH:mm');
+      controller.eventTimingChanged();
+    }
+  }
+
   /**
    * Change listener to the datepicker. Last choice is stored.
    */
@@ -160,6 +190,8 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       timestamp.endHour = '';
       timestamp.endHourAsDate = '';
       timestamp.showEndHour = false;
+      timestamp.date.setHours(0);
+      timestamp.date.setMinutes(0);
       controller.eventTimingChanged();
     }
   };

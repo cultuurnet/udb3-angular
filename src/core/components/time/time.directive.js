@@ -11,7 +11,7 @@ angular
   .module('udb.core')
   .directive('udbTime', udbTimeDirective);
 
-function udbTimeDirective($timeout, $filter) {
+function udbTimeDirective() {
   return {
     restrict: 'A',
     require: 'ngModel',
@@ -19,10 +19,13 @@ function udbTimeDirective($timeout, $filter) {
   };
 
   function link (scope, elem, attr, ngModel) {
-    if( !ngModel )
+    if (!ngModel) {
       return;
-    if( attr.type !== 'time' )
+    }
+
+    if (attr.type !== 'time') {
       return;
+    }
 
     ngModel.$formatters.unshift(function(value) {
       return value.replace(/:\d{2}[.,]\d{3}$/, '');

@@ -24,7 +24,7 @@
                    type="time"
                    class="form-control uur"
                    ng-model="timestamp.startHourAsDate"
-                   ng-change="hoursChanged(timestamp.startHourAsDate)"
+                   ng-change="hoursChanged(timestamp)"
                    placeholder="Bv. 08:00"
                    focus-if="timestamp.showStartHour"/>
           </div>
@@ -43,7 +43,7 @@
                    type="time"
                    class="form-control uur"
                    ng-model="timestamp.endHourAsDate"
-                   ng-change="hoursChanged(timestamp.endHourAsDate)"
+                   ng-change="hoursChanged(timestamp)"
                    placeholder="Bv. 23:00"
                    focus-if="timestamp.showEndHour"/>
           </div>
