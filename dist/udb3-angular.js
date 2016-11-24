@@ -18769,6 +18769,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
     "            <input udb-time\n" +
     "                   type=\"time\"\n" +
+    "                   required=\"required\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.startHourAsDate\"\n" +
     "                   ng-change=\"hoursChanged(timestamp)\"\n" +
@@ -18788,6 +18789,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
     "            <input udb-time\n" +
     "                   type=\"time\"\n" +
+    "                   required=\"required\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.endHourAsDate\"\n" +
     "                   ng-change=\"hoursChanged(timestamp)\"\n" +

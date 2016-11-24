@@ -22,6 +22,7 @@
           <div class="beginuur-invullen" ng-show="timestamp.showStartHour">
             <input udb-time
                    type="time"
+                   required="required"
                    class="form-control uur"
                    ng-model="timestamp.startHourAsDate"
                    ng-change="hoursChanged(timestamp)"
@@ -41,6 +42,7 @@
           <div class="einduur-invullen" ng-show="timestamp.showEndHour">
             <input udb-time
                    type="time"
+                   required="required"
                    class="form-control uur"
                    ng-model="timestamp.endHourAsDate"
                    ng-change="hoursChanged(timestamp)"
