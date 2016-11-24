@@ -9824,10 +9824,25 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Change listener for opening hours.
    */
   function openingHoursChanged(openingHour) {
-    var opensAsDate = moment(openingHour.opensAsDate);
-    openingHour.opens = opensAsDate.format('HH:mm');
-    var closesAsDate = moment(openingHour.closesAsDate);
-    openingHour.closes = closesAsDate.format('HH:mm');
+    var opensAsDate, closesAsDate;
+
+    if (openingHour.opensAsDate !== undefined) {
+      opensAsDate = moment(openingHour.opensAsDate);
+      openingHour.opens = opensAsDate.format('HH:mm');
+    }
+    // default value for when given openHour is invalid.
+    else {
+      openingHour.opens = '00:00';
+    }
+
+    if (openingHour.closesAsDate !== undefined) {
+      closesAsDate = moment(openingHour.closesAsDate);
+      openingHour.closes = closesAsDate.format('HH:mm');
+    }
+    // default value for when given closeHour is invalid.
+    else {
+      openingHour.closes = '00:00';
+    }
   }
 
   /**
@@ -19065,17 +19080,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </select>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "\n" +
-    "              <udb-time\n" +
-    "                      placeholder=\"Bv. 08:00\">\n" +
+    "                <input udb-time\n" +
+    "                       type=\"time\"\n" +
+    "                       class=\"form-control uur\"\n" +
+    "                       placeholder=\"Bv. 08:00\"\n" +
+    "                       ng-model=\"openingHour.opensAsDate\"\n" +
+    "                       ng-change=\"openingHoursChanged(openingHour)\"/>\n" +
     "            </td>\n" +
     "            <td>\n" +
     "              &nbsp;-&nbsp;\n" +
     "            </td>\n" +
     "            <td>\n" +
     "\n" +
-    "              <udb-time\n" +
-    "                      placeholder=\"Bv. 08:00\">\n" +
+    "              <input udb-time\n" +
+    "                     type=\"time\"\n" +
+    "                     class=\"form-control uur\"\n" +
+    "                     placeholder=\"Bv. 08:00\"\n" +
+    "                     ng-model=\"openingHour.closesAsDate\"\n" +
+    "                     ng-change=\"openingHoursChanged(openingHour)\"/>\n" +
     "            </td>\n" +
     "            <td>\n" +
     "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"eventFormData.removeOpeningHour(i)\">\n" +

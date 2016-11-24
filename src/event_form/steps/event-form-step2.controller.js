@@ -244,10 +244,25 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    * Change listener for opening hours.
    */
   function openingHoursChanged(openingHour) {
-    var opensAsDate = moment(openingHour.opensAsDate);
-    openingHour.opens = opensAsDate.format('HH:mm');
-    var closesAsDate = moment(openingHour.closesAsDate);
-    openingHour.closes = closesAsDate.format('HH:mm');
+    var opensAsDate, closesAsDate;
+
+    if (openingHour.opensAsDate !== undefined) {
+      opensAsDate = moment(openingHour.opensAsDate);
+      openingHour.opens = opensAsDate.format('HH:mm');
+    }
+    // default value for when given openHour is invalid.
+    else {
+      openingHour.opens = '00:00';
+    }
+
+    if (openingHour.closesAsDate !== undefined) {
+      closesAsDate = moment(openingHour.closesAsDate);
+      openingHour.closes = closesAsDate.format('HH:mm');
+    }
+    // default value for when given closeHour is invalid.
+    else {
+      openingHour.closes = '00:00';
+    }
   }
 
   /**
