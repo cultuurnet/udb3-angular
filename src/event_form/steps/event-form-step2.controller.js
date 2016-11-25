@@ -250,7 +250,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       opensAsDate = moment(openingHour.opensAsDate);
       openingHour.opens = opensAsDate.format('HH:mm');
     }
-    // default value for when given openHour is invalid.
+    // default value for when given openHour is invalid or null.
     else {
       openingHour.opens = '00:00';
     }
@@ -259,8 +259,16 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       closesAsDate = moment(openingHour.closesAsDate);
       openingHour.closes = closesAsDate.format('HH:mm');
     }
-    // default value for when given closeHour is invalid.
+    // default value for when given closeHour is invalid or null.
     else {
+      openingHour.closes = '00:00';
+    }
+
+    if (openingHour.opens === 'Invalid date') {
+      openingHour.opens = '00:00';
+    }
+
+    if (openingHour.closes === 'Invalid date') {
       openingHour.closes = '00:00';
     }
   }
