@@ -116,7 +116,7 @@
                       <a class="btn btn-info" target="_blank" ng-href="{{event.bookingInfo.url}}"
                          ng-bind="event.bookingInfo.urlLabel"></a>
                       <!--<a class="btn btn-link" ng-href="/event/{{event.id}}/edit#extra-booking-info">Wijzigen</a>-->
-                      <a class="btn btn-link" ui-sref="split.eventEdit({id: event.id, '#': 'extra'})">Wijzigen</a>
+                      <a class="btn btn-link" ui-sref="split.eventEdit({id: event.id})">Wijzigen</a>
                     </span>
                   </li>
                   <li ng-if="event.bookingInfo.phone">{{event.bookingInfo.phone}}</li>

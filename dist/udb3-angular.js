@@ -18570,7 +18570,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{event.bookingInfo.url}}\"\n" +
     "                         ng-bind=\"event.bookingInfo.urlLabel\"></a>\n" +
     "                      <!--<a class=\"btn btn-link\" ng-href=\"/event/{{event.id}}/edit#extra-booking-info\">Wijzigen</a>-->\n" +
-    "                      <a class=\"btn btn-link\" ui-sref=\"split.eventEdit({id: event.id, '#': 'extra-booking-info'})\">Wijzigen</a>\n" +
+    "                      <a class=\"btn btn-link\" ui-sref=\"split.eventEdit({id: event.id})\">Wijzigen</a>\n" +
     "                    </span>\n" +
     "                  </li>\n" +
     "                  <li ng-if=\"event.bookingInfo.phone\">{{event.bookingInfo.phone}}</li>\n" +
@@ -20323,7 +20323,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <price-info price=\"price\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
-    "        <form id=\"extra-booking-info\" name=\"step5TicketsForm\" class=\"css-form\">\n" +
+    "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
     "            <div class=\"extra-task state-incomplete\">\n" +
     "              <div class=\"col-sm-3\">\n" +
