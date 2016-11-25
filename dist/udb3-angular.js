@@ -18559,6 +18559,56 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                Geen prijsinformatie\n" +
     "              </td>\n" +
     "            </tr>\n" +
+    "            <tr ng-class=\"{muted: _.isEmpty(event.bookingInfo)}\">\n" +
+    "              <td>\n" +
+    "                <strong>Reservaties</strong>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"!_.isEmpty(event.bookingInfo)\">\n" +
+    "                <ul class=\"list-unstyled\">\n" +
+    "                  <li ng-if=\"event.bookingInfo.url\">\n" +
+    "                    <span>\n" +
+    "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{event.bookingInfo.url}}\"\n" +
+    "                         ng-bind=\"event.bookingInfo.urlLabel\"></a>\n" +
+    "                      <!--<a class=\"btn btn-link\" ng-href=\"/event/{{event.id}}/edit#extra-booking-info\">Wijzigen</a>-->\n" +
+    "                      <a class=\"btn btn-link\" ui-sref=\"split.eventEdit({id: event.id, '#': 'extra-booking-info'})\">Wijzigen</a>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                  <li ng-if=\"event.bookingInfo.phone\">{{event.bookingInfo.phone}}</li>\n" +
+    "                  <li ng-if=\"event.bookingInfo.email\">{{event.bookingInfo.email}}</li>\n" +
+    "                </ul>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"_.isEmpty(event.bookingInfo)\"></td>\n" +
+    "            </tr>\n" +
+    "\n" +
+    "            <tr ng-class=\"{muted: _.isEmpty(event.contactPoint)}\">\n" +
+    "              <td>\n" +
+    "                <strong>Contact</strong>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"!_.isEmpty(event.contactPoint)\">\n" +
+    "                <ul class=\"list-unstyled\">\n" +
+    "                  <li>\n" +
+    "                    <span ng-repeat=\"website in event.contactPoint.url\">\n" +
+    "                      <a ng-href=\"{{website}}\">{{website}}</a>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                  <li>\n" +
+    "                    <span ng-repeat=\"phone in event.contactPoint.phone\">\n" +
+    "                      <span>{{phone}}</span>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                  <li>\n" +
+    "                    <span ng-repeat=\"email in event.contactPoint.email\">\n" +
+    "                      <span>{{email}}</span>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                </ul>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"_.isEmpty(event.contactPoint)\"></td>\n" +
+    "            </tr>\n" +
+    "\n" +
     "            <tr>\n" +
     "              <td>\n" +
     "                <strong>Labels</strong>\n" +
@@ -20273,7 +20323,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <price-info price=\"price\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
-    "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
+    "        <form id=\"extra-booking-info\" name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
     "            <div class=\"extra-task state-incomplete\">\n" +
     "              <div class=\"col-sm-3\">\n" +

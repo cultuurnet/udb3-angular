@@ -105,6 +105,56 @@
                 Geen prijsinformatie
               </td>
             </tr>
+            <tr ng-class="{muted: _.isEmpty(event.bookingInfo)}">
+              <td>
+                <strong>Reservaties</strong>
+              </td>
+              <td ng-if="!_.isEmpty(event.bookingInfo)">
+                <ul class="list-unstyled">
+                  <li ng-if="event.bookingInfo.url">
+                    <span>
+                      <a class="btn btn-info" target="_blank" ng-href="{{event.bookingInfo.url}}"
+                         ng-bind="event.bookingInfo.urlLabel"></a>
+                      <!--<a class="btn btn-link" ng-href="/event/{{event.id}}/edit#extra-booking-info">Wijzigen</a>-->
+                      <a class="btn btn-link" ui-sref="split.eventEdit({id: event.id, '#': 'extra'})">Wijzigen</a>
+                    </span>
+                  </li>
+                  <li ng-if="event.bookingInfo.phone">{{event.bookingInfo.phone}}</li>
+                  <li ng-if="event.bookingInfo.email">{{event.bookingInfo.email}}</li>
+                </ul>
+              </td>
+              <td ng-if="_.isEmpty(event.bookingInfo)"></td>
+            </tr>
+
+            <tr ng-class="{muted: _.isEmpty(event.contactPoint)}">
+              <td>
+                <strong>Contact</strong>
+              </td>
+              <td ng-if="!_.isEmpty(event.contactPoint)">
+                <ul class="list-unstyled">
+                  <li>
+                    <span ng-repeat="website in event.contactPoint.url">
+                      <a ng-href="{{website}}">{{website}}</a>
+                      <span ng-if="!$last">of </span>
+                    </span>
+                  </li>
+                  <li>
+                    <span ng-repeat="phone in event.contactPoint.phone">
+                      <span>{{phone}}</span>
+                      <span ng-if="!$last">of </span>
+                    </span>
+                  </li>
+                  <li>
+                    <span ng-repeat="email in event.contactPoint.email">
+                      <span>{{email}}</span>
+                      <span ng-if="!$last">of </span>
+                    </span>
+                  </li>
+                </ul>
+              </td>
+              <td ng-if="_.isEmpty(event.contactPoint)"></td>
+            </tr>
+
             <tr>
               <td>
                 <strong>Labels</strong>
