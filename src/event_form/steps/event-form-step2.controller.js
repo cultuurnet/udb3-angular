@@ -26,6 +26,8 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
   $scope.hasOpeningHours = EventFormData.openingHours.length > 0;
+  $scope.openingHoursHasErrors = false;
+  $scope.openingHoursErrors = {};
   $scope.lastSelectedDate = '';
 
   // Scope functions
@@ -38,6 +40,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.openingHoursChanged = openingHoursChanged;
+  $scope.validateOpeningHours = validateOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
   $scope.dateChosen = dateChosen;
 
@@ -246,30 +249,31 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   function openingHoursChanged(openingHour) {
     var opensAsDate, closesAsDate;
 
-    if (openingHour.opensAsDate !== undefined) {
-      opensAsDate = moment(openingHour.opensAsDate);
-      openingHour.opens = opensAsDate.format('HH:mm');
+    opensAsDate = moment(openingHour.opensAsDate);
+    openingHour.opens = opensAsDate.format('HH:mm');
+
+    closesAsDate = moment(openingHour.closesAsDate);
+    openingHour.closes = closesAsDate.format('HH:mm');
+  }
+
+  function validateOpeningHours(openingHour) {
+
+    (openingHour.dayOfWeek.length === 0) ? $scope.weekdayError = true : $scope.weekdayError = false;
+    (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) ? $scope.openingHourError = true : $scope.openingHourError = false;
+    (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) ? $scope.closingHourError = true : $scope.closingHourError = false;
+    (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) ? $scope.closingHourGreaterError = true : $scope.closingHourGreaterError = false;
+
+    if ($scope.openingHoursHasErrors || $scope.openingHourError || $scope.closingHourError || $scope.closingHourGreaterError) {
+      $scope.openingHoursHasErrors = true;
+      openingHour.hasError = true;
     }
-    // default value for when given openHour is invalid or null.
     else {
-      openingHour.opens = '00:00';
+      $scope.openingHoursHasErrors = false;
+      openingHour.hasError = false;
     }
 
-    if (openingHour.closesAsDate !== undefined) {
-      closesAsDate = moment(openingHour.closesAsDate);
-      openingHour.closes = closesAsDate.format('HH:mm');
-    }
-    // default value for when given closeHour is invalid or null.
-    else {
-      openingHour.closes = '00:00';
-    }
-
-    if (openingHour.opens === 'Invalid date') {
-      openingHour.opens = '00:00';
-    }
-
-    if (openingHour.closes === 'Invalid date') {
-      openingHour.closes = '00:00';
+    if (!openingHour.hasError) {
+      openingHoursChanged(openingHour);
     }
   }
 

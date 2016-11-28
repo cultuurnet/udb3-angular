@@ -19,6 +19,7 @@ function udbTimeDirective() {
   };
 
   function link (scope, elem, attr, ngModel) {
+
     if (!ngModel) {
       return;
     }
@@ -29,6 +30,10 @@ function udbTimeDirective() {
 
     ngModel.$formatters.unshift(function(value) {
       return value.replace(/:\d{2}[.,]\d{3}$/, '');
+    });
+
+    elem.bind('blur', function() {
+      elem.toggleClass('has-error', elem.$invalid);
     });
   }
 }
