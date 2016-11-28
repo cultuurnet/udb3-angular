@@ -14685,6 +14685,34 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, $http, udbApi) {
 }
 MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "$http", "udbApi"];
 
+// Source: src/migration/event-migration-footer.component.js
+/**
+ * @ngdoc function
+ * @name udb.migration.component:udbEventMigrationFooter
+ * @description
+ * # Event Migration Footer
+ * Footer component for migrating events
+ */
+angular
+  .module('udb.migration')
+  .component('udbEventMigrationFooter', {
+    templateUrl: 'templates/event-migration-footer.component.html',
+    controller: EventMigrationFooterController,
+    controllerAs: 'migration'
+  });
+
+/* @ngInject */
+function EventMigrationFooterController(EventFormData) {
+  var controller = this;
+
+  controller.eventId = EventFormData.id;
+
+  controller.readyToEdit = function () {
+    return !!_.get(EventFormData, 'location.id');
+  };
+}
+EventMigrationFooterController.$inject = ["EventFormData"];
+
 // Source: src/migration/event-migration.service.js
 /**
  * @ngdoc service
@@ -21750,6 +21778,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-migration-footer.component.html',
+    "<div class=\"event-validation\">\n" +
+    "    <a class=\"btn btn-success\"\n" +
+    "       ui-sref=\"split.eventEdit({id: migration.eventId})\"\n" +
+    "       role=\"button\"\n" +
+    "       ng-class=\"{disabled: !migration.readyToEdit()}\">Doorgaan met bewerken</a>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-migration.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
     "    <div class=\"alert alert-info\" role=\"alert\">\n" +
@@ -21759,9 +21797,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <udb-event-form-step3></udb-event-form-step3>\n" +
     "\n" +
-    "    <div class=\"event-validation\">\n" +
-    "        <button type=\"submit\" class=\"btn btn-success\">Doorgaan met bewerken</button>\n" +
-    "    </div>\n" +
+    "    <udb-event-migration-footer></udb-event-migration-footer>\n" +
     "</div>\n" +
     "\n"
   );
