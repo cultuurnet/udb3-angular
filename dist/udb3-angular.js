@@ -1924,6 +1924,18 @@ angular
     'ui.bootstrap'
   ]);
 
+/**
+ * @ngdoc module
+ * @name udb.migration
+ * @description
+ * # Migration Module
+ */
+angular
+  .module('udb.migration', [
+    'udb.core',
+    'udb.event-form'
+  ]);
+
 // Source: src/core/authorization-service.service.js
 /**
  * @ngdoc service
@@ -14673,6 +14685,51 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, $http, udbApi) {
 }
 MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "$http", "udbApi"];
 
+// Source: src/migration/event-migration.service.js
+/**
+ * @ngdoc service
+ * @name udb.migration.eventMigration
+ * @description
+ * Event Migration Service
+ */
+angular
+  .module('udb.migration')
+  .service('eventMigration', EventMigrationService);
+
+/* @ngInject */
+function EventMigrationService($q, udbApi) {
+  var service = this;
+
+  var migrationRequirements = {
+    location: hasKnownLocation
+  };
+
+  /**
+   * @param {udbEvent} event
+   */
+  function hasKnownLocation(event) {
+    return !!_.get(event, 'location.id');
+  }
+
+  /**
+   * @param {udbEvent} event
+   *
+   * @return string[]
+   *  A list of migrations steps needed to meet all requirements.
+   */
+  service.checkRequirements = function (event) {
+    var migrationSteps = _(migrationRequirements)
+      .pick(function (requirementCheck) {
+        return !requirementCheck(event);
+      })
+      .keys();
+
+    return migrationSteps.value();
+  };
+
+}
+EventMigrationService.$inject = ["$q", "udbApi"];
+
 // Source: src/place-detail/place-detail.directive.js
 /**
  * @ngdoc directive
@@ -21690,6 +21747,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/event-migration.html',
+    "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
+    "    <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "        Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.\n" +
+    "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <udb-event-form-step3></udb-event-form-step3>\n" +
+    "\n" +
+    "    <div class=\"event-validation\">\n" +
+    "        <button type=\"submit\" class=\"btn btn-success\">Doorgaan met bewerken</button>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n"
   );
 
 
