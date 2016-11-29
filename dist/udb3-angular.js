@@ -12934,17 +12934,14 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   var controller = this;
   var organizerId = $stateParams.id;
 
-  controller.organizerLabels = [];
   controller.labelSaving = false;
-  controller.searchedLabels = [];
 
   controller.addLabel = addLabel;
   controller.deleteLabel = deleteLabel;
-  controller.searchLabels = searchLabels;
 
   loadOrganizer(organizerId);
 
@@ -12955,11 +12952,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
   /**
-   * @param {Organizer} organizer
+   * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
-    mapLabels(organizer.labels);
   }
 
   function addLabel(label) {
@@ -12986,23 +12982,6 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
         });
   }
 
-  function searchLabels(query) {
-    return LabelManager
-        .find(query, 6, 0)
-        .then(function (labels) {
-          return mapLabels(labels.member);
-        }, showProblem);
-  }
-
-  function mapLabels(labels) {
-    for (var i = 0; i < labels.length; i++) {
-      if (labels[i].hasOwnProperty('name')) {
-        labels[i].text = angular.copy(labels[i].name);
-      }
-    }
-    return labels;
-  }
-
   function removeFromCache() {
     OrganizerManager.removeOrganizerFromCache(organizerId);
   }
@@ -13025,11 +13004,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
         }
       }
     );
-    controller.organizer.labels = angular.copy(controller.organizerLabels);
   }
 
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams"];
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams"];
 
 // Source: src/management/organizers/organizer-manager.service.js
 /**
@@ -15256,7 +15234,7 @@ angular
     controller: LabelSelectComponent,
     controllerAs: 'select',
     bindings: {
-      offer: '<',
+      labels: '<',
       labelAdded: '&',
       labelRemoved: '&'
     }
@@ -15271,8 +15249,8 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.createLabel = createLabel;
   select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
-  select.labels = _.map(select.offer.labels, function (labelName) {
-    return {name:labelName};
+  select.labels = _.map(select.labels, function (label) {
+    return _.isString(label) ? {name:label} : label;
   });
   select.minimumInputLength = 2;
   select.maxInputLength = 255;
@@ -18564,7 +18542,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <strong>Labels</strong>\n" +
     "              </td>\n" +
     "              <td>\n" +
-    "                <udb-label-select offer=\"event\"\n" +
+    "                <udb-label-select labels=\"event.labels\"\n" +
     "                                  label-added=\"labelAdded(label)\"\n" +
     "                                  label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
     "              </td>\n" +
@@ -21141,13 +21119,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organizer-detail.html',
-    "<h1 class=\"title\">{{odc.organizer.name}}</h1>\n" +
+    "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
     "\n" +
     "<div ng-show=\"!odc.organizer && !odc.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-show=\"odc.organizer\">\n" +
+    "<div ng-if=\"odc.organizer\">\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-2\">\n" +
     "            <span><strong>Naam</strong></span>\n" +
@@ -21210,13 +21188,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-10\">\n" +
-    "            <tags-input ng-model=\"odc.organizer.labels\"\n" +
-    "                        on-tag-added=\"odc.addLabel($tag)\"\n" +
-    "                        on-tag-removed=\"odc.deleteLabel($tag)\"\n" +
-    "                        placeholder=\"voeg een label toe\">\n" +
-    "              <auto-complete source=\"odc.searchLabels($query)\"\n" +
-    "                             ></auto-complete>\n" +
-    "            </tags-input>\n" +
+    "            <udb-label-select labels=\"odc.organizer.labels\"\n" +
+    "                              label-added=\"odc.addLabel($tag)\"\n" +
+    "                              label-removed=\"odc.deleteLabel($tag)\"></udb-label-select>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
@@ -21771,7 +21745,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <strong>Labels</strong>\n" +
     "                </td>\n" +
     "                <td>\n" +
-    "                  <udb-label-select offer=\"place\"\n" +
+    "                  <udb-label-select labels=\"place.labels\"\n" +
     "                                    label-added=\"labelAdded(label)\"\n" +
     "                                    label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
     "                </td>\n" +
@@ -22411,7 +22385,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +
     "          <span ng-hide=\"event.labels.length\">Dit evenement is nog niet gelabeld.</span>\n" +
-    "          <udb-label-select offer=\"event\"\n" +
+    "          <udb-label-select labels=\"event.labels\"\n" +
     "                            label-added=\"eventCtrl.labelAdded(label)\"\n" +
     "                            label-removed=\"eventCtrl.labelRemoved(label)\">\n" +
     "        </div>\n" +
@@ -22566,7 +22540,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +
     "          <span ng-hide=\"event.labels.length\">Deze plaats is nog niet gelabeld.</span>\n" +
-    "          <udb-label-select offer=\"event\"\n" +
+    "          <udb-label-select labels=\"event.labels\"\n" +
     "                            label-added=\"placeCtrl.labelAdded(label)\"\n" +
     "                            label-removed=\"placeCtrl.labelRemoved(label)\">\n" +
     "          </udb-label-select>\n" +

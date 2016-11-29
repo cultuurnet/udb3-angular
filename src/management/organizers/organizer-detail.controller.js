@@ -11,17 +11,14 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   var controller = this;
   var organizerId = $stateParams.id;
 
-  controller.organizerLabels = [];
   controller.labelSaving = false;
-  controller.searchedLabels = [];
 
   controller.addLabel = addLabel;
   controller.deleteLabel = deleteLabel;
-  controller.searchLabels = searchLabels;
 
   loadOrganizer(organizerId);
 
@@ -32,11 +29,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
   /**
-   * @param {Organizer} organizer
+   * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
-    mapLabels(organizer.labels);
   }
 
   function addLabel(label) {
@@ -63,23 +59,6 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
         });
   }
 
-  function searchLabels(query) {
-    return LabelManager
-        .find(query, 6, 0)
-        .then(function (labels) {
-          return mapLabels(labels.member);
-        }, showProblem);
-  }
-
-  function mapLabels(labels) {
-    for (var i = 0; i < labels.length; i++) {
-      if (labels[i].hasOwnProperty('name')) {
-        labels[i].text = angular.copy(labels[i].name);
-      }
-    }
-    return labels;
-  }
-
   function removeFromCache() {
     OrganizerManager.removeOrganizerFromCache(organizerId);
   }
@@ -102,7 +81,6 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
         }
       }
     );
-    controller.organizer.labels = angular.copy(controller.organizerLabels);
   }
 
 }

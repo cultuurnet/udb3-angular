@@ -7,7 +7,7 @@ angular
     controller: LabelSelectComponent,
     controllerAs: 'select',
     bindings: {
-      offer: '<',
+      labels: '<',
       labelAdded: '&',
       labelRemoved: '&'
     }
@@ -22,8 +22,8 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.createLabel = createLabel;
   select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
-  select.labels = _.map(select.offer.labels, function (labelName) {
-    return {name:labelName};
+  select.labels = _.map(select.labels, function (label) {
+    return _.isString(label) ? {name:label} : label;
   });
   select.minimumInputLength = 2;
   select.maxInputLength = 255;
