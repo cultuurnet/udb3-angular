@@ -241,6 +241,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    */
   function saveOpeningHours() {
     $scope.hasOpeningHours = true;
+    angular.forEach(EventFormData.openingHours, function(openingHour) {
+      openingHoursChanged(openingHour);
+    });
     controller.eventTimingChanged();
   }
 
@@ -297,10 +300,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     });
 
     validateOpeningHours();
-
-    if (!openingHour.hasError) {
-      openingHoursChanged(openingHour);
-    }
   }
 
   // Validate all openinghours to set error messages.
