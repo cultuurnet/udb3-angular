@@ -46,38 +46,38 @@
           </thead>
 
           <tr ng-repeat="(i, openingHour) in eventFormData.openingHours">
-            <ng-form name="openingHourForm">
-              <td>
-                <select class="selectpicker"
-                        name="weekday"
-                        multiple
-                        start-label="Kies dag(en)"
-                        ng-model="openingHour.dayOfWeek"
-                        ng-change="saveOpeningHourDaySelection(i, openingHour.dayOfWeek)"
-                        ng-class="{'has-error': openingHourForm.weekday.$error.required}"
-                        udb-multiselect
-                        required>
-                  <option value="monday">maandag</option>
-                  <option value="tuesday">dinsdag</option>
-                  <option value="wednesday">woensdag</option>
-                  <option value="thursday">donderdag</option>
-                  <option value="friday">vrijdag</option>
-                  <option value="saturday">zaterdag</option>
-                  <option value="sunday">zondag</option>
-                </select>
+            <td>
+              <select class="selectpicker"
+                      name="weekday"
+                      multiple
+                      start-label="Kies dag(en)"
+                      ng-model="openingHour.dayOfWeek"
+                      ng-change="saveOpeningHourDaySelection(i, openingHour.dayOfWeek)"
+                      ng-class="{'has-error': openingHour.errors.weekdayError}"
+                      udb-multiselect
+                      required>
+                <option value="monday">maandag</option>
+                <option value="tuesday">dinsdag</option>
+                <option value="wednesday">woensdag</option>
+                <option value="thursday">donderdag</option>
+                <option value="friday">vrijdag</option>
+                <option value="saturday">zaterdag</option>
+                <option value="sunday">zondag</option>
+              </select>
+            </td>
+            <td>
+              <input udb-time
+                     type="time"
+                     name="openingHour"
+                     class="form-control uur"
+                     placeholder="Bv. 08:00"
+                     ng-model="openingHour.opensAsDate"
+                     ng-change="validateOpeningHour(openingHour)"
+                     ng-model-options="{ debounce: 500 }"
+                     ng-class="{'has-error': openingHour.errors.openingHourError}" />
               </td>
               <td>
-                  <input udb-time
-                         type="time"
-                         name="openingHour"
-                         class="form-control uur"
-                         placeholder="Bv. 08:00"
-                         ng-model="openingHour.opensAsDate"
-                         ng-change="validateOpeningHours(openingHour)"
-                         ng-model-options="{ debounce: 500 }"/>
-              </td>
-              <td>
-                &nbsp;-&nbsp;
+                -&nbsp;
               </td>
               <td>
 
@@ -87,25 +87,25 @@
                        class="form-control uur"
                        placeholder="Bv. 08:00"
                        ng-model="openingHour.closesAsDate"
-                       ng-change="validateOpeningHours(openingHour)"
-                       ng-model-options="{ debounce: 500 }"/>
+                       ng-change="validateOpeningHour(openingHour)"
+                       ng-model-options="{ debounce: 500 }"
+                       ng-class="{'has-error': openingHour.errors.closingHourError}"/>
               </td>
               <td>
                 <button type="button" class="close" aria-label="Close" ng-click="eventFormData.removeOpeningHour(i)">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </td>
-            </ng-form>
           </tr>
         </table>
         <a class="btn btn-link btn-plus" ng-click="eventFormData.addOpeningHour('', '' , '', '', '')">
           Meer openingstijden toevoegen
         </a>
         <div class="alert alert-danger" ng-show="openingHoursHasErrors">
-          <p class="text-danger" ng-if="weekdayError">Je moet minstens 1 weekdag selecteren.</p>
-          <p class="text-danger" ng-if="openingHourError">Gelieve een geldige openingstijd in te geven.</p>
-          <p class="text-danger" ng-if="closingHourError">Gelieve een geldige sluitingstijd in te geven.</p>
-          <p class="text-danger" ng-if="closingHourGreaterError">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>
+          <p class="text-danger" ng-if="openingHoursErrors.weekdayError">Je moet minstens 1 weekdag selecteren.</p>
+          <p class="text-danger" ng-if="openingHoursErrors.openingHourError">Gelieve een geldige openingstijd in te geven.</p>
+          <p class="text-danger" ng-if="openingHoursErrors.closingHourError">Gelieve een geldige sluitingstijd in te geven.</p>
+          <p class="text-danger" ng-if="openingHoursErrors.closingHourGreaterError">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>
         </div>
       </div>
       <div class="modal-footer">

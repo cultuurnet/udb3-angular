@@ -32,9 +32,9 @@ function udbTimeDirective() {
       return value.replace(/:\d{2}[.,]\d{3}$/, '');
     });
 
-    elem.bind('blur', function() {
+    /*elem.bind('blur', function() {
       elem.toggleClass('has-error', elem.$invalid);
-    });
+    });*/
   }
 }
 })();

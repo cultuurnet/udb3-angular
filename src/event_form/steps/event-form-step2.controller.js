@@ -40,6 +40,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.openingHoursChanged = openingHoursChanged;
+  $scope.validateOpeningHour = validateOpeningHour;
   $scope.validateOpeningHours = validateOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
   $scope.dateChosen = dateChosen;
@@ -256,25 +257,73 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     openingHour.closes = closesAsDate.format('HH:mm');
   }
 
-  function validateOpeningHours(openingHour) {
+  function validateOpeningHour(openingHour) {
 
-    (openingHour.dayOfWeek.length === 0) ? $scope.weekdayError = true : $scope.weekdayError = false;
-    (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) ? $scope.openingHourError = true : $scope.openingHourError = false;
-    (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) ? $scope.closingHourError = true : $scope.closingHourError = false;
-    (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) ? $scope.closingHourGreaterError = true : $scope.closingHourGreaterError = false;
+    openingHour.hasError = false;
+    openingHour.errors = {};
 
-    if ($scope.openingHoursHasErrors || $scope.openingHourError || $scope.closingHourError || $scope.closingHourGreaterError) {
-      $scope.openingHoursHasErrors = true;
-      openingHour.hasError = true;
+    if (openingHour.dayOfWeek.length === 0) {
+      openingHour.errors.weekdayError = true;
     }
     else {
-      $scope.openingHoursHasErrors = false;
-      openingHour.hasError = false;
+      openingHour.errors.weekdayError = false;
     }
+
+    if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
+      openingHour.errors.openingHourError = true;
+    }
+    else {
+      openingHour.errors.openingHourError = false;
+    }
+
+    if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
+      openingHour.errors.closingHourError = true;
+    }
+    else {
+      openingHour.errors.closingHourError = false;
+    }
+
+    if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
+      openingHour.errors.closingHourGreaterError = true;
+    }
+    else {
+      openingHour.errors.closingHourGreaterError = false;
+    }
+
+    angular.forEach(openingHour.errors, function(error, key) {
+      if (error) {
+        openingHour.hasError = true;
+      }
+    });
+
+    validateOpeningHours();
 
     if (!openingHour.hasError) {
       openingHoursChanged(openingHour);
     }
+  }
+
+  // Validate all openinghours to set error messages.
+  function validateOpeningHours() {
+    $scope.openingHoursHasErrors = false;
+    $scope.openingHoursErrors.weekdayError = false;
+    $scope.openingHoursErrors.openingHourError = false;
+    $scope.openingHoursErrors.closingHourError = false;
+    $scope.openingHoursErrors.closingHourGreaterError = false;
+
+    var errors = _.pluck(_.where(EventFormData.openingHours, {hasError: true}), 'errors');
+    if (errors.length > 0) {
+      $scope.openingHoursHasErrors = true;
+    }
+    else {
+      $scope.openingHoursHasErrors = false;
+    }
+
+    $scope.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
+    $scope.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
+    $scope.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
+    $scope.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
+
   }
 
   /**

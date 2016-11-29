@@ -2262,9 +2262,9 @@ function udbTimeDirective() {
       return value.replace(/:\d{2}[.,]\d{3}$/, '');
     });
 
-    elem.bind('blur', function() {
+    /*elem.bind('blur', function() {
       elem.toggleClass('has-error', elem.$invalid);
-    });
+    });*/
   }
 }
 })();
@@ -9625,6 +9625,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.openingHoursChanged = openingHoursChanged;
+  $scope.validateOpeningHour = validateOpeningHour;
   $scope.validateOpeningHours = validateOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
   $scope.dateChosen = dateChosen;
@@ -9841,25 +9842,73 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     openingHour.closes = closesAsDate.format('HH:mm');
   }
 
-  function validateOpeningHours(openingHour) {
+  function validateOpeningHour(openingHour) {
 
-    (openingHour.dayOfWeek.length === 0) ? $scope.weekdayError = true : $scope.weekdayError = false;
-    (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) ? $scope.openingHourError = true : $scope.openingHourError = false;
-    (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) ? $scope.closingHourError = true : $scope.closingHourError = false;
-    (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) ? $scope.closingHourGreaterError = true : $scope.closingHourGreaterError = false;
+    openingHour.hasError = false;
+    openingHour.errors = {};
 
-    if ($scope.openingHoursHasErrors || $scope.openingHourError || $scope.closingHourError || $scope.closingHourGreaterError) {
-      $scope.openingHoursHasErrors = true;
-      openingHour.hasError = true;
+    if (openingHour.dayOfWeek.length === 0) {
+      openingHour.errors.weekdayError = true;
     }
     else {
-      $scope.openingHoursHasErrors = false;
-      openingHour.hasError = false;
+      openingHour.errors.weekdayError = false;
     }
+
+    if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
+      openingHour.errors.openingHourError = true;
+    }
+    else {
+      openingHour.errors.openingHourError = false;
+    }
+
+    if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
+      openingHour.errors.closingHourError = true;
+    }
+    else {
+      openingHour.errors.closingHourError = false;
+    }
+
+    if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
+      openingHour.errors.closingHourGreaterError = true;
+    }
+    else {
+      openingHour.errors.closingHourGreaterError = false;
+    }
+
+    angular.forEach(openingHour.errors, function(error, key) {
+      if (error) {
+        openingHour.hasError = true;
+      }
+    });
+
+    validateOpeningHours();
 
     if (!openingHour.hasError) {
       openingHoursChanged(openingHour);
     }
+  }
+
+  // Validate all openinghours to set error messages.
+  function validateOpeningHours() {
+    $scope.openingHoursHasErrors = false;
+    $scope.openingHoursErrors.weekdayError = false;
+    $scope.openingHoursErrors.openingHourError = false;
+    $scope.openingHoursErrors.closingHourError = false;
+    $scope.openingHoursErrors.closingHourGreaterError = false;
+
+    var errors = _.pluck(_.where(EventFormData.openingHours, {hasError: true}), 'errors');
+    if (errors.length > 0) {
+      $scope.openingHoursHasErrors = true;
+    }
+    else {
+      $scope.openingHoursHasErrors = false;
+    }
+
+    $scope.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
+    $scope.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
+    $scope.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
+    $scope.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
+
   }
 
   /**
@@ -19054,38 +19103,38 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </thead>\n" +
     "\n" +
     "          <tr ng-repeat=\"(i, openingHour) in eventFormData.openingHours\">\n" +
-    "            <ng-form name=\"openingHourForm\">\n" +
-    "              <td>\n" +
-    "                <select class=\"selectpicker\"\n" +
-    "                        name=\"weekday\"\n" +
-    "                        multiple\n" +
-    "                        start-label=\"Kies dag(en)\"\n" +
-    "                        ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                        ng-change=\"saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\"\n" +
-    "                        ng-class=\"{'has-error': openingHourForm.weekday.$error.required}\"\n" +
-    "                        udb-multiselect\n" +
-    "                        required>\n" +
-    "                  <option value=\"monday\">maandag</option>\n" +
-    "                  <option value=\"tuesday\">dinsdag</option>\n" +
-    "                  <option value=\"wednesday\">woensdag</option>\n" +
-    "                  <option value=\"thursday\">donderdag</option>\n" +
-    "                  <option value=\"friday\">vrijdag</option>\n" +
-    "                  <option value=\"saturday\">zaterdag</option>\n" +
-    "                  <option value=\"sunday\">zondag</option>\n" +
-    "                </select>\n" +
+    "            <td>\n" +
+    "              <select class=\"selectpicker\"\n" +
+    "                      name=\"weekday\"\n" +
+    "                      multiple\n" +
+    "                      start-label=\"Kies dag(en)\"\n" +
+    "                      ng-model=\"openingHour.dayOfWeek\"\n" +
+    "                      ng-change=\"saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\"\n" +
+    "                      ng-class=\"{'has-error': openingHour.errors.weekdayError}\"\n" +
+    "                      udb-multiselect\n" +
+    "                      required>\n" +
+    "                <option value=\"monday\">maandag</option>\n" +
+    "                <option value=\"tuesday\">dinsdag</option>\n" +
+    "                <option value=\"wednesday\">woensdag</option>\n" +
+    "                <option value=\"thursday\">donderdag</option>\n" +
+    "                <option value=\"friday\">vrijdag</option>\n" +
+    "                <option value=\"saturday\">zaterdag</option>\n" +
+    "                <option value=\"sunday\">zondag</option>\n" +
+    "              </select>\n" +
+    "            </td>\n" +
+    "            <td>\n" +
+    "              <input udb-time\n" +
+    "                     type=\"time\"\n" +
+    "                     name=\"openingHour\"\n" +
+    "                     class=\"form-control uur\"\n" +
+    "                     placeholder=\"Bv. 08:00\"\n" +
+    "                     ng-model=\"openingHour.opensAsDate\"\n" +
+    "                     ng-change=\"validateOpeningHour(openingHour)\"\n" +
+    "                     ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                     ng-class=\"{'has-error': openingHour.errors.openingHourError}\" />\n" +
     "              </td>\n" +
     "              <td>\n" +
-    "                  <input udb-time\n" +
-    "                         type=\"time\"\n" +
-    "                         name=\"openingHour\"\n" +
-    "                         class=\"form-control uur\"\n" +
-    "                         placeholder=\"Bv. 08:00\"\n" +
-    "                         ng-model=\"openingHour.opensAsDate\"\n" +
-    "                         ng-change=\"validateOpeningHours(openingHour)\"\n" +
-    "                         ng-model-options=\"{ debounce: 500 }\"/>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                &nbsp;-&nbsp;\n" +
+    "                -&nbsp;\n" +
     "              </td>\n" +
     "              <td>\n" +
     "\n" +
@@ -19095,25 +19144,25 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       class=\"form-control uur\"\n" +
     "                       placeholder=\"Bv. 08:00\"\n" +
     "                       ng-model=\"openingHour.closesAsDate\"\n" +
-    "                       ng-change=\"validateOpeningHours(openingHour)\"\n" +
-    "                       ng-model-options=\"{ debounce: 500 }\"/>\n" +
+    "                       ng-change=\"validateOpeningHour(openingHour)\"\n" +
+    "                       ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                       ng-class=\"{'has-error': openingHour.errors.closingHourError}\"/>\n" +
     "              </td>\n" +
     "              <td>\n" +
     "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"eventFormData.removeOpeningHour(i)\">\n" +
     "                  <span aria-hidden=\"true\">&times;</span>\n" +
     "                </button>\n" +
     "              </td>\n" +
-    "            </ng-form>\n" +
     "          </tr>\n" +
     "        </table>\n" +
     "        <a class=\"btn btn-link btn-plus\" ng-click=\"eventFormData.addOpeningHour('', '' , '', '', '')\">\n" +
     "          Meer openingstijden toevoegen\n" +
     "        </a>\n" +
     "        <div class=\"alert alert-danger\" ng-show=\"openingHoursHasErrors\">\n" +
-    "          <p class=\"text-danger\" ng-if=\"weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"closingHourError\">Gelieve een geldige sluitingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"closingHourGreaterError\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"openingHoursErrors.weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"openingHoursErrors.openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"openingHoursErrors.closingHourError\">Gelieve een geldige sluitingstijd in te geven.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"openingHoursErrors.closingHourGreaterError\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
