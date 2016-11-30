@@ -120,16 +120,4 @@ describe('Controller: Organizer Detail', function() {
     expect(OrganizerManager.deleteLabelFromOrganizer)
       .toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'Blub');
   });
-
-  it ('should search some labels through a given query', function () {
-    OrganizerManager.get.and.returnValue($q.resolve(fakeOrganizer));
-    LabelManager.find.and.returnValue($q.resolve());
-
-    var controller = getController();
-    $scope.$digest();
-
-    controller.searchLabels('query');
-
-    expect(LabelManager.find).toHaveBeenCalledWith('query', 6, 0);
-  });
 });
