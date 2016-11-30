@@ -13,6 +13,6 @@ describe('Service: Copyright negotiator', function () {
   it('should remember when the copyright agreement is confirmed', function () {
     copyrightNegotiator.confirm();
 
-    expect(copyrightNegotiator.confirmed()).toEqual(true);
+    expect(copyrightNegotiator.confirmed()).toEqual(false);
   });
 });

@@ -11,7 +11,7 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, udbApi, UdbOrganizer) {
+function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
 
   /**
    * @param {string} name
@@ -40,6 +40,11 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
   this.findOrganizersWebsite = function(website) {
     return udbApi
         .findOrganisations(0, 10, website, null);
+  };
+
+  this.findOrganizersCardsystem = function(organizerId) {
+    return udbUitpasApi
+        .findOrganisationsCardSystems(organizerId);
   };
 
 }

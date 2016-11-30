@@ -236,6 +236,17 @@ angular
   ]);
 /**
  * @ngdoc module
+ * @name udb.management.organizers
+ * @description
+ * # Organizers Management Module
+ */
+angular
+  .module('udb.management.organizers', [
+    'rx',
+    'ngTagsInput'
+  ]);
+/**
+ * @ngdoc module
  * @name udb.management
  * @description
  * # Management Module
@@ -246,7 +257,8 @@ angular
     'udb.management.labels',
     'udb.management.roles',
     'udb.management.users',
-    'udb.management.moderation'
+    'udb.management.moderation',
+    'udb.management.organizers'
   ]);
 
 angular.module('peg', []).factory('LuceneQueryParser', function () {
@@ -1908,7 +1920,21 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
  * The UDB UiTPAS module
  */
 angular
-  .module('udb.uitpas', []);
+  .module('udb.uitpas', [
+    'ui.bootstrap'
+  ]);
+
+/**
+ * @ngdoc module
+ * @name udb.migration
+ * @description
+ * # Migration Module
+ */
+angular
+  .module('udb.migration', [
+    'udb.core',
+    'udb.event-form'
+  ]);
 
 // Source: src/core/authorization-service.service.js
 /**
@@ -2903,6 +2929,34 @@ function UdbApi(
     return $http
       .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
+  };
+
+  /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
+  this.addLabelToOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {string} organizerId
+   * @param {string} labelId
+   * @returns {Promise}
+   */
+  this.deleteLabelFromOrganizer = function(organizerId, labelId) {
+    var requestConfig = defaultApiConfig;
+
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, requestConfig)
+        .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -4044,6 +4098,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.uitpasData = {};
     },
 
     /**
@@ -4301,7 +4356,21 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory() {
+function UdbOrganizerFactory(UitpasLabels) {
+
+  function isUitpas(labels) {
+    return !_.isEmpty(_.intersection(
+        _.pluck(labels, 'name'),
+        _.values(UitpasLabels)));
+  }
+
+  function getFirst(jsonOrganizer, path) {
+    return _
+      .chain(jsonOrganizer)
+      .get(path, [])
+      .first()
+      .value();
+  }
 
   /**
    * @class UdbOrganizer
@@ -4320,16 +4389,18 @@ function UdbOrganizerFactory() {
     parseJson: function (jsonOrganizer) {
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
-      this.addresses = jsonOrganizer.addresses || [];
-      this.email = jsonOrganizer.email || [];
-      this.phone = jsonOrganizer.phone || [];
-      this.url = jsonOrganizer.url || [];
+      this.address = jsonOrganizer.address || [];
+      this.email = getFirst(jsonOrganizer, 'contactPoint.email');
+      this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
+      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
       this.labels = jsonOrganizer.labels || [];
+      this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
   };
 
   return (UdbOrganizer);
 }
+UdbOrganizerFactory.$inject = ["UitpasLabels"];
 
 // Source: src/core/udb-organizers.service.js
 /**
@@ -4343,7 +4414,7 @@ angular
   .service('udbOrganizers', UdbOrganizers);
 
 /* @ngInject */
-function UdbOrganizers($q, udbApi, UdbOrganizer) {
+function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
 
   /**
    * @param {string} name
@@ -4374,8 +4445,13 @@ function UdbOrganizers($q, udbApi, UdbOrganizer) {
         .findOrganisations(0, 10, website, null);
   };
 
+  this.findOrganizersCardsystem = function(organizerId) {
+    return udbUitpasApi
+        .findOrganisationsCardSystems(organizerId);
+  };
+
 }
-UdbOrganizers.$inject = ["$q", "udbApi", "UdbOrganizer"];
+UdbOrganizers.$inject = ["$q", "udbApi", "udbUitpasApi", "UdbOrganizer"];
 
 // Source: src/core/udb-place.factory.js
 /**
@@ -5364,6 +5440,7 @@ angular
 function EventCrud(
   jobLogger,
   udbApi,
+  udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
   $rootScope ,
@@ -5521,6 +5598,27 @@ function EventCrud(
   };
 
   /**
+   * Update UiTPAS info for the event.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updateEventUitpasData = function(item) {
+    return udbUitpasApi
+        .updateEventUitpasData(item.usedDistributionKeys, item.id)
+        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+  };
+
+  /**
+   * Get the Uitpas data from an event.
+   * @param {string} cdbid
+   * @returns {Promise}
+   */
+  service.getEventUitpasData = function(cdbid) {
+    return udbUitpasApi.getEventUitpasData(cdbid);
+  };
+
+  /**
    * @param {EventFormData} item
    * @param {string} jobName
    *
@@ -5547,7 +5645,7 @@ function EventCrud(
    */
   service.updatePriceInfo = function(item) {
     return udbApi
-      .updatePriceInfo(item.apiUrl, item.price)
+      .updatePriceInfo(item.apiUrl, item.priceInfo)
       .then(function (response) {
         var jobData = response.data;
         var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
@@ -5713,7 +5811,7 @@ function EventCrud(
   $rootScope.$on('eventTimingChanged', updateMajorInfo);
   $rootScope.$on('eventTitleChanged', updateMajorInfo);
 }
-EventCrud.$inject = ["jobLogger", "udbApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
+EventCrud.$inject = ["jobLogger", "udbApi", "udbUitpasApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
 
 // Source: src/entry/delete/delete-offer-job.factory.js
 /**
@@ -6048,7 +6146,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
   lmc.labelNames = '';
   lmc.labelSelection = [];
   lmc.alert = false;
-  lmc.minimumInputLength = 3;
+  lmc.minimumInputLength = 2;
   lmc.maxInputLength = 255;
 
   udbApi
@@ -6106,7 +6204,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
     var i;
     for (i = 0; i < labels.length; i++) {
       if (!areLengthCriteriaMet(labels[i].length)) {
-        lmc.alert = 'Een label mag minimum 3 en maximum 255 karakters bevatten.';
+        lmc.alert = 'Een label mag minimum 2 en maximum 255 karakters bevatten.';
         break;
       }
     }
@@ -7936,7 +8034,7 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootScope) {
+function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
@@ -8049,7 +8147,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
   function savePrice() {
     controller.savingPrice = true;
 
-    EventFormData.price = controller.price;
+    EventFormData.priceInfo = controller.price;
     controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
@@ -8076,7 +8174,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
     }
   }
 }
-PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "appConfig", "$rootScope"];
+PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/components/reservation-modal/reservation-modal.controller.js
 /**
@@ -8595,6 +8693,11 @@ function EventFormDataFactory() {
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
+
+      /**
+       * @type {string[]}
+       */
+      this.labels = [];
     },
 
     /**
@@ -9005,7 +9108,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'image',
       'additionalData',
       'apiUrl',
-      'workflowStatus'
+      'workflowStatus',
+      'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -10752,8 +10856,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function deleteOrganizer() {
     function resetOrganizer() {
       controller.eventFormSaved();
-      $scope.organizerCssClass = 'state-incomplete';
       EventFormData.resetOrganizer();
+      $rootScope.$emit('eventOrganizerDeleted', {});
+      $scope.organizerCssClass = 'state-incomplete';
       $scope.savingOrganizer = false;
     }
 
@@ -10805,6 +10910,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function markOrganizerAsCompleted() {
       controller.eventFormSaved();
+      $rootScope.$emit('eventOrganizerSelected', organizer);
       $scope.organizerCssClass = 'state-complete';
       $scope.savingOrganizer = false;
     }
@@ -12239,7 +12345,7 @@ function listItemDefaults(RolePermission) {
       permission: RolePermission.ORGANISATIES_BEHEREN,
       notificationCount: 0,
       index: 5,
-      sref: 'split.manageOrganisations',
+      sref: 'management.organizers',
       icon: 'fa-slideshare'
     }
   ];
@@ -12841,6 +12947,185 @@ angular
       'DELETED': 'DELETED'
     }
   );
+
+// Source: src/management/organizers/organizer-detail.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerDetailController
+ * @description
+ * # OrganizerDetailController
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizerDetailController', OrganizerDetailController);
+
+/* @ngInject */
+function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
+  var controller = this;
+  var organizerId = $stateParams.id;
+
+  controller.organizerLabels = [];
+  controller.labelSaving = false;
+  controller.searchedLabels = [];
+
+  controller.addLabel = addLabel;
+  controller.deleteLabel = deleteLabel;
+  controller.searchLabels = searchLabels;
+
+  loadOrganizer(organizerId);
+
+  function loadOrganizer(organizerId) {
+    OrganizerManager
+      .get(organizerId)
+      .then(showOrganizer);
+  }
+
+  /**
+   * @param {Organizer} organizer
+   */
+  function showOrganizer(organizer) {
+    controller.organizer = organizer;
+    mapLabels(organizer.labels);
+  }
+
+  function addLabel(label) {
+    controller.labelSaving = true;
+
+    OrganizerManager
+      .addLabelToOrganizer(organizerId, label.uuid)
+      .catch(showProblem)
+      .finally(function() {
+        controller.labelSaving = false;
+        removeFromCache();
+      });
+  }
+
+  function deleteLabel(label) {
+    controller.labelSaving = true;
+
+    OrganizerManager
+        .deleteLabelFromOrganizer(organizerId, label.uuid)
+        .catch(showProblem)
+        .finally(function() {
+          controller.labelSaving = false;
+          removeFromCache();
+        });
+  }
+
+  function searchLabels(query) {
+    return LabelManager
+        .find(query, 6, 0)
+        .then(function (labels) {
+          return mapLabels(labels.member);
+        }, showProblem);
+  }
+
+  function mapLabels(labels) {
+    for (var i = 0; i < labels.length; i++) {
+      if (labels[i].hasOwnProperty('name')) {
+        labels[i].text = angular.copy(labels[i].name);
+      }
+    }
+    return labels;
+  }
+
+  function removeFromCache() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    controller.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
+
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return controller.errorMessage;
+          }
+        }
+      }
+    );
+    controller.organizer.labels = angular.copy(controller.organizerLabels);
+  }
+
+}
+OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams"];
+
+// Source: src/management/organizers/organizer-manager.service.js
+/**
+ * @ngdoc service
+ * @name udb.management.organizers
+ * @description
+ * # Organizer Manager
+ * This service allows you to lookup organizers and perform actions on them.
+ */
+angular
+  .module('udb.management.organizers')
+  .service('OrganizerManager', OrganizerManager);
+
+/* @ngInject */
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
+  var service = this;
+
+  /**
+   * @param {string} organizerId
+   *
+   * @returns {Promise.<Organizer>}
+   */
+  service.get = function(organizerId) {
+    return udbApi.getOrganizerById(organizerId);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
+  service.addLabelToOrganizer = function(organizerId, labelUuid) {
+    return udbApi
+      .addLabelToOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelUuid
+   *
+   * @returns {Promise}
+   */
+  service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
+    return udbApi
+      .deleteLabelFromOrganizer(organizerId, labelUuid)
+      .then(logOrganizerLabelJob);
+  };
+
+  /**
+   * Removes an organizer from the cache.
+   * @param {string} organizerId
+   */
+  service.removeOrganizerFromCache = function(organizerId) {
+    udbApi.removeItemFromCache(organizerId);
+  };
+
+  /**
+   * @param {Object} commandInfo
+   * @return {Promise.<BaseJob>}
+   */
+  function logOrganizerLabelJob(commandInfo) {
+    var job = new BaseJob(commandInfo.commandId);
+    jobLogger.addJob(job);
+
+    return $q.resolve(job);
+  }
+}
+OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
 
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
 
@@ -14414,6 +14699,79 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, $http, udbApi) {
 }
 MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "$http", "udbApi"];
 
+// Source: src/migration/event-migration-footer.component.js
+/**
+ * @ngdoc function
+ * @name udb.migration.component:udbEventMigrationFooter
+ * @description
+ * # Event Migration Footer
+ * Footer component for migrating events
+ */
+angular
+  .module('udb.migration')
+  .component('udbEventMigrationFooter', {
+    templateUrl: 'templates/event-migration-footer.component.html',
+    controller: EventMigrationFooterController,
+    controllerAs: 'migration'
+  });
+
+/* @ngInject */
+function EventMigrationFooterController(EventFormData) {
+  var controller = this;
+
+  controller.eventId = EventFormData.id;
+
+  controller.readyToEdit = function () {
+    return !!_.get(EventFormData, 'location.id');
+  };
+}
+EventMigrationFooterController.$inject = ["EventFormData"];
+
+// Source: src/migration/event-migration.service.js
+/**
+ * @ngdoc service
+ * @name udb.migration.eventMigration
+ * @description
+ * Event Migration Service
+ */
+angular
+  .module('udb.migration')
+  .service('eventMigration', EventMigrationService);
+
+/* @ngInject */
+function EventMigrationService($q, udbApi) {
+  var service = this;
+
+  var migrationRequirements = {
+    location: hasKnownLocation
+  };
+
+  /**
+   * @param {udbEvent} event
+   */
+  function hasKnownLocation(event) {
+    return !!_.get(event, 'location.id');
+  }
+
+  /**
+   * @param {udbEvent} event
+   *
+   * @return string[]
+   *  A list of migrations steps needed to meet all requirements.
+   */
+  service.checkRequirements = function (event) {
+    var migrationSteps = _(migrationRequirements)
+      .pick(function (requirementCheck) {
+        return !requirementCheck(event);
+      })
+      .keys();
+
+    return migrationSteps.value();
+  };
+
+}
+EventMigrationService.$inject = ["$q", "udbApi"];
+
 // Source: src/place-detail/place-detail.directive.js
 /**
  * @ngdoc directive
@@ -15015,7 +15373,7 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.labels = _.map(select.offer.labels, function (labelName) {
     return {name:labelName};
   });
-  select.minimumInputLength = 3;
+  select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;
@@ -17527,6 +17885,167 @@ function searchDirective() {
   return search;
 }
 
+// Source: src/uitpas/components/card-systems/card-system-selector.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:CardSystemSelector
+ * @description
+ * # CardSystemSelector
+ * Component for setting UiTPAS info.
+ */
+angular
+  .module('udb.uitpas')
+  .component('cardSystemSelector', {
+    templateUrl: 'templates/card-systems.html',
+    controller: CardSystemsController,
+    controllerAs: 'cardSystemSelector',
+    bindings: {
+      organisation: '<',
+      offerData: '<'
+    }
+  });
+
+/* @ngInject */
+function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
+  var controller = this;
+  var organisation = controller.organisation;
+  var offerData = controller.offerData;
+
+  controller.$onInit = function() {
+    $q
+      .all([
+        udbUitpasApi
+          .getEventUitpasData(offerData.id)
+          .catch(function () {
+            return $q.resolve([]);
+          }),
+        udbUitpasApi.findOrganisationsCardSystems(organisation.id)
+      ])
+      .then(function (uitpasInfo) {
+        var assignedDistributionKeys = uitpasInfo[0],
+          organisationCardSystems = uitpasInfo[1];
+
+        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
+          cardSystem.assignedDistributionKey = _.find(
+            cardSystem.distributionKeys,
+            function(distributionKey) {
+              return _.includes(assignedDistributionKeys, distributionKey.id);
+            }
+          );
+
+          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+
+          return cardSystem;
+        });
+
+        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
+
+        _.forEach(organisationLabels, function(organisationLabel) {
+          if (!_.find(availableCardSystems, {name: organisationLabel})) {
+            availableCardSystems.push({
+              name: organisationLabel,
+              active: true, //_.includes(offerData.labels, organisationLabel),
+              distributionKeys: []
+            });
+          }
+        });
+
+        controller.availableCardSystems = availableCardSystems;
+      });
+  };
+
+  controller.distributionKeyAssigned = function() {
+    var assignedKeys = _(controller.availableCardSystems)
+      .pluck('assignedDistributionKey.id')
+      .reject(_.isEmpty)
+      .values();
+
+    udbUitpasApi
+      .updateEventUitpasData(assignedKeys, offerData.id)
+      .then(function () {
+        $rootScope.$emit('uitpasDataSaved');
+      });
+  };
+}
+CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels", "$rootScope"];
+
+// Source: src/uitpas/components/uitpas-info/uitpas-info.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormUitpasInfoController
+ * @description
+ * # EventFormUitpasInfoController
+ * Component for setting UiTPAS info.
+ */
+angular
+  .module('udb.uitpas')
+  .component('uitpasInfo', {
+    templateUrl: 'templates/uitpasInfo.html',
+    controller: UitpasInfoComponent,
+    controllerAs: 'upic',
+    bindings: {
+      organizer: '<',
+      price: '<'
+    }
+  });
+
+/* @ngInject */
+function UitpasInfoComponent(
+  $scope,
+  $rootScope,
+  EventFormData
+) {
+  var controller = this;
+
+  $scope.showUitpasInfo = false;
+  $scope.uitpasCssClass = 'state-incomplete';
+  $scope.checkedCardSystems = [];
+  controller.listeners = [];
+  controller.showCardSystems = false;
+
+  controller.$onInit = init;
+  controller.$onDestroy = destroy;
+
+  /**
+   *
+   * @param {Object} angularEvent
+   * @param {EventFormData} offerData
+   */
+  controller.showCardSystemsIfPriceIsSelected = function(angularEvent, offerData) {
+    controller.showCardSystems = offerData.priceInfo && !!offerData.priceInfo.length;
+  };
+
+  controller.markUitpasDataAsCompleted = function () {
+    $scope.uitpasCssClass = 'state-complete';
+  };
+
+  function init() {
+    controller.eventFormData = EventFormData;
+    $scope.showUitpasInfo = _.get(controller, 'organizer.isUitpas', false) && EventFormData.isEvent;
+    controller.showCardSystems = controller.price && !!controller.price.length;
+
+    controller.listeners = [
+      $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
+      $rootScope.$on('eventOrganizerSelected', controller.reset),
+      $rootScope.$on('eventOrganizerDeleted', controller.reset),
+      $rootScope.$on('uitpasDataSaved', controller.markUitpasDataAsCompleted)
+    ];
+  }
+
+  function destroy() {
+    _.invoke(controller.listeners, 'call');
+  }
+
+  controller.reset = function (angularEvent, organizer) {
+    controller.organizer = organizer;
+    $scope.checkedCardSystems = [];
+    destroy();
+    init();
+    controller.saveUitpasData($scope.checkedCardSystems);
+  };
+}
+UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
+
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
  * @ngdoc directive
@@ -17539,17 +18058,12 @@ angular
   .controller('OrganisationSuggestionController', OrganisationSuggestionController);
 
 /* @ngInject */
-function OrganisationSuggestionController($scope, UitpasLabels) {
+function OrganisationSuggestionController($scope) {
   var controller = this;
   controller.organisation = $scope.organisation;
   controller.query = $scope.query;
-
-  controller.isUitpas = !_.isEmpty(_.intersection(
-    _.pluck($scope.organisation.labels, 'name'),
-    _.values(UitpasLabels)
-  ));
 }
-OrganisationSuggestionController.$inject = ["$scope", "UitpasLabels"];
+OrganisationSuggestionController.$inject = ["$scope"];
 
 // Source: src/uitpas/organisation-suggestion.directive.js
 angular
@@ -17569,6 +18083,78 @@ function uitpasOrganisationSuggestion() {
     restrict: 'A'
   };
 }
+
+// Source: src/uitpas/udb-uitpas-api.service.js
+/**
+ * @typedef {Object} Cardsystem
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ * @property {DistributionKey[]} distributionKeys
+ */
+
+/**
+ * @typedef {Object} DistributionKey
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ *  the name of the key including the price, eg: "CC De Werf - 1,5 EUR / dag"
+ */
+
+angular
+  .module('udb.uitpas')
+  .service('udbUitpasApi', UdbUitpasApi);
+
+function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
+  var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
+  var defaultApiConfig = {
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + uitidAuth.getToken()
+    },
+    params: {}
+  };
+  /**
+   * @param {string} eventId
+   *
+   * @return {Promise.<string[]>}
+   */
+  this.getEventUitpasData = function(eventId) {
+    return $http
+      .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * Update UiTPAS info for an event.
+   * @param {string[]} distributionKeys
+   * @param {string} eventId
+   *
+   * @return {Promise.<CommandInfo>}
+   */
+  this.updateEventUitpasData = function(distributionKeys, eventId) {
+    return $http
+      .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', distributionKeys, defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} organizerId of the organizer
+   *
+   * @return {Promise.<Cardsystem[]>}
+   */
+  this.findOrganisationsCardSystems = function(organizerId) {
+    return $http
+      .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
+  function returnUnwrappedData(response) {
+    return $q.resolve(response.data);
+  }
+}
+UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
 
 // Source: src/uitpas/uitpas-labels.constant.js
 /* jshint sub: true */
@@ -17593,7 +18179,7 @@ angular
     'UITPAS': 'UiTPAS',
     'UITPAS_GENT': 'UiTPAS Gent',
     'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS regio Aalst',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
     'UITPAS_DENDER': 'UiTPAS Dender',
     'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
@@ -18051,15 +18637,25 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <td><strong>Organisator</strong></td>\n" +
     "              <td>{{event.organizer.name}}</td>\n" +
     "            </tr>\n" +
-    "            <tr class=\"rv-event-info-price\" ng-class=\"{muted: event.pricing === 'unknown'}\">\n" +
+    "            <tr class=\"rv-event-info-price\" ng-class=\"{muted: !event.priceInfo.length}\">\n" +
     "              <td><strong>Prijs</strong></td>\n" +
-    "              <td ng-switch=\"event.pricing\">\n" +
-    "                <span ng-switch-when=\"free\">Gratis</span>\n" +
-    "                <span ng-switch-when=\"payed\">\n" +
-    "                  <i class=\"fa fa-eur meta icon\"></i>\n" +
-    "                  <span ng-if=\"event.price\" ng-bind=\"event.price | currency\"></span>\n" +
-    "                </span>\n" +
-    "                <span ng-switch-when=\"unknown\">Geen prijsinformatie</span>\n" +
+    "              <td ng-if=\"event.priceInfo.length\">\n" +
+    "                <table class=\"table event-detail-price-table\">\n" +
+    "                  <tr ng-repeat=\"priceInfo in event.priceInfo\">\n" +
+    "                    <td>{{priceInfo.name}}</td>\n" +
+    "                    <td>\n" +
+    "                      <span ng-if=\"priceInfo.price == 0\">\n" +
+    "                        Gratis\n" +
+    "                      </span>\n" +
+    "                      <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                        {{priceInfo.price | currency}} euro\n" +
+    "                      </span>\n" +
+    "                    </td>\n" +
+    "                  </tr>\n" +
+    "                </table>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"!event.priceInfo.length\">\n" +
+    "                Geen prijsinformatie\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
@@ -18248,7 +18844,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
     "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
-    "      <p id=\"add-date-tip\" class=\"muted col-sm-12\"><em>Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</em></p>\n" +
+    "      <p id=\"add-date-tip\" class=\"muted\">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>\n" +
     "    </a>\n" +
     "  </div>\n" +
     "</div>\n"
@@ -18921,14 +19517,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  Gratis\n" +
     "                </span>\n" +
     "                <span ng-if=\"priceInfo.price !== 0\">\n" +
-    "                  <input type=\"number\"\n" +
+    "                  <div class=\"form-inline\">\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                      <input type=\"number\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"price\"\n" +
     "                       ng-model=\"priceInfo.price\"\n" +
     "                       ng-model-options=\"{ updateOn: 'blur' }\"\n" +
     "                       ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
     "                       required />\n" +
-    "                  euro\n" +
+    "                     </div>\n" +
+    "                     <div class=\"form-group\">\n" +
+    "                       euro\n" +
+    "                     </div>\n" +
+    "                  </div>\n" +
     "                </span>\n" +
     "              </td>\n" +
     "              <td ng-switch on=\"priceInfo.price\"\n" +
@@ -18941,9 +19543,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-switch-default>Gratis</a>\n" +
     "              </td>\n" +
     "              <td class=\"col-xs-1\">\n" +
-    "                <span aria-hidden=\"true\"\n" +
-    "                      ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
-    "                      ng-if=\"$ctrl.showPriceDelete(key)\">&times;</span>\n" +
+    "                <a aria-hidden=\"true\"\n" +
+    "                    ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
+    "                    ng-if=\"$ctrl.showPriceDelete(key)\" class=\"close\">&times;</a>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
@@ -19394,7 +19996,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
-    "                     placeholder=\"Locatie\"\n" +
+    "                     placeholder=\"Naam of adres\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
@@ -19618,7 +20220,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
     "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
-    "                <a class=\"btn btn-link\" ng-click=\"alterDescription()\">Wijzigen</a>\n" +
+    "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
@@ -19665,14 +20267,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"col-sm-8\">\n" +
     "              <section>\n" +
     "                <div class=\"form-group clearfix\" ng-hide=\"ageRange === AgeRange.ALL\">\n" +
-    "                  <select class=\"form-control leeftijd-incomplete-select\"\n" +
-    "                          ng-change=\"ageRangeChanged(ageRange)\"\n" +
-    "                          ng-model=\"ageRange\"\n" +
-    "                          ng-options=\"range.label for range in ageRanges\">\n" +
-    "                    <option value=\"\">Kies een leeftijdscategorie</option>\n" +
-    "                  </select>\n" +
-    "\n" +
-    "                  <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
+    "                  <div class=\"row\">\n" +
+    "                    <div class=\"col-xs-7\">\n" +
+    "                      <select class=\"form-control leeftijd-incomplete-select\"\n" +
+    "                              ng-change=\"ageRangeChanged(ageRange)\"\n" +
+    "                              ng-model=\"ageRange\"\n" +
+    "                              ng-options=\"range.label for range in ageRanges\">\n" +
+    "                        <option value=\"\">Kies een leeftijdscategorie</option>\n" +
+    "                      </select>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"col-xs-5\">\n" +
+    "                      <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
+    "                    </div>\n" +
+    "                  </div>\n" +
     "                </div>\n" +
     "                <div class=\"form-inline form-group\" ng-show=\"ageRange && ageRange !== AgeRange.ALL\">\n" +
     "                  <div class=\"form-group\">\n" +
@@ -19722,7 +20329,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <section class=\"state complete\">\n" +
     "                <span>\n" +
     "                  <span ng-bind=\"eventFormData.organizer.name\"></span>\n" +
-    "                  <a class=\"btn btn-link close\" ng-click=\"deleteOrganizer()\" data-dismiss=\"modal\" aria-label=\"Close\">\n" +
+    "                  <a class=\"close\" ng-click=\"deleteOrganizer()\">\n" +
     "                    <span aria-hidden=\"true\"> &times;</span>\n" +
     "                  </a>\n" +
     "                </span>\n" +
@@ -19739,7 +20346,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
-    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"/>\n" +
+    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
+    "                             typeahead-wait-ms=\"300\"/>\n" +
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
@@ -19762,6 +20370,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <price-info price=\"price\"></price-info>\n" +
+    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
     "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
     "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
@@ -20322,7 +20931,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       type=\"text\"\n" +
     "                       udb-unique-label\n" +
     "                       udb-semicolon-label-check\n" +
-    "                       ng-minlength=\"3\"\n" +
+    "                       ng-minlength=\"2\"\n" +
     "                       ng-required=\"true\"\n" +
     "                       ng-maxlength=\"255\"\n" +
     "                       ng-model=\"creator.label.name\"\n" +
@@ -20330,7 +20939,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       ng-disabled=\"creator.creating\">\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.uniqueLabel\">Er bestaat al een label met deze naam.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "            </div>\n" +
@@ -20384,12 +20993,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           name=\"name\"\n" +
     "                           udb-semicolon-label-check\n" +
     "                           ng-model=\"editor.label.name\"\n" +
-    "                           ng-minlength=\"3\"\n" +
+    "                           ng-minlength=\"2\"\n" +
     "                           ng-required=\"true\"\n" +
     "                           ng-maxlength=\"255\"\n" +
     "                           ng-disabled=\"editor.renaming\">\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 3 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
     "                    <p class=\"help-block\" ng-if=\"editor.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
     "                </div>\n" +
@@ -20506,7 +21115,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <span class=\"udb-short-info-seperator\" ng-show=\"moc.offer.type.label && moc.offer.theme.label\"> • </span>\n" +
     "                <span class=\"udb-theme\" ng-bind=\"moc.offer.theme.label\"></span>\n" +
     "\n" +
-    "                <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "                <a ng-href=\"{{ moc.offer.url  + '/preview' }}\">\n" +
+    "                    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "                </a>\n" +
     "            </header>\n" +
     "\n" +
     "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
@@ -20624,6 +21235,93 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </uib-pagination>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organizer-detail.html',
+    "<h1 class=\"title\">{{odc.organizer.name}}</h1>\n" +
+    "\n" +
+    "<div ng-show=\"!odc.organizer && !odc.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"odc.organizer\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Naam</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.name\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Straat + nr</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.streetAddress\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Postcode</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.postalCode\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Gemeente</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Website</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.url\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Telefoonnummer</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.phone\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>E-mailadres</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <span ng-bind=\"odc.organizer.email\"></span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "            <span><strong>Labels</strong></span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "            <tags-input ng-model=\"odc.organizer.labels\"\n" +
+    "                        on-tag-added=\"odc.addLabel($tag)\"\n" +
+    "                        on-tag-removed=\"odc.deleteLabel($tag)\"\n" +
+    "                        placeholder=\"voeg een label toe\">\n" +
+    "              <auto-complete source=\"odc.searchLabels($query)\"\n" +
+    "                             ></auto-complete>\n" +
+    "            </tags-input>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"odc.loadingError\">\n" +
+    "    <span ng-bind=\"odc.loadingError\"></span>\n" +
     "</div>\n"
   );
 
@@ -21094,6 +21792,31 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-migration-footer.component.html',
+    "<div class=\"event-validation\">\n" +
+    "    <a class=\"btn btn-success\"\n" +
+    "       ui-sref=\"split.eventEdit({id: migration.eventId})\"\n" +
+    "       role=\"button\"\n" +
+    "       ng-class=\"{disabled: !migration.readyToEdit()}\">Doorgaan met bewerken</a>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/event-migration.html',
+    "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
+    "    <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "        Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.\n" +
+    "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <udb-event-form-step3></udb-event-form-step3>\n" +
+    "\n" +
+    "    <udb-event-migration-footer></udb-event-migration-footer>\n" +
+    "</div>\n" +
+    "\n"
+  );
+
+
   $templateCache.put('templates/place-detail.html',
     "<div ng-if=\"placeIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
@@ -21328,7 +22051,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-link.directive.html',
-    "<a ng-href=\"{{ event.url }}\" ng-bind=\"::event.name\"></a>\n"
+    "<a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"::event.name\"></a>\n"
   );
 
 
@@ -21670,7 +22393,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span class=\"udb-theme\" ng-bind=\"event.theme.label\"></span>\n" +
     "    </div>\n" +
     "    <div class=\"udb-title\">\n" +
-    "      <a ng-href=\"{{ event.url }}\" ng-bind=\"event.name\"></a>\n" +
+    "      <a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"event.name\"></a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
@@ -21839,7 +22562,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span class=\"udb-theme\" ng-bind=\"event.theme.label\"></span>\n" +
     "    </div>\n" +
     "    <div class=\"udb-title\">\n" +
-    "      <a ng-href=\"{{ event.url }}\" ng-bind=\"event.name\"></a>\n" +
+    "      <a ng-href=\"{{ event.url + '/preview' }}\" ng-bind=\"event.name\"></a>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
@@ -22107,14 +22830,76 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/card-systems.html',
+    "<div class=\"form-group\">\n" +
+    "    <div class=\"card-system\">\n" +
+    "        <label>Kaartsystemen</label>\n" +
+    "\n" +
+    "        <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in cardSystemSelector.availableCardSystems\">\n" +
+    "            <div class=\"col-sm-6\">\n" +
+    "                <div class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\"\n" +
+    "                               disabled=\"disabled\"\n" +
+    "                               ng-model=\"cardSystem.active\"\n" +
+    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged()\">\n" +
+    "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
+    "                <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
+    "                        ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
+    "                        ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
+    "                    <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
+    "                </select>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/uitpasInfo.html',
+    "<div class=\"row extra-uitpas\" ng-if=\"showUitpasInfo\">\n" +
+    "    <div class=\"extra-task\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <em class=\"extra-task-label\">UiTPAS</em>\n" +
+    "            <span> </span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"alert alert-info\" ng-show=\"!upic.showCardSystems\">\n" +
+    "                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-if=\"upic.showCardSystems\">\n" +
+    "                <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "                    Dit is een UiTPAS activiteit.\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +
+    "                </card-system-selector>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/organisation-suggestion.directive.html',
-    "<span class=\"organisation-name\" ng-bind-html=\"::os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
-    "<small ng-if=\"::os.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+    "<span class=\"organisation-name\" ng-bind-html=\"os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
+    "<small ng-if=\"os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
   );
 
 
   $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
-    "<a uitpas-organisation-suggestion organisation=\"match.model\" query=\"query\"></a>"
+    "<a>\n" +
+    "    <span class=\"organisation-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
+    "    <small ng-if=\"match.model.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>\n" +
+    "</a>"
   );
 
 }]);

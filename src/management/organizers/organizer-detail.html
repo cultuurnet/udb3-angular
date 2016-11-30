@@ -1,0 +1,83 @@
+<h1 class="title">{{odc.organizer.name}}</h1>
+
+<div ng-show="!odc.organizer && !odc.loadingError">
+    <i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
+
+<div ng-show="odc.organizer">
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Naam</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.name"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Straat + nr</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.address.streetAddress"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Postcode</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.address.postalCode"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Gemeente</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.address.addressLocality"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Website</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.url"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Telefoonnummer</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.phone"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>E-mailadres</strong></span>
+        </div>
+        <div class="col-md-10">
+            <span ng-bind="odc.organizer.email"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <span><strong>Labels</strong></span>
+            <i class="fa fa-circle-o-notch fa-spin" ng-show="labelSaving"></i>
+        </div>
+        <div class="col-md-10">
+            <tags-input ng-model="odc.organizer.labels"
+                        on-tag-added="odc.addLabel($tag)"
+                        on-tag-removed="odc.deleteLabel($tag)"
+                        placeholder="voeg een label toe">
+              <auto-complete source="odc.searchLabels($query)"
+                             ></auto-complete>
+            </tags-input>
+        </div>
+    </div>
+</div>
+
+<div ng-show="odc.loadingError">
+    <span ng-bind="odc.loadingError"></span>
+</div>

@@ -18,7 +18,7 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootScope) {
+function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
@@ -131,7 +131,7 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, appConfig, $rootSc
   function savePrice() {
     controller.savingPrice = true;
 
-    EventFormData.price = controller.price;
+    EventFormData.priceInfo = controller.price;
     controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);

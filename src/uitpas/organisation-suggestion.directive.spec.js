@@ -40,11 +40,11 @@ describe('Organisation Suggestion Directive', function () {
           name: 'UiTPAS',
           uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
         }
-      ]
+      ],
+      isUitpas: true
     };
 
     var suggestionElement = getSuggestionElement(organisation);
-    expect(suggestionElement.isolateScope().os.isUitpas).toEqual(true);
     expect(suggestionElement.children('.uitpas-tag').length).toEqual(1);
   });
 
@@ -60,11 +60,11 @@ describe('Organisation Suggestion Directive', function () {
           name: 'orange',
           uuid: '0beb5b08-7660-460e-be5c-c2636787c231'
         }
-      ]
+      ],
+      isUitpas: false
     };
 
     var suggestionElement = getSuggestionElement(organisationWithOtherLabels);
-    expect(suggestionElement.isolateScope().os.isUitpas).toEqual(false);
     expect(suggestionElement.children('.uitpas-tag').length).toEqual(0);
   });
 
@@ -72,11 +72,11 @@ describe('Organisation Suggestion Directive', function () {
   it('should not tag an organisation without labels', function () {
     var organisationWithoutLabels = {
       name: 'Heidevissers',
-      labels: []
+      labels: [],
+      isUitpas: false
     };
 
     var suggestionElement = getSuggestionElement(organisationWithoutLabels);
-    expect(suggestionElement.isolateScope().os.isUitpas).toEqual(false);
     expect(suggestionElement.children('.uitpas-tag').length).toEqual(0);
   });
 

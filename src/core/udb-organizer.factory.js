@@ -12,7 +12,21 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory() {
+function UdbOrganizerFactory(UitpasLabels) {
+
+  function isUitpas(labels) {
+    return !_.isEmpty(_.intersection(
+        _.pluck(labels, 'name'),
+        _.values(UitpasLabels)));
+  }
+
+  function getFirst(jsonOrganizer, path) {
+    return _
+      .chain(jsonOrganizer)
+      .get(path, [])
+      .first()
+      .value();
+  }
 
   /**
    * @class UdbOrganizer
@@ -31,11 +45,12 @@ function UdbOrganizerFactory() {
     parseJson: function (jsonOrganizer) {
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
-      this.addresses = jsonOrganizer.addresses || [];
-      this.email = jsonOrganizer.email || [];
-      this.phone = jsonOrganizer.phone || [];
-      this.url = jsonOrganizer.url || [];
+      this.address = jsonOrganizer.address || [];
+      this.email = getFirst(jsonOrganizer, 'contactPoint.email');
+      this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
+      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
       this.labels = jsonOrganizer.labels || [];
+      this.isUitpas = isUitpas(jsonOrganizer.labels);
     }
   };
 
