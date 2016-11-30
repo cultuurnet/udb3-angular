@@ -105,7 +105,7 @@
                 Geen prijsinformatie
               </td>
             </tr>
-            <tr ng-class="{muted: _.isEmpty(event.bookingInfo)}">
+            <tr ng-class="{muted: !hasBookingInfoResults}">
               <td>
                 <strong>Reservaties</strong>
               </td>
@@ -126,7 +126,7 @@
               <td ng-if="_.isEmpty(event.bookingInfo)"></td>
             </tr>
 
-            <tr ng-class="{muted: _.isEmpty(event.contactPoint)}">
+            <tr ng-class="{muted: !hasContactPointResults}">
               <td>
                 <strong>Contact</strong>
               </td>
@@ -134,7 +134,7 @@
                 <ul class="list-unstyled">
                   <li>
                     <span ng-repeat="website in event.contactPoint.url">
-                      <a ng-href="{{website}}">{{website}}</a>
+                      <a ng-href="{{website}}" target="_blank">{{website}}</a>
                       <span ng-if="!$last">of </span>
                     </span>
                   </li>

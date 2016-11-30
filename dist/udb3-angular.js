@@ -7040,6 +7040,8 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+    hasContactPoint();
+    hasBookingInfo();
   }
 
   function failedToLoad(reason) {
@@ -7161,6 +7163,16 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
+  }
+
+  function hasContactPoint() {
+    var result = _.find($scope.event.contactPoint, function(value) { return value; });
+    $scope.hasContactPointResults = (result.length > 0);
+  }
+
+  function hasBookingInfo() {
+    var bookingInfo = $scope.event.bookingInfo;
+    $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
@@ -18559,7 +18571,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                Geen prijsinformatie\n" +
     "              </td>\n" +
     "            </tr>\n" +
-    "            <tr ng-class=\"{muted: _.isEmpty(event.bookingInfo)}\">\n" +
+    "            <tr ng-class=\"{muted: !hasBookingInfoResults}\">\n" +
     "              <td>\n" +
     "                <strong>Reservaties</strong>\n" +
     "              </td>\n" +
@@ -18580,7 +18592,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <td ng-if=\"_.isEmpty(event.bookingInfo)\"></td>\n" +
     "            </tr>\n" +
     "\n" +
-    "            <tr ng-class=\"{muted: _.isEmpty(event.contactPoint)}\">\n" +
+    "            <tr ng-class=\"{muted: !hasContactPointResults}\">\n" +
     "              <td>\n" +
     "                <strong>Contact</strong>\n" +
     "              </td>\n" +
@@ -18588,7 +18600,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <ul class=\"list-unstyled\">\n" +
     "                  <li>\n" +
     "                    <span ng-repeat=\"website in event.contactPoint.url\">\n" +
-    "                      <a ng-href=\"{{website}}\">{{website}}</a>\n" +
+    "                      <a ng-href=\"{{website}}\" target=\"_blank\">{{website}}</a>\n" +
     "                      <span ng-if=\"!$last\">of </span>\n" +
     "                    </span>\n" +
     "                  </li>\n" +
