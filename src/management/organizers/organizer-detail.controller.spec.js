@@ -35,10 +35,10 @@ describe('Controller: Organizer Detail', function() {
   };
 
   var fakeLabel = {
-    "uuid":"1d470df5-75c8-4a93-a70e-61c383263738",
-    "name":"Blub",
-    "visibility":"visible",
-    "privacy":"public"
+    'uuid':'1d470df5-75c8-4a93-a70e-61c383263738',
+    'name':'Blub',
+    'visibility':'visible',
+    'privacy':'public'
   };
 
   var id = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
@@ -83,8 +83,7 @@ describe('Controller: Organizer Detail', function() {
     var expectedLabels = [
       {
         "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
-        "name": "Mijn label",
-        "text": "Mijn label"
+        "name": "Mijn label"
       }
     ];
 
@@ -104,7 +103,9 @@ describe('Controller: Organizer Detail', function() {
     $scope.$digest();
     controller.addLabel(fakeLabel);
 
-    expect(OrganizerManager.addLabelToOrganizer).toHaveBeenCalledWith(id, fakeLabel.uuid);
+    expect(OrganizerManager.addLabelToOrganizer)
+      .toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'Blub');
+
     expect(controller.labelSaving).toBeTruthy();
   });
 
@@ -116,7 +117,8 @@ describe('Controller: Organizer Detail', function() {
     $scope.$digest();
     controller.deleteLabel(fakeLabel);
 
-    expect(OrganizerManager.deleteLabelFromOrganizer).toHaveBeenCalledWith(id, fakeLabel.uuid);
+    expect(OrganizerManager.deleteLabelFromOrganizer)
+      .toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'Blub');
   });
 
   it ('should search some labels through a given query', function () {
