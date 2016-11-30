@@ -39,7 +39,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
     controller.labelSaving = true;
 
     OrganizerManager
-      .addLabelToOrganizer(organizerId, label.uuid)
+      .addLabelToOrganizer(organizerId, label.name)
       .catch(showProblem)
       .finally(function() {
         controller.labelSaving = false;
@@ -51,7 +51,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
     controller.labelSaving = true;
 
     OrganizerManager
-        .deleteLabelFromOrganizer(organizerId, label.uuid)
+        .deleteLabelFromOrganizer(organizerId, label.name)
         .catch(showProblem)
         .finally(function() {
           controller.labelSaving = false;

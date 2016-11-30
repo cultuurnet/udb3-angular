@@ -2920,30 +2920,24 @@ function UdbApi(
   };
 
   /**
-   *
    * @param {string} organizerId
-   * @param {string} labelId
-   * @returns {Promise}
+   * @param {string} labelName
+   * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.addLabelToOrganizer = function(organizerId, labelId) {
-    var requestConfig = defaultApiConfig;
-
+  this.addLabelToOrganizer = function(organizerId, labelName) {
     return $http
-      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, {}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
-   *
    * @param {string} organizerId
-   * @param {string} labelId
-   * @returns {Promise}
+   * @param {string} labelName
+   * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.deleteLabelFromOrganizer = function(organizerId, labelId) {
-    var requestConfig = defaultApiConfig;
-
+  this.deleteLabelFromOrganizer = function(organizerId, labelName) {
     return $http
-        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, requestConfig)
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -12962,7 +12956,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
     controller.labelSaving = true;
 
     OrganizerManager
-      .addLabelToOrganizer(organizerId, label.uuid)
+      .addLabelToOrganizer(organizerId, label.name)
       .catch(showProblem)
       .finally(function() {
         controller.labelSaving = false;
@@ -12974,7 +12968,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
     controller.labelSaving = true;
 
     OrganizerManager
-        .deleteLabelFromOrganizer(organizerId, label.uuid)
+        .deleteLabelFromOrganizer(organizerId, label.name)
         .catch(showProblem)
         .finally(function() {
           controller.labelSaving = false;
@@ -15249,13 +15243,31 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.createLabel = createLabel;
   select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
-  select.labels = _.map(select.labels, function (label) {
-    return _.isString(label) ? {name:label} : label;
-  });
+  select.labels = objectifyLabels(select.labels);
   select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;
+
+  select.$onChanges = updateLabels;
+
+  /**
+   * @param {Object} bindingChanges
+   * @see https://code.angularjs.org/1.5.9/docs/guide/component
+   */
+  function updateLabels(bindingChanges) {
+    select.labels = objectifyLabels(_.get(bindingChanges, 'labels.currentValue', select.labels));
+  }
+
+  /**
+   * @param {string[]|Label[]} labels
+   * @return {Label[]}
+   */
+  function objectifyLabels(labels) {
+    return _.map(select.labels, function (label) {
+      return _.isString(label) ? {name:label} : label;
+    });
+  }
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
@@ -21189,8 +21201,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "        <div class=\"col-md-10\">\n" +
     "            <udb-label-select labels=\"odc.organizer.labels\"\n" +
-    "                              label-added=\"odc.addLabel($tag)\"\n" +
-    "                              label-removed=\"odc.deleteLabel($tag)\"></udb-label-select>\n" +
+    "                              label-added=\"odc.addLabel(label)\"\n" +
+    "                              label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
