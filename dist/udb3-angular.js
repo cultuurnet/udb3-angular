@@ -20681,7 +20681,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
     "                  <a class=\"media-left\" href=\"#\">\n" +
-    "                    <img ng-src=\"{{ image.thumbnailUrl }}\" style=\"max-width: 50px; max-height: 50px;\">\n" +
+    "                    <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"max-width: 50px; max-height: 50px;\">\n" +
     "                  </a>\n" +
     "\n" +
     "                  <div class=\"media-body\">\n" +
