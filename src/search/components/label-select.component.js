@@ -7,7 +7,7 @@ angular
     controller: LabelSelectComponent,
     controllerAs: 'select',
     bindings: {
-      offer: '<',
+      labels: '<',
       labelAdded: '&',
       labelRemoved: '&'
     }
@@ -22,13 +22,31 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.createLabel = createLabel;
   select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
-  select.labels = _.map(select.offer.labels, function (labelName) {
-    return {name:labelName};
-  });
+  select.labels = objectifyLabels(select.labels);
   select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;
+
+  select.$onChanges = updateLabels;
+
+  /**
+   * @param {Object} bindingChanges
+   * @see https://code.angularjs.org/1.5.9/docs/guide/component
+   */
+  function updateLabels(bindingChanges) {
+    select.labels = objectifyLabels(_.get(bindingChanges, 'labels.currentValue', select.labels));
+  }
+
+  /**
+   * @param {string[]|Label[]} labels
+   * @return {Label[]}
+   */
+  function objectifyLabels(labels) {
+    return _.map(select.labels, function (label) {
+      return _.isString(label) ? {name:label} : label;
+    });
+  }
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);

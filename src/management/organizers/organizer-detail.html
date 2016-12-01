@@ -1,10 +1,10 @@
-<h1 class="title">{{odc.organizer.name}}</h1>
+<h1 class="title" ng-bind="odc.organizer.name"></h1>
 
 <div ng-show="!odc.organizer && !odc.loadingError">
     <i class="fa fa-circle-o-notch fa-spin"></i>
 </div>
 
-<div ng-show="odc.organizer">
+<div ng-if="odc.organizer">
     <div class="row">
         <div class="col-md-2">
             <span><strong>Naam</strong></span>
@@ -67,13 +67,9 @@
             <i class="fa fa-circle-o-notch fa-spin" ng-show="labelSaving"></i>
         </div>
         <div class="col-md-10">
-            <tags-input ng-model="odc.organizer.labels"
-                        on-tag-added="odc.addLabel($tag)"
-                        on-tag-removed="odc.deleteLabel($tag)"
-                        placeholder="voeg een label toe">
-              <auto-complete source="odc.searchLabels($query)"
-                             ></auto-complete>
-            </tags-input>
+            <udb-label-select labels="odc.organizer.labels"
+                              label-added="odc.addLabel(label)"
+                              label-removed="odc.deleteLabel(label)"></udb-label-select>
         </div>
     </div>
 </div>
