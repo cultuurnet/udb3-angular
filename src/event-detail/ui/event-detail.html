@@ -125,7 +125,12 @@
             <tr ng-class="{muted: !event.image}">
               <td><strong>Afbeelding</strong></td>
               <td>
-                <img ng-if="event.image" class="offer-image-thumbnail" ng-src="{{event.image}}"/>
+                <img ng-if="event.image" class="offer-image-main" ng-src="{{event.image}}?width=400" />
+                <p>
+                  <span ng-repeat="image in event.images">
+                    <img ng-src="{{image.contentUrl}}?height=100" class="offer-image-thumbnail" />
+                  </span>
+                </p>
                 <span ng-if="!event.image">Geen afbeelding</span>
               </td>
             </tr>

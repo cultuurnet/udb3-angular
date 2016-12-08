@@ -82,16 +82,14 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
    * Get the images that exist for this event.
    */
   function getImages(jsonEvent) {
-
     var images = [];
     if (jsonEvent.mediaObject) {
       for (var i = 0; i < jsonEvent.mediaObject.length; i++) {
-        if (jsonEvent.mediaObject[i]['@type'] === 'ImageObject') {
+        if (jsonEvent.mediaObject[i]['@type'] === 'schema:ImageObject') {
           images.push(jsonEvent.mediaObject[i]);
         }
       }
     }
-
     return images;
 
   }
@@ -126,6 +124,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.location = new UdbPlace(jsonEvent.location);
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
+      this.images = _.filter(getImages(jsonEvent), function(imageObj) {
+        return imageObj.contentUrl !== jsonEvent.image;
+      });
       this.labels = _.map(jsonEvent.labels, function (label) {
         return label;
       });

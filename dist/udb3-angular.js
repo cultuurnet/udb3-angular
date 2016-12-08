@@ -4000,16 +4000,14 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
    * Get the images that exist for this event.
    */
   function getImages(jsonEvent) {
-
     var images = [];
     if (jsonEvent.mediaObject) {
       for (var i = 0; i < jsonEvent.mediaObject.length; i++) {
-        if (jsonEvent.mediaObject[i]['@type'] === 'ImageObject') {
+        if (jsonEvent.mediaObject[i]['@type'] === 'schema:ImageObject') {
           images.push(jsonEvent.mediaObject[i]);
         }
       }
     }
-
     return images;
 
   }
@@ -4044,6 +4042,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.location = new UdbPlace(jsonEvent.location);
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
+      this.images = _.filter(getImages(jsonEvent), function(imageObj) {
+        return imageObj.contentUrl !== jsonEvent.image;
+      });
       this.labels = _.map(jsonEvent.labels, function (label) {
         return label;
       });
@@ -18654,7 +18655,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tr ng-class=\"{muted: !event.image}\">\n" +
     "              <td><strong>Afbeelding</strong></td>\n" +
     "              <td>\n" +
-    "                <img ng-if=\"event.image\" class=\"offer-image-thumbnail\" ng-src=\"{{event.image}}\"/>\n" +
+    "                <img ng-if=\"event.image\" class=\"offer-image-main\" ng-src=\"{{event.image}}?width=400\" />\n" +
+    "                <p>\n" +
+    "                  <span ng-repeat=\"image in event.images\">\n" +
+    "                    <img ng-src=\"{{image.contentUrl}}?height=100\" class=\"offer-image-thumbnail\" />\n" +
+    "                  </span>\n" +
+    "                </p>\n" +
     "                <span ng-if=\"!event.image\">Geen afbeelding</span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
