@@ -309,7 +309,8 @@ module.exports = function (grunt) {
           'src/management/organizers/udb.organizers.module.js',
           'src/management/udb.management.module.js',
           'src/search/parsers/udb-query-parser.service.js',
-          'src/uitpas/udb.uitpas.module.js'
+          'src/uitpas/udb.uitpas.module.js',
+          'src/migration/udb.migration.module.js'
         ],
         dest: '.tmp/udb3-angular.modules.js'
       },
