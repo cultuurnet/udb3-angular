@@ -220,8 +220,14 @@ function EventDetail(
   }
 
   function hasContactPoint() {
-    var result = _.find($scope.event.contactPoint, function(value) { return value; });
-    $scope.hasContactPointResults = (result.length > 0);
+    var nonEmptyContactTypes = _.filter(
+      $scope.event.contactPoint,
+      function(value) {
+        return value.length > 0;
+      }
+    );
+
+    $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
   }
 
   function hasBookingInfo() {
