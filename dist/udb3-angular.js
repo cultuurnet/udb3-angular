@@ -20746,8 +20746,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl\">\n" +
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
-    "                  <a class=\"media-left\" href=\"#\">\n" +
-    "                    <img ng-src=\"{{ image.thumbnailUrl }}\" style=\"max-width: 50px; max-height: 50px;\">\n" +
+    "                  <a class=\"media-left\">\n" +
+    "                    <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\">\n" +
     "                  </a>\n" +
     "\n" +
     "                  <div class=\"media-body\">\n" +
