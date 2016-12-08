@@ -18656,28 +18656,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <td>\n" +
     "                <strong>Reservaties</strong>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"!_.isEmpty(event.bookingInfo)\">\n" +
-    "                <ul class=\"list-unstyled\">\n" +
+    "              <td ng-if=\"hasBookingInfoResults\">\n" +
+    "                <ul class=\"list-unstyled\" >\n" +
     "                  <li ng-if=\"event.bookingInfo.url\">\n" +
     "                    <span>\n" +
     "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{event.bookingInfo.url}}\"\n" +
     "                         ng-bind=\"event.bookingInfo.urlLabel\"></a>\n" +
-    "                      <!--<a class=\"btn btn-link\" ng-href=\"/event/{{event.id}}/edit#extra-booking-info\">Wijzigen</a>-->\n" +
-    "                      <a class=\"btn btn-link\" ui-sref=\"split.eventEdit({id: event.id})\">Wijzigen</a>\n" +
     "                    </span>\n" +
     "                  </li>\n" +
     "                  <li ng-if=\"event.bookingInfo.phone\">{{event.bookingInfo.phone}}</li>\n" +
     "                  <li ng-if=\"event.bookingInfo.email\">{{event.bookingInfo.email}}</li>\n" +
     "                </ul>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"_.isEmpty(event.bookingInfo)\"></td>\n" +
+    "              <td ng-if=\"!hasBookingInfoResults\"></td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr ng-class=\"{muted: !hasContactPointResults}\">\n" +
     "              <td>\n" +
     "                <strong>Contact</strong>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"!_.isEmpty(event.contactPoint)\">\n" +
+    "              <td ng-if=\"hasContactPointResults\">\n" +
     "                <ul class=\"list-unstyled\">\n" +
     "                  <li>\n" +
     "                    <span ng-repeat=\"website in event.contactPoint.url\">\n" +
@@ -18699,7 +18697,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </li>\n" +
     "                </ul>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"_.isEmpty(event.contactPoint)\"></td>\n" +
+    "              <td ng-if=\"!hasContactPointResults\"></td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr>\n" +

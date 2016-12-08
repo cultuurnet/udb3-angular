@@ -109,28 +109,26 @@
               <td>
                 <strong>Reservaties</strong>
               </td>
-              <td ng-if="!_.isEmpty(event.bookingInfo)">
-                <ul class="list-unstyled">
+              <td ng-if="hasBookingInfoResults">
+                <ul class="list-unstyled" >
                   <li ng-if="event.bookingInfo.url">
                     <span>
                       <a class="btn btn-info" target="_blank" ng-href="{{event.bookingInfo.url}}"
                          ng-bind="event.bookingInfo.urlLabel"></a>
-                      <!--<a class="btn btn-link" ng-href="/event/{{event.id}}/edit#extra-booking-info">Wijzigen</a>-->
-                      <a class="btn btn-link" ui-sref="split.eventEdit({id: event.id})">Wijzigen</a>
                     </span>
                   </li>
                   <li ng-if="event.bookingInfo.phone">{{event.bookingInfo.phone}}</li>
                   <li ng-if="event.bookingInfo.email">{{event.bookingInfo.email}}</li>
                 </ul>
               </td>
-              <td ng-if="_.isEmpty(event.bookingInfo)"></td>
+              <td ng-if="!hasBookingInfoResults"></td>
             </tr>
 
             <tr ng-class="{muted: !hasContactPointResults}">
               <td>
                 <strong>Contact</strong>
               </td>
-              <td ng-if="!_.isEmpty(event.contactPoint)">
+              <td ng-if="hasContactPointResults">
                 <ul class="list-unstyled">
                   <li>
                     <span ng-repeat="website in event.contactPoint.url">
@@ -152,7 +150,7 @@
                   </li>
                 </ul>
               </td>
-              <td ng-if="_.isEmpty(event.contactPoint)"></td>
+              <td ng-if="!hasContactPointResults"></td>
             </tr>
 
             <tr>
