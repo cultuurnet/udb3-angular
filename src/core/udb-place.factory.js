@@ -81,7 +81,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     var images = [];
     if (jsonPlace.mediaObject) {
       for (var i = 0; i < jsonPlace.mediaObject.length; i++) {
-        if (jsonPlace.mediaObject[i]['@type'] === 'ImageObject') {
+        if (jsonPlace.mediaObject[i]['@type'] === 'schema:ImageObject') {
           images.push(jsonPlace.mediaObject[i]);
         }
       }
@@ -149,6 +149,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         }
       }
       this.image = jsonPlace.image;
+      this.images = _.filter(getImages(jsonPlace), function(imageObj) {
+        return imageObj.contentUrl !== jsonPlace.image;
+      });
       this.labels = _.map(jsonPlace.labels, function (label) {
         return label;
       });

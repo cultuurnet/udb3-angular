@@ -4529,7 +4529,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     var images = [];
     if (jsonPlace.mediaObject) {
       for (var i = 0; i < jsonPlace.mediaObject.length; i++) {
-        if (jsonPlace.mediaObject[i]['@type'] === 'ImageObject') {
+        if (jsonPlace.mediaObject[i]['@type'] === 'schema:ImageObject') {
           images.push(jsonPlace.mediaObject[i]);
         }
       }
@@ -4597,6 +4597,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         }
       }
       this.image = jsonPlace.image;
+      this.images = _.filter(getImages(jsonPlace), function(imageObj) {
+        return imageObj.contentUrl !== jsonPlace.image;
+      });
       this.labels = _.map(jsonPlace.labels, function (label) {
         return label;
       });
@@ -21948,7 +21951,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <tr ng-class=\"{muted: !place.image}\">\n" +
     "                <td><strong>Afbeelding</strong></td>\n" +
     "                <td>\n" +
-    "                  <img ng-if=\"place.image\" class=\"offer-image-thumbnail\" ng-src=\"{{place.image}}\"/>\n" +
+    "                  <img ng-if=\"place.image\" class=\"offer-image-main\" ng-src=\"{{place.image}}?width=400\"/>\n" +
+    "                  <p>\n" +
+    "                    <span ng-repeat=\"image in place.images\">\n" +
+    "                      <img ng-src=\"{{image.contentUrl}}?height=100\" height=\"100\" class=\"offer-image-thumbnail\" />\n" +
+    "                    </span>\n" +
+    "                  </p>\n" +
     "                  <span ng-if=\"!place.image\">Geen afbeelding</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
