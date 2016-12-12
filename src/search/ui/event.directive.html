@@ -155,7 +155,7 @@
 
         <div ng-if="resultViewer.eventProperties.labels.visible && event.labels" class="udb-labels">
           <span ng-hide="event.labels.length">Dit evenement is nog niet gelabeld.</span>
-          <udb-label-select offer="event"
+          <udb-label-select labels="event.labels"
                             label-added="eventCtrl.labelAdded(label)"
                             label-removed="eventCtrl.labelRemoved(label)">
         </div>

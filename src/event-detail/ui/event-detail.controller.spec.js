@@ -103,6 +103,11 @@ describe('Controller: Event Detail', function() {
           "created":"2016-05-19T14:34:05+00:00",
           "creator":"948cf2a5-65c5-470e-ab55-97ee4b05f576 (nickbacc)"
         },
+        "contactPoint": {
+          "phone":[],
+          "email":[],
+          "url":[]
+        },
         "bookingInfo": [
           {
             "priceCurrency": "EUR",

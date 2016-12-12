@@ -1924,6 +1924,18 @@ angular
     'ui.bootstrap'
   ]);
 
+/**
+ * @ngdoc module
+ * @name udb.migration
+ * @description
+ * # Migration Module
+ */
+angular
+  .module('udb.migration', [
+    'udb.core',
+    'udb.event-form'
+  ]);
+
 // Source: src/core/authorization-service.service.js
 /**
  * @ngdoc service
@@ -2902,30 +2914,24 @@ function UdbApi(
   };
 
   /**
-   *
    * @param {string} organizerId
-   * @param {string} labelId
-   * @returns {Promise}
+   * @param {string} labelName
+   * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.addLabelToOrganizer = function(organizerId, labelId) {
-    var requestConfig = defaultApiConfig;
-
+  this.addLabelToOrganizer = function(organizerId, labelName) {
     return $http
-      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, {}, requestConfig)
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, {}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
-   *
    * @param {string} organizerId
-   * @param {string} labelId
-   * @returns {Promise}
+   * @param {string} labelName
+   * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.deleteLabelFromOrganizer = function(organizerId, labelId) {
-    var requestConfig = defaultApiConfig;
-
+  this.deleteLabelFromOrganizer = function(organizerId, labelName) {
     return $http
-        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelId, requestConfig)
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -7024,6 +7030,8 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+    hasContactPoint();
+    hasBookingInfo();
   }
 
   function failedToLoad(reason) {
@@ -7145,6 +7153,22 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
+  }
+
+  function hasContactPoint() {
+    var nonEmptyContactTypes = _.filter(
+      $scope.event.contactPoint,
+      function(value) {
+        return value.length > 0;
+      }
+    );
+
+    $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
+  }
+
+  function hasBookingInfo() {
+    var bookingInfo = $scope.event.bookingInfo;
+    $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
@@ -13034,17 +13058,14 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $stateParams) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   var controller = this;
   var organizerId = $stateParams.id;
 
-  controller.organizerLabels = [];
   controller.labelSaving = false;
-  controller.searchedLabels = [];
 
   controller.addLabel = addLabel;
   controller.deleteLabel = deleteLabel;
-  controller.searchLabels = searchLabels;
 
   loadOrganizer(organizerId);
 
@@ -13055,18 +13076,17 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
   }
 
   /**
-   * @param {Organizer} organizer
+   * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
-    mapLabels(organizer.labels);
   }
 
   function addLabel(label) {
     controller.labelSaving = true;
 
     OrganizerManager
-      .addLabelToOrganizer(organizerId, label.uuid)
+      .addLabelToOrganizer(organizerId, label.name)
       .catch(showProblem)
       .finally(function() {
         controller.labelSaving = false;
@@ -13078,29 +13098,12 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
     controller.labelSaving = true;
 
     OrganizerManager
-        .deleteLabelFromOrganizer(organizerId, label.uuid)
+        .deleteLabelFromOrganizer(organizerId, label.name)
         .catch(showProblem)
         .finally(function() {
           controller.labelSaving = false;
           removeFromCache();
         });
-  }
-
-  function searchLabels(query) {
-    return LabelManager
-        .find(query, 6, 0)
-        .then(function (labels) {
-          return mapLabels(labels.member);
-        }, showProblem);
-  }
-
-  function mapLabels(labels) {
-    for (var i = 0; i < labels.length; i++) {
-      if (labels[i].hasOwnProperty('name')) {
-        labels[i].text = angular.copy(labels[i].name);
-      }
-    }
-    return labels;
   }
 
   function removeFromCache() {
@@ -13125,11 +13128,10 @@ function OrganizerDetailController(OrganizerManager, LabelManager, $uibModal, $s
         }
       }
     );
-    controller.organizer.labels = angular.copy(controller.organizerLabels);
   }
 
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "LabelManager", "$uibModal", "$stateParams"];
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams"];
 
 // Source: src/management/organizers/organizer-manager.service.js
 /**
@@ -14773,6 +14775,79 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, $http, udbApi) {
 }
 MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "$http", "udbApi"];
 
+// Source: src/migration/event-migration-footer.component.js
+/**
+ * @ngdoc function
+ * @name udb.migration.component:udbEventMigrationFooter
+ * @description
+ * # Event Migration Footer
+ * Footer component for migrating events
+ */
+angular
+  .module('udb.migration')
+  .component('udbEventMigrationFooter', {
+    templateUrl: 'templates/event-migration-footer.component.html',
+    controller: EventMigrationFooterController,
+    controllerAs: 'migration'
+  });
+
+/* @ngInject */
+function EventMigrationFooterController(EventFormData) {
+  var controller = this;
+
+  controller.eventId = EventFormData.id;
+
+  controller.readyToEdit = function () {
+    return !!_.get(EventFormData, 'location.id');
+  };
+}
+EventMigrationFooterController.$inject = ["EventFormData"];
+
+// Source: src/migration/event-migration.service.js
+/**
+ * @ngdoc service
+ * @name udb.migration.eventMigration
+ * @description
+ * Event Migration Service
+ */
+angular
+  .module('udb.migration')
+  .service('eventMigration', EventMigrationService);
+
+/* @ngInject */
+function EventMigrationService($q, udbApi) {
+  var service = this;
+
+  var migrationRequirements = {
+    location: hasKnownLocation
+  };
+
+  /**
+   * @param {udbEvent} event
+   */
+  function hasKnownLocation(event) {
+    return !!_.get(event, 'location.id');
+  }
+
+  /**
+   * @param {udbEvent} event
+   *
+   * @return string[]
+   *  A list of migrations steps needed to meet all requirements.
+   */
+  service.checkRequirements = function (event) {
+    var migrationSteps = _(migrationRequirements)
+      .pick(function (requirementCheck) {
+        return !requirementCheck(event);
+      })
+      .keys();
+
+    return migrationSteps.value();
+  };
+
+}
+EventMigrationService.$inject = ["$q", "udbApi"];
+
 // Source: src/place-detail/place-detail.directive.js
 /**
  * @ngdoc directive
@@ -15356,7 +15431,7 @@ angular
     controller: LabelSelectComponent,
     controllerAs: 'select',
     bindings: {
-      offer: '<',
+      labels: '<',
       labelAdded: '&',
       labelRemoved: '&'
     }
@@ -15371,13 +15446,31 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.createLabel = createLabel;
   select.areLengthCriteriaMet = areLengthCriteriaMet;
   /** @type {Label[]} */
-  select.labels = _.map(select.offer.labels, function (labelName) {
-    return {name:labelName};
-  });
+  select.labels = objectifyLabels(select.labels);
   select.minimumInputLength = 2;
   select.maxInputLength = 255;
   select.findDelay = 300;
   select.refreshing = false;
+
+  select.$onChanges = updateLabels;
+
+  /**
+   * @param {Object} bindingChanges
+   * @see https://code.angularjs.org/1.5.9/docs/guide/component
+   */
+  function updateLabels(bindingChanges) {
+    select.labels = objectifyLabels(_.get(bindingChanges, 'labels.currentValue', select.labels));
+  }
+
+  /**
+   * @param {string[]|Label[]} labels
+   * @return {Label[]}
+   */
+  function objectifyLabels(labels) {
+    return _.map(select.labels, function (label) {
+      return _.isString(label) ? {name:label} : label;
+    });
+  }
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
@@ -18659,12 +18752,60 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                Geen prijsinformatie\n" +
     "              </td>\n" +
     "            </tr>\n" +
+    "            <tr ng-class=\"{muted: !hasBookingInfoResults}\">\n" +
+    "              <td>\n" +
+    "                <strong>Reservaties</strong>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"hasBookingInfoResults\">\n" +
+    "                <ul class=\"list-unstyled\" >\n" +
+    "                  <li ng-if=\"event.bookingInfo.url\">\n" +
+    "                    <span>\n" +
+    "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{event.bookingInfo.url}}\"\n" +
+    "                         ng-bind=\"event.bookingInfo.urlLabel\"></a>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                  <li ng-if=\"event.bookingInfo.phone\">{{event.bookingInfo.phone}}</li>\n" +
+    "                  <li ng-if=\"event.bookingInfo.email\">{{event.bookingInfo.email}}</li>\n" +
+    "                </ul>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"!hasBookingInfoResults\"></td>\n" +
+    "            </tr>\n" +
+    "\n" +
+    "            <tr ng-class=\"{muted: !hasContactPointResults}\">\n" +
+    "              <td>\n" +
+    "                <strong>Contact</strong>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"hasContactPointResults\">\n" +
+    "                <ul class=\"list-unstyled\">\n" +
+    "                  <li>\n" +
+    "                    <span ng-repeat=\"website in event.contactPoint.url\">\n" +
+    "                      <a ng-href=\"{{website}}\" target=\"_blank\">{{website}}</a>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                  <li>\n" +
+    "                    <span ng-repeat=\"phone in event.contactPoint.phone\">\n" +
+    "                      <span>{{phone}}</span>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                  <li>\n" +
+    "                    <span ng-repeat=\"email in event.contactPoint.email\">\n" +
+    "                      <span>{{email}}</span>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "                  </li>\n" +
+    "                </ul>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"!hasContactPointResults\"></td>\n" +
+    "            </tr>\n" +
+    "\n" +
     "            <tr>\n" +
     "              <td>\n" +
     "                <strong>Labels</strong>\n" +
     "              </td>\n" +
     "              <td>\n" +
-    "                <udb-label-select offer=\"event\"\n" +
+    "                <udb-label-select labels=\"event.labels\"\n" +
     "                                  label-added=\"labelAdded(label)\"\n" +
     "                                  label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
     "              </td>\n" +
@@ -20725,8 +20866,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl\">\n" +
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
-    "                  <a class=\"media-left\" href=\"#\">\n" +
-    "                    <img ng-src=\"{{ image.thumbnailUrl }}\" style=\"max-width: 50px; max-height: 50px;\">\n" +
+    "                  <a class=\"media-left\">\n" +
+    "                    <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\">\n" +
     "                  </a>\n" +
     "\n" +
     "                  <div class=\"media-body\">\n" +
@@ -21261,13 +21402,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organizer-detail.html',
-    "<h1 class=\"title\">{{odc.organizer.name}}</h1>\n" +
+    "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
     "\n" +
     "<div ng-show=\"!odc.organizer && !odc.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-show=\"odc.organizer\">\n" +
+    "<div ng-if=\"odc.organizer\">\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-2\">\n" +
     "            <span><strong>Naam</strong></span>\n" +
@@ -21330,13 +21471,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-10\">\n" +
-    "            <tags-input ng-model=\"odc.organizer.labels\"\n" +
-    "                        on-tag-added=\"odc.addLabel($tag)\"\n" +
-    "                        on-tag-removed=\"odc.deleteLabel($tag)\"\n" +
-    "                        placeholder=\"voeg een label toe\">\n" +
-    "              <auto-complete source=\"odc.searchLabels($query)\"\n" +
-    "                             ></auto-complete>\n" +
-    "            </tags-input>\n" +
+    "            <udb-label-select labels=\"odc.organizer.labels\"\n" +
+    "                              label-added=\"odc.addLabel(label)\"\n" +
+    "                              label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
@@ -21813,6 +21950,31 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-migration-footer.component.html',
+    "<div class=\"event-validation\">\n" +
+    "    <a class=\"btn btn-success\"\n" +
+    "       ui-sref=\"split.eventEdit({id: migration.eventId})\"\n" +
+    "       role=\"button\"\n" +
+    "       ng-class=\"{disabled: !migration.readyToEdit()}\">Doorgaan met bewerken</a>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/event-migration.html',
+    "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
+    "    <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "        Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.\n" +
+    "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <udb-event-form-step3></udb-event-form-step3>\n" +
+    "\n" +
+    "    <udb-event-migration-footer></udb-event-migration-footer>\n" +
+    "</div>\n" +
+    "\n"
+  );
+
+
   $templateCache.put('templates/place-detail.html',
     "<div ng-if=\"placeIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
@@ -21891,7 +22053,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <strong>Labels</strong>\n" +
     "                </td>\n" +
     "                <td>\n" +
-    "                  <udb-label-select offer=\"place\"\n" +
+    "                  <udb-label-select labels=\"place.labels\"\n" +
     "                                    label-added=\"labelAdded(label)\"\n" +
     "                                    label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
     "                </td>\n" +
@@ -22531,7 +22693,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +
     "          <span ng-hide=\"event.labels.length\">Dit evenement is nog niet gelabeld.</span>\n" +
-    "          <udb-label-select offer=\"event\"\n" +
+    "          <udb-label-select labels=\"event.labels\"\n" +
     "                            label-added=\"eventCtrl.labelAdded(label)\"\n" +
     "                            label-removed=\"eventCtrl.labelRemoved(label)\">\n" +
     "        </div>\n" +
@@ -22686,7 +22848,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div ng-if=\"resultViewer.eventProperties.labels.visible && event.labels\" class=\"udb-labels\">\n" +
     "          <span ng-hide=\"event.labels.length\">Deze plaats is nog niet gelabeld.</span>\n" +
-    "          <udb-label-select offer=\"event\"\n" +
+    "          <udb-label-select labels=\"event.labels\"\n" +
     "                            label-added=\"placeCtrl.labelAdded(label)\"\n" +
     "                            label-removed=\"placeCtrl.labelRemoved(label)\">\n" +
     "          </udb-label-select>\n" +
