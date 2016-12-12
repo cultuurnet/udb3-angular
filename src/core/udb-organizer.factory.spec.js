@@ -18,14 +18,8 @@ describe('Factory: UDB Organizer', function () {
       'phone': '+32 476 838982',
       'url': undefined,
       'labels': [
-        {
-          name: 'green',
-          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
-        },
-        {
-          name: 'UiTPAS',
-          uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
-        }
+        'green',
+        'UiTPAS'
       ],
       'isUitpas': true
     };
@@ -48,14 +42,8 @@ describe('Factory: UDB Organizer', function () {
         ]
       },
       labels: [
-        {
-          name: 'green',
-          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
-        },
-        {
-          name: 'UiTPAS',
-          uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
-        }
+        'green',
+        'UiTPAS'
       ]
     };
 
