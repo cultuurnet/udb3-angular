@@ -3180,6 +3180,7 @@ img.offer-image-main {
 img.offer-image-thumbnail {
   margin-top: 10px;
   margin-right: 10px;
+  display: inline !important;
 }
 table.event-detail-price-table {
   background-color: #fff !important;
