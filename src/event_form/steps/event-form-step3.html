@@ -53,7 +53,9 @@
                      typeahead-min-length="3"
                      typeahead-template-url="templates/place-suggestion.html"
                      typeahead-popup-template-url="templates/place-suggestion-popup.html"
-                     udb-auto-scroll/>
+                     focus-if="!loadingPlaces"
+                     udb-auto-scroll
+                     />
               <div class="plaats-adres-resultaat dropdown-menu-no-results"
                    ng-show="(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched">
                 <div class="panel panel-default text-center">
