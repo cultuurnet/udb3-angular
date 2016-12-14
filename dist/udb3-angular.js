@@ -18343,7 +18343,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
     "        <div class=\"panel-body text-center\">\n" +
     "          <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
-    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of monument toevoegen?</a></span>\n" +
+    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of locatie toevoegen?</a></span>\n" +
     "          </p>\n" +
     "        </div>\n" +
     "      </div>\n" +
