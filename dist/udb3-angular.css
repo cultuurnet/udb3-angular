@@ -3135,6 +3135,7 @@ input + .alert {
   border: none;
   background-color: transparent;
   box-shadow: none;
+  outline: none;
 }
 .muted td {
   background-color: #EDEDED;
