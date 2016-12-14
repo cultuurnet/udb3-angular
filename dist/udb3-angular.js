@@ -18628,7 +18628,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr ng-class=\"{muted: !event.organizer}\">\n" +
-    "              <td><strong>Organisator</strong></td>\n" +
+    "              <td><strong>Organisatie</strong></td>\n" +
     "              <td>{{event.organizer.name}}</td>\n" +
     "            </tr>\n" +
     "            <tr class=\"rv-event-info-price\" ng-class=\"{muted: !event.priceInfo.length}\">\n" +
