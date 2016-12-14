@@ -758,3 +758,17 @@
 #titel .help-block {
   max-width: 450px; // corresponds to linelength of +/- 65 characters
 }
+
+.hidden-input{
+    width: 0px;
+    height: 0px;
+    margin: 0px;
+    background-color: transparent;
+    border: none;
+    &:focus{
+        border: none;
+        background-color: transparent;
+        box-shadow: none;
+        outline: none;
+    }
+}

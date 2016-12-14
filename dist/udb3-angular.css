@@ -3124,6 +3124,18 @@ input + .alert {
 #titel .help-block {
   max-width: 450px;
 }
+.hidden-input {
+  width: 0px;
+  height: 0px;
+  margin: 0px;
+  background-color: transparent;
+  border: none;
+}
+.hidden-input:focus {
+  border: none;
+  background-color: transparent;
+  box-shadow: none;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;

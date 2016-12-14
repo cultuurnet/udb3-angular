@@ -20233,7 +20233,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </h2>\n" +
     "    <input type=\"text\"\n" +
     "       focus-if=\"eventFormData.showStep5\"\n" +
-    "       style=\"display:none\"\n" +
+    "       class=\"hidden-input\"\n" +
     "       udb-auto-scroll>\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-sm-7\">\n" +
