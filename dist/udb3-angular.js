@@ -18718,16 +18718,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
-    "            <tr ng-class=\"{muted: !event.image}\">\n" +
+    "            <tr ng-class=\"{muted: ::!event.image}\">\n" +
     "              <td><strong>Afbeeldingen</strong></td>\n" +
     "              <td>\n" +
-    "                <img ng-if=\"event.image\" class=\"img-responsive\" ng-src=\"{{::event.image}}?width=400\" />\n" +
+    "                <img ng-if=\"::event.image\" class=\"img-responsive\" ng-src=\"{{::event.image}}?width=400\" />\n" +
     "                <p>\n" +
-    "                  <span ng-repeat=\"image in event.images\">\n" +
+    "                  <span ng-repeat=\"image in ::event.images\">\n" +
     "                    <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
     "                  </span>\n" +
     "                </p>\n" +
-    "                <span ng-if=\"!event.image\">Geen afbeeldingen</span>\n" +
+    "                <span ng-if=\"::!event.image\">Geen afbeeldingen</span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            </tbody>\n" +
