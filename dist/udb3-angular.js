@@ -4354,7 +4354,7 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   function isUitpas(labels) {
     return !_.isEmpty(_.intersection(
-        _.pluck(labels, 'name'),
+        labels,
         _.values(UitpasLabels)));
   }
 
@@ -17935,7 +17935,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
           return cardSystem;
         });
 
-        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
+        var organisationLabels = _.intersection(_.values(UitpasLabels), organisation.labels);
 
         _.forEach(organisationLabels, function(organisationLabel) {
           if (!_.find(availableCardSystems, {name: organisationLabel})) {
