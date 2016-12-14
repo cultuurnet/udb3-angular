@@ -88,15 +88,15 @@
                 </td>
               </tr>
               <tr ng-class="{muted: !place.image}">
-                <td><strong>Afbeelding</strong></td>
+                <td><strong>Afbeeldingen</strong></td>
                 <td>
-                  <img ng-if="place.image" class="offer-image-main" ng-src="{{place.image}}?width=400"/>
+                  <img ng-if="place.image" class="img-responsive" ng-src="{{::place.image}}?width=400" />
                   <p>
                     <span ng-repeat="image in place.images">
-                      <img ng-src="{{image.contentUrl}}?height=100" height="100" class="offer-image-thumbnail" />
+                      <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail" />
                     </span>
                   </p>
-                  <span ng-if="!place.image">Geen afbeelding</span>
+                  <span ng-if="!place.image">Geen afbeeldingen</span>
                 </td>
               </tr>
             </tbody>

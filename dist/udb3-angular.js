@@ -21949,15 +21949,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"{muted: !place.image}\">\n" +
-    "                <td><strong>Afbeelding</strong></td>\n" +
+    "                <td><strong>Afbeeldingen</strong></td>\n" +
     "                <td>\n" +
-    "                  <img ng-if=\"place.image\" class=\"offer-image-main\" ng-src=\"{{place.image}}?width=400\"/>\n" +
+    "                  <img ng-if=\"place.image\" class=\"img-responsive\" ng-src=\"{{::place.image}}?width=400\" />\n" +
     "                  <p>\n" +
     "                    <span ng-repeat=\"image in place.images\">\n" +
-    "                      <img ng-src=\"{{image.contentUrl}}?height=100\" height=\"100\" class=\"offer-image-thumbnail\" />\n" +
+    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail\" />\n" +
     "                    </span>\n" +
     "                  </p>\n" +
-    "                  <span ng-if=\"!place.image\">Geen afbeelding</span>\n" +
+    "                  <span ng-if=\"!place.image\">Geen afbeeldingen</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
