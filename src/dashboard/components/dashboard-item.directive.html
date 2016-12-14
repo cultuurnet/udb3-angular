@@ -1,7 +1,9 @@
 <td>
+ 
   <strong>
     <a ng-href="{{ event.url  + '/preview' }}" ng-bind="::event.name"></a>
   </strong>
+  <span ng-if="event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' " class="label label-default">Niet gepubliceerd</span>
   <br/>
   <small>
     <span class="dashboard-item-type" ng-bind="::event.type.label"></span>
