@@ -21954,7 +21954,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <img ng-if=\"place.image\" class=\"img-responsive\" ng-src=\"{{::place.image}}?width=400\" />\n" +
     "                  <p>\n" +
     "                    <span ng-repeat=\"image in place.images\">\n" +
-    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail\" />\n" +
+    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
     "                    </span>\n" +
     "                  </p>\n" +
     "                  <span ng-if=\"!place.image\">Geen afbeeldingen</span>\n" +

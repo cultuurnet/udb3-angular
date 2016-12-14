@@ -93,7 +93,7 @@
                   <img ng-if="place.image" class="img-responsive" ng-src="{{::place.image}}?width=400" />
                   <p>
                     <span ng-repeat="image in place.images">
-                      <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail" />
+                      <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail img-responsive" />
                     </span>
                   </p>
                   <span ng-if="!place.image">Geen afbeeldingen</span>
