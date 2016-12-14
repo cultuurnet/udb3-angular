@@ -124,9 +124,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.location = new UdbPlace(jsonEvent.location);
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
-      this.images = _.filter(getImages(jsonEvent), function(imageObj) {
-        return imageObj.contentUrl !== jsonEvent.image;
-      });
+      this.images = _.reject(getImages(jsonEvent), 'contentUrl', jsonEvent.image);
       this.labels = _.map(jsonEvent.labels, function (label) {
         return label;
       });
