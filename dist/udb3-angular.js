@@ -11256,7 +11256,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Init this step for editing.
    */
   function initEditForm() {
-
     // On edit set state default to complete.
     if (EventFormData.id) {
       $scope.ageCssClass = 'state-complete';
@@ -20128,7 +20127,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-8 col-lg-7\">\n" +
     "        <label ng-show=\"eventFormData.isEvent\">Naam van het evenement </label>\n" +
-    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</strong></label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</label>\n" +
     "\n" +
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
@@ -20136,6 +20135,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
+    "                 focus-if=\"eventFormData.showStep4\"\n" +
     "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +
@@ -20223,15 +20223,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <a name=\"extra\"></a>\n" +
     "  <section id=\"extra\" ng-show=\"eventFormData.showStep5\">\n" +
     "\n" +
-    "    <h2 class=\"title-border\">\n" +
+    "    <h2  class=\"title-border\" >\n" +
     "      <span class=\"number\">5</span>\n" +
     "      <span ng-show=\"eventFormData.isEvent\">Laat je evenement extra opvallen</span>\n" +
     "      <span ng-show=\"eventFormData.isPlace\">Laat deze locatie extra opvallen</span>\n" +
     "    </h2>\n" +
-    "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-sm-7\">\n" +
-    "\n" +
+    "<input type=\"text\"\n" +
+    "       focus-if=\"eventFormData.showStep5\"\n" +
+    "       style=\"display:hidden\"\n" +
+    "       udb-auto-scroll>\n" +
     "        <div class=\"row extra-titnieel\">\n" +
     "          <div class=\"extra-task state-complete\">\n" +
     "            <div class=\"col-sm-3\">\n" +
