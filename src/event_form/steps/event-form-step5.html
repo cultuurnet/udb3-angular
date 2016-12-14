@@ -7,7 +7,10 @@
       <span ng-show="eventFormData.isEvent">Laat je evenement extra opvallen</span>
       <span ng-show="eventFormData.isPlace">Laat deze locatie extra opvallen</span>
     </h2>
-
+    <input type="text"
+       focus-if="eventFormData.showStep5"
+       style="display:none"
+       udb-auto-scroll>
     <div class="row">
       <div class="col-sm-7">
 
