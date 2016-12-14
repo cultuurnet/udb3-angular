@@ -52,7 +52,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
           return cardSystem;
         });
 
-        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
+        var organisationLabels = _.intersection(_.values(UitpasLabels), organisation.labels);
 
         _.forEach(organisationLabels, function(organisationLabel) {
           if (!_.find(availableCardSystems, {name: organisationLabel})) {

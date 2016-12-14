@@ -16,7 +16,7 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   function isUitpas(labels) {
     return !_.isEmpty(_.intersection(
-        _.pluck(labels, 'name'),
+        labels,
         _.values(UitpasLabels)));
   }
 
