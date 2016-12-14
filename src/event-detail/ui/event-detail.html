@@ -59,6 +59,17 @@
               <td>{{event.type.label}}</td>
             </tr>
             <tr>
+              <td>
+                <strong>Labels</strong>
+              </td>
+              <td>
+                <udb-label-select labels="event.labels"
+                                  label-added="labelAdded(label)"
+                                  label-removed="labelRemoved(label)"
+                                  ></udb-label-select>
+              </td>
+            </tr>
+            <tr>
               <td><strong>Beschrijving</strong></td>
               <td>
                 <div ng-bind-html="event.description" class="event-detail-description"></div>
@@ -151,17 +162,6 @@
                 </ul>
               </td>
               <td ng-if="!hasContactPointResults"></td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Labels</strong>
-              </td>
-              <td>
-                <udb-label-select labels="event.labels"
-                                  label-added="labelAdded(label)"
-                                  label-removed="labelRemoved(label)"></udb-label-select>
-              </td>
             </tr>
             <tr>
               <td><strong>Geschikt voor</strong></td>

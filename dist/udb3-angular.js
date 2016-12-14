@@ -6207,7 +6207,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $window) {
   var offerLabeller = this;
 
   /**
@@ -6241,11 +6241,25 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} labelName
    */
   this.label = function (offer, labelName) {
-    offer.label(labelName);
-
+    var result = {
+      success: false,
+      message: ''
+    };
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName));
+      .then(
+            function(response) {
+              offer.label(response.config.data.label);
+              jobCreatorFactory(OfferLabelJob, offer, response.config.data.label);
+              result.success = true;
+              result.message = response.config.data.label;
+              return result;
+            },
+            function(error) {
+              result.message = error.statusText;
+              return result;
+            }
+        );
   };
 
   /**
@@ -6302,7 +6316,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
-OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$window"];
 
 // Source: src/entry/labelling/query-label-job.factory.js
 /**
@@ -6975,7 +6989,8 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  $timeout
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7157,7 +7172,18 @@ function EventDetail(
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedEvent, newLabel.name);
+      offerLabeller.label(cachedEvent, newLabel.name).then(
+        function(response) {
+          if (response.success) {
+            $scope.event.labels = angular.copy(cachedEvent.labels);
+            $scope.labelMessage = 'Label toegevoegd';
+            $timeout(function() {
+              $scope.labelMessage = '';
+            } , 2000);
+          }
+        },
+        function(error) {}
+        );
     }
 
     $scope.event.labels = angular.copy(cachedEvent.labels);
@@ -7187,7 +7213,7 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$timeout"];
 
 // Source: src/event_form/components/auto-scroll.directive.js
 /**
@@ -18606,6 +18632,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <td>{{event.type.label}}</td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
+    "              <td>\n" +
+    "                <strong>Labels</strong>\n" +
+    "                <p>{{labelMessage}}</p>\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                <udb-label-select labels=\"event.labels\"\n" +
+    "                                  label-added=\"labelAdded(label)\"\n" +
+    "                                  label-removed=\"labelRemoved(label)\"\n" +
+    "                                  ></udb-label-select>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
     "              <td><strong>Beschrijving</strong></td>\n" +
     "              <td>\n" +
     "                <div ng-bind-html=\"event.description\" class=\"event-detail-description\"></div>\n" +
@@ -18698,17 +18736,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </ul>\n" +
     "              </td>\n" +
     "              <td ng-if=\"!hasContactPointResults\"></td>\n" +
-    "            </tr>\n" +
-    "\n" +
-    "            <tr>\n" +
-    "              <td>\n" +
-    "                <strong>Labels</strong>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                <udb-label-select labels=\"event.labels\"\n" +
-    "                                  label-added=\"labelAdded(label)\"\n" +
-    "                                  label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
-    "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
     "              <td><strong>Geschikt voor</strong></td>\n" +

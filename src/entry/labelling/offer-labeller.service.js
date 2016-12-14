@@ -12,7 +12,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $window) {
   var offerLabeller = this;
 
   /**
@@ -46,11 +46,25 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} labelName
    */
   this.label = function (offer, labelName) {
-    offer.label(labelName);
-
+    var result = {
+      success: false,
+      message: ''
+    };
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName));
+      .then(
+            function(response) {
+              offer.label(response.config.data.label);
+              jobCreatorFactory(OfferLabelJob, offer, response.config.data.label);
+              result.success = true;
+              result.message = response.config.data.label;
+              return result;
+            },
+            function(error) {
+              result.message = error.statusText;
+              return result;
+            }
+        );
   };
 
   /**

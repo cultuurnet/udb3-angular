@@ -23,7 +23,8 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  $timeout
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -205,7 +206,14 @@ function EventDetail(
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedEvent, newLabel.name);
+      offerLabeller.label(cachedEvent, newLabel.name).then(
+        function(response) {
+          if (response.success) {
+            $scope.event.labels = angular.copy(cachedEvent.labels);
+          }
+        },
+        function(error) {}
+        );
     }
 
     $scope.event.labels = angular.copy(cachedEvent.labels);
