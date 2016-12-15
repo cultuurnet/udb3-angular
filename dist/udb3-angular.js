@@ -18051,7 +18051,6 @@ function UitpasInfoComponent(
     $scope.checkedCardSystems = [];
     destroy();
     init();
-    controller.saveUitpasData($scope.checkedCardSystems);
   };
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
