@@ -81,7 +81,7 @@
               </td>
             </tr>
             <tr ng-class="{muted: !event.organizer}">
-              <td><strong>Organisator</strong></td>
+              <td><strong>Organisatie</strong></td>
               <td>{{event.organizer.name}}</td>
             </tr>
             <tr class="rv-event-info-price" ng-class="{muted: !event.priceInfo.length}">
@@ -170,11 +170,16 @@
                 <span ng-if="!event.typicalAgeRange">Alle leeftijden</span>
               </td>
             </tr>
-            <tr ng-class="{muted: !event.image}">
-              <td><strong>Afbeelding</strong></td>
+            <tr ng-class="::{muted: !event.image}">
+              <td><strong>Afbeeldingen</strong></td>
               <td>
-                <img ng-if="event.image" class="offer-image-thumbnail" ng-src="{{event.image}}"/>
-                <span ng-if="!event.image">Geen afbeelding</span>
+                <img ng-if="::event.image" class="img-responsive" ng-src="{{::event.image}}?width=400" />
+                <p>
+                  <span ng-repeat="image in ::event.images">
+                    <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail img-responsive" />
+                  </span>
+                  <span ng-if="::!event.image">Geen afbeeldingen</span>
+                </p>
               </td>
             </tr>
             </tbody>
