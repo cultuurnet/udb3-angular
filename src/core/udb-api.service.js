@@ -68,7 +68,7 @@ function UdbApi(
   $q,
   $http,
   appConfig,
-  $cookieStore,
+  $cookies,
   uitidAuth,
   $cacheFactory,
   UdbEvent,
@@ -324,7 +324,7 @@ function UdbApi(
         givenName: userData.givenName
       };
 
-      $cookieStore.put('user', user);
+      $cookies.putObject('user', user);
       deferredUser.resolve(user);
     }
 
