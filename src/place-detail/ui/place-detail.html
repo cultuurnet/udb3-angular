@@ -87,16 +87,16 @@
                   <span ng-if="!place.typicalAgeRange">Alle leeftijden</span>
                 </td>
               </tr>
-              <tr ng-class="{muted: !place.image}">
+              <tr ng-class="::{muted: !place.image}">
                 <td><strong>Afbeeldingen</strong></td>
                 <td>
-                  <img ng-if="place.image" class="img-responsive" ng-src="{{::place.image}}?width=400" />
+                  <img ng-if="::place.image" class="img-responsive" ng-src="{{::place.image}}?width=400" />
                   <p>
-                    <span ng-repeat="image in place.images">
+                    <span ng-repeat="image in ::place.images">
                       <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail img-responsive" />
                     </span>
                   </p>
-                  <span ng-if="!place.image">Geen afbeeldingen</span>
+                  <span ng-if="::!place.image">Geen afbeeldingen</span>
                 </td>
               </tr>
             </tbody>
