@@ -7119,6 +7119,10 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
+  $scope.translateWorkflowStatus = function(code) {
+     return translateWorkflowStatus(code);
+   };
+
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -7185,6 +7189,14 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
+  }
+
+  function translateWorkflowStatus(code) {
+    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
+      return 'Niet gepubliceerd';
+    } else {
+      return 'Gepubliceerd';
+    }
   }
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
@@ -18755,14 +18767,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <col style=\"width:80%\"/>\n" +
     "              </colgroup>\n" +
     "              <tbody>\n" +
-    "                <tr ng-class=\"{muted: !event.available}\">\n" +
-    "                  <td><strong>Publicatiedatum</strong></td>\n" +
+    "                <tr>\n" +
+    "                  <td><strong>Publicatiestatus</strong></td>\n" +
     "                  <td>\n" +
     "                    <span ng-if=\"event.available\"\n" +
     "                          ng-bind=\"event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
     "                    <span ng-if=\"!event.available\">\n" +
-    "                      Geen publicatiedatum\n" +
+    "                      {{translateWorkflowStatus(event.workflowStatus)}}\n" +
     "                    </span>\n" +
     "                  </td>\n" +
     "                </tr>\n" +
