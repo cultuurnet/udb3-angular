@@ -4597,9 +4597,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         }
       }
       this.image = jsonPlace.image;
-      this.images = _.filter(getImages(jsonPlace), function(imageObj) {
-        return imageObj.contentUrl !== jsonPlace.image;
-      });
+      this.images = _.reject(getImages(jsonPlace), 'contentUrl', jsonPlace.image);
       this.labels = _.map(jsonPlace.labels, function (label) {
         return label;
       });
@@ -21948,16 +21946,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <span ng-if=\"!place.typicalAgeRange\">Alle leeftijden</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "              <tr ng-class=\"{muted: !place.image}\">\n" +
+    "              <tr ng-class=\"::{muted: !place.image}\">\n" +
     "                <td><strong>Afbeeldingen</strong></td>\n" +
     "                <td>\n" +
-    "                  <img ng-if=\"place.image\" class=\"img-responsive\" ng-src=\"{{::place.image}}?width=400\" />\n" +
+    "                  <img ng-if=\"::place.image\" class=\"img-responsive\" ng-src=\"{{::place.image}}?width=400\" />\n" +
     "                  <p>\n" +
-    "                    <span ng-repeat=\"image in place.images\">\n" +
+    "                    <span ng-repeat=\"image in ::place.images\">\n" +
     "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
     "                    </span>\n" +
+    "                    <span ng-if=\"::!place.image\">Geen afbeeldingen</span>\n" +
     "                  </p>\n" +
-    "                  <span ng-if=\"!place.image\">Geen afbeeldingen</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +

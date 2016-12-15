@@ -149,9 +149,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         }
       }
       this.image = jsonPlace.image;
-      this.images = _.filter(getImages(jsonPlace), function(imageObj) {
-        return imageObj.contentUrl !== jsonPlace.image;
-      });
+      this.images = _.reject(getImages(jsonPlace), 'contentUrl', jsonPlace.image);
       this.labels = _.map(jsonPlace.labels, function (label) {
         return label;
       });
