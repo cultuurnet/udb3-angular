@@ -40,12 +40,16 @@
                 </div>
               </section>
               <section class="state complete">
+<!--
                 <div ng-bind-html="eventFormData.description.nl" class="description-text"></div>
                 <p><a href ng-click="alterDescription()">Wijzigen</a></p>
+                
+-->
+             <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll>{{eventFormData.description.nl}}</textarea>
               </section>
               <section class="state filling">
                 <div class="form-group">
-                  <textarea class="form-control" ng-model="description" rows="6" udb-auto-scroll></textarea>
+                  <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll>{{}}</textarea>
                   <div class="tip" ng-switch="eventFormData.eventType">
                     <p ng-switch-when="0.17.0.0.0">
                       Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>
@@ -65,9 +69,6 @@
                     </p>
                   </div>
 
-                </div>
-                <div class="form-group">
-                  <a class="btn btn-primary to-complete" ng-click="saveDescription()">Opslaan</a>
                 </div>
 
                 <div ng-show="descriptionError" class="alert alert-danger">
@@ -526,7 +527,7 @@
               <div class="uploaded-image">
                 <div class="media" ng-class="{'main-image': ($index === 0)}">
                   <a class="media-left" href="#">
-                    <img ng-src="{{ image.thumbnailUrl }}" style="max-width: 50px; max-height: 50px;">
+                    <img ng-src="{{ image.thumbnailUrl }}?width=50&height=50">
                   </a>
 
                   <div class="media-body">

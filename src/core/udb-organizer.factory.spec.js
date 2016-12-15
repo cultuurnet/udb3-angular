@@ -18,14 +18,11 @@ describe('Factory: UDB Organizer', function () {
       'phone': '+32 476 838982',
       'url': undefined,
       'labels': [
-        {
-          name: 'green',
-          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
-        },
-        {
-          name: 'UiTPAS',
-          uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
-        }
+        'green',
+        'UiTPAS'
+      ],
+      hiddenLabels: [
+
       ],
       'isUitpas': true
     };
@@ -48,18 +45,44 @@ describe('Factory: UDB Organizer', function () {
         ]
       },
       labels: [
-        {
-          name: 'green',
-          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
-        },
-        {
-          name: 'UiTPAS',
-          uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
-        }
+        'green',
+        'UiTPAS'
       ]
     };
 
     var organizerFromJson = new UdbOrganizer(jsonOrganizer);
     expect(organizerFromJson).toEqual(expectedOrganizer);
   }));
+
+  it('takes into account hidden labels when checking for UiTPAS', inject(function (UdbOrganizer) {
+    var jsonOrganizer = {
+      '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
+      '@context': '/api/1.0/organizer.jsonld',
+      'name': 'Club Silo',
+      'address': {
+        addressCountry: 'BE',
+        addressLocality: 'Leuven',
+        postalCode: '3000',
+        streetAddress: 'Vaartkom 39'
+      },
+      contactPoint: {
+        'email': [
+          'info@silo.be'
+        ],
+        'phone': [
+          '+32 476 838982'
+        ]
+      },
+      labels: [
+        'green'
+      ],
+      hiddenLabels: [
+        'UiTPAS'
+      ]
+    };
+
+    var organizerFromJson = new UdbOrganizer(jsonOrganizer);
+    expect(organizerFromJson.isUitpas).toEqual(true);
+  }));
+
 });

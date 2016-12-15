@@ -2,7 +2,7 @@
 
 describe('Label Select Component', function() {
   var $componentController, offerLabeller, $q, $scope;
-  var bindings = {offer: {labels: ['Wolverine', 'Deadpool']}};
+  var bindings = {labels: ['Wolverine', 'Deadpool']};
 
   beforeEach(module('udb.search'));
   beforeEach(inject(function(_$componentController_, _$q_, $rootScope) {
@@ -17,14 +17,7 @@ describe('Label Select Component', function() {
     return $componentController('udbLabelSelect', {'offerLabeller': offerLabeller}, bindings);
   }
 
-  it('should expose a `offer` object', function() {
-    var ctrl = getComponentController(bindings);
-
-    expect(ctrl.offer).toBeDefined();
-    expect(ctrl.offer.labels).toBe(bindings.offer.labels);
-  });
-
-  it('should init the labels array', function() {
+  it('should init the labels array as Label objects', function() {
     var ctrl = getComponentController(bindings);
 
     expect(ctrl.labels.length).toBe(2);
@@ -42,7 +35,7 @@ describe('Label Select Component', function() {
     expect(ctrl.areLengthCriteriaMet(45)).toBe(true);
   });
 
-  it('should not add the same label to the offer twice', function() {
+  it('should not add the same label twice', function() {
     var ctrl = getComponentController(bindings);
 
     // add already added label

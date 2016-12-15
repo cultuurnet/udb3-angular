@@ -81,7 +81,7 @@
               </td>
             </tr>
             <tr ng-class="{muted: !event.organizer}">
-              <td><strong>Organisator</strong></td>
+              <td><strong>Organisatie</strong></td>
               <td>{{event.organizer.name}}</td>
             </tr>
             <tr class="rv-event-info-price" ng-class="{muted: !event.priceInfo.length}">
@@ -105,12 +105,60 @@
                 Geen prijsinformatie
               </td>
             </tr>
+            <tr ng-class="{muted: !hasBookingInfoResults}">
+              <td>
+                <strong>Reservaties</strong>
+              </td>
+              <td ng-if="hasBookingInfoResults">
+                <ul class="list-unstyled" >
+                  <li ng-if="event.bookingInfo.url">
+                    <span>
+                      <a class="btn btn-info" target="_blank" ng-href="{{event.bookingInfo.url}}"
+                         ng-bind="event.bookingInfo.urlLabel"></a>
+                    </span>
+                  </li>
+                  <li ng-if="event.bookingInfo.phone">{{event.bookingInfo.phone}}</li>
+                  <li ng-if="event.bookingInfo.email">{{event.bookingInfo.email}}</li>
+                </ul>
+              </td>
+              <td ng-if="!hasBookingInfoResults"></td>
+            </tr>
+
+            <tr ng-class="{muted: !hasContactPointResults}">
+              <td>
+                <strong>Contact</strong>
+              </td>
+              <td ng-if="hasContactPointResults">
+                <ul class="list-unstyled">
+                  <li>
+                    <span ng-repeat="website in event.contactPoint.url">
+                      <a ng-href="{{website}}" target="_blank">{{website}}</a>
+                      <span ng-if="!$last">of </span>
+                    </span>
+                  </li>
+                  <li>
+                    <span ng-repeat="phone in event.contactPoint.phone">
+                      <span>{{phone}}</span>
+                      <span ng-if="!$last">of </span>
+                    </span>
+                  </li>
+                  <li>
+                    <span ng-repeat="email in event.contactPoint.email">
+                      <span>{{email}}</span>
+                      <span ng-if="!$last">of </span>
+                    </span>
+                  </li>
+                </ul>
+              </td>
+              <td ng-if="!hasContactPointResults"></td>
+            </tr>
+
             <tr>
               <td>
                 <strong>Labels</strong>
               </td>
               <td>
-                <udb-label-select offer="event"
+                <udb-label-select labels="event.labels"
                                   label-added="labelAdded(label)"
                                   label-removed="labelRemoved(label)"></udb-label-select>
               </td>
@@ -122,11 +170,16 @@
                 <span ng-if="!event.typicalAgeRange">Alle leeftijden</span>
               </td>
             </tr>
-            <tr ng-class="{muted: !event.image}">
-              <td><strong>Afbeelding</strong></td>
+            <tr ng-class="::{muted: !event.image}">
+              <td><strong>Afbeeldingen</strong></td>
               <td>
-                <img ng-if="event.image" class="offer-image-thumbnail" ng-src="{{event.image}}"/>
-                <span ng-if="!event.image">Geen afbeelding</span>
+                <img ng-if="::event.image" class="img-responsive" ng-src="{{::event.image}}?width=400" />
+                <p>
+                  <span ng-repeat="image in ::event.images">
+                    <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail img-responsive" />
+                  </span>
+                  <span ng-if="::!event.image">Geen afbeeldingen</span>
+                </p>
               </td>
             </tr>
             </tbody>
@@ -155,14 +208,14 @@
                 <col style="width:80%"/>
               </colgroup>
               <tbody>
-                <tr ng-class="{muted: !event.available}">
-                  <td><strong>Publicatiedatum</strong></td>
+                <tr>
+                  <td><strong>Publicatiestatus</strong></td>
                   <td>
                     <span ng-if="event.available"
                           ng-bind="event.available | date: 'dd/MM/yyyy'">
                     </span>
                     <span ng-if="!event.available">
-                      Geen publicatiedatum
+                      {{translateWorkflowStatus(event.workflowStatus)}}
                     </span>
                   </td>
                 </tr>
