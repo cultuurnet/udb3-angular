@@ -20308,9 +20308,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </div>\n" +
     "\n" +
     "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                  <a class=\"btn btn-primary to-complete\" ng-click=\"saveDescription()\">Opslaan</a>\n" +
-    "                </div>\n" +
     "\n" +
     "                <div ng-show=\"descriptionError\" class=\"alert alert-danger\">\n" +
     "                  Er ging iets fout bij het opslaan van de beschrijving.\n" +
