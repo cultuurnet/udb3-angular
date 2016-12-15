@@ -48,7 +48,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     var currentLocation = $location.absUrl(),
         registrationUrl = appConfig.authUrl + 'register';
 
-    this.removeCookies();
+    removeCookies();
 
     // redirect to login page
     registrationUrl += '?destination=' + currentLocation;
