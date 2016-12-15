@@ -3173,9 +3173,14 @@ h2.block-header {
   color: black;
   white-space: pre-line;
 }
-img.offer-image-thumbnail {
+img.offer-image-main {
   max-width: 400px;
   max-height: 300px;
+}
+img.offer-image-thumbnail {
+  margin-top: 10px;
+  margin-right: 10px;
+  display: inline !important;
 }
 table.event-detail-price-table {
   background-color: #fff !important;
