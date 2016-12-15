@@ -20278,12 +20278,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
+    "<!--\n" +
     "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
     "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
+    "                \n" +
+    "-->\n" +
+    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll>{{eventFormData.description.nl}}</textarea>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll></textarea>\n" +
+    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll>{{}}</textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
@@ -20303,9 +20307,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </p>\n" +
     "                  </div>\n" +
     "\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                  <a class=\"btn btn-primary to-complete\" ng-click=\"saveDescription()\">Opslaan</a>\n" +
     "                </div>\n" +
     "\n" +
     "                <div ng-show=\"descriptionError\" class=\"alert alert-danger\">\n" +
@@ -20763,7 +20764,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl\">\n" +
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
-    "                  <a class=\"media-left\">\n" +
+    "                  <a class=\"media-left\" href=\"#\">\n" +
     "                    <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\">\n" +
     "                  </a>\n" +
     "\n" +
