@@ -94,6 +94,8 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+    hasContactPoint();
+    hasBookingInfo();
   }
 
   function failedToLoad(reason) {
@@ -153,8 +155,21 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-    $location.path('/event/' + $scope.eventId.split('/').pop() + '/edit');
+    var eventId;
+    // When an event is published $scope.eventId is empty,
+    // so get the eventId straight from the current url.
+    if (_.isEmpty($scope.eventId)) {
+      eventId = $location.url().split('/')[2];
+    }
+    else {
+      eventId = $scope.eventId.split('/').pop();
+    }
+    $location.path('/event/' + eventId + '/edit');
   };
+
+  $scope.translateWorkflowStatus = function(code) {
+     return translateWorkflowStatus(code);
+   };
 
   function goToDashboard() {
     $location.path('/dashboard');
@@ -206,5 +221,29 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
+  }
+
+  function hasContactPoint() {
+    var nonEmptyContactTypes = _.filter(
+      $scope.event.contactPoint,
+      function(value) {
+        return value.length > 0;
+      }
+    );
+
+    $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
+  }
+
+  function hasBookingInfo() {
+    var bookingInfo = $scope.event.bookingInfo;
+    $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
+  }
+
+  function translateWorkflowStatus(code) {
+    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
+      return 'Niet gepubliceerd';
+    } else {
+      return 'Gepubliceerd';
+    }
   }
 }

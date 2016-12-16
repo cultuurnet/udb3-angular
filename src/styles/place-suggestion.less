@@ -13,15 +13,21 @@
     color: #999999;
   }
   .dropdown-menu {
-    width: 422px;
+    width: 420px;
     margin-top: 0px;
-    padding: 8px 0;
+    padding: 0;
     background-color: @white;
     border: 1px solid @udb-gray;
-    border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    max-height: 150px;
+    max-height: 350px;
     overflow-y: auto;
+  }
+  .panel {
+    margin: 0;
+    border: 0;
+  }
+  .dropdown-menu-no-results .panel {
+    border: 1px solid @udb-gray;
   }
   .place-suggestion {
     padding: 6px 20px;

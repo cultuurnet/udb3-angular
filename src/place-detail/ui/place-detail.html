@@ -61,11 +61,7 @@
               <tr>
                 <td><strong>Beschrijving</strong></td>
                 <td>
-                  <div ng-if="placeIsEditable">
-                    <div ng-bind-html="place.description" onbeforesave="updateDescription($data)" class="event-detail-description"
-                         editable-textarea="place.description" e-rows="6" e-cols="33"></div>
-                  </div>
-                  <i ng-if="!placeIsEditable" class="fa fa-circle-o-notch fa-spin"></i>
+                  <div ng-bind-html="place.description" class="event-detail-description"></div>
                 </td>
               </tr>
               <tr>
@@ -79,7 +75,7 @@
                   <strong>Labels</strong>
                 </td>
                 <td>
-                  <udb-label-select offer="place"
+                  <udb-label-select labels="place.labels"
                                     label-added="labelAdded(label)"
                                     label-removed="labelRemoved(label)"></udb-label-select>
                 </td>
@@ -91,11 +87,16 @@
                   <span ng-if="!place.typicalAgeRange">Alle leeftijden</span>
                 </td>
               </tr>
-              <tr ng-class="{muted: !place.image}">
-                <td><strong>Afbeelding</strong></td>
+              <tr ng-class="::{muted: !place.image}">
+                <td><strong>Afbeeldingen</strong></td>
                 <td>
-                  <img ng-if="place.image" class="offer-image-thumbnail" ng-src="{{place.image}}"/>
-                  <span ng-if="!place.image">Geen afbeelding</span>
+                  <img ng-if="::place.image" class="img-responsive" ng-src="{{::place.image}}?width=400" />
+                  <p>
+                    <span ng-repeat="image in ::place.images">
+                      <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail img-responsive" />
+                    </span>
+                    <span ng-if="::!place.image">Geen afbeeldingen</span>
+                  </p>
                 </td>
               </tr>
             </tbody>

@@ -208,28 +208,71 @@ function UdbApi(
 
   // TODO: Give organizers their own cache instead of using offer?
   this.getOrganizerById = function(organizerId) {
-      var deferredOrganizer = $q.defer();
+    var deferredOrganizer = $q.defer();
 
-      var organizer = offerCache.get(organizerId);
+    var organizer = offerCache.get(organizerId);
 
-      if (organizer) {
+    if (organizer) {
+      deferredOrganizer.resolve(organizer);
+    } else {
+      var organizerRequest  = $http.get(
+        appConfig.baseUrl + 'organizers/' + organizerId, defaultApiConfig
+      );
+
+      organizerRequest.success(function(jsonOrganizer) {
+        var organizer = new UdbOrganizer();
+        organizer.parseJson(jsonOrganizer);
+        offerCache.put(organizerId, organizer);
         deferredOrganizer.resolve(organizer);
-      } else {
-        var organizerRequest  = $http.get(
-          appConfig.baseApiUrl + 'organizer/' + organizerId,
-          defaultApiConfig
-        );
+      });
+    }
+    return deferredOrganizer.promise;
+  };
 
-        organizerRequest.success(function(jsonOrganizer) {
-          var organizer = new UdbOrganizer();
-          organizer.parseJson(jsonOrganizer);
-          offerCache.put(organizerId, organizer);
-          deferredOrganizer.resolve(organizer);
-        });
-      }
-
-      return deferredOrganizer.promise;
+  /**
+   * @param {number} start
+   * @param {number} limit
+   * @param {string|null} website
+   * @param {string|null} name
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  this.findOrganisations = function(start, limit, website, name) {
+    var params = {
+      limit: limit ? limit : 10,
+      start: start ? start : 0
     };
+    if (website) { params.website = website; }
+    if (name) { params.name = name; }
+
+    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+
+    return $http
+      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelName
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.addLabelToOrganizer = function(organizerId, labelName) {
+    return $http
+      .put(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, {}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} labelName
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.deleteLabelFromOrganizer = function(organizerId, labelName) {
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId
@@ -451,6 +494,14 @@ function UdbApi(
     );
   };
 
+  this.updatePriceInfo = function(offerLocation, price) {
+    return $http.put(
+      offerLocation + '/priceInfo',
+      price,
+      defaultApiConfig
+    );
+  };
+
   /**
    * @param {URL} offerLocation
    * @param {string} label
@@ -498,7 +549,7 @@ function UdbApi(
    */
   this.createOffer = function (type, offer) {
     return $http.post(
-      appConfig.baseApiUrl + type,
+      appConfig.baseUrl + type,
       offer,
       defaultApiConfig
     ).then(function(response) {
@@ -563,10 +614,8 @@ function UdbApi(
    * Create a new organizer.
    */
   this.createOrganizer = function(organizer) {
-    // TODO: swagger docs describes different path:
-    // /api/1.0/organizer
     return $http.post(
-      appConfig.baseApiUrl + 'organizer',
+      appConfig.baseUrl + 'organizers/',
       organizer,
       defaultApiConfig
     );

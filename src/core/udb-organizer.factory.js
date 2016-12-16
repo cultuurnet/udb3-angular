@@ -12,7 +12,24 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory() {
+function UdbOrganizerFactory(UitpasLabels) {
+
+  function isUitpas(organizer) {
+    return hasUitpasLabel(organizer.labels) ||
+      hasUitpasLabel(organizer.hiddenLabels);
+  }
+
+  function hasUitpasLabel(labels) {
+    return labels && !_.isEmpty(_.intersection(labels, _.values(UitpasLabels)));
+  }
+
+  function getFirst(jsonOrganizer, path) {
+    return _
+      .chain(jsonOrganizer)
+      .get(path, [])
+      .first()
+      .value();
+  }
 
   /**
    * @class UdbOrganizer
@@ -31,10 +48,13 @@ function UdbOrganizerFactory() {
     parseJson: function (jsonOrganizer) {
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
-      this.addresses = jsonOrganizer.addresses || [];
-      this.email = jsonOrganizer.email || [];
-      this.phone = jsonOrganizer.phone || [];
-      this.url = jsonOrganizer.url || [];
+      this.address = jsonOrganizer.address || [];
+      this.email = getFirst(jsonOrganizer, 'contactPoint.email');
+      this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
+      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
+      this.labels = jsonOrganizer.labels || [];
+      this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
+      this.isUitpas = isUitpas(jsonOrganizer);
     }
   };
 

@@ -317,6 +317,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Auto-complete callback for organizers.
    * @param {String} value
    *  Suggest organizers based off of this value.
+   *
+   * @return {UdbOrganizer[]}
    */
   function getOrganizers(value) {
     function suggestExistingOrNewOrganiser (organizers) {
@@ -351,8 +353,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   function deleteOrganizer() {
     function resetOrganizer() {
       controller.eventFormSaved();
-      $scope.organizerCssClass = 'state-incomplete';
       EventFormData.resetOrganizer();
+      $rootScope.$emit('eventOrganizerDeleted', {});
+      $scope.organizerCssClass = 'state-incomplete';
       $scope.savingOrganizer = false;
     }
 
@@ -404,6 +407,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function markOrganizerAsCompleted() {
       controller.eventFormSaved();
+      $rootScope.$emit('eventOrganizerSelected', organizer);
       $scope.organizerCssClass = 'state-complete';
       $scope.savingOrganizer = false;
     }
@@ -815,6 +819,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.facilitiesInapplicable = false;
       }
 
+    }
+
+    if (EventFormData.priceInfo) {
+      $scope.price = EventFormData.priceInfo;
+      $scope.priceCssClass = 'state-complete';
     }
 
   }

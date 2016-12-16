@@ -14,6 +14,7 @@ angular
 function EventCrud(
   jobLogger,
   udbApi,
+  udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
   $rootScope ,
@@ -22,6 +23,15 @@ function EventCrud(
 ) {
 
   var service = this;
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function pickMajorInfoFromFormData(formData) {
+    return _.pick(formData, function(property) {
+      return _.isDate(property) || !_.isEmpty(property);
+    });
+  }
 
   /**
    * Creates a new offer and add the job to the logger.
@@ -44,8 +54,10 @@ function EventCrud(
       return eventFormData;
     };
 
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
+
     return udbApi
-      .createOffer(type, eventFormData)
+      .createOffer(type, majorInfo)
       .then(updateEventFormData);
   };
 
@@ -87,8 +99,10 @@ function EventCrud(
    * @param {EventFormData} eventFormData
    */
   service.updateMajorInfo = function(eventFormData) {
+    var majorInfo = pickMajorInfoFromFormData(eventFormData);
+
     udbApi
-      .updateMajorInfo(eventFormData.apiUrl, eventFormData)
+      .updateMajorInfo(eventFormData.apiUrl, majorInfo)
       .then(jobCreatorFactory(eventFormData, 'updateItem'));
   };
 
@@ -158,6 +172,27 @@ function EventCrud(
   };
 
   /**
+   * Update UiTPAS info for the event.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updateEventUitpasData = function(item) {
+    return udbUitpasApi
+        .updateEventUitpasData(item.usedDistributionKeys, item.id)
+        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+  };
+
+  /**
+   * Get the Uitpas data from an event.
+   * @param {string} cdbid
+   * @returns {Promise}
+   */
+  service.getEventUitpasData = function(cdbid) {
+    return udbUitpasApi.getEventUitpasData(cdbid);
+  };
+
+  /**
    * @param {EventFormData} item
    * @param {string} jobName
    *
@@ -175,6 +210,24 @@ function EventCrud(
 
     return jobCreator;
   }
+
+  /**
+   * Update the price info and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.updatePriceInfo = function(item) {
+    return udbApi
+      .updatePriceInfo(item.apiUrl, item.priceInfo)
+      .then(function (response) {
+        var jobData = response.data;
+        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
+  };
 
   /**
    * Update the contact point and add it to the job logger.
@@ -286,6 +339,24 @@ function EventCrud(
     return udbApi
       .selectMainImage(item.apiUrl, imageId)
       .then(jobCreatorFactory(item, 'selectMainImage'));
+  };
+
+  /**
+   * @param {EventFormData} offer
+   * @param {string} jobName
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  service.publishOffer = function(offer, jobName) {
+    return udbApi
+      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .then(function (response) {
+        var job = new EventCrudJob(response.commandId, offer, jobName);
+
+        addJobAndInvalidateCache(jobLogger, job);
+
+        return $q.resolve(job);
+      });
   };
 
   /**

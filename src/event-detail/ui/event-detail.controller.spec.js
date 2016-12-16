@@ -103,6 +103,11 @@ describe('Controller: Event Detail', function() {
           "created":"2016-05-19T14:34:05+00:00",
           "creator":"948cf2a5-65c5-470e-ab55-97ee4b05f576 (nickbacc)"
         },
+        "contactPoint": {
+          "phone":[],
+          "email":[],
+          "url":[]
+        },
         "bookingInfo": [
           {
             "priceCurrency": "EUR",
@@ -144,7 +149,8 @@ describe('Controller: Event Detail', function() {
         "calendarType": "single",
         "performer": [{"name": "maaike beuten "}],
         "sameAs": ["http://www.uitinvlaanderen.be/agenda/e/70-mijl-in-vogelvlucht/1111be8c-a412-488d-9ecc-8fdf9e52edbc"],
-        "seeAlso": ["http://www.facebook.com/events/1590439757875265"]
+        "seeAlso": ["http://www.facebook.com/events/1590439757875265"],
+        "workflowStatus": "DRAFT"
       };
 
   var deferredEvent, deferredVariation, deferredPermission, deferredUpdate,
@@ -157,7 +163,7 @@ describe('Controller: Event Detail', function() {
     $scope = $rootScope.$new();
     eventId = 'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc';
     udbApi = $injector.get('udbApi');
-    $location = jasmine.createSpyObj('$location', ['path']);
+    $location = jasmine.createSpyObj('$location', ['path', 'url']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     variationRepository = $injector.get('variationRepository');
     offerEditor = $injector.get('offerEditor');
@@ -296,6 +302,25 @@ describe('Controller: Event Detail', function() {
     expect($location.path).toHaveBeenCalledWith('/dashboard');
   });
 
+  it('should redirect to the edit page with a known eventId', function () {
+    $scope.eventId = 'event/de84f1c4-d335-470a-924d-624982b87098';
+
+    $scope.openEditPage();
+    $scope.$digest();
+
+    expect($location.path).toHaveBeenCalledWith('/event/de84f1c4-d335-470a-924d-624982b87098/edit');
+  });
+
+  it('should redirect to the edit page without a known eventId', function () {
+    $scope.eventId = {};
+    $location.url.and.returnValue('/event/de84f1c4-d335-470a-924d-624982b87098/saved');
+
+    $scope.openEditPage();
+    $scope.$digest();
+
+    expect($location.path).toHaveBeenCalledWith('/event/de84f1c4-d335-470a-924d-624982b87098/edit');
+  });
+
 
   it('should update the event when adding a label', function () {
     var label = {name:'some other label'};
@@ -328,5 +353,29 @@ describe('Controller: Event Detail', function() {
     expect($scope.event.labels).toEqual(expectedLabels);
     expect($window.alert).toHaveBeenCalledWith('Het label "Some Label" is reeds toegevoegd als "some label".');
     expect(offerLabeller.label).not.toHaveBeenCalled();
+  });
+
+  it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
+    expect($scope.translateWorkflowStatus('DRAFT')).toEqual('Niet gepubliceerd')
+  });
+
+  it('should return niet gepubliceerd when the workflowStatus is REJECTED', function () {
+    expect($scope.translateWorkflowStatus('REJECTED')).toEqual('Niet gepubliceerd')
+  });
+
+  it('should return niet gepubliceerd when the workflowStatus is DELETED', function () {
+    expect($scope.translateWorkflowStatus('DELETED')).toEqual('Niet gepubliceerd')
+  });
+
+  it('should return gepubliceerd when the workflowStatus is READY_FOR_VALIDATION', function () {
+    expect($scope.translateWorkflowStatus('READY_FOR_VALIDATION')).toEqual('Gepubliceerd')
+  });
+
+  it('should return gepubliceerd when the workflowStatus is APPROVED', function () {
+    expect($scope.translateWorkflowStatus('APPROVED')).toEqual('Gepubliceerd')
+  });
+
+  it('should return gepubliceerd as default', function () {
+    expect($scope.translateWorkflowStatus()).toEqual('Gepubliceerd')
   });
 });

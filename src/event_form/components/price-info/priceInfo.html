@@ -1,0 +1,135 @@
+<div class="row extra-prijs">
+  <div class="extra-task" ng-class="$ctrl.priceCssClass">
+    <div class="col-sm-3">
+      <em class="extra-task-label">Prijs</em>
+        <i class="fa fa-circle-o-notch fa-spin" ng-show="savingPrice"></i>
+    </div>
+    <div class="col-sm-8">
+
+      <div ng-show="$ctrl.price.length == 0">
+        <section>
+          <a class="btn btn-default to-filling"
+             ng-show="!$ctrl.editPrice"
+             ng-click="$ctrl.priceCssClass = 'state-filling'; $ctrl.editingPrice()">
+            Prijzen toevoegen
+          </a>
+          <a class="btn btn-link"
+             ng-show="!$ctrl.editPrice"
+             ng-click="$ctrl.editingPrice(true)">Gratis</a>
+        </section>
+      </div>
+      <div ng-show="$ctrl.price.length > 0 && !$ctrl.editPrice">
+        <table class="table">
+          <thead>
+            <td>Prijzen</td>
+            <td>
+              <a class="btn btn-default pull-right" ng-click="$ctrl.editingPrice()">
+              Wijzigen
+            </a>
+            </td>
+          </thead>
+          <tr ng-repeat="(key, priceInfo) in $ctrl.price"
+              ng-model="priceInfo">
+            <td>{{priceInfo.name}}</td>
+            <td>
+              <span ng-if="priceInfo.price == 0">
+                Gratis
+              </span>
+              <span ng-if="priceInfo.price != 0">
+                {{priceInfo.price | currency}} euro
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <form name="priceForm"
+            ng-show="$ctrl.editPrice"
+            novalidate >
+        <table class="table">
+          <div class="form-group">
+            <tr ng-repeat="(key, priceInfo) in $ctrl.price"
+                ng-model="priceInfo"
+                ng-form="priceInfoForm">
+              <td ng-switch on="priceInfo.category"
+                  class="col-xs-4">
+                <span ng-switch-when="base">
+                  Basistarief
+                </span>
+                <span ng-switch-default>
+                  <input type="text"
+                         class="form-control"
+                         name="name"
+                         placeholder="Doelgroep"
+                         ng-model="priceInfo.name"
+                         ng-class="{ 'has-error': priceInfoForm.name.$invalid && formPriceSubmitted}"
+                         required />
+                </span>
+              </td>
+              <td class="col-xs-4">
+                <span ng-if="priceInfo.price === 0">
+                  Gratis
+                </span>
+                <span ng-if="priceInfo.price !== 0">
+                  <div class="form-inline">
+                    <div class="form-group">
+                      <input type="number"
+                       class="form-control"
+                       name="price"
+                       ng-model="priceInfo.price"
+                       ng-model-options="{ updateOn: 'blur' }"
+                       ng-class="{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}"
+                       required />
+                     </div>
+                     <div class="form-group">
+                       euro
+                     </div>
+                  </div>
+                </span>
+              </td>
+              <td ng-switch on="priceInfo.price"
+                  class="col-xs-3">
+                <a class="btn btn-link"
+                   ng-click="$ctrl.unsetPriceItemFree(key)"
+                   ng-switch-when="0">Prijs invoeren</a>
+                <a class="btn btn-link"
+                   ng-click="$ctrl.setPriceItemFree(key)"
+                   ng-switch-default>Gratis</a>
+              </td>
+              <td class="col-xs-1">
+                <a aria-hidden="true"
+                    ng-click="$ctrl.deletePriceItem(key)"
+                    ng-if="$ctrl.showPriceDelete(key)" class="close">&times;</a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <a class="btn btn-link" ng-click="$ctrl.addPriceItem()">Tarief toevoegen</a>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="4">
+                <div class="pull-right">
+                  <a class="btn btn-default" ng-click="$ctrl.cancelEditPrice()">
+                    Annuleren
+                  </a>
+                  <a class="btn btn-primary"
+                     ng-click="$ctrl.validatePrice()">
+                    Bewaren
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </div>
+        </table>
+      </form>
+
+      <div ng-show="$ctrl.priceError" class="alert alert-danger">
+        Er ging iets fout bij het opslaan van de prijs.
+      </div>
+      <div ng-show="$ctrl.invalidPrice" class="alert alert-danger">
+        Gelieve een geldige prijs en omschrijving in te voeren.
+      </div>
+
+    </div>
+  </div>
+</div>
