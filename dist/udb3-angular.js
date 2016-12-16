@@ -14746,7 +14746,7 @@ angular
   .service('eventMigration', EventMigrationService);
 
 /* @ngInject */
-function EventMigrationService($q, udbApi) {
+function EventMigrationService() {
   var service = this;
 
   var migrationRequirements = {
@@ -14777,7 +14777,6 @@ function EventMigrationService($q, udbApi) {
   };
 
 }
-EventMigrationService.$inject = ["$q", "udbApi"];
 
 // Source: src/place-detail/place-detail.directive.js
 /**
@@ -21878,8 +21877,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-migration.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
-    "    <div class=\"alert alert-info\" role=\"alert\">\n" +
-    "        Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.\n" +
+    "    <div class=\"alert alert-danger\" role=\"alert\">\n" +
+    "        <strong>Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.</strong><br>\n" +
     "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
     "    </div>\n" +
     "\n" +
