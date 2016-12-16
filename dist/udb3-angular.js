@@ -2747,7 +2747,7 @@ function UdbApi(
   $q,
   $http,
   appConfig,
-  $cookieStore,
+  $cookies,
   uitidAuth,
   $cacheFactory,
   UdbEvent,
@@ -2997,7 +2997,7 @@ function UdbApi(
         givenName: userData.givenName
       };
 
-      $cookieStore.put('user', user);
+      $cookies.putObject('user', user);
       deferredUser.resolve(user);
     }
 
@@ -3915,7 +3915,7 @@ function UdbApi(
     }
   }
 }
-UdbApi.$inject = ["$q", "$http", "appConfig", "$cookieStore", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
+UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
 
 // Source: src/core/udb-event.factory.js
 /**
@@ -4832,13 +4832,19 @@ angular
   .service('uitidAuth', UitidAuth);
 
 /* @ngInject */
-function UitidAuth($window, $location, appConfig, $cookieStore) {
+function UitidAuth($window, $location, appConfig, $cookies) {
+
+  function removeCookies () {
+    $cookies.remove('token');
+    $cookies.remove('user');
+  }
+
   /**
    * Log the active user out.
    */
   this.logout = function () {
-    $cookieStore.remove('token');
-    $cookieStore.remove('user');
+    removeCookies();
+
     // reset url
     $location.search('');
     $location.path('/');
@@ -4849,19 +4855,28 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    */
   this.login = function () {
     var currentLocation = $location.absUrl(),
-        authUrl = appConfig.authUrl;
+        loginUrl = appConfig.authUrl + 'connect';
 
-    // remove cookies
-    $cookieStore.remove('token');
-    $cookieStore.remove('user');
+    removeCookies();
 
     // redirect to login page
-    authUrl += '?destination=' + currentLocation;
-    $window.location.href = authUrl;
+    loginUrl += '?destination=' + currentLocation;
+    $window.location.href = loginUrl;
+  };
+
+  this.register = function () {
+    var currentLocation = $location.absUrl(),
+        registrationUrl = appConfig.authUrl + 'register';
+
+    removeCookies();
+
+    // redirect to login page
+    registrationUrl += '?destination=' + currentLocation;
+    $window.location.href = registrationUrl;
   };
 
   this.setToken = function (token) {
-    $cookieStore.put('token', token);
+    $cookies.put('token', token);
   };
 
   /**
@@ -4870,7 +4885,7 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    */
   this.getToken = function () {
     var service = this;
-    var currentToken = $cookieStore.get('token');
+    var currentToken = $cookies.get('token');
 
     // check if a new JWT is set in the search parameters and parse it
     var queryParameters = $location.search();
@@ -4890,10 +4905,10 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    * Returns the currently logged in user
    */
   this.getUser = function () {
-    return $cookieStore.get('user');
+    return $cookies.getObject('user');
   };
 }
-UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookieStore"];
+UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
 /**
