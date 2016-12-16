@@ -6207,7 +6207,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $window) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q) {
   var offerLabeller = this;
 
   /**
@@ -6316,7 +6316,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
-OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$window"];
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
 
 // Source: src/entry/labelling/query-label-job.factory.js
 /**
@@ -6989,8 +6989,7 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller,
-  $timeout
+  offerLabeller
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7171,15 +7170,12 @@ function EventDetail(
 
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
-    } else {
+    }
+    else {
       offerLabeller.label(cachedEvent, newLabel.name).then(
         function(response) {
           if (response.success) {
             $scope.event.labels = angular.copy(cachedEvent.labels);
-            $scope.labelMessage = 'Label toegevoegd';
-            $timeout(function() {
-              $scope.labelMessage = '';
-            } , 2000);
           }
         },
         function(error) {}
@@ -7213,7 +7209,7 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$timeout"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
 
 // Source: src/event_form/components/auto-scroll.directive.js
 /**
@@ -18634,7 +18630,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tr>\n" +
     "              <td>\n" +
     "                <strong>Labels</strong>\n" +
-    "                <p>{{labelMessage}}</p>\n" +
     "              </td>\n" +
     "              <td>\n" +
     "                <udb-label-select labels=\"event.labels\"\n" +
