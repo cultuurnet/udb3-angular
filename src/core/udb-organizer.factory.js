@@ -14,10 +14,13 @@ angular
 /* @ngInject */
 function UdbOrganizerFactory(UitpasLabels) {
 
-  function isUitpas(labels) {
-    return !_.isEmpty(_.intersection(
-        labels,
-        _.values(UitpasLabels)));
+  function isUitpas(organizer) {
+    return hasUitpasLabel(organizer.labels) ||
+      hasUitpasLabel(organizer.hiddenLabels);
+  }
+
+  function hasUitpasLabel(labels) {
+    return labels && !_.isEmpty(_.intersection(labels, _.values(UitpasLabels)));
   }
 
   function getFirst(jsonOrganizer, path) {
@@ -50,7 +53,8 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       this.url = getFirst(jsonOrganizer, 'contactPoint.url');
       this.labels = jsonOrganizer.labels || [];
-      this.isUitpas = isUitpas(jsonOrganizer.labels);
+      this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
+      this.isUitpas = isUitpas(jsonOrganizer);
     }
   };
 

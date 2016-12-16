@@ -149,7 +149,8 @@ describe('Controller: Event Detail', function() {
         "calendarType": "single",
         "performer": [{"name": "maaike beuten "}],
         "sameAs": ["http://www.uitinvlaanderen.be/agenda/e/70-mijl-in-vogelvlucht/1111be8c-a412-488d-9ecc-8fdf9e52edbc"],
-        "seeAlso": ["http://www.facebook.com/events/1590439757875265"]
+        "seeAlso": ["http://www.facebook.com/events/1590439757875265"],
+        "workflowStatus": "DRAFT"
       };
 
   var deferredEvent, deferredVariation, deferredPermission, deferredUpdate,
@@ -352,5 +353,29 @@ describe('Controller: Event Detail', function() {
     expect($scope.event.labels).toEqual(expectedLabels);
     expect($window.alert).toHaveBeenCalledWith('Het label "Some Label" is reeds toegevoegd als "some label".');
     expect(offerLabeller.label).not.toHaveBeenCalled();
+  });
+
+  it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
+    expect($scope.translateWorkflowStatus('DRAFT')).toEqual('Niet gepubliceerd')
+  });
+
+  it('should return niet gepubliceerd when the workflowStatus is REJECTED', function () {
+    expect($scope.translateWorkflowStatus('REJECTED')).toEqual('Niet gepubliceerd')
+  });
+
+  it('should return niet gepubliceerd when the workflowStatus is DELETED', function () {
+    expect($scope.translateWorkflowStatus('DELETED')).toEqual('Niet gepubliceerd')
+  });
+
+  it('should return gepubliceerd when the workflowStatus is READY_FOR_VALIDATION', function () {
+    expect($scope.translateWorkflowStatus('READY_FOR_VALIDATION')).toEqual('Gepubliceerd')
+  });
+
+  it('should return gepubliceerd when the workflowStatus is APPROVED', function () {
+    expect($scope.translateWorkflowStatus('APPROVED')).toEqual('Gepubliceerd')
+  });
+
+  it('should return gepubliceerd as default', function () {
+    expect($scope.translateWorkflowStatus()).toEqual('Gepubliceerd')
   });
 });
