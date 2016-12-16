@@ -5684,6 +5684,10 @@ function EventCrud(
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
     }
 
+    if (_.intersection(_.keysIn(bookingInfo), ['email', 'phone', 'email']).length === 0) {
+      bookingInfo = {};
+    }
+
     return udbApi
       .updateProperty(item.apiUrl, 'bookingInfo', bookingInfo)
       .then(jobCreatorFactory(item, 'updateBookingInfo'));
@@ -10663,9 +10667,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.savingOrganizer = false;
 
   // Booking & tickets vars.
-  $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
-  $scope.editBookingEmail = EventFormData.bookingInfo.email ? false : true;
-  $scope.editBookingUrl = EventFormData.bookingInfo.url ? false : true;
+  $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
+  $scope.editBookingEmail = !EventFormData.bookingInfo.email;
+  $scope.editBookingUrl = !EventFormData.bookingInfo.url;
   $scope.bookingModel = {
     urlRequired : false,
     emailRequired : false,
@@ -10677,9 +10681,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     email : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.email : ''
   };
 
-  $scope.viaWebsite =  EventFormData.bookingInfo.url ? true : false;
-  $scope.viaEmail = EventFormData.bookingInfo.email ? true : false;
-  $scope.viaPhone = EventFormData.bookingInfo.phone ? true : false;
+  $scope.viaWebsite =  !EventFormData.bookingInfo.url;
+  $scope.viaEmail = !EventFormData.bookingInfo.email;
+  $scope.viaPhone = !EventFormData.bookingInfo.phone;
   $scope.websitePreviewEnabled = false;
   $scope.bookingPeriodPreviewEnabled = false;
   $scope.bookingPeriodShowValidation = false;

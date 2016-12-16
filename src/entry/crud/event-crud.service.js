@@ -274,6 +274,10 @@ function EventCrud(
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
     }
 
+    if (_.intersection(_.keysIn(bookingInfo), ['email', 'phone', 'email']).length === 0) {
+      bookingInfo = {};
+    }
+
     return udbApi
       .updateProperty(item.apiUrl, 'bookingInfo', bookingInfo)
       .then(jobCreatorFactory(item, 'updateBookingInfo'));
