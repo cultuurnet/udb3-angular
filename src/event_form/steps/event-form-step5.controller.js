@@ -82,7 +82,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     urlLabel : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.urlLabel : 'Reserveer plaatsen',
     urlLabelCustom : '',
     phone : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.phone : '',
-    email : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.email : ''
+    email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
 
   $scope.viaWebsite =  EventFormData.bookingInfo.url ? true : false;
