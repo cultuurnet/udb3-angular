@@ -48,23 +48,24 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
   this.label = function (offer, labelName) {
     var result = {
       success: false,
-      message: ''
+      message: '',
+      name: ''
     };
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(
-            function(response) {
-              offer.label(response.config.data.label);
-              jobCreatorFactory(OfferLabelJob, offer, response.config.data.label);
-              result.success = true;
-              result.message = response.config.data.label;
-              return result;
-            },
-            function(error) {
-              result.message = error.statusText;
-              return result;
-            }
-        );
+      .then(function(response) {
+        offer.label(labelName);
+        jobCreatorFactory(OfferLabelJob, offer, labelName);
+        result.success = true;
+        result.message = response.config.data.label;
+        result.name = labelName;
+        return result;
+      })
+      .catch(function(error) {
+        result.message = error.data.title;
+        result.name = labelName;
+        return result;
+      });
   };
 
   /**

@@ -44,6 +44,7 @@ function EventDetail(
   $scope.hasEditPermissions = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
+  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
@@ -210,14 +211,17 @@ function EventDetail(
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     }
     else {
-      offerLabeller.label(cachedEvent, newLabel.name).then(
-        function(response) {
+      offerLabeller.label(cachedEvent, newLabel.name)
+        .then(function(response) {
           if (response.success) {
             $scope.event.labels = angular.copy(cachedEvent.labels);
+            $scope.hasLabelsError = false;
           }
-        },
-        function(error) {}
-        );
+          else {
+            $scope.hasLabelsError = true;
+            $scope.labelsError = response;
+          }
+        });
     }
 
     $scope.event.labels = angular.copy(cachedEvent.labels);

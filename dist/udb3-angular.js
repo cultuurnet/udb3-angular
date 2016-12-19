@@ -6262,23 +6262,24 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
   this.label = function (offer, labelName) {
     var result = {
       success: false,
-      message: ''
+      message: '',
+      name: ''
     };
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(
-            function(response) {
-              offer.label(response.config.data.label);
-              jobCreatorFactory(OfferLabelJob, offer, response.config.data.label);
-              result.success = true;
-              result.message = response.config.data.label;
-              return result;
-            },
-            function(error) {
-              result.message = error.statusText;
-              return result;
-            }
-        );
+      .then(function(response) {
+        offer.label(labelName);
+        jobCreatorFactory(OfferLabelJob, offer, labelName);
+        result.success = true;
+        result.message = response.config.data.label;
+        result.name = labelName;
+        return result;
+      })
+      .catch(function(error) {
+        result.message = error.data.title;
+        result.name = labelName;
+        return result;
+      });
   };
 
   /**
@@ -7029,6 +7030,7 @@ function EventDetail(
   $scope.hasEditPermissions = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
+  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
@@ -7195,14 +7197,17 @@ function EventDetail(
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     }
     else {
-      offerLabeller.label(cachedEvent, newLabel.name).then(
-        function(response) {
+      offerLabeller.label(cachedEvent, newLabel.name)
+        .then(function(response) {
           if (response.success) {
             $scope.event.labels = angular.copy(cachedEvent.labels);
+            $scope.hasLabelsError = false;
           }
-        },
-        function(error) {}
-        );
+          else {
+            $scope.hasLabelsError = true;
+            $scope.labelsError = response;
+          }
+        });
     }
 
     $scope.event.labels = angular.copy(cachedEvent.labels);
@@ -18665,6 +18670,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                  label-added=\"labelAdded(label)\"\n" +
     "                                  label-removed=\"labelRemoved(label)\"\n" +
     "                                  ></udb-label-select>\n" +
+    "                <div ng-show=\"hasLabelsError\" class=\"alert alert-danger\">\n" +
+    "                  Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                </div>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
