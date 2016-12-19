@@ -607,19 +607,6 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  // getRecentLabels
-  it('should get the users recent labels from the api', function (done) {
-    var response = {};
-    $httpBackend
-      .expectGET(baseUrl + 'user/labels')
-      .respond(JSON.stringify(response));
-    service
-      .getRecentLabels()
-      .then(done);
-
-    $httpBackend.flush();
-  });
-
   // hasPermission
   it('should respond when the user has permission to the offer location', function (done) {
     var responseWithPermission = {

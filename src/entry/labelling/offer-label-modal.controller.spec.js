@@ -22,10 +22,6 @@ describe('Controller: Offer Label Modal', function() {
     $q = _$q_;
     $scope = $rootScope.$new();
 
-    udbApi = jasmine.createSpyObj('udbApi', [
-      'getRecentLabels'
-    ]);
-
     $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', [
       'close',
       'dismiss'
@@ -35,38 +31,12 @@ describe('Controller: Offer Label Modal', function() {
   function getController() {
     return $controller(
       'OfferLabelModalCtrl', {
-        $uibModalInstance: $uibModalInstance,
-        udbApi: udbApi
+        $uibModalInstance: $uibModalInstance
       }
     );
   }
 
-  it('should load the recent labels', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve(labels));
-
-    var lmc = getController();
-
-    $scope.$digest();
-    expect(udbApi.getRecentLabels).toHaveBeenCalled();
-  });
-
-  it('should set the empty label selection', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve(labels));
-
-    var lmc = getController();
-
-    $scope.$digest();
-    expect(lmc.labelSelection).toEqual([
-      {name: 'blub>', selected: false},
-      {name: 'sla', selected:false},
-      {name: 'komkommer', selected:false},
-      {name: 'coc', selected:false}
-    ]);
-  });
-
   it('should select checked labels', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
-
     var lmc = getController();
     $scope.$digest();
 
@@ -82,8 +52,6 @@ describe('Controller: Offer Label Modal', function() {
   });
 
   it('should not accept labels shorter than 2 chars', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
-
     var lmc = getController();
     $scope.$digest();
 
@@ -95,8 +63,6 @@ describe('Controller: Offer Label Modal', function() {
   });
 
   it('should not accept labels longer than 255 chars', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
-
     var lmc = getController();
     $scope.$digest();
 
@@ -108,8 +74,6 @@ describe('Controller: Offer Label Modal', function() {
   });
 
   it('should construct a list from new and recent labels', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
-
     var lmc = getController();
     $scope.$digest();
 
@@ -128,8 +92,6 @@ describe('Controller: Offer Label Modal', function() {
   });
 
   it('should trim spaces from new labels', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
-
     var lmc = getController();
     $scope.$digest();
 
@@ -143,8 +105,6 @@ describe('Controller: Offer Label Modal', function() {
   });
 
   it('should split new labels on a semicolon', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
-
     var lmc = getController();
     $scope.$digest();
 
@@ -159,8 +119,6 @@ describe('Controller: Offer Label Modal', function() {
   });
 
   it('should not send a list of labels on cancel', function() {
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
-
     var lmc = getController();
     $scope.$digest();
 

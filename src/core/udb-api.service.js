@@ -285,24 +285,6 @@ function UdbApi(
   };
 
   /**
-   * @returns {Promise} A list of labels wrapped as a promise.
-   */
-  this.getRecentLabels = function () {
-    var deferredLabels = $q.defer();
-    var request = $http.get(apiUrl + 'user/labels', defaultApiConfig);
-
-    request
-      .success(function (data) {
-        deferredLabels.resolve(data);
-      })
-      .error(function () {
-        deferredLabels.reject();
-      });
-
-    return deferredLabels.promise;
-  };
-
-  /**
    * @returns {Promise.<UiTIDUser>}
    *   A promise with the credentials of the currently logged in user.
    */
