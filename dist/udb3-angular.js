@@ -17957,18 +17957,21 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
             }
           );
 
-          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+          var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+
+          cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
 
           return cardSystem;
         });
 
-        var organisationLabels = _.intersection(_.values(UitpasLabels), organisation.labels);
+        var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
+        var organisationLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
 
         _.forEach(organisationLabels, function(organisationLabel) {
           if (!_.find(availableCardSystems, {name: organisationLabel})) {
             availableCardSystems.push({
               name: organisationLabel,
-              active: true, //_.includes(offerData.labels, organisationLabel),
+              active: true,
               distributionKeys: []
             });
           }
