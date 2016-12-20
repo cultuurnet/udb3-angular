@@ -19229,19 +19229,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"modal-body\">\n" +
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
-    "    <form name=\"organizerForm\" class=\"css-form\">\n" +
-    "        <div class=\"form-group\" ng-class=\"{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }\">\n" +
-    "            <label>Website</label>\n" +
-    "            <input type=\"url\"\n" +
-    "                   name=\"website\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   ng-model=\"newOrganizer.website\"\n" +
-    "                   ng-change=\"validateWebsite()\"\n" +
-    "                   autocomplete=\"off\"\n" +
-    "                   required> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
-    "            <p class=\"alert alert-info\" ng-hide=\"organizersWebsiteFound\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
-    "            <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"selectOrganizer(firstOrganizerFound)\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
-    "        </div>\n" +
+    "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
+    "      <p class=\"alert alert-info\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
+    "      <div class=\"form-group\" ng-class=\"{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }\">\n" +
+    "        <label>Website</label>\n" +
+    "        <input type=\"url\"\n" +
+    "               name=\"website\"\n" +
+    "               class=\"form-control\"\n" +
+    "               ng-model=\"newOrganizer.website\"\n" +
+    "           \n" +
+    "               ng-blur=\"validateWebsite()\"\n" +
+    "               autocomplete=\"off\"\n" +
+    "               required>\n" +
+    "         <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"selectOrganizer(firstOrganizerFound)\" class=\"alert-link\" href=\"#\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
     "        <label>Naam</label>\n" +
@@ -19252,53 +19257,48 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"row\">\n" +
-    "\n" +
-    "        <div class=\"col-xs-12\">\n" +
-    "          <div class=\"form-group\">\n" +
-    "            <label>Straat en nummer</label>\n" +
-    "            <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <label>Straat en nummer</label>\n" +
+    "        <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"row\">\n" +
-    "         <div class=\"col-xs-12\">\n" +
-    "          <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">\n" +
-    "            Kies een gemeente\n" +
-    "          </label>\n" +
-    "          <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
-    "            <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
-    "              <input id=\"organizer-gemeente-autocomplete\"\n" +
-    "                     type=\"text\"\n" +
-    "                     class=\"form-control uib-typeahead\"\n" +
-    "                     placeholder=\"Gemeente of postcode\"\n" +
-    "                     ng-model=\"cityAutocompleteTextField\"\n" +
-    "                     uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
-    "                     typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                     typeahead-min-length=\"2\"\n" +
-    "                     typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                     autocomplete=\"off\">\n" +
-    "            </span>\n" +
-    "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
-    "              Er was een probleem tijdens het ophalen van de steden\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "          <div id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
-    "            <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
-    "            <a href=\"\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">\n" +
+    "          Gemeente\n" +
+    "        </label>\n" +
+    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
+    "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
+    "            <input id=\"organizer-gemeente-autocomplete\"\n" +
+    "                   type=\"text\"\n" +
+    "                   class=\"form-control uib-typeahead\"\n" +
+    "                   placeholder=\"Gemeente of postcode\"\n" +
+    "                   ng-model=\"cityAutocompleteTextField\"\n" +
+    "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
+    "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
+    "                   typeahead-min-length=\"2\"\n" +
+    "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                   autocomplete=\"off\">\n" +
+    "          </span>\n" +
+    "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
+    "            Er was een probleem tijdens het ophalen van de steden.\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <h2>Contact</h2>\n" +
+    "      <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
+    "        <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
+    "        <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <p><strong>Contact</strong></p>\n" +
+    "      </div>\n" +
     "\n" +
     "      <div ng-show=\"newOrganizer.contact.length === 0\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
-    "          <li><a ng-click=\"addOrganizerContactInfo('url')\">Website toevoegen</a></li>\n" +
-    "          <li><a ng-click=\"addOrganizerContactInfo('phone')\">Telefoonnummer toevoegen</a></li>\n" +
-    "          <li><a ng-click=\"addOrganizerContactInfo('email')\">E-mailadres toevoegen</a></li>\n" +
+    "          <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
+    "          <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
+    "          <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
     "\n" +
@@ -19338,7 +19338,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </button>\n" +
     "          </td>\n" +
     "        </tr>\n" +
-    "        <tr><td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\">Meer contactgegevens toevoegen</a></td></tr>\n" +
+    "        <tr><td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a></td></tr>\n" +
     "      </table>\n" +
     "    </form>\n" +
     "  </section>\n" +
