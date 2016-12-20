@@ -17965,12 +17965,12 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
         });
 
         var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
-        var organisationLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
+        var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
 
-        _.forEach(organisationLabels, function(organisationLabel) {
-          if (!_.find(availableCardSystems, {name: organisationLabel})) {
+        _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
+          if (!_.find(availableCardSystems, {name: organisationUitpasLabel})) {
             availableCardSystems.push({
-              name: organisationLabel,
+              name: organisationUitpasLabel,
               active: true,
               distributionKeys: []
             });
