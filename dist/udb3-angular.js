@@ -19263,26 +19263,35 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
-    "        <label>Naam</label>\n" +
-    "        <input type=\"text\" name=\"name\" class=\"form-control\" ng-model=\"newOrganizer.name\" required>\n" +
-    "        <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
-    "        <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "          <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
+    "            <label>Naam</label>\n" +
+    "            <input type=\"text\" name=\"name\" class=\"form-control\" ng-model=\"newOrganizer.name\" required>\n" +
+    "            <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
+    "            <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
     "          Gelieve een naam in te vullen\n" +
     "        </span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <label>Straat en nummer</label>\n" +
-    "        <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "          <div class=\"form-group\">\n" +
+    "            <label>Straat en nummer</label>\n" +
+    "            <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
+    "          </div>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">\n" +
-    "          Gemeente\n" +
-    "        </label>\n" +
-    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
-    "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "          <div class=\"form-group\">\n" +
+    "            <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">\n" +
+    "              Gemeente\n" +
+    "            </label>\n" +
+    "            <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
     "            <input id=\"organizer-gemeente-autocomplete\"\n" +
     "                   type=\"text\"\n" +
     "                   class=\"form-control uib-typeahead\"\n" +
@@ -19293,68 +19302,76 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   typeahead-min-length=\"2\"\n" +
     "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                   autocomplete=\"off\">\n" +
-    "          </span>\n" +
-    "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
-    "            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "              <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
+    "                Er was een probleem tijdens het ophalen van de steden.\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "          </div>\n" +
+    "\n" +
+    "          <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
+    "            <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
+    "            <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
-    "        <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
-    "        <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
-    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12\">\n" +
+    "          <p><strong>Contact</strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-12\">\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <p><strong>Contact</strong></p>\n" +
-    "      </div>\n" +
+    "          <div ng-show=\"newOrganizer.contact.length === 0\">\n" +
+    "            <ul class=\"list-unstyled\">\n" +
+    "              <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
+    "              <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
+    "              <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "            </ul>\n" +
+    "          </div>\n" +
     "\n" +
-    "      <div ng-show=\"newOrganizer.contact.length === 0\">\n" +
-    "        <ul class=\"list-unstyled\">\n" +
-    "          <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "          <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "          <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
-    "        </ul>\n" +
+    "          <table class=\"table\" ng-show=\"newOrganizer.contact.length\">\n" +
+    "            <tr ng-repeat=\"(key, info) in newOrganizer.contact\"\n" +
+    "                ng-model=\"info\"\n" +
+    "                udb-contact-info-validation\n" +
+    "                ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
+    "              <td>\n" +
+    "                <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
+    "                  <option value=\"url\">Website</option>\n" +
+    "                  <option value=\"phone\">Telefoonnummer</option>\n" +
+    "                  <option value=\"email\">E-mailadres</option>\n" +
+    "                </select>\n" +
+    "              </td>\n" +
+    "              <td ng-switch=\"info.type\">\n" +
+    "                <input type=\"text\"\n" +
+    "                       ng-switch-when=\"url\"\n" +
+    "                       udb-http-prefix\n" +
+    "                       class=\"form-control\"\n" +
+    "                       ng-model=\"info.value\"\n" +
+    "                       name=\"contact[{{key}}]\"\n" +
+    "                       ng-change=\"validateInfo()\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                <input type=\"text\"\n" +
+    "                       ng-switch-default\n" +
+    "                       class=\"form-control\"\n" +
+    "                       ng-model=\"info.value\"\n" +
+    "                       name=\"contact[{{key}}]\"\n" +
+    "                       ng-change=\"validateInfo()\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteOrganizerContactInfo(key)\">\n" +
+    "                  <span aria-hidden=\"true\">&times;</span>\n" +
+    "                </button>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "          </table>\n" +
+    "        </div>\n" +
     "      </div>\n" +
-    "\n" +
-    "      <table class=\"table\" ng-show=\"newOrganizer.contact.length\">\n" +
-    "        <tr ng-repeat=\"(key, info) in newOrganizer.contact\"\n" +
-    "            ng-model=\"info\"\n" +
-    "            udb-contact-info-validation\n" +
-    "            ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
-    "          <td>\n" +
-    "            <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
-    "              <option value=\"url\">Website</option>\n" +
-    "              <option value=\"phone\">Telefoonnummer</option>\n" +
-    "              <option value=\"email\">E-mailadres</option>\n" +
-    "            </select>\n" +
-    "          </td>\n" +
-    "          <td ng-switch=\"info.type\">\n" +
-    "            <input type=\"text\"\n" +
-    "                   ng-switch-when=\"url\"\n" +
-    "                   udb-http-prefix\n" +
-    "                   class=\"form-control\"\n" +
-    "                   ng-model=\"info.value\"\n" +
-    "                   name=\"contact[{{key}}]\"\n" +
-    "                   ng-change=\"validateInfo()\"\n" +
-    "                   ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "            <input type=\"text\"\n" +
-    "                   ng-switch-default\n" +
-    "                   class=\"form-control\"\n" +
-    "                   ng-model=\"info.value\"\n" +
-    "                   name=\"contact[{{key}}]\"\n" +
-    "                   ng-change=\"validateInfo()\"\n" +
-    "                   ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "            <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
-    "          </td>\n" +
-    "          <td>\n" +
-    "            <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteOrganizerContactInfo(key)\">\n" +
-    "              <span aria-hidden=\"true\">&times;</span>\n" +
-    "            </button>\n" +
-    "          </td>\n" +
-    "        </tr>\n" +
-    "        <tr><td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a></td></tr>\n" +
-    "      </table>\n" +
     "    </form>\n" +
     "  </section>\n" +
     "\n" +
