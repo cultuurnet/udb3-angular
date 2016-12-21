@@ -2142,7 +2142,9 @@ function udbCalendarSummary() {
       loadDatePicker();
 
       ngModel.$render = function () {
-        elem.datepicker('update', ngModel.$viewValue);
+        // the datepicker component does not play well with date objects that are not set to midnight
+        var date = moment(ngModel.$viewValue);
+        elem.datepicker('update', date.startOf('day').toDate());
       };
 
       /**
@@ -2747,7 +2749,7 @@ function UdbApi(
   $q,
   $http,
   appConfig,
-  $cookieStore,
+  $cookies,
   uitidAuth,
   $cacheFactory,
   UdbEvent,
@@ -2964,24 +2966,6 @@ function UdbApi(
   };
 
   /**
-   * @returns {Promise} A list of labels wrapped as a promise.
-   */
-  this.getRecentLabels = function () {
-    var deferredLabels = $q.defer();
-    var request = $http.get(apiUrl + 'user/labels', defaultApiConfig);
-
-    request
-      .success(function (data) {
-        deferredLabels.resolve(data);
-      })
-      .error(function () {
-        deferredLabels.reject();
-      });
-
-    return deferredLabels.promise;
-  };
-
-  /**
    * @returns {Promise.<UiTIDUser>}
    *   A promise with the credentials of the currently logged in user.
    */
@@ -2997,7 +2981,7 @@ function UdbApi(
         givenName: userData.givenName
       };
 
-      $cookieStore.put('user', user);
+      $cookies.putObject('user', user);
       deferredUser.resolve(user);
     }
 
@@ -3915,7 +3899,7 @@ function UdbApi(
     }
   }
 }
-UdbApi.$inject = ["$q", "$http", "appConfig", "$cookieStore", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
+UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
 
 // Source: src/core/udb-event.factory.js
 /**
@@ -4832,13 +4816,19 @@ angular
   .service('uitidAuth', UitidAuth);
 
 /* @ngInject */
-function UitidAuth($window, $location, appConfig, $cookieStore) {
+function UitidAuth($window, $location, appConfig, $cookies) {
+
+  function removeCookies () {
+    $cookies.remove('token');
+    $cookies.remove('user');
+  }
+
   /**
    * Log the active user out.
    */
   this.logout = function () {
-    $cookieStore.remove('token');
-    $cookieStore.remove('user');
+    removeCookies();
+
     // reset url
     $location.search('');
     $location.path('/');
@@ -4849,19 +4839,28 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    */
   this.login = function () {
     var currentLocation = $location.absUrl(),
-        authUrl = appConfig.authUrl;
+        loginUrl = appConfig.authUrl + 'connect';
 
-    // remove cookies
-    $cookieStore.remove('token');
-    $cookieStore.remove('user');
+    removeCookies();
 
     // redirect to login page
-    authUrl += '?destination=' + currentLocation;
-    $window.location.href = authUrl;
+    loginUrl += '?destination=' + currentLocation;
+    $window.location.href = loginUrl;
+  };
+
+  this.register = function () {
+    var currentLocation = $location.absUrl(),
+        registrationUrl = appConfig.authUrl + 'register';
+
+    removeCookies();
+
+    // redirect to login page
+    registrationUrl += '?destination=' + currentLocation;
+    $window.location.href = registrationUrl;
   };
 
   this.setToken = function (token) {
-    $cookieStore.put('token', token);
+    $cookies.put('token', token);
   };
 
   /**
@@ -4870,7 +4869,7 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    */
   this.getToken = function () {
     var service = this;
-    var currentToken = $cookieStore.get('token');
+    var currentToken = $cookies.get('token');
 
     // check if a new JWT is set in the search parameters and parse it
     var queryParameters = $location.search();
@@ -4890,10 +4889,10 @@ function UitidAuth($window, $location, appConfig, $cookieStore) {
    * Returns the currently logged in user
    */
   this.getUser = function () {
-    return $cookieStore.get('user');
+    return $cookies.getObject('user');
   };
 }
-UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookieStore"];
+UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
 /**
@@ -6143,7 +6142,7 @@ angular
   .controller('OfferLabelModalCtrl', OfferLabelModalCtrl);
 
 /* @ngInject */
-function OfferLabelModalCtrl($uibModalInstance, udbApi) {
+function OfferLabelModalCtrl($uibModalInstance) {
   var lmc = this;
   // ui-select can't get to this scope variable unless you reference it from the $parent scope.
   // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
@@ -6151,18 +6150,15 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
   lmc.close = close;
   lmc.ok = ok;
   lmc.labelNames = '';
+  /**
+   * This label-selection list used to contain labels that were last used by the user.
+   * The endpoint to get these labels has been removed so we can no longer fetch them.
+   * @see {@link https://jira.uitdatabank.be/browse/III-1708} for further information.
+   */
   lmc.labelSelection = [];
   lmc.alert = false;
   lmc.minimumInputLength = 2;
   lmc.maxInputLength = 255;
-
-  udbApi
-    .getRecentLabels()
-    .then(function (labels) {
-      lmc.labelSelection = _.map(labels, function (label) {
-        return {'name': label, 'selected': false};
-      });
-    });
 
   function ok() {
     // reset error msg
@@ -6219,7 +6215,7 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
     return labels;
   }
 }
-OfferLabelModalCtrl.$inject = ["$uibModalInstance", "udbApi"];
+OfferLabelModalCtrl.$inject = ["$uibModalInstance"];
 
 // Source: src/entry/labelling/offer-labeller.service.js
 /**
@@ -10678,7 +10674,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     urlLabel : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.urlLabel : 'Reserveer plaatsen',
     urlLabelCustom : '',
     phone : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.phone : '',
-    email : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.email : ''
+    email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
 
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
@@ -18014,18 +18010,21 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
             }
           );
 
-          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+          var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+
+          cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
 
           return cardSystem;
         });
 
-        var organisationLabels = _.intersection(_.values(UitpasLabels), organisation.labels);
+        var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
+        var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
 
-        _.forEach(organisationLabels, function(organisationLabel) {
-          if (!_.find(availableCardSystems, {name: organisationLabel})) {
+        _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
+          if (!_.find(availableCardSystems, {name: organisationUitpasLabel})) {
             availableCardSystems.push({
-              name: organisationLabel,
-              active: true, //_.includes(offerData.labels, organisationLabel),
+              name: organisationUitpasLabel,
+              active: true,
               distributionKeys: []
             });
           }
