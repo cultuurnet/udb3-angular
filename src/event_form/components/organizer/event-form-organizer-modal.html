@@ -9,20 +9,36 @@
   <section ng-hide="organizersFound">
     <form name="organizerForm" class="organizer-form">
       <p class="alert alert-info">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>
-      <div class="form-group" ng-class="{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }">
-        <label>Website</label>
-        <input type="url"
-               name="website"
-               class="form-control"
-               ng-model="newOrganizer.website"
-               ng-change="validateWebsite()"
-               autocomplete="off"
-               required>
-         <i class="fa fa-circle-o-notch fa-spin" ng-show="showWebsiteValidation"></i>
-      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-8">
+          <div class="form-group has-feedback"
+               ng-class="{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }">
+            <label class="control-label" for="organizer-website">Website</label>
+            <input type="url"
+                   id="organizer-website"
+                   name="website"
+                   class="form-control"
+                   ng-model-options="{ debounce: 300 }"
+                   ng-model="newOrganizer.website"
+                   aria-describedby="organizer-website-status"
+                   ng-change="validateWebsite()"
+                   autocomplete="off"
+                   required>
+            <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
+            <span id="organizer-website-status" class="sr-only">(warning)</span>
+          </div>
+        </div>
 
-      <div class="form-group">
-        <p class="alert alert-warning" ng-show="organizersWebsiteFound">Dit adres is al gebruikt door de organisatie '<span ng-bind="firstOrganizerFound.name"></span>'. Geef een unieke website of <a ng-click="selectOrganizer(firstOrganizerFound)" class="alert-link" href="#">gebruik <span ng-bind="firstOrganizerFound.name"></span> als organisatie</a>.</p>
+
+        <div class="col-sm-12">
+          <p class="alert alert-warning" ng-show="organizersWebsiteFound">
+            Dit adres is al gebruikt door de organisatie '<span ng-bind="firstOrganizerFound.name"></span>'.
+            Geef een unieke website of
+            <a ng-click="selectOrganizer(firstOrganizerFound)" class="alert-link" href="#">
+              gebruik <span ng-bind="firstOrganizerFound.name"></span> als organisatie
+            </a>.
+          </p>
+        </div>
       </div>
 
       <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">

@@ -19231,21 +19231,36 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
     "      <p class=\"alert alert-info\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
-    "      <div class=\"form-group\" ng-class=\"{'has-error' : showWebsiteValidation && organizerForm.website.$error.required }\">\n" +
-    "        <label>Website</label>\n" +
-    "        <input type=\"url\"\n" +
-    "               name=\"website\"\n" +
-    "               class=\"form-control\"\n" +
-    "               ng-model=\"newOrganizer.website\"\n" +
-    "           \n" +
-    "               ng-blur=\"validateWebsite()\"\n" +
-    "               autocomplete=\"off\"\n" +
-    "               required>\n" +
-    "         <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"showWebsiteValidation\"></i>\n" +
-    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "          <div class=\"form-group has-feedback\"\n" +
+    "               ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
+    "            <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
+    "            <input type=\"url\"\n" +
+    "                   id=\"organizer-website\"\n" +
+    "                   name=\"website\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   ng-model-options=\"{ debounce: 300 }\"\n" +
+    "                   ng-model=\"newOrganizer.website\"\n" +
+    "                   aria-describedby=\"organizer-website-status\"\n" +
+    "                   ng-change=\"validateWebsite()\"\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   required>\n" +
+    "            <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
+    "            <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'. Geef een unieke website of <a ng-click=\"selectOrganizer(firstOrganizerFound)\" class=\"alert-link\" href=\"#\">gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie</a>.</p>\n" +
+    "\n" +
+    "        <div class=\"col-sm-12\">\n" +
+    "          <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">\n" +
+    "            Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'.\n" +
+    "            Geef een unieke website of\n" +
+    "            <a ng-click=\"selectOrganizer(firstOrganizerFound)\" class=\"alert-link\" href=\"#\">\n" +
+    "              gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie\n" +
+    "            </a>.\n" +
+    "          </p>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
