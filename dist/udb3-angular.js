@@ -3414,6 +3414,18 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} itemLocation
+   * @param {('everyone'|'members'|'education')} audienceType
+   *
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.setAudienceType = function (itemLocation, audienceType) {
+    return $http
+      .put(itemLocation + '/audience', {'audienceType ': audienceType}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {object} response
    *  The response that is returned when creating a job.
    *
@@ -4076,6 +4088,10 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
       this.uitpasData = {};
+
+      this.audience = {
+        audienceType: _.get(jsonEvent, 'audience.audienceType', 'everyone')
+      };
     },
 
     /**
@@ -7201,6 +7217,53 @@ function EventDetail(
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
 
+// Source: src/event_form/components/audience/form-audience.controller.js
+/**
+ * @ngdoc function
+ * @name udb.event-form:FormAudienceController
+ * @description
+ * # FormAudienceController
+ * Controller for the form audience component
+ */
+angular
+  .module('udb.event-form')
+  .controller('FormAudienceController', FormAudienceController);
+
+/* @ngInject */
+function FormAudienceController(EventFormData, udbApi) {
+  var controller = this;
+
+  controller.formData = EventFormData;
+  controller.audienceType = EventFormData.audienceType;
+  controller.setAudienceType = setAudienceType;
+
+  function setAudienceType(audienceType) {
+    udbApi.setAudienceType(EventFormData.apiUrl, audienceType);
+  }
+}
+FormAudienceController.$inject = ["EventFormData", "udbApi"];
+
+// Source: src/event_form/components/audience/form-audience.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbFormAudience
+ * @description
+ * # Target audience component for event forms
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbFormAudience', FormAudienceDirective);
+
+/* @ngInject */
+function FormAudienceDirective() {
+  return {
+    templateUrl: 'templates/form-audience.html',
+    restrict: 'EA',
+    controller: 'FormAudienceController',
+    controllerAs: 'fac'
+  };
+}
+
 // Source: src/event_form/components/auto-scroll.directive.js
 /**
  * @ngdoc directive
@@ -8708,6 +8771,8 @@ function EventFormDataFactory() {
        * @type {string[]}
        */
       this.labels = [];
+
+      this.audienceType = 'everyone';
     },
 
     /**
@@ -9082,6 +9147,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
           address : location.address
         };
       }
+
+      EventFormData.audienceType = offer.audience.audienceType;
     }
 
     if (offerType === 'place') {
@@ -18801,6 +18868,64 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-audience.html',
+    "<div class=\"row audience\" ng-if=\"::fac.formData.isEvent\">\n" +
+    "    <div class=\"extra-task state-complete\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <em class=\"extra-task-label\">Toegang</em>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-8\">\n" +
+    "            <div class=\"radio\">\n" +
+    "                <label>\n" +
+    "                    <input ng-model=\"fac.audienceType\"\n" +
+    "                           ng-change=\"fac.setAudienceType('everyone')\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           name=\"audience-type\"\n" +
+    "                           id=\"audience-everyone\"\n" +
+    "                           value=\"everyone\"\n" +
+    "                           checked>\n" +
+    "                    Voor iedereen\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"radio\">\n" +
+    "                <label>\n" +
+    "                    <input ng-model=\"fac.audienceType\"\n" +
+    "                           ng-change=\"fac.setAudienceType('members')\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           name=\"audience-type\"\n" +
+    "                           id=\"audience-members\"\n" +
+    "                           value=\"members\"\n" +
+    "                           aria-describedby=\"audience-members-help\">\n" +
+    "                    Enkel voor leden\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "            <span id=\"audience-members-help\" class=\"help-block\">\n" +
+    "                Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.\n" +
+    "            </span>\n" +
+    "\n" +
+    "            <div class=\"radio\">\n" +
+    "                <label>\n" +
+    "                    <input ng-model=\"fac.audienceType\"\n" +
+    "                           ng-change=\"fac.setAudienceType('education')\"\n" +
+    "                           type=\"radio\"\n" +
+    "                           name=\"audience-type\"\n" +
+    "                           id=\"audience-education\"\n" +
+    "                           value=\"education\"\n" +
+    "                           aria-describedby=\"audience-education-help\">\n" +
+    "                    Specifiek voor scholen\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "            <span id=\"audience-education-help\" class=\"help-block\">\n" +
+    "                Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren\n" +
+    "                kan je nog specifieke informatie voor scholen toevoegen.\n" +
+    "            </span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-form-period.html',
     "<div id=\"wanneer-periode\">\n" +
     "  <div class=\"col-xs-12 col-sm-4\">\n" +
@@ -20782,6 +20907,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
+    "        <udb-form-audience></udb-form-audience>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-sm-5\">\n" +
