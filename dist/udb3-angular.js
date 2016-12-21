@@ -3421,7 +3421,7 @@ function UdbApi(
    */
   this.setAudienceType = function (itemLocation, audienceType) {
     return $http
-      .put(itemLocation + '/audience', {'audienceType ': audienceType}, defaultApiConfig)
+      .put(itemLocation.toString() + '/audience', {'audienceType ': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -7233,7 +7233,7 @@ angular
 function FormAudienceController(EventFormData, udbApi) {
   var controller = this;
 
-  controller.formData = EventFormData;
+  controller.enabled = EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
 
@@ -18869,7 +18869,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/form-audience.html',
-    "<div class=\"row audience\" ng-if=\"::fac.formData.isEvent\">\n" +
+    "<div class=\"row audience\" ng-if=\"::fac.enabled\">\n" +
     "    <div class=\"extra-task state-complete\">\n" +
     "        <div class=\"col-sm-3\">\n" +
     "            <em class=\"extra-task-label\">Toegang</em>\n" +

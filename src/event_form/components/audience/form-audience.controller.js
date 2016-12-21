@@ -15,7 +15,7 @@ angular
 function FormAudienceController(EventFormData, udbApi) {
   var controller = this;
 
-  controller.formData = EventFormData;
+  controller.enabled = EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
 

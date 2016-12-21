@@ -740,7 +740,7 @@ function UdbApi(
    */
   this.setAudienceType = function (itemLocation, audienceType) {
     return $http
-      .put(itemLocation + '/audience', {'audienceType ': audienceType}, defaultApiConfig)
+      .put(itemLocation.toString() + '/audience', {'audienceType ': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
