@@ -25,7 +25,9 @@
       loadDatePicker();
 
       ngModel.$render = function () {
-        elem.datepicker('update', ngModel.$viewValue);
+        // the datepicker component does not play well with date objects that are not set to midnight
+        var date = moment(ngModel.$viewValue);
+        elem.datepicker('update', date.startOf('day').toDate());
       };
 
       /**
