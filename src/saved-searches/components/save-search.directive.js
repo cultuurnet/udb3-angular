@@ -30,23 +30,25 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
       });
 
       modal.result.then(function (name) {
-        var savedSearchPromise = savedSearchesService.createSavedSearch(name, scope.queryString);
-
-        savedSearchPromise.catch(function() {
-          var modalInstance = $uibModal.open(
-            {
-              templateUrl: 'templates/unexpected-error-modal.html',
-              controller: 'UnexpectedErrorModalController',
-              size: 'lg',
-              resolve: {
-                errorMessage: function() {
-                  return 'Het opslaan van de zoekopdracht is mislukt. Controleer de verbinding en probeer opnieuw.';
-                }
-              }
-            }
-          );
-        });
+        savedSearchesService
+          .createSavedSearch(name, scope.queryString)
+          .catch(displayErrorModal);
       });
     };
+  }
+
+  function displayErrorModal() {
+    $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'lg',
+        resolve: {
+          errorMessage: function() {
+            return 'Het opslaan van de zoekopdracht is mislukt. Controleer de verbinding en probeer opnieuw.';
+          }
+        }
+      }
+    );
   }
 }
