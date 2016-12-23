@@ -102,13 +102,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Booking info vars.
   $scope.toggleBookingType = toggleBookingType;
-  $scope.saveBookingType = saveBookingType;
   $scope.saveBookingInfo = saveBookingInfo;
   $scope.removeDuplicateContactBooking = removeDuplicateContactBooking;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
   $scope.showBookingOption = showBookingOption;
   $scope.deleteBookingInfo = deleteBookingInfo;
+  $scope.removeBookingInfo = removeBookingInfo;
+  $scope.hasBookingInfo = hasBookingInfo;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -463,21 +464,17 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
       EventFormData.resetContactPoint();
 
-      // Copy all data to the correct contactpoint property.
-      for (var i = 0; i < $scope.contactInfo.length; i++) {
-        // Don't save the contactInfo with the attribute booking = true.
-        if (!$scope.contactInfo[i].booking) {
-          if ($scope.contactInfo[i].type === 'url') {
-            EventFormData.contactPoint.url.push($scope.contactInfo[i].value);
-          }
-          else if ($scope.contactInfo[i].type === 'phone') {
-            EventFormData.contactPoint.phone.push($scope.contactInfo[i].value);
-          }
-          else if ($scope.contactInfo[i].type === 'email') {
-            EventFormData.contactPoint.email.push($scope.contactInfo[i].value);
+      _.forEach($scope.contactInfo, function (contactInfoItem) {
+        if (contactInfoItem.booking) {
+          toggleBookingType(contactInfoItem);
+        } else {
+          if (!_.isEmpty(contactInfoItem.value) && _.includes(ContactInfoTypeEnum, contactInfoItem.type)) {
+            EventFormData
+              .contactPoint[contactInfoItem.type]
+              .push(contactInfoItem.value);
           }
         }
-      }
+      });
 
       var promise = eventCrud.updateContactPoint(EventFormData);
       promise.then(function() {
@@ -561,41 +558,38 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   /**
-   * Toggle the booking type and check if info should be deleted.
+   * @return {boolean}
    */
-  function toggleBookingType(contactItem) {
-    var saveNeeded = false;
-
-    if (_.includes(ContactInfoTypeEnum, contactItem.type)) {
-      if (contactItem.booking) {
-        $scope.bookingModel[contactItem.type] = contactItem.value;
-      }
-      else if (!contactItem.booking) {
-        $scope.bookingModel[contactItem.type] = '';
-      }
-      saveNeeded = true;
-    }
-
-    if (saveNeeded) {
-      saveBookingType();
-    }
-
+  function hasBookingInfo()
+  {
+    var bookingInfo = _.find($scope.contactInfo, {booking: true});
+    return !!bookingInfo;
   }
 
   /**
-   * Temporarily save a booking type.
+   * Toggle the booking type and check if info should be deleted.
+   *
+   * @param {ContactInfoItem} contactInfoItem
    */
-  function saveBookingType(type) {
-    if (type === 'phone') {
-      $scope.editBookingPhone = false;
+  function toggleBookingType(contactInfoItem) {
+    var type = contactInfoItem.type,
+        newValue = contactInfoItem.booking ? contactInfoItem.value : '';
+
+    if ($scope.bookingModel[type] !== newValue) {
+      $scope.bookingModel[type] = newValue;
+      saveBookingInfo();
     }
-    else if (type === 'email') {
-      $scope.editBookingEmail = false;
-    }
-    else if (type === 'website') {
-      $scope.editBookingUrl = false;
+  }
+
+  /**
+   * @param {string} type
+   */
+  function removeBookingInfo(type) {
+    if (!_.includes(ContactInfoTypeEnum, type)) {
+      return;
     }
 
+    $scope.bookingModel[type] = '';
     saveBookingInfo();
   }
 
@@ -812,16 +806,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.contactInfoCssClass = 'state-complete';
     }
 
-    // Set class to complete if we have booking info.
-    if (EventFormData.bookingInfo.url ||
-      EventFormData.bookingInfo.phone ||
-      EventFormData.bookingInfo.email ||
-      EventFormData.bookingInfo.availabilityStarts ||
-      EventFormData.bookingInfo.availabilityEnds
-    ) {
-      $scope.bookingInfoCssClass = 'state-complete';
-    }
-
     // Set default facilities.
     if (EventFormData.id) {
       $scope.facilitiesCssClass = 'state-complete';
@@ -832,7 +816,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.selectedFacilities = EventFormData.facilities;
         $scope.facilitiesInapplicable = false;
       }
-
     }
 
     if (EventFormData.priceInfo) {

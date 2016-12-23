@@ -215,7 +215,8 @@
                         ng-class="{'has-error' : infoErrorMessage !== '' }"
                         ng-change="saveContactInfo()">
                       <td>
-                        <select class="form-control" ng-model="info.type" ng-change="clearInfo();">
+                        <select class="form-control" ng-model="info.type"
+                                ng-change="clearInfo(); removeBookingInfo('{{info.type}}')">
                           <option value="url">Website</option>
                           <option value="phone">Telefoonnummer</option>
                           <option value="email">E-mailadres</option>
@@ -284,9 +285,7 @@
               </section>
 
               <div class="row extra-tickets-periode"
-                   ng-show="bookingModel.url ||
-                   bookingModel.phone ||
-                   bookingModel.email">
+                   ng-show="hasBookingInfo()">
                   <div class="extra-task">
                       <udb-reservation-period></udb-reservation-period>
                   </div>

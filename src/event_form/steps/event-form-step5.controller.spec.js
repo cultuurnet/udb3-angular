@@ -370,6 +370,12 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
 
+    scope.bookingModel = {
+      phone:'0987654321',
+      url:'http://google.be',
+      email:'dude@sweet.com'
+    };
+
     eventCrud.updateContactPoint.and.returnValue($q.resolve());
     spyOn(stepController, 'eventFormSaved');
 
@@ -475,79 +481,24 @@ describe('Controller: event form step 5', function () {
     expect(scope.facilitiesError).toBeTruthy();
   });
 
-  it('should set the right toggle for the booking option "phone"', function () {
-    var contactInfos = [
+  it('should show the booking info toggles based on contact info type', function () {
+    var contactInfo = [
       {type: 'phone', value: '1234567890', booking: false},
-      {type: 'phone', value: '0987654321', booking: true}
-    ];
-    scope.bookingModel = {
-      phone: '0987654321',
-      url: 'http://google.be',
-      email: 'dude@sweet.com'
-    };
-
-    scope.showBookingOption(contactInfos[0]);
-    scope.$apply();
-    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
-
-    scope.showBookingOption(contactInfos[1]);
-    scope.$apply();
-    expect(scope.showBookingOption(contactInfos[1])).toBeTruthy();
-  });
-
-  it('should set the right toggle for the booking option "url"', function () {
-    var contactInfos = [
+      {type: 'phone', value: '0987654321', booking: true},
       {type: 'url', value: 'http://cultuurnet.be', booking: false},
-      {type: 'url', value: 'http://google.be', booking: true},
-    ];
-    scope.bookingModel = {
-      phone: '0987654321',
-      url: 'http://google.be',
-      email: 'dude@sweet.com'
-    };
-
-    scope.showBookingOption(contactInfos[0]);
-    scope.$apply();
-    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
-
-    scope.showBookingOption(contactInfos[1]);
-    scope.$apply();
-    expect(scope.showBookingOption(contactInfos[1])).toBeTruthy();
-  });
-
-  it('should set the right toggle for the booking option "email"', function () {
-    var contactInfos = [
       {type: 'email', value: 'info@mail.com', booking: false},
-      {type: 'email', value: 'dude@sweet.com', booking: true},
+      {type: 'url', value: 'http://google.be', booking: true},
+      {type: 'email', value: 'dude@sweet.com', booking: false},
     ];
-    scope.bookingModel = {
-      phone: '0987654321',
-      url: 'http://google.be',
-      email: 'dude@sweet.com'
-    };
+    scope.contactInfo = contactInfo;
 
-    scope.showBookingOption(contactInfos[0]);
     scope.$apply();
-    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
-
-    scope.showBookingOption(contactInfos[1]);
-    scope.$apply();
-    expect(scope.showBookingOption(contactInfos[1])).toBeTruthy();
-  });
-
-  it('should set the right toggle when the booking option is invalid', function () {
-    var contactInfos = [
-      {type: '', value: 'invalid contact type', booking: false}
-    ];
-    scope.bookingModel = {
-      phone: '0987654321',
-      url: 'http://google.be',
-      email: 'dude@sweet.com'
-    };
-
-    scope.showBookingOption(contactInfos[0]);
-    scope.$apply();
-    expect(scope.showBookingOption(contactInfos[0])).toBeFalsy();
+    expect(scope.showBookingOption(contactInfo[0])).toEqual(false);
+    expect(scope.showBookingOption(contactInfo[1])).toEqual(true);
+    expect(scope.showBookingOption(contactInfo[2])).toEqual(false);
+    expect(scope.showBookingOption(contactInfo[3])).toEqual(true);
+    expect(scope.showBookingOption(contactInfo[4])).toEqual(true);
+    expect(scope.showBookingOption(contactInfo[5])).toEqual(true);
   });
 
   it('should set the right toggle when there is nothing in the bookingModel', function () {
@@ -581,7 +532,6 @@ describe('Controller: event form step 5', function () {
       {type: 'url', value: 'http://google.be', booking: true}
     ];
     scope.contactInfoForm = {};
-    spyOn(scope, 'saveBookingType');
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
 
     scope.toggleBookingType(contactInfos[0]);
@@ -599,7 +549,6 @@ describe('Controller: event form step 5', function () {
       {type: 'phone', value: '0987654321', booking: true}
     ];
     scope.contactInfoForm = {};
-    spyOn(scope, 'saveBookingType');
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
 
     scope.toggleBookingType(contactInfos[0]);
@@ -617,7 +566,6 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
     scope.contactInfoForm = {};
-    spyOn(scope, 'saveBookingType');
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
 
     scope.toggleBookingType(contactInfos[0]);
@@ -662,28 +610,6 @@ describe('Controller: event form step 5', function () {
     scope.enableWebsitePreview();
 
     expect(scope.websitePreviewEnabled).toBeTruthy();
-  });
-
-
-  it('should temporarily save the booking type "phone"', function () {
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
-    scope.saveBookingType('phone');
-
-    expect(scope.editBookingPhone).toBeFalsy();
-  });
-
-  it('should temporarily save the booking type "email"', function () {
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
-    scope.saveBookingType('email');
-
-    expect(scope.editBookingEmail).toBeFalsy();
-  });
-
-  it('should temporarily save the booking type "website"', function () {
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
-    scope.saveBookingType('website');
-
-    expect(scope.editBookingUrl).toBeFalsy();
   });
 
   it('should delete a given contact info item', function () {
@@ -761,7 +687,6 @@ describe('Controller: event form step 5', function () {
     scope.saveBookingInfo();
     scope.$apply();
 
-    expect(scope.bookingInfoCssClass).toEqual('state-incomplete');
     expect(scope.savingBookingInfo).toBeFalsy();
     expect(scope.bookingInfoError).toBeFalsy();
   });
@@ -897,7 +822,6 @@ describe('Controller: event form step 5', function () {
     ];
 
     expect(scope.contactInfo).toEqual(expectedContactInfo);
-    expect(scope.bookingInfoCssClass).toEqual('state-complete');
   });
 
   it('should update the image order when selecting a new main image', function () {

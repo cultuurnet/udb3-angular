@@ -274,7 +274,7 @@ function EventCrud(
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
     }
 
-    if (_.intersection(_.keysIn(bookingInfo), ['email', 'phone', 'email']).length === 0) {
+    if (_.intersection(_.keysIn(bookingInfo), ['url', 'phone', 'email']).length === 0) {
       bookingInfo = {};
     }
 
