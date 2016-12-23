@@ -616,6 +616,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     toggleBookingType(element);
 
     $scope.contactInfo.splice(index, 1);
+
+    if (_.isEmpty($scope.contactInfo)) {
+      $scope.contactInfoCssClass = 'state-incomplete';
+    }
   }
 
   /**
