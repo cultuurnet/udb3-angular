@@ -221,63 +221,49 @@
                           <option value="email">E-mailadres</option>
                         </select>
                       </td>
-                      <td ng-switch="info.type">
-                        <input type="text"
-                               ng-switch-when="url"
-                               udb-http-prefix
-                               class="form-control"
-                               ng-model="info.value"
-                               name="contact[{{key}}]"
-                               ng-change="validateInfo(); saveContactInfo();"
-                               ng-model-options="{ updateOn: 'blur' }"/>
-                        <input type="text"
-                               ng-switch-default
-                               class="form-control"
-                               ng-model="info.value"
-                               name="contact[{{key}}]"
-                               ng-change="validateInfo(); saveContactInfo();"
-                               ng-model-options="{ updateOn: 'blur' }"/>
+                      <td>
+                        <ng-switch on="info.type">
+                          <input type="text"
+                                 ng-switch-when="url"
+                                 udb-http-prefix
+                                 class="form-control"
+                                 ng-model="info.value"
+                                 name="contact[{{key}}]"
+                                 ng-change="validateInfo(); saveContactInfo();"
+                                 ng-model-options="{ updateOn: 'blur' }"/>
+                          <input type="text"
+                                 ng-switch-default
+                                 class="form-control"
+                                 ng-model="info.value"
+                                 name="contact[{{key}}]"
+                                 ng-change="validateInfo(); saveContactInfo();"
+                                 ng-model-options="{ updateOn: 'blur' }"/>
+                        </ng-switch>
                         <span class="help-block" ng-hide="infoErrorMessage === ''" ng-bind="infoErrorMessage"></span>
-
-                          <div class="booking-options"
-                               ng-show="showBookingOption(info)">
-                              <div class="checkbox"
-                                   ng-switch-when="url">
-                                  <label>
-                                      <input type="checkbox"
-                                             class="reservatie-website-check reservatie-check"
-                                             ng-model="info.booking"
-                                             ng-click="toggleBookingType(info)">
-                                      Gebruik voor reservatie
-                                  </label>
-                                  <div class="reservatie-website-info reservatie-info"
-                                       ng-show="info.booking">
-
-                                    <div class="reservatie-info-stap2">
-                                      <div class="weergave">
-                                          <p><strong>Hoe mag deze link verschijnen?</strong></p>
-                                          <select ng-model="bookingModel.urlLabel"
-                                                  ng-change="saveWebsitePreview()">
-                                              <option value="Koop tickets">Koop tickets</option>
-                                              <option value="Reserveer plaatsen">Reserveer plaatsen</option>
-                                              <option value="Controleer beschikbaarheid">Controleer beschikbaarheid</option>
-                                              <option value="Schrijf je in">Schrijf je in</option>
-                                          </select>
-                                      </div>
-                                    </div>
-                                  </div>
+                        <div class="booking-options" ng-show="showBookingOption(info)">
+                          <label>
+                            <input type="checkbox"
+                                   class="reservatie-{{info.type}}-check reservatie-check"
+                                   ng-model="info.booking"
+                                   ng-click="toggleBookingType(info)">
+                            Gebruik voor reservatie
+                          </label>
+                          <div class="reservatie-website-info reservatie-info"
+                               ng-if="info.type === 'url' && info.booking">
+                            <div class="reservatie-info-stap2">
+                              <div class="weergave">
+                                <p><strong>Hoe mag deze link verschijnen?</strong></p>
+                                <select ng-model="bookingModel.urlLabel"
+                                        ng-change="saveWebsitePreview()">
+                                  <option value="Koop tickets">Koop tickets</option>
+                                  <option value="Reserveer plaatsen">Reserveer plaatsen</option>
+                                  <option value="Controleer beschikbaarheid">Controleer beschikbaarheid</option>
+                                  <option value="Schrijf je in">Schrijf je in</option>
+                                </select>
                               </div>
-                              <div class="checkbox"
-                                   ng-switch-default>
-                                  <label>
-                                      <input type="checkbox"
-                                             class="reservatie-telefoon-check reservatie-check"
-                                             ng-model="info.booking"
-                                             ng-change="toggleBookingType(info)">
-                                      Gebruik voor reservatie
-                                  </label>
-                              </div>
+                            </div>
                           </div>
+                        </div>
                       </td>
                       <td>
                         <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteContactInfo(key)">

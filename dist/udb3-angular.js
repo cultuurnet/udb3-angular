@@ -8582,50 +8582,50 @@ function UdbContactInfoValidationDirective() {
   return {
     restrict: 'A',
     require: 'ngModel',
-    link: function(scope, elem, attrs, ngModel) {
-
-      // Scope methods.
-      scope.validateInfo = validateInfo;
-      scope.clearInfo = clearInfo;
-      scope.infoErrorMessage = '';
-
-      /**
-       * Validate the entered info.
-       */
-      function validateInfo() {
-
-        ngModel.$setValidity('contactinfo', true);
-        scope.infoErrorMessage = '';
-
-        if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-          EMAIL_REGEXP.test(ngModel.$modelValue.value);
-          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
-          ngModel.$setValidity('contactinfo', false);
-
-        }
-        else if (ngModel.$modelValue.type === 'url') {
-          var viewValue = ngModel.$viewValue;
-
-          if (!URL_REGEXP.test(viewValue.value)) {
-            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
-            ngModel.$setValidity('contactinfo', false);
-          }
-        }
-      }
-
-      /**
-       * Clear the entered info when switching type.
-       */
-      function clearInfo() {
-        ngModel.$modelValue.value = '';
-        scope.infoErrorMessage = '';
-        ngModel.$setValidity('contactinfo', true);
-      }
-
-    },
-
+    link: link
   };
 
+  function link (scope, elem, attrs, ngModel) {
+    // Scope methods.
+    scope.validateInfo = validateInfo;
+    scope.clearInfo = clearInfo;
+    scope.infoErrorMessage = '';
+
+    /**
+     * Validate the entered info.
+     */
+    function validateInfo() {
+
+      ngModel.$setValidity('contactinfo', true);
+      scope.infoErrorMessage = '';
+
+      if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
+        EMAIL_REGEXP.test(ngModel.$modelValue.value);
+        scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+        ngModel.$setValidity('contactinfo', false);
+
+      }
+      else if (ngModel.$modelValue.type === 'url') {
+        var viewValue = ngModel.$viewValue;
+
+        if (!URL_REGEXP.test(viewValue.value)) {
+          scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+          ngModel.$setValidity('contactinfo', false);
+        }
+      }
+    }
+
+    /**
+     * Clear the entered info when switching type.
+     */
+    function clearInfo() {
+      ngModel.$modelValue.value = '';
+      ngModel.$modelValue.booking = false;
+      scope.infoErrorMessage = '';
+      ngModel.$setValidity('contactinfo', true);
+    }
+
+  }
 }
 
 // Source: src/event_form/copyright-negotiator.service.js
@@ -10593,6 +10593,13 @@ EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appCon
 
 // Source: src/event_form/steps/event-form-step5.controller.js
 /**
+ * @typedef {Object} ContactInfoItem
+ * @property {ContactInfoTypeEnum} type
+ * @property {boolean} booking
+ * @property {string} value
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep5Controller
  * @description
@@ -11135,11 +11142,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     }
   }
 
-  function showBookingOption(contactInfo) {
-    var type = contactInfo.type;
-    var value = contactInfo.value;
+  /**
+   * @param {ContactInfoItem} contactInfoItem
+   * @return {boolean}
+   */
+  function showBookingOption(contactInfoItem) {
+    var bookingInfoOfSameType = _.find($scope.contactInfo, {type: contactInfoItem.type, booking: true});
 
-    return _.includes(ContactInfoTypeEnum, type) && (!$scope.bookingModel[type] || $scope.bookingModel[type] === value);
+    return contactInfoItem.booking || !bookingInfoOfSameType;
   }
 
   /**
@@ -20562,63 +20572,49 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                          <option value=\"email\">E-mailadres</option>\n" +
     "                        </select>\n" +
     "                      </td>\n" +
-    "                      <td ng-switch=\"info.type\">\n" +
-    "                        <input type=\"text\"\n" +
-    "                               ng-switch-when=\"url\"\n" +
-    "                               udb-http-prefix\n" +
-    "                               class=\"form-control\"\n" +
-    "                               ng-model=\"info.value\"\n" +
-    "                               name=\"contact[{{key}}]\"\n" +
-    "                               ng-change=\"validateInfo(); saveContactInfo();\"\n" +
-    "                               ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                        <input type=\"text\"\n" +
-    "                               ng-switch-default\n" +
-    "                               class=\"form-control\"\n" +
-    "                               ng-model=\"info.value\"\n" +
-    "                               name=\"contact[{{key}}]\"\n" +
-    "                               ng-change=\"validateInfo(); saveContactInfo();\"\n" +
-    "                               ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                      <td>\n" +
+    "                        <ng-switch on=\"info.type\">\n" +
+    "                          <input type=\"text\"\n" +
+    "                                 ng-switch-when=\"url\"\n" +
+    "                                 udb-http-prefix\n" +
+    "                                 class=\"form-control\"\n" +
+    "                                 ng-model=\"info.value\"\n" +
+    "                                 name=\"contact[{{key}}]\"\n" +
+    "                                 ng-change=\"validateInfo(); saveContactInfo();\"\n" +
+    "                                 ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                          <input type=\"text\"\n" +
+    "                                 ng-switch-default\n" +
+    "                                 class=\"form-control\"\n" +
+    "                                 ng-model=\"info.value\"\n" +
+    "                                 name=\"contact[{{key}}]\"\n" +
+    "                                 ng-change=\"validateInfo(); saveContactInfo();\"\n" +
+    "                                 ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                        </ng-switch>\n" +
     "                        <span class=\"help-block\" ng-hide=\"infoErrorMessage === ''\" ng-bind=\"infoErrorMessage\"></span>\n" +
-    "\n" +
-    "                          <div class=\"booking-options\"\n" +
-    "                               ng-show=\"showBookingOption(info)\">\n" +
-    "                              <div class=\"checkbox\"\n" +
-    "                                   ng-switch-when=\"url\">\n" +
-    "                                  <label>\n" +
-    "                                      <input type=\"checkbox\"\n" +
-    "                                             class=\"reservatie-website-check reservatie-check\"\n" +
-    "                                             ng-model=\"info.booking\"\n" +
-    "                                             ng-click=\"toggleBookingType(info)\">\n" +
-    "                                      Gebruik voor reservatie\n" +
-    "                                  </label>\n" +
-    "                                  <div class=\"reservatie-website-info reservatie-info\"\n" +
-    "                                       ng-show=\"info.booking\">\n" +
-    "\n" +
-    "                                    <div class=\"reservatie-info-stap2\">\n" +
-    "                                      <div class=\"weergave\">\n" +
-    "                                          <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
-    "                                          <select ng-model=\"bookingModel.urlLabel\"\n" +
-    "                                                  ng-change=\"saveWebsitePreview()\">\n" +
-    "                                              <option value=\"Koop tickets\">Koop tickets</option>\n" +
-    "                                              <option value=\"Reserveer plaatsen\">Reserveer plaatsen</option>\n" +
-    "                                              <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
-    "                                              <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
-    "                                          </select>\n" +
-    "                                      </div>\n" +
-    "                                    </div>\n" +
-    "                                  </div>\n" +
+    "                        <div class=\"booking-options\" ng-show=\"showBookingOption(info)\">\n" +
+    "                          <label>\n" +
+    "                            <input type=\"checkbox\"\n" +
+    "                                   class=\"reservatie-{{info.type}}-check reservatie-check\"\n" +
+    "                                   ng-model=\"info.booking\"\n" +
+    "                                   ng-click=\"toggleBookingType(info)\">\n" +
+    "                            Gebruik voor reservatie\n" +
+    "                          </label>\n" +
+    "                          <div class=\"reservatie-website-info reservatie-info\"\n" +
+    "                               ng-if=\"info.type === 'url' && info.booking\">\n" +
+    "                            <div class=\"reservatie-info-stap2\">\n" +
+    "                              <div class=\"weergave\">\n" +
+    "                                <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
+    "                                <select ng-model=\"bookingModel.urlLabel\"\n" +
+    "                                        ng-change=\"saveWebsitePreview()\">\n" +
+    "                                  <option value=\"Koop tickets\">Koop tickets</option>\n" +
+    "                                  <option value=\"Reserveer plaatsen\">Reserveer plaatsen</option>\n" +
+    "                                  <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
+    "                                  <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
+    "                                </select>\n" +
     "                              </div>\n" +
-    "                              <div class=\"checkbox\"\n" +
-    "                                   ng-switch-default>\n" +
-    "                                  <label>\n" +
-    "                                      <input type=\"checkbox\"\n" +
-    "                                             class=\"reservatie-telefoon-check reservatie-check\"\n" +
-    "                                             ng-model=\"info.booking\"\n" +
-    "                                             ng-change=\"toggleBookingType(info)\">\n" +
-    "                                      Gebruik voor reservatie\n" +
-    "                                  </label>\n" +
-    "                              </div>\n" +
+    "                            </div>\n" +
     "                          </div>\n" +
+    "                        </div>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
     "                        <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteContactInfo(key)\">\n" +

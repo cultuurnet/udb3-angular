@@ -1,6 +1,13 @@
 'use strict';
 
 /**
+ * @typedef {Object} ContactInfoItem
+ * @property {ContactInfoTypeEnum} type
+ * @property {boolean} booking
+ * @property {string} value
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep5Controller
  * @description
@@ -543,11 +550,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     }
   }
 
-  function showBookingOption(contactInfo) {
-    var type = contactInfo.type;
-    var value = contactInfo.value;
+  /**
+   * @param {ContactInfoItem} contactInfoItem
+   * @return {boolean}
+   */
+  function showBookingOption(contactInfoItem) {
+    var bookingInfoOfSameType = _.find($scope.contactInfo, {type: contactInfoItem.type, booking: true});
 
-    return _.includes(ContactInfoTypeEnum, type) && (!$scope.bookingModel[type] || $scope.bookingModel[type] === value);
+    return contactInfoItem.booking || !bookingInfoOfSameType;
   }
 
   /**
