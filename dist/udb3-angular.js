@@ -20531,7 +20531,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"row extra-contact\">\n" +
     "          <div class=\"extra-task meer-info\" ng-class=\"contactInfoCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Meer info &amp; contact</em>\n" +
+    "              <em class=\"extra-task-label\">Contact &amp; reservatie</em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingContactInfo\"></i>\n" +
     "            </div>\n" +
