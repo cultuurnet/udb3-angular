@@ -15162,24 +15162,26 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
       });
 
       modal.result.then(function (name) {
-        var savedSearchPromise = savedSearchesService.createSavedSearch(name, scope.queryString);
-
-        savedSearchPromise.catch(function() {
-          var modalInstance = $uibModal.open(
-            {
-              templateUrl: 'templates/unexpected-error-modal.html',
-              controller: 'UnexpectedErrorModalController',
-              size: 'lg',
-              resolve: {
-                errorMessage: function() {
-                  return 'Het opslaan van de zoekopdracht is mislukt. Controleer de verbinding en probeer opnieuw.';
-                }
-              }
-            }
-          );
-        });
+        savedSearchesService
+          .createSavedSearch(name, scope.queryString)
+          .catch(displayErrorModal);
       });
     };
+  }
+
+  function displayErrorModal() {
+    $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'lg',
+        resolve: {
+          errorMessage: function() {
+            return 'Het opslaan van de zoekopdracht is mislukt. Controleer de verbinding en probeer opnieuw.';
+          }
+        }
+      }
+    );
   }
 }
 udbSaveSearch.$inject = ["savedSearchesService", "$uibModal"];
@@ -22080,22 +22082,22 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/save-search-modal.html',
     "<form name=\"saveQueryForm\" novalidate class=\"save-search-modal\">\n" +
-    "<div class=\"modal-body\">\n" +
+    "    <div class=\"modal-body\">\n" +
     "\n" +
-    "    <label>Geef je zoekopdracht een naam</label>\n" +
+    "        <label>Geef je zoekopdracht een naam</label>\n" +
     "\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-lg-12\">\n" +
-    "            <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
-    "            <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-lg-12\">\n" +
+    "                <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
+    "                <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>\n" +
     "\n" +
-    "<div class=\"modal-footer\">\n" +
-    "  <button class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "  <button class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>    \n" +
-    "</div>\n" +
+    "    <div class=\"modal-footer\">\n" +
+    "      <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "      <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>\n" +
+    "    </div>\n" +
     "</form>\n"
   );
 
