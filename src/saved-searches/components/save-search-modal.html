@@ -1,18 +1,18 @@
 <form name="saveQueryForm" novalidate class="save-search-modal">
-<div class="modal-body">
+    <div class="modal-body">
 
-    <label>Geef je zoekopdracht een naam</label>
+        <label>Geef je zoekopdracht een naam</label>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <p class="alert alert-danger" role="alert" ng-show="wasSubmitted && saveQueryForm.queryName.$error.required">Een naam is verplicht.</p>
-            <input type="text" ng-required="'true'" name="queryName" ng-model="queryName" class="form-control"/>
+        <div class="row">
+            <div class="col-lg-12">
+                <p class="alert alert-danger" role="alert" ng-show="wasSubmitted && saveQueryForm.queryName.$error.required">Een naam is verplicht.</p>
+                <input type="text" ng-required="'true'" name="queryName" ng-model="queryName" class="form-control"/>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="modal-footer">
-  <button class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()">Annuleren</button>
-  <button class="btn btn-primary udb-save-query-ok-button" ng-click="ok()">Bewaren</button>    
-</div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()">Annuleren</button>
+      <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok()">Bewaren</button>
+    </div>
 </form>
