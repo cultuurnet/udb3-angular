@@ -257,7 +257,30 @@ function EventCrud(
    * @returns {Promise.<EventCrudJob>}
    */
   service.updateBookingInfo = function(item) {
-    return updateOfferProperty(item, 'bookingInfo', 'updateBookingInfo');
+    var allowedProperties = [
+      'url',
+      'urlLabel',
+      'email',
+      'phone',
+      'availabilityStarts',
+      'availabilityEnds'
+    ];
+
+    var bookingInfo =  _.pick(item.bookingInfo, function(property, propertyName) {
+      return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
+    });
+
+    if (!_.has(bookingInfo, 'url')) {
+      bookingInfo = _.omit(bookingInfo, 'urlLabel');
+    }
+
+    if (_.intersection(_.keysIn(bookingInfo), ['url', 'phone', 'email']).length === 0) {
+      bookingInfo = {};
+    }
+
+    return udbApi
+      .updateProperty(item.apiUrl, 'bookingInfo', bookingInfo)
+      .then(jobCreatorFactory(item, 'updateBookingInfo'));
   };
 
   /**

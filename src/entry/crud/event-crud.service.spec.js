@@ -224,4 +224,58 @@ describe('Service: Event crud', function () {
 
     expect(logger.addJob).toHaveBeenCalled();
   });
+
+  it('should strip view values when updating booking info', function () {
+    var formData = {
+      id : '217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      apiUrl: 'http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      bookingInfo : {
+        urlRequired : false,
+        emailRequired : false,
+        phoneRequired : false,
+        url : 'http://du.de',
+        urlLabel : 'Reserveer plaatsen',
+        urlLabelCustom : '',
+        phone : '016789012',
+        email : 'dirk@du.de'
+      }
+    };
+
+    var expectedBookingInfo = {
+      url: 'http://du.de',
+      urlLabel: 'Reserveer plaatsen',
+      phone: '016789012',
+      email: 'dirk@du.de'
+    };
+
+    promisePropertyUpdate();
+
+    eventCrud.updateBookingInfo(formData);
+    expect(udbApi.updateProperty)
+      .toHaveBeenCalledWith('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E', 'bookingInfo', expectedBookingInfo);
+  });
+
+
+  it('should not save booking availability data when there is no other booking info', function () {
+    var formData = {
+      id : '217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      apiUrl: 'http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      bookingInfo : {
+        urlRequired : false,
+        emailRequired : false,
+        phoneRequired : false,
+        urlLabel : 'Reserveer plaatsen',
+        availabilityStarts: new Date(),
+        availabilityEnds:  new Date()
+      }
+    };
+
+    var expectedBookingInfo = {};
+
+    promisePropertyUpdate();
+
+    eventCrud.updateBookingInfo(formData);
+    expect(udbApi.updateProperty)
+      .toHaveBeenCalledWith('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E', 'bookingInfo', expectedBookingInfo);
+  });
 });
