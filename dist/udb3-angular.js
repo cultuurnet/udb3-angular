@@ -7099,6 +7099,10 @@ function EventDetail(
     return eventLocation.join(', ');
   };
 
+  $scope.eventLocationUrl = function (event) {
+    return event.location.url + '/preview';
+  };
+
   $scope.eventIds = function (event) {
     return _.union([event.id], event.sameAs);
   };
@@ -18697,7 +18701,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </tr>\n" +
     "            <tr>\n" +
     "              <td><strong>Waar</strong></td>\n" +
-    "              <td ng-show=\"event.location.url\"><a href=\"{{event.location.url}}\">{{eventLocation(event)}}</a></td>\n" +
+    "              <td ng-show=\"event.location.url\"><a href=\"{{eventLocationUrl(event)}}\">{{eventLocation(event)}}</a></td>\n" +
     "              <td ng-hide=\"event.location.url\">\n" +
     "                {{event.location.name.nl}},\n" +
     "                {{event.location.address.streetAddress}},\n" +
@@ -20288,7 +20292,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div class=\"help-block\">\n" +
     "          <p>\n" +
-    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kappelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kapelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
     "            <span ng-show=\"eventFormData.isPlace\">Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".</span>\n" +
     "            Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.\n" +
     "          </p>\n" +

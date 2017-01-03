@@ -378,4 +378,9 @@ describe('Controller: Event Detail', function() {
   it('should return gepubliceerd as default', function () {
     expect($scope.translateWorkflowStatus()).toEqual('Gepubliceerd')
   });
+
+  it('should append preview to the place url', function () {
+    $scope.$digest();
+    expect($scope.eventLocationUrl($scope.event)).toEqual('place/4D6DD711-CB4F-168D-C8B1DB1D1F8335B4/preview');
+  });
 });
