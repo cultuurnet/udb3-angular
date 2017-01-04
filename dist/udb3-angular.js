@@ -3421,7 +3421,7 @@ function UdbApi(
    */
   this.setAudienceType = function (itemLocation, audienceType) {
     return $http
-      .put(itemLocation.toString() + '/audience', {'audienceType ': audienceType}, defaultApiConfig)
+      .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -5682,7 +5682,30 @@ function EventCrud(
    * @returns {Promise.<EventCrudJob>}
    */
   service.updateBookingInfo = function(item) {
-    return updateOfferProperty(item, 'bookingInfo', 'updateBookingInfo');
+    var allowedProperties = [
+      'url',
+      'urlLabel',
+      'email',
+      'phone',
+      'availabilityStarts',
+      'availabilityEnds'
+    ];
+
+    var bookingInfo =  _.pick(item.bookingInfo, function(property, propertyName) {
+      return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
+    });
+
+    if (!_.has(bookingInfo, 'url')) {
+      bookingInfo = _.omit(bookingInfo, 'urlLabel');
+    }
+
+    if (_.intersection(_.keysIn(bookingInfo), ['url', 'phone', 'email']).length === 0) {
+      bookingInfo = {};
+    }
+
+    return udbApi
+      .updateProperty(item.apiUrl, 'bookingInfo', bookingInfo)
+      .then(jobCreatorFactory(item, 'updateBookingInfo'));
   };
 
   /**
@@ -8249,96 +8272,150 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
 }
 PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
 
-// Source: src/event_form/components/reservation-modal/reservation-modal.controller.js
+// Source: src/event_form/components/reservation-period/reservation-period.controller.js
 /**
  * @ngdoc function
- * @name udbApp.controller:EventFormReservationModalController
+ * @name udbApp.controller:ReservationPeriodController
  * @description
- * # EventFormImageUploadController
- * Modal for setting the reservation period.
+ * # ReservationPeriodController
  */
 angular
   .module('udb.event-form')
-  .controller('EventFormReservationModalController', EventFormReservationModalController);
+  .controller('ReservationPeriodController', ReservationPeriodController);
 
 /* @ngInject */
-function EventFormReservationModalController($scope, $uibModalInstance, EventFormData, eventCrud, appConfig) {
+function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScope) {
 
-  // Scope vars.
-  $scope.eventFormData = EventFormData;
-  $scope.showStartDateRequired = false;
-  $scope.showEndDateRequired = false;
-  $scope.saving = false;
+  var controller = this;
+
+  $scope.haveBookingPeriod = false;
+  $scope.bookingPeriodInfoCssClass = 'state-incomplete';
+  $scope.savingBookingPeriodInfo = false;
+  $scope.bookingPeriodInfoError = false;
+  $scope.availabilityStarts = '';
+  $scope.availabilityEnds = '';
   $scope.errorMessage = '';
-  $scope.calendarHighlight = appConfig.calendarHighlight;
+  $scope.popup1 = {
+    opened: false
+  };
 
-  // Scope functions.
-  $scope.cancel = cancel;
-  $scope.save = save;
+  $scope.popup2 = {
+    opened: false
+  };
 
-  var initialStartDate = EventFormData.bookingInfo.availabilityStarts;
-  var initialEndDate = EventFormData.bookingInfo.availabilityEnds;
+  $scope.validateBookingPeriod = validateBookingPeriod;
+  $scope.saveBookingPeriod = saveBookingPeriod;
+  $scope.deleteBookingPeriod = deleteBookingPeriod;
+  $scope.changeHaveBookingPeriod = changeHaveBookingPeriod;
+  $scope.initBookingPeriodForm = initBookingPeriodForm;
 
-  /**
-   * Cancel the modal.
-   */
-  function cancel() {
-    EventFormData.bookingInfo.availabilityStarts = initialStartDate;
-    EventFormData.bookingInfo.availabilityEnds = initialEndDate;
-    $uibModalInstance.dismiss('cancel');
-  }
+  // Options for the datepicker
+  $scope.dateOptions = {
+    formatYear: 'yyyy',
+    maxDate: new Date(2020, 5, 22),
+    minDate: new Date(),
+    startingDay: 1
+  };
 
-  /**
-   * Save the period.
-   */
-  function save() {
+  initBookingPeriodForm();
 
-    $scope.errorMessage = '';
+  controller.bookingPeriodSaved = function () {
+    $rootScope.$emit('bookingPeriodSaved', EventFormData);
+  };
 
-    $scope.showStartDateRequired = false;
-    if (!EventFormData.bookingInfo.availabilityStarts) {
-      $scope.showStartDateRequired = true;
-    }
-
-    $scope.showEndDateRequired = false;
-    if (!EventFormData.bookingInfo.availabilityEnds) {
-      $scope.showEndDateRequired = true;
-    }
-
-    if ($scope.showStartDateRequired || $scope.showEndDateRequired) {
-      return;
-    }
-
-    if (EventFormData.bookingInfo.availabilityStarts > EventFormData.bookingInfo.availabilityEnds) {
+  function validateBookingPeriod() {
+    if ($scope.availabilityStarts > $scope.availabilityEnds) {
       $scope.errorMessage = 'De gekozen einddatum moet na de startdatum vallen.';
       return;
     }
+    $scope.errorMessage = '';
+    saveBookingPeriod();
+  }
 
-    $scope.saving = true;
+  function saveBookingPeriod() {
+    EventFormData.bookingInfo.availabilityStarts = $scope.availabilityStarts;
+    EventFormData.bookingInfo.availabilityEnds = $scope.availabilityEnds;
 
-    // Make sure all default values are set.
-    EventFormData.bookingInfo = angular.extend({}, {
-      url : '',
-      urlLabel : 'Reserveer plaatsen',
-      email : '',
-      phone : '',
-      availabilityStarts : '',
-      availabilityEnds : ''
-    }, EventFormData.bookingInfo);
+    $scope.savingBookingPeriodInfo = true;
+    $scope.bookingPeriodInfoError = false;
 
     var promise = eventCrud.updateBookingInfo(EventFormData);
     promise.then(function() {
-      $scope.saving = false;
-      $uibModalInstance.close();
+      controller.bookingPeriodSaved();
+      $scope.bookingPeriodInfoCssClass = 'state-complete';
+      $scope.savingBookingPeriodInfo = false;
+      $scope.bookingPeriodInfoError = false;
     }, function() {
-      $scope.saving = false;
-      $scope.errorMessage = 'Er ging iets fout bij het bewaren van de info.';
+      $scope.savingBookingPeriodInfo = false;
+      $scope.bookingPeriodInfoError = true;
     });
-
   }
 
+  function deleteBookingPeriod() {
+    $scope.availabilityStarts = '';
+    $scope.availabilityEnds = '';
+    $scope.haveBookingPeriod = false;
+    saveBookingPeriod();
+  }
+
+  function changeHaveBookingPeriod() {
+    if (!$scope.haveBookingPeriod) {
+      $scope.haveBookingPeriod = true;
+    }
+  }
+
+  $scope.open1 = function() {
+    $scope.popup1.opened = true;
+  };
+
+  $scope.open2 = function() {
+    $scope.popup2.opened = true;
+  };
+
+  function initBookingPeriodForm() {
+    if (EventFormData.bookingInfo.availabilityStarts ||
+      EventFormData.bookingInfo.availabilityEnds) {
+      $scope.haveBookingPeriod = true;
+    }
+
+    if (EventFormData.bookingInfo.availabilityStarts) {
+      $scope.availabilityStarts = new Date(EventFormData.bookingInfo.availabilityStarts);
+    }
+    else {
+      $scope.availabilityStarts = new Date();
+    }
+
+    if (EventFormData.bookingInfo.availabilityEnds) {
+      $scope.availabilityEnds = new Date(EventFormData.bookingInfo.availabilityEnds);
+    }
+    else {
+      $scope.availabilityEnds = new Date();
+    }
+  }
 }
-EventFormReservationModalController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig"];
+ReservationPeriodController.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
+
+// Source: src/event_form/components/reservation-period/reservation-period.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event_form.directive:udbReservationPeriod
+ * @description
+ * # reservation period selection for event form
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbReservationPeriod', ReservationPeriodDirective);
+
+/* @ngInject */
+function ReservationPeriodDirective() {
+
+  return {
+    restrict: 'AE',
+    controller: 'ReservationPeriodController',
+    templateUrl: 'templates/reservation-period.html'
+  };
+
+}
 
 // Source: src/event_form/components/save-time-tracker/save-time-tracker.directive.js
 /**
@@ -8568,50 +8645,50 @@ function UdbContactInfoValidationDirective() {
   return {
     restrict: 'A',
     require: 'ngModel',
-    link: function(scope, elem, attrs, ngModel) {
-
-      // Scope methods.
-      scope.validateInfo = validateInfo;
-      scope.clearInfo = clearInfo;
-      scope.infoErrorMessage = '';
-
-      /**
-       * Validate the entered info.
-       */
-      function validateInfo() {
-
-        ngModel.$setValidity('contactinfo', true);
-        scope.infoErrorMessage = '';
-
-        if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-          EMAIL_REGEXP.test(ngModel.$modelValue.value);
-          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
-          ngModel.$setValidity('contactinfo', false);
-
-        }
-        else if (ngModel.$modelValue.type === 'url') {
-          var viewValue = ngModel.$viewValue;
-
-          if (!URL_REGEXP.test(viewValue.value)) {
-            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
-            ngModel.$setValidity('contactinfo', false);
-          }
-        }
-      }
-
-      /**
-       * Clear the entered info when switching type.
-       */
-      function clearInfo() {
-        ngModel.$modelValue.value = '';
-        scope.infoErrorMessage = '';
-        ngModel.$setValidity('contactinfo', true);
-      }
-
-    },
-
+    link: link
   };
 
+  function link (scope, elem, attrs, ngModel) {
+    // Scope methods.
+    scope.validateInfo = validateInfo;
+    scope.clearInfo = clearInfo;
+    scope.infoErrorMessage = '';
+
+    /**
+     * Validate the entered info.
+     */
+    function validateInfo() {
+
+      ngModel.$setValidity('contactinfo', true);
+      scope.infoErrorMessage = '';
+
+      if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
+        EMAIL_REGEXP.test(ngModel.$modelValue.value);
+        scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+        ngModel.$setValidity('contactinfo', false);
+
+      }
+      else if (ngModel.$modelValue.type === 'url') {
+        var viewValue = ngModel.$viewValue;
+
+        if (!URL_REGEXP.test(viewValue.value)) {
+          scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+          ngModel.$setValidity('contactinfo', false);
+        }
+      }
+    }
+
+    /**
+     * Clear the entered info when switching type.
+     */
+    function clearInfo() {
+      ngModel.$modelValue.value = '';
+      ngModel.$modelValue.booking = false;
+      scope.infoErrorMessage = '';
+      ngModel.$setValidity('contactinfo', true);
+    }
+
+  }
 }
 
 // Source: src/event_form/copyright-negotiator.service.js
@@ -10583,6 +10660,13 @@ EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appCon
 
 // Source: src/event_form/steps/event-form-step5.controller.js
 /**
+ * @typedef {Object} ContactInfoItem
+ * @property {ContactInfoTypeEnum} type
+ * @property {boolean} booking
+ * @property {string} value
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep5Controller
  * @description
@@ -10653,9 +10737,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.savingOrganizer = false;
 
   // Booking & tickets vars.
-  $scope.editBookingPhone = EventFormData.bookingInfo.phone ? false : true;
-  $scope.editBookingEmail = EventFormData.bookingInfo.email ? false : true;
-  $scope.editBookingUrl = EventFormData.bookingInfo.url ? false : true;
+  $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
+  $scope.editBookingEmail = !EventFormData.bookingInfo.email;
+  $scope.editBookingUrl = !EventFormData.bookingInfo.url;
   $scope.bookingModel = {
     urlRequired : false,
     emailRequired : false,
@@ -10667,9 +10751,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
 
-  $scope.viaWebsite =  EventFormData.bookingInfo.url ? true : false;
-  $scope.viaEmail = EventFormData.bookingInfo.email ? true : false;
-  $scope.viaPhone = EventFormData.bookingInfo.phone ? true : false;
+  $scope.viaWebsite =  !EventFormData.bookingInfo.url;
+  $scope.viaEmail = !EventFormData.bookingInfo.email;
+  $scope.viaPhone = !EventFormData.bookingInfo.phone;
   $scope.websitePreviewEnabled = false;
   $scope.bookingPeriodPreviewEnabled = false;
   $scope.bookingPeriodShowValidation = false;
@@ -10677,11 +10761,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Booking info vars.
   $scope.toggleBookingType = toggleBookingType;
-  $scope.saveBookingType = saveBookingType;
-  $scope.validateBookingType = validateBookingType;
+  $scope.saveBookingInfo = saveBookingInfo;
+  $scope.removeDuplicateContactBooking = removeDuplicateContactBooking;
   $scope.saveWebsitePreview = saveWebsitePreview;
   $scope.enableWebsitePreview = enableWebsitePreview;
-  $scope.openBookingPeriodModal = openBookingPeriodModal;
+  $scope.showBookingOption = showBookingOption;
+  $scope.deleteBookingInfo = deleteBookingInfo;
+  $scope.removeBookingInfo = removeBookingInfo;
+  $scope.hasBookingInfo = hasBookingInfo;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -11007,7 +11094,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.contactInfoCssClass = 'state-filling';
     }
 
-    $scope.contactInfo.push({type: ContactInfoTypeEnum.PHONE, value: ''});
+    $scope.contactInfo.push({type: ContactInfoTypeEnum.PHONE, value: '', booking: false});
   }
 
   /**
@@ -11015,6 +11102,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function deleteContactInfo(index) {
     $scope.contactInfo.splice(index, 1);
+
+    if (_.isEmpty($scope.contactInfo)) {
+      $scope.contactInfoCssClass = 'state-incomplete';
+    }
+
     saveContactInfo();
   }
 
@@ -11031,23 +11123,24 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
       EventFormData.resetContactPoint();
 
-      // Copy all data to the correct contactpoint property.
-      for (var i = 0; i < $scope.contactInfo.length; i++) {
-        if ($scope.contactInfo[i].type === 'url') {
-          EventFormData.contactPoint.url.push($scope.contactInfo[i].value);
+      _.forEach($scope.contactInfo, function (contactInfoItem) {
+        if (contactInfoItem.booking) {
+          toggleBookingType(contactInfoItem);
+        } else {
+          if (!_.isEmpty(contactInfoItem.value) && _.includes(ContactInfoTypeEnum, contactInfoItem.type)) {
+            EventFormData
+              .contactPoint[contactInfoItem.type]
+              .push(contactInfoItem.value);
+          }
         }
-        else if ($scope.contactInfo[i].type === 'phone') {
-          EventFormData.contactPoint.phone.push($scope.contactInfo[i].value);
-        }
-        else if ($scope.contactInfo[i].type === 'email') {
-          EventFormData.contactPoint.email.push($scope.contactInfo[i].value);
-        }
-      }
+      });
 
       var promise = eventCrud.updateContactPoint(EventFormData);
       promise.then(function() {
         controller.eventFormSaved();
-        $scope.contactInfoCssClass = 'state-complete';
+        if (!_.isEmpty($scope.contactInfo)) {
+          $scope.contactInfoCssClass = 'state-complete';
+        }
         $scope.savingContactInfo = false;
       }, function() {
         $scope.contactInfoError = true;
@@ -11114,85 +11207,48 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   /**
-   * Toggle the booking type and check if info should be deleted.
+   * @param {ContactInfoItem} contactInfoItem
+   * @return {boolean}
    */
-  function toggleBookingType(type) {
+  function showBookingOption(contactInfoItem) {
+    var bookingInfoOfSameType = _.find($scope.contactInfo, {type: contactInfoItem.type, booking: true});
 
-    var saveNeeded = false;
-    if ($scope.bookingModel.url && !$scope.viaWebsite) {
-      $scope.bookingModel.url = '';
-      $scope.editBookingUrl = true;
-      saveNeeded = true;
-    }
-
-    if ($scope.bookingModel.phone && !$scope.viaPhone) {
-      $scope.bookingModel.phone = '';
-      $scope.editBookingPhone = true;
-      saveNeeded = true;
-    }
-
-    if ($scope.bookingModel.email && !$scope.viaEmail) {
-      $scope.bookingModel.email = '';
-      $scope.editBookingEmail = true;
-      saveNeeded = true;
-    }
-
-    if (saveNeeded) {
-      saveBookingType();
-    }
-
+    return contactInfoItem.booking || !bookingInfoOfSameType;
   }
 
   /**
-   * Validates a booking type.
+   * @return {boolean}
    */
-  function validateBookingType(type) {
+  function hasBookingInfo()
+  {
+    var bookingInfo = _.find($scope.contactInfo, {booking: true});
+    return !!bookingInfo;
+  }
 
-    if (type === 'website') {
-      // Valid url?
-      $scope.step5TicketsForm.url.$setValidity('url', true);
-      if (!URL_REGEXP.test($scope.bookingModel.url)) {
-        $scope.step5TicketsForm.url.$setValidity('url', false);
-      }
+  /**
+   * Toggle the booking type and check if info should be deleted.
+   *
+   * @param {ContactInfoItem} contactInfoItem
+   */
+  function toggleBookingType(contactInfoItem) {
+    var type = contactInfoItem.type,
+        newValue = contactInfoItem.booking ? contactInfoItem.value : '';
 
-      $scope.bookingModel.urlRequired = true;
-      $scope.bookingModel.emailRequired = false;
-      $scope.bookingModel.phoneRequired = false;
+    if ($scope.bookingModel[type] !== newValue) {
+      $scope.bookingModel[type] = newValue;
+      saveBookingInfo();
     }
-    else if (type === 'email') {
-      $scope.bookingModel.emailRequired = true;
-      $scope.bookingModel.urlRequired = false;
-      $scope.bookingModel.phoneRequired = false;
-    }
-    else if (type === 'phone') {
-      $scope.bookingModel.phoneRequired = true;
-      $scope.bookingModel.emailRequired = false;
-      $scope.bookingModel.urlRequired = false;
-    }
+  }
 
-    // Forms are automatically known in scope.
-    if (!$scope.step5TicketsForm.$valid) {
+  /**
+   * @param {string} type
+   */
+  function removeBookingInfo(type) {
+    if (!_.includes(ContactInfoTypeEnum, type)) {
       return;
     }
 
-    saveBookingType(type);
-
-  }
-
-  /**
-   * Temporarily save a booking type.
-   */
-  function saveBookingType(type) {
-    if (type === 'phone') {
-      $scope.editBookingPhone = false;
-    }
-    else if (type === 'email') {
-      $scope.editBookingEmail = false;
-    }
-    else if (type === 'website') {
-      $scope.editBookingUrl = false;
-    }
-
+    $scope.bookingModel[type] = '';
     saveBookingInfo();
   }
 
@@ -11216,27 +11272,17 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   /**
-   * Open the booking period modal.
+   * Delete a given contact info item.
    */
-  function openBookingPeriodModal() {
+  function deleteBookingInfo(element, index) {
+    $scope.contactInfo[index].booking = false;
+    toggleBookingType(element);
 
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/reservation-modal.html',
-      controller: 'EventFormReservationModalController'
-    });
+    $scope.contactInfo.splice(index, 1);
 
-    modalInstance.result.then(function () {
-      $scope.bookingInfoCssClass = 'state-complete';
-      $scope.bookingPeriodPreviewEnabled = true;
-    }, function () {
-      if (EventFormData.bookingInfo.availabilityStarts) {
-        $scope.bookingPeriodPreviewEnabled = true;
-      }
-      else {
-        $scope.bookingPeriodPreviewEnabled = false;
-      }
-    });
-
+    if (_.isEmpty($scope.contactInfo)) {
+      $scope.contactInfoCssClass = 'state-incomplete';
+    }
   }
 
   /**
@@ -11263,10 +11309,31 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.bookingInfoCssClass = 'state-complete';
       $scope.savingBookingInfo = false;
       $scope.bookingInfoError = false;
+      removeDuplicateContactBooking();
     }, function() {
       $scope.savingBookingInfo = false;
       $scope.bookingInfoError = true;
     });
+  }
+
+  function removeDuplicateContactBooking() {
+    var url = $scope.bookingModel.url;
+    var phone = $scope.bookingModel.phone;
+    var email = $scope.bookingModel.email;
+
+    $scope.contactInfo.some(function (element) {
+      return element.value === url;
+    });
+
+    $scope.contactInfo.some(function (element) {
+      return element.value === phone;
+    });
+
+    $scope.contactInfo.some(function (element) {
+      return element.value === email;
+    });
+
+    saveContactInfo();
   }
 
   /**
@@ -11375,24 +11442,27 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.contactInfo = _.flatten(
       _.map(EventFormData.contactPoint, function (contactInfo, type) {
         return _.contains(ContactInfoTypeEnum, type) ? _.map(contactInfo, function (contactInfoItem) {
-          return {type: type, value: contactInfoItem};
+          return {type: type, value: contactInfoItem, booking: false};
         }) : [];
       })
     );
 
+    // III-963 put booking items into the contactInfo array
+    if (EventFormData.bookingInfo.url) {
+      $scope.contactInfo.push({type: 'url', value: EventFormData.bookingInfo.url, booking: true});
+    }
+
+    if (EventFormData.bookingInfo.phone) {
+      $scope.contactInfo.push({type: 'phone', value: EventFormData.bookingInfo.phone, booking: true});
+    }
+
+    if (EventFormData.bookingInfo.email) {
+      $scope.contactInfo.push({type: 'email', value: EventFormData.bookingInfo.email, booking: true});
+    }
+
     // Set correct css class for contact info.
     if ($scope.contactInfo.length > 0) {
       $scope.contactInfoCssClass = 'state-complete';
-    }
-
-    // Set class to complete if we have booking info.
-    if (EventFormData.bookingInfo.url ||
-      EventFormData.bookingInfo.phone ||
-      EventFormData.bookingInfo.email ||
-      EventFormData.bookingInfo.availabilityStarts ||
-      EventFormData.bookingInfo.availabilityEnds
-    ) {
-      $scope.bookingInfoCssClass = 'state-complete';
     }
 
     // Set default facilities.
@@ -11405,7 +11475,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
         $scope.selectedFacilities = EventFormData.facilities;
         $scope.facilitiesInapplicable = false;
       }
-
     }
 
     if (EventFormData.priceInfo) {
@@ -15229,24 +15298,26 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
       });
 
       modal.result.then(function (name) {
-        var savedSearchPromise = savedSearchesService.createSavedSearch(name, scope.queryString);
-
-        savedSearchPromise.catch(function() {
-          var modalInstance = $uibModal.open(
-            {
-              templateUrl: 'templates/unexpected-error-modal.html',
-              controller: 'UnexpectedErrorModalController',
-              size: 'lg',
-              resolve: {
-                errorMessage: function() {
-                  return 'Het opslaan van de zoekopdracht is mislukt. Controleer de verbinding en probeer opnieuw.';
-                }
-              }
-            }
-          );
-        });
+        savedSearchesService
+          .createSavedSearch(name, scope.queryString)
+          .catch(displayErrorModal);
       });
     };
+  }
+
+  function displayErrorModal() {
+    $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'lg',
+        resolve: {
+          errorMessage: function() {
+            return 'Het opslaan van de zoekopdracht is mislukt. Controleer de verbinding en probeer opnieuw.';
+          }
+        }
+      }
+    );
   }
 }
 udbSaveSearch.$inject = ["savedSearchesService", "$uibModal"];
@@ -19800,47 +19871,73 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/reservation-modal.html',
-    "<div class=\"modal-content\">\n" +
-    "  <div class=\"modal-header\">\n" +
-    "    <button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
-    "    </button>\n" +
-    "    <h4 class=\"modal-title\">Reservatieperiode</h4>\n" +
-    "  </div>\n" +
-    "  <div class=\"modal-body\">\n" +
-    "    <div class=\"row\">\n" +
-    "      <div class=\"form-group col-md-6 col-sm-12\" ng-class=\"{'has-error' : showStartDateRequired }\">\n" +
-    "        <div class=\"add-date\">\n" +
-    "          <label>Reserveren van</label>\n" +
-    "          <div udb-datepicker\n" +
-    "               highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "               highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
-    "               ng-model=\"eventFormData.bookingInfo.availabilityStarts\"></div>\n" +
-    "          <span class=\"help-block\" ng-show=\"showStartDateRequired\">Gelieve een start datum te kiezen</span>\n" +
+  $templateCache.put('templates/reservation-period.html',
+    "<div class=\"col-sm-12\" ng-hide=\"haveBookingPeriod\">\n" +
+    "    <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"changeHaveBookingPeriod()\">\n" +
+    "        Reservatieperiode toevoegen\n" +
+    "    </a>\n" +
+    "</div>\n" +
+    "<div class=\"col-sm-12\" ng-show=\"haveBookingPeriod\">\n" +
+    "    <div class=\"booking-period\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-lg-11\">\n" +
+    "                <p><strong>Reservatie periode</strong></p>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-lg-1\">\n" +
+    "                <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
+    "                    <span aria-hidden=\"true\">&times;</span>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
     "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"form-group col-md-6 col-sm-12\" ng-class=\"{'has-error' : showEndDateRequired }\">\n" +
-    "        <div class=\"add-date\">\n" +
-    "          <label>Tot</label>\n" +
-    "          <div udb-datepicker\n" +
-    "               highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "               highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
-    "               ng-model=\"eventFormData.bookingInfo.availabilityEnds\"></div>\n" +
-    "          <span class=\"help-block\" ng-show=\"showEndDateRequired\">Gelieve een eind datum te kiezen</span>\n" +
+    "        <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
     "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
+    "        <form name=\"bookingPeriod\" class=\"booking-period\">\n" +
     "\n" +
-    "    <div class=\"alert alert-danger\" ng-if=\"errorMessage\" ng-bind=\"::errorMessage\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-lg-6\">\n" +
+    "                    <div class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\">Van</span>\n" +
+    "                        <input name=\"bookingStartDate\"\n" +
+    "                               class=\"form-control\"\n" +
+    "                               type=\"text\"\n" +
+    "                               uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "                               datepicker-options=\"dateOptions\"\n" +
+    "                               ng-model=\"availabilityStarts\"\n" +
+    "                               ng-change=\"validateBookingPeriod()\"\n" +
+    "                               is-open=\"popup1.opened\"\n" +
+    "                               show-button-bar=\"false\"\n" +
+    "                               ng-required=\"true\" />\n" +
+    "                        <span class=\"input-group-btn\">\n" +
+    "                            <button type=\"button\" class=\"btn btn-default\" ng-click=\"open1()\">\n" +
+    "                                <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n" +
+    "                            </button>\n" +
+    "                        </span>\n" +
+    "                    </div><!-- /input-group -->\n" +
+    "                </div><!-- /.col-lg-6 -->\n" +
+    "                <div class=\"col-lg-6\">\n" +
+    "                    <div class=\"input-group\">\n" +
+    "                        <span class=\"input-group-addon\">Tot</span>\n" +
+    "                        <input name=\"bookingEndDate\"\n" +
+    "                               type=\"text\"\n" +
+    "                               class=\"form-control\"\n" +
+    "                               type=\"text\"\n" +
+    "                               uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "                               datepicker-options=\"dateOptions\"\n" +
+    "                               ng-model=\"availabilityEnds\"\n" +
+    "                               ng-change=\"validateBookingPeriod()\"\n" +
+    "                               is-open=\"popup2.opened\"\n" +
+    "                               show-button-bar=\"false\"\n" +
+    "                               ng-required=\"true\" />\n" +
+    "                        <span class=\"input-group-btn\">\n" +
+    "                            <button type=\"button\" class=\"btn btn-default\" ng-click=\"open2()\">\n" +
+    "                                <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n" +
+    "                            </button>\n" +
+    "                          </span>\n" +
+    "                    </div><!-- /input-group -->\n" +
+    "                </div><!-- /.col-lg-6 -->\n" +
+    "            </div><!-- /.row -->\n" +
+    "        </form>\n" +
     "    </div>\n" +
-    "\n" +
-    "  </div>\n" +
-    "  <div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"save()\">\n" +
-    "      Bevestigen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
-    "    </button>\n" +
-    "  </div>\n" +
     "</div>"
   );
 
@@ -20316,7 +20413,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div class=\"help-block\">\n" +
     "          <p>\n" +
-    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kappelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kapelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
     "            <span ng-show=\"eventFormData.isPlace\">Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".</span>\n" +
     "            Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.\n" +
     "          </p>\n" +
@@ -20439,7 +20536,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<!--\n" +
     "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
     "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
-    "                \n" +
+    "\n" +
     "-->\n" +
     "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll>{{eventFormData.description.nl}}</textarea>\n" +
     "              </section>\n" +
@@ -20587,235 +20684,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <price-info price=\"price\"></price-info>\n" +
-    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
-    "\n" +
-    "        <form name=\"step5TicketsForm\" class=\"css-form\">\n" +
-    "          <div class=\"row extra-tickets-website\" ng-class=\"bookingInfoCssClass\">\n" +
-    "            <div class=\"extra-task state-incomplete\">\n" +
-    "              <div class=\"col-sm-3\">\n" +
-    "                <em class=\"extra-task-label\">Reservatie</em>\n" +
-    "                <span> </span>\n" +
-    "                <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingBookingInfo\"></i>\n" +
-    "              </div>\n" +
-    "              <div class=\"col-sm-8\">\n" +
-    "                <section class=\"state incomplete\">\n" +
-    "\n" +
-    "                  <div class=\"checkbox\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"checkbox\"\n" +
-    "                             class=\"reservatie-website-check reservatie-check\"\n" +
-    "                             ng-model=\"viaWebsite\"\n" +
-    "                             ng-click=\"toggleBookingType('website')\">\n" +
-    "                      Via website\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"reservatie-website-info reservatie-info\" ng-show=\"viaWebsite\">\n" +
-    "                    <div class=\"reservatie-info-stap1\" ng-show=\"editBookingUrl\">\n" +
-    "                      <div class=\"form-inline\">\n" +
-    "                        <label>URL voor reservaties</label><br>\n" +
-    "                        <div class=\"form-group\">\n" +
-    "                          <input type=\"text\"\n" +
-    "                                 class=\"form-control\"\n" +
-    "                                 ng-model-options=\"{ updateOn: 'blur' }\"\n" +
-    "                                 udb-http-prefix\n" +
-    "                                 name=\"url\"\n" +
-    "                                 ng-model=\"bookingModel.url\"\n" +
-    "                                 ng-required=\"viaWebsite\">\n" +
-    "                          <span class=\"help-block\" ng-show=\"bookingModel.urlRequired && !step5TicketsForm.url.$valid\">\n" +
-    "                            Gelieve een geldig formaat te gebruiken\n" +
-    "                          </span>\n" +
-    "                        </div>\n" +
-    "                        <a class=\"btn btn-primary reservatie-info-stap1-controleren\" ng-click=\"validateBookingType('website')\">\n" +
-    "                          Opslaan\n" +
-    "                        </a>\n" +
-    "                      </div>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"reservatie-info-stap2\" ng-hide=\"editBookingUrl\">\n" +
-    "                      <span>\n" +
-    "                        <span ng-bind=\"eventFormData.bookingInfo.url\"></span>\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"editBookingUrl = true\">Wijzigen</a>\n" +
-    "                      </span>\n" +
-    "                      <div class=\"weergave\">\n" +
-    "                        <p><small class=\"text-muted\">VOORBEELDWEERGAVE</small></p>\n" +
-    "                        <span>\n" +
-    "                          <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{bookingModel.url}}\"\n" +
-    "                             ng-bind=\"bookingModel.urlLabel\"></a>\n" +
-    "                          <a class=\"btn btn-link\" href=\"#\" ng-click=\"enableWebsitePreview()\" data-toggle=\"modal\"\n" +
-    "                             data-target=\"#extra-tickets-website-weergave\">Wijzigen</a>\n" +
-    "                        </span>\n" +
-    "                      </div>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                </section>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "          <div class=\"modal fade\" id=\"extra-tickets-website-weergave\" aria-hidden=\"true\" ng-show=\"websitePreviewEnabled\">\n" +
-    "            <div class=\"modal-dialog\">\n" +
-    "              <div class=\"modal-content\">\n" +
-    "                <div class=\"modal-header\">\n" +
-    "                  <button type=\"button\" class=\"close\" data-dismiss=\"modal\">\n" +
-    "                    <span aria-hidden=\"true\">×</span><span class=\"sr-only\">Close</span>\n" +
-    "                  </button>\n" +
-    "                  <h4 class=\"modal-title\">Weergave</h4>\n" +
-    "                </div>\n" +
-    "                <div class=\"modal-body\">\n" +
-    "                  <label>Kies een passend actie-label voor deze link</label>\n" +
-    "\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios1\"\n" +
-    "                             value=\"Koop tickets\" checked=\"\">\n" +
-    "                      Koop tickets\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios2\"\n" +
-    "                             value=\"Reserveer plaatsen\">\n" +
-    "                      Reserveer plaatsen\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios3\"\n" +
-    "                             value=\"Controleer beschikbaarheid\">\n" +
-    "                      Controleer beschikbaarheid\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label>\n" +
-    "                      <input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios4\"\n" +
-    "                             value=\"Schrijf je in\">\n" +
-    "                      Schrijf je in\n" +
-    "                    </label>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"radio\">\n" +
-    "                    <label><input type=\"radio\" ng-model=\"bookingModel.urlLabel\" name=\"optionsRadios\" id=\"optionsRadios5\"\n" +
-    "                                  value=\"Andere\">Andere</label>\n" +
-    "                    <input type=\"text\" class=\"form-control\" ng-show=\"bookingModel.urlLabel === 'Andere'\"\n" +
-    "                           ng-model=\"bookingModel.urlLabelCustom\">\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"modal-footer\">\n" +
-    "                  <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">\n" +
-    "                    Annuleren\n" +
-    "                  </button>\n" +
-    "                  <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
-    "                          data-target=\"#extra-tickets-website-weergave\" ng-click=\"saveWebsitePreview()\">\n" +
-    "                    Bevestigen\n" +
-    "                  </button>\n" +
-    "                </div>\n" +
-    "              </div><!-- /.modal-content -->\n" +
-    "            </div><!-- /.modal-dialog -->\n" +
-    "          </div>\n" +
-    "          <div class=\"row extra-tickets-telefoon\">\n" +
-    "            <div class=\"extra-task state-incomplete\">\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\">\n" +
-    "                <div class=\"checkbox\">\n" +
-    "                  <label>\n" +
-    "                    <input type=\"checkbox\" class=\"reservatie-telefoon-check reservatie-check\" ng-model=\"viaPhone\"\n" +
-    "                           ng-change=\"toggleBookingType('phone')\">\n" +
-    "                    Via telefoon\n" +
-    "                  </label>\n" +
-    "                </div>\n" +
-    "                <div class=\"reservatie-telefoon-info reservatie-info\" ng-show=\"viaPhone\">\n" +
-    "                  <div class=\"reservatie-telefoon-filling\" ng-show=\"editBookingPhone\">\n" +
-    "\n" +
-    "                    <label>Telefoonnummer voor reservaties</label><br>\n" +
-    "\n" +
-    "                    <div class=\"form-inline\">\n" +
-    "                      <input type=\"text\" class=\"form-control\" name=\"phone\" ng-model=\"bookingModel.phone\"\n" +
-    "                             ng-required=\"viaPhone\">\n" +
-    "                      <span class=\"help-block\"\n" +
-    "                            ng-show=\"bookingModel.phoneRequired && step5TicketsForm.phone.$error.required\">\n" +
-    "                        Gelieve een geldig formaat te gebruiken\n" +
-    "                      </span>\n" +
-    "                      <a class=\"btn btn-primary reservatie-telefoon-opslaan\" ng-click=\"validateBookingType('phone')\">\n" +
-    "                        Opslaan\n" +
-    "                      </a>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"reservatie-telefoon-complete\" ng-hide=\"editBookingPhone\">\n" +
-    "                    <span>\n" +
-    "                      <span ng-bind=\"bookingModel.phone\"></span>\n" +
-    "                      <a class=\"btn btn-link\" ng-click=\"editBookingPhone = true\">Wijzigen</a>\n" +
-    "                    </span>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "          <div class=\"row extra-tickets-email\">\n" +
-    "            <div class=\"extra-task state-incomplete\">\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\">\n" +
-    "                <div class=\"checkbox\">\n" +
-    "                  <label>\n" +
-    "                    <input type=\"checkbox\" class=\"reservatie-email-check reservatie-check\" ng-model=\"viaEmail\"\n" +
-    "                           ng-change=\"toggleBookingType('email')\">\n" +
-    "                    Via e-mail\n" +
-    "                  </label>\n" +
-    "                </div>\n" +
-    "                <div class=\"reservatie-email-info reservatie-info\" ng-show=\"viaEmail\">\n" +
-    "                  <div class=\"reservatie-email-filling\" ng-show=\"editBookingEmail\">\n" +
-    "                    <label>E-mailadres voor reservaties</label><br>\n" +
-    "\n" +
-    "                    <div class=\"form-inline\">\n" +
-    "                      <input type=\"email\"\n" +
-    "                             class=\"form-control\"\n" +
-    "                             name=\"email\"\n" +
-    "                             ng-model=\"bookingModel.email\"\n" +
-    "                             ng-required=\"viaEmail\">\n" +
-    "                      <span class=\"help-block\" ng-show=\"bookingModel.emailRequired && !step5TicketsForm.email.$valid\">\n" +
-    "                        Gelieve een geldig formaat te gebruiken\n" +
-    "                      </span>\n" +
-    "                      <a class=\"btn btn-primary reservatie-email-opslaan\" ng-click=\"validateBookingType('email')\">\n" +
-    "                        Opslaan\n" +
-    "                      </a>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"reservatie-email-complete\" ng-hide=\"editBookingEmail\">\n" +
-    "                    <span>\n" +
-    "                      <span ng-bind=\"bookingModel.email\"></span>\n" +
-    "                      <a class=\"btn btn-link\" ng-click=\"editBookingEmail = true\">Wijzigen</a>\n" +
-    "                    </span>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "          <div class=\"row extra-tickets-periode\">\n" +
-    "            <div class=\"extra-task\">\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\" ng-hide=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
-    "                <a class=\"reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
-    "                    Reservatieperiode toevoegen\n" +
-    "                </a>\n" +
-    "              </div>\n" +
-    "              <div class=\"col-sm-8 col-sm-offset-3\" ng-show=\"eventFormData.bookingInfo.availabilityStarts\">\n" +
-    "                <span>\n" +
-    "                  <span>Van </span>\n" +
-    "                  <span ng-bind=\"eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'\"></span>\n" +
-    "                  <span> tot </span>\n" +
-    "                  <span ng-bind=\"eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'\"></span>\n" +
-    "                  <a class=\"reservatie-periode-toevoegen\" href=\"#\" ng-click=\"openBookingPeriodModal()\">\n" +
-    "                      Reservatieperiode wijzigen\n" +
-    "                  </a>\n" +
-    "                </span>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "\n" +
-    "          <div class=\"alert alert-danger\" ng-show=\"bookingInfoError\">\n" +
-    "            Er ging iets fout bij het bewaren van de info.\n" +
-    "          </div>\n" +
-    "\n" +
-    "        </form>\n" +
-    "\n" +
     "        <div class=\"row extra-contact\">\n" +
     "          <div class=\"extra-task meer-info\" ng-class=\"contactInfoCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Meer info &amp; contact</em>\n" +
+    "              <em class=\"extra-task-label\">Contact &amp; reservatie</em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingContactInfo\"></i>\n" +
     "            </div>\n" +
@@ -20828,7 +20700,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </section>\n" +
     "\n" +
     "              <section class=\"state filling complete\">\n" +
-    "                <form name=\"contactInfoForm\">\n" +
+    "                <form name=\"contactInfoForm\" class=\"contact-info\">\n" +
     "                  <table class=\"table\">\n" +
     "                    <tr ng-repeat=\"(key, info) in contactInfo\"\n" +
     "                        ng-model=\"info\"\n" +
@@ -20836,32 +20708,62 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        ng-class=\"{'has-error' : infoErrorMessage !== '' }\"\n" +
     "                        ng-change=\"saveContactInfo()\">\n" +
     "                      <td>\n" +
-    "                        <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
+    "                        <select class=\"form-control\" ng-model=\"info.type\"\n" +
+    "                                ng-change=\"clearInfo(); removeBookingInfo('{{info.type}}')\">\n" +
     "                          <option value=\"url\">Website</option>\n" +
     "                          <option value=\"phone\">Telefoonnummer</option>\n" +
     "                          <option value=\"email\">E-mailadres</option>\n" +
     "                        </select>\n" +
     "                      </td>\n" +
-    "                      <td ng-switch=\"info.type\">\n" +
-    "                        <input type=\"text\"\n" +
-    "                               ng-switch-when=\"url\"\n" +
-    "                               udb-http-prefix\n" +
-    "                               class=\"form-control\"\n" +
-    "                               ng-model=\"info.value\"\n" +
-    "                               name=\"contact[{{key}}]\"\n" +
-    "                               ng-change=\"validateInfo(); saveContactInfo();\"\n" +
-    "                               ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                        <input type=\"text\"\n" +
-    "                               ng-switch-default\n" +
-    "                               class=\"form-control\"\n" +
-    "                               ng-model=\"info.value\"\n" +
-    "                               name=\"contact[{{key}}]\"\n" +
-    "                               ng-change=\"validateInfo(); saveContactInfo();\"\n" +
-    "                               ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                      <td>\n" +
+    "                        <ng-switch on=\"info.type\">\n" +
+    "                          <input type=\"text\"\n" +
+    "                                 ng-switch-when=\"url\"\n" +
+    "                                 udb-http-prefix\n" +
+    "                                 class=\"form-control\"\n" +
+    "                                 ng-model=\"info.value\"\n" +
+    "                                 name=\"contact[{{key}}]\"\n" +
+    "                                 ng-change=\"validateInfo(); saveContactInfo();\"\n" +
+    "                                 ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                          <input type=\"text\"\n" +
+    "                                 ng-switch-default\n" +
+    "                                 class=\"form-control\"\n" +
+    "                                 ng-model=\"info.value\"\n" +
+    "                                 name=\"contact[{{key}}]\"\n" +
+    "                                 ng-change=\"validateInfo(); saveContactInfo();\"\n" +
+    "                                 ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                        </ng-switch>\n" +
     "                        <span class=\"help-block\" ng-hide=\"infoErrorMessage === ''\" ng-bind=\"infoErrorMessage\"></span>\n" +
+    "                        <div class=\"booking-options\" ng-show=\"showBookingOption(info)\">\n" +
+    "                          <label>\n" +
+    "                            <input type=\"checkbox\"\n" +
+    "                                   class=\"reservatie-{{info.type}}-check reservatie-check\"\n" +
+    "                                   ng-model=\"info.booking\"\n" +
+    "                                   ng-click=\"toggleBookingType(info)\">\n" +
+    "                            Gebruik voor reservatie\n" +
+    "                          </label>\n" +
+    "                          <div class=\"reservatie-website-info reservatie-info\"\n" +
+    "                               ng-if=\"info.type === 'url' && info.booking\">\n" +
+    "                            <div class=\"reservatie-info-stap2\">\n" +
+    "                              <div class=\"weergave\">\n" +
+    "                                <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
+    "                                <select ng-model=\"bookingModel.urlLabel\"\n" +
+    "                                        ng-change=\"saveWebsitePreview()\">\n" +
+    "                                  <option value=\"Koop tickets\">Koop tickets</option>\n" +
+    "                                  <option value=\"Reserveer plaatsen\">Reserveer plaatsen</option>\n" +
+    "                                  <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
+    "                                  <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
+    "                                </select>\n" +
+    "                              </div>\n" +
+    "                            </div>\n" +
+    "                          </div>\n" +
+    "                        </div>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
-    "                        <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteContactInfo(key)\">\n" +
+    "                        <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteContactInfo(key)\">\n" +
+    "                          <span aria-hidden=\"true\">&times;</span>\n" +
+    "                        </button>\n" +
+    "                        <button ng-if=\"info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingInfo(info, key)\">\n" +
     "                          <span aria-hidden=\"true\">&times;</span>\n" +
     "                        </button>\n" +
     "                      </td>\n" +
@@ -20874,6 +20776,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </table>\n" +
     "                </form>\n" +
     "              </section>\n" +
+    "\n" +
+    "              <div class=\"row extra-tickets-periode\"\n" +
+    "                   ng-show=\"hasBookingInfo()\">\n" +
+    "                  <div class=\"extra-task\">\n" +
+    "                      <udb-reservation-period></udb-reservation-period>\n" +
+    "                  </div>\n" +
+    "              </div>\n" +
     "\n" +
     "              <div ng-show=\"contactInfoError\" class=\"alert alert-danger\">\n" +
     "                Er ging iets fout bij het opslaan van de contact info.\n" +
@@ -22206,22 +22115,22 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/save-search-modal.html',
     "<form name=\"saveQueryForm\" novalidate class=\"save-search-modal\">\n" +
-    "<div class=\"modal-body\">\n" +
+    "    <div class=\"modal-body\">\n" +
     "\n" +
-    "    <label>Geef je zoekopdracht een naam</label>\n" +
+    "        <label>Geef je zoekopdracht een naam</label>\n" +
     "\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-lg-12\">\n" +
-    "            <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
-    "            <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-lg-12\">\n" +
+    "                <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
+    "                <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>\n" +
     "\n" +
-    "<div class=\"modal-footer\">\n" +
-    "  <button class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "  <button class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>    \n" +
-    "</div>\n" +
+    "    <div class=\"modal-footer\">\n" +
+    "      <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "      <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>\n" +
+    "    </div>\n" +
     "</form>\n"
   );
 
