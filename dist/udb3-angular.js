@@ -20288,7 +20288,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div class=\"help-block\">\n" +
     "          <p>\n" +
-    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kappelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\">Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kapelletjes\", \"De Sage van de Eenhoorn\".</span>\n" +
     "            <span ng-show=\"eventFormData.isPlace\">Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".</span>\n" +
     "            Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.\n" +
     "          </p>\n" +
