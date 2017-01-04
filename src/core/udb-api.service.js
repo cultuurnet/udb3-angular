@@ -733,6 +733,18 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} itemLocation
+   * @param {('everyone'|'members'|'education')} audienceType
+   *
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.setAudienceType = function (itemLocation, audienceType) {
+    return $http
+      .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {object} response
    *  The response that is returned when creating a job.
    *
