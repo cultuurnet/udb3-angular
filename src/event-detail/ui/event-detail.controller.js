@@ -124,10 +124,6 @@ function EventDetail(
     return eventLocation.join(', ');
   };
 
-  $scope.eventLocationUrl = function (event) {
-    return event.location.url + '/preview';
-  };
-
   $scope.eventIds = function (event) {
     return _.union([event.id], event.sameAs);
   };
