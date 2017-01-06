@@ -174,6 +174,10 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
       this.uitpasData = {};
+
+      this.audience = {
+        audienceType: _.get(jsonEvent, 'audience.audienceType', 'everyone')
+      };
     },
 
     /**

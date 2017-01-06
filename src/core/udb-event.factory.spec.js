@@ -121,4 +121,8 @@ describe('Factory: UdbEvent', function () {
     expect(event.type).toEqual(expectedType);
     expect(event.theme).toEqual(expectedTheme);
   });
+
+  it('has a default audience/audienceType of everyone', function () {
+    expect(event.audience).toEqual({ audienceType: "everyone" });
+  });
 });
