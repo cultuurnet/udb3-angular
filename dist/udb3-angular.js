@@ -18749,7 +18749,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <ul class=\"list-unstyled\" >\n" +
     "            <li ng-if=\"::bookingInfo.url\">\n" +
     "                    <span>\n" +
-    "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{bookingInfo.url}}\"\n" +
+    "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{::bookingInfo.url}}\"\n" +
     "                         ng-bind=\"::bookingInfo.urlLabel\"></a>\n" +
     "                    </span>\n" +
     "            </li>\n" +
@@ -18771,20 +18771,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <ul class=\"list-unstyled\">\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"website in ::contactPoint.url\">\n" +
-    "                      <a ng-href=\"{{website}}\" target=\"_blank\" ng-bind=\"::website\"></a>\n" +
-    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                      <a ng-href=\"{{::website}}\" target=\"_blank\" ng-bind=\"::website\"></a>\n" +
+    "                      <span ng-if=\"::!$last\">of </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"phone in ::contactPoint.phone\">\n" +
     "                      <span ng-bind=\"::phone\"></span>\n" +
-    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                      <span ng-if=\"::!$last\">of </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"email in ::contactPoint.email\">\n" +
     "                      <span ng-bind=\"::email\"></span>\n" +
-    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                      <span ng-if=\"::!$last\">of </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "        </ul>\n" +
@@ -18903,8 +18903,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
-    "            <tbody udb-booking-info-detail=\"event.bookingInfo\"></tbody>\n" +
-    "            <tbody udb-contact-point-detail=\"event.contactPoint\"></tbody>\n" +
+    "            <tbody udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
+    "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
     "                <td>\n" +
@@ -22070,8 +22070,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  {{place.address.addressCountry}}</td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
-    "            <tbody udb-booking-info-detail=\"place.bookingInfo\"></tbody>\n" +
-    "            <tbody udb-contact-point-detail=\"place.contactPoint\"></tbody>\n" +
+    "            <tbody udb-booking-info-detail=\"::place.bookingInfo\"></tbody>\n" +
+    "            <tbody udb-contact-point-detail=\"::place.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
     "                <td>\n" +
