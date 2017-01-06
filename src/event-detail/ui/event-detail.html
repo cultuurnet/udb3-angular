@@ -105,54 +105,8 @@
                 Geen prijsinformatie
               </td>
             </tr>
-            <tr ng-class="{muted: !hasBookingInfoResults}">
-              <td>
-                <strong>Reservaties</strong>
-              </td>
-              <td ng-if="hasBookingInfoResults">
-                <ul class="list-unstyled" >
-                  <li ng-if="event.bookingInfo.url">
-                    <span>
-                      <a class="btn btn-info" target="_blank" ng-href="{{event.bookingInfo.url}}"
-                         ng-bind="event.bookingInfo.urlLabel"></a>
-                    </span>
-                  </li>
-                  <li ng-if="event.bookingInfo.phone">{{event.bookingInfo.phone}}</li>
-                  <li ng-if="event.bookingInfo.email">{{event.bookingInfo.email}}</li>
-                </ul>
-              </td>
-              <td ng-if="!hasBookingInfoResults"></td>
-            </tr>
-
-            <tr ng-class="{muted: !hasContactPointResults}">
-              <td>
-                <strong>Contact</strong>
-              </td>
-              <td ng-if="hasContactPointResults">
-                <ul class="list-unstyled">
-                  <li>
-                    <span ng-repeat="website in event.contactPoint.url">
-                      <a ng-href="{{website}}" target="_blank">{{website}}</a>
-                      <span ng-if="!$last">of </span>
-                    </span>
-                  </li>
-                  <li>
-                    <span ng-repeat="phone in event.contactPoint.phone">
-                      <span>{{phone}}</span>
-                      <span ng-if="!$last">of </span>
-                    </span>
-                  </li>
-                  <li>
-                    <span ng-repeat="email in event.contactPoint.email">
-                      <span>{{email}}</span>
-                      <span ng-if="!$last">of </span>
-                    </span>
-                  </li>
-                </ul>
-              </td>
-              <td ng-if="!hasContactPointResults"></td>
-            </tr>
-
+            <tbody udb-booking-info-detail="event.bookingInfo"></tbody>
+            <tbody udb-contact-point-detail="event.contactPoint"></tbody>
             <tr>
               <td>
                 <strong>Labels</strong>

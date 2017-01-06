@@ -6990,6 +6990,56 @@ function udbEventDetailDirective() {
   };
 }
 
+// Source: src/event-detail/ui/booking-info-detail.directive.js
+/**
+ * @ngdoc component
+ * @name udb.event-detail.component:BookingInfoDetail
+ * @description
+ * # udbBookingInfoDetail
+ */
+angular
+  .module('udb.event-detail')
+  .directive('udbBookingInfoDetail', function () {
+    return {
+      templateUrl: 'templates/booking-info-detail.directive.html',
+      controller: BookingInfoDetailController,
+      restrict: 'A',
+      scope: {
+        bookingInfo: '<udbBookingInfoDetail'
+      }
+    };
+  });
+
+function BookingInfoDetailController() {
+  this.isEmpty = _.isEmpty;
+}
+
+// Source: src/event-detail/ui/contact-point-detail.directive.js
+/**
+ * @ngdoc component
+ * @name udb.event-detail.component:ContactPointDetail
+ * @description
+ * # udbContactPointDetail
+ */
+angular
+  .module('udb.event-detail')
+  .directive('udbContactPointDetail', function () {
+    return {
+      templateUrl: 'templates/contact-point-detail.directive.html',
+      controller: ContactPointDetailController,
+      restrict: 'A',
+      scope: {
+        contactPoint: '<udbContactPointDetail'
+      }
+    };
+  });
+
+function ContactPointDetailController() {
+  this.isEmpty = function (contactPoint) {
+    return _(contactPoint).map().union().isEmpty();
+  };
+}
+
 // Source: src/event-detail/ui/event-detail.controller.js
 /**
  * @ngdoc function
@@ -7053,6 +7103,7 @@ function EventDetail(
   $scope.deleteEvent = function () {
     openEventDeleteConfirmModal($scope.event);
   };
+  $scope.isEmpty = _.isEmpty;
 
   function allowEditing() {
     $scope.hasEditPermissions = true;
@@ -7086,7 +7137,6 @@ function EventDetail(
         $scope.eventIsEditable = true;
       });
     hasContactPoint();
-    hasBookingInfo();
   }
 
   function failedToLoad(reason) {
@@ -7223,11 +7273,6 @@ function EventDetail(
     );
 
     $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
-  }
-
-  function hasBookingInfo() {
-    var bookingInfo = $scope.event.bookingInfo;
-    $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
   function translateWorkflowStatus(code) {
@@ -18695,6 +18740,60 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/booking-info-detail.directive.html',
+    "<tr ng-class=\"::{muted: isEmpty(bookingInfo)}\">\n" +
+    "    <td>\n" +
+    "        <strong>Reservaties</strong>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::!isEmpty(bookingInfo)\">\n" +
+    "        <ul class=\"list-unstyled\" >\n" +
+    "            <li ng-if=\"::bookingInfo.url\">\n" +
+    "                    <span>\n" +
+    "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{bookingInfo.url}}\"\n" +
+    "                         ng-bind=\"::bookingInfo.urlLabel\"></a>\n" +
+    "                    </span>\n" +
+    "            </li>\n" +
+    "            <li ng-if=\"::bookingInfo.phone\" ng-bind=\"::bookingInfo.phone\"></li>\n" +
+    "            <li ng-if=\"::bookingInfo.email\" ng-bind=\"::bookingInfo.email\"></li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::isEmpty(bookingInfo)\"></td>\n" +
+    "</tr>"
+  );
+
+
+  $templateCache.put('templates/contact-point-detail.directive.html',
+    "<tr ng-class=\"::{muted: isEmpty(contactPoint)}\">\n" +
+    "    <td>\n" +
+    "        <strong>Contact</strong>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::!isEmpty(contactPoint)\">\n" +
+    "        <ul class=\"list-unstyled\">\n" +
+    "            <li>\n" +
+    "                    <span ng-repeat=\"website in ::contactPoint.url\">\n" +
+    "                      <a ng-href=\"{{website}}\" target=\"_blank\" ng-bind=\"::website\"></a>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "            </li>\n" +
+    "            <li>\n" +
+    "                    <span ng-repeat=\"phone in ::contactPoint.phone\">\n" +
+    "                      <span ng-bind=\"::phone\"></span>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "            </li>\n" +
+    "            <li>\n" +
+    "                    <span ng-repeat=\"email in ::contactPoint.email\">\n" +
+    "                      <span ng-bind=\"::email\"></span>\n" +
+    "                      <span ng-if=\"!$last\">of </span>\n" +
+    "                    </span>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::isEmpty(contactPoint)\"></td>\n" +
+    "</tr>"
+  );
+
+
   $templateCache.put('templates/event-detail.html',
     "<div ng-if=\"eventIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
@@ -18803,54 +18902,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                Geen prijsinformatie\n" +
     "              </td>\n" +
     "            </tr>\n" +
-    "            <tr ng-class=\"{muted: !hasBookingInfoResults}\">\n" +
-    "              <td>\n" +
-    "                <strong>Reservaties</strong>\n" +
-    "              </td>\n" +
-    "              <td ng-if=\"hasBookingInfoResults\">\n" +
-    "                <ul class=\"list-unstyled\" >\n" +
-    "                  <li ng-if=\"event.bookingInfo.url\">\n" +
-    "                    <span>\n" +
-    "                      <a class=\"btn btn-info\" target=\"_blank\" ng-href=\"{{event.bookingInfo.url}}\"\n" +
-    "                         ng-bind=\"event.bookingInfo.urlLabel\"></a>\n" +
-    "                    </span>\n" +
-    "                  </li>\n" +
-    "                  <li ng-if=\"event.bookingInfo.phone\">{{event.bookingInfo.phone}}</li>\n" +
-    "                  <li ng-if=\"event.bookingInfo.email\">{{event.bookingInfo.email}}</li>\n" +
-    "                </ul>\n" +
-    "              </td>\n" +
-    "              <td ng-if=\"!hasBookingInfoResults\"></td>\n" +
-    "            </tr>\n" +
-    "\n" +
-    "            <tr ng-class=\"{muted: !hasContactPointResults}\">\n" +
-    "              <td>\n" +
-    "                <strong>Contact</strong>\n" +
-    "              </td>\n" +
-    "              <td ng-if=\"hasContactPointResults\">\n" +
-    "                <ul class=\"list-unstyled\">\n" +
-    "                  <li>\n" +
-    "                    <span ng-repeat=\"website in event.contactPoint.url\">\n" +
-    "                      <a ng-href=\"{{website}}\" target=\"_blank\">{{website}}</a>\n" +
-    "                      <span ng-if=\"!$last\">of </span>\n" +
-    "                    </span>\n" +
-    "                  </li>\n" +
-    "                  <li>\n" +
-    "                    <span ng-repeat=\"phone in event.contactPoint.phone\">\n" +
-    "                      <span>{{phone}}</span>\n" +
-    "                      <span ng-if=\"!$last\">of </span>\n" +
-    "                    </span>\n" +
-    "                  </li>\n" +
-    "                  <li>\n" +
-    "                    <span ng-repeat=\"email in event.contactPoint.email\">\n" +
-    "                      <span>{{email}}</span>\n" +
-    "                      <span ng-if=\"!$last\">of </span>\n" +
-    "                    </span>\n" +
-    "                  </li>\n" +
-    "                </ul>\n" +
-    "              </td>\n" +
-    "              <td ng-if=\"!hasContactPointResults\"></td>\n" +
-    "            </tr>\n" +
-    "\n" +
+    "            <tbody udb-booking-info-detail=\"event.bookingInfo\"></tbody>\n" +
+    "            <tbody udb-contact-point-detail=\"event.contactPoint\"></tbody>\n" +
     "            <tr>\n" +
     "              <td>\n" +
     "                <strong>Labels</strong>\n" +

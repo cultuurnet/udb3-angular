@@ -62,6 +62,7 @@ function EventDetail(
   $scope.deleteEvent = function () {
     openEventDeleteConfirmModal($scope.event);
   };
+  $scope.isEmpty = _.isEmpty;
 
   function allowEditing() {
     $scope.hasEditPermissions = true;
@@ -95,7 +96,6 @@ function EventDetail(
         $scope.eventIsEditable = true;
       });
     hasContactPoint();
-    hasBookingInfo();
   }
 
   function failedToLoad(reason) {
@@ -232,11 +232,6 @@ function EventDetail(
     );
 
     $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
-  }
-
-  function hasBookingInfo() {
-    var bookingInfo = $scope.event.bookingInfo;
-    $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
   function translateWorkflowStatus(code) {
