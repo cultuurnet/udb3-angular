@@ -19,6 +19,7 @@ angular
     };
   });
 
-function BookingInfoDetailController() {
-  this.isEmpty = _.isEmpty;
+/* @ngInject */
+function BookingInfoDetailController($scope) {
+  $scope.isEmpty = _.isEmpty;
 }

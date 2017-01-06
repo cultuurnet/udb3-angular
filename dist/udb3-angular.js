@@ -4074,7 +4074,11 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.mediaObject = jsonEvent.mediaObject || [];
       this.typicalAgeRange = jsonEvent.typicalAgeRange || '';
       this.bookingInfo = jsonEvent.bookingInfo || {};
-      this.contactPoint = jsonEvent.contactPoint || {};
+      this.contactPoint = jsonEvent.contactPoint || {
+        'url': [],
+        'phone': [],
+        'email': []
+      };
       this.url = 'event/' + this.id;
       this.sameAs = jsonEvent.sameAs;
       this.additionalData = jsonEvent.additionalData || {};
@@ -4585,7 +4589,11 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
-      this.contactPoint = jsonPlace.contactPoint || {};
+      this.contactPoint = jsonPlace.contactPoint || {
+        'url': [],
+        'phone': [],
+        'email': []
+      };
       if (jsonPlace.organizer) {
         // if it's a full organizer object, parse it as one
         if (jsonPlace.organizer['@id']) {
@@ -7010,9 +7018,11 @@ angular
     };
   });
 
-function BookingInfoDetailController() {
-  this.isEmpty = _.isEmpty;
+/* @ngInject */
+function BookingInfoDetailController($scope) {
+  $scope.isEmpty = _.isEmpty;
 }
+BookingInfoDetailController.$inject = ["$scope"];
 
 // Source: src/event-detail/ui/contact-point-detail.directive.js
 /**
@@ -7034,11 +7044,13 @@ angular
     };
   });
 
-function ContactPointDetailController() {
-  this.isEmpty = function (contactPoint) {
-    return _(contactPoint).map().union().isEmpty();
+/* @ngInject */
+function ContactPointDetailController($scope) {
+  $scope.isEmpty = function (contactPoint) {
+    return _(contactPoint).values().flatten().isEmpty();
   };
 }
+ContactPointDetailController.$inject = ["$scope"];
 
 // Source: src/event-detail/ui/event-detail.controller.js
 /**
@@ -7136,7 +7148,6 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
-    hasContactPoint();
   }
 
   function failedToLoad(reason) {
@@ -7262,17 +7273,6 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
-  }
-
-  function hasContactPoint() {
-    var nonEmptyContactTypes = _.filter(
-      $scope.event.contactPoint,
-      function(value) {
-        return value.length > 0;
-      }
-    );
-
-    $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
   }
 
   function translateWorkflowStatus(code) {
@@ -18757,7 +18757,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <li ng-if=\"::bookingInfo.email\" ng-bind=\"::bookingInfo.email\"></li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(bookingInfo)\"></td>\n" +
+    "    <td ng-if=\"::isEmpty(bookingInfo)\">Geen reservatie info</td>\n" +
     "</tr>"
   );
 
@@ -18789,7 +18789,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(contactPoint)\"></td>\n" +
+    "    <td ng-if=\"::isEmpty(contactPoint)\">Geen contactgegevens</td>\n" +
     "</tr>"
   );
 
@@ -18847,92 +18847,94 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
     "            <tbody>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Titel</strong></td>\n" +
-    "              <td>{{event.name}}</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Type</strong></td>\n" +
-    "              <td>{{event.type.label}}</td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Beschrijving</strong></td>\n" +
-    "              <td>\n" +
-    "                <div ng-bind-html=\"event.description\" class=\"event-detail-description\"></div>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Waar</strong></td>\n" +
-    "              <td ng-show=\"event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
-    "              <td ng-hide=\"event.location.url\">\n" +
-    "                {{event.location.name.nl}},\n" +
-    "                {{event.location.address.streetAddress}},\n" +
-    "                {{event.location.address.postalCode}}\n" +
-    "                {{event.location.address.addressLocality}}\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Wanneer</strong></td>\n" +
-    "              <td>\n" +
-    "                <udb-calendar-summary offer=\"event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr ng-class=\"{muted: !event.organizer}\">\n" +
-    "              <td><strong>Organisatie</strong></td>\n" +
-    "              <td>{{event.organizer.name}}</td>\n" +
-    "            </tr>\n" +
-    "            <tr class=\"rv-event-info-price\" ng-class=\"{muted: !event.priceInfo.length}\">\n" +
-    "              <td><strong>Prijs</strong></td>\n" +
-    "              <td ng-if=\"event.priceInfo.length\">\n" +
-    "                <table class=\"table event-detail-price-table\">\n" +
-    "                  <tr ng-repeat=\"priceInfo in event.priceInfo\">\n" +
-    "                    <td>{{priceInfo.name}}</td>\n" +
-    "                    <td>\n" +
-    "                      <span ng-if=\"priceInfo.price == 0\">\n" +
-    "                        Gratis\n" +
-    "                      </span>\n" +
-    "                      <span ng-if=\"priceInfo.price != 0\">\n" +
-    "                        {{priceInfo.price | currency}} euro\n" +
-    "                      </span>\n" +
-    "                    </td>\n" +
-    "                  </tr>\n" +
-    "                </table>\n" +
-    "              </td>\n" +
-    "              <td ng-if=\"!event.priceInfo.length\">\n" +
-    "                Geen prijsinformatie\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Titel</strong></td>\n" +
+    "                <td>{{event.name}}</td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Type</strong></td>\n" +
+    "                <td>{{event.type.label}}</td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Beschrijving</strong></td>\n" +
+    "                <td>\n" +
+    "                  <div ng-bind-html=\"event.description\" class=\"event-detail-description\"></div>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Waar</strong></td>\n" +
+    "                <td ng-show=\"event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
+    "                <td ng-hide=\"event.location.url\">\n" +
+    "                  {{event.location.name.nl}},\n" +
+    "                  {{event.location.address.streetAddress}},\n" +
+    "                  {{event.location.address.postalCode}}\n" +
+    "                  {{event.location.address.addressLocality}}\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Wanneer</strong></td>\n" +
+    "                <td>\n" +
+    "                  <udb-calendar-summary offer=\"event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr ng-class=\"{muted: !event.organizer}\">\n" +
+    "                <td><strong>Organisatie</strong></td>\n" +
+    "                <td>{{event.organizer.name}}</td>\n" +
+    "              </tr>\n" +
+    "              <tr class=\"rv-event-info-price\" ng-class=\"{muted: !event.priceInfo.length}\">\n" +
+    "                <td><strong>Prijs</strong></td>\n" +
+    "                <td ng-if=\"event.priceInfo.length\">\n" +
+    "                  <table class=\"table event-detail-price-table\">\n" +
+    "                    <tr ng-repeat=\"priceInfo in event.priceInfo\">\n" +
+    "                      <td>{{priceInfo.name}}</td>\n" +
+    "                      <td>\n" +
+    "                        <span ng-if=\"priceInfo.price == 0\">\n" +
+    "                          Gratis\n" +
+    "                        </span>\n" +
+    "                        <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                          {{priceInfo.price | currency}} euro\n" +
+    "                        </span>\n" +
+    "                      </td>\n" +
+    "                    </tr>\n" +
+    "                  </table>\n" +
+    "                </td>\n" +
+    "                <td ng-if=\"!event.priceInfo.length\">\n" +
+    "                  Geen prijsinformatie\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "            </tbody>\n" +
     "            <tbody udb-booking-info-detail=\"event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"event.contactPoint\"></tbody>\n" +
-    "            <tr>\n" +
-    "              <td>\n" +
-    "                <strong>Labels</strong>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                <udb-label-select labels=\"event.labels\"\n" +
-    "                                  label-added=\"labelAdded(label)\"\n" +
-    "                                  label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Geschikt voor</strong></td>\n" +
-    "              <td>\n" +
-    "                <span ng-if=\"event.typicalAgeRange\">{{event.typicalAgeRange}}</span>\n" +
-    "                <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr ng-class=\"::{muted: !event.image}\">\n" +
-    "              <td><strong>Afbeeldingen</strong></td>\n" +
-    "              <td>\n" +
-    "                <img ng-if=\"::event.image\" class=\"img-responsive\" ng-src=\"{{::event.image}}?width=400\" />\n" +
-    "                <p>\n" +
-    "                  <span ng-repeat=\"image in ::event.images\">\n" +
-    "                    <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
-    "                  </span>\n" +
-    "                  <span ng-if=\"::!event.image\">Geen afbeeldingen</span>\n" +
-    "                </p>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
+    "            <tbody>\n" +
+    "              <tr>\n" +
+    "                <td>\n" +
+    "                  <strong>Labels</strong>\n" +
+    "                </td>\n" +
+    "                <td>\n" +
+    "                  <udb-label-select labels=\"event.labels\"\n" +
+    "                                    label-added=\"labelAdded(label)\"\n" +
+    "                                    label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Geschikt voor</strong></td>\n" +
+    "                <td>\n" +
+    "                  <span ng-if=\"event.typicalAgeRange\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr ng-class=\"::{muted: !event.image}\">\n" +
+    "                <td><strong>Afbeeldingen</strong></td>\n" +
+    "                <td>\n" +
+    "                  <img ng-if=\"::event.image\" class=\"img-responsive\" ng-src=\"{{::event.image}}?width=400\" />\n" +
+    "                  <p>\n" +
+    "                    <span ng-repeat=\"image in ::event.images\">\n" +
+    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
+    "                    </span>\n" +
+    "                    <span ng-if=\"::!event.image\">Geen afbeeldingen</span>\n" +
+    "                  </p>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
@@ -22067,6 +22069,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  {{place.address.postalCode}} {{place.address.addressLocality}}<br />\n" +
     "                  {{place.address.addressCountry}}</td>\n" +
     "              </tr>\n" +
+    "            </tbody>\n" +
+    "            <tbody udb-booking-info-detail=\"place.bookingInfo\"></tbody>\n" +
+    "            <tbody udb-contact-point-detail=\"place.contactPoint\"></tbody>\n" +
+    "            <tbody>\n" +
     "              <tr>\n" +
     "                <td>\n" +
     "                  <strong>Labels</strong>\n" +

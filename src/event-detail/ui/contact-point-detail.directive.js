@@ -19,8 +19,9 @@ angular
     };
   });
 
-function ContactPointDetailController() {
-  this.isEmpty = function (contactPoint) {
-    return _(contactPoint).map().union().isEmpty();
+/* @ngInject */
+function ContactPointDetailController($scope) {
+  $scope.isEmpty = function (contactPoint) {
+    return _(contactPoint).values().flatten().isEmpty();
   };
 }
