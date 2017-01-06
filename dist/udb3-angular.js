@@ -18764,7 +18764,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </tr>\n" +
     "            <tr>\n" +
     "              <td><strong>Waar</strong></td>\n" +
-    "              <td ng-show=\"event.location.url\"><a href=\"{{event.location.url}}\">{{eventLocation(event)}}</a></td>\n" +
+    "              <td ng-show=\"event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "              <td ng-hide=\"event.location.url\">\n" +
     "                {{event.location.name.nl}},\n" +
     "                {{event.location.address.streetAddress}},\n" +
