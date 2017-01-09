@@ -20739,6 +20739,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
+    "        <price-info price=\"price\"></price-info>\n" +
+    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
+    "\n" +
     "        <div class=\"row extra-contact\">\n" +
     "          <div class=\"extra-task meer-info\" ng-class=\"contactInfoCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
