@@ -117,6 +117,8 @@ function EventFormDataFactory() {
        * @type {string[]}
        */
       this.labels = [];
+
+      this.audienceType = 'everyone';
     },
 
     /**

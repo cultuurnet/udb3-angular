@@ -68,7 +68,7 @@ function UdbApi(
   $q,
   $http,
   appConfig,
-  $cookieStore,
+  $cookies,
   uitidAuth,
   $cacheFactory,
   UdbEvent,
@@ -285,24 +285,6 @@ function UdbApi(
   };
 
   /**
-   * @returns {Promise} A list of labels wrapped as a promise.
-   */
-  this.getRecentLabels = function () {
-    var deferredLabels = $q.defer();
-    var request = $http.get(apiUrl + 'user/labels', defaultApiConfig);
-
-    request
-      .success(function (data) {
-        deferredLabels.resolve(data);
-      })
-      .error(function () {
-        deferredLabels.reject();
-      });
-
-    return deferredLabels.promise;
-  };
-
-  /**
    * @returns {Promise.<UiTIDUser>}
    *   A promise with the credentials of the currently logged in user.
    */
@@ -318,7 +300,7 @@ function UdbApi(
         givenName: userData.givenName
       };
 
-      $cookieStore.put('user', user);
+      $cookies.putObject('user', user);
       deferredUser.resolve(user);
     }
 
@@ -748,6 +730,18 @@ function UdbApi(
         defaultApiConfig
       )
       .then(returnJobData);
+  };
+
+  /**
+   * @param {URL} itemLocation
+   * @param {('everyone'|'members'|'education')} audienceType
+   *
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.setAudienceType = function (itemLocation, audienceType) {
+    return $http
+      .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**

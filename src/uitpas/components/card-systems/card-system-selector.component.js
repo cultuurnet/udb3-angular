@@ -47,18 +47,21 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
             }
           );
 
-          cardSystem.active = _.includes(offerData.labels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+          var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+
+          cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
 
           return cardSystem;
         });
 
-        var organisationLabels = _.intersection(_.values(UitpasLabels), _.pluck(organisation.labels, 'name'));
+        var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
+        var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
 
-        _.forEach(organisationLabels, function(organisationLabel) {
-          if (!_.find(availableCardSystems, {name: organisationLabel})) {
+        _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
+          if (!_.find(availableCardSystems, {name: organisationUitpasLabel})) {
             availableCardSystems.push({
-              name: organisationLabel,
-              active: true, //_.includes(offerData.labels, organisationLabel),
+              name: organisationUitpasLabel,
+              active: true,
               distributionKeys: []
             });
           }

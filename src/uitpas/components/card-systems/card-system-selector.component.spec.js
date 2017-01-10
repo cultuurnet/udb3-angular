@@ -26,14 +26,11 @@ describe('Component: Uitpas Info', function () {
     ],
     'url': [],
     'labels': [
-      {
-        name: 'green',
-        uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
-      },
-      {
-        name: 'UiTPAS',
-        uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
-      }
+        'green',
+        'UiTPAS'
+    ],
+    'hiddenLabels': [
+        'Paspartoe'
     ],
     'isUitpas': true
   };
@@ -131,6 +128,11 @@ describe('Component: Uitpas Info', function () {
         active: false
       },
       {
+        name: 'Paspartoe',
+        active: true,
+        distributionKeys: []
+      },
+      {
         name: 'UiTPAS',
         active: true,
         distributionKeys: []
@@ -173,6 +175,11 @@ describe('Component: Uitpas Info', function () {
         ],
         assignedDistributionKey: undefined,
         active: false
+      },
+      {
+        name: 'Paspartoe',
+        active: true,
+        distributionKeys: []
       },
       {
         name: 'UiTPAS',

@@ -57,6 +57,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
           address : location.address
         };
       }
+
+      EventFormData.audienceType = offer.audience.audienceType;
     }
 
     if (offerType === 'place') {

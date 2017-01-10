@@ -1,0 +1,54 @@
+<div class="row audience" ng-if="::fac.enabled">
+    <div class="extra-task state-complete">
+        <div class="col-sm-3">
+            <em class="extra-task-label">Toegang</em>
+        </div>
+        <div class="col-sm-8">
+            <div class="radio">
+                <label>
+                    <input ng-model="fac.audienceType"
+                           ng-change="fac.setAudienceType('everyone')"
+                           type="radio"
+                           name="audience-type"
+                           id="audience-everyone"
+                           value="everyone"
+                           checked>
+                    Voor iedereen
+                </label>
+            </div>
+
+            <div class="radio">
+                <label>
+                    <input ng-model="fac.audienceType"
+                           ng-change="fac.setAudienceType('members')"
+                           type="radio"
+                           name="audience-type"
+                           id="audience-members"
+                           value="members"
+                           aria-describedby="audience-members-help">
+                    Enkel voor leden
+                </label>
+            </div>
+            <span id="audience-members-help" class="help-block">
+                Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.
+            </span>
+
+            <div class="radio">
+                <label>
+                    <input ng-model="fac.audienceType"
+                           ng-change="fac.setAudienceType('education')"
+                           type="radio"
+                           name="audience-type"
+                           id="audience-education"
+                           value="education"
+                           aria-describedby="audience-education-help">
+                    Specifiek voor scholen
+                </label>
+            </div>
+            <span id="audience-education-help" class="help-block">
+                Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren
+                kan je nog specifieke informatie voor scholen toevoegen.
+            </span>
+        </div>
+    </div>
+</div>

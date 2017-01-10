@@ -28,18 +28,9 @@ describe('Organisation Suggestion Directive', function () {
     var organisation = {
       name: 'Heidevissers',
       labels: [
-        {
-          name: 'green',
-          uuid: '6befb6d0-aefe-42bb-8496-960e9ceec05f'
-        },
-        {
-          name: 'blue',
-          uuid: '33837f92-3ce7-45d5-9d5d-02cd69556aed'
-        },
-        {
-          name: 'UiTPAS',
-          uuid: '10e44536-44e2-4b42-98c8-b8dd86a6d60b'
-        }
+        'green',
+        'blue',
+        'UiTPAS'
       ],
       isUitpas: true
     };
@@ -52,14 +43,8 @@ describe('Organisation Suggestion Directive', function () {
     var organisationWithOtherLabels = {
       name: 'Heidevissers',
       labels: [
-        {
-          name: 'purple',
-          uuid: '252f5476-5442-4a2d-81ad-b1703fe8e88e'
-        },
-        {
-          name: 'orange',
-          uuid: '0beb5b08-7660-460e-be5c-c2636787c231'
-        }
+        'purple',
+        'orange'
       ],
       isUitpas: false
     };
@@ -84,10 +69,7 @@ describe('Organisation Suggestion Directive', function () {
     var organisation = {
       name: 'Heidevissers',
       labels: [
-        {
-          name: 'indigo',
-          uuid: '64410657-1125-41b4-b50d-7af2a156405a'
-        }
+        'indigo'
       ]
     };
 

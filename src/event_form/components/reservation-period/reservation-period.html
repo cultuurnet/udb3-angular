@@ -1,0 +1,67 @@
+<div class="col-sm-12" ng-hide="haveBookingPeriod">
+    <a class="btn btn-primary reservatie-periode-toevoegen" href="#" ng-click="changeHaveBookingPeriod()">
+        Reservatieperiode toevoegen
+    </a>
+</div>
+<div class="col-sm-12" ng-show="haveBookingPeriod">
+    <div class="booking-period">
+        <div class="row">
+            <div class="col-lg-11">
+                <p><strong>Reservatie periode</strong></p>
+            </div>
+            <div class="col-lg-1">
+                <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteBookingPeriod()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        <div class="alert alert-danger" ng-if="errorMessage" ng-bind="::errorMessage">
+        </div>
+        <form name="bookingPeriod" class="booking-period">
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">Van</span>
+                        <input name="bookingStartDate"
+                               class="form-control"
+                               type="text"
+                               uib-datepicker-popup="dd/MM/yyyy"
+                               datepicker-options="dateOptions"
+                               ng-model="availabilityStarts"
+                               ng-change="validateBookingPeriod()"
+                               is-open="popup1.opened"
+                               show-button-bar="false"
+                               ng-required="true" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open1()">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">Tot</span>
+                        <input name="bookingEndDate"
+                               type="text"
+                               class="form-control"
+                               type="text"
+                               uib-datepicker-popup="dd/MM/yyyy"
+                               datepicker-options="dateOptions"
+                               ng-model="availabilityEnds"
+                               ng-change="validateBookingPeriod()"
+                               is-open="popup2.opened"
+                               show-button-bar="false"
+                               ng-required="true" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open2()">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </button>
+                          </span>
+                    </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
+            </div><!-- /.row -->
+        </form>
+    </div>
+</div>

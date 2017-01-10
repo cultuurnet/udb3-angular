@@ -12,7 +12,7 @@ angular
   .controller('OfferLabelModalCtrl', OfferLabelModalCtrl);
 
 /* @ngInject */
-function OfferLabelModalCtrl($uibModalInstance, udbApi) {
+function OfferLabelModalCtrl($uibModalInstance) {
   var lmc = this;
   // ui-select can't get to this scope variable unless you reference it from the $parent scope.
   // seems to be 1.3 specific issue, see: https://github.com/angular-ui/ui-select/issues/243
@@ -20,18 +20,15 @@ function OfferLabelModalCtrl($uibModalInstance, udbApi) {
   lmc.close = close;
   lmc.ok = ok;
   lmc.labelNames = '';
+  /**
+   * This label-selection list used to contain labels that were last used by the user.
+   * The endpoint to get these labels has been removed so we can no longer fetch them.
+   * @see {@link https://jira.uitdatabank.be/browse/III-1708} for further information.
+   */
   lmc.labelSelection = [];
   lmc.alert = false;
   lmc.minimumInputLength = 2;
   lmc.maxInputLength = 255;
-
-  udbApi
-    .getRecentLabels()
-    .then(function (labels) {
-      lmc.labelSelection = _.map(labels, function (label) {
-        return {'name': label, 'selected': false};
-      });
-    });
 
   function ok() {
     // reset error msg
