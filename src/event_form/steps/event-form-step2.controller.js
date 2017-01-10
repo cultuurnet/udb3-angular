@@ -44,6 +44,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.validateOpeningHours = validateOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
   $scope.dateChosen = dateChosen;
+  $scope.isValidDate = isValidDate;
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -141,6 +142,10 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   function dateChosen(timestamp) {
     $scope.lastSelectedDate = timestamp;
     controller.eventTimingChanged();
+  }
+
+  function isValidDate(timestamp) {
+    return timestamp instanceof Date;
   }
 
   /**
