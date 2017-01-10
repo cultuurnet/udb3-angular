@@ -19217,7 +19217,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   required=\"required\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.startHourAsDate\"\n" +
-    "                   ng-change=\"hoursChanged(timestamp)\"\n" +
+    "                   ng-blur=\"hoursChanged(timestamp)\"\n" +
     "                   ng-model-options=\"{ debounce: 500 }\"\n" +
     "                   placeholder=\"Bv. 08:00\"\n" +
     "                   focus-if=\"timestamp.showStartHour\"/>\n" +
@@ -19238,7 +19238,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   required=\"required\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                   ng-change=\"hoursChanged(timestamp)\"\n" +
+    "                   ng-blur=\"hoursChanged(timestamp)\"\n" +
     "                   ng-model-options=\"{ debounce: 500 }\"\n" +
     "                   placeholder=\"Bv. 23:00\"\n" +
     "                   focus-if=\"timestamp.showEndHour\"/>\n" +
