@@ -5287,6 +5287,35 @@ function EventDuplicationStepController(EventFormData) {
 }
 EventDuplicationStepController.$inject = ["EventFormData"];
 
+// Source: src/duplication/event-migration-step.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.duplication.directive:udbEventMigrationStep
+ * @description
+ *  Shows the event migration step.
+ */
+angular
+  .module('udb.duplication')
+  .directive('udbEventMigrationStep', udbEventMigrationStep);
+
+/* @ngInject */
+function udbEventMigrationStep() {
+  return {
+    restrict: 'AE',
+    controller: EventMigrationStepController,
+    controllerAs: 'migration',
+    templateUrl: 'templates/event-migration-step.directive.html'
+  };
+}
+
+/* @ngInject */
+function EventMigrationStepController(eventMigration, EventFormData) {
+  var controller = this;
+
+  controller.required = !!eventMigration.checkRequirements(EventFormData).length;
+}
+EventMigrationStepController.$inject = ["eventMigration", "EventFormData"];
+
 // Source: src/entry/components/job-logo-states.constant.js
 /* jshint sub: true */
 
@@ -18667,7 +18696,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a class=\"btn btn-success\"\n" +
     "       ui-sref=\"split.eventEdit({id: duplication.eventId})\"\n" +
     "       role=\"button\"\n" +
-    "       ng-class=\"{disabled: !duplication.readyToEdit()}\">Duplicaat aanmaken</a>\n" +
+    "       ng-class=\"{disabled: !duplication.readyToEdit()}\">Kopiëren en aanpassen</a>\n" +
     "</div>"
   );
 
@@ -18684,18 +18713,25 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-duplication.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
-    "    <div class=\"alert alert-danger\" role=\"alert\">\n" +
-    "        <strong>Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.</strong><br>\n" +
-    "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <udb-event-form-step3></udb-event-form-step3>\n" +
+    "    <udb-event-migration-step></udb-event-migration-step>\n" +
     "\n" +
     "    <udb-event-duplication-step></udb-event-duplication-step>\n" +
     "\n" +
     "    <udb-event-duplication-footer></udb-event-duplication-footer>\n" +
     "</div>\n" +
     "\n"
+  );
+
+
+  $templateCache.put('templates/event-migration-step.directive.html',
+    "<div ng-if=\"::migration.required\">\n" +
+    "    <div class=\"alert alert-danger\" role=\"alert\">\n" +
+    "        <strong>Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.</strong><br>\n" +
+    "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <udb-event-form-step3></udb-event-form-step3>\n" +
+    "</div>"
   );
 
 
