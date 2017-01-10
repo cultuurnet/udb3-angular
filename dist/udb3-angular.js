@@ -1936,6 +1936,19 @@ angular
     'udb.event-form'
   ]);
 
+/**
+ * @ngdoc module
+ * @name udb.duplication
+ * @description
+ * # Duplication Module
+ */
+angular
+  .module('udb.duplication', [
+    'udb.core',
+    'udb.event-form',
+    'udb.migration'
+  ]);
+
 // Source: src/core/authorization-service.service.js
 /**
  * @ngdoc service
@@ -5217,6 +5230,62 @@ function udbDashboardDirective() {
     restrict: 'EA'
   };
 }
+
+// Source: src/duplication/event-duplication-footer.component.js
+/**
+ * @ngdoc function
+ * @name udb.duplication.component:udbEventDuplicationFooter
+ * @description
+ * # Event Duplication Footer
+ * Footer component for migrating events
+ */
+angular
+  .module('udb.duplication')
+  .component('udbEventDuplicationFooter', {
+    templateUrl: 'templates/event-duplication-footer.component.html',
+    controller: EventDuplicationFooterController,
+    controllerAs: 'duplication'
+  });
+
+/* @ngInject */
+function EventDuplicationFooterController(EventFormData) {
+  var controller = this;
+
+  controller.eventId = EventFormData.id;
+
+  controller.readyToEdit = function () {
+    return !!_.get(EventFormData, 'location.id');
+  };
+}
+EventDuplicationFooterController.$inject = ["EventFormData"];
+
+// Source: src/duplication/event-duplication-step.component.js
+/**
+ * @ngdoc function
+ * @name udb.duplication.component:udbEventDuplicationStep
+ * @description
+ * # Event Duplication Step
+ * Step component for migrating events
+ */
+angular
+  .module('udb.duplication')
+  .component('udbEventDuplicationStep', {
+    templateUrl: 'templates/event-duplication-step.component.html',
+    controller: EventDuplicationStepController,
+    controllerAs: 'duplication'
+  });
+
+/* @ngInject */
+function EventDuplicationStepController(EventFormData) {
+  var controller = this;
+
+  controller.eventId = EventFormData.id;
+
+  controller.readyToDuplicate = function () {
+    return false;
+  };
+}
+EventDuplicationStepController.$inject = ["EventFormData"];
 
 // Source: src/entry/components/job-logo-states.constant.js
 /* jshint sub: true */
@@ -18450,6 +18519,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </li>\n" +
     "      <li class=\"divider\"></li>\n" +
     "      <li role=\"menuitem\">\n" +
+    "        <a ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</a>\n" +
+    "      </li>\n" +
+    "      <li role=\"menuitem\">\n" +
     "        <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
     "      </li>\n" +
     "    </ul>\n" +
@@ -18587,6 +18659,43 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/event-duplication-footer.component.html',
+    "<div class=\"event-validation\">\n" +
+    "    <a class=\"btn btn-success\"\n" +
+    "       ui-sref=\"split.eventEdit({id: duplication.eventId})\"\n" +
+    "       role=\"button\"\n" +
+    "       ng-class=\"{disabled: !duplication.readyToEdit()}\">Duplicaat aanmaken</a>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/event-duplication-step.component.html',
+    "<div class=\"alert alert-info\" role=\"alert\">\n" +
+    "    <strong>Je staat op het punt een evenement te dupliceren.</strong><br>\n" +
+    "    Om overbodige data te vermijden, kies je een nieuwe kalender voor dit evenement.\n" +
+    "</div>\n" +
+    "\n" +
+    "<udb-event-form-step2></udb-event-form-step2>\n"
+  );
+
+
+  $templateCache.put('templates/event-duplication.html',
+    "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
+    "    <div class=\"alert alert-danger\" role=\"alert\">\n" +
+    "        <strong>Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.</strong><br>\n" +
+    "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <udb-event-form-step3></udb-event-form-step3>\n" +
+    "\n" +
+    "    <udb-event-duplication-step></udb-event-duplication-step>\n" +
+    "\n" +
+    "    <udb-event-duplication-footer></udb-event-duplication-footer>\n" +
+    "</div>\n" +
+    "\n"
   );
 
 
