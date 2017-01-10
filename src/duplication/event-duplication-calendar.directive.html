@@ -1,0 +1,42 @@
+<a name="wanneer"></a>
+<section id="wanneer">
+    <h2 class="title-border">
+        <span>Wanneer vindt dit evenement of deze activiteit plaats?</span>
+    </h2>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+
+                <label class="wanneerkiezer-label" ng-show="edc.eventFormData.activeCalendarType === ''">Maak een keuze</label>
+                <div class="wanneerkiezer" ng-show="edc.eventFormData.activeCalendarType === ''">
+                    <ul class="list-inline button-list">
+                        <li ng-repeat="calendarLabel in ::edc.calendarLabels">
+                            <button class="btn btn-default"
+                                    ng-bind="::calendarLabel.label"
+                                    udb-auto-scroll
+                                    ng-click="edc.eventFormData.setCalendarType(calendarLabel.id);"></button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="wanneer-chosen" ng-hide="edc.eventFormData.activeCalendarType === ''">
+        <span class="btn-chosen" ng-bind="edc.eventFormData.activeCalendarLabel">
+        </span><a class="btn btn-link wanneerrestore" href="#" ng-click="edc.eventFormData.resetCalendar()">Wijzigen</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="edc.eventFormData.activeCalendarType === 'single'">
+        <udb-event-form-timestamp></udb-event-form-timestamp>
+    </div>
+
+    <div class="row" ng-show="edc.eventFormData.activeCalendarType === 'periodic'">
+        <udb-event-form-period></udb-event-form-period>
+    </div>
+
+    <div class="row" ng-show="edc.eventFormData.activeCalendarType === 'permanent' || edc.eventFormData.activeCalendarType === 'periodic'">
+        <udb-event-form-opening-hours></udb-event-form-opening-hours>
+    </div>
+
+</section>

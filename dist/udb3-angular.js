@@ -5231,6 +5231,41 @@ function udbDashboardDirective() {
   };
 }
 
+// Source: src/duplication/event-duplication-calendar.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.duplication.directive:udbEventDuplicationCalendar
+ * @description
+ *  Shows the calendar when you try to create a duplicate event.
+ */
+angular
+  .module('udb.duplication')
+  .directive('udbEventDuplicationCalendar', udbEventDuplicationCalendar);
+
+/* @ngInject */
+function udbEventDuplicationCalendar() {
+  return {
+    restrict: 'AE',
+    controller: EventDuplicationCalendarController,
+    controllerAs: 'edc',
+    templateUrl: 'templates/event-duplication-calendar.directive.html'
+  };
+}
+
+/* @ngInject */
+function EventDuplicationCalendarController(EventFormData) {
+  var controller = this;
+
+  controller.calendarLabels = [
+    {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
+    {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
+    {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
+  ];
+
+  controller.eventFormData = _.cloneDeep(EventFormData);
+}
+EventDuplicationCalendarController.$inject = ["EventFormData"];
+
 // Source: src/duplication/event-duplication-footer.component.js
 /**
  * @ngdoc function
@@ -8918,6 +8953,17 @@ angular
 /* @ngInject */
 function EventFormDataFactory() {
 
+  // Mapping between machine name of days and real output.
+  var dayNames = {
+    monday : 'Maandag',
+    tuesday : 'Dinsdag',
+    wednesday : 'Woensdag',
+    thursday : 'Donderdag',
+    friday : 'Vrijdag',
+    saturday : 'Zaterdag',
+    sunday : 'Zondag'
+  };
+
   /**
    * @class EventFormData
    */
@@ -9299,6 +9345,78 @@ function EventFormDataFactory() {
       var endDate = this.getEndDate();
 
       return this.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
+    },
+
+    /**
+     * Init the calendar for the current selected calendar type.
+     */
+    initCalendar: function () {
+      var calendarLabels = [
+        {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
+        {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
+        {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
+      ];
+      var calendarType = _.findWhere(calendarLabels, {id: this.calendarType});
+
+      if (calendarType) {
+        this.activeCalendarLabel = calendarType.label;
+        this.activeCalendarType = this.calendarType;
+      }
+    },
+
+    resetCalender: function () {
+      this.activeCalendarType = '';
+      this.calendarType = '';
+    },
+
+    saveOpeningHourDaySelection: function (index, dayOfWeek) {
+      var humanValues = [];
+      if (dayOfWeek instanceof Array) {
+        for (var i in dayOfWeek) {
+          humanValues.push(dayNames[dayOfWeek[i]]);
+        }
+      }
+
+      this.openingHours[index].label = humanValues.join(', ');
+    },
+
+    /**
+     * Click listener on the calendar type buttons.
+     * Activate the selected calendar type.
+     */
+    setCalendarType: function (type) {
+      var formData = this;
+
+      formData.showStep(3);
+
+      // Check if previous calendar type was the same.
+      // If so, we don't need to create new opening hours. Just show the previous entered data.
+      if (formData.calendarType === type) {
+        return;
+      }
+
+      // A type is chosen, start a complete new calendar, removing old data
+      formData.resetCalendar();
+      formData.calendarType = type;
+
+      if (formData.calendarType === 'single') {
+        formData.addTimestamp('', '', '');
+      }
+
+      if (formData.calendarType === 'periodic') {
+        formData.addOpeningHour('', '', '');
+      }
+
+      if (formData.calendarType === 'permanent') {
+        formData.addOpeningHour('', '', '');
+      }
+
+      formData.initCalendar();
+
+      if (formData.id) {
+        formData.majorInfoChanged = true;
+      }
+
     }
 
   };
@@ -9445,6 +9563,16 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
     else if (item.calendarType === 'single') {
       addTimestamp(item.startDate, item.endDate);
+    }
+
+    if (EventFormData.calendarType) {
+      EventFormData.initCalendar();
+    }
+
+    if (!!EventFormData.openingHours.length) {
+      _.each(EventFormData.openingHours, function (openingHour) {
+        EventFormData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek);
+      });
     }
 
     $scope.loaded = true;
@@ -9957,7 +10085,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
-  $scope.hasOpeningHours = EventFormData.openingHours.length > 0;
   $scope.lastSelectedDate = '';
 
   // Scope functions
@@ -9971,65 +10098,12 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.eventTimingChanged = controller.eventTimingChanged;
   $scope.dateChosen = dateChosen;
 
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
-
-  // Set form default correct for the editing calendar type.
-  if (EventFormData.calendarType) {
-    initCalendar();
-  }
-
-  // Load the correct labels.
-  if ($scope.hasOpeningHours) {
-    initOpeningHours();
-  }
-
-  /**
-   * Click listener on the calendar type buttons.
-   * Activate the selected calendar type.
-   */
   function setCalendarType(type) {
-
-    EventFormData.showStep(3);
-
-    // Check if previous calendar type was the same.
-    // If so, we don't need to create new opening hours. Just show the previous entered data.
-    if (EventFormData.calendarType === type) {
-      return;
-    }
-
-    // A type is chosen, start a complete new calendar, removing old data
-    $scope.hasOpeningHours = false;
-    EventFormData.resetCalendar();
-    EventFormData.calendarType = type;
-
-    if (EventFormData.calendarType === 'single') {
-      addTimestamp();
-    }
-
-    if (EventFormData.calendarType === 'periodic') {
-      EventFormData.addOpeningHour('', '', '');
-    }
+    EventFormData.setCalendarType(type);
 
     if (EventFormData.calendarType === 'permanent') {
-      EventFormData.addOpeningHour('', '', '');
       controller.eventTimingChanged();
     }
-
-    initCalendar();
-
-    if (EventFormData.id) {
-      EventFormData.majorInfoChanged = true;
-    }
-
   }
 
   /**
@@ -10040,34 +10114,12 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     controller.eventTimingChanged();
   }
 
-  /**
-   * Init the calendar for the current selected calendar type.
-   */
-  function initCalendar() {
-
-    var calendarType = _.findWhere($scope.calendarLabels, {id: EventFormData.calendarType});
-
-    if (calendarType) {
-      EventFormData.activeCalendarLabel = calendarType.label;
-      EventFormData.activeCalendarType = EventFormData.calendarType;
-    }
+  function resetCalendar() {
+    EventFormData.resetCalendar();
   }
 
-  /**
-   * Init the opening hours.
-   */
-  function initOpeningHours() {
-    for (var i = 0; i < EventFormData.openingHours.length; i++) {
-      saveOpeningHourDaySelection(i, EventFormData.openingHours[i].dayOfWeek);
-    }
-  }
-
-  /**
-   * Click listener to reset the calendar. User can select a new calendar type.
-   */
-  function resetCalendar () {
-    EventFormData.activeCalendarType = '';
-    EventFormData.calendarType = '';
+  function saveOpeningHourDaySelection(index, dayOfWeek) {
+    EventFormData.saveOpeningHourDaySelection(index, dayOfWeek);
   }
 
   /**
@@ -10109,27 +10161,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   }
 
   /**
-   * Change listener on the day selection of opening hours.
-   * Create human labels for the day selection.
-   */
-  function saveOpeningHourDaySelection(index, dayOfWeek) {
-
-    var humanValues = [];
-    if (dayOfWeek instanceof Array) {
-      for (var i in dayOfWeek) {
-        humanValues.push(dayNames[dayOfWeek[i]]);
-      }
-    }
-
-    EventFormData.openingHours[index].label = humanValues.join(', ');
-
-  }
-
-  /**
    * Save the opening hours.
    */
   function saveOpeningHours() {
-    $scope.hasOpeningHours = true;
     controller.eventTimingChanged();
   }
 
@@ -18691,6 +18725,52 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-duplication-calendar.directive.html',
+    "<a name=\"wanneer\"></a>\n" +
+    "<section id=\"wanneer\">\n" +
+    "    <h2 class=\"title-border\">\n" +
+    "        <span>Wanneer vindt dit evenement of deze activiteit plaats?</span>\n" +
+    "    </h2>\n" +
+    "\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "\n" +
+    "                <label class=\"wanneerkiezer-label\" ng-show=\"edc.eventFormData.activeCalendarType === ''\">Maak een keuze</label>\n" +
+    "                <div class=\"wanneerkiezer\" ng-show=\"edc.eventFormData.activeCalendarType === ''\">\n" +
+    "                    <ul class=\"list-inline button-list\">\n" +
+    "                        <li ng-repeat=\"calendarLabel in ::edc.calendarLabels\">\n" +
+    "                            <button class=\"btn btn-default\"\n" +
+    "                                    ng-bind=\"::calendarLabel.label\"\n" +
+    "                                    udb-auto-scroll\n" +
+    "                                    ng-click=\"edc.eventFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
+    "                        </li>\n" +
+    "                    </ul>\n" +
+    "                </div>\n" +
+    "                <div class=\"wanneer-chosen\" ng-hide=\"edc.eventFormData.activeCalendarType === ''\">\n" +
+    "        <span class=\"btn-chosen\" ng-bind=\"edc.eventFormData.activeCalendarLabel\">\n" +
+    "        </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.eventFormData.resetCalendar()\">Wijzigen</a>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-show=\"edc.eventFormData.activeCalendarType === 'single'\">\n" +
+    "        <udb-event-form-timestamp></udb-event-form-timestamp>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-show=\"edc.eventFormData.activeCalendarType === 'periodic'\">\n" +
+    "        <udb-event-form-period></udb-event-form-period>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-show=\"edc.eventFormData.activeCalendarType === 'permanent' || edc.eventFormData.activeCalendarType === 'periodic'\">\n" +
+    "        <udb-event-form-opening-hours></udb-event-form-opening-hours>\n" +
+    "    </div>\n" +
+    "\n" +
+    "</section>\n"
+  );
+
+
   $templateCache.put('templates/event-duplication-footer.component.html',
     "<div class=\"event-validation\">\n" +
     "    <a class=\"btn btn-success\"\n" +
@@ -18704,10 +18784,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/event-duplication-step.component.html',
     "<div class=\"alert alert-info\" role=\"alert\">\n" +
     "    <strong>Je staat op het punt een evenement te dupliceren.</strong><br>\n" +
-    "    Om overbodige data te vermijden, kies je een nieuwe kalender voor dit evenement.\n" +
+    "    Om overlappende data te vermijden, kies je een nieuwe kalender voor dit evenement.\n" +
     "</div>\n" +
     "\n" +
-    "<udb-event-form-step2></udb-event-form-step2>\n"
+    "<udb-event-duplication-calendar></udb-event-duplication-calendar>\n"
   );
 
 
@@ -18718,8 +18798,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <udb-event-duplication-step></udb-event-duplication-step>\n" +
     "\n" +
     "    <udb-event-duplication-footer></udb-event-duplication-footer>\n" +
-    "</div>\n" +
-    "\n"
+    "</div>\n"
   );
 
 
@@ -19509,12 +19588,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"hasOpeningHours\">\n" +
+    "<div class=\"col-xs-12\" ng-hide=\"!!eventFormData.openingHours.length\">\n" +
     "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
     "     data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\">Openingsuren toevoegen</a>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"hasOpeningHours\">\n" +
+    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!eventFormData.openingHours.length\">\n" +
     "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
     "    <table class=\"table table-condensed \">\n" +
     "      <thead>\n" +
@@ -19563,7 +19642,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                      udb-multiselect\n" +
     "                      start-label=\"Kies dag(en)\"\n" +
     "                      ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                      ng-change=\"saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
+    "                      ng-change=\"eventFormData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
     "                <option value=\"monday\">maandag</option>\n" +
     "                <option value=\"tuesday\">dinsdag</option>\n" +
     "                <option value=\"wednesday\">woensdag</option>\n" +

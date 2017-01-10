@@ -44,6 +44,17 @@ angular
 /* @ngInject */
 function EventFormDataFactory() {
 
+  // Mapping between machine name of days and real output.
+  var dayNames = {
+    monday : 'Maandag',
+    tuesday : 'Dinsdag',
+    wednesday : 'Woensdag',
+    thursday : 'Donderdag',
+    friday : 'Vrijdag',
+    saturday : 'Zaterdag',
+    sunday : 'Zondag'
+  };
+
   /**
    * @class EventFormData
    */
@@ -425,6 +436,78 @@ function EventFormDataFactory() {
       var endDate = this.getEndDate();
 
       return this.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
+    },
+
+    /**
+     * Init the calendar for the current selected calendar type.
+     */
+    initCalendar: function () {
+      var calendarLabels = [
+        {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
+        {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
+        {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
+      ];
+      var calendarType = _.findWhere(calendarLabels, {id: this.calendarType});
+
+      if (calendarType) {
+        this.activeCalendarLabel = calendarType.label;
+        this.activeCalendarType = this.calendarType;
+      }
+    },
+
+    resetCalender: function () {
+      this.activeCalendarType = '';
+      this.calendarType = '';
+    },
+
+    saveOpeningHourDaySelection: function (index, dayOfWeek) {
+      var humanValues = [];
+      if (dayOfWeek instanceof Array) {
+        for (var i in dayOfWeek) {
+          humanValues.push(dayNames[dayOfWeek[i]]);
+        }
+      }
+
+      this.openingHours[index].label = humanValues.join(', ');
+    },
+
+    /**
+     * Click listener on the calendar type buttons.
+     * Activate the selected calendar type.
+     */
+    setCalendarType: function (type) {
+      var formData = this;
+
+      formData.showStep(3);
+
+      // Check if previous calendar type was the same.
+      // If so, we don't need to create new opening hours. Just show the previous entered data.
+      if (formData.calendarType === type) {
+        return;
+      }
+
+      // A type is chosen, start a complete new calendar, removing old data
+      formData.resetCalendar();
+      formData.calendarType = type;
+
+      if (formData.calendarType === 'single') {
+        formData.addTimestamp('', '', '');
+      }
+
+      if (formData.calendarType === 'periodic') {
+        formData.addOpeningHour('', '', '');
+      }
+
+      if (formData.calendarType === 'permanent') {
+        formData.addOpeningHour('', '', '');
+      }
+
+      formData.initCalendar();
+
+      if (formData.id) {
+        formData.majorInfoChanged = true;
+      }
+
     }
 
   };
