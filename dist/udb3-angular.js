@@ -7527,6 +7527,9 @@ function EventFormPeriodDirective() {
   return {
     templateUrl: 'templates/event-form-period.html',
     restrict: 'EA',
+    scope: {
+      formData: '='
+    }
   };
 }
 
@@ -9466,6 +9469,19 @@ function EventFormDataFactory(rx) {
         timestamp.endHour = '';
         this.timingChanged();
       }
+    },
+
+    periodicTimingChanged: function () {
+      var formData = this;
+
+      if (formData.id) {
+        if (formData.hasValidPeriodicRange()) {
+          formData.periodicRangeError = false;
+          formData.timingChanged();
+        } else {
+          formData.periodicRangeError = true;
+        }
+      }
     }
 
   };
@@ -10169,25 +10185,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
     console.log('event timing changed');
-  };
-
-  controller.periodicEventTimingChanged = function () {
-    if (EventFormData.id) {
-      if (EventFormData.hasValidPeriodicRange()) {
-        controller.clearPeriodicRangeError();
-        $rootScope.$emit('eventTimingChanged', EventFormData);
-      } else {
-        controller.displayPeriodicRangeError();
-      }
-    }
-  };
-
-  controller.displayPeriodicRangeError = function () {
-    controller.periodicRangeError = true;
-  };
-
-  controller.clearPeriodicRangeError = function () {
-    controller.periodicRangeError = false;
   };
 
   EventFormData
@@ -18759,7 +18756,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-period></udb-event-form-period>\n" +
+    "        <udb-event-form-period form-data=\"edc.duplicateFormData\"></udb-event-form-period>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
@@ -19282,8 +19279,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"form-group\">\n" +
     "        <p class=\"module-title\">Vanaf</p>\n" +
     "        <div udb-datepicker\n" +
-    "             ng-change=\"EventFormStep2.periodicEventTimingChanged()\"\n" +
-    "             ng-model=\"eventFormData.startDate\"></div>\n" +
+    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
+    "             ng-model=\"formData.startDate\"></div>\n" +
     "      </div>\n" +
     "    </section>\n" +
     "  </div>\n" +
@@ -19293,14 +19290,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"form-group\">\n" +
     "        <p class=\"module-title\">Tot en met</p>\n" +
     "        <div udb-datepicker\n" +
-    "             ng-change=\"EventFormStep2.periodicEventTimingChanged()\"\n" +
-    "             ng-model=\"eventFormData.endDate\"></div>\n" +
+    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
+    "             ng-model=\"formData.endDate\"></div>\n" +
     "      </div>\n" +
     "    </section>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-xs-12\">\n" +
-    "    <div ng-show=\"EventFormStep2.periodicRangeError\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "    <div ng-show=\"formData.periodicRangeError\" class=\"alert alert-warning\" role=\"alert\">\n" +
     "        Selecteer een geldige begin- en einddatum.\n" +
     "    </div>\n" +
     "  </div>\n" +

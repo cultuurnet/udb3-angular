@@ -541,6 +541,19 @@ function EventFormDataFactory(rx) {
         timestamp.endHour = '';
         this.timingChanged();
       }
+    },
+
+    periodicTimingChanged: function () {
+      var formData = this;
+
+      if (formData.id) {
+        if (formData.hasValidPeriodicRange()) {
+          formData.periodicRangeError = false;
+          formData.timingChanged();
+        } else {
+          formData.periodicRangeError = true;
+        }
+      }
     }
 
   };

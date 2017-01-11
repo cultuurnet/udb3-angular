@@ -33,7 +33,7 @@
     </div>
 
     <div class="row" ng-show="edc.duplicateFormData.activeCalendarType === 'periodic'">
-        <udb-event-form-period></udb-event-form-period>
+        <udb-event-form-period form-data="edc.duplicateFormData"></udb-event-form-period>
     </div>
 
     <div class="row" ng-show="edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'">
