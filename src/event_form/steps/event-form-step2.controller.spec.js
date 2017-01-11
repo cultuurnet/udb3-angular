@@ -26,7 +26,7 @@ describe('Controller: event form step 2', function () {
       showStartHour: false
     };
 
-    stepController.toggleStartHour(timestamp);
+    EventFormData.toggleStartHour(timestamp);
     expect(stepController.eventTimingChanged).toHaveBeenCalled();
   });
 
@@ -40,7 +40,7 @@ describe('Controller: event form step 2', function () {
       showStartHour: false
     };
 
-    stepController.toggleStartHour(timestamp);
+    EventFormData.toggleStartHour(timestamp);
     expect(stepController.eventTimingChanged).toHaveBeenCalled();
   });
 

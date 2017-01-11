@@ -12,42 +12,28 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-  $scope.calendarHighlight = appConfig.calendarHighlight;
 
   $scope.calendarLabels = [
     {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
     {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
-  $scope.lastSelectedDate = '';
 
   // Scope functions
   $scope.setCalendarType = setCalendarType;
   $scope.resetCalendar = resetCalendar;
-  $scope.addTimestamp = addTimestamp;
-  $scope.toggleStartHour = controller.toggleStartHour;
-  $scope.toggleEndHour = toggleEndHour;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
-  $scope.dateChosen = dateChosen;
 
   function setCalendarType(type) {
     EventFormData.setCalendarType(type);
-  }
-
-  /**
-   * Change listener to the datepicker. Last choice is stored.
-   */
-  function dateChosen(timestamp) {
-    $scope.lastSelectedDate = timestamp;
-    controller.eventTimingChanged();
   }
 
   function resetCalendar() {
@@ -56,44 +42,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   function saveOpeningHourDaySelection(index, dayOfWeek) {
     EventFormData.saveOpeningHourDaySelection(index, dayOfWeek);
-  }
-
-  /**
-   * Add a single date to the item.
-   */
-  function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
-  }
-
-  /**
-   * Toggle the starthour field for given timestamp.
-   * @param {Object} timestamp
-   *   Timestamp to change
-   */
-  controller.toggleStartHour = function (timestamp) {
-
-    // If we hide the textfield, empty all other time fields.
-    if (!timestamp.showStartHour) {
-      timestamp.startHour = '';
-      timestamp.endHour = '';
-      timestamp.showEndHour = false;
-      controller.eventTimingChanged();
-    }
-  };
-
-  /**
-   * Toggle the endhour field for given timestamp
-   * @param {Object} timestamp
-   *   Timestamp to change
-   */
-  function toggleEndHour(timestamp) {
-
-    // If we hide the textfield, empty also the input.
-    if (!timestamp.showEndHour) {
-      timestamp.endHour = '';
-      controller.eventTimingChanged();
-    }
-
   }
 
   /**

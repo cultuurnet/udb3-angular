@@ -2142,7 +2142,8 @@ function udbCalendarSummary() {
   .module('udb.core')
   .directive('udbDatepicker', udbDatepickerDirective);
 
-  function udbDatepickerDirective() {
+  /* @ngInject */
+  function udbDatepickerDirective(appConfig) {
 
     return {
       restrict: 'EA',
@@ -2167,10 +2168,11 @@ function udbCalendarSummary() {
 
         var lastSelectedYear;
         var lastSelectedMonth;
+        var selectedDate = ngModel.$viewValue;
 
-        if (scope.lastSelectedDate) {
-          lastSelectedYear = scope.lastSelectedDate.getFullYear();
-          lastSelectedMonth = scope.lastSelectedDate.getMonth();
+        if (selectedDate) {
+          lastSelectedYear = selectedDate.getFullYear();
+          lastSelectedMonth = selectedDate.getMonth();
         } else {
           var today = new Date();
           lastSelectedYear = today.getFullYear();
@@ -2182,17 +2184,19 @@ function udbCalendarSummary() {
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
-            if (!attrs.highlightDate) {
+            var highlightDate = _.get(appConfig, 'calendarHighlight.highlightDate');
+            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.highlightExtraClass');
+
+            if (!highlightDate) {
               return;
             }
 
             // init Date with ISO string
-            var highlightDate = new Date(attrs.highlightDate);
             if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
               var highlightClasses = 'highlight';
 
-              if (attrs.highlightExtraClass) {
-                highlightClasses += ' ' + attrs.highlightExtraClass;
+              if (highlightExtraClass) {
+                highlightClasses += ' ' + highlightExtraClass;
               }
 
               return {classes: highlightClasses};
@@ -2208,6 +2212,7 @@ function udbCalendarSummary() {
       }
     }
   }
+  udbDatepickerDirective.$inject = ["appConfig"];
 })();
 
 // Source: src/core/components/multiselect/multiselect.directive.js
@@ -7541,6 +7546,9 @@ function EventFormTimestampDirective() {
   return {
     templateUrl: 'templates/event-form-timestamp.html',
     restrict: 'EA',
+    scope: {
+      formData: '='
+    }
   };
 }
 
@@ -9430,6 +9438,34 @@ function EventFormDataFactory(rx) {
         formData.majorInfoChanged = true;
       }
 
+    },
+
+    /**
+     * Toggle the starthour field for given timestamp.
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleStartHour: function(timestamp) {
+      // If we hide the textfield, empty all other time fields.
+      if (!timestamp.showStartHour) {
+        timestamp.startHour = '';
+        timestamp.endHour = '';
+        timestamp.showEndHour = false;
+        this.timingChanged();
+      }
+    },
+
+    /**
+     * Toggle the endhour field for given timestamp
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleEndHour: function(timestamp) {
+      // If we hide the textfield, empty also the input.
+      if (!timestamp.showEndHour) {
+        timestamp.endHour = '';
+        this.timingChanged();
+      }
     }
 
   };
@@ -10086,42 +10122,28 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-  $scope.calendarHighlight = appConfig.calendarHighlight;
 
   $scope.calendarLabels = [
     {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
     {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
-  $scope.lastSelectedDate = '';
 
   // Scope functions
   $scope.setCalendarType = setCalendarType;
   $scope.resetCalendar = resetCalendar;
-  $scope.addTimestamp = addTimestamp;
-  $scope.toggleStartHour = controller.toggleStartHour;
-  $scope.toggleEndHour = toggleEndHour;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
   $scope.saveOpeningHours = saveOpeningHours;
   $scope.eventTimingChanged = controller.eventTimingChanged;
-  $scope.dateChosen = dateChosen;
 
   function setCalendarType(type) {
     EventFormData.setCalendarType(type);
-  }
-
-  /**
-   * Change listener to the datepicker. Last choice is stored.
-   */
-  function dateChosen(timestamp) {
-    $scope.lastSelectedDate = timestamp;
-    controller.eventTimingChanged();
   }
 
   function resetCalendar() {
@@ -10130,44 +10152,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   function saveOpeningHourDaySelection(index, dayOfWeek) {
     EventFormData.saveOpeningHourDaySelection(index, dayOfWeek);
-  }
-
-  /**
-   * Add a single date to the item.
-   */
-  function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
-  }
-
-  /**
-   * Toggle the starthour field for given timestamp.
-   * @param {Object} timestamp
-   *   Timestamp to change
-   */
-  controller.toggleStartHour = function (timestamp) {
-
-    // If we hide the textfield, empty all other time fields.
-    if (!timestamp.showStartHour) {
-      timestamp.startHour = '';
-      timestamp.endHour = '';
-      timestamp.showEndHour = false;
-      controller.eventTimingChanged();
-    }
-  };
-
-  /**
-   * Toggle the endhour field for given timestamp
-   * @param {Object} timestamp
-   *   Timestamp to change
-   */
-  function toggleEndHour(timestamp) {
-
-    // If we hide the textfield, empty also the input.
-    if (!timestamp.showEndHour) {
-      timestamp.endHour = '';
-      controller.eventTimingChanged();
-    }
-
   }
 
   /**
@@ -10210,7 +10194,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -18771,7 +18755,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'single'\">\n" +
-    "        <udb-event-form-timestamp></udb-event-form-timestamp>\n" +
+    "        <udb-event-form-timestamp form-data=\"edc.duplicateFormData\"></udb-event-form-timestamp>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
@@ -19298,8 +19282,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"form-group\">\n" +
     "        <p class=\"module-title\">Vanaf</p>\n" +
     "        <div udb-datepicker\n" +
-    "             highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "             highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
     "             ng-change=\"EventFormStep2.periodicEventTimingChanged()\"\n" +
     "             ng-model=\"eventFormData.startDate\"></div>\n" +
     "      </div>\n" +
@@ -19311,8 +19293,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"form-group\">\n" +
     "        <p class=\"module-title\">Tot en met</p>\n" +
     "        <div udb-datepicker\n" +
-    "             highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "             highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
     "             ng-change=\"EventFormStep2.periodicEventTimingChanged()\"\n" +
     "             ng-model=\"eventFormData.endDate\"></div>\n" +
     "      </div>\n" +
@@ -19329,22 +19309,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-form-timestamp.html',
-    "<div id=\"wanneer-dagen\" ng-repeat=\"timestamp in eventFormData.timestamps\">\n" +
+    "<div id=\"wanneer-dagen\" ng-repeat=\"timestamp in formData.timestamps\">\n" +
     "\n" +
     "  <div class=\"col-xs-12 col-sm-4 prototype-step\" id=\"add-date-form\">\n" +
     "    <section class=\"add-date\">\n" +
     "\n" +
     "      <div udb-datepicker\n" +
-    "           ng-change=\"dateChosen(timestamp.date)\"\n" +
-    "           highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "           highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
+    "           ng-change=\"formData.timingChanged()\"\n" +
     "           ng-model=\"timestamp.date\"></div>\n" +
     "\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-xs-6\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"EventFormStep2.toggleStartHour(timestamp)\"\n" +
+    "                   ng-change=\"formData.toggleStartHour(timestamp)\"\n" +
     "                   value=\"\"\n" +
     "                   ng-model=\"timestamp.showStartHour\"\n" +
     "                   class=\"beginuur-toevoegen\">\n" +
@@ -19356,7 +19334,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                ng-model=\"timestamp.startHour\"\n" +
     "                class=\"form-control uur\"\n" +
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
+    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 08:00\"\n" +
     "                focus-if=\"timestamp.showStartHour\">\n" +
@@ -19365,7 +19343,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"toggleEndHour(timestamp)\"\n" +
+    "                   ng-change=\"formData.toggleEndHour(timestamp)\"\n" +
     "                   value=\"\"\n" +
     "                   ng-model=\"timestamp.showEndHour\"\n" +
     "                   class=\"einduur-toevoegen\">\n" +
@@ -19377,7 +19355,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                ng-model=\"timestamp.endHour\"\n" +
     "                class=\"form-control uur\"\n" +
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
+    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
     "                focus-if=\"timestamp.showEndHour\">\n" +
@@ -19391,7 +19369,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div class=\"col-xs-12 col-sm-4\">\n" +
     "  <div class=\"add-date\">\n" +
-    "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
+    "    <a href=\"#\" class=\"add-date-link\" ng-click=\"formData.addTimestamp('','','')\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
     "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
     "      <p id=\"add-date-tip\" class=\"muted\">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>\n" +
@@ -20540,7 +20518,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'single'\">\n" +
-    "      <udb-event-form-timestamp></udb-event-form-timestamp>\n" +
+    "      <udb-event-form-timestamp form-data=\"eventFormData\"></udb-event-form-timestamp>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'periodic'\">\n" +

@@ -513,6 +513,34 @@ function EventFormDataFactory(rx) {
         formData.majorInfoChanged = true;
       }
 
+    },
+
+    /**
+     * Toggle the starthour field for given timestamp.
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleStartHour: function(timestamp) {
+      // If we hide the textfield, empty all other time fields.
+      if (!timestamp.showStartHour) {
+        timestamp.startHour = '';
+        timestamp.endHour = '';
+        timestamp.showEndHour = false;
+        this.timingChanged();
+      }
+    },
+
+    /**
+     * Toggle the endhour field for given timestamp
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleEndHour: function(timestamp) {
+      // If we hide the textfield, empty also the input.
+      if (!timestamp.showEndHour) {
+        timestamp.endHour = '';
+        this.timingChanged();
+      }
     }
 
   };
