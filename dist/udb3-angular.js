@@ -5297,24 +5297,32 @@ angular
   });
 
 /* @ngInject */
-function EventDuplicationFooterController($rootScope) {
+function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
   var controller = this;
-  var duplicator = {
-    duplicate: function() {
-      console.log(controller.readyForDuplication);
-    }
-  };
 
   controller.readyForDuplication = false;
-  controller.duplicate = duplicator.duplicate;
+  controller.duplicate = function () {
+    if (!controller.readyForDuplication) { return; }
 
-  function duplicateTimingChanged(formData) {
+    eventDuplicator
+      .duplicate(controller.readyForDuplication)
+      .then(showDuplicate);
+  };
+
+  /**
+   * @param {string} duplicateId
+   */
+  function showDuplicate(duplicateId) {
+    $state.go('split.footer.event', {id: duplicateId});
+  }
+
+  function duplicateTimingChanged(angularEvent, formData) {
     controller.readyForDuplication = formData;
   }
 
   $rootScope.$on('duplicateTimingChanged', duplicateTimingChanged);
 }
-EventDuplicationFooterController.$inject = ["$rootScope"];
+EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state"];
 
 // Source: src/duplication/event-duplication-step.component.js
 /**
@@ -5343,6 +5351,31 @@ function EventDuplicationStepController(EventFormData) {
   };
 }
 EventDuplicationStepController.$inject = ["EventFormData"];
+
+// Source: src/duplication/event-duplicator.service.js
+/**
+ * @ngdoc service
+ * @name udb.duplication.eventDuplicator
+ * @description
+ * Event Duplicator Service
+ */
+angular
+  .module('udb.duplication')
+  .service('eventDuplicator', EventDuplicatorService);
+
+/* @ngInject */
+function EventDuplicatorService($q) {
+  /**
+   * Duplicate an event using form date with the new timing info
+   * @param {EventFormData} formData
+   * @return {Promise.<string>} id
+   *  promise the id of the duplicates
+   */
+  this.duplicate = function(formData) {
+    return $q.resolve(formData.id);
+  };
+}
+EventDuplicatorService.$inject = ["$q"];
 
 // Source: src/duplication/event-migration-step.directive.js
 /**
@@ -18763,7 +18796,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button class=\"btn btn-success\"\n" +
     "            ng-click=\"duplication.duplicate()\"\n" +
     "            role=\"button\"\n" +
-    "            ng-class=\"{disabled: !duplication.readyForDuplication()}\">Kopiëren en aanpassen</button>\n" +
+    "            ng-class=\"{disabled: !duplication.readyForDuplication}\">Kopiëren en aanpassen</button>\n" +
     "</div>"
   );
 

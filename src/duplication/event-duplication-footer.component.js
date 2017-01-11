@@ -16,18 +16,26 @@ angular
   });
 
 /* @ngInject */
-function EventDuplicationFooterController($rootScope) {
+function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
   var controller = this;
-  var duplicator = {
-    duplicate: function() {
-      console.log(controller.readyForDuplication);
-    }
-  };
 
   controller.readyForDuplication = false;
-  controller.duplicate = duplicator.duplicate;
+  controller.duplicate = function () {
+    if (!controller.readyForDuplication) { return; }
 
-  function duplicateTimingChanged(formData) {
+    eventDuplicator
+      .duplicate(controller.readyForDuplication)
+      .then(showDuplicate);
+  };
+
+  /**
+   * @param {string} duplicateId
+   */
+  function showDuplicate(duplicateId) {
+    $state.go('split.footer.event', {id: duplicateId});
+  }
+
+  function duplicateTimingChanged(angularEvent, formData) {
     controller.readyForDuplication = formData;
   }
 
