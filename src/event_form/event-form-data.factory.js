@@ -42,7 +42,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory() {
+function EventFormDataFactory(rx) {
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -442,17 +442,21 @@ function EventFormDataFactory() {
      * Init the calendar for the current selected calendar type.
      */
     initCalendar: function () {
+      var formData = this;
+
       var calendarLabels = [
         {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
         {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
         {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
       ];
-      var calendarType = _.findWhere(calendarLabels, {id: this.calendarType});
+      var calendarType = _.findWhere(calendarLabels, {id: formData.calendarType});
 
       if (calendarType) {
         this.activeCalendarLabel = calendarType.label;
-        this.activeCalendarType = this.calendarType;
+        this.activeCalendarType = formData.calendarType;
       }
+
+      this.timingChanged$ = rx.createObservableFunction(formData, 'timingChanged');
     },
 
     resetCalender: function () {
@@ -500,6 +504,7 @@ function EventFormDataFactory() {
 
       if (formData.calendarType === 'permanent') {
         formData.addOpeningHour('', '', '');
+        formData.timingChanged();
       }
 
       formData.initCalendar();

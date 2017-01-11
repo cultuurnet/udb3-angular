@@ -30,5 +30,12 @@ function EventDuplicationCalendarController(EventFormData) {
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
 
-  controller.eventFormData = _.cloneDeep(EventFormData);
+  controller.duplicateFormData = _.cloneDeep(EventFormData);
+  controller.duplicateFormData.initCalendar();
+
+  controller.duplicateFormData
+    .timingChanged$
+    .subscribe(function () {
+      console.log('duplicate timing changed');
+    });
 }

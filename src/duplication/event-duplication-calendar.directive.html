@@ -7,36 +7,36 @@
         <div class="col-xs-12">
             <div class="form-group">
 
-                <label class="wanneerkiezer-label" ng-show="edc.eventFormData.activeCalendarType === ''">
+                <label class="wanneerkiezer-label" ng-show="edc.duplicateFormData.activeCalendarType === ''">
                     Maak een keuze
                 </label>
-                <div class="wanneerkiezer" ng-show="edc.eventFormData.activeCalendarType === ''">
+                <div class="wanneerkiezer" ng-show="edc.duplicateFormData.activeCalendarType === ''">
                     <ul class="list-inline button-list">
                         <li ng-repeat="calendarLabel in ::edc.calendarLabels">
                             <button class="btn btn-default"
                                     ng-bind="::calendarLabel.label"
                                     udb-auto-scroll
-                                    ng-click="edc.eventFormData.setCalendarType(calendarLabel.id);"></button>
+                                    ng-click="edc.duplicateFormData.setCalendarType(calendarLabel.id);"></button>
                         </li>
                     </ul>
                 </div>
-                <div class="wanneer-chosen" ng-hide="edc.eventFormData.activeCalendarType === ''">
-                    <span class="btn-chosen" ng-bind="edc.eventFormData.activeCalendarLabel"></span>
-                    <a class="btn btn-link wanneerrestore" href="#" ng-click="edc.eventFormData.resetCalendar()">Wijzigen</a>
+                <div class="wanneer-chosen" ng-hide="edc.duplicateFormData.activeCalendarType === ''">
+                    <span class="btn-chosen" ng-bind="edc.duplicateFormData.activeCalendarLabel"></span>
+                    <a class="btn btn-link wanneerrestore" href="#" ng-click="edc.duplicateFormData.resetCalendar()">Wijzigen</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row" ng-show="edc.eventFormData.activeCalendarType === 'single'">
+    <div class="row" ng-show="edc.duplicateFormData.activeCalendarType === 'single'">
         <udb-event-form-timestamp></udb-event-form-timestamp>
     </div>
 
-    <div class="row" ng-show="edc.eventFormData.activeCalendarType === 'periodic'">
+    <div class="row" ng-show="edc.duplicateFormData.activeCalendarType === 'periodic'">
         <udb-event-form-period></udb-event-form-period>
     </div>
 
-    <div class="row" ng-show="edc.eventFormData.activeCalendarType === 'permanent' || edc.eventFormData.activeCalendarType === 'periodic'">
+    <div class="row" ng-show="edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'">
         <udb-event-form-opening-hours></udb-event-form-opening-hours>
     </div>
 

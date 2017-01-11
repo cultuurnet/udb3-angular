@@ -5262,7 +5262,14 @@ function EventDuplicationCalendarController(EventFormData) {
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
 
-  controller.eventFormData = _.cloneDeep(EventFormData);
+  controller.duplicateFormData = _.cloneDeep(EventFormData);
+  controller.duplicateFormData.initCalendar();
+
+  controller.duplicateFormData
+    .timingChanged$
+    .subscribe(function () {
+      console.log('duplicate timing changed');
+    });
 }
 EventDuplicationCalendarController.$inject = ["EventFormData"];
 
@@ -5594,8 +5601,9 @@ function EventCrud(
    * @param {EventFormData} formData
    */
   function pickMajorInfoFromFormData(formData) {
-    return _.pick(formData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
+    return _.pick(formData, function(property, name) {
+      var isStream = name.charAt(name.length - 1) === '$';
+      return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
   }
 
@@ -8951,7 +8959,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory() {
+function EventFormDataFactory(rx) {
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9351,17 +9359,21 @@ function EventFormDataFactory() {
      * Init the calendar for the current selected calendar type.
      */
     initCalendar: function () {
+      var formData = this;
+
       var calendarLabels = [
         {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
         {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
         {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
       ];
-      var calendarType = _.findWhere(calendarLabels, {id: this.calendarType});
+      var calendarType = _.findWhere(calendarLabels, {id: formData.calendarType});
 
       if (calendarType) {
         this.activeCalendarLabel = calendarType.label;
-        this.activeCalendarType = this.calendarType;
+        this.activeCalendarType = formData.calendarType;
       }
+
+      this.timingChanged$ = rx.createObservableFunction(formData, 'timingChanged');
     },
 
     resetCalender: function () {
@@ -9409,6 +9421,7 @@ function EventFormDataFactory() {
 
       if (formData.calendarType === 'permanent') {
         formData.addOpeningHour('', '', '');
+        formData.timingChanged();
       }
 
       formData.initCalendar();
@@ -9426,6 +9439,7 @@ function EventFormDataFactory() {
 
   return eventFormData;
 }
+EventFormDataFactory.$inject = ["rx"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -10100,10 +10114,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   function setCalendarType(type) {
     EventFormData.setCalendarType(type);
-
-    if (EventFormData.calendarType === 'permanent') {
-      controller.eventTimingChanged();
-    }
   }
 
   /**
@@ -10174,6 +10184,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     if (EventFormData.id) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
+    console.log('event timing changed');
   };
 
   controller.periodicEventTimingChanged = function () {
@@ -10195,6 +10206,9 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     controller.periodicRangeError = false;
   };
 
+  EventFormData
+    .timingChanged$
+    .subscribe(controller.eventTimingChanged);
 }
 EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig"];
 
@@ -18735,34 +18749,36 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-xs-12\">\n" +
     "            <div class=\"form-group\">\n" +
     "\n" +
-    "                <label class=\"wanneerkiezer-label\" ng-show=\"edc.eventFormData.activeCalendarType === ''\">Maak een keuze</label>\n" +
-    "                <div class=\"wanneerkiezer\" ng-show=\"edc.eventFormData.activeCalendarType === ''\">\n" +
+    "                <label class=\"wanneerkiezer-label\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
+    "                    Maak een keuze\n" +
+    "                </label>\n" +
+    "                <div class=\"wanneerkiezer\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
     "                    <ul class=\"list-inline button-list\">\n" +
     "                        <li ng-repeat=\"calendarLabel in ::edc.calendarLabels\">\n" +
     "                            <button class=\"btn btn-default\"\n" +
     "                                    ng-bind=\"::calendarLabel.label\"\n" +
     "                                    udb-auto-scroll\n" +
-    "                                    ng-click=\"edc.eventFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
+    "                                    ng-click=\"edc.duplicateFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
     "                        </li>\n" +
     "                    </ul>\n" +
     "                </div>\n" +
-    "                <div class=\"wanneer-chosen\" ng-hide=\"edc.eventFormData.activeCalendarType === ''\">\n" +
-    "                    <span class=\"btn-chosen\" ng-bind=\"edc.eventFormData.activeCalendarLabel\"></span>\n" +
-    "                    <a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.eventFormData.resetCalendar()\">Wijzigen</a>\n" +
+    "                <div class=\"wanneer-chosen\" ng-hide=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
+    "                    <span class=\"btn-chosen\" ng-bind=\"edc.duplicateFormData.activeCalendarLabel\"></span>\n" +
+    "                    <a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.duplicateFormData.resetCalendar()\">Wijzigen</a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"row\" ng-show=\"edc.eventFormData.activeCalendarType === 'single'\">\n" +
+    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'single'\">\n" +
     "        <udb-event-form-timestamp></udb-event-form-timestamp>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"row\" ng-show=\"edc.eventFormData.activeCalendarType === 'periodic'\">\n" +
+    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
     "        <udb-event-form-period></udb-event-form-period>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"row\" ng-show=\"edc.eventFormData.activeCalendarType === 'permanent' || edc.eventFormData.activeCalendarType === 'periodic'\">\n" +
+    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
     "        <udb-event-form-opening-hours></udb-event-form-opening-hours>\n" +
     "    </div>\n" +
     "\n" +

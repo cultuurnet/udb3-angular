@@ -40,10 +40,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
   function setCalendarType(type) {
     EventFormData.setCalendarType(type);
-
-    if (EventFormData.calendarType === 'permanent') {
-      controller.eventTimingChanged();
-    }
   }
 
   /**
@@ -114,6 +110,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     if (EventFormData.id) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
+    console.log('event timing changed');
   };
 
   controller.periodicEventTimingChanged = function () {
@@ -135,4 +132,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     controller.periodicRangeError = false;
   };
 
+  EventFormData
+    .timingChanged$
+    .subscribe(controller.eventTimingChanged);
 }
