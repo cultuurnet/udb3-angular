@@ -30,7 +30,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   var AgeRangeEnum = Object.freeze({
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
-    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
+    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 0, max: 12},
     'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
     'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19}
   });
@@ -759,9 +759,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
           minAge = EventFormData.typicalAgeRange;
         }
 
-        if (minAge) {
+        if (typeof minAge === 'number') {
           $scope.minAge = minAge;
-
           if (maxAge) {
             $scope.ageRange = _.findWhere(AgeRangeEnum, {max: maxAge});
           }
@@ -773,9 +772,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
           }
         }
       }
-
-      if (!$scope.ageRange) {
-        $scope.minAge = 1;
+      else {
+        $scope.minAge = 0;
         $scope.ageRange = AgeRangeEnum.ALL;
       }
     }
