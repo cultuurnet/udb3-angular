@@ -169,7 +169,7 @@ describe('Factory: Event form data', function () {
         .timingChanged$
         .subscribe(done);
 
-      EventFormData.toggleStartHour(timestamp);
+      EventFormData.toggleEndHour(timestamp);
     })();
   });
 
@@ -184,4 +184,14 @@ describe('Factory: Event form data', function () {
       EventFormData.setCalendarType('permanent');
     })();
   });
+
+  it('should reset both activeCalendarType and calendarType when resetting the calendar', inject(function (EventFormData) {
+    EventFormData.calendarType = 'periodic';
+    EventFormData.activeCalendarType = 'periodic';
+    EventFormData.initCalendar();
+    EventFormData.resetCalendar();
+
+    expect(EventFormData.calendarType).toEqual('');
+    expect(EventFormData.activeCalendarType).toEqual('');
+  }));
 });

@@ -7923,6 +7923,9 @@ function EventFormOpeningHoursDirective() {
   return {
     templateUrl: 'templates/event-form-openinghours.html',
     restrict: 'E',
+    scope: {
+      formData: '='
+    }
   };
 }
 
@@ -10150,32 +10153,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData) {
     {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
-
-  // Scope functions
-  $scope.setCalendarType = setCalendarType;
-  $scope.resetCalendar = resetCalendar;
-  $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
-  $scope.saveOpeningHours = saveOpeningHours;
-  $scope.eventTimingChanged = controller.eventTimingChanged;
-
-  function setCalendarType(type) {
-    EventFormData.setCalendarType(type);
-  }
-
-  function resetCalendar() {
-    EventFormData.resetCalendar();
-  }
-
-  function saveOpeningHourDaySelection(index, dayOfWeek) {
-    EventFormData.saveOpeningHourDaySelection(index, dayOfWeek);
-  }
-
-  /**
-   * Save the opening hours.
-   */
-  function saveOpeningHours() {
-    controller.eventTimingChanged();
-  }
 
   /**
    * Mark the major info as changed.
@@ -18760,7 +18737,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-opening-hours></udb-event-form-opening-hours>\n" +
+    "        <udb-event-form-opening-hours form-data=\"edc.duplicateFormData\"></udb-event-form-opening-hours>\n" +
     "    </div>\n" +
     "\n" +
     "</section>\n"
@@ -19578,12 +19555,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"!!eventFormData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12\" ng-hide=\"!!formData.openingHours.length\">\n" +
     "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
     "     data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\">Openingsuren toevoegen</a>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!eventFormData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!formData.openingHours.length\">\n" +
     "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
     "    <table class=\"table table-condensed \">\n" +
     "      <thead>\n" +
@@ -19595,7 +19572,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
-    "        <tr ng-repeat=\"openingHour in eventFormData.openingHours\">\n" +
+    "        <tr ng-repeat=\"openingHour in formData.openingHours\">\n" +
     "          <td ng-bind=\"openingHour.label\"></td>\n" +
     "          <td>\n" +
     "            <span ng-bind=\"openingHour.opens\"></span> – <span ng-bind=\"openingHour.closes\"></span>\n" +
@@ -19625,14 +19602,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </tr>\n" +
     "          </thead>\n" +
     "\n" +
-    "          <tr ng-repeat=\"(i, openingHour) in eventFormData.openingHours\">\n" +
+    "          <tr ng-repeat=\"(i, openingHour) in formData.openingHours\">\n" +
     "            <td>\n" +
     "              <select class=\"selectpicker\"\n" +
     "                      multiple\n" +
     "                      udb-multiselect\n" +
     "                      start-label=\"Kies dag(en)\"\n" +
     "                      ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                      ng-change=\"eventFormData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
+    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
     "                <option value=\"monday\">maandag</option>\n" +
     "                <option value=\"tuesday\">dinsdag</option>\n" +
     "                <option value=\"wednesday\">woensdag</option>\n" +
@@ -19660,20 +19637,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-editable=\"false\">\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"eventFormData.removeOpeningHour(i)\">\n" +
+    "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
     "                <span aria-hidden=\"true\">&times;</span>\n" +
     "              </button>\n" +
     "            </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"eventFormData.addOpeningHour('', '' , '')\">\n" +
+    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '')\">\n" +
     "          Meer openingstijden toevoegen\n" +
     "        </a>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
     "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\" data-dismiss=\"modal\"\n" +
-    "                ng-click=\"saveOpeningHours()\">\n" +
+    "                ng-click=\"formData.timingChanged()\">\n" +
     "          Toevoegen\n" +
     "        </button>\n" +
     "      </div>\n" +
@@ -20502,13 +20479,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        class=\"btn btn-default\"\n" +
     "                        ng-bind=\"::calendarLabel.label\"\n" +
     "                        udb-auto-scroll\n" +
-    "                        ng-click=\"setCalendarType(calendarLabel.id);\"></button>\n" +
+    "                        ng-click=\"eventFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
     "              </li>\n" +
     "            </ul>\n" +
     "          </div>\n" +
     "          <div class=\"wanneer-chosen\" ng-hide=\"eventFormData.activeCalendarType === ''\">\n" +
     "            <span class=\"btn-chosen\" ng-bind=\"eventFormData.activeCalendarLabel\">\n" +
-    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"resetCalendar()\">Wijzigen</a>\n" +
+    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"eventFormData.resetCalendar()\">Wijzigen</a>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -20519,11 +20496,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-period></udb-event-form-period>\n" +
+    "      <udb-event-form-period form-data=\"eventFormData\"></udb-event-form-period>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'permanent' || eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-opening-hours></udb-event-form-opening-hours>\n" +
+    "      <udb-event-form-opening-hours form-data=\"eventFormData\"></udb-event-form-opening-hours>\n" +
     "    </div>\n" +
     "\n" +
     "  </section>\n" +

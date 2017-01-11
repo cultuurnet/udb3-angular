@@ -25,32 +25,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData) {
     {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
   ];
 
-  // Scope functions
-  $scope.setCalendarType = setCalendarType;
-  $scope.resetCalendar = resetCalendar;
-  $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
-  $scope.saveOpeningHours = saveOpeningHours;
-  $scope.eventTimingChanged = controller.eventTimingChanged;
-
-  function setCalendarType(type) {
-    EventFormData.setCalendarType(type);
-  }
-
-  function resetCalendar() {
-    EventFormData.resetCalendar();
-  }
-
-  function saveOpeningHourDaySelection(index, dayOfWeek) {
-    EventFormData.saveOpeningHourDaySelection(index, dayOfWeek);
-  }
-
-  /**
-   * Save the opening hours.
-   */
-  function saveOpeningHours() {
-    controller.eventTimingChanged();
-  }
-
   /**
    * Mark the major info as changed.
    */
