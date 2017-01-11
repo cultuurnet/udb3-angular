@@ -21,7 +21,7 @@ function udbEventDuplicationCalendar() {
 }
 
 /* @ngInject */
-function EventDuplicationCalendarController(EventFormData) {
+function EventDuplicationCalendarController(EventFormData, $rootScope) {
   var controller = this;
 
   controller.calendarLabels = [
@@ -33,9 +33,11 @@ function EventDuplicationCalendarController(EventFormData) {
   controller.duplicateFormData = _.cloneDeep(EventFormData);
   controller.duplicateFormData.initCalendar();
 
+  controller.duplicateTimingChanged = function (formData) {
+    $rootScope.$emit('duplicateTimingChanged', formData);
+  };
+
   controller.duplicateFormData
     .timingChanged$
-    .subscribe(function () {
-      console.log('duplicate timing changed');
-    });
+    .subscribe(controller.duplicateTimingChanged);
 }

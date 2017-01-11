@@ -456,7 +456,11 @@ function EventFormDataFactory(rx) {
         this.activeCalendarType = formData.calendarType;
       }
 
-      this.timingChanged$ = rx.createObservableFunction(formData, 'timingChanged');
+      this.timingChanged$ = rx.createObservableFunction(formData, 'timingChangedCallback');
+    },
+
+    timingChanged: function () {
+      this.timingChangedCallback(this);
     },
 
     resetCalender: function () {

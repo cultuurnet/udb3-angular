@@ -1,6 +1,6 @@
 <div class="event-validation">
-    <a class="btn btn-success"
-       ui-sref="split.eventEdit({id: duplication.eventId})"
-       role="button"
-       ng-class="{disabled: !duplication.readyToEdit()}">Kopiëren en aanpassen</a>
+    <button class="btn btn-success"
+            ng-click="duplication.duplicate()"
+            role="button"
+            ng-class="{disabled: !duplication.readyForDuplication()}">Kopiëren en aanpassen</button>
 </div>

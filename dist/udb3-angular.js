@@ -5258,7 +5258,7 @@ function udbEventDuplicationCalendar() {
 }
 
 /* @ngInject */
-function EventDuplicationCalendarController(EventFormData) {
+function EventDuplicationCalendarController(EventFormData, $rootScope) {
   var controller = this;
 
   controller.calendarLabels = [
@@ -5270,13 +5270,15 @@ function EventDuplicationCalendarController(EventFormData) {
   controller.duplicateFormData = _.cloneDeep(EventFormData);
   controller.duplicateFormData.initCalendar();
 
+  controller.duplicateTimingChanged = function (formData) {
+    $rootScope.$emit('duplicateTimingChanged', formData);
+  };
+
   controller.duplicateFormData
     .timingChanged$
-    .subscribe(function () {
-      console.log('duplicate timing changed');
-    });
+    .subscribe(controller.duplicateTimingChanged);
 }
-EventDuplicationCalendarController.$inject = ["EventFormData"];
+EventDuplicationCalendarController.$inject = ["EventFormData", "$rootScope"];
 
 // Source: src/duplication/event-duplication-footer.component.js
 /**
@@ -5295,16 +5297,24 @@ angular
   });
 
 /* @ngInject */
-function EventDuplicationFooterController(EventFormData) {
+function EventDuplicationFooterController($rootScope) {
   var controller = this;
-
-  controller.eventId = EventFormData.id;
-
-  controller.readyToEdit = function () {
-    return !!_.get(EventFormData, 'location.id');
+  var duplicator = {
+    duplicate: function() {
+      console.log(controller.readyForDuplication);
+    }
   };
+
+  controller.readyForDuplication = false;
+  controller.duplicate = duplicator.duplicate;
+
+  function duplicateTimingChanged(formData) {
+    controller.readyForDuplication = formData;
+  }
+
+  $rootScope.$on('duplicateTimingChanged', duplicateTimingChanged);
 }
-EventDuplicationFooterController.$inject = ["EventFormData"];
+EventDuplicationFooterController.$inject = ["$rootScope"];
 
 // Source: src/duplication/event-duplication-step.component.js
 /**
@@ -9387,7 +9397,11 @@ function EventFormDataFactory(rx) {
         this.activeCalendarType = formData.calendarType;
       }
 
-      this.timingChanged$ = rx.createObservableFunction(formData, 'timingChanged');
+      this.timingChanged$ = rx.createObservableFunction(formData, 'timingChangedCallback');
+    },
+
+    timingChanged: function () {
+      this.timingChangedCallback(this);
     },
 
     resetCalender: function () {
@@ -18746,10 +18760,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-duplication-footer.component.html',
     "<div class=\"event-validation\">\n" +
-    "    <a class=\"btn btn-success\"\n" +
-    "       ui-sref=\"split.eventEdit({id: duplication.eventId})\"\n" +
-    "       role=\"button\"\n" +
-    "       ng-class=\"{disabled: !duplication.readyToEdit()}\">Kopiëren en aanpassen</a>\n" +
+    "    <button class=\"btn btn-success\"\n" +
+    "            ng-click=\"duplication.duplicate()\"\n" +
+    "            role=\"button\"\n" +
+    "            ng-class=\"{disabled: !duplication.readyForDuplication()}\">Kopiëren en aanpassen</button>\n" +
     "</div>"
   );
 

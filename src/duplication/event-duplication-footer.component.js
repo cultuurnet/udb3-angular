@@ -16,12 +16,20 @@ angular
   });
 
 /* @ngInject */
-function EventDuplicationFooterController(EventFormData) {
+function EventDuplicationFooterController($rootScope) {
   var controller = this;
-
-  controller.eventId = EventFormData.id;
-
-  controller.readyToEdit = function () {
-    return !!_.get(EventFormData, 'location.id');
+  var duplicator = {
+    duplicate: function() {
+      console.log(controller.readyForDuplication);
+    }
   };
+
+  controller.readyForDuplication = false;
+  controller.duplicate = duplicator.duplicate;
+
+  function duplicateTimingChanged(formData) {
+    controller.readyForDuplication = formData;
+  }
+
+  $rootScope.$on('duplicateTimingChanged', duplicateTimingChanged);
 }
