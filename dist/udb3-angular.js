@@ -18726,7 +18726,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-duplication-calendar.directive.html',
-    "<a name=\"wanneer\"></a>\n" +
     "<section id=\"wanneer\">\n" +
     "    <h2 class=\"title-border\">\n" +
     "        <span>Wanneer vindt dit evenement of deze activiteit plaats?</span>\n" +
@@ -18748,8 +18747,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </ul>\n" +
     "                </div>\n" +
     "                <div class=\"wanneer-chosen\" ng-hide=\"edc.eventFormData.activeCalendarType === ''\">\n" +
-    "        <span class=\"btn-chosen\" ng-bind=\"edc.eventFormData.activeCalendarLabel\">\n" +
-    "        </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.eventFormData.resetCalendar()\">Wijzigen</a>\n" +
+    "                    <span class=\"btn-chosen\" ng-bind=\"edc.eventFormData.activeCalendarLabel\"></span>\n" +
+    "                    <a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.eventFormData.resetCalendar()\">Wijzigen</a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
