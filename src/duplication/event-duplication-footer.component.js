@@ -23,9 +23,10 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
   controller.duplicate = function () {
     if (!controller.readyForDuplication) { return; }
 
+    showAsyncDuplication();
     eventDuplicator
       .duplicate(controller.readyForDuplication)
-      .then(showDuplicate);
+      .then(showDuplicate, showAsyncError);
   };
 
   /**
@@ -33,6 +34,16 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
    */
   function showDuplicate(duplicateId) {
     $state.go('split.footer.event', {id: duplicateId});
+  }
+
+  function showAsyncError() {
+    controller.asyncError = true;
+    controller.duplicating = false;
+  }
+
+  function showAsyncDuplication() {
+    controller.asyncError = false;
+    controller.duplicating = true;
   }
 
   function duplicateTimingChanged(angularEvent, formData) {

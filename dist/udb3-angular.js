@@ -5315,9 +5315,10 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
   controller.duplicate = function () {
     if (!controller.readyForDuplication) { return; }
 
+    showAsyncDuplication();
     eventDuplicator
       .duplicate(controller.readyForDuplication)
-      .then(showDuplicate);
+      .then(showDuplicate, showAsyncError);
   };
 
   /**
@@ -5325,6 +5326,16 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
    */
   function showDuplicate(duplicateId) {
     $state.go('split.footer.event', {id: duplicateId});
+  }
+
+  function showAsyncError() {
+    controller.asyncError = true;
+    controller.duplicating = false;
+  }
+
+  function showAsyncDuplication() {
+    controller.asyncError = false;
+    controller.duplicating = true;
   }
 
   function duplicateTimingChanged(angularEvent, formData) {
@@ -18825,9 +18836,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/event-duplication-footer.component.html',
     "<div class=\"event-validation\">\n" +
     "    <button class=\"btn btn-success\"\n" +
+    "            ng-disabled=\"duplication.duplicating\"\n" +
     "            ng-click=\"duplication.duplicate()\"\n" +
     "            role=\"button\"\n" +
     "            ng-class=\"{disabled: !duplication.readyForDuplication}\">Kopiëren en aanpassen</button>\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"duplication.duplicating\"></i>\n" +
+    "    <span ng-show=\"duplication.asyncError\">Er ging iets mis tijdens het aanmaken van een kopie!</span>\n" +
     "</div>"
   );
 
