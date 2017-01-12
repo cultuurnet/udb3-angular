@@ -19128,7 +19128,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <span class=\"sr-only\">Toggle Dropdown</span>\n" +
     "            </button>\n" +
     "            <ul class=\"dropdown-menu\" role=\"menu\">\n" +
-    "              <li><a href=\"#\" ng-click=\"deleteEvent()\">Verwijderen</a>\n" +
+    "              <li role=\"menuitem\">\n" +
+    "                <a ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</a>\n" +
+    "              </li>\n" +
+    "              <li>\n" +
+    "                <a href=\"#\" ng-click=\"deleteEvent()\">Verwijderen</a>\n" +
     "              </li>\n" +
     "            </ul>\n" +
     "          </div>\n" +

@@ -35,7 +35,11 @@
               <span class="sr-only">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li><a href="#" ng-click="deleteEvent()">Verwijderen</a>
+              <li role="menuitem">
+                <a ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</a>
+              </li>
+              <li>
+                <a href="#" ng-click="deleteEvent()">Verwijderen</a>
               </li>
             </ul>
           </div>
