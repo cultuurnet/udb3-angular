@@ -1214,6 +1214,17 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} eventUrl
+   * @param {Object} newCalendarData
+   * @return {Promise.<Object|ApiProblem>} Object containing the duplicate info
+   */
+  this.duplicateEvent = function(eventUrl, newCalendarData) {
+    return $http
+      .post(eventUrl + '/copies/', newCalendarData, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */

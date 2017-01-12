@@ -11,14 +11,34 @@ angular
   .service('eventDuplicator', EventDuplicatorService);
 
 /* @ngInject */
-function EventDuplicatorService($q) {
+function EventDuplicatorService(udbApi) {
+  var calendarDataProperties = [
+    'calendarType',
+    'openingHours',
+    'timestamps',
+    'startDate',
+    'endDate'
+  ];
+
+  /**
+   * @param {object} duplicateInfo
+   * @return {string}
+   */
+  function getDuplicateId(duplicateInfo) {
+    return duplicateInfo.eventId;
+  }
+
   /**
    * Duplicate an event using form date with the new timing info
    * @param {EventFormData} formData
-   * @return {Promise.<string>} id
-   *  promise the id of the duplicates
+   * @return {Promise.<string>}
+   *  promises the duplicate id
    */
   this.duplicate = function(formData) {
-    return $q.resolve(formData.id);
+    var calendarData = _.pick(formData, calendarDataProperties);
+
+    return udbApi
+      .duplicateEvent(formData.apiUrl, calendarData)
+      .then(getDuplicateId);
   };
 }
