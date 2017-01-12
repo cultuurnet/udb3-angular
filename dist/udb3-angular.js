@@ -18649,7 +18649,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
     "      </li>\n" +
     "      <li class=\"divider\"></li>\n" +
-    "      <li role=\"menuitem\">\n" +
+    "      <li role=\"menuitem\" ng-if=\"offerType === 'event'\">\n" +
     "        <a ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</a>\n" +
     "      </li>\n" +
     "      <li role=\"menuitem\">\n" +
