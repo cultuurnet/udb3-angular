@@ -28,7 +28,7 @@
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('data')">
 
         <div class="clearfix">
-          <div class="btn-group pull-right" ng-if="hasEditPermissions">
+          <div class="btn-group pull-right" ng-if="hasEditPermissions && !isEventPassed">
             <button type="button" class="btn btn-primary" ng-click="openEditPage()">Bewerken</button>
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="caret"></span>

@@ -42,6 +42,7 @@ function EventDetail(
 
   $scope.eventIdIsInvalid = false;
   $scope.hasEditPermissions = false;
+  $scope.isEventPassed = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -87,6 +88,10 @@ function EventDetail(
     $scope.event = jsonLDLangFilter(event, language);
 
     $scope.eventIdIsInvalid = false;
+
+    if (new Date($scope.event.endDate) < new Date()) {
+      $scope.isEventPassed = true;
+    }
 
     personalVariationLoaded
       .then(function (variation) {
