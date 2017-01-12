@@ -17553,6 +17553,8 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
+  $scope.isOfferPassed = isOfferPassed;
+
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -17629,6 +17631,18 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
+
+  function isOfferPassed(offerEndDate) {
+    var endDate = new Date(offerEndDate);
+    var now = new Date();
+
+    if (endDate < now) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
@@ -18441,19 +18455,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</td>\n" +
     "\n" +
     "<td>\n" +
-    "  <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "    <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
-    "    <ul uib-dropdown-menu role=\"menu\">\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
-    "      </li>\n" +
-    "      <li class=\"divider\"></li>\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
-    "      </li>\n" +
-    "    </ul>\n" +
-    "  </div>\n" +
+    "  <span ng-if=\"isOfferPassed(event.endDate)\">\n" +
+    "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
+    "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "      <ul uib-dropdown-menu role=\"menu\">\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
+    "        </li>\n" +
+    "        <li class=\"divider\"></li>\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
+    "  <span ng-if=\"!isOfferPassed(event.endDate)\">\n" +
+    "    <div class=\"pull-right\">\n" +
+    "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
     "</td>\n"
   );
 

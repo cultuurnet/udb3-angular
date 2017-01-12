@@ -27,6 +27,8 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
+  $scope.isOfferPassed = isOfferPassed;
+
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -103,6 +105,18 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
+
+  function isOfferPassed(offerEndDate) {
+    var endDate = new Date(offerEndDate);
+    var now = new Date();
+
+    if (endDate < now) {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
