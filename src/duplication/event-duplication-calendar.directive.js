@@ -21,15 +21,10 @@ function udbEventDuplicationCalendar() {
 }
 
 /* @ngInject */
-function EventDuplicationCalendarController(EventFormData, $rootScope) {
+function EventDuplicationCalendarController(EventFormData, $rootScope, calendarLabels) {
   var controller = this;
 
-  controller.calendarLabels = [
-    {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
-    {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
-    {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
-  ];
-
+  controller.calendarLabels = calendarLabels;
   controller.duplicateFormData = _.cloneDeep(EventFormData);
   controller.duplicateFormData.initCalendar();
 

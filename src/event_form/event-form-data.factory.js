@@ -42,7 +42,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx) {
+function EventFormDataFactory(rx, calendarLabels) {
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -443,12 +443,6 @@ function EventFormDataFactory(rx) {
      */
     initCalendar: function () {
       var formData = this;
-
-      var calendarLabels = [
-        {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
-        {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
-        {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
-      ];
       var calendarType = _.findWhere(calendarLabels, {id: formData.calendarType});
 
       if (calendarType) {

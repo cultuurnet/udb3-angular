@@ -5269,15 +5269,10 @@ function udbEventDuplicationCalendar() {
 }
 
 /* @ngInject */
-function EventDuplicationCalendarController(EventFormData, $rootScope) {
+function EventDuplicationCalendarController(EventFormData, $rootScope, calendarLabels) {
   var controller = this;
 
-  controller.calendarLabels = [
-    {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
-    {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
-    {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
-  ];
-
+  controller.calendarLabels = calendarLabels;
   controller.duplicateFormData = _.cloneDeep(EventFormData);
   controller.duplicateFormData.initCalendar();
 
@@ -5289,7 +5284,7 @@ function EventDuplicationCalendarController(EventFormData, $rootScope) {
     .timingChanged$
     .subscribe(controller.duplicateTimingChanged);
 }
-EventDuplicationCalendarController.$inject = ["EventFormData", "$rootScope"];
+EventDuplicationCalendarController.$inject = ["EventFormData", "$rootScope", "calendarLabels"];
 
 // Source: src/duplication/event-duplication-footer.component.js
 /**
@@ -7516,6 +7511,29 @@ function EventDetail(
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
 
+// Source: src/event_form/calendar-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc constant
+ * @name udb.event-form.calendarLabels
+ * @description
+ * # calendarLabels
+ * Form calendar labels
+ */
+angular
+  .module('udb.event-form')
+  .constant('calendarLabels',
+    /**
+     * list of calendar labels
+     * @readonly
+     */
+    [
+      {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
+      {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
+      {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
+    ]);
+
 // Source: src/event_form/components/audience/form-audience.controller.js
 /**
  * @ngdoc function
@@ -9058,7 +9076,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx) {
+function EventFormDataFactory(rx, calendarLabels) {
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9459,12 +9477,6 @@ function EventFormDataFactory(rx) {
      */
     initCalendar: function () {
       var formData = this;
-
-      var calendarLabels = [
-        {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
-        {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
-        {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
-      ];
       var calendarType = _.findWhere(calendarLabels, {id: formData.calendarType});
 
       if (calendarType) {
@@ -9583,7 +9595,7 @@ function EventFormDataFactory(rx) {
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -10230,18 +10242,13 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-
-  $scope.calendarLabels = [
-    {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
-    {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
-    {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
-  ];
+  $scope.calendarLabels = calendarLabels;
 
   /**
    * Mark the major info as changed.
@@ -10257,7 +10264,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData) {
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
