@@ -15,19 +15,44 @@ angular
     controllerAs: 'duplication'
   });
 
+function pickFirstEventArgument(event) {
+  return event[1];
+}
+
 /* @ngInject */
-function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
+function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx, EventFormData) {
   var controller = this;
+  var duplicateTimingChanged$ = $rootScope
+    .$eventToObservable('duplicateTimingChanged')
+    .map(pickFirstEventArgument);
+  var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
+  var locationSelected$ = $rootScope
+    .$eventToObservable('locationSelected')
+    .map(pickFirstEventArgument);
 
-  controller.readyForDuplication = false;
-  controller.duplicate = function () {
-    if (!controller.readyForDuplication) { return; }
+  var location$ = locationSelected$.startWith(EventFormData.location);
 
-    showAsyncDuplication();
-    eventDuplicator
-      .duplicate(controller.readyForDuplication)
-      .then(showDuplicate, showAsyncError);
-  };
+  var duplicateFormData$ = rx.Observable
+    .combineLatest(location$, duplicateTimingChanged$, function(location, duplicateFormData) {
+      return location.id ? duplicateFormData : false;
+    })
+    .startWith(false);
+
+  duplicateFormData$
+    .subscribe(function (duplicateFormData) {
+      controller.readyForDuplication = !!duplicateFormData;
+    });
+
+  createDuplicate$
+    .withLatestFrom(duplicateFormData$, function (createDuplicate, duplicateFormData) {
+      if (duplicateFormData) {
+        showAsyncDuplication();
+        eventDuplicator
+          .duplicate(duplicateFormData)
+          .then(showDuplicate, showAsyncError);
+      }
+    })
+    .subscribe();
 
   /**
    * @param {string} duplicateId
@@ -45,10 +70,4 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
     controller.asyncError = false;
     controller.duplicating = true;
   }
-
-  function duplicateTimingChanged(angularEvent, formData) {
-    controller.readyForDuplication = formData;
-  }
-
-  $rootScope.$on('duplicateTimingChanged', duplicateTimingChanged);
 }

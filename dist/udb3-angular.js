@@ -5302,19 +5302,44 @@ angular
     controllerAs: 'duplication'
   });
 
+function pickFirstEventArgument(event) {
+  return event[1];
+}
+
 /* @ngInject */
-function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
+function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx, EventFormData) {
   var controller = this;
+  var duplicateTimingChanged$ = $rootScope
+    .$eventToObservable('duplicateTimingChanged')
+    .map(pickFirstEventArgument);
+  var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
+  var locationSelected$ = $rootScope
+    .$eventToObservable('locationSelected')
+    .map(pickFirstEventArgument);
 
-  controller.readyForDuplication = false;
-  controller.duplicate = function () {
-    if (!controller.readyForDuplication) { return; }
+  var location$ = locationSelected$.startWith(EventFormData.location);
 
-    showAsyncDuplication();
-    eventDuplicator
-      .duplicate(controller.readyForDuplication)
-      .then(showDuplicate, showAsyncError);
-  };
+  var duplicateFormData$ = rx.Observable
+    .combineLatest(location$, duplicateTimingChanged$, function(location, duplicateFormData) {
+      return location.id ? duplicateFormData : false;
+    })
+    .startWith(false);
+
+  duplicateFormData$
+    .subscribe(function (duplicateFormData) {
+      controller.readyForDuplication = !!duplicateFormData;
+    });
+
+  createDuplicate$
+    .withLatestFrom(duplicateFormData$, function (createDuplicate, duplicateFormData) {
+      if (duplicateFormData) {
+        showAsyncDuplication();
+        eventDuplicator
+          .duplicate(duplicateFormData)
+          .then(showDuplicate, showAsyncError);
+      }
+    })
+    .subscribe();
 
   /**
    * @param {string} duplicateId
@@ -5332,14 +5357,8 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state) {
     controller.asyncError = false;
     controller.duplicating = true;
   }
-
-  function duplicateTimingChanged(angularEvent, formData) {
-    controller.readyForDuplication = formData;
-  }
-
-  $rootScope.$on('duplicateTimingChanged', duplicateTimingChanged);
 }
-EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state"];
+EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx", "EventFormData"];
 
 // Source: src/duplication/event-duplication-step.component.js
 /**
@@ -10293,7 +10312,8 @@ function EventFormStep3Controller(
     $uibModal,
     cities,
     Levenshtein,
-    eventCrud
+    eventCrud,
+    $rootScope
 ) {
 
   var controller = this;
@@ -10439,6 +10459,7 @@ function EventFormStep3Controller(
 
     controller.stepCompleted();
     setMajorInfoChanged();
+    $rootScope.$emit('locationSelected', location);
 
   };
   $scope.selectLocation = controller.selectLocation;
@@ -10659,7 +10680,7 @@ function EventFormStep3Controller(
 
   controller.init(EventFormData);
 }
-EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud"];
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/steps/event-form-step4.controller.js
 /**
@@ -18844,7 +18865,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"event-validation\">\n" +
     "    <button class=\"btn btn-success\"\n" +
     "            ng-disabled=\"duplication.duplicating\"\n" +
-    "            ng-click=\"duplication.duplicate()\"\n" +
+    "            ng-click=\"duplication.createDuplicate()\"\n" +
     "            role=\"button\"\n" +
     "            ng-class=\"{disabled: !duplication.readyForDuplication}\">Kopiëren en aanpassen</button>\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"duplication.duplicating\"></i>\n" +
