@@ -3133,6 +3133,9 @@ form.booking-period table {
 .organizer-form .alert-link {
   text-decoration: underline;
 }
+.audience .help-block {
+  font-size: small;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;
