@@ -11,7 +11,7 @@ angular
   .service('eventDuplicator', EventDuplicatorService);
 
 /* @ngInject */
-function EventDuplicatorService(udbApi) {
+function EventDuplicatorService(udbApi, offerLocator) {
   var calendarDataProperties = [
     'calendarType',
     'openingHours',
@@ -24,7 +24,9 @@ function EventDuplicatorService(udbApi) {
    * @param {object} duplicateInfo
    * @return {string}
    */
-  function getDuplicateId(duplicateInfo) {
+  function rememberDuplicateLocationAndReturnId(duplicateInfo) {
+    offerLocator.add(duplicateInfo.eventId, duplicateInfo.url);
+
     return duplicateInfo.eventId;
   }
 
@@ -39,6 +41,6 @@ function EventDuplicatorService(udbApi) {
 
     return udbApi
       .duplicateEvent(formData.apiUrl, calendarData)
-      .then(getDuplicateId);
+      .then(rememberDuplicateLocationAndReturnId);
   };
 }
