@@ -40,13 +40,6 @@ function PriceFormModalController(
   $scope.validatePrice = validatePrice;
   $scope.savePrice = savePrice;
 
-  /**
-   * Cancel the modal.
-   */
-  function cancel() {
-    $uibModalInstance.dismiss('cancel');
-  }
-
   function unsetPriceItemFree(key) {
     $scope.price[key].price = '';
   }
@@ -89,6 +82,8 @@ function PriceFormModalController(
     $scope.invalidPrice = false;
     $scope.priceError = false;
     $scope.formPriceSubmitted = false;
+
+    $uibModalInstance.dismiss('cancel');
   }
 
   function validatePrice() {
