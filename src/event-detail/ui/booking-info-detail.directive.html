@@ -1,0 +1,18 @@
+<tr ng-class="::{muted: isEmpty(bookingInfo)}">
+    <td>
+        <strong>Reservaties</strong>
+    </td>
+    <td ng-if="::!isEmpty(bookingInfo)">
+        <ul class="list-unstyled" >
+            <li ng-if="::bookingInfo.url">
+                    <span>
+                      <a class="btn btn-info" target="_blank" ng-href="{{::bookingInfo.url}}"
+                         ng-bind="::bookingInfo.urlLabel"></a>
+                    </span>
+            </li>
+            <li ng-if="::bookingInfo.phone" ng-bind="::bookingInfo.phone"></li>
+            <li ng-if="::bookingInfo.email" ng-bind="::bookingInfo.email"></li>
+        </ul>
+    </td>
+    <td ng-if="::isEmpty(bookingInfo)">Geen reservatie info</td>
+</tr>

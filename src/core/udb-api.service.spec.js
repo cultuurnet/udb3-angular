@@ -607,19 +607,6 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  // getRecentLabels
-  it('should get the users recent labels from the api', function (done) {
-    var response = {};
-    $httpBackend
-      .expectGET(baseUrl + 'user/labels')
-      .respond(JSON.stringify(response));
-    service
-      .getRecentLabels()
-      .then(done);
-
-    $httpBackend.flush();
-  });
-
   // hasPermission
   it('should respond when the user has permission to the offer location', function (done) {
     var responseWithPermission = {
@@ -2256,4 +2243,16 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should PUT the audience data when the audience type for an event is set', function () {
+    var eventLocation = 'http://du.de/event/1da2bb3c-616f-4e89-9b17-f142413046d2';
+    var expectedUrl = 'http://du.de/event/1da2bb3c-616f-4e89-9b17-f142413046d2/audience';
+
+    $httpBackend
+      .expect('PUT', expectedUrl)
+      .respond({ audienceType: 'education'});
+
+    service.setAudienceType(eventLocation, 'education');
+    $httpBackend.flush();
+  })
 });

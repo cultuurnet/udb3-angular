@@ -50,7 +50,6 @@ describe('Service: Offer labeller', function () {
   beforeEach(module('udb.entry', function($provide){
     logger = jasmine.createSpyObj('jobLogger', ['addJob']);
     udbApi = jasmine.createSpyObj('udbApi', [
-      'getRecentLabels',
       'labelOffer',
       'labelQuery',
       'labelOffers',
@@ -73,8 +72,6 @@ describe('Service: Offer labeller', function () {
   beforeEach(inject(function(_$q_, _UdbPlace_, $rootScope, _OfferLabelJob_) {
     $q = _$q_;
     UdbPlace = _UdbPlace_;
-    // the labeller tries to fetch the most recent labels from the API when initializing.
-    udbApi.getRecentLabels.and.returnValue($q.resolve([]));
     $scope = $rootScope.$new();
     OfferLabelJob = _OfferLabelJob_;
 

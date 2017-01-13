@@ -21,6 +21,9 @@ describe('Factory: UDB Organizer', function () {
         'green',
         'UiTPAS'
       ],
+      hiddenLabels: [
+
+      ],
       'isUitpas': true
     };
     var jsonOrganizer = {
@@ -50,4 +53,36 @@ describe('Factory: UDB Organizer', function () {
     var organizerFromJson = new UdbOrganizer(jsonOrganizer);
     expect(organizerFromJson).toEqual(expectedOrganizer);
   }));
+
+  it('takes into account hidden labels when checking for UiTPAS', inject(function (UdbOrganizer) {
+    var jsonOrganizer = {
+      '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
+      '@context': '/api/1.0/organizer.jsonld',
+      'name': 'Club Silo',
+      'address': {
+        addressCountry: 'BE',
+        addressLocality: 'Leuven',
+        postalCode: '3000',
+        streetAddress: 'Vaartkom 39'
+      },
+      contactPoint: {
+        'email': [
+          'info@silo.be'
+        ],
+        'phone': [
+          '+32 476 838982'
+        ]
+      },
+      labels: [
+        'green'
+      ],
+      hiddenLabels: [
+        'UiTPAS'
+      ]
+    };
+
+    var organizerFromJson = new UdbOrganizer(jsonOrganizer);
+    expect(organizerFromJson.isUitpas).toEqual(true);
+  }));
+
 });

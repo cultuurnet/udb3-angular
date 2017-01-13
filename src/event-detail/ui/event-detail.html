@@ -50,133 +50,94 @@
               <col style="width:80%"/>
             </colgroup>
             <tbody>
-            <tr>
-              <td><strong>Titel</strong></td>
-              <td>{{event.name}}</td>
-            </tr>
-            <tr>
-              <td><strong>Type</strong></td>
-              <td>{{event.type.label}}</td>
-            </tr>
-            <tr>
-              <td><strong>Beschrijving</strong></td>
-              <td>
-                <div ng-bind-html="event.description" class="event-detail-description"></div>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Waar</strong></td>
-              <td ng-show="event.location.url"><a href="{{event.location.url}}">{{eventLocation(event)}}</a></td>
-              <td ng-hide="event.location.url">
-                {{event.location.name.nl}},
-                {{event.location.address.streetAddress}},
-                {{event.location.address.postalCode}}
-                {{event.location.address.addressLocality}}
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Wanneer</strong></td>
-              <td>
-                <udb-calendar-summary offer="event" show-opening-hours="true"></udb-calendar-summary>
-              </td>
-            </tr>
-            <tr ng-class="{muted: !event.organizer}">
-              <td><strong>Organisator</strong></td>
-              <td>{{event.organizer.name}}</td>
-            </tr>
-            <tr class="rv-event-info-price" ng-class="{muted: !event.priceInfo.length}">
-              <td><strong>Prijs</strong></td>
-              <td ng-if="event.priceInfo.length">
-                <table class="table event-detail-price-table">
-                  <tr ng-repeat="priceInfo in event.priceInfo">
-                    <td>{{priceInfo.name}}</td>
-                    <td>
-                      <span ng-if="priceInfo.price == 0">
-                        Gratis
-                      </span>
-                      <span ng-if="priceInfo.price != 0">
-                        {{priceInfo.price | currency}} euro
-                      </span>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-              <td ng-if="!event.priceInfo.length">
-                Geen prijsinformatie
-              </td>
-            </tr>
-            <tr ng-class="{muted: !hasBookingInfoResults}">
-              <td>
-                <strong>Reservaties</strong>
-              </td>
-              <td ng-if="hasBookingInfoResults">
-                <ul class="list-unstyled" >
-                  <li ng-if="event.bookingInfo.url">
-                    <span>
-                      <a class="btn btn-info" target="_blank" ng-href="{{event.bookingInfo.url}}"
-                         ng-bind="event.bookingInfo.urlLabel"></a>
+              <tr>
+                <td><strong>Titel</strong></td>
+                <td>{{event.name}}</td>
+              </tr>
+              <tr>
+                <td><strong>Type</strong></td>
+                <td>{{event.type.label}}</td>
+              </tr>
+              <tr>
+                <td><strong>Beschrijving</strong></td>
+                <td>
+                  <div ng-bind-html="event.description" class="event-detail-description"></div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Waar</strong></td>
+                <td ng-show="event.location.url"><a ui-sref="split.footer.place-preview({id: event.location.id})">{{eventLocation(event)}}</a></td>
+                <td ng-hide="event.location.url">
+                  {{event.location.name.nl}},
+                  {{event.location.address.streetAddress}},
+                  {{event.location.address.postalCode}}
+                  {{event.location.address.addressLocality}}
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Wanneer</strong></td>
+                <td>
+                  <udb-calendar-summary offer="event" show-opening-hours="true"></udb-calendar-summary>
+                </td>
+              </tr>
+              <tr ng-class="{muted: !event.organizer}">
+                <td><strong>Organisatie</strong></td>
+                <td>{{event.organizer.name}}</td>
+              </tr>
+              <tr class="rv-event-info-price" ng-class="{muted: !event.priceInfo.length}">
+                <td><strong>Prijs</strong></td>
+                <td ng-if="event.priceInfo.length">
+                  <table class="table event-detail-price-table">
+                    <tr ng-repeat="priceInfo in event.priceInfo">
+                      <td>{{priceInfo.name}}</td>
+                      <td>
+                        <span ng-if="priceInfo.price == 0">
+                          Gratis
+                        </span>
+                        <span ng-if="priceInfo.price != 0">
+                          {{priceInfo.price | currency}} euro
+                        </span>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+                <td ng-if="!event.priceInfo.length">
+                  Geen prijsinformatie
+                </td>
+              </tr>
+            </tbody>
+            <tbody udb-booking-info-detail="::event.bookingInfo"></tbody>
+            <tbody udb-contact-point-detail="::event.contactPoint"></tbody>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Labels</strong>
+                </td>
+                <td>
+                  <udb-label-select labels="event.labels"
+                                    label-added="labelAdded(label)"
+                                    label-removed="labelRemoved(label)"></udb-label-select>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Geschikt voor</strong></td>
+                <td>
+                  <span ng-if="event.typicalAgeRange">{{event.typicalAgeRange}}</span>
+                  <span ng-if="!event.typicalAgeRange">Alle leeftijden</span>
+                </td>
+              </tr>
+              <tr ng-class="::{muted: !event.image}">
+                <td><strong>Afbeeldingen</strong></td>
+                <td>
+                  <img ng-if="::event.image" class="img-responsive" ng-src="{{::event.image}}?width=400" />
+                  <p>
+                    <span ng-repeat="image in ::event.images">
+                      <img ng-src="{{::image.contentUrl}}?height=100" class="offer-image-thumbnail img-responsive" />
                     </span>
-                  </li>
-                  <li ng-if="event.bookingInfo.phone">{{event.bookingInfo.phone}}</li>
-                  <li ng-if="event.bookingInfo.email">{{event.bookingInfo.email}}</li>
-                </ul>
-              </td>
-              <td ng-if="!hasBookingInfoResults"></td>
-            </tr>
-
-            <tr ng-class="{muted: !hasContactPointResults}">
-              <td>
-                <strong>Contact</strong>
-              </td>
-              <td ng-if="hasContactPointResults">
-                <ul class="list-unstyled">
-                  <li>
-                    <span ng-repeat="website in event.contactPoint.url">
-                      <a ng-href="{{website}}" target="_blank">{{website}}</a>
-                      <span ng-if="!$last">of </span>
-                    </span>
-                  </li>
-                  <li>
-                    <span ng-repeat="phone in event.contactPoint.phone">
-                      <span>{{phone}}</span>
-                      <span ng-if="!$last">of </span>
-                    </span>
-                  </li>
-                  <li>
-                    <span ng-repeat="email in event.contactPoint.email">
-                      <span>{{email}}</span>
-                      <span ng-if="!$last">of </span>
-                    </span>
-                  </li>
-                </ul>
-              </td>
-              <td ng-if="!hasContactPointResults"></td>
-            </tr>
-
-            <tr>
-              <td>
-                <strong>Labels</strong>
-              </td>
-              <td>
-                <udb-label-select labels="event.labels"
-                                  label-added="labelAdded(label)"
-                                  label-removed="labelRemoved(label)"></udb-label-select>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Geschikt voor</strong></td>
-              <td>
-                <span ng-if="event.typicalAgeRange">{{event.typicalAgeRange}}</span>
-                <span ng-if="!event.typicalAgeRange">Alle leeftijden</span>
-              </td>
-            </tr>
-            <tr ng-class="{muted: !event.image}">
-              <td><strong>Afbeelding</strong></td>
-              <td>
-                <img ng-if="event.image" class="offer-image-thumbnail" ng-src="{{event.image}}"/>
-                <span ng-if="!event.image">Geen afbeelding</span>
-              </td>
-            </tr>
+                    <span ng-if="::!event.image">Geen afbeeldingen</span>
+                  </p>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
