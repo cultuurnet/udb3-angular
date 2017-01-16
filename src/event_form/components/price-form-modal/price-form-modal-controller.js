@@ -16,21 +16,12 @@ function PriceFormModalController(
   $scope,
   $uibModalInstance,
   EventFormData,
-  eventCrud,
-  $rootScope,
   price
 ) {
 
-  var controller = this;
-  $scope.price = price;
-
-  $scope.editPrice = false;
-  $scope.priceError = false;
-  $scope.invalidPrice = false;
-  $scope.savingPrice = false;
-  $scope.formPriceSubmitted = false;
   var originalPrice = [];
 
+  $scope.init = init;
   $scope.unsetPriceItemFree = unsetPriceItemFree;
   $scope.setPriceItemFree = setPriceItemFree;
   $scope.deletePriceItem = deletePriceItem;
@@ -38,7 +29,19 @@ function PriceFormModalController(
   $scope.addPriceItem = addPriceItem;
   $scope.cancelEditPrice = cancelEditPrice;
   $scope.validatePrice = validatePrice;
-  $scope.savePrice = savePrice;
+  $scope.save = save;
+
+  function init() {
+    $scope.price = angular.copy(price);
+    originalPrice = angular.copy(price);
+
+    $scope.priceError = false;
+    $scope.invalidPrice = false;
+    $scope.savingPrice = false;
+    $scope.formPriceSubmitted = false;
+  }
+
+  init();
 
   function unsetPriceItemFree(key) {
     $scope.price[key].price = '';
@@ -78,7 +81,6 @@ function PriceFormModalController(
     $scope.price = angular.copy(originalPrice);
     originalPrice = [];
 
-    $scope.editPrice = false;
     $scope.invalidPrice = false;
     $scope.priceError = false;
     $scope.formPriceSubmitted = false;
@@ -91,33 +93,16 @@ function PriceFormModalController(
     if ($scope.priceForm.$valid) {
       $scope.priceError = false;
       $scope.invalidPrice = false;
-      savePrice();
+      save();
     }
     else {
       $scope.invalidPrice = true;
     }
   }
 
-  function savePrice() {
-    $scope.savingPrice = true;
-
+  function save() {
     EventFormData.priceInfo = $scope.price;
-    $scope.editPrice = false;
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty($scope.price)) {
-        $scope.priceCssClass = 'state-complete';
-      }
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
-      $uibModalInstance.close();
-    }, function () {
-      $scope.priceError = true;
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
-    });
+    $uibModalInstance.close();
   }
 
 }

@@ -18,19 +18,22 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
+  var originalPrice = [];
 
-  controller.setPriceFree = setPriceFree;
-  controller.openModal = openModal;
+  $scope.setPriceFree = setPriceFree;
+  $scope.openModal = openModal;
+  $scope.savePrice = savePrice;
+  $scope.cancelPrice = cancelPrice;
 
   init();
 
   function setPriceFree() {
 
-    if (controller.price.length === 0) {
-      controller.price = [
+    if ($scope.price.length === 0) {
+      $scope.price = [
         {
           category: 'base',
           name: 'Basisprijs',
@@ -40,13 +43,13 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       ];
     }
 
-    EventFormData.priceInfo = controller.price;
+    EventFormData.priceInfo = $scope.price;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
       $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty(controller.price)) {
-        controller.priceCssClass = 'state-complete';
+      if (!_.isEmpty($scope.price)) {
+        $scope.priceCssClass = 'state-complete';
       }
     });
   }
@@ -57,20 +60,48 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       controller: 'PriceFormModalController',
       resolve: {
         price: function () {
-          return controller.price;
+          return $scope.price;
         }
       }
     });
 
-    modalInstance.result.then(controller.savePrice);
+    modalInstance.result.then($scope.savePrice, $scope.cancelPrice);
   }
 
   function init() {
-    if (controller.price.length) {
-      controller.priceCssClass = 'state-complete';
+    $scope.price = EventFormData.priceInfo;
+    originalPrice = $scope.price;
+
+    if ($scope.price.length) {
+      $scope.priceCssClass = 'state-complete';
     }
     else {
-      controller.priceCssClass = '';
+      $scope.priceCssClass = '';
     }
+  }
+
+  function savePrice() {
+    $scope.savingPrice = true;
+    $scope.price = EventFormData.priceInfo;
+
+    $scope.editPrice = false;
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      $rootScope.$emit('eventFormSaved', EventFormData);
+      if (!_.isEmpty($scope.price)) {
+        $scope.priceCssClass = 'state-complete';
+      }
+      $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
+    }, function () {
+      $scope.priceError = true;
+      $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
+    });
+  }
+
+  function cancelPrice() {
+    $scope.price = angular.copy(originalPrice);
   }
 }

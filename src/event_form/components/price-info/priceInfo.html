@@ -1,32 +1,32 @@
 <div class="row extra-prijs">
-  <div class="extra-task" ng-class="$ctrl.priceCssClass">
+  <div class="extra-task" ng-class="priceCssClass">
     <div class="col-sm-3">
       <em class="extra-task-label">Prijs</em>
         <i class="fa fa-circle-o-notch fa-spin" ng-show="savingPrice"></i>
     </div>
     <div class="col-sm-8">
 
-      <div ng-show="$ctrl.price.length == 0">
+      <div ng-show="price.length == 0">
         <section>
           <a class="btn btn-default to-filling"
-             ng-click="$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()">
+             ng-click="priceCssClass = 'state-filling'; openModal()">
             Prijzen toevoegen
           </a>
           <a class="btn btn-link"
-             ng-click="$ctrl.setPriceFree()">Gratis</a>
+             ng-click="setPriceFree()">Gratis</a>
         </section>
       </div>
-      <div ng-show="$ctrl.price.length > 0">
+      <div ng-show="price.length > 0">
         <table class="table">
           <thead>
             <td>Prijzen</td>
             <td>
-              <a class="btn btn-default pull-right" ng-click="$ctrl.openModal()">
+              <a class="btn btn-default pull-right" ng-click="openModal()">
               Wijzigen
             </a>
             </td>
           </thead>
-          <tr ng-repeat="(key, priceInfo) in $ctrl.price"
+          <tr ng-repeat="(key, priceInfo) in price"
               ng-model="priceInfo">
             <td>{{priceInfo.name}}</td>
             <td>

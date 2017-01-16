@@ -8173,21 +8173,12 @@ function PriceFormModalController(
   $scope,
   $uibModalInstance,
   EventFormData,
-  eventCrud,
-  $rootScope,
   price
 ) {
 
-  var controller = this;
-  $scope.price = price;
-
-  $scope.editPrice = false;
-  $scope.priceError = false;
-  $scope.invalidPrice = false;
-  $scope.savingPrice = false;
-  $scope.formPriceSubmitted = false;
   var originalPrice = [];
 
+  $scope.init = init;
   $scope.unsetPriceItemFree = unsetPriceItemFree;
   $scope.setPriceItemFree = setPriceItemFree;
   $scope.deletePriceItem = deletePriceItem;
@@ -8195,7 +8186,19 @@ function PriceFormModalController(
   $scope.addPriceItem = addPriceItem;
   $scope.cancelEditPrice = cancelEditPrice;
   $scope.validatePrice = validatePrice;
-  $scope.savePrice = savePrice;
+  $scope.save = save;
+
+  function init() {
+    $scope.price = angular.copy(price);
+    originalPrice = angular.copy(price);
+
+    $scope.priceError = false;
+    $scope.invalidPrice = false;
+    $scope.savingPrice = false;
+    $scope.formPriceSubmitted = false;
+  }
+
+  init();
 
   function unsetPriceItemFree(key) {
     $scope.price[key].price = '';
@@ -8235,7 +8238,6 @@ function PriceFormModalController(
     $scope.price = angular.copy(originalPrice);
     originalPrice = [];
 
-    $scope.editPrice = false;
     $scope.invalidPrice = false;
     $scope.priceError = false;
     $scope.formPriceSubmitted = false;
@@ -8248,37 +8250,20 @@ function PriceFormModalController(
     if ($scope.priceForm.$valid) {
       $scope.priceError = false;
       $scope.invalidPrice = false;
-      savePrice();
+      save();
     }
     else {
       $scope.invalidPrice = true;
     }
   }
 
-  function savePrice() {
-    $scope.savingPrice = true;
-
+  function save() {
     EventFormData.priceInfo = $scope.price;
-    $scope.editPrice = false;
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty($scope.price)) {
-        $scope.priceCssClass = 'state-complete';
-      }
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
-      $uibModalInstance.close();
-    }, function () {
-      $scope.priceError = true;
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
-    });
+    $uibModalInstance.close();
   }
 
 }
-PriceFormModalController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "$rootScope", "price"];
+PriceFormModalController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "price"];
 
 // Source: src/event_form/components/price-info/price-info.component.js
 /**
@@ -8299,19 +8284,22 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
+  var originalPrice = [];
 
-  controller.setPriceFree = setPriceFree;
-  controller.openModal = openModal;
+  $scope.setPriceFree = setPriceFree;
+  $scope.openModal = openModal;
+  $scope.savePrice = savePrice;
+  $scope.cancelPrice = cancelPrice;
 
   init();
 
   function setPriceFree() {
 
-    if (controller.price.length === 0) {
-      controller.price = [
+    if ($scope.price.length === 0) {
+      $scope.price = [
         {
           category: 'base',
           name: 'Basisprijs',
@@ -8321,13 +8309,13 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       ];
     }
 
-    EventFormData.priceInfo = controller.price;
+    EventFormData.priceInfo = $scope.price;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
       $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty(controller.price)) {
-        controller.priceCssClass = 'state-complete';
+      if (!_.isEmpty($scope.price)) {
+        $scope.priceCssClass = 'state-complete';
       }
     });
   }
@@ -8338,24 +8326,52 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       controller: 'PriceFormModalController',
       resolve: {
         price: function () {
-          return controller.price;
+          return $scope.price;
         }
       }
     });
 
-    modalInstance.result.then(controller.savePrice);
+    modalInstance.result.then($scope.savePrice, $scope.cancelPrice);
   }
 
   function init() {
-    if (controller.price.length) {
-      controller.priceCssClass = 'state-complete';
+    $scope.price = EventFormData.priceInfo;
+    originalPrice = $scope.price;
+
+    if ($scope.price.length) {
+      $scope.priceCssClass = 'state-complete';
     }
     else {
-      controller.priceCssClass = '';
+      $scope.priceCssClass = '';
     }
   }
+
+  function savePrice() {
+    $scope.savingPrice = true;
+    $scope.price = EventFormData.priceInfo;
+
+    $scope.editPrice = false;
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      $rootScope.$emit('eventFormSaved', EventFormData);
+      if (!_.isEmpty($scope.price)) {
+        $scope.priceCssClass = 'state-complete';
+      }
+      $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
+    }, function () {
+      $scope.priceError = true;
+      $scope.savingPrice = false;
+      $scope.formPriceSubmitted = false;
+    });
+  }
+
+  function cancelPrice() {
+    $scope.price = angular.copy(originalPrice);
+  }
 }
-PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
+PriceInfoComponent.$inject = ["$scope", "$uibModal", "EventFormData", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
 /**
@@ -19852,7 +19868,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   name=\"name\"\n" +
     "                                   placeholder=\"Doelgroep\"\n" +
     "                                   ng-model=\"priceInfo.name\"\n" +
-    "                                   ng-class=\"{ 'has-error': priceInfoForm.name.$invalid && formPriceSubmitted}\"\n" +
+    "                                   ng-class=\"{ 'has-error': priceForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -19868,7 +19884,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                           name=\"price\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
-    "                                           ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
+    "                                           ng-class=\"{ 'has-error': priceForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
     "                                <div class=\"form-group\">euro</div>\n" +
@@ -19911,7 +19927,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelEditPrice()\">Sluiten</button>\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "            ng-click=\"validatePrice()\">\n" +
+    "            ng-click=\"validatePrice()\"\n" +
+    "            ng-disabled=\"priceForm.$invalid\">\n" +
     "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "    </button>\n" +
     "</div>\n"
@@ -19920,34 +19937,34 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/priceInfo.html',
     "<div class=\"row extra-prijs\">\n" +
-    "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
+    "  <div class=\"extra-task\" ng-class=\"priceCssClass\">\n" +
     "    <div class=\"col-sm-3\">\n" +
     "      <em class=\"extra-task-label\">Prijs</em>\n" +
     "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingPrice\"></i>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-8\">\n" +
     "\n" +
-    "      <div ng-show=\"$ctrl.price.length == 0\">\n" +
+    "      <div ng-show=\"price.length == 0\">\n" +
     "        <section>\n" +
     "          <a class=\"btn btn-default to-filling\"\n" +
-    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()\">\n" +
+    "             ng-click=\"priceCssClass = 'state-filling'; openModal()\">\n" +
     "            Prijzen toevoegen\n" +
     "          </a>\n" +
     "          <a class=\"btn btn-link\"\n" +
-    "             ng-click=\"$ctrl.setPriceFree()\">Gratis</a>\n" +
+    "             ng-click=\"setPriceFree()\">Gratis</a>\n" +
     "        </section>\n" +
     "      </div>\n" +
-    "      <div ng-show=\"$ctrl.price.length > 0\">\n" +
+    "      <div ng-show=\"price.length > 0\">\n" +
     "        <table class=\"table\">\n" +
     "          <thead>\n" +
     "            <td>Prijzen</td>\n" +
     "            <td>\n" +
-    "              <a class=\"btn btn-default pull-right\" ng-click=\"$ctrl.openModal()\">\n" +
+    "              <a class=\"btn btn-default pull-right\" ng-click=\"openModal()\">\n" +
     "              Wijzigen\n" +
     "            </a>\n" +
     "            </td>\n" +
     "          </thead>\n" +
-    "          <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
+    "          <tr ng-repeat=\"(key, priceInfo) in price\"\n" +
     "              ng-model=\"priceInfo\">\n" +
     "            <td>{{priceInfo.name}}</td>\n" +
     "            <td>\n" +
