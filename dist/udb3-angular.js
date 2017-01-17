@@ -8296,9 +8296,6 @@ angular
 /* @ngInject */
 function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootScope) {
 
-  var controller = this;
-  var originalPrice = [];
-
   $scope.setPriceFree = setPriceFree;
   $scope.openModal = openModal;
   $scope.savePrice = savePrice;
@@ -8346,7 +8343,6 @@ function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootSc
 
   function init() {
     $scope.price = EventFormData.priceInfo;
-    originalPrice = $scope.price;
 
     if ($scope.price.length) {
       $scope.priceCssClass = 'state-complete';
@@ -8378,7 +8374,7 @@ function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootSc
   }
 
   function cancelPrice() {
-    $scope.price = angular.copy(originalPrice);
+    $scope.price = EventFormData.priceInfo;
   }
 }
 PriceInfoComponent.$inject = ["$scope", "$uibModal", "EventFormData", "eventCrud", "$rootScope"];
