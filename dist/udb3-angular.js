@@ -17639,12 +17639,7 @@ function OfferController(
     var endDate = new Date(offerEndDate);
     var now = new Date();
 
-    if (endDate < now) {
-      return false;
-    }
-    else {
-      return true;
-    }
+    return !(endDate < now);
   }
 
   /**
