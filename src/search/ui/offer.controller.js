@@ -110,7 +110,7 @@ function OfferController(
     var endDate = new Date(offerEndDate);
     var now = new Date();
 
-    return !(endDate < now);
+    return endDate < now;
   }
 
   /**

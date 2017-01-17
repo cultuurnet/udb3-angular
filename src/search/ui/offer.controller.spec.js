@@ -127,6 +127,7 @@ describe('Controller: Offer', function() {
         "modified": "2015-06-05T10:50:17+02:00",
         "publisher": "Invoerders Algemeen ",
         "startDate": "2015-06-19T19:00:00+02:00",
+        "endDate": "2015-06-20T19:00:00+02:00",
         "calendarType": "single",
         "performer": [{"name": "maaike beuten "}],
         "sameAs": ["http://www.uitinvlaanderen.be/agenda/e/70-mijl-in-vogelvlucht/1111be8c-a412-488d-9ecc-8fdf9e52edbc"],
@@ -204,6 +205,15 @@ describe('Controller: Offer', function() {
     expect($scope.event.labels).toEqual(expectedLabels);
     expect($window.alert).toHaveBeenCalledWith('Het label "Some Label" is reeds toegevoegd als "some label".');
     expect(offerLabeller.label).not.toHaveBeenCalled();
+  });
+
+  it('should return true when an event is expired', function () {
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    $scope.$digest();
+
+    $scope.offerIsExpired(deferredEvent.endDate);
+
+    expect($scope.offerIsExpired).toBeTruthy();
   });
 
   describe('variations: ', function () {
