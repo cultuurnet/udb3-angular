@@ -138,7 +138,7 @@ describe('Service: Moderation Service', function () {
 
     udbApi = jasmine.createSpyObj('udbApi', [
       'getMyRoles',
-      'findEventsWithLimit',
+      'findToModerate',
       'getOffer',
       'patchOffer'
     ]);
@@ -183,10 +183,10 @@ describe('Service: Moderation Service', function () {
   });
 
   it('should fetch the moderation items for a given role', function (done) {
-    udbApi.findEventsWithLimit.and.returnValue($q.resolve(events));
+    udbApi.findToModerate.and.returnValue($q.resolve(events));
 
     function assertResultset (result) {
-      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith(
+      expect(udbApi.findToModerate).toHaveBeenCalledWith(
         '(city:leuven) AND wfstatus:"readyforvalidation" AND startdate:[NOW TO *]',
         0,
         10
@@ -203,10 +203,10 @@ describe('Service: Moderation Service', function () {
   });
 
   it('should fetch all readyforvalidation offers when an empty constraint is given', function (done) {
-    udbApi.findEventsWithLimit.and.returnValue($q.resolve(events));
+    udbApi.findToModerate.and.returnValue($q.resolve(events));
 
     function assertResultset (result) {
-      expect(udbApi.findEventsWithLimit).toHaveBeenCalledWith(
+      expect(udbApi.findToModerate).toHaveBeenCalledWith(
         'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]',
         0,
         10
