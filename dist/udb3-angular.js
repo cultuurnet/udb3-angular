@@ -19086,11 +19086,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           value=\"members\"\n" +
     "                           aria-describedby=\"audience-members-help\">\n" +
     "                    Enkel voor leden\n" +
+    "                    <span id=\"audience-members-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'members'\">\n" +
+    "                        Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.\n" +
+    "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
-    "            <span id=\"audience-members-help\" class=\"help-block\">\n" +
-    "                Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.\n" +
-    "            </span>\n" +
+    "\n" +
     "\n" +
     "            <div class=\"radio\">\n" +
     "                <label>\n" +
@@ -19102,15 +19103,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           value=\"education\"\n" +
     "                           aria-describedby=\"audience-education-help\">\n" +
     "                    Specifiek voor scholen\n" +
+    "                    <span id=\"audience-education-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'education'\">\n" +
+    "                        Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren\n" +
+    "                        kan je nog specifieke informatie voor scholen toevoegen.\n" +
+    "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
-    "            <span id=\"audience-education-help\" class=\"help-block\">\n" +
-    "                Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren\n" +
-    "                kan je nog specifieke informatie voor scholen toevoegen.\n" +
-    "            </span>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 

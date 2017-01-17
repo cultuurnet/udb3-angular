@@ -27,11 +27,12 @@
                            value="members"
                            aria-describedby="audience-members-help">
                     Enkel voor leden
+                    <span id="audience-members-help" class="help-block" ng-show="fac.audienceType === 'members'">
+                        Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.
+                    </span>
                 </label>
             </div>
-            <span id="audience-members-help" class="help-block">
-                Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.
-            </span>
+
 
             <div class="radio">
                 <label>
@@ -43,12 +44,12 @@
                            value="education"
                            aria-describedby="audience-education-help">
                     Specifiek voor scholen
+                    <span id="audience-education-help" class="help-block" ng-show="fac.audienceType === 'education'">
+                        Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren
+                        kan je nog specifieke informatie voor scholen toevoegen.
+                    </span>
                 </label>
             </div>
-            <span id="audience-education-help" class="help-block">
-                Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren
-                kan je nog specifieke informatie voor scholen toevoegen.
-            </span>
         </div>
     </div>
 </div>
