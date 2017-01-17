@@ -17556,7 +17556,7 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
-  $scope.isOfferPassed = isOfferPassed;
+  $scope.offerIsExpired = offerIsExpired;
 
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
@@ -17635,7 +17635,7 @@ function OfferController(
     controller.applyPropertyChanges('description');
   };
 
-  function isOfferPassed(offerEndDate) {
+  function offerIsExpired(offerEndDate) {
     var endDate = new Date(offerEndDate);
     var now = new Date();
 
@@ -18460,7 +18460,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</td>\n" +
     "\n" +
     "<td>\n" +
-    "  <span ng-if=\"isOfferPassed(event.endDate)\">\n" +
+    "  <span ng-if=\"offerIsExpired(event.endDate)\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
@@ -18475,7 +18475,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </ul>\n" +
     "    </div>\n" +
     "  </span>\n" +
-    "  <span ng-if=\"!isOfferPassed(event.endDate)\">\n" +
+    "  <span ng-if=\"!offerIsExpired(event.endDate)\">\n" +
     "    <div class=\"pull-right\">\n" +
     "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
     "    </div>\n" +

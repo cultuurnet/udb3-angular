@@ -27,7 +27,7 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
-  $scope.isOfferPassed = isOfferPassed;
+  $scope.offerIsExpired = offerIsExpired;
 
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
@@ -106,7 +106,7 @@ function OfferController(
     controller.applyPropertyChanges('description');
   };
 
-  function isOfferPassed(offerEndDate) {
+  function offerIsExpired(offerEndDate) {
     var endDate = new Date(offerEndDate);
     var now = new Date();
 
