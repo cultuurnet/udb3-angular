@@ -35,6 +35,16 @@ function PriceFormModalController(
     $scope.price = angular.copy(price);
     originalPrice = angular.copy(price);
 
+    if ($scope.price.length === 0) {
+      var priceItem = {
+        category: 'base',
+        name: 'Basistarief',
+        priceCurrency: 'EUR',
+        price: ''
+      };
+      $scope.price.push(priceItem);
+    }
+
     $scope.priceError = false;
     $scope.invalidPrice = false;
     $scope.savingPrice = false;
