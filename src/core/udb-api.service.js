@@ -85,6 +85,13 @@ function UdbApi(
     },
     params: {}
   };
+  var apiConfigWithoutAuthorization = {
+    withCredentials: false,
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    params: {}
+  };
   var offerCache = $cacheFactory('offerCache');
 
   this.mainLanguage = 'nl';
@@ -245,7 +252,7 @@ function UdbApi(
     if (website) { params.website = website; }
     if (name) { params.name = name; }
 
-    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+    var configWithQueryParams = _.set(_.cloneDeep(apiConfigWithoutAuthorization), 'params', params);
 
     return $http
       .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
