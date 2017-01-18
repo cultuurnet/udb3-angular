@@ -7152,7 +7152,8 @@ function EventDetail(
   }
 
   function isEventEditable(event) {
-    return (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date() && $scope.hasEditPermissions));
+    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
+    return ($scope.hasEditPermissions && notExpired);
   }
 
   function failedToLoad(reason) {
@@ -13283,7 +13284,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
    * @param {string} organizerId
    */
   service.removeOrganizerFromCache = function(organizerId) {
-    udbApi.removeItemFromCache(organizerId);
+    return udbApi.removeItemFromCache(organizerId);
   };
 
   /**

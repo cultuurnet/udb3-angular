@@ -355,19 +355,44 @@ describe('Controller: Event Detail', function() {
     expect(offerLabeller.label).not.toHaveBeenCalled();
   });
 
-  it('should return false if an event is not editable', function () {
-    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+  it('should not show an event as editable when the user does not have the required permissions', function () {
+    var event = new UdbEvent(exampleEventJson);
     $scope.hasEditPermissions = true;
 
-    expect($scope.isEventEditable(deferredEvent)).toBeFalsy();
+    expect($scope.isEventEditable(event)).toBeFalsy();
   });
 
-  it('should return false if an event is not editable', function () {
-    deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    deferredEvent.endDate = '2017-06-20T19:00:00+02:00';
+  it('should show an event as editable when the user has the required permissions and the offer is not expired', function () {
+    var baseTime = new Date(2020, 9, 23);
+    jasmine.clock().mockDate(baseTime);
+
+    var event = new UdbEvent(exampleEventJson);
+    event.endDate = '2021-06-20T19:00:00+02:00';
+
     $scope.hasEditPermissions = true;
 
-    expect($scope.isEventEditable(deferredEvent)).toBeTruthy();
+    expect($scope.isEventEditable(event)).toBeTruthy();
+  });
+
+  it('should not show an event as editable when the user has the required permissions but the offer is expired', function () {
+    var baseTime = new Date(2020, 9, 23);
+    jasmine.clock().mockDate(baseTime);
+
+    var event = new UdbEvent(exampleEventJson);
+    event.endDate = '2016-06-20T19:00:00+02:00';
+    $scope.hasEditPermissions = true;
+
+    expect($scope.isEventEditable(event)).toBeFalsy();
+  });
+
+  it('should not show an event as editable when the offer is permanent but the user lacks permissions', function () {
+    var permanentEventJson = angular.copy(exampleEventJson);
+    permanentEventJson.calendarType = 'permanent';
+    var event = new UdbEvent(permanentEventJson);
+
+    $scope.hasEditPermissions = false;
+
+    expect($scope.isEventEditable(event)).toBeFalsy();
   });
 
   it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
