@@ -146,6 +146,7 @@ describe('Controller: Event Detail', function() {
         "modified": "2015-06-05T10:50:17+02:00",
         "publisher": "Invoerders Algemeen ",
         "startDate": "2015-06-19T19:00:00+02:00",
+        "endDate": "2015-06-20T19:00:00+02:00",
         "calendarType": "single",
         "performer": [{"name": "maaike beuten "}],
         "sameAs": ["http://www.uitinvlaanderen.be/agenda/e/70-mijl-in-vogelvlucht/1111be8c-a412-488d-9ecc-8fdf9e52edbc"],
@@ -218,7 +219,6 @@ describe('Controller: Event Detail', function() {
     expect(udbApi.getHistory).toHaveBeenCalledWith(
       'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
-    expect($scope.eventIsEditable).toEqual(true);
   });
 
   it('should loads the event description from the variation', function () {
@@ -353,6 +353,21 @@ describe('Controller: Event Detail', function() {
     expect($scope.event.labels).toEqual(expectedLabels);
     expect($window.alert).toHaveBeenCalledWith('Het label "Some Label" is reeds toegevoegd als "some label".');
     expect(offerLabeller.label).not.toHaveBeenCalled();
+  });
+
+  it('should return false if an event is not editable', function () {
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    $scope.hasEditPermissions = true;
+
+    expect($scope.isEventEditable(deferredEvent)).toBeFalsy();
+  });
+
+  it('should return false if an event is not editable', function () {
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    deferredEvent.endDate = '2017-06-20T19:00:00+02:00';
+    $scope.hasEditPermissions = true;
+
+    expect($scope.isEventEditable(deferredEvent)).toBeTruthy();
   });
 
   it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
