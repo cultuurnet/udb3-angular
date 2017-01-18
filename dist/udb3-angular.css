@@ -3113,10 +3113,6 @@ input + .alert {
   line-height: 18px;
   text-transform: uppercase;
 }
-#gemeente-kiezer,
-#locatie-kiezer {
-  min-height: 100px;
-}
 form.contact-info table,
 form.booking-period table {
   border: 1px solid #dddddd;
@@ -3132,6 +3128,9 @@ form.booking-period table {
 }
 .organizer-form .alert-link {
   text-decoration: underline;
+}
+.audience .help-block {
+  font-size: small;
 }
 .muted td {
   background-color: #EDEDED;

@@ -206,6 +206,16 @@ describe('Controller: Offer', function() {
     expect(offerLabeller.label).not.toHaveBeenCalled();
   });
 
+  it('should return true when an event is expired', function () {
+    var endDate = '2015-06-20T19:00:00+02:00';
+    expect($scope.offerIsExpired(endDate)).toBeTruthy();
+  });
+
+  it('should return false when an event is not expired', function () {
+    var endDate = '2017-06-20T19:00:00+02:00';
+    expect($scope.offerIsExpired(endDate)).toBeFalsy();
+  });
+
   describe('variations: ', function () {
     beforeEach(function () {
       deferredEvent.resolve(new UdbEvent(exampleEventJson));

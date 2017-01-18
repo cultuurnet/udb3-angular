@@ -9,7 +9,7 @@ describe('Controller: event form step 5', function () {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
     'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
     'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
-    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19}
+    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
   };
 
   beforeEach(inject(function ($rootScope, $injector) {
@@ -772,7 +772,7 @@ describe('Controller: event form step 5', function () {
     stepController = getController();
 
     expect(scope.ageRange).toEqual(AgeRange.ALL);
-    expect(scope.minAge).toEqual(1);
+    expect(scope.minAge).toEqual(0);
   });
 
   it('should initialize with an "teens" age range when only for 18 year olds', function () {
