@@ -7342,6 +7342,7 @@ function EventDetail(
 
   $scope.eventIdIsInvalid = false;
   $scope.hasEditPermissions = false;
+  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -7395,6 +7396,11 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+  }
+
+  function isEventEditable(event) {
+    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
+    return ($scope.hasEditPermissions && notExpired);
   }
 
   function failedToLoad(reason) {
@@ -10957,9 +10963,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   var AgeRangeEnum = Object.freeze({
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
-    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
+    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 0, max: 12},
     'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
-    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19}
+    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
   });
   /**
    * Enum for contact info types.
@@ -11686,9 +11692,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
           minAge = EventFormData.typicalAgeRange;
         }
 
-        if (minAge) {
+        if (typeof minAge === 'number') {
           $scope.minAge = minAge;
-
           if (maxAge) {
             $scope.ageRange = _.findWhere(AgeRangeEnum, {max: maxAge});
           }
@@ -11700,9 +11705,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
           }
         }
       }
-
-      if (!$scope.ageRange) {
-        $scope.minAge = 1;
+      else {
+        $scope.minAge = 0;
         $scope.ageRange = AgeRangeEnum.ALL;
       }
     }
@@ -13503,7 +13507,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
    * @param {string} organizerId
    */
   service.removeOrganizerFromCache = function(organizerId) {
-    udbApi.removeItemFromCache(organizerId);
+    return udbApi.removeItemFromCache(organizerId);
   };
 
   /**
@@ -17776,6 +17780,8 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
+  $scope.offerIsExpired = offerIsExpired;
+
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -17852,6 +17858,13 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
+
+  function offerIsExpired(offerEndDate) {
+    var endDate = new Date(offerEndDate);
+    var now = new Date();
+
+    return endDate < now;
+  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
@@ -18653,6 +18666,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <strong>\n" +
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
+    "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
     "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
@@ -18664,22 +18678,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</td>\n" +
     "\n" +
     "<td>\n" +
-    "  <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "    <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
-    "    <ul uib-dropdown-menu role=\"menu\">\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
-    "      </li>\n" +
-    "      <li class=\"divider\"></li>\n" +
-    "      <li role=\"menuitem\" ng-if=\"offerType === 'event'\">\n" +
-    "        <a ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</a>\n" +
-    "      </li>\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
-    "      </li>\n" +
-    "    </ul>\n" +
-    "  </div>\n" +
+    "  <span ng-if=\"!offerIsExpired(event.endDate)\">\n" +
+    "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
+    "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "      <ul uib-dropdown-menu role=\"menu\">\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
+    "        </li>\n" +
+    "        <li class=\"divider\"></li>\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
+    "  <span ng-if=\"offerIsExpired(event.endDate)\">\n" +
+    "    <div class=\"pull-right\">\n" +
+    "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
     "</td>\n"
   );
 
@@ -19144,7 +19162,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <div class=\"btn-group pull-right\" ng-if=\"hasEditPermissions\">\n" +
+    "          <div class=\"btn-group pull-right\" ng-if=\"isEventEditable(event)\">\n" +
     "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
     "            <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
     "              <span class=\"caret\"></span>\n" +
@@ -19347,11 +19365,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           value=\"members\"\n" +
     "                           aria-describedby=\"audience-members-help\">\n" +
     "                    Enkel voor leden\n" +
+    "                    <span id=\"audience-members-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'members'\">\n" +
+    "                        Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.\n" +
+    "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
-    "            <span id=\"audience-members-help\" class=\"help-block\">\n" +
-    "                Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.\n" +
-    "            </span>\n" +
+    "\n" +
     "\n" +
     "            <div class=\"radio\">\n" +
     "                <label>\n" +
@@ -19363,15 +19382,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           value=\"education\"\n" +
     "                           aria-describedby=\"audience-education-help\">\n" +
     "                    Specifiek voor scholen\n" +
+    "                    <span id=\"audience-education-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'education'\">\n" +
+    "                        Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren\n" +
+    "                        kan je nog specifieke informatie voor scholen toevoegen.\n" +
+    "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
-    "            <span id=\"audience-education-help\" class=\"help-block\">\n" +
-    "                Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren\n" +
-    "                kan je nog specifieke informatie voor scholen toevoegen.\n" +
-    "            </span>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
