@@ -42,6 +42,7 @@ function EventDetail(
 
   $scope.eventIdIsInvalid = false;
   $scope.hasEditPermissions = false;
+  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -95,6 +96,10 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+  }
+
+  function isEventEditable(event) {
+    return (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date() && $scope.hasEditPermissions));
   }
 
   function failedToLoad(reason) {

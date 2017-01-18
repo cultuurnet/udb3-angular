@@ -7095,6 +7095,7 @@ function EventDetail(
 
   $scope.eventIdIsInvalid = false;
   $scope.hasEditPermissions = false;
+  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -7148,6 +7149,10 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+  }
+
+  function isEventEditable(event) {
+    return (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date() && $scope.hasEditPermissions));
   }
 
   function failedToLoad(reason) {
@@ -17551,6 +17556,8 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
+  $scope.offerIsExpired = offerIsExpired;
+
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -17627,6 +17634,13 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
+
+  function offerIsExpired(offerEndDate) {
+    var endDate = new Date(offerEndDate);
+    var now = new Date();
+
+    return endDate < now;
+  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
@@ -18441,19 +18455,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</td>\n" +
     "\n" +
     "<td>\n" +
-    "  <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "    <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
-    "    <ul uib-dropdown-menu role=\"menu\">\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
-    "      </li>\n" +
-    "      <li class=\"divider\"></li>\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
-    "      </li>\n" +
-    "    </ul>\n" +
-    "  </div>\n" +
+    "  <span ng-if=\"!offerIsExpired(event.endDate)\">\n" +
+    "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
+    "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "      <ul uib-dropdown-menu role=\"menu\">\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
+    "        </li>\n" +
+    "        <li class=\"divider\"></li>\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
+    "  <span ng-if=\"offerIsExpired(event.endDate)\">\n" +
+    "    <div class=\"pull-right\">\n" +
+    "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
     "</td>\n"
   );
 
@@ -18825,7 +18846,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <div class=\"btn-group pull-right\" ng-if=\"hasEditPermissions\">\n" +
+    "          <div class=\"btn-group pull-right\" ng-if=\"isEventEditable(event)\">\n" +
     "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
     "            <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
     "              <span class=\"caret\"></span>\n" +
