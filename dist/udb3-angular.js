@@ -18386,7 +18386,8 @@ angular
     'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
     'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen'
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven'
   });
 
 // Source: .tmp/udb3-angular.templates.js
