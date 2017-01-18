@@ -42,7 +42,7 @@ function EventDetail(
 
   $scope.eventIdIsInvalid = false;
   $scope.hasEditPermissions = false;
-  $scope.isEventPassed = false;
+  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -89,10 +89,6 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    if (new Date($scope.event.endDate) < new Date()) {
-      $scope.isEventPassed = true;
-    }
-
     personalVariationLoaded
       .then(function (variation) {
         $scope.event.description = variation.description[language];
@@ -100,6 +96,10 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+  }
+
+  function isEventEditable(event) {
+    return (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date() && $scope.hasEditPermissions));
   }
 
   function failedToLoad(reason) {
