@@ -13,8 +13,8 @@
   </small>
 </td>
 
-<td>
-  <span ng-if="!offerIsExpired(event.endDate)">
+<td ng-if="!offerCtrl.fetching">
+  <span ng-if="::!offerCtrl.offerExpired">
     <div class="pull-right btn-group" uib-dropdown>
       <a class="btn btn-default" ng-href="{{ event.url + '/edit' }}">Bewerken</a>
       <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
@@ -29,7 +29,7 @@
       </ul>
     </div>
   </span>
-  <span ng-if="offerIsExpired(event.endDate)">
+  <span ng-if="::offerCtrl.offerExpired">
     <div class="pull-right">
       <span class="text-muted">Afgelopen evenement</span>
     </div>

@@ -4257,6 +4257,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+    isExpired: function () {
+      return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
     }
   };
 
@@ -4963,7 +4966,7 @@ function udbDashboardEventItem() {
   var dashboardEventItemDirective = {
     restrict: 'AE',
     controller: 'OfferController',
-    controllerAs: 'eventCtrl',
+    controllerAs: 'offerCtrl',
     templateUrl: 'templates/dashboard-item.directive.html'
   };
 
@@ -4986,7 +4989,7 @@ function udbDashboardPlaceItem() {
   var dashboardPlaceItemDirective = {
     restrict: 'AE',
     controller: 'OfferController',
-    controllerAs: 'placeCtrl',
+    controllerAs: 'offerCtrl',
     templateUrl: 'templates/dashboard-item.directive.html'
   };
 
@@ -17780,8 +17783,6 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
-  $scope.offerIsExpired = offerIsExpired;
-
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -17802,6 +17803,7 @@ function OfferController(
 
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
+          controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.fetching = false;
 
           watchLabels();
@@ -17858,13 +17860,6 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
-
-  function offerIsExpired(offerEndDate) {
-    var endDate = new Date(offerEndDate);
-    var now = new Date();
-
-    return endDate < now;
-  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
@@ -18677,8 +18672,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </small>\n" +
     "</td>\n" +
     "\n" +
-    "<td>\n" +
-    "  <span ng-if=\"!offerIsExpired(event.endDate)\">\n" +
+    "<td ng-if=\"!offerCtrl.fetching\">\n" +
+    "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
@@ -18693,7 +18688,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </ul>\n" +
     "    </div>\n" +
     "  </span>\n" +
-    "  <span ng-if=\"offerIsExpired(event.endDate)\">\n" +
+    "  <span ng-if=\"::offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right\">\n" +
     "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
     "    </div>\n" +
