@@ -2929,7 +2929,7 @@ function UdbApi(
     var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
 
     return $http
-      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
   };
 
