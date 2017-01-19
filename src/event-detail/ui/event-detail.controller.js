@@ -42,11 +42,13 @@ function EventDetail(
   });
 
   /**
-   * Grant permissions
-   * @param {Object} permissionData
+   * Grant permissions based on permission-data.
+   * @param {Array} permissionsData
+   *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
+   *  The second value holds the offer itself.
    */
-  function grantPermissions(permissionData) {
-    var event = permissionData[1];
+  function grantPermissions(permissionsData) {
+    var event = permissionsData[1];
     $scope.permissions = {editing: !event.isExpired(), duplication: true};
   }
 

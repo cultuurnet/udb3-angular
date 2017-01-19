@@ -7345,11 +7345,13 @@ function EventDetail(
   });
 
   /**
-   * Grant permissions
-   * @param {Object} permissionData
+   * Grant permissions based on permission-data.
+   * @param {Array} permissionsData
+   *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
+   *  The second value holds the offer itself.
    */
-  function grantPermissions(permissionData) {
-    var event = permissionData[1];
+  function grantPermissions(permissionsData) {
+    var event = permissionsData[1];
     $scope.permissions = {editing: !event.isExpired(), duplication: true};
   }
 
@@ -15226,17 +15228,26 @@ function PlaceDetail(
   $q.when(placeId, function(offerLocation) {
     $scope.placeId = offerLocation;
 
-    udbApi
-      .hasPermission(offerLocation)
-      .then(allowEditing);
+    var offer = udbApi.getOffer(offerLocation);
+    var permission = udbApi.hasPermission(offerLocation);
 
-    udbApi
-      .getOffer(offerLocation)
-      .then(showOffer, failedToLoad);
+    offer.then(showOffer, failedToLoad);
+
+    $q.all([permission, offer])
+      .then(grantPermissions, denyAllPermissions);
+
+    permission.catch(denyAllPermissions);
   });
 
+  function grantPermissions() {
+    $scope.permissions = {editing: true};
+  }
+
+  function denyAllPermissions() {
+    $scope.permissions = {editing: false};
+  }
+
   $scope.placeIdIsInvalid = false;
-  $scope.hasEditPermissions = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.placeHistory = [];
@@ -15253,10 +15264,6 @@ function PlaceDetail(
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
   };
-
-  function allowEditing() {
-    $scope.hasEditPermissions = true;
-  }
 
   var language = 'nl';
   var cachedPlace;
@@ -19170,13 +19177,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </ul>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "\n" +
-    "        <div class=\"clearfix\">\n" +
-    "\n" +
-    "          <h2 class=\"block-header\">Voorbeeld</h2>\n" +
-    "\n" +
-    "        </div>\n" +
-    "\n" +
+    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
     "        <div class=\"panel panel-default\">\n" +
     "          <table class=\"table udb3-data-table\">\n" +
     "            <colgroup>\n" +
@@ -22345,38 +22346,31 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div ng-if=\"place\">\n" +
-    "  <div class=\"page-header\">\n" +
-    "    <h1>{{place.name}}</h1>\n" +
-    "  </div>\n" +
+    "  <h1 class=\"title\" ng-bind=\"place.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
-    "    <div class=\"col-xs-3\">\n" +
-    "      <ul class=\"nav nav-pills nav-stacked\">\n" +
+    "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
+    "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                href=\"#\"\n" +
+    "                ng-click=\"deletePlace()\">Verwijderen</button>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-xs-9 col-sm-pull-3\">\n" +
+    "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
     "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
-    "    </div>\n" +
     "\n" +
-    "    <div class=\"col-xs-9\">\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "\n" +
-    "        <div class=\"clearfix\">\n" +
-    "          <div class=\"btn-group pull-right\" ng-if=\"hasEditPermissions\">\n" +
-    "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
-    "            <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
-    "              <span class=\"caret\"></span>\n" +
-    "              <span class=\"sr-only\">Toggle Dropdown</span>\n" +
-    "            </button>\n" +
-    "            <ul class=\"dropdown-menu\" role=\"menu\">\n" +
-    "              <li><a href=\"#\" ng-click=\"deletePlace()\">Verwijderen</a>\n" +
-    "              </li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "          <p class=\"block-header\">Voorbeeld</p>\n" +
-    "\n" +
-    "        </div>\n" +
-    "\n" +
+    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
     "        <div class=\"panel panel-default\">\n" +
     "          <table class=\"table udb3-data-table\">\n" +
     "            <colgroup>\n" +

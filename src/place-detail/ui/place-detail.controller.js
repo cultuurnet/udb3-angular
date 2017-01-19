@@ -32,17 +32,26 @@ function PlaceDetail(
   $q.when(placeId, function(offerLocation) {
     $scope.placeId = offerLocation;
 
-    udbApi
-      .hasPermission(offerLocation)
-      .then(allowEditing);
+    var offer = udbApi.getOffer(offerLocation);
+    var permission = udbApi.hasPermission(offerLocation);
 
-    udbApi
-      .getOffer(offerLocation)
-      .then(showOffer, failedToLoad);
+    offer.then(showOffer, failedToLoad);
+
+    $q.all([permission, offer])
+      .then(grantPermissions, denyAllPermissions);
+
+    permission.catch(denyAllPermissions);
   });
 
+  function grantPermissions() {
+    $scope.permissions = {editing: true};
+  }
+
+  function denyAllPermissions() {
+    $scope.permissions = {editing: false};
+  }
+
   $scope.placeIdIsInvalid = false;
-  $scope.hasEditPermissions = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.placeHistory = [];
@@ -59,10 +68,6 @@ function PlaceDetail(
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
   };
-
-  function allowEditing() {
-    $scope.hasEditPermissions = true;
-  }
 
   var language = 'nl';
   var cachedPlace;
