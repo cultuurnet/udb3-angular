@@ -27,22 +27,34 @@ function EventDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
-
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
-    udbApi
-      .hasPermission(offerLocation)
-      .then(allowEditing);
+    var offer = udbApi.getOffer(offerLocation);
+    var permission = udbApi.hasPermission(offerLocation);
 
-    udbApi
-      .getOffer(offerLocation)
-      .then(showOffer, failedToLoad);
+    offer.then(showOffer, failedToLoad);
+
+    $q.all([permission, offer])
+      .then(grantPermissions, denyAllPermissions);
+
+    permission.catch(denyAllPermissions);
   });
 
+  /**
+   * Grant permissions
+   * @param {Object} permissionData
+   */
+  function grantPermissions(permissionData) {
+    var event = permissionData[1];
+    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+  }
+
+  function denyAllPermissions() {
+    $scope.permissions = {editing: false, duplication: false};
+  }
+
   $scope.eventIdIsInvalid = false;
-  $scope.hasEditPermissions = false;
-  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -64,10 +76,6 @@ function EventDetail(
     openEventDeleteConfirmModal($scope.event);
   };
   $scope.isEmpty = _.isEmpty;
-
-  function allowEditing() {
-    $scope.hasEditPermissions = true;
-  }
 
   var language = 'nl';
   var cachedEvent;
@@ -96,11 +104,6 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
-  }
-
-  function isEventEditable(event) {
-    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
-    return ($scope.hasEditPermissions && notExpired);
   }
 
   function failedToLoad(reason) {

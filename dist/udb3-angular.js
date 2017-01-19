@@ -7330,22 +7330,34 @@ function EventDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
-
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
-    udbApi
-      .hasPermission(offerLocation)
-      .then(allowEditing);
+    var offer = udbApi.getOffer(offerLocation);
+    var permission = udbApi.hasPermission(offerLocation);
 
-    udbApi
-      .getOffer(offerLocation)
-      .then(showOffer, failedToLoad);
+    offer.then(showOffer, failedToLoad);
+
+    $q.all([permission, offer])
+      .then(grantPermissions, denyAllPermissions);
+
+    permission.catch(denyAllPermissions);
   });
 
+  /**
+   * Grant permissions
+   * @param {Object} permissionData
+   */
+  function grantPermissions(permissionData) {
+    var event = permissionData[1];
+    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+  }
+
+  function denyAllPermissions() {
+    $scope.permissions = {editing: false, duplication: false};
+  }
+
   $scope.eventIdIsInvalid = false;
-  $scope.hasEditPermissions = false;
-  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -7367,10 +7379,6 @@ function EventDetail(
     openEventDeleteConfirmModal($scope.event);
   };
   $scope.isEmpty = _.isEmpty;
-
-  function allowEditing() {
-    $scope.hasEditPermissions = true;
-  }
 
   var language = 'nl';
   var cachedEvent;
@@ -7399,11 +7407,6 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
-  }
-
-  function isEventEditable(event) {
-    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
-    return ($scope.hasEditPermissions && notExpired);
   }
 
   function failedToLoad(reason) {
@@ -19140,20 +19143,29 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div ng-if=\"event\">\n" +
-    "  <h1 class=\"title\">{{event.name}}</h1>\n" +
+    "  <h1 class=\"title\" ng-bind=\"event.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
-    "      <div class=\"list-group\" ng-if=\"isEventEditable(event)\">\n" +
-    "        <button class=\"list-group-item\" type=\"button\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
-    "        <button class=\"list-group-item\" type=\"button\" ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>\n" +
-    "        <button class=\"list-group-item\" href=\"#\" ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
+    "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "        <button ng-if=\"::permissions.duplication\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                href=\"#\"\n" +
+    "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "\n" +
