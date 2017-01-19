@@ -19140,38 +19140,27 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div ng-if=\"event\">\n" +
-    "  <div class=\"page-header\">\n" +
-    "    <h1>{{event.name}}</h1>\n" +
-    "  </div>\n" +
+    "  <h1 class=\"title\">{{event.name}}</h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
-    "    <div class=\"col-xs-3\">\n" +
-    "      <ul class=\"nav nav-pills nav-stacked\">\n" +
+    "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
+    "      <div class=\"list-group\" ng-if=\"isEventEditable(event)\">\n" +
+    "        <button class=\"list-group-item\" type=\"button\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "        <button class=\"list-group-item\" type=\"button\" ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>\n" +
+    "        <button class=\"list-group-item\" href=\"#\" ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
+    "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
     "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
-    "    </div>\n" +
     "\n" +
-    "    <div class=\"col-xs-9\">\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <div class=\"btn-group pull-right\" ng-if=\"isEventEditable(event)\">\n" +
-    "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
-    "            <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
-    "              <span class=\"caret\"></span>\n" +
-    "              <span class=\"sr-only\">Toggle Dropdown</span>\n" +
-    "            </button>\n" +
-    "            <ul class=\"dropdown-menu\" role=\"menu\">\n" +
-    "              <li role=\"menuitem\">\n" +
-    "                <a ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</a>\n" +
-    "              </li>\n" +
-    "              <li>\n" +
-    "                <a href=\"#\" ng-click=\"deleteEvent()\">Verwijderen</a>\n" +
-    "              </li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
+    "\n" +
     "          <h2 class=\"block-header\">Voorbeeld</h2>\n" +
     "\n" +
     "        </div>\n" +

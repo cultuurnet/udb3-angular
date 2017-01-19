@@ -11,38 +11,27 @@
 </div>
 
 <div ng-if="event">
-  <div class="page-header">
-    <h1>{{event.name}}</h1>
-  </div>
+  <h1 class="title">{{event.name}}</h1>
 
   <div class="row">
-    <div class="col-xs-3">
-      <ul class="nav nav-pills nav-stacked">
+    <div class="col-sm-3 col-sm-push-9">
+      <div class="list-group" ng-if="isEventEditable(event)">
+        <button class="list-group-item" type="button" ng-click="openEditPage()">Bewerken</button>
+        <button class="list-group-item" type="button" ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>
+        <button class="list-group-item" href="#" ng-click="deleteEvent()">Verwijderen</button>
+      </div>
+    </div>
+    <div class="col-sm-9 col-sm-pull-3">
+      <ul class="nav nav-tabs">
         <li ng-repeat="tab in tabs" ng-class="{active: isTabActive(tab.id)}" role="tab">
-          <a ng-click="makeTabActive(tab.id)" role="tab" ng-bind="tab.header"></a>
+          <a ng-click="makeTabActive(tab.id)" role="tab" ng-bind="tab.header" href="#"></a>
         </li>
       </ul>
-    </div>
 
-    <div class="col-xs-9">
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('data')">
 
         <div class="clearfix">
-          <div class="btn-group pull-right" ng-if="isEventEditable(event)">
-            <button type="button" class="btn btn-primary" ng-click="openEditPage()">Bewerken</button>
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li role="menuitem">
-                <a ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</a>
-              </li>
-              <li>
-                <a href="#" ng-click="deleteEvent()">Verwijderen</a>
-              </li>
-            </ul>
-          </div>
+
           <h2 class="block-header">Voorbeeld</h2>
 
         </div>
