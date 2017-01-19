@@ -5348,7 +5348,7 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
    * @param {string} duplicateId
    */
   function showDuplicate(duplicateId) {
-    $state.go('split.footer.event', {id: duplicateId});
+    $state.go('split.eventEdit', {id: duplicateId});
   }
 
   function showAsyncError() {
