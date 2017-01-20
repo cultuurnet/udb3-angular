@@ -5821,6 +5821,19 @@ function EventCrud(
   };
 
   /**
+   * Select the main image for an item.
+   *
+   * @param {EventFormData} item
+   * @param {string} audienceType
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.setAudienceType = function (item, audienceType) {
+    return udbApi
+      .setAudienceType(item.apiUrl, audienceType)
+      .then(jobCreatorFactory(item, 'setAudienceType'));
+  };
+
+  /**
    * @param {EventFormData} offer
    * @param {string} jobName
    *
@@ -7327,7 +7340,7 @@ angular
   .controller('FormAudienceController', FormAudienceController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, udbApi) {
+function FormAudienceController(EventFormData, eventCrud) {
   var controller = this;
 
   controller.enabled = EventFormData.isEvent;
@@ -7335,10 +7348,10 @@ function FormAudienceController(EventFormData, udbApi) {
   controller.setAudienceType = setAudienceType;
 
   function setAudienceType(audienceType) {
-    udbApi.setAudienceType(EventFormData.apiUrl, audienceType);
+    eventCrud.setAudienceType(EventFormData, audienceType);
   }
 }
-FormAudienceController.$inject = ["EventFormData", "udbApi"];
+FormAudienceController.$inject = ["EventFormData", "eventCrud"];
 
 // Source: src/event_form/components/audience/form-audience.directive.js
 /**
