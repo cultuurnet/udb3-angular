@@ -132,12 +132,16 @@ describe('Service: Organizer manager Service', function () {
   });
 
   it('should remove an organizer from the cache', function (done) {
-    udbApi.removeItemFromCache.and.callThrough().and.callFake(done);
+    var expectedCommandId = {
+      commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'
+    };
+    udbApi.removeItemFromCache.and.returnValue($q.resolve(expectedCommandId));
 
     service
       .removeOrganizerFromCache(organizerId)
       .then(function () {
         expect(udbApi.removeItemFromCache).toHaveBeenCalledWith(organizerId);
+        done();
       });
 
     $scope.$apply();
