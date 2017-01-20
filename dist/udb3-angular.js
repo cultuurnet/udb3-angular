@@ -2766,14 +2766,18 @@ function UdbApi(
     },
     params: {}
   };
-  var apiConfigWithoutAuthorization = {
-    withCredentials: false,
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    params: {}
-  };
   var offerCache = $cacheFactory('offerCache');
+
+  function withoutAuthorization(apiConfig) {
+    var config = _.cloneDeep(apiConfig);
+    config.withCredentials = false;
+    /**
+     * @todo: use _.unset when lodash is updated to v4: https://lodash.com/docs/4.17.4#unset
+     */
+    delete config.headers.Authorization;
+
+    return config;
+  }
 
   this.mainLanguage = 'nl';
 
@@ -2933,7 +2937,7 @@ function UdbApi(
     if (website) { params.website = website; }
     if (name) { params.name = name; }
 
-    var configWithQueryParams = _.set(_.cloneDeep(apiConfigWithoutAuthorization), 'params', params);
+    var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
 
     return $http
       .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
