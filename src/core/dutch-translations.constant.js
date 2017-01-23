@@ -311,7 +311,7 @@ angular.module('udb.core')
       'organizer': 'Organisator',
       'bookingInfo.price': 'Prijsinformatie',
       'kansentarief': 'Kansentarief',
-      'bookingInfo.url': 'Reservatie-info',
+      'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
