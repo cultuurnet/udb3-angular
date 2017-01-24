@@ -53,7 +53,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
    * @param {string} organizerId
    */
   service.removeOrganizerFromCache = function(organizerId) {
-    udbApi.removeItemFromCache(organizerId);
+    return udbApi.removeItemFromCache(organizerId);
   };
 
   /**

@@ -2846,22 +2846,18 @@ function UdbApi(
    *  search results or a failure.
    */
   this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    var offset = start || 0,
-        limit = itemsPerPage || 30,
-        searchParams = {
-          start: offset,
-          limit: limit
-        };
-    var requestOptions = _.cloneDeep(defaultApiConfig);
-    requestOptions.params = searchParams;
+    return find(apiUrl + 'search', queryString, start, itemsPerPage);
+  };
 
-    if (queryString.length) {
-      searchParams.query = queryString;
-    }
-
-    return $http
-      .get(apiUrl + 'search', requestOptions)
-      .then(returnUnwrappedData, returnApiProblem);
+  /**
+   * @param {string} queryString - The query used to find offer to moderate.
+   * @param {number} [start] - From which offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findToModerate = function (queryString, start, itemsPerPage) {
+    return find(appConfig.baseUrl + 'moderation', queryString, start, itemsPerPage);
   };
 
   /**
@@ -3904,6 +3900,33 @@ function UdbApi(
       .patch(offerUrl, (reason ? updateData : {}), requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
   };
+
+  /**
+   * @param {string} path - The path to direct the HTTP request to.
+   * @param {string} queryString - The query used to find events.
+   * @param {number} [start] - From which event offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  function find(path, queryString, start, itemsPerPage) {
+    var offset = start || 0,
+      limit = itemsPerPage || 30,
+      searchParams = {
+        start: offset,
+        limit: limit
+      };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.query = queryString;
+    }
+
+    return $http
+      .get(path, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  }
 
   /**
    * @param {Object} errorResponse
@@ -7106,6 +7129,7 @@ function EventDetail(
 
   $scope.eventIdIsInvalid = false;
   $scope.hasEditPermissions = false;
+  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -7159,6 +7183,11 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+  }
+
+  function isEventEditable(event) {
+    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
+    return ($scope.hasEditPermissions && notExpired);
   }
 
   function failedToLoad(reason) {
@@ -12957,7 +12986,7 @@ function ModerationListController(
       var canModerate = _.filter(role.permissions, function(permission) {
         return permission === RolePermission.AANBOD_MODEREREN;
       });
-      return canModerate.length > 0 ? true : false;
+      return canModerate.length > 0;
     });
 
     if (filteredRoles.length) {
@@ -13051,7 +13080,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
     queryString = (queryString ? '(' + queryString + ')' + ' AND ' : '') + moderationFilter;
 
     return udbApi
-      .findEventsWithLimit(queryString, offset, itemsPerPage);
+      .findToModerate(queryString, offset, itemsPerPage);
   };
 
   /**
@@ -13289,7 +13318,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
    * @param {string} organizerId
    */
   service.removeOrganizerFromCache = function(organizerId) {
-    udbApi.removeItemFromCache(organizerId);
+    return udbApi.removeItemFromCache(organizerId);
   };
 
   /**
@@ -17562,6 +17591,8 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
+  $scope.offerIsExpired = offerIsExpired;
+
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -17638,6 +17669,13 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
+
+  function offerIsExpired(offerEndDate) {
+    var endDate = new Date(offerEndDate);
+    var now = new Date();
+
+    return endDate < now;
+  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
@@ -18383,7 +18421,8 @@ angular
     'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
     'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen'
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven'
   });
 
 // Source: .tmp/udb3-angular.templates.js
@@ -18452,19 +18491,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</td>\n" +
     "\n" +
     "<td>\n" +
-    "  <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "    <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
-    "    <ul uib-dropdown-menu role=\"menu\">\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
-    "      </li>\n" +
-    "      <li class=\"divider\"></li>\n" +
-    "      <li role=\"menuitem\">\n" +
-    "        <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
-    "      </li>\n" +
-    "    </ul>\n" +
-    "  </div>\n" +
+    "  <span ng-if=\"!offerIsExpired(event.endDate)\">\n" +
+    "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
+    "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "      <ul uib-dropdown-menu role=\"menu\">\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
+    "        </li>\n" +
+    "        <li class=\"divider\"></li>\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
+    "  <span ng-if=\"offerIsExpired(event.endDate)\">\n" +
+    "    <div class=\"pull-right\">\n" +
+    "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
     "</td>\n"
   );
 
@@ -18836,7 +18882,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <div class=\"btn-group pull-right\" ng-if=\"hasEditPermissions\">\n" +
+    "          <div class=\"btn-group pull-right\" ng-if=\"isEventEditable(event)\">\n" +
     "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
     "            <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
     "              <span class=\"caret\"></span>\n" +
