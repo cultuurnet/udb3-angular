@@ -8185,7 +8185,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
 })();
 
-// Source: src/event_form/components/price-form-modal/price-form-modal-controller.js
+// Source: src/event_form/components/price-form-modal/price-form-modal.controller.js
 /**
  * @ngdoc function
  * @name udbApp.controller:PriceFormModalController
@@ -8199,7 +8199,6 @@ angular
 
 /* @ngInject */
 function PriceFormModalController(
-  $scope,
   $uibModalInstance,
   EventFormData,
   price
@@ -8292,7 +8291,7 @@ function PriceFormModalController(
   }
 
 }
-PriceFormModalController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "price"];
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price"];
 
 // Source: src/event_form/components/price-info/price-info.component.js
 /**

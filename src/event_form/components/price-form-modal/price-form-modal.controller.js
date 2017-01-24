@@ -13,7 +13,6 @@ angular
 
 /* @ngInject */
 function PriceFormModalController(
-  $scope,
   $uibModalInstance,
   EventFormData,
   price
