@@ -42,7 +42,8 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'calendarType', include: false, sortable: false, excludable: true},
     {name: 'sameAs', include: false, sortable: false, excludable: true},
     {name: 'typicalAgeRange', include: false, sortable: false, excludable: true},
-    {name: 'language', include: false, sortable: false, excludable: true}
+    {name: 'language', include: false, sortable: false, excludable: true},
+    {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML}
   ];
 
   exporter.exportFormats = _.map(ExportFormats);

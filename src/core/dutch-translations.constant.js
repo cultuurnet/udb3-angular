@@ -325,7 +325,8 @@ angular.module('udb.core')
       'calendarType': 'Tijd type',
       'sameAs': 'Externe IDs',
       'typicalAgeRange': 'Leeftijd',
-      'language': 'Taal'
+      'language': 'Taal',
+      'audience': 'Toegang'
     },
     queryFieldGroup: {
       'what': 'Wat',
