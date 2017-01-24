@@ -238,6 +238,18 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // findToModerate
+  it('should find offer to moderate when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'moderation?query=searchquery&start=120&limit=60')
+      .respond(JSON.stringify(response));
+    service
+      .findToModerate('searchquery', 120, 60)
+      .then(done);
+    $httpBackend.flush();
+  });
+
   // getOffer
   it('should retrieve offers from api when not in cache', function (done) {
     var offerLocation = 'http://foobar/event/0823f57e-a6bd-450a-b4f5-8459b4b11043';
