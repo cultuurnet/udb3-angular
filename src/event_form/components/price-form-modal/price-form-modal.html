@@ -1,16 +1,16 @@
 
 <div class="modal-header">
-    <button type="button" class="close" ng-click="cancelEditPrice()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <button type="button" class="close" ng-click="pfmc.cancelEditPrice()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
     <h4 class="modal-title">Prijzen toevoegen</h4>
 </div>
 <div class="modal-body">
 
-    <form name="priceForm" novalidate>
+    <form name="pfmc.priceForm" novalidate>
         <table class="table">
             <div class="form-group">
-                <tr ng-repeat="(key, priceInfo) in price"
+                <tr ng-repeat="(key, priceInfo) in pfmc.price"
                     ng-model="priceInfo"
-                    ng-form="priceInfoForm">
+                    ng-form="pfmc.priceForm">
                     <td ng-switch on="priceInfo.category"
                         class="col-xs-4">
                         <span ng-switch-when="base">
@@ -22,7 +22,7 @@
                                    name="name"
                                    placeholder="Doelgroep"
                                    ng-model="priceInfo.name"
-                                   ng-class="{ 'has-error': priceForm.name.$invalid }"
+                                   ng-class="{ 'has-error': pfmc.priceForm.name.$invalid }"
                                    required />
                         </span>
                     </td>
@@ -38,7 +38,7 @@
                                            name="price"
                                            ng-model="priceInfo.price"
                                            ng-model-options="{ updateOn: 'blur' }"
-                                           ng-class="{ 'has-error': priceForm.price.$invalid }"
+                                           ng-class="{ 'has-error': pfmc.priceForm.price.$invalid }"
                                            required />
                                 </div>
                                 <div class="form-group">euro</div>
@@ -48,41 +48,41 @@
                     <td ng-switch on="priceInfo.price"
                         class="col-xs-3">
                         <a class="btn btn-link"
-                           ng-click="unsetPriceItemFree(key)"
+                           ng-click="pfmc.unsetPriceItemFree(key)"
                            ng-switch-when="0">Prijs invoeren</a>
                         <a class="btn btn-link"
-                           ng-click="setPriceItemFree(key)"
+                           ng-click="pfmc.setPriceItemFree(key)"
                            ng-switch-default>Gratis</a>
                     </td>
                     <td class="col-xs-1">
                         <a aria-hidden="true"
-                           ng-click="deletePriceItem(key)"
-                           ng-if="showPriceDelete(key)" class="close">&times;</a>
+                           ng-click="pfmc.deletePriceItem(key)"
+                           ng-if="pfmc.showPriceDelete(key)" class="close">&times;</a>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <a class="btn btn-link" ng-click="addPriceItem()">Tarief toevoegen</a>
+                        <a class="btn btn-link" ng-click="pfmc.addPriceItem()">Tarief toevoegen</a>
                     </td>
                 </tr>
             </div>
         </table>
     </form>
 
-    <div ng-show="priceError" class="alert alert-danger">
+    <div ng-show="pfmc.priceError" class="alert alert-danger">
         Er ging iets fout bij het opslaan van de prijs.
     </div>
-    <div ng-show="invalidPrice" class="alert alert-danger">
+    <div ng-show="pfmc.invalidPrice" class="alert alert-danger">
         Gelieve een geldige prijs en omschrijving in te voeren.
     </div>
 
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancelEditPrice()">Sluiten</button>
+    <button type="button" class="btn btn-default" ng-click="pfmc.cancelEditPrice()">Sluiten</button>
     <button type="button"
             class="btn btn-primary organisator-toevoegen-bewaren"
-            ng-click="validatePrice()"
-            ng-disabled="priceForm.$invalid || priceForm.$pristine">
+            ng-click="pfmc.validatePrice()"
+            ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
         Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
     </button>
 </div>

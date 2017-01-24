@@ -8175,58 +8175,56 @@ function PriceFormModalController(
   EventFormData,
   price
 ) {
-
+  var pfmc = this;
   var originalPrice = [];
 
-  $scope.init = init;
-  $scope.unsetPriceItemFree = unsetPriceItemFree;
-  $scope.setPriceItemFree = setPriceItemFree;
-  $scope.deletePriceItem = deletePriceItem;
-  $scope.showPriceDelete = showPriceDelete;
-  $scope.addPriceItem = addPriceItem;
-  $scope.cancelEditPrice = cancelEditPrice;
-  $scope.validatePrice = validatePrice;
-  $scope.save = save;
+  pfmc.unsetPriceItemFree = unsetPriceItemFree;
+  pfmc.setPriceItemFree = setPriceItemFree;
+  pfmc.deletePriceItem = deletePriceItem;
+  pfmc.showPriceDelete = showPriceDelete;
+  pfmc.addPriceItem = addPriceItem;
+  pfmc.cancelEditPrice = cancelEditPrice;
+  pfmc.validatePrice = validatePrice;
 
   function init() {
-    $scope.price = angular.copy(price);
+    pfmc.price = angular.copy(price);
     originalPrice = angular.copy(price);
 
-    if ($scope.price.length === 0) {
+    if (pfmc.price.length === 0) {
       var priceItem = {
         category: 'base',
         name: 'Basistarief',
         priceCurrency: 'EUR',
         price: ''
       };
-      $scope.price.push(priceItem);
+      pfmc.price.push(priceItem);
     }
 
-    $scope.priceError = false;
-    $scope.invalidPrice = false;
-    $scope.savingPrice = false;
-    $scope.formPriceSubmitted = false;
+    pfmc.priceError = false;
+    pfmc.invalidPrice = false;
+    pfmc.savingPrice = false;
+    pfmc.formPriceSubmitted = false;
   }
 
   init();
 
   function unsetPriceItemFree(key) {
-    $scope.price[key].price = '';
+    pfmc.price[key].price = '';
   }
 
   function setPriceItemFree(key) {
-    $scope.price[key].price = 0;
+    pfmc.price[key].price = 0;
   }
 
   function deletePriceItem(key) {
-    $scope.price.splice(key, 1);
+    pfmc.price.splice(key, 1);
   }
 
   function showPriceDelete(key) {
     return key !== 0;
 
     // TODO when BE can accept empty price array
-    /*if (key === 0 && controller.price.length === 1) {
+    /*if (key === 0 && pfmc.price.length === 1) {
      return true;
      }
      else {
@@ -8241,34 +8239,34 @@ function PriceFormModalController(
       priceCurrency: 'EUR',
       price: ''
     };
-    $scope.price.push(priceItem);
+    pfmc.price.push(priceItem);
   }
 
   function cancelEditPrice() {
-    $scope.price = angular.copy(originalPrice);
+    pfmc.price = angular.copy(originalPrice);
     originalPrice = [];
 
-    $scope.invalidPrice = false;
-    $scope.priceError = false;
-    $scope.formPriceSubmitted = false;
+    pfmc.invalidPrice = false;
+    pfmc.priceError = false;
+    pfmc.formPriceSubmitted = false;
 
     $uibModalInstance.dismiss('cancel');
   }
 
   function validatePrice() {
-    $scope.formPriceSubmitted = true;
-    if ($scope.priceForm.$valid) {
-      $scope.priceError = false;
-      $scope.invalidPrice = false;
+    pfmc.formPriceSubmitted = true;
+    if (pfmc.priceForm.$valid) {
+      pfmc.priceError = false;
+      pfmc.invalidPrice = false;
       save();
     }
     else {
-      $scope.invalidPrice = true;
+      pfmc.invalidPrice = true;
     }
   }
 
   function save() {
-    EventFormData.priceInfo = $scope.price;
+    EventFormData.priceInfo = pfmc.price;
     $uibModalInstance.close();
   }
 
@@ -8296,17 +8294,17 @@ angular
 /* @ngInject */
 function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootScope) {
 
-  $scope.setPriceFree = setPriceFree;
-  $scope.openModal = openModal;
-  $scope.savePrice = savePrice;
-  $scope.cancelPrice = cancelPrice;
+  var controller = this;
+
+  controller.setPriceFree = setPriceFree;
+  controller.openModal = openModal;
 
   init();
 
   function setPriceFree() {
 
-    if ($scope.price.length === 0) {
-      $scope.price = [
+    if (controller.price.length === 0) {
+      controller.price = [
         {
           category: 'base',
           name: 'Basisprijs',
@@ -8316,13 +8314,13 @@ function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootSc
       ];
     }
 
-    EventFormData.priceInfo = $scope.price;
+    EventFormData.priceInfo = controller.price;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
       $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty($scope.price)) {
-        $scope.priceCssClass = 'state-complete';
+      if (!_.isEmpty(controller.price)) {
+        controller.priceCssClass = 'state-complete';
       }
     });
   }
@@ -8331,50 +8329,51 @@ function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootSc
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/price-form-modal.html',
       controller: 'PriceFormModalController',
+      controllerAs: 'pfmc',
       resolve: {
         price: function () {
-          return $scope.price;
+          return controller.price;
         }
       }
     });
 
-    modalInstance.result.then($scope.savePrice, $scope.cancelPrice);
+    modalInstance.result.then(savePrice, cancelPrice);
   }
 
   function init() {
-    $scope.price = EventFormData.priceInfo;
+    controller.price = EventFormData.priceInfo;
 
-    if ($scope.price.length) {
-      $scope.priceCssClass = 'state-complete';
+    if (controller.price.length) {
+      controller.priceCssClass = 'state-complete';
     }
     else {
-      $scope.priceCssClass = '';
+      controller.priceCssClass = '';
     }
   }
 
   function savePrice() {
-    $scope.savingPrice = true;
-    $scope.price = EventFormData.priceInfo;
+    controller.savingPrice = true;
+    controller.price = EventFormData.priceInfo;
 
-    $scope.editPrice = false;
+    controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
       $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty($scope.price)) {
-        $scope.priceCssClass = 'state-complete';
+      if (!_.isEmpty(controller.price)) {
+        controller.priceCssClass = 'state-complete';
       }
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
     }, function () {
-      $scope.priceError = true;
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
+      controller.priceError = true;
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
     });
   }
 
   function cancelPrice() {
-    $scope.price = EventFormData.priceInfo;
+    controller.price = EventFormData.priceInfo;
   }
 }
 PriceInfoComponent.$inject = ["$scope", "$uibModal", "EventFormData", "eventCrud", "$rootScope"];
@@ -19853,17 +19852,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/price-form-modal.html',
     "\n" +
     "<div class=\"modal-header\">\n" +
-    "    <button type=\"button\" class=\"close\" ng-click=\"cancelEditPrice()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
+    "    <button type=\"button\" class=\"close\" ng-click=\"pfmc.cancelEditPrice()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
     "    <h4 class=\"modal-title\">Prijzen toevoegen</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
-    "    <form name=\"priceForm\" novalidate>\n" +
+    "    <form name=\"pfmc.priceForm\" novalidate>\n" +
     "        <table class=\"table\">\n" +
     "            <div class=\"form-group\">\n" +
-    "                <tr ng-repeat=\"(key, priceInfo) in price\"\n" +
+    "                <tr ng-repeat=\"(key, priceInfo) in pfmc.price\"\n" +
     "                    ng-model=\"priceInfo\"\n" +
-    "                    ng-form=\"priceInfoForm\">\n" +
+    "                    ng-form=\"pfmc.priceForm\">\n" +
     "                    <td ng-switch on=\"priceInfo.category\"\n" +
     "                        class=\"col-xs-4\">\n" +
     "                        <span ng-switch-when=\"base\">\n" +
@@ -19875,7 +19874,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   name=\"name\"\n" +
     "                                   placeholder=\"Doelgroep\"\n" +
     "                                   ng-model=\"priceInfo.name\"\n" +
-    "                                   ng-class=\"{ 'has-error': priceForm.name.$invalid }\"\n" +
+    "                                   ng-class=\"{ 'has-error': pfmc.priceForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -19891,7 +19890,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                           name=\"price\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
-    "                                           ng-class=\"{ 'has-error': priceForm.price.$invalid }\"\n" +
+    "                                           ng-class=\"{ 'has-error': pfmc.priceForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
     "                                <div class=\"form-group\">euro</div>\n" +
@@ -19901,41 +19900,41 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <td ng-switch on=\"priceInfo.price\"\n" +
     "                        class=\"col-xs-3\">\n" +
     "                        <a class=\"btn btn-link\"\n" +
-    "                           ng-click=\"unsetPriceItemFree(key)\"\n" +
+    "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
     "                           ng-switch-when=\"0\">Prijs invoeren</a>\n" +
     "                        <a class=\"btn btn-link\"\n" +
-    "                           ng-click=\"setPriceItemFree(key)\"\n" +
+    "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
     "                           ng-switch-default>Gratis</a>\n" +
     "                    </td>\n" +
     "                    <td class=\"col-xs-1\">\n" +
     "                        <a aria-hidden=\"true\"\n" +
-    "                           ng-click=\"deletePriceItem(key)\"\n" +
-    "                           ng-if=\"showPriceDelete(key)\" class=\"close\">&times;</a>\n" +
+    "                           ng-click=\"pfmc.deletePriceItem(key)\"\n" +
+    "                           ng-if=\"pfmc.showPriceDelete(key)\" class=\"close\">&times;</a>\n" +
     "                    </td>\n" +
     "                </tr>\n" +
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"addPriceItem()\">Tarief toevoegen</a>\n" +
+    "                        <a class=\"btn btn-link\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
     "                    </td>\n" +
     "                </tr>\n" +
     "            </div>\n" +
     "        </table>\n" +
     "    </form>\n" +
     "\n" +
-    "    <div ng-show=\"priceError\" class=\"alert alert-danger\">\n" +
+    "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
     "        Er ging iets fout bij het opslaan van de prijs.\n" +
     "    </div>\n" +
-    "    <div ng-show=\"invalidPrice\" class=\"alert alert-danger\">\n" +
+    "    <div ng-show=\"pfmc.invalidPrice\" class=\"alert alert-danger\">\n" +
     "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
     "    </div>\n" +
     "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelEditPrice()\">Sluiten</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "            ng-click=\"validatePrice()\"\n" +
-    "            ng-disabled=\"priceForm.$invalid || priceForm.$pristine\">\n" +
+    "            ng-click=\"pfmc.validatePrice()\"\n" +
+    "            ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
     "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "    </button>\n" +
     "</div>\n"
@@ -19944,34 +19943,34 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/priceInfo.html',
     "<div class=\"row extra-prijs\">\n" +
-    "  <div class=\"extra-task\" ng-class=\"priceCssClass\">\n" +
+    "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
     "    <div class=\"col-sm-3\">\n" +
     "      <em class=\"extra-task-label\">Prijs</em>\n" +
-    "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingPrice\"></i>\n" +
+    "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"$ctrl.savingPrice\"></i>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-8\">\n" +
     "\n" +
-    "      <div ng-show=\"price.length == 0\">\n" +
+    "      <div ng-show=\"$ctrl.price.length == 0\">\n" +
     "        <section>\n" +
     "          <a class=\"btn btn-default to-filling\"\n" +
-    "             ng-click=\"priceCssClass = 'state-filling'; openModal()\">\n" +
+    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()\">\n" +
     "            Prijzen toevoegen\n" +
     "          </a>\n" +
     "          <a class=\"btn btn-link\"\n" +
-    "             ng-click=\"setPriceFree()\">Gratis</a>\n" +
+    "             ng-click=\"$ctrl.setPriceFree()\">Gratis</a>\n" +
     "        </section>\n" +
     "      </div>\n" +
-    "      <div ng-show=\"price.length > 0\">\n" +
+    "      <div ng-show=\"$ctrl.price.length > 0\">\n" +
     "        <table class=\"table\">\n" +
     "          <thead>\n" +
     "            <td>Prijzen</td>\n" +
     "            <td>\n" +
-    "              <a class=\"btn btn-default pull-right\" ng-click=\"openModal()\">\n" +
+    "              <a class=\"btn btn-default pull-right\" ng-click=\"$ctrl.openModal()\">\n" +
     "              Wijzigen\n" +
     "            </a>\n" +
     "            </td>\n" +
     "          </thead>\n" +
-    "          <tr ng-repeat=\"(key, priceInfo) in price\"\n" +
+    "          <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
     "              ng-model=\"priceInfo\">\n" +
     "            <td>{{priceInfo.name}}</td>\n" +
     "            <td>\n" +

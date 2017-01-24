@@ -20,17 +20,17 @@ angular
 /* @ngInject */
 function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootScope) {
 
-  $scope.setPriceFree = setPriceFree;
-  $scope.openModal = openModal;
-  $scope.savePrice = savePrice;
-  $scope.cancelPrice = cancelPrice;
+  var controller = this;
+
+  controller.setPriceFree = setPriceFree;
+  controller.openModal = openModal;
 
   init();
 
   function setPriceFree() {
 
-    if ($scope.price.length === 0) {
-      $scope.price = [
+    if (controller.price.length === 0) {
+      controller.price = [
         {
           category: 'base',
           name: 'Basisprijs',
@@ -40,13 +40,13 @@ function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootSc
       ];
     }
 
-    EventFormData.priceInfo = $scope.price;
+    EventFormData.priceInfo = controller.price;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
       $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty($scope.price)) {
-        $scope.priceCssClass = 'state-complete';
+      if (!_.isEmpty(controller.price)) {
+        controller.priceCssClass = 'state-complete';
       }
     });
   }
@@ -55,49 +55,50 @@ function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootSc
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/price-form-modal.html',
       controller: 'PriceFormModalController',
+      controllerAs: 'pfmc',
       resolve: {
         price: function () {
-          return $scope.price;
+          return controller.price;
         }
       }
     });
 
-    modalInstance.result.then($scope.savePrice, $scope.cancelPrice);
+    modalInstance.result.then(savePrice, cancelPrice);
   }
 
   function init() {
-    $scope.price = EventFormData.priceInfo;
+    controller.price = EventFormData.priceInfo;
 
-    if ($scope.price.length) {
-      $scope.priceCssClass = 'state-complete';
+    if (controller.price.length) {
+      controller.priceCssClass = 'state-complete';
     }
     else {
-      $scope.priceCssClass = '';
+      controller.priceCssClass = '';
     }
   }
 
   function savePrice() {
-    $scope.savingPrice = true;
-    $scope.price = EventFormData.priceInfo;
+    controller.savingPrice = true;
+    controller.price = EventFormData.priceInfo;
 
-    $scope.editPrice = false;
+    controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
     promise.then(function() {
       $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty($scope.price)) {
-        $scope.priceCssClass = 'state-complete';
+      if (!_.isEmpty(controller.price)) {
+        controller.priceCssClass = 'state-complete';
       }
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
     }, function () {
-      $scope.priceError = true;
-      $scope.savingPrice = false;
-      $scope.formPriceSubmitted = false;
+      controller.priceError = true;
+      controller.savingPrice = false;
+      controller.formPriceSubmitted = false;
     });
   }
 
   function cancelPrice() {
-    $scope.price = EventFormData.priceInfo;
+    controller.price = EventFormData.priceInfo;
   }
 }
