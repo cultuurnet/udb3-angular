@@ -8251,14 +8251,6 @@ function PriceFormModalController(
 
   function showPriceDelete(key) {
     return key !== 0;
-
-    // TODO when BE can accept empty price array
-    /*if (key === 0 && pfmc.price.length === 1) {
-     return true;
-     }
-     else {
-     return false
-     }*/
   }
 
   function addPriceItem() {
