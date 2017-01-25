@@ -39,7 +39,7 @@ describe('Service: uitidAuth', function () {
     expect($cookies.put).toHaveBeenCalledWith('token', token);
   });
 
-  it('should logout a user by removing the right cookies and reseting the location', function () {
+  it('should logout a user by removing the right cookies and redirecting to the logout page', function () {
     var expectedLogoutUrl = 'http://google.be/logout?destination=http://auth.uitdatabank.be';
 
     uitidAuth.logout();
