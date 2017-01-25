@@ -19,15 +19,25 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     $cookies.remove('user');
   }
 
+  function buildBaseUrl() {
+    var baseUrl = $location.protocol() + '://' + $location.host();
+    var port = $location.port();
+
+    return (port === 80) ? baseUrl : baseUrl + ':' + port;
+  }
+
   /**
    * Log the active user out.
    */
   this.logout = function () {
+    var destination = buildBaseUrl(),
+      logoutUrl = appConfig.authUrl + 'logout';
+
     removeCookies();
 
-    // reset url
-    $location.search('');
-    $location.path('/');
+    // redirect to login page
+    logoutUrl += '?destination=' + destination;
+    $window.location.href = logoutUrl;
   };
 
   /**
