@@ -111,6 +111,32 @@ describe('Service: Offer labeller', function () {
     $scope.$digest();
   });
 
+  it('should catch the error when labelling an offer failed', function (done) {
+    var place = new UdbPlace(examplePlaceJson);
+    var expectedResult = {
+      success: false,
+      message: 'error title',
+      name: 'awesome'
+    };
+    udbApi.labelOffer.and.returnValue($q.reject({
+      data: {
+        title: 'error title'
+      }
+    }));
+
+    var jobPromise = labeller.label(place, 'awesome');
+
+    function assertJob(error) {
+      expect(error.message).toEqual('error title');
+      expect(error.name).toEqual(expectedResult.name);
+
+      done();
+    }
+
+    jobPromise.then(assertJob);
+    $scope.$digest();
+  });
+
   it('should search for similar labels when asking for suggestions', function (done) {
     var similarLabels = [
       {name: 'biceps', id:'5AAAEB67-A418-42DD-A202-483D2AA537F5'},
