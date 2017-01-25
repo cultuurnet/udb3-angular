@@ -51,13 +51,14 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       message: '',
       name: ''
     };
+
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
+      .then(jobCreatorFactory(OfferLabelJob, offer, labelName))
       .then(function(response) {
         offer.label(labelName);
-        jobCreatorFactory(OfferLabelJob, offer, labelName);
         result.success = true;
-        result.message = response.config.data.label;
+        result.message = response.id;
         result.name = labelName;
         return result;
       })
