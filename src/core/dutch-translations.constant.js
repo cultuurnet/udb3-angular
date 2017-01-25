@@ -311,7 +311,7 @@ angular.module('udb.core')
       'organizer': 'Organisator',
       'bookingInfo.price': 'Prijsinformatie',
       'kansentarief': 'Kansentarief',
-      'bookingInfo.url': 'Ticket link',
+      'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
@@ -325,7 +325,8 @@ angular.module('udb.core')
       'calendarType': 'Tijd type',
       'sameAs': 'Externe IDs',
       'typicalAgeRange': 'Leeftijd',
-      'language': 'Taal'
+      'language': 'Taal',
+      'audience': 'Toegang'
     },
     queryFieldGroup: {
       'what': 'Wat',

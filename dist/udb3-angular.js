@@ -2613,7 +2613,7 @@ angular.module('udb.core')
       'organizer': 'Organisator',
       'bookingInfo.price': 'Prijsinformatie',
       'kansentarief': 'Kansentarief',
-      'bookingInfo.url': 'Ticket link',
+      'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
@@ -2627,7 +2627,8 @@ angular.module('udb.core')
       'calendarType': 'Tijd type',
       'sameAs': 'Externe IDs',
       'typicalAgeRange': 'Leeftijd',
-      'language': 'Taal'
+      'language': 'Taal',
+      'audience': 'Toegang'
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -11727,7 +11728,7 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'organizer', include: false, sortable: false, excludable: true},
     {name: 'bookingInfo.price', include: true, sortable: false, excludable: true},
     {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
-    {name: 'bookingInfo.url', include: false, sortable: false, excludable: true},
+    {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
     {name: 'terms.theme', include: true, sortable: false, excludable: true},
@@ -11740,7 +11741,8 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'calendarType', include: false, sortable: false, excludable: true},
     {name: 'sameAs', include: false, sortable: false, excludable: true},
     {name: 'typicalAgeRange', include: false, sortable: false, excludable: true},
-    {name: 'language', include: false, sortable: false, excludable: true}
+    {name: 'language', include: false, sortable: false, excludable: true},
+    {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML}
   ];
 
   exporter.exportFormats = _.map(ExportFormats);
