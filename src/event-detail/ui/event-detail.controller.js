@@ -42,6 +42,7 @@ function EventDetail(
 
   $scope.eventIdIsInvalid = false;
   $scope.hasEditPermissions = false;
+  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.hasLabelsError = false;
@@ -63,6 +64,7 @@ function EventDetail(
   $scope.deleteEvent = function () {
     openEventDeleteConfirmModal($scope.event);
   };
+  $scope.isEmpty = _.isEmpty;
 
   function allowEditing() {
     $scope.hasEditPermissions = true;
@@ -97,6 +99,11 @@ function EventDetail(
       });
     hasContactPoint();
     hasBookingInfo();
+  }
+
+  function isEventEditable(event) {
+    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
+    return ($scope.hasEditPermissions && notExpired);
   }
 
   function failedToLoad(reason) {

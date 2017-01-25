@@ -36,7 +36,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
     queryString = (queryString ? '(' + queryString + ')' + ' AND ' : '') + moderationFilter;
 
     return udbApi
-      .findEventsWithLimit(queryString, offset, itemsPerPage);
+      .findToModerate(queryString, offset, itemsPerPage);
   };
 
   /**

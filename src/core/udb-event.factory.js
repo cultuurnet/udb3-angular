@@ -160,7 +160,11 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.mediaObject = jsonEvent.mediaObject || [];
       this.typicalAgeRange = jsonEvent.typicalAgeRange || '';
       this.bookingInfo = jsonEvent.bookingInfo || {};
-      this.contactPoint = jsonEvent.contactPoint || {};
+      this.contactPoint = jsonEvent.contactPoint || {
+        'url': [],
+        'phone': [],
+        'email': []
+      };
       this.url = 'event/' + this.id;
       this.sameAs = jsonEvent.sameAs;
       this.additionalData = jsonEvent.additionalData || {};
@@ -174,6 +178,10 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
       this.uitpasData = {};
+
+      this.audience = {
+        audienceType: _.get(jsonEvent, 'audience.audienceType', 'everyone')
+      };
     },
 
     /**

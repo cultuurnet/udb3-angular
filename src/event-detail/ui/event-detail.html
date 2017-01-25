@@ -28,7 +28,7 @@
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('data')">
 
         <div class="clearfix">
-          <div class="btn-group pull-right" ng-if="hasEditPermissions">
+          <div class="btn-group pull-right" ng-if="isEventEditable(event)">
             <button type="button" class="btn btn-primary" ng-click="openEditPage()">Bewerken</button>
             <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               <span class="caret"></span>
@@ -66,7 +66,7 @@
                 <udb-label-select labels="event.labels"
                                   label-added="labelAdded(label)"
                                   label-removed="labelRemoved(label)"
-                                  ></udb-label-select>
+                ></udb-label-select>
                 <div ng-show="hasLabelsError" class="alert alert-danger">
                   Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.
                 </div>
@@ -196,46 +196,46 @@
           <dl ng-repeat="eventAction in eventHistory track by $index">
             <dt ng-bind="eventAction.date | date:'dd/MM/yyyy H:mm'"></dt>
             <dd>
-                <span class="author" ng-if="eventAction.author">{{eventAction.author}}</span><br ng-if="eventAction.author"/>
-                <span class="description">{{eventAction.description}}</span>
+              <span class="author" ng-if="eventAction.author">{{eventAction.author}}</span><br ng-if="eventAction.author"/>
+              <span class="description">{{eventAction.description}}</span>
             </dd>
           </dl>
         </div>
       </div>
 
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('publication')">
-          <div class="panel panel-default">
-            <table class="table">
-              <colgroup>
-                <col style="width:20%"/>
-                <col style="width:80%"/>
-              </colgroup>
-              <tbody>
-                <tr>
-                  <td><strong>Publicatiestatus</strong></td>
-                  <td>
+        <div class="panel panel-default">
+          <table class="table">
+            <colgroup>
+              <col style="width:20%"/>
+              <col style="width:80%"/>
+            </colgroup>
+            <tbody>
+            <tr>
+              <td><strong>Publicatiestatus</strong></td>
+              <td>
                     <span ng-if="event.available"
                           ng-bind="event.available | date: 'dd/MM/yyyy'">
                     </span>
-                    <span ng-if="!event.available">
+                <span ng-if="!event.available">
                       {{translateWorkflowStatus(event.workflowStatus)}}
                     </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>ID</strong></td>
-                  <td>
-                    <ul>
-                      <li ng-repeat="id in eventIds(event)" ng-switch="isUrl(id)">
-                        <a ng-switch-when="true" ng-href="{{id}}" ng-bind="id"></a>
-                        <span ng-switch-when="false" ng-bind="id"></span>
-                      </li>
-                    </ul>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>ID</strong></td>
+              <td>
+                <ul>
+                  <li ng-repeat="id in eventIds(event)" ng-switch="isUrl(id)">
+                    <a ng-switch-when="true" ng-href="{{id}}" ng-bind="id"></a>
+                    <span ng-switch-when="false" ng-bind="id"></span>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>

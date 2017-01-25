@@ -134,7 +134,11 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
-      this.contactPoint = jsonPlace.contactPoint || {};
+      this.contactPoint = jsonPlace.contactPoint || {
+        'url': [],
+        'phone': [],
+        'email': []
+      };
       if (jsonPlace.organizer) {
         // if it's a full organizer object, parse it as one
         if (jsonPlace.organizer['@id']) {
