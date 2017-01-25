@@ -8323,14 +8323,13 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
   controller.setPriceFree = setPriceFree;
   controller.openModal = openModal;
-
-  init();
+  controller.$onInit = init;
 
   function setPriceFree() {
 
@@ -8407,7 +8406,7 @@ function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootSc
     controller.price = EventFormData.priceInfo;
   }
 }
-PriceInfoComponent.$inject = ["$scope", "$uibModal", "EventFormData", "eventCrud", "$rootScope"];
+PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
 /**

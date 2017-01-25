@@ -24,8 +24,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
 
   controller.setPriceFree = setPriceFree;
   controller.openModal = openModal;
-
-  init();
+  controller.$onInit = init;
 
   function setPriceFree() {
 
