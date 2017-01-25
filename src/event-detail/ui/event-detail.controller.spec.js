@@ -325,6 +325,11 @@ describe('Controller: Event Detail', function() {
   it('should update the event when adding a label', function () {
     var label = {name:'some other label'};
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    offerLabeller.label.and.returnValue($q.resolve({
+      response: {
+        success: true
+      }
+    }));
     $scope.$digest();
 
     $scope.labelAdded(label);

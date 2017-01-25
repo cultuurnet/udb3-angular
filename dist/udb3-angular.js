@@ -6331,8 +6331,9 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
 
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName))
+      .then(jobCreatorFactory(OfferLabelJob))
       .then(function(response) {
+        console.log(response);
         offer.label(labelName);
         result.success = true;
         result.message = response.id;

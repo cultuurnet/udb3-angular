@@ -51,7 +51,6 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       message: '',
       name: ''
     };
-
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
       .then(jobCreatorFactory(OfferLabelJob, offer, labelName))

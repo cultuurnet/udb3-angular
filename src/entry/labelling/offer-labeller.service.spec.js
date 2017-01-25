@@ -96,14 +96,13 @@ describe('Service: Offer labeller', function () {
 
     var jobPromise = labeller.label(place, 'awesome');
 
-    function assertJob(job) {
+    function assertJob(response) {
       expect(place.labels).toContain('awesome');
-      expect(job.label).toEqual(expectedJob.label);
+      expect(response.name).toEqual(expectedJob.label);
       expect(udbApi.labelOffer).toHaveBeenCalledWith(
         new URL('http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'),
         'awesome'
       );
-      expect(logger.addJob).toHaveBeenCalledWith(job);
 
       done();
     }
