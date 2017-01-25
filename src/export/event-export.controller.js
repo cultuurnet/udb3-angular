@@ -27,7 +27,7 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'location', include: true, sortable: false, excludable: false},
     {name: 'address', include: true, sortable: false, excludable: true},
     {name: 'organizer', include: false, sortable: false, excludable: true},
-    {name: 'bookingInfo.price', include: true, sortable: false, excludable: true},
+    {name: 'bookingInfo.price', include: false, sortable: false, excludable: true},
     {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
     {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
