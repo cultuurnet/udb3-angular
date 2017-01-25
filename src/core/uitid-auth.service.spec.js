@@ -40,7 +40,7 @@ describe('Service: uitidAuth', function () {
   });
 
   it('should logout a user by removing the right cookies and redirecting to the logout page', function () {
-    var expectedLogoutUrl = 'http://google.be/logout?destination=http://auth.uitdatabank.be';
+    var expectedLogoutUrl = 'http://google.be/logout?destination=http%3A%2F%2Fauth.uitdatabank.be';
 
     uitidAuth.logout();
 

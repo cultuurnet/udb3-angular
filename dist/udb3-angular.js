@@ -4899,7 +4899,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    logoutUrl += '?destination=' + destination;
+    logoutUrl += '?destination=' + encodeURIComponent(destination);
     $window.location.href = logoutUrl;
   };
 
@@ -4913,7 +4913,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    loginUrl += '?destination=' + currentLocation;
+    loginUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = loginUrl;
   };
 
@@ -4924,7 +4924,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    registrationUrl += '?destination=' + currentLocation;
+    registrationUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = registrationUrl;
   };
 
