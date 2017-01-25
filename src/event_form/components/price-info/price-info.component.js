@@ -18,7 +18,7 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($scope, $uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
