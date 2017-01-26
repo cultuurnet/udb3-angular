@@ -8,7 +8,8 @@ describe('Service: UDB3 Api', function () {
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
       baseUrl: baseUrl,
-      baseApiUrl: baseUrl
+      baseApiUrl: baseUrl,
+      baseSearchUrl: baseUrl
     };
 
     uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
@@ -234,6 +235,18 @@ describe('Service: UDB3 Api', function () {
       .respond(JSON.stringify(response));
     service
       .findEventsWithLimit('searchquery', 0, 30)
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // findToModerate
+  it('should find offer to moderate when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'moderation?query=searchquery&start=120&limit=60')
+      .respond(JSON.stringify(response));
+    service
+      .findToModerate('searchquery', 120, 60)
       .then(done);
     $httpBackend.flush();
   });

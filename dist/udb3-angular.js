@@ -2631,7 +2631,7 @@ angular.module('udb.core')
       'organizer': 'Organisator',
       'bookingInfo.price': 'Prijsinformatie',
       'kansentarief': 'Kansentarief',
-      'bookingInfo.url': 'Ticket link',
+      'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinformatie',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
@@ -2645,7 +2645,8 @@ angular.module('udb.core')
       'calendarType': 'Tijd type',
       'sameAs': 'Externe IDs',
       'typicalAgeRange': 'Leeftijd',
-      'language': 'Taal'
+      'language': 'Taal',
+      'audience': 'Toegang'
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -2786,6 +2787,17 @@ function UdbApi(
   };
   var offerCache = $cacheFactory('offerCache');
 
+  function withoutAuthorization(apiConfig) {
+    var config = _.cloneDeep(apiConfig);
+    config.withCredentials = false;
+    /**
+     * @todo: use _.unset when lodash is updated to v4: https://lodash.com/docs/4.17.4#unset
+     */
+    delete config.headers.Authorization;
+
+    return config;
+  }
+
   this.mainLanguage = 'nl';
 
   /**
@@ -2853,22 +2865,18 @@ function UdbApi(
    *  search results or a failure.
    */
   this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    var offset = start || 0,
-        limit = itemsPerPage || 30,
-        searchParams = {
-          start: offset,
-          limit: limit
-        };
-    var requestOptions = _.cloneDeep(defaultApiConfig);
-    requestOptions.params = searchParams;
+    return find(apiUrl + 'search', queryString, start, itemsPerPage);
+  };
 
-    if (queryString.length) {
-      searchParams.query = queryString;
-    }
-
-    return $http
-      .get(apiUrl + 'search', requestOptions)
-      .then(returnUnwrappedData, returnApiProblem);
+  /**
+   * @param {string} queryString - The query used to find offer to moderate.
+   * @param {number} [start] - From which offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findToModerate = function (queryString, start, itemsPerPage) {
+    return find(appConfig.baseUrl + 'moderation', queryString, start, itemsPerPage);
   };
 
   /**
@@ -2944,10 +2952,10 @@ function UdbApi(
     if (website) { params.website = website; }
     if (name) { params.name = name; }
 
-    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+    var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
 
     return $http
-      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
   };
 
@@ -3924,6 +3932,33 @@ function UdbApi(
   };
 
   /**
+   * @param {string} path - The path to direct the HTTP request to.
+   * @param {string} queryString - The query used to find events.
+   * @param {number} [start] - From which event offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  function find(path, queryString, start, itemsPerPage) {
+    var offset = start || 0,
+      limit = itemsPerPage || 30,
+      searchParams = {
+        start: offset,
+        limit: limit
+      };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.query = queryString;
+    }
+
+    return $http
+      .get(path, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  }
+
+  /**
    * @param {Object} errorResponse
    * @return {Promise.<ApiProblem>}
    */
@@ -4879,15 +4914,25 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     $cookies.remove('user');
   }
 
+  function buildBaseUrl() {
+    var baseUrl = $location.protocol() + '://' + $location.host();
+    var port = $location.port();
+
+    return (port === 80) ? baseUrl : baseUrl + ':' + port;
+  }
+
   /**
    * Log the active user out.
    */
   this.logout = function () {
+    var destination = buildBaseUrl(),
+      logoutUrl = appConfig.authUrl + 'logout';
+
     removeCookies();
 
-    // reset url
-    $location.search('');
-    $location.path('/');
+    // redirect to login page
+    logoutUrl += '?destination=' + encodeURIComponent(destination);
+    $window.location.href = logoutUrl;
   };
 
   /**
@@ -4900,7 +4945,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    loginUrl += '?destination=' + currentLocation;
+    loginUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = loginUrl;
   };
 
@@ -4911,7 +4956,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    registrationUrl += '?destination=' + currentLocation;
+    registrationUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = registrationUrl;
   };
 
@@ -11873,7 +11918,7 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'organizer', include: false, sortable: false, excludable: true},
     {name: 'bookingInfo.price', include: true, sortable: false, excludable: true},
     {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
-    {name: 'bookingInfo.url', include: false, sortable: false, excludable: true},
+    {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
     {name: 'terms.theme', include: true, sortable: false, excludable: true},
@@ -11886,7 +11931,8 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'calendarType', include: false, sortable: false, excludable: true},
     {name: 'sameAs', include: false, sortable: false, excludable: true},
     {name: 'typicalAgeRange', include: false, sortable: false, excludable: true},
-    {name: 'language', include: false, sortable: false, excludable: true}
+    {name: 'language', include: false, sortable: false, excludable: true},
+    {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML}
   ];
 
   exporter.exportFormats = _.map(ExportFormats);
@@ -13183,7 +13229,7 @@ function ModerationListController(
       var canModerate = _.filter(role.permissions, function(permission) {
         return permission === RolePermission.AANBOD_MODEREREN;
       });
-      return canModerate.length > 0 ? true : false;
+      return canModerate.length > 0;
     });
 
     if (filteredRoles.length) {
@@ -13277,7 +13323,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
     queryString = (queryString ? '(' + queryString + ')' + ' AND ' : '') + moderationFilter;
 
     return udbApi
-      .findEventsWithLimit(queryString, offset, itemsPerPage);
+      .findToModerate(queryString, offset, itemsPerPage);
   };
 
   /**
@@ -18615,7 +18661,8 @@ angular
     'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
     'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen'
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven'
   });
 
 // Source: .tmp/udb3-angular.templates.js
