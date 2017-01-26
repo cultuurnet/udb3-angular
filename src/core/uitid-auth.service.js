@@ -19,15 +19,25 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     $cookies.remove('user');
   }
 
+  function buildBaseUrl() {
+    var baseUrl = $location.protocol() + '://' + $location.host();
+    var port = $location.port();
+
+    return (port === 80) ? baseUrl : baseUrl + ':' + port;
+  }
+
   /**
    * Log the active user out.
    */
   this.logout = function () {
+    var destination = buildBaseUrl(),
+      logoutUrl = appConfig.authUrl + 'logout';
+
     removeCookies();
 
-    // reset url
-    $location.search('');
-    $location.path('/');
+    // redirect to login page
+    logoutUrl += '?destination=' + encodeURIComponent(destination);
+    $window.location.href = logoutUrl;
   };
 
   /**
@@ -40,7 +50,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    loginUrl += '?destination=' + currentLocation;
+    loginUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = loginUrl;
   };
 
@@ -51,7 +61,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    registrationUrl += '?destination=' + currentLocation;
+    registrationUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = registrationUrl;
   };
 

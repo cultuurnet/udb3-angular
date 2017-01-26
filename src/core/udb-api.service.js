@@ -87,6 +87,17 @@ function UdbApi(
   };
   var offerCache = $cacheFactory('offerCache');
 
+  function withoutAuthorization(apiConfig) {
+    var config = _.cloneDeep(apiConfig);
+    config.withCredentials = false;
+    /**
+     * @todo: use _.unset when lodash is updated to v4: https://lodash.com/docs/4.17.4#unset
+     */
+    delete config.headers.Authorization;
+
+    return config;
+  }
+
   this.mainLanguage = 'nl';
 
   /**
@@ -154,22 +165,18 @@ function UdbApi(
    *  search results or a failure.
    */
   this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    var offset = start || 0,
-        limit = itemsPerPage || 30,
-        searchParams = {
-          start: offset,
-          limit: limit
-        };
-    var requestOptions = _.cloneDeep(defaultApiConfig);
-    requestOptions.params = searchParams;
+    return find(apiUrl + 'search', queryString, start, itemsPerPage);
+  };
 
-    if (queryString.length) {
-      searchParams.query = queryString;
-    }
-
-    return $http
-      .get(apiUrl + 'search', requestOptions)
-      .then(returnUnwrappedData, returnApiProblem);
+  /**
+   * @param {string} queryString - The query used to find offer to moderate.
+   * @param {number} [start] - From which offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findToModerate = function (queryString, start, itemsPerPage) {
+    return find(appConfig.baseUrl + 'moderation', queryString, start, itemsPerPage);
   };
 
   /**
@@ -245,10 +252,10 @@ function UdbApi(
     if (website) { params.website = website; }
     if (name) { params.name = name; }
 
-    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+    var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
 
     return $http
-      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
   };
 
@@ -1212,6 +1219,33 @@ function UdbApi(
       .patch(offerUrl, (reason ? updateData : {}), requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
   };
+
+  /**
+   * @param {string} path - The path to direct the HTTP request to.
+   * @param {string} queryString - The query used to find events.
+   * @param {number} [start] - From which event offset the result set should start.
+   * @param {number} [itemsPerPage] - How many items should be in the result set.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  function find(path, queryString, start, itemsPerPage) {
+    var offset = start || 0,
+      limit = itemsPerPage || 30,
+      searchParams = {
+        start: offset,
+        limit: limit
+      };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.query = queryString;
+    }
+
+    return $http
+      .get(path, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  }
 
   /**
    * @param {Object} errorResponse
