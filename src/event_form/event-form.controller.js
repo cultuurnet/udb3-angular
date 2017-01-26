@@ -142,8 +142,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
 
     if (!!EventFormData.openingHours.length) {
-      _.each(EventFormData.openingHours, function (openingHour) {
-        EventFormData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek);
+      _.each(EventFormData.openingHours, function (openingHour, index) {
+        EventFormData.saveOpeningHourDaySelection(index, openingHour.dayOfWeek);
       });
     }
 
