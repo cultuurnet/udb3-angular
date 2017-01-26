@@ -10064,6 +10064,21 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       timestamp.date.setMinutes(0);
       controller.eventTimingChanged();
     }
+    else {
+      var nextHour = moment().add(1, 'hours').minutes(0);
+      var startHourAsDate = angular.copy(timestamp.date);
+      var endHourAsDate = angular.copy(timestamp.date);
+      startHourAsDate.setHours(nextHour.hours());
+      startHourAsDate.setMinutes(nextHour.minutes());
+      endHourAsDate.setHours(23);
+      endHourAsDate.setMinutes(59);
+
+      timestamp.startHour = moment(startHourAsDate).format('HH:mm');
+      timestamp.startHourAsDate = startHourAsDate;
+      timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+      timestamp.endHourAsDate = endHourAsDate;
+      timestamp.showEndHour = false;
+    }
   };
 
   /**
@@ -10075,9 +10090,22 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
 
     // If we hide the textfield, empty also the input.
     if (!timestamp.showEndHour) {
-      timestamp.endHour = '';
-      timestamp.endHourAsDate = '';
+      var endHourAsDate = timestamp.date;
+      endHourAsDate.setHours(23);
+      endHourAsDate.setMinutes(59);
+
+      timestamp.endHour = '23:59';
+      timestamp.endHourAsDate = endHourAsDate;
       controller.eventTimingChanged();
+    }
+    else {
+      var endHourAsDate = timestamp.date;
+      var nextThreeHours = moment(timestamp.startHourAsDate).add(3, 'hours').minutes(0);
+      endHourAsDate.setHours(nextThreeHours.hours());
+      endHourAsDate.setMinutes(nextThreeHours.minutes());
+
+      timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+      timestamp.endHourAsDate = endHourAsDate;
     }
 
   }
