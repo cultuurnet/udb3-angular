@@ -226,10 +226,10 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
    *   Timestamp to change
    */
   function toggleEndHour(timestamp) {
-
+    var endHourAsDate = timestamp.date;
+    
     // If we hide the textfield, empty also the input.
     if (!timestamp.showEndHour) {
-      var endHourAsDate = timestamp.date;
       endHourAsDate.setHours(23);
       endHourAsDate.setMinutes(59);
 
@@ -238,7 +238,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
       controller.eventTimingChanged();
     }
     else {
-      var endHourAsDate = timestamp.date;
       var nextThreeHours = moment(timestamp.startHourAsDate).add(3, 'hours').minutes(0);
       endHourAsDate.setHours(nextThreeHours.hours());
       endHourAsDate.setMinutes(nextThreeHours.minutes());
