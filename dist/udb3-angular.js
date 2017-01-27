@@ -1933,7 +1933,8 @@ angular
 angular
   .module('udb.migration', [
     'udb.core',
-    'udb.event-form'
+    'udb.event-form',
+    'ui.router'
   ]);
 
 /**
@@ -5354,23 +5355,14 @@ function pickFirstEventArgument(event) {
 }
 
 /* @ngInject */
-function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx, EventFormData) {
+function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx) {
   var controller = this;
   var duplicateTimingChanged$ = $rootScope
     .$eventToObservable('duplicateTimingChanged')
     .map(pickFirstEventArgument);
   var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
-  var locationSelected$ = $rootScope
-    .$eventToObservable('locationSelected')
-    .map(pickFirstEventArgument);
 
-  var location$ = locationSelected$.startWith(EventFormData.location);
-
-  var duplicateFormData$ = rx.Observable
-    .combineLatest(location$, duplicateTimingChanged$, function(location, duplicateFormData) {
-      return location.id ? duplicateFormData : false;
-    })
-    .startWith(false);
+  var duplicateFormData$ = duplicateTimingChanged$.startWith(false);
 
   duplicateFormData$
     .subscribe(function (duplicateFormData) {
@@ -5405,7 +5397,7 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
     controller.duplicating = true;
   }
 }
-EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx", "EventFormData"];
+EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx"];
 
 // Source: src/duplication/event-duplication-step.component.js
 /**
@@ -5481,35 +5473,6 @@ function EventDuplicatorService(udbApi, offerLocator) {
   };
 }
 EventDuplicatorService.$inject = ["udbApi", "offerLocator"];
-
-// Source: src/duplication/event-migration-step.directive.js
-/**
- * @ngdoc directive
- * @name udb.duplication.directive:udbEventMigrationStep
- * @description
- *  Shows the event migration step.
- */
-angular
-  .module('udb.duplication')
-  .directive('udbEventMigrationStep', udbEventMigrationStep);
-
-/* @ngInject */
-function udbEventMigrationStep() {
-  return {
-    restrict: 'AE',
-    controller: EventMigrationStepController,
-    controllerAs: 'migration',
-    templateUrl: 'templates/event-migration-step.directive.html'
-  };
-}
-
-/* @ngInject */
-function EventMigrationStepController(eventMigration, EventFormData) {
-  var controller = this;
-
-  controller.required = !!eventMigration.checkRequirements(EventFormData).length;
-}
-EventMigrationStepController.$inject = ["eventMigration", "EventFormData"];
 
 // Source: src/entry/components/job-logo-states.constant.js
 /* jshint sub: true */
@@ -15172,16 +15135,24 @@ angular
   });
 
 /* @ngInject */
-function EventMigrationFooterController(EventFormData) {
+function EventMigrationFooterController(EventFormData, $stateParams, $state) {
   var controller = this;
 
-  controller.eventId = EventFormData.id;
+  controller.completeMigration = completeMigration;
+  controller.destination = $stateParams.destination;
+  controller.migrationReady = migrationReady;
 
-  controller.readyToEdit = function () {
+  function completeMigration () {
+    if (migrationReady()) {
+      $state.go($stateParams.destination.state, {id: EventFormData.id});
+    }
+  }
+
+  function migrationReady () {
     return !!_.get(EventFormData, 'location.id');
-  };
+  }
 }
-EventMigrationFooterController.$inject = ["EventFormData"];
+EventMigrationFooterController.$inject = ["EventFormData", "$stateParams", "$state"];
 
 // Source: src/migration/event-migration.service.js
 /**
@@ -18954,7 +18925,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-duplication-step.component.html',
     "<div class=\"alert alert-info\" role=\"alert\">\n" +
-    "    <strong>Je staat op het punt een evenement te dupliceren.</strong><br>\n" +
+    "    <strong>Je staat op het punt een evenement te kopiëren.</strong><br>\n" +
     "    Om overlappende data te vermijden, kies je een nieuwe kalender voor dit evenement.\n" +
     "</div>\n" +
     "\n" +
@@ -18964,24 +18935,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-duplication.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
-    "    <udb-event-migration-step></udb-event-migration-step>\n" +
-    "\n" +
     "    <udb-event-duplication-step></udb-event-duplication-step>\n" +
-    "\n" +
     "    <udb-event-duplication-footer></udb-event-duplication-footer>\n" +
     "</div>\n"
-  );
-
-
-  $templateCache.put('templates/event-migration-step.directive.html',
-    "<div ng-if=\"::migration.required\">\n" +
-    "    <div class=\"alert alert-danger\" role=\"alert\">\n" +
-    "        <strong>Deze activiteit werd ingevoerd in de vorige versie van UiTdatabank.</strong><br>\n" +
-    "        Om deze te kunnen bewerken, is het nodig om de eerder gekozen locatie en adres éénmalig opnieuw te selecteren of in te voeren.\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <udb-event-form-step3></udb-event-form-step3>\n" +
-    "</div>"
   );
 
 
@@ -22363,9 +22319,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/event-migration-footer.component.html',
     "<div class=\"event-validation\">\n" +
     "    <a class=\"btn btn-success\"\n" +
-    "       ui-sref=\"split.eventEdit({id: migration.eventId})\"\n" +
+    "       ng-click=\"migration.completeMigration()\"\n" +
     "       role=\"button\"\n" +
-    "       ng-class=\"{disabled: !migration.readyToEdit()}\">Doorgaan met bewerken</a>\n" +
+    "       ng-class=\"{disabled: !migration.migrationReady()}\"\n" +
+    "       ng-bind=\"::migration.destination.description\"></a>\n" +
     "</div>"
   );
 

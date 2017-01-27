@@ -9,5 +9,6 @@
 angular
   .module('udb.migration', [
     'udb.core',
-    'udb.event-form'
+    'udb.event-form',
+    'ui.router'
   ]);

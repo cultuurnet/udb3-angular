@@ -1,6 +1,7 @@
 <div class="event-validation">
     <a class="btn btn-success"
-       ui-sref="split.eventEdit({id: migration.eventId})"
+       ng-click="migration.completeMigration()"
        role="button"
-       ng-class="{disabled: !migration.readyToEdit()}">Doorgaan met bewerken</a>
+       ng-class="{disabled: !migration.migrationReady()}"
+       ng-bind="::migration.destination.description"></a>
 </div>

@@ -20,23 +20,14 @@ function pickFirstEventArgument(event) {
 }
 
 /* @ngInject */
-function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx, EventFormData) {
+function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx) {
   var controller = this;
   var duplicateTimingChanged$ = $rootScope
     .$eventToObservable('duplicateTimingChanged')
     .map(pickFirstEventArgument);
   var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
-  var locationSelected$ = $rootScope
-    .$eventToObservable('locationSelected')
-    .map(pickFirstEventArgument);
 
-  var location$ = locationSelected$.startWith(EventFormData.location);
-
-  var duplicateFormData$ = rx.Observable
-    .combineLatest(location$, duplicateTimingChanged$, function(location, duplicateFormData) {
-      return location.id ? duplicateFormData : false;
-    })
-    .startWith(false);
+  var duplicateFormData$ = duplicateTimingChanged$.startWith(false);
 
   duplicateFormData$
     .subscribe(function (duplicateFormData) {
