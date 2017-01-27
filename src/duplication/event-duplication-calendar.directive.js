@@ -25,8 +25,7 @@ function EventDuplicationCalendarController(EventFormData, $rootScope, calendarL
   var controller = this;
 
   controller.calendarLabels = calendarLabels;
-  controller.duplicateFormData = _.cloneDeep(EventFormData);
-  controller.duplicateFormData.initCalendar();
+  controller.duplicateFormData = EventFormData.clone();
 
   controller.duplicateTimingChanged = function (formData) {
     $rootScope.$emit('duplicateTimingChanged', formData);

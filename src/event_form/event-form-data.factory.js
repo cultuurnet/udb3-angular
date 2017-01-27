@@ -130,6 +130,15 @@ function EventFormDataFactory(rx, calendarLabels) {
       this.labels = [];
 
       this.audienceType = 'everyone';
+
+      this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
+    },
+
+    clone: function () {
+      var clone = _.cloneDeep(this);
+      clone.timingChanged$ = rx.createObservableFunction(clone, 'timingChangedCallback');
+
+      return clone;
     },
 
     /**
@@ -449,8 +458,6 @@ function EventFormDataFactory(rx, calendarLabels) {
         this.activeCalendarLabel = calendarType.label;
         this.activeCalendarType = formData.calendarType;
       }
-
-      this.timingChanged$ = rx.createObservableFunction(formData, 'timingChangedCallback');
     },
 
     timingChanged: function () {
