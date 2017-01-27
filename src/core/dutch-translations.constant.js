@@ -309,7 +309,7 @@ angular.module('udb.core')
       'location': 'Locatie',
       'address': 'Adres',
       'organizer': 'Organisator',
-      'bookingInfo.price': 'Prijsinformatie',
+      'priceInfo': 'Prijsinformatie',
       'kansentarief': 'Kansentarief',
       'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinfo',
