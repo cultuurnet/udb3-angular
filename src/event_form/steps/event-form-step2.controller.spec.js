@@ -42,7 +42,8 @@ describe('Controller: event form step 2', function () {
       showStartHour: false
     };
 
-    stepController.toggleStartHour(timestamp);
+    scope.toggleEndHour(timestamp);
+    expect(timestamp.endHour).toEqual('23:59');
     expect(stepController.eventTimingChanged).toHaveBeenCalled();
   });
 
@@ -72,5 +73,89 @@ describe('Controller: event form step 2', function () {
 
     expect(EventFormData.calendarType).toEqual('');
     expect(EventFormData.activeCalendarType).toEqual('');
+  });
+
+  it('should notify that the event timing has changed when the start or end hour changed', function () {
+    spyOn(stepController, 'eventTimingChanged');
+
+    var timestamp = {
+      date: new Date(),
+      startHour: '',
+      startHourAsDate: new Date('2017', '01', '27', '14', '00'),
+      endHourAsDate: new Date('2017', '01', '27', '18', '00'),
+      endHour: '',
+      showEndHour: true,
+      showStartHour: true
+    };
+
+    scope.hoursChanged(timestamp);
+
+    expect(timestamp.startHour).toEqual('14:00');
+    expect(timestamp.endHour).toEqual('18:00');
+    expect(stepController.eventTimingChanged).toHaveBeenCalled();
+  });
+
+  it('should notify that the event timing has changed when the start or end hour is reset', function () {
+    spyOn(stepController, 'eventTimingChanged');
+
+    var timestamp = {
+      date: new Date(),
+      startHour: '',
+      endHour: '',
+      showEndHour: true,
+      showStartHour: true
+    };
+
+    scope.hoursChanged(timestamp);
+
+    expect(timestamp.startHour).toEqual('00:00');
+    expect(timestamp.endHour).toEqual('00:00');
+    expect(stepController.eventTimingChanged).toHaveBeenCalled();
+  });
+
+  it('should add a timestamp to the event form data', function () {
+    spyOn(EventFormData, 'addTimestamp');
+    scope.addTimestamp();
+
+    expect(EventFormData.addTimestamp).toHaveBeenCalledWith('', '', '', '', '');
+  });
+
+  it('should set a valid placeholder for start en end hour when toggle start hour is on', function () {
+    var timestamp = {
+      date: new Date('2017-01-27T23:00:00Z'),
+      startHour: '',
+      endHour: '',
+      showEndHour: true,
+      showStartHour: true
+    };
+
+    stepController.toggleStartHour(timestamp);
+
+    expect(timestamp.startHour).toEqual('23:00');
+    expect(timestamp.endHour).toEqual('23:59');
+    expect(timestamp.showEndHour).toBeFalsy();
+  });
+
+  it('should set a valid placeholder for end hour when the toggle end hour is on', function () {
+    var timestamp = {
+      date: new Date('2017-01-27T14:00:00Z'),
+      startHour: '',
+      startHourAsDate: new Date('2017-01-27T19:00:00Z'),
+      endHour: '',
+      showEndHour: true,
+      showStartHour: true
+    };
+
+    scope.toggleEndHour(timestamp);
+
+    expect(timestamp.endHour).toEqual('23:00');
+  });
+
+  it('should fire an emit when the event timing is changed', function () {
+    spyOn(scope, '$emit');
+    EventFormData.id = 'dit is een fake id';
+
+    stepController.eventTimingChanged();
+    expect(scope.$emit).toHaveBeenCalledWith('eventTimingChanged', EventFormData);
   });
 });

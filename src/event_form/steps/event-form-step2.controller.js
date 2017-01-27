@@ -34,7 +34,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.setCalendarType = setCalendarType;
   $scope.resetCalendar = resetCalendar;
   $scope.addTimestamp = addTimestamp;
-  $scope.toggleStartHour = controller.toggleStartHour;
   $scope.toggleEndHour = toggleEndHour;
   $scope.hoursChanged = hoursChanged;
   $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
@@ -42,7 +41,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
   $scope.openingHoursChanged = openingHoursChanged;
   $scope.validateOpeningHour = validateOpeningHour;
   $scope.validateOpeningHours = validateOpeningHours;
-  $scope.eventTimingChanged = controller.eventTimingChanged;
   $scope.dateChosen = dateChosen;
   $scope.isValidDate = isValidDate;
 
