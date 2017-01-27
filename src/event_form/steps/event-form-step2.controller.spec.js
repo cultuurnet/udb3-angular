@@ -138,9 +138,9 @@ describe('Controller: event form step 2', function () {
 
   it('should set a valid placeholder for end hour when the toggle end hour is on', function () {
     var timestamp = {
-      date: new Date('2017-01-27T14:00:00Z'),
+      date: new Date('2017-01-27T14:00:00'),
       startHour: '',
-      startHourAsDate: new Date('2017-01-27T19:00:00Z'),
+      startHourAsDate: new Date('2017', '01', '27', '19', '00'),
       endHour: '',
       showEndHour: true,
       showStartHour: true
@@ -148,7 +148,13 @@ describe('Controller: event form step 2', function () {
 
     scope.toggleEndHour(timestamp);
 
-    expect(timestamp.endHour).toEqual('23:00');
+    expect(timestamp.endHour).toEqual('22:00');
+  });
+
+  it('should notify that the event timing has changed when saving opening hours', function () {
+    spyOn(stepController, 'eventTimingChanged');
+    scope.saveOpeningHours();
+    expect(stepController.eventTimingChanged).toHaveBeenCalled();
   });
 
   it('should fire an emit when the event timing is changed', function () {
