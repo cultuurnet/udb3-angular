@@ -1221,6 +1221,17 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} eventUrl
+   * @param {Object} newCalendarData
+   * @return {Promise.<Object|ApiProblem>} Object containing the duplicate info
+   */
+  this.duplicateEvent = function(eventUrl, newCalendarData) {
+    return $http
+      .post(eventUrl + '/copies/', newCalendarData, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} path - The path to direct the HTTP request to.
    * @param {string} queryString - The query used to find events.
    * @param {number} [start] - From which event offset the result set should start.
