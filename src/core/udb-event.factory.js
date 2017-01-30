@@ -187,15 +187,8 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.educationLevels = [];
 
       if(jsonEvent.terms){
-            angular.forEach(jsonEvent.terms,function(term){
-                if(term.domain){
-                    if( term.domain === "educationlevel"){
-                        educationLevels.push(term);
-                    } else if(term.domain === "educationfield"){
-                        educationFields.push(term);
-                    }
-                }
-            })
+            this.educationFields = _.filter(jsonEvent.terms,'domain','educationfield');
+            this.educationLevels = _.filter(jsonEvent.terms,'domain','educationlevel');
         }
     },
 

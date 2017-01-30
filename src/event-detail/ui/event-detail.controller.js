@@ -245,4 +245,8 @@ function EventDetail(
   $scope.translateAudience = function (type){
       return $translate.instant("audience."+type);
   }
+
+  $scope.finishedLoading = function(){
+      return ($scope.event && $scope.permissions);
+  }
 }
