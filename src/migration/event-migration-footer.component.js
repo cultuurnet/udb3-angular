@@ -16,12 +16,20 @@ angular
   });
 
 /* @ngInject */
-function EventMigrationFooterController(EventFormData) {
+function EventMigrationFooterController(EventFormData, $stateParams, $state) {
   var controller = this;
 
-  controller.eventId = EventFormData.id;
+  controller.completeMigration = completeMigration;
+  controller.destination = $stateParams.destination;
+  controller.migrationReady = migrationReady;
 
-  controller.readyToEdit = function () {
+  function completeMigration () {
+    if (migrationReady()) {
+      $state.go($stateParams.destination.state, {id: EventFormData.id});
+    }
+  }
+
+  function migrationReady () {
     return !!_.get(EventFormData, 'location.id');
-  };
+  }
 }

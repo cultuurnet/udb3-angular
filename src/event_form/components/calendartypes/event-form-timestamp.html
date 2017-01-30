@@ -1,19 +1,17 @@
-<div id="wanneer-dagen" ng-repeat="timestamp in eventFormData.timestamps">
+<div id="wanneer-dagen" ng-repeat="timestamp in formData.timestamps">
 
   <div class="col-xs-12 col-sm-4 prototype-step" id="add-date-form">
     <section class="add-date">
 
       <div udb-datepicker
-           ng-change="dateChosen(timestamp.date)"
-           highlight-date="{{calendarHighlight.date}}"
-           highlight-extra-class="{{calendarHighlight.extraClass}}"
+           ng-change="formData.timingChanged()"
            ng-model="timestamp.date"></div>
 
       <div class="row">
         <div class="col-xs-6">
           <label>
             <input type="checkbox"
-                   ng-change="EventFormStep2.toggleStartHour(timestamp)"
+                   ng-change="formData.toggleStartHour(timestamp)"
                    value=""
                    ng-model="timestamp.showStartHour"
                    class="beginuur-toevoegen">
@@ -25,7 +23,7 @@
                 ng-model="timestamp.startHour"
                 class="form-control uur"
                 uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
-                typeahead-on-select="EventFormStep2.eventTimingChanged()"
+                typeahead-on-select="formData.timingChanged()"
                 typeahead-editable="false"
                 placeholder="Bv. 08:00"
                 focus-if="timestamp.showStartHour">
@@ -34,7 +32,7 @@
         <div class="col-xs-6 einduur" ng-show="timestamp.showStartHour">
           <label>
             <input type="checkbox"
-                   ng-change="toggleEndHour(timestamp)"
+                   ng-change="formData.toggleEndHour(timestamp)"
                    value=""
                    ng-model="timestamp.showEndHour"
                    class="einduur-toevoegen">
@@ -46,7 +44,7 @@
                 ng-model="timestamp.endHour"
                 class="form-control uur"
                 uib-typeahead="time for time in ::times | filter:$viewValue | limitTo:8"
-                typeahead-on-select="EventFormStep2.eventTimingChanged()"
+                typeahead-on-select="formData.timingChanged()"
                 typeahead-editable="false"
                 placeholder="Bv. 23:00"
                 focus-if="timestamp.showEndHour">
@@ -60,7 +58,7 @@
 
 <div class="col-xs-12 col-sm-4">
   <div class="add-date">
-    <a href="#" class="add-date-link" ng-click="addTimestamp()">
+    <a href="#" class="add-date-link" ng-click="formData.addTimestamp('','','')">
       <p id="add-date-plus">+</p>
       <p id="add-date-label">Nog een dag toevoegen</p>
       <p id="add-date-tip" class="muted">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>

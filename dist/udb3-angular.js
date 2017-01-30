@@ -1933,7 +1933,21 @@ angular
 angular
   .module('udb.migration', [
     'udb.core',
-    'udb.event-form'
+    'udb.event-form',
+    'ui.router'
+  ]);
+
+/**
+ * @ngdoc module
+ * @name udb.duplication
+ * @description
+ * # Duplication Module
+ */
+angular
+  .module('udb.duplication', [
+    'udb.core',
+    'udb.event-form',
+    'udb.migration'
   ]);
 
 // Source: src/core/authorization-service.service.js
@@ -2129,7 +2143,8 @@ function udbCalendarSummary() {
   .module('udb.core')
   .directive('udbDatepicker', udbDatepickerDirective);
 
-  function udbDatepickerDirective() {
+  /* @ngInject */
+  function udbDatepickerDirective(appConfig) {
 
     return {
       restrict: 'EA',
@@ -2154,10 +2169,11 @@ function udbCalendarSummary() {
 
         var lastSelectedYear;
         var lastSelectedMonth;
+        var selectedDate = ngModel.$viewValue;
 
-        if (scope.lastSelectedDate) {
-          lastSelectedYear = scope.lastSelectedDate.getFullYear();
-          lastSelectedMonth = scope.lastSelectedDate.getMonth();
+        if (selectedDate) {
+          lastSelectedYear = selectedDate.getFullYear();
+          lastSelectedMonth = selectedDate.getMonth();
         } else {
           var today = new Date();
           lastSelectedYear = today.getFullYear();
@@ -2169,17 +2185,19 @@ function udbCalendarSummary() {
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
-            if (!attrs.highlightDate) {
+            var highlightDate = _.get(appConfig, 'calendarHighlight.highlightDate');
+            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.highlightExtraClass');
+
+            if (!highlightDate) {
               return;
             }
 
             // init Date with ISO string
-            var highlightDate = new Date(attrs.highlightDate);
             if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
               var highlightClasses = 'highlight';
 
-              if (attrs.highlightExtraClass) {
-                highlightClasses += ' ' + attrs.highlightExtraClass;
+              if (highlightExtraClass) {
+                highlightClasses += ' ' + highlightExtraClass;
               }
 
               return {classes: highlightClasses};
@@ -2195,6 +2213,7 @@ function udbCalendarSummary() {
       }
     }
   }
+  udbDatepickerDirective.$inject = ["appConfig"];
 })();
 
 // Source: src/core/components/multiselect/multiselect.directive.js
@@ -2611,10 +2630,10 @@ angular.module('udb.core')
       'location': 'Locatie',
       'address': 'Adres',
       'organizer': 'Organisator',
-      'bookingInfo.price': 'Prijsinformatie',
+      'priceInfo': 'Prijsinformatie',
       'kansentarief': 'Kansentarief',
       'bookingInfo': 'Reservatie-info',
-      'contactPoint': 'Contactinformatie',
+      'contactPoint': 'Contactinfo',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
       'terms.eventtype': 'Type',
@@ -3903,6 +3922,17 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} eventUrl
+   * @param {Object} newCalendarData
+   * @return {Promise.<Object|ApiProblem>} Object containing the duplicate info
+   */
+  this.duplicateEvent = function(eventUrl, newCalendarData) {
+    return $http
+      .post(eventUrl + '/copies/', newCalendarData, defaultApiConfig)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} path - The path to direct the HTTP request to.
    * @param {string} queryString - The query used to find events.
    * @param {number} [start] - From which event offset the result set should start.
@@ -4263,6 +4293,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+    isExpired: function () {
+      return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
     }
   };
 
@@ -4882,15 +4915,25 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     $cookies.remove('user');
   }
 
+  function buildBaseUrl() {
+    var baseUrl = $location.protocol() + '://' + $location.host();
+    var port = $location.port();
+
+    return (port === 80) ? baseUrl : baseUrl + ':' + port;
+  }
+
   /**
    * Log the active user out.
    */
   this.logout = function () {
+    var destination = buildBaseUrl(),
+      logoutUrl = appConfig.authUrl + 'logout';
+
     removeCookies();
 
-    // reset url
-    $location.search('');
-    $location.path('/');
+    // redirect to login page
+    logoutUrl += '?destination=' + encodeURIComponent(destination);
+    $window.location.href = logoutUrl;
   };
 
   /**
@@ -4903,7 +4946,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    loginUrl += '?destination=' + currentLocation;
+    loginUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = loginUrl;
   };
 
@@ -4914,7 +4957,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     removeCookies();
 
     // redirect to login page
-    registrationUrl += '?destination=' + currentLocation;
+    registrationUrl += '?destination=' + encodeURIComponent(currentLocation);
     $window.location.href = registrationUrl;
   };
 
@@ -4969,7 +5012,7 @@ function udbDashboardEventItem() {
   var dashboardEventItemDirective = {
     restrict: 'AE',
     controller: 'OfferController',
-    controllerAs: 'eventCtrl',
+    controllerAs: 'offerCtrl',
     templateUrl: 'templates/dashboard-item.directive.html'
   };
 
@@ -4992,7 +5035,7 @@ function udbDashboardPlaceItem() {
   var dashboardPlaceItemDirective = {
     restrict: 'AE',
     controller: 'OfferController',
-    controllerAs: 'placeCtrl',
+    controllerAs: 'offerCtrl',
     templateUrl: 'templates/dashboard-item.directive.html'
   };
 
@@ -5253,6 +5296,184 @@ function udbDashboardDirective() {
   };
 }
 
+// Source: src/duplication/event-duplication-calendar.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.duplication.directive:udbEventDuplicationCalendar
+ * @description
+ *  Shows the calendar when you try to create a duplicate event.
+ */
+angular
+  .module('udb.duplication')
+  .directive('udbEventDuplicationCalendar', udbEventDuplicationCalendar);
+
+/* @ngInject */
+function udbEventDuplicationCalendar() {
+  return {
+    restrict: 'AE',
+    controller: EventDuplicationCalendarController,
+    controllerAs: 'edc',
+    templateUrl: 'templates/event-duplication-calendar.directive.html'
+  };
+}
+
+/* @ngInject */
+function EventDuplicationCalendarController(EventFormData, $rootScope, calendarLabels) {
+  var controller = this;
+
+  controller.calendarLabels = calendarLabels;
+  controller.duplicateFormData = EventFormData.clone();
+
+  controller.duplicateTimingChanged = function (formData) {
+    $rootScope.$emit('duplicateTimingChanged', formData);
+  };
+
+  controller.duplicateFormData
+    .timingChanged$
+    .subscribe(controller.duplicateTimingChanged);
+}
+EventDuplicationCalendarController.$inject = ["EventFormData", "$rootScope", "calendarLabels"];
+
+// Source: src/duplication/event-duplication-footer.component.js
+/**
+ * @ngdoc function
+ * @name udb.duplication.component:udbEventDuplicationFooter
+ * @description
+ * # Event Duplication Footer
+ * Footer component for migrating events
+ */
+angular
+  .module('udb.duplication')
+  .component('udbEventDuplicationFooter', {
+    templateUrl: 'templates/event-duplication-footer.component.html',
+    controller: EventDuplicationFooterController,
+    controllerAs: 'duplication'
+  });
+
+function pickFirstEventArgument(event) {
+  return event[1];
+}
+
+/* @ngInject */
+function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx) {
+  var controller = this;
+  var duplicateTimingChanged$ = $rootScope
+    .$eventToObservable('duplicateTimingChanged')
+    .map(pickFirstEventArgument);
+  var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
+
+  var duplicateFormData$ = duplicateTimingChanged$.startWith(false);
+
+  duplicateFormData$
+    .subscribe(function (duplicateFormData) {
+      controller.readyForDuplication = !!duplicateFormData;
+    });
+
+  createDuplicate$
+    .withLatestFrom(duplicateFormData$, function (createDuplicate, duplicateFormData) {
+      if (duplicateFormData) {
+        showAsyncDuplication();
+        eventDuplicator
+          .duplicate(duplicateFormData)
+          .then(showDuplicate, showAsyncError);
+      }
+    })
+    .subscribe();
+
+  /**
+   * @param {string} duplicateId
+   */
+  function showDuplicate(duplicateId) {
+    $state.go('split.eventEdit', {id: duplicateId});
+  }
+
+  function showAsyncError() {
+    controller.asyncError = true;
+    controller.duplicating = false;
+  }
+
+  function showAsyncDuplication() {
+    controller.asyncError = false;
+    controller.duplicating = true;
+  }
+}
+EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx"];
+
+// Source: src/duplication/event-duplication-step.component.js
+/**
+ * @ngdoc function
+ * @name udb.duplication.component:udbEventDuplicationStep
+ * @description
+ * # Event Duplication Step
+ * Step component for migrating events
+ */
+angular
+  .module('udb.duplication')
+  .component('udbEventDuplicationStep', {
+    templateUrl: 'templates/event-duplication-step.component.html',
+    controller: EventDuplicationStepController,
+    controllerAs: 'duplication'
+  });
+
+/* @ngInject */
+function EventDuplicationStepController(EventFormData) {
+  var controller = this;
+
+  controller.eventId = EventFormData.id;
+
+  controller.readyToDuplicate = function () {
+    return false;
+  };
+}
+EventDuplicationStepController.$inject = ["EventFormData"];
+
+// Source: src/duplication/event-duplicator.service.js
+/**
+ * @ngdoc service
+ * @name udb.duplication.eventDuplicator
+ * @description
+ * Event Duplicator Service
+ */
+angular
+  .module('udb.duplication')
+  .service('eventDuplicator', EventDuplicatorService);
+
+/* @ngInject */
+function EventDuplicatorService(udbApi, offerLocator) {
+  var calendarDataProperties = [
+    'calendarType',
+    'openingHours',
+    'timestamps',
+    'startDate',
+    'endDate'
+  ];
+
+  /**
+   * @param {object} duplicateInfo
+   * @return {string}
+   */
+  function rememberDuplicateLocationAndReturnId(duplicateInfo) {
+    offerLocator.add(duplicateInfo.eventId, duplicateInfo.url);
+
+    return duplicateInfo.eventId;
+  }
+
+  /**
+   * Duplicate an event using form date with the new timing info
+   * @param {EventFormData} formData
+   * @return {Promise.<string>}
+   *  promises the duplicate id
+   */
+  this.duplicate = function(formData) {
+    var calendarData = _.pick(formData, calendarDataProperties);
+
+    return udbApi
+      .duplicateEvent(formData.apiUrl, calendarData)
+      .then(rememberDuplicateLocationAndReturnId);
+  };
+}
+EventDuplicatorService.$inject = ["udbApi", "offerLocator"];
+
 // Source: src/entry/components/job-logo-states.constant.js
 /* jshint sub: true */
 
@@ -5496,8 +5717,9 @@ function EventCrud(
    * @param {EventFormData} formData
    */
   function pickMajorInfoFromFormData(formData) {
-    return _.pick(formData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
+    return _.pick(formData, function(property, name) {
+      var isStream = name.charAt(name.length - 1) === '$';
+      return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
   }
 
@@ -7115,22 +7337,36 @@ function EventDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
-
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
-    udbApi
-      .hasPermission(offerLocation)
-      .then(allowEditing);
+    var offer = udbApi.getOffer(offerLocation);
+    var permission = udbApi.hasPermission(offerLocation);
 
-    udbApi
-      .getOffer(offerLocation)
-      .then(showOffer, failedToLoad);
+    offer.then(showOffer, failedToLoad);
+
+    $q.all([permission, offer])
+      .then(grantPermissions, denyAllPermissions);
+
+    permission.catch(denyAllPermissions);
   });
 
+  /**
+   * Grant permissions based on permission-data.
+   * @param {Array} permissionsData
+   *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
+   *  The second value holds the offer itself.
+   */
+  function grantPermissions(permissionsData) {
+    var event = permissionsData[1];
+    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+  }
+
+  function denyAllPermissions() {
+    $scope.permissions = {editing: false, duplication: false};
+  }
+
   $scope.eventIdIsInvalid = false;
-  $scope.hasEditPermissions = false;
-  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
@@ -7152,10 +7388,6 @@ function EventDetail(
     openEventDeleteConfirmModal($scope.event);
   };
   $scope.isEmpty = _.isEmpty;
-
-  function allowEditing() {
-    $scope.hasEditPermissions = true;
-  }
 
   var language = 'nl';
   var cachedEvent;
@@ -7184,11 +7416,6 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
-  }
-
-  function isEventEditable(event) {
-    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
-    return ($scope.hasEditPermissions && notExpired);
   }
 
   function failedToLoad(reason) {
@@ -7326,6 +7553,29 @@ function EventDetail(
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
 
+// Source: src/event_form/calendar-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc constant
+ * @name udb.event-form.calendarLabels
+ * @description
+ * # calendarLabels
+ * Form calendar labels
+ */
+angular
+  .module('udb.event-form')
+  .constant('calendarLabels',
+    /**
+     * list of calendar labels
+     * @readonly
+     */
+    [
+      {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
+      {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
+      {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
+    ]);
+
 // Source: src/event_form/components/audience/form-audience.controller.js
 /**
  * @ngdoc function
@@ -7422,6 +7672,9 @@ function EventFormPeriodDirective() {
   return {
     templateUrl: 'templates/event-form-period.html',
     restrict: 'EA',
+    scope: {
+      formData: '='
+    }
   };
 }
 
@@ -7441,6 +7694,9 @@ function EventFormTimestampDirective() {
   return {
     templateUrl: 'templates/event-form-timestamp.html',
     restrict: 'EA',
+    scope: {
+      formData: '='
+    }
   };
 }
 
@@ -7812,6 +8068,9 @@ function EventFormOpeningHoursDirective() {
   return {
     templateUrl: 'templates/event-form-openinghours.html',
     restrict: 'E',
+    scope: {
+      formData: '='
+    }
   };
 }
 
@@ -8910,7 +9169,18 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory() {
+function EventFormDataFactory(rx, calendarLabels) {
+
+  // Mapping between machine name of days and real output.
+  var dayNames = {
+    monday : 'Maandag',
+    tuesday : 'Dinsdag',
+    wednesday : 'Woensdag',
+    thursday : 'Donderdag',
+    friday : 'Vrijdag',
+    saturday : 'Zaterdag',
+    sunday : 'Zondag'
+  };
 
   /**
    * @class EventFormData
@@ -8987,6 +9257,15 @@ function EventFormDataFactory() {
       this.labels = [];
 
       this.audienceType = 'everyone';
+
+      this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
+    },
+
+    clone: function () {
+      var clone = _.cloneDeep(this);
+      clone.timingChanged$ = rx.createObservableFunction(clone, 'timingChangedCallback');
+
+      return clone;
     },
 
     /**
@@ -9293,6 +9572,120 @@ function EventFormDataFactory() {
       var endDate = this.getEndDate();
 
       return this.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
+    },
+
+    /**
+     * Init the calendar for the current selected calendar type.
+     */
+    initCalendar: function () {
+      var formData = this;
+      var calendarType = _.findWhere(calendarLabels, {id: formData.calendarType});
+
+      if (calendarType) {
+        this.activeCalendarLabel = calendarType.label;
+        this.activeCalendarType = formData.calendarType;
+      }
+    },
+
+    timingChanged: function () {
+      this.timingChangedCallback(this);
+    },
+
+    resetCalender: function () {
+      this.activeCalendarType = '';
+      this.calendarType = '';
+    },
+
+    saveOpeningHourDaySelection: function (index, dayOfWeek) {
+      var humanValues = [];
+      if (dayOfWeek instanceof Array) {
+        for (var i in dayOfWeek) {
+          humanValues.push(dayNames[dayOfWeek[i]]);
+        }
+      }
+
+      this.openingHours[index].label = humanValues.join(', ');
+    },
+
+    /**
+     * Click listener on the calendar type buttons.
+     * Activate the selected calendar type.
+     */
+    setCalendarType: function (type) {
+      var formData = this;
+
+      formData.showStep(3);
+
+      // Check if previous calendar type was the same.
+      // If so, we don't need to create new opening hours. Just show the previous entered data.
+      if (formData.calendarType === type) {
+        return;
+      }
+
+      // A type is chosen, start a complete new calendar, removing old data
+      formData.resetCalendar();
+      formData.calendarType = type;
+
+      if (formData.calendarType === 'single') {
+        formData.addTimestamp('', '', '');
+      }
+
+      if (formData.calendarType === 'periodic') {
+        formData.addOpeningHour('', '', '');
+      }
+
+      if (formData.calendarType === 'permanent') {
+        formData.addOpeningHour('', '', '');
+        formData.timingChanged();
+      }
+
+      formData.initCalendar();
+
+      if (formData.id) {
+        formData.majorInfoChanged = true;
+      }
+
+    },
+
+    /**
+     * Toggle the starthour field for given timestamp.
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleStartHour: function(timestamp) {
+      // If we hide the textfield, empty all other time fields.
+      if (!timestamp.showStartHour) {
+        timestamp.startHour = '';
+        timestamp.endHour = '';
+        timestamp.showEndHour = false;
+        this.timingChanged();
+      }
+    },
+
+    /**
+     * Toggle the endhour field for given timestamp
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleEndHour: function(timestamp) {
+      // If we hide the textfield, empty also the input.
+      if (!timestamp.showEndHour) {
+        timestamp.endHour = '';
+        this.timingChanged();
+      }
+    },
+
+    periodicTimingChanged: function () {
+      var formData = this;
+
+      if (formData.id) {
+        if (formData.hasValidPeriodicRange()) {
+          formData.periodicRangeError = false;
+          formData.timingChanged();
+        } else {
+          formData.periodicRangeError = true;
+        }
+      }
     }
 
   };
@@ -9302,6 +9695,7 @@ function EventFormDataFactory() {
 
   return eventFormData;
 }
+EventFormDataFactory.$inject = ["rx", "calendarLabels"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -9439,6 +9833,16 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
     else if (item.calendarType === 'single') {
       addTimestamp(item.startDate, item.endDate);
+    }
+
+    if (EventFormData.calendarType) {
+      EventFormData.initCalendar();
+    }
+
+    if (!!EventFormData.openingHours.length) {
+      _.each(EventFormData.openingHours, function (openingHour, index) {
+        EventFormData.saveOpeningHourDaySelection(index, openingHour.dayOfWeek);
+      });
     }
 
     $scope.loaded = true;
@@ -9938,194 +10342,13 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-  $scope.calendarHighlight = appConfig.calendarHighlight;
-
-  $scope.calendarLabels = [
-    {'label': 'Eén of meerdere dagen', 'id' : 'single', 'eventOnly' : true},
-    {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
-    {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
-  ];
-  $scope.hasOpeningHours = EventFormData.openingHours.length > 0;
-  $scope.lastSelectedDate = '';
-
-  // Scope functions
-  $scope.setCalendarType = setCalendarType;
-  $scope.resetCalendar = resetCalendar;
-  $scope.addTimestamp = addTimestamp;
-  $scope.toggleStartHour = controller.toggleStartHour;
-  $scope.toggleEndHour = toggleEndHour;
-  $scope.saveOpeningHourDaySelection = saveOpeningHourDaySelection;
-  $scope.saveOpeningHours = saveOpeningHours;
-  $scope.eventTimingChanged = controller.eventTimingChanged;
-  $scope.dateChosen = dateChosen;
-
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
-
-  // Set form default correct for the editing calendar type.
-  if (EventFormData.calendarType) {
-    initCalendar();
-  }
-
-  // Load the correct labels.
-  if ($scope.hasOpeningHours) {
-    initOpeningHours();
-  }
-
-  /**
-   * Click listener on the calendar type buttons.
-   * Activate the selected calendar type.
-   */
-  function setCalendarType(type) {
-
-    EventFormData.showStep(3);
-
-    // Check if previous calendar type was the same.
-    // If so, we don't need to create new opening hours. Just show the previous entered data.
-    if (EventFormData.calendarType === type) {
-      return;
-    }
-
-    // A type is chosen, start a complete new calendar, removing old data
-    $scope.hasOpeningHours = false;
-    EventFormData.resetCalendar();
-    EventFormData.calendarType = type;
-
-    if (EventFormData.calendarType === 'single') {
-      addTimestamp();
-    }
-
-    if (EventFormData.calendarType === 'periodic') {
-      EventFormData.addOpeningHour('', '', '');
-    }
-
-    if (EventFormData.calendarType === 'permanent') {
-      EventFormData.addOpeningHour('', '', '');
-      controller.eventTimingChanged();
-    }
-
-    initCalendar();
-
-    if (EventFormData.id) {
-      EventFormData.majorInfoChanged = true;
-    }
-
-  }
-
-  /**
-   * Change listener to the datepicker. Last choice is stored.
-   */
-  function dateChosen(timestamp) {
-    $scope.lastSelectedDate = timestamp;
-    controller.eventTimingChanged();
-  }
-
-  /**
-   * Init the calendar for the current selected calendar type.
-   */
-  function initCalendar() {
-
-    var calendarType = _.findWhere($scope.calendarLabels, {id: EventFormData.calendarType});
-
-    if (calendarType) {
-      EventFormData.activeCalendarLabel = calendarType.label;
-      EventFormData.activeCalendarType = EventFormData.calendarType;
-    }
-  }
-
-  /**
-   * Init the opening hours.
-   */
-  function initOpeningHours() {
-    for (var i = 0; i < EventFormData.openingHours.length; i++) {
-      saveOpeningHourDaySelection(i, EventFormData.openingHours[i].dayOfWeek);
-    }
-  }
-
-  /**
-   * Click listener to reset the calendar. User can select a new calendar type.
-   */
-  function resetCalendar () {
-    EventFormData.activeCalendarType = '';
-    EventFormData.calendarType = '';
-  }
-
-  /**
-   * Add a single date to the item.
-   */
-  function addTimestamp() {
-    EventFormData.addTimestamp('', '', '');
-  }
-
-  /**
-   * Toggle the starthour field for given timestamp.
-   * @param {Object} timestamp
-   *   Timestamp to change
-   */
-  controller.toggleStartHour = function (timestamp) {
-
-    // If we hide the textfield, empty all other time fields.
-    if (!timestamp.showStartHour) {
-      timestamp.startHour = '';
-      timestamp.endHour = '';
-      timestamp.showEndHour = false;
-      controller.eventTimingChanged();
-    }
-  };
-
-  /**
-   * Toggle the endhour field for given timestamp
-   * @param {Object} timestamp
-   *   Timestamp to change
-   */
-  function toggleEndHour(timestamp) {
-
-    // If we hide the textfield, empty also the input.
-    if (!timestamp.showEndHour) {
-      timestamp.endHour = '';
-      controller.eventTimingChanged();
-    }
-
-  }
-
-  /**
-   * Change listener on the day selection of opening hours.
-   * Create human labels for the day selection.
-   */
-  function saveOpeningHourDaySelection(index, dayOfWeek) {
-
-    var humanValues = [];
-    if (dayOfWeek instanceof Array) {
-      for (var i in dayOfWeek) {
-        humanValues.push(dayNames[dayOfWeek[i]]);
-      }
-    }
-
-    EventFormData.openingHours[index].label = humanValues.join(', ');
-
-  }
-
-  /**
-   * Save the opening hours.
-   */
-  function saveOpeningHours() {
-    $scope.hasOpeningHours = true;
-    controller.eventTimingChanged();
-  }
+  $scope.calendarLabels = calendarLabels;
 
   /**
    * Mark the major info as changed.
@@ -10134,29 +10357,14 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, appConfig) 
     if (EventFormData.id) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
+    console.log('event timing changed');
   };
 
-  controller.periodicEventTimingChanged = function () {
-    if (EventFormData.id) {
-      if (EventFormData.hasValidPeriodicRange()) {
-        controller.clearPeriodicRangeError();
-        $rootScope.$emit('eventTimingChanged', EventFormData);
-      } else {
-        controller.displayPeriodicRangeError();
-      }
-    }
-  };
-
-  controller.displayPeriodicRangeError = function () {
-    controller.periodicRangeError = true;
-  };
-
-  controller.clearPeriodicRangeError = function () {
-    controller.periodicRangeError = false;
-  };
-
+  EventFormData
+    .timingChanged$
+    .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "appConfig"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -10185,7 +10393,8 @@ function EventFormStep3Controller(
     $uibModal,
     cities,
     Levenshtein,
-    eventCrud
+    eventCrud,
+    $rootScope
 ) {
 
   var controller = this;
@@ -10331,6 +10540,7 @@ function EventFormStep3Controller(
 
     controller.stepCompleted();
     setMajorInfoChanged();
+    $rootScope.$emit('locationSelected', location);
 
   };
   $scope.selectLocation = controller.selectLocation;
@@ -10551,7 +10761,7 @@ function EventFormStep3Controller(
 
   controller.init(EventFormData);
 }
-EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud"];
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/steps/event-form-step4.controller.js
 /**
@@ -11726,10 +11936,10 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'location', include: true, sortable: false, excludable: false},
     {name: 'address', include: true, sortable: false, excludable: true},
     {name: 'organizer', include: false, sortable: false, excludable: true},
-    {name: 'bookingInfo.price', include: true, sortable: false, excludable: true},
+    {name: 'priceInfo', include: false, sortable: false, excludable: true},
     {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
-    {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
+    {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
     {name: 'terms.theme', include: true, sortable: false, excludable: true},
     {name: 'terms.eventtype', include: true, sortable: false, excludable: true},
@@ -14976,16 +15186,24 @@ angular
   });
 
 /* @ngInject */
-function EventMigrationFooterController(EventFormData) {
+function EventMigrationFooterController(EventFormData, $stateParams, $state) {
   var controller = this;
 
-  controller.eventId = EventFormData.id;
+  controller.completeMigration = completeMigration;
+  controller.destination = $stateParams.destination;
+  controller.migrationReady = migrationReady;
 
-  controller.readyToEdit = function () {
+  function completeMigration () {
+    if (migrationReady()) {
+      $state.go($stateParams.destination.state, {id: EventFormData.id});
+    }
+  }
+
+  function migrationReady () {
     return !!_.get(EventFormData, 'location.id');
-  };
+  }
 }
-EventMigrationFooterController.$inject = ["EventFormData"];
+EventMigrationFooterController.$inject = ["EventFormData", "$stateParams", "$state"];
 
 // Source: src/migration/event-migration.service.js
 /**
@@ -15084,17 +15302,26 @@ function PlaceDetail(
   $q.when(placeId, function(offerLocation) {
     $scope.placeId = offerLocation;
 
-    udbApi
-      .hasPermission(offerLocation)
-      .then(allowEditing);
+    var offer = udbApi.getOffer(offerLocation);
+    var permission = udbApi.hasPermission(offerLocation);
 
-    udbApi
-      .getOffer(offerLocation)
-      .then(showOffer, failedToLoad);
+    offer.then(showOffer, failedToLoad);
+
+    $q.all([permission, offer])
+      .then(grantPermissions, denyAllPermissions);
+
+    permission.catch(denyAllPermissions);
   });
 
+  function grantPermissions() {
+    $scope.permissions = {editing: true};
+  }
+
+  function denyAllPermissions() {
+    $scope.permissions = {editing: false};
+  }
+
   $scope.placeIdIsInvalid = false;
-  $scope.hasEditPermissions = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.placeHistory = [];
@@ -15111,10 +15338,6 @@ function PlaceDetail(
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
   };
-
-  function allowEditing() {
-    $scope.hasEditPermissions = true;
-  }
 
   var language = 'nl';
   var cachedPlace;
@@ -17644,8 +17867,6 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
-  $scope.offerIsExpired = offerIsExpired;
-
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -17666,6 +17887,7 @@ function OfferController(
 
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
+          controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.fetching = false;
 
           watchLabels();
@@ -17722,13 +17944,6 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
-
-  function offerIsExpired(offerEndDate) {
-    var endDate = new Date(offerEndDate);
-    var now = new Date();
-
-    return endDate < now;
-  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
@@ -18528,7 +18743,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/dashboard-item.directive.html',
     "<td>\n" +
-    " \n" +
     "  <strong>\n" +
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
@@ -18543,8 +18757,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </small>\n" +
     "</td>\n" +
     "\n" +
-    "<td>\n" +
-    "  <span ng-if=\"!offerIsExpired(event.endDate)\">\n" +
+    "<td ng-if=\"!offerCtrl.fetching\">\n" +
+    "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
@@ -18559,7 +18773,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </ul>\n" +
     "    </div>\n" +
     "  </span>\n" +
-    "  <span ng-if=\"offerIsExpired(event.endDate)\">\n" +
+    "  <span ng-if=\"::offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right\">\n" +
     "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
     "    </div>\n" +
@@ -18696,6 +18910,84 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/event-duplication-calendar.directive.html',
+    "<section id=\"wanneer\">\n" +
+    "    <h2 class=\"title-border\">\n" +
+    "        <span>Wanneer vindt dit evenement of deze activiteit plaats?</span>\n" +
+    "    </h2>\n" +
+    "\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "\n" +
+    "                <label class=\"wanneerkiezer-label\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
+    "                    Maak een keuze\n" +
+    "                </label>\n" +
+    "                <div class=\"wanneerkiezer\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
+    "                    <ul class=\"list-inline button-list\">\n" +
+    "                        <li ng-repeat=\"calendarLabel in ::edc.calendarLabels\">\n" +
+    "                            <button class=\"btn btn-default\"\n" +
+    "                                    ng-bind=\"::calendarLabel.label\"\n" +
+    "                                    udb-auto-scroll\n" +
+    "                                    ng-click=\"edc.duplicateFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
+    "                        </li>\n" +
+    "                    </ul>\n" +
+    "                </div>\n" +
+    "                <div class=\"wanneer-chosen\" ng-hide=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
+    "                    <span class=\"btn-chosen\" ng-bind=\"edc.duplicateFormData.activeCalendarLabel\"></span>\n" +
+    "                    <a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.duplicateFormData.resetCalendar()\">Wijzigen</a>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'single'\">\n" +
+    "        <udb-event-form-timestamp form-data=\"edc.duplicateFormData\"></udb-event-form-timestamp>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
+    "        <udb-event-form-period form-data=\"edc.duplicateFormData\"></udb-event-form-period>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
+    "        <udb-event-form-opening-hours form-data=\"edc.duplicateFormData\"></udb-event-form-opening-hours>\n" +
+    "    </div>\n" +
+    "\n" +
+    "</section>\n"
+  );
+
+
+  $templateCache.put('templates/event-duplication-footer.component.html',
+    "<div class=\"event-validation\">\n" +
+    "    <button class=\"btn btn-success\"\n" +
+    "            ng-disabled=\"duplication.duplicating\"\n" +
+    "            ng-click=\"duplication.createDuplicate()\"\n" +
+    "            role=\"button\"\n" +
+    "            ng-class=\"{disabled: !duplication.readyForDuplication}\">Kopiëren en aanpassen</button>\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"duplication.duplicating\"></i>\n" +
+    "    <span ng-show=\"duplication.asyncError\">Er ging iets mis tijdens het aanmaken van een kopie!</span>\n" +
+    "</div>"
+  );
+
+
+  $templateCache.put('templates/event-duplication-step.component.html',
+    "<div class=\"alert alert-info\" role=\"alert\">\n" +
+    "    <strong>Je staat op het punt een evenement te kopiëren.</strong><br>\n" +
+    "    Om overlappende data te vermijden, kies je een nieuwe kalender voor dit evenement.\n" +
+    "</div>\n" +
+    "\n" +
+    "<udb-event-duplication-calendar></udb-event-duplication-calendar>\n"
+  );
+
+
+  $templateCache.put('templates/event-duplication.html',
+    "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
+    "    <udb-event-duplication-step></udb-event-duplication-step>\n" +
+    "    <udb-event-duplication-footer></udb-event-duplication-footer>\n" +
     "</div>\n"
   );
 
@@ -18918,38 +19210,34 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div ng-if=\"event\">\n" +
-    "  <div class=\"page-header\">\n" +
-    "    <h1>{{event.name}}</h1>\n" +
-    "  </div>\n" +
+    "  <h1 class=\"title\" ng-bind=\"event.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
-    "    <div class=\"col-xs-3\">\n" +
-    "      <ul class=\"nav nav-pills nav-stacked\">\n" +
+    "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
+    "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "        <button ng-if=\"::permissions.duplication\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                href=\"#\"\n" +
+    "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
+    "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
-    "    </div>\n" +
     "\n" +
-    "    <div class=\"col-xs-9\">\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "\n" +
-    "        <div class=\"clearfix\">\n" +
-    "          <div class=\"btn-group pull-right\" ng-if=\"isEventEditable(event)\">\n" +
-    "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
-    "            <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
-    "              <span class=\"caret\"></span>\n" +
-    "              <span class=\"sr-only\">Toggle Dropdown</span>\n" +
-    "            </button>\n" +
-    "            <ul class=\"dropdown-menu\" role=\"menu\">\n" +
-    "              <li><a href=\"#\" ng-click=\"deleteEvent()\">Verwijderen</a>\n" +
-    "              </li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "          <h2 class=\"block-header\">Voorbeeld</h2>\n" +
-    "\n" +
-    "        </div>\n" +
-    "\n" +
+    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
     "        <div class=\"panel panel-default\">\n" +
     "          <table class=\"table udb3-data-table\">\n" +
     "            <colgroup>\n" +
@@ -19170,10 +19458,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"form-group\">\n" +
     "        <p class=\"module-title\">Vanaf</p>\n" +
     "        <div udb-datepicker\n" +
-    "             highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "             highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
-    "             ng-change=\"EventFormStep2.periodicEventTimingChanged()\"\n" +
-    "             ng-model=\"eventFormData.startDate\"></div>\n" +
+    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
+    "             ng-model=\"formData.startDate\"></div>\n" +
     "      </div>\n" +
     "    </section>\n" +
     "  </div>\n" +
@@ -19183,16 +19469,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"form-group\">\n" +
     "        <p class=\"module-title\">Tot en met</p>\n" +
     "        <div udb-datepicker\n" +
-    "             highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "             highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
-    "             ng-change=\"EventFormStep2.periodicEventTimingChanged()\"\n" +
-    "             ng-model=\"eventFormData.endDate\"></div>\n" +
+    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
+    "             ng-model=\"formData.endDate\"></div>\n" +
     "      </div>\n" +
     "    </section>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-xs-12\">\n" +
-    "    <div ng-show=\"EventFormStep2.periodicRangeError\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "    <div ng-show=\"formData.periodicRangeError\" class=\"alert alert-warning\" role=\"alert\">\n" +
     "        Selecteer een geldige begin- en einddatum.\n" +
     "    </div>\n" +
     "  </div>\n" +
@@ -19201,22 +19485,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-form-timestamp.html',
-    "<div id=\"wanneer-dagen\" ng-repeat=\"timestamp in eventFormData.timestamps\">\n" +
+    "<div id=\"wanneer-dagen\" ng-repeat=\"timestamp in formData.timestamps\">\n" +
     "\n" +
     "  <div class=\"col-xs-12 col-sm-4 prototype-step\" id=\"add-date-form\">\n" +
     "    <section class=\"add-date\">\n" +
     "\n" +
     "      <div udb-datepicker\n" +
-    "           ng-change=\"dateChosen(timestamp.date)\"\n" +
-    "           highlight-date=\"{{calendarHighlight.date}}\"\n" +
-    "           highlight-extra-class=\"{{calendarHighlight.extraClass}}\"\n" +
+    "           ng-change=\"formData.timingChanged()\"\n" +
     "           ng-model=\"timestamp.date\"></div>\n" +
     "\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-xs-6\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"EventFormStep2.toggleStartHour(timestamp)\"\n" +
+    "                   ng-change=\"formData.toggleStartHour(timestamp)\"\n" +
     "                   value=\"\"\n" +
     "                   ng-model=\"timestamp.showStartHour\"\n" +
     "                   class=\"beginuur-toevoegen\">\n" +
@@ -19228,7 +19510,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                ng-model=\"timestamp.startHour\"\n" +
     "                class=\"form-control uur\"\n" +
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
+    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 08:00\"\n" +
     "                focus-if=\"timestamp.showStartHour\">\n" +
@@ -19237,7 +19519,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"toggleEndHour(timestamp)\"\n" +
+    "                   ng-change=\"formData.toggleEndHour(timestamp)\"\n" +
     "                   value=\"\"\n" +
     "                   ng-model=\"timestamp.showEndHour\"\n" +
     "                   class=\"einduur-toevoegen\">\n" +
@@ -19249,7 +19531,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                ng-model=\"timestamp.endHour\"\n" +
     "                class=\"form-control uur\"\n" +
     "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"EventFormStep2.eventTimingChanged()\"\n" +
+    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
     "                typeahead-editable=\"false\"\n" +
     "                placeholder=\"Bv. 23:00\"\n" +
     "                focus-if=\"timestamp.showEndHour\">\n" +
@@ -19263,7 +19545,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div class=\"col-xs-12 col-sm-4\">\n" +
     "  <div class=\"add-date\">\n" +
-    "    <a href=\"#\" class=\"add-date-link\" ng-click=\"addTimestamp()\">\n" +
+    "    <a href=\"#\" class=\"add-date-link\" ng-click=\"formData.addTimestamp('','','')\">\n" +
     "      <p id=\"add-date-plus\">+</p>\n" +
     "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
     "      <p id=\"add-date-tip\" class=\"muted\">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>\n" +
@@ -19475,12 +19757,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"hasOpeningHours\">\n" +
+    "<div class=\"col-xs-12\" ng-hide=\"!!formData.openingHours.length\">\n" +
     "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
     "     data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\">Openingsuren toevoegen</a>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"hasOpeningHours\">\n" +
+    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!formData.openingHours.length\">\n" +
     "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
     "    <table class=\"table table-condensed \">\n" +
     "      <thead>\n" +
@@ -19492,7 +19774,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
-    "        <tr ng-repeat=\"openingHour in eventFormData.openingHours\">\n" +
+    "        <tr ng-repeat=\"openingHour in formData.openingHours\">\n" +
     "          <td ng-bind=\"openingHour.label\"></td>\n" +
     "          <td>\n" +
     "            <span ng-bind=\"openingHour.opens\"></span> – <span ng-bind=\"openingHour.closes\"></span>\n" +
@@ -19522,14 +19804,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </tr>\n" +
     "          </thead>\n" +
     "\n" +
-    "          <tr ng-repeat=\"(i, openingHour) in eventFormData.openingHours\">\n" +
+    "          <tr ng-repeat=\"(i, openingHour) in formData.openingHours\">\n" +
     "            <td>\n" +
     "              <select class=\"selectpicker\"\n" +
     "                      multiple\n" +
     "                      udb-multiselect\n" +
     "                      start-label=\"Kies dag(en)\"\n" +
     "                      ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                      ng-change=\"saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
+    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
     "                <option value=\"monday\">maandag</option>\n" +
     "                <option value=\"tuesday\">dinsdag</option>\n" +
     "                <option value=\"wednesday\">woensdag</option>\n" +
@@ -19557,20 +19839,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-editable=\"false\">\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"eventFormData.removeOpeningHour(i)\">\n" +
+    "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
     "                <span aria-hidden=\"true\">&times;</span>\n" +
     "              </button>\n" +
     "            </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"eventFormData.addOpeningHour('', '' , '')\">\n" +
+    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '')\">\n" +
     "          Meer openingstijden toevoegen\n" +
     "        </a>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
     "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\" data-dismiss=\"modal\"\n" +
-    "                ng-click=\"saveOpeningHours()\">\n" +
+    "                ng-click=\"formData.timingChanged()\">\n" +
     "          Toevoegen\n" +
     "        </button>\n" +
     "      </div>\n" +
@@ -20402,28 +20684,28 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        class=\"btn btn-default\"\n" +
     "                        ng-bind=\"::calendarLabel.label\"\n" +
     "                        udb-auto-scroll\n" +
-    "                        ng-click=\"setCalendarType(calendarLabel.id);\"></button>\n" +
+    "                        ng-click=\"eventFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
     "              </li>\n" +
     "            </ul>\n" +
     "          </div>\n" +
     "          <div class=\"wanneer-chosen\" ng-hide=\"eventFormData.activeCalendarType === ''\">\n" +
     "            <span class=\"btn-chosen\" ng-bind=\"eventFormData.activeCalendarLabel\">\n" +
-    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"resetCalendar()\">Wijzigen</a>\n" +
+    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"eventFormData.resetCalendar()\">Wijzigen</a>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'single'\">\n" +
-    "      <udb-event-form-timestamp></udb-event-form-timestamp>\n" +
+    "      <udb-event-form-timestamp form-data=\"eventFormData\"></udb-event-form-timestamp>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-period></udb-event-form-period>\n" +
+    "      <udb-event-form-period form-data=\"eventFormData\"></udb-event-form-period>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'permanent' || eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-opening-hours></udb-event-form-opening-hours>\n" +
+    "      <udb-event-form-opening-hours form-data=\"eventFormData\"></udb-event-form-opening-hours>\n" +
     "    </div>\n" +
     "\n" +
     "  </section>\n" +
@@ -22091,9 +22373,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/event-migration-footer.component.html',
     "<div class=\"event-validation\">\n" +
     "    <a class=\"btn btn-success\"\n" +
-    "       ui-sref=\"split.eventEdit({id: migration.eventId})\"\n" +
+    "       ng-click=\"migration.completeMigration()\"\n" +
     "       role=\"button\"\n" +
-    "       ng-class=\"{disabled: !migration.readyToEdit()}\">Doorgaan met bewerken</a>\n" +
+    "       ng-class=\"{disabled: !migration.migrationReady()}\"\n" +
+    "       ng-bind=\"::migration.destination.description\"></a>\n" +
     "</div>"
   );
 
@@ -22127,38 +22410,31 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div ng-if=\"place\">\n" +
-    "  <div class=\"page-header\">\n" +
-    "    <h1>{{place.name}}</h1>\n" +
-    "  </div>\n" +
+    "  <h1 class=\"title\" ng-bind=\"place.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
-    "    <div class=\"col-xs-3\">\n" +
-    "      <ul class=\"nav nav-pills nav-stacked\">\n" +
+    "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
+    "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                href=\"#\"\n" +
+    "                ng-click=\"deletePlace()\">Verwijderen</button>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-xs-9 col-sm-pull-3\">\n" +
+    "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
     "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
-    "    </div>\n" +
     "\n" +
-    "    <div class=\"col-xs-9\">\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "\n" +
-    "        <div class=\"clearfix\">\n" +
-    "          <div class=\"btn-group pull-right\" ng-if=\"hasEditPermissions\">\n" +
-    "            <button type=\"button\" class=\"btn btn-primary\" ng-click=\"openEditPage()\">Bewerken</button>\n" +
-    "            <button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\" aria-expanded=\"false\">\n" +
-    "              <span class=\"caret\"></span>\n" +
-    "              <span class=\"sr-only\">Toggle Dropdown</span>\n" +
-    "            </button>\n" +
-    "            <ul class=\"dropdown-menu\" role=\"menu\">\n" +
-    "              <li><a href=\"#\" ng-click=\"deletePlace()\">Verwijderen</a>\n" +
-    "              </li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "          <p class=\"block-header\">Voorbeeld</p>\n" +
-    "\n" +
-    "        </div>\n" +
-    "\n" +
+    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
     "        <div class=\"panel panel-default\">\n" +
     "          <table class=\"table udb3-data-table\">\n" +
     "            <colgroup>\n" +

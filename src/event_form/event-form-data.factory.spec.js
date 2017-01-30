@@ -122,4 +122,76 @@ describe('Factory: Event form data', function () {
     EventFormData.init();
     expect(EventFormData.workflowStatus).toEqual('DRAFT');
   }));
+
+  it('should display an error message when the range of periodic calendar is invalid', inject(function (EventFormData) {
+    EventFormData.init();
+
+    EventFormData.id = 1;
+    EventFormData.startDate = new Date('2015-12-12');
+    EventFormData.endDate = new Date('2015-12-10');
+    EventFormData.calendarType = 'periodic';
+    EventFormData.periodicTimingChanged();
+
+    expect(EventFormData.periodicRangeError).toEqual(true);
+  }));
+
+  it('should notify that the event timing has changed when toggling off the start time', function (done) {
+    inject(function(EventFormData) {
+      EventFormData.initCalendar();
+
+      var timestamp = {
+        startHour: '',
+        endHour: '',
+        showEndHour: true,
+        showStartHour: false
+      };
+
+      EventFormData
+        .timingChanged$
+        .subscribe(done);
+
+      EventFormData.toggleStartHour(timestamp);
+    })();
+  });
+
+  it('should notify that the event timing has changed when toggling off the end time', function (done) {
+    inject(function (EventFormData) {
+      EventFormData.initCalendar();
+
+      var timestamp = {
+        startHour: '',
+        endHour: '',
+        showEndHour: false,
+        showStartHour: false
+      };
+
+      EventFormData
+        .timingChanged$
+        .subscribe(done);
+
+      EventFormData.toggleEndHour(timestamp);
+    })();
+  });
+
+  it('should update timing when the calendar type is set to permanent', function (done) {
+    inject(function (EventFormData) {
+      EventFormData.initCalendar();
+
+      EventFormData
+        .timingChanged$
+        .subscribe(done);
+
+      EventFormData.setCalendarType('permanent');
+    })();
+  });
+
+  it('should reset both activeCalendarType and calendarType when resetting the calendar', inject(function (EventFormData) {
+    EventFormData.calendarType = 'periodic';
+    EventFormData.activeCalendarType = 'periodic';
+    EventFormData.initCalendar();
+    EventFormData.resetCalendar();
+
+    expect(EventFormData.calendarType).toEqual('');
+    expect(EventFormData.activeCalendarType).toEqual('');
+  }));
 });

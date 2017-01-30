@@ -11,38 +11,34 @@
 </div>
 
 <div ng-if="event">
-  <div class="page-header">
-    <h1>{{event.name}}</h1>
-  </div>
+  <h1 class="title" ng-bind="event.name"></h1>
 
   <div class="row">
-    <div class="col-xs-3">
-      <ul class="nav nav-pills nav-stacked">
+    <div class="col-sm-3 col-sm-push-9">
+      <div class="list-group" ng-if="::permissions">
+        <button ng-if="::permissions.editing"
+                class="list-group-item"
+                type="button"
+                ng-click="openEditPage()">Bewerken</button>
+        <button ng-if="::permissions.duplication"
+                class="list-group-item"
+                type="button"
+                ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>
+        <button ng-if="::permissions.editing"
+                class="list-group-item"
+                href="#"
+                ng-click="deleteEvent()">Verwijderen</button>
+      </div>
+    </div>
+    <div class="col-sm-9 col-sm-pull-3">
+      <ul class="nav nav-tabs">
         <li ng-repeat="tab in tabs" ng-class="{active: isTabActive(tab.id)}" role="tab">
-          <a ng-click="makeTabActive(tab.id)" role="tab" ng-bind="tab.header"></a>
+          <a ng-click="makeTabActive(tab.id)" role="tab" ng-bind="tab.header" href="#"></a>
         </li>
       </ul>
-    </div>
 
-    <div class="col-xs-9">
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('data')">
-
-        <div class="clearfix">
-          <div class="btn-group pull-right" ng-if="isEventEditable(event)">
-            <button type="button" class="btn btn-primary" ng-click="openEditPage()">Bewerken</button>
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <span class="caret"></span>
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li><a href="#" ng-click="deleteEvent()">Verwijderen</a>
-              </li>
-            </ul>
-          </div>
-          <h2 class="block-header">Voorbeeld</h2>
-
-        </div>
-
+        <h2 class="block-header">Voorbeeld</h2>
         <div class="panel panel-default">
           <table class="table udb3-data-table">
             <colgroup>

@@ -4,10 +4,8 @@
       <div class="form-group">
         <p class="module-title">Vanaf</p>
         <div udb-datepicker
-             highlight-date="{{calendarHighlight.date}}"
-             highlight-extra-class="{{calendarHighlight.extraClass}}"
-             ng-change="EventFormStep2.periodicEventTimingChanged()"
-             ng-model="eventFormData.startDate"></div>
+             ng-change="formData.periodicTimingChanged()"
+             ng-model="formData.startDate"></div>
       </div>
     </section>
   </div>
@@ -17,16 +15,14 @@
       <div class="form-group">
         <p class="module-title">Tot en met</p>
         <div udb-datepicker
-             highlight-date="{{calendarHighlight.date}}"
-             highlight-extra-class="{{calendarHighlight.extraClass}}"
-             ng-change="EventFormStep2.periodicEventTimingChanged()"
-             ng-model="eventFormData.endDate"></div>
+             ng-change="formData.periodicTimingChanged()"
+             ng-model="formData.endDate"></div>
       </div>
     </section>
   </div>
 
   <div class="col-xs-12">
-    <div ng-show="EventFormStep2.periodicRangeError" class="alert alert-warning" role="alert">
+    <div ng-show="formData.periodicRangeError" class="alert alert-warning" role="alert">
         Selecteer een geldige begin- en einddatum.
     </div>
   </div>

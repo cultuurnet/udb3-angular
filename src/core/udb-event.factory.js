@@ -314,6 +314,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+    isExpired: function () {
+      return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
     }
   };
 

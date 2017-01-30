@@ -1,9 +1,9 @@
-<div class="col-xs-12" ng-hide="hasOpeningHours">
+<div class="col-xs-12" ng-hide="!!formData.openingHours.length">
   <a href="#" class="btn btn-link btn-plus wanneer-openingsuren-link"
      data-toggle="modal" data-target="#wanneer-openingsuren-toevoegen">Openingsuren toevoegen</a>
 </div>
 
-<div class="col-xs-12 col-sm-8" ng-show="hasOpeningHours">
+<div class="col-xs-12 col-sm-8" ng-show="!!formData.openingHours.length">
   <section class="wanneer-openingsuren-resultaat">
     <table class="table table-condensed ">
       <thead>
@@ -15,7 +15,7 @@
       </th>
       </thead>
       <tbody>
-        <tr ng-repeat="openingHour in eventFormData.openingHours">
+        <tr ng-repeat="openingHour in formData.openingHours">
           <td ng-bind="openingHour.label"></td>
           <td>
             <span ng-bind="openingHour.opens"></span> – <span ng-bind="openingHour.closes"></span>
@@ -45,14 +45,14 @@
           </tr>
           </thead>
 
-          <tr ng-repeat="(i, openingHour) in eventFormData.openingHours">
+          <tr ng-repeat="(i, openingHour) in formData.openingHours">
             <td>
               <select class="selectpicker"
                       multiple
                       udb-multiselect
                       start-label="Kies dag(en)"
                       ng-model="openingHour.dayOfWeek"
-                      ng-change="saveOpeningHourDaySelection(i, openingHour.dayOfWeek)">
+                      ng-change="formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)">
                 <option value="monday">maandag</option>
                 <option value="tuesday">dinsdag</option>
                 <option value="wednesday">woensdag</option>
@@ -80,20 +80,20 @@
                      typeahead-editable="false">
             </td>
             <td>
-              <button type="button" class="close" aria-label="Close" ng-click="eventFormData.removeOpeningHour(i)">
+              <button type="button" class="close" aria-label="Close" ng-click="formData.removeOpeningHour(i)">
                 <span aria-hidden="true">&times;</span>
               </button>
             </td>
           </tr>
         </table>
-        <a class="btn btn-link btn-plus" ng-click="eventFormData.addOpeningHour('', '' , '')">
+        <a class="btn btn-link btn-plus" ng-click="formData.addOpeningHour('', '' , '')">
           Meer openingstijden toevoegen
         </a>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
         <button type="button" class="btn btn-primary openingsuren-toevoegen" data-dismiss="modal"
-                ng-click="saveOpeningHours()">
+                ng-click="formData.timingChanged()">
           Toevoegen
         </button>
       </div>

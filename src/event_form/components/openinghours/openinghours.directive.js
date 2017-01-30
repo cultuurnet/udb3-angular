@@ -15,5 +15,8 @@ function EventFormOpeningHoursDirective() {
   return {
     templateUrl: 'templates/event-form-openinghours.html',
     restrict: 'E',
+    scope: {
+      formData: '='
+    }
   };
 }

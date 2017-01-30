@@ -1,0 +1,9 @@
+<div class="event-validation">
+    <button class="btn btn-success"
+            ng-disabled="duplication.duplicating"
+            ng-click="duplication.createDuplicate()"
+            role="button"
+            ng-class="{disabled: !duplication.readyForDuplication}">Kopiëren en aanpassen</button>
+    <i class="fa fa-circle-o-notch fa-spin" ng-show="duplication.duplicating"></i>
+    <span ng-show="duplication.asyncError">Er ging iets mis tijdens het aanmaken van een kopie!</span>
+</div>

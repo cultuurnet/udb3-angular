@@ -28,8 +28,9 @@ function EventCrud(
    * @param {EventFormData} formData
    */
   function pickMajorInfoFromFormData(formData) {
-    return _.pick(formData, function(property) {
-      return _.isDate(property) || !_.isEmpty(property);
+    return _.pick(formData, function(property, name) {
+      var isStream = name.charAt(name.length - 1) === '$';
+      return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
   }
 

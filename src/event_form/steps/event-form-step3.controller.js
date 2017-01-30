@@ -26,7 +26,8 @@ function EventFormStep3Controller(
     $uibModal,
     cities,
     Levenshtein,
-    eventCrud
+    eventCrud,
+    $rootScope
 ) {
 
   var controller = this;
@@ -172,6 +173,7 @@ function EventFormStep3Controller(
 
     controller.stepCompleted();
     setMajorInfoChanged();
+    $rootScope.$emit('locationSelected', location);
 
   };
   $scope.selectLocation = controller.selectLocation;
