@@ -177,7 +177,18 @@ function OfferController(
       });
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedOffer, newLabel.name);
+      offerLabeller.label(cachedOffer, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.event.labels = angular.copy(cachedOffer.labels);
+            controller.labelResponse = 'success';
+            controller.addedLabel = response.name;
+          }
+          else {
+            controller.labelResponse = 'error';
+            controller.labelsError = response;
+          }
+        });
     }
   };
 
@@ -186,6 +197,7 @@ function OfferController(
    */
   controller.labelRemoved = function (label) {
     offerLabeller.unlabel(cachedOffer, label.name);
+    $scope.labelResponse = '';
   };
 
   /**

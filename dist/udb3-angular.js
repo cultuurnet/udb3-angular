@@ -18013,7 +18013,18 @@ function OfferController(
       });
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedOffer, newLabel.name);
+      offerLabeller.label(cachedOffer, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.event.labels = angular.copy(cachedOffer.labels);
+            controller.labelResponse = 'success';
+            controller.addedLabel = response.name;
+          }
+          else {
+            controller.labelResponse = 'error';
+            controller.labelsError = response;
+          }
+        });
     }
   };
 
@@ -18022,6 +18033,7 @@ function OfferController(
    */
   controller.labelRemoved = function (label) {
     offerLabeller.unlabel(cachedOffer, label.name);
+    $scope.labelResponse = '';
   };
 
   /**
@@ -23161,7 +23173,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <span ng-hide=\"event.labels.length\">Dit evenement is nog niet gelabeld.</span>\n" +
     "          <udb-label-select labels=\"event.labels\"\n" +
     "                            label-added=\"eventCtrl.labelAdded(label)\"\n" +
-    "                            label-removed=\"eventCtrl.labelRemoved(label)\">\n" +
+    "                            label-removed=\"eventCtrl.labelRemoved(label)\"></udb-label-select>\n" +
+    "          <div ng-if=\"eventCtrl.labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "            Het toevoegen van het label '{{eventCtrl.labelsError.name}}' is niet gelukt.\n" +
+    "          </div>\n" +
+    "          <div ng-if=\"eventCtrl.labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "            Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -23316,8 +23334,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <span ng-hide=\"event.labels.length\">Deze plaats is nog niet gelabeld.</span>\n" +
     "          <udb-label-select labels=\"event.labels\"\n" +
     "                            label-added=\"placeCtrl.labelAdded(label)\"\n" +
-    "                            label-removed=\"placeCtrl.labelRemoved(label)\">\n" +
-    "          </udb-label-select>\n" +
+    "                            label-removed=\"placeCtrl.labelRemoved(label)\"></udb-label-select>\n" +
+    "          <div ng-if=\"placeCtrl.labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "            Het toevoegen van het label '{{placeCtrl.labelsError.name}}' is niet gelukt.\n" +
+    "          </div>\n" +
+    "          <div ng-if=\"placeCtrl.labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "            Het label '{{placeCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
