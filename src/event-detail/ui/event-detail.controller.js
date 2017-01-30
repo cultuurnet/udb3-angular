@@ -23,7 +23,8 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+   $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -239,5 +240,9 @@ function EventDetail(
     } else {
       return 'Gepubliceerd';
     }
+  }
+
+  $scope.translateAudience = function (type){
+      return $translate.instant("audience."+type);
   }
 }

@@ -182,6 +182,21 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.audience = {
         audienceType: _.get(jsonEvent, 'audience.audienceType', 'everyone')
       };
+
+      this.educationFields = [];
+      this.educationLevels = [];
+
+      if(jsonEvent.terms){
+            angular.forEach(jsonEvent.terms,function(term){
+                if(term.domain){
+                    if( term.domain === "educationlevel"){
+                        educationLevels.push(term);
+                    } else if(term.domain === "educationfield"){
+                        educationFields.push(term);
+                    }
+                }
+            })
+        }
     },
 
     /**

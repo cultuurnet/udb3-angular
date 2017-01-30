@@ -311,7 +311,8 @@ module.exports = function (grunt) {
           'src/search/parsers/udb-query-parser.service.js',
           'src/uitpas/udb.uitpas.module.js',
           'src/migration/udb.migration.module.js',
-          'src/duplication/udb.duplication.module.js'
+          'src/duplication/udb.duplication.module.js',
+          'src/cultuurkuur/udb.cultuurkuur.module.js'
         ],
         dest: '.tmp/udb3-angular.modules.js'
       },

@@ -24,6 +24,7 @@ angular
     'udb.media',
     'udb.management',
     'udb.uitpas',
+    'udb.cultuurkuur',
     'btford.socket-io',
     'pascalprecht.translate'
   ])
@@ -1950,6 +1951,18 @@ angular
     'udb.migration'
   ]);
 
+/**
+ * @ngdoc module
+ * @name udb.cultuurkuur
+ * @description
+ * # Cultuurkuur Module
+ */
+angular
+  .module('udb.cultuurkuur', [
+    'udb.core',
+    'udb.event-detail',
+  ]);
+
 // Source: src/core/authorization-service.service.js
 /**
  * @ngdoc service
@@ -2648,6 +2661,11 @@ angular.module('udb.core')
       'typicalAgeRange': 'Leeftijd',
       'language': 'Taal',
       'audience': 'Toegang'
+    },
+    audience:{
+        everyone : 'Voor iedereen',
+        members : "Enkel voor leden",
+        education: "Specifiek voor scholen"
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -4161,6 +4179,21 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.audience = {
         audienceType: _.get(jsonEvent, 'audience.audienceType', 'everyone')
       };
+
+      this.educationFields = [];
+      this.educationLevels = [];
+
+      if(jsonEvent.terms){
+            angular.forEach(jsonEvent.terms,function(term){
+                if(term.domain){
+                    if( term.domain === "educationlevel"){
+                        educationLevels.push(term);
+                    } else if(term.domain === "educationfield"){
+                        educationFields.push(term);
+                    }
+                }
+            })
+        }
     },
 
     /**
@@ -4995,6 +5028,23 @@ function UitidAuth($window, $location, appConfig, $cookies) {
   };
 }
 UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
+
+// Source: src/cultuurkuur/event-cultuurkuur.component.js
+angular.module('udb.cultuurkuur').component('udbEventCultuurkuurComponent', {
+    bindings: {
+        event: '=',
+        permission: '='
+    },
+    templateUrl: 'templates/event-cultuurkuur.html',
+    controller: EventCultuurKuurComponentController
+})
+
+function EventCultuurKuurComponentController() {
+    var cm = this;
+    cm.previewLink = 'http://www.cultuurkuur.be/agenda/e//' + cm.event.id;
+    cm.editLink = 'http://dev.cultuurkuur.be/event/' + cm.event.id + '/edit';
+    cm.showCultuurKuur = (cm.event.educationFields.length === 0 || cm.event.educationLevels.length === 0);
+}
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
 /**
@@ -7333,7 +7383,8 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+   $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7550,8 +7601,12 @@ function EventDetail(
       return 'Gepubliceerd';
     }
   }
+
+  $scope.translateAudience = function (type){
+      return $translate.instant("audience."+type);
+  }
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
 
 // Source: src/event_form/calendar-labels.constant.js
 /* jshint sub: true */
@@ -18690,6 +18745,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-cultuurkuur.html',
+    "<p ng-if=\"!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" href=\"{{$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
+    "<div ng-if=\"$ctrl.permission\">\n" +
+    "    <div ng-if=\"!$ctrl.showCultuurKuur\" class=\"row\">\n" +
+    "\n" +
+    "    </div>\n" +
+    "    <div class=\"alert alert-info\" ng-if=\"$ctrl.showCultuurKuur\">\n" +
+    "    <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>\n" +
+    "    <a href=\"{{$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/dashboard-item.directive.html',
     "<td>\n" +
     "  <strong>\n" +
@@ -19201,6 +19270,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <tr>\n" +
     "                <td><strong>Type</strong></td>\n" +
     "                <td>{{event.type.label}}</td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Toegang</strong></td>\n" +
+    "                <td>{{translateAudience(event.audience.audienceType)}}\n" +
+    "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><strong>Beschrijving</strong></td>\n" +

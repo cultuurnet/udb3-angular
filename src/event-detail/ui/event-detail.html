@@ -55,6 +55,11 @@
                 <td>{{event.type.label}}</td>
               </tr>
               <tr>
+                <td><strong>Toegang</strong></td>
+                <td>{{translateAudience(event.audience.audienceType)}}
+                <udb-event-cultuurkuur-component event="event" permission="::permissions.editing" ></udb-event-cultuurkuur-component></td>
+              </tr>
+              <tr>
                 <td><strong>Beschrijving</strong></td>
                 <td>
                   <div ng-bind-html="event.description" class="event-detail-description"></div>

@@ -328,6 +328,11 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    audience:{
+        everyone : 'Voor iedereen',
+        members : "Enkel voor leden",
+        education: "Specifiek voor scholen"
+    },
     queryFieldGroup: {
       'what': 'Wat',
       'where': 'Waar',
