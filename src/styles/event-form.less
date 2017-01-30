@@ -1,774 +1,692 @@
-.offer-form {
-  @border-color: @udb-gray-light;
-  margin-bottom: 33vw;
-
-  .alert {
-    margin-top: 10px;
-  }
-
-  .alert p {
-    line-height: inherit;
-  }
-
-  .alert-link {
-    text-decoration: underline;
-  }
-
-  #or-label {
-    font-style: italic;
-    color: @udb-gray-dark;
-    position: relative;
-    background-color: @body-bg;
-    text-align: center;
-    display: block;
-  }
-
-  #step1 {
-    position: relative;
-  }
-
-  #step1-events,
-  #step1-places,
-  #step2-list,
-  #step3-list {
-    line-height: 2.7em;
-    margin-bottom: 1em;
-
-    a {
-      text-decoration: underline;
+    .offer-form {
+    @border-color: @udb-gray-light;
+    margin-bottom: 33vw;
+    .alert {
+        margin-top: 10px;
     }
-  }
-
-  .title-border {
-    border-bottom: 1px solid @gray;
-    padding-bottom: 1em;
-    text-transform: uppercase;
-    font-weight: bold;
-    color: @text-color;
-  }
-
-  .btn {
-    padding: @padding-base-vertical @padding-small-horizontal;
-  }
-
-  .btn-chosen {
-    color: @text-color;
-    padding: 7px 0;
-    display: inline-block;
-    line-height: 1.42857;
-    font-style: italic;
-  }
-
-  .btn-chosen:before {
-    content: "\f058 ";
-    font-family: "FontAwesome";
-    color: @brand-success;
-    margin-right: 6px;
-    font-style: normal;
-    font-size: 17px;
-  }
-
-  .number {
-    background-color: @gray;
-    border-radius: 99px;
-    color: @white;
-    display: inline-block;
-    font-size: 14px;
-    font-weight: normal;
-    margin-right: 1em;
-    text-align: center;
-    width: 21px;
-    height: 21px;
-    line-height: 21px;
-  }
-
-  .add-date {
-    padding: 5px;
-    border: 1px solid @border-color;
-    min-height: 354px;
-    width: 100%;
-    margin-bottom: 1em;
-    background-color: @white;
-  }
-
-  .add-date-teaser {
-    color: @udb-gray-dark;
-  }
-
-  .datepicker-cpo {
-    margin-bottom: 1em;
-  }
-
-  .datepicker-inline {
-    margin-bottom: 5px;
-    width: auto;
-  }
-
-  .datepicker table {
-    width: 100%;
-  }
-
-  .datepicker .table-condensed > thead > tr > th,
-  .datepicker .table-condensed > tbody > tr > th,
-  .datepicker .table-condensed > tfoot > tr > th,
-  .datepicker .table-condensed > thead > tr > td,
-  .datepicker .table-condensed > tbody > tr > td,
-  .datepicker .table-condensed > tfoot > tr > td {
-    padding: 0;
-  }
-
-  .datepicker table tr td.active.active {
-    background-color: @link-color;
-    background-image: none;
-  }
-
-  #add-date-plus {
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    font-size: 5em;
-    line-height: 1;
-    text-decoration: none !important;
-  }
-
-  .add-date-link:hover,
-  .add-date-link:focus {
-    text-decoration: none !important;
-  }
-
-  #add-date-label {
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    text-decoration: underline;
-  }
-
-  #add-date-tip {
-    font-style: italic;
-    color: #999;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 15px;
-    margin: 0;
-  }
-
-  .add-date-link,
-  .add-date-link:focus *,
-  .add-date-link:active * {
-    text-decoration: none;
-
-  }
-
-  .add-date-link {
-    display: inline-block;
-    height: 336px;
-    margin: 0;
-    overflow: hidden;
-    padding: 0;
-    width: 100%;
-    position: relative;
-  }
-
-  .day {
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    vertical-align: top;
-  }
-
-  .datepicker th,
-  .datepicker td {
-    border-radius: 0;
-    font-weight: normal;
-  }
-
-  .dow {
-    color: #999;
-    border-bottom: 1px solid @border-color;
-  }
-
-  .datepicker td {
-    border-bottom: 1px solid @border-color;
-  }
-
-  .datepicker_icon:after {
-    font-family: "FontAwesome";
-    color: @udb-gray-dark;
-    content: "\f073";
-    position: absolute;
-    right: 6px;
-    top: 6px;
-    z-index: 9;
-    display: block;
-  }
-
-  .datepicker-group {
-    position: relative;
-  }
-
-  .day-prefix {
-    color: @udb-gray-dark;
-    margin-bottom: 0;
-    font-style: italic;
-    text-align: center;
-  }
-
-  .openingsuren-toevoegen-section {
-    background-color: @white;
-    padding: 0.5em;
-    border: 1px solid @border-color;
-  }
-
-  .openingsuren th a {
-    font-weight: normal;
-  }
-
-  .openingsuren {
-    margin: 0;
-  }
-
-  .extra-row {
-    padding-bottom: 0.5em;
-  }
-
-  .tt-dataset-locaties em {
-    font-style: normal;
-    color: #004f94;
-  }
-  .tt-suggestion {
-    border-bottom: 1px solid @border-color;
-  }
-  .tt-suggestion:hover {
-    border-bottom: 1px solid @border-color;
-  }
-  .extra-task-label {
-    line-height: 30px;
-    /* align with buttons */
-  }
-  .state-nvt .extra-task-label:before,
-  .state-complete .extra-task-label:before {
-    content: "\f058";
-    color: @brand-success;
-    font-family: "FontAwesome";
-    transition: opacity 0.5s ease;
-    -webkit-font-smoothing: subpixel-antialiased;
-    -moz-osx-font-smoothing: auto;
-    font-style: normal;
-    line-height: 30px;
-    font-size: 17px;
-    margin-right: 6px;
-  }
-
-  .btn-nvt {
-    color: @udb-gray-dark;
-  }
-
-  .extra-titel,
-  .extra-beschrijving,
-  .extra-leeftijd,
-  .extra-organisator,
-  .extra-prijs,
-  .extra-contact {
-    margin-bottom: 0.5em;
-  }
-
-  .extra-beschrijving a:not(.btn) {
-    text-decoration: underline;
-  }
-
-  .description-text {
-    margin-top: 3px;
-    white-space: pre-line;
-  }
-
-  .udb3-data-table {
-    table-layout: fixed;
-  }
-
-  .extra-prijs .table {
-    margin-bottom: 0;
-  }
-
-  .extra-task p,
-  .udb3-data-table td {
-    line-height: 30px;
-    margin: 0;
-    white-space: -moz-pre-wrap; /* Firefox */
-    white-space: -pre-wrap; /* ancient Opera */
-    white-space: -o-pre-wrap; /* newer Opera */
-    white-space: pre-wrap; /* Chrome; W3C standard */
-    word-wrap: break-word; /* IE */
-  }
-  .extra-tickets-telefoon .checkbox,
-  .extra-tickets-website .checkbox,
-  .extra-tickets-email .checkbox {
-    margin: 0;
-  }
-
-  .extra-tickets-telefoon .checkbox,
-  .extra-tickets-email .checkbox {
-
-  }
-  .extra-tickets-website .checkbox {
-    margin-top: 0.5em;
-  }
-
-  .meer-info a:not(.btn) {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .extra-tickets .checkbox:first-child {
-    margin-top: 1em;
-  }
-
-  .state {
-    display: none;
-  }
-
-  .state-incomplete .incomplete {
-    display: block;
-  }
-
-  .state-complete .complete {
-    display: block;
-  }
-
-  .state-filling .filling {
-    display: block;
-  }
-
-  .state-nvt .nvt {
-    display: block;
-  }
-
-  // Images
-  .image-upload {
-    background-color: @white;
-    border: 2px dotted @border-color;
-    display: block;
-    padding: 10px;
-    width: 100%;
-  }
-  .image-upload-list {
-    display: none;
-    margin-bottom: 10px;
-    h4 {
-      margin-top: 0;
+    .alert p {
+        line-height: inherit;
     }
-    .media {
-      border-bottom: 1px solid @border-color;
-      padding: 10px;
-    }
-  }
-
-  .image-upload-icon:before {
-    color: @udb-gray-dark;
-    text-align: center;
-    font-family: "FontAwesome";
-    content: "\f03e";
-    font-size: 50px;
-  }
-
-  .image-upload-none {
-    text-align: center;
-    color: @udb-gray-dark;
-  }
-
-  .tip {
-    color: #626262;
-    margin-bottom: 10px;
-    margin-top: 5px;
-  }
-
-  .tip p {
-    line-height: 1.6;
-  }
-
-  .incomplete .btn-default {
-    text-align: left;
-  }
-
-  .btn-plus {
-    position: relative;
-    margin-left: 1em;
-    padding-left: 0.25em;
-  }
-
-  .btn-plus:before {
-    content: "\f055";
-    font-family: "FontAwesome";
-    color: @udb-gray;
-    margin-right: 0.5em;
-    text-decoration: none;
-    position: absolute;
-    left: -1em;
-    top: 6px;
-  }
-
-  .incomplete .btn-default:hover:before {
-    color: #333;
-  }
-
-  .extra-leeftijd {
-
-    .form-group {
-      margin-bottom: 0;
-    }
-
-    .form-inline {
-      margin: 10px 0;
-    }
-  }
-
-  .extra-task .fa {
-    color: @udb-gray-dark;
-    margin-left: 0.85em;
-    margin-right: 0.25em;
-  }
-
-  .media-body {
-    line-height: 1.3em;
-  }
-
-  .media-actions {
-    margin-top: 10px;
-  }
-
-  #publiceren {
-    margin-top: 2em;
-    border-top: 1px solid @border-color;
-    padding-top: 1em;
-  }
-
-  .reservatie-info {
-    margin: 0.5em 0 1em 1.5em;
-  }
-
-  .extra-tickets-email .checkbox {
-    margin-bottom: 1em;
-  }
-
-  .reservatie-periode-toevoegen {
-    text-decoration: underline;
-    margin-bottom: 1em;
-    display: block;
-  }
-
-  .btn-reservatie {
-    margin-bottom: 1em;
-  }
-
-  .btn-ready span:before {
-    content: "\f058";
-    position: absolute;
-    left: 0;
-    color: @brand-success;
-    font-family: "FontAwesome";
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    -webkit-font-smoothing: subpixel-antialiased;
-    -moz-osx-font-smoothing: auto;
-    font-style: normal;
-    line-height: 30px;
-    font-size: 17px;
-  }
-
-  .recently-added td {
-    -webkit-transition: background-color 500ms linear;
-    -moz-transition: background-color 500ms linear;
-    -o-transition: background-color 500ms linear;
-    -ms-transition: background-color 500ms linear;
-    transition: background-color 500ms linear;
-  }
-
-  .btn-reservatieperiode-toevoegen {
-    margin: 0.25em 0 0.5em;
-  }
-
-  .module-title {
-    line-height: 1.42857;
-    font-weight: bold;
-    border-bottom: 2px solid @border-color;
-    padding: 5px;
-  }
-
-  .multiselect-container {
-    position: absolute;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .multiselect-container .input-group {
-    margin: 5px;
-  }
-
-  .multiselect-container > li {
-    padding: 0;
-  }
-
-  .multiselect-container > li > a.multiselect-all label {
-    font-weight: 700;
-  }
-
-  .multiselect-container > li.multiselect-group label {
-    margin: 0;
-    padding: 3px 20px;
-    height: 100%;
-    font-weight: 700;
-  }
-
-  .multiselect-container > li.multiselect-group-clickable label {
-    cursor: pointer;
-  }
-
-  .multiselect-container > li > a {
-    padding: 0;
-  }
-
-  .multiselect-container > li > a > label.radio,
-  .multiselect-container > li > a > label.checkbox {
-    margin: 0;
-  }
-
-  .filter .btn {
-    padding: 6px 3px;
-  }
-
-  .btn-group > .btn-group:nth-child(2) > .multiselect.btn {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-  }
-
-  .form-inline .multiselect-container label.checkbox,
-  .form-inline .multiselect-container label.radio {
-    padding: 3px 20px 3px 40px;
-  }
-
-  .form-inline .multiselect-container li a label.checkbox input[type=checkbox],
-  .form-inline .multiselect-container li a label.radio input[type=radio] {
-    margin-left: -20px;
-    margin-right: 0;
-  }
-
-  .plaats-adres-ingeven {
-    padding: 1em;
-    margin-left: 1.5em;
-    background-color: @white;
-    border: 1px solid @border-color;
-  }
-
-  .checkbox small {
-    color: @gray;
-  }
-
-  .block-divider {
-    border-bottom: 1px solid @border-color;
-    padding: 0.5em 0;
-  }
-
-  .show-only-places {
-    display: none;
-  }
-
-  .only-places .show-only-places {
-    display: initial;
-  }
-
-  .only-places .hide-only-places {
-    display: none;
-  }
-
-  .btn-tile {
-    display: inline-block;
-    text-align: left;
-    background-color: @white;
-    margin-bottom: 1em;
-    min-height: 10em;
-    padding: 1em;
-    width: 100%;
-    position: relative;
-    .preview-corner {
-      display: none;
-    }
-    .preview-icon {
-      display: none;
-    }
-
-    &:hover {
-      background-color: @link-color;
-      color: @white;
-      .title {
+    .alert-link {
         text-decoration: underline;
-      }
-      .preview-corner {
-        display: block;
-        position: absolute;
-        right: -1px;
-        bottom: -1px;
-        width: 0px;
-        height: 0px;
-        border-style: solid;
-        border-width: 0 0 50px 50px;
-        border-color: transparent transparent #FFF transparent;
-      }
-      .preview-icon {
-        display: block;
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        color: @link-color;
-      }
     }
-  }
-
-  .preview {
-    .panel-heading {
-      background-color: #333;
-      background-size: cover;
-      position: relative;
-      background-position: center center;
-      &:before {
-        position: absolute;
-        top: 0;
+    #or-label {
+        font-style: italic;
+        color: @udb-gray-dark;
+        position: relative;
+        background-color: @body-bg;
+        text-align: center;
         display: block;
+    }
+    #step1 {
+        position: relative;
+    }
+    #step1-events,
+    #step1-places,
+    #step2-list,
+    #step3-list {
+        line-height: 2.7em;
+        margin-bottom: 1em;
+        a {
+            text-decoration: underline;
+        }
+    }
+    .title-border {
+        border-bottom: 1px solid @gray;
+        padding-bottom: 1em;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: @text-color;
+    }
+    .btn {
+        padding: @padding-base-vertical @padding-small-horizontal;
+    }
+    .btn-chosen {
+        color: @text-color;
+        padding: 7px 0;
+        display: inline-block;
+        line-height: 1.42857;
+        font-style: italic;
+    }
+    .btn-chosen:before {
+        content: "\f058 ";
+        font-family: "FontAwesome";
+        color: @brand-success;
+        margin-right: 6px;
+        font-style: normal;
+        font-size: 17px;
+    }
+    .number {
+        background-color: @gray;
+        border-radius: 99px;
+        color: @white;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: normal;
+        margin-right: 1em;
+        text-align: center;
+        width: 21px;
+        height: 21px;
+        line-height: 21px;
+    }
+    .add-date {
+        padding: 5px;
+        border: 1px solid @border-color;
+        min-height: 354px;
         width: 100%;
-        height: 100%;
-        background-color: #000;
-        opacity: 0.5;
-        bottom: 0;
+        margin-bottom: 1em;
+        background-color: @white;
+    }
+    .add-date-teaser {
+        color: @udb-gray-dark;
+    }
+    .datepicker-cpo {
+        margin-bottom: 1em;
+    }
+    .datepicker-inline {
+        margin-bottom: 5px;
+        width: auto;
+    }
+    .datepicker table {
+        width: 100%;
+    }
+    .datepicker .table-condensed>thead>tr>th,
+    .datepicker .table-condensed>tbody>tr>th,
+    .datepicker .table-condensed>tfoot>tr>th,
+    .datepicker .table-condensed>thead>tr>td,
+    .datepicker .table-condensed>tbody>tr>td,
+    .datepicker .table-condensed>tfoot>tr>td {
+        padding: 0;
+    }
+    .datepicker table tr td.active.active {
+        background-color: @link-color;
+        background-image: none;
+    }
+    #add-date-plus {
+        display: block;
+        margin: 0 auto;
+        text-align: center;
+        font-size: 5em;
+        line-height: 1;
+        text-decoration: none !important;
+    }
+    .add-date-link:hover,
+    .add-date-link:focus {
+        text-decoration: none !important;
+    }
+    #add-date-label {
+        display: block;
+        margin: 0 auto;
+        text-align: center;
+        text-decoration: underline;
+    }
+    #add-date-tip {
+        font-style: italic;
+        color: #999;
+        position: absolute;
         left: 0;
-        content: " ";
-        z-index: 0
-      }
+        right: 0;
+        bottom: 0;
+        padding: 15px;
+        margin: 0;
     }
-    .title {
-      color: @white;
-      position: relative;
-      margin-top: 12px;
-      text-shadow: 1px 1px #000;
-      font-size: 30px;
-      font-weight: 700;
+    .add-date-link,
+    .add-date-link:focus *,
+    .add-date-link:active * {
+        text-decoration: none;
     }
-    .list-inline {
-      color: @white;
-      position: relative;
+    .add-date-link {
+        display: inline-block;
+        height: 336px;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+        width: 100%;
+        position: relative;
     }
-    table {
-      margin-bottom: 0;
+    .day {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        vertical-align: top;
     }
-  }
-  .media.main-image {
-    background-color: aliceblue;
-    border-color: darken(aliceblue, 15%);
-  }
-  .main-image {
-    .select-main-image {
-      display: none;
+    .datepicker th,
+    .datepicker td {
+        border-radius: 0;
+        font-weight: normal;
     }
-  }
-
-  input.has-error {
-    border: 1px solid #f3453f;
-  }
-
-  .event-validation {
-    background-color: @white;
-    padding: 1em;
-    position: fixed;
-    bottom: 0;
-    margin-left: -15px;
-    border-top: 1px solid @border-color;
-    width: 100%;
-
-    div.text-danger {
-      margin-bottom: 1ex;
+    .dow {
+        color: #999;
+        border-bottom: 1px solid @border-color;
     }
-  }
+    .datepicker td {
+        border-bottom: 1px solid @border-color;
+    }
+    .datepicker_icon:after {
+        font-family: "FontAwesome";
+        color: @udb-gray-dark;
+        content: "\f073";
+        position: absolute;
+        right: 6px;
+        top: 6px;
+        z-index: 9;
+        display: block;
+    }
+    .datepicker-group {
+        position: relative;
+    }
+    .day-prefix {
+        color: @udb-gray-dark;
+        margin-bottom: 0;
+        font-style: italic;
+        text-align: center;
+    }
+    .openingsuren-toevoegen-section {
+        background-color: @white;
+        padding: 0.5em;
+        border: 1px solid @border-color;
+    }
+    .openingsuren th a {
+        font-weight: normal;
+    }
+    .openingsuren {
+        margin: 0;
+    }
+    .extra-row {
+        padding-bottom: 0.5em;
+    }
+    .tt-dataset-locaties em {
+        font-style: normal;
+        color: #004f94;
+    }
+    .tt-suggestion {
+        border-bottom: 1px solid @border-color;
+    }
+    .tt-suggestion:hover {
+        border-bottom: 1px solid @border-color;
+    }
+    .extra-task-label {
+        line-height: 30px;
+        /* align with buttons */
+    }
+    .state-nvt .extra-task-label:before,
+    .state-complete .extra-task-label:before {
+        content: "\f058";
+        color: @brand-success;
+        font-family: "FontAwesome";
+        transition: opacity 0.5s ease;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -moz-osx-font-smoothing: auto;
+        font-style: normal;
+        line-height: 30px;
+        font-size: 17px;
+        margin-right: 6px;
+    }
+    .btn-nvt {
+        color: @udb-gray-dark;
+    }
+    .extra-titel,
+    .extra-beschrijving,
+    .extra-leeftijd,
+    .extra-organisator,
+    .extra-prijs,
+    .extra-contact {
+        margin-bottom: 0.5em;
+    }
+    .extra-beschrijving a:not(.btn) {
+        text-decoration: underline;
+    }
+    .description-text {
+        margin-top: 3px;
+        white-space: pre-line;
+    }
+    .udb3-data-table {
+        table-layout: fixed;
+    }
+    .extra-prijs .table {
+        margin-bottom: 0;
+    }
+    .extra-task p,
+    .udb3-data-table td {
+        line-height: 30px;
+        margin: 0;
+        white-space: -moz-pre-wrap;
+        /* Firefox */
+        white-space: -pre-wrap;
+        /* ancient Opera */
+        white-space: -o-pre-wrap;
+        /* newer Opera */
+        white-space: pre-wrap;
+        /* Chrome; W3C standard */
+        word-wrap: break-word;
+        /* IE */
+    }
+    .extra-tickets-telefoon .checkbox,
+    .extra-tickets-website .checkbox,
+    .extra-tickets-email .checkbox {
+        margin: 0;
+    }
+    .extra-tickets-telefoon .checkbox,
+    .extra-tickets-email .checkbox {}
+    .extra-tickets-website .checkbox {
+        margin-top: 0.5em;
+    }
+    .meer-info a:not(.btn) {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .extra-tickets .checkbox:first-child {
+        margin-top: 1em;
+    }
+    .state {
+        display: none;
+    }
+    .state-incomplete .incomplete {
+        display: block;
+    }
+    .state-complete .complete {
+        display: block;
+    }
+    .state-filling .filling {
+        display: block;
+    }
+    .state-nvt .nvt {
+        display: block;
+    }
+    // Images
+    .image-upload {
+        background-color: @white;
+        border: 2px dotted @border-color;
+        display: block;
+        padding: 10px;
+        width: 100%;
+    }
+    .image-upload-list {
+        display: none;
+        margin-bottom: 10px;
+        h4 {
+            margin-top: 0;
+        }
+        .media {
+            border-bottom: 1px solid @border-color;
+            padding: 10px;
+        }
+    }
+    .image-upload-icon:before {
+        color: @udb-gray-dark;
+        text-align: center;
+        font-family: "FontAwesome";
+        content: "\f03e";
+        font-size: 50px;
+    }
+    .image-upload-none {
+        text-align: center;
+        color: @udb-gray-dark;
+    }
+    .tip {
+        color: #626262;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+    .tip p {
+        line-height: 1.6;
+    }
+    .incomplete .btn-default {
+        text-align: left;
+    }
+    .btn-plus {
+        position: relative;
+        margin-left: 1em;
+        padding-left: 0.25em;
+    }
+    .btn-plus:before {
+        content: "\f055";
+        font-family: "FontAwesome";
+        color: @udb-gray;
+        margin-right: 0.5em;
+        text-decoration: none;
+        position: absolute;
+        left: -1em;
+        top: 6px;
+    }
+    .incomplete .btn-default:hover:before {
+        color: #333;
+    }
+    .extra-leeftijd {
+        .form-group {
+            margin-bottom: 0;
+        }
+        .form-inline {
+            margin: 10px 0;
+        }
+    }
+    .extra-task .fa {
+        color: @udb-gray-dark;
+        margin-left: 0.85em;
+        margin-right: 0.25em;
+    }
+    .media-body {
+        line-height: 1.3em;
+    }
+    .media-actions {
+        margin-top: 10px;
+    }
+    #publiceren {
+        margin-top: 2em;
+        border-top: 1px solid @border-color;
+        padding-top: 1em;
+    }
+    .reservatie-info {
+        margin: 0.5em 0 1em 1.5em;
+    }
+    .extra-tickets-email .checkbox {
+        margin-bottom: 1em;
+    }
+    .reservatie-periode-toevoegen {
+        text-decoration: underline;
+        margin-bottom: 1em;
+        display: block;
+    }
+    .btn-reservatie {
+        margin-bottom: 1em;
+    }
+    .btn-ready span:before {
+        content: "\f058";
+        position: absolute;
+        left: 0;
+        color: @brand-success;
+        font-family: "FontAwesome";
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -moz-osx-font-smoothing: auto;
+        font-style: normal;
+        line-height: 30px;
+        font-size: 17px;
+    }
+    .recently-added td {
+        -webkit-transition: background-color 500ms linear;
+        -moz-transition: background-color 500ms linear;
+        -o-transition: background-color 500ms linear;
+        -ms-transition: background-color 500ms linear;
+        transition: background-color 500ms linear;
+    }
+    .btn-reservatieperiode-toevoegen {
+        margin: 0.25em 0 0.5em;
+    }
+    .module-title {
+        line-height: 1.42857;
+        font-weight: bold;
+        border-bottom: 2px solid @border-color;
+        padding: 5px;
+    }
+    .multiselect-container {
+        position: absolute;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    .multiselect-container .input-group {
+        margin: 5px;
+    }
+    .multiselect-container>li {
+        padding: 0;
+    }
+    .multiselect-container>li>a.multiselect-all label {
+        font-weight: 700;
+    }
+    .multiselect-container>li.multiselect-group label {
+        margin: 0;
+        padding: 3px 20px;
+        height: 100%;
+        font-weight: 700;
+    }
+    .multiselect-container>li.multiselect-group-clickable label {
+        cursor: pointer;
+    }
+    .multiselect-container>li>a {
+        padding: 0;
+    }
+    .multiselect-container>li>a>label.radio,
+    .multiselect-container>li>a>label.checkbox {
+        margin: 0;
+    }
+    .filter .btn {
+        padding: 6px 3px;
+    }
+    .btn-group>.btn-group:nth-child(2)>.multiselect.btn {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    .form-inline .multiselect-container label.checkbox,
+    .form-inline .multiselect-container label.radio {
+        padding: 3px 20px 3px 40px;
+    }
+    .form-inline .multiselect-container li a label.checkbox input[type=checkbox],
+    .form-inline .multiselect-container li a label.radio input[type=radio] {
+        margin-left: -20px;
+        margin-right: 0;
+    }
+    .plaats-adres-ingeven {
+        padding: 1em;
+        margin-left: 1.5em;
+        background-color: @white;
+        border: 1px solid @border-color;
+    }
+    .checkbox small {
+        color: @gray;
+    }
+    .block-divider {
+        border-bottom: 1px solid @border-color;
+        padding: 0.5em 0;
+    }
+    .show-only-places {
+        display: none;
+    }
+    .only-places .show-only-places {
+        display: initial;
+    }
+    .only-places .hide-only-places {
+        display: none;
+    }
+    .btn-tile {
+        display: inline-block;
+        text-align: left;
+        background-color: @white;
+        margin-bottom: 1em;
+        min-height: 10em;
+        padding: 1em;
+        width: 100%;
+        position: relative;
+        .preview-corner {
+            display: none;
+        }
+        .preview-icon {
+            display: none;
+        }
+        &:hover {
+            background-color: @link-color;
+            color: @white;
+            .title {
+                text-decoration: underline;
+            }
+            .preview-corner {
+                display: block;
+                position: absolute;
+                right: -1px;
+                bottom: -1px;
+                width: 0px;
+                height: 0px;
+                border-style: solid;
+                border-width: 0 0 50px 50px;
+                border-color: transparent transparent #FFF transparent;
+            }
+            .preview-icon {
+                display: block;
+                position: absolute;
+                bottom: 5px;
+                right: 5px;
+                color: @link-color;
+            }
+        }
+    }
+    .preview {
+        .panel-heading {
+            background-color: #333;
+            background-size: cover;
+            position: relative;
+            background-position: center center;
+            &:before {
+                position: absolute;
+                top: 0;
+                display: block;
+                width: 100%;
+                height: 100%;
+                background-color: #000;
+                opacity: 0.5;
+                bottom: 0;
+                left: 0;
+                content: " ";
+                z-index: 0
+            }
+        }
+        .title {
+            color: @white;
+            position: relative;
+            margin-top: 12px;
+            text-shadow: 1px 1px #000;
+            font-size: 30px;
+            font-weight: 700;
+        }
+        .list-inline {
+            color: @white;
+            position: relative;
+        }
+        table {
+            margin-bottom: 0;
+        }
+    }
+    .media.main-image {
+        background-color: aliceblue;
+        border-color: darken(aliceblue, 15%);
+    }
+    .main-image {
+        .select-main-image {
+            display: none;
+        }
+    }
+    input.has-error {
+        border: 1px solid #f3453f;
+    }
+    .event-validation {
+        background-color: @white;
+        padding: 1em;
+        position: fixed;
+        bottom: 0;
+        margin-left: -15px;
+        border-top: 1px solid @border-color;
+        width: 100%;
+        div.text-danger {
+            margin-bottom: 1ex;
+        }
+    }
 }
 
 .event-type-choser-label {
-  background-repeat: no-repeat;
-  background-position: top center;
-  background-size: auto 60px;
-  padding-top: 75px;
-  position: relative;
-  text-align: center;
-  width: 100%;
-  z-index: 0;
-  > span {
-    background-color: @body-bg;
-    padding: .2em 1em;
-  }
-  &:before {
-    border-top: 1px solid @udb-gray;
-    bottom: 12px;
-    content: "";
-    position: absolute;
-    left: 0;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: auto 60px;
+    padding-top: 75px;
+    position: relative;
+    text-align: center;
     width: 100%;
-    z-index: -1;
-  }
-  &.event {
-    background-image: url('../images/icons/icon-event.svg');
-  }
-  &.place {
-    background-image: url('../images/icons/icon-place.svg');
-  }
+    z-index: 0;
+    >span {
+        background-color: @body-bg;
+        padding: .2em 1em;
+    }
+    &:before {
+        border-top: 1px solid @udb-gray;
+        bottom: 12px;
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 100%;
+        z-index: -1;
+    }
+    &.event {
+        background-image: url('../images/icons/icon-event.svg');
+    }
+    &.place {
+        background-image: url('../images/icons/icon-place.svg');
+    }
 }
+
 .event-type-splitter {
-  display: block;
-  margin-bottom: 1em;
-  margin-top: 1em;
-  @media(min-width: @screen-xs-min) {
-    margin-top: 75px;
-  }
+    display: block;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    @media(min-width: @screen-xs-min) {
+        margin-top: 75px;
+    }
 }
 
 .image-copyright-agreements {
-  font-size: 0.85em;
+    font-size: 0.85em;
 }
 
 .datepicker-days .highlight {
-  background-color: @udb-gray-light;
+    background-color: @udb-gray-light;
 }
 
 .datepicker-days .omd.active:after {
-  color: @udb-gray-light;
+    color: @udb-gray-light;
 }
 
 .datepicker-days .omd:after {
-  color: #006c7a;
-  content: "OMD";
-  display: block;
-  font-size: 11px;
-  font-weight: bold;
-  line-height: 18px;
-  text-transform: uppercase;
+    color: #006c7a;
+    content: "OMD";
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 18px;
+    text-transform: uppercase;
 }
 
-#gemeente-kiezer,
-#locatie-kiezer {
-  min-height: 100px;
+form.contact-info,
+form.booking-period {
+    table {
+        border: 1px solid @udb-gray-light;
+    }
+}
+
+.npr {
+    padding-right: 0px;
+}
+
+.npl {
+    padding-left: 0px;
 }
 
 #titel .help-block {
-  max-width: 450px; // corresponds to linelength of +/- 65 characters
+    max-width: 450px; // corresponds to linelength of +/- 65 characters
 }
 
-.hidden-input{
+.hidden-input {
     width: 0px;
     height: 0px;
     margin: 0px;
     background-color: transparent;
     border: none;
-    &:focus{
+    &:focus {
         border: none;
         background-color: transparent;
         box-shadow: none;
         outline: none;
     }
-}
+    .organizer-form .alert-link {
+        text-decoration: underline;
+    }
+    .audience .help-block {
+        font-size: small;
+    }
