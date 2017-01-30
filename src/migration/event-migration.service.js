@@ -11,7 +11,7 @@ angular
   .service('eventMigration', EventMigrationService);
 
 /* @ngInject */
-function EventMigrationService($q, udbApi) {
+function EventMigrationService() {
   var service = this;
 
   var migrationRequirements = {

@@ -27,10 +27,10 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'location', include: true, sortable: false, excludable: false},
     {name: 'address', include: true, sortable: false, excludable: true},
     {name: 'organizer', include: false, sortable: false, excludable: true},
-    {name: 'bookingInfo.price', include: true, sortable: false, excludable: true},
+    {name: 'priceInfo', include: false, sortable: false, excludable: true},
     {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
-    {name: 'bookingInfo.url', include: false, sortable: false, excludable: true},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
+    {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
     {name: 'terms.theme', include: true, sortable: false, excludable: true},
     {name: 'terms.eventtype', include: true, sortable: false, excludable: true},
@@ -42,7 +42,8 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'calendarType', include: false, sortable: false, excludable: true},
     {name: 'sameAs', include: false, sortable: false, excludable: true},
     {name: 'typicalAgeRange', include: false, sortable: false, excludable: true},
-    {name: 'language', include: false, sortable: false, excludable: true}
+    {name: 'language', include: false, sortable: false, excludable: true},
+    {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML}
   ];
 
   exporter.exportFormats = _.map(ExportFormats);

@@ -309,10 +309,10 @@ angular.module('udb.core')
       'location': 'Locatie',
       'address': 'Adres',
       'organizer': 'Organisator',
-      'bookingInfo.price': 'Prijsinformatie',
+      'priceInfo': 'Prijsinformatie',
       'kansentarief': 'Kansentarief',
-      'bookingInfo.url': 'Ticket link',
-      'contactPoint': 'Contactinformatie',
+      'bookingInfo': 'Reservatie-info',
+      'contactPoint': 'Contactinfo',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
       'terms.eventtype': 'Type',
@@ -325,7 +325,8 @@ angular.module('udb.core')
       'calendarType': 'Tijd type',
       'sameAs': 'Externe IDs',
       'typicalAgeRange': 'Leeftijd',
-      'language': 'Taal'
+      'language': 'Taal',
+      'audience': 'Toegang'
     },
     queryFieldGroup: {
       'what': 'Wat',

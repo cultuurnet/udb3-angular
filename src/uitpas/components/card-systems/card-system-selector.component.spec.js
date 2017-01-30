@@ -29,6 +29,9 @@ describe('Component: Uitpas Info', function () {
         'green',
         'UiTPAS'
     ],
+    'hiddenLabels': [
+        'Paspartoe'
+    ],
     'isUitpas': true
   };
 
@@ -125,6 +128,11 @@ describe('Component: Uitpas Info', function () {
         active: false
       },
       {
+        name: 'Paspartoe',
+        active: true,
+        distributionKeys: []
+      },
+      {
         name: 'UiTPAS',
         active: true,
         distributionKeys: []
@@ -167,6 +175,11 @@ describe('Component: Uitpas Info', function () {
         ],
         assignedDistributionKey: undefined,
         active: false
+      },
+      {
+        name: 'Paspartoe',
+        active: true,
+        distributionKeys: []
       },
       {
         name: 'UiTPAS',

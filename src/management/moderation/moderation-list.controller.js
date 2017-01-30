@@ -81,7 +81,7 @@ function ModerationListController(
       var canModerate = _.filter(role.permissions, function(permission) {
         return permission === RolePermission.AANBOD_MODEREREN;
       });
-      return canModerate.length > 0 ? true : false;
+      return canModerate.length > 0;
     });
 
     if (filteredRoles.length) {

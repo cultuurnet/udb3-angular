@@ -43,12 +43,16 @@
                 </div>
               </section>
               <section class="state complete">
+<!--
                 <div ng-bind-html="eventFormData.description.nl" class="description-text"></div>
                 <p><a href ng-click="alterDescription()">Wijzigen</a></p>
+
+-->
+             <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll>{{eventFormData.description.nl}}</textarea>
               </section>
               <section class="state filling">
                 <div class="form-group">
-                  <textarea class="form-control" ng-model="description" rows="6" udb-auto-scroll></textarea>
+                  <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll>{{}}</textarea>
                   <div class="tip" ng-switch="eventFormData.eventType">
                     <p ng-switch-when="0.17.0.0.0">
                       Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>
@@ -68,9 +72,6 @@
                     </p>
                   </div>
 
-                </div>
-                <div class="form-group">
-                  <a class="btn btn-primary to-complete" ng-click="saveDescription()">Opslaan</a>
                 </div>
 
                 <div ng-show="descriptionError" class="alert alert-danger">
@@ -196,232 +197,10 @@
         <price-info price="price"></price-info>
         <uitpas-info organizer="eventFormData.organizer" price="price"></uitpas-info>
 
-        <form name="step5TicketsForm" class="css-form">
-          <div class="row extra-tickets-website" ng-class="bookingInfoCssClass">
-            <div class="extra-task state-incomplete">
-              <div class="col-sm-3">
-                <em class="extra-task-label">Reservatie</em>
-                <span> </span>
-                <i class="fa fa-circle-o-notch fa-spin" ng-show="savingBookingInfo"></i>
-              </div>
-              <div class="col-sm-8">
-                <section class="state incomplete">
-
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox"
-                             class="reservatie-website-check reservatie-check"
-                             ng-model="viaWebsite"
-                             ng-click="toggleBookingType('website')">
-                      Via website
-                    </label>
-                  </div>
-                  <div class="reservatie-website-info reservatie-info" ng-show="viaWebsite">
-                    <div class="reservatie-info-stap1" ng-show="editBookingUrl">
-                      <div class="form-inline">
-                        <label>URL voor reservaties</label><br>
-                        <div class="form-group">
-                          <input type="text"
-                                 class="form-control"
-                                 ng-model-options="{ updateOn: 'blur' }"
-                                 udb-http-prefix
-                                 name="url"
-                                 ng-model="bookingModel.url"
-                                 ng-required="viaWebsite">
-                          <span class="help-block" ng-show="bookingModel.urlRequired && !step5TicketsForm.url.$valid">
-                            Gelieve een geldig formaat te gebruiken
-                          </span>
-                        </div>
-                        <a class="btn btn-primary reservatie-info-stap1-controleren" ng-click="validateBookingType('website')">
-                          Opslaan
-                        </a>
-                      </div>
-                    </div>
-                    <div class="reservatie-info-stap2" ng-hide="editBookingUrl">
-                      <span>
-                        <span ng-bind="eventFormData.bookingInfo.url"></span>
-                        <a class="btn btn-link" ng-click="editBookingUrl = true">Wijzigen</a>
-                      </span>
-                      <div class="weergave">
-                        <p><small class="text-muted">VOORBEELDWEERGAVE</small></p>
-                        <span>
-                          <a class="btn btn-info" target="_blank" ng-href="{{bookingModel.url}}"
-                             ng-bind="bookingModel.urlLabel"></a>
-                          <a class="btn btn-link" href="#" ng-click="enableWebsitePreview()" data-toggle="modal"
-                             data-target="#extra-tickets-website-weergave">Wijzigen</a>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              </div>
-            </div>
-          </div>
-          <div class="modal fade" id="extra-tickets-website-weergave" aria-hidden="true" ng-show="websitePreviewEnabled">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">×</span><span class="sr-only">Close</span>
-                  </button>
-                  <h4 class="modal-title">Weergave</h4>
-                </div>
-                <div class="modal-body">
-                  <label>Kies een passend actie-label voor deze link</label>
-
-                  <div class="radio">
-                    <label>
-                      <input type="radio" ng-model="bookingModel.urlLabel" name="optionsRadios" id="optionsRadios1"
-                             value="Koop tickets" checked="">
-                      Koop tickets
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
-                      <input type="radio" ng-model="bookingModel.urlLabel" name="optionsRadios" id="optionsRadios2"
-                             value="Reserveer plaatsen">
-                      Reserveer plaatsen
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
-                      <input type="radio" ng-model="bookingModel.urlLabel" name="optionsRadios" id="optionsRadios3"
-                             value="Controleer beschikbaarheid">
-                      Controleer beschikbaarheid
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label>
-                      <input type="radio" ng-model="bookingModel.urlLabel" name="optionsRadios" id="optionsRadios4"
-                             value="Schrijf je in">
-                      Schrijf je in
-                    </label>
-                  </div>
-                  <div class="radio">
-                    <label><input type="radio" ng-model="bookingModel.urlLabel" name="optionsRadios" id="optionsRadios5"
-                                  value="Andere">Andere</label>
-                    <input type="text" class="form-control" ng-show="bookingModel.urlLabel === 'Andere'"
-                           ng-model="bookingModel.urlLabelCustom">
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">
-                    Annuleren
-                  </button>
-                  <button type="button" class="btn btn-primary" data-toggle="modal"
-                          data-target="#extra-tickets-website-weergave" ng-click="saveWebsitePreview()">
-                    Bevestigen
-                  </button>
-                </div>
-              </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-          </div>
-          <div class="row extra-tickets-telefoon">
-            <div class="extra-task state-incomplete">
-              <div class="col-sm-8 col-sm-offset-3">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" class="reservatie-telefoon-check reservatie-check" ng-model="viaPhone"
-                           ng-change="toggleBookingType('phone')">
-                    Via telefoon
-                  </label>
-                </div>
-                <div class="reservatie-telefoon-info reservatie-info" ng-show="viaPhone">
-                  <div class="reservatie-telefoon-filling" ng-show="editBookingPhone">
-
-                    <label>Telefoonnummer voor reservaties</label><br>
-
-                    <div class="form-inline">
-                      <input type="text" class="form-control" name="phone" ng-model="bookingModel.phone"
-                             ng-required="viaPhone">
-                      <span class="help-block"
-                            ng-show="bookingModel.phoneRequired && step5TicketsForm.phone.$error.required">
-                        Gelieve een geldig formaat te gebruiken
-                      </span>
-                      <a class="btn btn-primary reservatie-telefoon-opslaan" ng-click="validateBookingType('phone')">
-                        Opslaan
-                      </a>
-                    </div>
-                  </div>
-                  <div class="reservatie-telefoon-complete" ng-hide="editBookingPhone">
-                    <span>
-                      <span ng-bind="bookingModel.phone"></span>
-                      <a class="btn btn-link" ng-click="editBookingPhone = true">Wijzigen</a>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row extra-tickets-email">
-            <div class="extra-task state-incomplete">
-              <div class="col-sm-8 col-sm-offset-3">
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" class="reservatie-email-check reservatie-check" ng-model="viaEmail"
-                           ng-change="toggleBookingType('email')">
-                    Via e-mail
-                  </label>
-                </div>
-                <div class="reservatie-email-info reservatie-info" ng-show="viaEmail">
-                  <div class="reservatie-email-filling" ng-show="editBookingEmail">
-                    <label>E-mailadres voor reservaties</label><br>
-
-                    <div class="form-inline">
-                      <input type="email"
-                             class="form-control"
-                             name="email"
-                             ng-model="bookingModel.email"
-                             ng-required="viaEmail">
-                      <span class="help-block" ng-show="bookingModel.emailRequired && !step5TicketsForm.email.$valid">
-                        Gelieve een geldig formaat te gebruiken
-                      </span>
-                      <a class="btn btn-primary reservatie-email-opslaan" ng-click="validateBookingType('email')">
-                        Opslaan
-                      </a>
-                    </div>
-                  </div>
-                  <div class="reservatie-email-complete" ng-hide="editBookingEmail">
-                    <span>
-                      <span ng-bind="bookingModel.email"></span>
-                      <a class="btn btn-link" ng-click="editBookingEmail = true">Wijzigen</a>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row extra-tickets-periode">
-            <div class="extra-task">
-              <div class="col-sm-8 col-sm-offset-3" ng-hide="eventFormData.bookingInfo.availabilityStarts">
-                <a class="reservatie-periode-toevoegen" href="#" ng-click="openBookingPeriodModal()">
-                    Reservatieperiode toevoegen
-                </a>
-              </div>
-              <div class="col-sm-8 col-sm-offset-3" ng-show="eventFormData.bookingInfo.availabilityStarts">
-                <span>
-                  <span>Van </span>
-                  <span ng-bind="eventFormData.bookingInfo.availabilityStarts | date:'dd-MM-yyyy'"></span>
-                  <span> tot </span>
-                  <span ng-bind="eventFormData.bookingInfo.availabilityEnds | date:'dd-MM-yyyy'"></span>
-                  <a class="reservatie-periode-toevoegen" href="#" ng-click="openBookingPeriodModal()">
-                      Reservatieperiode wijzigen
-                  </a>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="alert alert-danger" ng-show="bookingInfoError">
-            Er ging iets fout bij het bewaren van de info.
-          </div>
-
-        </form>
-
         <div class="row extra-contact">
           <div class="extra-task meer-info" ng-class="contactInfoCssClass">
             <div class="col-sm-3">
-              <em class="extra-task-label">Meer info &amp; contact</em>
+              <em class="extra-task-label">Contact &amp; reservatie</em>
               <span> </span>
               <i class="fa fa-circle-o-notch fa-spin" ng-show="savingContactInfo"></i>
             </div>
@@ -434,7 +213,7 @@
               </section>
 
               <section class="state filling complete">
-                <form name="contactInfoForm">
+                <form name="contactInfoForm" class="contact-info">
                   <table class="table">
                     <tr ng-repeat="(key, info) in contactInfo"
                         ng-model="info"
@@ -442,32 +221,62 @@
                         ng-class="{'has-error' : infoErrorMessage !== '' }"
                         ng-change="saveContactInfo()">
                       <td>
-                        <select class="form-control" ng-model="info.type" ng-change="clearInfo();">
+                        <select class="form-control" ng-model="info.type"
+                                ng-change="clearInfo(); removeBookingInfo('{{info.type}}')">
                           <option value="url">Website</option>
                           <option value="phone">Telefoonnummer</option>
                           <option value="email">E-mailadres</option>
                         </select>
                       </td>
-                      <td ng-switch="info.type">
-                        <input type="text"
-                               ng-switch-when="url"
-                               udb-http-prefix
-                               class="form-control"
-                               ng-model="info.value"
-                               name="contact[{{key}}]"
-                               ng-change="validateInfo(); saveContactInfo();"
-                               ng-model-options="{ updateOn: 'blur' }"/>
-                        <input type="text"
-                               ng-switch-default
-                               class="form-control"
-                               ng-model="info.value"
-                               name="contact[{{key}}]"
-                               ng-change="validateInfo(); saveContactInfo();"
-                               ng-model-options="{ updateOn: 'blur' }"/>
+                      <td>
+                        <ng-switch on="info.type">
+                          <input type="text"
+                                 ng-switch-when="url"
+                                 udb-http-prefix
+                                 class="form-control"
+                                 ng-model="info.value"
+                                 name="contact[{{key}}]"
+                                 ng-change="validateInfo(); saveContactInfo();"
+                                 ng-model-options="{ updateOn: 'blur' }"/>
+                          <input type="text"
+                                 ng-switch-default
+                                 class="form-control"
+                                 ng-model="info.value"
+                                 name="contact[{{key}}]"
+                                 ng-change="validateInfo(); saveContactInfo();"
+                                 ng-model-options="{ updateOn: 'blur' }"/>
+                        </ng-switch>
                         <span class="help-block" ng-hide="infoErrorMessage === ''" ng-bind="infoErrorMessage"></span>
+                        <div class="booking-options" ng-show="showBookingOption(info)">
+                          <label>
+                            <input type="checkbox"
+                                   class="reservatie-{{info.type}}-check reservatie-check"
+                                   ng-model="info.booking"
+                                   ng-click="toggleBookingType(info)">
+                            Gebruik voor reservatie
+                          </label>
+                          <div class="reservatie-website-info reservatie-info"
+                               ng-if="info.type === 'url' && info.booking">
+                            <div class="reservatie-info-stap2">
+                              <div class="weergave">
+                                <p><strong>Hoe mag deze link verschijnen?</strong></p>
+                                <select ng-model="bookingModel.urlLabel"
+                                        ng-change="saveWebsitePreview()">
+                                  <option value="Koop tickets">Koop tickets</option>
+                                  <option value="Reserveer plaatsen">Reserveer plaatsen</option>
+                                  <option value="Controleer beschikbaarheid">Controleer beschikbaarheid</option>
+                                  <option value="Schrijf je in">Schrijf je in</option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </td>
                       <td>
-                        <button type="button" class="close" aria-label="Close" ng-click="deleteContactInfo(key)">
+                        <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteContactInfo(key)">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                        <button ng-if="info.booking" type="button" class="close" aria-label="Close" ng-click="deleteBookingInfo(info, key)">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </td>
@@ -480,6 +289,13 @@
                   </table>
                 </form>
               </section>
+
+              <div class="row extra-tickets-periode"
+                   ng-show="hasBookingInfo()">
+                  <div class="extra-task">
+                      <udb-reservation-period></udb-reservation-period>
+                  </div>
+              </div>
 
               <div ng-show="contactInfoError" class="alert alert-danger">
                 Er ging iets fout bij het opslaan van de contact info.
@@ -513,6 +329,7 @@
           </div>
         </div>
 
+        <udb-form-audience></udb-form-audience>
       </div>
 
       <div class="col-sm-5">
@@ -528,7 +345,7 @@
             <div ng-repeat="image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl">
               <div class="uploaded-image">
                 <div class="media" ng-class="{'main-image': ($index === 0)}">
-                  <a class="media-left">
+                  <a class="media-left" href="#">
                     <img ng-src="{{ image.thumbnailUrl }}?width=50&height=50">
                   </a>
 
