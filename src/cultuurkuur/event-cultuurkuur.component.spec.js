@@ -162,23 +162,53 @@ describe('Event Cultuurkuur Component', function () {
    return $componentController('udbEventCultuurkuurComponent',{}, bindings);
   }
 
-  it('should have a previewLink if permission is false', function () {
+  it('should have a previewLink and editLink', function () {
     var event = new UdbEvent(exampleEventJson);
     var permission = false;
-    var presumedLink = 'http://dev.cultuurkuur.be/agenda/e//1111be8c-a412-488d-9ecc-8fdf9e52edbc';
+    var presumedPreviewLink = 'http://dev.cultuurkuur.be/agenda/e//1111be8c-a412-488d-9ecc-8fdf9e52edbc';
+    var presumedEditLink = 'http://dev.cultuurkuur.be/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc/edit';
     var controller = getComponentController(event,permission);
 
-    expect(controller.previewLink).toEqual(presumedLink);
+    expect(controller.previewLink).toEqual(presumedPreviewLink);
+    expect(controller.editLink).toEqual(presumedEditLink);
   });
 
-  it('should have an editLink if permission is true', function () {
+  it('should show CultuurKuur as incomplete if no educationfields/levels', function () {
       var event = new UdbEvent(exampleEventJson);
       var permission = true;
-      var presumedLink = 'http://dev.cultuurkuur.be/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc/edit';
       var controller = getComponentController(event,permission);
 
-      expect(controller.editLink).toEqual(presumedLink);
+      expect(controller.isIncomplete).toEqual(true);
   });
+
+    it('should show CultuurKuur as complete if it has an educationfield', function () {
+      var event = new UdbEvent(exampleEventJson);
+      event.educationFields.push({
+          label: "Cultuur en Kunst",
+          domain: "educationfield",
+          id: "yodawashere"
+      });
+      var permission = true;
+      var controller = getComponentController(event,permission);
+
+      expect(controller.isIncomplete).toEqual(false);
+  });
+
+    it('should show CultuurKuur as complete if it has an educationlevel', function () {
+      var event = new UdbEvent(exampleEventJson);
+      event.educationLevels.push({
+          label: "Cultuur en Kunst",
+          domain: "educationfield",
+          id: "yodawashere"
+      });
+      var permission = true;
+      var controller = getComponentController(event,permission);
+
+      expect(controller.isIncomplete).toEqual(false);
+  });
+
+
+
 
 
 

@@ -1,9 +1,9 @@
 <p ng-if="!$ctrl.permission">Dit evenement bevat <a target="_blank" href="{{$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
 <div ng-if="$ctrl.permission">
-    <div ng-if="!$ctrl.showCultuurKuur" class="row">
-    Hello world
+    <div ng-if="!$ctrl.isIncomplete" class="row">
+
     </div>
-    <div class="alert alert-info" ng-if="$ctrl.showCultuurKuur">
+    <div class="alert alert-info" ng-if="$ctrl.isIncomplete">
     <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>
     <a href="{{$ctrl.editLink}}" target="_blank" class="btn btn-default btn-info">Doorgaan</a>
     </div>

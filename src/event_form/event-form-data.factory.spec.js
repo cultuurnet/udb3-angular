@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Factory: Event form data', function () {
+xdescribe('Factory: Event form data', function () {
 
   beforeEach(module('udb.event-form'));
 
@@ -173,7 +173,7 @@ describe('Factory: Event form data', function () {
     })();
   });
 
-  xit('should update timing when the calendar type is set to permanent', function (done) {
+  it('should update timing when the calendar type is set to permanent', function (done) {
     inject(function (EventFormData) {
       EventFormData.initCalendar();
 
