@@ -63,8 +63,11 @@
                                   label-added="labelAdded(label)"
                                   label-removed="labelRemoved(label)"
                 ></udb-label-select>
-                <div ng-show="hasLabelsError" class="alert alert-danger">
+                <div ng-if="labelResponse === 'error'" class="alert alert-danger">
                   Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.
+                </div>
+                <div ng-if="labelResponse === 'success'" class="alert alert-success">
+                  Het label '{{addedLabel}}' werd succesvol toegevoegd.
                 </div>
               </td>
             </tr>

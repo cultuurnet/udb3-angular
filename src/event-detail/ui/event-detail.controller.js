@@ -227,10 +227,11 @@ function EventDetail(
         .then(function(response) {
           if (response.success) {
             $scope.event.labels = angular.copy(cachedEvent.labels);
-            $scope.hasLabelsError = false;
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
           }
           else {
-            $scope.hasLabelsError = true;
+            $scope.labelResponse = 'error';
             $scope.labelsError = response;
           }
         });
@@ -245,6 +246,7 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = '';
   }
 
   function hasContactPoint() {

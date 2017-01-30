@@ -7552,10 +7552,11 @@ function EventDetail(
         .then(function(response) {
           if (response.success) {
             $scope.event.labels = angular.copy(cachedEvent.labels);
-            $scope.hasLabelsError = false;
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
           }
           else {
-            $scope.hasLabelsError = true;
+            $scope.labelResponse = 'error';
             $scope.labelsError = response;
           }
         });
@@ -7570,6 +7571,7 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = '';
   }
 
   function hasContactPoint() {
@@ -19256,8 +19258,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                  label-added=\"labelAdded(label)\"\n" +
     "                                  label-removed=\"labelRemoved(label)\"\n" +
     "                ></udb-label-select>\n" +
-    "                <div ng-show=\"hasLabelsError\" class=\"alert alert-danger\">\n" +
+    "                <div ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
     "                  Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                </div>\n" +
+    "                <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "                  Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
     "                </div>\n" +
     "              </td>\n" +
     "            </tr>\n" +
