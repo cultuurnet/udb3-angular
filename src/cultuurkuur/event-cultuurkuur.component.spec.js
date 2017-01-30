@@ -171,5 +171,14 @@ describe('Event Cultuurkuur Component', function () {
     expect(controller.previewLink).toEqual(presumedLink);
   });
 
+    it('should have an editLink if permission is true and event has no educationfields or educationlevels', function () {
+    var event = new UdbEvent(exampleEventJson);
+    var permission = false;
+    var presumedLink = 'http://dev.cultuurkuur.be/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc/edit';
+    var controller = getComponentController(event,permission);
+
+    expect(controller.editLink).toEqual(presumedLink);
+  });
+
 
 });
