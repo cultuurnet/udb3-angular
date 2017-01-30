@@ -15,5 +15,8 @@ function EventFormPeriodDirective() {
   return {
     templateUrl: 'templates/event-form-period.html',
     restrict: 'EA',
+    scope: {
+      formData: '='
+    }
   };
 }

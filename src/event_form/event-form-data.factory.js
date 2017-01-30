@@ -42,7 +42,18 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory() {
+function EventFormDataFactory(rx, calendarLabels) {
+
+  // Mapping between machine name of days and real output.
+  var dayNames = {
+    monday : 'Maandag',
+    tuesday : 'Dinsdag',
+    wednesday : 'Woensdag',
+    thursday : 'Donderdag',
+    friday : 'Vrijdag',
+    saturday : 'Zaterdag',
+    sunday : 'Zondag'
+  };
 
   /**
    * @class EventFormData
@@ -119,6 +130,15 @@ function EventFormDataFactory() {
       this.labels = [];
 
       this.audienceType = 'everyone';
+
+      this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
+    },
+
+    clone: function () {
+      var clone = _.cloneDeep(this);
+      clone.timingChanged$ = rx.createObservableFunction(clone, 'timingChangedCallback');
+
+      return clone;
     },
 
     /**
@@ -425,6 +445,120 @@ function EventFormDataFactory() {
       var endDate = this.getEndDate();
 
       return this.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
+    },
+
+    /**
+     * Init the calendar for the current selected calendar type.
+     */
+    initCalendar: function () {
+      var formData = this;
+      var calendarType = _.findWhere(calendarLabels, {id: formData.calendarType});
+
+      if (calendarType) {
+        this.activeCalendarLabel = calendarType.label;
+        this.activeCalendarType = formData.calendarType;
+      }
+    },
+
+    timingChanged: function () {
+      this.timingChangedCallback(this);
+    },
+
+    resetCalender: function () {
+      this.activeCalendarType = '';
+      this.calendarType = '';
+    },
+
+    saveOpeningHourDaySelection: function (index, dayOfWeek) {
+      var humanValues = [];
+      if (dayOfWeek instanceof Array) {
+        for (var i in dayOfWeek) {
+          humanValues.push(dayNames[dayOfWeek[i]]);
+        }
+      }
+
+      this.openingHours[index].label = humanValues.join(', ');
+    },
+
+    /**
+     * Click listener on the calendar type buttons.
+     * Activate the selected calendar type.
+     */
+    setCalendarType: function (type) {
+      var formData = this;
+
+      formData.showStep(3);
+
+      // Check if previous calendar type was the same.
+      // If so, we don't need to create new opening hours. Just show the previous entered data.
+      if (formData.calendarType === type) {
+        return;
+      }
+
+      // A type is chosen, start a complete new calendar, removing old data
+      formData.resetCalendar();
+      formData.calendarType = type;
+
+      if (formData.calendarType === 'single') {
+        formData.addTimestamp('', '', '');
+      }
+
+      if (formData.calendarType === 'periodic') {
+        formData.addOpeningHour('', '', '');
+      }
+
+      if (formData.calendarType === 'permanent') {
+        formData.addOpeningHour('', '', '');
+        formData.timingChanged();
+      }
+
+      formData.initCalendar();
+
+      if (formData.id) {
+        formData.majorInfoChanged = true;
+      }
+
+    },
+
+    /**
+     * Toggle the starthour field for given timestamp.
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleStartHour: function(timestamp) {
+      // If we hide the textfield, empty all other time fields.
+      if (!timestamp.showStartHour) {
+        timestamp.startHour = '';
+        timestamp.endHour = '';
+        timestamp.showEndHour = false;
+        this.timingChanged();
+      }
+    },
+
+    /**
+     * Toggle the endhour field for given timestamp
+     * @param {Object} timestamp
+     *   Timestamp to change
+     */
+    toggleEndHour: function(timestamp) {
+      // If we hide the textfield, empty also the input.
+      if (!timestamp.showEndHour) {
+        timestamp.endHour = '';
+        this.timingChanged();
+      }
+    },
+
+    periodicTimingChanged: function () {
+      var formData = this;
+
+      if (formData.id) {
+        if (formData.hasValidPeriodicRange()) {
+          formData.periodicRangeError = false;
+          formData.timingChanged();
+        } else {
+          formData.periodicRangeError = true;
+        }
+      }
     }
 
   };
