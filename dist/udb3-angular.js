@@ -18782,8 +18782,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <strong>Onderwerp</strong>\n" +
     "                                </div>\n" +
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                            <p ng-repeat=\"field in $ctrl.cultuurKuurInfo.fields\">{{field}}</p>\n" +
-    "\n" +
+    "                                    <p ng-repeat=\"field in $ctrl.cultuurKuurInfo.fields\" ng-bind=\"field\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <div ng-if=\"$ctrl.cultuurKuurInfo.targetAudience.length > 0\" class=\"row\">\n" +
@@ -18791,8 +18790,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <strong>Doelgroep</strong>\n" +
     "                                </div>\n" +
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                            <p ng-repeat=\"target in $ctrl.cultuurKuurInfo.targetAudience\">{{target}}</p>\n" +
-    "\n" +
+    "                                    <p ng-repeat=\"target in $ctrl.cultuurKuurInfo.targetAudience\" ng-bind=\"target\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 0\" class=\"row\">\n" +
@@ -18800,8 +18798,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <strong>Geschikt voor</strong>\n" +
     "                                </div>\n" +
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                            <p ng-repeat=\"level in $ctrl.cultuurKuurInfo.levels\">{{level}}</p>\n" +
-    "\n" +
+    "                                    <p ng-repeat=\"level in $ctrl.cultuurKuurInfo.levels\" ng-bind=\"level\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
