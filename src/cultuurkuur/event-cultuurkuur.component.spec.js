@@ -198,8 +198,8 @@ describe('Event Cultuurkuur Component', function () {
       var event = new UdbEvent(exampleEventJson);
       event.educationLevels.push({
           label: "Cultuur en Kunst",
-          domain: "educationfield",
-          id: "yodawashere"
+          domain: "educationlevel",
+          id: "tothestarsandbeyond"
       });
       var permission = true;
       var controller = getComponentController(event,permission);
@@ -207,10 +207,30 @@ describe('Event Cultuurkuur Component', function () {
       expect(controller.isIncomplete).toEqual(false);
   });
 
+    it('should have a cultuurKuurInfo object containing educationlevels/fields/targetaudiences', function (){
+        var event = new UdbEvent(exampleEventJson);
+        event.educationLevels.push({
+            label: "CVO/CDO/Basiseducatie",
+          domain: "educationlevel",
+          id: "lukeimyourfather"
+        });
+        event.educationFields.push({
+            label:"Kunst en cultuur",
+            domain: "educationfield",
+            id:"bricksandstuds"
+        });
+        event.educationTargetAudience.push({
+            label: "Leerlingen",
+            domain:"targetaudience",
+            id: "2.1.14.0.0"
+        });
+        var permission = true;
+        var controller = getComponentController(event,permission);
 
-
-
-
+        expect(controller.cultuurKuurInfo.levels).toContain("CVO/CDO/Basiseducatie");
+        expect(controller.cultuurKuurInfo.fields).toContain("Kunst en cultuur");
+        expect(controller.cultuurKuurInfo.targetAudience).toContain("Leerlingen");
+    })
 
 
 });
