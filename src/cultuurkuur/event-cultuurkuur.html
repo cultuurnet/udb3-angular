@@ -1,18 +1,18 @@
 <div class="cultuurkuur-component">
-    <p ng-if="!$ctrl.permission">Dit evenement bevat <a target="_blank" ng-href="{{$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
-    <div ng-if="$ctrl.permission">
-        <div ng-if="!$ctrl.isIncomplete" class="row">
+    <p ng-if="::!$ctrl.permission">Dit evenement bevat <a target="_blank" ng-href="{{::$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
+    <div ng-if="::$ctrl.permission">
+        <div ng-if="::!$ctrl.isIncomplete" class="row">
             <p><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                            <div ng-if="$ctrl.cultuurKuurInfo.fields.length > 0" class="row">
+                            <div ng-if="::($ctrl.cultuurKuurInfo.fields.length > 0)" class="row">
                                 <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
                                     <strong>Onderwerp</strong>
                                 </div>
                                 <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-                                    <p ng-repeat="field in $ctrl.cultuurKuurInfo.fields" ng-bind="field"></p>
+                                    <p ng-repeat="field in ::$ctrl.cultuurKuurInfo.fields" ng-bind="::field"></p>
                                 </div>
                             </div>
                             <div ng-if="$ctrl.cultuurKuurInfo.targetAudience.length > 0" class="row">
@@ -20,7 +20,7 @@
                                     <strong>Doelgroep</strong>
                                 </div>
                                 <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-                                    <p ng-repeat="target in $ctrl.cultuurKuurInfo.targetAudience" ng-bind="target"></p>
+                                    <p ng-repeat="target in ::$ctrl.cultuurKuurInfo.targetAudience" ng-bind="::target"></p>
                                 </div>
                             </div>
                             <div ng-if="$ctrl.cultuurKuurInfo.levels.length > 0" class="row">
@@ -28,7 +28,7 @@
                                     <strong>Geschikt voor</strong>
                                 </div>
                                 <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-                                    <p ng-repeat="level in $ctrl.cultuurKuurInfo.levels" ng-bind="level"></p>
+                                    <p ng-repeat="level in ::$ctrl.cultuurKuurInfo.levels" ng-bind="::level"></p>
                                 </div>
                             </div>
                         </div>
@@ -38,13 +38,13 @@
 
                     </div>
                 </div>
-                <div class="panel-footer"> <a ng-href="{{$ctrl.editLink}}" target="_blank">Wijzig op cultuurkuur.be</a>
+                <div class="panel-footer"> <a ng-href="{{::$ctrl.editLink}}" target="_blank">Wijzig op cultuurkuur.be</a>
                 </div>
             </div>
         </div>
-        <div class="alert alert-info" ng-if="$ctrl.isIncomplete">
+        <div class="alert alert-info" ng-if="::$ctrl.isIncomplete">
             <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>
-            <a ng-href="{{$ctrl.editLink}}" target="_blank" class="btn btn-default btn-info">Doorgaan</a>
+            <a ng-href="{{::$ctrl.editLink}}" target="_blank" class="btn btn-default btn-info">Doorgaan</a>
         </div>
     </div>
 </div>

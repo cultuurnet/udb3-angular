@@ -18769,20 +18769,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <p ng-if=\"!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" ng-href=\"{{$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
-    "    <div ng-if=\"$ctrl.permission\">\n" +
-    "        <div ng-if=\"!$ctrl.isIncomplete\" class=\"row\">\n" +
+    "    <p ng-if=\"::!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
+    "    <div ng-if=\"::$ctrl.permission\">\n" +
+    "        <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
     "            <p><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div class=\"row\">\n" +
     "                        <div class=\"col-xs-10 col-sm-10 col-md-10 col-lg-10\">\n" +
-    "                            <div ng-if=\"$ctrl.cultuurKuurInfo.fields.length > 0\" class=\"row\">\n" +
+    "                            <div ng-if=\"::($ctrl.cultuurKuurInfo.fields.length > 0)\" class=\"row\">\n" +
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                                    <strong>Onderwerp</strong>\n" +
     "                                </div>\n" +
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                                    <p ng-repeat=\"field in $ctrl.cultuurKuurInfo.fields\" ng-bind=\"field\"></p>\n" +
+    "                                    <p ng-repeat=\"field in ::$ctrl.cultuurKuurInfo.fields\" ng-bind=\"::field\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <div ng-if=\"$ctrl.cultuurKuurInfo.targetAudience.length > 0\" class=\"row\">\n" +
@@ -18790,7 +18790,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <strong>Doelgroep</strong>\n" +
     "                                </div>\n" +
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                                    <p ng-repeat=\"target in $ctrl.cultuurKuurInfo.targetAudience\" ng-bind=\"target\"></p>\n" +
+    "                                    <p ng-repeat=\"target in ::$ctrl.cultuurKuurInfo.targetAudience\" ng-bind=\"::target\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 0\" class=\"row\">\n" +
@@ -18798,7 +18798,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <strong>Geschikt voor</strong>\n" +
     "                                </div>\n" +
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                                    <p ng-repeat=\"level in $ctrl.cultuurKuurInfo.levels\" ng-bind=\"level\"></p>\n" +
+    "                                    <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
@@ -18808,13 +18808,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"panel-footer\"> <a ng-href=\"{{$ctrl.editLink}}\" target=\"_blank\">Wijzig op cultuurkuur.be</a>\n" +
+    "                <div class=\"panel-footer\"> <a ng-href=\"{{::$ctrl.editLink}}\" target=\"_blank\">Wijzig op cultuurkuur.be</a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"alert alert-info\" ng-if=\"$ctrl.isIncomplete\">\n" +
+    "        <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete\">\n" +
     "            <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>\n" +
-    "            <a ng-href=\"{{$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
+    "            <a ng-href=\"{{::$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
