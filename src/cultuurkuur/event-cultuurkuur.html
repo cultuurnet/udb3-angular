@@ -5,36 +5,40 @@
             <p><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <div ng-if="$ctrl.cultuurKuurInfo.fields.length > 0" class="row">
-                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <strong>Onderwerp</strong>
-                        </div>
-                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                    <div class="row">
+                        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                            <div ng-if="$ctrl.cultuurKuurInfo.fields.length > 0" class="row">
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                    <strong>Onderwerp</strong>
+                                </div>
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
                             <p ng-repeat="field in $ctrl.cultuurKuurInfo.fields">{{field}}</p>
+
+                                </div>
+                            </div>
+                            <div ng-if="$ctrl.cultuurKuurInfo.targetAudience.length > 0" class="row">
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                    <strong>Doelgroep</strong>
+                                </div>
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <p ng-repeat="target in $ctrl.cultuurKuurInfo.targetAudience">{{target}}</p>
+
+                                </div>
+                            </div>
+                            <div ng-if="$ctrl.cultuurKuurInfo.levels.length > 0" class="row">
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                    <strong>Geschikt voor</strong>
+                                </div>
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <p ng-repeat="level in $ctrl.cultuurKuurInfo.levels">{{level}}</p>
+
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3 cultuurkuur-logo">
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 cultuurkuur-logo">
                             &nbsp;
                         </div>
-                    </div>
-                    <div ng-if="$ctrl.cultuurKuurInfo.targetAudience.length > 0" class="row">
-                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <strong>Doelgroep</strong>
-                        </div>
-                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-                            <p ng-repeat="target in $ctrl.cultuurKuurInfo.targetAudience">{{target}}</p>
-                        </div>
-                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                        </div>
-                    </div>
-                    <div ng-if="$ctrl.cultuurKuurInfo.levels.length > 0" class="row">
-                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <strong>Geschikt voor</strong>
-                        </div>
-                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-                            <p ng-repeat="level in $ctrl.cultuurKuurInfo.levels">{{level}}</p>
-                        </div>
-                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                        </div>
+
                     </div>
                 </div>
                 <div class="panel-footer"> <a href="{{$ctrl.editLink}}" target="_blank">Wijzig op cultuurkuur.be</a>
