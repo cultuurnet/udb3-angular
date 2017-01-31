@@ -56,10 +56,12 @@ function PriceFormModalController(
 
   function setPriceItemFree(key) {
     pfmc.price[key].price = 0;
+    pfmc.priceForm.$setDirty()
   }
 
   function deletePriceItem(key) {
     pfmc.price.splice(key, 1);
+    pfmc.priceForm.$setDirty();
   }
 
   function showPriceDelete(key) {

@@ -8513,10 +8513,12 @@ function PriceFormModalController(
 
   function setPriceItemFree(key) {
     pfmc.price[key].price = 0;
+    pfmc.priceForm.$setDirty()
   }
 
   function deletePriceItem(key) {
     pfmc.price.splice(key, 1);
+    pfmc.priceForm.$setDirty();
   }
 
   function showPriceDelete(key) {
@@ -20194,7 +20196,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"form-group\">\n" +
     "                <tr ng-repeat=\"(key, priceInfo) in pfmc.price\"\n" +
     "                    ng-model=\"priceInfo\"\n" +
-    "                    ng-form=\"pfmc.priceForm\">\n" +
+    "                    ng-form=\"{{$index}}\">\n" +
     "                    <td ng-switch on=\"priceInfo.category\"\n" +
     "                        class=\"col-xs-4\">\n" +
     "                        <span ng-switch-when=\"base\">\n" +
@@ -20206,7 +20208,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   name=\"name\"\n" +
     "                                   placeholder=\"Doelgroep\"\n" +
     "                                   ng-model=\"priceInfo.name\"\n" +
-    "                                   ng-class=\"{ 'has-error': pfmc.priceForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -20222,7 +20223,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                           name=\"price\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
-    "                                           ng-class=\"{ 'has-error': pfmc.priceForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
     "                                <div class=\"form-group\">euro</div>\n" +

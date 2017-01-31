@@ -10,7 +10,7 @@
             <div class="form-group">
                 <tr ng-repeat="(key, priceInfo) in pfmc.price"
                     ng-model="priceInfo"
-                    ng-form="pfmc.priceForm">
+                    ng-form="{{$index}}">
                     <td ng-switch on="priceInfo.category"
                         class="col-xs-4">
                         <span ng-switch-when="base">
@@ -22,7 +22,6 @@
                                    name="name"
                                    placeholder="Doelgroep"
                                    ng-model="priceInfo.name"
-                                   ng-class="{ 'has-error': pfmc.priceForm.name.$invalid }"
                                    required />
                         </span>
                     </td>
@@ -38,7 +37,6 @@
                                            name="price"
                                            ng-model="priceInfo.price"
                                            ng-model-options="{ updateOn: 'blur' }"
-                                           ng-class="{ 'has-error': pfmc.priceForm.price.$invalid }"
                                            required />
                                 </div>
                                 <div class="form-group">euro</div>
