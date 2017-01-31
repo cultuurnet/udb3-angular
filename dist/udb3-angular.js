@@ -18759,39 +18759,38 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <p ng-if=\"!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" href=\"{{$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
     "    <div ng-if=\"$ctrl.permission\">\n" +
     "        <div ng-if=\"!$ctrl.isIncomplete\" class=\"row\">\n" +
-    "\n" +
+    "            <p><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div ng-if=\"$ctrl.cultuurKuurInfo.fields.length > 0\" class=\"row\">\n" +
-    "                        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                        <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
     "                            <strong>Onderwerp</strong>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                            <p ng-repeat=\"field in $ctrl.cultuurKuurInfo.fields\">{{field}}</p>\n" +
     "                        </div>\n" +
-    "                        <div class=\"cultuurkuur-logo\" class=\"col-xs-2 col-sm-2 col-md-2 col-lg-2\">\n" +
+    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3 cultuurkuur-logo\">\n" +
+    "                            &nbsp;\n" +
     "                        </div>\n" +
-    "\n" +
     "                    </div>\n" +
     "                    <div ng-if=\"$ctrl.cultuurKuurInfo.targetAudience.length > 0\" class=\"row\">\n" +
-    "                        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                        <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
     "                            <strong>Doelgroep</strong>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                            <p ng-repeat=\"target in $ctrl.cultuurKuurInfo.targetAudience\">{{target}}</p>\n" +
     "                        </div>\n" +
-    "                        <div class=\"col-xs-2 col-sm-2 col-md-2 col-lg-2\">\n" +
+    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 0\" class=\"row\">\n" +
-    "                        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                        <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
     "                            <strong>Geschikt voor</strong>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                            <p ng-repeat=\"level in $ctrl.cultuurKuurInfo.levels\">{{level}}</p>\n" +
     "                        </div>\n" +
-    "                        <div class=\"col-xs-2 col-sm-2 col-md-2 col-lg-2\">\n" +
-    "\n" +
+    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
