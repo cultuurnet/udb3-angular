@@ -1,6 +1,6 @@
 'use strict';
 
-xdescribe('Factory: Event form data', function () {
+describe('Factory: Event form data', function () {
 
   beforeEach(module('udb.event-form'));
 
