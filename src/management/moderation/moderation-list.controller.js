@@ -26,7 +26,7 @@ function ModerationListController(
   rx,
   $scope,
   $q,
-  scroller
+  $document
 ) {
   var moderator = this;
 
@@ -74,7 +74,7 @@ function ModerationListController(
       .subscribe();
 
     page$.subscribe(function () {
-      scroller.scrollTo('moderation-search-results');
+      $document.scrollTop(0);
     });
 
     return $q.resolve();

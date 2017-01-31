@@ -13,7 +13,7 @@
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController(scroller, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -43,7 +43,7 @@
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
-      scroller.scrollTo('dashboard-items');
+      $document.scrollTop(0);
     }
 
     function updateItemViewer() {

@@ -2753,28 +2753,6 @@ function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage)
 }
 UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
 
-// Source: src/core/scroller.service.js
-/**
- * @ngdoc service
- * @name udb.core.scroller
- * @description
- * # Scroller
- */
-angular
-  .module('udb.core')
-  .service('scroller', Scroller);
-
-/* @ngInject */
-function Scroller($document) {
-  var scroller = this;
-
-  scroller.scrollTo = function (targetId) {
-    var targetElement = angular.element($document[0].getElementById(targetId));
-    $document.scrollTo(targetElement, 100, 1000);
-  };
-}
-Scroller.$inject = ["$document"];
-
 // Source: src/core/udb-api.service.js
 /**
  * @typedef {Object} UiTIDUser
@@ -5238,7 +5216,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController(scroller, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -5268,7 +5246,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
-      scroller.scrollTo('dashboard-items');
+      $document.scrollTop(0);
     }
 
     function updateItemViewer() {
@@ -5347,7 +5325,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["scroller", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
 })();
 
@@ -13719,7 +13697,7 @@ function ModerationListController(
   rx,
   $scope,
   $q,
-  scroller
+  $document
 ) {
   var moderator = this;
 
@@ -13767,7 +13745,7 @@ function ModerationListController(
       .subscribe();
 
     page$.subscribe(function () {
-      scroller.scrollTo('moderation-search-results');
+      $document.scrollTop(0);
     });
 
     return $q.resolve();
@@ -13834,7 +13812,7 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "scroller"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
 
 // Source: src/management/moderation/moderation.service.js
 /**
@@ -14850,7 +14828,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, scroller) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -14946,10 +14924,10 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
 
   page$
     .subscribe(function () {
-      scroller.scrollTo('paged-roles-list');
+      $document.scrollTop(0);
     });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "scroller"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
 
 // Source: src/management/roles/search-label.component.js
 angular
@@ -15494,7 +15472,7 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state, $document) {
   var ulc = this;
 
   var itemsPerPage = 20;
@@ -15585,8 +15563,12 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       ulc.loading = true;
     })
     .subscribe();
+
+  page$.subscribe(function () {
+    $document.scrollTop(0);
+  });
 }
-UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state"];
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 
 // Source: src/media/create-image-job.factory.js
 /**
@@ -19573,7 +19555,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table\" id=\"dashboard-items\">\n" +
+    "          <table class=\"table\">\n" +
     "            <tbody>\n" +
     "              <tr udb-dashboard-event-item\n" +
     "                  ng-if=\"event['@type'] === 'Event'\"\n" +
@@ -22500,7 +22482,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div id=\"moderation-search-results\" class=\"row search-result-block\" ng-cloak>\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <p class=\"rv-item-counter\">\n" +
     "            <ng-pluralize count=\"moderator.searchResult.totalItems\"\n" +
@@ -22864,7 +22846,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <th>Opties</th>\n" +
     "                    </tr>\n" +
     "                    </thead>\n" +
-    "                    <tbody id=\"paged-roles-list\">\n" +
+    "                    <tbody>\n" +
     "                    <tr ng-repeat=\"role in rlc.searchResult.member\">\n" +
     "                        <td ng-bind=\"::role.name\"></td>\n" +
     "                        <td>\n" +

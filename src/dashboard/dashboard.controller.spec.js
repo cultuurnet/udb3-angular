@@ -44,7 +44,7 @@ describe('Controller: Dashboard', function () {
     udbApi.getMe.and.returnValue($q.resolve(activeUser));
 
     return $controller('DashboardController', {
-      'scroller': jasmine.createSpyObj('scroller', ['scrollTo']),
+      '$document': jasmine.createSpyObj('$document', ['scrollTop']),
       'udbApi': udbApi
     });
   }

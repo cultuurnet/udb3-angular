@@ -11,7 +11,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, scroller) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -107,6 +107,6 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
 
   page$
     .subscribe(function () {
-      scroller.scrollTo('paged-roles-list');
+      $document.scrollTop(0);
     });
 }
