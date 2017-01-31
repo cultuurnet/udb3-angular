@@ -18769,7 +18769,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <p ng-if=\"!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" href=\"{{$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
+    "    <p ng-if=\"!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" ng-href=\"{{$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
     "    <div ng-if=\"$ctrl.permission\">\n" +
     "        <div ng-if=\"!$ctrl.isIncomplete\" class=\"row\">\n" +
     "            <p><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>\n" +
@@ -18811,13 +18811,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "                <div class=\"panel-footer\"> <a href=\"{{$ctrl.editLink}}\" target=\"_blank\">Wijzig op cultuurkuur.be</a>\n" +
+    "                <div class=\"panel-footer\"> <a ng-href=\"{{$ctrl.editLink}}\" target=\"_blank\">Wijzig op cultuurkuur.be</a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"alert alert-info\" ng-if=\"$ctrl.isIncomplete\">\n" +
     "            <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>\n" +
-    "            <a href=\"{{$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
+    "            <a ng-href=\"{{$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"

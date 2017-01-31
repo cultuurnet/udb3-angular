@@ -1,5 +1,5 @@
 <div class="cultuurkuur-component">
-    <p ng-if="!$ctrl.permission">Dit evenement bevat <a target="_blank" href="{{$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
+    <p ng-if="!$ctrl.permission">Dit evenement bevat <a target="_blank" ng-href="{{$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
     <div ng-if="$ctrl.permission">
         <div ng-if="!$ctrl.isIncomplete" class="row">
             <p><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>
@@ -41,13 +41,13 @@
 
                     </div>
                 </div>
-                <div class="panel-footer"> <a href="{{$ctrl.editLink}}" target="_blank">Wijzig op cultuurkuur.be</a>
+                <div class="panel-footer"> <a ng-href="{{$ctrl.editLink}}" target="_blank">Wijzig op cultuurkuur.be</a>
                 </div>
             </div>
         </div>
         <div class="alert alert-info" ng-if="$ctrl.isIncomplete">
             <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>
-            <a href="{{$ctrl.editLink}}" target="_blank" class="btn btn-default btn-info">Doorgaan</a>
+            <a ng-href="{{$ctrl.editLink}}" target="_blank" class="btn btn-default btn-info">Doorgaan</a>
         </div>
     </div>
 </div>
