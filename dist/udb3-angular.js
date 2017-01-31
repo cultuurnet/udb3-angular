@@ -2753,6 +2753,28 @@ function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage)
 }
 UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
 
+// Source: src/core/scroller.service.js
+/**
+ * @ngdoc service
+ * @name udb.core.scroller
+ * @description
+ * # Scroller
+ */
+angular
+  .module('udb.core')
+  .service('scroller', Scroller);
+
+/* @ngInject */
+function Scroller($document) {
+  var scroller = this;
+
+  scroller.scrollTo = function (targetId) {
+    var targetElement = angular.element($document[0].getElementById(targetId));
+    $document.scrollTo(targetElement, 100, 1000);
+  };
+}
+Scroller.$inject = ["$document"];
+
 // Source: src/core/udb-api.service.js
 /**
  * @typedef {Object} UiTIDUser
@@ -5216,7 +5238,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController(scroller, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -5246,7 +5268,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
-      scrollToTopOfDashboardItems();
+      scroller.scrollTo('dashboard-items');
     }
 
     function updateItemViewer() {
@@ -5324,13 +5346,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         openPlaceDeleteConfirmModal(item);
       }
     }
-
-    function scrollToTopOfDashboardItems() {
-      var targetElement = angular.element($document[0].getElementById('dashboard-items'));
-      $document.scrollTo(targetElement, 100, 1000);
-    }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["scroller", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
 })();
 
@@ -13702,7 +13719,7 @@ function ModerationListController(
   rx,
   $scope,
   $q,
-  $document
+  scroller
 ) {
   var moderator = this;
 
@@ -13749,7 +13766,9 @@ function ModerationListController(
       })
       .subscribe();
 
-    page$.subscribe(scrollToTopOfSearchResults);
+    page$.subscribe(function () {
+      scroller.scrollTo('moderation-search-results');
+    });
 
     return $q.resolve();
   }
@@ -13814,13 +13833,8 @@ function ModerationListController(
       }
     );
   }
-
-  function scrollToTopOfSearchResults() {
-    var targetElement = angular.element($document[0].getElementById('moderation-search-results'));
-    $document.scrollTo(targetElement, 100, 1000);
-  }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "scroller"];
 
 // Source: src/management/moderation/moderation.service.js
 /**
@@ -14836,7 +14850,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, scroller) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -14931,14 +14945,11 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
     .subscribe();
 
   page$
-    .subscribe(scrollToTopOfRoles);
-
-  function scrollToTopOfRoles() {
-    var targetElement = angular.element($document[0].getElementById('paged-roles-list'));
-    $document.scrollTo(targetElement, 100, 1000);
-  }
+    .subscribe(function () {
+      scroller.scrollTo('paged-roles-list');
+    });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "scroller"];
 
 // Source: src/management/roles/search-label.component.js
 angular

@@ -26,7 +26,7 @@ function ModerationListController(
   rx,
   $scope,
   $q,
-  $document
+  scroller
 ) {
   var moderator = this;
 
@@ -73,7 +73,9 @@ function ModerationListController(
       })
       .subscribe();
 
-    page$.subscribe(scrollToTopOfSearchResults);
+    page$.subscribe(function () {
+      scroller.scrollTo('moderation-search-results');
+    });
 
     return $q.resolve();
   }
@@ -137,10 +139,5 @@ function ModerationListController(
         }
       }
     );
-  }
-
-  function scrollToTopOfSearchResults() {
-    var targetElement = angular.element($document[0].getElementById('moderation-search-results'));
-    $document.scrollTo(targetElement, 100, 1000);
   }
 }

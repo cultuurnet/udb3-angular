@@ -13,7 +13,7 @@
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController(scroller, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -43,7 +43,7 @@
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
-      scrollToTopOfDashboardItems();
+      scroller.scrollTo('dashboard-items');
     }
 
     function updateItemViewer() {
@@ -120,11 +120,6 @@
       else {
         openPlaceDeleteConfirmModal(item);
       }
-    }
-
-    function scrollToTopOfDashboardItems() {
-      var targetElement = angular.element($document[0].getElementById('dashboard-items'));
-      $document.scrollTo(targetElement, 100, 1000);
     }
   }
 
