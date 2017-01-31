@@ -1,10 +1,51 @@
-<p ng-if="!$ctrl.permission">Dit evenement bevat <a target="_blank" href="{{$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
-<div ng-if="$ctrl.permission">
-    <div ng-if="!$ctrl.isIncomplete" class="row">
+<div class="cultuurkuur-component">
+    <p ng-if="!$ctrl.permission">Dit evenement bevat <a target="_blank" href="{{$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
+    <div ng-if="$ctrl.permission">
+        <div ng-if="!$ctrl.isIncomplete" class="row">
 
-    </div>
-    <div class="alert alert-info" ng-if="$ctrl.isIncomplete">
-    <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>
-    <a href="{{$ctrl.editLink}}" target="_blank" class="btn btn-default btn-info">Doorgaan</a>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div ng-if="$ctrl.cultuurKuurInfo.fields.length > 0" class="row">
+                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <strong>Onderwerp</strong>
+                        </div>
+                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <p ng-repeat="field in $ctrl.cultuurKuurInfo.fields">{{field}}</p>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+
+                        </div>
+
+                    </div>
+                    <div ng-if="$ctrl.cultuurKuurInfo.targetAudience.length > 0" class="row">
+                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <strong>Doelgroep</strong>
+                        </div>
+                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <p ng-repeat="target in $ctrl.cultuurKuurInfo.targetAudience">{{target}}</p>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                        </div>
+                    </div>
+                    <div ng-if="$ctrl.cultuurKuurInfo.levels.length > 0" class="row">
+                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <strong>Geschikt voor</strong>
+                        </div>
+                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                            <p ng-repeat="level in $ctrl.cultuurKuurInfo.levels">{{level}}</p>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"> <a href="{{$ctrl.editLink}}" target="_blank">Wijzig op cultuurkuur.be</a>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-info" ng-if="$ctrl.isIncomplete">
+            <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>
+            <a href="{{$ctrl.editLink}}" target="_blank" class="btn btn-default btn-info">Doorgaan</a>
+        </div>
     </div>
 </div>
