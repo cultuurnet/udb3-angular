@@ -197,7 +197,7 @@ function OfferController(
    */
   controller.labelRemoved = function (label) {
     offerLabeller.unlabel(cachedOffer, label.name);
-    $scope.labelResponse = '';
+    controller.labelResponse = '';
   };
 
   /**
