@@ -4,8 +4,8 @@ angular
   .module('udb.cultuurkuur')
   .component('udbEventCultuurkuurComponent', {
     bindings: {
-      event: '=',
-      permission: '='
+      event: '<',
+      permission: '<'
     },
     templateUrl: 'templates/event-cultuurkuur.html',
     controller: EventCultuurKuurComponentController
