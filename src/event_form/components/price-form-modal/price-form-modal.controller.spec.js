@@ -111,6 +111,10 @@ describe('Controller: Price Form Modal', function() {
   it('should change a paying price item to a free price item', function () {
     price = getPrice();
     var controller = getController();
+    controller.priceForm = {
+      $dirty: false,
+      $setDirty: function() {}
+    };
     var expectedPrice = [
       {
         category: 'base',
@@ -139,6 +143,10 @@ describe('Controller: Price Form Modal', function() {
   it('should delete a price item', function () {
     price = getPrice();
     var controller = getController();
+    controller.priceForm = {
+      $dirty: false,
+      $setDirty: function() {}
+    };
     var expectedPrice = [
       {
         category: 'base',
