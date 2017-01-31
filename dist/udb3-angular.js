@@ -5029,19 +5029,30 @@ function UitidAuth($window, $location, appConfig, $cookies) {
 UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
 
 // Source: src/cultuurkuur/event-cultuurkuur.component.js
-angular.module('udb.cultuurkuur').component('udbEventCultuurkuurComponent', {
-  bindings: {
-    event: '=',
-    permission: '='
-  },
-  templateUrl: 'templates/event-cultuurkuur.html',
-  controller: EventCultuurKuurComponentController
-});
+angular
+  .module('udb.cultuurkuur')
+  .component('udbEventCultuurkuurComponent', {
+    bindings: {
+      event: '=',
+      permission: '='
+    },
+    templateUrl: 'templates/event-cultuurkuur.html',
+    controller: EventCultuurKuurComponentController
+  });
 
-function EventCultuurKuurComponentController() {
-  var cm = this;
-  cm.previewLink = 'http://dev.cultuurkuur.be/agenda/e//' + cm.event.id;
-  cm.editLink = 'http://dev.cultuurkuur.be/event/' + cm.event.id + '/edit';
+/**
+ * @ngInject
+ */
+function EventCultuurKuurComponentController(appConfig) {
+  var cm = this,
+      cultuurkuurUrl = _.get(appConfig, 'cultuurkuurUrl');
+
+  if (!cultuurkuurUrl) {
+    throw 'cultuurkuur url is not configured';
+  }
+
+  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
+  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
   cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
 
   cm.cultuurKuurInfo = {
@@ -5050,6 +5061,7 @@ function EventCultuurKuurComponentController() {
     targetAudience : _.pluck(cm.event.educationTargetAudience, 'label')
   };
 }
+EventCultuurKuurComponentController.$inject = ["appConfig"];
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
 /**
@@ -11945,12 +11957,12 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'description', include: false, sortable: false, excludable: true},
     {name: 'labels', include: false, sortable: false, excludable: true},
     {name: 'calendarSummary', include: true, sortable: false, excludable: false},
-    {name: 'image', include: true, sortable: false, excludable: true},
+    {name: 'image', include: false, sortable: false, excludable: true},
     {name: 'location', include: true, sortable: false, excludable: false},
     {name: 'address', include: true, sortable: false, excludable: true},
     {name: 'organizer', include: false, sortable: false, excludable: true},
     {name: 'priceInfo', include: false, sortable: false, excludable: true},
-    {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
+    {name: 'kansentarief', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
     {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
@@ -18703,7 +18715,8 @@ angular
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
     'UITPAS_KEMPEN': 'UiTPAS Kempen',
     'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven'
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_SYX': 'UiTPAS Syx'
   });
 
 // Source: .tmp/udb3-angular.templates.js
