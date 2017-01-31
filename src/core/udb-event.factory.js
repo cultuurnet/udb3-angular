@@ -185,10 +185,16 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
       this.educationFields = [];
       this.educationLevels = [];
+      this.educationTargetAudience = [];
 
       if(jsonEvent.terms){
             this.educationFields = _.filter(jsonEvent.terms,'domain','educationfield');
             this.educationLevels = _.filter(jsonEvent.terms,'domain','educationlevel');
+            this.educationTargetAudience = _.filter(jsonEvent.terms,function(term){
+                var leerlingenId = '2.1.14.0.0';
+                var leerkrachtenId = '2.1.13.0.0';
+                return (term.domain==='targetaudience' && ( term.id === leerlingenId || term.id === leerkrachtenId ));
+            });
         }
     },
 
