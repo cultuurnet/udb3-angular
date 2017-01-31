@@ -13696,7 +13696,8 @@ function ModerationListController(
   SearchResultGenerator,
   rx,
   $scope,
-  $q
+  $q,
+  $document
 ) {
   var moderator = this;
 
@@ -13742,6 +13743,8 @@ function ModerationListController(
         moderator.loading = true;
       })
       .subscribe();
+
+    page$.subscribe(scrollToTopOfSearchResults);
 
     return $q.resolve();
   }
@@ -13806,8 +13809,13 @@ function ModerationListController(
       }
     );
   }
+
+  function scrollToTopOfSearchResults() {
+    var targetElement = angular.element($document[0].getElementById('moderation-search-results'));
+    $document.scrollTo(targetElement, 100, 1000);
+  }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
 
 // Source: src/management/moderation/moderation.service.js
 /**
@@ -22476,7 +22484,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"row search-result-block\" ng-cloak>\n" +
+    "<div id=\"moderation-search-results\" class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <p class=\"rv-item-counter\">\n" +
     "            <ng-pluralize count=\"moderator.searchResult.totalItems\"\n" +
