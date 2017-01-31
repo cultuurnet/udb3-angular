@@ -11932,12 +11932,12 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     {name: 'description', include: false, sortable: false, excludable: true},
     {name: 'labels', include: false, sortable: false, excludable: true},
     {name: 'calendarSummary', include: true, sortable: false, excludable: false},
-    {name: 'image', include: true, sortable: false, excludable: true},
+    {name: 'image', include: false, sortable: false, excludable: true},
     {name: 'location', include: true, sortable: false, excludable: false},
     {name: 'address', include: true, sortable: false, excludable: true},
     {name: 'organizer', include: false, sortable: false, excludable: true},
     {name: 'priceInfo', include: false, sortable: false, excludable: true},
-    {name: 'kansentarief', include: true, sortable: false, excludable: true, format: ExportFormats.OOXML},
+    {name: 'kansentarief', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML},
     {name: 'contactPoint', include: false, sortable: false, excludable: true},
     {name: 'bookingInfo', include: false, sortable: false, excludable: true},
     {name: 'creator', include: false, sortable: false, excludable: true},
@@ -18690,7 +18690,8 @@ angular
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
     'UITPAS_KEMPEN': 'UiTPAS Kempen',
     'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven'
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_SYX': 'UiTPAS Syx'
   });
 
 // Source: .tmp/udb3-angular.templates.js
