@@ -14823,7 +14823,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -14916,8 +14916,16 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
+
+  page$
+    .subscribe(scrollToTopOfRoles);
+
+  function scrollToTopOfRoles() {
+    var targetElement = angular.element($document[0].getElementById('paged-roles-list'));
+    $document.scrollTo(targetElement, 100, 1000);
+  }
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
 
 // Source: src/management/roles/search-label.component.js
 angular
@@ -22832,7 +22840,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <th>Opties</th>\n" +
     "                    </tr>\n" +
     "                    </thead>\n" +
-    "                    <tbody>\n" +
+    "                    <tbody id=\"paged-roles-list\">\n" +
     "                    <tr ng-repeat=\"role in rlc.searchResult.member\">\n" +
     "                        <td ng-bind=\"::role.name\"></td>\n" +
     "                        <td>\n" +
