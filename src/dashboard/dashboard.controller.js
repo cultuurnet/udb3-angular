@@ -13,7 +13,7 @@
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -43,6 +43,7 @@
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
+      scrollToTopOfDashboardItems();
     }
 
     function updateItemViewer() {
@@ -121,6 +122,10 @@
       }
     }
 
+    function scrollToTopOfDashboardItems() {
+      var targetElement = angular.element($document[0].getElementById('dashboard-items'));
+      $document.scrollTo(targetElement, 100, 1000);
+    }
   }
 
 })();

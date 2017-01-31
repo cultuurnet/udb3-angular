@@ -5216,7 +5216,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -5246,6 +5246,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
+      scrollToTopOfDashboardItems();
     }
 
     function updateItemViewer() {
@@ -5324,8 +5325,12 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
 
+    function scrollToTopOfDashboardItems() {
+      var targetElement = angular.element($document[0].getElementById('dashboard-items'));
+      $document.scrollTo(targetElement, 100, 1000);
+    }
   }
-  DashboardController.$inject = ["$scope", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
 })();
 
@@ -19557,7 +19562,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "\n" +
     "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table\">\n" +
+    "          <table class=\"table\" id=\"dashboard-items\">\n" +
     "            <tbody>\n" +
     "              <tr udb-dashboard-event-item\n" +
     "                  ng-if=\"event['@type'] === 'Event'\"\n" +
