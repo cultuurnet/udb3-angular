@@ -1,7 +1,6 @@
 'use strict';
 
 describe('Event Cultuurkuur Component', function () {
-
   var $componentController;
   var UdbEvent;
   var exampleEventJson = {
@@ -144,8 +143,13 @@ describe('Event Cultuurkuur Component', function () {
         "workflowStatus": "DRAFT"
       };
 
+  beforeEach(module('udb.cultuurkuur', function ($provide) {
+    var appConfig = {
+      cultuurkuurUrl: 'http://dev.cultuurkuur.be/'
+    };
 
-  beforeEach(module('udb.cultuurkuur'));
+    $provide.constant('appConfig', appConfig);
+  }));
 
   beforeEach(inject(function ($injector) {
     $componentController = $injector.get('$componentController');
@@ -153,13 +157,13 @@ describe('Event Cultuurkuur Component', function () {
 
   }));
 
-
   function getComponentController(event,permission) {
-      var bindings = {
-        event : event,
-       permission: permission
-      };
-   return $componentController('udbEventCultuurkuurComponent',{}, bindings);
+    var bindings = {
+      event : event,
+     permission: permission
+    };
+
+    return $componentController('udbEventCultuurkuurComponent', {}, bindings);
   }
 
   it('should have a previewLink and editLink', function () {
@@ -181,56 +185,54 @@ describe('Event Cultuurkuur Component', function () {
       expect(controller.isIncomplete).toEqual(true);
   });
 
-    it('should show CultuurKuur as complete if it has an educationfield', function () {
-      var event = new UdbEvent(exampleEventJson);
-      event.educationFields.push({
-          label: "Cultuur en Kunst",
-          domain: "educationfield",
-          id: "yodawashere"
-      });
-      var permission = true;
-      var controller = getComponentController(event,permission);
+  it('should show CultuurKuur as complete if it has an educationfield', function () {
+    var event = new UdbEvent(exampleEventJson);
+    event.educationFields.push({
+        label: "Cultuur en Kunst",
+        domain: "educationfield",
+        id: "yodawashere"
+    });
+    var permission = true;
+    var controller = getComponentController(event,permission);
 
-      expect(controller.isIncomplete).toEqual(false);
+    expect(controller.isIncomplete).toEqual(false);
   });
 
-    it('should show CultuurKuur as complete if it has an educationlevel', function () {
-      var event = new UdbEvent(exampleEventJson);
-      event.educationLevels.push({
-          label: "Cultuur en Kunst",
-          domain: "educationlevel",
-          id: "tothestarsandbeyond"
-      });
-      var permission = true;
-      var controller = getComponentController(event,permission);
+  it('should show CultuurKuur as complete if it has an educationlevel', function () {
+    var event = new UdbEvent(exampleEventJson);
+    event.educationLevels.push({
+        label: "Cultuur en Kunst",
+        domain: "educationlevel",
+        id: "tothestarsandbeyond"
+    });
+    var permission = true;
+    var controller = getComponentController(event,permission);
 
-      expect(controller.isIncomplete).toEqual(false);
+    expect(controller.isIncomplete).toEqual(false);
   });
 
-    it('should have a cultuurKuurInfo object containing educationlevels/fields/targetaudiences', function (){
-        var event = new UdbEvent(exampleEventJson);
-        event.educationLevels.push({
-            label: "CVO/CDO/Basiseducatie",
-          domain: "educationlevel",
-          id: "lukeimyourfather"
-        });
-        event.educationFields.push({
-            label:"Kunst en cultuur",
-            domain: "educationfield",
-            id:"bricksandstuds"
-        });
-        event.educationTargetAudience.push({
-            label: "Leerlingen",
-            domain:"targetaudience",
-            id: "2.1.14.0.0"
-        });
-        var permission = true;
-        var controller = getComponentController(event,permission);
+  it('should have a cultuurKuurInfo object containing educationlevels/fields/targetaudiences', function (){
+    var event = new UdbEvent(exampleEventJson);
+    event.educationLevels.push({
+        label: "CVO/CDO/Basiseducatie",
+      domain: "educationlevel",
+      id: "lukeimyourfather"
+    });
+    event.educationFields.push({
+        label:"Kunst en cultuur",
+        domain: "educationfield",
+        id:"bricksandstuds"
+    });
+    event.educationTargetAudience.push({
+        label: "Leerlingen",
+        domain:"targetaudience",
+        id: "2.1.14.0.0"
+    });
+    var permission = true;
+    var controller = getComponentController(event,permission);
 
-        expect(controller.cultuurKuurInfo.levels).toContain("CVO/CDO/Basiseducatie");
-        expect(controller.cultuurKuurInfo.fields).toContain("Kunst en cultuur");
-        expect(controller.cultuurKuurInfo.targetAudience).toContain("Leerlingen");
-    })
-
-
+    expect(controller.cultuurKuurInfo.levels).toContain("CVO/CDO/Basiseducatie");
+    expect(controller.cultuurKuurInfo.fields).toContain("Kunst en cultuur");
+    expect(controller.cultuurKuurInfo.targetAudience).toContain("Leerlingen");
+  })
 });
