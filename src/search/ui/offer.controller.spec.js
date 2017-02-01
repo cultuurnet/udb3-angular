@@ -5,6 +5,7 @@ describe('Controller: Offer', function() {
       offerController,
       udbApi,
       UdbEvent,
+      UdbPlace,
       jsonLDLangFilter,
       EventTranslationState,
       offerTranslator,
@@ -142,6 +143,7 @@ describe('Controller: Offer', function() {
     $scope = $rootScope.$new();
     udbApi = $injector.get('udbApi');
     UdbEvent = $injector.get('UdbEvent');
+    UdbPlace = $injector.get('UdbPlace');
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     EventTranslationState = $injector.get('EventTranslationState');
     offerTranslator = $injector.get('offerTranslator');
@@ -206,14 +208,24 @@ describe('Controller: Offer', function() {
     expect(offerLabeller.label).not.toHaveBeenCalled();
   });
 
-  it('should return true when an event is expired', function () {
-    var endDate = '2015-06-20T19:00:00+02:00';
-    expect($scope.offerIsExpired(endDate)).toBeTruthy();
+  it('should show when an event is expired', function () {
+    var baseTime = new Date(2020, 9, 23);
+    jasmine.clock().mockDate(baseTime);
+
+    var expiredEventJson = angular.copy(exampleEventJson);
+    expiredEventJson.endDate = '2017-06-20T19:00:00+02:00';
+
+    deferredEvent.resolve(new UdbEvent(expiredEventJson));
+    $scope.$digest();
+    expect(offerController.offerExpired).toBeTruthy();
   });
 
-  it('should return false when an event is not expired', function () {
-    var endDate = '2017-06-20T19:00:00+02:00';
-    expect($scope.offerIsExpired(endDate)).toBeFalsy();
+  it('should never show a place as expired', function () {
+    var placeJson = angular.copy(exampleEventJson.location);
+
+    deferredEvent.resolve(new UdbPlace(placeJson));
+    $scope.$digest();
+    expect(offerController.offerExpired).toBeFalsy();
   });
 
   describe('variations: ', function () {

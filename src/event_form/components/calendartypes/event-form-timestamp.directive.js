@@ -15,5 +15,8 @@ function EventFormTimestampDirective() {
   return {
     templateUrl: 'templates/event-form-timestamp.html',
     restrict: 'EA',
+    scope: {
+      formData: '='
+    }
   };
 }

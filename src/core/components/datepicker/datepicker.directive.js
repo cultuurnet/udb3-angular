@@ -12,7 +12,8 @@
   .module('udb.core')
   .directive('udbDatepicker', udbDatepickerDirective);
 
-  function udbDatepickerDirective() {
+  /* @ngInject */
+  function udbDatepickerDirective(appConfig) {
 
     return {
       restrict: 'EA',
@@ -37,10 +38,11 @@
 
         var lastSelectedYear;
         var lastSelectedMonth;
+        var selectedDate = ngModel.$viewValue;
 
-        if (scope.lastSelectedDate) {
-          lastSelectedYear = scope.lastSelectedDate.getFullYear();
-          lastSelectedMonth = scope.lastSelectedDate.getMonth();
+        if (selectedDate) {
+          lastSelectedYear = selectedDate.getFullYear();
+          lastSelectedMonth = selectedDate.getMonth();
         } else {
           var today = new Date();
           lastSelectedYear = today.getFullYear();
@@ -52,17 +54,19 @@
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
-            if (!attrs.highlightDate) {
+            var highlightDate = _.get(appConfig, 'calendarHighlight.highlightDate');
+            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.highlightExtraClass');
+
+            if (!highlightDate) {
               return;
             }
 
             // init Date with ISO string
-            var highlightDate = new Date(attrs.highlightDate);
             if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
               var highlightClasses = 'highlight';
 
-              if (attrs.highlightExtraClass) {
-                highlightClasses += ' ' + attrs.highlightExtraClass;
+              if (highlightExtraClass) {
+                highlightClasses += ' ' + highlightExtraClass;
               }
 
               return {classes: highlightClasses};

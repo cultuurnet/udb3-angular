@@ -137,6 +137,16 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       addTimestamp(item.startDate, item.endDate);
     }
 
+    if (EventFormData.calendarType) {
+      EventFormData.initCalendar();
+    }
+
+    if (!!EventFormData.openingHours.length) {
+      _.each(EventFormData.openingHours, function (openingHour, index) {
+        EventFormData.saveOpeningHourDaySelection(index, openingHour.dayOfWeek);
+      });
+    }
+
     $scope.loaded = true;
     EventFormData.showStep(1);
     EventFormData.showStep(2);
