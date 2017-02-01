@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc module
- * @name udb.migration
+ * @name udb.duplication
  * @description
- * # Migration Module
+ * # Duplication Module
  */
 angular
-  .module('udb.migration', [
+  .module('udb.duplication', [
     'udb.core',
     'udb.event-form',
-    'ui.router'
+    'udb.migration'
   ]);

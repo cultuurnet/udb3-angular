@@ -27,7 +27,7 @@ describe('Event Migration Footer Component', function () {
 
     var footer = getComponentController(formData);
 
-    expect(footer.readyToEdit()).toEqual(false);
+    expect(footer.migrationReady()).toEqual(false);
   });
 
   it('should mark the event as ready to edit when the migration is completed', function () {
@@ -39,6 +39,6 @@ describe('Event Migration Footer Component', function () {
 
     var footer = getComponentController(formData);
 
-    expect(footer.readyToEdit()).toEqual(true);
+    expect(footer.migrationReady()).toEqual(true);
   });
 });

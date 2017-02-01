@@ -28,5 +28,6 @@ angular
     'UITPAS_MECHELEN': 'UiTPAS Mechelen',
     'UITPAS_KEMPEN': 'UiTPAS Kempen',
     'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven'
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_SYX': 'UiTPAS Syx'
   });

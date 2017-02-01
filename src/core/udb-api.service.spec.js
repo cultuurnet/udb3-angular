@@ -8,7 +8,8 @@ describe('Service: UDB3 Api', function () {
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
       baseUrl: baseUrl,
-      baseApiUrl: baseUrl
+      baseApiUrl: baseUrl,
+      baseSearchUrl: baseUrl
     };
 
     uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);

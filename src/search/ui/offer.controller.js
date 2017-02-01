@@ -27,8 +27,6 @@ function OfferController(
   var cachedOffer;
   var defaultLanguage = 'nl';
 
-  $scope.offerIsExpired = offerIsExpired;
-
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
   controller.languageSelector = [
@@ -49,6 +47,7 @@ function OfferController(
 
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
+          controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.fetching = false;
 
           watchLabels();
@@ -105,13 +104,6 @@ function OfferController(
     controller.applyPropertyChanges('name');
     controller.applyPropertyChanges('description');
   };
-
-  function offerIsExpired(offerEndDate) {
-    var endDate = new Date(offerEndDate);
-    var now = new Date();
-
-    return endDate < now;
-  }
 
   /**
    * Sets the provided language as active or toggles it off when already active
@@ -185,7 +177,18 @@ function OfferController(
       });
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedOffer, newLabel.name);
+      offerLabeller.label(cachedOffer, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            controller.labelResponse = 'success';
+            controller.addedLabel = response.name;
+          }
+          else {
+            controller.labelResponse = 'error';
+            controller.labelsError = response;
+          }
+          $scope.event.labels = angular.copy(cachedOffer.labels);
+        });
     }
   };
 
@@ -194,6 +197,7 @@ function OfferController(
    */
   controller.labelRemoved = function (label) {
     offerLabeller.unlabel(cachedOffer, label.name);
+    controller.labelResponse = '';
   };
 
   /**

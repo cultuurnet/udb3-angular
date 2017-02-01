@@ -177,10 +177,8 @@ describe('Controller: Event Detail', function() {
     deferredEvent = $q.defer(); deferredVariation = $q.defer();
     deferredPermission = $q.defer();
 
-    spyOn(udbApi, 'hasPermission').and.returnValue($q.resolve());
-
+    spyOn(udbApi, 'hasPermission').and.returnValue(deferredPermission.promise);
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
-    deferredEvent.resolve(new UdbEvent(exampleEventJson));
 
     spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
 
@@ -206,6 +204,7 @@ describe('Controller: Event Detail', function() {
   }));
 
   it('should fetch the event information', function () {
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
     deferredVariation.reject('there is no personal variation for offer');
     $scope.$digest();
 
@@ -222,6 +221,7 @@ describe('Controller: Event Detail', function() {
   });
 
   it('should loads the event description from the variation', function () {
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
     var variation = new UdbEvent(exampleEventJson);
     variation.description['nl'] = 'haak is een zeekoe';
     deferredVariation.resolve(variation);
@@ -231,6 +231,7 @@ describe('Controller: Event Detail', function() {
   });
 
   it('should update the description', function () {
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
     deferredVariation.reject('there is no personal variation for offer');
 
     $scope.$digest();
@@ -247,6 +248,7 @@ describe('Controller: Event Detail', function() {
   it('should replace the description with the cached one when the variation is deleted', function () {
     var variation = new UdbEvent(exampleEventJson);
     variation.description['nl'] = 'haak is een zeekoe';
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
     deferredVariation.resolve(variation);
     $scope.$digest();
 
@@ -325,6 +327,11 @@ describe('Controller: Event Detail', function() {
   it('should update the event when adding a label', function () {
     var label = {name:'some other label'};
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    offerLabeller.label.and.returnValue($q.resolve({
+      response: {
+        success: true
+      }
+    }));
     $scope.$digest();
 
     $scope.labelAdded(label);
@@ -357,9 +364,11 @@ describe('Controller: Event Detail', function() {
 
   it('should not show an event as editable when the user does not have the required permissions', function () {
     var event = new UdbEvent(exampleEventJson);
-    $scope.hasEditPermissions = true;
+    deferredEvent.resolve(event);
+    deferredPermission.reject();
 
-    expect($scope.isEventEditable(event)).toBeFalsy();
+    $scope.$digest();
+    expect($scope.permissions.editing).toEqual(false);
   });
 
   it('should show an event as editable when the user has the required permissions and the offer is not expired', function () {
@@ -369,9 +378,16 @@ describe('Controller: Event Detail', function() {
     var event = new UdbEvent(exampleEventJson);
     event.endDate = '2021-06-20T19:00:00+02:00';
 
-    $scope.hasEditPermissions = true;
+    deferredPermission.resolve();
+    deferredEvent.resolve(event);
 
-    expect($scope.isEventEditable(event)).toBeTruthy();
+    var expectedPermissions = {
+      editing: true,
+      duplication: true
+    };
+
+    $scope.$digest();
+    expect($scope.permissions).toEqual(expectedPermissions);
   });
 
   it('should not show an event as editable when the user has the required permissions but the offer is expired', function () {
@@ -380,19 +396,17 @@ describe('Controller: Event Detail', function() {
 
     var event = new UdbEvent(exampleEventJson);
     event.endDate = '2016-06-20T19:00:00+02:00';
-    $scope.hasEditPermissions = true;
 
-    expect($scope.isEventEditable(event)).toBeFalsy();
-  });
+    deferredPermission.resolve();
+    deferredEvent.resolve(event);
 
-  it('should not show an event as editable when the offer is permanent but the user lacks permissions', function () {
-    var permanentEventJson = angular.copy(exampleEventJson);
-    permanentEventJson.calendarType = 'permanent';
-    var event = new UdbEvent(permanentEventJson);
+    var expectedPermissions = {
+      editing: false,
+      duplication: true
+    };
 
-    $scope.hasEditPermissions = false;
-
-    expect($scope.isEventEditable(event)).toBeFalsy();
+    $scope.$digest();
+    expect($scope.permissions).toEqual(expectedPermissions);
   });
 
   it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {

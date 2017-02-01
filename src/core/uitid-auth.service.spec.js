@@ -12,7 +12,14 @@ describe('Service: uitidAuth', function () {
     $window = {location: {href: jasmine.createSpy()}};
     $provide.value('$window', $window);
 
-    $location = {absUrl: function(){}, search: jasmine.createSpy(), path: jasmine.createSpy()};
+    $location = {
+      absUrl: function(){},
+      search: jasmine.createSpy(),
+      path: jasmine.createSpy(),
+      protocol: function() {return 'http'},
+      port: function() {return 80},
+      host: function() {return 'auth.uitdatabank.be'}
+    };
     $provide.value('$location', $location);
 
     $cookies = jasmine.createSpyObj('$cookies', ['get', 'getObject', 'put', 'remove']);
@@ -32,11 +39,14 @@ describe('Service: uitidAuth', function () {
     expect($cookies.put).toHaveBeenCalledWith('token', token);
   });
 
-  it('should logout a user by removing the right cookies and reseting the location', function () {
+  it('should logout a user by removing the right cookies and redirecting to the logout page', function () {
+    var expectedLogoutUrl = 'http://google.be/logout?destination=http%3A%2F%2Fauth.uitdatabank.be';
+
     uitidAuth.logout();
+
     expect($cookies.remove).toHaveBeenCalledWith('token');
     expect($cookies.remove).toHaveBeenCalledWith('user');
-
+    expect($window.location.href).toBe(expectedLogoutUrl);
   });
 
   it('should login a user by redirecting to the right url', function () {

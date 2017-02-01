@@ -87,6 +87,17 @@ function UdbApi(
   };
   var offerCache = $cacheFactory('offerCache');
 
+  function withoutAuthorization(apiConfig) {
+    var config = _.cloneDeep(apiConfig);
+    config.withCredentials = false;
+    /**
+     * @todo: use _.unset when lodash is updated to v4: https://lodash.com/docs/4.17.4#unset
+     */
+    delete config.headers.Authorization;
+
+    return config;
+  }
+
   this.mainLanguage = 'nl';
 
   /**
@@ -241,10 +252,10 @@ function UdbApi(
     if (website) { params.website = website; }
     if (name) { params.name = name; }
 
-    var configWithQueryParams = _.set(_.cloneDeep(defaultApiConfig), 'params', params);
+    var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
 
     return $http
-      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
+      .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
   };
 
@@ -1206,6 +1217,17 @@ function UdbApi(
 
     return $http
       .patch(offerUrl, (reason ? updateData : {}), requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {URL} eventUrl
+   * @param {Object} newCalendarData
+   * @return {Promise.<Object|ApiProblem>} Object containing the duplicate info
+   */
+  this.duplicateEvent = function(eventUrl, newCalendarData) {
+    return $http
+      .post(eventUrl + '/copies/', newCalendarData, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
 

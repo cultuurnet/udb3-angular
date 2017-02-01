@@ -27,24 +27,39 @@ function EventDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
-
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
-    udbApi
-      .hasPermission(offerLocation)
-      .then(allowEditing);
+    var offer = udbApi.getOffer(offerLocation);
+    var permission = udbApi.hasPermission(offerLocation);
 
-    udbApi
-      .getOffer(offerLocation)
-      .then(showOffer, failedToLoad);
+    offer.then(showOffer, failedToLoad);
+
+    $q.all([permission, offer])
+      .then(grantPermissions, denyAllPermissions);
+
+    permission.catch(denyAllPermissions);
   });
 
+  /**
+   * Grant permissions based on permission-data.
+   * @param {Array} permissionsData
+   *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
+   *  The second value holds the offer itself.
+   */
+  function grantPermissions(permissionsData) {
+    var event = permissionsData[1];
+    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+  }
+
+  function denyAllPermissions() {
+    $scope.permissions = {editing: false, duplication: false};
+  }
+
   $scope.eventIdIsInvalid = false;
-  $scope.hasEditPermissions = false;
-  $scope.isEventEditable = isEventEditable;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
+  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
@@ -64,10 +79,6 @@ function EventDetail(
     openEventDeleteConfirmModal($scope.event);
   };
   $scope.isEmpty = _.isEmpty;
-
-  function allowEditing() {
-    $scope.hasEditPermissions = true;
-  }
 
   var language = 'nl';
   var cachedEvent;
@@ -96,11 +107,8 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
-  }
-
-  function isEventEditable(event) {
-    var notExpired = (event.calendarType === 'permanent' || (new Date(event.endDate) >= new Date()));
-    return ($scope.hasEditPermissions && notExpired);
+    hasContactPoint();
+    hasBookingInfo();
   }
 
   function failedToLoad(reason) {
@@ -213,11 +221,21 @@ function EventDetail(
 
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
-    } else {
-      offerLabeller.label(cachedEvent, newLabel.name);
     }
-
-    $scope.event.labels = angular.copy(cachedEvent.labels);
+    else {
+      offerLabeller.label(cachedEvent, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
+          }
+          else {
+            $scope.labelResponse = 'error';
+            $scope.labelsError = response;
+          }
+          $scope.event.labels = angular.copy(cachedEvent.labels);
+        });
+    }
   }
 
   /**
@@ -226,6 +244,23 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = '';
+  }
+
+  function hasContactPoint() {
+    var nonEmptyContactTypes = _.filter(
+      $scope.event.contactPoint,
+      function(value) {
+        return value.length > 0;
+      }
+    );
+
+    $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
+  }
+
+  function hasBookingInfo() {
+    var bookingInfo = $scope.event.bookingInfo;
+    $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
   function translateWorkflowStatus(code) {
