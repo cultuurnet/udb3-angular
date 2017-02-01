@@ -187,6 +187,30 @@ describe('Factory: Event form data', function () {
     })();
   });
 
+  it('should notify that the event timing has changed when the start or end hour changed', function (done) {
+    inject(function (EventFormData) {
+      EventFormData.initCalendar();
+
+      var timestamp = {
+        date: new Date(),
+        startHour: '',
+        startHourAsDate: new Date('2017', '01', '27', '14', '00'),
+        endHourAsDate: new Date('2017', '01', '27', '18', '00'),
+        endHour: '',
+        showEndHour: true,
+        showStartHour: true
+      };
+
+      EventFormData
+        .timingChanged$
+        .subscribe(done);
+
+      EventFormData.hoursChanged(timestamp);
+      expect(timestamp.startHour).toEqual('14:00');
+      expect(timestamp.endHour).toEqual('18:00');
+    })();
+  });
+
   it('should reset both activeCalendarType and calendarType when resetting the calendar', inject(function (EventFormData) {
     EventFormData.calendarType = 'periodic';
     EventFormData.activeCalendarType = 'periodic';
