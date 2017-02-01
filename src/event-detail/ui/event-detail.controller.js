@@ -59,6 +59,7 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
+  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
@@ -106,6 +107,8 @@ function EventDetail(
       .finally(function () {
         $scope.eventIsEditable = true;
       });
+    hasContactPoint();
+    hasBookingInfo();
   }
 
   function failedToLoad(reason) {
@@ -218,11 +221,21 @@ function EventDetail(
 
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
-    } else {
-      offerLabeller.label(cachedEvent, newLabel.name);
     }
-
-    $scope.event.labels = angular.copy(cachedEvent.labels);
+    else {
+      offerLabeller.label(cachedEvent, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
+          }
+          else {
+            $scope.labelResponse = 'error';
+            $scope.labelsError = response;
+          }
+          $scope.event.labels = angular.copy(cachedEvent.labels);
+        });
+    }
   }
 
   /**
@@ -231,6 +244,23 @@ function EventDetail(
   function labelRemoved(label) {
     offerLabeller.unlabel(cachedEvent, label.name);
     $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = '';
+  }
+
+  function hasContactPoint() {
+    var nonEmptyContactTypes = _.filter(
+      $scope.event.contactPoint,
+      function(value) {
+        return value.length > 0;
+      }
+    );
+
+    $scope.hasContactPointResults = (nonEmptyContactTypes.length > 0);
+  }
+
+  function hasBookingInfo() {
+    var bookingInfo = $scope.event.bookingInfo;
+    $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
   function translateWorkflowStatus(code) {
