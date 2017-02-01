@@ -226,7 +226,6 @@ function EventDetail(
       offerLabeller.label(cachedEvent, newLabel.name)
         .then(function(response) {
           if (response.success) {
-            $scope.event.labels = angular.copy(cachedEvent.labels);
             $scope.labelResponse = 'success';
             $scope.addedLabel = response.name;
           }
@@ -234,10 +233,9 @@ function EventDetail(
             $scope.labelResponse = 'error';
             $scope.labelsError = response;
           }
+          $scope.event.labels = angular.copy(cachedEvent.labels);
         });
     }
-
-    $scope.event.labels = angular.copy(cachedEvent.labels);
   }
 
   /**

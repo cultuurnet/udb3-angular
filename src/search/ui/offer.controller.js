@@ -180,7 +180,6 @@ function OfferController(
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function(response) {
           if (response.success) {
-            $scope.event.labels = angular.copy(cachedOffer.labels);
             controller.labelResponse = 'success';
             controller.addedLabel = response.name;
           }
@@ -188,6 +187,7 @@ function OfferController(
             controller.labelResponse = 'error';
             controller.labelsError = response;
           }
+          $scope.event.labels = angular.copy(cachedOffer.labels);
         });
     }
   };
