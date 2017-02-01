@@ -127,7 +127,7 @@ describe('Service: Offer labeller', function () {
     var jobPromise = labeller.label(place, 'awesome');
 
     function assertJob(error) {
-      expect(error.message).toEqual('error title');
+      expect(error.message).toEqual(expectedResult.message);
       expect(error.name).toEqual(expectedResult.name);
 
       done();
