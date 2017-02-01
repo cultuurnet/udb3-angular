@@ -140,6 +140,7 @@ describe('Factory: Event form data', function () {
       EventFormData.initCalendar();
 
       var timestamp = {
+        date: new Date(),
         startHour: '',
         endHour: '',
         showEndHour: true,
@@ -159,6 +160,7 @@ describe('Factory: Event form data', function () {
       EventFormData.initCalendar();
 
       var timestamp = {
+        date: new Date(),
         startHour: '',
         endHour: '',
         showEndHour: false,
