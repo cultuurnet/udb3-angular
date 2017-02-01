@@ -6547,9 +6547,9 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
   this.label = function (offer, labelName) {
     var result = {
       success: false,
-      message: '',
-      name: ''
+      name: labelName
     };
+
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
       .then(jobCreatorFactory(OfferLabelJob, offer, labelName))
@@ -6557,12 +6557,10 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
         offer.label(labelName);
         result.success = true;
         result.message = response.id;
-        result.name = labelName;
         return result;
       })
       .catch(function(error) {
         result.message = error.data.title;
-        result.name = labelName;
         return result;
       });
   };
@@ -7551,7 +7549,6 @@ function EventDetail(
       offerLabeller.label(cachedEvent, newLabel.name)
         .then(function(response) {
           if (response.success) {
-            $scope.event.labels = angular.copy(cachedEvent.labels);
             $scope.labelResponse = 'success';
             $scope.addedLabel = response.name;
           }
@@ -7559,10 +7556,9 @@ function EventDetail(
             $scope.labelResponse = 'error';
             $scope.labelsError = response;
           }
+          $scope.event.labels = angular.copy(cachedEvent.labels);
         });
     }
-
-    $scope.event.labels = angular.copy(cachedEvent.labels);
   }
 
   /**
@@ -18016,7 +18012,6 @@ function OfferController(
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function(response) {
           if (response.success) {
-            $scope.event.labels = angular.copy(cachedOffer.labels);
             controller.labelResponse = 'success';
             controller.addedLabel = response.name;
           }
@@ -18024,6 +18019,7 @@ function OfferController(
             controller.labelResponse = 'error';
             controller.labelsError = response;
           }
+          $scope.event.labels = angular.copy(cachedOffer.labels);
         });
     }
   };
