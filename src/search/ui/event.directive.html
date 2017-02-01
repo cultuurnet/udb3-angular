@@ -157,7 +157,13 @@
           <span ng-hide="event.labels.length">Dit evenement is nog niet gelabeld.</span>
           <udb-label-select labels="event.labels"
                             label-added="eventCtrl.labelAdded(label)"
-                            label-removed="eventCtrl.labelRemoved(label)">
+                            label-removed="eventCtrl.labelRemoved(label)"></udb-label-select>
+          <div ng-if="eventCtrl.labelResponse === 'error'" class="alert alert-danger">
+            Het toevoegen van het label '{{eventCtrl.labelsError.name}}' is niet gelukt.
+          </div>
+          <div ng-if="eventCtrl.labelResponse === 'success'" class="alert alert-success">
+            Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.
+          </div>
         </div>
       </div>
     </div>
