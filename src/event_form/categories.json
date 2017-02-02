@@ -209,6 +209,10 @@
                     "label": "Fotografie"
                 },
                 {
+                    "id": "1.11.0.0.0",
+                    "label": "Geschiedenis"
+                },
+                {
                     "id": "1.0.4.0.0",
                     "label": "Grafiek"
                 },
@@ -225,19 +229,45 @@
                     "label": "Decoratieve kunst"
                 },
                 {
-                    "id": "1.2.2.0.0",
-                    "label": "Design"
+                    "id": "1.0.9.0.0",
+                    "label": "Meerdere kunstvormen"
                 },
                 {
-                    "id": "1.49.0.0.0",
-                    "label": "Mode"
+                    "id": "1.37.2.0.0",
+                    "label": "Samenleving"
                 }
             ]
         },
         {
             "label": "Beurs",
             "id": "0.6.0.0.0",
-            "primary": false
+            "primary": false,
+            "themes": [
+                {
+                    "id": "1.17.0.0.0",
+                    "label": "Antiek en brocante"
+                },
+                {
+                    "id": "1.62.0.0.0",
+                    "label": "Gezondheid en wellness"
+                },
+                {
+                    "id": "1.10.0.0.0",
+                    "label": "Literatuur"
+                },
+                {
+                    "id": "1.0.9.0.0",
+                    "label": "Meerdere kunstvormen"
+                },
+                {
+                    "id": "1.37.2.0.0",
+                    "label": "Samenleving"
+                },
+                {
+                    "id": "1.25.0.0.0",
+                    "label": "Wetenschap"
+                }
+            ]
         },
         {
             "label": "Dansvoorstelling",
