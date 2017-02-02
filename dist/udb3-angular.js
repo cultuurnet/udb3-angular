@@ -21767,7 +21767,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </a>\n" +
     "            </header>\n" +
     "\n" +
+    "            <p class=\"text-muted\"><udb-calendar-summary offer=\"moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary></p>\n" +
+    "\n" +
     "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
+    "\n" +
+    "            <a ng-href=\"{{ moc.offer.url  + '/preview' }}\">\n" +
+    "                Alle info bekijken\n" +
+    "            </a>\n" +
+    "            &nbsp;\n" +
+    "            <a ng-href=\"{{ moc.offer.url  + '/edit' }}\">\n" +
+    "                Bewerken\n" +
+    "            </a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
     "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\"/>\n" +
@@ -21787,7 +21797,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
     "        </div>\n" +
     "    </footer>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 

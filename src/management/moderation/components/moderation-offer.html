@@ -14,7 +14,17 @@
                 </a>
             </header>
 
+            <p class="text-muted"><udb-calendar-summary offer="moc.offer" show-opening-hours="true"></udb-calendar-summary></p>
+
             <div class="content" ng-bind-html="moc.offer.description"></div>
+
+            <a ng-href="{{ moc.offer.url  + '/preview' }}">
+                Alle info bekijken
+            </a>
+            &nbsp;
+            <a ng-href="{{ moc.offer.url  + '/edit' }}">
+                Bewerken
+            </a>
         </div>
         <div class="col-md-3" ng-class="{muted: !moc.offer.image}">
             <img ng-if="moc.offer.image" class="offer-image-thumbnail center-block" ng-src="{{moc.offer.image}}"/>
