@@ -7366,7 +7366,8 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7607,14 +7608,10 @@ function EventDetail(
   }
 
   function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
+    return $translate.instant('publicationStatus.' + code);
   }
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
 
 // Source: src/event_form/calendar-labels.constant.js
 /* jshint sub: true */
