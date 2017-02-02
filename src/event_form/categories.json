@@ -184,7 +184,57 @@
         {
             "label": "Lezing of congres",
             "id": "0.3.2.0.0",
-            "primary": ""
+            "primary": "false",
+            "themes": [
+                {
+                    "id": "1.21.0.0.0",
+                    "label": "Computer en techniek"
+                },
+                {
+                    "id": "1.42.0.0.0",
+                    "label": "Creativiteit"
+                },
+                {
+                    "id": "1.11.0.0.0",
+                    "label": "Geschiedenis"
+                },
+                {
+                    "id": "1.37.1.0.0",
+                    "label": "Gezondheid en zorg"
+                },
+                {
+                    "id": "1.41.0.0.0",
+                    "label": "Kunst en kunsteducatie"
+                },
+                {
+                    "id": "1.10.0.0.0",
+                    "label": "Literatuur"
+                },
+                {
+                    "id": "1.64.0.0.0",
+                    "label": "Milieu en natuur"
+                },
+                {
+                    "id": "1.37.0.0.0",
+                    "label": "Opvoeding"
+                },
+                {
+                    "id": "1.61.0.0.0",
+                    "label": "Persoon en relaties"
+                },
+                {
+                    "id": "1.37.2.0.0",
+                    "label": "Samenleving"
+                },
+                {
+                    "id": "1.25.0.0.0",
+                    "label": "Wetenschap"
+                },
+                {
+                    "id": "1.44.0.0.0",
+                    "label": "Zingeving, filosofie en religie"
+                }
+            ]
         },
         {
             "label": "Opendeurdag",
