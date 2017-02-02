@@ -3,7 +3,33 @@
         {
             "label": "Begeleide rondleiding",
             "id": "0.7.0.0.0",
-            "primary": true
+            "primary": true,
+            "themes": [
+                {
+                    "id": "1.2.1.0.0",
+                    "label": "Architectuur"
+                },
+                {
+                    "id": "1.11.0.0.0",
+                    "label": "Geschiedenis"
+                },
+                {
+                    "id": "1.0.9.0.0",
+                    "label": "Meerdere kunstvormen"
+                },
+                {
+                    "id": "1.64.0.0.0",
+                    "label": "Milieu en natuur"
+                },
+                {
+                    "id": "1.37.2.0.0",
+                    "label": "Samenleving"
+                },
+                {
+                    "id": "1.44.0.0.0",
+                    "label": "Zingeving, filosofie en religie"
+                }
+            ]
         },
         {
             "label": "Concert",
