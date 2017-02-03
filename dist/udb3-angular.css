@@ -1725,6 +1725,9 @@ input + .alert {
 .table td p {
   margin: 0 0 6px 0;
 }
+.pagination .disabled {
+  display: none;
+}
 .udb-query-editor {
   padding-top: 24px;
 }
