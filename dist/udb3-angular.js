@@ -21797,7 +21797,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
     "        </div>\n" +
     "    </footer>\n" +
-    "</div>\n"
+    "</article>\n"
   );
 
 
