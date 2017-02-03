@@ -265,6 +265,10 @@ function EventDetail(
   }
 
   function translateWorkflowStatus(code) {
-    return $translate.instant('publicationStatus.' + code);
+    if (code) {
+      return $translate.instant('publicationStatus.' + code);
+    } else {
+      return 'Gepubliceerd';
+    }
   }
 }
