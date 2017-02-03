@@ -21755,7 +21755,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
     "    <div class=\"text-info\" ng-show=\"moc.loading\"><i class=\"fa fa-circle-o-notch fa-spin\"></i> Moderatie aanbod \"{{moc.offerId}}\" wordt geladen.</div>\n" +
     "\n" +
-    "    <div class=\"row\" ng-hide=\"moc-loading\">\n" +
+    "    <div class=\"row\" ng-if=\"!moc.loading\">\n" +
     "        <div class=\"col-md-9\">\n" +
     "            <header class=\"udb-short-info\">\n" +
     "                <span class=\"udb-category\" ng-bind=\"moc.offer.type.label\"></span>\n" +
@@ -21767,15 +21767,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </a>\n" +
     "            </header>\n" +
     "\n" +
-    "            <p class=\"text-muted\"><udb-calendar-summary offer=\"moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary></p>\n" +
+    "            <p class=\"text-muted\"><udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary></p>\n" +
     "\n" +
     "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
     "\n" +
-    "            <a ng-href=\"{{ moc.offer.url  + '/preview' }}\">\n" +
+    "            <a ng-href=\"{{ ::moc.offer.url  + '/preview' }}\">\n" +
     "                Alle info bekijken\n" +
     "            </a>\n" +
     "            &nbsp;\n" +
-    "            <a ng-href=\"{{ moc.offer.url  + '/edit' }}\">\n" +
+    "            <a ng-href=\"{{ ::moc.offer.url  + '/edit' }}\">\n" +
     "                Bewerken\n" +
     "            </a>\n" +
     "        </div>\n" +
