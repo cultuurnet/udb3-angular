@@ -9731,12 +9731,16 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
   }
 
   /**
-   * @param {string} offerId
+   * @param {string|null} offerId
    */
   function fetchOffer(offerId) {
-    udbApi
-      .getOffer(offerId)
-      .then(startEditing);
+    if (!offerId) {
+      startCreating();
+    } else {
+      udbApi
+        .getOffer(offerId)
+        .then(startEditing);
+    }
   }
 
   /**
