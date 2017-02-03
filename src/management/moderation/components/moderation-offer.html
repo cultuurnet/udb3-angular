@@ -2,7 +2,7 @@
     <div class="error text-danger" ng-show="moc.error" ng-bind="moc.error"></div>
     <div class="text-info" ng-show="moc.loading"><i class="fa fa-circle-o-notch fa-spin"></i> Moderatie aanbod "{{moc.offerId}}" wordt geladen.</div>
 
-    <div class="row" ng-hide="moc-loading">
+    <div class="row" ng-if="!moc.loading">
         <div class="col-md-9">
             <header class="udb-short-info">
                 <span class="udb-category" ng-bind="moc.offer.type.label"></span>
