@@ -23,7 +23,8 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -264,8 +265,8 @@ function EventDetail(
   }
 
   function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
+    if (code) {
+      return $translate.instant('publicationStatus.' + code);
     } else {
       return 'Gepubliceerd';
     }

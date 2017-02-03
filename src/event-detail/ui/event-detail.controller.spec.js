@@ -14,6 +14,7 @@ describe('Controller: Event Detail', function() {
       offerLabeller,
       $window,
       $uibModal,
+      $translate,
       exampleEventJson = {
         "@id": "http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc",
         "@context": "/api/1.0/event.jsonld",
@@ -174,6 +175,18 @@ describe('Controller: Event Detail', function() {
     offerLabeller = jasmine.createSpyObj('offerLabeller', ['recentLabels', 'label', 'unlabel']);
     $window = $injector.get('$window');
 
+    $translate = {
+        instant : function(code){
+            if(code === 'publicationStatus.DRAFT' || code === 'publicationStatus.REJECTED' || code === 'publicationStatus.DELETED') {
+                return 'Niet gepubliceerd';
+            } else if ( code === 'publicationStatus.READY_FOR_VALIDATION' || code === 'publicationStatus.APPROVED'){
+                return 'Gepubliceerd';
+            } else {
+                return 'Gepubliceerd';
+            }
+        }
+    }
+
     deferredEvent = $q.defer(); deferredVariation = $q.defer();
     deferredPermission = $q.defer();
 
@@ -198,7 +211,8 @@ describe('Controller: Event Detail', function() {
         offerEditor: offerEditor,
         $uibModal: $uibModal,
         $window: $window,
-        offerLabeller: offerLabeller
+        offerLabeller: offerLabeller,
+        $translate:$translate
       }
     );
   }));
@@ -432,4 +446,6 @@ describe('Controller: Event Detail', function() {
   it('should return gepubliceerd as default', function () {
     expect($scope.translateWorkflowStatus()).toEqual('Gepubliceerd')
   });
+
+
 });
