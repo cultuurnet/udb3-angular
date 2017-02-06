@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<div ng-if="event">
+<div ng-if="finishedLoading()">
   <h1 class="title" ng-bind="event.name"></h1>
 
   <div class="row">
@@ -53,6 +53,11 @@
               <tr>
                 <td><strong>Type</strong></td>
                 <td>{{event.type.label}}</td>
+              </tr>
+              <tr>
+                <td><strong>Toegang</strong></td>
+                <td>{{translateAudience(event.audience.audienceType)}}
+                <udb-event-cultuurkuur-component event="event" permission="::permissions.editing" ></udb-event-cultuurkuur-component></td>
               </tr>
               <tr>
                 <td>

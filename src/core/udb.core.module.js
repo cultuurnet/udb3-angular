@@ -24,6 +24,7 @@ angular
     'udb.media',
     'udb.management',
     'udb.uitpas',
+    'udb.cultuurkuur',
     'btford.socket-io',
     'pascalprecht.translate'
   ])
