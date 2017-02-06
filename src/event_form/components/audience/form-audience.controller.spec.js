@@ -1,19 +1,19 @@
 describe('Controller: Form: Audience', function () {
 
-  var $controller, udbApi;
+  var $controller, eventCrud;
 
   beforeEach(module('udb.event-form'));
 
   beforeEach(inject(function (_$controller_) {
     $controller = _$controller_;
-    udbApi = jasmine.createSpyObj('udbApi', ['setAudienceType']);
+    eventCrud = jasmine.createSpyObj('eventCrud', ['setAudienceType']);
   }));
 
   function getController(formData) {
     return $controller(
       'FormAudienceController', {
         EventFormData: formData,
-        udbApi: udbApi
+        eventCrud: eventCrud
       }
     );
   }
@@ -41,8 +41,8 @@ describe('Controller: Form: Audience', function () {
 
     controller.setAudienceType('education');
 
-    expect(udbApi.setAudienceType).toHaveBeenCalledWith(
-      new URL('http://du.de/event/1da2bb3c-616f-4e89-9b17-f142413046d2'),
+    expect(eventCrud.setAudienceType).toHaveBeenCalledWith(
+      formData,
       'education'
     );
   });

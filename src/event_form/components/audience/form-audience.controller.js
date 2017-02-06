@@ -12,7 +12,7 @@ angular
   .controller('FormAudienceController', FormAudienceController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, udbApi) {
+function FormAudienceController(EventFormData, eventCrud) {
   var controller = this;
 
   controller.enabled = EventFormData.isEvent;
@@ -20,6 +20,6 @@ function FormAudienceController(EventFormData, udbApi) {
   controller.setAudienceType = setAudienceType;
 
   function setAudienceType(audienceType) {
-    udbApi.setAudienceType(EventFormData.apiUrl, audienceType);
+    eventCrud.setAudienceType(EventFormData, audienceType);
   }
 }

@@ -1,11 +1,11 @@
 {
   "name": "udb3-angular",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/cultuurnet/udb3-angular",
   "authors": [
     "Bram Cordie <bram@2dotstwice.be>"
   ],
-  "description": "This project holds all the necessary angular recipes, styles and templates to create an UDB3 front-end.",
+  "description": "This project holds all the modules, styles and templates to create an UDB3 front-end.",
   "main": [
     "dist/udb3-angular.css",
     "dist/udb3-angular.js"
@@ -15,8 +15,7 @@
     "uitdatabank",
     "cultuurnet"
   ],
-  "license": "MIT",
-  "private": true,
+  "license": "Apache-2.0",
   "ignore": [
     "**/.*",
     "node_modules",

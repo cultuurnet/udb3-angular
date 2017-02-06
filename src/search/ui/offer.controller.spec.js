@@ -148,7 +148,7 @@ describe('Controller: Offer', function() {
     EventTranslationState = $injector.get('EventTranslationState');
     offerTranslator = $injector.get('offerTranslator');
     offerEditor = $injector.get('offerEditor');
-    offerLabeller = jasmine.createSpyObj('offerLabeller', ['recentLabels', 'label']);
+    offerLabeller = jasmine.createSpyObj('offerLabeller', ['recentLabels', 'label', 'unlabel']);
     variationRepository = $injector.get('variationRepository');
     $window = $injector.get('$window');
     $q = _$q_;
@@ -170,7 +170,8 @@ describe('Controller: Offer', function() {
         offerLabeller: offerLabeller,
         $window: $window,
         offerEditor: offerEditor,
-        variationRepository: variationRepository
+        variationRepository: variationRepository,
+        $q: $q
       }
     );
   }));
@@ -187,9 +188,16 @@ describe('Controller: Offer', function() {
   it('should trigger an API label action when adding a label', function () {
     var label = {name:'some other label'};
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    $scope.$digest();
+    offerLabeller.label.and.returnValue($q.resolve({
+      response: {
+        success: true,
+        name: 'some other label'
+      }
+    }));
 
+    $scope.$digest();
     offerController.labelAdded(label);
+
     expect(offerLabeller.label).toHaveBeenCalled();
   });
 
@@ -206,6 +214,17 @@ describe('Controller: Offer', function() {
     expect($scope.event.labels).toEqual(expectedLabels);
     expect($window.alert).toHaveBeenCalledWith('Het label "Some Label" is reeds toegevoegd als "some label".');
     expect(offerLabeller.label).not.toHaveBeenCalled();
+  });
+
+  it('should trigger an API label action when removing a label', function () {
+    var label = {name:'Some Label'};
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    $scope.$digest();
+
+    offerController.labelRemoved(label);
+
+    expect(offerLabeller.unlabel).toHaveBeenCalled();
+    expect(offerController.labelResponse).toEqual('');
   });
 
   it('should show when an event is expired', function () {

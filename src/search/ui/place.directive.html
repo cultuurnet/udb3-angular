@@ -143,8 +143,13 @@
           <span ng-hide="event.labels.length">Deze plaats is nog niet gelabeld.</span>
           <udb-label-select labels="event.labels"
                             label-added="placeCtrl.labelAdded(label)"
-                            label-removed="placeCtrl.labelRemoved(label)">
-          </udb-label-select>
+                            label-removed="placeCtrl.labelRemoved(label)"></udb-label-select>
+          <div ng-if="placeCtrl.labelResponse === 'error'" class="alert alert-danger">
+            Het toevoegen van het label '{{placeCtrl.labelsError.name}}' is niet gelukt.
+          </div>
+          <div ng-if="placeCtrl.labelResponse === 'success'" class="alert alert-success">
+            Het label '{{placeCtrl.addedLabel}}' werd succesvol toegevoegd.
+          </div>
         </div>
       </div>
     </div>
