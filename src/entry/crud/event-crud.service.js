@@ -366,6 +366,19 @@ function EventCrud(
   };
 
   /**
+   * Select the main image for an item.
+   *
+   * @param {EventFormData} item
+   * @param {string} audienceType
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.setAudienceType = function (item, audienceType) {
+    return udbApi
+      .setAudienceType(item.apiUrl, audienceType)
+      .then(jobCreatorFactory(item, 'setAudienceType'));
+  };
+
+  /**
    * @param {EventFormData} offer
    * @param {string} jobName
    *
