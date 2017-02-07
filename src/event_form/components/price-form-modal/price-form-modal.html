@@ -1,0 +1,88 @@
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="pfmc.cancelEditPrice()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <h4 class="modal-title">Prijzen toevoegen</h4>
+</div>
+<div class="modal-body">
+
+    <form name="pfmc.priceForm" novalidate>
+        <table class="table">
+            <div class="form-group">
+                <tr ng-repeat="(key, priceInfo) in pfmc.price"
+                    ng-model="priceInfo"
+                    ng-form="pfmc.priceForm.priceFieldForm">
+                    <td ng-switch on="priceInfo.category"
+                        class="col-xs-4">
+                        <span ng-switch-when="base">
+                            Basistarief
+                        </span>
+                        <span ng-switch-default>
+                            <input type="text"
+                                   class="form-control"
+                                   name="name"
+                                   placeholder="Doelgroep"
+                                   ng-model="priceInfo.name"
+                                   ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }"
+                                   required />
+                        </span>
+                    </td>
+                    <td class="col-xs-4">
+                        <span ng-if="priceInfo.price === 0">
+                            Gratis
+                        </span>
+                        <span ng-if="priceInfo.price !== 0">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="number"
+                                           class="form-control"
+                                           name="price"
+                                           ng-model="priceInfo.price"
+                                           ng-model-options="{ updateOn: 'default' }"
+                                           ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
+                                           required />
+                                </div>
+                                <div class="form-group">euro</div>
+                            </div>
+                        </span>
+                    </td>
+                    <td ng-switch on="priceInfo.price"
+                        class="col-xs-3">
+                        <a class="btn btn-link"
+                           ng-click="pfmc.unsetPriceItemFree(key)"
+                           ng-switch-when="0">Prijs invoeren</a>
+                        <a class="btn btn-link"
+                           ng-click="pfmc.setPriceItemFree(key)"
+                           ng-switch-default>Gratis</a>
+                    </td>
+                    <td class="col-xs-1">
+                        <a aria-hidden="true"
+                           ng-click="pfmc.deletePriceItem(key)"
+                           ng-if="pfmc.showPriceDelete(key)" class="close">&times;</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <a class="btn btn-link" ng-click="pfmc.addPriceItem()">Tarief toevoegen</a>
+                    </td>
+                </tr>
+            </div>
+        </table>
+    </form>
+
+    <div ng-show="pfmc.priceError" class="alert alert-danger">
+        Er ging iets fout bij het opslaan van de prijs.
+    </div>
+    <div ng-show="pfmc.invalidPrice" class="alert alert-danger">
+        Gelieve een geldige prijs en omschrijving in te voeren.
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="pfmc.cancelEditPrice()">Sluiten</button>
+    <button type="button"
+            class="btn btn-primary organisator-toevoegen-bewaren"
+            ng-click="pfmc.validatePrice()"
+            ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
+        Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+    </button>
+</div>
