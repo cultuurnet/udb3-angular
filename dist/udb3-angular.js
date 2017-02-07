@@ -20521,7 +20521,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "            ng-click=\"pfmc.validatePrice()\"\n" +
-    "            ng-disabled=\"pfmc.priceForm.$invalid\">\n" +
+    "            ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
     "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "    </button>\n" +
     "</div>\n"

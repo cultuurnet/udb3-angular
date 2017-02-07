@@ -82,7 +82,7 @@
     <button type="button"
             class="btn btn-primary organisator-toevoegen-bewaren"
             ng-click="pfmc.validatePrice()"
-            ng-disabled="pfmc.priceForm.$invalid">
+            ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
         Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
     </button>
 </div>
