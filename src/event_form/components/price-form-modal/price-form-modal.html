@@ -37,7 +37,7 @@
                                            class="form-control"
                                            name="price"
                                            ng-model="priceInfo.price"
-                                           ng-model-options="{ updateOn: 'blur' }"
+                                           ng-model-options="{ updateOn: 'default' }"
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
                                            required />
                                 </div>
@@ -82,7 +82,7 @@
     <button type="button"
             class="btn btn-primary organisator-toevoegen-bewaren"
             ng-click="pfmc.validatePrice()"
-            ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
+            ng-disabled="pfmc.priceForm.$invalid">
         Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
     </button>
 </div>

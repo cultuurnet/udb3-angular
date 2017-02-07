@@ -20223,7 +20223,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
-    "                                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
+    "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
@@ -20268,7 +20268,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "            ng-click=\"pfmc.validatePrice()\"\n" +
-    "            ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
+    "            ng-disabled=\"pfmc.priceForm.$invalid\">\n" +
     "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "    </button>\n" +
     "</div>\n"
