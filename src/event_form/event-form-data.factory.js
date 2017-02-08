@@ -611,28 +611,29 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     hoursChanged: function (timestamp) {
       var startHourAsDate;
       var endHourAsDate;
-      if (timestamp.showStartHour) {
-        if (timestamp.startHourAsDate !== undefined) {
-          startHourAsDate = moment(timestamp.startHourAsDate);
+      if (timestamp.showStartHour || timestamp.showEndHour) {
+        if (timestamp.showStartHour) {
+          if (timestamp.startHourAsDate !== undefined) {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+          }
+          else {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+            startHourAsDate.hours(0);
+            startHourAsDate.minutes(0);
+          }
+          timestamp.startHour = startHourAsDate.format('HH:mm');
         }
-        else {
-          startHourAsDate = moment(timestamp.startHourAsDate);
-          startHourAsDate.hours(0);
-          startHourAsDate.minutes(0);
-        }
-        timestamp.startHour = startHourAsDate.format('HH:mm');
-        this.timingChanged();
-      }
 
-      if (timestamp.showEndHour) {
-        // if the endhour is invalid, send starthour to backend.
-        if (timestamp.endHourAsDate !== undefined) {
-          endHourAsDate = moment(timestamp.endHourAsDate);
+        if (timestamp.showEndHour) {
+          // if the endhour is invalid, send starthour to backend.
+          if (timestamp.endHourAsDate !== undefined) {
+            endHourAsDate = moment(timestamp.endHourAsDate);
+          }
+          else {
+            endHourAsDate = startHourAsDate;
+          }
+          timestamp.endHour = endHourAsDate.format('HH:mm');
         }
-        else {
-          endHourAsDate = startHourAsDate;
-        }
-        timestamp.endHour = endHourAsDate.format('HH:mm');
         this.timingChanged();
       }
     },

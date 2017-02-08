@@ -24,8 +24,8 @@
                    required="required"
                    class="form-control uur"
                    ng-model="timestamp.startHourAsDate"
-                   ng-blur="formData.hoursChanged(timestamp)"
-                   ng-model-options="{ debounce: 500 }"
+                   ng-change="formData.hoursChanged(timestamp)"
+                   ng-model-options="{ updateOn: 'blur', debounce: 500 }"
                    placeholder="Bv. 08:00"
                    focus-if="timestamp.showStartHour"/>
           </div>
@@ -45,8 +45,8 @@
                    required="required"
                    class="form-control uur"
                    ng-model="timestamp.endHourAsDate"
-                   ng-blur="formData.hoursChanged(timestamp)"
-                   ng-model-options="{ debounce: 500 }"
+                   ng-change="formData.hoursChanged(timestamp)"
+                   ng-model-options="{ updateOn: 'blur', debounce: 500 }"
                    placeholder="Bv. 23:00"
                    focus-if="timestamp.showEndHour"/>
           </div>
@@ -56,7 +56,6 @@
   </div>
 
 </div>
-
 <div class="col-xs-12 col-sm-4">
   <div class="add-date">
     <a href="#" class="add-date-link" ng-click="formData.addTimestamp('','','')">

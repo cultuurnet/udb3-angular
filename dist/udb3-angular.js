@@ -9856,28 +9856,29 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     hoursChanged: function (timestamp) {
       var startHourAsDate;
       var endHourAsDate;
-      if (timestamp.showStartHour) {
-        if (timestamp.startHourAsDate !== undefined) {
-          startHourAsDate = moment(timestamp.startHourAsDate);
+      if (timestamp.showStartHour || timestamp.showEndHour) {
+        if (timestamp.showStartHour) {
+          if (timestamp.startHourAsDate !== undefined) {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+          }
+          else {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+            startHourAsDate.hours(0);
+            startHourAsDate.minutes(0);
+          }
+          timestamp.startHour = startHourAsDate.format('HH:mm');
         }
-        else {
-          startHourAsDate = moment(timestamp.startHourAsDate);
-          startHourAsDate.hours(0);
-          startHourAsDate.minutes(0);
-        }
-        timestamp.startHour = startHourAsDate.format('HH:mm');
-        this.timingChanged();
-      }
 
-      if (timestamp.showEndHour) {
-        // if the endhour is invalid, send starthour to backend.
-        if (timestamp.endHourAsDate !== undefined) {
-          endHourAsDate = moment(timestamp.endHourAsDate);
+        if (timestamp.showEndHour) {
+          // if the endhour is invalid, send starthour to backend.
+          if (timestamp.endHourAsDate !== undefined) {
+            endHourAsDate = moment(timestamp.endHourAsDate);
+          }
+          else {
+            endHourAsDate = startHourAsDate;
+          }
+          timestamp.endHour = endHourAsDate.format('HH:mm');
         }
-        else {
-          endHourAsDate = startHourAsDate;
-        }
-        timestamp.endHour = endHourAsDate.format('HH:mm');
         this.timingChanged();
       }
     },
@@ -10627,7 +10628,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     if (EventFormData.id) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
-    console.log('event timing changed');
   };
 
   EventFormData
@@ -19903,8 +19903,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   required=\"required\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.startHourAsDate\"\n" +
-    "                   ng-blur=\"formData.hoursChanged(timestamp)\"\n" +
-    "                   ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
+    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
     "                   placeholder=\"Bv. 08:00\"\n" +
     "                   focus-if=\"timestamp.showStartHour\"/>\n" +
     "          </div>\n" +
@@ -19924,8 +19924,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   required=\"required\"\n" +
     "                   class=\"form-control uur\"\n" +
     "                   ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                   ng-blur=\"formData.hoursChanged(timestamp)\"\n" +
-    "                   ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
+    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
     "                   placeholder=\"Bv. 23:00\"\n" +
     "                   focus-if=\"timestamp.showEndHour\"/>\n" +
     "          </div>\n" +
@@ -19935,7 +19935,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "\n" +
     "</div>\n" +
-    "\n" +
     "<div class=\"col-xs-12 col-sm-4\">\n" +
     "  <div class=\"add-date\">\n" +
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"formData.addTimestamp('','','')\">\n" +
