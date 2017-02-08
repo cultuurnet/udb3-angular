@@ -431,6 +431,11 @@
             "label": "Zaal of expohal",
             "id": "OyaPaf64AEmEAYXHeLMAtA",
             "primary": false
+        },
+        {
+            "label": "Openbare ruimte",
+            "id": "0.8.0.0.0",
+            "primary": false
         }
     ]
 }
