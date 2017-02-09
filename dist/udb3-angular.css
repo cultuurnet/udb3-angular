@@ -3240,6 +3240,9 @@ table.event-detail-price-table {
 .cultuurkuur-component .panel {
   max-width: 95%;
 }
+.cultuurkuur-component .collapse {
+  display: none!important;
+}
 .cultuurkuur-logo {
   background-image: url(/images/cultuurkuur-logo.svg);
   background-size: contain;
