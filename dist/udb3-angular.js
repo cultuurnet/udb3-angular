@@ -5047,9 +5047,9 @@ function EventCultuurKuurComponentController(appConfig) {
   var cm = this,
       cultuurkuurUrl = _.get(appConfig, 'cultuurkuurUrl');
 
-  if (!cultuurkuurUrl) {
-    throw 'cultuurkuur url is not configured';
-  }
+//  if (!cultuurkuurUrl) {
+//    throw 'cultuurkuur url is not configured';
+//  }
 
   cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
   cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
@@ -18892,41 +18892,37 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"cultuurkuur-component\">\n" +
     "    <p ng-if=\"::!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
     "    <div ng-if=\"::$ctrl.permission\">\n" +
-    "        <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
+    "        <div ng-if=\"::!$ctrl.isIncomplete\">\n" +
     "            <p><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div class=\"row\">\n" +
-    "                        <div class=\"col-xs-10 col-sm-10 col-md-10 col-lg-10\">\n" +
+    "                        <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 cultuurkuur-logo\">\n" +
     "                            <div ng-if=\"::($ctrl.cultuurKuurInfo.fields.length > 0)\" class=\"row\">\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
     "                                    <strong>Onderwerp</strong>\n" +
     "                                </div>\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
     "                                    <p ng-repeat=\"field in ::$ctrl.cultuurKuurInfo.fields\" ng-bind=\"::field\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <div ng-if=\"$ctrl.cultuurKuurInfo.targetAudience.length > 0\" class=\"row\">\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
     "                                    <strong>Doelgroep</strong>\n" +
     "                                </div>\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
     "                                    <p ng-repeat=\"target in ::$ctrl.cultuurKuurInfo.targetAudience\" ng-bind=\"::target\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 0\" class=\"row\">\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
     "                                    <strong>Geschikt voor</strong>\n" +
     "                                </div>\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
     "                                    <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
-    "                        <div class=\"col-xs-2 col-sm-2 col-md-2 col-lg-2 cultuurkuur-logo\">\n" +
-    "                            &nbsp;\n" +
-    "                        </div>\n" +
-    "\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "                <div class=\"panel-footer\"> <a ng-href=\"{{::$ctrl.editLink}}\" target=\"_blank\">Wijzig op cultuurkuur.be</a>\n" +
