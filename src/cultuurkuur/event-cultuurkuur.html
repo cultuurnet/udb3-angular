@@ -1,8 +1,8 @@
 <div class="cultuurkuur-component">
-    <p ng-if="::!$ctrl.permission">Dit evenement bevat <a target="_blank" ng-href="{{::$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
+    <p ng-if="::!$ctrl.permission && $ctrl.forSchools"><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat <a target="_blank" ng-href="{{::$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
     <div ng-if="::$ctrl.permission">
         <div ng-if="::!$ctrl.isIncomplete" class="row">
-            <p><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>
+            <p ng-if="$ctrl.forSchools"><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat <a target="_blank" ng-href="{{::$ctrl.previewLink}}">extra informatie</a> voor scholen en leerkrachten.</p>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
