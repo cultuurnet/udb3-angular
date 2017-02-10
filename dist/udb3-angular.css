@@ -3240,14 +3240,16 @@ table.event-detail-price-table {
 .cultuurkuur-component .panel {
   max-width: 95%;
 }
-.cultuurkuur-component .collapse {
-  display: none!important;
-}
 .cultuurkuur-logo {
   background-image: url(/images/cultuurkuur-logo.svg);
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
+}
+@media (min-width: 768px) {
+  .cultuurkuur-component .collapse {
+    display: none;
+  }
 }
 .loading-search-result {
   opacity: 0.4;
