@@ -2262,6 +2262,32 @@ function udbCalendarSummary() {
 
 })();
 
+// Source: src/core/components/publish-status/udb.publishstatus.component.js
+angular
+  .module('udb.core')
+  .component('udbPublishStatusComponent', {
+    bindings: {
+      status: '<',
+    },
+    template: '<span>{{cm.statusTranslated}}</span',
+    controller: PublishStatusComponentController,
+    controllerAs: 'cm'
+  });
+
+/**
+ * @ngInject
+ */
+function PublishStatusComponentController($translate) {
+  var cm = this;
+  cm.statusTranslated = translateStatus(cm.status);
+
+  function translateStatus (status){
+    return $translate.instant('publicationStatus.' + status);
+  }
+
+}
+PublishStatusComponentController.$inject = ["$translate"];
+
 // Source: src/core/components/time-autocomplete/time-autocomplete.js
 (function () {
 /**
@@ -7605,14 +7631,6 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
-  }
-
-  function translateWorkflowStatus(code) {
-    if (code) {
-      return $translate.instant('publicationStatus.' + code);
-    } else {
-      return 'Gepubliceerd';
-    }
   }
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
@@ -19441,9 +19459,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <span ng-if=\"event.available\"\n" +
     "                          ng-bind=\"event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
-    "                <span ng-if=\"!event.available\">\n" +
-    "                      {{translateWorkflowStatus(event.workflowStatus)}}\n" +
-    "                    </span>\n" +
+    "                    <udb-publish-status-component ng-if=\"!event.available\" status=\"event.workflowStatus\"></udb-publish-status-component>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
@@ -22593,15 +22609,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
     "            <tbody>\n" +
-    "              <tr ng-class=\"{muted: !place.available}\">\n" +
-    "                <td><strong>Publicatiedatum</strong></td>\n" +
+    "              <tr>\n" +
+    "                <td><strong>Publicatiestatus</strong></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"place.available\"\n" +
     "                        ng-bind=\"place.available | date: 'dd / MM / yyyy'\">\n" +
     "                  </span>\n" +
-    "                  <span ng-if=\"!place.available\">\n" +
-    "                    Geen publicatiedatum\n" +
-    "                  </span>\n" +
+    "                  <udb-publish-status-component ng-if=\"!place.available\" status=\"place.workflowStatus\"></udb-publish-status-component>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +

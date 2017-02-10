@@ -263,12 +263,4 @@ function EventDetail(
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
-
-  function translateWorkflowStatus(code) {
-    if (code) {
-      return $translate.instant('publicationStatus.' + code);
-    } else {
-      return 'Gepubliceerd';
-    }
-  }
 }

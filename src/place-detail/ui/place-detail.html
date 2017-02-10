@@ -121,15 +121,13 @@
               <col style="width:80%"/>
             </colgroup>
             <tbody>
-              <tr ng-class="{muted: !place.available}">
-                <td><strong>Publicatiedatum</strong></td>
+              <tr>
+                <td><strong>Publicatiestatus</strong></td>
                 <td>
                   <span ng-if="place.available"
                         ng-bind="place.available | date: 'dd / MM / yyyy'">
                   </span>
-                  <span ng-if="!place.available">
-                    Geen publicatiedatum
-                  </span>
+                  <udb-publish-status-component ng-if="!place.available" status="place.workflowStatus"></udb-publish-status-component>
                 </td>
               </tr>
               <tr>

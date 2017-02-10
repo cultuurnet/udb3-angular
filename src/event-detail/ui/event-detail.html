@@ -216,9 +216,7 @@
                     <span ng-if="event.available"
                           ng-bind="event.available | date: 'dd/MM/yyyy'">
                     </span>
-                <span ng-if="!event.available">
-                      {{translateWorkflowStatus(event.workflowStatus)}}
-                    </span>
+                    <udb-publish-status-component ng-if="!event.available" status="event.workflowStatus"></udb-publish-status-component>
               </td>
             </tr>
             <tr>
