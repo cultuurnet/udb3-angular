@@ -5047,9 +5047,9 @@ function EventCultuurKuurComponentController(appConfig) {
   var cm = this,
       cultuurkuurUrl = _.get(appConfig, 'cultuurkuurUrl');
 
-  if (!cultuurkuurUrl) {
-    throw 'cultuurkuur url is not configured';
-  }
+//  if (!cultuurkuurUrl) {
+//    throw 'cultuurkuur url is not configured';
+//  }
 
   cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
   cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
@@ -18935,7 +18935,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete\">\n" +
+    "        <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete && $ctrl.forSchools\">\n" +
     "            <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>\n" +
     "            <a ng-href=\"{{::$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
     "        </div>\n" +
