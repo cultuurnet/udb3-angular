@@ -103,7 +103,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
       if (EventFormData.openingHours.length === 0) {
-        EventFormData.addOpeningHour('', '', '');
+        EventFormData.addOpeningHour('', '', '', '', '');
       }
       EventFormData.showStep(3);
 

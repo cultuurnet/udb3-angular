@@ -23,7 +23,9 @@ function UdbOpeningHoursFactory() {
     this.validThrough = '';
     this.dayOfWeek = '';
     this.opens = '';
+    this.opensAsDate = '';
     this.closes = '';
+    this.closesAsDate = '';
   };
 
   UdbOpeningHours.prototype = {
