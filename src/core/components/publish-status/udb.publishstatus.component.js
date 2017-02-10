@@ -11,14 +11,14 @@ angular
     controllerAs: 'cm'
   });
 
-/**
+/**ik
  * @ngInject
  */
 function PublishStatusComponentController($translate) {
   var cm = this;
   cm.statusTranslated = translateStatus(cm.status);
 
-  function translateStatus (status){
+  function translateStatus (status) {
     return $translate.instant('publicationStatus.' + status);
   }
 
