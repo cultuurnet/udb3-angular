@@ -21060,7 +21060,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
-    "                 focus-if=\"eventFormData.showStep4\"\n" +
+    "                 focus-if=\"eventFormData.showStep4 && eventFormData.id === ''\"\n" +
     "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +

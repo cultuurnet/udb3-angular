@@ -16,7 +16,7 @@
                  ng-model="eventFormData.name.nl"
                  ng-model-options="titleInputOptions"
                  ng-change="eventTitleChanged()"
-                 focus-if="eventFormData.showStep4"
+                 focus-if="eventFormData.showStep4 && eventFormData.id === ''"
                  udb-auto-scroll>
         </div>
 
