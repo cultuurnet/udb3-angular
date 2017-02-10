@@ -19456,7 +19456,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <td><strong>Type</strong></td>\n" +
     "                <td>{{event.type.label}}</td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
+    "              <tr ng-if=\"event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><strong>Toegang</strong></td>\n" +
     "                <td>{{translateAudience(event.audience.audienceType)}}\n" +
     "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
