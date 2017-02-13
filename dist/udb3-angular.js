@@ -19056,8 +19056,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                                    <strong>Geschikt voor</strong>\n" +
     "                                </div>\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length <= 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                                    <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
+    "                                </div>\n" +
+    "                                <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                    <a role=\"button\" data-toggle=\"collapse\" href=\"#level\" aria-expanded=\"false\" aria-controls=\"level\"> {{$ctrl.cultuurKuurInfo.levels.length}} onderwijsgraden</a>\n" +
+    "                                    <div class=\"collapse\" id=\"level\">\n" +
+    "                                        <div>\n" +
+    "                                            <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
+    "\n" +
+    "                                        </div>\n" +
+    "                                    </div>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
