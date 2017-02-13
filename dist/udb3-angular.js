@@ -13383,6 +13383,66 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
 }
 ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
 
+// Source: src/management/moderation/components/moderation-summary/moderation-summary.component.js
+/**
+ * @ngdoc component
+ * @name udb.management.moderation:udbModerationSummaryComponent
+ * @description
+ * # udbModerationSummary
+ */
+angular
+  .module('udb.management.moderation')
+  .component('udbModerationSummary', {
+    templateUrl: 'templates/moderation-summary.html',
+    controller: ModerationSummaryComponent,
+    controllerAs: 'moc',
+    bindings: {
+      offerId: '@',
+      offerType: '@'
+    }
+  });
+
+/* @ngInject */
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+  var moc = this;
+  var defaultLanguage = 'nl';
+
+  moc.loading = true;
+  moc.offer = {};
+  moc.sendingJob = false;
+  moc.error = false;
+
+  moc.isReadyForValidation = isReadyForValidation;
+
+  // fetch offer
+  ModerationService
+    .getModerationOffer(moc.offerId)
+    .then(function(offer) {
+      offer.updateTranslationState();
+      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+    })
+    .catch(showLoadingError)
+    .finally(function() {
+      moc.loading = false;
+    });
+
+  function showLoadingError(problem) {
+    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
+
+  function isReadyForValidation() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
+  }
+}
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
+
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
 
 /**
@@ -22152,6 +22212,47 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/moderation-summary.html',
+    "<article class=\"moderation-summary\">\n" +
+    "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
+    "    <div class=\"text-info\" ng-show=\"moc.loading\"><i class=\"fa fa-circle-o-notch fa-spin\"></i> Moderatie aanbod \"{{moc.offerId}}\" wordt geladen.</div>\n" +
+    "\n" +
+    "    <div class=\"row\" ng-if=\"!moc.loading\">\n" +
+    "        <div class=\"col-md-9\">\n" +
+    "            <header class=\"udb-short-info\">\n" +
+    "                <span class=\"udb-category\" ng-bind=\"moc.offer.type.label\"></span>\n" +
+    "                <span class=\"udb-short-info-seperator\" ng-show=\"moc.offer.type.label && moc.offer.theme.label\"> • </span>\n" +
+    "                <span class=\"udb-theme\" ng-bind=\"moc.offer.theme.label\"></span>\n" +
+    "\n" +
+    "                <a ng-href=\"{{ moc.offer.url  + '/preview' }}\">\n" +
+    "                    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
+    "                </a>\n" +
+    "            </header>\n" +
+    "\n" +
+    "            <p class=\"text-muted\"><udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary></p>\n" +
+    "\n" +
+    "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
+    "\n" +
+    "            <a ng-href=\"{{ ::moc.offer.url  + '/preview' }}\">\n" +
+    "                Alle info bekijken\n" +
+    "            </a>\n" +
+    "            &nbsp;\n" +
+    "            <a ng-href=\"{{ ::moc.offer.url  + '/edit' }}\">\n" +
+    "                Bewerken\n" +
+    "            </a>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\"/>\n" +
+    "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
+    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "    </footer>\n" +
+    "</article>\n"
+  );
+
+
   $templateCache.put('templates/reject-offer-confirm-modal.html',
     "<div class=\"modal-body\">\n" +
     "    <div class=\"row\">\n" +
@@ -22229,8 +22330,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </p>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
-    "        <udb-moderation-offer offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
-    "        </udb-moderation-offer>\n" +
+    "        <udb-moderation-summary offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
+    "        </udb-moderation-summary>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <div class=\"panel-footer\">\n" +
