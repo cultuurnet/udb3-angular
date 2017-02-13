@@ -39,7 +39,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
-    website: 'http://',
+    website: '',
     name : $scope.organizer,
     address : {
       streetAddress : '',

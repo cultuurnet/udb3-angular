@@ -23,6 +23,8 @@
                    aria-describedby="organizer-website-status"
                    ng-change="validateWebsite()"
                    autocomplete="off"
+                   udb-http-extension="http://"
+                   udb-https-extension="https://"
                    required>
             <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
             <span id="organizer-website-status" class="sr-only">(warning)</span>

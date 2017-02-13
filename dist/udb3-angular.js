@@ -2229,6 +2229,38 @@ function udbCalendarSummary() {
   udbDatepickerDirective.$inject = ["appConfig"];
 })();
 
+// Source: src/core/components/input-extension/http.extension.directive.js
+/**
+* @ngdoc directive
+* @name udb.http.extension.directive:udbHttpExtension
+* @description
+* # directive to add http if it isn't already in the link
+*/
+angular
+  .module('udb.core')
+  .directive('udbHttpExtension', UdbHttpExtensionDirective);
+
+function UdbHttpExtensionDirective() {
+
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: link
+  };
+
+  function link (scope, elem, attrs, ngModel) {
+    var modelSetter = model.assign;
+
+    elem.bind('change',attachHttp())
+
+    function attachHttp() {
+      if(!elem.includes(attrs.udbHttpExtension) || !elem.includes(attrs.udbHttpsExtension)) {
+          modelSetter(scope,attrs.udbHttpExtension + elem.val());
+      }
+    }
+  }
+}
+
 // Source: src/core/components/multiselect/multiselect.directive.js
 (function () {
 /**
@@ -8230,7 +8262,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
-    website: 'http://',
+    website: '',
     name : $scope.organizer,
     address : {
       streetAddress : '',
@@ -20312,6 +20344,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   aria-describedby=\"organizer-website-status\"\n" +
     "                   ng-change=\"validateWebsite()\"\n" +
     "                   autocomplete=\"off\"\n" +
+    "                   udb-http-extension=\"http://\"\n" +
+    "                   udb-https-extension=\"https://\"\n" +
     "                   required>\n" +
     "            <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
     "            <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
