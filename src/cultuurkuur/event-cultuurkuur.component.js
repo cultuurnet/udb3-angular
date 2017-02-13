@@ -31,4 +31,6 @@ function EventCultuurKuurComponentController(appConfig) {
     fields : _.pluck(cm.event.educationFields, 'label'),
     targetAudience : _.pluck(cm.event.educationTargetAudience, 'label')
   };
+
+  cm.forSchools = cm.event.audience.audienceType === 'education';
 }

@@ -54,7 +54,7 @@
                 <td><strong>Type</strong></td>
                 <td>{{event.type.label}}</td>
               </tr>
-              <tr>
+              <tr ng-if="event.audience.audienceType !== 'everyone'">
                 <td><strong>Toegang</strong></td>
                 <td>{{translateAudience(event.audience.audienceType)}}
                 <udb-event-cultuurkuur-component event="event" permission="::permissions.editing" ></udb-event-cultuurkuur-component></td>
