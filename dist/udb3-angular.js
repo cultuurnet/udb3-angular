@@ -13227,7 +13227,7 @@ function listItems(
 }
 listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults"];
 
-// Source: src/management/moderation/components/moderation-offer.component.js
+// Source: src/management/moderation/components/moderation-offer/moderation-offer.component.js
 /**
  * @ngdoc component
  * @name udb.search.directive:udbSearchBar
@@ -13241,18 +13241,16 @@ angular
     controller: ModerationOfferComponent,
     controllerAs: 'moc',
     bindings: {
-      offerId: '@',
-      offerType: '@'
+      offer: '<',
     }
   });
 
 /* @ngInject */
 function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
+    console.log(moc.offer.workflowStatus);
   var defaultLanguage = 'nl';
 
-  moc.loading = true;
-  moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
 
@@ -13261,22 +13259,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
-
-  // fetch offer
-  ModerationService
-    .getModerationOffer(moc.offerId)
-    .then(function(offer) {
-      offer.updateTranslationState();
-      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-    })
-    .catch(showLoadingError)
-    .finally(function() {
-      moc.loading = false;
-    });
-
-  function showLoadingError(problem) {
-    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
-  }
 
   function isReadyForValidation() {
     return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
@@ -22162,53 +22144,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<article class=\"moderation-offer\">\n" +
-    "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
-    "    <div class=\"text-info\" ng-show=\"moc.loading\"><i class=\"fa fa-circle-o-notch fa-spin\"></i> Moderatie aanbod \"{{moc.offerId}}\" wordt geladen.</div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-if=\"!moc.loading\">\n" +
-    "        <div class=\"col-md-9\">\n" +
-    "            <header class=\"udb-short-info\">\n" +
-    "                <span class=\"udb-category\" ng-bind=\"moc.offer.type.label\"></span>\n" +
-    "                <span class=\"udb-short-info-seperator\" ng-show=\"moc.offer.type.label && moc.offer.theme.label\"> • </span>\n" +
-    "                <span class=\"udb-theme\" ng-bind=\"moc.offer.theme.label\"></span>\n" +
-    "\n" +
-    "                <a ng-href=\"{{ moc.offer.url  + '/preview' }}\">\n" +
-    "                    <h2 ng-bind=\"moc.offer.name\"></h2>\n" +
-    "                </a>\n" +
-    "            </header>\n" +
-    "\n" +
-    "            <p class=\"text-muted\"><udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary></p>\n" +
-    "\n" +
-    "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
-    "\n" +
-    "            <a ng-href=\"{{ ::moc.offer.url  + '/preview' }}\">\n" +
-    "                Alle info bekijken\n" +
-    "            </a>\n" +
-    "            &nbsp;\n" +
-    "            <a ng-href=\"{{ ::moc.offer.url  + '/edit' }}\">\n" +
-    "                Bewerken\n" +
-    "            </a>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
-    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\"/>\n" +
-    "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
-    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
-    "        <div class=\"col-md-6 text-right\">\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
+    "<div class=\"col-md-6 text-right\">\n" +
+    "    <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
     "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
+    "    <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
     "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
     "\n" +
-    "            <span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
-    "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
-    "        </div>\n" +
-    "    </footer>\n" +
-    "</article>\n"
+    "    <span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
+    "    <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "</div>\n"
   );
 
 
@@ -22248,6 +22192,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
     "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "        <udb-moderation-offer offer=\"moc.offer\"></udb-moderation-offer>\n" +
     "    </footer>\n" +
     "</article>\n"
   );

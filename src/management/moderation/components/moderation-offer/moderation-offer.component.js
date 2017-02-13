@@ -13,18 +13,16 @@ angular
     controller: ModerationOfferComponent,
     controllerAs: 'moc',
     bindings: {
-      offerId: '@',
-      offerType: '@'
+      offer: '<',
     }
   });
 
 /* @ngInject */
 function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
+    console.log(moc.offer.workflowStatus);
   var defaultLanguage = 'nl';
 
-  moc.loading = true;
-  moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
 
@@ -33,22 +31,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
-
-  // fetch offer
-  ModerationService
-    .getModerationOffer(moc.offerId)
-    .then(function(offer) {
-      offer.updateTranslationState();
-      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-    })
-    .catch(showLoadingError)
-    .finally(function() {
-      moc.loading = false;
-    });
-
-  function showLoadingError(problem) {
-    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
-  }
 
   function isReadyForValidation() {
     return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
