@@ -136,17 +136,14 @@
       $uibModalInstance.close(place);
     }
 
+    /**
+     * @return {string}
+     */
     function getFirstCategoryId() {
       var sortedCategories = $scope.categories.sort(
-            function(a, b) {
-              if (a.label < b.label) {
-                return -1;
-              }
-              if (a.label > b.label) {
-                return 1;
-              }
-              return 0;
-            });
+        function(a, b) {
+          return a.label.localeCompare(b.label);
+        });
       return sortedCategories[0].id;
     }
 
