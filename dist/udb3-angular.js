@@ -19590,7 +19590,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div ng-if=\"finishedLoading()\">\n" +
     "  <h1 class=\"title\" ng-bind=\"event.name\"></h1>\n" +
-    "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
@@ -22153,7 +22152,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
     "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
-    "<a href=\"\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected()) && moc.next\">Verder valideren</a>\n"
+    "<a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected()) && moc.next\">Verder valideren</a>\n"
   );
 
 
