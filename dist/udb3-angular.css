@@ -3335,3 +3335,9 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success
 .moderation-detail p {
   color: #777777;
 }
+.moderation-detail i {
+  margin-right: 1em;
+}
+.moderation-detail #continue-validation {
+  margin-left: 2em;
+}
