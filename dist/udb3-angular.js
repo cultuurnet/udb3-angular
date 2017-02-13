@@ -19606,7 +19606,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
-    "        <udb-moderation-offer  class=\"list-group-item\" offer=\"event\"></udb-moderation-offer>\n" +
+    "<!--        <udb-moderation-offer class=\"list-group-item moderation-detail\" offer=\"event\"></udb-moderation-offer>-->\n" +
     "      </div>\n" +
     "</div>\n" +
     "    </div>\n" +

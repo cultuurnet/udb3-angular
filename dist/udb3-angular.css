@@ -3322,3 +3322,7 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-danger 
 udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success {
   color: #357935;
 }
+.moderation-detail button {
+  display: block;
+  width: 100%;
+}
