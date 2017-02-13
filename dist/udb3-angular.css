@@ -3332,8 +3332,9 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success
   display: block;
   text-decoration: underline;
 }
-.moderation-detail p {
+.moderation-detail small {
   color: #777777;
+  display: block;
 }
 .moderation-detail i {
   margin-right: 1em;
