@@ -49,7 +49,7 @@ angular.module('udb.config', [])
 
 .constant('eventCategories', [{label:'Begeleide rondleiding',id:'0.7.0.0.0',primary:true},{label:'Concert',id:'0.50.4.0.0',primary:true,themes:[{id:'1.8.1.0.0',label:'Klassieke muziek'},{id:'1.8.2.0.0',label:'Jazz en blues'},{id:'1.8.3.1.0',label:'Pop en rock'},{id:'1.8.3.2.0',label:'Hip hop, rnb en rap'},{id:'1.8.3.3.0',label:'Dance'},{id:'1.8.4.0.0',label:'Folk en wereldmuziek'},{id:'1.8.3.5.0',label:'Amusementsmuziek'}]},{label:'Cursus of workshop',id:'0.3.1.0.0',primary:true,themes:[{id:'1.42.0.0.0',label:'Creativiteit'},{id:'1.21.0.0.0',label:'Computer en techniek'},{id:'1.37.0.0.0',label:'Opvoeding'},{id:'1.61.0.0.0',label:'Persoon en relaties'},{id:'1.43.0.0.0',label:'Interculturele vorming'},{id:'1.41.0.0.0',label:'Kunst en kunsteducatie'},{id:'1.37.1.0.0',label:'Gezondheid en zorg'},{id:'1.65.0.0.0',label:'Voeding'},{id:'1.37.2.0.0',label:'Samenleving'},{id:'1.64.0.0.0',label:'Milieu en natuur'},{id:'1.25.0.0.0',label:'Wetenschap'},{id:'1.44.0.0.0',label:'Zingeving, filosofie en religie'}]},{label:'Route',id:'0.17.0.0.0',primary:true},{label:'Film',id:'0.50.6.0.0',primary:true,themes:[{id:'1.7.2.0.0',label:'Actie en avontuur'},{id:'1.7.12.0.0',label:'Animatie en kinderfilms'},{id:'1.7.1.0.0',label:'Documentaires en reportages'},{id:'1.7.6.0.0',label:'Griezelfilm of horror'},{id:'1.7.8.0.0',label:'Historische film'},{id:'1.7.3.0.0',label:'Komedie'},{id:'1.7.13.0.0',label:'Kortfilm'},{id:'1.7.10.0.0',label:'Filmmusical'},{id:'1.7.4.0.0',label:'Drama'},{id:'1.7.7.0.0',label:'Science fiction'},{id:'1.7.11.0.0',label:'Cinefiel'},{id:'1.7.15.0.0',label:'Thriller'}]},{label:'Lezing of congres',id:'0.3.2.0.0',primary:''},{label:'Opendeurdag',id:'0.12.0.0.0',primary:true},{label:'Tentoonstelling',id:'0.0.0.0.0',primary:true,themes:[{id:'1.1.0.0.0',label:'Audiovisuele kunst'},{id:'1.0.2.0.0',label:'Beeldhouwkunst'},{id:'1.0.6.0.0',label:'Fotografie'},{id:'1.0.4.0.0',label:'Grafiek'},{id:'1.0.3.0.0',label:'Installatiekunst'},{id:'1.0.1.0.0',label:'Schilderkunst'},{id:'1.0.5.0.0',label:'Decoratieve kunst'},{id:'1.2.2.0.0',label:'Design'},{id:'1.49.0.0.0',label:'Mode'}]},{label:'Beurs',id:'0.6.0.0.0',primary:false},{label:'Dansvoorstelling',id:'0.54.0.0.0',primary:false,themes:[{id:'1.9.1.0.0',label:'Ballet en klassieke dans'},{id:'1.9.3.0.0',label:'Volksdans en werelddans'},{id:'1.9.5.0.0',label:'Stijl en salondansen'},{id:'1.9.2.0.0',label:'Moderne dans'}]},{label:'Eten en drinken',id:'1.50.0.0.0',primary:false},{label:'Festival',id:'0.5.0.0.0',primary:false},{label:'Kamp of vakantie',id:'0.57.0.0.0',primary:false},{label:'Kermis of feestelijkheid',id:'0.28.0.0.0',primary:false},{label:'Markt of braderie',id:'0.37.0.0.0',primary:false},{label:'Party of fuif',id:'0.49.0.0.0',primary:false},{label:'Spel of quiz',id:'0.50.21.0.0',primary:false},{label:'Sport en beweging',id:'0.59.0.0.0',primary:false,themes:[{id:'1.51.13.0.0',label:'Bal en racketsport'},{id:'1.51.14.0.0',label:'Atletiek, wandelen en fietsen'},{id:'1.51.3.0.0',label:'Zwemmen en watersport'},{id:'1.51.6.0.0',label:'Fitness, gymnastiek, dans en vechtsport'},{id:'1.51.11.0.0',label:'Outdoor en adventure'},{id:'1.58.8.0.0',label:'Lucht en motorsport'},{id:'1.51.10.0.0',label:'Volkssporten'},{id:'1.51.12.0.0',label:'Omnisport en andere'}]},{label:'Sportwedstrijd bekijken',id:'0.19.0.0.0',primary:false},{label:'Theatervoorstelling',id:'0.55.0.0.0',primary:false,themes:[{id:'0.52.0.0.0',label:'Circus'},{id:'1.3.1.0.0',label:'Tekst en muziektheater'},{id:'1.3.10.0.0',label:'Humor comedy'},{id:'1.4.0.0.0',label:'Musical'},{id:'1.3.5.0.0',label:'Figuren en poppentheater'},{id:'1.5.0.0.0',label:'Opera en operette'},{id:'1.3.4.0.0',label:'Mime en bewegingstheater'}]}])
 
-.constant('placeCategories', [{label:'Monument',id:'0.14.0.0.0',primary:true},{label:'Natuur, park of tuin',id:'0.15.0.0.0',primary:true},{label:'Archeologische Site',id:'3CuHvenJ+EGkcvhXLg9Ykg',primary:true},{label:'Museum of galerij',id:'GnPFp9uvOUyqhOckIFMKmg',primary:true},{label:'Bibliotheek of documentatiecentrum',id:'kI7uAyn2uUu9VV6Z3uWZTA',primary:true},{label:'Recreatiedomein of centrum',id:'0.53.0.0.0',primary:false},{label:'Thema of pretpark',id:'0.41.0.0.0',primary:false},{label:'School of onderwijscentrum',id:'rJRFUqmd6EiqTD4c7HS90w',primary:false},{label:'Sportcentrum',id:'eBwaUAAhw0ur0Z02i5ttnw',primary:false},{label:'Winkel',id:'VRC6HX0Wa063sq98G5ciqw',primary:false},{label:'Jeugdhuis of jeugdcentrum',id:'JCjA0i5COUmdjMwcyjNAFA',primary:false},{label:'Cultuur- of ontmoetingscentrum',id:'Yf4aZBfsUEu2NsQqsprngw',primary:false},{label:'Discotheek',id:'YVBc8KVdrU6XfTNvhMYUpg',primary:false},{label:'Bioscoop',id:'BtVNd33sR0WntjALVbyp3w',primary:false},{label:'Horeca',id:'ekdc4ATGoUitCa0e6me6xA',primary:false},{label:'Zaal of expohal',id:'OyaPaf64AEmEAYXHeLMAtA',primary:false}])
+.constant('placeCategories', [{label:'Monument',id:'0.14.0.0.0',primary:true},{label:'Natuur, park of tuin',id:'0.15.0.0.0',primary:true},{label:'Archeologische Site',id:'3CuHvenJ+EGkcvhXLg9Ykg',primary:true},{label:'Museum of galerij',id:'GnPFp9uvOUyqhOckIFMKmg',primary:true},{label:'Bibliotheek of documentatiecentrum',id:'kI7uAyn2uUu9VV6Z3uWZTA',primary:true},{label:'Recreatiedomein of centrum',id:'0.53.0.0.0',primary:false},{label:'Thema of pretpark',id:'0.41.0.0.0',primary:false},{label:'School of onderwijscentrum',id:'rJRFUqmd6EiqTD4c7HS90w',primary:false},{label:'Sportcentrum',id:'eBwaUAAhw0ur0Z02i5ttnw',primary:false},{label:'Winkel',id:'VRC6HX0Wa063sq98G5ciqw',primary:false},{label:'Jeugdhuis of jeugdcentrum',id:'JCjA0i5COUmdjMwcyjNAFA',primary:false},{label:'Cultuur- of ontmoetingscentrum',id:'Yf4aZBfsUEu2NsQqsprngw',primary:false},{label:'Discotheek',id:'YVBc8KVdrU6XfTNvhMYUpg',primary:false},{label:'Bioscoop',id:'BtVNd33sR0WntjALVbyp3w',primary:false},{label:'Horeca',id:'ekdc4ATGoUitCa0e6me6xA',primary:false},{label:'Zaal of expohal',id:'OyaPaf64AEmEAYXHeLMAtA',primary:false},{label:'Openbare ruimte',id:'0.8.0.0.0',primary:false}])
 
 .constant('facilities', {motor:[{label:'Voorzieningen voor rolstoelgebruikers',id:'3.23.1.0.0'},{label:'Assistentie',id:'3.23.2.0.0'},{label:'Rolstoel ter beschikking',id:'3.23.3.0.0'}],visual:[{label:'Voorzieningen voor hulp- en/of geleidehonden',id:'3.13.1.0.0'},{label:'Audiodescriptie',id:'3.13.2.0.0'},{label:'Brochure beschikbaar in braille',id:'3.13.3.0.0'},{label:'Brochure beschikbaar in grootletterschrift',id:'3.13.4.0.0'},{label:'Brochure beschikbaar in gesproken vorm',id:'3.13.5.0.0'}],hearing:[{label:'Ringleiding',id:'3.17.1.0.0'},{label:'Voelstoelen',id:'3.17.2.0.0'},{label:'Ondertiteling',id:'3.17.3.0.0'}]})
 
@@ -2275,62 +2275,44 @@ function udbCalendarSummary() {
 
 })();
 
-// Source: src/core/components/time-autocomplete/time-autocomplete.js
+// Source: src/core/components/time/time.directive.js
 (function () {
 /**
-   * @ngdoc directive
-   * @name udb.core.directive:udbMultiselect
-   * @description
-   * # directive for bootstrap-multiselect integration
-   */
-  angular
+ * @ngdoc component
+ * @name udb.core.directive:udbTime
+ * @description
+ * # udbTime
+ */
+angular
   .module('udb.core')
-  .directive('udbTimeAutocomplete', udbTimeAutocompleteDirective);
+  .directive('udbTime', udbTimeDirective);
 
-  function udbTimeAutocompleteDirective() {
+function udbTimeDirective() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: link
+  };
 
-    return {
-      restrict: 'A',
-      link: function(scope) {
-        scope.times = generateTimes();
-      }
-    };
+  function link (scope, elem, attr, ngModel) {
 
-    /**
-     * Generate the time options.
-     */
-    function generateTimes() {
-
-      var increment = 15;
-      var date = new Date(2015, 1, 1, 0, 0);
-      var options = [];
-      var hourLen = 60;
-      var hours = 24;
-
-      for (var i = 0, loopInt = hours * (hourLen / increment); i < loopInt; i++) {
-
-        date.setMinutes(date.getMinutes() + increment);
-        var h = date.getHours();
-        var m = date.getMinutes();
-
-        if (('' + h).length === 1) {
-          h = '0' + h;
-        }
-
-        if (('' + m).length === 1) {
-          m = '0' + m;
-        }
-
-        var label = h + ':' + m;
-        options.push(label);
-      }
-
-      return options;
-
+    if (!ngModel) {
+      return;
     }
 
-  }
+    if (attr.type !== 'time') {
+      return;
+    }
 
+    ngModel.$formatters.unshift(function(value) {
+      return value.replace(/:\d{2}[.,]\d{3}$/, '');
+    });
+
+    /*elem.bind('blur', function() {
+      elem.toggleClass('has-error', elem.$invalid);
+    });*/
+  }
+}
 })();
 
 // Source: src/core/dutch-translations.constant.js
@@ -2663,8 +2645,8 @@ angular.module('udb.core')
       'audience': 'Toegang'
     },
     audience: {
-      'name': 'Voor iedereen',
-      'description': 'Enkel voor leden',
+      'everyone': 'Voor iedereen',
+      'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
     },
     queryFieldGroup: {
@@ -4359,7 +4341,9 @@ function UdbOpeningHoursFactory() {
     this.validThrough = '';
     this.dayOfWeek = '';
     this.opens = '';
+    this.opensAsDate = '';
     this.closes = '';
+    this.closesAsDate = '';
   };
 
   UdbOpeningHours.prototype = {
@@ -8588,6 +8572,116 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
 })();
 
+// Source: src/event_form/components/price-form-modal/price-form-modal.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:PriceFormModalController
+ * @description
+ * # PriceFormModalController
+ * Modal for adding and editing prices.
+ */
+angular
+  .module('udb.event-form')
+  .controller('PriceFormModalController', PriceFormModalController);
+
+/* @ngInject */
+function PriceFormModalController(
+  $uibModalInstance,
+  EventFormData,
+  price
+) {
+  var pfmc = this;
+  var originalPrice = [];
+
+  pfmc.unsetPriceItemFree = unsetPriceItemFree;
+  pfmc.setPriceItemFree = setPriceItemFree;
+  pfmc.deletePriceItem = deletePriceItem;
+  pfmc.showPriceDelete = showPriceDelete;
+  pfmc.addPriceItem = addPriceItem;
+  pfmc.cancelEditPrice = cancelEditPrice;
+  pfmc.validatePrice = validatePrice;
+
+  function init() {
+    pfmc.price = angular.copy(price);
+    originalPrice = angular.copy(price);
+
+    if (pfmc.price.length === 0) {
+      var priceItem = {
+        category: 'base',
+        name: 'Basistarief',
+        priceCurrency: 'EUR',
+        price: ''
+      };
+      pfmc.price.push(priceItem);
+    }
+
+    pfmc.priceError = false;
+    pfmc.invalidPrice = false;
+    pfmc.savingPrice = false;
+    pfmc.formPriceSubmitted = false;
+  }
+
+  init();
+
+  function unsetPriceItemFree(key) {
+    pfmc.price[key].price = '';
+  }
+
+  function setPriceItemFree(key) {
+    pfmc.price[key].price = 0;
+    pfmc.priceForm.$setDirty();
+  }
+
+  function deletePriceItem(key) {
+    pfmc.price.splice(key, 1);
+    pfmc.priceForm.$setDirty();
+  }
+
+  function showPriceDelete(key) {
+    return key !== 0;
+  }
+
+  function addPriceItem() {
+    var priceItem = {
+      category: 'tariff',
+      name: '',
+      priceCurrency: 'EUR',
+      price: ''
+    };
+    pfmc.price.push(priceItem);
+  }
+
+  function cancelEditPrice() {
+    pfmc.price = angular.copy(originalPrice);
+    originalPrice = [];
+
+    pfmc.invalidPrice = false;
+    pfmc.priceError = false;
+    pfmc.formPriceSubmitted = false;
+
+    $uibModalInstance.dismiss('cancel');
+  }
+
+  function validatePrice() {
+    pfmc.formPriceSubmitted = true;
+    if (pfmc.priceForm.$valid) {
+      pfmc.priceError = false;
+      pfmc.invalidPrice = false;
+      save();
+    }
+    else {
+      pfmc.invalidPrice = true;
+    }
+  }
+
+  function save() {
+    EventFormData.priceInfo = pfmc.price;
+    $uibModalInstance.close();
+  }
+
+}
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price"];
+
 // Source: src/event_form/components/price-info/price-info.component.js
 /**
  * @ngdoc function
@@ -8607,38 +8701,17 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
 
   var controller = this;
 
-  // Price info vars.
-  controller.editPrice = false;
-  controller.priceError = false;
-  controller.invalidPrice = false;
-  controller.savingPrice = false;
-  controller.formPriceSubmitted = false;
-  var originalPrice = [];
-  controller.editingPrice = editingPrice;
-  controller.unsetPriceItemFree = unsetPriceItemFree;
-  controller.setPriceItemFree = setPriceItemFree;
-  controller.deletePriceItem = deletePriceItem;
-  controller.showPriceDelete = showPriceDelete;
-  controller.addPriceItem = addPriceItem;
-  controller.cancelEditPrice = cancelEditPrice;
-  controller.validatePrice = validatePrice;
-  controller.savePrice = savePrice;
+  controller.setPriceFree = setPriceFree;
+  controller.openModal = openModal;
+  controller.$onInit = init;
 
-  init();
+  function setPriceFree() {
 
-  function editingPrice(firstItem) {
-    if (firstItem === undefined) {
-      firstItem = false;
-    }
-
-    controller.editPrice = true;
-    originalPrice = angular.copy(controller.price);
-
-    if (firstItem && controller.price.length === 0) {
+    if (controller.price.length === 0) {
       controller.price = [
         {
           category: 'base',
@@ -8649,78 +8722,47 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
       ];
     }
 
-    else if (controller.price.length === 0) {
-      controller.price = [
-        {
-          category: 'base',
-          name: 'Basisprijs',
-          priceCurrency: 'EUR',
-          price: ''
+    EventFormData.priceInfo = controller.price;
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      $rootScope.$emit('eventFormSaved', EventFormData);
+      if (!_.isEmpty(controller.price)) {
+        controller.priceCssClass = 'state-complete';
+      }
+    });
+  }
+
+  function openModal() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/price-form-modal.html',
+      controller: 'PriceFormModalController',
+      controllerAs: 'pfmc',
+      resolve: {
+        price: function () {
+          return controller.price;
         }
-      ];
-    }
+      }
+    });
+
+    modalInstance.result.then(savePrice, cancelPrice);
   }
 
-  function unsetPriceItemFree(key) {
-    controller.price[key].price = '';
-  }
+  function init() {
+    controller.price = EventFormData.priceInfo;
 
-  function setPriceItemFree(key) {
-    controller.price[key].price = 0;
-  }
-
-  function deletePriceItem(key) {
-    controller.price.splice(key, 1);
-  }
-
-  function showPriceDelete(key) {
-    return key !== 0;
-
-    // TODO when BE can accept empty price array
-    /*if (key === 0 && controller.price.length === 1) {
-      return true;
+    if (controller.price.length) {
+      controller.priceCssClass = 'state-complete';
     }
     else {
-      return false
-    }*/
-  }
-
-  function addPriceItem() {
-    var priceItem = {
-      category: 'tariff',
-      name: '',
-      priceCurrency: 'EUR',
-      price: ''
-    };
-    controller.price.push(priceItem);
-  }
-
-  function cancelEditPrice() {
-    controller.price = angular.copy(originalPrice);
-    originalPrice = [];
-
-    controller.editPrice = false;
-    controller.invalidPrice = false;
-    controller.priceError = false;
-    controller.formPriceSubmitted = false;
-  }
-
-  function validatePrice() {
-    controller.formPriceSubmitted = true;
-    if ($scope.priceForm.$valid) {
-      controller.priceError = false;
-      controller.invalidPrice = false;
-      savePrice();
-    }
-    else {
-      controller.invalidPrice = true;
+      controller.priceCssClass = '';
     }
   }
 
   function savePrice() {
     controller.savingPrice = true;
+    controller.price = EventFormData.priceInfo;
 
-    EventFormData.priceInfo = controller.price;
     controller.editPrice = false;
 
     var promise = eventCrud.updatePriceInfo(EventFormData);
@@ -8738,16 +8780,11 @@ function PriceInfoComponent($scope, EventFormData, eventCrud, $rootScope) {
     });
   }
 
-  function init() {
-    if (controller.price.length) {
-      controller.priceCssClass = 'state-complete';
-    }
-    else {
-      controller.priceCssClass = '';
-    }
+  function cancelPrice() {
+    controller.price = EventFormData.priceInfo;
   }
 }
-PriceInfoComponent.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
+PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
 
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
 /**
@@ -9250,7 +9287,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels) {
+function EventFormDataFactory(rx, calendarLabels, moment) {
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9315,6 +9352,7 @@ function EventFormDataFactory(rx, calendarLabels) {
       this.endDate = '';
       this.timestamps = [];
       this.openingHours = [];
+      this.openingHoursErrors = {};
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -9504,11 +9542,13 @@ function EventFormDataFactory(rx, calendarLabels) {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addTimestamp: function(date, startHour, endHour) {
+    addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
 
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
+        'startHourAsDate' : startHourAsDate,
+        'endHourAsDate' : endHourAsDate,
         'endHour' : endHour,
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
@@ -9519,15 +9559,28 @@ function EventFormDataFactory(rx, calendarLabels) {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addOpeningHour: function(dayOfWeek, opens, closes) {
+    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
+      var now = moment();
+      if (opens === '') {
+        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
+        opensAsDate = openDate.toDate();
+        opens = openDate.format('HH:mm');
+      }
+
+      if (closes === '') {
+        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
+        closesAsDate = closeDate.toDate();
+        closes = closeDate.format('HH:mm');
+      }
 
       this.openingHours.push({
         'dayOfWeek' : dayOfWeek,
         'opens' : opens,
+        'opensAsDate' : opensAsDate,
         'closes' : closes,
+        'closesAsDate' : closesAsDate,
         'label' : ''
       });
-
     },
 
     /**
@@ -9685,6 +9738,9 @@ function EventFormDataFactory(rx, calendarLabels) {
         }
       }
 
+      this.openingHours[index].opensAsDate = moment(this.openingHours[index].opens, 'HH:mm').toDate();
+      this.openingHours[index].closesAsDate = moment(this.openingHours[index].closes, 'HH:mm').toDate();
+
       this.openingHours[index].label = humanValues.join(', ');
     },
 
@@ -9708,15 +9764,15 @@ function EventFormDataFactory(rx, calendarLabels) {
       formData.calendarType = type;
 
       if (formData.calendarType === 'single') {
-        formData.addTimestamp('', '', '');
+        formData.addTimestamp('', '', '', '', '');
       }
 
       if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '');
+        formData.addOpeningHour('', '', '', '', '');
       }
 
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '');
+        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 
@@ -9729,6 +9785,15 @@ function EventFormDataFactory(rx, calendarLabels) {
     },
 
     /**
+     * Check if the given timestamp is a valid date object.
+     * @param {Object} timestamp
+     * @returns {boolean}
+     */
+    isValidDate: function(timestamp) {
+      return timestamp instanceof Date;
+    },
+
+    /**
      * Toggle the starthour field for given timestamp.
      * @param {Object} timestamp
      *   Timestamp to change
@@ -9737,9 +9802,28 @@ function EventFormDataFactory(rx, calendarLabels) {
       // If we hide the textfield, empty all other time fields.
       if (!timestamp.showStartHour) {
         timestamp.startHour = '';
+        timestamp.startHourAsDate = '';
         timestamp.endHour = '';
+        timestamp.endHourAsDate = '';
         timestamp.showEndHour = false;
+        timestamp.date.setHours(0);
+        timestamp.date.setMinutes(0);
         this.timingChanged();
+      }
+      else {
+        var nextHour = moment().add(1, 'hours').minutes(0);
+        var startHourAsDate = angular.copy(timestamp.date);
+        var endHourAsDate = angular.copy(timestamp.date);
+        startHourAsDate.setHours(nextHour.hours());
+        startHourAsDate.setMinutes(nextHour.minutes());
+        endHourAsDate.setHours(23);
+        endHourAsDate.setMinutes(59);
+
+        timestamp.startHour = moment(startHourAsDate).format('HH:mm');
+        timestamp.startHourAsDate = startHourAsDate;
+        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+        timestamp.endHourAsDate = endHourAsDate;
+        timestamp.showEndHour = false;
       }
     },
 
@@ -9749,11 +9833,129 @@ function EventFormDataFactory(rx, calendarLabels) {
      *   Timestamp to change
      */
     toggleEndHour: function(timestamp) {
+      var endHourAsDate = timestamp.date;
       // If we hide the textfield, empty also the input.
       if (!timestamp.showEndHour) {
-        timestamp.endHour = '';
+        endHourAsDate.setHours(23);
+        endHourAsDate.setMinutes(59);
+
+        timestamp.endHour = '23:59';
+        timestamp.endHourAsDate = endHourAsDate;
         this.timingChanged();
       }
+      else {
+        var nextThreeHours = moment(timestamp.startHourAsDate).add(3, 'hours').minutes(0);
+        endHourAsDate.setHours(nextThreeHours.hours());
+        endHourAsDate.setMinutes(nextThreeHours.minutes());
+
+        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+        timestamp.endHourAsDate = endHourAsDate;
+      }
+    },
+
+    hoursChanged: function (timestamp) {
+      var startHourAsDate;
+      var endHourAsDate;
+      if (timestamp.showStartHour || timestamp.showEndHour) {
+        if (timestamp.showStartHour) {
+          if (timestamp.startHourAsDate !== undefined) {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+          }
+          else {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+            startHourAsDate.hours(0);
+            startHourAsDate.minutes(0);
+          }
+          timestamp.startHour = startHourAsDate.format('HH:mm');
+        }
+
+        if (timestamp.showEndHour) {
+          // if the endhour is invalid, send starthour to backend.
+          if (timestamp.endHourAsDate !== undefined) {
+            endHourAsDate = moment(timestamp.endHourAsDate);
+          }
+          else {
+            endHourAsDate = startHourAsDate;
+          }
+          timestamp.endHour = endHourAsDate.format('HH:mm');
+        }
+        this.timingChanged();
+      }
+    },
+
+    saveOpeningHours: function () {
+      angular.forEach(this.openingHours, function(openingHour) {
+        var opensAsDate, closesAsDate;
+
+        opensAsDate = moment(openingHour.opensAsDate);
+        openingHour.opens = opensAsDate.format('HH:mm');
+
+        closesAsDate = moment(openingHour.closesAsDate);
+        openingHour.closes = closesAsDate.format('HH:mm');
+      });
+      this.timingChanged();
+    },
+
+    validateOpeningHour: function (openingHour) {
+      openingHour.hasError = false;
+      openingHour.errors = {};
+
+      if (openingHour.dayOfWeek.length === 0) {
+        openingHour.errors.weekdayError = true;
+      }
+      else {
+        openingHour.errors.weekdayError = false;
+      }
+
+      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
+        openingHour.errors.openingHourError = true;
+      }
+      else {
+        openingHour.errors.openingHourError = false;
+      }
+
+      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
+        openingHour.errors.closingHourError = true;
+      }
+      else {
+        openingHour.errors.closingHourError = false;
+      }
+
+      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
+        openingHour.errors.closingHourGreaterError = true;
+      }
+      else {
+        openingHour.errors.closingHourGreaterError = false;
+      }
+
+      angular.forEach(openingHour.errors, function(error, key) {
+        if (error) {
+          openingHour.hasError = true;
+        }
+      });
+
+      this.validateOpeningHours();
+    },
+
+    validateOpeningHours: function () {
+      this.openingHoursHasErrors = false;
+      this.openingHoursErrors.weekdayError = false;
+      this.openingHoursErrors.openingHourError = false;
+      this.openingHoursErrors.closingHourError = false;
+      this.openingHoursErrors.closingHourGreaterError = false;
+
+      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
+      if (errors.length > 0) {
+        this.openingHoursHasErrors = true;
+      }
+      else {
+        this.openingHoursHasErrors = false;
+      }
+
+      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
+      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
+      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
+      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
     },
 
     periodicTimingChanged: function () {
@@ -9776,7 +9978,7 @@ function EventFormDataFactory(rx, calendarLabels) {
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -9943,29 +10145,17 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     var startDate = moment(startDateString);
     var endDate = moment(endDateString);
 
-    var startHour = '';
-    startHour = startDate.hours() <= 9 ? '0' + startDate.hours() : startDate.hours();
-    if (startDate.minutes() <= 9) {
-      startHour += ':0' + startDate.minutes();
-    }
-    else {
-      startHour += ':' + startDate.minutes();
-    }
-
-    var endHour = '';
-    endHour = endDate.hours() <= 9 ? '0' + endDate.hours() : endDate.hours();
-    if (endDate.minutes() <= 9) {
-      endHour += ':0' + endDate.minutes();
-    }
-    else {
-      endHour += ':' + endDate.minutes();
-    }
+    var startHour = startDate.format('HH:mm');
+    var endHour = endDate.format('HH:mm');
 
     startHour = startHour === '00:00' ? '' : startHour;
     endHour = endHour === '00:00' ? '' : endHour;
 
+    var startHourAsDate = moment(startDateString).toDate();
+    var endHourAsDate = moment(endDateString).toDate();
+
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
-    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);
+    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
 
@@ -10321,7 +10511,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
       if (EventFormData.openingHours.length === 0) {
-        EventFormData.addOpeningHour('', '', '');
+        EventFormData.addOpeningHour('', '', '', '', '');
       }
       EventFormData.showStep(3);
 
@@ -10438,7 +10628,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     if (EventFormData.id) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
-    console.log('event timing changed');
   };
 
   EventFormData
@@ -19697,7 +19886,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "           ng-change=\"formData.timingChanged()\"\n" +
     "           ng-model=\"timestamp.date\"></div>\n" +
     "\n" +
-    "      <div class=\"row\">\n" +
+    "      <div class=\"row\"\n" +
+    "           ng-show=\"formData.isValidDate(timestamp.date)\">\n" +
     "        <div class=\"col-xs-6\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\"\n" +
@@ -19708,15 +19898,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Beginuur\n" +
     "          </label>\n" +
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
-    "            <input\n" +
-    "                udb-time-autocomplete\n" +
-    "                ng-model=\"timestamp.startHour\"\n" +
-    "                class=\"form-control uur\"\n" +
-    "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
-    "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 08:00\"\n" +
-    "                focus-if=\"timestamp.showStartHour\">\n" +
+    "            <input udb-time\n" +
+    "                   type=\"time\"\n" +
+    "                   required=\"required\"\n" +
+    "                   class=\"form-control uur\"\n" +
+    "                   ng-model=\"timestamp.startHourAsDate\"\n" +
+    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
+    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
+    "                   placeholder=\"Bv. 08:00\"\n" +
+    "                   focus-if=\"timestamp.showStartHour\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -19729,15 +19919,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Einduur\n" +
     "          </label>\n" +
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
-    "            <input\n" +
-    "                udb-time-autocomplete\n" +
-    "                ng-model=\"timestamp.endHour\"\n" +
-    "                class=\"form-control uur\"\n" +
-    "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
-    "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 23:00\"\n" +
-    "                focus-if=\"timestamp.showEndHour\">\n" +
+    "            <input udb-time\n" +
+    "                   type=\"time\"\n" +
+    "                   required=\"required\"\n" +
+    "                   class=\"form-control uur\"\n" +
+    "                   ng-model=\"timestamp.endHourAsDate\"\n" +
+    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
+    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
+    "                   placeholder=\"Bv. 23:00\"\n" +
+    "                   focus-if=\"timestamp.showEndHour\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -19745,7 +19935,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "\n" +
     "</div>\n" +
-    "\n" +
     "<div class=\"col-xs-12 col-sm-4\">\n" +
     "  <div class=\"add-date\">\n" +
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"formData.addTimestamp('','','')\">\n" +
@@ -19989,7 +20178,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"modal fade\" id=\"wanneer-openingsuren-toevoegen\">\n" +
+    "<div class=\"modal fade\" id=\"wanneer-openingsuren-toevoegen\" ng-init=\"formData.initOpeningHours()\">\n" +
     "  <div class=\"modal-dialog\">\n" +
     "    <div class=\"modal-content\">\n" +
     "      <div class=\"modal-header\">\n" +
@@ -20010,11 +20199,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <tr ng-repeat=\"(i, openingHour) in formData.openingHours\">\n" +
     "            <td>\n" +
     "              <select class=\"selectpicker\"\n" +
+    "                      name=\"weekday\"\n" +
     "                      multiple\n" +
-    "                      udb-multiselect\n" +
     "                      start-label=\"Kies dag(en)\"\n" +
     "                      ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
+    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\"\n" +
+    "                      ng-class=\"{'has-error': openingHour.errors.weekdayError}\"\n" +
+    "                      udb-multiselect\n" +
+    "                      required>\n" +
     "                <option value=\"monday\">maandag</option>\n" +
     "                <option value=\"tuesday\">dinsdag</option>\n" +
     "                <option value=\"wednesday\">woensdag</option>\n" +
@@ -20025,37 +20217,54 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </select>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <input udb-time-autocomplete\n" +
-    "                  ng-model=\"openingHour.opens\"\n" +
-    "                  class=\"form-control\"\n" +
-    "                  uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                  typeahead-editable=\"false\">\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              &nbsp;-&nbsp;\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              <input udb-time-autocomplete\n" +
-    "                     ng-model=\"openingHour.closes\"\n" +
-    "                     class=\"form-control\"\n" +
-    "                     uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                     typeahead-editable=\"false\">\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
-    "                <span aria-hidden=\"true\">&times;</span>\n" +
-    "              </button>\n" +
-    "            </td>\n" +
+    "              <input udb-time\n" +
+    "                     type=\"time\"\n" +
+    "                     name=\"openingHour\"\n" +
+    "                     class=\"form-control uur\"\n" +
+    "                     placeholder=\"Bv. 08:00\"\n" +
+    "                     ng-model=\"openingHour.opensAsDate\"\n" +
+    "                     ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
+    "                     ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                     ng-class=\"{'has-error': openingHour.errors.openingHourError}\" />\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                -&nbsp;\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "\n" +
+    "                <input udb-time\n" +
+    "                       type=\"time\"\n" +
+    "                       name=\"closingHour\"\n" +
+    "                       class=\"form-control uur\"\n" +
+    "                       placeholder=\"Bv. 08:00\"\n" +
+    "                       ng-model=\"openingHour.closesAsDate\"\n" +
+    "                       ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
+    "                       ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                       ng-class=\"{'has-error': openingHour.errors.closingHourError}\"/>\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
+    "                  <span aria-hidden=\"true\">&times;</span>\n" +
+    "                </button>\n" +
+    "              </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '')\">\n" +
+    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '', '', '')\">\n" +
     "          Meer openingstijden toevoegen\n" +
     "        </a>\n" +
+    "        <div class=\"alert alert-danger\" ng-show=\"formData.openingHoursHasErrors\">\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourError\">Gelieve een geldige sluitingstijd in te geven.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourGreaterError\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\" data-dismiss=\"modal\"\n" +
-    "                ng-click=\"formData.timingChanged()\">\n" +
+    "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
+    "                data-dismiss=\"modal\"\n" +
+    "                ng-click=\"formData.saveOpeningHours()\"\n" +
+    "                ng-disabled=\"formData.openingHoursHasErrors\">\n" +
     "          Toevoegen\n" +
     "        </button>\n" +
     "      </div>\n" +
@@ -20383,33 +20592,123 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/price-form-modal.html',
+    "\n" +
+    "<div class=\"modal-header\">\n" +
+    "    <button type=\"button\" class=\"close\" ng-click=\"pfmc.cancelEditPrice()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
+    "    <h4 class=\"modal-title\">Prijzen toevoegen</h4>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "\n" +
+    "    <form name=\"pfmc.priceForm\" novalidate>\n" +
+    "        <table class=\"table\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <tr ng-repeat=\"(key, priceInfo) in pfmc.price\"\n" +
+    "                    ng-model=\"priceInfo\"\n" +
+    "                    ng-form=\"pfmc.priceForm.priceFieldForm\">\n" +
+    "                    <td ng-switch on=\"priceInfo.category\"\n" +
+    "                        class=\"col-xs-4\">\n" +
+    "                        <span ng-switch-when=\"base\">\n" +
+    "                            Basistarief\n" +
+    "                        </span>\n" +
+    "                        <span ng-switch-default>\n" +
+    "                            <input type=\"text\"\n" +
+    "                                   class=\"form-control\"\n" +
+    "                                   name=\"name\"\n" +
+    "                                   placeholder=\"Doelgroep\"\n" +
+    "                                   ng-model=\"priceInfo.name\"\n" +
+    "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
+    "                                   required />\n" +
+    "                        </span>\n" +
+    "                    </td>\n" +
+    "                    <td class=\"col-xs-4\">\n" +
+    "                        <span ng-if=\"priceInfo.price === 0\">\n" +
+    "                            Gratis\n" +
+    "                        </span>\n" +
+    "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
+    "                            <div class=\"form-inline\">\n" +
+    "                                <div class=\"form-group\">\n" +
+    "                                    <input type=\"number\"\n" +
+    "                                           class=\"form-control\"\n" +
+    "                                           name=\"price\"\n" +
+    "                                           ng-model=\"priceInfo.price\"\n" +
+    "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
+    "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
+    "                                           required />\n" +
+    "                                </div>\n" +
+    "                                <div class=\"form-group\">euro</div>\n" +
+    "                            </div>\n" +
+    "                        </span>\n" +
+    "                    </td>\n" +
+    "                    <td ng-switch on=\"priceInfo.price\"\n" +
+    "                        class=\"col-xs-3\">\n" +
+    "                        <a class=\"btn btn-link\"\n" +
+    "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
+    "                           ng-switch-when=\"0\">Prijs invoeren</a>\n" +
+    "                        <a class=\"btn btn-link\"\n" +
+    "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
+    "                           ng-switch-default>Gratis</a>\n" +
+    "                    </td>\n" +
+    "                    <td class=\"col-xs-1\">\n" +
+    "                        <a aria-hidden=\"true\"\n" +
+    "                           ng-click=\"pfmc.deletePriceItem(key)\"\n" +
+    "                           ng-if=\"pfmc.showPriceDelete(key)\" class=\"close\">&times;</a>\n" +
+    "                    </td>\n" +
+    "                </tr>\n" +
+    "                <tr>\n" +
+    "                    <td colspan=\"4\">\n" +
+    "                        <a class=\"btn btn-link\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "                    </td>\n" +
+    "                </tr>\n" +
+    "            </div>\n" +
+    "        </table>\n" +
+    "    </form>\n" +
+    "\n" +
+    "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
+    "        Er ging iets fout bij het opslaan van de prijs.\n" +
+    "    </div>\n" +
+    "    <div ng-show=\"pfmc.invalidPrice\" class=\"alert alert-danger\">\n" +
+    "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
+    "    </div>\n" +
+    "\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "            ng-click=\"pfmc.validatePrice()\"\n" +
+    "            ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
+    "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    </button>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/priceInfo.html',
     "<div class=\"row extra-prijs\">\n" +
     "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
     "    <div class=\"col-sm-3\">\n" +
     "      <em class=\"extra-task-label\">Prijs</em>\n" +
-    "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingPrice\"></i>\n" +
+    "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"$ctrl.savingPrice\"></i>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-8\">\n" +
     "\n" +
     "      <div ng-show=\"$ctrl.price.length == 0\">\n" +
     "        <section>\n" +
     "          <a class=\"btn btn-default to-filling\"\n" +
-    "             ng-show=\"!$ctrl.editPrice\"\n" +
-    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.editingPrice()\">\n" +
+    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()\">\n" +
     "            Prijzen toevoegen\n" +
     "          </a>\n" +
     "          <a class=\"btn btn-link\"\n" +
-    "             ng-show=\"!$ctrl.editPrice\"\n" +
-    "             ng-click=\"$ctrl.editingPrice(true)\">Gratis</a>\n" +
+    "             ng-click=\"$ctrl.setPriceFree()\">Gratis</a>\n" +
     "        </section>\n" +
     "      </div>\n" +
-    "      <div ng-show=\"$ctrl.price.length > 0 && !$ctrl.editPrice\">\n" +
+    "      <div ng-show=\"$ctrl.price.length > 0\">\n" +
     "        <table class=\"table\">\n" +
     "          <thead>\n" +
     "            <td>Prijzen</td>\n" +
     "            <td>\n" +
-    "              <a class=\"btn btn-default pull-right\" ng-click=\"$ctrl.editingPrice()\">\n" +
+    "              <a class=\"btn btn-default pull-right\" ng-click=\"$ctrl.openModal()\">\n" +
     "              Wijzigen\n" +
     "            </a>\n" +
     "            </td>\n" +
@@ -20427,93 +20726,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
-    "      </div>\n" +
-    "      <form name=\"priceForm\"\n" +
-    "            ng-show=\"$ctrl.editPrice\"\n" +
-    "            novalidate >\n" +
-    "        <table class=\"table\">\n" +
-    "          <div class=\"form-group\">\n" +
-    "            <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
-    "                ng-model=\"priceInfo\"\n" +
-    "                ng-form=\"priceInfoForm\">\n" +
-    "              <td ng-switch on=\"priceInfo.category\"\n" +
-    "                  class=\"col-xs-4\">\n" +
-    "                <span ng-switch-when=\"base\">\n" +
-    "                  Basistarief\n" +
-    "                </span>\n" +
-    "                <span ng-switch-default>\n" +
-    "                  <input type=\"text\"\n" +
-    "                         class=\"form-control\"\n" +
-    "                         name=\"name\"\n" +
-    "                         placeholder=\"Doelgroep\"\n" +
-    "                         ng-model=\"priceInfo.name\"\n" +
-    "                         ng-class=\"{ 'has-error': priceInfoForm.name.$invalid && formPriceSubmitted}\"\n" +
-    "                         required />\n" +
-    "                </span>\n" +
-    "              </td>\n" +
-    "              <td class=\"col-xs-4\">\n" +
-    "                <span ng-if=\"priceInfo.price === 0\">\n" +
-    "                  Gratis\n" +
-    "                </span>\n" +
-    "                <span ng-if=\"priceInfo.price !== 0\">\n" +
-    "                  <div class=\"form-inline\">\n" +
-    "                    <div class=\"form-group\">\n" +
-    "                      <input type=\"number\"\n" +
-    "                       class=\"form-control\"\n" +
-    "                       name=\"price\"\n" +
-    "                       ng-model=\"priceInfo.price\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\"\n" +
-    "                       ng-class=\"{ 'has-error': priceInfoForm.price.$invalid && formPriceSubmitted}\"\n" +
-    "                       required />\n" +
-    "                     </div>\n" +
-    "                     <div class=\"form-group\">\n" +
-    "                       euro\n" +
-    "                     </div>\n" +
-    "                  </div>\n" +
-    "                </span>\n" +
-    "              </td>\n" +
-    "              <td ng-switch on=\"priceInfo.price\"\n" +
-    "                  class=\"col-xs-3\">\n" +
-    "                <a class=\"btn btn-link\"\n" +
-    "                   ng-click=\"$ctrl.unsetPriceItemFree(key)\"\n" +
-    "                   ng-switch-when=\"0\">Prijs invoeren</a>\n" +
-    "                <a class=\"btn btn-link\"\n" +
-    "                   ng-click=\"$ctrl.setPriceItemFree(key)\"\n" +
-    "                   ng-switch-default>Gratis</a>\n" +
-    "              </td>\n" +
-    "              <td class=\"col-xs-1\">\n" +
-    "                <a aria-hidden=\"true\"\n" +
-    "                    ng-click=\"$ctrl.deletePriceItem(key)\"\n" +
-    "                    ng-if=\"$ctrl.showPriceDelete(key)\" class=\"close\">&times;</a>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td colspan=\"4\">\n" +
-    "                <a class=\"btn btn-link\" ng-click=\"$ctrl.addPriceItem()\">Tarief toevoegen</a>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td colspan=\"4\">\n" +
-    "                <div class=\"pull-right\">\n" +
-    "                  <a class=\"btn btn-default\" ng-click=\"$ctrl.cancelEditPrice()\">\n" +
-    "                    Annuleren\n" +
-    "                  </a>\n" +
-    "                  <a class=\"btn btn-primary\"\n" +
-    "                     ng-click=\"$ctrl.validatePrice()\">\n" +
-    "                    Bewaren\n" +
-    "                  </a>\n" +
-    "                </div>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "          </div>\n" +
-    "        </table>\n" +
-    "      </form>\n" +
-    "\n" +
-    "      <div ng-show=\"$ctrl.priceError\" class=\"alert alert-danger\">\n" +
-    "        Er ging iets fout bij het opslaan van de prijs.\n" +
-    "      </div>\n" +
-    "      <div ng-show=\"$ctrl.invalidPrice\" class=\"alert alert-danger\">\n" +
-    "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +

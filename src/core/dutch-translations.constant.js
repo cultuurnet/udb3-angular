@@ -329,8 +329,8 @@ angular.module('udb.core')
       'audience': 'Toegang'
     },
     audience: {
-      'name': 'Voor iedereen',
-      'description': 'Enkel voor leden',
+      'everyone': 'Voor iedereen',
+      'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
     },
     queryFieldGroup: {
