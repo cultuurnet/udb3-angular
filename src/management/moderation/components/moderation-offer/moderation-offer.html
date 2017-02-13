@@ -1,3 +1,4 @@
+<p ng-if="moc.next" class="muted">Valideren</p>
 <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-success btn-moderation" ng-click="moc.approve()">
                 <i class="fa fa-flag text-success"></i>Goedkeuren</button>
 <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-danger btn-moderation" ng-click="moc.askForRejectionReasons()">
@@ -5,3 +6,4 @@
 
 <span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation"><i class="fa fa-flag"></i>Goedgekeurd</span>
 <span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>Afgekeurd</span>
+<a href="" ng-if="(moc.isApproved() || moc.isRejected()) && moc.next">Verder valideren</a>

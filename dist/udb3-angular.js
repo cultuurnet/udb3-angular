@@ -13242,7 +13242,7 @@ angular
     controllerAs: 'moc',
     bindings: {
       offer: '<',
-      continueValidation: '<',
+      next: '<'
     }
   });
 
@@ -19606,9 +19606,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
-    "<!--        <udb-moderation-offer class=\"list-group-item moderation-detail\" offer=\"event\"></udb-moderation-offer>-->\n" +
+    "        <udb-moderation-offer class=\"list-group-item moderation-detail\" offer=\"event\" next=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
-    "</div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
@@ -22146,13 +22145,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-offer.html',
+    "<p ng-if=\"moc.next\" class=\"muted\">Valideren</p>\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
     "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
     "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
     "\n" +
     "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
-    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n"
+    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "<a href=\"\" ng-if=\"(moc.isApproved() || moc.isRejected()) && moc.next\">Verder valideren</a>\n"
   );
 
 

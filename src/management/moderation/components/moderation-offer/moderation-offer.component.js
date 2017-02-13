@@ -14,7 +14,7 @@ angular
     controllerAs: 'moc',
     bindings: {
       offer: '<',
-      continueValidation: '<',
+      next: '<'
     }
   });
 

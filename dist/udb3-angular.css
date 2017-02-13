@@ -3325,4 +3325,13 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success
 .moderation-detail button {
   display: block;
   width: 100%;
+  text-align: left;
+  margin-bottom: 1em;
+}
+.moderation-detail a {
+  display: block;
+  text-decoration: underline;
+}
+.moderation-detail p {
+  color: #777777;
 }
