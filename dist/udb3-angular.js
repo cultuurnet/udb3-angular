@@ -8467,7 +8467,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     function getDefaultPlace() {
       return {
         name: $scope.title,
-        eventType: '',
+        eventType: getFirstCategoryId(),
         address: {
           addressCountry: 'BE',
           addressLocality: $scope.location.address.addressLocality,
@@ -8565,6 +8565,20 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
      */
     function selectPlace(place) {
       $uibModalInstance.close(place);
+    }
+
+    function getFirstCategoryId() {
+      var sortedCategories = $scope.categories.sort(
+            function(a, b) {
+              if (a.label < b.label) {
+                return -1;
+              }
+              if (a.label > b.label) {
+                return 1;
+              }
+              return 0;
+            });
+      return sortedCategories[0].id;
     }
 
   }
@@ -20495,68 +20509,56 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-form-place-modal.html',
     "<div class=\"modal-header\">\n" +
-    "  <h4 class=\"modal-title\">Nieuwe locatie toevoegen</h4>\n" +
+    "    <h4 class=\"modal-title\">Nieuwe locatie toevoegen</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "  <form name=\"placeForm\" class=\"css-form\">\n" +
-    "    <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "      <label>Naam locatie</label>\n" +
-    "      <input class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
-    "      <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
+    "    <form name=\"placeForm\" class=\"css-form\">\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
+    "            <label>Naam locatie</label>\n" +
+    "            <input class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
+    "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
     "        De naam van de locatie is een verplicht veld.\n" +
     "      </span>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "      <label>Categorie</label>\n" +
-    "      <select class=\"form-control\"\n" +
-    "              size=\"4\"\n" +
-    "              name=\"eventType\"\n" +
-    "              id=\"locatie-toevoegen-types\"\n" +
-    "              ng-model=\"newPlace.eventType\"\n" +
-    "              required\n" +
-    "              ng-options=\"category.id as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
-    "          <option value=\"\" selected=\"selected\">Geen selectie</option>\n" +
-    "      </select>\n" +
-    "      <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "        Categorie is een verplicht veld.\n" +
-    "      </span>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\">\n" +
-    "\n" +
-    "      <div class=\"col-xs-12\">\n" +
-    "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "          <label>Straat en nummer</label>\n" +
-    "          <input class=\"form-control\"\n" +
-    "                 id=\"locatie-straat\"\n" +
-    "                 name=\"address_streetAddress\"\n" +
-    "                 type=\"text\"\n" +
-    "                 ng-model=\"newPlace.address.streetAddress\"\n" +
-    "                 required>\n" +
-    "          <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
+    "        </div>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-xs-8 col-sm-8 col-md-8 col-lg-8\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
+    "                    <label>Straat en nummer</label>\n" +
+    "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
+    "                    <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
     "            Straat is een verplicht veld.\n" +
     "          </span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <label>Gemeente</label>\n" +
+    "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
     "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"col-xs-12\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "          <label>Gemeente</label>\n" +
-    "          <p id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
+    "            <label>Categorie</label>\n" +
+    "            <p class=\"help-block\">Kies een categorie die deze locatie het best omschrijft.</p>\n" +
+    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required>\n" +
+    "          <option ng-repeat=\"category in categories  | orderBy:'label' track by category.id\" value=\"{{category.id}}\" >{{category.label}}</option>\n" +
+    "      </select>\n" +
+    "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
+    "        Categorie is een verplicht veld.\n" +
+    "      </span>\n" +
     "        </div>\n" +
-    "\n" +
-    "        <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "          Er ging iets fout tijdens het opslaan van je locatie.\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-xs-12\">\n" +
+    "                <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "                    Er ging iets fout tijdens het opslaan van je locatie.\n" +
+    "                </div>\n" +
+    "            </div>\n" +
     "        </div>\n" +
-    "\n" +
-    "      </div>\n" +
-    "\n" +
-    "    </div>\n" +
-    "  </form>\n" +
+    "    </form>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">Annuleren</button>\n" +
-    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
     "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"

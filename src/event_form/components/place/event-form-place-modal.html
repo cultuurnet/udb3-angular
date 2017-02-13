@@ -1,66 +1,54 @@
 <div class="modal-header">
-  <h4 class="modal-title">Nieuwe locatie toevoegen</h4>
+    <h4 class="modal-title">Nieuwe locatie toevoegen</h4>
 </div>
 <div class="modal-body">
-  <form name="placeForm" class="css-form">
-    <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.name.$error.required }">
-      <label>Naam locatie</label>
-      <input class="form-control" type="text" ng-model="newPlace.name" name="name" required>
-      <span class="help-block" ng-show="showValidation && placeForm.name.$error.required">
+    <form name="placeForm" class="css-form">
+        <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.name.$error.required }">
+            <label>Naam locatie</label>
+            <input class="form-control" type="text" ng-model="newPlace.name" name="name" required>
+            <span class="help-block" ng-show="showValidation && placeForm.name.$error.required">
         De naam van de locatie is een verplicht veld.
       </span>
-    </div>
-
-    <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.eventType.$error.required }">
-      <label>Categorie</label>
-      <select class="form-control"
-              size="4"
-              name="eventType"
-              id="locatie-toevoegen-types"
-              ng-model="newPlace.eventType"
-              required
-              ng-options="category.id as category.label for category in categories | orderBy:'label' track by category.id">
-          <option value="" selected="selected">Geen selectie</option>
-      </select>
-      <span class="help-block" ng-show="showValidation && placeForm.eventType.$error.required">
-        Categorie is een verplicht veld.
-      </span>
-    </div>
-
-    <div class="row">
-
-      <div class="col-xs-12">
-        <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }">
-          <label>Straat en nummer</label>
-          <input class="form-control"
-                 id="locatie-straat"
-                 name="address_streetAddress"
-                 type="text"
-                 ng-model="newPlace.address.streetAddress"
-                 required>
-          <span class="help-block" ng-show="showValidation && placeForm.address_streetAddress.$error.required">
+        </div>
+        <div class="row">
+            <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }">
+                    <label>Straat en nummer</label>
+                    <input class="form-control" id="locatie-straat" name="address_streetAddress" type="text" ng-model="newPlace.address.streetAddress" required>
+                    <span class="help-block" ng-show="showValidation && placeForm.address_streetAddress.$error.required">
             Straat is een verplicht veld.
           </span>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div class="form-group">
+                    <label>Gemeente</label>
+                    <p class="form-control-static" id="waar-locatie-toevoegen-gemeente" ng-bind="newPlace.address.addressLocality"></p>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="col-xs-12">
-        <div class="form-group">
-          <label>Gemeente</label>
-          <p id="waar-locatie-toevoegen-gemeente" ng-bind="newPlace.address.addressLocality"></p>
+        <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.eventType.$error.required }">
+            <label>Categorie</label>
+            <p class="help-block">Kies een categorie die deze locatie het best omschrijft.</p>
+            <select class="form-control" size="4" name="eventType" id="locatie-toevoegen-types" ng-model="newPlace.eventType" required>
+          <option ng-repeat="category in categories  | orderBy:'label' track by category.id" value="{{category.id}}" >{{category.label}}</option>
+      </select>
+            <span class="help-block" ng-show="showValidation && placeForm.eventType.$error.required">
+        Categorie is een verplicht veld.
+      </span>
         </div>
-
-        <div class="alert alert-danger" ng-show="error">
-          Er ging iets fout tijdens het opslaan van je locatie.
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-danger" ng-show="error">
+                    Er ging iets fout tijdens het opslaan van je locatie.
+                </div>
+            </div>
         </div>
-
-      </div>
-
-    </div>
-  </form>
+    </form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="resetAddLocation()">Annuleren</button>
-  <button type="button" class="btn btn-primary" ng-click="addLocation()">
+    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="resetAddLocation()">Annuleren</button>
+    <button type="button" class="btn btn-primary" ng-click="addLocation()">
     Toevoegen <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>
 </div>
