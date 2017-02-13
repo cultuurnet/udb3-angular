@@ -2275,62 +2275,44 @@ function udbCalendarSummary() {
 
 })();
 
-// Source: src/core/components/time-autocomplete/time-autocomplete.js
+// Source: src/core/components/time/time.directive.js
 (function () {
 /**
-   * @ngdoc directive
-   * @name udb.core.directive:udbMultiselect
-   * @description
-   * # directive for bootstrap-multiselect integration
-   */
-  angular
+ * @ngdoc component
+ * @name udb.core.directive:udbTime
+ * @description
+ * # udbTime
+ */
+angular
   .module('udb.core')
-  .directive('udbTimeAutocomplete', udbTimeAutocompleteDirective);
+  .directive('udbTime', udbTimeDirective);
 
-  function udbTimeAutocompleteDirective() {
+function udbTimeDirective() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: link
+  };
 
-    return {
-      restrict: 'A',
-      link: function(scope) {
-        scope.times = generateTimes();
-      }
-    };
+  function link (scope, elem, attr, ngModel) {
 
-    /**
-     * Generate the time options.
-     */
-    function generateTimes() {
-
-      var increment = 15;
-      var date = new Date(2015, 1, 1, 0, 0);
-      var options = [];
-      var hourLen = 60;
-      var hours = 24;
-
-      for (var i = 0, loopInt = hours * (hourLen / increment); i < loopInt; i++) {
-
-        date.setMinutes(date.getMinutes() + increment);
-        var h = date.getHours();
-        var m = date.getMinutes();
-
-        if (('' + h).length === 1) {
-          h = '0' + h;
-        }
-
-        if (('' + m).length === 1) {
-          m = '0' + m;
-        }
-
-        var label = h + ':' + m;
-        options.push(label);
-      }
-
-      return options;
-
+    if (!ngModel) {
+      return;
     }
 
-  }
+    if (attr.type !== 'time') {
+      return;
+    }
 
+    ngModel.$formatters.unshift(function(value) {
+      return value.replace(/:\d{2}[.,]\d{3}$/, '');
+    });
+
+    /*elem.bind('blur', function() {
+      elem.toggleClass('has-error', elem.$invalid);
+    });*/
+  }
+}
 })();
 
 // Source: src/core/dutch-translations.constant.js
@@ -4359,7 +4341,9 @@ function UdbOpeningHoursFactory() {
     this.validThrough = '';
     this.dayOfWeek = '';
     this.opens = '';
+    this.opensAsDate = '';
     this.closes = '';
+    this.closesAsDate = '';
   };
 
   UdbOpeningHours.prototype = {
@@ -9305,7 +9289,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels) {
+function EventFormDataFactory(rx, calendarLabels, moment) {
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -9370,6 +9354,7 @@ function EventFormDataFactory(rx, calendarLabels) {
       this.endDate = '';
       this.timestamps = [];
       this.openingHours = [];
+      this.openingHoursErrors = {};
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -9559,11 +9544,13 @@ function EventFormDataFactory(rx, calendarLabels) {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addTimestamp: function(date, startHour, endHour) {
+    addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
 
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
+        'startHourAsDate' : startHourAsDate,
+        'endHourAsDate' : endHourAsDate,
         'endHour' : endHour,
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
@@ -9574,15 +9561,28 @@ function EventFormDataFactory(rx, calendarLabels) {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addOpeningHour: function(dayOfWeek, opens, closes) {
+    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
+      var now = moment();
+      if (opens === '') {
+        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
+        opensAsDate = openDate.toDate();
+        opens = openDate.format('HH:mm');
+      }
+
+      if (closes === '') {
+        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
+        closesAsDate = closeDate.toDate();
+        closes = closeDate.format('HH:mm');
+      }
 
       this.openingHours.push({
         'dayOfWeek' : dayOfWeek,
         'opens' : opens,
+        'opensAsDate' : opensAsDate,
         'closes' : closes,
+        'closesAsDate' : closesAsDate,
         'label' : ''
       });
-
     },
 
     /**
@@ -9740,6 +9740,9 @@ function EventFormDataFactory(rx, calendarLabels) {
         }
       }
 
+      this.openingHours[index].opensAsDate = moment(this.openingHours[index].opens, 'HH:mm').toDate();
+      this.openingHours[index].closesAsDate = moment(this.openingHours[index].closes, 'HH:mm').toDate();
+
       this.openingHours[index].label = humanValues.join(', ');
     },
 
@@ -9763,15 +9766,15 @@ function EventFormDataFactory(rx, calendarLabels) {
       formData.calendarType = type;
 
       if (formData.calendarType === 'single') {
-        formData.addTimestamp('', '', '');
+        formData.addTimestamp('', '', '', '', '');
       }
 
       if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '');
+        formData.addOpeningHour('', '', '', '', '');
       }
 
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '');
+        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 
@@ -9784,6 +9787,15 @@ function EventFormDataFactory(rx, calendarLabels) {
     },
 
     /**
+     * Check if the given timestamp is a valid date object.
+     * @param {Object} timestamp
+     * @returns {boolean}
+     */
+    isValidDate: function(timestamp) {
+      return timestamp instanceof Date;
+    },
+
+    /**
      * Toggle the starthour field for given timestamp.
      * @param {Object} timestamp
      *   Timestamp to change
@@ -9792,9 +9804,28 @@ function EventFormDataFactory(rx, calendarLabels) {
       // If we hide the textfield, empty all other time fields.
       if (!timestamp.showStartHour) {
         timestamp.startHour = '';
+        timestamp.startHourAsDate = '';
         timestamp.endHour = '';
+        timestamp.endHourAsDate = '';
         timestamp.showEndHour = false;
+        timestamp.date.setHours(0);
+        timestamp.date.setMinutes(0);
         this.timingChanged();
+      }
+      else {
+        var nextHour = moment().add(1, 'hours').minutes(0);
+        var startHourAsDate = angular.copy(timestamp.date);
+        var endHourAsDate = angular.copy(timestamp.date);
+        startHourAsDate.setHours(nextHour.hours());
+        startHourAsDate.setMinutes(nextHour.minutes());
+        endHourAsDate.setHours(23);
+        endHourAsDate.setMinutes(59);
+
+        timestamp.startHour = moment(startHourAsDate).format('HH:mm');
+        timestamp.startHourAsDate = startHourAsDate;
+        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+        timestamp.endHourAsDate = endHourAsDate;
+        timestamp.showEndHour = false;
       }
     },
 
@@ -9804,11 +9835,129 @@ function EventFormDataFactory(rx, calendarLabels) {
      *   Timestamp to change
      */
     toggleEndHour: function(timestamp) {
+      var endHourAsDate = timestamp.date;
       // If we hide the textfield, empty also the input.
       if (!timestamp.showEndHour) {
-        timestamp.endHour = '';
+        endHourAsDate.setHours(23);
+        endHourAsDate.setMinutes(59);
+
+        timestamp.endHour = '23:59';
+        timestamp.endHourAsDate = endHourAsDate;
         this.timingChanged();
       }
+      else {
+        var nextThreeHours = moment(timestamp.startHourAsDate).add(3, 'hours').minutes(0);
+        endHourAsDate.setHours(nextThreeHours.hours());
+        endHourAsDate.setMinutes(nextThreeHours.minutes());
+
+        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+        timestamp.endHourAsDate = endHourAsDate;
+      }
+    },
+
+    hoursChanged: function (timestamp) {
+      var startHourAsDate;
+      var endHourAsDate;
+      if (timestamp.showStartHour || timestamp.showEndHour) {
+        if (timestamp.showStartHour) {
+          if (timestamp.startHourAsDate !== undefined) {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+          }
+          else {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+            startHourAsDate.hours(0);
+            startHourAsDate.minutes(0);
+          }
+          timestamp.startHour = startHourAsDate.format('HH:mm');
+        }
+
+        if (timestamp.showEndHour) {
+          // if the endhour is invalid, send starthour to backend.
+          if (timestamp.endHourAsDate !== undefined) {
+            endHourAsDate = moment(timestamp.endHourAsDate);
+          }
+          else {
+            endHourAsDate = startHourAsDate;
+          }
+          timestamp.endHour = endHourAsDate.format('HH:mm');
+        }
+        this.timingChanged();
+      }
+    },
+
+    saveOpeningHours: function () {
+      angular.forEach(this.openingHours, function(openingHour) {
+        var opensAsDate, closesAsDate;
+
+        opensAsDate = moment(openingHour.opensAsDate);
+        openingHour.opens = opensAsDate.format('HH:mm');
+
+        closesAsDate = moment(openingHour.closesAsDate);
+        openingHour.closes = closesAsDate.format('HH:mm');
+      });
+      this.timingChanged();
+    },
+
+    validateOpeningHour: function (openingHour) {
+      openingHour.hasError = false;
+      openingHour.errors = {};
+
+      if (openingHour.dayOfWeek.length === 0) {
+        openingHour.errors.weekdayError = true;
+      }
+      else {
+        openingHour.errors.weekdayError = false;
+      }
+
+      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
+        openingHour.errors.openingHourError = true;
+      }
+      else {
+        openingHour.errors.openingHourError = false;
+      }
+
+      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
+        openingHour.errors.closingHourError = true;
+      }
+      else {
+        openingHour.errors.closingHourError = false;
+      }
+
+      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
+        openingHour.errors.closingHourGreaterError = true;
+      }
+      else {
+        openingHour.errors.closingHourGreaterError = false;
+      }
+
+      angular.forEach(openingHour.errors, function(error, key) {
+        if (error) {
+          openingHour.hasError = true;
+        }
+      });
+
+      this.validateOpeningHours();
+    },
+
+    validateOpeningHours: function () {
+      this.openingHoursHasErrors = false;
+      this.openingHoursErrors.weekdayError = false;
+      this.openingHoursErrors.openingHourError = false;
+      this.openingHoursErrors.closingHourError = false;
+      this.openingHoursErrors.closingHourGreaterError = false;
+
+      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
+      if (errors.length > 0) {
+        this.openingHoursHasErrors = true;
+      }
+      else {
+        this.openingHoursHasErrors = false;
+      }
+
+      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
+      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
+      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
+      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
     },
 
     periodicTimingChanged: function () {
@@ -9831,7 +9980,7 @@ function EventFormDataFactory(rx, calendarLabels) {
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -9998,29 +10147,17 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     var startDate = moment(startDateString);
     var endDate = moment(endDateString);
 
-    var startHour = '';
-    startHour = startDate.hours() <= 9 ? '0' + startDate.hours() : startDate.hours();
-    if (startDate.minutes() <= 9) {
-      startHour += ':0' + startDate.minutes();
-    }
-    else {
-      startHour += ':' + startDate.minutes();
-    }
-
-    var endHour = '';
-    endHour = endDate.hours() <= 9 ? '0' + endDate.hours() : endDate.hours();
-    if (endDate.minutes() <= 9) {
-      endHour += ':0' + endDate.minutes();
-    }
-    else {
-      endHour += ':' + endDate.minutes();
-    }
+    var startHour = startDate.format('HH:mm');
+    var endHour = endDate.format('HH:mm');
 
     startHour = startHour === '00:00' ? '' : startHour;
     endHour = endHour === '00:00' ? '' : endHour;
 
+    var startHourAsDate = moment(startDateString).toDate();
+    var endHourAsDate = moment(endDateString).toDate();
+
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
-    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);
+    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
 
@@ -10376,7 +10513,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
       if (EventFormData.openingHours.length === 0) {
-        EventFormData.addOpeningHour('', '', '');
+        EventFormData.addOpeningHour('', '', '', '', '');
       }
       EventFormData.showStep(3);
 
@@ -10493,7 +10630,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     if (EventFormData.id) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
-    console.log('event timing changed');
   };
 
   EventFormData
@@ -19752,7 +19888,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "           ng-change=\"formData.timingChanged()\"\n" +
     "           ng-model=\"timestamp.date\"></div>\n" +
     "\n" +
-    "      <div class=\"row\">\n" +
+    "      <div class=\"row\"\n" +
+    "           ng-show=\"formData.isValidDate(timestamp.date)\">\n" +
     "        <div class=\"col-xs-6\">\n" +
     "          <label>\n" +
     "            <input type=\"checkbox\"\n" +
@@ -19763,15 +19900,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Beginuur\n" +
     "          </label>\n" +
     "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
-    "            <input\n" +
-    "                udb-time-autocomplete\n" +
-    "                ng-model=\"timestamp.startHour\"\n" +
-    "                class=\"form-control uur\"\n" +
-    "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
-    "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 08:00\"\n" +
-    "                focus-if=\"timestamp.showStartHour\">\n" +
+    "            <input udb-time\n" +
+    "                   type=\"time\"\n" +
+    "                   required=\"required\"\n" +
+    "                   class=\"form-control uur\"\n" +
+    "                   ng-model=\"timestamp.startHourAsDate\"\n" +
+    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
+    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
+    "                   placeholder=\"Bv. 08:00\"\n" +
+    "                   focus-if=\"timestamp.showStartHour\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
@@ -19784,15 +19921,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            Einduur\n" +
     "          </label>\n" +
     "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
-    "            <input\n" +
-    "                udb-time-autocomplete\n" +
-    "                ng-model=\"timestamp.endHour\"\n" +
-    "                class=\"form-control uur\"\n" +
-    "                uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                typeahead-on-select=\"formData.timingChanged()\"\n" +
-    "                typeahead-editable=\"false\"\n" +
-    "                placeholder=\"Bv. 23:00\"\n" +
-    "                focus-if=\"timestamp.showEndHour\">\n" +
+    "            <input udb-time\n" +
+    "                   type=\"time\"\n" +
+    "                   required=\"required\"\n" +
+    "                   class=\"form-control uur\"\n" +
+    "                   ng-model=\"timestamp.endHourAsDate\"\n" +
+    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
+    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
+    "                   placeholder=\"Bv. 23:00\"\n" +
+    "                   focus-if=\"timestamp.showEndHour\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -19800,7 +19937,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "\n" +
     "</div>\n" +
-    "\n" +
     "<div class=\"col-xs-12 col-sm-4\">\n" +
     "  <div class=\"add-date\">\n" +
     "    <a href=\"#\" class=\"add-date-link\" ng-click=\"formData.addTimestamp('','','')\">\n" +
@@ -20044,7 +20180,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"modal fade\" id=\"wanneer-openingsuren-toevoegen\">\n" +
+    "<div class=\"modal fade\" id=\"wanneer-openingsuren-toevoegen\" ng-init=\"formData.initOpeningHours()\">\n" +
     "  <div class=\"modal-dialog\">\n" +
     "    <div class=\"modal-content\">\n" +
     "      <div class=\"modal-header\">\n" +
@@ -20065,11 +20201,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <tr ng-repeat=\"(i, openingHour) in formData.openingHours\">\n" +
     "            <td>\n" +
     "              <select class=\"selectpicker\"\n" +
+    "                      name=\"weekday\"\n" +
     "                      multiple\n" +
-    "                      udb-multiselect\n" +
     "                      start-label=\"Kies dag(en)\"\n" +
     "                      ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\">\n" +
+    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\"\n" +
+    "                      ng-class=\"{'has-error': openingHour.errors.weekdayError}\"\n" +
+    "                      udb-multiselect\n" +
+    "                      required>\n" +
     "                <option value=\"monday\">maandag</option>\n" +
     "                <option value=\"tuesday\">dinsdag</option>\n" +
     "                <option value=\"wednesday\">woensdag</option>\n" +
@@ -20080,37 +20219,54 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </select>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "              <input udb-time-autocomplete\n" +
-    "                  ng-model=\"openingHour.opens\"\n" +
-    "                  class=\"form-control\"\n" +
-    "                  uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                  typeahead-editable=\"false\">\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              &nbsp;-&nbsp;\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              <input udb-time-autocomplete\n" +
-    "                     ng-model=\"openingHour.closes\"\n" +
-    "                     class=\"form-control\"\n" +
-    "                     uib-typeahead=\"time for time in ::times | filter:$viewValue | limitTo:8\"\n" +
-    "                     typeahead-editable=\"false\">\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
-    "                <span aria-hidden=\"true\">&times;</span>\n" +
-    "              </button>\n" +
-    "            </td>\n" +
+    "              <input udb-time\n" +
+    "                     type=\"time\"\n" +
+    "                     name=\"openingHour\"\n" +
+    "                     class=\"form-control uur\"\n" +
+    "                     placeholder=\"Bv. 08:00\"\n" +
+    "                     ng-model=\"openingHour.opensAsDate\"\n" +
+    "                     ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
+    "                     ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                     ng-class=\"{'has-error': openingHour.errors.openingHourError}\" />\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                -&nbsp;\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "\n" +
+    "                <input udb-time\n" +
+    "                       type=\"time\"\n" +
+    "                       name=\"closingHour\"\n" +
+    "                       class=\"form-control uur\"\n" +
+    "                       placeholder=\"Bv. 08:00\"\n" +
+    "                       ng-model=\"openingHour.closesAsDate\"\n" +
+    "                       ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
+    "                       ng-model-options=\"{ debounce: 500 }\"\n" +
+    "                       ng-class=\"{'has-error': openingHour.errors.closingHourError}\"/>\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
+    "                  <span aria-hidden=\"true\">&times;</span>\n" +
+    "                </button>\n" +
+    "              </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '')\">\n" +
+    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '', '', '')\">\n" +
     "          Meer openingstijden toevoegen\n" +
     "        </a>\n" +
+    "        <div class=\"alert alert-danger\" ng-show=\"formData.openingHoursHasErrors\">\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourError\">Gelieve een geldige sluitingstijd in te geven.</p>\n" +
+    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourGreaterError\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\" data-dismiss=\"modal\"\n" +
-    "                ng-click=\"formData.timingChanged()\">\n" +
+    "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
+    "                data-dismiss=\"modal\"\n" +
+    "                ng-click=\"formData.saveOpeningHours()\"\n" +
+    "                ng-disabled=\"formData.openingHoursHasErrors\">\n" +
     "          Toevoegen\n" +
     "        </button>\n" +
     "      </div>\n" +
@@ -20843,8 +20999,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
-    "</div>"
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\" focus-if >Klaar met bewerken</button>\n" +
+    "</div>\n"
   );
 
 
@@ -21027,6 +21183,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
     "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
+    "                     focus-if=\"!loadingPlaces\"\n" +
     "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
@@ -21109,7 +21266,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-8 col-lg-7\">\n" +
     "        <label ng-show=\"eventFormData.isEvent\">Naam van het evenement </label>\n" +
-    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</strong></label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</label>\n" +
     "\n" +
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
@@ -21117,6 +21274,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
+    "                 focus-if=\"eventFormData.showStep4 && eventFormData.id === ''\"\n" +
     "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +
@@ -21247,11 +21405,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
     "\n" +
     "-->\n" +
-    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll>{{eventFormData.description.nl}}</textarea>\n" +
+    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass==state-complete\">{{eventFormData.description.nl}}</textarea>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll>{{}}</textarea>\n" +
+    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass == 'state-filling'\">{{}}</textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
@@ -21371,7 +21529,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
     "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
-    "                             typeahead-wait-ms=\"300\"/>\n" +
+    "                             typeahead-wait-ms=\"300\"\n" +
+    "                             focus-if=\"organizerCssClass == 'state-filling'\"\n" +
+    "                             udb-auto-scroll/>\n" +
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
