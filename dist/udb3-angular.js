@@ -20999,8 +20999,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
-    "</div>"
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\" focus-if >Klaar met bewerken</button>\n" +
+    "</div>\n"
   );
 
 
@@ -21183,6 +21183,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
     "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
+    "                     focus-if=\"!loadingPlaces\"\n" +
     "                     udb-auto-scroll/>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
@@ -21265,7 +21266,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-8 col-lg-7\">\n" +
     "        <label ng-show=\"eventFormData.isEvent\">Naam van het evenement </label>\n" +
-    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</strong></label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\">Naam van de locatie</label>\n" +
     "\n" +
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
@@ -21273,6 +21274,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                 ng-model=\"eventFormData.name.nl\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
+    "                 focus-if=\"eventFormData.showStep4 && eventFormData.id === ''\"\n" +
     "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +
@@ -21403,11 +21405,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
     "\n" +
     "-->\n" +
-    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll>{{eventFormData.description.nl}}</textarea>\n" +
+    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass==state-complete\">{{eventFormData.description.nl}}</textarea>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll>{{}}</textarea>\n" +
+    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass == 'state-filling'\">{{}}</textarea>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
@@ -21527,7 +21529,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
     "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
-    "                             typeahead-wait-ms=\"300\"/>\n" +
+    "                             typeahead-wait-ms=\"300\"\n" +
+    "                             focus-if=\"organizerCssClass == 'state-filling'\"\n" +
+    "                             udb-auto-scroll/>\n" +
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
