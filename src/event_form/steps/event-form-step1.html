@@ -8,7 +8,7 @@
     </section>
 
     <div class="row" ng-show="!activeEventType">
-      <div ng-class="splitTypes ? 'col-sm-5': ''"
+      <div ng-class="splitTypes ? 'col-sm-5': 'col-sm-12'"
            ng-show="splitTypes || eventFormData.getType() === 'event'">
         <label class="event-type-choser-label event"><span>Een evenement</span></label>
         <ul class="list-inline" id="step1-events">
@@ -26,7 +26,7 @@
         <p class="text-center event-type-splitter"><em>of</em></p>
       </div>
 
-      <div ng-class="splitTypes ? 'col-sm-5': ''"
+      <div ng-class="splitTypes ? 'col-sm-5': 'col-sm-12'"
            ng-show="splitTypes || eventFormData.getType() === 'place'">
         <label class="event-type-choser-label place"><span>Een locatie</span></label>
         <ul class="list-inline" id="step1-places">
