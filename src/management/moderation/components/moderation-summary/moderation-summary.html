@@ -14,25 +14,28 @@
                 </a>
             </header>
 
-            <p class="text-muted"><udb-calendar-summary offer="::moc.offer" show-opening-hours="true"></udb-calendar-summary></p>
+            <p class="text-muted">
+                <udb-calendar-summary offer="::moc.offer" show-opening-hours="true"></udb-calendar-summary>
+            </p>
 
             <div class="content" ng-bind-html="moc.offer.description"></div>
 
             <a ng-href="{{ ::moc.offer.url  + '/preview' }}">
                 Alle info bekijken
-            </a>
-            &nbsp;
+            </a> &nbsp;
             <a ng-href="{{ ::moc.offer.url  + '/edit' }}">
                 Bewerken
             </a>
         </div>
         <div class="col-md-3" ng-class="{muted: !moc.offer.image}">
-            <img ng-if="moc.offer.image" class="offer-image-thumbnail center-block" ng-src="{{moc.offer.image}}"/>
+            <img ng-if="moc.offer.image" class="offer-image-thumbnail center-block" ng-src="{{moc.offer.image}}" />
             <div class="no-img center-block" ng-if="!moc.offer.image">Geen afbeelding</div>
         </div>
     </div>
     <footer class="row" ng-hide="moc.loading">
         <div class="col-md-6">Toegevoegd door {{moc.offer.creator}}</div>
-        <udb-moderation-offer offer="moc.offer" continueValidation="false"></udb-moderation-offer>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
+            <udb-moderation-offer offer="moc.offer" continueValidation="false"></udb-moderation-offer>
+        </div>
     </footer>
 </article>

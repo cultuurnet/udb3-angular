@@ -1,9 +1,7 @@
-<div class="col-md-6 text-right">
-    <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-success btn-moderation" ng-click="moc.approve()">
+<button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-success btn-moderation" ng-click="moc.approve()">
                 <i class="fa fa-flag text-success"></i>Goedkeuren</button>
-    <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-danger btn-moderation" ng-click="moc.askForRejectionReasons()">
+<button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-danger btn-moderation" ng-click="moc.askForRejectionReasons()">
                 <i class="fa fa-flag text-danger"></i>Afkeuren</button>
 
-    <span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation"><i class="fa fa-flag"></i>Goedgekeurd</span>
-    <span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>Afgekeurd</span>
-</div>
+<span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation"><i class="fa fa-flag"></i>Goedgekeurd</span>
+<span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>Afgekeurd</span>
