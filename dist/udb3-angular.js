@@ -13242,13 +13242,13 @@ angular
     controllerAs: 'moc',
     bindings: {
       offer: '<',
+      continueValidation: '<',
     }
   });
 
 /* @ngInject */
 function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
-    console.log(moc.offer.workflowStatus);
   var defaultLanguage = 'nl';
 
   moc.sendingJob = false;
@@ -22192,7 +22192,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
     "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
-    "        <udb-moderation-offer offer=\"moc.offer\"></udb-moderation-offer>\n" +
+    "        <udb-moderation-offer offer=\"moc.offer\" continueValidation=\"false\"></udb-moderation-offer>\n" +
     "    </footer>\n" +
     "</article>\n"
   );

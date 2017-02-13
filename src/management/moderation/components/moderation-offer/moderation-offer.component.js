@@ -14,13 +14,13 @@ angular
     controllerAs: 'moc',
     bindings: {
       offer: '<',
+      continueValidation: '<',
     }
   });
 
 /* @ngInject */
 function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
-    console.log(moc.offer.workflowStatus);
   var defaultLanguage = 'nl';
 
   moc.sendingJob = false;
