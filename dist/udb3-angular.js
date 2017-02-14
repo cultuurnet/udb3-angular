@@ -2275,6 +2275,38 @@ function udbCalendarSummary() {
 
 })();
 
+// Source: src/core/components/publish-status/udb.publishstatus.component.js
+angular
+  .module('udb.core')
+  .component('udbPublishStatusComponent', {
+    bindings: {
+      event: '<',
+    },
+    templateUrl: 'templates/udb.publishstatus.html',
+    controller: PublishStatusComponentController,
+    controllerAs: 'cm'
+  });
+
+/**ik
+ * @ngInject
+ */
+function PublishStatusComponentController($translate) {
+  var cm = this;
+  cm.status = translateStatus(cm.event.workflowStatus);
+  cm.eventIds = eventIds;
+  console.log(cm.event);
+
+  function eventIds (event) {
+    return _.union([event.id], event.sameAs);
+  };
+
+  function translateStatus (status) {
+    return $translate.instant('publicationStatus.' + status);
+  }
+
+}
+PublishStatusComponentController.$inject = ["$translate"];
+
 // Source: src/core/components/time/time.directive.js
 (function () {
 /**
@@ -2644,10 +2676,12 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
-    audience: {
-      'everyone': 'Voor iedereen',
-      'members': 'Enkel voor leden',
-      'education': 'Specifiek voor scholen',
+    publicationStatus: {
+      'DRAFT': 'Niet gepubliceerd',
+      'READY_FOR_VALIDATION': 'Gepubliceerd',
+      'APPROVED': 'Gepubliceerd',
+      'REJECTED': 'Niet gepubliceerd',
+      'DELETED': 'Niet gepubliceerd'
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -7413,7 +7447,7 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7570,10 +7604,6 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
-  $scope.translateWorkflowStatus = function(code) {
-     return translateWorkflowStatus(code);
-   };
-
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -7652,22 +7682,6 @@ function EventDetail(
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
-
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
-  }
-
-  $scope.translateAudience = function (type) {
-    return $translate.instant('audience.' + type);
-  };
-
-  $scope.finishedLoading = function() {
-    return ($scope.event && $scope.permissions);
-  };
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
 
@@ -19015,6 +19029,29 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/udb.publishstatus.html',
+    "<tr>\n" +
+    "    <td><strong>Publicatiestatus</strong></td>\n" +
+    "    <td>\n" +
+    "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
+    "                    </span>\n" +
+    "        <span ng-if=\"!cm.event.available\">{{cm.status | translate }}</span>\n" +
+    "    </td>\n" +
+    "</tr>\n" +
+    "<tr>\n" +
+    "    <td><strong>ID</strong></td>\n" +
+    "    <td>\n" +
+    "        <ul>\n" +
+    "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"isUrl(id)\">\n" +
+    "                <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
+    "                <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "</tr>\n"
+  );
+
+
   $templateCache.put('templates/unexpected-error-modal.html',
     "<div class=\"modal-body\">\n" +
     "  <p ng-bind=\"errorMessage\"></p>\n" +
@@ -19762,28 +19799,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
     "            <tbody>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Publicatiestatus</strong></td>\n" +
-    "              <td>\n" +
-    "                    <span ng-if=\"event.available\"\n" +
-    "                          ng-bind=\"event.available | date: 'dd/MM/yyyy'\">\n" +
-    "                    </span>\n" +
-    "                <span ng-if=\"!event.available\">\n" +
-    "                      {{translateWorkflowStatus(event.workflowStatus)}}\n" +
-    "                    </span>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>ID</strong></td>\n" +
-    "              <td>\n" +
-    "                <ul>\n" +
-    "                  <li ng-repeat=\"id in eventIds(event)\" ng-switch=\"isUrl(id)\">\n" +
-    "                    <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                    <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "                  </li>\n" +
-    "                </ul>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
+    "            <udb-publish-status-component event=\"event\"></udb-publish-status-component>\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
@@ -22957,28 +22973,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
     "            <tbody>\n" +
-    "              <tr ng-class=\"{muted: !place.available}\">\n" +
-    "                <td><strong>Publicatiedatum</strong></td>\n" +
-    "                <td>\n" +
-    "                  <span ng-if=\"place.available\"\n" +
-    "                        ng-bind=\"place.available | date: 'dd / MM / yyyy'\">\n" +
-    "                  </span>\n" +
-    "                  <span ng-if=\"!place.available\">\n" +
-    "                    Geen publicatiedatum\n" +
-    "                  </span>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>ID</strong></td>\n" +
-    "                <td>\n" +
-    "                  <ul>\n" +
-    "                    <li ng-repeat=\"id in placeIds(place)\" ng-switch=\"isUrl(id)\">\n" +
-    "                      <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                      <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "                    </li>\n" +
-    "                  </ul>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
+    "              <udb-publish-status-component event=\"place\"></udb-publish-status-component>\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +

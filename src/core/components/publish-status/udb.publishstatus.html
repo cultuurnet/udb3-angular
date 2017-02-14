@@ -1,0 +1,19 @@
+<tr>
+    <td><strong>Publicatiestatus</strong></td>
+    <td>
+        <span ng-if="cm.event.available" ng-bind="cm.event.available | date: 'dd/MM/yyyy'">
+                    </span>
+        <span ng-if="!cm.event.available">{{cm.status | translate }}</span>
+    </td>
+</tr>
+<tr>
+    <td><strong>ID</strong></td>
+    <td>
+        <ul>
+            <li ng-repeat="id in cm.eventIds(cm.event)" ng-switch="isUrl(id)">
+                <a ng-switch-when="true" ng-href="{{id}}" ng-bind="id"></a>
+                <span ng-switch-when="false" ng-bind="id"></span>
+            </li>
+        </ul>
+    </td>
+</tr>

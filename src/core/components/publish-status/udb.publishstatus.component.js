@@ -4,9 +4,9 @@ angular
   .module('udb.core')
   .component('udbPublishStatusComponent', {
     bindings: {
-      status: '<',
+      event: '<',
     },
-    template: '<span>{{cm.statusTranslated}}</span',
+    templateUrl: 'templates/udb.publishstatus.html',
     controller: PublishStatusComponentController,
     controllerAs: 'cm'
   });
@@ -16,7 +16,13 @@ angular
  */
 function PublishStatusComponentController($translate) {
   var cm = this;
-  cm.statusTranslated = translateStatus(cm.status);
+  cm.status = translateStatus(cm.event.workflowStatus);
+  cm.eventIds = eventIds;
+  console.log(cm.event);
+
+  function eventIds (event) {
+    return _.union([event.id], event.sameAs);
+  };
 
   function translateStatus (status) {
     return $translate.instant('publicationStatus.' + status);
