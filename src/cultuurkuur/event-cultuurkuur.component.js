@@ -18,9 +18,9 @@ function EventCultuurKuurComponentController(appConfig) {
   var cm = this,
       cultuurkuurUrl = _.get(appConfig, 'cultuurkuurUrl');
 
-//  if (!cultuurkuurUrl) {
-//    throw 'cultuurkuur url is not configured';
-//  }
+  if (!cultuurkuurUrl) {
+    throw 'cultuurkuur url is not configured';
+  }
 
   cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
   cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
