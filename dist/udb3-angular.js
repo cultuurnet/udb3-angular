@@ -5044,6 +5044,8 @@ function EventCultuurKuurComponentController(appConfig) {
     fields : _.pluck(cm.event.educationFields, 'label'),
     targetAudience : _.pluck(cm.event.educationTargetAudience, 'label')
   };
+
+  cm.forSchools = cm.event.audience.audienceType === 'education';
 }
 EventCultuurKuurComponentController.$inject = ["appConfig"];
 
@@ -19040,10 +19042,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <p ng-if=\"::!$ctrl.permission\">Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
+    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
     "    <div ng-if=\"::$ctrl.permission\">\n" +
     "        <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
-    "            <p><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>\n" +
+    "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leerkrachten.</p>\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div class=\"row\">\n" +
@@ -19068,8 +19070,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                                    <strong>Geschikt voor</strong>\n" +
     "                                </div>\n" +
-    "                                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length <= 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
     "                                    <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
+    "                                </div>\n" +
+    "                                <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                                    <a role=\"button\" data-toggle=\"collapse\" href=\"#level\" aria-expanded=\"false\" aria-controls=\"level\"> {{$ctrl.cultuurKuurInfo.levels.length}} onderwijsgraden</a>\n" +
+    "                                    <div class=\"collapse\" id=\"level\">\n" +
+    "                                        <div>\n" +
+    "                                            <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
+    "\n" +
+    "                                        </div>\n" +
+    "                                    </div>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
@@ -19083,7 +19094,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete\">\n" +
+    "        <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete && $ctrl.forSchools\">\n" +
     "            <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>\n" +
     "            <a ng-href=\"{{::$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
     "        </div>\n" +
@@ -19604,7 +19615,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <td><strong>Type</strong></td>\n" +
     "                <td>{{event.type.label}}</td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
+    "              <tr ng-if=\"event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><strong>Toegang</strong></td>\n" +
     "                <td>{{translateAudience(event.audience.audienceType)}}\n" +
     "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
