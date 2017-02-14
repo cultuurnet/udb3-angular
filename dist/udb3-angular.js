@@ -8352,6 +8352,15 @@ function EventFormOrganizerModalController(
    */
   function validateNewOrganizer() {
 
+    var newContact = [];
+    angular.forEach($scope.newOrganizer.contact, function(contact) {
+      if (contact.value !== '') {
+        newContact.push(contact);
+      }
+    });
+
+    $scope.newOrganizer.contact = newContact;
+
     $scope.showValidation = true;
     // Forms are automatically known in scope.
     if (!$scope.organizerForm.$valid) {
