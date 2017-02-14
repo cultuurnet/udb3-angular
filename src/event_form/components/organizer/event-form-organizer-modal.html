@@ -60,7 +60,7 @@
         <div class="col-sm-12 col-md-8">
           <div class="form-group">
             <label>Straat en nummer</label>
-            <input type="text" class="form-control" name="street" ng-model="newOrganizer.address.streetAddress">
+            <input type="text" class="form-control" ng-required="newOrganizer.address.postalCode !== '' " name="street" ng-model="newOrganizer.address.streetAddress">
           </div>
         </div>
       </div>
@@ -73,6 +73,7 @@
             </label>
             <div id="gemeente-kiezer" ng-hide="selectedCity !== ''">
             <input id="organizer-gemeente-autocomplete"
+                   ng-required="newOrganizer.address.streetAddress !== ''"
                    type="text"
                    class="form-control uib-typeahead"
                    placeholder="Gemeente of postcode"
@@ -202,7 +203,7 @@
   <button type="button" class="btn btn-default" ng-click="cancel()">Sluiten</button>
   <button type="button"
           class="btn btn-primary organisator-toevoegen-bewaren"
-          ng-disabled="disableSubmit"
+          ng-disabled="disableSubmit || !addressCompleteOrEmpty()"
           ng-click="validateNewOrganizer()">
     Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>

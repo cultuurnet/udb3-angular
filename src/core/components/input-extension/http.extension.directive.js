@@ -23,12 +23,12 @@ function UdbHttpExtensionDirective($parse) {
     var model = $parse(attrs.ngModel);
     var modelSetter = model.assign;
 
-    elem.on('blur',attachHttp());
+    elem.on('blur', attachHttp());
 
     function attachHttp() {
-      if(!elem.val().includes(attrs.udbHttpExtension) || !elem.val().includes(attrs.udbHttpsExtension)) {
-          var val = attrs.udbHttpExtension + elem.val()
-          modelSetter(scope,val);
+      if (!elem.val().includes(attrs.udbHttpExtension) || !elem.val().includes(attrs.udbHttpsExtension)) {
+        var val = attrs.udbHttpExtension + elem.val();
+        modelSetter(scope, val);
       }
     }
   }

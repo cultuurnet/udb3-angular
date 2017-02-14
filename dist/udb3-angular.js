@@ -2253,12 +2253,12 @@ function UdbHttpExtensionDirective($parse) {
     var model = $parse(attrs.ngModel);
     var modelSetter = model.assign;
 
-    elem.on('blur',attachHttp());
+    elem.on('blur', attachHttp());
 
     function attachHttp() {
-      if(!elem.val().includes(attrs.udbHttpExtension) || !elem.val().includes(attrs.udbHttpsExtension)) {
-          var val = attrs.udbHttpExtension + elem.val()
-          modelSetter(scope,val);
+      if (!elem.val().includes(attrs.udbHttpExtension) || !elem.val().includes(attrs.udbHttpsExtension)) {
+        var val = attrs.udbHttpExtension + elem.val();
+        modelSetter(scope, val);
       }
     }
   }
@@ -8285,6 +8285,7 @@ function EventFormOrganizerModalController(
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
+  $scope.addressCompleteOrEmpty = addressCompleteOrEmpty;
 
   /**
    * Cancel the modal.
@@ -8383,6 +8384,14 @@ function EventFormOrganizerModalController(
 
   }
 
+  function addressCompleteOrEmpty() {
+    var address = $scope.newOrganizer.address;
+    var empty = (address.streetAddress === ''  && address.postalCode === '' && address.addressLocality === '');
+    var streedAddressComplete = (address.streetAddress !== '' && address.streetAddress !== undefined);
+    var complete = (streedAddressComplete && address.postalCode !== '' && address.addressLocality !== '');
+    return (empty || complete);
+  }
+
   /**
    * Select the organizer that should be used.
    */
@@ -8463,6 +8472,8 @@ function EventFormOrganizerModalController(
   function changeCitySelection() {
     $scope.selectedCity = '';
     $scope.cityAutocompleteTextField = '';
+    $scope.newOrganizer.address.postalCode = '';
+    $scope.newOrganizer.address.addressLocality = '';
   }
 
 }
@@ -20387,7 +20398,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group\">\n" +
     "            <label>Straat en nummer</label>\n" +
-    "            <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
+    "            <input type=\"text\" class=\"form-control\" ng-required=\"newOrganizer.address.postalCode !== '' \" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -20400,6 +20411,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </label>\n" +
     "            <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
     "            <input id=\"organizer-gemeente-autocomplete\"\n" +
+    "                   ng-required=\"newOrganizer.address.streetAddress !== ''\"\n" +
     "                   type=\"text\"\n" +
     "                   class=\"form-control uib-typeahead\"\n" +
     "                   placeholder=\"Gemeente of postcode\"\n" +
@@ -20529,7 +20541,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "          ng-disabled=\"disableSubmit\"\n" +
+    "          ng-disabled=\"disableSubmit || !addressCompleteOrEmpty()\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
     "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +

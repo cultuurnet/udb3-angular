@@ -58,6 +58,7 @@ function EventFormOrganizerModalController(
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
+  $scope.addressCompleteOrEmpty = addressCompleteOrEmpty;
 
   /**
    * Cancel the modal.
@@ -156,6 +157,14 @@ function EventFormOrganizerModalController(
 
   }
 
+  function addressCompleteOrEmpty() {
+    var address = $scope.newOrganizer.address;
+    var empty = (address.streetAddress === ''  && address.postalCode === '' && address.addressLocality === '');
+    var streedAddressComplete = (address.streetAddress !== '' && address.streetAddress !== undefined);
+    var complete = (streedAddressComplete && address.postalCode !== '' && address.addressLocality !== '');
+    return (empty || complete);
+  }
+
   /**
    * Select the organizer that should be used.
    */
@@ -236,6 +245,8 @@ function EventFormOrganizerModalController(
   function changeCitySelection() {
     $scope.selectedCity = '';
     $scope.cityAutocompleteTextField = '';
+    $scope.newOrganizer.address.postalCode = '';
+    $scope.newOrganizer.address.addressLocality = '';
   }
 
 }
