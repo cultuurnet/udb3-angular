@@ -2240,7 +2240,7 @@ angular
   .module('udb.core')
   .directive('udbHttpExtension', UdbHttpExtensionDirective);
 
-function UdbHttpExtensionDirective() {
+function UdbHttpExtensionDirective($parse) {
 
   return {
     restrict: 'A',
@@ -2248,18 +2248,22 @@ function UdbHttpExtensionDirective() {
     link: link
   };
 
-  function link (scope, elem, attrs, ngModel) {
+  function link (scope, elem, attrs) {
+
+    var model = $parse(attrs.ngModel);
     var modelSetter = model.assign;
 
-    elem.bind('change',attachHttp())
+    elem.on('blur',attachHttp());
 
     function attachHttp() {
-      if(!elem.includes(attrs.udbHttpExtension) || !elem.includes(attrs.udbHttpsExtension)) {
-          modelSetter(scope,attrs.udbHttpExtension + elem.val());
+      if(!elem.val().includes(attrs.udbHttpExtension) || !elem.val().includes(attrs.udbHttpsExtension)) {
+          var val = attrs.udbHttpExtension + elem.val()
+          modelSetter(scope,val);
       }
     }
   }
 }
+UdbHttpExtensionDirective.$inject = ["$parse"];
 
 // Source: src/core/components/multiselect/multiselect.directive.js
 (function () {
@@ -8310,6 +8314,7 @@ function EventFormOrganizerModalController(
    * Validate the website of new organizer.
    */
   function validateWebsite() {
+
     $scope.showWebsiteValidation = true;
 
     if (!$scope.organizerForm.website.$valid) {
@@ -8338,6 +8343,7 @@ function EventFormOrganizerModalController(
           $scope.websiteError = true;
           $scope.showWebsiteValidation = false;
         });
+
   }
 
   /**
@@ -20343,9 +20349,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-model=\"newOrganizer.website\"\n" +
     "                   aria-describedby=\"organizer-website-status\"\n" +
     "                   ng-change=\"validateWebsite()\"\n" +
-    "                   autocomplete=\"off\"\n" +
     "                   udb-http-extension=\"http://\"\n" +
     "                   udb-https-extension=\"https://\"\n" +
+    "                   autocomplete=\"off\"\n" +
     "                   required>\n" +
     "            <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
     "            <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +

@@ -87,6 +87,7 @@ function EventFormOrganizerModalController(
    * Validate the website of new organizer.
    */
   function validateWebsite() {
+
     $scope.showWebsiteValidation = true;
 
     if (!$scope.organizerForm.website.$valid) {
@@ -115,6 +116,7 @@ function EventFormOrganizerModalController(
           $scope.websiteError = true;
           $scope.showWebsiteValidation = false;
         });
+
   }
 
   /**

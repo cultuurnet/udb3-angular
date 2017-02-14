@@ -10,7 +10,7 @@ angular
   .module('udb.core')
   .directive('udbHttpExtension', UdbHttpExtensionDirective);
 
-function UdbHttpExtensionDirective() {
+function UdbHttpExtensionDirective($parse) {
 
   return {
     restrict: 'A',
@@ -18,14 +18,17 @@ function UdbHttpExtensionDirective() {
     link: link
   };
 
-  function link (scope, elem, attrs, ngModel) {
+  function link (scope, elem, attrs) {
+
+    var model = $parse(attrs.ngModel);
     var modelSetter = model.assign;
 
-    elem.bind('change',attachHttp())
+    elem.on('blur',attachHttp());
 
     function attachHttp() {
-      if(!elem.includes(attrs.udbHttpExtension) || !elem.includes(attrs.udbHttpsExtension)) {
-          modelSetter(scope,attrs.udbHttpExtension + elem.val());
+      if(!elem.val().includes(attrs.udbHttpExtension) || !elem.val().includes(attrs.udbHttpsExtension)) {
+          var val = attrs.udbHttpExtension + elem.val()
+          modelSetter(scope,val);
       }
     }
   }
