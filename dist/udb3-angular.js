@@ -8569,17 +8569,14 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       $uibModalInstance.close(place);
     }
 
+    /**
+     * @return {string}
+     */
     function getFirstCategoryId() {
       var sortedCategories = $scope.categories.sort(
-            function(a, b) {
-              if (a.label < b.label) {
-                return -1;
-              }
-              if (a.label > b.label) {
-                return 1;
-              }
-              return 0;
-            });
+        function(a, b) {
+          return a.label.localeCompare(b.label);
+        });
       return sortedCategories[0].id;
     }
 
@@ -20525,23 +20522,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"modal-body\">\n" +
     "    <form name=\"placeForm\" class=\"css-form\">\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "            <label>Naam locatie</label>\n" +
-    "            <input class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
+    "            <label for=\"name\">Naam locatie</label>\n" +
+    "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
     "        De naam van de locatie is een verplicht veld.\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
-    "            <div class=\"col-xs-8 col-sm-8 col-md-8 col-lg-8\">\n" +
+    "            <div class=\"col-xs-8\">\n" +
     "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "                    <label>Straat en nummer</label>\n" +
+    "                    <label for=\"locatie-straat\">Straat en nummer</label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
     "                    <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
     "            Straat is een verplicht veld.\n" +
     "          </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
+    "            <div class=\"col-xs-4\">\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label>Gemeente</label>\n" +
     "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
@@ -20549,7 +20546,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "            <label>Categorie</label>\n" +
+    "            <label for=\"locatie-toevoegen-types\">Categorie</label>\n" +
     "            <p class=\"help-block\">Kies een categorie die deze locatie het best omschrijft.</p>\n" +
     "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required>\n" +
     "          <option ng-repeat=\"category in categories  | orderBy:'label' track by category.id\" value=\"{{category.id}}\" >{{category.label}}</option>\n" +
