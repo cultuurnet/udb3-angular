@@ -24,7 +24,7 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -181,10 +181,6 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
-  $scope.translateWorkflowStatus = function(code) {
-     return translateWorkflowStatus(code);
-   };
-
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -263,20 +259,4 @@ function EventDetail(
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
-
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
-  }
-
-  $scope.translateAudience = function (type) {
-    return $translate.instant('audience.' + type);
-  };
-
-  $scope.finishedLoading = function() {
-    return ($scope.event && $scope.permissions);
-  };
 }
