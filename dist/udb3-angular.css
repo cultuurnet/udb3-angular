@@ -1725,6 +1725,9 @@ input + .alert {
 .table td p {
   margin: 0 0 6px 0;
 }
+.pagination .disabled {
+  display: none;
+}
 .udb-query-editor {
   padding-top: 24px;
 }
@@ -3230,6 +3233,18 @@ table.event-detail-price-table {
 }
 .editable-wrap .editable-buttons button + button {
   margin-left: 10px;
+}
+.cultuurkuur-component {
+  margin-left: 12px;
+}
+.cultuurkuur-component .panel {
+  max-width: 95%;
+}
+.cultuurkuur-logo {
+  background-image: url(/images/cultuurkuur-logo.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 .loading-search-result {
   opacity: 0.4;

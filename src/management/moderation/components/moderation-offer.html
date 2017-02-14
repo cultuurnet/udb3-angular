@@ -2,7 +2,7 @@
     <div class="error text-danger" ng-show="moc.error" ng-bind="moc.error"></div>
     <div class="text-info" ng-show="moc.loading"><i class="fa fa-circle-o-notch fa-spin"></i> Moderatie aanbod "{{moc.offerId}}" wordt geladen.</div>
 
-    <div class="row" ng-hide="moc-loading">
+    <div class="row" ng-if="!moc.loading">
         <div class="col-md-9">
             <header class="udb-short-info">
                 <span class="udb-category" ng-bind="moc.offer.type.label"></span>
@@ -14,7 +14,17 @@
                 </a>
             </header>
 
+            <p class="text-muted"><udb-calendar-summary offer="::moc.offer" show-opening-hours="true"></udb-calendar-summary></p>
+
             <div class="content" ng-bind-html="moc.offer.description"></div>
+
+            <a ng-href="{{ ::moc.offer.url  + '/preview' }}">
+                Alle info bekijken
+            </a>
+            &nbsp;
+            <a ng-href="{{ ::moc.offer.url  + '/edit' }}">
+                Bewerken
+            </a>
         </div>
         <div class="col-md-3" ng-class="{muted: !moc.offer.image}">
             <img ng-if="moc.offer.image" class="offer-image-thumbnail center-block" ng-src="{{moc.offer.image}}"/>
@@ -34,4 +44,4 @@
             <span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>Afgekeurd</span>
         </div>
     </footer>
-</div>
+</article>
