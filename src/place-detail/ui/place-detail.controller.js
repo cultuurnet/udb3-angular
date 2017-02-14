@@ -102,14 +102,6 @@ function PlaceDetail(
     return '';
   };
 
-  $scope.placeIds = function (place) {
-    return _.union([place.id], place.sameAs);
-  };
-
-  $scope.isUrl = function (potentialUrl) {
-    return /^(https?)/.test(potentialUrl);
-  };
-
   $scope.isTabActive = function (tabId) {
     return tabId === activeTabId;
   };

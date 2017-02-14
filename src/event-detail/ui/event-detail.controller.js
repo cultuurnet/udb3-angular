@@ -264,14 +264,6 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
-  }
-
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
   };

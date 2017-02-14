@@ -120,29 +120,7 @@
               <col style="width:20%"/>
               <col style="width:80%"/>
             </colgroup>
-            <tbody>
-              <tr ng-class="{muted: !place.available}">
-                <td><strong>Publicatiedatum</strong></td>
-                <td>
-                  <span ng-if="place.available"
-                        ng-bind="place.available | date: 'dd / MM / yyyy'">
-                  </span>
-                  <span ng-if="!place.available">
-                    Geen publicatiedatum
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>ID</strong></td>
-                <td>
-                  <ul>
-                    <li ng-repeat="id in placeIds(place)" ng-switch="isUrl(id)">
-                      <a ng-switch-when="true" ng-href="{{id}}" ng-bind="id"></a>
-                      <span ng-switch-when="false" ng-bind="id"></span>
-                    </li>
-                  </ul>
-                </td>
-              </tr>
+            <tbody udb-publish-status="place">
             </tbody>
           </table>
         </div>
