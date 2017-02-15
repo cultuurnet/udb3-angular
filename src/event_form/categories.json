@@ -255,6 +255,10 @@
                     "label": "Beeldhouwkunst"
                 },
                 {
+                    "id": "1.0.5.0.0",
+                    "label": "Decoratieve kunst"
+                },
+                {
                     "id": "1.0.6.0.0",
                     "label": "Fotografie"
                 },
@@ -271,20 +275,16 @@
                     "label": "Installatiekunst"
                 },
                 {
-                    "id": "1.0.1.0.0",
-                    "label": "Schilderkunst"
-                },
-                {
-                    "id": "1.0.5.0.0",
-                    "label": "Decoratieve kunst"
-                },
-                {
                     "id": "1.0.9.0.0",
                     "label": "Meerdere kunstvormen"
                 },
                 {
                     "id": "1.37.2.0.0",
                     "label": "Samenleving"
+                },
+                {
+                    "id": "1.0.1.0.0",
+                    "label": "Schilderkunst"
                 }
             ]
         },
