@@ -24,17 +24,17 @@ describe('EventFormPlaceModalController', function() {
 
   }));
 
-    beforeEach(function(){
-        categories = getCategories();
-        location = {
-            address : {
-            addressLocality : '',
-            postalCode : ''
-        }
-        };
-        title= 'Test';
-        controller = getController();
-    })
+  beforeEach(function(){
+    categories = getCategories();
+    location = {
+      address : {
+        addressLocality : '',
+        postalCode : ''
+      }
+    };
+    title= 'Test';
+    controller = getController();
+  });
 
   function getController() {
     return $controller(
@@ -52,18 +52,18 @@ describe('EventFormPlaceModalController', function() {
 
   function getCategories() {
     return [
-        {
-            label: 'Bioscoop',
-            id: 'BtVNd33sR0WntjALVbyp3w'
-        },
-        {
-            label: 'Horeca',
-            id: 'ekdc4ATGoUitCa0e6me6xA'
-        },
-        {
-            label: 'Archeologische Site',
-            id: '3CuHvenJ+EGkcvhXLg9Ykg'
-        }
+      {
+        label: 'Bioscoop',
+        id: 'BtVNd33sR0WntjALVbyp3w'
+      },
+      {
+        label: 'Horeca',
+        id: 'ekdc4ATGoUitCa0e6me6xA'
+      },
+      {
+        label: 'Archeologische Site',
+        id: '3CuHvenJ+EGkcvhXLg9Ykg'
+      }
     ];
   }
 
