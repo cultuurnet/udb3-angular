@@ -12,7 +12,7 @@ angular
   .controller('EventFormController', EventFormController);
 
 /* @ngInject */
-function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q) {
+function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q, appConfig) {
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
@@ -24,7 +24,23 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+    var calendarConfig = _.get(appConfig, 'calendarHighlight');
+
+    if (EventFormData.isEvent && calendarConfig.date) {
+      preselectDate(calendarConfig);
+    }
+
     $scope.loaded = true;
+  }
+
+  function preselectDate(calendarConfig) {
+    EventFormData.calendarType = 'single';
+    EventFormData.addTimestamp(
+      new Date(calendarConfig.date),
+      calendarConfig.startTime,
+      calendarConfig.endTime
+    );
+    EventFormData.initCalendar();
   }
 
   /**

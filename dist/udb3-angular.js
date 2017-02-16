@@ -9426,10 +9426,11 @@ function EventFormDataFactory(rx, calendarLabels) {
     },
 
     /**
-     * Add a timestamp to the timestamps array.
+     * @param {Date} date
+     * @param {string} startHour HH:MM
+     * @param {string} endHour HH:MM
      */
     addTimestamp: function(date, startHour, endHour) {
-
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
@@ -9437,7 +9438,6 @@ function EventFormDataFactory(rx, calendarLabels) {
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
       });
-
     },
 
     /**
@@ -9715,7 +9715,7 @@ angular
   .controller('EventFormController', EventFormController);
 
 /* @ngInject */
-function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q) {
+function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q, appConfig) {
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
@@ -9727,7 +9727,23 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+    var calendarConfig = _.get(appConfig, 'calendarHighlight');
+
+    if (EventFormData.isEvent && calendarConfig.date) {
+      preselectDate(calendarConfig);
+    }
+
     $scope.loaded = true;
+  }
+
+  function preselectDate(calendarConfig) {
+    EventFormData.calendarType = 'single';
+    EventFormData.addTimestamp(
+      new Date(calendarConfig.date),
+      calendarConfig.startTime,
+      calendarConfig.endTime
+    );
+    EventFormData.initCalendar();
   }
 
   /**
@@ -9898,7 +9914,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
   }
 
 }
-EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q"];
+EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
 
 // Source: src/event_form/event-form.directive.js
 /**
