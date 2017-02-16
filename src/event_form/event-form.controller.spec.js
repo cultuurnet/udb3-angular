@@ -90,17 +90,20 @@ describe('Controller: Event Form', function() {
   });
 
   it('should preselect timing from configured highlight values when creating a new event', function () {
+    EventFormData.isEvent = true;
+
     $controller(
       'EventFormController', {
         udbApi: udbApi,
         offerId: null,
-        $scope: $scope
+        $scope: $scope,
+        EventFormData: EventFormData
       }
     );
 
     var expectedTimestamps = [
       {
-        date: '2017-09-10',
+        date: new Date('2017-09-10'),
         startHour: '10:00',
         endHour: '18:00',
         showStartHour: true,
