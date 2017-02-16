@@ -2140,8 +2140,8 @@ function udbCalendarSummary() {
    * https://github.com/eternicode/bootstrap-datepicker
    */
   angular
-  .module('udb.core')
-  .directive('udbDatepicker', udbDatepickerDirective);
+    .module('udb.core')
+    .directive('udbDatepicker', udbDatepickerDirective);
 
   /* @ngInject */
   function udbDatepickerDirective(appConfig) {
@@ -2185,14 +2185,14 @@ function udbCalendarSummary() {
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
-            var highlightDate = _.get(appConfig, 'calendarHighlight.highlightDate');
-            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.highlightExtraClass');
+            var highlightDateString = _.get(appConfig, 'calendarHighlight.date');
+            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.extraClass');
 
-            if (!highlightDate) {
+            if (!highlightDateString) {
               return;
             }
-
             // init Date with ISO string
+            var highlightDate = new Date(highlightDateString);
             if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
               var highlightClasses = 'highlight';
 
