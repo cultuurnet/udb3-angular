@@ -4104,9 +4104,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
       this.images = _.reject(getImages(jsonEvent), 'contentUrl', jsonEvent.image);
-      this.labels = _.map(jsonEvent.labels, function (label) {
-        return label;
-      });
+      this.labels = _.union(jsonEvent.labels, jsonEvent.hiddenLabels);
       if (jsonEvent.organizer) {
         // if it's a full organizer object, parse it as one
         if (jsonEvent.organizer['@id']) {

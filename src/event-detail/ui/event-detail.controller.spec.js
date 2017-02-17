@@ -409,6 +409,16 @@ describe('Controller: Event Detail', function() {
     expect($scope.permissions).toEqual(expectedPermissions);
   });
 
+  it('should show regular and hidden labels as a single list for all users', function () {
+    var eventJsonWithHiddenLabel = angular.copy(exampleEventJson);
+    eventJsonWithHiddenLabel.hiddenLabels = ["UiTPAS Leuven"];
+
+    deferredEvent.resolve(new UdbEvent(eventJsonWithHiddenLabel));
+    $scope.$digest();
+
+    expect($scope.event.labels).toEqual(['some label', 'UiTPAS Leuven']);
+  });
+
   it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
     expect($scope.translateWorkflowStatus('DRAFT')).toEqual('Niet gepubliceerd')
   });
