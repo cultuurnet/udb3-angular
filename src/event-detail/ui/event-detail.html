@@ -74,6 +74,9 @@
                   <div ng-if="labelResponse === 'success'" class="alert alert-success">
                     Het label '{{addedLabel}}' werd succesvol toegevoegd.
                   </div>
+                  <div ng-if="labelResponse === 'unlabelError'" class="alert alert-danger">
+                    <span ng-bind="labelsError"></span>
+                  </div>
                 </td>
               </tr>
               <tr>

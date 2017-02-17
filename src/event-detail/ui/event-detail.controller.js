@@ -239,13 +239,29 @@ function EventDetail(
     }
   }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedEvent, label.name);
-    $scope.event.labels = angular.copy(cachedEvent.labels);
-    $scope.labelResponse = '';
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedEvent, label.name)
+      .catch(showUnlabelProblem);
   }
 
   function hasContactPoint() {

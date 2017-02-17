@@ -3213,10 +3213,9 @@ function UdbApi(
    * @return {Promise}
    */
   this.unlabelOffer = function (offerLocation, label) {
-    return $http.delete(
-      offerLocation + '/labels/' + label,
-      defaultApiConfig
-    );
+    return $http
+      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .catch(returnApiProblem);
   };
 
   /**
@@ -6573,7 +6572,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $uibModal) {
   var offerLabeller = this;
 
   /**
@@ -6631,12 +6630,18 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * Unlabel a label from an event
    * @param {UdbEvent|UdbPlace} offer
    * @param {string} labelName
+   *
+   * @return {Promise.<OfferLabelJob|ApiProblem>}
    */
   this.unlabel = function (offer, labelName) {
-    offer.unlabel(labelName);
+    function eagerlyUnlabelAndPassOnResponse(response) {
+      offer.unlabel(labelName);
+      return response;
+    }
 
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
+      .then(eagerlyUnlabelAndPassOnResponse)
       .then(jobCreatorFactory(OfferLabelJob, offer, labelName, true));
   };
 
@@ -6681,7 +6686,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
-OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$uibModal"];
 
 // Source: src/entry/labelling/query-label-job.factory.js
 /**
@@ -7624,13 +7629,29 @@ function EventDetail(
     }
   }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedEvent, label.name);
-    $scope.event.labels = angular.copy(cachedEvent.labels);
-    $scope.labelResponse = '';
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedEvent, label.name)
+      .catch(showUnlabelProblem);
   }
 
   function hasContactPoint() {
@@ -19632,6 +19653,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </div>\n" +
     "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
+    "                  </div>\n" +
+    "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                    <span ng-bind=\"labelsError\"></span>\n" +
     "                  </div>\n" +
     "                </td>\n" +
     "              </tr>\n" +

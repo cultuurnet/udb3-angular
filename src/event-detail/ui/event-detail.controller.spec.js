@@ -341,6 +341,7 @@ describe('Controller: Event Detail', function() {
   it('should update the event when removing a label', function () {
     var label = {name:'some label'};
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    offerLabeller.unlabel.and.returnValue($q.resolve());
     $scope.$digest();
 
     $scope.labelRemoved(label);
