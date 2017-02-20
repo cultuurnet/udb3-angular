@@ -333,7 +333,7 @@ angular.module('udb.core')
       'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
     },
-    publicationStatus: {
+    workflowStatus: {
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',

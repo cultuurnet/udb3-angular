@@ -2275,49 +2275,6 @@ function udbCalendarSummary() {
 
 })();
 
-// Source: src/core/components/publish-status/udb.publishstatus.directive.js
-/**
- * @ngdoc directive
- * @name udb.core.directive: udbPublishStatus
- * @description
- * # udbPublishStatus
- */
-angular
-  .module('udb.core')
-  .directive('udbPublishStatus', function () {
-    return {
-      templateUrl: 'templates/udb.publishstatus.directive.html',
-      controller: PublishStatusDirectiveController,
-      controllerAs: 'cm',
-      restrict: 'A',
-      scope: {
-        event: '<udbPublishStatus'
-      }
-    };
-  });
-
-/* @ngInject */
-function PublishStatusDirectiveController($scope, $translate) {
-  var cm = this;
-  cm.event = $scope.event;
-  cm.status = translateStatus(cm.event.workflowStatus);
-  cm.eventIds = eventIds;
-  cm.isUrl = isUrl;
-
-  function eventIds (event) {
-    return _.union([event.id], event.sameAs);
-  }
-
-  function translateStatus (status) {
-    return $translate.instant('publicationStatus.' + status);
-  }
-
-  function isUrl (potentialUrl) {
-    return /^(https?)/.test(potentialUrl);
-  }
-}
-PublishStatusDirectiveController.$inject = ["$scope", "$translate"];
-
 // Source: src/core/components/time/time.directive.js
 (function () {
 /**
@@ -2357,6 +2314,49 @@ function udbTimeDirective() {
   }
 }
 })();
+
+// Source: src/core/components/workflow-status/udb.workflow-status.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.core.directive: udbWorkflowStatus
+ * @description
+ * # udbWorkflowStatus
+ */
+angular
+  .module('udb.core')
+  .directive('udbWorkflowStatus', function () {
+    return {
+      templateUrl: 'templates/udb.workflow-status.directive.html',
+      controller: WorkflowStatusDirectiveController,
+      controllerAs: 'cm',
+      restrict: 'A',
+      scope: {
+        event: '<udbWorkflowStatus'
+      }
+    };
+  });
+
+/* @ngInject */
+function WorkflowStatusDirectiveController($scope, $translate) {
+  var cm = this;
+  cm.event = $scope.event;
+  cm.status = translateStatus(cm.event.workflowStatus);
+  cm.eventIds = eventIds;
+  cm.isUrl = isUrl;
+
+  function eventIds (event) {
+    return _.union([event.id], event.sameAs);
+  }
+
+  function translateStatus (status) {
+    return $translate.instant('workflowStatus.' + status);
+  }
+
+  function isUrl (potentialUrl) {
+    return /^(https?)/.test(potentialUrl);
+  }
+}
+WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
 
 // Source: src/core/dutch-translations.constant.js
 /**
@@ -2692,7 +2692,7 @@ angular.module('udb.core')
       'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
     },
-    publicationStatus: {
+    workflowStatus: {
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',
@@ -19045,7 +19045,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/udb.publishstatus.directive.html',
+  $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
     "    <td><strong>Publicatiestatus</strong></td>\n" +
     "    <td>\n" +
@@ -19814,7 +19814,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:20%\"/>\n" +
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
-    "            <tbody udb-publish-status=\"event\">\n" +
+    "            <tbody udb-workflow-status=\"::event\">\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
@@ -22987,7 +22987,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:20%\"/>\n" +
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
-    "            <tbody udb-publish-status=\"place\">\n" +
+    "            <tbody udb-workflow-status=\"::place\">\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +

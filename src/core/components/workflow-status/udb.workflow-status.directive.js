@@ -2,26 +2,26 @@
 
 /**
  * @ngdoc directive
- * @name udb.core.directive: udbPublishStatus
+ * @name udb.core.directive: udbWorkflowStatus
  * @description
- * # udbPublishStatus
+ * # udbWorkflowStatus
  */
 angular
   .module('udb.core')
-  .directive('udbPublishStatus', function () {
+  .directive('udbWorkflowStatus', function () {
     return {
-      templateUrl: 'templates/udb.publishstatus.directive.html',
-      controller: PublishStatusDirectiveController,
+      templateUrl: 'templates/udb.workflow-status.directive.html',
+      controller: WorkflowStatusDirectiveController,
       controllerAs: 'cm',
       restrict: 'A',
       scope: {
-        event: '<udbPublishStatus'
+        event: '<udbWorkflowStatus'
       }
     };
   });
 
 /* @ngInject */
-function PublishStatusDirectiveController($scope, $translate) {
+function WorkflowStatusDirectiveController($scope, $translate) {
   var cm = this;
   cm.event = $scope.event;
   cm.status = translateStatus(cm.event.workflowStatus);
@@ -33,7 +33,7 @@ function PublishStatusDirectiveController($scope, $translate) {
   }
 
   function translateStatus (status) {
-    return $translate.instant('publicationStatus.' + status);
+    return $translate.instant('workflowStatus.' + status);
   }
 
   function isUrl (potentialUrl) {
