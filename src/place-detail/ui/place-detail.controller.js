@@ -52,8 +52,13 @@ function PlaceDetail(
   }
 
   $scope.placeIdIsInvalid = false;
+
+  // labels scope variables and functions
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
+  $scope.labelResponse = '';
+  $scope.labelsError = '';
+
   $scope.placeHistory = [];
   $scope.tabs = [
     {
@@ -202,11 +207,28 @@ function PlaceDetail(
     $scope.place.labels = angular.copy(cachedPlace.labels);
   }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.place.labels = angular.copy(cachedPlace.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedPlace, label.name);
-    $scope.place.labels = angular.copy(cachedPlace.labels);
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedPlace, label.name)
+      .catch(showUnlabelProblem);
   }
 }
