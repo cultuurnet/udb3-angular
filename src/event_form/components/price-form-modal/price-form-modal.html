@@ -36,7 +36,9 @@
                                     <input type="number"
                                            class="form-control"
                                            name="price"
+                                           step=".01"
                                            ng-model="priceInfo.price"
+                                           pattern="^\d*(\.\d{1,2}$)?"
                                            ng-model-options="{ updateOn: 'default' }"
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
                                            required />

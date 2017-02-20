@@ -20603,7 +20603,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <input type=\"number\"\n" +
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
+    "                                           step=\".01\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
+    "                                           pattern=\"^\\d*(\\.\\d{1,2}$)?\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
