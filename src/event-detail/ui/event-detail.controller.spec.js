@@ -420,6 +420,30 @@ describe('Controller: Event Detail', function() {
     expect($scope.event.labels).toEqual(['some label', 'UiTPAS Leuven']);
   });
 
+  it('should display an error message when removing a label fails', function () {
+    /** @type {ApiProblem} */
+    var problem = {
+      type: new URL('http://udb.be/problems/event-unlabel-permission'),
+      title: 'You do not have the required permission to unlabel this event.',
+      detail: 'User with id: 2aab63ca-adef-4b6d-badb-0f8a17367c53 has no permission: "Aanbod bewerken" on item: ecee32f5-94bb-4129-b7b9-fac341d55219 when executing command: RemoveLabel.',
+      instance: new URL('http://udb.be/jobs/6ed2eb90-0163-4d15-ba6d-5d66223795e1'),
+      status: 403
+    };
+    var expectedLabels = ['some label'];
+    var label = {name:'some label'};
+    offerLabeller.unlabel.and.returnValue($q.reject(problem));
+
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    $scope.$digest();
+
+    $scope.labelRemoved(label);
+    $scope.$digest();
+
+    expect($scope.event.labels).toEqual(expectedLabels);
+    expect($scope.labelResponse).toEqual('unlabelError');
+    expect($scope.labelsError).toEqual('You do not have the required permission to unlabel this event.');
+  });
+
   it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
     expect($scope.translateWorkflowStatus('DRAFT')).toEqual('Niet gepubliceerd')
   });
