@@ -15,7 +15,7 @@ describe('Controller: Place Detail', function() {
       eventCrud,
       offerLabeller,
       $window,
-      examplePlaceEventJson = {
+      examplePlaceJson = {
         '@id': "http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702",
         '@context': "/api/1.0/place.jsonld",
         name: "Villa 99, een art deco pareltje",
@@ -84,7 +84,7 @@ describe('Controller: Place Detail', function() {
     spyOn(udbApi, 'hasPermission').and.returnValue($q.resolve());
 
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
 
     spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
 
@@ -123,7 +123,7 @@ describe('Controller: Place Detail', function() {
   });
 
   it('should loads the place description from the variation', function () {
-    var variation = new UdbPlace(examplePlaceEventJson);
+    var variation = new UdbPlace(examplePlaceJson);
     variation.description['nl'] = 'haak is een zeekoe';
     deferredVariation.resolve(variation);
     $scope.$digest();
@@ -140,13 +140,13 @@ describe('Controller: Place Detail', function() {
     deferredUpdate.resolve();
 
     expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbPlace(examplePlaceEventJson),
+      new UdbPlace(examplePlaceJson),
       'updated description'
     );
   });
 
   it('should replace the description with the cached one when the variation is deleted', function () {
-    var variation = new UdbPlace(examplePlaceEventJson);
+    var variation = new UdbPlace(examplePlaceJson);
     variation.description['nl'] = 'haak is een zeekoe';
     deferredVariation.resolve(variation);
     $scope.$digest();
@@ -158,7 +158,7 @@ describe('Controller: Place Detail', function() {
     $scope.$digest();
 
     expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbPlace(examplePlaceEventJson),
+      new UdbPlace(examplePlaceJson),
       ''
     );
     expect($scope.place.description).toEqual('Toto is geen zeekoe');
@@ -232,7 +232,7 @@ describe('Controller: Place Detail', function() {
 
   it('should update the place when adding a label', function () {
     var label = {name:'some other label'};
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 
     $scope.labelAdded(label);
@@ -242,7 +242,7 @@ describe('Controller: Place Detail', function() {
   it('should update the place when removing a label', function () {
     var label = {name:'some label'};
     offerLabeller.unlabel.and.returnValue($q.resolve());
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 
     $scope.labelRemoved(label);
@@ -251,7 +251,7 @@ describe('Controller: Place Detail', function() {
 
   it('should prevent any duplicate labels and warn the user when trying to add one', function () {
     var label = {name:'Some Label'};
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 
     spyOn($window, 'alert');
@@ -277,7 +277,7 @@ describe('Controller: Place Detail', function() {
     var label = {name:'some label'};
     offerLabeller.unlabel.and.returnValue($q.reject(problem));
 
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 
     $scope.labelRemoved(label);
