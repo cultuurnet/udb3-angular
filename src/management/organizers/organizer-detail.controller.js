@@ -15,10 +15,12 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   var controller = this;
   var organizerId = $stateParams.id;
 
+  // labels scope variables and functions
   controller.labelSaving = false;
-
   controller.addLabel = addLabel;
   controller.deleteLabel = deleteLabel;
+  controller.labelResponse = '';
+  controller.labelsError = '';
 
   loadOrganizer(organizerId);
 
@@ -37,6 +39,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
 
   function addLabel(label) {
     controller.labelSaving = true;
+    clearLabelsError();
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.name)
@@ -49,18 +52,33 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
 
   function deleteLabel(label) {
     controller.labelSaving = true;
+    clearLabelsError();
+    removeFromCache();
 
     OrganizerManager
         .deleteLabelFromOrganizer(organizerId, label.name)
-        .catch(showProblem)
+        .catch(showUnlabelProblem)
         .finally(function() {
           controller.labelSaving = false;
-          removeFromCache();
         });
   }
 
   function removeFromCache() {
     OrganizerManager.removeOrganizerFromCache(organizerId);
+  }
+
+  function clearLabelsError() {
+    controller.labelResponse = '';
+    controller.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    loadOrganizer(organizerId);
+    controller.labelResponse = 'unlabelError';
+    controller.labelsError = problem.title;
   }
 
   /**
@@ -82,5 +100,4 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
       }
     );
   }
-
 }
