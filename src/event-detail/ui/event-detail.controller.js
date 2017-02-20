@@ -60,7 +60,6 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
