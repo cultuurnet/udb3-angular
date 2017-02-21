@@ -314,13 +314,13 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
+    addOpeningHour: function(openingHour) {
       this.openingHours.push({
-        'dayOfWeek' : dayOfWeek,
-        'opens' : opens,
-        'opensAsDate' : opensAsDate,
-        'closes' : closes,
-        'closesAsDate' : closesAsDate,
+        'dayOfWeek' : openingHour.dayOfWeek,
+        'opens' : openingHour.opens,
+        'opensAsDate' : openingHour.opensAsDate,
+        'closes' : openingHour.closes,
+        'closesAsDate' : openingHour.closesAsDate,
         'label' : ''
       });
     },
