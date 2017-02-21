@@ -20582,9 +20582,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "               <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"\n" +
     "                   ng-class=\"{ 'has-error': priceFieldForm.name.$invalid && priceFieldForm.name.$touched }\"\n" +
     "                    ng-switch on=\"priceInfo.category\">\n" +
-    "                        <span ng-switch-when=\"base\">\n" +
+    "                        <p class=\"form-control-static\"  ng-switch-when=\"base\">\n" +
     "                            Basistarief\n" +
-    "                        </span>\n" +
+    "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
     "                                   class=\"form-control\"\n" +
@@ -20596,9 +20596,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\"\n" +
     "                     ng-class=\"{ 'has-error': priceFieldForm.price.$invalid && priceFieldForm.price.$touched }\">\n" +
-    "                        <span ng-if=\"priceInfo.price === 0\">\n" +
+    "                        <p class=\"form-control-static\" ng-if=\"priceInfo.price === 0\">\n" +
     "                            Gratis\n" +
-    "                        </span>\n" +
+    "                        </p>\n" +
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
     "                                <div class=\"input-group\" >\n" +
@@ -20617,10 +20617,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "                <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
     "                     ng-switch on=\"priceInfo.price\">\n" +
-    "                        <a class=\"btn btn-link\"\n" +
+    "                        <a class=\"btn btn-link form-control-static\"\n" +
     "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
     "                           ng-switch-when=\"0\">Prijs invoeren</a>\n" +
-    "                        <a class=\"btn btn-link\"\n" +
+    "                        <a class=\"btn btn-link form-control-static\"\n" +
     "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
     "                           ng-switch-default>Gratis</a>\n" +
     "                </div>\n" +

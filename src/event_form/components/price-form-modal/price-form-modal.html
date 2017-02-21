@@ -15,9 +15,9 @@
                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
                    ng-class="{ 'has-error': priceFieldForm.name.$invalid && priceFieldForm.name.$touched }"
                     ng-switch on="priceInfo.category">
-                        <span ng-switch-when="base">
+                        <p class="form-control-static"  ng-switch-when="base">
                             Basistarief
-                        </span>
+                        </p>
                         <span ng-switch-default>
                             <input type="text"
                                    class="form-control"
@@ -29,9 +29,9 @@
                 </div>
                 <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5"
                      ng-class="{ 'has-error': priceFieldForm.price.$invalid && priceFieldForm.price.$touched }">
-                        <span ng-if="priceInfo.price === 0">
+                        <p class="form-control-static" ng-if="priceInfo.price === 0">
                             Gratis
-                        </span>
+                        </p>
                         <span ng-if="priceInfo.price !== 0">
                             <div class="form-inline">
                                 <div class="input-group" >
@@ -50,10 +50,10 @@
                 </div>
                 <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
                      ng-switch on="priceInfo.price">
-                        <a class="btn btn-link"
+                        <a class="btn btn-link form-control-static"
                            ng-click="pfmc.unsetPriceItemFree(key)"
                            ng-switch-when="0">Prijs invoeren</a>
-                        <a class="btn btn-link"
+                        <a class="btn btn-link form-control-static"
                            ng-click="pfmc.setPriceItemFree(key)"
                            ng-switch-default>Gratis</a>
                 </div>
