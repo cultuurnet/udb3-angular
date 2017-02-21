@@ -20571,15 +20571,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <h4 class=\"modal-title\">Prijzen toevoegen</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "\n" +
     "    <form name=\"pfmc.priceForm\" novalidate>\n" +
-    "        <table class=\"table\">\n" +
-    "            <div class=\"form-group\">\n" +
-    "                <tr ng-repeat=\"(key, priceInfo) in pfmc.price\"\n" +
-    "                    ng-model=\"priceInfo\"\n" +
-    "                    ng-form=\"pfmc.priceForm.priceFieldForm\">\n" +
-    "                    <td ng-switch on=\"priceInfo.category\"\n" +
-    "                        class=\"col-xs-4\">\n" +
+    "        <div class=\"row price-table\"\n" +
+    "           ng-repeat=\"(key, priceInfo) in pfmc.price\"\n" +
+    "           ng-model=\"priceInfo\">\n" +
+    "           <p class=\"alert alert-danger\" ng-show=\"priceFieldForm.price.$invalid && priceFieldForm.price.$touched\">\n" +
+    "           Gelieve een geldig bedrag in te geven, met maximaal 2 cijfers na de komma.\n" +
+    "           </p>\n" +
+    "           <ng-form name=\"priceFieldForm\">\n" +
+    "               <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"\n" +
+    "                   ng-class=\"{ 'has-error': priceFieldForm.name.$invalid && priceFieldForm.name.$touched }\"\n" +
+    "                    ng-switch on=\"priceInfo.category\">\n" +
     "                        <span ng-switch-when=\"base\">\n" +
     "                            Basistarief\n" +
     "                        </span>\n" +
@@ -20589,17 +20591,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   name=\"name\"\n" +
     "                                   placeholder=\"Doelgroep\"\n" +
     "                                   ng-model=\"priceInfo.name\"\n" +
-    "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
-    "                    </td>\n" +
-    "                    <td class=\"col-xs-4\">\n" +
+    "                </div>\n" +
+    "                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\"\n" +
+    "                     ng-class=\"{ 'has-error': priceFieldForm.price.$invalid && priceFieldForm.price.$touched }\">\n" +
     "                        <span ng-if=\"priceInfo.price === 0\">\n" +
     "                            Gratis\n" +
     "                        </span>\n" +
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
-    "                                <div class=\"form-group\">\n" +
+    "                                <div class=\"input-group\" >\n" +
     "                                    <input type=\"number\"\n" +
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
@@ -20607,35 +20609,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           pattern=\"^\\d*(\\.\\d{1,2}$)?\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
-    "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
+    "                                    <span class=\"input-group-addon\" >euro</span>\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\">euro</div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
-    "                    </td>\n" +
-    "                    <td ng-switch on=\"priceInfo.price\"\n" +
-    "                        class=\"col-xs-3\">\n" +
+    "                </div>\n" +
+    "                <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                     ng-switch on=\"priceInfo.price\">\n" +
     "                        <a class=\"btn btn-link\"\n" +
     "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
     "                           ng-switch-when=\"0\">Prijs invoeren</a>\n" +
     "                        <a class=\"btn btn-link\"\n" +
     "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
     "                           ng-switch-default>Gratis</a>\n" +
-    "                    </td>\n" +
-    "                    <td class=\"col-xs-1\">\n" +
-    "                        <a aria-hidden=\"true\"\n" +
-    "                           ng-click=\"pfmc.deletePriceItem(key)\"\n" +
-    "                           ng-if=\"pfmc.showPriceDelete(key)\" class=\"close\">&times;</a>\n" +
-    "                    </td>\n" +
-    "                </tr>\n" +
-    "                <tr>\n" +
-    "                    <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
-    "                    </td>\n" +
-    "                </tr>\n" +
-    "            </div>\n" +
-    "        </table>\n" +
+    "                </div>\n" +
+    "           </ng-form>\n" +
+    "        </div>\n" +
+    "        <div class=\"row\">\n" +
+    "            <a class=\"btn btn-link\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "        </div>\n" +
     "    </form>\n" +
     "\n" +
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +

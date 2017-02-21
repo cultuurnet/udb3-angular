@@ -4,15 +4,17 @@
     <h4 class="modal-title">Prijzen toevoegen</h4>
 </div>
 <div class="modal-body">
-
     <form name="pfmc.priceForm" novalidate>
-        <table class="table">
-            <div class="form-group">
-                <tr ng-repeat="(key, priceInfo) in pfmc.price"
-                    ng-model="priceInfo"
-                    ng-form="pfmc.priceForm.priceFieldForm">
-                    <td ng-switch on="priceInfo.category"
-                        class="col-xs-4">
+        <div class="row price-table"
+           ng-repeat="(key, priceInfo) in pfmc.price"
+           ng-model="priceInfo">
+           <p class="alert alert-danger" ng-show="priceFieldForm.price.$invalid && priceFieldForm.price.$touched">
+           Gelieve een geldig bedrag in te geven, met maximaal 2 cijfers na de komma.
+           </p>
+           <ng-form name="priceFieldForm">
+               <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+                   ng-class="{ 'has-error': priceFieldForm.name.$invalid && priceFieldForm.name.$touched }"
+                    ng-switch on="priceInfo.category">
                         <span ng-switch-when="base">
                             Basistarief
                         </span>
@@ -22,17 +24,17 @@
                                    name="name"
                                    placeholder="Doelgroep"
                                    ng-model="priceInfo.name"
-                                   ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }"
                                    required />
                         </span>
-                    </td>
-                    <td class="col-xs-4">
+                </div>
+                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5"
+                     ng-class="{ 'has-error': priceFieldForm.price.$invalid && priceFieldForm.price.$touched }">
                         <span ng-if="priceInfo.price === 0">
                             Gratis
                         </span>
                         <span ng-if="priceInfo.price !== 0">
                             <div class="form-inline">
-                                <div class="form-group">
+                                <div class="input-group" >
                                     <input type="number"
                                            class="form-control"
                                            name="price"
@@ -40,35 +42,26 @@
                                            ng-model="priceInfo.price"
                                            pattern="^\d*(\.\d{1,2}$)?"
                                            ng-model-options="{ updateOn: 'blur' }"
-                                           ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
                                            required />
+                                    <span class="input-group-addon" >euro</span>
                                 </div>
-                                <div class="form-group">euro</div>
                             </div>
                         </span>
-                    </td>
-                    <td ng-switch on="priceInfo.price"
-                        class="col-xs-3">
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
+                     ng-switch on="priceInfo.price">
                         <a class="btn btn-link"
                            ng-click="pfmc.unsetPriceItemFree(key)"
                            ng-switch-when="0">Prijs invoeren</a>
                         <a class="btn btn-link"
                            ng-click="pfmc.setPriceItemFree(key)"
                            ng-switch-default>Gratis</a>
-                    </td>
-                    <td class="col-xs-1">
-                        <a aria-hidden="true"
-                           ng-click="pfmc.deletePriceItem(key)"
-                           ng-if="pfmc.showPriceDelete(key)" class="close">&times;</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4">
-                        <a class="btn btn-link" ng-click="pfmc.addPriceItem()">Tarief toevoegen</a>
-                    </td>
-                </tr>
-            </div>
-        </table>
+                </div>
+           </ng-form>
+        </div>
+        <div class="row">
+            <a class="btn btn-link" ng-click="pfmc.addPriceItem()">Tarief toevoegen</a>
+        </div>
     </form>
 
     <div ng-show="pfmc.priceError" class="alert alert-danger">
