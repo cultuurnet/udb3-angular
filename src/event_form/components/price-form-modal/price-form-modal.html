@@ -39,7 +39,7 @@
                                            step=".01"
                                            ng-model="priceInfo.price"
                                            pattern="^\d*(\.\d{1,2}$)?"
-                                           ng-model-options="{ updateOn: 'default' }"
+                                           ng-model-options="{ updateOn: 'blur' }"
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
                                            required />
                                 </div>

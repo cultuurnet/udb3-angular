@@ -20606,7 +20606,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                           step=\".01\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           pattern=\"^\\d*(\\.\\d{1,2}$)?\"\n" +
-    "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
+    "                                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
