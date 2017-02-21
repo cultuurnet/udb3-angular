@@ -315,19 +315,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
      * Add a timestamp to the timestamps array.
      */
     addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
-      var now = moment();
-      if (opens === '') {
-        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
-        opensAsDate = openDate.toDate();
-        opens = openDate.format('HH:mm');
-      }
-
-      if (closes === '') {
-        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
-        closesAsDate = closeDate.toDate();
-        closes = closeDate.format('HH:mm');
-      }
-
       this.openingHours.push({
         'dayOfWeek' : dayOfWeek,
         'opens' : opens,
@@ -522,12 +509,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         formData.addTimestamp('', '', '', '', '');
       }
 
-      if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '', '', '');
-      }
-
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 

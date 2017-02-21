@@ -34,6 +34,78 @@
         <h4 class="modal-title">Openingsuren</h4>
       </div>
       <div class="modal-body">
+        <div class="row">
+            <div
+               ng-if="cm.formData.openingHours.length === 0 || addData ">
+               <form name="newOpeningHourForm">
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                            <label for="newOpeningHourForm.weekday">Dagen</label>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                            <label for="newOpeningHourForm.opens">Van</label>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                            <label for="newOpeningHourForm.closes">Tot</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+                             ng-class="{'has-error': newOpeningHourForm.weekday.$invalid && newOpeningHourForm.weekday.$touched  }">
+                              <div class="form-group">
+                                   <select class="selectpicker"
+                                      name="weekday"
+                                      multiple
+                                      start-label="Kies dag(en)"
+                                      ng-model="openingHour.dayOfWeek"
+                                      udb-multiselect
+                                      required>
+                                    <option value="monday">maandag</option>
+                                    <option value="tuesday">dinsdag</option>
+                                    <option value="wednesday">woensdag</option>
+                                    <option value="thursday">donderdag</option>
+                                    <option value="friday">vrijdag</option>
+                                    <option value="saturday">zaterdag</option>
+                                    <option value="sunday">zondag</option>
+                                </select>
+                              </div>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
+                             ng-class="{'has-error': newOpeningHourForm.opens.$invalid && newOpeningHourForm.opens.$touched}" >
+                              <div class="form-group">
+                              <input udb-time
+                                 type="time"
+                                 name="opens"
+                                 class="form-control uur"
+                                 placeholder="Bv. 08:00"
+                                 ng-model="cm.prototypeOpeningHour.opens"
+                                 />
+                              </div>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
+                           ng-class="{'has-error': newOpeningHourForm.closes.$invalid && newOpeningHourForm.closes.$touched}">
+                            <div class="form-group">
+                                 <input udb-time
+                                   type="time"
+                                   name="closes"
+                                   class="form-control uur"
+                                   placeholder="Bv. 08:00"
+                                   ng-model="cm.prototypeOpeningHour.closes"
+
+                                   />
+                              </div>
+                        </div>
+                    </div>
+                </form>
+        </div>
+        <form name="openingHoursForm"></form>
+        <div class="row">
+            <ng-form name="openingHour">
+
+            </ng-form>
+        </div>
+
+
         <table class="table">
           <thead>
           <tr>

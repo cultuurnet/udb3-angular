@@ -8170,27 +8170,60 @@ function EventFormImageUploadController(
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
 
-// Source: src/event_form/components/openinghours/openinghours.directive.js
-/**
- * @ngdoc directive
- * @name udb.search.directive:tudbEventFormTimestampSelection
- * @description
- * # timestamp selection for event form
- */
+// Source: src/event_form/components/openinghours/openinghours.component.js
 angular
   .module('udb.event-form')
-  .directive('udbEventFormOpeningHours', EventFormOpeningHoursDirective);
-
-/* @ngInject */
-function EventFormOpeningHoursDirective() {
-  return {
-    templateUrl: 'templates/event-form-openinghours.html',
-    restrict: 'E',
-    scope: {
+  .component('udbEventFormOpeningHours', {
+    bindings: {
       formData: '='
-    }
+    },
+    templateUrl: 'templates/event-form-openinghours.html',
+    controller: OpeningHourComponentController,
+    controllerAs: 'cm'
+  });
+
+/**
+ * @ngInject
+ */
+function OpeningHourComponentController(moment) {
+  var cm = this;
+
+  cm.protoTypeOpeningHour = {
+    opens : getPreviewHour(1),
+    closes : getPreviewHour(4)
   };
+
+  function getPreviewHour(x) {
+    var now = moment();
+    var open = angular.copy(now).add(x, 'hours').startOf('hour');
+    return open.format('HH:mm');
+  }
 }
+OpeningHourComponentController.$inject = ["moment"];
+
+// Source: src/event_form/components/openinghours/openinghours.directive.js
+//'use strict';
+//
+///**
+// * @ngdoc directive
+// * @name udb.search.directive:tudbEventFormTimestampSelection
+// * @description
+// * # timestamp selection for event form
+// */
+//angular
+//  .module('udb.event-form')
+//  .directive('udbEventFormOpeningHours', EventFormOpeningHoursDirective);
+//
+///* @ngInject */
+//function EventFormOpeningHoursDirective() {
+//  return {
+//    templateUrl: 'templates/event-form-openinghours.html',
+//    restrict: 'E',
+//    scope: {
+//      formData: '='
+//    }
+//  };
+//}
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -9573,19 +9606,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
      * Add a timestamp to the timestamps array.
      */
     addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
-      var now = moment();
-      if (opens === '') {
-        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
-        opensAsDate = openDate.toDate();
-        opens = openDate.format('HH:mm');
-      }
-
-      if (closes === '') {
-        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
-        closesAsDate = closeDate.toDate();
-        closes = closeDate.format('HH:mm');
-      }
-
       this.openingHours.push({
         'dayOfWeek' : dayOfWeek,
         'opens' : opens,
@@ -9780,12 +9800,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         formData.addTimestamp('', '', '', '', '');
       }
 
-      if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '', '', '');
-      }
-
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 
@@ -20169,6 +20184,78 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <h4 class=\"modal-title\">Openingsuren</h4>\n" +
     "      </div>\n" +
     "      <div class=\"modal-body\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div\n" +
+    "               ng-if=\"cm.formData.openingHours.length === 0 || addData \">\n" +
+    "               <form name=\"newOpeningHourForm\">\n" +
+    "                    <div class=\"row\">\n" +
+    "                        <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
+    "                            <label for=\"newOpeningHourForm.weekday\">Dagen</label>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                            <label for=\"newOpeningHourForm.opens\">Van</label>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                            <label for=\"newOpeningHourForm.closes\">Tot</label>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"row\">\n" +
+    "                        <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"\n" +
+    "                             ng-class=\"{'has-error': newOpeningHourForm.weekday.$invalid && newOpeningHourForm.weekday.$touched  }\">\n" +
+    "                              <div class=\"form-group\">\n" +
+    "                                   <select class=\"selectpicker\"\n" +
+    "                                      name=\"weekday\"\n" +
+    "                                      multiple\n" +
+    "                                      start-label=\"Kies dag(en)\"\n" +
+    "                                      ng-model=\"openingHour.dayOfWeek\"\n" +
+    "                                      udb-multiselect\n" +
+    "                                      required>\n" +
+    "                                    <option value=\"monday\">maandag</option>\n" +
+    "                                    <option value=\"tuesday\">dinsdag</option>\n" +
+    "                                    <option value=\"wednesday\">woensdag</option>\n" +
+    "                                    <option value=\"thursday\">donderdag</option>\n" +
+    "                                    <option value=\"friday\">vrijdag</option>\n" +
+    "                                    <option value=\"saturday\">zaterdag</option>\n" +
+    "                                    <option value=\"sunday\">zondag</option>\n" +
+    "                                </select>\n" +
+    "                              </div>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                             ng-class=\"{'has-error': newOpeningHourForm.opens.$invalid && newOpeningHourForm.opens.$touched}\" >\n" +
+    "                              <div class=\"form-group\">\n" +
+    "                              <input udb-time\n" +
+    "                                 type=\"time\"\n" +
+    "                                 name=\"opens\"\n" +
+    "                                 class=\"form-control uur\"\n" +
+    "                                 placeholder=\"Bv. 08:00\"\n" +
+    "                                 ng-model=\"cm.prototypeOpeningHour.opens\"\n" +
+    "                                 />\n" +
+    "                              </div>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                           ng-class=\"{'has-error': newOpeningHourForm.closes.$invalid && newOpeningHourForm.closes.$touched}\">\n" +
+    "                            <div class=\"form-group\">\n" +
+    "                                 <input udb-time\n" +
+    "                                   type=\"time\"\n" +
+    "                                   name=\"closes\"\n" +
+    "                                   class=\"form-control uur\"\n" +
+    "                                   placeholder=\"Bv. 08:00\"\n" +
+    "                                   ng-model=\"cm.prototypeOpeningHour.closes\"\n" +
+    "\n" +
+    "                                   />\n" +
+    "                              </div>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </form>\n" +
+    "        </div>\n" +
+    "        <form name=\"openingHoursForm\"></form>\n" +
+    "        <div class=\"row\">\n" +
+    "            <ng-form name=\"openingHour\">\n" +
+    "\n" +
+    "            </ng-form>\n" +
+    "        </div>\n" +
+    "\n" +
+    "\n" +
     "        <table class=\"table\">\n" +
     "          <thead>\n" +
     "          <tr>\n" +
@@ -20257,7 +20344,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "  <!-- /.modal-dialog -->\n" +
     "</div>\n" +
-    "<!-- /.modal -->"
+    "<!-- /.modal -->\n"
   );
 
 
