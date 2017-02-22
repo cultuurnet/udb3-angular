@@ -9930,6 +9930,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     saveOpeningHours: function () {
+      console.log(this.openingHours);
       angular.forEach(this.openingHours, function(openingHour) {
         var opensAsDate, closesAsDate;
 
@@ -20327,9 +20328,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
     "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
     "                data-dismiss=\"modal\"\n" +
-    "                ng-click=\"formData.saveOpeningHours()\"\n" +
+    "                ng-click=\"cm.formData.saveOpeningHours()\"\n" +
     "                ng-disabled=\"formData.openingHoursHasErrors\">\n" +
-    "          Toevoegen\n" +
+    "          Opslaan\n" +
     "        </button>\n" +
     "      </div>\n" +
     "    </div>\n" +
