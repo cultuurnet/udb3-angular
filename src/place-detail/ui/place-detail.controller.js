@@ -201,10 +201,19 @@ function PlaceDetail(
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedPlace, newLabel.name);
+      offerLabeller.label(cachedPlace, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
+          }
+          else {
+            $scope.labelResponse = 'error';
+            $scope.labelsError = response;
+          }
+          $scope.place.labels = angular.copy(cachedPlace.labels);
+        });
     }
-
-    $scope.place.labels = angular.copy(cachedPlace.labels);
   }
 
   function clearLabelsError() {

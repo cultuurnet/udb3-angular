@@ -74,7 +74,14 @@
                 <td>
                   <udb-label-select labels="place.labels"
                                     label-added="labelAdded(label)"
-                                    label-removed="labelRemoved(label)"></udb-label-select>
+                                    label-removed="labelRemoved(label)">
+                  </udb-label-select>
+                  <div ng-if="labelResponse === 'error'" class="alert alert-danger">
+                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.
+                  </div>
+                  <div ng-if="labelResponse === 'success'" class="alert alert-success">
+                    Het label '{{addedLabel}}' werd succesvol toegevoegd.
+                  </div>
                   <div ng-if="labelResponse === 'unlabelError'" class="alert alert-danger">
                     <span ng-bind="labelsError"></span>
                   </div>
