@@ -7611,8 +7611,7 @@ function EventDetail(
 
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
-    }
-    else {
+    } else {
       offerLabeller.label(cachedEvent, newLabel.name)
         .then(function(response) {
           if (response.success) {
@@ -15787,10 +15786,19 @@ function PlaceDetail(
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedPlace, newLabel.name);
+      offerLabeller.label(cachedPlace, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
+          }
+          else {
+            $scope.labelResponse = 'error';
+            $scope.labelsError = response;
+          }
+          $scope.place.labels = angular.copy(cachedPlace.labels);
+        });
     }
-
-    $scope.place.labels = angular.copy(cachedPlace.labels);
   }
 
   function clearLabelsError() {
@@ -22923,7 +22931,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <td>\n" +
     "                  <udb-label-select labels=\"place.labels\"\n" +
     "                                    label-added=\"labelAdded(label)\"\n" +
-    "                                    label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
+    "                                    label-removed=\"labelRemoved(label)\">\n" +
+    "                  </udb-label-select>\n" +
+    "                  <div ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                  </div>\n" +
+    "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
+    "                  </div>\n" +
     "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                    <span ng-bind=\"labelsError\"></span>\n" +
     "                  </div>\n" +
