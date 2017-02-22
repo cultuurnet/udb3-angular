@@ -3922,6 +3922,21 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} offerUrl
+   * @param {Date} [publicationDate]
+   * @returns {Promise.<Object|ApiProblem>}
+   */
+  this.publishOffer = function (offerUrl, publicationDate) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=Publish';
+    var data = publicationDate instanceof Date ? {publicationDate: publicationDate} : {};
+
+    return $http
+      .patch(offerUrl.toString(), data, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventUrl
    * @param {Object} newCalendarData
    * @return {Promise.<Object|ApiProblem>} Object containing the duplicate info
@@ -6122,15 +6137,15 @@ function EventCrud(
 
   /**
    * @param {EventFormData} offer
-   * @param {string} jobName
+   * @param {Date} [publicationDate]
    *
    * @return {Promise.<EventCrudJob>}
    */
-  service.publishOffer = function(offer, jobName) {
+  service.publishOffer = function(offer, publicationDate) {
     return udbApi
-      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .publishOffer(offer.apiUrl, publicationDate)
       .then(function (response) {
-        var job = new EventCrudJob(response.commandId, offer, jobName);
+        var job = new EventCrudJob(response.commandId, offer, 'publishOffer');
 
         addJobAndInvalidateCache(jobLogger, job);
 
@@ -10368,7 +10383,7 @@ angular
 
 /* @ngInject */
 function EventFormPublishController(
-    $scope,
+    appConfig,
     EventFormData,
     eventCrud,
     OfferWorkflowStatus,
@@ -10387,9 +10402,10 @@ function EventFormPublishController(
 
   function publish() {
     controller.error = '';
+    var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
 
     eventCrud
-      .publishOffer(EventFormData, 'publishOffer')
+      .publishOffer(EventFormData, defaultPublicationDate)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
@@ -10418,7 +10434,7 @@ function EventFormPublishController(
     return (status === OfferWorkflowStatus.DRAFT);
   }
 }
-EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
+EventFormPublishController.$inject = ["appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**

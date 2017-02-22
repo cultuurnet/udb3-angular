@@ -380,15 +380,15 @@ function EventCrud(
 
   /**
    * @param {EventFormData} offer
-   * @param {string} jobName
+   * @param {Date} [publicationDate]
    *
    * @return {Promise.<EventCrudJob>}
    */
-  service.publishOffer = function(offer, jobName) {
+  service.publishOffer = function(offer, publicationDate) {
     return udbApi
-      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .publishOffer(offer.apiUrl, publicationDate)
       .then(function (response) {
-        var job = new EventCrudJob(response.commandId, offer, jobName);
+        var job = new EventCrudJob(response.commandId, offer, 'publishOffer');
 
         addJobAndInvalidateCache(jobLogger, job);
 
