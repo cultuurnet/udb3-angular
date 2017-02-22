@@ -9638,7 +9638,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
      * Remove the openinghour with the given index.
      */
     removeOpeningHour: function(index) {
-      console.log(index);
       this.openingHours.splice(index, 1);
     },
 
@@ -20317,9 +20316,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </div>\n" +
     "                </form>\n" +
     "            </div>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '', '', '')\">\n" +
-    "          Meer openingstijden toevoegen\n" +
-    "        </a>\n" +
     "        <div class=\"alert alert-danger\" ng-show=\"formData.openingHoursHasErrors\">\n" +
     "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
     "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
