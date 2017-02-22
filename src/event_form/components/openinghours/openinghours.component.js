@@ -23,11 +23,11 @@ function OpeningHourComponentController(moment) {
 
   function initPrototype() {
     cm.prototype = {
-    opensAsDate : getPreviewHour(1),
-    closesAsDate : getPreviewHour(4),
-    dayOfWeek : [],
-    opens : '',
-    closes : ''
+      opensAsDate : getPreviewHour(1),
+      closesAsDate : getPreviewHour(4),
+      dayOfWeek : [],
+      opens : '',
+      closes : ''
     };
   }
 
@@ -45,14 +45,14 @@ function OpeningHourComponentController(moment) {
     var openExists = (cm.prototype.opensAsDate !== null);
     var closesAsDateExists = (cm.prototype.closesAsDate !== null);
     if (!openExists) {
-        cm.opensAsDate = new moment();
-        cm.opensAsDate.hours(0).minutes(0).seconds(0);
-        cm.opensAsDate = cm.opensAsDate.toDate();
+      cm.opensAsDate = new moment();
+      cm.opensAsDate.hours(0).minutes(0).seconds(0);
+      cm.opensAsDate = cm.opensAsDate.toDate();
     }
     if (!closesAsDateExists) {
-        cm.closesAsDate = new moment();
-        cm.closesAsDate.hours(23).minutes(59).seconds(59);
-        cm.closesAsDate = cm.closesAsDate.toDate();
+      cm.closesAsDate = new moment();
+      cm.closesAsDate.hours(23).minutes(59).seconds(59);
+      cm.closesAsDate = cm.closesAsDate.toDate();
     }
 
     cm.prototype.opens = openMoment.format('HH:mm');
@@ -63,8 +63,8 @@ function OpeningHourComponentController(moment) {
     var dayOfWeekNotEmpty = (cm.prototype.dayOfWeek.length > 0);
 
     if (openIsNotClose && openisBeforeClose && openExists && closesAsDateExists && dayOfWeekNotEmpty) {
-        cm.formData.addOpeningHour(angular.copy(cm.prototype));
-        initPrototype();
+      cm.formData.addOpeningHour(angular.copy(cm.prototype));
+      initPrototype();
     }
 
   }
