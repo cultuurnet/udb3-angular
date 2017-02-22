@@ -9930,7 +9930,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     saveOpeningHours: function () {
-      console.log(this.openingHours);
       angular.forEach(this.openingHours, function(openingHour) {
         var opensAsDate, closesAsDate;
 
@@ -20164,12 +20163,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"!!formData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12\" ng-hide=\"!!cm.formData.openingHours.length\">\n" +
     "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
     "     data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\">Openingsuren toevoegen</a>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!formData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!cm.formData.openingHours.length\">\n" +
     "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
     "    <table class=\"table table-condensed \">\n" +
     "      <thead>\n" +
@@ -20181,7 +20180,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
-    "        <tr ng-repeat=\"openingHour in formData.openingHours\">\n" +
+    "        <tr ng-repeat=\"openingHour in cm.formData.openingHours\">\n" +
     "          <td ng-bind=\"openingHour.label\"></td>\n" +
     "          <td>\n" +
     "            <span ng-bind=\"openingHour.opens\"></span> – <span ng-bind=\"openingHour.closes\"></span>\n" +
