@@ -45,12 +45,12 @@ function OpeningHourComponentController(moment) {
     var openExists = (cm.prototype.opensAsDate !== null);
     var closesAsDateExists = (cm.prototype.closesAsDate !== null);
     if (!openExists) {
-      cm.opensAsDate = new moment();
+      cm.opensAsDate = moment();
       cm.opensAsDate.hours(0).minutes(0).seconds(0);
       cm.opensAsDate = cm.opensAsDate.toDate();
     }
     if (!closesAsDateExists) {
-      cm.closesAsDate = new moment();
+      cm.closesAsDate = moment();
       cm.closesAsDate.hours(23).minutes(59).seconds(59);
       cm.closesAsDate = cm.closesAsDate.toDate();
     }
