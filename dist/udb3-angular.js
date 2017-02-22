@@ -19094,15 +19094,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leekrachten.</p>\n" +
+    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leerkrachten.</p>\n" +
     "    <div ng-if=\"::$ctrl.permission\">\n" +
-    "<<<<<<< HEAD\n" +
     "        <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
     "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leerkrachten.</p>\n" +
-    "=======\n" +
-    "        <div ng-if=\"::!$ctrl.isIncomplete\">\n" +
-    "            <p><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>\n" +
-    ">>>>>>> feature/III-1874\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div class=\"row\">\n" +
@@ -19127,11 +19122,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
     "                                    <strong>Geschikt voor</strong>\n" +
     "                                </div>\n" +
-    "<<<<<<< HEAD\n" +
     "                                <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length <= 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "=======\n" +
-    "                                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
-    ">>>>>>> feature/III-1874\n" +
     "                                    <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
     "                                </div>\n" +
     "                                <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +

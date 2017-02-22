@@ -1,13 +1,8 @@
 <div class="cultuurkuur-component">
-    <p ng-if="::!$ctrl.permission && $ctrl.forSchools"><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat <a target="_blank" ng-href="{{::$ctrl.previewLink}}">extra informatie</a> voor scholen en leekrachten.</p>
+    <p ng-if="::!$ctrl.permission && $ctrl.forSchools"><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat <a target="_blank" ng-href="{{::$ctrl.previewLink}}">extra informatie</a> voor scholen en leerkrachten.</p>
     <div ng-if="::$ctrl.permission">
-<<<<<<< HEAD
         <div ng-if="::!$ctrl.isIncomplete" class="row">
             <p ng-if="$ctrl.forSchools"><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat <a target="_blank" ng-href="{{::$ctrl.previewLink}}">extra informatie</a> voor scholen en leerkrachten.</p>
-=======
-        <div ng-if="::!$ctrl.isIncomplete">
-            <p><i class="fa fa-check-circle text-success" aria-hidden="true"></i> Dit evenement bevat extra informatie voor scholen en leerkrachten.</p>
->>>>>>> feature/III-1874
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="row">
@@ -32,11 +27,7 @@
                                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                     <strong>Geschikt voor</strong>
                                 </div>
-<<<<<<< HEAD
                                 <div ng-if="$ctrl.cultuurKuurInfo.levels.length <= 4" class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-=======
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
->>>>>>> feature/III-1874
                                     <p ng-repeat="level in ::$ctrl.cultuurKuurInfo.levels" ng-bind="::level"></p>
                                 </div>
                                 <div ng-if="$ctrl.cultuurKuurInfo.levels.length > 4" class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
