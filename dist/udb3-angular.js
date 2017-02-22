@@ -20585,7 +20585,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   required />\n" +
     "                        </span>\n" +
     "                </div>\n" +
-    "                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\"\n" +
+    "                <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\"\n" +
     "                     ng-class=\"{ 'has-error': priceFieldForm.price.$invalid && priceFieldForm.price.$touched }\">\n" +
     "                        <p class=\"form-control-static\" ng-if=\"priceInfo.price === 0\">\n" +
     "                            Gratis\n" +
@@ -20615,6 +20615,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
     "                           ng-switch-default>Gratis</a>\n" +
     "                </div>\n" +
+    "               <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
+    "                   <a aria-hidden=\"true\"\n" +
+    "                      ng-click=\"pfmc.deletePriceItem(key)\"\n" +
+    "                      ng-if=\"pfmc.showPriceDelete(key)\"\n" +
+    "                      class=\"close form-control-static\">&times;</a>\n" +
+    "               </div>\n" +
     "           </ng-form>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
