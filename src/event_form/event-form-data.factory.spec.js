@@ -142,21 +142,21 @@ describe('Factory: Event form data', function () {
   });
 
   it('should notify that the event timing has changed when toggling off the start time', function (done) {
-      EventFormData.initCalendar();
+    EventFormData.initCalendar();
 
-      var timestamp = {
-        date: new Date(),
-        startHour: '',
-        endHour: '',
-        showEndHour: true,
-        showStartHour: false
-      };
+    var timestamp = {
+      date: new Date(),
+      startHour: '',
+      endHour: '',
+      showEndHour: true,
+      showStartHour: false
+    };
 
-      EventFormData
-        .timingChanged$
-        .subscribe(done);
+    EventFormData
+      .timingChanged$
+      .subscribe(done);
 
-      EventFormData.toggleStartHour(timestamp);
+    EventFormData.toggleStartHour(timestamp);
   });
 
   it('should notify that the event timing has changed when toggling off the end time', function (done) {

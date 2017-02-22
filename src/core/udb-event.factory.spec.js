@@ -27,7 +27,7 @@ describe('Factory: UdbEvent', function () {
       "available": "2014-10-13T00:00:00+02:00",
       "calendarSummary": "vrij 15\/05\/15 van 14:00 tot 16:30 ",
       "location": {
-      "@type": "Place",
+        "@type": "Place",
         "@id": "http:\/\/culudb-silex.dev:8080\/place\/50d35a7d-e070-4dfe-ba6e-072e1e48a3bd",
         "@context": "\/api\/1.0\/place.jsonld",
         "description": "Seniorama vzw",
@@ -50,7 +50,7 @@ describe('Factory: UdbEvent', function () {
       }, {"label": "Polyvalente zaal of expohal", "domain": "actortype", "id": "8.52.0.0.0"}]
     },
       "organizer": {
-      "@id": "http:\/\/culudb-silex.dev:8080\/organizer\/50d35a7d-e070-4dfe-ba6e-072e1e48a3bd",
+        "@id": "http:\/\/culudb-silex.dev:8080\/organizer\/50d35a7d-e070-4dfe-ba6e-072e1e48a3bd",
         "@context": "\/api\/1.0\/organizer.jsonld",
         "name": "Seniorama vzw",
         "addresses": [{
