@@ -232,6 +232,7 @@ describe('Controller: Place Detail', function() {
 
   it('should update the place when adding a label', function () {
     var label = {name:'some other label'};
+    offerLabeller.label.and.returnValue($q.resolve());
     deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 

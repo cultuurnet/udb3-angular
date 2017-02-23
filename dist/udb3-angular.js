@@ -7611,7 +7611,8 @@ function EventDetail(
 
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
-    } else {
+    }
+    else {
       offerLabeller.label(cachedEvent, newLabel.name)
         .then(function(response) {
           if (response.success) {
