@@ -52,8 +52,13 @@ function PlaceDetail(
   }
 
   $scope.placeIdIsInvalid = false;
+
+  // labels scope variables and functions
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
+  $scope.labelResponse = '';
+  $scope.labelsError = '';
+
   $scope.placeHistory = [];
   $scope.tabs = [
     {
@@ -100,14 +105,6 @@ function PlaceDetail(
     }
 
     return '';
-  };
-
-  $scope.placeIds = function (place) {
-    return _.union([place.id], place.sameAs);
-  };
-
-  $scope.isUrl = function (potentialUrl) {
-    return /^(https?)/.test(potentialUrl);
   };
 
   $scope.isTabActive = function (tabId) {
@@ -196,17 +193,43 @@ function PlaceDetail(
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedPlace, newLabel.name);
+      offerLabeller.label(cachedPlace, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
+          }
+          else {
+            $scope.labelResponse = 'error';
+            $scope.labelsError = response;
+          }
+          $scope.place.labels = angular.copy(cachedPlace.labels);
+        });
     }
+  }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
     $scope.place.labels = angular.copy(cachedPlace.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
   }
 
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedPlace, label.name);
-    $scope.place.labels = angular.copy(cachedPlace.labels);
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedPlace, label.name)
+      .catch(showUnlabelProblem);
   }
 }

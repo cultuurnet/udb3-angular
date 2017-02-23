@@ -512,10 +512,9 @@ function UdbApi(
    * @return {Promise}
    */
   this.unlabelOffer = function (offerLocation, label) {
-    return $http.delete(
-      offerLocation + '/labels/' + label,
-      defaultApiConfig
-    );
+    return $http
+      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .catch(returnApiProblem);
   };
 
   /**

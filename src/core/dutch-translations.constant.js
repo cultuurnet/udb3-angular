@@ -333,6 +333,13 @@ angular.module('udb.core')
       'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
     },
+    workflowStatus: {
+      'DRAFT': 'Niet gepubliceerd',
+      'READY_FOR_VALIDATION': 'Gepubliceerd',
+      'APPROVED': 'Gepubliceerd',
+      'REJECTED': 'Niet gepubliceerd',
+      'DELETED': 'Niet gepubliceerd'
+    },
     queryFieldGroup: {
       'what': 'Wat',
       'where': 'Waar',

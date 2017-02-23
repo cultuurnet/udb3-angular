@@ -12,7 +12,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $uibModal) {
   var offerLabeller = this;
 
   /**
@@ -70,12 +70,18 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * Unlabel a label from an event
    * @param {UdbEvent|UdbPlace} offer
    * @param {string} labelName
+   *
+   * @return {Promise.<OfferLabelJob|ApiProblem>}
    */
   this.unlabel = function (offer, labelName) {
-    offer.unlabel(labelName);
+    function eagerlyUnlabelAndPassOnResponse(response) {
+      offer.unlabel(labelName);
+      return response;
+    }
 
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
+      .then(eagerlyUnlabelAndPassOnResponse)
       .then(jobCreatorFactory(OfferLabelJob, offer, labelName, true));
   };
 

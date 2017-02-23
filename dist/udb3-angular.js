@@ -2315,6 +2315,49 @@ function udbTimeDirective() {
 }
 })();
 
+// Source: src/core/components/workflow-status/udb.workflow-status.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.core.directive: udbWorkflowStatus
+ * @description
+ * # udbWorkflowStatus
+ */
+angular
+  .module('udb.core')
+  .directive('udbWorkflowStatus', function () {
+    return {
+      templateUrl: 'templates/udb.workflow-status.directive.html',
+      controller: WorkflowStatusDirectiveController,
+      controllerAs: 'cm',
+      restrict: 'A',
+      scope: {
+        event: '<udbWorkflowStatus'
+      }
+    };
+  });
+
+/* @ngInject */
+function WorkflowStatusDirectiveController($scope, $translate) {
+  var cm = this;
+  cm.event = $scope.event;
+  cm.status = translateStatus(cm.event.workflowStatus);
+  cm.eventIds = eventIds;
+  cm.isUrl = isUrl;
+
+  function eventIds (event) {
+    return _.union([event.id], event.sameAs);
+  }
+
+  function translateStatus (status) {
+    return $translate.instant('workflowStatus.' + status);
+  }
+
+  function isUrl (potentialUrl) {
+    return /^(https?)/.test(potentialUrl);
+  }
+}
+WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
+
 // Source: src/core/dutch-translations.constant.js
 /**
  * @ngdoc service
@@ -2648,6 +2691,13 @@ angular.module('udb.core')
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
+    },
+    workflowStatus: {
+      'DRAFT': 'Niet gepubliceerd',
+      'READY_FOR_VALIDATION': 'Gepubliceerd',
+      'APPROVED': 'Gepubliceerd',
+      'REJECTED': 'Niet gepubliceerd',
+      'DELETED': 'Niet gepubliceerd'
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -3213,10 +3263,9 @@ function UdbApi(
    * @return {Promise}
    */
   this.unlabelOffer = function (offerLocation, label) {
-    return $http.delete(
-      offerLocation + '/labels/' + label,
-      defaultApiConfig
-    );
+    return $http
+      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .catch(returnApiProblem);
   };
 
   /**
@@ -4119,9 +4168,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
       this.images = _.reject(getImages(jsonEvent), 'contentUrl', jsonEvent.image);
-      this.labels = _.map(jsonEvent.labels, function (label) {
-        return label;
-      });
+      this.labels = _.union(jsonEvent.labels, jsonEvent.hiddenLabels);
       if (jsonEvent.organizer) {
         // if it's a full organizer object, parse it as one
         if (jsonEvent.organizer['@id']) {
@@ -4492,7 +4539,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       this.url = getFirst(jsonOrganizer, 'contactPoint.url');
-      this.labels = jsonOrganizer.labels || [];
+      this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
     }
@@ -4708,9 +4755,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       }
       this.image = jsonPlace.image;
       this.images = _.reject(getImages(jsonPlace), 'contentUrl', jsonPlace.image);
-      this.labels = _.map(jsonPlace.labels, function (label) {
-        return label;
-      });
+      this.labels = _.union(jsonPlace.labels, jsonPlace.hiddenLabels);
       this.mediaObject = jsonPlace.mediaObject || [];
       this.facilities = getCategoriesByType(jsonPlace, 'facility') || [];
       this.additionalData = jsonPlace.additionalData || {};
@@ -6592,7 +6637,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $uibModal) {
   var offerLabeller = this;
 
   /**
@@ -6650,12 +6695,18 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * Unlabel a label from an event
    * @param {UdbEvent|UdbPlace} offer
    * @param {string} labelName
+   *
+   * @return {Promise.<OfferLabelJob|ApiProblem>}
    */
   this.unlabel = function (offer, labelName) {
-    offer.unlabel(labelName);
+    function eagerlyUnlabelAndPassOnResponse(response) {
+      offer.unlabel(labelName);
+      return response;
+    }
 
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
+      .then(eagerlyUnlabelAndPassOnResponse)
       .then(jobCreatorFactory(OfferLabelJob, offer, labelName, true));
   };
 
@@ -6700,7 +6751,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
-OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$uibModal"];
 
 // Source: src/entry/labelling/query-label-job.factory.js
 /**
@@ -7464,7 +7515,6 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
@@ -7585,10 +7635,6 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
-  $scope.translateWorkflowStatus = function(code) {
-     return translateWorkflowStatus(code);
-   };
-
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -7643,13 +7689,29 @@ function EventDetail(
     }
   }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedEvent, label.name);
-    $scope.event.labels = angular.copy(cachedEvent.labels);
-    $scope.labelResponse = '';
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedEvent, label.name)
+      .catch(showUnlabelProblem);
   }
 
   function hasContactPoint() {
@@ -7666,14 +7728,6 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
-  }
-
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
   }
 
   $scope.translateAudience = function (type) {
@@ -13755,10 +13809,12 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   var controller = this;
   var organizerId = $stateParams.id;
 
+  // labels scope variables and functions
   controller.labelSaving = false;
-
   controller.addLabel = addLabel;
   controller.deleteLabel = deleteLabel;
+  controller.labelResponse = '';
+  controller.labelsError = '';
 
   loadOrganizer(organizerId);
 
@@ -13777,6 +13833,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
 
   function addLabel(label) {
     controller.labelSaving = true;
+    clearLabelsError();
 
     OrganizerManager
       .addLabelToOrganizer(organizerId, label.name)
@@ -13789,18 +13846,33 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
 
   function deleteLabel(label) {
     controller.labelSaving = true;
+    clearLabelsError();
+    removeFromCache();
 
     OrganizerManager
         .deleteLabelFromOrganizer(organizerId, label.name)
-        .catch(showProblem)
+        .catch(showUnlabelProblem)
         .finally(function() {
           controller.labelSaving = false;
-          removeFromCache();
         });
   }
 
   function removeFromCache() {
     OrganizerManager.removeOrganizerFromCache(organizerId);
+  }
+
+  function clearLabelsError() {
+    controller.labelResponse = '';
+    controller.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    loadOrganizer(organizerId);
+    controller.labelResponse = 'unlabelError';
+    controller.labelsError = problem.title;
   }
 
   /**
@@ -13822,7 +13894,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
       }
     );
   }
-
 }
 OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams"];
 
@@ -15621,8 +15692,13 @@ function PlaceDetail(
   }
 
   $scope.placeIdIsInvalid = false;
+
+  // labels scope variables and functions
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
+  $scope.labelResponse = '';
+  $scope.labelsError = '';
+
   $scope.placeHistory = [];
   $scope.tabs = [
     {
@@ -15669,14 +15745,6 @@ function PlaceDetail(
     }
 
     return '';
-  };
-
-  $scope.placeIds = function (place) {
-    return _.union([place.id], place.sameAs);
-  };
-
-  $scope.isUrl = function (potentialUrl) {
-    return /^(https?)/.test(potentialUrl);
   };
 
   $scope.isTabActive = function (tabId) {
@@ -15765,18 +15833,44 @@ function PlaceDetail(
     if (similarLabel) {
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
-      offerLabeller.label(cachedPlace, newLabel.name);
+      offerLabeller.label(cachedPlace, newLabel.name)
+        .then(function(response) {
+          if (response.success) {
+            $scope.labelResponse = 'success';
+            $scope.addedLabel = response.name;
+          }
+          else {
+            $scope.labelResponse = 'error';
+            $scope.labelsError = response;
+          }
+          $scope.place.labels = angular.copy(cachedPlace.labels);
+        });
     }
+  }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
     $scope.place.labels = angular.copy(cachedPlace.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
   }
 
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedPlace, label.name);
-    $scope.place.labels = angular.copy(cachedPlace.labels);
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedPlace, label.name)
+      .catch(showUnlabelProblem);
   }
 }
 PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller"];
@@ -18173,6 +18267,7 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -18331,13 +18426,30 @@ function OfferController(
     }
   };
 
+  function clearLabelsError() {
+    controller.labelResponse = '';
+    controller.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedOffer.labels);
+    controller.labelResponse = 'unlabelError';
+    controller.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
-  controller.labelRemoved = function (label) {
-    offerLabeller.unlabel(cachedOffer, label.name);
-    controller.labelResponse = '';
-  };
+  function labelRemoved(label) {
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedOffer, label.name)
+      .catch(showUnlabelProblem);
+  }
 
   /**
    * @param {(UdbPlace|UdbEvent)}offer
@@ -19042,6 +19154,29 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/udb.workflow-status.directive.html',
+    "<tr>\n" +
+    "    <td><strong>Publicatiestatus</strong></td>\n" +
+    "    <td>\n" +
+    "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
+    "                    </span>\n" +
+    "        <span ng-if=\"!cm.event.available\">{{cm.status | translate }}</span>\n" +
+    "    </td>\n" +
+    "</tr>\n" +
+    "<tr>\n" +
+    "    <td><strong>ID</strong></td>\n" +
+    "    <td>\n" +
+    "        <ul>\n" +
+    "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
+    "                <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
+    "                <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "</tr>\n"
+  );
+
+
   $templateCache.put('templates/unexpected-error-modal.html',
     "<div class=\"modal-body\">\n" +
     "  <p ng-bind=\"errorMessage\"></p>\n" +
@@ -19644,6 +19779,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
     "                  </div>\n" +
+    "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                    <span ng-bind=\"labelsError\"></span>\n" +
+    "                  </div>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
@@ -19741,29 +19879,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:20%\"/>\n" +
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
-    "            <tbody>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Publicatiestatus</strong></td>\n" +
-    "              <td>\n" +
-    "                    <span ng-if=\"event.available\"\n" +
-    "                          ng-bind=\"event.available | date: 'dd/MM/yyyy'\">\n" +
-    "                    </span>\n" +
-    "                <span ng-if=\"!event.available\">\n" +
-    "                      {{translateWorkflowStatus(event.workflowStatus)}}\n" +
-    "                    </span>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>ID</strong></td>\n" +
-    "              <td>\n" +
-    "                <ul>\n" +
-    "                  <li ng-repeat=\"id in eventIds(event)\" ng-switch=\"isUrl(id)\">\n" +
-    "                    <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                    <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "                  </li>\n" +
-    "                </ul>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
+    "            <tbody udb-workflow-status=\"::event\">\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
@@ -22299,6 +22415,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <udb-label-select labels=\"odc.organizer.labels\"\n" +
     "                              label-added=\"odc.addLabel(label)\"\n" +
     "                              label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
+    "            <div ng-if=\"odc.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                <span ng-bind=\"odc.labelsError\"></span>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
@@ -22878,7 +22997,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <td>\n" +
     "                  <udb-label-select labels=\"place.labels\"\n" +
     "                                    label-added=\"labelAdded(label)\"\n" +
-    "                                    label-removed=\"labelRemoved(label)\"></udb-label-select>\n" +
+    "                                    label-removed=\"labelRemoved(label)\">\n" +
+    "                  </udb-label-select>\n" +
+    "                  <div ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                  </div>\n" +
+    "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
+    "                  </div>\n" +
+    "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                    <span ng-bind=\"labelsError\"></span>\n" +
+    "                  </div>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
@@ -22924,29 +23053,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:20%\"/>\n" +
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
-    "            <tbody>\n" +
-    "              <tr ng-class=\"{muted: !place.available}\">\n" +
-    "                <td><strong>Publicatiedatum</strong></td>\n" +
-    "                <td>\n" +
-    "                  <span ng-if=\"place.available\"\n" +
-    "                        ng-bind=\"place.available | date: 'dd / MM / yyyy'\">\n" +
-    "                  </span>\n" +
-    "                  <span ng-if=\"!place.available\">\n" +
-    "                    Geen publicatiedatum\n" +
-    "                  </span>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>ID</strong></td>\n" +
-    "                <td>\n" +
-    "                  <ul>\n" +
-    "                    <li ng-repeat=\"id in placeIds(place)\" ng-switch=\"isUrl(id)\">\n" +
-    "                      <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                      <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "                    </li>\n" +
-    "                  </ul>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
+    "            <tbody udb-workflow-status=\"::place\">\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
@@ -23530,6 +23637,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div ng-if=\"eventCtrl.labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "            Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
     "          </div>\n" +
+    "          <div ng-if=\"eventCtrl.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "            <span ng-bind=\"eventCtrl.labelsError\"></span>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -23690,6 +23800,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "          <div ng-if=\"placeCtrl.labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "            Het label '{{placeCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
+    "          </div>\n" +
+    "          <div ng-if=\"placeCtrl.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "            <span ng-bind=\"placeCtrl.labelsError\"></span>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
