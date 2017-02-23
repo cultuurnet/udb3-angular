@@ -4,7 +4,7 @@ angular
   .module('udb.event-form')
   .component('udbEventFormOpeningHours', {
     bindings: {
-      formData: '='
+      openingHours: '='
     },
     templateUrl: 'templates/event-form-openinghours.html',
     controller: OpeningHourComponentController,
@@ -75,7 +75,7 @@ function OpeningHourComponentController(moment, dayNames) {
     var dayOfWeekNotEmpty = (cm.prototype.dayOfWeek.length > 0);
 
     if (openIsNotClose && openisBeforeClose && openExists && closesAsDateExists && dayOfWeekNotEmpty) {
-      cm.formData.addOpeningHour(angular.copy(cm.prototype));
+      cm.openingHours.addOpeningHour(angular.copy(cm.prototype));
       initPrototype();
     }
 

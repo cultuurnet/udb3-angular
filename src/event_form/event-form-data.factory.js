@@ -42,7 +42,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
+function EventFormDataFactory(rx, calendarLabels, moment, dayNames, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -95,7 +95,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
       this.startDate = '';
       this.endDate = '';
       this.timestamps = [];
-      this.openingHours = [];
+      this.openingHours = OpeningHoursCollection.init();
       this.openingHoursErrors = {};
       this.typicalAgeRange = '';
       this.organizer = {};
@@ -247,13 +247,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
     },
 
     /**
-     * Get the opening hours.
-     */
-    getOpeningHours: function() {
-      return this.openingHours;
-    },
-
-    /**
      * Reset the location.
      */
     resetLocation: function(location) {
@@ -298,27 +291,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
         'showEndHour' : (endHour && endHour !== startHour)
       });
 
-    },
-
-    /**
-     * Add a timestamp to the timestamps array.
-     */
-    addOpeningHour: function(openingHour) {
-      this.openingHours.push({
-        'dayOfWeek' : openingHour.dayOfWeek,
-        'opens' : openingHour.opens,
-        'opensAsDate' : openingHour.opensAsDate,
-        'closes' : openingHour.closes,
-        'closesAsDate' : openingHour.closesAsDate,
-        'label' : openingHour.label
-      });
-    },
-
-    /**
-     * Remove the openinghour with the given index.
-     */
-    removeOpeningHour: function(index) {
-      this.openingHours.splice(index, 1);
     },
 
     /**
@@ -461,18 +433,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
       this.calendarType = '';
     },
 
-    saveOpeningHourDaySelection: function (index, dayOfWeek) {
-      var humanValues = [];
-      if (dayOfWeek instanceof Array) {
-        for (var i in dayOfWeek) {
-          humanValues.push(dayNames[dayOfWeek[i]]);
-        }
-      }
-
-      this.openingHours[index].opensAsDate = moment(this.openingHours[index].opens, 'HH:mm').toDate();
-      this.openingHours[index].closesAsDate = moment(this.openingHours[index].closes, 'HH:mm').toDate();
-
-      this.openingHours[index].label = humanValues.join(', ');
+    initOpeningHours: function(openingHours) {
+      OpeningHoursCollection.setOpeningHours(openingHours);
     },
 
     /**
@@ -609,7 +571,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
       }
     },
 
-    saveOpeningHours: function () {
+    /*saveOpeningHours: function () {
       angular.forEach(this.openingHours, function(openingHour) {
         var opensAsDate, closesAsDate;
 
@@ -620,7 +582,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
         openingHour.closes = closesAsDate.format('HH:mm');
       });
       this.timingChanged();
-    },
+    },*/
 
     validateOpeningHour: function (openingHour) {
       openingHour.hasError = false;
