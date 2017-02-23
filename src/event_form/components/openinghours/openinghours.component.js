@@ -14,19 +14,8 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment) {
+function OpeningHourComponentController(moment, dayNames) {
   var cm = this;
-
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
 
   initPrototype();
 

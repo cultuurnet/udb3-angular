@@ -8170,6 +8170,33 @@ function EventFormImageUploadController(
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
 
+// Source: src/event_form/components/openinghours/day-names.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc constant
+ * @name udb.event-form.dayNames
+ * @description
+ * # dayNames
+ * Opening hours day names
+ */
+angular
+  .module('udb.event-form')
+  .constant('dayNames',
+    /**
+     * list of day names
+     * @readonly
+     */
+    {
+      monday : 'Maandag',
+      tuesday : 'Dinsdag',
+      wednesday : 'Woensdag',
+      thursday : 'Donderdag',
+      friday : 'Vrijdag',
+      saturday : 'Zaterdag',
+      sunday : 'Zondag'
+    });
+
 // Source: src/event_form/components/openinghours/openinghours.component.js
 angular
   .module('udb.event-form')
@@ -8185,19 +8212,8 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment) {
+function OpeningHourComponentController(moment, dayNames) {
   var cm = this;
-
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
 
   initPrototype();
 
@@ -8264,7 +8280,7 @@ function OpeningHourComponentController(moment) {
   }
 
 }
-OpeningHourComponentController.$inject = ["moment"];
+OpeningHourComponentController.$inject = ["moment", "dayNames"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -9374,18 +9390,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment) {
-
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
+function EventFormDataFactory(rx, calendarLabels, moment, dayNames) {
 
   /**
    * @class EventFormData
@@ -10047,7 +10052,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "dayNames"];
 
 // Source: src/event_form/event-form.controller.js
 /**
