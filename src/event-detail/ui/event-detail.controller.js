@@ -180,10 +180,6 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
-  $scope.translateWorkflowStatus = function(code) {
-     return translateWorkflowStatus(code);
-   };
-
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -277,14 +273,6 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
-  }
-
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
   }
 
   $scope.translateAudience = function (type) {

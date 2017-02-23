@@ -2315,6 +2315,49 @@ function udbTimeDirective() {
 }
 })();
 
+// Source: src/core/components/workflow-status/udb.workflow-status.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.core.directive: udbWorkflowStatus
+ * @description
+ * # udbWorkflowStatus
+ */
+angular
+  .module('udb.core')
+  .directive('udbWorkflowStatus', function () {
+    return {
+      templateUrl: 'templates/udb.workflow-status.directive.html',
+      controller: WorkflowStatusDirectiveController,
+      controllerAs: 'cm',
+      restrict: 'A',
+      scope: {
+        event: '<udbWorkflowStatus'
+      }
+    };
+  });
+
+/* @ngInject */
+function WorkflowStatusDirectiveController($scope, $translate) {
+  var cm = this;
+  cm.event = $scope.event;
+  cm.status = translateStatus(cm.event.workflowStatus);
+  cm.eventIds = eventIds;
+  cm.isUrl = isUrl;
+
+  function eventIds (event) {
+    return _.union([event.id], event.sameAs);
+  }
+
+  function translateStatus (status) {
+    return $translate.instant('workflowStatus.' + status);
+  }
+
+  function isUrl (potentialUrl) {
+    return /^(https?)/.test(potentialUrl);
+  }
+}
+WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
+
 // Source: src/core/dutch-translations.constant.js
 /**
  * @ngdoc service
@@ -2648,6 +2691,13 @@ angular.module('udb.core')
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
+    },
+    workflowStatus: {
+      'DRAFT': 'Niet gepubliceerd',
+      'READY_FOR_VALIDATION': 'Gepubliceerd',
+      'APPROVED': 'Gepubliceerd',
+      'REJECTED': 'Niet gepubliceerd',
+      'DELETED': 'Niet gepubliceerd'
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -7570,10 +7620,6 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
-  $scope.translateWorkflowStatus = function(code) {
-     return translateWorkflowStatus(code);
-   };
-
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -7667,14 +7713,6 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
-  }
-
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
   }
 
   $scope.translateAudience = function (type) {
@@ -15693,14 +15731,6 @@ function PlaceDetail(
     return '';
   };
 
-  $scope.placeIds = function (place) {
-    return _.union([place.id], place.sameAs);
-  };
-
-  $scope.isUrl = function (potentialUrl) {
-    return /^(https?)/.test(potentialUrl);
-  };
-
   $scope.isTabActive = function (tabId) {
     return tabId === activeTabId;
   };
@@ -19108,6 +19138,29 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/udb.workflow-status.directive.html',
+    "<tr>\n" +
+    "    <td><strong>Publicatiestatus</strong></td>\n" +
+    "    <td>\n" +
+    "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
+    "                    </span>\n" +
+    "        <span ng-if=\"!cm.event.available\">{{cm.status | translate }}</span>\n" +
+    "    </td>\n" +
+    "</tr>\n" +
+    "<tr>\n" +
+    "    <td><strong>ID</strong></td>\n" +
+    "    <td>\n" +
+    "        <ul>\n" +
+    "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
+    "                <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
+    "                <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "</tr>\n"
+  );
+
+
   $templateCache.put('templates/unexpected-error-modal.html',
     "<div class=\"modal-body\">\n" +
     "  <p ng-bind=\"errorMessage\"></p>\n" +
@@ -19810,29 +19863,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:20%\"/>\n" +
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
-    "            <tbody>\n" +
-    "            <tr>\n" +
-    "              <td><strong>Publicatiestatus</strong></td>\n" +
-    "              <td>\n" +
-    "                    <span ng-if=\"event.available\"\n" +
-    "                          ng-bind=\"event.available | date: 'dd/MM/yyyy'\">\n" +
-    "                    </span>\n" +
-    "                <span ng-if=\"!event.available\">\n" +
-    "                      {{translateWorkflowStatus(event.workflowStatus)}}\n" +
-    "                    </span>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td><strong>ID</strong></td>\n" +
-    "              <td>\n" +
-    "                <ul>\n" +
-    "                  <li ng-repeat=\"id in eventIds(event)\" ng-switch=\"isUrl(id)\">\n" +
-    "                    <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                    <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "                  </li>\n" +
-    "                </ul>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
+    "            <tbody udb-workflow-status=\"::event\">\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
@@ -23006,29 +23037,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <col style=\"width:20%\"/>\n" +
     "              <col style=\"width:80%\"/>\n" +
     "            </colgroup>\n" +
-    "            <tbody>\n" +
-    "              <tr ng-class=\"{muted: !place.available}\">\n" +
-    "                <td><strong>Publicatiedatum</strong></td>\n" +
-    "                <td>\n" +
-    "                  <span ng-if=\"place.available\"\n" +
-    "                        ng-bind=\"place.available | date: 'dd / MM / yyyy'\">\n" +
-    "                  </span>\n" +
-    "                  <span ng-if=\"!place.available\">\n" +
-    "                    Geen publicatiedatum\n" +
-    "                  </span>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>ID</strong></td>\n" +
-    "                <td>\n" +
-    "                  <ul>\n" +
-    "                    <li ng-repeat=\"id in placeIds(place)\" ng-switch=\"isUrl(id)\">\n" +
-    "                      <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                      <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "                    </li>\n" +
-    "                  </ul>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
+    "            <tbody udb-workflow-status=\"::place\">\n" +
     "            </tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +

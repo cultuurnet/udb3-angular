@@ -443,28 +443,4 @@ describe('Controller: Event Detail', function() {
     expect($scope.labelResponse).toEqual('unlabelError');
     expect($scope.labelsError).toEqual('You do not have the required permission to unlabel this event.');
   });
-
-  it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
-    expect($scope.translateWorkflowStatus('DRAFT')).toEqual('Niet gepubliceerd')
-  });
-
-  it('should return niet gepubliceerd when the workflowStatus is REJECTED', function () {
-    expect($scope.translateWorkflowStatus('REJECTED')).toEqual('Niet gepubliceerd')
-  });
-
-  it('should return niet gepubliceerd when the workflowStatus is DELETED', function () {
-    expect($scope.translateWorkflowStatus('DELETED')).toEqual('Niet gepubliceerd')
-  });
-
-  it('should return gepubliceerd when the workflowStatus is READY_FOR_VALIDATION', function () {
-    expect($scope.translateWorkflowStatus('READY_FOR_VALIDATION')).toEqual('Gepubliceerd')
-  });
-
-  it('should return gepubliceerd when the workflowStatus is APPROVED', function () {
-    expect($scope.translateWorkflowStatus('APPROVED')).toEqual('Gepubliceerd')
-  });
-
-  it('should return gepubliceerd as default', function () {
-    expect($scope.translateWorkflowStatus()).toEqual('Gepubliceerd')
-  });
 });
