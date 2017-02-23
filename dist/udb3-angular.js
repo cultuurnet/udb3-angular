@@ -8209,7 +8209,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment, dayNames) {
+function OpeningHoursCollectionFactory(rx, moment, dayNames) {
 
   function prepareOpeningHoursForDisplay(openingHours) {
     angular.forEach (openingHours, function(openingHour, key) {
@@ -8238,6 +8238,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
       this.openingHours = [];
       this.temporaryOpeningHours = [];
       this.openingHoursErrors = {};
+      this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
     },
 
     /**
@@ -8259,7 +8260,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
      */
     setOpeningHours: function(openingHours) {
       this.openingHours = prepareOpeningHoursForDisplay(openingHours);
-      this.temporaryOpeningHours = this.openingHours;
+      this.temporaryOpeningHours = _.cloneDeep(this.openingHours);
     },
 
     /**
@@ -8283,17 +8284,15 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
       this.temporaryOpeningHours.splice(index, 1);
     },
 
+
+
     saveOpeningHours: function () {
-      angular.forEach(this.openingHours, function(openingHour) {
-        var opensAsDate, closesAsDate;
-
-        opensAsDate = moment(openingHour.opensAsDate);
-        openingHour.opens = opensAsDate.format('HH:mm');
-
-        closesAsDate = moment(openingHour.closesAsDate);
-        openingHour.closes = closesAsDate.format('HH:mm');
-      });
+      this.openingHours = this.temporaryOpeningHours;
       this.timingChanged();
+    },
+
+    timingChanged: function () {
+      this.timingChangedCallback(this.openingHours);
     }
 
   };
@@ -8303,7 +8302,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
 
   return openingHoursCollection;
 }
-OpeningHoursCollectionFactory.$inject = ["moment", "dayNames"];
+OpeningHoursCollectionFactory.$inject = ["rx", "moment", "dayNames"];
 
 // Source: src/event_form/components/openinghours/openinghours.component.js
 angular
@@ -8326,6 +8325,7 @@ function OpeningHourComponentController(moment, dayNames) {
   initPrototype();
 
   cm.addPrototypeOpeningHour = addPrototypeOpeningHour;
+  cm.validatePrototypeOpeningHour = validatePrototypeOpeningHour;
 
   function initPrototype() {
     cm.prototype = {
@@ -8333,7 +8333,9 @@ function OpeningHourComponentController(moment, dayNames) {
       closesAsDate: getPreviewHour(4),
       dayOfWeek: [],
       opens: '',
-      closes: ''
+      closes: '',
+      hasErrors: false,
+      errors: {}
     };
   }
 
@@ -8352,6 +8354,27 @@ function OpeningHourComponentController(moment, dayNames) {
     }
 
     cm.prototype.label = humanValues.join(', ');
+  }
+
+  function validatePrototypeOpeningHour() {
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+
+    cm.prototype.errors.openIsClose = (openMoment === closeMoment);
+    cm.prototype.errors.openIsBeforeClose = !openMoment.isBefore(closeMoment);
+    cm.prototype.errors.closingHourError = (cm.prototype.closesAsDate === undefined);
+    cm.prototype.errors.openingHourError = (cm.prototype.opensAsDate === undefined);
+    cm.prototype.errors.weekdayError = (cm.prototype.dayOfWeek.length > 0);
+
+
+    angular.forEach(cm.prototype.errors, function(error) {
+      if (error) {
+        cm.prototype.hasError = true;
+      }
+      else {
+        cm.addPrototypeOpeningHour();
+      }
+    });
   }
 
   function addPrototypeOpeningHour() {
@@ -8376,11 +8399,7 @@ function OpeningHourComponentController(moment, dayNames) {
     cm.prototype.closes = closeMoment.format('HH:mm');
     addLabelToPrototypeOpeningHour();
 
-    var openIsNotClose = (openMoment !== closeMoment);
-    var openisBeforeClose = openMoment.isBefore(closeMoment);
-    var dayOfWeekNotEmpty = (cm.prototype.dayOfWeek.length > 0);
-
-    if (openIsNotClose && openisBeforeClose && openExists && closesAsDateExists && dayOfWeekNotEmpty) {
+    if (!cm.prototype.hasError) {
       cm.openingHours.addOpeningHour(angular.copy(cm.prototype));
       initPrototype();
     }
@@ -9498,7 +9517,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, dayNames, OpeningHoursCollection) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -10122,7 +10141,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, dayNames, OpeningHours
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "dayNames", "OpeningHoursCollection"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -20403,12 +20422,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   class=\"form-control uur\"\n" +
     "                                   placeholder=\"Bv. 08:00\"\n" +
     "                                   ng-model=\"cm.prototype.closesAsDate\"\n" +
-    "\n" +
     "                                   />\n" +
     "                              </div>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                            <a href=\"\" ng-click=\"cm.addPrototypeOpeningHour()\">Toevoegen</a>\n" +
+    "                            <a href=\"\" ng-click=\"cm.validatePrototypeOpeningHour()\">Toevoegen</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </form>\n" +

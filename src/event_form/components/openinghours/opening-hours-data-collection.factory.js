@@ -11,7 +11,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment, dayNames) {
+function OpeningHoursCollectionFactory(rx, moment, dayNames) {
 
   function prepareOpeningHoursForDisplay(openingHours) {
     angular.forEach (openingHours, function(openingHour, key) {
@@ -40,6 +40,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
       this.openingHours = [];
       this.temporaryOpeningHours = [];
       this.openingHoursErrors = {};
+      this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
     },
 
     /**
@@ -61,7 +62,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
      */
     setOpeningHours: function(openingHours) {
       this.openingHours = prepareOpeningHoursForDisplay(openingHours);
-      this.temporaryOpeningHours = this.openingHours;
+      this.temporaryOpeningHours = _.cloneDeep(this.openingHours);
     },
 
     /**
@@ -85,17 +86,15 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
       this.temporaryOpeningHours.splice(index, 1);
     },
 
+
+
     saveOpeningHours: function () {
-      angular.forEach(this.openingHours, function(openingHour) {
-        var opensAsDate, closesAsDate;
-
-        opensAsDate = moment(openingHour.opensAsDate);
-        openingHour.opens = opensAsDate.format('HH:mm');
-
-        closesAsDate = moment(openingHour.closesAsDate);
-        openingHour.closes = closesAsDate.format('HH:mm');
-      });
+      this.openingHours = this.temporaryOpeningHours;
       this.timingChanged();
+    },
+
+    timingChanged: function () {
+      this.timingChangedCallback(this.openingHours);
     }
 
   };

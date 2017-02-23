@@ -42,7 +42,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, dayNames, OpeningHoursCollection) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData

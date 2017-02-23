@@ -20,6 +20,7 @@ function OpeningHourComponentController(moment, dayNames) {
   initPrototype();
 
   cm.addPrototypeOpeningHour = addPrototypeOpeningHour;
+  cm.validatePrototypeOpeningHour = validatePrototypeOpeningHour;
 
   function initPrototype() {
     cm.prototype = {
@@ -27,7 +28,9 @@ function OpeningHourComponentController(moment, dayNames) {
       closesAsDate: getPreviewHour(4),
       dayOfWeek: [],
       opens: '',
-      closes: ''
+      closes: '',
+      hasErrors: false,
+      errors: {}
     };
   }
 
@@ -46,6 +49,27 @@ function OpeningHourComponentController(moment, dayNames) {
     }
 
     cm.prototype.label = humanValues.join(', ');
+  }
+
+  function validatePrototypeOpeningHour() {
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+
+    cm.prototype.errors.openIsClose = (openMoment === closeMoment);
+    cm.prototype.errors.openIsBeforeClose = !openMoment.isBefore(closeMoment);
+    cm.prototype.errors.closingHourError = (cm.prototype.closesAsDate === undefined);
+    cm.prototype.errors.openingHourError = (cm.prototype.opensAsDate === undefined);
+    cm.prototype.errors.weekdayError = (cm.prototype.dayOfWeek.length > 0);
+
+
+    angular.forEach(cm.prototype.errors, function(error) {
+      if (error) {
+        cm.prototype.hasError = true;
+      }
+      else {
+        cm.addPrototypeOpeningHour();
+      }
+    });
   }
 
   function addPrototypeOpeningHour() {
@@ -70,11 +94,7 @@ function OpeningHourComponentController(moment, dayNames) {
     cm.prototype.closes = closeMoment.format('HH:mm');
     addLabelToPrototypeOpeningHour();
 
-    var openIsNotClose = (openMoment !== closeMoment);
-    var openisBeforeClose = openMoment.isBefore(closeMoment);
-    var dayOfWeekNotEmpty = (cm.prototype.dayOfWeek.length > 0);
-
-    if (openIsNotClose && openisBeforeClose && openExists && closesAsDateExists && dayOfWeekNotEmpty) {
+    if (!cm.prototype.hasError) {
       cm.openingHours.addOpeningHour(angular.copy(cm.prototype));
       initPrototype();
     }
