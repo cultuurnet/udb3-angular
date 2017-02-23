@@ -8188,17 +8188,28 @@ angular
 function OpeningHourComponentController(moment) {
   var cm = this;
 
+  // Mapping between machine name of days and real output.
+  var dayNames = {
+    monday : 'Maandag',
+    tuesday : 'Dinsdag',
+    wednesday : 'Woensdag',
+    thursday : 'Donderdag',
+    friday : 'Vrijdag',
+    saturday : 'Zaterdag',
+    sunday : 'Zondag'
+  };
+
   initPrototype();
 
   cm.addPrototypeOpeningHour = addPrototypeOpeningHour;
 
   function initPrototype() {
     cm.prototype = {
-      opensAsDate : getPreviewHour(1),
-      closesAsDate : getPreviewHour(4),
-      dayOfWeek : [],
-      opens : '',
-      closes : ''
+      opensAsDate: getPreviewHour(1),
+      closesAsDate: getPreviewHour(4),
+      dayOfWeek: [],
+      opens: '',
+      closes: ''
     };
   }
 
@@ -8206,6 +8217,17 @@ function OpeningHourComponentController(moment) {
     var now = moment();
     var open = angular.copy(now).add(x, 'hours').startOf('hour');
     return open.toDate();
+  }
+
+  function addLabelToPrototypeOpeningHour() {
+    var humanValues = [];
+    if (cm.prototype.dayOfWeek instanceof Array) {
+      for (var i in cm.prototype.dayOfWeek) {
+        humanValues.push(dayNames[cm.prototype.dayOfWeek[i]]);
+      }
+    }
+
+    cm.prototype.label = humanValues.join(', ');
   }
 
   function addPrototypeOpeningHour() {
@@ -8228,6 +8250,7 @@ function OpeningHourComponentController(moment) {
 
     cm.prototype.opens = openMoment.format('HH:mm');
     cm.prototype.closes = closeMoment.format('HH:mm');
+    addLabelToPrototypeOpeningHour();
 
     var openIsNotClose = (openMoment !== closeMoment);
     var openisBeforeClose = openMoment.isBefore(closeMoment);
@@ -9630,7 +9653,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         'opensAsDate' : openingHour.opensAsDate,
         'closes' : openingHour.closes,
         'closesAsDate' : openingHour.closesAsDate,
-        'label' : ''
+        'label' : openingHour.label
       });
     },
 
@@ -20328,7 +20351,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
     "                data-dismiss=\"modal\"\n" +
     "                ng-click=\"cm.formData.saveOpeningHours()\"\n" +
-    "                ng-disabled=\"formData.openingHoursHasErrors\">\n" +
+    "                ng-disabled=\"cm.formData.openingHoursHasErrors\">\n" +
     "          Opslaan\n" +
     "        </button>\n" +
     "      </div>\n" +

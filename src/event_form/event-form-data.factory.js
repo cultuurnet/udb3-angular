@@ -321,7 +321,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         'opensAsDate' : openingHour.opensAsDate,
         'closes' : openingHour.closes,
         'closesAsDate' : openingHour.closesAsDate,
-        'label' : ''
+        'label' : openingHour.label
       });
     },
 
