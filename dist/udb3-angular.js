@@ -18221,6 +18221,7 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -18379,13 +18380,30 @@ function OfferController(
     }
   };
 
+  function clearLabelsError() {
+    controller.labelResponse = '';
+    controller.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedOffer.labels);
+    controller.labelResponse = 'unlabelError';
+    controller.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
-  controller.labelRemoved = function (label) {
-    offerLabeller.unlabel(cachedOffer, label.name);
-    controller.labelResponse = '';
-  };
+  function labelRemoved(label) {
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedOffer, label.name)
+      .catch(showUnlabelProblem);
+  }
 
   /**
    * @param {(UdbPlace|UdbEvent)}offer
@@ -23594,6 +23612,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <div ng-if=\"eventCtrl.labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "            Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
     "          </div>\n" +
+    "          <div ng-if=\"eventCtrl.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "            <span ng-bind=\"eventCtrl.labelsError\"></span>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -23754,6 +23775,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "          <div ng-if=\"placeCtrl.labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "            Het label '{{placeCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
+    "          </div>\n" +
+    "          <div ng-if=\"placeCtrl.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "            <span ng-bind=\"placeCtrl.labelsError\"></span>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
