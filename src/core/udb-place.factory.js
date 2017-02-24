@@ -154,9 +154,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       }
       this.image = jsonPlace.image;
       this.images = _.reject(getImages(jsonPlace), 'contentUrl', jsonPlace.image);
-      this.labels = _.map(jsonPlace.labels, function (label) {
-        return label;
-      });
+      this.labels = _.union(jsonPlace.labels, jsonPlace.hiddenLabels);
       this.mediaObject = jsonPlace.mediaObject || [];
       this.facilities = getCategoriesByType(jsonPlace, 'facility') || [];
       this.additionalData = jsonPlace.additionalData || {};

@@ -45,11 +45,11 @@
                 <p><a href ng-click="alterDescription()">Wijzigen</a></p>
 
 -->
-             <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll>{{eventFormData.description.nl}}</textarea>
+             <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll focus-if="descriptionCssClass==state-complete">{{eventFormData.description.nl}}</textarea>
               </section>
               <section class="state filling">
                 <div class="form-group">
-                  <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll>{{}}</textarea>
+                  <textarea ng-blur="saveDescription()" class="form-control" ng-model="description" rows="6" udb-auto-scroll focus-if="descriptionCssClass == 'state-filling'">{{}}</textarea>
                   <div class="tip" ng-switch="eventFormData.eventType">
                     <p ng-switch-when="0.17.0.0.0">
                       Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>
@@ -169,7 +169,9 @@
                              typeahead-on-select="selectOrganizer(organizer)"
                              typeahead-min-length="3"
                              typeahead-template-url="templates/organisation-uitpas-typeahead-template.html"
-                             typeahead-wait-ms="300"/>
+                             typeahead-wait-ms="300"
+                             focus-if="organizerCssClass == 'state-filling'"
+                             udb-auto-scroll/>
                       <div class="dropdown-menu-no-results text-center" ng-show="emptyOrganizerAutocomplete">
                         <div class="panel panel-default text-center">
                           <div class="panel-body">

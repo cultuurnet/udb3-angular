@@ -42,7 +42,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels) {
+function EventFormDataFactory(rx, calendarLabels, moment) {
 
   // Mapping between machine name of days and real output.
   var dayNames = {
@@ -107,6 +107,7 @@ function EventFormDataFactory(rx, calendarLabels) {
       this.endDate = '';
       this.timestamps = [];
       this.openingHours = [];
+      this.openingHoursErrors = {};
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -296,12 +297,16 @@ function EventFormDataFactory(rx, calendarLabels) {
     /**
      * @param {Date} date
      * @param {string} startHour HH:MM
+     * @param {Date} startHourAsDate
      * @param {string} endHour HH:MM
+     * @param {Date} endHourAsDate
      */
-    addTimestamp: function(date, startHour, endHour) {
+    addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
+        'startHourAsDate' : startHourAsDate,
+        'endHourAsDate' : endHourAsDate,
         'endHour' : endHour,
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
@@ -311,15 +316,28 @@ function EventFormDataFactory(rx, calendarLabels) {
     /**
      * Add a timestamp to the timestamps array.
      */
-    addOpeningHour: function(dayOfWeek, opens, closes) {
+    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
+      var now = moment();
+      if (opens === '') {
+        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
+        opensAsDate = openDate.toDate();
+        opens = openDate.format('HH:mm');
+      }
+
+      if (closes === '') {
+        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
+        closesAsDate = closeDate.toDate();
+        closes = closeDate.format('HH:mm');
+      }
 
       this.openingHours.push({
         'dayOfWeek' : dayOfWeek,
         'opens' : opens,
+        'opensAsDate' : opensAsDate,
         'closes' : closes,
+        'closesAsDate' : closesAsDate,
         'label' : ''
       });
-
     },
 
     /**
@@ -477,6 +495,9 @@ function EventFormDataFactory(rx, calendarLabels) {
         }
       }
 
+      this.openingHours[index].opensAsDate = moment(this.openingHours[index].opens, 'HH:mm').toDate();
+      this.openingHours[index].closesAsDate = moment(this.openingHours[index].closes, 'HH:mm').toDate();
+
       this.openingHours[index].label = humanValues.join(', ');
     },
 
@@ -500,15 +521,15 @@ function EventFormDataFactory(rx, calendarLabels) {
       formData.calendarType = type;
 
       if (formData.calendarType === 'single') {
-        formData.addTimestamp('', '', '');
+        formData.addTimestamp('', '', '', '', '');
       }
 
       if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '');
+        formData.addOpeningHour('', '', '', '', '');
       }
 
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '');
+        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 
@@ -521,6 +542,15 @@ function EventFormDataFactory(rx, calendarLabels) {
     },
 
     /**
+     * Check if the given timestamp is a valid date object.
+     * @param {Object} timestamp
+     * @returns {boolean}
+     */
+    isValidDate: function(timestamp) {
+      return timestamp instanceof Date;
+    },
+
+    /**
      * Toggle the starthour field for given timestamp.
      * @param {Object} timestamp
      *   Timestamp to change
@@ -529,9 +559,28 @@ function EventFormDataFactory(rx, calendarLabels) {
       // If we hide the textfield, empty all other time fields.
       if (!timestamp.showStartHour) {
         timestamp.startHour = '';
+        timestamp.startHourAsDate = '';
         timestamp.endHour = '';
+        timestamp.endHourAsDate = '';
         timestamp.showEndHour = false;
+        timestamp.date.setHours(0);
+        timestamp.date.setMinutes(0);
         this.timingChanged();
+      }
+      else {
+        var nextHour = moment().add(1, 'hours').minutes(0);
+        var startHourAsDate = angular.copy(timestamp.date);
+        var endHourAsDate = angular.copy(timestamp.date);
+        startHourAsDate.setHours(nextHour.hours());
+        startHourAsDate.setMinutes(nextHour.minutes());
+        endHourAsDate.setHours(23);
+        endHourAsDate.setMinutes(59);
+
+        timestamp.startHour = moment(startHourAsDate).format('HH:mm');
+        timestamp.startHourAsDate = startHourAsDate;
+        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+        timestamp.endHourAsDate = endHourAsDate;
+        timestamp.showEndHour = false;
       }
     },
 
@@ -541,11 +590,129 @@ function EventFormDataFactory(rx, calendarLabels) {
      *   Timestamp to change
      */
     toggleEndHour: function(timestamp) {
+      var endHourAsDate = timestamp.date;
       // If we hide the textfield, empty also the input.
       if (!timestamp.showEndHour) {
-        timestamp.endHour = '';
+        endHourAsDate.setHours(23);
+        endHourAsDate.setMinutes(59);
+
+        timestamp.endHour = '23:59';
+        timestamp.endHourAsDate = endHourAsDate;
         this.timingChanged();
       }
+      else {
+        var nextThreeHours = moment(timestamp.startHourAsDate).add(3, 'hours').minutes(0);
+        endHourAsDate.setHours(nextThreeHours.hours());
+        endHourAsDate.setMinutes(nextThreeHours.minutes());
+
+        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
+        timestamp.endHourAsDate = endHourAsDate;
+      }
+    },
+
+    hoursChanged: function (timestamp) {
+      var startHourAsDate;
+      var endHourAsDate;
+      if (timestamp.showStartHour || timestamp.showEndHour) {
+        if (timestamp.showStartHour) {
+          if (timestamp.startHourAsDate !== undefined) {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+          }
+          else {
+            startHourAsDate = moment(timestamp.startHourAsDate);
+            startHourAsDate.hours(0);
+            startHourAsDate.minutes(0);
+          }
+          timestamp.startHour = startHourAsDate.format('HH:mm');
+        }
+
+        if (timestamp.showEndHour) {
+          // if the endhour is invalid, send starthour to backend.
+          if (timestamp.endHourAsDate !== undefined) {
+            endHourAsDate = moment(timestamp.endHourAsDate);
+          }
+          else {
+            endHourAsDate = startHourAsDate;
+          }
+          timestamp.endHour = endHourAsDate.format('HH:mm');
+        }
+        this.timingChanged();
+      }
+    },
+
+    saveOpeningHours: function () {
+      angular.forEach(this.openingHours, function(openingHour) {
+        var opensAsDate, closesAsDate;
+
+        opensAsDate = moment(openingHour.opensAsDate);
+        openingHour.opens = opensAsDate.format('HH:mm');
+
+        closesAsDate = moment(openingHour.closesAsDate);
+        openingHour.closes = closesAsDate.format('HH:mm');
+      });
+      this.timingChanged();
+    },
+
+    validateOpeningHour: function (openingHour) {
+      openingHour.hasError = false;
+      openingHour.errors = {};
+
+      if (openingHour.dayOfWeek.length === 0) {
+        openingHour.errors.weekdayError = true;
+      }
+      else {
+        openingHour.errors.weekdayError = false;
+      }
+
+      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
+        openingHour.errors.openingHourError = true;
+      }
+      else {
+        openingHour.errors.openingHourError = false;
+      }
+
+      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
+        openingHour.errors.closingHourError = true;
+      }
+      else {
+        openingHour.errors.closingHourError = false;
+      }
+
+      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
+        openingHour.errors.closingHourGreaterError = true;
+      }
+      else {
+        openingHour.errors.closingHourGreaterError = false;
+      }
+
+      angular.forEach(openingHour.errors, function(error, key) {
+        if (error) {
+          openingHour.hasError = true;
+        }
+      });
+
+      this.validateOpeningHours();
+    },
+
+    validateOpeningHours: function () {
+      this.openingHoursHasErrors = false;
+      this.openingHoursErrors.weekdayError = false;
+      this.openingHoursErrors.openingHourError = false;
+      this.openingHoursErrors.closingHourError = false;
+      this.openingHoursErrors.closingHourGreaterError = false;
+
+      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
+      if (errors.length > 0) {
+        this.openingHoursHasErrors = true;
+      }
+      else {
+        this.openingHoursHasErrors = false;
+      }
+
+      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
+      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
+      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
+      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
     },
 
     periodicTimingChanged: function () {
