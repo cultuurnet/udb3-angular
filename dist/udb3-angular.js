@@ -8284,8 +8284,6 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
       this.temporaryOpeningHours.splice(index, 1);
     },
 
-
-
     saveOpeningHours: function () {
       this.openingHours = this.temporaryOpeningHours;
       this.timingChanged();
@@ -8325,7 +8323,9 @@ function OpeningHourComponentController(moment, dayNames) {
   initPrototype();
 
   cm.addPrototypeOpeningHour = addPrototypeOpeningHour;
+  cm.validatePrototypeWeekDays = validatePrototypeWeekDays;
   cm.validatePrototypeOpeningHour = validatePrototypeOpeningHour;
+  cm.validatePrototypeClosingHour = validatePrototypeClosingHour;
 
   function initPrototype() {
     cm.prototype = {
@@ -8334,7 +8334,7 @@ function OpeningHourComponentController(moment, dayNames) {
       dayOfWeek: [],
       opens: '',
       closes: '',
-      hasErrors: false,
+      hasErrors: true, // on init always true because there is no week day selected!
       errors: {}
     };
   }
@@ -8343,6 +8343,70 @@ function OpeningHourComponentController(moment, dayNames) {
     var now = moment();
     var open = angular.copy(now).add(x, 'hours').startOf('hour');
     return open.toDate();
+  }
+
+  function validatePrototypeWeekDays() {
+    cm.prototype.errors.weekdayError = (cm.prototype.dayOfWeek === undefined || cm.prototype.dayOfWeek.length <= 0);
+    validatePrototype();
+  }
+
+  function validatePrototypeOpeningHour() {
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+    var openExists = (cm.prototype.opensAsDate !== null);
+
+    if (!openExists) {
+      cm.opensAsDate = moment();
+      cm.opensAsDate.hours(0).minutes(0).seconds(0);
+      cm.opensAsDate = cm.opensAsDate.toDate();
+      cm.prototype.opensAsDate = cm.opensAsDate;
+    }
+
+    cm.prototype.errors.openIsClose = (openMoment === closeMoment);
+    validatePrototype();
+  }
+
+  function validatePrototypeClosingHour() {
+    var closesAsDateExists = (cm.prototype.closesAsDate !== null);
+
+    if (!closesAsDateExists) {
+      cm.closesAsDate = moment();
+      cm.closesAsDate.hours(23).minutes(59).seconds(59);
+      cm.closesAsDate = cm.closesAsDate.toDate();
+      cm.prototype.closesAsDate = cm.closesAsDate;
+    }
+
+    validatePrototype();
+  }
+
+  function validatePrototype() {
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+    cm.prototype.errors.openIsBeforeClose = !openMoment.isBefore(closeMoment);
+
+    var hasErrors = false;
+    angular.forEach(cm.prototype.errors, function(error) {
+      if (error) {
+        hasErrors = true;
+      }
+    });
+
+    cm.prototype.hasErrors = hasErrors;
+  }
+
+  function addPrototypeOpeningHour() {
+
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+
+    cm.prototype.opens = openMoment.format('HH:mm');
+    cm.prototype.closes = closeMoment.format('HH:mm');
+    addLabelToPrototypeOpeningHour();
+
+    if (!cm.prototype.hasErrors) {
+      cm.openingHours.addOpeningHour(angular.copy(cm.prototype));
+      initPrototype();
+    }
   }
 
   function addLabelToPrototypeOpeningHour() {
@@ -8354,56 +8418,6 @@ function OpeningHourComponentController(moment, dayNames) {
     }
 
     cm.prototype.label = humanValues.join(', ');
-  }
-
-  function validatePrototypeOpeningHour() {
-    var openMoment = moment(cm.prototype.opensAsDate);
-    var closeMoment = moment(cm.prototype.closesAsDate);
-
-    cm.prototype.errors.openIsClose = (openMoment === closeMoment);
-    cm.prototype.errors.openIsBeforeClose = !openMoment.isBefore(closeMoment);
-    cm.prototype.errors.closingHourError = (cm.prototype.closesAsDate === undefined);
-    cm.prototype.errors.openingHourError = (cm.prototype.opensAsDate === undefined);
-    cm.prototype.errors.weekdayError = (cm.prototype.dayOfWeek.length > 0);
-
-
-    angular.forEach(cm.prototype.errors, function(error) {
-      if (error) {
-        cm.prototype.hasError = true;
-      }
-      else {
-        cm.addPrototypeOpeningHour();
-      }
-    });
-  }
-
-  function addPrototypeOpeningHour() {
-
-    var openMoment = moment(cm.prototype.opensAsDate);
-    var closeMoment = moment(cm.prototype.closesAsDate);
-
-    var openExists = (cm.prototype.opensAsDate !== null);
-    var closesAsDateExists = (cm.prototype.closesAsDate !== null);
-    if (!openExists) {
-      cm.opensAsDate = moment();
-      cm.opensAsDate.hours(0).minutes(0).seconds(0);
-      cm.opensAsDate = cm.opensAsDate.toDate();
-    }
-    if (!closesAsDateExists) {
-      cm.closesAsDate = moment();
-      cm.closesAsDate.hours(23).minutes(59).seconds(59);
-      cm.closesAsDate = cm.closesAsDate.toDate();
-    }
-
-    cm.prototype.opens = openMoment.format('HH:mm');
-    cm.prototype.closes = closeMoment.format('HH:mm');
-    addLabelToPrototypeOpeningHour();
-
-    if (!cm.prototype.hasError) {
-      cm.openingHours.addOpeningHour(angular.copy(cm.prototype));
-      initPrototype();
-    }
-
   }
 
 }
@@ -10058,68 +10072,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       });
       this.timingChanged();
     },*/
-
-    validateOpeningHour: function (openingHour) {
-      openingHour.hasError = false;
-      openingHour.errors = {};
-
-      if (openingHour.dayOfWeek.length === 0) {
-        openingHour.errors.weekdayError = true;
-      }
-      else {
-        openingHour.errors.weekdayError = false;
-      }
-
-      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
-        openingHour.errors.openingHourError = true;
-      }
-      else {
-        openingHour.errors.openingHourError = false;
-      }
-
-      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
-        openingHour.errors.closingHourError = true;
-      }
-      else {
-        openingHour.errors.closingHourError = false;
-      }
-
-      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
-        openingHour.errors.closingHourGreaterError = true;
-      }
-      else {
-        openingHour.errors.closingHourGreaterError = false;
-      }
-
-      angular.forEach(openingHour.errors, function(error, key) {
-        if (error) {
-          openingHour.hasError = true;
-        }
-      });
-
-      this.validateOpeningHours();
-    },
-
-    validateOpeningHours: function () {
-      this.openingHoursHasErrors = false;
-      this.openingHoursErrors.weekdayError = false;
-      this.openingHoursErrors.openingHourError = false;
-      this.openingHoursErrors.closingHourError = false;
-      this.openingHoursErrors.closingHourGreaterError = false;
-
-      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
-      if (errors.length > 0) {
-        this.openingHoursHasErrors = true;
-      }
-      else {
-        this.openingHoursHasErrors = false;
-      }
-
-      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
-      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
-      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
-      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
-    },
 
     periodicTimingChanged: function () {
       var formData = this;
@@ -20315,6 +20267,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <h4 class=\"modal-title\">Openingsuren</h4>\n" +
     "      </div>\n" +
     "      <div class=\"modal-body\">\n" +
+    "          <div class=\"alert alert-danger\" ng-show=\"cm.prototype.errors.weekdayError\">\n" +
+    "              <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "          </div>\n" +
+    "          <div class=\"alert alert-danger\" ng-show=\"cm.prototype.errors.openIsBeforeClose\">\n" +
+    "              <p class=\"text-danger\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
+    "          </div>\n" +
     "          <div class=\"row\">\n" +
     "              <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
     "                  <label for=\"newOpeningHourForm.weekday\">Dagen</label>\n" +
@@ -20389,6 +20347,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                      multiple\n" +
     "                                      start-label=\"Kies dag(en)\"\n" +
     "                                      ng-model=\"cm.prototype.dayOfWeek\"\n" +
+    "                                      ng-change=\"cm.validatePrototypeWeekDays()\"\n" +
     "                                      udb-multiselect\n" +
     "                                      required>\n" +
     "                                    <option value=\"monday\">maandag</option>\n" +
@@ -20410,6 +20369,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                 class=\"form-control uur\"\n" +
     "                                 placeholder=\"Bv. 08:00\"\n" +
     "                                 ng-model=\"cm.prototype.opensAsDate\"\n" +
+    "                                 ng-blur=\"cm.validatePrototypeOpeningHour()\"\n" +
     "                                 />\n" +
     "                              </div>\n" +
     "                        </div>\n" +
@@ -20422,21 +20382,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   class=\"form-control uur\"\n" +
     "                                   placeholder=\"Bv. 08:00\"\n" +
     "                                   ng-model=\"cm.prototype.closesAsDate\"\n" +
+    "                                   ng-blur=\"cm.validatePrototypeClosingHour()\"\n" +
     "                                   />\n" +
     "                              </div>\n" +
     "                        </div>\n" +
     "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                            <a href=\"\" ng-click=\"cm.validatePrototypeOpeningHour()\">Toevoegen</a>\n" +
+    "                            <a href=\"\" ng-click=\"cm.addPrototypeOpeningHour()\"\n" +
+    "                                       ng-hide=\"cm.prototype.hasErrors\">Toevoegen</a>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </form>\n" +
     "            </div>\n" +
-    "        <div class=\"alert alert-danger\" ng-show=\"formData.openingHoursHasErrors\">\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourError\">Gelieve een geldige sluitingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourGreaterError\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
-    "        </div>\n" +
     "      </div>\n" +
     "      <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +

@@ -34,6 +34,12 @@
         <h4 class="modal-title">Openingsuren</h4>
       </div>
       <div class="modal-body">
+          <div class="alert alert-danger" ng-show="cm.prototype.errors.weekdayError">
+              <p class="text-danger">Je moet minstens 1 weekdag selecteren.</p>
+          </div>
+          <div class="alert alert-danger" ng-show="cm.prototype.errors.openIsBeforeClose">
+              <p class="text-danger">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>
+          </div>
           <div class="row">
               <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                   <label for="newOpeningHourForm.weekday">Dagen</label>
@@ -108,6 +114,7 @@
                                       multiple
                                       start-label="Kies dag(en)"
                                       ng-model="cm.prototype.dayOfWeek"
+                                      ng-change="cm.validatePrototypeWeekDays()"
                                       udb-multiselect
                                       required>
                                     <option value="monday">maandag</option>
@@ -129,6 +136,7 @@
                                  class="form-control uur"
                                  placeholder="Bv. 08:00"
                                  ng-model="cm.prototype.opensAsDate"
+                                 ng-blur="cm.validatePrototypeOpeningHour()"
                                  />
                               </div>
                         </div>
@@ -141,21 +149,17 @@
                                    class="form-control uur"
                                    placeholder="Bv. 08:00"
                                    ng-model="cm.prototype.closesAsDate"
+                                   ng-blur="cm.validatePrototypeClosingHour()"
                                    />
                               </div>
                         </div>
                         <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                            <a href="" ng-click="cm.validatePrototypeOpeningHour()">Toevoegen</a>
+                            <a href="" ng-click="cm.addPrototypeOpeningHour()"
+                                       ng-hide="cm.prototype.hasErrors">Toevoegen</a>
                         </div>
                     </div>
                 </form>
             </div>
-        <div class="alert alert-danger" ng-show="formData.openingHoursHasErrors">
-          <p class="text-danger" ng-if="formData.openingHoursErrors.weekdayError">Je moet minstens 1 weekdag selecteren.</p>
-          <p class="text-danger" ng-if="formData.openingHoursErrors.openingHourError">Gelieve een geldige openingstijd in te geven.</p>
-          <p class="text-danger" ng-if="formData.openingHoursErrors.closingHourError">Gelieve een geldige sluitingstijd in te geven.</p>
-          <p class="text-danger" ng-if="formData.openingHoursErrors.closingHourGreaterError">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>
-        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
