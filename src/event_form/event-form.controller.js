@@ -168,29 +168,17 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     var startDate = moment(startDateString);
     var endDate = moment(endDateString);
 
-    var startHour = '';
-    startHour = startDate.hours() <= 9 ? '0' + startDate.hours() : startDate.hours();
-    if (startDate.minutes() <= 9) {
-      startHour += ':0' + startDate.minutes();
-    }
-    else {
-      startHour += ':' + startDate.minutes();
-    }
-
-    var endHour = '';
-    endHour = endDate.hours() <= 9 ? '0' + endDate.hours() : endDate.hours();
-    if (endDate.minutes() <= 9) {
-      endHour += ':0' + endDate.minutes();
-    }
-    else {
-      endHour += ':' + endDate.minutes();
-    }
+    var startHour = startDate.format('HH:mm');
+    var endHour = endDate.format('HH:mm');
 
     startHour = startHour === '00:00' ? '' : startHour;
     endHour = endHour === '00:00' ? '' : endHour;
 
+    var startHourAsDate = moment(startDateString).toDate();
+    var endHourAsDate = moment(endDateString).toDate();
+
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
-    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, endHour);
+    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
 

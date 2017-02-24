@@ -3234,6 +3234,19 @@ table.event-detail-price-table {
 .editable-wrap .editable-buttons button + button {
   margin-left: 10px;
 }
+.cultuurkuur-component {
+  margin-top: 12px;
+}
+.cultuurkuur-component .panel {
+  max-width: 95%;
+}
+.cultuurkuur-logo {
+  background-image: url(/images/cultuurkuur-logo.svg);
+  background-size: 5vw;
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-origin: content-box;
+}
 .loading-search-result {
   opacity: 0.4;
   pointer-events: none;

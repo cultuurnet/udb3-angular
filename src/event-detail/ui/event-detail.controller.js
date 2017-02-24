@@ -23,7 +23,8 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+   $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -59,7 +60,6 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
@@ -180,10 +180,6 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
-  $scope.translateWorkflowStatus = function(code) {
-     return translateWorkflowStatus(code);
-   };
-
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -238,13 +234,29 @@ function EventDetail(
     }
   }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedEvent, label.name);
-    $scope.event.labels = angular.copy(cachedEvent.labels);
-    $scope.labelResponse = '';
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedEvent, label.name)
+      .catch(showUnlabelProblem);
   }
 
   function hasContactPoint() {
@@ -263,11 +275,11 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
-  }
+  $scope.translateAudience = function (type) {
+    return $translate.instant('audience.' + type);
+  };
+
+  $scope.finishedLoading = function() {
+    return ($scope.event && $scope.permissions);
+  };
 }

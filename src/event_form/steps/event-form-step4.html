@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-md-8 col-lg-7">
         <label ng-show="eventFormData.isEvent">Naam van het evenement </label>
-        <label ng-show="eventFormData.isPlace">Naam van de locatie</strong></label>
+        <label ng-show="eventFormData.isPlace">Naam van de locatie</label>
 
         <div class="form-group-lg">
           <input type="text"
@@ -16,6 +16,7 @@
                  ng-model="eventFormData.name.nl"
                  ng-model-options="titleInputOptions"
                  ng-change="eventTitleChanged()"
+                 focus-if="eventFormData.showStep4 && eventFormData.id === ''"
                  udb-auto-scroll>
         </div>
 

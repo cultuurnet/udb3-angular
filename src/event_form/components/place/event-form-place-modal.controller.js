@@ -36,7 +36,7 @@
     function getDefaultPlace() {
       return {
         name: $scope.title,
-        eventType: '',
+        eventType: getFirstCategoryId(),
         address: {
           addressCountry: 'BE',
           addressLocality: $scope.location.address.addressLocality,
@@ -134,6 +134,17 @@
      */
     function selectPlace(place) {
       $uibModalInstance.close(place);
+    }
+
+    /**
+     * @return {string}
+     */
+    function getFirstCategoryId() {
+      var sortedCategories = $scope.categories.sort(
+        function(a, b) {
+          return a.label.localeCompare(b.label);
+        });
+      return sortedCategories[0].id;
     }
 
   }

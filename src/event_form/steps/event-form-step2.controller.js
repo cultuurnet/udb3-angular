@@ -27,7 +27,6 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     if (EventFormData.id) {
       $rootScope.$emit('eventTimingChanged', EventFormData);
     }
-    console.log('event timing changed');
   };
 
   EventFormData
