@@ -584,68 +584,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChanged();
     },*/
 
-    validateOpeningHour: function (openingHour) {
-      openingHour.hasError = false;
-      openingHour.errors = {};
-
-      if (openingHour.dayOfWeek.length === 0) {
-        openingHour.errors.weekdayError = true;
-      }
-      else {
-        openingHour.errors.weekdayError = false;
-      }
-
-      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
-        openingHour.errors.openingHourError = true;
-      }
-      else {
-        openingHour.errors.openingHourError = false;
-      }
-
-      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
-        openingHour.errors.closingHourError = true;
-      }
-      else {
-        openingHour.errors.closingHourError = false;
-      }
-
-      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
-        openingHour.errors.closingHourGreaterError = true;
-      }
-      else {
-        openingHour.errors.closingHourGreaterError = false;
-      }
-
-      angular.forEach(openingHour.errors, function(error, key) {
-        if (error) {
-          openingHour.hasError = true;
-        }
-      });
-
-      this.validateOpeningHours();
-    },
-
-    validateOpeningHours: function () {
-      this.openingHoursHasErrors = false;
-      this.openingHoursErrors.weekdayError = false;
-      this.openingHoursErrors.openingHourError = false;
-      this.openingHoursErrors.closingHourError = false;
-      this.openingHoursErrors.closingHourGreaterError = false;
-
-      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
-      if (errors.length > 0) {
-        this.openingHoursHasErrors = true;
-      }
-      else {
-        this.openingHoursHasErrors = false;
-      }
-
-      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
-      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
-      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
-      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
-    },
-
     periodicTimingChanged: function () {
       var formData = this;
 

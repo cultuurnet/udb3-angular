@@ -86,8 +86,6 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
       this.temporaryOpeningHours.splice(index, 1);
     },
 
-
-
     saveOpeningHours: function () {
       this.openingHours = this.temporaryOpeningHours;
       this.timingChanged();

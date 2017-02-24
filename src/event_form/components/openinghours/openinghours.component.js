@@ -20,7 +20,9 @@ function OpeningHourComponentController(moment, dayNames) {
   initPrototype();
 
   cm.addPrototypeOpeningHour = addPrototypeOpeningHour;
+  cm.validatePrototypeWeekDays = validatePrototypeWeekDays;
   cm.validatePrototypeOpeningHour = validatePrototypeOpeningHour;
+  cm.validatePrototypeClosingHour = validatePrototypeClosingHour;
 
   function initPrototype() {
     cm.prototype = {
@@ -29,7 +31,7 @@ function OpeningHourComponentController(moment, dayNames) {
       dayOfWeek: [],
       opens: '',
       closes: '',
-      hasErrors: false,
+      hasErrors: true, // on init always true because there is no week day selected!
       errors: {}
     };
   }
@@ -38,6 +40,70 @@ function OpeningHourComponentController(moment, dayNames) {
     var now = moment();
     var open = angular.copy(now).add(x, 'hours').startOf('hour');
     return open.toDate();
+  }
+
+  function validatePrototypeWeekDays() {
+    cm.prototype.errors.weekdayError = (cm.prototype.dayOfWeek === undefined || cm.prototype.dayOfWeek.length <= 0);
+    validatePrototype();
+  }
+
+  function validatePrototypeOpeningHour() {
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+    var openExists = (cm.prototype.opensAsDate !== null);
+
+    if (!openExists) {
+      cm.opensAsDate = moment();
+      cm.opensAsDate.hours(0).minutes(0).seconds(0);
+      cm.opensAsDate = cm.opensAsDate.toDate();
+      cm.prototype.opensAsDate = cm.opensAsDate;
+    }
+
+    cm.prototype.errors.openIsClose = (openMoment === closeMoment);
+    validatePrototype();
+  }
+
+  function validatePrototypeClosingHour() {
+    var closesAsDateExists = (cm.prototype.closesAsDate !== null);
+
+    if (!closesAsDateExists) {
+      cm.closesAsDate = moment();
+      cm.closesAsDate.hours(23).minutes(59).seconds(59);
+      cm.closesAsDate = cm.closesAsDate.toDate();
+      cm.prototype.closesAsDate = cm.closesAsDate;
+    }
+
+    validatePrototype();
+  }
+
+  function validatePrototype() {
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+    cm.prototype.errors.openIsBeforeClose = !openMoment.isBefore(closeMoment);
+
+    var hasErrors = false;
+    angular.forEach(cm.prototype.errors, function(error) {
+      if (error) {
+        hasErrors = true;
+      }
+    });
+
+    cm.prototype.hasErrors = hasErrors;
+  }
+
+  function addPrototypeOpeningHour() {
+
+    var openMoment = moment(cm.prototype.opensAsDate);
+    var closeMoment = moment(cm.prototype.closesAsDate);
+
+    cm.prototype.opens = openMoment.format('HH:mm');
+    cm.prototype.closes = closeMoment.format('HH:mm');
+    addLabelToPrototypeOpeningHour();
+
+    if (!cm.prototype.hasErrors) {
+      cm.openingHours.addOpeningHour(angular.copy(cm.prototype));
+      initPrototype();
+    }
   }
 
   function addLabelToPrototypeOpeningHour() {
@@ -49,56 +115,6 @@ function OpeningHourComponentController(moment, dayNames) {
     }
 
     cm.prototype.label = humanValues.join(', ');
-  }
-
-  function validatePrototypeOpeningHour() {
-    var openMoment = moment(cm.prototype.opensAsDate);
-    var closeMoment = moment(cm.prototype.closesAsDate);
-
-    cm.prototype.errors.openIsClose = (openMoment === closeMoment);
-    cm.prototype.errors.openIsBeforeClose = !openMoment.isBefore(closeMoment);
-    cm.prototype.errors.closingHourError = (cm.prototype.closesAsDate === undefined);
-    cm.prototype.errors.openingHourError = (cm.prototype.opensAsDate === undefined);
-    cm.prototype.errors.weekdayError = (cm.prototype.dayOfWeek.length > 0);
-
-
-    angular.forEach(cm.prototype.errors, function(error) {
-      if (error) {
-        cm.prototype.hasError = true;
-      }
-      else {
-        cm.addPrototypeOpeningHour();
-      }
-    });
-  }
-
-  function addPrototypeOpeningHour() {
-
-    var openMoment = moment(cm.prototype.opensAsDate);
-    var closeMoment = moment(cm.prototype.closesAsDate);
-
-    var openExists = (cm.prototype.opensAsDate !== null);
-    var closesAsDateExists = (cm.prototype.closesAsDate !== null);
-    if (!openExists) {
-      cm.opensAsDate = moment();
-      cm.opensAsDate.hours(0).minutes(0).seconds(0);
-      cm.opensAsDate = cm.opensAsDate.toDate();
-    }
-    if (!closesAsDateExists) {
-      cm.closesAsDate = moment();
-      cm.closesAsDate.hours(23).minutes(59).seconds(59);
-      cm.closesAsDate = cm.closesAsDate.toDate();
-    }
-
-    cm.prototype.opens = openMoment.format('HH:mm');
-    cm.prototype.closes = closeMoment.format('HH:mm');
-    addLabelToPrototypeOpeningHour();
-
-    if (!cm.prototype.hasError) {
-      cm.openingHours.addOpeningHour(angular.copy(cm.prototype));
-      initPrototype();
-    }
-
   }
 
 }
