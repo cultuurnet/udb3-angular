@@ -9729,7 +9729,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
   function startCreating() {
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
 
-    if (EventFormData.isEvent && calendarConfig.date) {
+    if (EventFormData.isEvent && calendarConfig && calendarConfig.date) {
       preselectDate(calendarConfig);
     }
 
