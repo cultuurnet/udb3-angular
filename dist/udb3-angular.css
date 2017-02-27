@@ -3235,16 +3235,17 @@ table.event-detail-price-table {
   margin-left: 10px;
 }
 .cultuurkuur-component {
-  margin-left: 12px;
+  margin-top: 12px;
 }
 .cultuurkuur-component .panel {
   max-width: 95%;
 }
 .cultuurkuur-logo {
   background-image: url(/images/cultuurkuur-logo.svg);
-  background-size: contain;
+  background-size: 5vw;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: top right;
+  background-origin: content-box;
 }
 .loading-search-result {
   opacity: 0.4;
