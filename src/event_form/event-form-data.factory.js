@@ -42,7 +42,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
 
   /**
    * @class EventFormData
@@ -95,8 +95,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.startDate = '';
       this.endDate = '';
       this.timestamps = [];
-      this.openingHours = OpeningHoursCollection.init();
-      this.openingHoursErrors = {};
+      this.openingHours = [];
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -571,18 +570,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
     },
 
-    /*saveOpeningHours: function () {
-      angular.forEach(this.openingHours, function(openingHour) {
-        var opensAsDate, closesAsDate;
-
-        opensAsDate = moment(openingHour.opensAsDate);
-        openingHour.opens = opensAsDate.format('HH:mm');
-
-        closesAsDate = moment(openingHour.closesAsDate);
-        openingHour.closes = closesAsDate.format('HH:mm');
-      });
+    saveOpeningHours: function (openingHours) {
+      this.openingHours = openingHours;
       this.timingChanged();
-    },*/
+    },
 
     periodicTimingChanged: function () {
       var formData = this;
@@ -601,6 +592,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   // initialize the data
   eventFormData.init();
+
+  $rootScope.$on('openingHoursChanged', function (event, data) {
+    eventFormData.saveOpeningHours(data);
+  });
 
   return eventFormData;
 }

@@ -11,7 +11,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(rx, moment, dayNames) {
+function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
 
   function prepareOpeningHoursForDisplay(openingHours) {
     angular.forEach (openingHours, function(openingHour, key) {
@@ -30,7 +30,7 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
   }
 
   /**
-   * @class EventFormData
+   * @class OpeningHoursCollection
    */
   var openingHoursCollection = {
     /**
@@ -40,7 +40,6 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
       this.openingHours = [];
       this.temporaryOpeningHours = [];
       this.openingHoursErrors = {};
-      this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
     },
 
     /**
@@ -88,13 +87,8 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
 
     saveOpeningHours: function () {
       this.openingHours = this.temporaryOpeningHours;
-      this.timingChanged();
-    },
-
-    timingChanged: function () {
-      this.timingChangedCallback(this.openingHours);
+      $rootScope.$emit('openingHoursChanged', this.openingHours);
     }
-
   };
 
   // initialize the data

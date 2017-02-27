@@ -8209,7 +8209,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(rx, moment, dayNames) {
+function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
 
   function prepareOpeningHoursForDisplay(openingHours) {
     angular.forEach (openingHours, function(openingHour, key) {
@@ -8228,7 +8228,7 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
   }
 
   /**
-   * @class EventFormData
+   * @class OpeningHoursCollection
    */
   var openingHoursCollection = {
     /**
@@ -8238,7 +8238,6 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
       this.openingHours = [];
       this.temporaryOpeningHours = [];
       this.openingHoursErrors = {};
-      this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
     },
 
     /**
@@ -8286,13 +8285,8 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
 
     saveOpeningHours: function () {
       this.openingHours = this.temporaryOpeningHours;
-      this.timingChanged();
-    },
-
-    timingChanged: function () {
-      this.timingChangedCallback(this.openingHours);
+      $rootScope.$emit('openingHoursChanged', this.openingHours);
     }
-
   };
 
   // initialize the data
@@ -8300,7 +8294,7 @@ function OpeningHoursCollectionFactory(rx, moment, dayNames) {
 
   return openingHoursCollection;
 }
-OpeningHoursCollectionFactory.$inject = ["rx", "moment", "dayNames"];
+OpeningHoursCollectionFactory.$inject = ["$rootScope", "moment", "dayNames"];
 
 // Source: src/event_form/components/openinghours/openinghours.component.js
 angular
@@ -9531,7 +9525,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
 
   /**
    * @class EventFormData
@@ -9584,8 +9578,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.startDate = '';
       this.endDate = '';
       this.timestamps = [];
-      this.openingHours = OpeningHoursCollection.init();
-      this.openingHoursErrors = {};
+      this.openingHours = [];
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -10060,18 +10053,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
     },
 
-    /*saveOpeningHours: function () {
-      angular.forEach(this.openingHours, function(openingHour) {
-        var opensAsDate, closesAsDate;
-
-        opensAsDate = moment(openingHour.opensAsDate);
-        openingHour.opens = opensAsDate.format('HH:mm');
-
-        closesAsDate = moment(openingHour.closesAsDate);
-        openingHour.closes = closesAsDate.format('HH:mm');
-      });
+    saveOpeningHours: function (openingHours) {
+      this.openingHours = openingHours;
       this.timingChanged();
-    },*/
+    },
 
     periodicTimingChanged: function () {
       var formData = this;
@@ -10091,9 +10076,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
   // initialize the data
   eventFormData.init();
 
+  $rootScope.$on('openingHoursChanged', function (event, data) {
+    eventFormData.saveOpeningHours(data);
+  });
+
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "$rootScope"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -10271,7 +10260,6 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
-
 }
 EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q"];
 
