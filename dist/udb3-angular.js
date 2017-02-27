@@ -21097,7 +21097,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </section>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"!activeEventType\">\n" +
-    "      <div ng-class=\"splitTypes ? 'col-sm-5': ''\"\n" +
+    "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'event'\">\n" +
     "        <label class=\"event-type-choser-label event\"><span>Een evenement</span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-events\">\n" +
@@ -21115,7 +21115,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <p class=\"text-center event-type-splitter\"><em>of</em></p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div ng-class=\"splitTypes ? 'col-sm-5': ''\"\n" +
+    "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'place'\">\n" +
     "        <label class=\"event-type-choser-label place\"><span>Een locatie</span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-places\">\n" +
