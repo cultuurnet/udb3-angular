@@ -58,7 +58,8 @@ describe('Controller: Organizer Detail', function() {
     OrganizerManager = jasmine.createSpyObj('OrganizerManager', [
       'get',
       'addLabelToOrganizer',
-      'deleteLabelFromOrganizer'
+      'deleteLabelFromOrganizer',
+      'removeOrganizerFromCache'
     ]);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
 
@@ -120,4 +121,30 @@ describe('Controller: Organizer Detail', function() {
     expect(OrganizerManager.deleteLabelFromOrganizer)
       .toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'Blub');
   });
+
+  it('should display an error message when removing a label fails', function () {
+    /** @type {ApiProblem} */
+    var problem = {
+      type: new URL('http://udb.be/problems/organisation-unlabel-permission'),
+      title: 'You do not have the required permission to unlabel this organisation.',
+      detail: 'User with id: 2aab63ca-adef-4b6d-badb-0f8a17367c53 has no permission: "Aanbod bewerken" on item: ecee32f5-94bb-4129-b7b9-fac341d55219 when executing command: RemoveLabel.',
+      instance: new URL('http://udb.be/jobs/6ed2eb90-0163-4d15-ba6d-5d66223795e1'),
+      status: 403
+    };
+    var label = {
+      'uuid':'80f63f49-5de2-42ea-9642-59fc0400f2c5',
+      'name':'Mijn label'
+    };
+    var expectedLabels = [label];
+    OrganizerManager.get.and.returnValue($q.resolve(fakeOrganizer));
+    OrganizerManager.deleteLabelFromOrganizer.and.returnValue($q.reject(problem));
+
+    var controller = getController();
+    controller.deleteLabel(label);
+    $scope.$digest();
+
+    expect(controller.organizer.labels).toEqual(expectedLabels);
+    expect(controller.labelResponse).toEqual('unlabelError');
+    expect(controller.labelsError).toEqual('You do not have the required permission to unlabel this organisation.');
+  })
 });
