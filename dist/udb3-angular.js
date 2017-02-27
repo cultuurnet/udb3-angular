@@ -13339,6 +13339,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -23607,7 +23608,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-sm-12\" ng-show=\"resultViewer.isShowingProperties()\">\n" +
     "    <div class=\"udb-details row\">\n" +
     "      <div class=\"col-sm-2\" ng-if=\"resultViewer.eventProperties.image.visible\">\n" +
-    "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
+    "        <img ng-if=\"event.image\" ng-src=\"{{event.image + '?maxwidth=150&maxheight=150'}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
     "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
@@ -23771,7 +23772,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-sm-12\" ng-show=\"resultViewer.isShowingProperties()\">\n" +
     "    <div class=\"udb-details row\">\n" +
     "      <div class=\"col-sm-2\" ng-if=\"resultViewer.eventProperties.image.visible\">\n" +
-    "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
+    "        <img ng-if=\"event.image\" ng-src=\"{{event.image + '?maxwidth=150&maxheight=150'}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
     "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
@@ -23796,7 +23797,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
