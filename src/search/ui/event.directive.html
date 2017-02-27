@@ -164,6 +164,9 @@
           <div ng-if="eventCtrl.labelResponse === 'success'" class="alert alert-success">
             Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.
           </div>
+          <div ng-if="eventCtrl.labelResponse === 'unlabelError'" class="alert alert-danger">
+            <span ng-bind="eventCtrl.labelsError"></span>
+          </div>
         </div>
       </div>
     </div>

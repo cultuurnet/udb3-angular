@@ -70,6 +70,9 @@
             <udb-label-select labels="odc.organizer.labels"
                               label-added="odc.addLabel(label)"
                               label-removed="odc.deleteLabel(label)"></udb-label-select>
+            <div ng-if="odc.labelResponse === 'unlabelError'" class="alert alert-danger">
+                <span ng-bind="odc.labelsError"></span>
+            </div>
         </div>
     </div>
 </div>

@@ -150,6 +150,9 @@
           <div ng-if="placeCtrl.labelResponse === 'success'" class="alert alert-success">
             Het label '{{placeCtrl.addedLabel}}' werd succesvol toegevoegd.
           </div>
+          <div ng-if="placeCtrl.labelResponse === 'unlabelError'" class="alert alert-danger">
+            <span ng-bind="placeCtrl.labelsError"></span>
+          </div>
         </div>
       </div>
     </div>
