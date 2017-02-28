@@ -19470,9 +19470,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-duplication-step.component.html',
+    "<h1 class=\"title\">Kopiëren en aanpassen</h1>\n" +
+    "\n" +
     "<div class=\"alert alert-info\" role=\"alert\">\n" +
-    "    <strong>Je staat op het punt een evenement te kopiëren.</strong><br>\n" +
-    "    Om overlappende data te vermijden, kies je een nieuwe kalender voor dit evenement.\n" +
+    "  Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.\n" +
     "</div>\n" +
     "\n" +
     "<udb-event-duplication-calendar></udb-event-duplication-calendar>\n"
