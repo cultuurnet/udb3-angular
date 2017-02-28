@@ -24,7 +24,8 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -90,8 +91,6 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    var personalVariationLoaded = variationRepository.getPersonalVariation(event);
-
     udbApi
       .getHistory($scope.eventId)
       .then(showHistory);
@@ -100,13 +99,17 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    personalVariationLoaded
-      .then(function (variation) {
-        $scope.event.description = variation.description[language];
-      })
-      .finally(function () {
-        $scope.eventIsEditable = true;
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      variationRepository.getPersonalVariation(event)
+        .then(function (variation) {
+          $scope.event.description = variation.description[language];
+        })
+        .finally(function () {
+          $scope.eventIsEditable = true;
+        });
+    }
+
     hasContactPoint();
     hasBookingInfo();
   }

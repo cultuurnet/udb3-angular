@@ -7464,7 +7464,8 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7530,8 +7531,6 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    var personalVariationLoaded = variationRepository.getPersonalVariation(event);
-
     udbApi
       .getHistory($scope.eventId)
       .then(showHistory);
@@ -7540,13 +7539,17 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    personalVariationLoaded
-      .then(function (variation) {
-        $scope.event.description = variation.description[language];
-      })
-      .finally(function () {
-        $scope.eventIsEditable = true;
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      variationRepository.getPersonalVariation(event)
+        .then(function (variation) {
+          $scope.event.description = variation.description[language];
+        })
+        .finally(function () {
+          $scope.eventIsEditable = true;
+        });
+    }
+
     hasContactPoint();
     hasBookingInfo();
   }
@@ -7723,7 +7726,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig"];
 
 // Source: src/event_form/calendar-labels.constant.js
 /* jshint sub: true */
@@ -15653,12 +15656,13 @@ function PlaceDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
 
-  $q.when(placeId, function(offerLocation) {
+  $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
@@ -15707,21 +15711,22 @@ function PlaceDetail(
   var cachedPlace;
 
   function showOffer(place) {
-      cachedPlace = place;
+    cachedPlace = place;
 
-      var personalVariationLoaded = variationRepository.getPersonalVariation(place);
+    $scope.place = jsonLDLangFilter(place, language);
+    $scope.placeIdIsInvalid = false;
 
-      $scope.place = jsonLDLangFilter(place, language);
-      $scope.placeIdIsInvalid = false;
-
-      personalVariationLoaded
-        .then(function (variation) {
-          $scope.place.description = variation.description[language];
-        })
-        .finally(function () {
-          $scope.placeIsEditable = true;
-        });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      variationRepository.getPersonalVariation(place)
+      .then(function (variation) {
+        $scope.place.description = variation.description[language];
+      })
+      .finally(function () {
+        $scope.placeIsEditable = true;
+      });
     }
+  }
 
   function failedToLoad(reason) {
     $scope.placeIdIsInvalid = true;
@@ -15862,7 +15867,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
 
 // Source: src/router/offer-locator.service.js
 /**
@@ -18243,7 +18248,8 @@ function OfferController(
   $window,
   offerEditor,
   variationRepository,
-  $q
+  $q,
+  appConfig
 ) {
   var controller = this;
   var cachedOffer;
@@ -18445,14 +18451,19 @@ function OfferController(
    * @return {Promise}
    */
   function fetchPersonalVariation(offer) {
-    return variationRepository
-      .getPersonalVariation(offer)
-      .then(function (personalVariation) {
-        $scope.event.description = personalVariation.description[defaultLanguage];
-        return personalVariation;
-      }, function () {
-        return $q.reject();
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      return variationRepository
+        .getPersonalVariation(offer)
+        .then(function (personalVariation) {
+          $scope.event.description = personalVariation.description[defaultLanguage];
+          return personalVariation;
+        }, function () {
+          return $q.reject();
+        });
+    } else {
+      return $q.reject();
+    }
   }
 
   /**
@@ -18481,7 +18492,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig"];
 
 // Source: src/search/ui/place.directive.js
 /**
