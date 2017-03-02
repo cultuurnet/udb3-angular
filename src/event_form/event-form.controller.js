@@ -38,9 +38,9 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.addTimestamp(
       new Date(calendarConfig.date),
       calendarConfig.startTime,
-      '',
+      new Date(calendarConfig.date + 'T' + calendarConfig.startTime),
       calendarConfig.endTime,
-      ''
+      new Date(calendarConfig.date + 'T' + calendarConfig.endTime)
     );
     EventFormData.initCalendar();
   }

@@ -10083,15 +10083,17 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     $scope.loaded = true;
   }
 
+
+
   function preselectDate(calendarConfig) {
+    console.log(calendarConfig.date + 'T' + calendarConfig.startTime);
     EventFormData.calendarType = 'single';
-    var date = new Date(calendarConfig.date);
     EventFormData.addTimestamp(
       new Date(calendarConfig.date),
       calendarConfig.startTime,
-      date.setHours(10),
+      new Date(calendarConfig.date + 'T' + calendarConfig.startTime),
       calendarConfig.endTime,
-      date.setHours(18)
+      new Date(calendarConfig.date + 'T' + calendarConfig.endTime)
     );
     EventFormData.initCalendar();
   }
@@ -10236,6 +10238,10 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
 
     var startDate = moment(startDateString);
     var endDate = moment(endDateString);
+
+    console.log("aaa");
+
+    console.log(startDate);
 
     var startHour = startDate.format('HH:mm');
     var endHour = endDate.format('HH:mm');

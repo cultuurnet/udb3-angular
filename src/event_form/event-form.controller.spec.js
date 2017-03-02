@@ -105,6 +105,8 @@ describe('Controller: Event Form', function() {
       {
         date: new Date('2017-09-10'),
         startHour: '10:00',
+        startHourAsDate: new Date('2017-09-10T10:00'),
+        endHourAsDate: new Date('2017-09-10T18:00'),
         endHour: '18:00',
         showStartHour: true,
         showEndHour: true
