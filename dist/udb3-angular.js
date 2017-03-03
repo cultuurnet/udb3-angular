@@ -2153,8 +2153,8 @@ function udbCalendarSummary() {
    * https://github.com/eternicode/bootstrap-datepicker
    */
   angular
-  .module('udb.core')
-  .directive('udbDatepicker', udbDatepickerDirective);
+    .module('udb.core')
+    .directive('udbDatepicker', udbDatepickerDirective);
 
   /* @ngInject */
   function udbDatepickerDirective(appConfig) {
@@ -2198,14 +2198,14 @@ function udbCalendarSummary() {
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
-            var highlightDate = _.get(appConfig, 'calendarHighlight.highlightDate');
-            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.highlightExtraClass');
+            var highlightDateString = _.get(appConfig, 'calendarHighlight.date');
+            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.extraClass');
 
-            if (!highlightDate) {
+            if (!highlightDateString) {
               return;
             }
-
             // init Date with ISO string
+            var highlightDate = new Date(highlightDateString);
             if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
               var highlightClasses = 'highlight';
 
@@ -9607,10 +9607,13 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
-     * Add a timestamp to the timestamps array.
+     * @param {Date} date
+     * @param {string} startHour HH:MM
+     * @param {Date} startHourAsDate
+     * @param {string} endHour HH:MM
+     * @param {Date} endHourAsDate
      */
     addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
-
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
@@ -9620,7 +9623,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
       });
-
     },
 
     /**
@@ -10060,7 +10062,7 @@ angular
   .controller('EventFormController', EventFormController);
 
 /* @ngInject */
-function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q) {
+function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q, appConfig) {
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
@@ -10072,7 +10074,25 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+    var calendarConfig = _.get(appConfig, 'calendarHighlight');
+
+    if (EventFormData.isEvent && calendarConfig && calendarConfig.date) {
+      preselectDate(calendarConfig);
+    }
+
     $scope.loaded = true;
+  }
+
+  function preselectDate(calendarConfig) {
+    EventFormData.calendarType = 'single';
+    EventFormData.addTimestamp(
+      new Date(calendarConfig.date),
+      calendarConfig.startTime,
+      new Date(calendarConfig.date + 'T' + calendarConfig.startTime),
+      calendarConfig.endTime,
+      new Date(calendarConfig.date + 'T' + calendarConfig.endTime)
+    );
+    EventFormData.initCalendar();
   }
 
   /**
@@ -10231,7 +10251,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
   }
 
 }
-EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q"];
+EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
 
 // Source: src/event_form/event-form.directive.js
 /**
@@ -10584,8 +10604,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       if (EventFormData.openingHours.length === 0) {
         EventFormData.addOpeningHour('', '', '', '', '');
       }
-      EventFormData.showStep(3);
-
     }
 
     EventFormData.setEventType(eventType);
@@ -10596,7 +10614,14 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     }
 
     controller.updateEventTypeAndThemePicker(EventFormData);
+
     EventFormData.showStep(2);
+
+    // immediately show step 3 if the form contains a place or an event with a preselected date
+    // in both cases the calendar type will already be set
+    if (EventFormData.calendarType) {
+      EventFormData.showStep(3);
+    }
   }
 
   /**
