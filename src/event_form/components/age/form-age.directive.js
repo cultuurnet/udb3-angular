@@ -16,6 +16,6 @@ function FormAgeDirective() {
     templateUrl: 'templates/form-age.html',
     restrict: 'EA',
     controller: 'FormAgeController',
-    controllerAs: 'fac'
+    controllerAs: 'fagec'
   };
 }

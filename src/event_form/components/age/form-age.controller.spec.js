@@ -1,12 +1,13 @@
-xdescribe('Controller: Form: Age', function () {
+describe('Controller: Form: Age', function () {
 
-  var $controller, eventCrud;
+  var $controller, eventCrud, $scope;
 
   beforeEach(module('udb.event-form'));
 
-  beforeEach(inject(function (_$controller_) {
+  beforeEach(inject(function (_$controller_, $rootScope) {
     $controller = _$controller_;
-    eventCrud = jasmine.createSpyObj('eventCrud', ['setAudienceType']);
+    eventCrud = jasmine.createSpyObj('eventCrud', ['updateTypicalAgeRange']);
+    $scope = $rootScope;
   }));
 
   function getController(formData) {
@@ -18,131 +19,55 @@ xdescribe('Controller: Form: Age', function () {
     );
   }
 
-  it('should set the right form data and save it when all ages is selected', function () {
-    spyOn(scope, 'saveAgeRange');
-    scope.ageRange = scope.ageRanges[0];
-    scope.ageRangeChanged(scope.ageRanges[0]);
+  it('should initialize with an active age range when age form data is not empty', function () {
+    var formData = {typicalAgeRange: '-'};
+    var controller = getController(formData);
 
-    expect(scope.saveAgeRange).toHaveBeenCalled();
+    expect(controller.activeAgeRange).toEqual('ALL');
   });
 
-  it('should check if the minimum age is in range of the selected age-range when saving', function () {
-    var testCases = {
-      'min and max set and not in range': {
-        range: { min: 12, max: 18 },
-        expectedInvalid: true,
-        minAge: 10
-      },
-      'max set and in range': {
-        range: { max: 18 },
-        expectedInvalid: false,
-        minAge: 10
-      },
-      'max set and not in range': {
-        range: { max: 18 },
-        expectedInvalid: true,
-        minAge: 69
-      },
-      'range without boundaries': {
-        range: { },
-        expectedInvalid: false,
-        minAge: 10
-      }
-    };
-    eventCrud.updateTypicalAgeRange.and.returnValue($q.resolve());
+  it('should not initialize with an active age range when age form data is empty', function () {
+    var formData = {typicalAgeRange: ''};
+    var controller = getController(formData);
 
-    for (var caseName in testCases) {
-      var testCase = testCases[caseName];
-
-      scope.ageRange = testCase.range;
-      scope.minAge = testCase.minAge;
-      scope.saveAgeRange();
-
-      expect(scope.invalidAgeRange).toEqual(testCase.expectedInvalid);
-    }
+    expect(controller.activeAgeRange).toEqual(undefined);
   });
 
-  it('should format the age-range when saving', function () {
-    var testCases = {
-      'all ages': {
-        range: scope.ageRanges[0],
-        minAge: null,
-        expectedResult: null
-      },
-      'range with max and min': {
-        range: { max: 18, min: 12 },
-        minAge: 12,
-        expectedResult: '12-18'
-      },
-      'range with only min': {
-        range: { min: 18 },
-        minAge: 21,
-        expectedResult: '21-'
-      }
-    };
-    eventCrud.updateTypicalAgeRange.and.returnValue($q.resolve());
-    eventCrud.deleteTypicalAgeRange.and.returnValue($q.resolve());
+  it('should initialize with a CUSTOM active age range when form data does not match a known range', function () {
+    var formData = {typicalAgeRange: '5-55'};
+    var controller = getController(formData);
 
-    for (var caseName in testCases) {
-      var testCase = testCases[caseName];
-
-      scope.ageRange = testCase.range;
-      scope.minAge = testCase.minAge;
-      scope.saveAgeRange();
-
-      expect(EventFormData.typicalAgeRange).toEqual(testCase.expectedResult);
-    }
+    expect(controller.activeAgeRange).toEqual('CUSTOM');
+    expect(controller.minAge).toEqual(5);
+    expect(controller.maxAge).toEqual(55);
   });
 
-  it('should set the ageRange to all ages', function () {
-    scope.setAllAges();
-    expect(scope.ageRange).toEqual(AgeRange.ALL);
+  it('should initialize with an active age range and boundary when form data matches this range', function () {
+    var formData = {typicalAgeRange: '12-17'};
+    var controller = getController(formData);
+
+    expect(controller.activeAgeRange).toEqual('YOUNGSTERS');
+    expect(controller.minAge).toEqual(12);
+    expect(controller.maxAge).toEqual(17);
   });
 
-  it('should rest the age selection', function () {
-    scope.resetAgeRange();
+  it('should initialize with an active age range and boundary when form data matches a range with one boundary', function () {
+    var formData = {typicalAgeRange: '18-'};
+    var controller = getController(formData);
 
-    expect(scope.ageRange).toEqual(null);
-    expect(scope.minAge).toEqual(null);
-    expect(scope.ageCssClass).toEqual('state-incomplete');
+    expect(controller.activeAgeRange).toEqual('ADULTS');
+    expect(controller.minAge).toEqual(18);
+    expect(controller.maxAge).toEqual(undefined);
   });
 
-  it('should initialize with an "adult" age range when the min age is over 18', function () {
-    EventFormData.typicalAgeRange = '21-';
-    EventFormData.id = 1;
-    stepController = getController();
+  it('should set the boundaries to their default value when a age range is set by type', function () {
+    var formData = {typicalAgeRange: ''};
+    var controller = getController(formData);
 
-    expect(scope.ageRange).toEqual(AgeRange.ADULTS);
-    expect(scope.minAge).toEqual(21);
-  });
+    controller.setAgeRangeByType('PRESCHOOLERS');
 
-  it('should initialize with an "all" age range when no specific age range is included', function () {
-    EventFormData.typicalAgeRange = '';
-    EventFormData.id = 1;
-    stepController = getController();
-
-    expect(scope.ageRange).toEqual(AgeRange.ALL);
-    expect(scope.minAge).toEqual(0);
-  });
-
-  it('should initialize with an "teens" age range when only for 18 year olds', function () {
-    EventFormData.typicalAgeRange = 18;
-    EventFormData.id = 1;
-    EventFormData.facilities = ['f1', 'f2', 'f3'];
-    stepController = getController();
-
-    expect(scope.ageRange).toEqual(AgeRange.TEENS);
-    expect(scope.minAge).toEqual(18);
-    expect(scope.selectedFacilities).toEqual(EventFormData.facilities);
-    expect(scope.facilitiesInapplicable).toBeFalsy();
-  });
-
-  it('should initialize with an "teens" age range between 12-18 years', function () {
-    EventFormData.typicalAgeRange = '12-18';
-    EventFormData.id = 1;
-    stepController = getController();
-
-    expect(scope.ageRange).toEqual(AgeRange.TEENS);
-    expect(scope.minAge).toEqual(12);
+    expect(controller.activeAgeRange).toEqual('PRESCHOOLERS');
+    expect(controller.minAge).toEqual(3);
+    expect(controller.maxAge).toEqual(5);
   });
 });

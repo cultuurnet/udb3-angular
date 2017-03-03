@@ -1,54 +1,27 @@
 <div class="row extra-leeftijd">
-    <div class="extra-task" ng-class="ageCssClass">
+    <div class="extra-task" ng-class="{'state-complete': !!fagec.activeAgeRange}">
         <div class="col-sm-3">
             <em class="extra-task-label">Geschikt voor</em>
-            <i class="fa fa-circle-o-notch fa-spin" ng-show="savingAgeRange"></i>
         </div>
-        <div class="col-sm-8">
-            <section>
-                <div class="form-group clearfix" ng-hide="ageRange === AgeRange.ALL">
-                    <div class="row">
-                        <div class="col-xs-7">
-                            <select class="form-control leeftijd-incomplete-select"
-                                    ng-change="ageRangeChanged(ageRange)"
-                                    ng-model="ageRange"
-                                    ng-options="range.label for range in ageRanges">
-                                <option value="">Kies een leeftijdscategorie</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-5">
-                            <a class="btn btn-link" ng-show="ageRange === null" ng-click="setAllAges()">Alle leeftijden</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-inline form-group" ng-show="ageRange && ageRange !== AgeRange.ALL">
-                    <div class="form-group">
-                        <label for="min-age">Vanaf</label>
-                        <input type="text"
-                               id="min-age"
-                               class="form-control"
-                               ng-model="minAge"
-                               ng-model-options="{updateOn: 'change'}"
-                               ng-change="saveAgeRange()">
-                        <label for="min-age">jaar</label>
-                    </div>
-                </div>
-
-                <span ng-show="ageRange === AgeRange.ALL">
-                  Alle leeftijden
-                  <a href="#" class="btn btn-link btn-leeftijd-restore to-filling" ng-click="resetAgeRange()">
-                    Wijzigen
-                  </a>
+        <div class="col-sm-9">
+            <p>
+                <span ng-repeat="(type, ageRange) in ::fagec.ageRanges">
+                    <a ng-bind="::ageRange.label"
+                       href="#"
+                       ng-click="fagec.setAgeRangeByType(type)"></a>
+                    <span ng-if="::!$last">, </span>
                 </span>
-
-                <div ng-show="ageRangeError" class="alert alert-danger">
-                    Er ging iets fout bij het opslaan van de leeftijd.
+            </p>
+            <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
+                <div class="form-group" >
+                    <label for="min-age">Van</label>
+                    <input type="number" class="form-control" id="min-age" ng-model="fagec.minAge">
                 </div>
-                <div ng-show="invalidAgeRange" class="alert alert-danger">
-                    Gelieve een leeftijd in te voeren die binnen de gekozen leeftijdscategorie valt.
+                <div class="form-group">
+                    <label for="max-age">tot</label>
+                    <input type="number" class="form-control" id="max-age" ng-model="fagec.maxAge">
                 </div>
-
-            </section>
+            </div>
         </div>
     </div>
 </div>

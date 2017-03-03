@@ -2,17 +2,17 @@
 
 /**
  * @ngdoc function
- * @name udb.event-form:FormAudienceController
+ * @name udb.event-form:FormAgeController
  * @description
- * # FormAudienceController
- * Controller for the form audience component
+ * # FormAgeController
+ * Controller for the form age component
  */
 angular
   .module('udb.event-form')
-  .controller('FormAudienceController', FormAudienceController);
+  .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, eventCrud) {
+function FormAgeController(EventFormData, eventCrud) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -20,185 +20,75 @@ function FormAudienceController(EventFormData, eventCrud) {
    * @enum {Object}
    */
   var AgeRangeEnum = Object.freeze({
-    'ALL': {'value': 0, 'label': 'Alle leeftijden'},
-    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 0, max: 12},
-    'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
-    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
+    'ALL': {label: 'Alle leeftijden'},
+    'TODDLERS': {label: 'Peuters', min: 0, max: 2},
+    'PRESCHOOLERS': {label: 'Kleuters', min: 3, max: 5},
+    'KIDS': {label: 'Kinderen', min: 6, max: 11},
+    'YOUNGSTERS': {label: 'Jongeren', min: 12, max: 17},
+    'ADULTS': {label: 'Volwassenen', min: 18},
+    'SENIORS': {label: 'Senioren', min: 65},
+    'CUSTOM': {label: 'Andere'}
   });
 
-  // Age range vars
-  $scope.savingAgeRange = false;
-  $scope.ageRangeError = false;
-  $scope.invalidAgeRange = false;
-  /**
-   * @type {AgeRangeEnum|null}
-   */
-  $scope.ageRange = null;
-  $scope.ageCssClass = EventFormData.typicalAgeRange ? 'state-complete' : 'state-incomplete';
-  /**
-   * * @type {number|null}
-   */
-  $scope.minAge = null;
+  controller.ageRanges = angular.copy(AgeRangeEnum);
+  controller.activeAgeRange = undefined;
+  controller.minAge = undefined;
+  controller.maxAge = undefined;
+  controller.setAgeRangeByType = setAgeRangeByType;
 
-  // Age range functions.
-  $scope.saveAgeRange = saveAgeRange;
-  $scope.ageRangeChanged = ageRangeChanged;
-  $scope.setAllAges = setAllAges;
-  $scope.resetAgeRange = resetAgeRange;
-
-  $scope.ageRanges = _.map(AgeRangeEnum, function (range) {
-    return range;
-  });
-
-  $scope.AgeRange = AgeRangeEnum;
-
+  init(EventFormData);
 
   /**
-   * Listener on the age range selection.
-   * @param {AgeRangeEnum} ageRange
-   */
-  function ageRangeChanged(ageRange) {
-    $scope.minAge = null;
-    $scope.ageCssClass = 'state-complete';
-
-    $scope.saveAgeRange();
-  }
-
-  /**
-   * @param {number} minAge
-   * @param {number} [maxAge]
+   * Create a matcher with a min and max age that takes an age range object.
    *
-   * @return {string}
+   * @param {int} min
+   * @param {int} max
+   * @returns {Function}
    */
-  function formatTypicalAgeRange(minAge, maxAge) {
-    var formattedAgeRange = '';
-
-    if (maxAge) {
-      formattedAgeRange = minAge === maxAge ? minAge.toString() : minAge + '-' + maxAge;
-    } else {
-      formattedAgeRange = minAge + '-';
-    }
-
-    return formattedAgeRange;
+  function rangeMatcher(min, max) {
+    return function (ageRange) {
+      return ageRange.min === min && ageRange.max === max;
+    };
   }
 
   /**
-   * @param {number} minAge
-   * @param {AgeRangeEnum} ageRange
-   *
-   * @return {boolean}
+   * @param {EventFormData} formData
    */
-  function isMinimumAgeInRange(minAge, ageRange) {
-    var inRange = true;
-
-    if (ageRange.max && minAge > ageRange.max) {
-      inRange = false;
+  function init(formData) {
+    if (_.isEmpty(formData.typicalAgeRange)) {
+      return;
     }
 
-    if (ageRange.min && minAge < ageRange.min) {
-      inRange = false;
-    }
+    var rangeArray = formData.typicalAgeRange.split('-');
+    var minAge = rangeArray[0] ? parseInt(rangeArray[0]) : undefined;
+    var maxAge = rangeArray[1] ? parseInt(rangeArray[1]) : undefined;
 
-    return inRange;
+    showRange(minAge, maxAge);
   }
 
   /**
-   * Save the age range.
+   * @param {int} min
+   * @param {int} max
    */
-  function saveAgeRange() {
-
-    $scope.invalidAgeRange = false;
-
-    if ($scope.ageRange === AgeRangeEnum.ALL) {
-      EventFormData.typicalAgeRange = null;
-    }
-    else {
-      if ($scope.minAge) {
-        $scope.invalidAgeRange = !isMinimumAgeInRange($scope.minAge, $scope.ageRange);
-      }
-
-      EventFormData.typicalAgeRange = formatTypicalAgeRange(
-        $scope.minAge || $scope.ageRange.min,
-        $scope.ageRange.max
-      );
-    }
-
-    // Save to db if valid age entered.
-    if (!$scope.invalidAgeRange) {
-      var ageRangePersisted = null;
-
-      var showAgeRangeError = function() {
-        $scope.savingAgeRange = false;
-        $scope.ageRangeError = true;
-      };
-
-      var markAgeRangeAsUpdated = function () {
-        $scope.savingAgeRange = false;
-        controller.eventFormSaved();
-        $scope.ageCssClass = 'state-complete';
-      };
-
-      if ($scope.ageRange === AgeRangeEnum.ALL) {
-        ageRangePersisted = eventCrud.deleteTypicalAgeRange(EventFormData);
-      }
-      else {
-        ageRangePersisted = eventCrud.updateTypicalAgeRange(EventFormData);
-      }
-
-      ageRangePersisted.then(markAgeRangeAsUpdated, showAgeRangeError);
-    }
-
+  function showRange(min, max) {
+    var activeAgeRangeType = _.findKey(AgeRangeEnum, rangeMatcher(min, max));
+    controller.minAge = min;
+    controller.maxAge = max;
+    controller.rangeInputEnabled = activeAgeRangeType && activeAgeRangeType !== 'ALL';
+    controller.activeAgeRange = activeAgeRangeType || 'CUSTOM';
   }
 
   /**
-   * Set to all ages.
+   * @param {string} type
    */
-  function setAllAges() {
-    $scope.ageRange = AgeRangeEnum.ALL;
-  }
+  function setAgeRangeByType(type) {
+    var ageRange = AgeRangeEnum[type];
 
-  /**
-   * Reset the age selection.
-   */
-  function resetAgeRange() {
-    $scope.ageRange = null;
-    $scope.minAge = null;
-    $scope.ageCssClass = 'state-incomplete';
-  }
-
-  function init() {
-    // On edit set state default to complete.
-    if (EventFormData.id) {
-      $scope.ageCssClass = 'state-complete';
-      var minAge, maxAge;
-
-      if (EventFormData.typicalAgeRange) {
-        if (typeof EventFormData.typicalAgeRange === 'string') {
-          var rangeArray = EventFormData.typicalAgeRange.split('-');
-          minAge = rangeArray[0] ? parseInt(rangeArray[0]) : null;
-          maxAge = rangeArray[1] ? parseInt(rangeArray[1]) : null;
-        }
-        else {
-          minAge = EventFormData.typicalAgeRange;
-        }
-
-        if (typeof minAge === 'number') {
-          $scope.minAge = minAge;
-          if (maxAge) {
-            $scope.ageRange = _.findWhere(AgeRangeEnum, {max: maxAge});
-          }
-          else {
-            $scope.ageRange = _.find(AgeRangeEnum, function (ageRange) {
-              // ignore AgeRangeEnum.ALL which has value zero because it will match anything
-              return ageRange.value && isMinimumAgeInRange(minAge, ageRange);
-            });
-          }
-        }
-      }
-      else {
-        $scope.minAge = 0;
-        $scope.ageRange = AgeRangeEnum.ALL;
-      }
+    if (ageRange) {
+      controller.minAge = ageRange.min;
+      controller.maxAge = ageRange.max;
+      controller.rangeInputEnabled = type !== 'ALL';
+      controller.activeAgeRange = type;
     }
   }
 }
