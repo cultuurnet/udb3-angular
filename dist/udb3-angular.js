@@ -10083,10 +10083,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     $scope.loaded = true;
   }
 
-
-
   function preselectDate(calendarConfig) {
-    console.log(calendarConfig.date + 'T' + calendarConfig.startTime);
     EventFormData.calendarType = 'single';
     EventFormData.addTimestamp(
       new Date(calendarConfig.date),
@@ -10238,10 +10235,6 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
 
     var startDate = moment(startDateString);
     var endDate = moment(endDateString);
-
-    console.log("aaa");
-
-    console.log(startDate);
 
     var startHour = startDate.format('HH:mm');
     var endHour = endDate.format('HH:mm');
@@ -13371,6 +13364,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -19112,7 +19106,13 @@ UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
  * @name udb.entry.uitpasLabels
  * @description
  * # UiTPAS Labels
- * All the known UiTPAS labels that link an organizer to card-systems
+ *
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01.
+ * This file used to be updated each time labels changed but now acts as a placeholder.
+ *
+ * The actual labels should be fetched when building your app and overwrite this UitpasLabels constant.
+ * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * e.g.: https://uitpas.uitdatabank.be/labels for production
  */
 angular
   .module('udb.uitpas')
@@ -19501,9 +19501,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/event-duplication-step.component.html',
+    "<h1 class=\"title\">Kopiëren en aanpassen</h1>\n" +
+    "\n" +
     "<div class=\"alert alert-info\" role=\"alert\">\n" +
-    "    <strong>Je staat op het punt een evenement te kopiëren.</strong><br>\n" +
-    "    Om overlappende data te vermijden, kies je een nieuwe kalender voor dit evenement.\n" +
+    "  Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.\n" +
     "</div>\n" +
     "\n" +
     "<udb-event-duplication-calendar></udb-event-duplication-calendar>\n"
@@ -21128,7 +21129,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </section>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"!activeEventType\">\n" +
-    "      <div ng-class=\"splitTypes ? 'col-sm-5': ''\"\n" +
+    "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'event'\">\n" +
     "        <label class=\"event-type-choser-label event\"><span>Een evenement</span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-events\">\n" +
@@ -21146,7 +21147,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <p class=\"text-center event-type-splitter\"><em>of</em></p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div ng-class=\"splitTypes ? 'col-sm-5': ''\"\n" +
+    "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'place'\">\n" +
     "        <label class=\"event-type-choser-label place\"><span>Een locatie</span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-places\">\n" +
@@ -23639,7 +23640,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-sm-12\" ng-show=\"resultViewer.isShowingProperties()\">\n" +
     "    <div class=\"udb-details row\">\n" +
     "      <div class=\"col-sm-2\" ng-if=\"resultViewer.eventProperties.image.visible\">\n" +
-    "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
+    "        <img ng-if=\"event.image\" ng-src=\"{{event.image + '?maxwidth=150&maxheight=150'}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
     "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
@@ -23803,7 +23804,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-sm-12\" ng-show=\"resultViewer.isShowingProperties()\">\n" +
     "    <div class=\"udb-details row\">\n" +
     "      <div class=\"col-sm-2\" ng-if=\"resultViewer.eventProperties.image.visible\">\n" +
-    "        <img ng-if=\"event.image\" ng-src=\"{{event.image}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
+    "        <img ng-if=\"event.image\" ng-src=\"{{event.image + '?maxwidth=150&maxheight=150'}}\" alt=\"{{event.name}}\" class=\"img-responsive\">\n" +
     "      </div>\n" +
     "      <div ng-class=\"resultViewer.eventProperties.image.visible ? 'col-sm-10' : 'col-sm-12'\">\n" +
     "        <div ng-if=\"resultViewer.eventProperties.description.visible\">\n" +
@@ -23828,7 +23829,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
