@@ -8853,6 +8853,50 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
 }
 PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
 
+// Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
+(function () {
+/**
+   * @ngdoc function
+   * @name udbApp.controller:EventFormPublishModalController
+   * @description
+   * # EventFormPublishModalController
+   * Modal for postponing a publish.
+   */
+  angular
+    .module('udb.event-form')
+    .controller('EventFormPublishModalController', EventFormPublishModalController);
+
+  /* @ngInject */
+  function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
+
+    console.log(eventFormData);
+    
+    $scope.date = eventFormData.availableFrom;
+    $scope.enableDate = false;
+
+    $scope.dismiss = dismiss;
+    $scope.convertDate = convertDate;
+    $scope.publish = publish;
+
+    function dismiss() {
+      $uibModalInstance.dismiss();
+
+    }
+
+    function convertDate() {
+      $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth(), $scope.date.getDate(), 0, 0, 0);
+    }
+
+    function publish() {
+      eventFormData.availableFrom = $scope.date;
+      $uibModalInstance.close();
+    }
+
+  }
+  EventFormPublishModalController.$inject = ["$scope", "$uibModalInstance", "eventFormData", "eventCrud"];
+
+})();
+
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
 /**
  * @ngdoc function
@@ -10447,27 +10491,41 @@ angular
 /* @ngInject */
 function EventFormPublishController(
     $scope,
+    appConfig,
     EventFormData,
     eventCrud,
     OfferWorkflowStatus,
     $q,
-    $location
+    $location,
+    $uibModal
 ) {
 
   var controller = this;
 
   controller.publish = publish;
+  controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
+  controller.toBePublishedLater = toBePublishedLater;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
+
+  var publicationDate = '';
+  if (angular.isUndefined(controller.eventFormData.availableFrom)) {
+    if (angular.isUndefined(defaultPublicationDate)) {
+      publicationDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+    } else {
+      publicationDate = defaultPublicationDate;
+    }
+  }
+  controller.eventFormData.availableFrom = publicationDate;
 
   function publish() {
     controller.error = '';
 
     eventCrud
-      .publishOffer(EventFormData, 'publishOffer')
+      .publishOffer(EventFormData, publicationDate)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
@@ -10476,6 +10534,29 @@ function EventFormPublishController(
             controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
           });
       });
+  }
+
+  function publishLater() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-publish-modal.html',
+      controller: 'EventFormPublishModalController',
+      resolve: {
+        eventFormData: function () {
+          return controller.eventFormData;
+        },
+        eventCrud : function () {
+          return eventCrud;
+        }
+      }
+    });
+  }
+
+  function toBePublishedLater() {
+    var today = new Date();
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+    console.log(today);
+    console.log(controller.eventFormData.availableFrom);
+    return today !== controller.eventFormData.availableFrom;
   }
 
   function setEventAsReadyForValidation() {
@@ -10496,7 +10577,7 @@ function EventFormPublishController(
     return (status === OfferWorkflowStatus.DRAFT);
   }
 }
-EventFormPublishController.$inject = ["$scope", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
+EventFormPublishController.$inject = ["$scope", "appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location", "$uibModal"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
@@ -20850,6 +20931,35 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-form-publish-modal.html',
+    "<div class=\"modal-header\">\n" +
+    "    <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
+    "</div>\n" +
+    "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
+    "    <p>Vanaf wanneer mag dit online verschijnen?</p>\n" +
+    "    <div class=\"radio\">\n" +
+    "        <label>\n" +
+    "        <input type=\"radio\" ng-model=\"enableDate\" ng-checked=\"!enableDate\" value=\"false\" name=\"publishDate\" value=\"now\">\n" +
+    "        Meteen\n" +
+    "    </label>\n" +
+    "    </div>\n" +
+    "    <div class=\"input-group\">\n" +
+    "        <span class=\"input-group-addon\">\n" +
+    "        <input type=\"radio\" name=\"publishDate\" ng-model=\"enableDate\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
+    "        Later, vanaf\n" +
+    "      </span>\n" +
+    "        <input type=\"date\" name=\"\" ng-model=\"date\" ng-change=\"convertDate()\" id=\"date-input\" class=\"form-control\" ng-required=\"enableDate\" ng-disabled=\"!enableDate\" title=\"\">\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"dismiss()\" data-dismiss=\"modal\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"publish()\">\n" +
+    "    Bevestigen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  </button>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/reservation-period.html',
     "<div class=\"col-sm-12\" ng-hide=\"haveBookingPeriod\">\n" +
     "    <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"changeHaveBookingPeriod()\">\n" +
@@ -21113,7 +21223,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\" focus-if >Klaar met bewerken</button>\n" +
+    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.toBePublishedLater\">Later publiceren</a>\n" +
+    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater\">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
     "</div>\n"
   );
 

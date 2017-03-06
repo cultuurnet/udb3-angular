@@ -14,27 +14,41 @@ angular
 /* @ngInject */
 function EventFormPublishController(
     $scope,
+    appConfig,
     EventFormData,
     eventCrud,
     OfferWorkflowStatus,
     $q,
-    $location
+    $location,
+    $uibModal
 ) {
 
   var controller = this;
 
   controller.publish = publish;
+  controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
+  controller.toBePublishedLater = toBePublishedLater;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
+
+  var publicationDate = '';
+  if (angular.isUndefined(controller.eventFormData.availableFrom)) {
+    if (angular.isUndefined(defaultPublicationDate)) {
+      publicationDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+    } else {
+      publicationDate = defaultPublicationDate;
+    }
+  }
+  controller.eventFormData.availableFrom = publicationDate;
 
   function publish() {
     controller.error = '';
 
     eventCrud
-      .publishOffer(EventFormData, 'publishOffer')
+      .publishOffer(EventFormData, publicationDate)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
@@ -43,6 +57,29 @@ function EventFormPublishController(
             controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
           });
       });
+  }
+
+  function publishLater() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-publish-modal.html',
+      controller: 'EventFormPublishModalController',
+      resolve: {
+        eventFormData: function () {
+          return controller.eventFormData;
+        },
+        eventCrud : function () {
+          return eventCrud;
+        }
+      }
+    });
+  }
+
+  function toBePublishedLater() {
+    var today = new Date();
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+    console.log(today);
+    console.log(controller.eventFormData.availableFrom);
+    return today !== controller.eventFormData.availableFrom;
   }
 
   function setEventAsReadyForValidation() {

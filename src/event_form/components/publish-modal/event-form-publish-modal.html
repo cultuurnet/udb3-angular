@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h4 class="modal-title">Kies een publicatiedatum</h4>
+</div>
+<div id="event-form-publish-modal" class="modal-body">
+    <p>Vanaf wanneer mag dit online verschijnen?</p>
+    <div class="radio">
+        <label>
+        <input type="radio" ng-model="enableDate" ng-checked="!enableDate" value="false" name="publishDate" value="now">
+        Meteen
+    </label>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon">
+        <input type="radio" name="publishDate" ng-model="enableDate" value="true" aria-label="Later, vanaf">
+        Later, vanaf
+      </span>
+        <input type="date" name="" ng-model="date" ng-change="convertDate()" id="date-input" class="form-control" ng-required="enableDate" ng-disabled="!enableDate" title="">
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="dismiss()" data-dismiss="modal">Annuleren</button>
+    <button type="button" class="btn btn-primary" ng-click="publish()">
+    Bevestigen <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+  </button>
+</div>

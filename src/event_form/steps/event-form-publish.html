@@ -4,5 +4,7 @@
     <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>
 
     <button type="submit" class="btn btn-success" ng-click="efpc.publish()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus)">Publiceren</button>
-    <button type="submit" class="btn btn-success" ng-click="efpc.preview()" ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)" focus-if >Klaar met bewerken</button>
+    <a href="" ng-click="efpc.publishLater()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.toBePublishedLater">Later publiceren</a>
+    <a href="" ng-click="efpc.publishLater()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>
+    <button type="submit" class="btn btn-success" ng-click="efpc.preview()" ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)">Klaar met bewerken</button>
 </div>
