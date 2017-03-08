@@ -17,7 +17,7 @@ function EventCrud(
   udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
-  $rootScope ,
+  $rootScope,
   $q,
   offerLocator
 ) {
@@ -51,6 +51,7 @@ function EventCrud(
       eventFormData.id = url.toString().split('/').pop();
 
       offerLocator.add(eventFormData.id, eventFormData.apiUrl);
+      $rootScope.$emit('eventFormSaved', eventFormData);
 
       return eventFormData;
     };
