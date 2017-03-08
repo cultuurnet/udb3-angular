@@ -5855,6 +5855,12 @@ function EventCrud(
       offerLocator.add(eventFormData.id, eventFormData.apiUrl);
       $rootScope.$emit('eventFormSaved', eventFormData);
 
+      udbApi
+        .getOffer(url)
+        .then(function(offer) {
+          $rootScope.$emit('offerCreated', offer);
+        });
+
       return eventFormData;
     };
 
