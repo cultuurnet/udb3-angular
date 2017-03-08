@@ -30,9 +30,8 @@
         <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.eventType.$error.required }">
             <label for="locatie-toevoegen-types">Categorie</label>
             <p class="help-block">Kies een categorie die deze locatie het best omschrijft.</p>
-            <select class="form-control" size="4" name="eventType" id="locatie-toevoegen-types" ng-model="newPlace.eventType" required>
-          <option ng-repeat="category in categories  | orderBy:'label' track by category.id" value="{{category.id}}" >{{category.label}}</option>
-      </select>
+            <select class="form-control" size="4" name="eventType" id="locatie-toevoegen-types" ng-model="newPlace.eventType" required  ng-options="category as category.label for category in categories | orderBy:'label' track by category.id">
+            </select>
             <span class="help-block" ng-show="showValidation && placeForm.eventType.$error.required">
         Categorie is een verplicht veld.
       </span>

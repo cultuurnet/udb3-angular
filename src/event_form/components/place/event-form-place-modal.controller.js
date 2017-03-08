@@ -21,6 +21,7 @@
 
     // Scope vars.
     $scope.newPlace = getDefaultPlace();
+    $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
     $scope.saving = false;
     $scope.error = false;
@@ -36,7 +37,9 @@
     function getDefaultPlace() {
       return {
         name: $scope.title,
-        eventType: getFirstCategoryId(),
+        eventType: {
+          id: ''
+        },
         address: {
           addressCountry: 'BE',
           addressLocality: $scope.location.address.addressLocality,
@@ -88,7 +91,7 @@
       // Convert this place data to a Udb-place.
       var eventTypeLabel = '';
       for (var i = 0; i < $scope.categories.length; i++) {
-        if ($scope.categories[i].id === $scope.newPlace.eventType) {
+        if ($scope.categories[i].id === $scope.newPlace.eventType.id) {
           eventTypeLabel = $scope.categories[i].label;
           break;
         }
@@ -98,7 +101,7 @@
       udbPlace.name = {nl : $scope.newPlace.name};
       udbPlace.calendarType = 'permanent';
       udbPlace.type = {
-        id : $scope.newPlace.eventType,
+        id : $scope.newPlace.eventType.id,
         label : eventTypeLabel,
         domain : 'eventtype'
       };
