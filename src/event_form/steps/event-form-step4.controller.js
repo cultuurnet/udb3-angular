@@ -181,7 +181,6 @@ function EventFormStep4Controller(
       EventFormData = newEventFormData;
       EventFormData.majorInfoChanged = false;
 
-      controller.eventFormSaved();
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
       EventFormData.showStep(5);
