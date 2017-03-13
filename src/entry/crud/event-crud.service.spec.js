@@ -10,6 +10,7 @@ describe('Service: Event crud', function () {
       'updateProperty',
       'translateProperty',
       'patchOffer',
+      'publishOffer',
       'createOffer',
       'updateMajorInfo'
     ]);
@@ -118,14 +119,36 @@ describe('Service: Event crud', function () {
       }
     };
 
-    udbApi.patchOffer.and.returnValue($q.resolve({
+    udbApi.publishOffer.and.returnValue($q.resolve({
       commandId: 'D3F6B805-ECE7-4042-A495-35E26766512A'
     }));
 
-    eventCrud.publishOffer(eventFormData, 'publishOffer');
+    eventCrud.publishOffer(eventFormData);
     $rootScope.$digest();
 
     expect(logger.addJob).toHaveBeenCalled();
+  });
+
+  it('should pass along a date when publishing an offer on a date in the future', function() {
+    var eventFormData = {
+      apiUrl: new URL('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E'),
+      description: {
+        nl: 'foodier'
+      }
+    };
+    var publicationDate = new Date('2013-03-01T00:00:00Z');
+
+    udbApi.publishOffer.and.returnValue($q.resolve({
+      commandId: 'D3F6B805-ECE7-4042-A495-35E26766512A'
+    }));
+
+    eventCrud.publishOffer(eventFormData, publicationDate);
+    $rootScope.$digest();
+
+    expect(udbApi.publishOffer).toHaveBeenCalledWith(
+      new URL('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E'),
+      publicationDate
+    );
   });
 
   it('should not throw away dates when picking major info from form-data when creating an offer', function () {

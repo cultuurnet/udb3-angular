@@ -1220,6 +1220,21 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} offerUrl
+   * @param {Date} [publicationDate]
+   * @returns {Promise.<Object|ApiProblem>}
+   */
+  this.publishOffer = function (offerUrl, publicationDate) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=Publish';
+    var data = publicationDate instanceof Date ? {publicationDate: publicationDate} : {};
+
+    return $http
+      .patch(offerUrl.toString(), data, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventUrl
    * @param {Object} newCalendarData
    * @return {Promise.<Object|ApiProblem>} Object containing the duplicate info
