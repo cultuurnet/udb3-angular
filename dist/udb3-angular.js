@@ -8530,6 +8530,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
     // Scope vars.
     $scope.newPlace = getDefaultPlace();
+    $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
     $scope.saving = false;
     $scope.error = false;
@@ -8545,7 +8546,9 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     function getDefaultPlace() {
       return {
         name: $scope.title,
-        eventType: getFirstCategoryId(),
+        eventType: {
+          id: ''
+        },
         address: {
           addressCountry: 'BE',
           addressLocality: $scope.location.address.addressLocality,
@@ -8597,7 +8600,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       // Convert this place data to a Udb-place.
       var eventTypeLabel = '';
       for (var i = 0; i < $scope.categories.length; i++) {
-        if ($scope.categories[i].id === $scope.newPlace.eventType) {
+        if ($scope.categories[i].id === $scope.newPlace.eventType.id) {
           eventTypeLabel = $scope.categories[i].label;
           break;
         }
@@ -8607,7 +8610,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       udbPlace.name = {nl : $scope.newPlace.name};
       udbPlace.calendarType = 'permanent';
       udbPlace.type = {
-        id : $scope.newPlace.eventType,
+        id : $scope.newPlace.eventType.id,
         label : eventTypeLabel,
         domain : 'eventtype'
       };
@@ -20676,9 +20679,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
     "            <label for=\"locatie-toevoegen-types\">Categorie</label>\n" +
     "            <p class=\"help-block\">Kies een categorie die deze locatie het best omschrijft.</p>\n" +
-    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required>\n" +
-    "          <option ng-repeat=\"category in categories  | orderBy:'label' track by category.id\" value=\"{{category.id}}\" >{{category.label}}</option>\n" +
-    "      </select>\n" +
+    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
+    "            </select>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
     "        Categorie is een verplicht veld.\n" +
     "      </span>\n" +
