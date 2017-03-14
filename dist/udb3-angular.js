@@ -11416,7 +11416,7 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope) {
+function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -11473,6 +11473,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
+
+  // Price info
+  $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
 
   // Booking & tickets vars.
   $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
@@ -12221,7 +12224,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
 }
-EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope"];
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig"];
 
 // Source: src/export/event-export-job.factory.js
 /**
@@ -21691,7 +21694,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <price-info price=\"price\"></price-info>\n" +
+    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
