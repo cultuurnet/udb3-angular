@@ -14,7 +14,7 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment, dayNames) {
+function OpeningHourComponentController(moment, dayNames, $uibModal) {
   var cm = this;
 
   initPrototype();
@@ -23,6 +23,7 @@ function OpeningHourComponentController(moment, dayNames) {
   cm.validatePrototypeWeekDays = validatePrototypeWeekDays;
   cm.validatePrototypeOpeningHour = validatePrototypeOpeningHour;
   cm.validatePrototypeClosingHour = validatePrototypeClosingHour;
+  cm.edit = openEditorModal;
 
   function initPrototype() {
     cm.prototype = {
@@ -117,4 +118,12 @@ function OpeningHourComponentController(moment, dayNames) {
     cm.prototype.label = humanValues.join(', ');
   }
 
+  function openEditorModal() {
+    var editorModal = $uibModal.open({
+      templateUrl: 'templates/opening-hours-editor.modal.html',
+      controller: OpeningHourComponentController,
+      controllerAs: 'cm',
+      size: 'lg'
+    });
+  }
 }

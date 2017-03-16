@@ -8387,7 +8387,7 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment, dayNames) {
+function OpeningHourComponentController(moment, dayNames, $uibModal) {
   var cm = this;
 
   initPrototype();
@@ -8396,6 +8396,7 @@ function OpeningHourComponentController(moment, dayNames) {
   cm.validatePrototypeWeekDays = validatePrototypeWeekDays;
   cm.validatePrototypeOpeningHour = validatePrototypeOpeningHour;
   cm.validatePrototypeClosingHour = validatePrototypeClosingHour;
+  cm.edit = openEditorModal;
 
   function initPrototype() {
     cm.prototype = {
@@ -8490,8 +8491,16 @@ function OpeningHourComponentController(moment, dayNames) {
     cm.prototype.label = humanValues.join(', ');
   }
 
+  function openEditorModal() {
+    var editorModal = $uibModal.open({
+      templateUrl: 'templates/opening-hours-editor.modal.html',
+      controller: OpeningHourComponentController,
+      controllerAs: 'cm',
+      size: 'lg'
+    });
+  }
 }
-OpeningHourComponentController.$inject = ["moment", "dayNames"];
+OpeningHourComponentController.$inject = ["moment", "dayNames", "$uibModal"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -20390,10 +20399,155 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/opening-hours-editor.modal.html',
+    "<div class=\"modal-header\">\n" +
+    "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"cm.prototype.errors.weekdayError\">\n" +
+    "        <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"cm.prototype.errors.openIsBeforeClose\">\n" +
+    "        <p class=\"text-danger\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
+    "            <label for=\"newOpeningHourForm.weekday\">Dagen</label>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "            <label for=\"newOpeningHourForm.opens\">Van</label>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "            <label for=\"newOpeningHourForm.closes\">Tot</label>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\" ng-repeat=\"(i, openingHour) in cm.openingHours.temporaryOpeningHours\">\n" +
+    "        <ng-form name=\"openingHourInfo\">\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                 ng-class=\"{'has-error': openingHour.weekday.$invalid && openingHour.weekday.$touched  }\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <select class=\"selectpicker\"\n" +
+    "                            name=\"weekday\"\n" +
+    "                            multiple\n" +
+    "                            start-label=\"Kies dag(en)\"\n" +
+    "                            ng-model=\"openingHour.dayOfWeek\"\n" +
+    "                            udb-multiselect\n" +
+    "                            required>\n" +
+    "                        <option value=\"monday\">maandag</option>\n" +
+    "                        <option value=\"tuesday\">dinsdag</option>\n" +
+    "                        <option value=\"wednesday\">woensdag</option>\n" +
+    "                        <option value=\"thursday\">donderdag</option>\n" +
+    "                        <option value=\"friday\">vrijdag</option>\n" +
+    "                        <option value=\"saturday\">zaterdag</option>\n" +
+    "                        <option value=\"sunday\">zondag</option>\n" +
+    "                    </select>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                 ng-class=\"{'has-error': openingHour.opens.$invalid && openingHour.opens.$touched}\" >\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input udb-time\n" +
+    "                           type=\"time\"\n" +
+    "                           name=\"opens\"\n" +
+    "                           class=\"form-control uur\"\n" +
+    "                           placeholder=\"Bv. 08:00\"\n" +
+    "                           ng-model=\"openingHour.opensAsDate\"\n" +
+    "                    />\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                 ng-class=\"{'has-error': openingHour.closes.$invalid && openingHour.closes.$touched}\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input udb-time\n" +
+    "                           type=\"time\"\n" +
+    "                           name=\"closes\"\n" +
+    "                           class=\"form-control uur\"\n" +
+    "                           placeholder=\"Bv. 08:00\"\n" +
+    "                           ng-model=\"openingHour.closesAsDate\"\n" +
+    "\n" +
+    "                    />\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                <a href=\"\" ng-click=\"cm.openingHours.removeOpeningHour(i)\">X</a>\n" +
+    "            </div>\n" +
+    "        </ng-form>\n" +
+    "    </div>\n" +
+    "    <div>\n" +
+    "        <form name=\"newOpeningHourForm\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                     ng-class=\"{'has-error': newOpeningHourForm.weekday.$invalid && newOpeningHourForm.weekday.$touched  }\">\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <select class=\"selectpicker\"\n" +
+    "                                name=\"weekday\"\n" +
+    "                                multiple\n" +
+    "                                start-label=\"Kies dag(en)\"\n" +
+    "                                ng-model=\"cm.prototype.dayOfWeek\"\n" +
+    "                                ng-change=\"cm.validatePrototypeWeekDays()\"\n" +
+    "                                udb-multiselect\n" +
+    "                                required>\n" +
+    "                            <option value=\"monday\">maandag</option>\n" +
+    "                            <option value=\"tuesday\">dinsdag</option>\n" +
+    "                            <option value=\"wednesday\">woensdag</option>\n" +
+    "                            <option value=\"thursday\">donderdag</option>\n" +
+    "                            <option value=\"friday\">vrijdag</option>\n" +
+    "                            <option value=\"saturday\">zaterdag</option>\n" +
+    "                            <option value=\"sunday\">zondag</option>\n" +
+    "                        </select>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                     ng-class=\"{'has-error': newOpeningHourForm.opens.$invalid && newOpeningHourForm.opens.$touched}\" >\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input udb-time\n" +
+    "                               type=\"time\"\n" +
+    "                               name=\"opens\"\n" +
+    "                               class=\"form-control uur\"\n" +
+    "                               placeholder=\"Bv. 08:00\"\n" +
+    "                               ng-model=\"cm.prototype.opensAsDate\"\n" +
+    "                               ng-blur=\"cm.validatePrototypeOpeningHour()\"\n" +
+    "                        />\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
+    "                     ng-class=\"{'has-error': newOpeningHourForm.closes.$invalid && newOpeningHourForm.closes.$touched}\">\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input udb-time\n" +
+    "                               type=\"time\"\n" +
+    "                               name=\"closes\"\n" +
+    "                               class=\"form-control uur\"\n" +
+    "                               placeholder=\"Bv. 08:00\"\n" +
+    "                               ng-model=\"cm.prototype.closesAsDate\"\n" +
+    "                               ng-blur=\"cm.validatePrototypeClosingHour()\"\n" +
+    "                        />\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                    <a href=\"\" ng-click=\"cm.addPrototypeOpeningHour()\"\n" +
+    "                       ng-hide=\"cm.prototype.hasErrors\">Toevoegen</a>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </form>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
+    "            data-dismiss=\"modal\"\n" +
+    "            ng-click=\"cm.openingHours.saveOpeningHours()\"\n" +
+    "            ng-disabled=\"cm.openingHours.openingHoursHasErrors\">\n" +
+    "        Opslaan\n" +
+    "    </button>\n" +
+    "</div>\n" +
+    "\n"
+  );
+
+
   $templateCache.put('templates/event-form-openinghours.html',
     "<div class=\"col-xs-12\" ng-hide=\"!!cm.openingHours.openingHours.length\">\n" +
     "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
-    "     data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\">Openingsuren toevoegen</a>\n" +
+    "     ng-click=\"cm.edit()\">Openingsuren toevoegen</a>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!cm.openingHours.openingHours.length\">\n" +
@@ -20402,7 +20556,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <thead>\n" +
     "      <th>Openingsuren</th>\n" +
     "      <th>\n" +
-    "        <a href=\"#\" data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\" class=\"btn btn-default\">\n" +
+    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\">\n" +
     "          Wijzigen\n" +
     "        </a>\n" +
     "      </th>\n" +
@@ -20417,158 +20571,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </tbody>\n" +
     "    </table>\n" +
     "  </section>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal fade\" id=\"wanneer-openingsuren-toevoegen\">\n" +
-    "  <div class=\"modal-dialog\">\n" +
-    "    <div class=\"modal-content\">\n" +
-    "      <div class=\"modal-header\">\n" +
-    "        <h4 class=\"modal-title\">Openingsuren</h4>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-body\">\n" +
-    "          <div class=\"alert alert-danger\" ng-show=\"cm.prototype.errors.weekdayError\">\n" +
-    "              <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"alert alert-danger\" ng-show=\"cm.prototype.errors.openIsBeforeClose\">\n" +
-    "              <p class=\"text-danger\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"row\">\n" +
-    "              <div class=\"col-xs-4 col-sm-4 col-md-4 col-lg-4\">\n" +
-    "                  <label for=\"newOpeningHourForm.weekday\">Dagen</label>\n" +
-    "              </div>\n" +
-    "              <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                  <label for=\"newOpeningHourForm.opens\">Van</label>\n" +
-    "              </div>\n" +
-    "              <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                  <label for=\"newOpeningHourForm.closes\">Tot</label>\n" +
-    "              </div>\n" +
-    "          </div>\n" +
-    "          <div class=\"row\" ng-repeat=\"(i, openingHour) in cm.openingHours.temporaryOpeningHours\">\n" +
-    "              <ng-form name=\"openingHourInfo\">\n" +
-    "                  <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
-    "                       ng-class=\"{'has-error': openingHour.weekday.$invalid && openingHour.weekday.$touched  }\">\n" +
-    "                      <div class=\"form-group\">\n" +
-    "                          <select class=\"selectpicker\"\n" +
-    "                                  name=\"weekday\"\n" +
-    "                                  multiple\n" +
-    "                                  start-label=\"Kies dag(en)\"\n" +
-    "                                  ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                                  udb-multiselect\n" +
-    "                                  required>\n" +
-    "                              <option value=\"monday\">maandag</option>\n" +
-    "                              <option value=\"tuesday\">dinsdag</option>\n" +
-    "                              <option value=\"wednesday\">woensdag</option>\n" +
-    "                              <option value=\"thursday\">donderdag</option>\n" +
-    "                              <option value=\"friday\">vrijdag</option>\n" +
-    "                              <option value=\"saturday\">zaterdag</option>\n" +
-    "                              <option value=\"sunday\">zondag</option>\n" +
-    "                          </select>\n" +
-    "                      </div>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
-    "                       ng-class=\"{'has-error': openingHour.opens.$invalid && openingHour.opens.$touched}\" >\n" +
-    "                      <div class=\"form-group\">\n" +
-    "                          <input udb-time\n" +
-    "                                 type=\"time\"\n" +
-    "                                 name=\"opens\"\n" +
-    "                                 class=\"form-control uur\"\n" +
-    "                                 placeholder=\"Bv. 08:00\"\n" +
-    "                                 ng-model=\"openingHour.opensAsDate\"\n" +
-    "                          />\n" +
-    "                      </div>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
-    "                       ng-class=\"{'has-error': openingHour.closes.$invalid && openingHour.closes.$touched}\">\n" +
-    "                      <div class=\"form-group\">\n" +
-    "                          <input udb-time\n" +
-    "                                 type=\"time\"\n" +
-    "                                 name=\"closes\"\n" +
-    "                                 class=\"form-control uur\"\n" +
-    "                                 placeholder=\"Bv. 08:00\"\n" +
-    "                                 ng-model=\"openingHour.closesAsDate\"\n" +
-    "\n" +
-    "                          />\n" +
-    "                      </div>\n" +
-    "                  </div>\n" +
-    "                  <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                      <a href=\"\" ng-click=\"cm.openingHours.removeOpeningHour(i)\">X</a>\n" +
-    "                  </div>\n" +
-    "              </ng-form>\n" +
-    "          </div>\n" +
-    "            <div>\n" +
-    "               <form name=\"newOpeningHourForm\">\n" +
-    "                    <div class=\"row\">\n" +
-    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
-    "                             ng-class=\"{'has-error': newOpeningHourForm.weekday.$invalid && newOpeningHourForm.weekday.$touched  }\">\n" +
-    "                              <div class=\"form-group\">\n" +
-    "                                   <select class=\"selectpicker\"\n" +
-    "                                      name=\"weekday\"\n" +
-    "                                      multiple\n" +
-    "                                      start-label=\"Kies dag(en)\"\n" +
-    "                                      ng-model=\"cm.prototype.dayOfWeek\"\n" +
-    "                                      ng-change=\"cm.validatePrototypeWeekDays()\"\n" +
-    "                                      udb-multiselect\n" +
-    "                                      required>\n" +
-    "                                    <option value=\"monday\">maandag</option>\n" +
-    "                                    <option value=\"tuesday\">dinsdag</option>\n" +
-    "                                    <option value=\"wednesday\">woensdag</option>\n" +
-    "                                    <option value=\"thursday\">donderdag</option>\n" +
-    "                                    <option value=\"friday\">vrijdag</option>\n" +
-    "                                    <option value=\"saturday\">zaterdag</option>\n" +
-    "                                    <option value=\"sunday\">zondag</option>\n" +
-    "                                </select>\n" +
-    "                              </div>\n" +
-    "                        </div>\n" +
-    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
-    "                             ng-class=\"{'has-error': newOpeningHourForm.opens.$invalid && newOpeningHourForm.opens.$touched}\" >\n" +
-    "                              <div class=\"form-group\">\n" +
-    "                              <input udb-time\n" +
-    "                                 type=\"time\"\n" +
-    "                                 name=\"opens\"\n" +
-    "                                 class=\"form-control uur\"\n" +
-    "                                 placeholder=\"Bv. 08:00\"\n" +
-    "                                 ng-model=\"cm.prototype.opensAsDate\"\n" +
-    "                                 ng-blur=\"cm.validatePrototypeOpeningHour()\"\n" +
-    "                                 />\n" +
-    "                              </div>\n" +
-    "                        </div>\n" +
-    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\"\n" +
-    "                           ng-class=\"{'has-error': newOpeningHourForm.closes.$invalid && newOpeningHourForm.closes.$touched}\">\n" +
-    "                            <div class=\"form-group\">\n" +
-    "                                 <input udb-time\n" +
-    "                                   type=\"time\"\n" +
-    "                                   name=\"closes\"\n" +
-    "                                   class=\"form-control uur\"\n" +
-    "                                   placeholder=\"Bv. 08:00\"\n" +
-    "                                   ng-model=\"cm.prototype.closesAsDate\"\n" +
-    "                                   ng-blur=\"cm.validatePrototypeClosingHour()\"\n" +
-    "                                   />\n" +
-    "                              </div>\n" +
-    "                        </div>\n" +
-    "                        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                            <a href=\"\" ng-click=\"cm.addPrototypeOpeningHour()\"\n" +
-    "                                       ng-hide=\"cm.prototype.hasErrors\">Toevoegen</a>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                </form>\n" +
-    "            </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-footer\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
-    "                data-dismiss=\"modal\"\n" +
-    "                ng-click=\"cm.openingHours.saveOpeningHours()\"\n" +
-    "                ng-disabled=\"cm.openingHours.openingHoursHasErrors\">\n" +
-    "          Opslaan\n" +
-    "        </button>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "    <!-- /.modal-content -->\n" +
-    "  </div>\n" +
-    "  <!-- /.modal-dialog -->\n" +
-    "</div>\n" +
-    "<!-- /.modal -->\n"
+    "</div>"
   );
 
 
