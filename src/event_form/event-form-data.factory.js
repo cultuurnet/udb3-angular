@@ -276,10 +276,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * Add a timestamp to the timestamps array.
+     * @param {Date} date
+     * @param {string} startHour HH:MM
+     * @param {Date} startHourAsDate
+     * @param {string} endHour HH:MM
+     * @param {Date} endHourAsDate
      */
     addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
-
       this.timestamps.push({
         'date' : date,
         'startHour' : startHour,
@@ -289,7 +292,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
       });
-
     },
 
     /**

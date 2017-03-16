@@ -47,7 +47,18 @@ describe('Controller: Event Form', function() {
     }
   };
 
-  beforeEach(module('udb.event-form'));
+  beforeEach(module('udb.event-form', function ($provide) {
+    var appConfig = {
+      'calendarHighlight': {
+        'date': '2017-09-10',
+        'startTime': '10:00',
+        'endTime': '18:00',
+        'extraClass': 'omd'
+      }
+    };
+
+    $provide.constant('appConfig', appConfig);
+  }));
 
   beforeEach(inject(function($rootScope, _$controller_, _EventFormData_, _UdbEvent_, _$q_) {
     $controller = _$controller_;
@@ -77,4 +88,33 @@ describe('Controller: Event Form', function() {
     $scope.$digest();
     expect(EventFormData.workflowStatus).toEqual('READY_FOR_VALIDATION');
   });
+
+  it('should preselect timing from configured highlight values when creating a new event', function () {
+    EventFormData.isEvent = true;
+
+    $controller(
+      'EventFormController', {
+        udbApi: udbApi,
+        offerId: null,
+        $scope: $scope,
+        EventFormData: EventFormData
+      }
+    );
+
+    var expectedTimestamps = [
+      {
+        date: new Date('2017-09-10'),
+        startHour: '10:00',
+        startHourAsDate: new Date('2017-09-10T10:00'),
+        endHourAsDate: new Date('2017-09-10T18:00'),
+        endHour: '18:00',
+        showStartHour: true,
+        showEndHour: true
+      }
+    ];
+
+    $scope.$digest();
+    expect(EventFormData.timestamps).toEqual(expectedTimestamps);
+    expect(EventFormData.calendarType).toEqual('single');
+  })
 });
