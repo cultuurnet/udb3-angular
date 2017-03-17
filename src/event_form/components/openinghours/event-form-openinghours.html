@@ -1,9 +1,9 @@
-<div class="col-xs-12" ng-hide="!!cm.openingHours.openingHours.length">
+<div class="col-xs-12" ng-hide="!!cm.openingHoursCollection.openingHours.length">
   <a href="#" class="btn btn-link btn-plus wanneer-openingsuren-link"
      ng-click="cm.edit()">Openingsuren toevoegen</a>
 </div>
 
-<div class="col-xs-12 col-sm-8" ng-show="!!cm.openingHours.openingHours.length">
+<div class="col-xs-12 col-sm-8" ng-if="!!cm.openingHoursCollection.openingHours.length">
   <section class="wanneer-openingsuren-resultaat">
     <table class="table table-condensed ">
       <thead>
@@ -15,7 +15,7 @@
       </th>
       </thead>
       <tbody>
-        <tr ng-repeat="openingHour in cm.openingHours.openingHours">
+        <tr ng-repeat="openingHour in cm.openingHoursCollection.openingHours">
           <td ng-bind="openingHour.label"></td>
           <td>
             <span ng-bind="openingHour.opens"></span> – <span ng-bind="openingHour.closes"></span>

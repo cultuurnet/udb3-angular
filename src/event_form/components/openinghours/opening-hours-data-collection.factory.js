@@ -13,20 +13,51 @@ angular
 /* @ngInject */
 function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
 
-  function prepareOpeningHoursForDisplay(openingHours) {
-    angular.forEach (openingHours, function(openingHour, key) {
+  var validationRequirements = {
+    'dayOfWeek': hasDayOfWeek,
+    'openIsBeforeClose': openIsBeforeClose
+  };
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function openIsBeforeClose(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return moment(openingHours.opensAsDate).isBefore(openingHours.closesAsDate);
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function hasDayOfWeek(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return !_.isEmpty(openingHours.dayOfWeek);
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   *
+   * @returns {OpeningHours[]}
+   */
+  function prepareOpeningHoursForDisplay(openingHoursList) {
+    angular.forEach (openingHoursList, function(openingHour, key) {
       var humanValues = [];
       if (openingHour.dayOfWeek instanceof Array) {
-        for (var i in openingHours[key].dayOfWeek) {
+        for (var i in openingHoursList[key].dayOfWeek) {
           humanValues.push(dayNames[openingHour.dayOfWeek[i]]);
         }
       }
-      openingHour.opensAsDate = moment(openingHour.opens, 'HH:mm').toDate();
-      openingHour.closesAsDate = moment(openingHour.closes, 'HH:mm').toDate();
+      openingHour.opens = moment(openingHour.opensAsDate).format('HH:mm');
+      openingHour.closes = moment(openingHour.closesAsDate).format('HH:mm');
 
       openingHour.label = humanValues.join(', ');
     });
-    return openingHours;
+
+    return openingHoursList;
   }
 
   /**
@@ -38,7 +69,6 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
      */
     init: function() {
       this.openingHours = [];
-      this.temporaryOpeningHours = [];
       this.openingHoursErrors = {};
     },
 
@@ -50,25 +80,26 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
     },
 
     /**
-     * Get the temporary opening hours.
-     */
-    getTemporaryOpeningHours: function() {
-      return this.temporaryOpeningHours;
-    },
-
-    /**
      * Set the opening hours.
      */
     setOpeningHours: function(openingHours) {
       this.openingHours = prepareOpeningHoursForDisplay(openingHours);
-      this.temporaryOpeningHours = _.cloneDeep(this.openingHours);
+    },
+
+    /**
+     * @param {OpeningHours} openingHours
+     */
+    removeOpeningHours: function (openingHours) {
+      var openingHoursList = this.openingHours;
+
+      this.setOpeningHours(_.without(openingHoursList, openingHours));
     },
 
     /**
      * Add an opening hour to the opening hours array.
      */
     addOpeningHour: function(openingHour) {
-      this.temporaryOpeningHours.push({
+      this.openingHours.push({
         'dayOfWeek' : openingHour.dayOfWeek,
         'opens' : openingHour.opens,
         'opensAsDate' : openingHour.opensAsDate,
@@ -79,15 +110,54 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
     },
 
     /**
-     * Remove the openinghour with the given index.
+     * Create new opening hours and append them to the list of existing hours.
      */
-    removeOpeningHour: function(index) {
-      this.temporaryOpeningHours.splice(index, 1);
+    createNewOpeningHours: function () {
+      var openingHoursList = this.openingHours || [];
+      var openingHours = {
+        'dayOfWeek': [],
+        'opens': '00:00',
+        'opensAsDate': new Date(1970, 0, 1),
+        'closes': '00:00',
+        'closesAsDate': new Date(1970, 0, 1)
+      };
+
+      openingHoursList.push(openingHours);
+
+      this.setOpeningHours(openingHoursList);
     },
 
-    saveOpeningHours: function () {
-      this.openingHours = this.temporaryOpeningHours;
-      $rootScope.$emit('openingHoursChanged', this.openingHours);
+    /**
+     * {object[]} jsonOpeningHoursList
+     */
+    deserialize: function (jsonOpeningHoursList) {
+      this.setOpeningHours(_.map(jsonOpeningHoursList, function (jsonOpeningHours) {
+        return {
+          'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
+          'opens': jsonOpeningHours.opens || '00:00',
+          'opensAsDate':
+            jsonOpeningHours.opens ? moment(jsonOpeningHours.opens, 'HH:mm').toDate() : new Date(1970, 0, 1),
+          'closes': jsonOpeningHours.closes || '00:00',
+          'closesAsDate':
+            jsonOpeningHours.closes ? moment(jsonOpeningHours.closes, 'HH:mm').toDate() : new Date(1970, 0, 1)
+        };
+      }));
+    },
+
+    /**
+     * returns a list of errors
+     *
+     * @returns {string[]}
+     */
+    validate: function () {
+      var openingHours = this.openingHours;
+
+      return _(validationRequirements)
+        .pick(function (requirementCheck) {
+          return !requirementCheck(openingHours);
+        })
+        .keys()
+        .value();
     }
   };
 

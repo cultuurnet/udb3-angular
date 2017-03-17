@@ -435,7 +435,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     initOpeningHours: function(openingHours) {
-      OpeningHoursCollection.setOpeningHours(openingHours);
+      OpeningHoursCollection.deserialize(openingHours);
     },
 
     /**
@@ -594,10 +594,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   // initialize the data
   eventFormData.init();
-
-  $rootScope.$on('openingHoursChanged', function (event, data) {
-    eventFormData.saveOpeningHours(data);
-  });
 
   return eventFormData;
 }
