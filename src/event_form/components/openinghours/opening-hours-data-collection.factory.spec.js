@@ -163,4 +163,29 @@ describe('Factory: Opening hours collection', function () {
 
     expect(OpeningHoursCollection.validate()).toEqual(expectedValidationErrors);
   });
+
+  it('should serialize a list of opening hours', function () {
+    var formDataOpeningHours = giveSomeOpeningHours();
+    var expectedOpeningHours = [
+      {
+        "dayOfWeek": [
+          "monday"
+        ],
+        "opens": "14:00",
+        "closes": "18:00"
+      },
+      {
+        "dayOfWeek": [
+          "tuesday"
+        ],
+        "opens": "12:00",
+        "closes": "14:00"
+      }
+    ];
+    OpeningHoursCollection.deserialize(formDataOpeningHours);
+    OpeningHoursCollection.openingHours[0].opensAsDate = new Date(1970, 0, 1, 14);
+    OpeningHoursCollection.openingHours[0].closesAsDate = new Date(1970, 0, 1, 18);
+
+    expect(OpeningHoursCollection.serialize()).toEqual(expectedOpeningHours);
+  });
 });

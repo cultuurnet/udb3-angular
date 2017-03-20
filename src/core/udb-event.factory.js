@@ -105,6 +105,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     this.place = {};
     this.type = {};
     this.theme = {};
+    /** @type {OpeningHoursData[]} **/
     this.openingHours = [];
 
     if (jsonEvent) {
@@ -269,6 +270,8 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openingHours;

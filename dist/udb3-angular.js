@@ -4148,6 +4148,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     this.place = {};
     this.type = {};
     this.theme = {};
+    /** @type {OpeningHoursData[]} **/
     this.openingHours = [];
 
     if (jsonEvent) {
@@ -4312,6 +4313,8 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openingHours;
@@ -4634,6 +4637,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.type = '';
     this.theme = {};
     this.calendarType = '';
+    /** @type {OpeningHoursData[]} **/
     this.openinghours = [];
     this.address = {
       'addressCountry' : 'BE',
@@ -4792,6 +4796,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openinghours;
@@ -8205,7 +8211,7 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
     var errors = controller.openingHoursCollection.validate();
 
     if (_.isEmpty(errors)) {
-      $uibModalInstance.close(controller.openingHoursCollection.openingHours);
+      $uibModalInstance.close(controller.openingHoursCollection.serialize());
     } else {
       showErrors(errors);
     }
@@ -8397,6 +8403,16 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
       }));
     },
 
+    serialize: function () {
+      return _.map(this.openingHours, function (openingHours) {
+        return {
+          dayOfWeek: openingHours.dayOfWeek,
+          opens: moment(openingHours.opensAsDate).format('HH:mm'),
+          closes: moment(openingHours.closesAsDate).format('HH:mm')
+        };
+      });
+    },
+
     /**
      * returns a list of errors
      *
@@ -8476,11 +8492,11 @@ function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormDa
 
   /**
    *
-   * @param {OpeningHours[]} openingHoursList
+   * @param {OpeningHoursData[]} openingHoursList
    */
   function saveOpeningHours(openingHoursList) {
-    cm.openingHoursCollection.setOpeningHours(openingHoursList);
     EventFormData.saveOpeningHours(openingHoursList);
+    cm.openingHoursCollection.deserialize(openingHoursList);
   }
 }
 OpeningHourComponentController.$inject = ["moment", "dayNames", "$uibModal", "EventFormData"];
@@ -9583,6 +9599,13 @@ CopyrightNegotiator.$inject = ["$cookies"];
  * @property {string} urlLabel
  * @property {string} email
  * @property {string} phone
+ */
+
+/**
+ * @typedef {Object} OpeningHoursData
+ * @property {string} opens
+ * @property {string} closes
+ * @property {string[]} dayOfWeek
  */
 
 /**

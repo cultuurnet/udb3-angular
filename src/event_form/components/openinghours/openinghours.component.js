@@ -46,10 +46,10 @@ function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormDa
 
   /**
    *
-   * @param {OpeningHours[]} openingHoursList
+   * @param {OpeningHoursData[]} openingHoursList
    */
   function saveOpeningHours(openingHoursList) {
-    cm.openingHoursCollection.setOpeningHours(openingHoursList);
     EventFormData.saveOpeningHours(openingHoursList);
+    cm.openingHoursCollection.deserialize(openingHoursList);
   }
 }

@@ -135,6 +135,16 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
       }));
     },
 
+    serialize: function () {
+      return _.map(this.openingHours, function (openingHours) {
+        return {
+          dayOfWeek: openingHours.dayOfWeek,
+          opens: moment(openingHours.opensAsDate).format('HH:mm'),
+          closes: moment(openingHours.closesAsDate).format('HH:mm')
+        };
+      });
+    },
+
     /**
      * returns a list of errors
      *

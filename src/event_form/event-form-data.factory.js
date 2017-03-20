@@ -32,6 +32,13 @@
  */
 
 /**
+ * @typedef {Object} OpeningHoursData
+ * @property {string} opens
+ * @property {string} closes
+ * @property {string[]} dayOfWeek
+ */
+
+/**
  * @ngdoc service
  * @name udb.core.EventFormData
  * @description

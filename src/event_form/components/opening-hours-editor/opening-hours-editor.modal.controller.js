@@ -26,7 +26,7 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
     var errors = controller.openingHoursCollection.validate();
 
     if (_.isEmpty(errors)) {
-      $uibModalInstance.close(controller.openingHoursCollection.openingHours);
+      $uibModalInstance.close(controller.openingHoursCollection.serialize());
     } else {
       showErrors(errors);
     }
