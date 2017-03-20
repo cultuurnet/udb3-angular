@@ -2,6 +2,9 @@
     <h4 class="modal-title">Openingsuren</h4>
 </div>
 <div class="modal-body">
+    <div class="alert alert-danger" ng-show="ohemc.errors.openAndClose">
+        <p class="text-danger">Vul alle openings- en sluitingstijden in.</p>
+    </div>
     <div class="alert alert-danger" ng-show="ohemc.errors.dayOfWeek">
         <p class="text-danger">Je moet minstens 1 weekdag selecteren.</p>
     </div>

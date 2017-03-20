@@ -14,7 +14,6 @@ describe('Controller: event form step 2', function () {
     EventFormData.initCalendar();
     calendarLabels = $injector.get('calendarLabels');
     OpeningHoursCollection = $injector.get('OpeningHoursCollection');
-    OpeningHoursCollection.init();
     stepController = $controller('EventFormStep2Controller', {
       $scope: $scope,
       $rootScope: $rootScope,

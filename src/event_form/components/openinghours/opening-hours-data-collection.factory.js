@@ -14,9 +14,20 @@ angular
 function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
 
   var validationRequirements = {
+    'openAndClose': opensAndCloses,
     'dayOfWeek': hasDayOfWeek,
     'openIsBeforeClose': openIsBeforeClose
   };
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function opensAndCloses(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return openingHours.opensAsDate instanceof Date && openingHours.closesAsDate instanceof Date;
+    }));
+  }
 
   /**
    * @param {OpeningHours[]} openingHoursList

@@ -8276,9 +8276,20 @@ angular
 function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
 
   var validationRequirements = {
+    'openAndClose': opensAndCloses,
     'dayOfWeek': hasDayOfWeek,
     'openIsBeforeClose': openIsBeforeClose
   };
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function opensAndCloses(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return openingHours.opensAsDate instanceof Date && openingHours.closesAsDate instanceof Date;
+    }));
+  }
 
   /**
    * @param {OpeningHours[]} openingHoursList
@@ -20372,6 +20383,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openAndClose\">\n" +
+    "        <p class=\"text-danger\">Vul alle openings- en sluitingstijden in.</p>\n" +
+    "    </div>\n" +
     "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.dayOfWeek\">\n" +
     "        <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
     "    </div>\n" +

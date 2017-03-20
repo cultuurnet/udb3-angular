@@ -120,6 +120,26 @@ describe('Factory: Opening hours collection', function () {
     expect(OpeningHoursCollection.validate()).toEqual(expectedValidationErrors);
   });
 
+  it('should return a validation error when closing time is missing', function () {
+    var formDataOpeningHours = giveSomeOpeningHours();
+    var expectedValidationErrors = ['openAndClose', 'openIsBeforeClose'];
+
+    OpeningHoursCollection.deserialize(formDataOpeningHours);
+    OpeningHoursCollection.openingHours[0].closesAsDate = null;
+
+    expect(OpeningHoursCollection.validate()).toEqual(expectedValidationErrors);
+  });
+
+  it('should return a validation error when opening time is missing', function () {
+    var formDataOpeningHours = giveSomeOpeningHours();
+    var expectedValidationErrors = ['openAndClose', 'openIsBeforeClose'];
+
+    OpeningHoursCollection.deserialize(formDataOpeningHours);
+    OpeningHoursCollection.openingHours[0].opensAsDate = null;
+
+    expect(OpeningHoursCollection.validate()).toEqual(expectedValidationErrors);
+  });
+
   it('should return a validation error when opening days are missing', function () {
     var formDataOpeningHours = [
       {
