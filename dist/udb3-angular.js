@@ -20473,7 +20473,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
-    "                <a href=\"\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">X</a>\n" +
+    "                <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
+    "                    <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
+    "                </button>\n" +
     "            </div>\n" +
     "        </ng-form>\n" +
     "    </div>\n" +
