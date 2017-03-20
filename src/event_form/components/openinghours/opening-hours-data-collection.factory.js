@@ -64,13 +64,7 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
    * @class OpeningHoursCollection
    */
   var openingHoursCollection = {
-    /**
-     * Initialize the properties with default data
-     */
-    init: function() {
-      this.openingHours = [];
-      this.openingHoursErrors = {};
-    },
+    openingHours: [],
 
     /**
      * Get the opening hours.
@@ -136,10 +130,10 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
           'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
           'opens': jsonOpeningHours.opens || '00:00',
           'opensAsDate':
-            jsonOpeningHours.opens ? moment(jsonOpeningHours.opens, 'HH:mm').toDate() : new Date(1970, 0, 1),
+            jsonOpeningHours.opens ? resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() : new Date(1970, 0, 1),
           'closes': jsonOpeningHours.closes || '00:00',
           'closesAsDate':
-            jsonOpeningHours.closes ? moment(jsonOpeningHours.closes, 'HH:mm').toDate() : new Date(1970, 0, 1)
+            jsonOpeningHours.closes ? resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() : new Date(1970, 0, 1)
         };
       }));
     },
@@ -161,8 +155,16 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
     }
   };
 
-  // initialize the data
-  openingHoursCollection.init();
+  /**
+   * Takes a moment object and returns a new one with the day reset to the beginning of unix time.
+   *
+   * @param {object} moment
+   *  a moment object
+   * @returns {object}
+   */
+  function resetDay(moment) {
+    return moment.clone().year(1970).dayOfYear(1);
+  }
 
   return openingHoursCollection;
 }
