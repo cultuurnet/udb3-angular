@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Factory: Opening hours colleciton', function () {
+describe('Factory: Opening hours collection', function () {
 
   var OpeningHoursCollection, givenOpeningHours, $rootscope, dayNames;
 
