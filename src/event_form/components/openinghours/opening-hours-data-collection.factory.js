@@ -90,20 +90,6 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
     },
 
     /**
-     * Add an opening hour to the opening hours array.
-     */
-    addOpeningHour: function(openingHour) {
-      this.openingHours.push({
-        'dayOfWeek' : openingHour.dayOfWeek,
-        'opens' : openingHour.opens,
-        'opensAsDate' : openingHour.opensAsDate,
-        'closes' : openingHour.closes,
-        'closesAsDate' : openingHour.closesAsDate,
-        'label' : openingHour.label
-      });
-    },
-
-    /**
      * Create new opening hours and append them to the list of existing hours.
      */
     createNewOpeningHours: function () {

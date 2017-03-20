@@ -3,6 +3,22 @@
 describe('Factory: Opening hours collection', function () {
 
   var OpeningHoursCollection, givenOpeningHours, $scope, dayNames;
+  var formDataOpeningHours = [
+    {
+      "dayOfWeek": [
+        "monday"
+      ],
+      "opens": "11:00",
+      "closes": "14:00"
+    },
+    {
+      "dayOfWeek": [
+        "tuesday"
+      ],
+      "opens": "12:00",
+      "closes": "14:00"
+    }
+  ];
 
   beforeEach(module('udb.event-form'));
 
@@ -16,23 +32,12 @@ describe('Factory: Opening hours collection', function () {
     ];
   }));
 
+  function giveSomeOpeningHours() {
+    return angular.copy(formDataOpeningHours);
+  }
+
   it('should deserialize opening hours from form data', function () {
-    var formDataOpeningHours = [
-      {
-        "dayOfWeek": [
-          "monday"
-        ],
-        "opens": "11:00",
-        "closes": "14:00"
-      },
-      {
-        "dayOfWeek": [
-          "tuesday"
-        ],
-        "opens": "12:00",
-        "closes": "14:00"
-      }
-    ];
+    var formDataOpeningHours = giveSomeOpeningHours();
     OpeningHoursCollection.deserialize(formDataOpeningHours);
     var expectedOpeningHours = [
       {
@@ -77,49 +82,65 @@ describe('Factory: Opening hours collection', function () {
     expect(OpeningHoursCollection.getOpeningHours()).toEqual(expectedOpeningHours);
   });
 
-  xit('should add an opening hour to the opening hours array', function () {
-    var openingHour = {
-      dayOfWeek: ['monday', 'tuesday'],
-      opens: '16:00',
-      opensAsDate: new Date('2017', '01', '27', '14', '00'),
-      closes: '20:00',
-      closesAsDate: new Date('2017', '01', '27', '18', '00'),
-      label: 'maandag, dinsdag'
-    };
-
-    var expectedOpeningHours = [{
-      dayOfWeek: ['monday', 'tuesday'],
-      opens: '16:00',
-      opensAsDate: new Date('2017', '01', '27', '14', '00'),
-      closes: '20:00',
-      closesAsDate: new Date('2017', '01', '27', '18', '00'),
-      label: 'maandag, dinsdag'
-    }];
-
-    OpeningHoursCollection.addOpeningHour(openingHour);
-    expect(OpeningHoursCollection.temporaryOpeningHours).toEqual(expectedOpeningHours);
-  });
-
-  xit('should remove an OpeningHour from the array', function () {
+  it('should remove opening hours', function () {
+    var formDataOpeningHours = giveSomeOpeningHours();
     var expectedOpeningHours = [
-      'openingHour2', 'openingHour3', 'openingHour4'
+      {
+        'dayOfWeek': [
+          'tuesday'
+        ],
+        'opens': '12:00',
+        'opensAsDate': new Date(1970, 0, 1, 12),
+        'closes': '14:00',
+        'closesAsDate': new Date(1970, 0, 1, 14),
+        'label': 'Dinsdag'
+      }
     ];
 
-    OpeningHoursCollection.temporaryOpeningHours = givenOpeningHours;
-    OpeningHoursCollection.removeOpeningHour(0);
+    OpeningHoursCollection.deserialize(formDataOpeningHours);
+    OpeningHoursCollection.removeOpeningHours(OpeningHoursCollection.getOpeningHours()[0]);
 
-    var temporaryOpeningHours = OpeningHoursCollection.getTemporaryOpeningHours();
-
-    expect(temporaryOpeningHours).toEqual(expectedOpeningHours);
+    expect(OpeningHoursCollection.getOpeningHours()).toEqual(expectedOpeningHours);
   });
 
-  xit('should fire an emit when saving the OpeningHours', function () {
-    spyOn($scope, '$emit');
-    OpeningHoursCollection.temporaryOpeningHours = givenOpeningHours;
+  it('should return a validation error when closing hour is before opening hour', function () {
+    var formDataOpeningHours = [
+      {
+        "dayOfWeek": [
+          "monday"
+        ],
+        "opens": "16:00",
+        "closes": "09:00"
+      }
+    ];
+    var expectedValidationErrors = ['openIsBeforeClose'];
 
-    OpeningHoursCollection.saveOpeningHours();
+    OpeningHoursCollection.deserialize(formDataOpeningHours);
 
-    expect(OpeningHoursCollection.openingHours).toEqual(givenOpeningHours);
-    expect($scope.$emit).toHaveBeenCalledWith('openingHoursChanged', givenOpeningHours);
+    expect(OpeningHoursCollection.validate()).toEqual(expectedValidationErrors);
+  });
+
+  it('should return a validation error when opening days are missing', function () {
+    var formDataOpeningHours = [
+      {
+        "dayOfWeek": [],
+        "opens": "12:00",
+        "closes": "15:00"
+      }
+    ];
+    var expectedValidationErrors = ['dayOfWeek'];
+
+    OpeningHoursCollection.deserialize(formDataOpeningHours);
+
+    expect(OpeningHoursCollection.validate()).toEqual(expectedValidationErrors);
+  });
+
+  it('should return an empty error list when valid', function () {
+    var formDataOpeningHours = giveSomeOpeningHours();
+    var expectedValidationErrors = [];
+
+    OpeningHoursCollection.deserialize(formDataOpeningHours);
+
+    expect(OpeningHoursCollection.validate()).toEqual(expectedValidationErrors);
   });
 });

@@ -46,13 +46,6 @@ describe('Component: Opening Hours', function () {
     };
   });
 
-  it('should validate the prototype\'s week days', function () {
-    OpeningHourComponent.validatePrototypeWeekDays();
-
-    expect(OpeningHourComponent.prototype.errors.weekdayError).toBeTruthy();
-    expect(OpeningHourComponent.prototype.hasErrors).toBeTruthy();
-  });
-
   it('should validate the prototype\'s opening hour', function () {
     OpeningHourComponent.prototype.opensAsDate = moment('2017-01-27 18:00').toDate();
     OpeningHourComponent.prototype.closesAsDate = moment('2017-01-27 18:00').toDate();
@@ -80,26 +73,5 @@ describe('Component: Opening Hours', function () {
 
     expect(OpeningHourComponent.prototype.closesAsDate).toEqual(moment('2017-01-27 23:59:59').toDate());
     expect(OpeningHourComponent.prototype.hasErrors).toBeFalsy();
-  });
-
-  it('should set an error when closing hour is before opening hour', function () {
-    OpeningHourComponent.prototype.opensAsDate = moment('2017-01-27 18:00').toDate();
-    OpeningHourComponent.prototype.closesAsDate = moment('2017-01-27 14:00').toDate();
-
-    OpeningHourComponent.validatePrototypeClosingHour();
-
-    expect(OpeningHourComponent.prototype.errors.openIsBeforeClose).toBeTruthy();
-    expect(OpeningHourComponent.prototype.hasErrors).toBeTruthy();
-  });
-
-  it('should add an opening hour to the collection factory', function () {
-    OpeningHourComponent.prototype.dayOfWeek = ['monday', 'tuesday'];
-    spyOn(OpeningHoursCollection, 'addOpeningHour');
-
-    OpeningHourComponent.addPrototypeOpeningHour();
-
-    expect(OpeningHourComponent.prototype.opens).toEqual('15:00');
-    expect(OpeningHourComponent.prototype.closes).toEqual('18:00');
-    expect(OpeningHourComponent.prototype.label).toEqual('Maandag, Dinsdag');
   });
 });
