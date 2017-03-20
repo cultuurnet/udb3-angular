@@ -17,7 +17,7 @@ function EventCrud(
   udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
-  $rootScope ,
+  $rootScope,
   $q,
   offerLocator
 ) {
@@ -51,6 +51,13 @@ function EventCrud(
       eventFormData.id = url.toString().split('/').pop();
 
       offerLocator.add(eventFormData.id, eventFormData.apiUrl);
+      $rootScope.$emit('eventFormSaved', eventFormData);
+
+      udbApi
+        .getOffer(url)
+        .then(function(offer) {
+          $rootScope.$emit('offerCreated', offer);
+        });
 
       return eventFormData;
     };
@@ -380,15 +387,15 @@ function EventCrud(
 
   /**
    * @param {EventFormData} offer
-   * @param {string} jobName
+   * @param {Date} [publicationDate]
    *
    * @return {Promise.<EventCrudJob>}
    */
-  service.publishOffer = function(offer, jobName) {
+  service.publishOffer = function(offer, publicationDate) {
     return udbApi
-      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .publishOffer(offer.apiUrl, publicationDate)
       .then(function (response) {
-        var job = new EventCrudJob(response.commandId, offer, jobName);
+        var job = new EventCrudJob(response.commandId, offer, 'publishOffer');
 
         addJobAndInvalidateCache(jobLogger, job);
 

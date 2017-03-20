@@ -69,7 +69,7 @@ describe('EventFormPlaceModalController', function() {
 
   it('should return the id of Archeologische Site', function () {
     expect($scope.categories).toEqual(categories);
-    expect($scope.newPlace.eventType).toEqual('3CuHvenJ+EGkcvhXLg9Ykg');
+    expect($scope.newPlace.eventType.id).toEqual('3CuHvenJ+EGkcvhXLg9Ykg');
   });
 
 });

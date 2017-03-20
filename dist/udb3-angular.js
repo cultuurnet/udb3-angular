@@ -3971,6 +3971,21 @@ function UdbApi(
   };
 
   /**
+   * @param {URL} offerUrl
+   * @param {Date} [publicationDate]
+   * @returns {Promise.<Object|ApiProblem>}
+   */
+  this.publishOffer = function (offerUrl, publicationDate) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=Publish';
+    var data = publicationDate instanceof Date ? {publicationDate: publicationDate} : {};
+
+    return $http
+      .patch(offerUrl.toString(), data, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventUrl
    * @param {Object} newCalendarData
    * @return {Promise.<Object|ApiProblem>} Object containing the duplicate info
@@ -5804,7 +5819,7 @@ function EventCrud(
   udbUitpasApi,
   EventCrudJob,
   DeleteOfferJob,
-  $rootScope ,
+  $rootScope,
   $q,
   offerLocator
 ) {
@@ -5838,6 +5853,13 @@ function EventCrud(
       eventFormData.id = url.toString().split('/').pop();
 
       offerLocator.add(eventFormData.id, eventFormData.apiUrl);
+      $rootScope.$emit('eventFormSaved', eventFormData);
+
+      udbApi
+        .getOffer(url)
+        .then(function(offer) {
+          $rootScope.$emit('offerCreated', offer);
+        });
 
       return eventFormData;
     };
@@ -6167,15 +6189,15 @@ function EventCrud(
 
   /**
    * @param {EventFormData} offer
-   * @param {string} jobName
+   * @param {Date} [publicationDate]
    *
    * @return {Promise.<EventCrudJob>}
    */
-  service.publishOffer = function(offer, jobName) {
+  service.publishOffer = function(offer, publicationDate) {
     return udbApi
-      .patchOffer(offer.apiUrl.toString(), 'Publish')
+      .publishOffer(offer.apiUrl, publicationDate)
       .then(function (response) {
-        var job = new EventCrudJob(response.commandId, offer, jobName);
+        var job = new EventCrudJob(response.commandId, offer, 'publishOffer');
 
         addJobAndInvalidateCache(jobLogger, job);
 
@@ -8508,6 +8530,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
     // Scope vars.
     $scope.newPlace = getDefaultPlace();
+    $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
     $scope.saving = false;
     $scope.error = false;
@@ -8523,7 +8546,9 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     function getDefaultPlace() {
       return {
         name: $scope.title,
-        eventType: getFirstCategoryId(),
+        eventType: {
+          id: ''
+        },
         address: {
           addressCountry: 'BE',
           addressLocality: $scope.location.address.addressLocality,
@@ -8575,7 +8600,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       // Convert this place data to a Udb-place.
       var eventTypeLabel = '';
       for (var i = 0; i < $scope.categories.length; i++) {
-        if ($scope.categories[i].id === $scope.newPlace.eventType) {
+        if ($scope.categories[i].id === $scope.newPlace.eventType.id) {
           eventTypeLabel = $scope.categories[i].label;
           break;
         }
@@ -8585,7 +8610,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       udbPlace.name = {nl : $scope.newPlace.name};
       udbPlace.calendarType = 'permanent';
       udbPlace.type = {
-        id : $scope.newPlace.eventType,
+        id : $scope.newPlace.eventType.id,
         label : eventTypeLabel,
         domain : 'eventtype'
       };
@@ -10490,7 +10515,6 @@ angular
 
 /* @ngInject */
 function EventFormPublishController(
-    $scope,
     appConfig,
     EventFormData,
     eventCrud,
@@ -10511,9 +10535,12 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
   var publicationDate = '';
-  if (angular.isUndefined(controller.eventFormData.availableFrom)) {
+
+  if (angular.isUndefined(controller.eventFormData.availableFrom) || controller.eventFormData.availableFrom == "" ) {
     if (angular.isUndefined(defaultPublicationDate)) {
+      var today = new Date();
       publicationDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
     } else {
       publicationDate = defaultPublicationDate;
@@ -10523,9 +10550,8 @@ function EventFormPublishController(
 
   function publish() {
     controller.error = '';
-
     eventCrud
-      .publishOffer(EventFormData, publicationDate)
+      .publishOffer(EventFormData, new Date('2013-03-01T00:00:00Z'))//controller.eventFormData.availableFrom)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
@@ -10577,7 +10603,7 @@ function EventFormPublishController(
     return (status === OfferWorkflowStatus.DRAFT);
   }
 }
-EventFormPublishController.$inject = ["$scope", "appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location", "$uibModal"];
+EventFormPublishController.$inject = ["appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location", "$uibModal"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
@@ -11392,7 +11418,6 @@ function EventFormStep4Controller(
       EventFormData = newEventFormData;
       EventFormData.majorInfoChanged = false;
 
-      controller.eventFormSaved();
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
       EventFormData.showStep(5);
@@ -11472,7 +11497,7 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope) {
+function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -11529,6 +11554,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
+
+  // Price info
+  $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
 
   // Booking & tickets vars.
   $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
@@ -12277,7 +12305,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
 }
-EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope"];
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig"];
 
 // Source: src/export/event-export-job.factory.js
 /**
@@ -20735,9 +20763,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
     "            <label for=\"locatie-toevoegen-types\">Categorie</label>\n" +
     "            <p class=\"help-block\">Kies een categorie die deze locatie het best omschrijft.</p>\n" +
-    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required>\n" +
-    "          <option ng-repeat=\"category in categories  | orderBy:'label' track by category.id\" value=\"{{category.id}}\" >{{category.label}}</option>\n" +
-    "      </select>\n" +
+    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
+    "            </select>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
     "        Categorie is een verplicht veld.\n" +
     "      </span>\n" +
@@ -21779,7 +21806,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <price-info price=\"price\"></price-info>\n" +
+    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
