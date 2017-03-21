@@ -94,7 +94,7 @@ describe('Controller: Form: Age', function () {
     controller.maxAge = 3;
     controller.saveAgeRange();
 
-    expect(controller.error).toEqual('De minimum ouderdom moet lager zijn dan maximum.');
+    expect(controller.error).toEqual('De minimum ouderdom mag niet hoger zijn dan maximum.');
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
   });
 
@@ -106,8 +106,20 @@ describe('Controller: Form: Age', function () {
     controller.maxAge = 0;
     controller.saveAgeRange();
 
-    expect(controller.error).toEqual('De minimum ouderdom moet lager zijn dan maximum.');
+    expect(controller.error).toEqual('De minimum ouderdom mag niet hoger zijn dan maximum.');
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
+  });
+
+  it('should not error when upper and lower boundary are the same', function () {
+    var formData = getMockedFormData('');
+    var controller = getController(formData);
+
+    controller.minAge = 18;
+    controller.maxAge = 18;
+    controller.saveAgeRange();
+
+    expect(controller.error).toEqual('');
+    expect(formData.setTypicalAgeRange).toHaveBeenCalled();
   });
 
   it('should not clear the age range boundaries when type is set to CUSTOM', function () {
