@@ -455,6 +455,14 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
+     * @param {number|undefined} min
+     * @param {number|undefined} max
+     */
+    setTypicalAgeRange: function(min, max) {
+      this.typicalAgeRange = (isNaN(min) ? '' : min) + '-' + (isNaN(max) ? '' : max);
+    },
+
+    /**
      * Check if the timing of the event is periodic and has a valid range.
      * @return {boolean}
      */
@@ -727,7 +735,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         }
       }
     }
-
   };
 
   // initialize the data

@@ -15,12 +15,26 @@
             <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
                 <div class="form-group" >
                     <label for="min-age">Van</label>
-                    <input type="number" class="form-control" id="min-age" ng-model="fagec.minAge">
+                    <input type="text"
+                           class="form-control"
+                           id="min-age"
+                           ng-model="fagec.minAge"
+                           ng-change="fagec.saveAgeRange()"
+                           udb-age-input>
                 </div>
                 <div class="form-group">
                     <label for="max-age">tot</label>
-                    <input type="number" class="form-control" id="max-age" ng-model="fagec.maxAge">
+                    <input type="text"
+                           class="form-control"
+                           id="max-age"
+                           ng-model="fagec.maxAge"
+                           ng-change="fagec.saveAgeRange()"
+                           udb-age-input>
                 </div>
+            </div>
+
+            <div class="alert alert-danger" role="alert" ng-show="fagec.error">
+                <span ng-bind="fagec.error"></span>
             </div>
         </div>
     </div>

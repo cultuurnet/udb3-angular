@@ -35,19 +35,45 @@ function FormAgeController(EventFormData, eventCrud) {
   controller.minAge = undefined;
   controller.maxAge = undefined;
   controller.setAgeRangeByType = setAgeRangeByType;
+  controller.saveAgeRange = saveAgeRange;
+  controller.error = '';
 
   init(EventFormData);
 
   /**
+   * Save the age range based on current controller min and max values.
+   */
+  function saveAgeRange() {
+    clearError();
+    var min = controller.minAge;
+    var max = controller.maxAge;
+
+    if (min && max && min >= max) {
+      controller.error = 'De minimum ouderdom moet lager zijn dan maximum.';
+      return;
+    }
+
+    EventFormData.setTypicalAgeRange(min, max);
+    eventCrud.updateTypicalAgeRange(EventFormData);
+  }
+
+  function clearError() {
+    controller.error = '';
+  }
+
+  /**
    * Create a matcher with a min and max age that takes an age range object.
    *
-   * @param {int} min
-   * @param {int} max
+   * @param {number} min
+   * @param {number} max
    * @returns {Function}
    */
   function rangeMatcher(min, max) {
     return function (ageRange) {
-      return ageRange.min === min && ageRange.max === max;
+      var fixedRange = (ageRange.min === min && ageRange.max === max);
+      var customRange = !(isNaN(min) && isNaN(max)) && ageRange === AgeRangeEnum.CUSTOM;
+
+      return fixedRange ? fixedRange : customRange;
     };
   }
 
@@ -67,15 +93,15 @@ function FormAgeController(EventFormData, eventCrud) {
   }
 
   /**
-   * @param {int} min
-   * @param {int} max
+   * @param {number} min
+   * @param {number} max
    */
   function showRange(min, max) {
     var activeAgeRangeType = _.findKey(AgeRangeEnum, rangeMatcher(min, max));
     controller.minAge = min;
     controller.maxAge = max;
     controller.rangeInputEnabled = activeAgeRangeType && activeAgeRangeType !== 'ALL';
-    controller.activeAgeRange = activeAgeRangeType || 'CUSTOM';
+    controller.activeAgeRange = activeAgeRangeType;
   }
 
   /**
@@ -89,6 +115,8 @@ function FormAgeController(EventFormData, eventCrud) {
       controller.maxAge = ageRange.max;
       controller.rangeInputEnabled = type !== 'ALL';
       controller.activeAgeRange = type;
+
+      saveAgeRange();
     }
   }
 }

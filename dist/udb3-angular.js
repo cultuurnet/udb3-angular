@@ -7770,6 +7770,48 @@ angular
       {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
     ]);
 
+// Source: src/event_form/components/age/age-input.directive.js
+/**
+ * @ngdoc component
+ * @name udb.event-form.directive:udbAgeInput
+ * @description
+ * # Age input parsing and formatting
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbAgeInput', AgeInputDirective);
+
+/* @ngInject */
+function AgeInputDirective() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, element, attrs, controller) {
+      function ensureAge(value) {
+        var number = parseInt(value);
+
+        if (isNaN(number)) {
+          controller.$setViewValue(undefined);
+          controller.$render();
+          return undefined;
+        }
+
+        var age = Math.abs(number);
+
+        if (age.toString() !== value) {
+          controller.$setViewValue(age.toString());
+          controller.$render();
+        }
+
+        return age;
+      }
+
+      controller.$formatters.push(ensureAge);
+      controller.$parsers.splice(0, 0, ensureAge);
+    }
+  };
+}
+
 // Source: src/event_form/components/age/form-age.controller.js
 /**
  * @ngdoc function
@@ -7806,19 +7848,45 @@ function FormAgeController(EventFormData, eventCrud) {
   controller.minAge = undefined;
   controller.maxAge = undefined;
   controller.setAgeRangeByType = setAgeRangeByType;
+  controller.saveAgeRange = saveAgeRange;
+  controller.error = '';
 
   init(EventFormData);
 
   /**
+   * Save the age range based on current controller min and max values.
+   */
+  function saveAgeRange() {
+    clearError();
+    var min = controller.minAge;
+    var max = controller.maxAge;
+
+    if (min && max && min >= max) {
+      controller.error = 'De minimum ouderdom moet lager zijn dan maximum.';
+      return;
+    }
+
+    EventFormData.setTypicalAgeRange(min, max);
+    eventCrud.updateTypicalAgeRange(EventFormData);
+  }
+
+  function clearError() {
+    controller.error = '';
+  }
+
+  /**
    * Create a matcher with a min and max age that takes an age range object.
    *
-   * @param {int} min
-   * @param {int} max
+   * @param {number} min
+   * @param {number} max
    * @returns {Function}
    */
   function rangeMatcher(min, max) {
     return function (ageRange) {
-      return ageRange.min === min && ageRange.max === max;
+      var fixedRange = (ageRange.min === min && ageRange.max === max);
+      var customRange = !(isNaN(min) && isNaN(max)) && ageRange === AgeRangeEnum.CUSTOM;
+
+      return fixedRange ? fixedRange : customRange;
     };
   }
 
@@ -7838,15 +7906,15 @@ function FormAgeController(EventFormData, eventCrud) {
   }
 
   /**
-   * @param {int} min
-   * @param {int} max
+   * @param {number} min
+   * @param {number} max
    */
   function showRange(min, max) {
     var activeAgeRangeType = _.findKey(AgeRangeEnum, rangeMatcher(min, max));
     controller.minAge = min;
     controller.maxAge = max;
     controller.rangeInputEnabled = activeAgeRangeType && activeAgeRangeType !== 'ALL';
-    controller.activeAgeRange = activeAgeRangeType || 'CUSTOM';
+    controller.activeAgeRange = activeAgeRangeType;
   }
 
   /**
@@ -7860,6 +7928,8 @@ function FormAgeController(EventFormData, eventCrud) {
       controller.maxAge = ageRange.max;
       controller.rangeInputEnabled = type !== 'ALL';
       controller.activeAgeRange = type;
+
+      saveAgeRange();
     }
   }
 }
@@ -9908,6 +9978,14 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
+     * @param {number|undefined} min
+     * @param {number|undefined} max
+     */
+    setTypicalAgeRange: function(min, max) {
+      this.typicalAgeRange = (isNaN(min) ? '' : min) + '-' + (isNaN(max) ? '' : max);
+    },
+
+    /**
      * Check if the timing of the event is periodic and has a valid range.
      * @return {boolean}
      */
@@ -10180,7 +10258,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         }
       }
     }
-
   };
 
   // initialize the data
@@ -19889,12 +19966,26 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "                <div class=\"form-group\" >\n" +
     "                    <label for=\"min-age\">Van</label>\n" +
-    "                    <input type=\"number\" class=\"form-control\" id=\"min-age\" ng-model=\"fagec.minAge\">\n" +
+    "                    <input type=\"text\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           id=\"min-age\"\n" +
+    "                           ng-model=\"fagec.minAge\"\n" +
+    "                           ng-change=\"fagec.saveAgeRange()\"\n" +
+    "                           udb-age-input>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"max-age\">tot</label>\n" +
-    "                    <input type=\"number\" class=\"form-control\" id=\"max-age\" ng-model=\"fagec.maxAge\">\n" +
+    "                    <input type=\"text\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           id=\"max-age\"\n" +
+    "                           ng-model=\"fagec.maxAge\"\n" +
+    "                           ng-change=\"fagec.saveAgeRange()\"\n" +
+    "                           udb-age-input>\n" +
     "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
+    "                <span ng-bind=\"fagec.error\"></span>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +

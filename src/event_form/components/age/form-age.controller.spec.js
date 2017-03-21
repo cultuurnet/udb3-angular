@@ -61,7 +61,7 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should set the boundaries to their default value when a age range is set by type', function () {
-    var formData = {typicalAgeRange: ''};
+    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
     var controller = getController(formData);
 
     controller.setAgeRangeByType('PRESCHOOLERS');
@@ -69,5 +69,18 @@ describe('Controller: Form: Age', function () {
     expect(controller.activeAgeRange).toEqual('PRESCHOOLERS');
     expect(controller.minAge).toEqual(3);
     expect(controller.maxAge).toEqual(5);
+    expect(formData.setTypicalAgeRange).toHaveBeenCalledWith(3, 5);
   });
+
+  it('should show an error when trying to save a range with an invalid lower bound', function () {
+    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
+    var controller = getController(formData);
+
+    controller.minAge = 33;
+    controller.maxAge = 3;
+    controller.saveAgeRange();
+
+    expect(controller.error).toEqual('De minimum ouderdom moet lager zijn dan maximum.');
+    expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
+  })
 });
