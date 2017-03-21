@@ -48,13 +48,16 @@ function FormAgeController(EventFormData, eventCrud) {
     var min = controller.minAge;
     var max = controller.maxAge;
 
-    if (min && max && min >= max) {
-      controller.error = 'De minimum ouderdom moet lager zijn dan maximum.';
-      return;
+    if (_.isNumber(min) && _.isNumber(max) && min >= max) {
+      showError('De minimum ouderdom moet lager zijn dan maximum.'); return;
     }
 
     EventFormData.setTypicalAgeRange(min, max);
     eventCrud.updateTypicalAgeRange(EventFormData);
+  }
+
+  function showError() {
+    controller.error = 'De minimum ouderdom moet lager zijn dan maximum.';
   }
 
   function clearError() {

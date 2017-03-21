@@ -82,5 +82,17 @@ describe('Controller: Form: Age', function () {
 
     expect(controller.error).toEqual('De minimum ouderdom moet lager zijn dan maximum.');
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
-  })
+  });
+
+  it('should show an error when trying to save a range with a lower bound and an upper bound set to zero', function () {
+    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
+    var controller = getController(formData);
+
+    controller.minAge = 18;
+    controller.maxAge = 0;
+    controller.saveAgeRange();
+
+    expect(controller.error).toEqual('De minimum ouderdom moet lager zijn dan maximum.');
+    expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
+  });
 });
