@@ -2278,7 +2278,7 @@ function udbCalendarSummary() {
 // Source: src/core/components/time/time.directive.js
 (function () {
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.core.directive:udbTime
  * @description
  * # udbTime
@@ -8186,8 +8186,8 @@ EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventF
 
 // Source: src/event_form/components/opening-hours-editor/opening-hours-editor.modal.controller.js
 /**
- * @ngdoc function
- * @name udbApp.controller:OpeningHoursEditorModalController
+ * @ngdoc controller
+ * @name udb.event-form.controller:OpeningHoursEditorModalController
  * @description
  * # OpeningHoursEditorModalController
  * Controller for editing opening hours
@@ -8270,7 +8270,7 @@ angular
 // Source: src/event_form/components/openinghours/opening-hours-data-collection.factory.js
 /**
  * @ngdoc service
- * @name udb.core.EventFormData
+ * @name udb.event-form.service:OpeningHoursCollection
  * @description
  * Contains data needed for opening hours.
  */
@@ -8279,7 +8279,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
+function OpeningHoursCollectionFactory(moment, dayNames) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,
@@ -8443,7 +8443,7 @@ function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
 
   return openingHoursCollection;
 }
-OpeningHoursCollectionFactory.$inject = ["$rootScope", "moment", "dayNames"];
+OpeningHoursCollectionFactory.$inject = ["moment", "dayNames"];
 
 // Source: src/event_form/components/openinghours/openinghours.component.js
 /**

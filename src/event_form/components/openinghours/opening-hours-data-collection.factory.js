@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc service
- * @name udb.core.EventFormData
+ * @name udb.event-form.service:OpeningHoursCollection
  * @description
  * Contains data needed for opening hours.
  */
@@ -11,7 +11,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory($rootScope, moment, dayNames) {
+function OpeningHoursCollectionFactory(moment, dayNames) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,

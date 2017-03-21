@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * @ngdoc function
- * @name udbApp.controller:OpeningHoursEditorModalController
+ * @ngdoc controller
+ * @name udb.event-form.controller:OpeningHoursEditorModalController
  * @description
  * # OpeningHoursEditorModalController
  * Controller for editing opening hours
