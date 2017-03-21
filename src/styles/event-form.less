@@ -391,23 +391,6 @@
     text-align: left;
   }
 
-  .btn-plus {
-    position: relative;
-    margin-left: 1em;
-    padding-left: 0.25em;
-  }
-
-  .btn-plus:before {
-    content: "\f055";
-    font-family: "FontAwesome";
-    color: @udb-gray;
-    margin-right: 0.5em;
-    text-decoration: none;
-    position: absolute;
-    left: -1em;
-    top: 6px;
-  }
-
   .incomplete .btn-default:hover:before {
     color: #333;
   }
@@ -688,6 +671,23 @@
       margin-bottom: 1ex;
     }
   }
+}
+
+.btn-plus {
+  position: relative;
+  margin-left: 1em;
+  padding-left: 0.25em;
+}
+
+.btn-plus:before {
+  content: "\f055";
+  font-family: "FontAwesome";
+  color: @udb-gray;
+  margin-right: 0.5em;
+  text-decoration: none;
+  position: absolute;
+  left: -1em;
+  top: 6px;
 }
 
 .event-type-choser-label {

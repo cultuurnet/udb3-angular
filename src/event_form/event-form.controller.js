@@ -24,6 +24,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+    EventFormData.initOpeningHours([]);
+
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
 
     if (EventFormData.isEvent && calendarConfig && calendarConfig.date) {
@@ -164,9 +166,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
 
     if (!!EventFormData.openingHours.length) {
-      _.each(EventFormData.openingHours, function (openingHour, index) {
-        EventFormData.saveOpeningHourDaySelection(index, openingHour.dayOfWeek);
-      });
+      EventFormData.initOpeningHours(EventFormData.openingHours);
     }
 
     $scope.loaded = true;
@@ -199,5 +199,4 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
-
 }

@@ -2278,7 +2278,7 @@ function udbCalendarSummary() {
 // Source: src/core/components/time/time.directive.js
 (function () {
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.core.directive:udbTime
  * @description
  * # udbTime
@@ -4148,6 +4148,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     this.place = {};
     this.type = {};
     this.theme = {};
+    /** @type {OpeningHoursData[]} **/
     this.openingHours = [];
 
     if (jsonEvent) {
@@ -4312,6 +4313,8 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openingHours;
@@ -4378,74 +4381,6 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
   return (UdbEvent);
 }
 UdbEventFactory.$inject = ["EventTranslationState", "UdbPlace", "UdbOrganizer"];
-
-// Source: src/core/udb-openinghours.factory.js
-/**
- * @ngdoc service
- * @name udb.core.UdbTimestamps
- * @description
- * # UdbOpeningHours
- * Contains the opening hours for 1 period / date of an offer.
- */
-angular
-  .module('udb.core')
-  .factory('UdbOpeningHours', UdbOpeningHoursFactory);
-
-/* @ngInject */
-function UdbOpeningHoursFactory() {
-
-  /**
-   * @class UdbOpeningHours
-   * @constructor
-   */
-  var UdbOpeningHours = function () {
-    this.validFrom = '';
-    this.validThrough = '';
-    this.dayOfWeek = '';
-    this.opens = '';
-    this.opensAsDate = '';
-    this.closes = '';
-    this.closesAsDate = '';
-  };
-
-  UdbOpeningHours.prototype = {
-
-    parseJson: function (json) {
-
-    },
-
-    /**
-     * Set the valid from date.
-     */
-    setValidFrom: function(date) {
-      this.validFrom = date;
-    },
-
-    /**
-     * Set the valid till date.
-     */
-    setValidTrough: function(date) {
-      this.validThrough = date;
-    },
-
-    /**
-     * Set the opening hour.
-     */
-    setOpens: function(hour) {
-      this.opens = hour;
-    },
-
-    /**
-     * Set the opening hour.
-     */
-    setDayOfWeek: function(dayOfWeek) {
-      this.dayOfWeek = dayOfWeek;
-    }
-
-  };
-
-  return (UdbOpeningHours);
-}
 
 // Source: src/core/udb-organizer.directive.js
 /**
@@ -4702,6 +4637,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.type = '';
     this.theme = {};
     this.calendarType = '';
+    /** @type {OpeningHoursData[]} **/
     this.openinghours = [];
     this.address = {
       'addressCountry' : 'BE',
@@ -4860,6 +4796,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openinghours;
@@ -8246,27 +8184,322 @@ function EventFormImageUploadController(
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
 
-// Source: src/event_form/components/openinghours/openinghours.directive.js
+// Source: src/event_form/components/opening-hours-editor/opening-hours-editor.modal.controller.js
 /**
- * @ngdoc directive
- * @name udb.search.directive:tudbEventFormTimestampSelection
+ * @ngdoc controller
+ * @name udb.event-form.controller:OpeningHoursEditorModalController
  * @description
- * # timestamp selection for event form
+ * # OpeningHoursEditorModalController
+ * Controller for editing opening hours
  */
 angular
   .module('udb.event-form')
-  .directive('udbEventFormOpeningHours', EventFormOpeningHoursDirective);
+  .controller('OpeningHoursEditorModalController', OpeningHoursEditorModalController);
 
 /* @ngInject */
-function EventFormOpeningHoursDirective() {
-  return {
-    templateUrl: 'templates/event-form-openinghours.html',
-    restrict: 'E',
-    scope: {
-      formData: '='
+function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollection) {
+  var controller = this;
+
+  controller.openingHoursCollection = openingHoursCollection;
+  controller.saveOpeningHours = saveOpeningHours;
+  controller.createNewOpeningHours = createNewOpeningHours;
+  controller.removeOpeningHours = removeOpeningHours;
+  controller.errors = {};
+
+  function saveOpeningHours() {
+    clearErrors();
+    var errors = controller.openingHoursCollection.validate();
+
+    if (_.isEmpty(errors)) {
+      $uibModalInstance.close(controller.openingHoursCollection.serialize());
+    } else {
+      showErrors(errors);
+    }
+  }
+
+  /**
+   * @param {string[]} errorList
+   */
+  function showErrors(errorList) {
+    controller.errors = _.zipObject(errorList, _.map(errorList, function() {
+      return true;
+    }));
+  }
+
+  function clearErrors() {
+    controller.errors = {};
+  }
+
+  function createNewOpeningHours() {
+    controller.openingHoursCollection.createNewOpeningHours();
+  }
+
+  function removeOpeningHours(openingHours) {
+    controller.openingHoursCollection.removeOpeningHours(openingHours);
+  }
+}
+OpeningHoursEditorModalController.$inject = ["$uibModalInstance", "openingHoursCollection"];
+
+// Source: src/event_form/components/openinghours/day-names.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc constant
+ * @name udb.event-form.dayNames
+ * @description
+ * # dayNames
+ * Opening hours day names
+ */
+angular
+  .module('udb.event-form')
+  .constant('dayNames',
+    /**
+     * list of day names
+     * @readonly
+     */
+    {
+      monday : 'Maandag',
+      tuesday : 'Dinsdag',
+      wednesday : 'Woensdag',
+      thursday : 'Donderdag',
+      friday : 'Vrijdag',
+      saturday : 'Zaterdag',
+      sunday : 'Zondag'
+    });
+
+// Source: src/event_form/components/openinghours/opening-hours-data-collection.factory.js
+/**
+ * @ngdoc service
+ * @name udb.event-form.service:OpeningHoursCollection
+ * @description
+ * Contains data needed for opening hours.
+ */
+angular
+  .module('udb.event-form')
+  .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
+
+/* @ngInject */
+function OpeningHoursCollectionFactory(moment, dayNames) {
+
+  var validationRequirements = {
+    'openAndClose': opensAndCloses,
+    'dayOfWeek': hasDayOfWeek,
+    'openIsBeforeClose': openIsBeforeClose
+  };
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function opensAndCloses(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return openingHours.opensAsDate instanceof Date && openingHours.closesAsDate instanceof Date;
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function openIsBeforeClose(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return moment(openingHours.opensAsDate).isBefore(openingHours.closesAsDate);
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function hasDayOfWeek(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return !_.isEmpty(openingHours.dayOfWeek);
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   *
+   * @returns {OpeningHours[]}
+   */
+  function prepareOpeningHoursForDisplay(openingHoursList) {
+    angular.forEach (openingHoursList, function(openingHour, key) {
+      var humanValues = [];
+      if (openingHour.dayOfWeek instanceof Array) {
+        for (var i in openingHoursList[key].dayOfWeek) {
+          humanValues.push(dayNames[openingHour.dayOfWeek[i]]);
+        }
+      }
+      openingHour.opens = moment(openingHour.opensAsDate).format('HH:mm');
+      openingHour.closes = moment(openingHour.closesAsDate).format('HH:mm');
+
+      openingHour.label = humanValues.join(', ');
+    });
+
+    return openingHoursList;
+  }
+
+  /**
+   * @class OpeningHoursCollection
+   */
+  var openingHoursCollection = {
+    openingHours: [],
+
+    /**
+     * Get the opening hours.
+     */
+    getOpeningHours: function() {
+      return this.openingHours;
+    },
+
+    /**
+     * Set the opening hours.
+     */
+    setOpeningHours: function(openingHours) {
+      this.openingHours = prepareOpeningHoursForDisplay(openingHours);
+    },
+
+    /**
+     * @param {OpeningHours} openingHours
+     */
+    removeOpeningHours: function (openingHours) {
+      var openingHoursList = this.openingHours;
+
+      this.setOpeningHours(_.without(openingHoursList, openingHours));
+    },
+
+    /**
+     * Create new opening hours and append them to the list of existing hours.
+     */
+    createNewOpeningHours: function () {
+      var openingHoursList = this.openingHours || [];
+      var openingHours = {
+        'dayOfWeek': [],
+        'opens': '00:00',
+        'opensAsDate': new Date(1970, 0, 1),
+        'closes': '00:00',
+        'closesAsDate': new Date(1970, 0, 1)
+      };
+
+      openingHoursList.push(openingHours);
+
+      this.setOpeningHours(openingHoursList);
+    },
+
+    /**
+     * {object[]} jsonOpeningHoursList
+     */
+    deserialize: function (jsonOpeningHoursList) {
+      this.setOpeningHours(_.map(jsonOpeningHoursList, function (jsonOpeningHours) {
+        return {
+          'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
+          'opens': jsonOpeningHours.opens || '00:00',
+          'opensAsDate':
+            jsonOpeningHours.opens ? resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() : new Date(1970, 0, 1),
+          'closes': jsonOpeningHours.closes || '00:00',
+          'closesAsDate':
+            jsonOpeningHours.closes ? resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() : new Date(1970, 0, 1)
+        };
+      }));
+    },
+
+    serialize: function () {
+      return _.map(this.openingHours, function (openingHours) {
+        return {
+          dayOfWeek: openingHours.dayOfWeek,
+          opens: moment(openingHours.opensAsDate).format('HH:mm'),
+          closes: moment(openingHours.closesAsDate).format('HH:mm')
+        };
+      });
+    },
+
+    /**
+     * returns a list of errors
+     *
+     * @returns {string[]}
+     */
+    validate: function () {
+      var openingHours = this.openingHours;
+
+      return _(validationRequirements)
+        .pick(function (requirementCheck) {
+          return !requirementCheck(openingHours);
+        })
+        .keys()
+        .value();
     }
   };
+
+  /**
+   * Takes a moment object and returns a new one with the day reset to the beginning of unix time.
+   *
+   * @param {object} moment
+   *  a moment object
+   * @returns {object}
+   */
+  function resetDay(moment) {
+    return moment.clone().year(1970).dayOfYear(1);
+  }
+
+  return openingHoursCollection;
 }
+OpeningHoursCollectionFactory.$inject = ["moment", "dayNames"];
+
+// Source: src/event_form/components/openinghours/openinghours.component.js
+/**
+ * @typedef {Object} OpeningHours
+ * @property {Date} opensAsDate
+ * @property {Date} closesAsDate
+ * @property {string} opens
+ * @property {string} closes
+ * @property {string[]} dayOfWeek
+ */
+
+angular
+  .module('udb.event-form')
+  .component('udbEventFormOpeningHours', {
+    bindings: {
+      openingHoursCollection: '=openingHours'
+    },
+    templateUrl: 'templates/event-form-openinghours.html',
+    controller: OpeningHourComponentController,
+    controllerAs: 'cm'
+  });
+
+/**
+ * @ngInject
+ */
+function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormData) {
+  var cm = this;
+
+  cm.edit = openEditorModal;
+
+  function openEditorModal() {
+    var editorModal = $uibModal.open({
+      templateUrl: 'templates/opening-hours-editor.modal.html',
+      controller: 'OpeningHoursEditorModalController',
+      controllerAs: 'ohemc',
+      size: 'lg',
+      resolve: {
+        openingHoursCollection: function () {
+          return angular.copy(cm.openingHoursCollection);
+        }
+      }
+    });
+
+    editorModal.result.then(saveOpeningHours);
+  }
+
+  /**
+   *
+   * @param {OpeningHoursData[]} openingHoursList
+   */
+  function saveOpeningHours(openingHoursList) {
+    EventFormData.saveOpeningHours(openingHoursList);
+    cm.openingHoursCollection.deserialize(openingHoursList);
+  }
+}
+OpeningHourComponentController.$inject = ["moment", "dayNames", "$uibModal", "EventFormData"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -9369,6 +9602,13 @@ CopyrightNegotiator.$inject = ["$cookies"];
  */
 
 /**
+ * @typedef {Object} OpeningHoursData
+ * @property {string} opens
+ * @property {string} closes
+ * @property {string[]} dayOfWeek
+ */
+
+/**
  * @ngdoc service
  * @name udb.core.EventFormData
  * @description
@@ -9379,18 +9619,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment) {
-
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
 
   /**
    * @class EventFormData
@@ -9444,7 +9673,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       this.endDate = '';
       this.timestamps = [];
       this.openingHours = [];
-      this.openingHoursErrors = {};
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -9595,13 +9823,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
-     * Get the opening hours.
-     */
-    getOpeningHours: function() {
-      return this.openingHours;
-    },
-
-    /**
      * Reset the location.
      */
     resetLocation: function(location) {
@@ -9648,40 +9869,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
       });
-    },
-
-    /**
-     * Add a timestamp to the timestamps array.
-     */
-    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
-      var now = moment();
-      if (opens === '') {
-        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
-        opensAsDate = openDate.toDate();
-        opens = openDate.format('HH:mm');
-      }
-
-      if (closes === '') {
-        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
-        closesAsDate = closeDate.toDate();
-        closes = closeDate.format('HH:mm');
-      }
-
-      this.openingHours.push({
-        'dayOfWeek' : dayOfWeek,
-        'opens' : opens,
-        'opensAsDate' : opensAsDate,
-        'closes' : closes,
-        'closesAsDate' : closesAsDate,
-        'label' : ''
-      });
-    },
-
-    /**
-     * Remove the openinghour with the given index.
-     */
-    removeOpeningHour: function(index) {
-      this.openingHours.splice(index, 1);
     },
 
     /**
@@ -9824,18 +10011,8 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       this.calendarType = '';
     },
 
-    saveOpeningHourDaySelection: function (index, dayOfWeek) {
-      var humanValues = [];
-      if (dayOfWeek instanceof Array) {
-        for (var i in dayOfWeek) {
-          humanValues.push(dayNames[dayOfWeek[i]]);
-        }
-      }
-
-      this.openingHours[index].opensAsDate = moment(this.openingHours[index].opens, 'HH:mm').toDate();
-      this.openingHours[index].closesAsDate = moment(this.openingHours[index].closes, 'HH:mm').toDate();
-
-      this.openingHours[index].label = humanValues.join(', ');
+    initOpeningHours: function(openingHours) {
+      OpeningHoursCollection.deserialize(openingHours);
     },
 
     /**
@@ -9861,12 +10038,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         formData.addTimestamp('', '', '', '', '');
       }
 
-      if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '', '', '');
-      }
-
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 
@@ -9977,79 +10149,9 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       }
     },
 
-    saveOpeningHours: function () {
-      angular.forEach(this.openingHours, function(openingHour) {
-        var opensAsDate, closesAsDate;
-
-        opensAsDate = moment(openingHour.opensAsDate);
-        openingHour.opens = opensAsDate.format('HH:mm');
-
-        closesAsDate = moment(openingHour.closesAsDate);
-        openingHour.closes = closesAsDate.format('HH:mm');
-      });
+    saveOpeningHours: function (openingHours) {
+      this.openingHours = openingHours;
       this.timingChanged();
-    },
-
-    validateOpeningHour: function (openingHour) {
-      openingHour.hasError = false;
-      openingHour.errors = {};
-
-      if (openingHour.dayOfWeek.length === 0) {
-        openingHour.errors.weekdayError = true;
-      }
-      else {
-        openingHour.errors.weekdayError = false;
-      }
-
-      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
-        openingHour.errors.openingHourError = true;
-      }
-      else {
-        openingHour.errors.openingHourError = false;
-      }
-
-      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
-        openingHour.errors.closingHourError = true;
-      }
-      else {
-        openingHour.errors.closingHourError = false;
-      }
-
-      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
-        openingHour.errors.closingHourGreaterError = true;
-      }
-      else {
-        openingHour.errors.closingHourGreaterError = false;
-      }
-
-      angular.forEach(openingHour.errors, function(error, key) {
-        if (error) {
-          openingHour.hasError = true;
-        }
-      });
-
-      this.validateOpeningHours();
-    },
-
-    validateOpeningHours: function () {
-      this.openingHoursHasErrors = false;
-      this.openingHoursErrors.weekdayError = false;
-      this.openingHoursErrors.openingHourError = false;
-      this.openingHoursErrors.closingHourError = false;
-      this.openingHoursErrors.closingHourGreaterError = false;
-
-      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
-      if (errors.length > 0) {
-        this.openingHoursHasErrors = true;
-      }
-      else {
-        this.openingHoursHasErrors = false;
-      }
-
-      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
-      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
-      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
-      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
     },
 
     periodicTimingChanged: function () {
@@ -10072,7 +10174,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "$rootScope"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -10099,6 +10201,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+    EventFormData.initOpeningHours([]);
+
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
 
     if (EventFormData.isEvent && calendarConfig && calendarConfig.date) {
@@ -10239,9 +10343,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
 
     if (!!EventFormData.openingHours.length) {
-      _.each(EventFormData.openingHours, function (openingHour, index) {
-        EventFormData.saveOpeningHourDaySelection(index, openingHour.dayOfWeek);
-      });
+      EventFormData.initOpeningHours(EventFormData.openingHours);
     }
 
     $scope.loaded = true;
@@ -10274,7 +10376,6 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
-
 }
 EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
 
@@ -10627,9 +10728,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.calendarType = 'permanent';
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
-      if (EventFormData.openingHours.length === 0) {
-        EventFormData.addOpeningHour('', '', '', '', '');
-      }
     }
 
     EventFormData.setEventType(eventType);
@@ -10735,13 +10833,14 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels, OpeningHoursCollection) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
   $scope.calendarLabels = calendarLabels;
+  $scope.openingHours = OpeningHoursCollection;
 
   /**
    * Mark the major info as changed.
@@ -10756,7 +10855,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels", "OpeningHoursCollection"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -20304,25 +20403,119 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/opening-hours-editor.modal.html',
+    "<div class=\"modal-header\">\n" +
+    "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openAndClose\">\n" +
+    "        <p class=\"text-danger\">Vul alle openings- en sluitingstijden in.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.dayOfWeek\">\n" +
+    "        <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openIsBeforeClose\">\n" +
+    "        <p class=\"text-danger\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "            Dagen\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "            Van\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "            Tot\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
+    "        <ng-form name=\"openingHoursInfo\">\n" +
+    "            <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\"\n" +
+    "                 ng-class=\"{'has-error': openingHoursInfo.dayOfWeek.$invalid && openingHoursInfo.dayOfWeek.$touched}\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <select class=\"selectpicker\"\n" +
+    "                            name=\"dayOfWeek\"\n" +
+    "                            multiple\n" +
+    "                            start-label=\"Kies dag(en)\"\n" +
+    "                            ng-model=\"openingHours.dayOfWeek\"\n" +
+    "                            udb-multiselect\n" +
+    "                            ng-required=\"true\">\n" +
+    "                        <option value=\"monday\">maandag</option>\n" +
+    "                        <option value=\"tuesday\">dinsdag</option>\n" +
+    "                        <option value=\"wednesday\">woensdag</option>\n" +
+    "                        <option value=\"thursday\">donderdag</option>\n" +
+    "                        <option value=\"friday\">vrijdag</option>\n" +
+    "                        <option value=\"saturday\">zaterdag</option>\n" +
+    "                        <option value=\"sunday\">zondag</option>\n" +
+    "                    </select>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                <div class=\"form-group\"\n" +
+    "                     ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
+    "                    <input udb-time\n" +
+    "                           type=\"time\"\n" +
+    "                           name=\"opens\"\n" +
+    "                           class=\"form-control uur\"\n" +
+    "                           placeholder=\"Bv. 08:00\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-model=\"openingHours.opensAsDate\"/>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                <div class=\"form-group\"\n" +
+    "                     ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
+    "                    <input udb-time\n" +
+    "                           type=\"time\"\n" +
+    "                           name=\"closes\"\n" +
+    "                           class=\"form-control uur\"\n" +
+    "                           placeholder=\"Bv. 08:00\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-model=\"openingHours.closesAsDate\"/>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
+    "                <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
+    "                    <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </ng-form>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
+    "        Meer openingstijden toevoegen\n" +
+    "    </a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
+    "            ng-click=\"ohemc.saveOpeningHours()\">\n" +
+    "        Opslaan\n" +
+    "    </button>\n" +
+    "</div>\n" +
+    "\n"
+  );
+
+
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"!!formData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
-    "     data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\">Openingsuren toevoegen</a>\n" +
+    "     ng-click=\"cm.edit()\">Openingsuren toevoegen</a>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!formData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12 col-sm-8\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
     "    <table class=\"table table-condensed \">\n" +
     "      <thead>\n" +
     "      <th>Openingsuren</th>\n" +
     "      <th>\n" +
-    "        <a href=\"#\" data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\" class=\"btn btn-default\">\n" +
+    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\">\n" +
     "          Wijzigen\n" +
     "        </a>\n" +
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
-    "        <tr ng-repeat=\"openingHour in formData.openingHours\">\n" +
+    "        <tr ng-repeat=\"openingHour in cm.openingHoursCollection.openingHours\">\n" +
     "          <td ng-bind=\"openingHour.label\"></td>\n" +
     "          <td>\n" +
     "            <span ng-bind=\"openingHour.opens\"></span> – <span ng-bind=\"openingHour.closes\"></span>\n" +
@@ -20331,105 +20524,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </tbody>\n" +
     "    </table>\n" +
     "  </section>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal fade\" id=\"wanneer-openingsuren-toevoegen\" ng-init=\"formData.initOpeningHours()\">\n" +
-    "  <div class=\"modal-dialog\">\n" +
-    "    <div class=\"modal-content\">\n" +
-    "      <div class=\"modal-header\">\n" +
-    "        <h4 class=\"modal-title\">Openingsuren</h4>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-body\">\n" +
-    "        <table class=\"table\">\n" +
-    "          <thead>\n" +
-    "          <tr>\n" +
-    "            <th>Dag(en)</th>\n" +
-    "            <th>Van</th>\n" +
-    "            <th></th>\n" +
-    "            <th>Tot</th>\n" +
-    "            <th></th>\n" +
-    "          </tr>\n" +
-    "          </thead>\n" +
-    "\n" +
-    "          <tr ng-repeat=\"(i, openingHour) in formData.openingHours\">\n" +
-    "            <td>\n" +
-    "              <select class=\"selectpicker\"\n" +
-    "                      name=\"weekday\"\n" +
-    "                      multiple\n" +
-    "                      start-label=\"Kies dag(en)\"\n" +
-    "                      ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\"\n" +
-    "                      ng-class=\"{'has-error': openingHour.errors.weekdayError}\"\n" +
-    "                      udb-multiselect\n" +
-    "                      required>\n" +
-    "                <option value=\"monday\">maandag</option>\n" +
-    "                <option value=\"tuesday\">dinsdag</option>\n" +
-    "                <option value=\"wednesday\">woensdag</option>\n" +
-    "                <option value=\"thursday\">donderdag</option>\n" +
-    "                <option value=\"friday\">vrijdag</option>\n" +
-    "                <option value=\"saturday\">zaterdag</option>\n" +
-    "                <option value=\"sunday\">zondag</option>\n" +
-    "              </select>\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              <input udb-time\n" +
-    "                     type=\"time\"\n" +
-    "                     name=\"openingHour\"\n" +
-    "                     class=\"form-control uur\"\n" +
-    "                     placeholder=\"Bv. 08:00\"\n" +
-    "                     ng-model=\"openingHour.opensAsDate\"\n" +
-    "                     ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
-    "                     ng-model-options=\"{ debounce: 500 }\"\n" +
-    "                     ng-class=\"{'has-error': openingHour.errors.openingHourError}\" />\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                -&nbsp;\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "\n" +
-    "                <input udb-time\n" +
-    "                       type=\"time\"\n" +
-    "                       name=\"closingHour\"\n" +
-    "                       class=\"form-control uur\"\n" +
-    "                       placeholder=\"Bv. 08:00\"\n" +
-    "                       ng-model=\"openingHour.closesAsDate\"\n" +
-    "                       ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
-    "                       ng-model-options=\"{ debounce: 500 }\"\n" +
-    "                       ng-class=\"{'has-error': openingHour.errors.closingHourError}\"/>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
-    "                  <span aria-hidden=\"true\">&times;</span>\n" +
-    "                </button>\n" +
-    "              </td>\n" +
-    "          </tr>\n" +
-    "        </table>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '', '', '')\">\n" +
-    "          Meer openingstijden toevoegen\n" +
-    "        </a>\n" +
-    "        <div class=\"alert alert-danger\" ng-show=\"formData.openingHoursHasErrors\">\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourError\">Gelieve een geldige sluitingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourGreaterError\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-footer\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
-    "                data-dismiss=\"modal\"\n" +
-    "                ng-click=\"formData.saveOpeningHours()\"\n" +
-    "                ng-disabled=\"formData.openingHoursHasErrors\">\n" +
-    "          Toevoegen\n" +
-    "        </button>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "    <!-- /.modal-content -->\n" +
-    "  </div>\n" +
-    "  <!-- /.modal-dialog -->\n" +
-    "</div>\n" +
-    "<!-- /.modal -->"
+    "</div>"
   );
 
 
@@ -21260,7 +21355,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'permanent' || eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-opening-hours form-data=\"eventFormData\"></udb-event-form-opening-hours>\n" +
+    "      <udb-event-form-opening-hours opening-hours=\"openingHours\"></udb-event-form-opening-hours>\n" +
     "    </div>\n" +
     "\n" +
     "  </section>\n" +
