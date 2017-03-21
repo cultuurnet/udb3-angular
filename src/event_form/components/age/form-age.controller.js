@@ -37,23 +37,31 @@ function FormAgeController(EventFormData, eventCrud) {
   controller.setAgeRangeByType = setAgeRangeByType;
   controller.saveAgeRange = _.debounce(saveAgeRange, 300);
   controller.error = '';
+  controller.formData = undefined;
 
   init(EventFormData);
 
   /**
    * Save the age range based on current controller min and max values.
+   *
+   * If the controller values do not change the old form data, no update will happen.
    */
   function saveAgeRange() {
     clearError();
     var min = controller.minAge;
     var max = controller.maxAge;
+    var oldAgeRange = controller.formData.getTypicalAgeRange();
+
+    if (oldAgeRange && oldAgeRange.min === min && oldAgeRange.max === max) {
+      return;
+    }
 
     if (_.isNumber(min) && _.isNumber(max) && min >= max) {
       showError('De minimum ouderdom moet lager zijn dan maximum.'); return;
     }
 
-    EventFormData.setTypicalAgeRange(min, max);
-    eventCrud.updateTypicalAgeRange(EventFormData);
+    controller.formData.setTypicalAgeRange(min, max);
+    eventCrud.updateTypicalAgeRange(controller.formData);
   }
 
   function showError() {
@@ -84,15 +92,12 @@ function FormAgeController(EventFormData, eventCrud) {
    * @param {EventFormData} formData
    */
   function init(formData) {
-    if (_.isEmpty(formData.typicalAgeRange)) {
-      return;
+    controller.formData = formData;
+    var ageRange = formData.getTypicalAgeRange();
+
+    if (ageRange) {
+      showRange(ageRange.min, ageRange.max);
     }
-
-    var rangeArray = formData.typicalAgeRange.split('-');
-    var minAge = rangeArray[0] ? parseInt(rangeArray[0]) : undefined;
-    var maxAge = rangeArray[1] ? parseInt(rangeArray[1]) : undefined;
-
-    showRange(minAge, maxAge);
   }
 
   /**

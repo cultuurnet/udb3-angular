@@ -463,6 +463,26 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
+     * Get the typical age range as an object or undefined when no range is set.
+     * When the offer is intended for all ages, you do get a range but both min and max will be undefined.
+     *
+     * @return {{min: number|undefined, max: number|undefined}|undefined}
+     */
+    getTypicalAgeRange: function () {
+      if (_.isEmpty(this.typicalAgeRange)) {
+        return;
+      }
+
+      var ageRange = {min: undefined, max: undefined};
+      var rangeArray = this.typicalAgeRange.split('-');
+
+      if (rangeArray[0]) {ageRange.min =  parseInt(rangeArray[0]);}
+      if (rangeArray[1]) {ageRange.max =  parseInt(rangeArray[1]);}
+
+      return ageRange;
+    },
+
+    /**
      * Check if the timing of the event is periodic and has a valid range.
      * @return {boolean}
      */

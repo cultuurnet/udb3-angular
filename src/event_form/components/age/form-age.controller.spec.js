@@ -1,10 +1,10 @@
 describe('Controller: Form: Age', function () {
 
-  var $controller, eventCrud, $scope;
+  var $controller, eventCrud, $scope, EventFormData;
 
   beforeEach(module('udb.event-form'));
 
-  beforeEach(inject(function (_$controller_, $rootScope) {
+  beforeEach(inject(function (_$controller_, $rootScope, _EventFormData_) {
     $controller = _$controller_;
     eventCrud = jasmine.createSpyObj('eventCrud', ['updateTypicalAgeRange']);
     $scope = $rootScope;
@@ -13,6 +13,7 @@ describe('Controller: Form: Age', function () {
         debounceFunction.apply(this, arguments);
       };
     });
+    EventFormData = _EventFormData_;
   }));
 
   function getController(formData) {
@@ -24,22 +25,30 @@ describe('Controller: Form: Age', function () {
     );
   }
 
+  function getMockedFormData (ageRangeData) {
+    var formData = EventFormData.clone();
+    formData.typicalAgeRange = ageRangeData;
+    spyOn(formData, 'setTypicalAgeRange').and.callThrough();
+
+    return formData;
+  }
+
   it('should initialize with an active age range when age form data is not empty', function () {
-    var formData = {typicalAgeRange: '-'};
+    var formData = getMockedFormData('-');
     var controller = getController(formData);
 
     expect(controller.activeAgeRange).toEqual('ALL');
   });
 
   it('should not initialize with an active age range when age form data is empty', function () {
-    var formData = {typicalAgeRange: ''};
+    var formData = getMockedFormData('');
     var controller = getController(formData);
 
     expect(controller.activeAgeRange).toEqual(undefined);
   });
 
   it('should initialize with a CUSTOM active age range when form data does not match a known range', function () {
-    var formData = {typicalAgeRange: '5-55'};
+    var formData = getMockedFormData('5-55');
     var controller = getController(formData);
 
     expect(controller.activeAgeRange).toEqual('CUSTOM');
@@ -48,7 +57,7 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should initialize with an active age range and boundary when form data matches this range', function () {
-    var formData = {typicalAgeRange: '12-17'};
+    var formData = getMockedFormData('12-17');
     var controller = getController(formData);
 
     expect(controller.activeAgeRange).toEqual('YOUNGSTERS');
@@ -57,7 +66,7 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should initialize with an active age range and boundary when form data matches a range with one boundary', function () {
-    var formData = {typicalAgeRange: '18-'};
+    var formData = getMockedFormData('18-');
     var controller = getController(formData);
 
     expect(controller.activeAgeRange).toEqual('ADULTS');
@@ -66,7 +75,7 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should set the boundaries to their default value when a age range is set by type', function () {
-    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
+    var formData = getMockedFormData('');
     var controller = getController(formData);
 
     controller.setAgeRangeByType('PRESCHOOLERS');
@@ -78,7 +87,7 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should show an error when trying to save a range with an invalid lower bound', function () {
-    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
+    var formData = getMockedFormData('');
     var controller = getController(formData);
 
     controller.minAge = 33;
@@ -90,7 +99,7 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should show an error when trying to save a range with a lower bound and an upper bound set to zero', function () {
-    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
+    var formData = getMockedFormData('');
     var controller = getController(formData);
 
     controller.minAge = 18;
@@ -102,7 +111,7 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should not clear the age range when selecting a type without boundaries', function () {
-    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
+    var formData = getMockedFormData('');
     var controller = getController(formData);
 
     controller.minAge = 18;
@@ -112,5 +121,20 @@ describe('Controller: Form: Age', function () {
     expect(controller.minAge).toEqual(18);
     expect(controller.maxAge).toEqual(26);
     expect(formData.setTypicalAgeRange).toHaveBeenCalledWith(18, 26);
+  });
+
+  it('should not persist the age range when saving with the same old form data', function () {
+    var formData = getMockedFormData('');
+    var controller = getController(formData);
+
+    controller.minAge = 6;
+    controller.maxAge = 11;
+    controller.saveAgeRange();
+
+    controller.setAgeRangeByType('KIDS');
+
+    controller.saveAgeRange();
+
+    expect(formData.setTypicalAgeRange.calls.count()).toEqual(1);
   });
 });
