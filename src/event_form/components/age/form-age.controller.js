@@ -35,7 +35,7 @@ function FormAgeController(EventFormData, eventCrud) {
   controller.minAge = undefined;
   controller.maxAge = undefined;
   controller.setAgeRangeByType = setAgeRangeByType;
-  controller.saveAgeRange = saveAgeRange;
+  controller.saveAgeRange = _.debounce(saveAgeRange, 300);
   controller.error = '';
 
   init(EventFormData);

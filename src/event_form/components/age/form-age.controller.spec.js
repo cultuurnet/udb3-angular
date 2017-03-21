@@ -8,6 +8,11 @@ describe('Controller: Form: Age', function () {
     $controller = _$controller_;
     eventCrud = jasmine.createSpyObj('eventCrud', ['updateTypicalAgeRange']);
     $scope = $rootScope;
+    spyOn(_, 'debounce').and.callFake(function (debounceFunction) {
+      return function(args) {
+        debounceFunction.apply(this, arguments);
+      };
+    });
   }));
 
   function getController(formData) {
