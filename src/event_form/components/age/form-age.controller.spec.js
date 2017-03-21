@@ -100,4 +100,17 @@ describe('Controller: Form: Age', function () {
     expect(controller.error).toEqual('De minimum ouderdom moet lager zijn dan maximum.');
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
   });
+
+  it('should not clear the age range when selecting a type without boundaries', function () {
+    var formData = jasmine.createSpyObj('formData', ['setTypicalAgeRange']);
+    var controller = getController(formData);
+
+    controller.minAge = 18;
+    controller.maxAge = 26;
+    controller.setAgeRangeByType('CUSTOM');
+
+    expect(controller.minAge).toEqual(18);
+    expect(controller.maxAge).toEqual(26);
+    expect(formData.setTypicalAgeRange).toHaveBeenCalledWith(18, 26);
+  });
 });
