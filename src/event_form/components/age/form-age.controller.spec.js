@@ -110,7 +110,7 @@ describe('Controller: Form: Age', function () {
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
   });
 
-  it('should not clear the age range when selecting a type without boundaries', function () {
+  it('should not clear the age range boundaries when type is set to CUSTOM', function () {
     var formData = getMockedFormData('');
     var controller = getController(formData);
 

@@ -119,8 +119,11 @@ function FormAgeController(EventFormData, eventCrud) {
     var ageRange = AgeRangeEnum[type];
 
     if (ageRange) {
-      if (ageRange.min) {controller.minAge = ageRange.min;}
-      if (ageRange.max) {controller.maxAge = ageRange.max;}
+      if (type !== 'CUSTOM') {
+        controller.minAge = ageRange.min;
+        controller.maxAge = ageRange.max;
+      }
+
       controller.rangeInputEnabled = type !== 'ALL';
       controller.activeAgeRange = type;
 
