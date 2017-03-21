@@ -24,6 +24,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+    EventFormData.initOpeningHours([]);
+
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
 
     if (EventFormData.isEvent && calendarConfig && calendarConfig.date) {
