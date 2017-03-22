@@ -4,20 +4,20 @@
 
 /**
  * @ngdoc service
- * @name udb.entry.uitpasLabels
+ * @name udb.uitpas.DefaultUitpasLabels
  * @description
- * # UiTPAS Labels
+ * # Default UiTPAS Labels
  *
  * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01.
  * This file used to be updated each time labels changed but now acts as a placeholder.
  *
- * The actual labels should be fetched when building your app and overwrite this UitpasLabels constant.
+ * The actual labels should be fetched when building or bootstrapping your app and written to the UitpasLabels constant.
  * The UiTPAS service should have an endpoint with all the labels for your environment.
  * e.g.: https://uitpas.uitdatabank.be/labels for production
  */
 angular
   .module('udb.uitpas')
-  .constant('UitpasLabels',
+  .constant('DefaultUitpasLabels',
   /**
    * Enum for UiTPAS labels
    * @readonly
