@@ -7724,10 +7724,11 @@ angular
   .controller('FormAudienceController', FormAudienceController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, eventCrud) {
+function FormAudienceController(EventFormData, eventCrud, appConfig) {
   var controller = this;
+  var componentDisabled = _.get(appConfig, 'offerEditor.disableAudience');
 
-  controller.enabled = EventFormData.isEvent;
+  controller.enabled = !componentDisabled && EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
 
@@ -7735,7 +7736,7 @@ function FormAudienceController(EventFormData, eventCrud) {
     eventCrud.setAudienceType(EventFormData, audienceType);
   }
 }
-FormAudienceController.$inject = ["EventFormData", "eventCrud"];
+FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig"];
 
 // Source: src/event_form/components/audience/form-audience.directive.js
 /**
