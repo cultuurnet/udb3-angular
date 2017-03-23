@@ -9855,9 +9855,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * @param {Date} date
      * @param {string} startHour HH:MM
-     * @param {Date} startHourAsDate
+     * @param {Date|string} startHourAsDate
+     *  An empty string when not set.
      * @param {string} endHour HH:MM
-     * @param {Date} endHourAsDate
+     * @param {Date|string} endHourAsDate
+     *  An empty string when not set.
      */
     addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
       this.timestamps.push({
@@ -10216,10 +10218,12 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.calendarType = 'single';
     EventFormData.addTimestamp(
       new Date(calendarConfig.date),
-      calendarConfig.startTime,
-      new Date(calendarConfig.date + 'T' + calendarConfig.startTime),
-      calendarConfig.endTime,
-      new Date(calendarConfig.date + 'T' + calendarConfig.endTime)
+      calendarConfig.startTime || '',
+      calendarConfig.startTime ?
+        moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
+      calendarConfig.endTime || '',
+      calendarConfig.endTime ?
+        moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
   }

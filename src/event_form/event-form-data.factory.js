@@ -285,9 +285,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * @param {Date} date
      * @param {string} startHour HH:MM
-     * @param {Date} startHourAsDate
+     * @param {Date|string} startHourAsDate
+     *  An empty string when not set.
      * @param {string} endHour HH:MM
-     * @param {Date} endHourAsDate
+     * @param {Date|string} endHourAsDate
+     *  An empty string when not set.
      */
     addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
       this.timestamps.push({
