@@ -9629,6 +9629,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * Initialize the properties with default data
      */
     init: function() {
+      this.apiUrl = '';
       this.isEvent = true; // Is current item an event.
       this.isPlace = false; // Is current item a place.
       this.showStep1 = true;
