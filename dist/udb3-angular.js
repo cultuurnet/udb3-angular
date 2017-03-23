@@ -2359,6 +2359,8 @@ function WorkflowStatusDirectiveController($scope, $translate) {
 WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
 
 // Source: src/core/dutch-translations.constant.js
+// jscs:disable maximumLineLength
+
 /**
  * @ngdoc service
  * @name udbApp.dutchTranslations
@@ -2723,6 +2725,7 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
+    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.'
   }
 );
 
@@ -20544,7 +20547,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
-    "      <p class=\"alert alert-info\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
+    "      <p class=\"alert alert-info\" ng-bind=\"'UNIQUE_ORGANIZER_NOTICE' | translate\"></p>\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group has-feedback\"\n" +
