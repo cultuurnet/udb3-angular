@@ -4,14 +4,12 @@
             <em class="extra-task-label">Geschikt voor</em>
         </div>
         <div class="col-sm-9">
-            <p>
-                <span ng-repeat="(type, ageRange) in ::fagec.ageRanges">
-                    <a ng-bind="::ageRange.label"
-                       href="#"
-                       ng-click="fagec.setAgeRangeByType(type)"></a>
-                    <span ng-if="::!$last">, </span>
-                </span>
-            </p>
+            <span ng-repeat="(type, ageRange) in ::fagec.ageRanges">
+                <a ng-bind="::ageRange.label"
+                   href="#"
+                   ng-click="fagec.setAgeRangeByType(type)"></a>
+                <span ng-if="::!$last">, </span>
+            </span>
             <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
                 <div class="form-group" >
                     <label for="min-age">Van</label>
@@ -19,7 +17,8 @@
                            class="form-control"
                            id="min-age"
                            ng-model="fagec.minAge"
-                           ng-change="fagec.saveAgeRange()"
+                           ng-blur="fagec.instantSaveAgeRange()"
+                           ng-change="fagec.delayedSaveAgeRange()"
                            udb-age-input>
                 </div>
                 <div class="form-group">
@@ -28,7 +27,8 @@
                            class="form-control"
                            id="max-age"
                            ng-model="fagec.maxAge"
-                           ng-change="fagec.saveAgeRange()"
+                           ng-blur="fagec.instantSaveAgeRange()"
+                           ng-change="fagec.delayedSaveAgeRange()"
                            udb-age-input>
                 </div>
             </div>

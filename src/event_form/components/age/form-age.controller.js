@@ -1,8 +1,9 @@
 'use strict';
 
 /**
- * @ngdoc function
+ * @ngdoc controller
  * @name udb.event-form:FormAgeController
+ * @var FormAgeController fagec
  * @description
  * # FormAgeController
  * Controller for the form age component
@@ -12,7 +13,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController(EventFormData, eventCrud) {
+function FormAgeController($scope, EventFormData, eventCrud) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -35,7 +36,8 @@ function FormAgeController(EventFormData, eventCrud) {
   controller.minAge = undefined;
   controller.maxAge = undefined;
   controller.setAgeRangeByType = setAgeRangeByType;
-  controller.saveAgeRange = _.debounce(saveAgeRange, 300);
+  controller.delayedSaveAgeRange = _.debounce(digestSaveAgeRange, 1000);
+  controller.instantSaveAgeRange = instantSaveAgeRange;
   controller.error = '';
   controller.formData = undefined;
 
@@ -62,6 +64,15 @@ function FormAgeController(EventFormData, eventCrud) {
 
     controller.formData.setTypicalAgeRange(min, max);
     eventCrud.updateTypicalAgeRange(controller.formData);
+  }
+
+  function digestSaveAgeRange() {
+    $scope.$apply(saveAgeRange);
+  }
+
+  function instantSaveAgeRange() {
+    controller.delayedSaveAgeRange.cancel();
+    saveAgeRange();
   }
 
   function showError(errorMessage) {
