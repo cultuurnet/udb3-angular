@@ -65,8 +65,11 @@ describe('Directive: Datepicker', function () {
   });
 
   it('should have a defaultViewDate equal to the first hour of the first day of the current month ', function () {
-    var today = new Date();
-    var expectedDate = new Date(today.getFullYear(), today.getMonth(), 1, 1, 0);
+    var today = moment('2017-01-27 14:01').toDate();
+    jasmine.clock().install();
+    jasmine.clock().mockDate(today);
+
+    var expectedDate = moment('2017-01-01 01:00').toDate();
 
     var picker = getDatepicker();
 
