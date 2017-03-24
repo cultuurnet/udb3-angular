@@ -7772,7 +7772,7 @@ angular
 
 // Source: src/event_form/components/age/age-input.directive.js
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.event-form.directive:udbAgeInput
  * @description
  * # Age input parsing and formatting
@@ -7814,8 +7814,9 @@ function AgeInputDirective() {
 
 // Source: src/event_form/components/age/form-age.controller.js
 /**
- * @ngdoc function
+ * @ngdoc controller
  * @name udb.event-form:FormAgeController
+ * @var FormAgeController fagec
  * @description
  * # FormAgeController
  * Controller for the form age component
@@ -7825,7 +7826,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController(EventFormData, eventCrud) {
+function FormAgeController($scope, EventFormData, eventCrud) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -7848,7 +7849,8 @@ function FormAgeController(EventFormData, eventCrud) {
   controller.minAge = undefined;
   controller.maxAge = undefined;
   controller.setAgeRangeByType = setAgeRangeByType;
-  controller.saveAgeRange = _.debounce(saveAgeRange, 300);
+  controller.delayedSaveAgeRange = _.debounce(digestSaveAgeRange, 1000);
+  controller.instantSaveAgeRange = instantSaveAgeRange;
   controller.error = '';
   controller.formData = undefined;
 
@@ -7875,6 +7877,15 @@ function FormAgeController(EventFormData, eventCrud) {
 
     controller.formData.setTypicalAgeRange(min, max);
     eventCrud.updateTypicalAgeRange(controller.formData);
+  }
+
+  function digestSaveAgeRange() {
+    $scope.$apply(saveAgeRange);
+  }
+
+  function instantSaveAgeRange() {
+    controller.delayedSaveAgeRange.cancel();
+    saveAgeRange();
   }
 
   function showError(errorMessage) {
@@ -7944,11 +7955,11 @@ function FormAgeController(EventFormData, eventCrud) {
     }
   }
 }
-FormAgeController.$inject = ["EventFormData", "eventCrud"];
+FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud"];
 
 // Source: src/event_form/components/age/form-age.directive.js
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.event-form.directive:udbFormAge
  * @description
  * # Target age component for offer forms
@@ -19986,14 +19997,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <em class=\"extra-task-label\">Geschikt voor</em>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
-    "            <p>\n" +
-    "                <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
-    "                    <a ng-bind=\"::ageRange.label\"\n" +
-    "                       href=\"#\"\n" +
-    "                       ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
-    "                    <span ng-if=\"::!$last\">, </span>\n" +
-    "                </span>\n" +
-    "            </p>\n" +
+    "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
+    "                <a ng-bind=\"::ageRange.label\"\n" +
+    "                   href=\"#\"\n" +
+    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
+    "                <span ng-if=\"::!$last\">, </span>\n" +
+    "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "                <div class=\"form-group\" >\n" +
     "                    <label for=\"min-age\">Van</label>\n" +
@@ -20001,7 +20010,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           class=\"form-control\"\n" +
     "                           id=\"min-age\"\n" +
     "                           ng-model=\"fagec.minAge\"\n" +
-    "                           ng-change=\"fagec.saveAgeRange()\"\n" +
+    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
@@ -20010,7 +20020,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           class=\"form-control\"\n" +
     "                           id=\"max-age\"\n" +
     "                           ng-model=\"fagec.maxAge\"\n" +
-    "                           ng-change=\"fagec.saveAgeRange()\"\n" +
+    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
     "                </div>\n" +
     "            </div>\n" +
