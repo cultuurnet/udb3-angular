@@ -8,21 +8,19 @@ describe('Controller: Form: Age', function () {
     $controller = _$controller_;
     eventCrud = jasmine.createSpyObj('eventCrud', ['updateTypicalAgeRange']);
     $scope = $rootScope;
-    spyOn(_, 'debounce').and.callFake(function (debounceFunction) {
-      return function(args) {
-        debounceFunction.apply(this, arguments);
-      };
-    });
     EventFormData = _EventFormData_;
   }));
 
   function getController(formData) {
-    return $controller(
+    var controller = $controller(
       'FormAgeController', {
+        $scope: $scope,
         EventFormData: formData,
         eventCrud: eventCrud
       }
     );
+    controller.delayedSaveAgeRange = jasmine.createSpyObj('delayedSaveAgeRange', ['cancel']);
+    return controller;
   }
 
   function getMockedFormData (ageRangeData) {
@@ -92,7 +90,7 @@ describe('Controller: Form: Age', function () {
 
     controller.minAge = 33;
     controller.maxAge = 3;
-    controller.saveAgeRange();
+    controller.instantSaveAgeRange();
 
     expect(controller.error).toEqual('De minimum ouderdom mag niet hoger zijn dan maximum.');
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
@@ -104,7 +102,7 @@ describe('Controller: Form: Age', function () {
 
     controller.minAge = 18;
     controller.maxAge = 0;
-    controller.saveAgeRange();
+    controller.instantSaveAgeRange();
 
     expect(controller.error).toEqual('De minimum ouderdom mag niet hoger zijn dan maximum.');
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
@@ -116,7 +114,7 @@ describe('Controller: Form: Age', function () {
 
     controller.minAge = 18;
     controller.maxAge = 18;
-    controller.saveAgeRange();
+    controller.instantSaveAgeRange();
 
     expect(controller.error).toEqual('');
     expect(formData.setTypicalAgeRange).toHaveBeenCalled();
@@ -141,11 +139,11 @@ describe('Controller: Form: Age', function () {
 
     controller.minAge = 6;
     controller.maxAge = 11;
-    controller.saveAgeRange();
+    controller.instantSaveAgeRange();
 
     controller.setAgeRangeByType('KIDS');
 
-    controller.saveAgeRange();
+    controller.instantSaveAgeRange();
 
     expect(formData.setTypicalAgeRange.calls.count()).toEqual(1);
   });
