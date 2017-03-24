@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.event-form.directive:udbAgeInput
  * @description
  * # Age input parsing and formatting

@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.event-form.directive:udbFormAge
  * @description
  * # Target age component for offer forms
