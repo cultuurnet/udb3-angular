@@ -2811,21 +2811,6 @@ input + .alert {
 .offer-form .incomplete .btn-default {
   text-align: left;
 }
-.offer-form .btn-plus {
-  position: relative;
-  margin-left: 1em;
-  padding-left: 0.25em;
-}
-.offer-form .btn-plus:before {
-  content: "\f055";
-  font-family: "FontAwesome";
-  color: #cccccc;
-  margin-right: 0.5em;
-  text-decoration: none;
-  position: absolute;
-  left: -1em;
-  top: 6px;
-}
 .offer-form .incomplete .btn-default:hover:before {
   color: #333;
 }
@@ -3060,6 +3045,21 @@ input + .alert {
 }
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
+}
+.btn-plus {
+  position: relative;
+  margin-left: 1em;
+  padding-left: 0.25em;
+}
+.btn-plus:before {
+  content: "\f055";
+  font-family: "FontAwesome";
+  color: #cccccc;
+  margin-right: 0.5em;
+  text-decoration: none;
+  position: absolute;
+  left: -1em;
+  top: 6px;
 }
 .event-type-choser-label {
   background-repeat: no-repeat;

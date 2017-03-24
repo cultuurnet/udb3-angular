@@ -32,6 +32,13 @@
  */
 
 /**
+ * @typedef {Object} OpeningHoursData
+ * @property {string} opens
+ * @property {string} closes
+ * @property {string[]} dayOfWeek
+ */
+
+/**
  * @ngdoc service
  * @name udb.core.EventFormData
  * @description
@@ -42,18 +49,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment) {
-
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
 
   /**
    * @class EventFormData
@@ -63,6 +59,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
      * Initialize the properties with default data
      */
     init: function() {
+      this.apiUrl = '';
       this.isEvent = true; // Is current item an event.
       this.isPlace = false; // Is current item a place.
       this.showStep1 = true;
@@ -107,7 +104,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       this.endDate = '';
       this.timestamps = [];
       this.openingHours = [];
-      this.openingHoursErrors = {};
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -258,13 +254,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
-     * Get the opening hours.
-     */
-    getOpeningHours: function() {
-      return this.openingHours;
-    },
-
-    /**
      * Reset the location.
      */
     resetLocation: function(location) {
@@ -297,9 +286,11 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     /**
      * @param {Date} date
      * @param {string} startHour HH:MM
-     * @param {Date} startHourAsDate
+     * @param {Date|string} startHourAsDate
+     *  An empty string when not set.
      * @param {string} endHour HH:MM
-     * @param {Date} endHourAsDate
+     * @param {Date|string} endHourAsDate
+     *  An empty string when not set.
      */
     addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
       this.timestamps.push({
@@ -311,40 +302,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
       });
-    },
-
-    /**
-     * Add a timestamp to the timestamps array.
-     */
-    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
-      var now = moment();
-      if (opens === '') {
-        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
-        opensAsDate = openDate.toDate();
-        opens = openDate.format('HH:mm');
-      }
-
-      if (closes === '') {
-        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
-        closesAsDate = closeDate.toDate();
-        closes = closeDate.format('HH:mm');
-      }
-
-      this.openingHours.push({
-        'dayOfWeek' : dayOfWeek,
-        'opens' : opens,
-        'opensAsDate' : opensAsDate,
-        'closes' : closes,
-        'closesAsDate' : closesAsDate,
-        'label' : ''
-      });
-    },
-
-    /**
-     * Remove the openinghour with the given index.
-     */
-    removeOpeningHour: function(index) {
-      this.openingHours.splice(index, 1);
     },
 
     /**
@@ -515,18 +472,8 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       this.calendarType = '';
     },
 
-    saveOpeningHourDaySelection: function (index, dayOfWeek) {
-      var humanValues = [];
-      if (dayOfWeek instanceof Array) {
-        for (var i in dayOfWeek) {
-          humanValues.push(dayNames[dayOfWeek[i]]);
-        }
-      }
-
-      this.openingHours[index].opensAsDate = moment(this.openingHours[index].opens, 'HH:mm').toDate();
-      this.openingHours[index].closesAsDate = moment(this.openingHours[index].closes, 'HH:mm').toDate();
-
-      this.openingHours[index].label = humanValues.join(', ');
+    initOpeningHours: function(openingHours) {
+      OpeningHoursCollection.deserialize(openingHours);
     },
 
     /**
@@ -552,12 +499,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         formData.addTimestamp('', '', '', '', '');
       }
 
-      if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '', '', '');
-      }
-
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 
@@ -668,79 +610,9 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       }
     },
 
-    saveOpeningHours: function () {
-      angular.forEach(this.openingHours, function(openingHour) {
-        var opensAsDate, closesAsDate;
-
-        opensAsDate = moment(openingHour.opensAsDate);
-        openingHour.opens = opensAsDate.format('HH:mm');
-
-        closesAsDate = moment(openingHour.closesAsDate);
-        openingHour.closes = closesAsDate.format('HH:mm');
-      });
+    saveOpeningHours: function (openingHours) {
+      this.openingHours = openingHours;
       this.timingChanged();
-    },
-
-    validateOpeningHour: function (openingHour) {
-      openingHour.hasError = false;
-      openingHour.errors = {};
-
-      if (openingHour.dayOfWeek.length === 0) {
-        openingHour.errors.weekdayError = true;
-      }
-      else {
-        openingHour.errors.weekdayError = false;
-      }
-
-      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
-        openingHour.errors.openingHourError = true;
-      }
-      else {
-        openingHour.errors.openingHourError = false;
-      }
-
-      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
-        openingHour.errors.closingHourError = true;
-      }
-      else {
-        openingHour.errors.closingHourError = false;
-      }
-
-      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
-        openingHour.errors.closingHourGreaterError = true;
-      }
-      else {
-        openingHour.errors.closingHourGreaterError = false;
-      }
-
-      angular.forEach(openingHour.errors, function(error, key) {
-        if (error) {
-          openingHour.hasError = true;
-        }
-      });
-
-      this.validateOpeningHours();
-    },
-
-    validateOpeningHours: function () {
-      this.openingHoursHasErrors = false;
-      this.openingHoursErrors.weekdayError = false;
-      this.openingHoursErrors.openingHourError = false;
-      this.openingHoursErrors.closingHourError = false;
-      this.openingHoursErrors.closingHourGreaterError = false;
-
-      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
-      if (errors.length > 0) {
-        this.openingHoursHasErrors = true;
-      }
-      else {
-        this.openingHoursHasErrors = false;
-      }
-
-      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
-      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
-      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
-      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
     },
 
     periodicTimingChanged: function () {
