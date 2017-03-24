@@ -19999,6 +19999,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
     "                <a ng-bind=\"::ageRange.label\"\n" +
+    "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
     "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
     "                <span ng-if=\"::!$last\">, </span>\n" +
