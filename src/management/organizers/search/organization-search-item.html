@@ -1,0 +1,15 @@
+<td ng-bind="::osic.organization.name"></td>
+<td>
+    <span ng-bind="::osic.organization.address.streetAddress"></span>
+    <br>
+    <span ng-bind="::osic.organization.address.addressLocality"></span>
+</td>
+<td>
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Bewerken <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            <li><a ui-sref="management.organizers.detail({id: osic.organization.id})" ui-sref-opts="{reload:true}">Bewerken</a></li>
+        </ul>
+    </div>
+</td>

@@ -16,6 +16,17 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   var service = this;
 
   /**
+   * @param {string} query
+   * @param {int} limit
+   * @param {int} start
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  service.find = function(query, limit, start) {
+    return udbApi.findOrganisations(start, limit, null, query);
+  };
+
+  /**
    * @param {string} organizerId
    *
    * @returns {Promise.<Organizer>}
