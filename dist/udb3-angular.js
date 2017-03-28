@@ -22929,12 +22929,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<h1 class=\"title\">Organisaties</h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
-    "    <div class=\"col-md-11\">\n" +
+    "    <div class=\"col-md-8\">\n" +
     "        <udb-query-search-bar search-label=\"Zoeken op organisatie naam\"\n" +
     "                              on-change=\"$ctrl.queryChanged(query)\"></udb-query-search-bar>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-1\">\n" +
     "        <i ng-show=\"$ctrl.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-3 text-right\">\n" +
+    "        <a class=\"btn btn-primary\" ui-sref=\"management.organizers.search.create\">\n" +
+    "            <i class=\"fa fa-plus-circle\"></i> Organisatie toevoegen\n" +
+    "        </a>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
