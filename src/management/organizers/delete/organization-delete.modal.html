@@ -1,0 +1,23 @@
+<div class="modal-body">
+    <div class="row">
+
+        <div class="col-xs-12">
+            <p>Ben je zeker dat je "<span ng-bind="::odc.organization.name"></span>" wil verwijderen? Deze actie kan niet ongedaan worden.</p>
+        </div>
+
+        <div class="col-xs-12">
+            <div class="alert alert-danger" ng-show="error">
+                Er ging iets fout bij het verwijderen van de organisatie.
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="odc.cancelRemoval()">
+        Annuleren
+    </button>
+    <button type="button" class="btn btn-primary" ng-click="odc.deleteOrganization()">
+        Definitief verwijderen <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+    </button>
+</div>

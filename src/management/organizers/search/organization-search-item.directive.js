@@ -23,8 +23,9 @@ function OrganizationSearchItem() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemController(udbApi) {
+function OrganizationSearchItemController(udbApi, $rootScope) {
   var controller = this;
+  var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
 
   udbApi
     .getOrganizerByLDId(controller.organizationSearchItem['@id'])
@@ -36,5 +37,24 @@ function OrganizationSearchItemController(udbApi) {
    */
   function showOrganization(organization) {
     controller.organization = organization;
+  }
+
+  function markAsDeleted() {
+    organizationDeletedListener();
+    controller.organizationDeleted = true;
+  }
+
+  /**
+   * @param {Object} angularEvent
+   * @param {UdbOrganizer} deletedOrganization
+   */
+  function matchAndMarkAsDeleted(angularEvent, deletedOrganization) {
+    if (!controller.organization) {
+      return;
+    }
+
+    if (controller.organization.id === deletedOrganization.id) {
+      markAsDeleted();
+    }
   }
 }

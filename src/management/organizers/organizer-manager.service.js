@@ -12,8 +12,36 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   var service = this;
+
+  /**
+   * @param {UdbOrganizer} organization
+   */
+  service.delete = function (organization) {
+    return udbApi
+      .deleteOrganization(organization)
+      .then(logOrganizationDeleted(organization));
+  };
+
+  /**
+   * @param {UdbOrganizer} organization
+   * @return {Function}
+   */
+  function logOrganizationDeleted(organization) {
+    /**
+     * @param {Object} commandInfo
+     * @return {Promise.<BaseJob>}
+     */
+    return function (commandInfo) {
+      var job = new BaseJob(commandInfo.commandId);
+      jobLogger.addJob(job);
+
+      $rootScope.$emit('organizationDeleted', organization);
+      return $q.resolve(job);
+    };
+
+  }
 
   /**
    * @param {string} query
@@ -29,7 +57,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   /**
    * @param {string} organizerId
    *
-   * @returns {Promise.<Organizer>}
+   * @returns {Promise.<UdbOrganizer>}
    */
   service.get = function(organizerId) {
     return udbApi.getOrganizerById(organizerId);

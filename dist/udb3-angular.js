@@ -3284,6 +3284,17 @@ function UdbApi(
   };
 
   /**
+   * @param {udbOrganizer} organization
+   *
+   * @return {Promise.<Object|ApiProblem>}
+   */
+  this.deleteOrganization = function (organization) {
+    return $http
+      .delete(organization['@id'], defaultApiConfig)
+      .then(returnJobData, returnApiProblem);
+  };
+
+  /**
    * @param {string} type   either 'place' or 'event'
    * @param {EventFormData} offer
    *
@@ -4471,6 +4482,7 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   UdbOrganizer.prototype = {
     parseJson: function (jsonOrganizer) {
+      this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
       this.address = jsonOrganizer.address || [];
@@ -13993,6 +14005,56 @@ angular
     }
   );
 
+// Source: src/management/organizers/delete/organization-delete.modal.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizationDeleteModalController
+ * @description
+ * # OrganizationDeleteModalController
+ * Modal to delete an organization
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizationDeleteModalController', OrganizationDeleteModalController);
+
+/* @ngInject */
+function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization) {
+  var controller = this;
+
+  controller.organization = organization;
+  controller.saving = false;
+  controller.error = false;
+
+  controller.cancelRemoval = cancelRemoval;
+  controller.deleteOrganization = deleteOrganization;
+
+  /**
+   * Delete the role.
+   */
+  function deleteOrganization() {
+    controller.error = false;
+    controller.saving = true;
+
+    function showError() {
+      controller.saving = false;
+      controller.error = true;
+    }
+
+    OrganizerManager
+      .delete(organization)
+      .then($uibModalInstance.close)
+      .catch(showError);
+  }
+
+  /**
+   * Cancel, modal dismiss.
+   */
+  function cancelRemoval() {
+    $uibModalInstance.dismiss();
+  }
+}
+OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
+
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
  * @ngdoc function
@@ -14110,8 +14172,36 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   var service = this;
+
+  /**
+   * @param {UdbOrganizer} organization
+   */
+  service.delete = function (organization) {
+    return udbApi
+      .deleteOrganization(organization)
+      .then(logOrganizationDeleted(organization));
+  };
+
+  /**
+   * @param {UdbOrganizer} organization
+   * @return {Function}
+   */
+  function logOrganizationDeleted(organization) {
+    /**
+     * @param {Object} commandInfo
+     * @return {Promise.<BaseJob>}
+     */
+    return function (commandInfo) {
+      var job = new BaseJob(commandInfo.commandId);
+      jobLogger.addJob(job);
+
+      $rootScope.$emit('organizationDeleted', organization);
+      return $q.resolve(job);
+    };
+
+  }
 
   /**
    * @param {string} query
@@ -14127,7 +14217,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   /**
    * @param {string} organizerId
    *
-   * @returns {Promise.<Organizer>}
+   * @returns {Promise.<UdbOrganizer>}
    */
   service.get = function(organizerId) {
     return udbApi.getOrganizerById(organizerId);
@@ -14176,7 +14266,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
     return $q.resolve(job);
   }
 }
-OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope"];
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
 /**
@@ -14202,8 +14292,9 @@ function OrganizationSearchItem() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemController(udbApi) {
+function OrganizationSearchItemController(udbApi, $rootScope) {
   var controller = this;
+  var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
 
   udbApi
     .getOrganizerByLDId(controller.organizationSearchItem['@id'])
@@ -14216,8 +14307,27 @@ function OrganizationSearchItemController(udbApi) {
   function showOrganization(organization) {
     controller.organization = organization;
   }
+
+  function markAsDeleted() {
+    organizationDeletedListener();
+    controller.organizationDeleted = true;
+  }
+
+  /**
+   * @param {Object} angularEvent
+   * @param {UdbOrganizer} deletedOrganization
+   */
+  function matchAndMarkAsDeleted(angularEvent, deletedOrganization) {
+    if (!controller.organization) {
+      return;
+    }
+
+    if (controller.organization.id === deletedOrganization.id) {
+      markAsDeleted();
+    }
+  }
 }
-OrganizationSearchItemController.$inject = ["udbApi"];
+OrganizationSearchItemController.$inject = ["udbApi", "$rootScope"];
 
 // Source: src/management/organizers/search/organization-search.controller.js
 /**
@@ -22680,6 +22790,33 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/organization-delete.modal.html',
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"row\">\n" +
+    "\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <p>Ben je zeker dat je \"<span ng-bind=\"::odc.organization.name\"></span>\" wil verwijderen? Deze actie kan niet ongedaan worden.</p>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "                Er ging iets fout bij het verwijderen van de organisatie.\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"odc.cancelRemoval()\">\n" +
+    "        Annuleren\n" +
+    "    </button>\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"odc.deleteOrganization()\">\n" +
+    "        Definitief verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    </button>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/organizer-detail.html',
     "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
     "\n" +
@@ -22767,21 +22904,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organization-search-item.html',
-    "<td ng-bind=\"::osic.organization.name\"></td>\n" +
-    "<td>\n" +
-    "    <span ng-bind=\"::osic.organization.address.streetAddress\"></span>\n" +
-    "    <br>\n" +
-    "    <span ng-bind=\"::osic.organization.address.addressLocality\"></span>\n" +
-    "</td>\n" +
-    "<td>\n" +
-    "    <div class=\"btn-group\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
-    "            Bewerken <span class=\"caret\"></span></button>\n" +
-    "        <ul class=\"dropdown-menu\">\n" +
-    "            <li><a ui-sref=\"management.organizers.detail({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
-    "        </ul>\n" +
-    "    </div>\n" +
-    "</td>"
+    "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\">\n" +
+    "    <td ng-bind=\"::osic.organization.name\"></td>\n" +
+    "    <td>\n" +
+    "        <span ng-bind=\"::osic.organization.address.streetAddress\"></span>\n" +
+    "        <br>\n" +
+    "        <span ng-bind=\"::osic.organization.address.addressLocality\"></span>\n" +
+    "    </td>\n" +
+    "    <td>\n" +
+    "        <div class=\"btn-group\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+    "                Bewerken <span class=\"caret\"></span></button>\n" +
+    "            <ul class=\"dropdown-menu\">\n" +
+    "                <li><a ui-sref=\"management.organizers.detail({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
+    "                <li><a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a></li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "    </td>\n" +
+    "</tr>"
   );
 
 
@@ -22824,9 +22964,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <th>Opties</th>\n" +
     "                </tr>\n" +
     "                </thead>\n" +
-    "                <tbody>\n" +
-    "                <tr udb-organization-search-item=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
-    "                </tr>\n" +
+    "                <tbody udb-organization-search-item=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
     "                </tbody>\n" +
     "            </table>\n" +
     "            <div class=\"panel-footer\">\n" +

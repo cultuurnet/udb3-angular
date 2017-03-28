@@ -32,6 +32,7 @@ describe('Factory: UDB Organizer', function () {
 
   it('should set all the properties when parsing a json organizer', inject(function (UdbOrganizer) {
     var expectedOrganizer = {
+      '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
       'id': '357D5297-9E37-1DE9-62398987EA110D38',
       'name': 'Club Silo',
       'address': {

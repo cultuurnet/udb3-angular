@@ -46,6 +46,7 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   UdbOrganizer.prototype = {
     parseJson: function (jsonOrganizer) {
+      this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
       this.address = jsonOrganizer.address || [];
