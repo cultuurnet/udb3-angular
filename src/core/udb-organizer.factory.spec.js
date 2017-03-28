@@ -43,7 +43,7 @@ describe('Factory: UDB Organizer', function () {
       },
       'email': 'info@silo.be',
       'phone': '+32 476 838982',
-      'url': undefined,
+      'url': 'http://foo.bar',
       'labels': [
         'green',
         'UiTPAS'
@@ -51,11 +51,15 @@ describe('Factory: UDB Organizer', function () {
       hiddenLabels: [
 
       ],
-      'isUitpas': true
+      'isUitpas': true,
+      'created': Date('2017-03-28T12:09:18+00:00')
     };
     var jsonOrganizer = {
       '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
       '@context': '/api/1.0/organizer.jsonld',
+      'created': '2017-03-28T12:09:18+00:00',
+      'creator': '357D5297-9E37-1DE9-62398987EA110D38',
+      'url': 'http://foo.bar',
       'name': 'Club Silo',
       'address': {
         addressCountry: 'BE',

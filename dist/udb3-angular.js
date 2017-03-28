@@ -4488,10 +4488,11 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
-      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
+      this.url = jsonOrganizer.url;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
+      this.created = Date(jsonOrganizer.created);
     }
   };
 
@@ -22904,7 +22905,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organization-search-item.html',
-    "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\">\n" +
+    "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\" ng-if=\"::osic.organization\">\n" +
     "    <td ng-bind=\"::osic.organization.name\"></td>\n" +
     "    <td>\n" +
     "        <span ng-bind=\"::osic.organization.address.streetAddress\"></span>\n" +
@@ -22912,10 +22913,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <span ng-bind=\"::osic.organization.address.addressLocality\"></span>\n" +
     "    </td>\n" +
     "    <td>\n" +
+    "        <span ng-bind=\"::osic.organization.created | amDateFormat:'DD/MM/YYYY HH:mm'\"></span>\n" +
+    "        <span class=\"organization-search-item-email\" ng-if=\"::osic.organization.email\">\n" +
+    "            <br><span ng-bind=\"::osic.organization.email\"></span>\n" +
+    "        </span>\n" +
+    "        <span class=\"organization-search-item-url\" ng-if=\"::osic.organization.url\">\n" +
+    "            <br><a ng-href=\"{{::osic.organization.url}}\" target=\"_blank\" ng-bind=\"::osic.organization.url\"></a>\n" +
+    "        </span>\n" +
+    "    </td>\n" +
+    "    <td class=\"text-right\">\n" +
     "        <div class=\"btn-group\">\n" +
     "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
     "                Bewerken <span class=\"caret\"></span></button>\n" +
-    "            <ul class=\"dropdown-menu\">\n" +
+    "            <ul class=\"dropdown-menu dropdown-menu-right\">\n" +
     "                <li><a ui-sref=\"management.organizers.detail({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
     "                <li><a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a></li>\n" +
     "            </ul>\n" +
@@ -22929,14 +22939,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<h1 class=\"title\">Organisaties</h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
-    "    <div class=\"col-md-8\">\n" +
+    "    <div class=\"col-md-6\">\n" +
     "        <udb-query-search-bar search-label=\"Zoeken op organisatie naam\"\n" +
     "                              on-change=\"$ctrl.queryChanged(query)\"></udb-query-search-bar>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-1\">\n" +
     "        <i ng-show=\"$ctrl.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-3 text-right\">\n" +
+    "    <div class=\"col-md-5 text-right\">\n" +
     "        <a class=\"btn btn-primary\" ui-sref=\"management.organizers.search.create\">\n" +
     "            <i class=\"fa fa-plus-circle\"></i> Organisatie toevoegen\n" +
     "        </a>\n" +
@@ -22966,7 +22976,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <tr>\n" +
     "                    <th>Naam</th>\n" +
     "                    <th>Adres</th>\n" +
-    "                    <th>Opties</th>\n" +
+    "                    <th></th>\n" +
+    "                    <th class=\"text-right\">Opties</th>\n" +
     "                </tr>\n" +
     "                </thead>\n" +
     "                <tbody udb-organization-search-item=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
