@@ -1,4 +1,5 @@
 'use strict';
+// jscs:disable maximumLineLength
 
 /**
  * @ngdoc service
@@ -333,6 +334,13 @@ angular.module('udb.core')
       'members': 'Enkel voor leden',
       'education': 'Specifiek voor scholen',
     },
+    workflowStatus: {
+      'DRAFT': 'Niet gepubliceerd',
+      'READY_FOR_VALIDATION': 'Gepubliceerd',
+      'APPROVED': 'Gepubliceerd',
+      'REJECTED': 'Niet gepubliceerd',
+      'DELETED': 'Niet gepubliceerd'
+    },
     queryFieldGroup: {
       'what': 'Wat',
       'where': 'Waar',
@@ -357,5 +365,6 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
+    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.'
   }
 );

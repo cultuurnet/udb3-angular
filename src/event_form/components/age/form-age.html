@@ -1,0 +1,42 @@
+<div class="row extra-leeftijd">
+    <div class="extra-task" ng-class="{'state-complete': !!fagec.activeAgeRange}">
+        <div class="col-sm-3">
+            <em class="extra-task-label">Geschikt voor</em>
+        </div>
+        <div class="col-sm-9">
+            <span ng-repeat="(type, ageRange) in ::fagec.ageRanges">
+                <a ng-bind="::ageRange.label"
+                   ng-class="{'font-bold': fagec.activeAgeRange === type}"
+                   href="#"
+                   ng-click="fagec.setAgeRangeByType(type)"></a>
+                <span ng-if="::!$last">, </span>
+            </span>
+            <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
+                <div class="form-group" >
+                    <label for="min-age">Van</label>
+                    <input type="text"
+                           class="form-control"
+                           id="min-age"
+                           ng-model="fagec.minAge"
+                           ng-blur="fagec.instantSaveAgeRange()"
+                           ng-change="fagec.delayedSaveAgeRange()"
+                           udb-age-input>
+                </div>
+                <div class="form-group">
+                    <label for="max-age">tot</label>
+                    <input type="text"
+                           class="form-control"
+                           id="max-age"
+                           ng-model="fagec.maxAge"
+                           ng-blur="fagec.instantSaveAgeRange()"
+                           ng-change="fagec.delayedSaveAgeRange()"
+                           udb-age-input>
+                </div>
+            </div>
+
+            <div class="alert alert-danger" role="alert" ng-show="fagec.error">
+                <span ng-bind="fagec.error"></span>
+            </div>
+        </div>
+    </div>
+</div>

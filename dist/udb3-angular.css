@@ -1728,6 +1728,9 @@ input + .alert {
 .pagination .disabled {
   display: none;
 }
+.font-bold {
+  font-weight: bold;
+}
 .udb-query-editor {
   padding-top: 24px;
 }
@@ -2724,7 +2727,6 @@ input + .alert {
 .offer-form .extra-prijs .table {
   margin-bottom: 0;
 }
-.offer-form .extra-task p,
 .offer-form .udb3-data-table td {
   line-height: 30px;
   margin: 0;
@@ -2808,21 +2810,6 @@ input + .alert {
 }
 .offer-form .incomplete .btn-default {
   text-align: left;
-}
-.offer-form .btn-plus {
-  position: relative;
-  margin-left: 1em;
-  padding-left: 0.25em;
-}
-.offer-form .btn-plus:before {
-  content: "\f055";
-  font-family: "FontAwesome";
-  color: #cccccc;
-  margin-right: 0.5em;
-  text-decoration: none;
-  position: absolute;
-  left: -1em;
-  top: 6px;
 }
 .offer-form .incomplete .btn-default:hover:before {
   color: #333;
@@ -3059,6 +3046,21 @@ input + .alert {
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
 }
+.btn-plus {
+  position: relative;
+  margin-left: 1em;
+  padding-left: 0.25em;
+}
+.btn-plus:before {
+  content: "\f055";
+  font-family: "FontAwesome";
+  color: #cccccc;
+  margin-right: 0.5em;
+  text-decoration: none;
+  position: absolute;
+  left: -1em;
+  top: 6px;
+}
 .event-type-choser-label {
   background-repeat: no-repeat;
   background-position: top center;
@@ -3235,16 +3237,17 @@ table.event-detail-price-table {
   margin-left: 10px;
 }
 .cultuurkuur-component {
-  margin-left: 12px;
+  margin-top: 12px;
 }
 .cultuurkuur-component .panel {
   max-width: 95%;
 }
 .cultuurkuur-logo {
   background-image: url(/images/cultuurkuur-logo.svg);
-  background-size: contain;
+  background-size: 5vw;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: top right;
+  background-origin: content-box;
 }
 .loading-search-result {
   opacity: 0.4;

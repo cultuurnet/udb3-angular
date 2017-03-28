@@ -9,7 +9,16 @@ describe('Factory: UdbPlace', function () {
   var place;
   beforeEach(inject(function (_UdbPlace_) {
     UdbPlace = _UdbPlace_;
-    place = new UdbPlace({
+    place = new UdbPlace(getPlaceJson());
+  }));
+
+  /**
+   * Returns a unique copy of place json data. This way you can manipulate the data without influencing other tests.
+   *
+   * @returns {Object}
+   */
+  function getPlaceJson() {
+    return angular.copy({
       '@id': "http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702",
       '@context': "/api/1.0/place.jsonld",
       name: "Villa 99, een art deco pareltje",
@@ -68,8 +77,8 @@ describe('Factory: UdbPlace', function () {
         {"@id":"http:\/\/culudb-silex.dev:8080\/media\/4125fbc0-88b9-4008-855e-1cae6bd1f775","@type":"schema:ImageObject","contentUrl":"http:\/\/culudb-silex.dev:8080\/media\/4125fbc0-88b9-4008-855e-1cae6bd1f775.jpeg","thumbnailUrl":"http:\/\/culudb-silex.dev:8080\/media\/4125fbc0-88b9-4008-855e-1cae6bd1f775.jpeg","description":"test1","copyrightHolder":"test"},
         {"@id":"http:\/\/culudb-silex.dev:8080\/media\/cb78ad42-90d6-4b70-a1d9-9bc016bdba73","@type":"schema:ImageObject","contentUrl":"http:\/\/culudb-silex.dev:8080\/media\/cb78ad42-90d6-4b70-a1d9-9bc016bdba73.png","thumbnailUrl":"http:\/\/culudb-silex.dev:8080\/media\/cb78ad42-90d6-4b70-a1d9-9bc016bdba73.png","description":"test256","copyrightHolder":"test"}
       ]
-    });
-  }));
+    })
+  }
 
   it('Can be unlabelled',function () {
     place.unlabel('remove me');
@@ -102,4 +111,14 @@ describe('Factory: UdbPlace', function () {
 
     expect(place.image).toEqual(expectedImage);
   });
+
+  it('should combine regular and hidden labels as a single list', function () {
+    var placeJsonWithHiddenLabel = getPlaceJson();
+    placeJsonWithHiddenLabel.hiddenLabels = ['list-585000ebd1b2b-58a6a85397ddc'];
+
+    var expectedCombinedLabels = ['remove me', 'list-585000ebd1b2b-58a6a85397ddc'];
+    var place = new UdbPlace(placeJsonWithHiddenLabel);
+
+    expect(place.labels).toEqual(expectedCombinedLabels);
+  })
 });

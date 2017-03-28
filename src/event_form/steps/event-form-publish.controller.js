@@ -13,7 +13,7 @@ angular
 
 /* @ngInject */
 function EventFormPublishController(
-    $scope,
+    appConfig,
     EventFormData,
     eventCrud,
     OfferWorkflowStatus,
@@ -32,9 +32,10 @@ function EventFormPublishController(
 
   function publish() {
     controller.error = '';
+    var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
 
     eventCrud
-      .publishOffer(EventFormData, 'publishOffer')
+      .publishOffer(EventFormData, defaultPublicationDate)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)

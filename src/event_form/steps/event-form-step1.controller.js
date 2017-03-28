@@ -102,11 +102,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.calendarType = 'permanent';
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
-      if (EventFormData.openingHours.length === 0) {
-        EventFormData.addOpeningHour('', '', '', '', '');
-      }
-      EventFormData.showStep(3);
-
     }
 
     EventFormData.setEventType(eventType);
@@ -117,7 +112,14 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     }
 
     controller.updateEventTypeAndThemePicker(EventFormData);
+
     EventFormData.showStep(2);
+
+    // immediately show step 3 if the form contains a place or an event with a preselected date
+    // in both cases the calendar type will already be set
+    if (EventFormData.calendarType) {
+      EventFormData.showStep(3);
+    }
   }
 
   /**
