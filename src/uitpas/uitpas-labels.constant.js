@@ -35,5 +35,8 @@ angular
     'UITPAS_KEMPEN': 'UiTPAS Kempen',
     'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
     'UITPAS_LEUVEN': 'UiTPAS Leuven',
-    'UITPAS_SYX': 'UiTPAS Syx'
+    'UITPAS_LIER': 'UiTPAS Lier',
+    'UITPAS_HEIST-OP-DEN-BERG': 'UiTPAS Heist-op-den-Berg',
+    'UITPAS_MEETJESLAND': 'UiTPAS Meetjesland',
+    'UITPAS_WESTHOEK': 'UiTPAS Westhoek'
   });
