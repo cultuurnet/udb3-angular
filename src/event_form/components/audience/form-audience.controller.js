@@ -12,10 +12,11 @@ angular
   .controller('FormAudienceController', FormAudienceController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, eventCrud) {
+function FormAudienceController(EventFormData, eventCrud, appConfig) {
   var controller = this;
+  var componentDisabled = _.get(appConfig, 'offerEditor.disableAudience');
 
-  controller.enabled = EventFormData.isEvent;
+  controller.enabled = !componentDisabled && EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
 

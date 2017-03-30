@@ -39,10 +39,12 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.calendarType = 'single';
     EventFormData.addTimestamp(
       new Date(calendarConfig.date),
-      calendarConfig.startTime,
-      new Date(calendarConfig.date + 'T' + calendarConfig.startTime),
-      calendarConfig.endTime,
-      new Date(calendarConfig.date + 'T' + calendarConfig.endTime)
+      calendarConfig.startTime || '',
+      calendarConfig.startTime ?
+        moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
+      calendarConfig.endTime || '',
+      calendarConfig.endTime ?
+        moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
   }

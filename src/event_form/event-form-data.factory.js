@@ -59,6 +59,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * Initialize the properties with default data
      */
     init: function() {
+      this.apiUrl = '';
       this.isEvent = true; // Is current item an event.
       this.isPlace = false; // Is current item a place.
       this.showStep1 = true;
@@ -285,9 +286,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * @param {Date} date
      * @param {string} startHour HH:MM
-     * @param {Date} startHourAsDate
+     * @param {Date|string} startHourAsDate
+     *  An empty string when not set.
      * @param {string} endHour HH:MM
-     * @param {Date} endHourAsDate
+     * @param {Date|string} endHourAsDate
+     *  An empty string when not set.
      */
     addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
       this.timestamps.push({
@@ -406,6 +409,34 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       reindexedMedia.unshift(image);
 
       this.mediaObjects = reindexedMedia;
+    },
+
+    /**
+     * @param {number|undefined} min
+     * @param {number|undefined} max
+     */
+    setTypicalAgeRange: function(min, max) {
+      this.typicalAgeRange = (isNaN(min) ? '' : min) + '-' + (isNaN(max) ? '' : max);
+    },
+
+    /**
+     * Get the typical age range as an object or undefined when no range is set.
+     * When the offer is intended for all ages, you do get a range but both min and max will be undefined.
+     *
+     * @return {{min: number|undefined, max: number|undefined}|undefined}
+     */
+    getTypicalAgeRange: function () {
+      if (_.isEmpty(this.typicalAgeRange)) {
+        return;
+      }
+
+      var ageRange = {min: undefined, max: undefined};
+      var rangeArray = this.typicalAgeRange.split('-');
+
+      if (rangeArray[0]) {ageRange.min =  parseInt(rangeArray[0]);}
+      if (rangeArray[1]) {ageRange.max =  parseInt(rangeArray[1]);}
+
+      return ageRange;
     },
 
     /**
@@ -596,7 +627,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         }
       }
     }
-
   };
 
   // initialize the data

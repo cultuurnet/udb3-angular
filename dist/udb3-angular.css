@@ -1728,6 +1728,9 @@ input + .alert {
 .pagination .disabled {
   display: none;
 }
+.font-bold {
+  font-weight: bold;
+}
 .udb-query-editor {
   padding-top: 24px;
 }
@@ -2724,7 +2727,6 @@ input + .alert {
 .offer-form .extra-prijs .table {
   margin-bottom: 0;
 }
-.offer-form .extra-task p,
 .offer-form .udb3-data-table td {
   line-height: 30px;
   margin: 0;
