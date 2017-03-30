@@ -5215,7 +5215,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -5245,6 +5245,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
+      $document.scrollTop(0);
     }
 
     function updateItemViewer() {
@@ -5322,9 +5323,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         openPlaceDeleteConfirmModal(item);
       }
     }
-
   }
-  DashboardController.$inject = ["$scope", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
 })();
 
@@ -13745,7 +13745,8 @@ function ModerationListController(
   SearchResultGenerator,
   rx,
   $scope,
-  $q
+  $q,
+  $document
 ) {
   var moderator = this;
 
@@ -13791,6 +13792,10 @@ function ModerationListController(
         moderator.loading = true;
       })
       .subscribe();
+
+    page$.subscribe(function () {
+      $document.scrollTop(0);
+    });
 
     return $q.resolve();
   }
@@ -13856,7 +13861,7 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
 
 // Source: src/management/moderation/moderation.service.js
 /**
@@ -14872,7 +14877,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -14965,8 +14970,13 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
+
+  page$
+    .subscribe(function () {
+      $document.scrollTop(0);
+    });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
 
 // Source: src/management/roles/search-label.component.js
 angular
@@ -15511,7 +15521,7 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state, $document) {
   var ulc = this;
 
   var itemsPerPage = 20;
@@ -15602,8 +15612,12 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       ulc.loading = true;
     })
     .subscribe();
+
+  page$.subscribe(function () {
+    $document.scrollTop(0);
+  });
 }
-UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state"];
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 
 // Source: src/media/create-image-job.factory.js
 /**

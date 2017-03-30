@@ -25,7 +25,8 @@ function ModerationListController(
   SearchResultGenerator,
   rx,
   $scope,
-  $q
+  $q,
+  $document
 ) {
   var moderator = this;
 
@@ -71,6 +72,10 @@ function ModerationListController(
         moderator.loading = true;
       })
       .subscribe();
+
+    page$.subscribe(function () {
+      $document.scrollTop(0);
+    });
 
     return $q.resolve();
   }
