@@ -19173,6 +19173,48 @@ function UitpasInfoComponent(
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
 
+// Source: src/uitpas/default-uitpas-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.uitpas.DefaultUitpasLabels
+ * @description
+ * # Default UiTPAS Labels
+ *
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-30.
+ * This file used to be updated each time labels changed but now acts as a placeholder.
+ *
+ * The actual labels should be fetched when building or bootstrapping your app and written to the UitpasLabels constant.
+ * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * e.g.: https://uitpas.uitdatabank.be/labels for production
+ */
+angular
+  .module('udb.uitpas')
+  .constant('DefaultUitpasLabels',
+  /**
+   * Enum for UiTPAS labels
+   * @readonly
+   * @enum {string}
+   */
+  {
+    'PASPARTOE': 'Paspartoe',
+    'UITPAS': 'UiTPAS',
+    'UITPAS_GENT': 'UiTPAS Gent',
+    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
+    'UITPAS_DENDER': 'UiTPAS Dender',
+    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
+    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
+    'UITPAS_KEMPEN': 'UiTPAS Kempen',
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_LIER': 'UiTPAS Lier',
+    'UITPAS_HEIST-OP-DEN-BERG': 'UiTPAS Heist-op-den-Berg',
+    'UITPAS_MEETJESLAND': 'UiTPAS Meetjesland',
+    'UITPAS_WESTHOEK': 'UiTPAS Westhoek'
+  });
+
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
  * @ngdoc directive
@@ -19283,47 +19325,41 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
 }
 UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
 
-// Source: src/uitpas/uitpas-labels.constant.js
+// Source: src/uitpas/uitpas-labels.provider.js
 /* jshint sub: true */
 
 /**
  * @ngdoc service
- * @name udb.entry.uitpasLabels
+ * @name udb.uitpas.UitpasLabelsProvider
  * @description
- * # UiTPAS Labels
+ * # UiTPAS Labels Provider
  *
- * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01.
- * This file used to be updated each time labels changed but now acts as a placeholder.
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01 are in the DefaultUitpasLabels
+ * constant. The file used to be updated each time labels changed but now acts as a placeholder.
  *
- * The actual labels should be fetched when building your app and overwrite this UitpasLabels constant.
- * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * The actual labels should be fetched when building or bootstrapping your app and written to the ExtermalUitpasLabels
+ * constant. The UiTPAS service should have an endpoint with all the labels for your environment.
  * e.g.: https://uitpas.uitdatabank.be/labels for production
  */
 angular
   .module('udb.uitpas')
-  .constant('UitpasLabels',
+  .provider('UitpasLabels', UitpasLabelsProvider);
+
+function UitpasLabelsProvider() {
+  var customUitpasLabels;
+
   /**
-   * Enum for UiTPAS labels
-   * @readonly
-   * @enum {string}
+   * Configure the UiTPAS labels by providing a map of {LABEL_KEY: label name}
+   * @param {object} labels
    */
-  {
-    'PASPARTOE': 'Paspartoe',
-    'UITPAS': 'UiTPAS',
-    'UITPAS_GENT': 'UiTPAS Gent',
-    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
-    'UITPAS_DENDER': 'UiTPAS Dender',
-    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
-    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
-    'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven',
-    'UITPAS_LIER': 'UiTPAS Lier',
-    'UITPAS_HEIST-OP-DEN-BERG': 'UiTPAS Heist-op-den-Berg',
-    'UITPAS_MEETJESLAND': 'UiTPAS Meetjesland',
-    'UITPAS_WESTHOEK': 'UiTPAS Westhoek'
-  });
+  this.useLabels = function(labels) {
+    customUitpasLabels = labels;
+  };
+
+  this.$get = ['DefaultUitpasLabels', function(DefaultUitpasLabels) {
+    return !!customUitpasLabels ? customUitpasLabels : DefaultUitpasLabels;
+  }];
+}
 
 // Source: .tmp/udb3-angular.templates.js
 angular.module('udb.core').run(['$templateCache', function($templateCache) {
