@@ -2180,21 +2180,19 @@ function udbCalendarSummary() {
        */
       function loadDatePicker() {
 
-        var lastSelectedYear;
-        var lastSelectedMonth;
-        var selectedDate = ngModel.$viewValue;
+        var defaultViewDate = new Date();
 
-        if (selectedDate) {
-          lastSelectedYear = selectedDate.getFullYear();
-          lastSelectedMonth = selectedDate.getMonth();
-        } else {
-          var today = new Date();
-          lastSelectedYear = today.getFullYear();
-          lastSelectedMonth = today.getMonth();
+        if (scope.formData) {
+          for (var i = (scope.formData.timestamps.length - 1); i >= 0; i--) {
+            if (scope.formData.timestamps[i].date !== '') {
+              defaultViewDate = scope.formData.timestamps[i].date;
+              break;
+            }
+          }
         }
 
         var options = {
-          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
+          defaultViewDate: {year: defaultViewDate.getFullYear(), month: defaultViewDate.getMonth(), day: 1},
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
@@ -2219,6 +2217,7 @@ function udbCalendarSummary() {
         };
 
         elem.datepicker(options).on('changeDate', function (newValue) {
+          scope.defaultViewDate = newValue.date;
           if (!ngModel.$viewValue || ngModel.$viewValue.getTime() !== newValue.date.getTime()) {
             ngModel.$setViewValue(newValue.date);
           }
@@ -7711,6 +7710,214 @@ angular
       {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
     ]);
 
+// Source: src/event_form/components/age/age-input.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbAgeInput
+ * @description
+ * # Age input parsing and formatting
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbAgeInput', AgeInputDirective);
+
+/* @ngInject */
+function AgeInputDirective() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, element, attrs, controller) {
+      function ensureAge(value) {
+        var number = parseInt(value);
+
+        if (isNaN(number)) {
+          controller.$setViewValue(undefined);
+          controller.$render();
+          return undefined;
+        }
+
+        var age = Math.abs(number);
+
+        if (age.toString() !== value) {
+          controller.$setViewValue(age.toString());
+          controller.$render();
+        }
+
+        return age;
+      }
+
+      controller.$formatters.push(ensureAge);
+      controller.$parsers.splice(0, 0, ensureAge);
+    }
+  };
+}
+
+// Source: src/event_form/components/age/form-age.controller.js
+/**
+ * @ngdoc controller
+ * @name udb.event-form:FormAgeController
+ * @var FormAgeController fagec
+ * @description
+ * # FormAgeController
+ * Controller for the form age component
+ */
+angular
+  .module('udb.event-form')
+  .controller('FormAgeController', FormAgeController);
+
+/* @ngInject */
+function FormAgeController($scope, EventFormData, eventCrud) {
+  var controller = this;
+  /**
+   * Enum for age ranges.
+   * @readonly
+   * @enum {Object}
+   */
+  var AgeRangeEnum = Object.freeze({
+    'ALL': {label: 'Alle leeftijden'},
+    'TODDLERS': {label: 'Peuters', min: 0, max: 2},
+    'PRESCHOOLERS': {label: 'Kleuters', min: 3, max: 5},
+    'KIDS': {label: 'Kinderen', min: 6, max: 11},
+    'YOUNGSTERS': {label: 'Jongeren', min: 12, max: 17},
+    'ADULTS': {label: 'Volwassenen', min: 18},
+    'SENIORS': {label: 'Senioren', min: 65},
+    'CUSTOM': {label: 'Andere'}
+  });
+
+  controller.ageRanges = angular.copy(AgeRangeEnum);
+  controller.activeAgeRange = undefined;
+  controller.minAge = undefined;
+  controller.maxAge = undefined;
+  controller.setAgeRangeByType = setAgeRangeByType;
+  controller.delayedSaveAgeRange = _.debounce(digestSaveAgeRange, 1000);
+  controller.instantSaveAgeRange = instantSaveAgeRange;
+  controller.error = '';
+  controller.formData = undefined;
+
+  init(EventFormData);
+
+  /**
+   * Save the age range based on current controller min and max values.
+   *
+   * If the controller values do not change the old form data, no update will happen.
+   */
+  function saveAgeRange() {
+    clearError();
+    var min = controller.minAge;
+    var max = controller.maxAge;
+    var oldAgeRange = controller.formData.getTypicalAgeRange();
+
+    if (oldAgeRange && oldAgeRange.min === min && oldAgeRange.max === max) {
+      return;
+    }
+
+    if (_.isNumber(min) && _.isNumber(max) && min > max) {
+      showError('De minimum ouderdom mag niet hoger zijn dan maximum.'); return;
+    }
+
+    controller.formData.setTypicalAgeRange(min, max);
+    eventCrud.updateTypicalAgeRange(controller.formData);
+  }
+
+  function digestSaveAgeRange() {
+    $scope.$apply(saveAgeRange);
+  }
+
+  function instantSaveAgeRange() {
+    controller.delayedSaveAgeRange.cancel();
+    saveAgeRange();
+  }
+
+  function showError(errorMessage) {
+    controller.error = errorMessage;
+  }
+
+  function clearError() {
+    controller.error = '';
+  }
+
+  /**
+   * Create a matcher with a min and max age that takes an age range object.
+   *
+   * @param {number} min
+   * @param {number} max
+   * @returns {Function}
+   */
+  function rangeMatcher(min, max) {
+    return function (ageRange) {
+      var fixedRange = (ageRange.min === min && ageRange.max === max);
+      var customRange = !(isNaN(min) && isNaN(max)) && ageRange === AgeRangeEnum.CUSTOM;
+
+      return fixedRange ? fixedRange : customRange;
+    };
+  }
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function init(formData) {
+    controller.formData = formData;
+    var ageRange = formData.getTypicalAgeRange();
+
+    if (ageRange) {
+      showRange(ageRange.min, ageRange.max);
+    }
+  }
+
+  /**
+   * @param {number} min
+   * @param {number} max
+   */
+  function showRange(min, max) {
+    var activeAgeRangeType = _.findKey(AgeRangeEnum, rangeMatcher(min, max));
+    controller.minAge = min;
+    controller.maxAge = max;
+    controller.rangeInputEnabled = activeAgeRangeType && activeAgeRangeType !== 'ALL';
+    controller.activeAgeRange = activeAgeRangeType;
+  }
+
+  /**
+   * @param {string} type
+   */
+  function setAgeRangeByType(type) {
+    var ageRange = AgeRangeEnum[type];
+
+    if (ageRange) {
+      if (type !== 'CUSTOM') {
+        controller.minAge = ageRange.min;
+        controller.maxAge = ageRange.max;
+      }
+
+      controller.rangeInputEnabled = type !== 'ALL';
+      controller.activeAgeRange = type;
+
+      saveAgeRange();
+    }
+  }
+}
+FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud"];
+
+// Source: src/event_form/components/age/form-age.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbFormAge
+ * @description
+ * # Target age component for offer forms
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbFormAge', FormAgeDirective);
+
+/* @ngInject */
+function FormAgeDirective() {
+  return {
+    templateUrl: 'templates/form-age.html',
+    restrict: 'EA',
+    controller: 'FormAgeController',
+    controllerAs: 'fagec'
+  };
+}
+
 // Source: src/event_form/components/audience/form-audience.controller.js
 /**
  * @ngdoc function
@@ -9986,6 +10193,34 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
+     * @param {number|undefined} min
+     * @param {number|undefined} max
+     */
+    setTypicalAgeRange: function(min, max) {
+      this.typicalAgeRange = (isNaN(min) ? '' : min) + '-' + (isNaN(max) ? '' : max);
+    },
+
+    /**
+     * Get the typical age range as an object or undefined when no range is set.
+     * When the offer is intended for all ages, you do get a range but both min and max will be undefined.
+     *
+     * @return {{min: number|undefined, max: number|undefined}|undefined}
+     */
+    getTypicalAgeRange: function () {
+      if (_.isEmpty(this.typicalAgeRange)) {
+        return;
+      }
+
+      var ageRange = {min: undefined, max: undefined};
+      var rangeArray = this.typicalAgeRange.split('-');
+
+      if (rangeArray[0]) {ageRange.min =  parseInt(rangeArray[0]);}
+      if (rangeArray[1]) {ageRange.max =  parseInt(rangeArray[1]);}
+
+      return ageRange;
+    },
+
+    /**
      * Check if the timing of the event is periodic and has a valid range.
      * @return {boolean}
      */
@@ -10173,7 +10408,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         }
       }
     }
-
   };
 
   // initialize the data
@@ -11529,17 +11763,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
   /**
-   * Enum for age ranges.
-   * @readonly
-   * @enum {Object}
-   */
-  var AgeRangeEnum = Object.freeze({
-    'ALL': {'value': 0, 'label': 'Alle leeftijden'},
-    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 0, max: 12},
-    'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
-    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
-  });
-  /**
    * Enum for contact info types.
    * @readonly
    * @enum {string}
@@ -11559,20 +11782,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
-
-  // Age range vars
-  $scope.savingAgeRange = false;
-  $scope.ageRangeError = false;
-  $scope.invalidAgeRange = false;
-  /**
-   * @type {AgeRangeEnum|null}
-   */
-  $scope.ageRange = null;
-  $scope.ageCssClass = EventFormData.typicalAgeRange ? 'state-complete' : 'state-incomplete';
-  /**
-   * * @type {number|null}
-   */
-  $scope.minAge = null;
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -11634,12 +11843,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.alterDescription = alterDescription;
   $scope.saveDescription = saveDescription;
 
-  // Age range functions.
-  $scope.saveAgeRange = saveAgeRange;
-  $scope.ageRangeChanged = ageRangeChanged;
-  $scope.setAllAges = setAllAges;
-  $scope.resetAgeRange = resetAgeRange;
-
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
   $scope.selectOrganizer = selectOrganizer;
@@ -11660,12 +11863,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.removeImage = removeImage;
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
-
-  $scope.ageRanges = _.map(AgeRangeEnum, function (range) {
-    return range;
-  });
-
-  $scope.AgeRange = AgeRangeEnum;
 
   // Init the controller for editing.
   initEditForm();
@@ -11710,119 +11907,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.descriptionError = true;
     });
 
-  }
-
-  /**
-   * Listener on the age range selection.
-   * @param {AgeRangeEnum} ageRange
-   */
-  function ageRangeChanged(ageRange) {
-    $scope.minAge = null;
-    $scope.ageCssClass = 'state-complete';
-
-    $scope.saveAgeRange();
-  }
-
-  /**
-   * @param {number} minAge
-   * @param {number} [maxAge]
-   *
-   * @return {string}
-   */
-  function formatTypicalAgeRange(minAge, maxAge) {
-    var formattedAgeRange = '';
-
-    if (maxAge) {
-      formattedAgeRange = minAge === maxAge ? minAge.toString() : minAge + '-' + maxAge;
-    } else {
-      formattedAgeRange = minAge + '-';
-    }
-
-    return formattedAgeRange;
-  }
-
-  /**
-   * @param {number} minAge
-   * @param {AgeRangeEnum} ageRange
-   *
-   * @return {boolean}
-   */
-  function isMinimumAgeInRange(minAge, ageRange) {
-    var inRange = true;
-
-    if (ageRange.max && minAge > ageRange.max) {
-      inRange = false;
-    }
-
-    if (ageRange.min && minAge < ageRange.min) {
-      inRange = false;
-    }
-
-    return inRange;
-  }
-
-  /**
-   * Save the age range.
-   */
-  function saveAgeRange() {
-
-    $scope.invalidAgeRange = false;
-
-    if ($scope.ageRange === AgeRangeEnum.ALL) {
-      EventFormData.typicalAgeRange = null;
-    }
-    else {
-      if ($scope.minAge) {
-        $scope.invalidAgeRange = !isMinimumAgeInRange($scope.minAge, $scope.ageRange);
-      }
-
-      EventFormData.typicalAgeRange = formatTypicalAgeRange(
-        $scope.minAge || $scope.ageRange.min,
-        $scope.ageRange.max
-      );
-    }
-
-    // Save to db if valid age entered.
-    if (!$scope.invalidAgeRange) {
-      var ageRangePersisted = null;
-
-      var showAgeRangeError = function() {
-        $scope.savingAgeRange = false;
-        $scope.ageRangeError = true;
-      };
-
-      var markAgeRangeAsUpdated = function () {
-        $scope.savingAgeRange = false;
-        controller.eventFormSaved();
-        $scope.ageCssClass = 'state-complete';
-      };
-
-      if ($scope.ageRange === AgeRangeEnum.ALL) {
-        ageRangePersisted = eventCrud.deleteTypicalAgeRange(EventFormData);
-      }
-      else {
-        ageRangePersisted = eventCrud.updateTypicalAgeRange(EventFormData);
-      }
-
-      ageRangePersisted.then(markAgeRangeAsUpdated, showAgeRangeError);
-    }
-
-  }
-
-  /**
-   * Set to all ages.
-   */
-  function setAllAges() {
-    $scope.ageRange = AgeRangeEnum.ALL;
-  }
-
-  /**
-   * Reset the age selection.
-   */
-  function resetAgeRange() {
-    $scope.ageRange = null;
-    $scope.minAge = null;
-    $scope.ageCssClass = 'state-incomplete';
   }
 
   controller.eventFormSaved = function () {
@@ -12251,41 +12335,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Init this step for editing.
    */
   function initEditForm() {
-
-    // On edit set state default to complete.
-    if (EventFormData.id) {
-      $scope.ageCssClass = 'state-complete';
-      var minAge, maxAge;
-
-      if (EventFormData.typicalAgeRange) {
-        if (typeof EventFormData.typicalAgeRange === 'string') {
-          var rangeArray = EventFormData.typicalAgeRange.split('-');
-          minAge = rangeArray[0] ? parseInt(rangeArray[0]) : null;
-          maxAge = rangeArray[1] ? parseInt(rangeArray[1]) : null;
-        }
-        else {
-          minAge = EventFormData.typicalAgeRange;
-        }
-
-        if (typeof minAge === 'number') {
-          $scope.minAge = minAge;
-          if (maxAge) {
-            $scope.ageRange = _.findWhere(AgeRangeEnum, {max: maxAge});
-          }
-          else {
-            $scope.ageRange = _.find(AgeRangeEnum, function (ageRange) {
-              // ignore AgeRangeEnum.ALL which has value zero because it will match anything
-              return ageRange.value && isMinimumAgeInRange(minAge, ageRange);
-            });
-          }
-        }
-      }
-      else {
-        $scope.minAge = 0;
-        $scope.ageRange = AgeRangeEnum.ALL;
-      }
-    }
-
     $scope.contactInfo = _.flatten(
       _.map(EventFormData.contactPoint, function (contactInfo, type) {
         return _.contains(ContactInfoTypeEnum, type) ? _.map(contactInfo, function (contactInfoItem) {
@@ -19138,6 +19187,48 @@ function UitpasInfoComponent(
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
 
+// Source: src/uitpas/default-uitpas-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.uitpas.DefaultUitpasLabels
+ * @description
+ * # Default UiTPAS Labels
+ *
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-30.
+ * This file used to be updated each time labels changed but now acts as a placeholder.
+ *
+ * The actual labels should be fetched when building or bootstrapping your app and written to the UitpasLabels constant.
+ * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * e.g.: https://uitpas.uitdatabank.be/labels for production
+ */
+angular
+  .module('udb.uitpas')
+  .constant('DefaultUitpasLabels',
+  /**
+   * Enum for UiTPAS labels
+   * @readonly
+   * @enum {string}
+   */
+  {
+    'PASPARTOE': 'Paspartoe',
+    'UITPAS': 'UiTPAS',
+    'UITPAS_GENT': 'UiTPAS Gent',
+    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
+    'UITPAS_DENDER': 'UiTPAS Dender',
+    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
+    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
+    'UITPAS_KEMPEN': 'UiTPAS Kempen',
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_LIER': 'UiTPAS Lier',
+    'UITPAS_HEIST-OP-DEN-BERG': 'UiTPAS Heist-op-den-Berg',
+    'UITPAS_MEETJESLAND': 'UiTPAS Meetjesland',
+    'UITPAS_WESTHOEK': 'UiTPAS Westhoek'
+  });
+
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
  * @ngdoc directive
@@ -19248,44 +19339,41 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
 }
 UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
 
-// Source: src/uitpas/uitpas-labels.constant.js
+// Source: src/uitpas/uitpas-labels.provider.js
 /* jshint sub: true */
 
 /**
  * @ngdoc service
- * @name udb.entry.uitpasLabels
+ * @name udb.uitpas.UitpasLabelsProvider
  * @description
- * # UiTPAS Labels
+ * # UiTPAS Labels Provider
  *
- * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01.
- * This file used to be updated each time labels changed but now acts as a placeholder.
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01 are in the DefaultUitpasLabels
+ * constant. The file used to be updated each time labels changed but now acts as a placeholder.
  *
- * The actual labels should be fetched when building your app and overwrite this UitpasLabels constant.
- * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * The actual labels should be fetched when building or bootstrapping your app and written to the ExtermalUitpasLabels
+ * constant. The UiTPAS service should have an endpoint with all the labels for your environment.
  * e.g.: https://uitpas.uitdatabank.be/labels for production
  */
 angular
   .module('udb.uitpas')
-  .constant('UitpasLabels',
+  .provider('UitpasLabels', UitpasLabelsProvider);
+
+function UitpasLabelsProvider() {
+  var customUitpasLabels;
+
   /**
-   * Enum for UiTPAS labels
-   * @readonly
-   * @enum {string}
+   * Configure the UiTPAS labels by providing a map of {LABEL_KEY: label name}
+   * @param {object} labels
    */
-  {
-    'PASPARTOE': 'Paspartoe',
-    'UITPAS': 'UiTPAS',
-    'UITPAS_GENT': 'UiTPAS Gent',
-    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
-    'UITPAS_DENDER': 'UiTPAS Dender',
-    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
-    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
-    'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven',
-    'UITPAS_SYX': 'UiTPAS Syx'
-  });
+  this.useLabels = function(labels) {
+    customUitpasLabels = labels;
+  };
+
+  this.$get = ['DefaultUitpasLabels', function(DefaultUitpasLabels) {
+    return !!customUitpasLabels ? customUitpasLabels : DefaultUitpasLabels;
+  }];
+}
 
 // Source: .tmp/udb3-angular.templates.js
 angular.module('udb.core').run(['$templateCache', function($templateCache) {
@@ -20058,6 +20146,52 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/form-age.html',
+    "<div class=\"row extra-leeftijd\">\n" +
+    "    <div class=\"extra-task\" ng-class=\"{'state-complete': !!fagec.activeAgeRange}\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <em class=\"extra-task-label\">Geschikt voor</em>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
+    "                <a ng-bind=\"::ageRange.label\"\n" +
+    "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
+    "                   href=\"#\"\n" +
+    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
+    "                <span ng-if=\"::!$last\">, </span>\n" +
+    "            </span>\n" +
+    "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
+    "                <div class=\"form-group\" >\n" +
+    "                    <label for=\"min-age\">Van</label>\n" +
+    "                    <input type=\"text\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           id=\"min-age\"\n" +
+    "                           ng-model=\"fagec.minAge\"\n" +
+    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "                           udb-age-input>\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <label for=\"max-age\">tot</label>\n" +
+    "                    <input type=\"text\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           id=\"max-age\"\n" +
+    "                           ng-model=\"fagec.maxAge\"\n" +
+    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "                           udb-age-input>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
+    "                <span ng-bind=\"fagec.error\"></span>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n"
   );
 
@@ -21699,60 +21833,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"row extra-leeftijd\">\n" +
-    "          <div class=\"extra-task\" ng-class=\"ageCssClass\">\n" +
-    "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Geschikt voor</em>\n" +
-    "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingAgeRange\"></i>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-sm-8\">\n" +
-    "              <section>\n" +
-    "                <div class=\"form-group clearfix\" ng-hide=\"ageRange === AgeRange.ALL\">\n" +
-    "                  <div class=\"row\">\n" +
-    "                    <div class=\"col-xs-7\">\n" +
-    "                      <select class=\"form-control leeftijd-incomplete-select\"\n" +
-    "                              ng-change=\"ageRangeChanged(ageRange)\"\n" +
-    "                              ng-model=\"ageRange\"\n" +
-    "                              ng-options=\"range.label for range in ageRanges\">\n" +
-    "                        <option value=\"\">Kies een leeftijdscategorie</option>\n" +
-    "                      </select>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"col-xs-5\">\n" +
-    "                      <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-inline form-group\" ng-show=\"ageRange && ageRange !== AgeRange.ALL\">\n" +
-    "                  <div class=\"form-group\">\n" +
-    "                    <label for=\"min-age\">Vanaf</label>\n" +
-    "                    <input type=\"text\"\n" +
-    "                           id=\"min-age\"\n" +
-    "                           class=\"form-control\"\n" +
-    "                           ng-model=\"minAge\"\n" +
-    "                           ng-model-options=\"{updateOn: 'change'}\"\n" +
-    "                           ng-change=\"saveAgeRange()\">\n" +
-    "                    <label for=\"min-age\">jaar</label>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "\n" +
-    "                <span ng-show=\"ageRange === AgeRange.ALL\">\n" +
-    "                  Alle leeftijden\n" +
-    "                  <a href=\"#\" class=\"btn btn-link btn-leeftijd-restore to-filling\" ng-click=\"resetAgeRange()\">\n" +
-    "                    Wijzigen\n" +
-    "                  </a>\n" +
-    "                </span>\n" +
-    "\n" +
-    "                <div ng-show=\"ageRangeError\" class=\"alert alert-danger\">\n" +
-    "                  Er ging iets fout bij het opslaan van de leeftijd.\n" +
-    "                </div>\n" +
-    "                <div ng-show=\"invalidAgeRange\" class=\"alert alert-danger\">\n" +
-    "                  Gelieve een leeftijd in te voeren die binnen de gekozen leeftijdscategorie valt.\n" +
-    "                </div>\n" +
-    "\n" +
-    "              </section>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
+    "        <udb-form-age></udb-form-age>\n" +
     "\n" +
     "        <div class=\"row extra-organisator\">\n" +
     "          <div class=\"extra-task\" ng-class=\"organizerCssClass\">\n" +
