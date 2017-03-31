@@ -119,7 +119,6 @@ describe('Controller: Place Detail', function() {
     expect(udbApi.getOffer).toHaveBeenCalledWith(
         'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'
     );
-    expect($scope.placeIsEditable).toEqual(true);
   });
 
   it('should loads the place description from the variation', function () {
