@@ -29,6 +29,8 @@ function EventDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
+
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
@@ -99,7 +101,6 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    var disableVariations = _.get(appConfig, 'disableVariations');
     if (!disableVariations) {
       variationRepository.getPersonalVariation(event)
         .then(function (variation) {
