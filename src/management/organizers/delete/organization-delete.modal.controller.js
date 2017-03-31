@@ -1,8 +1,9 @@
 'use strict';
 
 /**
- * @ngdoc function
- * @name udbApp.controller:OrganizationDeleteModalController
+ * @ngdoc controller
+ * @name udbApp.management.organizers.controller:OrganizationDeleteModalController
+ * @var OrganizationDeleteModalController odc
  * @description
  * # OrganizationDeleteModalController
  * Modal to delete an organization
