@@ -18,7 +18,7 @@
     $scope.date = eventFormData.availableFrom;
     $scope.enableDate = false;
     var today = new Date();
-    if (typeof eventFormData === 'string') {
+    if (typeof eventFormData.availableFrom === 'string') {
       $scope.isToday = true;
     } else {
       $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;

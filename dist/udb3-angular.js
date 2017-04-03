@@ -9345,7 +9345,7 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     $scope.date = eventFormData.availableFrom;
     $scope.enableDate = false;
     var today = new Date();
-    if (typeof eventFormData === 'string') {
+    if (typeof eventFormData.availableFrom === 'string') {
       $scope.isToday = true;
     } else {
       $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
@@ -21235,7 +21235,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
     "    <p>Vanaf wanneer mag dit online verschijnen?</p>\n" +
-    "    <div class=\"radio\">\n" +
+    "    <div class=\"radio padding-left-12-5\">\n" +
     "        <label>\n" +
     "        <input type=\"radio\" ng-model=\"enableDate\" ng-checked=\"isToday\" value=\"false\" name=\"publishDate\" value=\"now\">\n" +
     "        Meteen\n" +
