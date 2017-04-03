@@ -530,6 +530,17 @@ function UdbApi(
   };
 
   /**
+   * @param {udbOrganizer} organization
+   *
+   * @return {Promise.<Object|ApiProblem>}
+   */
+  this.deleteOrganization = function (organization) {
+    return $http
+      .delete(organization['@id'], defaultApiConfig)
+      .then(returnJobData, returnApiProblem);
+  };
+
+  /**
    * @param {string} type   either 'place' or 'event'
    * @param {EventFormData} offer
    *
