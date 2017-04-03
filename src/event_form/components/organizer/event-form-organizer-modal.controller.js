@@ -125,7 +125,7 @@ function EventFormOrganizerModalController(
     if ($scope.newOrganizer.name && !$scope.websiteError) {
       $scope.disableSubmit = false;
     } else {
-      $scope.disableSubmit = false;
+      $scope.disableSubmit = true;
     }
   }
 
