@@ -9342,13 +9342,15 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
   /* @ngInject */
   function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
 
-    console.log(eventFormData);
-
     $scope.date = eventFormData.availableFrom;
     $scope.enableDate = false;
     var today = new Date();
-    $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
-    console.log($scope.isToday);
+    if (typeof eventFormData === 'string') {
+       $scope.isToday = true;
+    } else {
+       $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
+    }
+
 
     $scope.dismiss = dismiss;
     $scope.convertDate = convertDate;

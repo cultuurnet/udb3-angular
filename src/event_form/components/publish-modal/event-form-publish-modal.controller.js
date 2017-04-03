@@ -18,7 +18,12 @@
     $scope.date = eventFormData.availableFrom;
     $scope.enableDate = false;
     var today = new Date();
-    $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
+    if (typeof eventFormData === 'string') {
+       $scope.isToday = true;
+    } else {
+       $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
+    }
+
 
     $scope.dismiss = dismiss;
     $scope.convertDate = convertDate;
