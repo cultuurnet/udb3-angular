@@ -11,7 +11,7 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state, $document) {
   var ulc = this;
 
   var itemsPerPage = 20;
@@ -102,4 +102,8 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       ulc.loading = true;
     })
     .subscribe();
+
+  page$.subscribe(function () {
+    $document.scrollTop(0);
+  });
 }

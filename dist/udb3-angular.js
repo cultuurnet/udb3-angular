@@ -2180,21 +2180,19 @@ function udbCalendarSummary() {
        */
       function loadDatePicker() {
 
-        var lastSelectedYear;
-        var lastSelectedMonth;
-        var selectedDate = ngModel.$viewValue;
+        var defaultViewDate = new Date();
 
-        if (selectedDate) {
-          lastSelectedYear = selectedDate.getFullYear();
-          lastSelectedMonth = selectedDate.getMonth();
-        } else {
-          var today = new Date();
-          lastSelectedYear = today.getFullYear();
-          lastSelectedMonth = today.getMonth();
+        if (scope.formData) {
+          for (var i = (scope.formData.timestamps.length - 1); i >= 0; i--) {
+            if (scope.formData.timestamps[i].date !== '') {
+              defaultViewDate = scope.formData.timestamps[i].date;
+              break;
+            }
+          }
         }
 
         var options = {
-          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
+          defaultViewDate: {year: defaultViewDate.getFullYear(), month: defaultViewDate.getMonth(), day: 1},
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
@@ -2219,6 +2217,7 @@ function udbCalendarSummary() {
         };
 
         elem.datepicker(options).on('changeDate', function (newValue) {
+          scope.defaultViewDate = newValue.date;
           if (!ngModel.$viewValue || ngModel.$viewValue.getTime() !== newValue.date.getTime()) {
             ngModel.$setViewValue(newValue.date);
           }
@@ -2278,7 +2277,7 @@ function udbCalendarSummary() {
 // Source: src/core/components/time/time.directive.js
 (function () {
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.core.directive:udbTime
  * @description
  * # udbTime
@@ -2359,6 +2358,8 @@ function WorkflowStatusDirectiveController($scope, $translate) {
 WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
 
 // Source: src/core/dutch-translations.constant.js
+// jscs:disable maximumLineLength
+
 /**
  * @ngdoc service
  * @name udbApp.dutchTranslations
@@ -2723,6 +2724,7 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
+    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.'
   }
 );
 
@@ -4148,6 +4150,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     this.place = {};
     this.type = {};
     this.theme = {};
+    /** @type {OpeningHoursData[]} **/
     this.openingHours = [];
 
     if (jsonEvent) {
@@ -4312,6 +4315,8 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openingHours;
@@ -4378,74 +4383,6 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
   return (UdbEvent);
 }
 UdbEventFactory.$inject = ["EventTranslationState", "UdbPlace", "UdbOrganizer"];
-
-// Source: src/core/udb-openinghours.factory.js
-/**
- * @ngdoc service
- * @name udb.core.UdbTimestamps
- * @description
- * # UdbOpeningHours
- * Contains the opening hours for 1 period / date of an offer.
- */
-angular
-  .module('udb.core')
-  .factory('UdbOpeningHours', UdbOpeningHoursFactory);
-
-/* @ngInject */
-function UdbOpeningHoursFactory() {
-
-  /**
-   * @class UdbOpeningHours
-   * @constructor
-   */
-  var UdbOpeningHours = function () {
-    this.validFrom = '';
-    this.validThrough = '';
-    this.dayOfWeek = '';
-    this.opens = '';
-    this.opensAsDate = '';
-    this.closes = '';
-    this.closesAsDate = '';
-  };
-
-  UdbOpeningHours.prototype = {
-
-    parseJson: function (json) {
-
-    },
-
-    /**
-     * Set the valid from date.
-     */
-    setValidFrom: function(date) {
-      this.validFrom = date;
-    },
-
-    /**
-     * Set the valid till date.
-     */
-    setValidTrough: function(date) {
-      this.validThrough = date;
-    },
-
-    /**
-     * Set the opening hour.
-     */
-    setOpens: function(hour) {
-      this.opens = hour;
-    },
-
-    /**
-     * Set the opening hour.
-     */
-    setDayOfWeek: function(dayOfWeek) {
-      this.dayOfWeek = dayOfWeek;
-    }
-
-  };
-
-  return (UdbOpeningHours);
-}
 
 // Source: src/core/udb-organizer.directive.js
 /**
@@ -4702,6 +4639,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.type = '';
     this.theme = {};
     this.calendarType = '';
+    /** @type {OpeningHoursData[]} **/
     this.openinghours = [];
     this.address = {
       'addressCountry' : 'BE',
@@ -4860,6 +4798,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openinghours;
@@ -5275,7 +5215,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -5305,6 +5245,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
+      $document.scrollTop(0);
     }
 
     function updateItemViewer() {
@@ -5382,9 +5323,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         openPlaceDeleteConfirmModal(item);
       }
     }
-
   }
-  DashboardController.$inject = ["$scope", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
 })();
 
@@ -7486,10 +7426,13 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
+
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
@@ -7552,8 +7495,6 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    var personalVariationLoaded = variationRepository.getPersonalVariation(event);
-
     udbApi
       .getHistory($scope.eventId)
       .then(showHistory);
@@ -7562,15 +7503,18 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    personalVariationLoaded
-      .then(function (variation) {
-        $scope.event.description = variation.description[language];
-      })
-      .finally(function () {
-        $scope.eventIsEditable = true;
-      });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(event)
+        .then(showVariation);
+    }
+
     hasContactPoint();
     hasBookingInfo();
+  }
+
+  function showVariation(variation) {
+    $scope.event.description = variation.description[language];
   }
 
   function failedToLoad(reason) {
@@ -7745,7 +7689,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig"];
 
 // Source: src/event_form/calendar-labels.constant.js
 /* jshint sub: true */
@@ -7770,6 +7714,214 @@ angular
       {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
     ]);
 
+// Source: src/event_form/components/age/age-input.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbAgeInput
+ * @description
+ * # Age input parsing and formatting
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbAgeInput', AgeInputDirective);
+
+/* @ngInject */
+function AgeInputDirective() {
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, element, attrs, controller) {
+      function ensureAge(value) {
+        var number = parseInt(value);
+
+        if (isNaN(number)) {
+          controller.$setViewValue(undefined);
+          controller.$render();
+          return undefined;
+        }
+
+        var age = Math.abs(number);
+
+        if (age.toString() !== value) {
+          controller.$setViewValue(age.toString());
+          controller.$render();
+        }
+
+        return age;
+      }
+
+      controller.$formatters.push(ensureAge);
+      controller.$parsers.splice(0, 0, ensureAge);
+    }
+  };
+}
+
+// Source: src/event_form/components/age/form-age.controller.js
+/**
+ * @ngdoc controller
+ * @name udb.event-form:FormAgeController
+ * @var FormAgeController fagec
+ * @description
+ * # FormAgeController
+ * Controller for the form age component
+ */
+angular
+  .module('udb.event-form')
+  .controller('FormAgeController', FormAgeController);
+
+/* @ngInject */
+function FormAgeController($scope, EventFormData, eventCrud) {
+  var controller = this;
+  /**
+   * Enum for age ranges.
+   * @readonly
+   * @enum {Object}
+   */
+  var AgeRangeEnum = Object.freeze({
+    'ALL': {label: 'Alle leeftijden'},
+    'TODDLERS': {label: 'Peuters', min: 0, max: 2},
+    'PRESCHOOLERS': {label: 'Kleuters', min: 3, max: 5},
+    'KIDS': {label: 'Kinderen', min: 6, max: 11},
+    'YOUNGSTERS': {label: 'Jongeren', min: 12, max: 17},
+    'ADULTS': {label: 'Volwassenen', min: 18},
+    'SENIORS': {label: 'Senioren', min: 65},
+    'CUSTOM': {label: 'Andere'}
+  });
+
+  controller.ageRanges = angular.copy(AgeRangeEnum);
+  controller.activeAgeRange = undefined;
+  controller.minAge = undefined;
+  controller.maxAge = undefined;
+  controller.setAgeRangeByType = setAgeRangeByType;
+  controller.delayedSaveAgeRange = _.debounce(digestSaveAgeRange, 1000);
+  controller.instantSaveAgeRange = instantSaveAgeRange;
+  controller.error = '';
+  controller.formData = undefined;
+
+  init(EventFormData);
+
+  /**
+   * Save the age range based on current controller min and max values.
+   *
+   * If the controller values do not change the old form data, no update will happen.
+   */
+  function saveAgeRange() {
+    clearError();
+    var min = controller.minAge;
+    var max = controller.maxAge;
+    var oldAgeRange = controller.formData.getTypicalAgeRange();
+
+    if (oldAgeRange && oldAgeRange.min === min && oldAgeRange.max === max) {
+      return;
+    }
+
+    if (_.isNumber(min) && _.isNumber(max) && min > max) {
+      showError('De minimum ouderdom mag niet hoger zijn dan maximum.'); return;
+    }
+
+    controller.formData.setTypicalAgeRange(min, max);
+    eventCrud.updateTypicalAgeRange(controller.formData);
+  }
+
+  function digestSaveAgeRange() {
+    $scope.$apply(saveAgeRange);
+  }
+
+  function instantSaveAgeRange() {
+    controller.delayedSaveAgeRange.cancel();
+    saveAgeRange();
+  }
+
+  function showError(errorMessage) {
+    controller.error = errorMessage;
+  }
+
+  function clearError() {
+    controller.error = '';
+  }
+
+  /**
+   * Create a matcher with a min and max age that takes an age range object.
+   *
+   * @param {number} min
+   * @param {number} max
+   * @returns {Function}
+   */
+  function rangeMatcher(min, max) {
+    return function (ageRange) {
+      var fixedRange = (ageRange.min === min && ageRange.max === max);
+      var customRange = !(isNaN(min) && isNaN(max)) && ageRange === AgeRangeEnum.CUSTOM;
+
+      return fixedRange ? fixedRange : customRange;
+    };
+  }
+
+  /**
+   * @param {EventFormData} formData
+   */
+  function init(formData) {
+    controller.formData = formData;
+    var ageRange = formData.getTypicalAgeRange();
+
+    if (ageRange) {
+      showRange(ageRange.min, ageRange.max);
+    }
+  }
+
+  /**
+   * @param {number} min
+   * @param {number} max
+   */
+  function showRange(min, max) {
+    var activeAgeRangeType = _.findKey(AgeRangeEnum, rangeMatcher(min, max));
+    controller.minAge = min;
+    controller.maxAge = max;
+    controller.rangeInputEnabled = activeAgeRangeType && activeAgeRangeType !== 'ALL';
+    controller.activeAgeRange = activeAgeRangeType;
+  }
+
+  /**
+   * @param {string} type
+   */
+  function setAgeRangeByType(type) {
+    var ageRange = AgeRangeEnum[type];
+
+    if (ageRange) {
+      if (type !== 'CUSTOM') {
+        controller.minAge = ageRange.min;
+        controller.maxAge = ageRange.max;
+      }
+
+      controller.rangeInputEnabled = type !== 'ALL';
+      controller.activeAgeRange = type;
+
+      saveAgeRange();
+    }
+  }
+}
+FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud"];
+
+// Source: src/event_form/components/age/form-age.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.event-form.directive:udbFormAge
+ * @description
+ * # Target age component for offer forms
+ */
+angular
+  .module('udb.event-form')
+  .directive('udbFormAge', FormAgeDirective);
+
+/* @ngInject */
+function FormAgeDirective() {
+  return {
+    templateUrl: 'templates/form-age.html',
+    restrict: 'EA',
+    controller: 'FormAgeController',
+    controllerAs: 'fagec'
+  };
+}
+
 // Source: src/event_form/components/audience/form-audience.controller.js
 /**
  * @ngdoc function
@@ -7783,10 +7935,11 @@ angular
   .controller('FormAudienceController', FormAudienceController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, eventCrud) {
+function FormAudienceController(EventFormData, eventCrud, appConfig) {
   var controller = this;
+  var componentDisabled = _.get(appConfig, 'offerEditor.disableAudience');
 
-  controller.enabled = EventFormData.isEvent;
+  controller.enabled = !componentDisabled && EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
 
@@ -7794,7 +7947,7 @@ function FormAudienceController(EventFormData, eventCrud) {
     eventCrud.setAudienceType(EventFormData, audienceType);
   }
 }
-FormAudienceController.$inject = ["EventFormData", "eventCrud"];
+FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig"];
 
 // Source: src/event_form/components/audience/form-audience.directive.js
 /**
@@ -8246,27 +8399,322 @@ function EventFormImageUploadController(
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
 
-// Source: src/event_form/components/openinghours/openinghours.directive.js
+// Source: src/event_form/components/opening-hours-editor/opening-hours-editor.modal.controller.js
 /**
- * @ngdoc directive
- * @name udb.search.directive:tudbEventFormTimestampSelection
+ * @ngdoc controller
+ * @name udb.event-form.controller:OpeningHoursEditorModalController
  * @description
- * # timestamp selection for event form
+ * # OpeningHoursEditorModalController
+ * Controller for editing opening hours
  */
 angular
   .module('udb.event-form')
-  .directive('udbEventFormOpeningHours', EventFormOpeningHoursDirective);
+  .controller('OpeningHoursEditorModalController', OpeningHoursEditorModalController);
 
 /* @ngInject */
-function EventFormOpeningHoursDirective() {
-  return {
-    templateUrl: 'templates/event-form-openinghours.html',
-    restrict: 'E',
-    scope: {
-      formData: '='
+function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollection) {
+  var controller = this;
+
+  controller.openingHoursCollection = openingHoursCollection;
+  controller.saveOpeningHours = saveOpeningHours;
+  controller.createNewOpeningHours = createNewOpeningHours;
+  controller.removeOpeningHours = removeOpeningHours;
+  controller.errors = {};
+
+  function saveOpeningHours() {
+    clearErrors();
+    var errors = controller.openingHoursCollection.validate();
+
+    if (_.isEmpty(errors)) {
+      $uibModalInstance.close(controller.openingHoursCollection.serialize());
+    } else {
+      showErrors(errors);
+    }
+  }
+
+  /**
+   * @param {string[]} errorList
+   */
+  function showErrors(errorList) {
+    controller.errors = _.zipObject(errorList, _.map(errorList, function() {
+      return true;
+    }));
+  }
+
+  function clearErrors() {
+    controller.errors = {};
+  }
+
+  function createNewOpeningHours() {
+    controller.openingHoursCollection.createNewOpeningHours();
+  }
+
+  function removeOpeningHours(openingHours) {
+    controller.openingHoursCollection.removeOpeningHours(openingHours);
+  }
+}
+OpeningHoursEditorModalController.$inject = ["$uibModalInstance", "openingHoursCollection"];
+
+// Source: src/event_form/components/openinghours/day-names.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc constant
+ * @name udb.event-form.dayNames
+ * @description
+ * # dayNames
+ * Opening hours day names
+ */
+angular
+  .module('udb.event-form')
+  .constant('dayNames',
+    /**
+     * list of day names
+     * @readonly
+     */
+    {
+      monday : 'Maandag',
+      tuesday : 'Dinsdag',
+      wednesday : 'Woensdag',
+      thursday : 'Donderdag',
+      friday : 'Vrijdag',
+      saturday : 'Zaterdag',
+      sunday : 'Zondag'
+    });
+
+// Source: src/event_form/components/openinghours/opening-hours-data-collection.factory.js
+/**
+ * @ngdoc service
+ * @name udb.event-form.service:OpeningHoursCollection
+ * @description
+ * Contains data needed for opening hours.
+ */
+angular
+  .module('udb.event-form')
+  .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
+
+/* @ngInject */
+function OpeningHoursCollectionFactory(moment, dayNames) {
+
+  var validationRequirements = {
+    'openAndClose': opensAndCloses,
+    'dayOfWeek': hasDayOfWeek,
+    'openIsBeforeClose': openIsBeforeClose
+  };
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function opensAndCloses(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return openingHours.opensAsDate instanceof Date && openingHours.closesAsDate instanceof Date;
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function openIsBeforeClose(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return moment(openingHours.opensAsDate).isBefore(openingHours.closesAsDate);
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   * @returns {boolean}
+   */
+  function hasDayOfWeek(openingHoursList) {
+    return _.all(_.map(openingHoursList, function (openingHours) {
+      return !_.isEmpty(openingHours.dayOfWeek);
+    }));
+  }
+
+  /**
+   * @param {OpeningHours[]} openingHoursList
+   *
+   * @returns {OpeningHours[]}
+   */
+  function prepareOpeningHoursForDisplay(openingHoursList) {
+    angular.forEach (openingHoursList, function(openingHour, key) {
+      var humanValues = [];
+      if (openingHour.dayOfWeek instanceof Array) {
+        for (var i in openingHoursList[key].dayOfWeek) {
+          humanValues.push(dayNames[openingHour.dayOfWeek[i]]);
+        }
+      }
+      openingHour.opens = moment(openingHour.opensAsDate).format('HH:mm');
+      openingHour.closes = moment(openingHour.closesAsDate).format('HH:mm');
+
+      openingHour.label = humanValues.join(', ');
+    });
+
+    return openingHoursList;
+  }
+
+  /**
+   * @class OpeningHoursCollection
+   */
+  var openingHoursCollection = {
+    openingHours: [],
+
+    /**
+     * Get the opening hours.
+     */
+    getOpeningHours: function() {
+      return this.openingHours;
+    },
+
+    /**
+     * Set the opening hours.
+     */
+    setOpeningHours: function(openingHours) {
+      this.openingHours = prepareOpeningHoursForDisplay(openingHours);
+    },
+
+    /**
+     * @param {OpeningHours} openingHours
+     */
+    removeOpeningHours: function (openingHours) {
+      var openingHoursList = this.openingHours;
+
+      this.setOpeningHours(_.without(openingHoursList, openingHours));
+    },
+
+    /**
+     * Create new opening hours and append them to the list of existing hours.
+     */
+    createNewOpeningHours: function () {
+      var openingHoursList = this.openingHours || [];
+      var openingHours = {
+        'dayOfWeek': [],
+        'opens': '00:00',
+        'opensAsDate': new Date(1970, 0, 1),
+        'closes': '00:00',
+        'closesAsDate': new Date(1970, 0, 1)
+      };
+
+      openingHoursList.push(openingHours);
+
+      this.setOpeningHours(openingHoursList);
+    },
+
+    /**
+     * {object[]} jsonOpeningHoursList
+     */
+    deserialize: function (jsonOpeningHoursList) {
+      this.setOpeningHours(_.map(jsonOpeningHoursList, function (jsonOpeningHours) {
+        return {
+          'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
+          'opens': jsonOpeningHours.opens || '00:00',
+          'opensAsDate':
+            jsonOpeningHours.opens ? resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() : new Date(1970, 0, 1),
+          'closes': jsonOpeningHours.closes || '00:00',
+          'closesAsDate':
+            jsonOpeningHours.closes ? resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() : new Date(1970, 0, 1)
+        };
+      }));
+    },
+
+    serialize: function () {
+      return _.map(this.openingHours, function (openingHours) {
+        return {
+          dayOfWeek: openingHours.dayOfWeek,
+          opens: moment(openingHours.opensAsDate).format('HH:mm'),
+          closes: moment(openingHours.closesAsDate).format('HH:mm')
+        };
+      });
+    },
+
+    /**
+     * returns a list of errors
+     *
+     * @returns {string[]}
+     */
+    validate: function () {
+      var openingHours = this.openingHours;
+
+      return _(validationRequirements)
+        .pick(function (requirementCheck) {
+          return !requirementCheck(openingHours);
+        })
+        .keys()
+        .value();
     }
   };
+
+  /**
+   * Takes a moment object and returns a new one with the day reset to the beginning of unix time.
+   *
+   * @param {object} moment
+   *  a moment object
+   * @returns {object}
+   */
+  function resetDay(moment) {
+    return moment.clone().year(1970).dayOfYear(1);
+  }
+
+  return openingHoursCollection;
 }
+OpeningHoursCollectionFactory.$inject = ["moment", "dayNames"];
+
+// Source: src/event_form/components/openinghours/openinghours.component.js
+/**
+ * @typedef {Object} OpeningHours
+ * @property {Date} opensAsDate
+ * @property {Date} closesAsDate
+ * @property {string} opens
+ * @property {string} closes
+ * @property {string[]} dayOfWeek
+ */
+
+angular
+  .module('udb.event-form')
+  .component('udbEventFormOpeningHours', {
+    bindings: {
+      openingHoursCollection: '=openingHours'
+    },
+    templateUrl: 'templates/event-form-openinghours.html',
+    controller: OpeningHourComponentController,
+    controllerAs: 'cm'
+  });
+
+/**
+ * @ngInject
+ */
+function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormData) {
+  var cm = this;
+
+  cm.edit = openEditorModal;
+
+  function openEditorModal() {
+    var editorModal = $uibModal.open({
+      templateUrl: 'templates/opening-hours-editor.modal.html',
+      controller: 'OpeningHoursEditorModalController',
+      controllerAs: 'ohemc',
+      size: 'lg',
+      resolve: {
+        openingHoursCollection: function () {
+          return angular.copy(cm.openingHoursCollection);
+        }
+      }
+    });
+
+    editorModal.result.then(saveOpeningHours);
+  }
+
+  /**
+   *
+   * @param {OpeningHoursData[]} openingHoursList
+   */
+  function saveOpeningHours(openingHoursList) {
+    EventFormData.saveOpeningHours(openingHoursList);
+    cm.openingHoursCollection.deserialize(openingHoursList);
+  }
+}
+OpeningHourComponentController.$inject = ["moment", "dayNames", "$uibModal", "EventFormData"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -9413,6 +9861,13 @@ CopyrightNegotiator.$inject = ["$cookies"];
  */
 
 /**
+ * @typedef {Object} OpeningHoursData
+ * @property {string} opens
+ * @property {string} closes
+ * @property {string[]} dayOfWeek
+ */
+
+/**
  * @ngdoc service
  * @name udb.core.EventFormData
  * @description
@@ -9423,18 +9878,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment) {
-
-  // Mapping between machine name of days and real output.
-  var dayNames = {
-    monday : 'Maandag',
-    tuesday : 'Dinsdag',
-    wednesday : 'Woensdag',
-    thursday : 'Donderdag',
-    friday : 'Vrijdag',
-    saturday : 'Zaterdag',
-    sunday : 'Zondag'
-  };
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
 
   /**
    * @class EventFormData
@@ -9444,6 +9888,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
      * Initialize the properties with default data
      */
     init: function() {
+      this.apiUrl = '';
       this.isEvent = true; // Is current item an event.
       this.isPlace = false; // Is current item a place.
       this.showStep1 = true;
@@ -9488,7 +9933,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       this.endDate = '';
       this.timestamps = [];
       this.openingHours = [];
-      this.openingHoursErrors = {};
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -9639,13 +10083,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
-     * Get the opening hours.
-     */
-    getOpeningHours: function() {
-      return this.openingHours;
-    },
-
-    /**
      * Reset the location.
      */
     resetLocation: function(location) {
@@ -9678,9 +10115,11 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     /**
      * @param {Date} date
      * @param {string} startHour HH:MM
-     * @param {Date} startHourAsDate
+     * @param {Date|string} startHourAsDate
+     *  An empty string when not set.
      * @param {string} endHour HH:MM
-     * @param {Date} endHourAsDate
+     * @param {Date|string} endHourAsDate
+     *  An empty string when not set.
      */
     addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
       this.timestamps.push({
@@ -9692,40 +10131,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         'showStartHour' : !!startHour,
         'showEndHour' : (endHour && endHour !== startHour)
       });
-    },
-
-    /**
-     * Add a timestamp to the timestamps array.
-     */
-    addOpeningHour: function(dayOfWeek, opens, opensAsDate, closes, closesAsDate) {
-      var now = moment();
-      if (opens === '') {
-        var openDate = angular.copy(now).add(1, 'hours').startOf('hour');
-        opensAsDate = openDate.toDate();
-        opens = openDate.format('HH:mm');
-      }
-
-      if (closes === '') {
-        var closeDate = angular.copy(now).add(4, 'hours').startOf('hour');
-        closesAsDate = closeDate.toDate();
-        closes = closeDate.format('HH:mm');
-      }
-
-      this.openingHours.push({
-        'dayOfWeek' : dayOfWeek,
-        'opens' : opens,
-        'opensAsDate' : opensAsDate,
-        'closes' : closes,
-        'closesAsDate' : closesAsDate,
-        'label' : ''
-      });
-    },
-
-    /**
-     * Remove the openinghour with the given index.
-     */
-    removeOpeningHour: function(index) {
-      this.openingHours.splice(index, 1);
     },
 
     /**
@@ -9836,6 +10241,34 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
     },
 
     /**
+     * @param {number|undefined} min
+     * @param {number|undefined} max
+     */
+    setTypicalAgeRange: function(min, max) {
+      this.typicalAgeRange = (isNaN(min) ? '' : min) + '-' + (isNaN(max) ? '' : max);
+    },
+
+    /**
+     * Get the typical age range as an object or undefined when no range is set.
+     * When the offer is intended for all ages, you do get a range but both min and max will be undefined.
+     *
+     * @return {{min: number|undefined, max: number|undefined}|undefined}
+     */
+    getTypicalAgeRange: function () {
+      if (_.isEmpty(this.typicalAgeRange)) {
+        return;
+      }
+
+      var ageRange = {min: undefined, max: undefined};
+      var rangeArray = this.typicalAgeRange.split('-');
+
+      if (rangeArray[0]) {ageRange.min =  parseInt(rangeArray[0]);}
+      if (rangeArray[1]) {ageRange.max =  parseInt(rangeArray[1]);}
+
+      return ageRange;
+    },
+
+    /**
      * Check if the timing of the event is periodic and has a valid range.
      * @return {boolean}
      */
@@ -9868,18 +10301,8 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       this.calendarType = '';
     },
 
-    saveOpeningHourDaySelection: function (index, dayOfWeek) {
-      var humanValues = [];
-      if (dayOfWeek instanceof Array) {
-        for (var i in dayOfWeek) {
-          humanValues.push(dayNames[dayOfWeek[i]]);
-        }
-      }
-
-      this.openingHours[index].opensAsDate = moment(this.openingHours[index].opens, 'HH:mm').toDate();
-      this.openingHours[index].closesAsDate = moment(this.openingHours[index].closes, 'HH:mm').toDate();
-
-      this.openingHours[index].label = humanValues.join(', ');
+    initOpeningHours: function(openingHours) {
+      OpeningHoursCollection.deserialize(openingHours);
     },
 
     /**
@@ -9905,12 +10328,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         formData.addTimestamp('', '', '', '', '');
       }
 
-      if (formData.calendarType === 'periodic') {
-        formData.addOpeningHour('', '', '', '', '');
-      }
-
       if (formData.calendarType === 'permanent') {
-        formData.addOpeningHour('', '', '', '', '');
         formData.timingChanged();
       }
 
@@ -10021,79 +10439,9 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
       }
     },
 
-    saveOpeningHours: function () {
-      angular.forEach(this.openingHours, function(openingHour) {
-        var opensAsDate, closesAsDate;
-
-        opensAsDate = moment(openingHour.opensAsDate);
-        openingHour.opens = opensAsDate.format('HH:mm');
-
-        closesAsDate = moment(openingHour.closesAsDate);
-        openingHour.closes = closesAsDate.format('HH:mm');
-      });
+    saveOpeningHours: function (openingHours) {
+      this.openingHours = openingHours;
       this.timingChanged();
-    },
-
-    validateOpeningHour: function (openingHour) {
-      openingHour.hasError = false;
-      openingHour.errors = {};
-
-      if (openingHour.dayOfWeek.length === 0) {
-        openingHour.errors.weekdayError = true;
-      }
-      else {
-        openingHour.errors.weekdayError = false;
-      }
-
-      if (openingHour.opens === 'Invalid date' || openingHour.opensAsDate === undefined) {
-        openingHour.errors.openingHourError = true;
-      }
-      else {
-        openingHour.errors.openingHourError = false;
-      }
-
-      if (openingHour.closes === 'Invalid date' || openingHour.closesAsDate === undefined) {
-        openingHour.errors.closingHourError = true;
-      }
-      else {
-        openingHour.errors.closingHourError = false;
-      }
-
-      if (moment(openingHour.opensAsDate) > moment(moment(openingHour.closesAsDate))) {
-        openingHour.errors.closingHourGreaterError = true;
-      }
-      else {
-        openingHour.errors.closingHourGreaterError = false;
-      }
-
-      angular.forEach(openingHour.errors, function(error, key) {
-        if (error) {
-          openingHour.hasError = true;
-        }
-      });
-
-      this.validateOpeningHours();
-    },
-
-    validateOpeningHours: function () {
-      this.openingHoursHasErrors = false;
-      this.openingHoursErrors.weekdayError = false;
-      this.openingHoursErrors.openingHourError = false;
-      this.openingHoursErrors.closingHourError = false;
-      this.openingHoursErrors.closingHourGreaterError = false;
-
-      var errors = _.pluck(_.where(this.openingHours, {hasError: true}), 'errors');
-      if (errors.length > 0) {
-        this.openingHoursHasErrors = true;
-      }
-      else {
-        this.openingHoursHasErrors = false;
-      }
-
-      this.openingHoursErrors.weekdayError = _.contains(_.pluck(errors, 'weekdayError'), true);
-      this.openingHoursErrors.openingHourError = _.contains(_.pluck(errors, 'openingHourError'), true);
-      this.openingHoursErrors.closingHourError = _.contains(_.pluck(errors, 'closingHourError'), true);
-      this.openingHoursErrors.closingHourGreaterError = _.contains(_.pluck(errors, 'closingHourGreaterError'), true);
     },
 
     periodicTimingChanged: function () {
@@ -10108,7 +10456,6 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
         }
       }
     }
-
   };
 
   // initialize the data
@@ -10116,7 +10463,7 @@ function EventFormDataFactory(rx, calendarLabels, moment) {
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "$rootScope"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -10143,6 +10490,8 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+    EventFormData.initOpeningHours([]);
+
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
 
     if (EventFormData.isEvent && calendarConfig && calendarConfig.date) {
@@ -10156,10 +10505,12 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.calendarType = 'single';
     EventFormData.addTimestamp(
       new Date(calendarConfig.date),
-      calendarConfig.startTime,
-      new Date(calendarConfig.date + 'T' + calendarConfig.startTime),
-      calendarConfig.endTime,
-      new Date(calendarConfig.date + 'T' + calendarConfig.endTime)
+      calendarConfig.startTime || '',
+      calendarConfig.startTime ?
+        moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
+      calendarConfig.endTime || '',
+      calendarConfig.endTime ?
+        moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
   }
@@ -10283,9 +10634,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     }
 
     if (!!EventFormData.openingHours.length) {
-      _.each(EventFormData.openingHours, function (openingHour, index) {
-        EventFormData.saveOpeningHourDaySelection(index, openingHour.dayOfWeek);
-      });
+      EventFormData.initOpeningHours(EventFormData.openingHours);
     }
 
     $scope.loaded = true;
@@ -10318,7 +10667,6 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
-
 }
 EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
 
@@ -10708,9 +11056,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.calendarType = 'permanent';
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
-      if (EventFormData.openingHours.length === 0) {
-        EventFormData.addOpeningHour('', '', '', '', '');
-      }
     }
 
     EventFormData.setEventType(eventType);
@@ -10816,13 +11161,14 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels, OpeningHoursCollection) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
   $scope.calendarLabels = calendarLabels;
+  $scope.openingHours = OpeningHoursCollection;
 
   /**
    * Mark the major info as changed.
@@ -10837,7 +11183,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels", "OpeningHoursCollection"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -11502,17 +11848,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
   /**
-   * Enum for age ranges.
-   * @readonly
-   * @enum {Object}
-   */
-  var AgeRangeEnum = Object.freeze({
-    'ALL': {'value': 0, 'label': 'Alle leeftijden'},
-    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 0, max: 12},
-    'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
-    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
-  });
-  /**
    * Enum for contact info types.
    * @readonly
    * @enum {string}
@@ -11532,20 +11867,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
-
-  // Age range vars
-  $scope.savingAgeRange = false;
-  $scope.ageRangeError = false;
-  $scope.invalidAgeRange = false;
-  /**
-   * @type {AgeRangeEnum|null}
-   */
-  $scope.ageRange = null;
-  $scope.ageCssClass = EventFormData.typicalAgeRange ? 'state-complete' : 'state-incomplete';
-  /**
-   * * @type {number|null}
-   */
-  $scope.minAge = null;
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -11607,12 +11928,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.alterDescription = alterDescription;
   $scope.saveDescription = saveDescription;
 
-  // Age range functions.
-  $scope.saveAgeRange = saveAgeRange;
-  $scope.ageRangeChanged = ageRangeChanged;
-  $scope.setAllAges = setAllAges;
-  $scope.resetAgeRange = resetAgeRange;
-
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
   $scope.selectOrganizer = selectOrganizer;
@@ -11633,12 +11948,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.removeImage = removeImage;
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
-
-  $scope.ageRanges = _.map(AgeRangeEnum, function (range) {
-    return range;
-  });
-
-  $scope.AgeRange = AgeRangeEnum;
 
   // Init the controller for editing.
   initEditForm();
@@ -11683,119 +11992,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.descriptionError = true;
     });
 
-  }
-
-  /**
-   * Listener on the age range selection.
-   * @param {AgeRangeEnum} ageRange
-   */
-  function ageRangeChanged(ageRange) {
-    $scope.minAge = null;
-    $scope.ageCssClass = 'state-complete';
-
-    $scope.saveAgeRange();
-  }
-
-  /**
-   * @param {number} minAge
-   * @param {number} [maxAge]
-   *
-   * @return {string}
-   */
-  function formatTypicalAgeRange(minAge, maxAge) {
-    var formattedAgeRange = '';
-
-    if (maxAge) {
-      formattedAgeRange = minAge === maxAge ? minAge.toString() : minAge + '-' + maxAge;
-    } else {
-      formattedAgeRange = minAge + '-';
-    }
-
-    return formattedAgeRange;
-  }
-
-  /**
-   * @param {number} minAge
-   * @param {AgeRangeEnum} ageRange
-   *
-   * @return {boolean}
-   */
-  function isMinimumAgeInRange(minAge, ageRange) {
-    var inRange = true;
-
-    if (ageRange.max && minAge > ageRange.max) {
-      inRange = false;
-    }
-
-    if (ageRange.min && minAge < ageRange.min) {
-      inRange = false;
-    }
-
-    return inRange;
-  }
-
-  /**
-   * Save the age range.
-   */
-  function saveAgeRange() {
-
-    $scope.invalidAgeRange = false;
-
-    if ($scope.ageRange === AgeRangeEnum.ALL) {
-      EventFormData.typicalAgeRange = null;
-    }
-    else {
-      if ($scope.minAge) {
-        $scope.invalidAgeRange = !isMinimumAgeInRange($scope.minAge, $scope.ageRange);
-      }
-
-      EventFormData.typicalAgeRange = formatTypicalAgeRange(
-        $scope.minAge || $scope.ageRange.min,
-        $scope.ageRange.max
-      );
-    }
-
-    // Save to db if valid age entered.
-    if (!$scope.invalidAgeRange) {
-      var ageRangePersisted = null;
-
-      var showAgeRangeError = function() {
-        $scope.savingAgeRange = false;
-        $scope.ageRangeError = true;
-      };
-
-      var markAgeRangeAsUpdated = function () {
-        $scope.savingAgeRange = false;
-        controller.eventFormSaved();
-        $scope.ageCssClass = 'state-complete';
-      };
-
-      if ($scope.ageRange === AgeRangeEnum.ALL) {
-        ageRangePersisted = eventCrud.deleteTypicalAgeRange(EventFormData);
-      }
-      else {
-        ageRangePersisted = eventCrud.updateTypicalAgeRange(EventFormData);
-      }
-
-      ageRangePersisted.then(markAgeRangeAsUpdated, showAgeRangeError);
-    }
-
-  }
-
-  /**
-   * Set to all ages.
-   */
-  function setAllAges() {
-    $scope.ageRange = AgeRangeEnum.ALL;
-  }
-
-  /**
-   * Reset the age selection.
-   */
-  function resetAgeRange() {
-    $scope.ageRange = null;
-    $scope.minAge = null;
-    $scope.ageCssClass = 'state-incomplete';
   }
 
   controller.eventFormSaved = function () {
@@ -12224,41 +12420,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Init this step for editing.
    */
   function initEditForm() {
-
-    // On edit set state default to complete.
-    if (EventFormData.id) {
-      $scope.ageCssClass = 'state-complete';
-      var minAge, maxAge;
-
-      if (EventFormData.typicalAgeRange) {
-        if (typeof EventFormData.typicalAgeRange === 'string') {
-          var rangeArray = EventFormData.typicalAgeRange.split('-');
-          minAge = rangeArray[0] ? parseInt(rangeArray[0]) : null;
-          maxAge = rangeArray[1] ? parseInt(rangeArray[1]) : null;
-        }
-        else {
-          minAge = EventFormData.typicalAgeRange;
-        }
-
-        if (typeof minAge === 'number') {
-          $scope.minAge = minAge;
-          if (maxAge) {
-            $scope.ageRange = _.findWhere(AgeRangeEnum, {max: maxAge});
-          }
-          else {
-            $scope.ageRange = _.find(AgeRangeEnum, function (ageRange) {
-              // ignore AgeRangeEnum.ALL which has value zero because it will match anything
-              return ageRange.value && isMinimumAgeInRange(minAge, ageRange);
-            });
-          }
-        }
-      }
-      else {
-        $scope.minAge = 0;
-        $scope.ageRange = AgeRangeEnum.ALL;
-      }
-    }
-
     $scope.contactInfo = _.flatten(
       _.map(EventFormData.contactPoint, function (contactInfo, type) {
         return _.contains(ContactInfoTypeEnum, type) ? _.map(contactInfo, function (contactInfoItem) {
@@ -13669,7 +13830,8 @@ function ModerationListController(
   SearchResultGenerator,
   rx,
   $scope,
-  $q
+  $q,
+  $document
 ) {
   var moderator = this;
 
@@ -13715,6 +13877,10 @@ function ModerationListController(
         moderator.loading = true;
       })
       .subscribe();
+
+    page$.subscribe(function () {
+      $document.scrollTop(0);
+    });
 
     return $q.resolve();
   }
@@ -13780,7 +13946,7 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
 
 // Source: src/management/moderation/moderation.service.js
 /**
@@ -14796,7 +14962,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -14889,8 +15055,13 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
+
+  page$
+    .subscribe(function () {
+      $document.scrollTop(0);
+    });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
 
 // Source: src/management/roles/search-label.component.js
 angular
@@ -15435,7 +15606,7 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state, $document) {
   var ulc = this;
 
   var itemsPerPage = 20;
@@ -15526,8 +15697,12 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       ulc.loading = true;
     })
     .subscribe();
+
+  page$.subscribe(function () {
+    $document.scrollTop(0);
+  });
 }
-UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state"];
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 
 // Source: src/media/create-image-job.factory.js
 /**
@@ -15787,12 +15962,14 @@ function PlaceDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
 
-  $q.when(placeId, function(offerLocation) {
+  $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
@@ -15841,21 +16018,21 @@ function PlaceDetail(
   var cachedPlace;
 
   function showOffer(place) {
-      cachedPlace = place;
+    cachedPlace = place;
 
-      var personalVariationLoaded = variationRepository.getPersonalVariation(place);
+    $scope.place = jsonLDLangFilter(place, language);
+    $scope.placeIdIsInvalid = false;
 
-      $scope.place = jsonLDLangFilter(place, language);
-      $scope.placeIdIsInvalid = false;
-
-      personalVariationLoaded
-        .then(function (variation) {
-          $scope.place.description = variation.description[language];
-        })
-        .finally(function () {
-          $scope.placeIsEditable = true;
-        });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(place)
+        .then(showVariation);
     }
+  }
+
+  function showVariation(variation) {
+    $scope.place.description = variation.description[language];
+  }
 
   function failedToLoad(reason) {
     $scope.placeIdIsInvalid = true;
@@ -15996,7 +16173,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
 
 // Source: src/router/offer-locator.service.js
 /**
@@ -18377,7 +18554,8 @@ function OfferController(
   $window,
   offerEditor,
   variationRepository,
-  $q
+  $q,
+  appConfig
 ) {
   var controller = this;
   var cachedOffer;
@@ -18579,14 +18757,19 @@ function OfferController(
    * @return {Promise}
    */
   function fetchPersonalVariation(offer) {
-    return variationRepository
-      .getPersonalVariation(offer)
-      .then(function (personalVariation) {
-        $scope.event.description = personalVariation.description[defaultLanguage];
-        return personalVariation;
-      }, function () {
-        return $q.reject();
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      return variationRepository
+        .getPersonalVariation(offer)
+        .then(function (personalVariation) {
+          $scope.event.description = personalVariation.description[defaultLanguage];
+          return personalVariation;
+        }, function () {
+          return $q.reject();
+        });
+    } else {
+      return $q.reject();
+    }
   }
 
   /**
@@ -18615,7 +18798,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig"];
 
 // Source: src/search/ui/place.directive.js
 /**
@@ -19097,6 +19280,48 @@ function UitpasInfoComponent(
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
 
+// Source: src/uitpas/default-uitpas-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.uitpas.DefaultUitpasLabels
+ * @description
+ * # Default UiTPAS Labels
+ *
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-30.
+ * This file used to be updated each time labels changed but now acts as a placeholder.
+ *
+ * The actual labels should be fetched when building or bootstrapping your app and written to the UitpasLabels constant.
+ * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * e.g.: https://uitpas.uitdatabank.be/labels for production
+ */
+angular
+  .module('udb.uitpas')
+  .constant('DefaultUitpasLabels',
+  /**
+   * Enum for UiTPAS labels
+   * @readonly
+   * @enum {string}
+   */
+  {
+    'PASPARTOE': 'Paspartoe',
+    'UITPAS': 'UiTPAS',
+    'UITPAS_GENT': 'UiTPAS Gent',
+    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
+    'UITPAS_DENDER': 'UiTPAS Dender',
+    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
+    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
+    'UITPAS_KEMPEN': 'UiTPAS Kempen',
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_LIER': 'UiTPAS Lier',
+    'UITPAS_HEIST-OP-DEN-BERG': 'UiTPAS Heist-op-den-Berg',
+    'UITPAS_MEETJESLAND': 'UiTPAS Meetjesland',
+    'UITPAS_WESTHOEK': 'UiTPAS Westhoek'
+  });
+
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
  * @ngdoc directive
@@ -19207,44 +19432,41 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
 }
 UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
 
-// Source: src/uitpas/uitpas-labels.constant.js
+// Source: src/uitpas/uitpas-labels.provider.js
 /* jshint sub: true */
 
 /**
  * @ngdoc service
- * @name udb.entry.uitpasLabels
+ * @name udb.uitpas.UitpasLabelsProvider
  * @description
- * # UiTPAS Labels
+ * # UiTPAS Labels Provider
  *
- * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01.
- * This file used to be updated each time labels changed but now acts as a placeholder.
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01 are in the DefaultUitpasLabels
+ * constant. The file used to be updated each time labels changed but now acts as a placeholder.
  *
- * The actual labels should be fetched when building your app and overwrite this UitpasLabels constant.
- * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * The actual labels should be fetched when building or bootstrapping your app and written to the ExtermalUitpasLabels
+ * constant. The UiTPAS service should have an endpoint with all the labels for your environment.
  * e.g.: https://uitpas.uitdatabank.be/labels for production
  */
 angular
   .module('udb.uitpas')
-  .constant('UitpasLabels',
+  .provider('UitpasLabels', UitpasLabelsProvider);
+
+function UitpasLabelsProvider() {
+  var customUitpasLabels;
+
   /**
-   * Enum for UiTPAS labels
-   * @readonly
-   * @enum {string}
+   * Configure the UiTPAS labels by providing a map of {LABEL_KEY: label name}
+   * @param {object} labels
    */
-  {
-    'PASPARTOE': 'Paspartoe',
-    'UITPAS': 'UiTPAS',
-    'UITPAS_GENT': 'UiTPAS Gent',
-    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
-    'UITPAS_DENDER': 'UiTPAS Dender',
-    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
-    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
-    'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven',
-    'UITPAS_SYX': 'UiTPAS Syx'
-  });
+  this.useLabels = function(labels) {
+    customUitpasLabels = labels;
+  };
+
+  this.$get = ['DefaultUitpasLabels', function(DefaultUitpasLabels) {
+    return !!customUitpasLabels ? customUitpasLabels : DefaultUitpasLabels;
+  }];
+}
 
 // Source: .tmp/udb3-angular.templates.js
 angular.module('udb.core').run(['$templateCache', function($templateCache) {
@@ -20021,6 +20243,52 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-age.html',
+    "<div class=\"row extra-leeftijd\">\n" +
+    "    <div class=\"extra-task\" ng-class=\"{'state-complete': !!fagec.activeAgeRange}\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <em class=\"extra-task-label\">Geschikt voor</em>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
+    "                <a ng-bind=\"::ageRange.label\"\n" +
+    "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
+    "                   href=\"#\"\n" +
+    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
+    "                <span ng-if=\"::!$last\">, </span>\n" +
+    "            </span>\n" +
+    "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
+    "                <div class=\"form-group\" >\n" +
+    "                    <label for=\"min-age\">Van</label>\n" +
+    "                    <input type=\"text\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           id=\"min-age\"\n" +
+    "                           ng-model=\"fagec.minAge\"\n" +
+    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "                           udb-age-input>\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <label for=\"max-age\">tot</label>\n" +
+    "                    <input type=\"text\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           id=\"max-age\"\n" +
+    "                           ng-model=\"fagec.maxAge\"\n" +
+    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "                           udb-age-input>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
+    "                <span ng-bind=\"fagec.error\"></span>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/form-audience.html',
     "<div class=\"row audience\" ng-if=\"::fac.enabled\">\n" +
     "    <div class=\"extra-task state-complete\">\n" +
@@ -20385,25 +20653,119 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/opening-hours-editor.modal.html',
+    "<div class=\"modal-header\">\n" +
+    "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openAndClose\">\n" +
+    "        <p class=\"text-danger\">Vul alle openings- en sluitingstijden in.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.dayOfWeek\">\n" +
+    "        <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openIsBeforeClose\">\n" +
+    "        <p class=\"text-danger\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "            Dagen\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "            Van\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "            Tot\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
+    "        <ng-form name=\"openingHoursInfo\">\n" +
+    "            <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\"\n" +
+    "                 ng-class=\"{'has-error': openingHoursInfo.dayOfWeek.$invalid && openingHoursInfo.dayOfWeek.$touched}\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <select class=\"selectpicker\"\n" +
+    "                            name=\"dayOfWeek\"\n" +
+    "                            multiple\n" +
+    "                            start-label=\"Kies dag(en)\"\n" +
+    "                            ng-model=\"openingHours.dayOfWeek\"\n" +
+    "                            udb-multiselect\n" +
+    "                            ng-required=\"true\">\n" +
+    "                        <option value=\"monday\">maandag</option>\n" +
+    "                        <option value=\"tuesday\">dinsdag</option>\n" +
+    "                        <option value=\"wednesday\">woensdag</option>\n" +
+    "                        <option value=\"thursday\">donderdag</option>\n" +
+    "                        <option value=\"friday\">vrijdag</option>\n" +
+    "                        <option value=\"saturday\">zaterdag</option>\n" +
+    "                        <option value=\"sunday\">zondag</option>\n" +
+    "                    </select>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                <div class=\"form-group\"\n" +
+    "                     ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
+    "                    <input udb-time\n" +
+    "                           type=\"time\"\n" +
+    "                           name=\"opens\"\n" +
+    "                           class=\"form-control uur\"\n" +
+    "                           placeholder=\"Bv. 08:00\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-model=\"openingHours.opensAsDate\"/>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
+    "                <div class=\"form-group\"\n" +
+    "                     ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
+    "                    <input udb-time\n" +
+    "                           type=\"time\"\n" +
+    "                           name=\"closes\"\n" +
+    "                           class=\"form-control uur\"\n" +
+    "                           placeholder=\"Bv. 08:00\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-model=\"openingHours.closesAsDate\"/>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
+    "                <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
+    "                    <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </ng-form>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
+    "        Meer openingstijden toevoegen\n" +
+    "    </a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
+    "            ng-click=\"ohemc.saveOpeningHours()\">\n" +
+    "        Opslaan\n" +
+    "    </button>\n" +
+    "</div>\n" +
+    "\n"
+  );
+
+
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"!!formData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
-    "     data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\">Openingsuren toevoegen</a>\n" +
+    "     ng-click=\"cm.edit()\">Openingsuren toevoegen</a>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-show=\"!!formData.openingHours.length\">\n" +
+    "<div class=\"col-xs-12 col-sm-8\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
     "    <table class=\"table table-condensed \">\n" +
     "      <thead>\n" +
     "      <th>Openingsuren</th>\n" +
     "      <th>\n" +
-    "        <a href=\"#\" data-toggle=\"modal\" data-target=\"#wanneer-openingsuren-toevoegen\" class=\"btn btn-default\">\n" +
+    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\">\n" +
     "          Wijzigen\n" +
     "        </a>\n" +
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
-    "        <tr ng-repeat=\"openingHour in formData.openingHours\">\n" +
+    "        <tr ng-repeat=\"openingHour in cm.openingHoursCollection.openingHours\">\n" +
     "          <td ng-bind=\"openingHour.label\"></td>\n" +
     "          <td>\n" +
     "            <span ng-bind=\"openingHour.opens\"></span> – <span ng-bind=\"openingHour.closes\"></span>\n" +
@@ -20412,105 +20774,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </tbody>\n" +
     "    </table>\n" +
     "  </section>\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"modal fade\" id=\"wanneer-openingsuren-toevoegen\" ng-init=\"formData.initOpeningHours()\">\n" +
-    "  <div class=\"modal-dialog\">\n" +
-    "    <div class=\"modal-content\">\n" +
-    "      <div class=\"modal-header\">\n" +
-    "        <h4 class=\"modal-title\">Openingsuren</h4>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-body\">\n" +
-    "        <table class=\"table\">\n" +
-    "          <thead>\n" +
-    "          <tr>\n" +
-    "            <th>Dag(en)</th>\n" +
-    "            <th>Van</th>\n" +
-    "            <th></th>\n" +
-    "            <th>Tot</th>\n" +
-    "            <th></th>\n" +
-    "          </tr>\n" +
-    "          </thead>\n" +
-    "\n" +
-    "          <tr ng-repeat=\"(i, openingHour) in formData.openingHours\">\n" +
-    "            <td>\n" +
-    "              <select class=\"selectpicker\"\n" +
-    "                      name=\"weekday\"\n" +
-    "                      multiple\n" +
-    "                      start-label=\"Kies dag(en)\"\n" +
-    "                      ng-model=\"openingHour.dayOfWeek\"\n" +
-    "                      ng-change=\"formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)\"\n" +
-    "                      ng-class=\"{'has-error': openingHour.errors.weekdayError}\"\n" +
-    "                      udb-multiselect\n" +
-    "                      required>\n" +
-    "                <option value=\"monday\">maandag</option>\n" +
-    "                <option value=\"tuesday\">dinsdag</option>\n" +
-    "                <option value=\"wednesday\">woensdag</option>\n" +
-    "                <option value=\"thursday\">donderdag</option>\n" +
-    "                <option value=\"friday\">vrijdag</option>\n" +
-    "                <option value=\"saturday\">zaterdag</option>\n" +
-    "                <option value=\"sunday\">zondag</option>\n" +
-    "              </select>\n" +
-    "            </td>\n" +
-    "            <td>\n" +
-    "              <input udb-time\n" +
-    "                     type=\"time\"\n" +
-    "                     name=\"openingHour\"\n" +
-    "                     class=\"form-control uur\"\n" +
-    "                     placeholder=\"Bv. 08:00\"\n" +
-    "                     ng-model=\"openingHour.opensAsDate\"\n" +
-    "                     ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
-    "                     ng-model-options=\"{ debounce: 500 }\"\n" +
-    "                     ng-class=\"{'has-error': openingHour.errors.openingHourError}\" />\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                -&nbsp;\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "\n" +
-    "                <input udb-time\n" +
-    "                       type=\"time\"\n" +
-    "                       name=\"closingHour\"\n" +
-    "                       class=\"form-control uur\"\n" +
-    "                       placeholder=\"Bv. 08:00\"\n" +
-    "                       ng-model=\"openingHour.closesAsDate\"\n" +
-    "                       ng-blur=\"formData.validateOpeningHour(openingHour)\"\n" +
-    "                       ng-model-options=\"{ debounce: 500 }\"\n" +
-    "                       ng-class=\"{'has-error': openingHour.errors.closingHourError}\"/>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"formData.removeOpeningHour(i)\">\n" +
-    "                  <span aria-hidden=\"true\">&times;</span>\n" +
-    "                </button>\n" +
-    "              </td>\n" +
-    "          </tr>\n" +
-    "        </table>\n" +
-    "        <a class=\"btn btn-link btn-plus\" ng-click=\"formData.addOpeningHour('', '' , '', '', '')\">\n" +
-    "          Meer openingstijden toevoegen\n" +
-    "        </a>\n" +
-    "        <div class=\"alert alert-danger\" ng-show=\"formData.openingHoursHasErrors\">\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.weekdayError\">Je moet minstens 1 weekdag selecteren.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.openingHourError\">Gelieve een geldige openingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourError\">Gelieve een geldige sluitingstijd in te geven.</p>\n" +
-    "          <p class=\"text-danger\" ng-if=\"formData.openingHoursErrors.closingHourGreaterError\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"modal-footer\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Annuleren</button>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
-    "                data-dismiss=\"modal\"\n" +
-    "                ng-click=\"formData.saveOpeningHours()\"\n" +
-    "                ng-disabled=\"formData.openingHoursHasErrors\">\n" +
-    "          Toevoegen\n" +
-    "        </button>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "    <!-- /.modal-content -->\n" +
-    "  </div>\n" +
-    "  <!-- /.modal-dialog -->\n" +
-    "</div>\n" +
-    "<!-- /.modal -->"
+    "</div>"
   );
 
 
@@ -20525,7 +20789,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
-    "      <p class=\"alert alert-info\">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>\n" +
+    "      <p class=\"alert alert-info\" ng-bind=\"'UNIQUE_ORGANIZER_NOTICE' | translate\"></p>\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group has-feedback\"\n" +
@@ -21372,7 +21636,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'permanent' || eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-opening-hours form-data=\"eventFormData\"></udb-event-form-opening-hours>\n" +
+    "      <udb-event-form-opening-hours opening-hours=\"openingHours\"></udb-event-form-opening-hours>\n" +
     "    </div>\n" +
     "\n" +
     "  </section>\n" +
@@ -21693,60 +21957,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <div class=\"row extra-leeftijd\">\n" +
-    "          <div class=\"extra-task\" ng-class=\"ageCssClass\">\n" +
-    "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Geschikt voor</em>\n" +
-    "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingAgeRange\"></i>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-sm-8\">\n" +
-    "              <section>\n" +
-    "                <div class=\"form-group clearfix\" ng-hide=\"ageRange === AgeRange.ALL\">\n" +
-    "                  <div class=\"row\">\n" +
-    "                    <div class=\"col-xs-7\">\n" +
-    "                      <select class=\"form-control leeftijd-incomplete-select\"\n" +
-    "                              ng-change=\"ageRangeChanged(ageRange)\"\n" +
-    "                              ng-model=\"ageRange\"\n" +
-    "                              ng-options=\"range.label for range in ageRanges\">\n" +
-    "                        <option value=\"\">Kies een leeftijdscategorie</option>\n" +
-    "                      </select>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"col-xs-5\">\n" +
-    "                      <a class=\"btn btn-link\" ng-show=\"ageRange === null\" ng-click=\"setAllAges()\">Alle leeftijden</a>\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-inline form-group\" ng-show=\"ageRange && ageRange !== AgeRange.ALL\">\n" +
-    "                  <div class=\"form-group\">\n" +
-    "                    <label for=\"min-age\">Vanaf</label>\n" +
-    "                    <input type=\"text\"\n" +
-    "                           id=\"min-age\"\n" +
-    "                           class=\"form-control\"\n" +
-    "                           ng-model=\"minAge\"\n" +
-    "                           ng-model-options=\"{updateOn: 'change'}\"\n" +
-    "                           ng-change=\"saveAgeRange()\">\n" +
-    "                    <label for=\"min-age\">jaar</label>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "\n" +
-    "                <span ng-show=\"ageRange === AgeRange.ALL\">\n" +
-    "                  Alle leeftijden\n" +
-    "                  <a href=\"#\" class=\"btn btn-link btn-leeftijd-restore to-filling\" ng-click=\"resetAgeRange()\">\n" +
-    "                    Wijzigen\n" +
-    "                  </a>\n" +
-    "                </span>\n" +
-    "\n" +
-    "                <div ng-show=\"ageRangeError\" class=\"alert alert-danger\">\n" +
-    "                  Er ging iets fout bij het opslaan van de leeftijd.\n" +
-    "                </div>\n" +
-    "                <div ng-show=\"invalidAgeRange\" class=\"alert alert-danger\">\n" +
-    "                  Gelieve een leeftijd in te voeren die binnen de gekozen leeftijdscategorie valt.\n" +
-    "                </div>\n" +
-    "\n" +
-    "              </section>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
+    "        <udb-form-age></udb-form-age>\n" +
     "\n" +
     "        <div class=\"row extra-organisator\">\n" +
     "          <div class=\"extra-task\" ng-class=\"organizerCssClass\">\n" +

@@ -101,6 +101,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.type = '';
     this.theme = {};
     this.calendarType = '';
+    /** @type {OpeningHoursData[]} **/
     this.openinghours = [];
     this.address = {
       'addressCountry' : 'BE',
@@ -259,6 +260,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     /**
      * Get the opening hours for this event.
+     *
+     * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
       return this.openinghours;

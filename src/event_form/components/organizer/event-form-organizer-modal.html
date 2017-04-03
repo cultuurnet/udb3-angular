@@ -8,7 +8,7 @@
 
   <section ng-hide="organizersFound">
     <form name="organizerForm" class="organizer-form">
-      <p class="alert alert-info">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>
+      <p class="alert alert-info" ng-bind="'UNIQUE_ORGANIZER_NOTICE' | translate"></p>
       <div class="row">
         <div class="col-sm-12 col-md-8">
           <div class="form-group has-feedback"

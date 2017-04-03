@@ -13,7 +13,7 @@
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -43,6 +43,7 @@
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
+      $document.scrollTop(0);
     }
 
     function updateItemViewer() {
@@ -120,7 +121,6 @@
         openPlaceDeleteConfirmModal(item);
       }
     }
-
   }
 
 })();
