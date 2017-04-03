@@ -45,6 +45,7 @@ function EventFormPublishController(
     }
   }
   controller.eventFormData.availableFrom = publicationDate;
+  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
 
   function publish() {
     controller.error = '';
@@ -78,8 +79,6 @@ function EventFormPublishController(
   function toBePublishedLater() {
     var today = new Date();
     today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    console.log(today);
-    console.log(controller.eventFormData.availableFrom);
     return today !== controller.eventFormData.availableFrom;
   }
 

@@ -10918,6 +10918,7 @@ function EventFormPublishController(
     }
   }
   controller.eventFormData.availableFrom = publicationDate;
+  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
 
   function publish() {
     controller.error = '';
@@ -10951,8 +10952,6 @@ function EventFormPublishController(
   function toBePublishedLater() {
     var today = new Date();
     today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    console.log(today);
-    console.log(controller.eventFormData.availableFrom);
     return today !== controller.eventFormData.availableFrom;
   }
 
@@ -21543,10 +21542,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
     "\n" +
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
-    "\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.toBePublishedLater\">Later publiceren</a>\n" +
-    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater\">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>\n" +
+    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.toBePublishedLater && efpc.hasNoDefault\">Later publiceren</a>\n" +
+    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater && efpc.hasNoDefault\">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
     "</div>\n"
   );
