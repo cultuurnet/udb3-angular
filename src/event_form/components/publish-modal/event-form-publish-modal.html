@@ -14,7 +14,7 @@
         <input type="radio" name="publishDate" ng-model="enableDate" ng-checked="!isToday" value="true" aria-label="Later, vanaf">
         Later, vanaf
       </span>
-   <input type="text" class="form-control" ng-focus="drp.startOpened = !drp.startOpened" uib-datepicker-popup="{{drp.dateFormat}}" ng-model="date"
+   <input type="text" class="form-control" ng-focus="onFocus()" uib-datepicker-popup="{{drp.dateFormat}}" ng-model="date"
            is-open="drp.startOpened" ng-required="true" datepicker-options="drp.options"/>
     <span class="input-group-btn">
         <button type="button" class="btn btn-default" ng-click="drp.startOpened = !drp.startOpened">
@@ -22,6 +22,8 @@
         </button>
     </span>
     </div>
+    <br>
+    <div class="alert alert-warning" ng-if="error">Een publicatiedatum kan niet in het verleden liggen.</div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="dismiss()" data-dismiss="modal">Annuleren</button>

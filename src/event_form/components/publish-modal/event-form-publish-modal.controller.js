@@ -28,8 +28,13 @@
     $scope.publish = publish;
     $scope.drp = {
       dateFormat: 'dd/MM/yyyy',
-      startOpened: false
+      startOpened: false,
+      options : {
+        minDate : today
+      }
     };
+    $scope.error = false;
+    $scope.onFocus = onFocus;
 
     function dismiss() {
       $uibModalInstance.dismiss();
@@ -40,9 +45,20 @@
       $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth(), $scope.date.getDate(), 0, 0, 0);
     }
 
+    function onFocus() {
+      $scope.isToday = false;
+      $scope.error = false;
+      $scope.drp.startOpened = !$scope.drp.startOpened;
+    }
+
     function publish() {
-      eventFormData.availableFrom = $scope.date;
-      $uibModalInstance.close();
+      if (today < $scope.date) {
+        eventFormData.availableFrom = $scope.date;
+        $uibModalInstance.close();
+      } else {
+        $scope.error = true;
+      }
+
     }
 
   }

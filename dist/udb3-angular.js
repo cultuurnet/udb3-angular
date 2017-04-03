@@ -9355,8 +9355,13 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     $scope.publish = publish;
     $scope.drp = {
       dateFormat: 'dd/MM/yyyy',
-      startOpened: false
+      startOpened: false,
+      options : {
+        minDate : today
+      }
     };
+    $scope.error = false;
+    $scope.onFocus = onFocus;
 
     function dismiss() {
       $uibModalInstance.dismiss();
@@ -9367,9 +9372,20 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
       $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth(), $scope.date.getDate(), 0, 0, 0);
     }
 
+    function onFocus() {
+      $scope.isToday = false;
+      $scope.error = false;
+      $scope.drp.startOpened = !$scope.drp.startOpened;
+    }
+
     function publish() {
-      eventFormData.availableFrom = $scope.date;
-      $uibModalInstance.close();
+      if (today < $scope.date) {
+        eventFormData.availableFrom = $scope.date;
+        $uibModalInstance.close();
+      } else {
+        $scope.error = true;
+      }
+
     }
 
   }
@@ -21246,7 +21262,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <input type=\"radio\" name=\"publishDate\" ng-model=\"enableDate\" ng-checked=\"!isToday\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
     "        Later, vanaf\n" +
     "      </span>\n" +
-    "   <input type=\"text\" class=\"form-control\" ng-focus=\"drp.startOpened = !drp.startOpened\" uib-datepicker-popup=\"{{drp.dateFormat}}\" ng-model=\"date\"\n" +
+    "   <input type=\"text\" class=\"form-control\" ng-focus=\"onFocus()\" uib-datepicker-popup=\"{{drp.dateFormat}}\" ng-model=\"date\"\n" +
     "           is-open=\"drp.startOpened\" ng-required=\"true\" datepicker-options=\"drp.options\"/>\n" +
     "    <span class=\"input-group-btn\">\n" +
     "        <button type=\"button\" class=\"btn btn-default\" ng-click=\"drp.startOpened = !drp.startOpened\">\n" +
@@ -21254,6 +21270,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </button>\n" +
     "    </span>\n" +
     "    </div>\n" +
+    "    <br>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"error\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"dismiss()\" data-dismiss=\"modal\">Annuleren</button>\n" +
