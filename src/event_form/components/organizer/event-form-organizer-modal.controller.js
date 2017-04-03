@@ -55,6 +55,7 @@ function EventFormOrganizerModalController(
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
+  $scope.updateName = updateName;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -115,6 +116,17 @@ function EventFormOrganizerModalController(
           $scope.websiteError = true;
           $scope.showWebsiteValidation = false;
         });
+  }
+
+  /**
+   * When the name is changed by a user, submit state needs to be updated also.
+   */
+  function updateName() {
+    if ($scope.newOrganizer.name && !$scope.websiteError) {
+      $scope.disableSubmit = false;
+    } else {
+      $scope.disableSubmit = false;
+    }
   }
 
   /**
