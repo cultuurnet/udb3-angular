@@ -2,7 +2,7 @@
 
 /**
  * @ngdoc function
- * @name udbApp.controller:OrganizationSearchController
+ * @name udb.management.organizers.controller:OrganizationSearchController
  * @description
  * # Organization Search Controller
  */

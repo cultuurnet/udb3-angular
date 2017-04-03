@@ -3,6 +3,7 @@
 /**
  * @ngdoc directive
  * @name udb.management.organizers.directive:udbOrganizationSearchItem
+ * @var udbOrganizationSearchItem osic
  * @description
  * # Organizer search item Directive
  */
