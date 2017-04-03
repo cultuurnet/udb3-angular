@@ -36,7 +36,7 @@ function EventFormPublishController(
   var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
   var publicationDate = '';
 
-  if (angular.isUndefined(controller.eventFormData.availableFrom) || controller.eventFormData.availableFrom == "" ) {
+  if (angular.isUndefined(controller.eventFormData.availableFrom) || controller.eventFormData.availableFrom === '') {
     if (angular.isUndefined(defaultPublicationDate)) {
       var today = new Date();
       publicationDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
@@ -49,7 +49,7 @@ function EventFormPublishController(
   function publish() {
     controller.error = '';
     eventCrud
-      .publishOffer(EventFormData, new Date('2013-03-01T00:00:00Z'))//controller.eventFormData.availableFrom)
+      .publishOffer(EventFormData, controller.eventFormData.availableFrom)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)

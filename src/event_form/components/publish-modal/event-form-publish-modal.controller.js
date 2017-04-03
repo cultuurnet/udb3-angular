@@ -19,19 +19,17 @@
     $scope.enableDate = false;
     var today = new Date();
     if (typeof eventFormData === 'string') {
-       $scope.isToday = true;
+      $scope.isToday = true;
     } else {
-       $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
+      $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
     }
-
-
     $scope.dismiss = dismiss;
     $scope.convertDate = convertDate;
     $scope.publish = publish;
     $scope.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false
-    }
+    };
 
     function dismiss() {
       $uibModalInstance.dismiss();
