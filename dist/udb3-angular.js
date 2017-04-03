@@ -9343,13 +9343,17 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
   function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
 
     console.log(eventFormData);
-    
+
     $scope.date = eventFormData.availableFrom;
     $scope.enableDate = false;
 
     $scope.dismiss = dismiss;
     $scope.convertDate = convertDate;
     $scope.publish = publish;
+    $scope.drp = {
+        dateFormat: 'dd/MM/yyyy',
+        startOpened: false
+    }
 
     function dismiss() {
       $uibModalInstance.dismiss();
@@ -21239,7 +21243,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <input type=\"radio\" name=\"publishDate\" ng-model=\"enableDate\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
     "        Later, vanaf\n" +
     "      </span>\n" +
-    "        <input type=\"date\" name=\"\" ng-model=\"date\" ng-change=\"convertDate()\" id=\"date-input\" class=\"form-control\" ng-required=\"enableDate\" ng-disabled=\"!enableDate\" title=\"\">\n" +
+    "<!--        <input type=\"date\" name=\"\" ng-model=\"date\" ng-change=\"convertDate()\" id=\"date-input\" class=\"form-control\" ng-required=\"enableDate\" ng-disabled=\"!enableDate\" title=\"\">-->\n" +
+    "   <input type=\"text\" class=\"form-control\" ng-focus=\"drp.startOpened = !drp.startOpened\" uib-datepicker-popup=\"{{drp.dateFormat}}\" ng-model=\"date\"\n" +
+    "           is-open=\"drp.startOpened\" ng-required=\"true\" datepicker-options=\"drp.options\"/>\n" +
+    "    <span class=\"input-group-btn\">\n" +
+    "        <button type=\"button\" class=\"btn btn-default\" ng-click=\"drp.startOpened = !drp.startOpened\">\n" +
+    "          <i class=\"fa fa-calendar\"></i>\n" +
+    "        </button>\n" +
+    "    </span>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +

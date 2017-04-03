@@ -14,7 +14,14 @@
         <input type="radio" name="publishDate" ng-model="enableDate" value="true" aria-label="Later, vanaf">
         Later, vanaf
       </span>
-        <input type="date" name="" ng-model="date" ng-change="convertDate()" id="date-input" class="form-control" ng-required="enableDate" ng-disabled="!enableDate" title="">
+<!--        <input type="date" name="" ng-model="date" ng-change="convertDate()" id="date-input" class="form-control" ng-required="enableDate" ng-disabled="!enableDate" title="">-->
+   <input type="text" class="form-control" ng-focus="drp.startOpened = !drp.startOpened" uib-datepicker-popup="{{drp.dateFormat}}" ng-model="date"
+           is-open="drp.startOpened" ng-required="true" datepicker-options="drp.options"/>
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-default" ng-click="drp.startOpened = !drp.startOpened">
+          <i class="fa fa-calendar"></i>
+        </button>
+    </span>
     </div>
 </div>
 <div class="modal-footer">
