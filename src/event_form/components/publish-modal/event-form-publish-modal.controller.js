@@ -15,17 +15,17 @@
   /* @ngInject */
   function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
 
-    console.log(eventFormData);
-
     $scope.date = eventFormData.availableFrom;
     $scope.enableDate = false;
+    var today = new Date();
+    $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
 
     $scope.dismiss = dismiss;
     $scope.convertDate = convertDate;
     $scope.publish = publish;
     $scope.drp = {
-        dateFormat: 'dd/MM/yyyy',
-        startOpened: false
+      dateFormat: 'dd/MM/yyyy',
+      startOpened: false
     }
 
     function dismiss() {

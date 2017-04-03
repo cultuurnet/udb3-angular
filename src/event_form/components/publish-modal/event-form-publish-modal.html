@@ -5,13 +5,13 @@
     <p>Vanaf wanneer mag dit online verschijnen?</p>
     <div class="radio">
         <label>
-        <input type="radio" ng-model="enableDate" ng-checked="!enableDate" value="false" name="publishDate" value="now">
+        <input type="radio" ng-model="enableDate" ng-checked="isToday" value="false" name="publishDate" value="now">
         Meteen
     </label>
     </div>
     <div class="input-group">
         <span class="input-group-addon">
-        <input type="radio" name="publishDate" ng-model="enableDate" value="true" aria-label="Later, vanaf">
+        <input type="radio" name="publishDate" ng-model="enableDate" ng-checked="!isToday" value="true" aria-label="Later, vanaf">
         Later, vanaf
       </span>
    <input type="text" class="form-control" ng-focus="drp.startOpened = !drp.startOpened" uib-datepicker-popup="{{drp.dateFormat}}" ng-model="date"
