@@ -56,7 +56,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
-      this.created = Date(jsonOrganizer.created);
+      this.created = new Date(jsonOrganizer.created);
     }
   };
 

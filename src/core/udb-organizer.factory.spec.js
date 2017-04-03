@@ -52,7 +52,7 @@ describe('Factory: UDB Organizer', function () {
 
       ],
       'isUitpas': true,
-      'created': Date('2017-03-28T12:09:18+00:00')
+      'created': new Date('2017-03-28T12:09:18+00:00')
     };
     var jsonOrganizer = {
       '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
