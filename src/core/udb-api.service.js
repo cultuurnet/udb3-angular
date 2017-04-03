@@ -512,10 +512,9 @@ function UdbApi(
    * @return {Promise}
    */
   this.unlabelOffer = function (offerLocation, label) {
-    return $http.delete(
-      offerLocation + '/labels/' + label,
-      defaultApiConfig
-    );
+    return $http
+      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .catch(returnApiProblem);
   };
 
   /**
@@ -528,6 +527,17 @@ function UdbApi(
       offer['@id'],
       defaultApiConfig
     );
+  };
+
+  /**
+   * @param {udbOrganizer} organization
+   *
+   * @return {Promise.<Object|ApiProblem>}
+   */
+  this.deleteOrganization = function (organization) {
+    return $http
+      .delete(organization['@id'], defaultApiConfig)
+      .then(returnJobData, returnApiProblem);
   };
 
   /**
@@ -1217,6 +1227,21 @@ function UdbApi(
 
     return $http
       .patch(offerUrl, (reason ? updateData : {}), requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {URL} offerUrl
+   * @param {Date} [publicationDate]
+   * @returns {Promise.<Object|ApiProblem>}
+   */
+  this.publishOffer = function (offerUrl, publicationDate) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=Publish';
+    var data = publicationDate instanceof Date ? {publicationDate: publicationDate} : {};
+
+    return $http
+      .patch(offerUrl.toString(), data, requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
   };
 

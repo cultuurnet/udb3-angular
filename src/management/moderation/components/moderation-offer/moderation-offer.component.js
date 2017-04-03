@@ -13,8 +13,8 @@ angular
     controller: ModerationOfferComponent,
     controllerAs: 'moc',
     bindings: {
-      offer: '<',
-      next: '<'
+      offerId: '@',
+      offerType: '@'
     }
   });
 
@@ -23,6 +23,8 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   var moc = this;
   var defaultLanguage = 'nl';
 
+  moc.loading = true;
+  moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
 
@@ -31,6 +33,23 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
+
+  // fetch offer
+  ModerationService
+    .getModerationOffer(moc.offerId)
+    .then(function(offer) {
+      offer.updateTranslationState();
+      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
+    })
+    .catch(showLoadingError)
+    .finally(function() {
+      moc.loading = false;
+    });
+
+  function showLoadingError(problem) {
+    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
 
   function isReadyForValidation() {
     return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;

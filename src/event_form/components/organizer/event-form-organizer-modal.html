@@ -8,7 +8,7 @@
 
   <section ng-hide="organizersFound">
     <form name="organizerForm" class="organizer-form">
-      <p class="alert alert-info">Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.</p>
+      <p class="alert alert-info" ng-bind="'UNIQUE_ORGANIZER_NOTICE' | translate"></p>
       <div class="row">
         <div class="col-sm-12 col-md-8">
           <div class="form-group has-feedback"
@@ -45,7 +45,12 @@
         <div class="col-sm-12 col-md-8">
           <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
             <label>Naam</label>
-            <input type="text" name="name" class="form-control" ng-model="newOrganizer.name" required>
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   ng-model="newOrganizer.name"
+                   ng-change="updateName()"
+                   required>
             <p class="help-block">De officiële publieke naam van de organisatie.</p>
             <span class="help-block" ng-show="showValidation && organizerForm.name.$error.required">
           Gelieve een naam in te vullen

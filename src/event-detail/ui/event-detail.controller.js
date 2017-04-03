@@ -24,10 +24,13 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
+
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
@@ -60,7 +63,6 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.hasLabelsError = false;
   $scope.eventHistory = [];
   $scope.tabs = [
     {
@@ -91,8 +93,6 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    var personalVariationLoaded = variationRepository.getPersonalVariation(event);
-
     udbApi
       .getHistory($scope.eventId)
       .then(showHistory);
@@ -101,15 +101,18 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    personalVariationLoaded
-      .then(function (variation) {
-        $scope.event.description = variation.description[language];
-      })
-      .finally(function () {
-        $scope.eventIsEditable = true;
-      });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(event)
+        .then(showVariation);
+    }
+
     hasContactPoint();
     hasBookingInfo();
+  }
+
+  function showVariation(variation) {
+    $scope.event.description = variation.description[language];
   }
 
   function failedToLoad(reason) {
@@ -181,10 +184,6 @@ function EventDetail(
     $location.path('/event/' + eventId + '/edit');
   };
 
-  $scope.translateWorkflowStatus = function(code) {
-     return translateWorkflowStatus(code);
-   };
-
   function goToDashboard() {
     $location.path('/dashboard');
   }
@@ -239,13 +238,29 @@ function EventDetail(
     }
   }
 
+  function clearLabelsError() {
+    $scope.labelResponse = '';
+    $scope.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedEvent.labels);
+    $scope.labelResponse = 'unlabelError';
+    $scope.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
   function labelRemoved(label) {
-    offerLabeller.unlabel(cachedEvent, label.name);
-    $scope.event.labels = angular.copy(cachedEvent.labels);
-    $scope.labelResponse = '';
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedEvent, label.name)
+      .catch(showUnlabelProblem);
   }
 
   function hasContactPoint() {
@@ -262,14 +277,6 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
-  }
-
-  function translateWorkflowStatus(code) {
-    if (code === 'DRAFT' || code === 'REJECTED' || code === 'DELETED') {
-      return 'Niet gepubliceerd';
-    } else {
-      return 'Gepubliceerd';
-    }
   }
 
   $scope.translateAudience = function (type) {

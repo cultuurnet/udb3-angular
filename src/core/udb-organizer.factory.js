@@ -46,15 +46,17 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   UdbOrganizer.prototype = {
     parseJson: function (jsonOrganizer) {
+      this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
       this.name = jsonOrganizer.name || '';
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
-      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
-      this.labels = jsonOrganizer.labels || [];
+      this.url = jsonOrganizer.url;
+      this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
+      this.created = new Date(jsonOrganizer.created);
     }
   };
 

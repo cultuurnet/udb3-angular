@@ -1,21 +1,21 @@
-<div class="col-xs-12" ng-hide="!!formData.openingHours.length">
+<div class="col-xs-12" ng-hide="!!cm.openingHoursCollection.openingHours.length">
   <a href="#" class="btn btn-link btn-plus wanneer-openingsuren-link"
-     data-toggle="modal" data-target="#wanneer-openingsuren-toevoegen">Openingsuren toevoegen</a>
+     ng-click="cm.edit()">Openingsuren toevoegen</a>
 </div>
 
-<div class="col-xs-12 col-sm-8" ng-show="!!formData.openingHours.length">
+<div class="col-xs-12 col-sm-8" ng-if="!!cm.openingHoursCollection.openingHours.length">
   <section class="wanneer-openingsuren-resultaat">
     <table class="table table-condensed ">
       <thead>
       <th>Openingsuren</th>
       <th>
-        <a href="#" data-toggle="modal" data-target="#wanneer-openingsuren-toevoegen" class="btn btn-default">
+        <a href="#" ng-click="cm.edit()" class="btn btn-default">
           Wijzigen
         </a>
       </th>
       </thead>
       <tbody>
-        <tr ng-repeat="openingHour in formData.openingHours">
+        <tr ng-repeat="openingHour in cm.openingHoursCollection.openingHours">
           <td ng-bind="openingHour.label"></td>
           <td>
             <span ng-bind="openingHour.opens"></span> – <span ng-bind="openingHour.closes"></span>
@@ -24,102 +24,4 @@
       </tbody>
     </table>
   </section>
-
 </div>
-
-<div class="modal fade" id="wanneer-openingsuren-toevoegen" ng-init="formData.initOpeningHours()">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Openingsuren</h4>
-      </div>
-      <div class="modal-body">
-        <table class="table">
-          <thead>
-          <tr>
-            <th>Dag(en)</th>
-            <th>Van</th>
-            <th></th>
-            <th>Tot</th>
-            <th></th>
-          </tr>
-          </thead>
-
-          <tr ng-repeat="(i, openingHour) in formData.openingHours">
-            <td>
-              <select class="selectpicker"
-                      name="weekday"
-                      multiple
-                      start-label="Kies dag(en)"
-                      ng-model="openingHour.dayOfWeek"
-                      ng-change="formData.saveOpeningHourDaySelection(i, openingHour.dayOfWeek)"
-                      ng-class="{'has-error': openingHour.errors.weekdayError}"
-                      udb-multiselect
-                      required>
-                <option value="monday">maandag</option>
-                <option value="tuesday">dinsdag</option>
-                <option value="wednesday">woensdag</option>
-                <option value="thursday">donderdag</option>
-                <option value="friday">vrijdag</option>
-                <option value="saturday">zaterdag</option>
-                <option value="sunday">zondag</option>
-              </select>
-            </td>
-            <td>
-              <input udb-time
-                     type="time"
-                     name="openingHour"
-                     class="form-control uur"
-                     placeholder="Bv. 08:00"
-                     ng-model="openingHour.opensAsDate"
-                     ng-blur="formData.validateOpeningHour(openingHour)"
-                     ng-model-options="{ debounce: 500 }"
-                     ng-class="{'has-error': openingHour.errors.openingHourError}" />
-              </td>
-              <td>
-                -&nbsp;
-              </td>
-              <td>
-
-                <input udb-time
-                       type="time"
-                       name="closingHour"
-                       class="form-control uur"
-                       placeholder="Bv. 08:00"
-                       ng-model="openingHour.closesAsDate"
-                       ng-blur="formData.validateOpeningHour(openingHour)"
-                       ng-model-options="{ debounce: 500 }"
-                       ng-class="{'has-error': openingHour.errors.closingHourError}"/>
-              </td>
-              <td>
-                <button type="button" class="close" aria-label="Close" ng-click="formData.removeOpeningHour(i)">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </td>
-          </tr>
-        </table>
-        <a class="btn btn-link btn-plus" ng-click="formData.addOpeningHour('', '' , '', '', '')">
-          Meer openingstijden toevoegen
-        </a>
-        <div class="alert alert-danger" ng-show="formData.openingHoursHasErrors">
-          <p class="text-danger" ng-if="formData.openingHoursErrors.weekdayError">Je moet minstens 1 weekdag selecteren.</p>
-          <p class="text-danger" ng-if="formData.openingHoursErrors.openingHourError">Gelieve een geldige openingstijd in te geven.</p>
-          <p class="text-danger" ng-if="formData.openingHoursErrors.closingHourError">Gelieve een geldige sluitingstijd in te geven.</p>
-          <p class="text-danger" ng-if="formData.openingHoursErrors.closingHourGreaterError">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
-        <button type="button" class="btn btn-primary openingsuren-toevoegen"
-                data-dismiss="modal"
-                ng-click="formData.saveOpeningHours()"
-                ng-disabled="formData.openingHoursHasErrors">
-          Toevoegen
-        </button>
-      </div>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->

@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * @ngdoc component
+ * @ngdoc directive
  * @name udb.core.directive:udbTime
  * @description
  * # udbTime

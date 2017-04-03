@@ -1,0 +1,90 @@
+<div class="modal-header">
+    <h4 class="modal-title">Openingsuren</h4>
+</div>
+<div class="modal-body">
+    <div class="alert alert-danger" ng-show="ohemc.errors.openAndClose">
+        <p class="text-danger">Vul alle openings- en sluitingstijden in.</p>
+    </div>
+    <div class="alert alert-danger" ng-show="ohemc.errors.dayOfWeek">
+        <p class="text-danger">Je moet minstens 1 weekdag selecteren.</p>
+    </div>
+    <div class="alert alert-danger" ng-show="ohemc.errors.openIsBeforeClose">
+        <p class="text-danger">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>
+    </div>
+    <div class="row">
+        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+            Dagen
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+            Van
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+            Tot
+        </div>
+    </div>
+    <div class="row" ng-repeat="openingHours in ohemc.openingHoursCollection.openingHours">
+        <ng-form name="openingHoursInfo">
+            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5"
+                 ng-class="{'has-error': openingHoursInfo.dayOfWeek.$invalid && openingHoursInfo.dayOfWeek.$touched}">
+                <div class="form-group">
+                    <select class="selectpicker"
+                            name="dayOfWeek"
+                            multiple
+                            start-label="Kies dag(en)"
+                            ng-model="openingHours.dayOfWeek"
+                            udb-multiselect
+                            ng-required="true">
+                        <option value="monday">maandag</option>
+                        <option value="tuesday">dinsdag</option>
+                        <option value="wednesday">woensdag</option>
+                        <option value="thursday">donderdag</option>
+                        <option value="friday">vrijdag</option>
+                        <option value="saturday">zaterdag</option>
+                        <option value="sunday">zondag</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <div class="form-group"
+                     ng-class="{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}">
+                    <input udb-time
+                           type="time"
+                           name="opens"
+                           class="form-control uur"
+                           placeholder="Bv. 08:00"
+                           ng-required="true"
+                           ng-model="openingHours.opensAsDate"/>
+                </div>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <div class="form-group"
+                     ng-class="{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}">
+                    <input udb-time
+                           type="time"
+                           name="closes"
+                           class="form-control uur"
+                           placeholder="Bv. 08:00"
+                           ng-required="true"
+                           ng-model="openingHours.closesAsDate"/>
+                </div>
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                <button class="btn btn-link" ng-click="ohemc.removeOpeningHours(openingHours)">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </ng-form>
+    </div>
+
+    <a class="btn btn-link btn-plus" ng-click="ohemc.createNewOpeningHours()">
+        Meer openingstijden toevoegen
+    </a>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$dismiss()">Annuleren</button>
+    <button type="button" class="btn btn-primary openingsuren-toevoegen"
+            ng-click="ohemc.saveOpeningHours()">
+        Opslaan
+    </button>
+</div>
+

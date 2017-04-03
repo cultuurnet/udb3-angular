@@ -37,6 +37,48 @@ describe('Controller: Event Form Organizer Modal', function() {
     );
   }
 
+  it('enables submit button on valid website and name', function() {
+    getController();
+
+    $scope.newOrganizer = {
+      website: 'http://google.be',
+      name: 'The CooCoo'
+    };
+    $scope.websiteError = false;
+
+    $scope.updateName();
+
+    expect($scope.disableSubmit).toBeFalsy();
+  });
+
+  it('disables submit button on valid website but invalid name', function() {
+    getController();
+
+    $scope.newOrganizer = {
+      website: 'http://google.be',
+      name: undefined
+    };
+    $scope.websiteError = false;
+
+    $scope.updateName();
+
+    expect($scope.disableSubmit).toBeTruthy();
+  });
+
+  it('disables submit button on valid name but invalid website', function() {
+    getController();
+
+    $scope.newOrganizer = {
+      website: 'http://google.be',
+      name: 'The CooCoo'
+    };
+    $scope.websiteError = true;
+
+    $scope.updateName();
+
+    expect($scope.disableSubmit).toBeTruthy();
+  });
+
   it('should just close the modal on cancel', function() {
     var controller = getController();
     $scope.$digest();

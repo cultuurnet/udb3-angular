@@ -38,6 +38,28 @@ describe('Service: UDB3 Api', function () {
     offerCache = _$cacheFactory_.get('offerCache');
   }));
 
+  function setUpAuthorizedHeaders() {
+    var jwt = 'bob';
+    var headers = {
+      'Content-Type': 'application/ld+json;domain-model=RenameRole',
+      'Authorization': 'Bearer ' + jwt,
+      'Accept': 'application/json, text/plain, */*'
+    };
+
+    // in order for the headers to match we also need the getMe()
+    // function to be called so it can set the Authorization headers
+    uitidAuth.getUser.and.returnValue(null);
+    uitidAuth.getToken.and.returnValue(jwt);
+
+    $httpBackend
+      .expectGET(baseUrl + 'user')
+      .respond(JSON.stringify({}));
+
+    service.getMe();
+
+    return headers;
+  }
+
   it('should only return the essential data when getting the currently logged in user', function (done) {
     var jsonUserResponse = {
       'id': 2,
@@ -501,22 +523,9 @@ describe('Service: UDB3 Api', function () {
     var expectedData = {
       'name': 'newname'
     };
-    var expectedHeaders = {
-      'Content-Type': 'application/ld+json;domain-model=RenameRole',
-      'Authorization': 'Bearer bob',
-      'Accept': 'application/json, text/plain, */*'
-    };
-
-    // in order for the headers to match we also need the getMe()
-    // function to be called so it can set the Authorization headers
-    uitidAuth.getUser.and.returnValue(null);
-    uitidAuth.getToken.and.returnValue('bob');
-    $httpBackend
-      .expectGET(baseUrl + 'user')
-      .respond(JSON.stringify({}));
-
-    service
-      .getMe();
+    var expectedHeaders = _.assign(setUpAuthorizedHeaders(), {
+      'Content-Type': 'application/ld+json;domain-model=RenameRole'
+    });
 
     // What we actually want to check
     $httpBackend
@@ -2267,5 +2276,46 @@ describe('Service: UDB3 Api', function () {
 
     service.setAudienceType(eventLocation, 'education');
     $httpBackend.flush();
-  })
+  });
+
+  it('should publish an offer by patching with the right content-type', function () {
+    var offerLocation = 'http://du.de/event/1da2bb3c-616f-4e89-9b17-f142413046d2',
+        expectedData = {},
+        expectedHeaders = _.assign(setUpAuthorizedHeaders(), {
+          'Content-Type': 'application/ld+json;domain-model=Publish'
+        }),
+        commandInfo= {
+          commandId: '5f19a97e-ea7f-4bbb-9fcf-5eb52b5f2512'
+        };
+
+    $httpBackend
+      .expect('PATCH', offerLocation, expectedData, expectedHeaders)
+      .respond(JSON.stringify(commandInfo));
+
+    service.publishOffer(offerLocation);
+
+    $httpBackend.flush();
+  });
+
+  it('should pass along a publication date when publishing on a future date', function () {
+    var offerLocation = 'http://du.de/event/1da2bb3c-616f-4e89-9b17-f142413046d2',
+        expectedData = {
+          publicationDate: '2013-03-01T00:00:00.000Z'
+        },
+        expectedHeaders = _.assign(setUpAuthorizedHeaders(), {
+          'Content-Type': 'application/ld+json;domain-model=Publish'
+        }),
+        commandInfo= {
+          commandId: '5f19a97e-ea7f-4bbb-9fcf-5eb52b5f2512'
+        },
+        publicationDate = new Date('2013-03-01T00:00:00Z');
+
+    $httpBackend
+      .expect('PATCH', offerLocation, expectedData, expectedHeaders)
+      .respond(JSON.stringify(commandInfo));
+
+    service.publishOffer(offerLocation, publicationDate);
+
+    $httpBackend.flush();
+  });
 });

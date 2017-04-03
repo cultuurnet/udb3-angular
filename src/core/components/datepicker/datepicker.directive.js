@@ -9,8 +9,8 @@
    * https://github.com/eternicode/bootstrap-datepicker
    */
   angular
-  .module('udb.core')
-  .directive('udbDatepicker', udbDatepickerDirective);
+    .module('udb.core')
+    .directive('udbDatepicker', udbDatepickerDirective);
 
   /* @ngInject */
   function udbDatepickerDirective(appConfig) {
@@ -36,32 +36,30 @@
        */
       function loadDatePicker() {
 
-        var lastSelectedYear;
-        var lastSelectedMonth;
-        var selectedDate = ngModel.$viewValue;
+        var defaultViewDate = new Date();
 
-        if (selectedDate) {
-          lastSelectedYear = selectedDate.getFullYear();
-          lastSelectedMonth = selectedDate.getMonth();
-        } else {
-          var today = new Date();
-          lastSelectedYear = today.getFullYear();
-          lastSelectedMonth = today.getMonth();
+        if (scope.formData) {
+          for (var i = (scope.formData.timestamps.length - 1); i >= 0; i--) {
+            if (scope.formData.timestamps[i].date !== '') {
+              defaultViewDate = scope.formData.timestamps[i].date;
+              break;
+            }
+          }
         }
 
         var options = {
-          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
+          defaultViewDate: {year: defaultViewDate.getFullYear(), month: defaultViewDate.getMonth(), day: 1},
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
-            var highlightDate = _.get(appConfig, 'calendarHighlight.highlightDate');
-            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.highlightExtraClass');
+            var highlightDateString = _.get(appConfig, 'calendarHighlight.date');
+            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.extraClass');
 
-            if (!highlightDate) {
+            if (!highlightDateString) {
               return;
             }
-
             // init Date with ISO string
+            var highlightDate = new Date(highlightDateString);
             if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
               var highlightClasses = 'highlight';
 
@@ -75,6 +73,7 @@
         };
 
         elem.datepicker(options).on('changeDate', function (newValue) {
+          scope.defaultViewDate = newValue.date;
           if (!ngModel.$viewValue || ngModel.$viewValue.getTime() !== newValue.date.getTime()) {
             ngModel.$setViewValue(newValue.date);
           }

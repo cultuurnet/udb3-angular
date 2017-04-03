@@ -1728,6 +1728,9 @@ input + .alert {
 .pagination .disabled {
   display: none;
 }
+.font-bold {
+  font-weight: bold;
+}
 .udb-query-editor {
   padding-top: 24px;
 }
@@ -2724,7 +2727,6 @@ input + .alert {
 .offer-form .extra-prijs .table {
   margin-bottom: 0;
 }
-.offer-form .extra-task p,
 .offer-form .udb3-data-table td {
   line-height: 30px;
   margin: 0;
@@ -2808,21 +2810,6 @@ input + .alert {
 }
 .offer-form .incomplete .btn-default {
   text-align: left;
-}
-.offer-form .btn-plus {
-  position: relative;
-  margin-left: 1em;
-  padding-left: 0.25em;
-}
-.offer-form .btn-plus:before {
-  content: "\f055";
-  font-family: "FontAwesome";
-  color: #cccccc;
-  margin-right: 0.5em;
-  text-decoration: none;
-  position: absolute;
-  left: -1em;
-  top: 6px;
 }
 .offer-form .incomplete .btn-default:hover:before {
   color: #333;
@@ -3059,6 +3046,21 @@ input + .alert {
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
 }
+.btn-plus {
+  position: relative;
+  margin-left: 1em;
+  padding-left: 0.25em;
+}
+.btn-plus:before {
+  content: "\f055";
+  font-family: "FontAwesome";
+  color: #cccccc;
+  margin-right: 0.5em;
+  text-decoration: none;
+  position: absolute;
+  left: -1em;
+  top: 6px;
+}
 .event-type-choser-label {
   background-repeat: no-repeat;
   background-position: top center;
@@ -3235,16 +3237,17 @@ table.event-detail-price-table {
   margin-left: 10px;
 }
 .cultuurkuur-component {
-  margin-left: 12px;
+  margin-top: 12px;
 }
 .cultuurkuur-component .panel {
   max-width: 95%;
 }
 .cultuurkuur-logo {
   background-image: url(/images/cultuurkuur-logo.svg);
-  background-size: contain;
+  background-size: 5vw;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: top right;
+  background-origin: content-box;
 }
 .loading-search-result {
   opacity: 0.4;
@@ -3277,27 +3280,27 @@ udb-search-label i.caret {
 .form-group udb-search-label input {
   max-width: none;
 }
-udb-moderation-summary .moderation-summary {
+udb-moderation-offer .moderation-offer {
   border: 1px solid #dddddd;
   background: #f5f5f5;
   padding: 1em;
   margin-bottom: 1em;
   min-height: 300px;
 }
-udb-moderation-summary .moderation-summary h2 {
+udb-moderation-offer .moderation-offer h2 {
   margin-top: 12px;
 }
-udb-moderation-summary .moderation-summary div.content {
+udb-moderation-offer .moderation-offer div.content {
   height: 150px;
   overflow-y: auto;
   white-space: pre-line;
 }
-udb-moderation-summary .moderation-summary img {
+udb-moderation-offer .moderation-offer img {
   max-height: 200px;
   max-width: 200px;
   margin-top: 7px;
 }
-udb-moderation-summary .moderation-summary .no-img {
+udb-moderation-offer .moderation-offer .no-img {
   height: 200px;
   width: 200px;
   border: 1px solid #dddddd;
@@ -3306,39 +3309,23 @@ udb-moderation-summary .moderation-summary .no-img {
   padding-top: 20px;
   margin-top: 7px;
 }
-udb-moderation-summary .moderation-summary footer {
+udb-moderation-offer .moderation-offer footer {
   color: #919191;
   margin-top: 2ex;
 }
-udb-moderation-summary .moderation-summary footer .btn-moderation {
+udb-moderation-offer .moderation-offer footer .btn-moderation {
   margin-left: 1em;
 }
-udb-moderation-summary .moderation-summary footer .btn-moderation i {
+udb-moderation-offer .moderation-offer footer .btn-moderation i {
   margin-right: 8px;
 }
-udb-moderation-summary .moderation-summary footer .btn-moderation i.text-danger {
+udb-moderation-offer .moderation-offer footer .btn-moderation i.text-danger {
   color: #a02622;
 }
-udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success {
+udb-moderation-offer .moderation-offer footer .btn-moderation i.text-success {
   color: #357935;
 }
-.moderation-detail button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  margin-bottom: 1em;
-}
-.moderation-detail a {
-  display: block;
-  text-decoration: underline;
-}
-.moderation-detail small {
-  color: #777777;
-  display: block;
-}
-.moderation-detail i {
-  margin-right: 1em;
-}
-.moderation-detail #continue-validation {
-  margin-left: 2em;
+.organization-search-item.deleted {
+  opacity: 0.2;
+  pointer-events: none;
 }

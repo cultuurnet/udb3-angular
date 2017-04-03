@@ -54,7 +54,7 @@
                 <td><strong>Type</strong></td>
                 <td>{{event.type.label}}</td>
               </tr>
-              <tr>
+              <tr ng-if="event.audience.audienceType !== 'everyone'">
                 <td><strong>Toegang</strong></td>
                 <td>{{translateAudience(event.audience.audienceType)}}
                 <udb-event-cultuurkuur-component event="event" permission="::permissions.editing" ></udb-event-cultuurkuur-component></td>
@@ -74,6 +74,9 @@
                   <div ng-if="labelResponse === 'success'" class="alert alert-success">
                     Het label '{{addedLabel}}' werd succesvol toegevoegd.
                   </div>
+                  <div ng-if="labelResponse === 'unlabelError'" class="alert alert-danger">
+                    <span ng-bind="labelsError"></span>
+                  </div>
                 </td>
               </tr>
               <tr>
@@ -84,7 +87,7 @@
               </tr>
               <tr>
                 <td><strong>Waar</strong></td>
-                <td ng-show="event.location.url"><a href="{{event.location.url}}">{{eventLocation(event)}}</a></td>
+                <td ng-show="event.location.url"><a ui-sref="split.footer.place-preview({id: event.location.id})">{{eventLocation(event)}}</a></td>
                 <td ng-hide="event.location.url">
                   {{event.location.name.nl}},
                   {{event.location.address.streetAddress}},
@@ -123,53 +126,10 @@
                   Geen prijsinformatie
                 </td>
               </tr>
-              <tr ng-class="{muted: !hasBookingInfoResults}">
-                <td>
-                  <strong>Reservaties</strong>
-                </td>
-                <td ng-if="hasBookingInfoResults">
-                  <ul class="list-unstyled" >
-                    <li ng-if="event.bookingInfo.url">
-                      <span>
-                        <a class="btn btn-info" target="_blank" ng-href="{{event.bookingInfo.url}}"
-                           ng-bind="event.bookingInfo.urlLabel"></a>
-                      </span>
-                    </li>
-                    <li ng-if="event.bookingInfo.phone">{{event.bookingInfo.phone}}</li>
-                    <li ng-if="event.bookingInfo.email">{{event.bookingInfo.email}}</li>
-                  </ul>
-                </td>
-                <td ng-if="!hasBookingInfoResults"></td>
-              </tr>
-
-              <tr ng-class="{muted: !hasContactPointResults}">
-                <td>
-                  <strong>Contact</strong>
-                </td>
-                <td ng-if="hasContactPointResults">
-                  <ul class="list-unstyled">
-                    <li>
-                      <span ng-repeat="website in event.contactPoint.url">
-                        <a ng-href="{{website}}" target="_blank">{{website}}</a>
-                        <span ng-if="!$last">of </span>
-                      </span>
-                    </li>
-                    <li>
-                      <span ng-repeat="phone in event.contactPoint.phone">
-                        <span>{{phone}}</span>
-                        <span ng-if="!$last">of </span>
-                      </span>
-                    </li>
-                    <li>
-                      <span ng-repeat="email in event.contactPoint.email">
-                        <span>{{email}}</span>
-                        <span ng-if="!$last">of </span>
-                      </span>
-                    </li>
-                  </ul>
-                </td>
-                <td ng-if="!hasContactPointResults"></td>
-              </tr>
+            </tbody>
+            <tbody udb-booking-info-detail="::event.bookingInfo"></tbody>
+            <tbody udb-contact-point-detail="::event.contactPoint"></tbody>
+            <tbody>
               <tr>
                 <td><strong>Geschikt voor</strong></td>
                 <td>
@@ -214,29 +174,7 @@
               <col style="width:20%"/>
               <col style="width:80%"/>
             </colgroup>
-            <tbody>
-            <tr>
-              <td><strong>Publicatiestatus</strong></td>
-              <td>
-                    <span ng-if="event.available"
-                          ng-bind="event.available | date: 'dd/MM/yyyy'">
-                    </span>
-                <span ng-if="!event.available">
-                      {{translateWorkflowStatus(event.workflowStatus)}}
-                    </span>
-              </td>
-            </tr>
-            <tr>
-              <td><strong>ID</strong></td>
-              <td>
-                <ul>
-                  <li ng-repeat="id in eventIds(event)" ng-switch="isUrl(id)">
-                    <a ng-switch-when="true" ng-href="{{id}}" ng-bind="id"></a>
-                    <span ng-switch-when="false" ng-bind="id"></span>
-                  </li>
-                </ul>
-              </td>
-            </tr>
+            <tbody udb-workflow-status="::event">
             </tbody>
           </table>
         </div>

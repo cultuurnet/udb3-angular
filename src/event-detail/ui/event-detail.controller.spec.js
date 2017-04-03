@@ -341,6 +341,7 @@ describe('Controller: Event Detail', function() {
   it('should update the event when removing a label', function () {
     var label = {name:'some label'};
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    offerLabeller.unlabel.and.returnValue($q.resolve());
     $scope.$digest();
 
     $scope.labelRemoved(label);
@@ -409,27 +410,37 @@ describe('Controller: Event Detail', function() {
     expect($scope.permissions).toEqual(expectedPermissions);
   });
 
-  it('should return niet gepubliceerd when the workflowStatus is DRAFT', function () {
-    expect($scope.translateWorkflowStatus('DRAFT')).toEqual('Niet gepubliceerd')
+  it('should show regular and hidden labels as a single list for all users', function () {
+    var eventJsonWithHiddenLabel = angular.copy(exampleEventJson);
+    eventJsonWithHiddenLabel.hiddenLabels = ["UiTPAS Leuven"];
+
+    deferredEvent.resolve(new UdbEvent(eventJsonWithHiddenLabel));
+    $scope.$digest();
+
+    expect($scope.event.labels).toEqual(['some label', 'UiTPAS Leuven']);
   });
 
-  it('should return niet gepubliceerd when the workflowStatus is REJECTED', function () {
-    expect($scope.translateWorkflowStatus('REJECTED')).toEqual('Niet gepubliceerd')
-  });
+  it('should display an error message when removing a label fails', function () {
+    /** @type {ApiProblem} */
+    var problem = {
+      type: new URL('http://udb.be/problems/event-unlabel-permission'),
+      title: 'You do not have the required permission to unlabel this event.',
+      detail: 'User with id: 2aab63ca-adef-4b6d-badb-0f8a17367c53 has no permission: "Aanbod bewerken" on item: ecee32f5-94bb-4129-b7b9-fac341d55219 when executing command: RemoveLabel.',
+      instance: new URL('http://udb.be/jobs/6ed2eb90-0163-4d15-ba6d-5d66223795e1'),
+      status: 403
+    };
+    var expectedLabels = ['some label'];
+    var label = {name:'some label'};
+    offerLabeller.unlabel.and.returnValue($q.reject(problem));
 
-  it('should return niet gepubliceerd when the workflowStatus is DELETED', function () {
-    expect($scope.translateWorkflowStatus('DELETED')).toEqual('Niet gepubliceerd')
-  });
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    $scope.$digest();
 
-  it('should return gepubliceerd when the workflowStatus is READY_FOR_VALIDATION', function () {
-    expect($scope.translateWorkflowStatus('READY_FOR_VALIDATION')).toEqual('Gepubliceerd')
-  });
+    $scope.labelRemoved(label);
+    $scope.$digest();
 
-  it('should return gepubliceerd when the workflowStatus is APPROVED', function () {
-    expect($scope.translateWorkflowStatus('APPROVED')).toEqual('Gepubliceerd')
-  });
-
-  it('should return gepubliceerd as default', function () {
-    expect($scope.translateWorkflowStatus()).toEqual('Gepubliceerd')
+    expect($scope.event.labels).toEqual(expectedLabels);
+    expect($scope.labelResponse).toEqual('unlabelError');
+    expect($scope.labelsError).toEqual('You do not have the required permission to unlabel this event.');
   });
 });

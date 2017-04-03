@@ -21,7 +21,8 @@ function OfferController(
   $window,
   offerEditor,
   variationRepository,
-  $q
+  $q,
+  appConfig
 ) {
   var controller = this;
   var cachedOffer;
@@ -34,6 +35,7 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -192,27 +194,49 @@ function OfferController(
     }
   };
 
+  function clearLabelsError() {
+    controller.labelResponse = '';
+    controller.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedOffer.labels);
+    controller.labelResponse = 'unlabelError';
+    controller.labelsError = problem.title;
+  }
+
   /**
    * @param {Label} label
    */
-  controller.labelRemoved = function (label) {
-    offerLabeller.unlabel(cachedOffer, label.name);
-    controller.labelResponse = '';
-  };
+  function labelRemoved(label) {
+    clearLabelsError();
+
+    offerLabeller
+      .unlabel(cachedOffer, label.name)
+      .catch(showUnlabelProblem);
+  }
 
   /**
    * @param {(UdbPlace|UdbEvent)}offer
    * @return {Promise}
    */
   function fetchPersonalVariation(offer) {
-    return variationRepository
-      .getPersonalVariation(offer)
-      .then(function (personalVariation) {
-        $scope.event.description = personalVariation.description[defaultLanguage];
-        return personalVariation;
-      }, function () {
-        return $q.reject();
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      return variationRepository
+        .getPersonalVariation(offer)
+        .then(function (personalVariation) {
+          $scope.event.description = personalVariation.description[defaultLanguage];
+          return personalVariation;
+        }, function () {
+          return $q.reject();
+        });
+    } else {
+      return $q.reject();
+    }
   }
 
   /**

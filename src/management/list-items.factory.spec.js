@@ -106,7 +106,7 @@ describe('Factory: List Items', function () {
           permission: 'ORGANISATIES_BEHEREN',
           notificationCount: 0,
           index: 5,
-          sref: 'management.organizers',
+          sref: 'management.organizers.search',
           icon: 'fa-slideshare'
         },
         {
@@ -218,7 +218,7 @@ describe('Factory: List Items', function () {
           permission: 'ORGANISATIES_BEHEREN',
           notificationCount: 0,
           index: 5,
-          sref: 'management.organizers',
+          sref: 'management.organizers.search',
           icon: 'fa-slideshare'
         }
       ]);

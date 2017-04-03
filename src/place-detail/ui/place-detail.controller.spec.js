@@ -15,7 +15,7 @@ describe('Controller: Place Detail', function() {
       eventCrud,
       offerLabeller,
       $window,
-      examplePlaceEventJson = {
+      examplePlaceJson = {
         '@id': "http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702",
         '@context': "/api/1.0/place.jsonld",
         name: "Villa 99, een art deco pareltje",
@@ -84,7 +84,7 @@ describe('Controller: Place Detail', function() {
     spyOn(udbApi, 'hasPermission').and.returnValue($q.resolve());
 
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
 
     spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
 
@@ -119,11 +119,10 @@ describe('Controller: Place Detail', function() {
     expect(udbApi.getOffer).toHaveBeenCalledWith(
         'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'
     );
-    expect($scope.placeIsEditable).toEqual(true);
   });
 
   it('should loads the place description from the variation', function () {
-    var variation = new UdbPlace(examplePlaceEventJson);
+    var variation = new UdbPlace(examplePlaceJson);
     variation.description['nl'] = 'haak is een zeekoe';
     deferredVariation.resolve(variation);
     $scope.$digest();
@@ -140,13 +139,13 @@ describe('Controller: Place Detail', function() {
     deferredUpdate.resolve();
 
     expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbPlace(examplePlaceEventJson),
+      new UdbPlace(examplePlaceJson),
       'updated description'
     );
   });
 
   it('should replace the description with the cached one when the variation is deleted', function () {
-    var variation = new UdbPlace(examplePlaceEventJson);
+    var variation = new UdbPlace(examplePlaceJson);
     variation.description['nl'] = 'haak is een zeekoe';
     deferredVariation.resolve(variation);
     $scope.$digest();
@@ -158,7 +157,7 @@ describe('Controller: Place Detail', function() {
     $scope.$digest();
 
     expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbPlace(examplePlaceEventJson),
+      new UdbPlace(examplePlaceJson),
       ''
     );
     expect($scope.place.description).toEqual('Toto is geen zeekoe');
@@ -232,7 +231,8 @@ describe('Controller: Place Detail', function() {
 
   it('should update the place when adding a label', function () {
     var label = {name:'some other label'};
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    offerLabeller.label.and.returnValue($q.resolve());
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 
     $scope.labelAdded(label);
@@ -241,7 +241,8 @@ describe('Controller: Place Detail', function() {
 
   it('should update the place when removing a label', function () {
     var label = {name:'some label'};
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    offerLabeller.unlabel.and.returnValue($q.resolve());
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 
     $scope.labelRemoved(label);
@@ -250,7 +251,7 @@ describe('Controller: Place Detail', function() {
 
   it('should prevent any duplicate labels and warn the user when trying to add one', function () {
     var label = {name:'Some Label'};
-    deferredEvent.resolve(new UdbPlace(examplePlaceEventJson));
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
     $scope.$digest();
 
     spyOn($window, 'alert');
@@ -262,4 +263,28 @@ describe('Controller: Place Detail', function() {
     expect($window.alert).toHaveBeenCalledWith('Het label "Some Label" is reeds toegevoegd als "some label".');
     expect(offerLabeller.label).not.toHaveBeenCalled();
   });
+
+  it('should display an error message when removing a label fails', function () {
+    /** @type {ApiProblem} */
+    var problem = {
+      type: new URL('http://udb.be/problems/place-unlabel-permission'),
+      title: 'You do not have the required permission to unlabel this place.',
+      detail: 'User with id: 2aab63ca-adef-4b6d-badb-0f8a17367c53 has no permission: "Aanbod bewerken" on item: ecee32f5-94bb-4129-b7b9-fac341d55219 when executing command: RemoveLabel.',
+      instance: new URL('http://udb.be/jobs/6ed2eb90-0163-4d15-ba6d-5d66223795e1'),
+      status: 403
+    };
+    var expectedLabels = ['some label'];
+    var label = {name:'some label'};
+    offerLabeller.unlabel.and.returnValue($q.reject(problem));
+
+    deferredEvent.resolve(new UdbPlace(examplePlaceJson));
+    $scope.$digest();
+
+    $scope.labelRemoved(label);
+    $scope.$digest();
+
+    expect($scope.place.labels).toEqual(expectedLabels);
+    expect($scope.labelResponse).toEqual('unlabelError');
+    expect($scope.labelsError).toEqual('You do not have the required permission to unlabel this place.');
+  })
 });
