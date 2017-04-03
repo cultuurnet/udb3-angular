@@ -14,49 +14,44 @@
 
   /* @ngInject */
   function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
-
-    $scope.date = eventFormData.availableFrom;
-    $scope.enableDate = false;
+    var vm = this;
+    vm.date = eventFormData.availableFrom;
+    vm.enableDate = false;
     var today = new Date();
-    if (typeof eventFormData.availableFrom === 'string') {
-      $scope.isToday = true;
+    if (typeof eventFormData.availableFrom === 'string' || typeof eventFormData.availableFrom === 'undefined') {
+      vm.isToday = true;
     } else {
-      $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
+      vm.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
     }
-    $scope.dismiss = dismiss;
-    $scope.convertDate = convertDate;
-    $scope.publish = publish;
-    $scope.drp = {
+    vm.dismiss = dismiss;
+    vm.publish = publish;
+    vm.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
       options : {
         minDate : today
       }
     };
-    $scope.error = false;
-    $scope.onFocus = onFocus;
+    vm.error = false;
+    vm.onFocus = onFocus;
 
     function dismiss() {
       $uibModalInstance.dismiss();
 
     }
 
-    function convertDate() {
-      $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth(), $scope.date.getDate(), 0, 0, 0);
-    }
-
     function onFocus() {
-      $scope.isToday = false;
-      $scope.error = false;
-      $scope.drp.startOpened = !$scope.drp.startOpened;
+      vm.isToday = false;
+      vm.error = false;
+      vm.drp.startOpened = !vm.drp.startOpened;
     }
 
     function publish() {
-      if (today < $scope.date) {
-        eventFormData.availableFrom = $scope.date;
+      if (today < vm.date) {
+        eventFormData.availableFrom = vm.date;
         $uibModalInstance.close();
       } else {
-        $scope.error = true;
+        vm.error = true;
       }
 
     }
