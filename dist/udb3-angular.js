@@ -2180,21 +2180,19 @@ function udbCalendarSummary() {
        */
       function loadDatePicker() {
 
-        var lastSelectedYear;
-        var lastSelectedMonth;
-        var selectedDate = ngModel.$viewValue;
+        var defaultViewDate = new Date();
 
-        if (selectedDate) {
-          lastSelectedYear = selectedDate.getFullYear();
-          lastSelectedMonth = selectedDate.getMonth();
-        } else {
-          var today = new Date();
-          lastSelectedYear = today.getFullYear();
-          lastSelectedMonth = today.getMonth();
+        if (scope.formData) {
+          for (var i = (scope.formData.timestamps.length - 1); i >= 0; i--) {
+            if (scope.formData.timestamps[i].date !== '') {
+              defaultViewDate = scope.formData.timestamps[i].date;
+              break;
+            }
+          }
         }
 
         var options = {
-          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
+          defaultViewDate: {year: defaultViewDate.getFullYear(), month: defaultViewDate.getMonth(), day: 1},
           format: 'd MM yyyy',
           language: 'nl-BE',
           beforeShowDay: function (date) {
@@ -2219,6 +2217,7 @@ function udbCalendarSummary() {
         };
 
         elem.datepicker(options).on('changeDate', function (newValue) {
+          scope.defaultViewDate = newValue.date;
           if (!ngModel.$viewValue || ngModel.$viewValue.getTime() !== newValue.date.getTime()) {
             ngModel.$setViewValue(newValue.date);
           }
@@ -4492,7 +4491,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
-      this.created = Date(jsonOrganizer.created);
+      this.created = new Date(jsonOrganizer.created);
     }
   };
 
@@ -5229,7 +5228,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -5259,6 +5258,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
+      $document.scrollTop(0);
     }
 
     function updateItemViewer() {
@@ -5336,9 +5336,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         openPlaceDeleteConfirmModal(item);
       }
     }
-
   }
-  DashboardController.$inject = ["$scope", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
 })();
 
@@ -7440,10 +7439,13 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
+
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
@@ -7506,8 +7508,6 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    var personalVariationLoaded = variationRepository.getPersonalVariation(event);
-
     udbApi
       .getHistory($scope.eventId)
       .then(showHistory);
@@ -7516,15 +7516,18 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    personalVariationLoaded
-      .then(function (variation) {
-        $scope.event.description = variation.description[language];
-      })
-      .finally(function () {
-        $scope.eventIsEditable = true;
-      });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(event)
+        .then(showVariation);
+    }
+
     hasContactPoint();
     hasBookingInfo();
+  }
+
+  function showVariation(variation) {
+    $scope.event.description = variation.description[language];
   }
 
   function failedToLoad(reason) {
@@ -7699,7 +7702,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig"];
 
 // Source: src/event_form/calendar-labels.constant.js
 /* jshint sub: true */
@@ -8782,6 +8785,7 @@ function EventFormOrganizerModalController(
   $scope.addOrganizerContactInfo = addOrganizerContactInfo;
   $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
+  $scope.updateName = updateName;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -8842,6 +8846,17 @@ function EventFormOrganizerModalController(
           $scope.websiteError = true;
           $scope.showWebsiteValidation = false;
         });
+  }
+
+  /**
+   * When the name is changed by a user, submit state needs to be updated also.
+   */
+  function updateName() {
+    if ($scope.newOrganizer.name && !$scope.websiteError) {
+      $scope.disableSubmit = false;
+    } else {
+      $scope.disableSubmit = true;
+    }
   }
 
   /**
@@ -13759,7 +13774,8 @@ function ModerationListController(
   SearchResultGenerator,
   rx,
   $scope,
-  $q
+  $q,
+  $document
 ) {
   var moderator = this;
 
@@ -13805,6 +13821,10 @@ function ModerationListController(
         moderator.loading = true;
       })
       .subscribe();
+
+    page$.subscribe(function () {
+      $document.scrollTop(0);
+    });
 
     return $q.resolve();
   }
@@ -13870,7 +13890,7 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
 
 // Source: src/management/moderation/moderation.service.js
 /**
@@ -14008,8 +14028,9 @@ angular
 
 // Source: src/management/organizers/delete/organization-delete.modal.controller.js
 /**
- * @ngdoc function
- * @name udbApp.controller:OrganizationDeleteModalController
+ * @ngdoc controller
+ * @name udbApp.management.organizers.controller:OrganizationDeleteModalController
+ * @var OrganizationDeleteModalController odc
  * @description
  * # OrganizationDeleteModalController
  * Modal to delete an organization
@@ -14273,6 +14294,7 @@ OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope"
 /**
  * @ngdoc directive
  * @name udb.management.organizers.directive:udbOrganizationSearchItem
+ * @var udbOrganizationSearchItem osic
  * @description
  * # Organizer search item Directive
  */
@@ -14333,7 +14355,7 @@ OrganizationSearchItemController.$inject = ["udbApi", "$rootScope"];
 // Source: src/management/organizers/search/organization-search.controller.js
 /**
  * @ngdoc function
- * @name udbApp.controller:OrganizationSearchController
+ * @name udb.management.organizers.controller:OrganizationSearchController
  * @description
  * # Organization Search Controller
  */
@@ -15127,7 +15149,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -15220,8 +15242,13 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
+
+  page$
+    .subscribe(function () {
+      $document.scrollTop(0);
+    });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
 
 // Source: src/management/roles/search-label.component.js
 angular
@@ -15766,7 +15793,7 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state, $document) {
   var ulc = this;
 
   var itemsPerPage = 20;
@@ -15857,8 +15884,12 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       ulc.loading = true;
     })
     .subscribe();
+
+  page$.subscribe(function () {
+    $document.scrollTop(0);
+  });
 }
-UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state"];
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 
 // Source: src/media/create-image-job.factory.js
 /**
@@ -16118,12 +16149,14 @@ function PlaceDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
 
-  $q.when(placeId, function(offerLocation) {
+  $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
@@ -16172,21 +16205,21 @@ function PlaceDetail(
   var cachedPlace;
 
   function showOffer(place) {
-      cachedPlace = place;
+    cachedPlace = place;
 
-      var personalVariationLoaded = variationRepository.getPersonalVariation(place);
+    $scope.place = jsonLDLangFilter(place, language);
+    $scope.placeIdIsInvalid = false;
 
-      $scope.place = jsonLDLangFilter(place, language);
-      $scope.placeIdIsInvalid = false;
-
-      personalVariationLoaded
-        .then(function (variation) {
-          $scope.place.description = variation.description[language];
-        })
-        .finally(function () {
-          $scope.placeIsEditable = true;
-        });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(place)
+        .then(showVariation);
     }
+  }
+
+  function showVariation(variation) {
+    $scope.place.description = variation.description[language];
+  }
 
   function failedToLoad(reason) {
     $scope.placeIdIsInvalid = true;
@@ -16327,7 +16360,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
 
 // Source: src/router/offer-locator.service.js
 /**
@@ -18708,7 +18741,8 @@ function OfferController(
   $window,
   offerEditor,
   variationRepository,
-  $q
+  $q,
+  appConfig
 ) {
   var controller = this;
   var cachedOffer;
@@ -18910,14 +18944,19 @@ function OfferController(
    * @return {Promise}
    */
   function fetchPersonalVariation(offer) {
-    return variationRepository
-      .getPersonalVariation(offer)
-      .then(function (personalVariation) {
-        $scope.event.description = personalVariation.description[defaultLanguage];
-        return personalVariation;
-      }, function () {
-        return $q.reject();
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      return variationRepository
+        .getPersonalVariation(offer)
+        .then(function (personalVariation) {
+          $scope.event.description = personalVariation.description[defaultLanguage];
+          return personalVariation;
+        }, function () {
+          return $q.reject();
+        });
+    } else {
+      return $q.reject();
+    }
   }
 
   /**
@@ -18946,7 +18985,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig"];
 
 // Source: src/search/ui/place.directive.js
 /**
@@ -19428,6 +19467,48 @@ function UitpasInfoComponent(
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
 
+// Source: src/uitpas/default-uitpas-labels.constant.js
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.uitpas.DefaultUitpasLabels
+ * @description
+ * # Default UiTPAS Labels
+ *
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-30.
+ * This file used to be updated each time labels changed but now acts as a placeholder.
+ *
+ * The actual labels should be fetched when building or bootstrapping your app and written to the UitpasLabels constant.
+ * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * e.g.: https://uitpas.uitdatabank.be/labels for production
+ */
+angular
+  .module('udb.uitpas')
+  .constant('DefaultUitpasLabels',
+  /**
+   * Enum for UiTPAS labels
+   * @readonly
+   * @enum {string}
+   */
+  {
+    'PASPARTOE': 'Paspartoe',
+    'UITPAS': 'UiTPAS',
+    'UITPAS_GENT': 'UiTPAS Gent',
+    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
+    'UITPAS_DENDER': 'UiTPAS Dender',
+    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
+    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
+    'UITPAS_KEMPEN': 'UiTPAS Kempen',
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_LIER': 'UiTPAS Lier',
+    'UITPAS_HEIST-OP-DEN-BERG': 'UiTPAS Heist-op-den-Berg',
+    'UITPAS_MEETJESLAND': 'UiTPAS Meetjesland',
+    'UITPAS_WESTHOEK': 'UiTPAS Westhoek'
+  });
+
 // Source: src/uitpas/organisation-suggestion.controller.js
 /**
  * @ngdoc directive
@@ -19538,44 +19619,41 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
 }
 UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
 
-// Source: src/uitpas/uitpas-labels.constant.js
+// Source: src/uitpas/uitpas-labels.provider.js
 /* jshint sub: true */
 
 /**
  * @ngdoc service
- * @name udb.entry.uitpasLabels
+ * @name udb.uitpas.UitpasLabelsProvider
  * @description
- * # UiTPAS Labels
+ * # UiTPAS Labels Provider
  *
- * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01.
- * This file used to be updated each time labels changed but now acts as a placeholder.
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01 are in the DefaultUitpasLabels
+ * constant. The file used to be updated each time labels changed but now acts as a placeholder.
  *
- * The actual labels should be fetched when building your app and overwrite this UitpasLabels constant.
- * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * The actual labels should be fetched when building or bootstrapping your app and written to the ExtermalUitpasLabels
+ * constant. The UiTPAS service should have an endpoint with all the labels for your environment.
  * e.g.: https://uitpas.uitdatabank.be/labels for production
  */
 angular
   .module('udb.uitpas')
-  .constant('UitpasLabels',
+  .provider('UitpasLabels', UitpasLabelsProvider);
+
+function UitpasLabelsProvider() {
+  var customUitpasLabels;
+
   /**
-   * Enum for UiTPAS labels
-   * @readonly
-   * @enum {string}
+   * Configure the UiTPAS labels by providing a map of {LABEL_KEY: label name}
+   * @param {object} labels
    */
-  {
-    'PASPARTOE': 'Paspartoe',
-    'UITPAS': 'UiTPAS',
-    'UITPAS_GENT': 'UiTPAS Gent',
-    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
-    'UITPAS_DENDER': 'UiTPAS Dender',
-    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
-    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
-    'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven',
-    'UITPAS_SYX': 'UiTPAS Syx'
-  });
+  this.useLabels = function(labels) {
+    customUitpasLabels = labels;
+  };
+
+  this.$get = ['DefaultUitpasLabels', function(DefaultUitpasLabels) {
+    return !!customUitpasLabels ? customUitpasLabels : DefaultUitpasLabels;
+  }];
+}
 
 // Source: .tmp/udb3-angular.templates.js
 angular.module('udb.core').run(['$templateCache', function($templateCache) {
@@ -20935,7 +21013,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
     "            <label>Naam</label>\n" +
-    "            <input type=\"text\" name=\"name\" class=\"form-control\" ng-model=\"newOrganizer.name\" required>\n" +
+    "            <input type=\"text\"\n" +
+    "                   name=\"name\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   ng-model=\"newOrganizer.name\"\n" +
+    "                   ng-change=\"updateName()\"\n" +
+    "                   required>\n" +
     "            <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
     "          Gelieve een naam in te vullen\n" +
@@ -22812,7 +22895,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        Annuleren\n" +
     "    </button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"odc.deleteOrganization()\">\n" +
-    "        Definitief verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        Definitief verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"odc.saving\"></i>\n" +
     "    </button>\n" +
     "</div>\n"
   );

@@ -24,12 +24,14 @@ function PlaceDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
 
-  $q.when(placeId, function(offerLocation) {
+  $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
@@ -78,21 +80,21 @@ function PlaceDetail(
   var cachedPlace;
 
   function showOffer(place) {
-      cachedPlace = place;
+    cachedPlace = place;
 
-      var personalVariationLoaded = variationRepository.getPersonalVariation(place);
+    $scope.place = jsonLDLangFilter(place, language);
+    $scope.placeIdIsInvalid = false;
 
-      $scope.place = jsonLDLangFilter(place, language);
-      $scope.placeIdIsInvalid = false;
-
-      personalVariationLoaded
-        .then(function (variation) {
-          $scope.place.description = variation.description[language];
-        })
-        .finally(function () {
-          $scope.placeIsEditable = true;
-        });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(place)
+        .then(showVariation);
     }
+  }
+
+  function showVariation(variation) {
+    $scope.place.description = variation.description[language];
+  }
 
   function failedToLoad(reason) {
     $scope.placeIdIsInvalid = true;

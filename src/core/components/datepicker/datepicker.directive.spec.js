@@ -13,6 +13,7 @@ describe('Directive: Datepicker', function () {
     dateChangeListener = jasmine.createSpy('dateChangeListener');
     $scope.dateChangeListener = dateChangeListener;
     $scope.date = new Date('2015-12-10');
+    //$scope.defaultViewDate = new Date('2015-12-10');
   }));
 
   function getDatepicker() {
@@ -50,4 +51,17 @@ describe('Directive: Datepicker', function () {
     expect(dateChangeListener).toHaveBeenCalled();
     expect($scope.date).toEqual(expectedDate);
   });
+
+  it('should have a defaultViewDate equal to the first day of the last chosen timestamp', function () {
+    var expectedDate = new Date('2015-03-01');
+
+    $scope.formData = {
+      timestamps: [{date: new Date('2015-12-16')}, {date: new Date('2015-03-17')}]
+    }
+
+    var picker = getDatepicker();
+
+    expect(picker.o.defaultViewDate).toEqual(expectedDate);
+  });
+
 });
