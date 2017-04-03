@@ -1,0 +1,59 @@
+<h1 class="title">Organisaties</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <udb-query-search-bar search-label="Zoeken op organisatie naam"
+                              on-change="$ctrl.queryChanged(query)"></udb-query-search-bar>
+    </div>
+    <div class="col-md-1">
+        <i ng-show="$ctrl.loading" class="fa fa-circle-o-notch fa-spin"></i>
+    </div>
+    <div class="col-md-5 text-right">
+        <a class="btn btn-primary" ui-sref="management.organizers.search.create">
+            <i class="fa fa-plus-circle"></i> Organisatie toevoegen
+        </a>
+    </div>
+</div>
+
+<div class="row search-result-block" ng-cloak>
+    <div class="col-md-12">
+        <div class="alert alert-info" role="alert" ng-show="$ctrl.query.length < $ctrl.minQueryLength">
+            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om organisaties te zoeken.</p>
+            <p>Laat het veld leeg om alle organisaties op te vragen in alfabetische volgorde.</p>
+        </div>
+        <div ng-show="$ctrl.query.length >= $ctrl.minQueryLength && $ctrl.searchResult.totalItems === 0"
+             class="alert alert-warning" role="alert">
+            <p>Geen organisaties gevonden.</p>
+        </div>
+        <div ng-show="$ctrl.problem" class="alert alert-warning" role="alert">
+            <span>Er ging iets mis tijdens het zoeken:</span>
+            <br>
+            <strong ng-bind="$ctrl.problem.title"></strong>
+        </div>
+        <div class="query-search-result organization-search-results"
+             ng-class="{'loading-search-result': $ctrl.loading}"
+             ng-show="$ctrl.searchResult.totalItems > 0">
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>Naam</th>
+                    <th>Adres</th>
+                    <th></th>
+                    <th class="text-right">Opties</th>
+                </tr>
+                </thead>
+                <tbody udb-organization-search-item="organization" ng-repeat="organization in $ctrl.searchResult.member">
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <uib-pagination
+                        total-items="$ctrl.searchResult.totalItems"
+                        ng-model="$ctrl.page"
+                        items-per-page="$ctrl.searchResult.itemsPerPage"
+                        max-size="10"
+                        ng-change="$ctrl.pageChanged($ctrl.page)">
+                </uib-pagination>
+            </div>
+        </div>
+    </div>
+</div>

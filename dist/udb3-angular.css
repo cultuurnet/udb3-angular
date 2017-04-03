@@ -3328,3 +3328,7 @@ udb-moderation-offer .moderation-offer footer .btn-moderation i.text-danger {
 udb-moderation-offer .moderation-offer footer .btn-moderation i.text-success {
   color: #357935;
 }
+.organization-search-item.deleted {
+  opacity: 0.2;
+  pointer-events: none;
+}

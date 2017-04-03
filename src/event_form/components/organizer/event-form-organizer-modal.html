@@ -45,7 +45,12 @@
         <div class="col-sm-12 col-md-8">
           <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
             <label>Naam</label>
-            <input type="text" name="name" class="form-control" ng-model="newOrganizer.name" required>
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   ng-model="newOrganizer.name"
+                   ng-change="updateName()"
+                   required>
             <p class="help-block">De officiële publieke naam van de organisatie.</p>
             <span class="help-block" ng-show="showValidation && organizerForm.name.$error.required">
           Gelieve een naam in te vullen
