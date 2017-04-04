@@ -22826,7 +22826,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
     "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
-    "<a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected()) && moc.next\">Verder valideren</a>\n"
+    "<a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">Verder valideren</a>\n"
   );
 
 
