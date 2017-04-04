@@ -27,7 +27,7 @@
                 class="list-group-item"
                 href="#"
                 ng-click="deleteEvent()">Verwijderen</button>
-        <udb-moderation-offer class="list-group-item moderation-detail" offer="event" next="true"></udb-moderation-offer>
+        <udb-moderation-offer class="list-group-item moderation-detail" offer-id="{{event['@id']}}" next="true"></udb-moderation-offer>
       </div>
     </div>
     <div class="col-sm-9 col-sm-pull-3">

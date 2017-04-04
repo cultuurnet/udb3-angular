@@ -13537,7 +13537,7 @@ function listItems(
 }
 listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults"];
 
-// Source: src/management/moderation/components/moderation-offer.component.js
+// Source: src/management/moderation/components/moderation-offer/moderation-offer.component.js
 /**
  * @ngdoc component
  * @name udb.search.directive:udbSearchBar
@@ -13571,7 +13571,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
-
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
@@ -13693,6 +13692,66 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   }
 }
 ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
+
+// Source: src/management/moderation/components/moderation-summary/moderation-summary.component.js
+/**
+ * @ngdoc component
+ * @name udb.management.moderation:udbModerationSummaryComponent
+ * @description
+ * # udbModerationSummary
+ */
+angular
+  .module('udb.management.moderation')
+  .component('udbModerationSummary', {
+    templateUrl: 'templates/moderation-summary.html',
+    controller: ModerationSummaryComponent,
+    controllerAs: 'moc',
+    bindings: {
+      offerId: '@',
+      offerType: '@'
+    }
+  });
+
+/* @ngInject */
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+  var moc = this;
+  var defaultLanguage = 'nl';
+
+  moc.loading = true;
+  moc.offer = {};
+  moc.sendingJob = false;
+  moc.error = false;
+
+  moc.isReadyForValidation = isReadyForValidation;
+
+  // fetch offer
+  ModerationService
+    .getModerationOffer(moc.offerId)
+    .then(function(offer) {
+      offer.updateTranslationState();
+      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+    })
+    .catch(showLoadingError)
+    .finally(function() {
+      moc.loading = false;
+    });
+
+  function showLoadingError(problem) {
+    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
+
+  function isReadyForValidation() {
+    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
+  }
+}
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
 
@@ -20256,7 +20315,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div ng-if=\"finishedLoading()\">\n" +
     "  <h1 class=\"title\" ng-bind=\"event.name\"></h1>\n" +
-    "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
@@ -20272,6 +20330,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
+    "        <udb-moderation-offer class=\"list-group-item moderation-detail\" offer-id=\"{{event['@id']}}\" next=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
@@ -22729,7 +22788,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<article class=\"moderation-offer\">\n" +
+    "<small ng-if=\"moc.next\" class=\"muted\">Valideren</small>\n" +
+    "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
+    "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
+    "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
+    "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
+    "\n" +
+    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
+    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "<a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected()) && moc.next\">Verder valideren</a>\n"
+  );
+
+
+  $templateCache.put('templates/moderation-summary.html',
+    "<article class=\"moderation-summary\">\n" +
     "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
     "    <div class=\"text-info\" ng-show=\"moc.loading\"><i class=\"fa fa-circle-o-notch fa-spin\"></i> Moderatie aanbod \"{{moc.offerId}}\" wordt geladen.</div>\n" +
     "\n" +
@@ -22745,34 +22817,28 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </a>\n" +
     "            </header>\n" +
     "\n" +
-    "            <p class=\"text-muted\"><udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary></p>\n" +
+    "            <p class=\"text-muted\">\n" +
+    "                <udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
+    "            </p>\n" +
     "\n" +
     "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
     "\n" +
     "            <a ng-href=\"{{ ::moc.offer.url  + '/preview' }}\">\n" +
     "                Alle info bekijken\n" +
-    "            </a>\n" +
-    "            &nbsp;\n" +
+    "            </a> &nbsp;\n" +
     "            <a ng-href=\"{{ ::moc.offer.url  + '/edit' }}\">\n" +
     "                Bewerken\n" +
     "            </a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
-    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\"/>\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\" />\n" +
     "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
     "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
-    "        <div class=\"col-md-6 text-right\">\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
-    "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
-    "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
-    "\n" +
-    "            <span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
-    "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "        <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right\">\n" +
+    "            <udb-moderation-offer offer=\"moc.offer\" continueValidation=\"false\"></udb-moderation-offer>\n" +
     "        </div>\n" +
     "    </footer>\n" +
     "</article>\n"
@@ -22856,8 +22922,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </p>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
-    "        <udb-moderation-offer offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
-    "        </udb-moderation-offer>\n" +
+    "        <udb-moderation-summary offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
+    "        </udb-moderation-summary>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <div class=\"panel-footer\">\n" +

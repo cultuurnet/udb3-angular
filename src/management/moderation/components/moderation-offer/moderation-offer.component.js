@@ -33,7 +33,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
-
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
