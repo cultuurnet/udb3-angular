@@ -7440,7 +7440,8 @@ function EventDetail(
   $window,
   offerLabeller,
   $translate,
-  appConfig
+  appConfig,
+   ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7448,6 +7449,19 @@ function EventDetail(
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
+    var splitLocation = offerLocation.split('/');
+    $scope.cbid = splitLocation[splitLocation.length - 1];
+    ModerationService
+      .getMyRoles()
+      .then(function(roles) {
+        getModerationItems(roles).then(function(result) {
+          angular.forEach(result.member, function(member) {
+            if (member['@id'] === $scope.eventId) {
+              $scope.moderationPermission = true;
+            }
+          });
+        });
+      });
 
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
@@ -7473,6 +7487,23 @@ function EventDetail(
 
   function denyAllPermissions() {
     $scope.permissions = {editing: false, duplication: false};
+  }
+
+  function getModerationItems(roles) {
+    var query = '';
+
+    _.forEach(roles, function(role) {
+      if (role.constraint) {
+        query += (query ? ' OR ' : '') + role.constraint;
+      }
+    });
+    query = (query ? '(' + query + ')' : '');
+    query = '(' + query + ' OR cdbid:' + $scope.cbid + ')';
+    return ModerationService
+      .find(query, 10, 0)
+      .then(function(searchResult) {
+        return searchResult;
+      });
   }
 
   $scope.eventIdIsInvalid = false;
@@ -7702,7 +7733,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService"];
 
 // Source: src/event_form/calendar-labels.constant.js
 /* jshint sub: true */
@@ -13472,7 +13503,6 @@ function listItems(
       }
     });
     query = (query ? '(' + query + ')' : '');
-
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
@@ -20330,7 +20360,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
-    "        <udb-moderation-offer class=\"list-group-item moderation-detail\" offer-id=\"{{event['@id']}}\" next=\"true\"></udb-moderation-offer>\n" +
+    "        <udb-moderation-offer ng-if=\"moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{event['@id']}}\" next=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
