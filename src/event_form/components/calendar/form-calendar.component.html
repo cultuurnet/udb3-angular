@@ -1,0 +1,35 @@
+<div class="row" ng-show="calendar.formData.isEvent">
+    <div class="col-xs-12">
+        <div class="form-group">
+
+            <label class="wanneerkiezer-label" ng-show="calendar.type === ''">Maak een keuze</label>
+            <div class="wanneerkiezer" ng-show="calendar.type === ''">
+                <ul class="list-inline button-list">
+                    <li ng-repeat="calendarType in ::calendar.types" ng-hide="calendar.formData.isPlace && calendarType.eventOnly">
+                        <button
+                                class="btn btn-default"
+                                ng-bind="::calendarType.label"
+                                udb-auto-scroll
+                                ng-click="calendar.setType(calendarType.id)"></button>
+                    </li>
+                </ul>
+            </div>
+            <div class="wanneer-chosen" ng-hide="calendar.type === ''">
+            <span class="btn-chosen" ng-bind="calendar.type">
+            </span><a class="btn btn-link wanneerrestore" href="#" ng-click="calendar.reset()">Wijzigen</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" ng-show="calendar.type === 'single'">
+    <udb-event-form-timestamp form-data="calendar.formData"></udb-event-form-timestamp>
+</div>
+
+<div class="row" ng-show="calendar.type === 'periodic'">
+    <udb-event-form-period form-data="calendar.formData"></udb-event-form-period>
+</div>
+
+<div class="row" ng-show="calendar.type === 'permanent' || calendar.type === 'periodic'">
+    <udb-event-form-opening-hours opening-hours="calendar.openingHours"></udb-event-form-opening-hours>
+</div>

@@ -467,11 +467,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChangedCallback(this);
     },
 
-    resetCalender: function () {
-      this.activeCalendarType = '';
-      this.calendarType = '';
-    },
-
     initOpeningHours: function(openingHours) {
       OpeningHoursCollection.deserialize(openingHours);
     },

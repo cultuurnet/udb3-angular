@@ -8016,6 +8016,49 @@ function AutoScroll($document) {
 }
 AutoScroll.$inject = ["$document"];
 
+// Source: src/event_form/components/calendar/form-calendar.component.js
+/**
+ * @ngdoc function
+ * @name udb.event-form.component:udbCalendar
+ * @description
+ * # Form Calendar
+ * The Calendar component for the offer form.
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendar', {
+    templateUrl: 'templates/form-calendar.component.html',
+    controller: CalendarController,
+    controllerAs: 'calendar'
+  });
+
+/* @ngInject */
+function CalendarController(EventFormData, OpeningHoursCollection, calendarLabels) {
+  var calendar = this;
+
+  calendar.formData = EventFormData;
+  calendar.types = calendarLabels;
+  calendar.type = EventFormData.activeCalendarType;
+  calendar.setType = setType;
+  calendar.reset = reset;
+  calendar.openingHours = OpeningHoursCollection;
+
+  function reset() {
+    EventFormData.resetCalendar();
+    calendar.type= EventFormData.calendarType;
+  }
+
+  /**
+   * @param {string} calendarType
+   */
+  function setType(calendarType) {
+    EventFormData.setCalendarType(calendarType);
+    calendar.formData = EventFormData;
+    calendar.type = EventFormData.activeCalendarType;
+  }
+}
+CalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "calendarLabels"];
+
 // Source: src/event_form/components/calendartypes/event-form-period.directive.js
 /**
  * @ngdoc directive
@@ -10277,11 +10320,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChangedCallback(this);
     },
 
-    resetCalender: function () {
-      this.activeCalendarType = '';
-      this.calendarType = '';
-    },
-
     initOpeningHours: function(openingHours) {
       OpeningHoursCollection.deserialize(openingHours);
     },
@@ -11105,14 +11143,12 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels, OpeningHoursCollection) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-  $scope.calendarLabels = calendarLabels;
-  $scope.openingHours = OpeningHoursCollection;
 
   /**
    * Mark the major info as changed.
@@ -11127,7 +11163,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels", "OpeningHoursCollection"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -20535,6 +20571,45 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-calendar.component.html',
+    "<div class=\"row\" ng-show=\"calendar.formData.isEvent\">\n" +
+    "    <div class=\"col-xs-12\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "\n" +
+    "            <label class=\"wanneerkiezer-label\" ng-show=\"calendar.type === ''\">Maak een keuze</label>\n" +
+    "            <div class=\"wanneerkiezer\" ng-show=\"calendar.type === ''\">\n" +
+    "                <ul class=\"list-inline button-list\">\n" +
+    "                    <li ng-repeat=\"calendarType in ::calendar.types\" ng-hide=\"calendar.formData.isPlace && calendarType.eventOnly\">\n" +
+    "                        <button\n" +
+    "                                class=\"btn btn-default\"\n" +
+    "                                ng-bind=\"::calendarType.label\"\n" +
+    "                                udb-auto-scroll\n" +
+    "                                ng-click=\"calendar.setType(calendarType.id)\"></button>\n" +
+    "                    </li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
+    "            <div class=\"wanneer-chosen\" ng-hide=\"calendar.type === ''\">\n" +
+    "            <span class=\"btn-chosen\" ng-bind=\"calendar.type\">\n" +
+    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"calendar.reset()\">Wijzigen</a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\" ng-show=\"calendar.type === 'single'\">\n" +
+    "    <udb-event-form-timestamp form-data=\"calendar.formData\"></udb-event-form-timestamp>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\" ng-show=\"calendar.type === 'periodic'\">\n" +
+    "    <udb-event-form-period form-data=\"calendar.formData\"></udb-event-form-period>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row\" ng-show=\"calendar.type === 'permanent' || calendar.type === 'periodic'\">\n" +
+    "    <udb-event-form-opening-hours opening-hours=\"calendar.openingHours\"></udb-event-form-opening-hours>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-form-period.html',
     "<div id=\"wanneer-periode\">\n" +
     "  <div class=\"col-xs-12 col-sm-4\">\n" +
@@ -21764,42 +21839,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span ng-show=\"eventFormData.isPlace\">Wanneer is deze plaats of locatie open?</span>\n" +
     "    </h2>\n" +
     "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.isEvent\">\n" +
-    "      <div class=\"col-xs-12\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "\n" +
-    "          <label class=\"wanneerkiezer-label\" ng-show=\"eventFormData.activeCalendarType === ''\">Maak een keuze</label>\n" +
-    "          <div class=\"wanneerkiezer\" ng-show=\"eventFormData.activeCalendarType === ''\">\n" +
-    "            <ul class=\"list-inline button-list\">\n" +
-    "              <li ng-repeat=\"calendarLabel in ::calendarLabels\" ng-hide=\"eventFormData.isPlace && calendarLabel.eventOnly\">\n" +
-    "                <button\n" +
-    "                        class=\"btn btn-default\"\n" +
-    "                        ng-bind=\"::calendarLabel.label\"\n" +
-    "                        udb-auto-scroll\n" +
-    "                        ng-click=\"eventFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
-    "              </li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "          <div class=\"wanneer-chosen\" ng-hide=\"eventFormData.activeCalendarType === ''\">\n" +
-    "            <span class=\"btn-chosen\" ng-bind=\"eventFormData.activeCalendarLabel\">\n" +
-    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"eventFormData.resetCalendar()\">Wijzigen</a>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'single'\">\n" +
-    "      <udb-event-form-timestamp form-data=\"eventFormData\"></udb-event-form-timestamp>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-period form-data=\"eventFormData\"></udb-event-form-period>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'permanent' || eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-opening-hours opening-hours=\"openingHours\"></udb-event-form-opening-hours>\n" +
-    "    </div>\n" +
-    "\n" +
+    "    <udb-form-calendar></udb-form-calendar>\n" +
     "  </section>\n" +
     "</div>\n"
   );
