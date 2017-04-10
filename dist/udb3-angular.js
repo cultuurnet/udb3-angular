@@ -14077,6 +14077,105 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
 }
 OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
 
+// Source: src/management/organizers/edit/organizer-edit.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerEditController
+ * @description
+ * # OrganizerEditController
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizerEditController', OrganizerEditController);
+
+/* @ngInject */
+function OrganizerEditController($scope, OrganizerManager, $uibModal, $stateParams, cities, Levenshtein) {
+  var controller = this;
+  var organizerId = $stateParams.id;
+
+  $scope.cities = cities;
+  $scope.changeCitySelection = changeCitySelection;
+  $scope.selectCity = controller.selectCity;
+  $scope.selectedCity = '';
+
+  loadOrganizer(organizerId);
+
+  function loadOrganizer(organizerId) {
+    OrganizerManager
+      .get(organizerId)
+      .then(showOrganizer);
+  }
+
+  /**
+   * @param {udbOrganizer} organizer
+   */
+  function showOrganizer(organizer) {
+    controller.organizer = organizer;
+    $scope.selectedCity = organizer.address.postalCode + ' - ' + organizer.address.addressLocality;
+  }
+
+  $scope.filterCities = function(value) {
+    return function (city) {
+      var length = value.length;
+      var words = value.match(/\w+/g);
+      var zipMatches = words.filter(function (word) {
+        return city.zip.substring(0, length) === word;
+      });
+      var nameMatches = words.filter(function (word) {
+        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+      });
+
+      return zipMatches.length + nameMatches.length >= words.length;
+    };
+  };
+
+  $scope.orderByLevenshteinDistance = function(value) {
+    return function (city) {
+      return new Levenshtein(value, city.zip + '' + city.name);
+    };
+  };
+
+  /**
+   * Select City.
+   */
+  controller.selectCity = function ($item, $label) {
+    $scope.newOrganizer.address.postalCode = $item.zip;
+    $scope.newOrganizer.address.addressLocality = $item.name;
+
+    $scope.cityAutocompleteTextField = '';
+    $scope.selectedCity = $label;
+  };
+
+  /**
+   * Change a city selection.
+   */
+  function changeCitySelection() {
+    $scope.selectedCity = '';
+    $scope.cityAutocompleteTextField = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    controller.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
+
+    var modalInstance = $uibModal.open(
+      {
+        templateUrl: 'templates/unexpected-error-modal.html',
+        controller: 'UnexpectedErrorModalController',
+        size: 'sm',
+        resolve: {
+          errorMessage: function() {
+            return controller.errorMessage;
+          }
+        }
+      }
+    );
+  }
+}
+OrganizerEditController.$inject = ["$scope", "OrganizerManager", "$uibModal", "$stateParams", "cities", "Levenshtein"];
+
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
  * @ngdoc function
@@ -22897,6 +22996,167 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"odc.deleteOrganization()\">\n" +
     "        Definitief verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"odc.saving\"></i>\n" +
     "    </button>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organizer-edit.html',
+    "<h1 class=\"title\" ng-bind=\"oec.organizer.name\"></h1>\n" +
+    "\n" +
+    "<div ng-show=\"!oec.organizer && !oec.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-if=\"oec.organizer\">\n" +
+    "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <div class=\"form-group has-feedback\"\n" +
+    "                     ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
+    "                    <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
+    "                    <input type=\"url\"\n" +
+    "                           id=\"organizer-website\"\n" +
+    "                           name=\"website\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           ng-model-options=\"{ debounce: 300 }\"\n" +
+    "                           ng-model=\"oec.organizer.url\"\n" +
+    "                           aria-describedby=\"organizer-website-status\"\n" +
+    "                           ng-change=\"validateWebsite()\"\n" +
+    "                           autocomplete=\"off\"\n" +
+    "                           required>\n" +
+    "                    <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
+    "                    <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">\n" +
+    "                    Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'.\n" +
+    "                    Geef een unieke website op.\n" +
+    "                </p>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
+    "                    <label>Naam</label>\n" +
+    "                    <input type=\"text\"\n" +
+    "                           name=\"name\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           ng-model=\"oec.organizer.name\"\n" +
+    "                           ng-change=\"updateName()\"\n" +
+    "                           required>\n" +
+    "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
+    "                    <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
+    "          Gelieve een naam in te vullen\n" +
+    "        </span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <label>Straat en nummer</label>\n" +
+    "                    <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"oec.organizer.address.streetAddress\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">\n" +
+    "                        Gemeente\n" +
+    "                    </label>\n" +
+    "                    <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
+    "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
+    "                               type=\"text\"\n" +
+    "                               class=\"form-control uib-typeahead\"\n" +
+    "                               placeholder=\"Gemeente of postcode\"\n" +
+    "                               ng-model=\"cityAutocompleteTextField\"\n" +
+    "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
+    "                               typeahead-on-select=\"selectCity($item, $label)\"\n" +
+    "                               typeahead-min-length=\"2\"\n" +
+    "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                               autocomplete=\"off\">\n" +
+    "                        <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
+    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
+    "                    <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
+    "                    <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "                <p><strong>Contact</strong></p>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-12\">\n" +
+    "\n" +
+    "                <div ng-show=\"oec.organizer.contact.length === 0\">\n" +
+    "                    <ul class=\"list-unstyled\">\n" +
+    "                        <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
+    "                        <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
+    "                        <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "                    </ul>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <table class=\"table\" ng-show=\"oec.organizer.contact.length\">\n" +
+    "                    <tr ng-repeat=\"(key, info) in oec.organizer.contact\"\n" +
+    "                        ng-model=\"info\"\n" +
+    "                        udb-contact-info-validation\n" +
+    "                        ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
+    "                        <td>\n" +
+    "                            <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
+    "                                <option value=\"url\">Website</option>\n" +
+    "                                <option value=\"phone\">Telefoonnummer</option>\n" +
+    "                                <option value=\"email\">E-mailadres</option>\n" +
+    "                            </select>\n" +
+    "                        </td>\n" +
+    "                        <td ng-switch=\"info.type\">\n" +
+    "                            <input type=\"text\"\n" +
+    "                                   ng-switch-when=\"url\"\n" +
+    "                                   udb-http-prefix\n" +
+    "                                   class=\"form-control\"\n" +
+    "                                   ng-model=\"info.value\"\n" +
+    "                                   name=\"contact[{{key}}]\"\n" +
+    "                                   ng-change=\"validateInfo()\"\n" +
+    "                                   ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                            <input type=\"text\"\n" +
+    "                                   ng-switch-default\n" +
+    "                                   class=\"form-control\"\n" +
+    "                                   ng-model=\"info.value\"\n" +
+    "                                   name=\"contact[{{key}}]\"\n" +
+    "                                   ng-change=\"validateInfo()\"\n" +
+    "                                   ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                            <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
+    "                        </td>\n" +
+    "                        <td>\n" +
+    "                            <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteOrganizerContactInfo(key)\">\n" +
+    "                                <span aria-hidden=\"true\">&times;</span>\n" +
+    "                            </button>\n" +
+    "                        </td>\n" +
+    "                    </tr>\n" +
+    "                    <tr>\n" +
+    "                        <td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
+    "                        </td>\n" +
+    "                    </tr>\n" +
+    "                </table>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"oec.loadingError\">\n" +
+    "    <span ng-bind=\"oec.loadingError\"></span>\n" +
     "</div>\n"
   );
 
