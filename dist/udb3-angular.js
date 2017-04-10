@@ -79,9 +79,9 @@ angular
 
 /**
  * @ngdoc module
- * @name udb.export
+ * @name udb.event-form
  * @description
- * The udb eventform module
+ * The udb form module
  */
 angular
   .module('udb.event-form', [
@@ -8028,12 +8028,23 @@ angular
   .module('udb.event-form')
   .component('udbFormCalendar', {
     templateUrl: 'templates/form-calendar.component.html',
-    controller: CalendarController,
+    controller: 'FormCalendarController',
     controllerAs: 'calendar'
   });
 
+// Source: src/event_form/components/calendar/form-calendar.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarController
+ * @description
+ * # Form Calendar Controller
+ */
+angular
+  .module('udb.event-form')
+  .controller('FormCalendarController', FormCalendarController);
+
 /* @ngInject */
-function CalendarController(EventFormData, OpeningHoursCollection, calendarLabels) {
+function FormCalendarController(EventFormData, OpeningHoursCollection, calendarLabels) {
   var calendar = this;
 
   calendar.formData = EventFormData;
@@ -8042,10 +8053,19 @@ function CalendarController(EventFormData, OpeningHoursCollection, calendarLabel
   calendar.setType = setType;
   calendar.reset = reset;
   calendar.openingHours = OpeningHoursCollection;
+  calendar.createTimeSpan = createTimeSpan;
+  calendar.timeSpans = [];
+  calendar.removeTimeSpan = removeTimeSpan;
+
+  init();
+
+  function init() {
+    setType('single');
+  }
 
   function reset() {
     EventFormData.resetCalendar();
-    calendar.type= EventFormData.calendarType;
+    calendar.type = EventFormData.calendarType;
   }
 
   /**
@@ -8055,9 +8075,50 @@ function CalendarController(EventFormData, OpeningHoursCollection, calendarLabel
     EventFormData.setCalendarType(calendarType);
     calendar.formData = EventFormData;
     calendar.type = EventFormData.activeCalendarType;
+
+    if (calendarType === 'single' && calendar.timeSpans.length === 0) {
+      createTimeSpan();
+    }
+  }
+
+  function createTimeSpan() {
+    var newTimeSpan = {
+      startDate: moment().startOf('day').toDate(),
+      endDate: moment().endOf('day').toDate(),
+      wholeDay: true,
+      startTime: moment(0).startOf('hour').add(2, 'h').toDate(),
+      endTime:  moment(0).startOf('hour').add(5, 'h').toDate()
+    };
+
+    calendar.timeSpans.push(newTimeSpan);
+  }
+
+  /**
+   * @param {Object} timeSpan
+   */
+  function removeTimeSpan(timeSpan) {
+    if (calendar.timeSpans.length > 1) {
+      calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
+    }
   }
 }
-CalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "calendarLabels"];
+FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "calendarLabels"];
+
+// Source: src/event_form/components/calendar/form-event-calendar.component.js
+/**
+ * @ngdoc function
+ * @name udb.event-form.component:udbFormEventCalendar
+ * @description
+ * # Form Calendar
+ * The form calendar component for events.
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormEventCalendar', {
+    templateUrl: 'templates/form-event-calendar.component.html',
+    controller: 'FormCalendarController',
+    controllerAs: 'calendar'
+  });
 
 // Source: src/event_form/components/calendartypes/event-form-period.directive.js
 /**
@@ -20610,6 +20671,89 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-event-calendar.component.html',
+    "<div class=\"calendar-type-picker\">\n" +
+    "    <div class=\"calendar-type-options\">\n" +
+    "\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
+    "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
+    "            <p class=\"text-center\"><strong>Eén of meerdere dagen</strong></p>\n" +
+    "        </a>\n" +
+    "\n" +
+    "        <span class=\"or\">of</span>\n" +
+    "\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('periodic')\"\n" +
+    "           ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
+    "            <p class=\"text-center\"><strong>Vaste dagen per week</strong></p>\n" +
+    "        </a>\n" +
+    "\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"calendar-timing-info\">\n" +
+    "    <div class=\"panel panel-default\">\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div class=\"calendar-time-spans\" ng-if=\"calendar.type === 'single'\">\n" +
+    "                <div class=\"calendar-time-span\" ng-repeat=\"timeSpan in calendar.timeSpans\">\n" +
+    "                    <span ng-show=\"calendar.timeSpans.length > 1\"\n" +
+    "                          aria-hidden=\"true\"\n" +
+    "                          ng-click=\"calendar.removeTimeSpan(timeSpan)\"\n" +
+    "                          class=\"close\">×</span>\n" +
+    "                        <div class=\"dates\">\n" +
+    "                            <div class=\"date form-group\">\n" +
+    "                                <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
+    "                                <input id=\"time-span-{{$index}}-start-date\"\n" +
+    "                                       type=\"date\"\n" +
+    "                                       ng-model=\"timeSpan.startDate\"\n" +
+    "                                       class=\"form-control start-date\">\n" +
+    "                            </div>\n" +
+    "                            <div class=\"date form-group\">\n" +
+    "                                <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
+    "                                <input id=\"time-span-{{$index}}-end-date\"\n" +
+    "                                       type=\"date\"\n" +
+    "                                       ng-model=\"timeSpan.endDate\"\n" +
+    "                                       class=\"form-control end-date\">\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"timing-control\">\n" +
+    "                            <div class=\"checkbox whole-day\">\n" +
+    "                                <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
+    "                                    <input type=\"checkbox\"\n" +
+    "                                           id=\"time-span-{{$index}}-has-timing-info\"\n" +
+    "                                           ng-model=\"timeSpan.wholeDay\"\n" +
+    "                                           class=\"whole-day-check\"> Hele dag\n" +
+    "                                </label>\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"timing\" ng-show=\"!timeSpan.wholeDay\">\n" +
+    "                            <div class=\"time form-group\">\n" +
+    "                                <label for=\"time-span-{{$index}}-start-time\">Beginuur</label>\n" +
+    "                                <input id=\"time-span-{{$index}}-start-time\"\n" +
+    "                                       type=\"time\"\n" +
+    "                                       ng-model=\"timeSpan.startTime\"\n" +
+    "                                       class=\"form-control start-time\">\n" +
+    "                            </div>\n" +
+    "                            <div class=\"time form-group\">\n" +
+    "                                <label for=\"time-span-{{$index}}-end-time\">Einduur</label>\n" +
+    "                                <input id=\"time-span-{{$index}}-end-time\"\n" +
+    "                                       type=\"time\"\n" +
+    "                                       ng-model=\"timeSpan.endTime\"\n" +
+    "                                       class=\"form-control end-time\">\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"error alert alert-danger\" ng-show=\"calendar.error\">\n" +
+    "                        </div>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\">Dag(en) toevoegen</a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-form-period.html',
     "<div id=\"wanneer-periode\">\n" +
     "  <div class=\"col-xs-12 col-sm-4\">\n" +
@@ -21839,7 +21983,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span ng-show=\"eventFormData.isPlace\">Wanneer is deze plaats of locatie open?</span>\n" +
     "    </h2>\n" +
     "\n" +
-    "    <udb-form-calendar></udb-form-calendar>\n" +
+    "    <udb-form-calendar ng-if=\"eventFormData.isPlace\"></udb-form-calendar>\n" +
+    "    <udb-form-event-calendar ng-if=\"eventFormData.isEvent\"></udb-form-event-calendar>\n" +
     "  </section>\n" +
     "</div>\n"
   );

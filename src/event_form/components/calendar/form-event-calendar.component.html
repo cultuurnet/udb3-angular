@@ -1,0 +1,79 @@
+<div class="calendar-type-picker">
+    <div class="calendar-type-options">
+
+        <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': calendar.type === 'single'}">
+            <img src="../images/form-calendar/days.svg" class="calendar-type-icon">
+            <p class="text-center"><strong>Eén of meerdere dagen</strong></p>
+        </a>
+
+        <span class="or">of</span>
+
+        <a href="#" ng-click="calendar.setType('periodic')"
+           ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
+            <img src="../images/form-calendar/period.svg" class="calendar-type-icon">
+            <p class="text-center"><strong>Vaste dagen per week</strong></p>
+        </a>
+
+    </div>
+</div>
+
+<div class="calendar-timing-info">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="calendar-time-spans" ng-if="calendar.type === 'single'">
+                <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans">
+                    <span ng-show="calendar.timeSpans.length > 1"
+                          aria-hidden="true"
+                          ng-click="calendar.removeTimeSpan(timeSpan)"
+                          class="close">×</span>
+                        <div class="dates">
+                            <div class="date form-group">
+                                <label for="time-span-{{$index}}-start-date">Start</label>
+                                <input id="time-span-{{$index}}-start-date"
+                                       type="date"
+                                       ng-model="timeSpan.startDate"
+                                       class="form-control start-date">
+                            </div>
+                            <div class="date form-group">
+                                <label for="time-span-{{$index}}-end-date">Einde</label>
+                                <input id="time-span-{{$index}}-end-date"
+                                       type="date"
+                                       ng-model="timeSpan.endDate"
+                                       class="form-control end-date">
+                            </div>
+                        </div>
+                        <div class="timing-control">
+                            <div class="checkbox whole-day">
+                                <label for="time-span-{{$index}}-has-timing-info">
+                                    <input type="checkbox"
+                                           id="time-span-{{$index}}-has-timing-info"
+                                           ng-model="timeSpan.wholeDay"
+                                           class="whole-day-check"> Hele dag
+                                </label>
+                            </div>
+                        </div>
+                        <div class="timing" ng-show="!timeSpan.wholeDay">
+                            <div class="time form-group">
+                                <label for="time-span-{{$index}}-start-time">Beginuur</label>
+                                <input id="time-span-{{$index}}-start-time"
+                                       type="time"
+                                       ng-model="timeSpan.startTime"
+                                       class="form-control start-time">
+                            </div>
+                            <div class="time form-group">
+                                <label for="time-span-{{$index}}-end-time">Einduur</label>
+                                <input id="time-span-{{$index}}-end-time"
+                                       type="time"
+                                       ng-model="timeSpan.endTime"
+                                       class="form-control end-time">
+                            </div>
+                        </div>
+                        <div class="error alert alert-danger" ng-show="calendar.error">
+                        </div>
+                </div>
+
+                <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link">Dag(en) toevoegen</a>
+            </div>
+        </div>
+    </div>
+</div>
