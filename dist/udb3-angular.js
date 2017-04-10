@@ -14090,16 +14090,19 @@ angular
   .controller('OrganizerEditController', OrganizerEditController);
 
 /* @ngInject */
-function OrganizerEditController($scope, OrganizerManager, $uibModal, $stateParams, cities, Levenshtein) {
+function OrganizerEditController(
+    $scope,
+    OrganizerManager,
+    udbOrganizers,
+    $uibModal,
+    $stateParams,
+    cities,
+    Levenshtein
+  ) {
   var controller = this;
   var organizerId = $stateParams.id;
 
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
-  $scope.changeCitySelection = changeCitySelection;
-
   $scope.cities = cities;
-  $scope.selectCity = controller.selectCity;
   $scope.selectedCity = '';
   $scope.contact = [];
 
@@ -14116,6 +14119,7 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
+    controller.oldOrganizer = organizer;
     $scope.selectedCity = organizer.address.postalCode + ' - ' + organizer.address.addressLocality;
 
     _.forEach(organizer.contactPoint, function(contactArray, key) {
@@ -14123,26 +14127,58 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
         $scope.contact.push({type: key, value: value});
       });
     });
+
+    console.log(controller.organizerEditForm);
   }
+
+  /**
+   * Validate the website of new organizer.
+   */
+  controller.validateWebsite = function() {
+    $scope.showWebsiteValidation = true;
+
+    if (!controller.organizerEditForm.website.$valid) {
+      $scope.showWebsiteValidation = false;
+      return;
+    }
+
+    udbOrganizers
+        .findOrganizersWebsite(controller.organizer)
+        .then(function (data) {
+          // Set the results for the duplicates modal,
+          if (data.totalItems > 0) {
+            $scope.organizersWebsiteFound = true;
+            $scope.showWebsiteValidation = false;
+            $scope.disableSubmit = true;
+          }
+          else {
+            $scope.showWebsiteValidation = false;
+            $scope.organizersWebsiteFound = false;
+          }
+        }, function() {
+          $scope.websiteError = true;
+          $scope.showWebsiteValidation = false;
+        });
+  };
 
   /**
    * Add a contact info entry for an organizer.
    */
-  function addOrganizerContactInfo(type) {
+  controller.addOrganizerContactInfo = function(type) {
     $scope.contact.push({
       type : type,
       value : ''
     });
-  }
+  };
 
   /**
    * Remove a given key of the contact info.
    */
-  function deleteOrganizerContactInfo(index) {
+  controller.deleteOrganizerContactInfo = function(index) {
     $scope.contact.splice(index, 1);
-  }
+  };
 
-  $scope.filterCities = function(value) {
+  controller.filterCities = function(value) {
     return function (city) {
       var length = value.length;
       var words = value.match(/\w+/g);
@@ -14157,7 +14193,7 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
     };
   };
 
-  $scope.orderByLevenshteinDistance = function(value) {
+  controller.orderByLevenshteinDistance = function(value) {
     return function (city) {
       return new Levenshtein(value, city.zip + '' + city.name);
     };
@@ -14177,10 +14213,10 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
   /**
    * Change a city selection.
    */
-  function changeCitySelection() {
+  controller.changeCitySelection = function () {
     $scope.selectedCity = '';
     $scope.cityAutocompleteTextField = '';
-  }
+  };
 
   /**
    * @param {ApiProblem} problem
@@ -14202,7 +14238,7 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
     );
   }
 }
-OrganizerEditController.$inject = ["$scope", "OrganizerManager", "$uibModal", "$stateParams", "cities", "Levenshtein"];
+OrganizerEditController.$inject = ["$scope", "OrganizerManager", "udbOrganizers", "$uibModal", "$stateParams", "cities", "Levenshtein"];
 
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
@@ -23036,7 +23072,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div ng-if=\"oec.organizer\">\n" +
-    "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
+    "    <form name=\"oec.organizerEditForm\" class=\"organizer-edit-form\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-sm-12 col-md-8\">\n" +
     "                <div class=\"form-group has-feedback\"\n" +
@@ -23049,7 +23085,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           ng-model-options=\"{ debounce: 300 }\"\n" +
     "                           ng-model=\"oec.organizer.url\"\n" +
     "                           aria-describedby=\"organizer-website-status\"\n" +
-    "                           ng-change=\"validateWebsite()\"\n" +
+    "                           ng-change=\"oec.validateWebsite()\"\n" +
     "                           autocomplete=\"off\"\n" +
     "                           required>\n" +
     "                    <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
@@ -23104,7 +23140,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                               class=\"form-control uib-typeahead\"\n" +
     "                               placeholder=\"Gemeente of postcode\"\n" +
     "                               ng-model=\"cityAutocompleteTextField\"\n" +
-    "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
+    "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:oec.filterCities($viewValue) | orderBy:oec.orderByLevenshteinDistance($viewValue)\"\n" +
     "                               typeahead-on-select=\"selectCity($item, $label)\"\n" +
     "                               typeahead-min-length=\"2\"\n" +
     "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
@@ -23117,7 +23153,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "                <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
     "                    <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
-    "                    <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
+    "                    <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oec.changeCitySelection()\">Wijzigen</a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -23130,9 +23166,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "                <div ng-show=\"contact.length === 0\">\n" +
     "                    <ul class=\"list-unstyled\">\n" +
-    "                        <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "                        <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "                        <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "                        <li><a ng-click=\"oec.addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
+    "                        <li><a ng-click=\"oec.addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
+    "                        <li><a ng-click=\"oec.addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
     "                    </ul>\n" +
     "                </div>\n" +
     "\n" +
@@ -23167,13 +23203,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                            <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
     "                        </td>\n" +
     "                        <td>\n" +
-    "                            <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteOrganizerContactInfo(key)\">\n" +
+    "                            <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"oec.deleteOrganizerContactInfo(key)\">\n" +
     "                                <span aria-hidden=\"true\">&times;</span>\n" +
     "                            </button>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                    <tr>\n" +
-    "                        <td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
+    "                        <td colspan=\"3\"><a ng-click=\"oec.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                </table>\n" +

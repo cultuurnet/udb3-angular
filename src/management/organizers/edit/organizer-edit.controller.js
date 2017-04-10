@@ -11,16 +11,19 @@ angular
   .controller('OrganizerEditController', OrganizerEditController);
 
 /* @ngInject */
-function OrganizerEditController($scope, OrganizerManager, $uibModal, $stateParams, cities, Levenshtein) {
+function OrganizerEditController(
+    $scope,
+    OrganizerManager,
+    udbOrganizers,
+    $uibModal,
+    $stateParams,
+    cities,
+    Levenshtein
+  ) {
   var controller = this;
   var organizerId = $stateParams.id;
 
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
-  $scope.changeCitySelection = changeCitySelection;
-
   $scope.cities = cities;
-  $scope.selectCity = controller.selectCity;
   $scope.selectedCity = '';
   $scope.contact = [];
 
@@ -37,6 +40,7 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
+    controller.oldOrganizer = organizer;
     $scope.selectedCity = organizer.address.postalCode + ' - ' + organizer.address.addressLocality;
 
     _.forEach(organizer.contactPoint, function(contactArray, key) {
@@ -47,23 +51,53 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
   }
 
   /**
+   * Validate the website of new organizer.
+   */
+  controller.validateWebsite = function() {
+    $scope.showWebsiteValidation = true;
+
+    if (!controller.organizerEditForm.website.$valid) {
+      $scope.showWebsiteValidation = false;
+      return;
+    }
+
+    udbOrganizers
+        .findOrganizersWebsite(controller.organizer)
+        .then(function (data) {
+          // Set the results for the duplicates modal,
+          if (data.totalItems > 0) {
+            $scope.organizersWebsiteFound = true;
+            $scope.showWebsiteValidation = false;
+            $scope.disableSubmit = true;
+          }
+          else {
+            $scope.showWebsiteValidation = false;
+            $scope.organizersWebsiteFound = false;
+          }
+        }, function() {
+          $scope.websiteError = true;
+          $scope.showWebsiteValidation = false;
+        });
+  };
+
+  /**
    * Add a contact info entry for an organizer.
    */
-  function addOrganizerContactInfo(type) {
+  controller.addOrganizerContactInfo = function(type) {
     $scope.contact.push({
       type : type,
       value : ''
     });
-  }
+  };
 
   /**
    * Remove a given key of the contact info.
    */
-  function deleteOrganizerContactInfo(index) {
+  controller.deleteOrganizerContactInfo = function(index) {
     $scope.contact.splice(index, 1);
-  }
+  };
 
-  $scope.filterCities = function(value) {
+  controller.filterCities = function(value) {
     return function (city) {
       var length = value.length;
       var words = value.match(/\w+/g);
@@ -78,7 +112,7 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
     };
   };
 
-  $scope.orderByLevenshteinDistance = function(value) {
+  controller.orderByLevenshteinDistance = function(value) {
     return function (city) {
       return new Levenshtein(value, city.zip + '' + city.name);
     };
@@ -98,10 +132,10 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
   /**
    * Change a city selection.
    */
-  function changeCitySelection() {
+  controller.changeCitySelection = function () {
     $scope.selectedCity = '';
     $scope.cityAutocompleteTextField = '';
-  }
+  };
 
   /**
    * @param {ApiProblem} problem

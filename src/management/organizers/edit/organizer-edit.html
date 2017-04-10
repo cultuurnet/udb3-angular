@@ -5,7 +5,7 @@
 </div>
 
 <div ng-if="oec.organizer">
-    <form name="organizerForm" class="organizer-form">
+    <form name="oec.organizerEditForm" class="organizer-edit-form">
         <div class="row">
             <div class="col-sm-12 col-md-8">
                 <div class="form-group has-feedback"
@@ -18,7 +18,7 @@
                            ng-model-options="{ debounce: 300 }"
                            ng-model="oec.organizer.url"
                            aria-describedby="organizer-website-status"
-                           ng-change="validateWebsite()"
+                           ng-change="oec.validateWebsite()"
                            autocomplete="off"
                            required>
                     <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
@@ -73,7 +73,7 @@
                                class="form-control uib-typeahead"
                                placeholder="Gemeente of postcode"
                                ng-model="cityAutocompleteTextField"
-                               uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
+                               uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:oec.filterCities($viewValue) | orderBy:oec.orderByLevenshteinDistance($viewValue)"
                                typeahead-on-select="selectCity($item, $label)"
                                typeahead-min-length="2"
                                typeahead-template-url="templates/city-suggestion.html"
@@ -86,7 +86,7 @@
 
                 <div class="form-group" id="gemeente-gekozen" ng-if="selectedCity">
                     <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::selectedCity"></span>
-                    <a href="#" class="btn btn-default btn-link" ng-click="changeCitySelection()">Wijzigen</a>
+                    <a href="#" class="btn btn-default btn-link" ng-click="oec.changeCitySelection()">Wijzigen</a>
                 </div>
             </div>
         </div>
@@ -99,9 +99,9 @@
 
                 <div ng-show="contact.length === 0">
                     <ul class="list-unstyled">
-                        <li><a ng-click="addOrganizerContactInfo('phone')" href="#">Telefoonnummer toevoegen</a></li>
-                        <li><a ng-click="addOrganizerContactInfo('email')" href="#">E-mailadres toevoegen</a></li>
-                        <li><a ng-click="addOrganizerContactInfo('url')" href="#">Andere website toevoegen</a></li>
+                        <li><a ng-click="oec.addOrganizerContactInfo('phone')" href="#">Telefoonnummer toevoegen</a></li>
+                        <li><a ng-click="oec.addOrganizerContactInfo('email')" href="#">E-mailadres toevoegen</a></li>
+                        <li><a ng-click="oec.addOrganizerContactInfo('url')" href="#">Andere website toevoegen</a></li>
                     </ul>
                 </div>
 
@@ -136,13 +136,13 @@
                             <span class="help-block" ng-if="infoErrorMessage" ng-bind="::infoErrorMessage"></span>
                         </td>
                         <td>
-                            <button type="button" class="close" aria-label="Close" ng-click="deleteOrganizerContactInfo(key)">
+                            <button type="button" class="close" aria-label="Close" ng-click="oec.deleteOrganizerContactInfo(key)">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3"><a ng-click="addOrganizerContactInfo('url')" href="#">Meer contactgegevens toevoegen</a>
+                        <td colspan="3"><a ng-click="oec.addOrganizerContactInfo('url')" href="#">Meer contactgegevens toevoegen</a>
                         </td>
                     </tr>
                 </table>
