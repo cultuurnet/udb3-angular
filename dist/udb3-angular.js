@@ -4488,6 +4488,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       this.url = jsonOrganizer.url;
+      this.contactPoint = jsonOrganizer.contactPoint;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
@@ -14093,10 +14094,14 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
   var controller = this;
   var organizerId = $stateParams.id;
 
-  $scope.cities = cities;
+  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
+  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.changeCitySelection = changeCitySelection;
+
+  $scope.cities = cities;
   $scope.selectCity = controller.selectCity;
   $scope.selectedCity = '';
+  $scope.contact = [];
 
   loadOrganizer(organizerId);
 
@@ -14112,6 +14117,29 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
   function showOrganizer(organizer) {
     controller.organizer = organizer;
     $scope.selectedCity = organizer.address.postalCode + ' - ' + organizer.address.addressLocality;
+
+    _.forEach(organizer.contactPoint, function(contactArray, key) {
+      _.forEach(contactArray, function(value) {
+        $scope.contact.push({type: key, value: value});
+      });
+    });
+  }
+
+  /**
+   * Add a contact info entry for an organizer.
+   */
+  function addOrganizerContactInfo(type) {
+    $scope.contact.push({
+      type : type,
+      value : ''
+    });
+  }
+
+  /**
+   * Remove a given key of the contact info.
+   */
+  function deleteOrganizerContactInfo(index) {
+    $scope.contact.splice(index, 1);
   }
 
   $scope.filterCities = function(value) {
@@ -23032,8 +23060,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "            <div class=\"col-sm-12\">\n" +
     "                <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">\n" +
-    "                    Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'.\n" +
-    "                    Geef een unieke website op.\n" +
+    "                    Deze URL is al in gebruik door een andere organisatie.\n" +
     "                </p>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -23101,7 +23128,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "            <div class=\"col-sm-12\">\n" +
     "\n" +
-    "                <div ng-show=\"oec.organizer.contact.length === 0\">\n" +
+    "                <div ng-show=\"contact.length === 0\">\n" +
     "                    <ul class=\"list-unstyled\">\n" +
     "                        <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
     "                        <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
@@ -23109,16 +23136,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </ul>\n" +
     "                </div>\n" +
     "\n" +
-    "                <table class=\"table\" ng-show=\"oec.organizer.contact.length\">\n" +
-    "                    <tr ng-repeat=\"(key, info) in oec.organizer.contact\"\n" +
+    "                <table class=\"table\" ng-show=\"contact.length\">\n" +
+    "                    <tr ng-repeat=\"(key, info) in contact\"\n" +
     "                        ng-model=\"info\"\n" +
     "                        udb-contact-info-validation\n" +
     "                        ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
     "                        <td>\n" +
     "                            <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
-    "                                <option value=\"url\">Website</option>\n" +
-    "                                <option value=\"phone\">Telefoonnummer</option>\n" +
-    "                                <option value=\"email\">E-mailadres</option>\n" +
+    "                              <option value=\"url\">Website</option>\n" +
+    "                              <option value=\"phone\">Telefoonnummer</option>\n" +
+    "                              <option value=\"email\">E-mailadres</option>\n" +
     "                            </select>\n" +
     "                        </td>\n" +
     "                        <td ng-switch=\"info.type\">\n" +

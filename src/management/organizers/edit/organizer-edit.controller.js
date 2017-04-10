@@ -15,10 +15,14 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
   var controller = this;
   var organizerId = $stateParams.id;
 
-  $scope.cities = cities;
+  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
+  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.changeCitySelection = changeCitySelection;
+
+  $scope.cities = cities;
   $scope.selectCity = controller.selectCity;
   $scope.selectedCity = '';
+  $scope.contact = [];
 
   loadOrganizer(organizerId);
 
@@ -34,6 +38,29 @@ function OrganizerEditController($scope, OrganizerManager, $uibModal, $statePara
   function showOrganizer(organizer) {
     controller.organizer = organizer;
     $scope.selectedCity = organizer.address.postalCode + ' - ' + organizer.address.addressLocality;
+
+    _.forEach(organizer.contactPoint, function(contactArray, key) {
+      _.forEach(contactArray, function(value) {
+        $scope.contact.push({type: key, value: value});
+      });
+    });
+  }
+
+  /**
+   * Add a contact info entry for an organizer.
+   */
+  function addOrganizerContactInfo(type) {
+    $scope.contact.push({
+      type : type,
+      value : ''
+    });
+  }
+
+  /**
+   * Remove a given key of the contact info.
+   */
+  function deleteOrganizerContactInfo(index) {
+    $scope.contact.splice(index, 1);
   }
 
   $scope.filterCities = function(value) {
