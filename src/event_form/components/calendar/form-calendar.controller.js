@@ -23,6 +23,12 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
   calendar.removeTimeSpan = removeTimeSpan;
+  calendar.weeklyRecurring = false;
+
+  calendar.period = {
+    startDate: moment().startOf('day').toDate(),
+    endDate: moment().endOf('day').toDate()
+  };
 
   init();
 
@@ -35,6 +41,10 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     calendar.type = EventFormData.calendarType;
   }
 
+  function isTypeWeeklyRecurring(type) {
+    return type === 'permanent' || type === 'periodic';
+  }
+
   /**
    * @param {string} calendarType
    */
@@ -42,6 +52,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     EventFormData.setCalendarType(calendarType);
     calendar.formData = EventFormData;
     calendar.type = EventFormData.activeCalendarType;
+    calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && calendar.timeSpans.length === 0) {
       createTimeSpan();

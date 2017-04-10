@@ -20,7 +20,7 @@
 <div class="calendar-timing-info">
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="calendar-time-spans" ng-if="calendar.type === 'single'">
+            <div class="calendar-time-spans" ng-if="!calendar.weeklyRecurring">
                 <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans">
                     <span ng-show="calendar.timeSpans.length > 1"
                           aria-hidden="true"
@@ -73,6 +73,49 @@
                 </div>
 
                 <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link">Dag(en) toevoegen</a>
+            </div>
+
+            <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
+                <div class="calendar-period">
+                    <label>
+                        <input type="checkbox"
+                               class="permanent-check"
+                               ng-model="calendar.type"
+                               ng-true-value="'periodic'"
+                               ng-false-value="'permanent'"
+                               ng-change="calendar.setType(calendar.type)">
+                        Start- en einddatum
+                    </label>
+                    <div class="not-permanent">
+                        <div class="form-inline">
+                            Van
+                            <div class="form-group">
+                                <label class="sr-only" for="calendar-period-start-date">Begindatum</label>
+                                <input type="date"
+                                       id="calendar-period-start-date"
+                                       ng-disabled="calendar.type !== 'periodic'"
+                                       ng-model="calendar.period.startDate"
+                                       class="form-control calendar-period-start-date">
+                            </div>
+                            tot
+                            <div class="form-group">
+                                <label class="sr-only" for="calendar-period-end-date">Einddatum</label>
+                                <input type="date"
+                                       id="calendar-period-end-date"
+                                       ng-disabled="calendar.type !== 'periodic'"
+                                       ng-model="calendar.period.endDate"
+                                       class="form-control calendar-period-end-date">
+                            </div>
+                        </div>
+                        <div class="alert alert-danger " style="margin-top: 10px; margin-bottom: 0; display: none">
+                            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calendar-opening-hours">
+
+                </div>
             </div>
         </div>
     </div>
