@@ -130,8 +130,8 @@ function OrganizerEditController(
    * Select City.
    */
   controller.selectCity = function ($item, $label) {
-    controller.newOrganizer.address.postalCode = $item.zip;
-    controller.newOrganizer.address.addressLocality = $item.name;
+    controller.organizer.address.postalCode = $item.zip;
+    controller.organizer.address.addressLocality = $item.name;
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
