@@ -3033,6 +3033,20 @@ function UdbApi(
         .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
+  /**
+   * @param {string} organizerId
+   * @param {string} website
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerWebsite = function(organizerId, website) {
+    var params = {
+      url: website
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/url', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId
@@ -14105,10 +14119,10 @@ function OrganizerEditController(
   controller.selectedCity = '';
   controller.contact = [];
 
-  controller.isUrlChanged = false;
-  controller.isNameChanged = false;
-  controller.isAddressChanged = false;
-  controller.isContactChanged = false;
+  var isUrlChanged = false;
+  var isNameChanged = false;
+  var isAddressChanged = false;
+  var isContactChanged = false;
 
   loadOrganizer(organizerId);
 
@@ -14123,7 +14137,7 @@ function OrganizerEditController(
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
-    controller.oldOrganizer = angular.copy(organizer);
+    controller.oldOrganizer = _.cloneDeep(organizer);
     controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
     _.forEach(organizer.contactPoint, function(contactArray, key) {
@@ -14231,15 +14245,16 @@ function OrganizerEditController(
       return;
     }
 
-    controller.isUrlChanged = !_.isEqual(controller.organizer.url, controller.oldOrganizer.url);
-    controller.isNameChanged = !_.isEqual(controller.organizer.name, controller.oldOrganizer.name);
-    controller.isAddressChanged = !_.isEqual(controller.organizer.address, controller.oldOrganizer.address);
+    isUrlChanged = !_.isEqual(controller.organizer.url, controller.oldOrganizer.url);
+    isNameChanged = !_.isEqual(controller.organizer.name, controller.oldOrganizer.name);
+    isAddressChanged = !_.isEqual(controller.organizer.address, controller.oldOrganizer.address);
 
+    // overwrite all contactPoint info with info of controller.contact.
     delete controller.organizer.contactPoint;
     controller.organizer.contactPoint = {
       phone: [],
       email: [],
-      url: [],
+      url: []
     };
     _.forEach(controller.contact, function(value) {
       if (value.type === 'phone') {
@@ -14253,15 +14268,18 @@ function OrganizerEditController(
       }
     });
 
-    console.log(_.isEqual(controller.organizer.contactPoint, controller.oldOrganizer.contactPoint));
-    controller.isContactChanged = !_.isEqual(controller.organizer.contactPoint, controller.oldOrganizer.contactPoint);
+    isContactChanged = !_.isEqual(controller.organizer.contactPoint, controller.oldOrganizer.contactPoint);
 
     saveOrganizer();
 
   };
 
   function saveOrganizer () {
-
+    if (isUrlChanged) {
+      OrganizerManager
+          .updateOrganizerWebsite(organizerId, controller.organizer.url)
+          .catch(showProblem);
+    }
   }
 
   /**
@@ -14484,6 +14502,19 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
    */
   service.removeOrganizerFromCache = function(organizerId) {
     return udbApi.removeItemFromCache(organizerId);
+  };
+
+  /**
+   * Update the unique url of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} website
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerWebsite = function(organizerId, website) {
+    return udbApi
+        .updateOrganizerWebsite(organizerId, website)
+        .then(logOrganizerLabelJob);
   };
 
   /**

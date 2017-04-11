@@ -280,6 +280,20 @@ function UdbApi(
         .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
+  /**
+   * @param {string} organizerId
+   * @param {string} website
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerWebsite = function(organizerId, website) {
+    var params = {
+      url: website
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/url', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId

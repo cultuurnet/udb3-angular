@@ -96,6 +96,19 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   };
 
   /**
+   * Update the unique url of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} website
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerWebsite = function(organizerId, website) {
+    return udbApi
+        .updateOrganizerWebsite(organizerId, website)
+        .then(logOrganizerLabelJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
