@@ -135,6 +135,19 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   };
 
   /**
+   * Update contact info of a specific organizer.
+   * @param {string} organizerId
+   * @param {Array} contact
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerContact = function(organizerId, contact) {
+    return udbApi
+        .updateOrganizerContact(organizerId, contact)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */

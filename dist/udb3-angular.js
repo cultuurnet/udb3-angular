@@ -3076,6 +3076,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId
+   * @param {Array} contact
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerContact = function(organizerId, contact) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/contactPoint', contact, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */
@@ -14146,6 +14158,8 @@ function OrganizerEditController(
   controller.selectedCity = '';
   controller.contact = [];
 
+  var oldOrganizer = {};
+  var oldContact = {};
   var isUrlChanged = false;
   var isNameChanged = false;
   var isAddressChanged = false;
@@ -14164,7 +14178,7 @@ function OrganizerEditController(
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
-    controller.oldOrganizer = _.cloneDeep(organizer);
+    oldOrganizer = _.cloneDeep(organizer);
     controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
     _.forEach(organizer.contactPoint, function(contactArray, key) {
@@ -14172,6 +14186,8 @@ function OrganizerEditController(
         controller.contact.push({type: key, value: value});
       });
     });
+
+    oldContact = _.cloneDeep(controller.contact);
   }
 
   /**
@@ -14272,30 +14288,10 @@ function OrganizerEditController(
       return;
     }
 
-    isUrlChanged = !_.isEqual(controller.organizer.url, controller.oldOrganizer.url);
-    isNameChanged = !_.isEqual(controller.organizer.name, controller.oldOrganizer.name);
-    isAddressChanged = !_.isEqual(controller.organizer.address, controller.oldOrganizer.address);
-
-    // overwrite all contactPoint info with info of controller.contact.
-    delete controller.organizer.contactPoint;
-    controller.organizer.contactPoint = {
-      phone: [],
-      email: [],
-      url: []
-    };
-    _.forEach(controller.contact, function(value) {
-      if (value.type === 'phone') {
-        controller.organizer.contactPoint.phone.push(value.value);
-      }
-      else if (value.type === 'email') {
-        controller.organizer.contactPoint.email.push(value.value);
-      }
-      else if (value.type === 'url') {
-        controller.organizer.contactPoint.url.push(value.value);
-      }
-    });
-
-    isContactChanged = !_.isEqual(controller.organizer.contactPoint, controller.oldOrganizer.contactPoint);
+    isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
+    isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
+    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
+    isContactChanged = !_.isEqual(controller.contact, oldContact);
 
     saveOrganizer();
 
@@ -14317,6 +14313,12 @@ function OrganizerEditController(
     if (isAddressChanged) {
       OrganizerManager
           .updateOrganizerAddress(organizerId, controller.organizer.address)
+          .catch(showProblem);
+    }
+
+    if (isContactChanged) {
+      OrganizerManager
+          .updateOrganizerContact(organizerId, controller.contact)
           .catch(showProblem);
     }
   }
@@ -14579,6 +14581,19 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.updateOrganizerAddress = function(organizerId, address) {
     return udbApi
         .updateOrganizerAddress(organizerId, address)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update contact info of a specific organizer.
+   * @param {string} organizerId
+   * @param {Array} contact
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerContact = function(organizerId, contact) {
+    return udbApi
+        .updateOrganizerContact(organizerId, contact)
         .then(logUpdateOrganizerJob);
   };
 
