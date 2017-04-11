@@ -311,6 +311,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId
+   * @param {Object} address
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerAddress = function(organizerId, address) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */

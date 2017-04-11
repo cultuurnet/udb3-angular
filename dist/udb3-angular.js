@@ -3064,6 +3064,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId
+   * @param {Object} address
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerAddress = function(organizerId, address) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */
@@ -14301,6 +14313,12 @@ function OrganizerEditController(
           .updateOrganizerName(organizerId, controller.organizer.name)
           .catch(showProblem);
     }
+
+    if (isAddressChanged) {
+      OrganizerManager
+          .updateOrganizerAddress(organizerId, controller.organizer.address)
+          .catch(showProblem);
+    }
   }
 
   /**
@@ -14548,6 +14566,19 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.updateOrganizerName = function(organizerId, name) {
     return udbApi
         .updateOrganizerName(organizerId, name)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update the address of a specific organizer.
+   * @param {string} organizerId
+   * @param {Object} address
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerAddress = function(organizerId, address) {
+    return udbApi
+        .updateOrganizerAddress(organizerId, address)
         .then(logUpdateOrganizerJob);
   };
 

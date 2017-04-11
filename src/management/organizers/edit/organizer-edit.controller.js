@@ -193,6 +193,12 @@ function OrganizerEditController(
           .updateOrganizerName(organizerId, controller.organizer.name)
           .catch(showProblem);
     }
+
+    if (isAddressChanged) {
+      OrganizerManager
+          .updateOrganizerAddress(organizerId, controller.organizer.address)
+          .catch(showProblem);
+    }
   }
 
   /**
