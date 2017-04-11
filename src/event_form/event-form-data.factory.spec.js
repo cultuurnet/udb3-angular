@@ -231,7 +231,7 @@ describe('Factory: Event form data', function () {
       showStartHour: true
     };
 
-    EventFormDataf
+    EventFormData
       .timingChanged$
       .subscribe(done);
 

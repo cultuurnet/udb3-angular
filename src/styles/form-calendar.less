@@ -87,6 +87,24 @@
   }
 }
 
+.opening-hours {
+  .make-row();
+  position: relative;
+  padding-right: 30px;
+
+  .weekdays {
+    .make-sm-column(6);
+  }
+
+  .opening-time {
+    .make-sm-column(2);
+  }
+
+  .closing-time {
+    .make-sm-column(2);
+  }
+}
+
 .close {
   right: 15px;
   z-index: 9999;
@@ -94,7 +112,7 @@
 }
 
 .calendar-time-span:not(:first-child),
-.periods .period:not(:first-child){
+.opening-hours:not(:first-child){
   margin-top: 10px;
   border-top: 1px solid #eee;
   padding-top: 10px;

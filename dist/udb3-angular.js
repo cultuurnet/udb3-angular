@@ -2724,7 +2724,12 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
-    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.'
+    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+    'OPENING_HOURS_ERROR': {
+      'openAndClose': 'Een openings- en sluitingsuur is verplicht.',
+      'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
+      'openIsBeforeClose': 'het openingsuur mag niet na het sluitingsuur vallen.'
+    }
   }
 );
 
@@ -8052,21 +8057,23 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
   calendar.type = EventFormData.activeCalendarType;
   calendar.setType = setType;
   calendar.reset = reset;
-  calendar.openingHours = OpeningHoursCollection;
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
   calendar.removeTimeSpan = removeTimeSpan;
   calendar.weeklyRecurring = false;
+  calendar.openingHoursCollection = OpeningHoursCollection;
 
-  calendar.period = {
-    startDate: moment().startOf('day').toDate(),
-    endDate: moment().endOf('day').toDate()
-  };
+  calendar.openingHoursErrors = [];
+  calendar.validateOpeningHours = validateOpeningHours;
+  calendar.removeOpeningHours = removeOpeningHours;
+  calendar.createNewOpeningHours = createNewOpeningHours;
 
   init();
 
   function init() {
-    setType('single');
+    calendar.setType('single');
+    calendar.openingHoursCollection.setOpeningHours([]);
+    calendar.createNewOpeningHours();
   }
 
   function reset() {
@@ -8090,6 +8097,11 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     if (calendarType === 'single' && calendar.timeSpans.length === 0) {
       createTimeSpan();
     }
+
+    if (calendarType === 'periodic') {
+      calendar.formData.startDate = moment().startOf('day').toDate(),
+      calendar.formData.endDate = moment().add(1, 'y').startOf('day').toDate()
+    }
   }
 
   function createTimeSpan() {
@@ -8111,6 +8123,23 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     if (calendar.timeSpans.length > 1) {
       calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
     }
+  }
+
+  function validateOpeningHours() {
+    calendar.openingHoursErrors = calendar.openingHoursCollection.validate();
+  }
+
+  /**
+   * @param {OpeningHours} openingHours
+   */
+  function removeOpeningHours(openingHours) {
+    calendar.openingHoursCollection.removeOpeningHours(openingHours);
+    calendar.validateOpeningHours();
+  }
+
+  function createNewOpeningHours() {
+    calendar.openingHoursCollection.createNewOpeningHours();
+    calendar.validateOpeningHours();
   }
 }
 FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "calendarLabels"];
@@ -8630,6 +8659,16 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     'openIsBeforeClose': openIsBeforeClose
   };
 
+  var weekdays = {
+    'monday': {label: 'Ma', name: 'Maandag', open: false},
+    'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
+    'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+    'thursday': {label: 'Do', name: 'Donderdag', open: false},
+    'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+    'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+    'sunday': {label: 'Zo', name: 'Zondag', open: false}
+  };
+
   /**
    * @param {OpeningHours[]} openingHoursList
    * @returns {boolean}
@@ -8656,7 +8695,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function hasDayOfWeek(openingHoursList) {
     return _.all(_.map(openingHoursList, function (openingHours) {
-      return !_.isEmpty(openingHours.dayOfWeek);
+      return !_.isUndefined(_.find(openingHours.dayOfWeek, 'open'));
     }));
   }
 
@@ -8667,16 +8706,9 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function prepareOpeningHoursForDisplay(openingHoursList) {
     angular.forEach (openingHoursList, function(openingHour, key) {
-      var humanValues = [];
-      if (openingHour.dayOfWeek instanceof Array) {
-        for (var i in openingHoursList[key].dayOfWeek) {
-          humanValues.push(dayNames[openingHour.dayOfWeek[i]]);
-        }
-      }
       openingHour.opens = moment(openingHour.opensAsDate).format('HH:mm');
       openingHour.closes = moment(openingHour.closesAsDate).format('HH:mm');
-
-      openingHour.label = humanValues.join(', ');
+      openingHour.label = _.pluck(_.filter(openingHour.dayOfWeek, 'open'), 'name').join(', ');
     });
 
     return openingHoursList;
@@ -8717,11 +8749,11 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     createNewOpeningHours: function () {
       var openingHoursList = this.openingHours || [];
       var openingHours = {
-        'dayOfWeek': [],
+        'dayOfWeek': _.cloneDeep(weekdays),
         'opens': '00:00',
-        'opensAsDate': new Date(1970, 0, 1),
+        'opensAsDate': new Date(1970, 0, 1, 9),
         'closes': '00:00',
-        'closesAsDate': new Date(1970, 0, 1)
+        'closesAsDate': new Date(1970, 0, 1, 17)
       };
 
       openingHoursList.push(openingHours);
@@ -8735,13 +8767,22 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     deserialize: function (jsonOpeningHoursList) {
       this.setOpeningHours(_.map(jsonOpeningHoursList, function (jsonOpeningHours) {
         return {
-          'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
+          'dayOfWeek': _.mapValues(weekdays, function (weekday, day) {
+            var dayOfWeek = _.cloneDeep(weekday);
+            dayOfWeek.open = _.includes(jsonOpeningHours.dayOfWeek, day);
+
+            return dayOfWeek;
+          }),
           'opens': jsonOpeningHours.opens || '00:00',
           'opensAsDate':
-            jsonOpeningHours.opens ? resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() : new Date(1970, 0, 1),
+            jsonOpeningHours.opens ?
+              resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1, 9),
           'closes': jsonOpeningHours.closes || '00:00',
           'closesAsDate':
-            jsonOpeningHours.closes ? resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() : new Date(1970, 0, 1)
+            jsonOpeningHours.closes ?
+              resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1, 17)
         };
       }));
     },
@@ -8749,7 +8790,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     serialize: function () {
       return _.map(this.openingHours, function (openingHours) {
         return {
-          dayOfWeek: openingHours.dayOfWeek,
+          dayOfWeek: _.keys(omitClosedDays(openingHours.dayOfWeek)),
           opens: moment(openingHours.opensAsDate).format('HH:mm'),
           closes: moment(openingHours.closesAsDate).format('HH:mm')
         };
@@ -8782,6 +8823,12 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function resetDay(moment) {
     return moment.clone().year(1970).dayOfYear(1);
+  }
+
+  function omitClosedDays(dayOfWeek) {
+    return _.pick(dayOfWeek, function(weekday) {
+      return weekday.open;
+    });
   }
 
   return openingHoursCollection;
@@ -20693,8 +20740,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <span class=\"or\">of</span>\n" +
     "\n" +
-    "        <a href=\"#\" ng-click=\"calendar.setType('periodic')\"\n" +
-    "           ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
     "            <p class=\"text-center\"><strong>Vaste dagen per week</strong></p>\n" +
     "        </a>\n" +
@@ -20707,54 +20753,39 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"panel-body\">\n" +
     "            <div class=\"calendar-time-spans\" ng-if=\"!calendar.weeklyRecurring\">\n" +
     "                <div class=\"calendar-time-span\" ng-repeat=\"timeSpan in calendar.timeSpans\">\n" +
-    "                    <span ng-show=\"calendar.timeSpans.length > 1\"\n" +
-    "                          aria-hidden=\"true\"\n" +
-    "                          ng-click=\"calendar.removeTimeSpan(timeSpan)\"\n" +
-    "                          class=\"close\">×</span>\n" +
-    "                        <div class=\"dates\">\n" +
-    "                            <div class=\"date form-group\">\n" +
-    "                                <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
-    "                                <input id=\"time-span-{{$index}}-start-date\"\n" +
-    "                                       type=\"date\"\n" +
-    "                                       ng-model=\"timeSpan.startDate\"\n" +
-    "                                       class=\"form-control start-date\">\n" +
-    "                            </div>\n" +
-    "                            <div class=\"date form-group\">\n" +
-    "                                <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
-    "                                <input id=\"time-span-{{$index}}-end-date\"\n" +
-    "                                       type=\"date\"\n" +
-    "                                       ng-model=\"timeSpan.endDate\"\n" +
-    "                                       class=\"form-control end-date\">\n" +
-    "                            </div>\n" +
+    "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
+    "                    <div class=\"dates\">\n" +
+    "                        <div class=\"date form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
+    "                            <input id=\"time-span-{{$index}}-start-date\" type=\"date\" ng-model=\"timeSpan.startDate\" class=\"form-control start-date\">\n" +
     "                        </div>\n" +
-    "                        <div class=\"timing-control\">\n" +
-    "                            <div class=\"checkbox whole-day\">\n" +
-    "                                <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
+    "                        <div class=\"date form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
+    "                            <input id=\"time-span-{{$index}}-end-date\" type=\"date\" ng-model=\"timeSpan.endDate\" class=\"form-control end-date\">\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"timing-control\">\n" +
+    "                        <div class=\"checkbox whole-day\">\n" +
+    "                            <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
     "                                    <input type=\"checkbox\"\n" +
     "                                           id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                           ng-model=\"timeSpan.wholeDay\"\n" +
     "                                           class=\"whole-day-check\"> Hele dag\n" +
     "                                </label>\n" +
-    "                            </div>\n" +
     "                        </div>\n" +
-    "                        <div class=\"timing\" ng-show=\"!timeSpan.wholeDay\">\n" +
-    "                            <div class=\"time form-group\">\n" +
-    "                                <label for=\"time-span-{{$index}}-start-time\">Beginuur</label>\n" +
-    "                                <input id=\"time-span-{{$index}}-start-time\"\n" +
-    "                                       type=\"time\"\n" +
-    "                                       ng-model=\"timeSpan.startTime\"\n" +
-    "                                       class=\"form-control start-time\">\n" +
-    "                            </div>\n" +
-    "                            <div class=\"time form-group\">\n" +
-    "                                <label for=\"time-span-{{$index}}-end-time\">Einduur</label>\n" +
-    "                                <input id=\"time-span-{{$index}}-end-time\"\n" +
-    "                                       type=\"time\"\n" +
-    "                                       ng-model=\"timeSpan.endTime\"\n" +
-    "                                       class=\"form-control end-time\">\n" +
-    "                            </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"timing\" ng-show=\"!timeSpan.wholeDay\">\n" +
+    "                        <div class=\"time form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-start-time\">Beginuur</label>\n" +
+    "                            <input id=\"time-span-{{$index}}-start-time\" type=\"time\" ng-model=\"timeSpan.startTime\" class=\"form-control start-time\">\n" +
     "                        </div>\n" +
-    "                        <div class=\"error alert alert-danger\" ng-show=\"calendar.error\">\n" +
+    "                        <div class=\"time form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-end-time\">Einduur</label>\n" +
+    "                            <input id=\"time-span-{{$index}}-end-time\" type=\"time\" ng-model=\"timeSpan.endTime\" class=\"form-control end-time\">\n" +
     "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"error alert alert-danger\" ng-show=\"calendar.error\">\n" +
+    "                    </div>\n" +
     "                </div>\n" +
     "\n" +
     "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\">Dag(en) toevoegen</a>\n" +
@@ -20773,33 +20804,90 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </label>\n" +
     "                    <div class=\"not-permanent\">\n" +
     "                        <div class=\"form-inline\">\n" +
-    "                            Van\n" +
-    "                            <div class=\"form-group\">\n" +
-    "                                <label class=\"sr-only\" for=\"calendar-period-start-date\">Begindatum</label>\n" +
+    "                            <div class=\"input-group\">\n" +
+    "                                <span class=\"input-group-addon\" id=\"calendar-period-start-date\">van</span>\n" +
     "                                <input type=\"date\"\n" +
+    "                                       aria-describedby=\"calendar-period-start-date\"\n" +
     "                                       id=\"calendar-period-start-date\"\n" +
     "                                       ng-disabled=\"calendar.type !== 'periodic'\"\n" +
-    "                                       ng-model=\"calendar.period.startDate\"\n" +
+    "                                       ng-model=\"calendar.formData.startDate\"\n" +
+    "                                       required=\"required\"\n" +
+    "                                       ng-change=\"calendar.formData.periodicTimingChanged()\"\n" +
     "                                       class=\"form-control calendar-period-start-date\">\n" +
     "                            </div>\n" +
-    "                            tot\n" +
-    "                            <div class=\"form-group\">\n" +
-    "                                <label class=\"sr-only\" for=\"calendar-period-end-date\">Einddatum</label>\n" +
+    "                            <div class=\"input-group\">\n" +
+    "                                <span class=\"input-group-addon\" id=\"calendar-period-end-date\">tot</span>\n" +
     "                                <input type=\"date\"\n" +
+    "                                       aria-describedby=\"calendar-period-end-date\"\n" +
     "                                       id=\"calendar-period-end-date\"\n" +
     "                                       ng-disabled=\"calendar.type !== 'periodic'\"\n" +
-    "                                       ng-model=\"calendar.period.endDate\"\n" +
+    "                                       ng-model=\"calendar.formData.endDate\"\n" +
+    "                                       required=\"required\"\n" +
+    "                                       ng-change=\"calendar.formData.periodicTimingChanged()\"\n" +
     "                                       class=\"form-control calendar-period-end-date\">\n" +
     "                            </div>\n" +
     "                        </div>\n" +
-    "                        <div class=\"alert alert-danger \" style=\"margin-top: 10px; margin-bottom: 0; display: none\">\n" +
+    "                        <div class=\"alert alert-danger \" ng-show=\"calendar.formData.periodicRangeError\" style=\"margin-top: 10px; margin-bottom: 0;\">\n" +
     "                            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
-    "\n" +
+    "                <hr>\n" +
     "                <div class=\"calendar-opening-hours\">\n" +
-    "\n" +
+    "                    <div class=\"opening-hours-collection\">\n" +
+    "                        <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!calendar.openingHoursErrors.length\">\n" +
+    "                            <ul>\n" +
+    "                                <li ng-repeat=\"error in calendar.openingHoursErrors\"\n" +
+    "                                    ng-bind=\"'OPENING_HOURS_ERROR.' + error | translate\"></li>\n" +
+    "                            </ul>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"opening-hours\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in calendar.openingHoursCollection.openingHours\">\n" +
+    "                            <span aria-hidden=\"true\"\n" +
+    "                                  class=\"close\"\n" +
+    "                                  ng-show=\"calendar.openingHoursCollection.openingHours.length > 1\"\n" +
+    "                                  ng-click=\"calendar.removeOpeningHours(openingHours)\">×</span>\n" +
+    "                            <div class=\"weekdays\">\n" +
+    "                                <label>Op</label>\n" +
+    "                                <br>\n" +
+    "                                <label class=\"checkbox-inline\" ng-repeat=\"(day, weekday) in openingHours.dayOfWeek\">\n" +
+    "                                    <input type=\"checkbox\"\n" +
+    "                                           ng-change=\"calendar.validateOpeningHours()\"\n" +
+    "                                           ng-model=\"openingHours.dayOfWeek[day].open\">\n" +
+    "                                        <span ng-bind=\"::weekday.label\"></span>\n" +
+    "                                </label>\n" +
+    "                            </div>\n" +
+    "                            <div class=\"opening-time form-group\"\n" +
+    "                                 ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
+    "                                <label class=\"control-label\" for=\"opening-hours-{{$index}}-opens\">Van</label>\n" +
+    "                                <input udb-time\n" +
+    "                                        id=\"opening-hours-{{$index}}-opens\" \n" +
+    "                                        type=\"time\"\n" +
+    "                                        name=\"opens\"\n" +
+    "                                        class=\"form-control starthour\" \n" +
+    "                                        ng-model=\"openingHours.opensAsDate\"\n" +
+    "                                        ng-required=\"true\"\n" +
+    "                                        ng-change=\"calendar.validateOpeningHours()\"\n" +
+    "                                        placeholder=\"Bv. 09:00\">\n" +
+    "                            </div>\n" +
+    "                            <div class=\"closing-time form-group\"\n" +
+    "                                 ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
+    "                                <label class=\"control-label\" for=\"opening-hours-{{$index}}-closes\">Tot</label>\n" +
+    "                                <input  udb-time\n" +
+    "                                        id=\"opening-hours-{{$index}}-closes\" \n" +
+    "                                        type=\"time\" \n" +
+    "                                        name=\"closes\"\n" +
+    "                                        class=\"form-control endhour\" \n" +
+    "                                        ng-model=\"openingHours.closesAsDate\"\n" +
+    "                                        ng-required=\"true\"\n" +
+    "                                        ng-change=\"calendar.validateOpeningHours()\"\n" +
+    "                                        placeholder=\"Bv. 17:00\">\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <hr>\n" +
+    "                    <p><a href=\"#\" \n" +
+    "                        ng-click=\"calendar.createNewOpeningHours()\" \n" +
+    "                        class=\"add-period-link\">Uren toevoegen</a></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +

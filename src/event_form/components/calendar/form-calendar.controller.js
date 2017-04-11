@@ -19,21 +19,23 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
   calendar.type = EventFormData.activeCalendarType;
   calendar.setType = setType;
   calendar.reset = reset;
-  calendar.openingHours = OpeningHoursCollection;
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
   calendar.removeTimeSpan = removeTimeSpan;
   calendar.weeklyRecurring = false;
+  calendar.openingHoursCollection = OpeningHoursCollection;
 
-  calendar.period = {
-    startDate: moment().startOf('day').toDate(),
-    endDate: moment().endOf('day').toDate()
-  };
+  calendar.openingHoursErrors = [];
+  calendar.validateOpeningHours = validateOpeningHours;
+  calendar.removeOpeningHours = removeOpeningHours;
+  calendar.createNewOpeningHours = createNewOpeningHours;
 
   init();
 
   function init() {
-    setType('single');
+    calendar.setType('single');
+    calendar.openingHoursCollection.setOpeningHours([]);
+    calendar.createNewOpeningHours();
   }
 
   function reset() {
@@ -57,6 +59,11 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     if (calendarType === 'single' && calendar.timeSpans.length === 0) {
       createTimeSpan();
     }
+
+    if (calendarType === 'periodic') {
+      calendar.formData.startDate = moment().startOf('day').toDate(),
+      calendar.formData.endDate = moment().add(1, 'y').startOf('day').toDate()
+    }
   }
 
   function createTimeSpan() {
@@ -78,5 +85,22 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     if (calendar.timeSpans.length > 1) {
       calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
     }
+  }
+
+  function validateOpeningHours() {
+    calendar.openingHoursErrors = calendar.openingHoursCollection.validate();
+  }
+
+  /**
+   * @param {OpeningHours} openingHours
+   */
+  function removeOpeningHours(openingHours) {
+    calendar.openingHoursCollection.removeOpeningHours(openingHours);
+    calendar.validateOpeningHours();
+  }
+
+  function createNewOpeningHours() {
+    calendar.openingHoursCollection.createNewOpeningHours();
+    calendar.validateOpeningHours();
   }
 }

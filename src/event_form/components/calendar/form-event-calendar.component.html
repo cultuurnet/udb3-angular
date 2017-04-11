@@ -8,8 +8,7 @@
 
         <span class="or">of</span>
 
-        <a href="#" ng-click="calendar.setType('periodic')"
-           ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
+        <a href="#" ng-click="calendar.setType('periodic')" ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
             <img src="../images/form-calendar/period.svg" class="calendar-type-icon">
             <p class="text-center"><strong>Vaste dagen per week</strong></p>
         </a>
@@ -22,54 +21,39 @@
         <div class="panel-body">
             <div class="calendar-time-spans" ng-if="!calendar.weeklyRecurring">
                 <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans">
-                    <span ng-show="calendar.timeSpans.length > 1"
-                          aria-hidden="true"
-                          ng-click="calendar.removeTimeSpan(timeSpan)"
-                          class="close">×</span>
-                        <div class="dates">
-                            <div class="date form-group">
-                                <label for="time-span-{{$index}}-start-date">Start</label>
-                                <input id="time-span-{{$index}}-start-date"
-                                       type="date"
-                                       ng-model="timeSpan.startDate"
-                                       class="form-control start-date">
-                            </div>
-                            <div class="date form-group">
-                                <label for="time-span-{{$index}}-end-date">Einde</label>
-                                <input id="time-span-{{$index}}-end-date"
-                                       type="date"
-                                       ng-model="timeSpan.endDate"
-                                       class="form-control end-date">
-                            </div>
+                    <span ng-show="calendar.timeSpans.length > 1" aria-hidden="true" ng-click="calendar.removeTimeSpan(timeSpan)" class="close">×</span>
+                    <div class="dates">
+                        <div class="date form-group">
+                            <label for="time-span-{{$index}}-start-date">Start</label>
+                            <input id="time-span-{{$index}}-start-date" type="date" ng-model="timeSpan.startDate" class="form-control start-date">
                         </div>
-                        <div class="timing-control">
-                            <div class="checkbox whole-day">
-                                <label for="time-span-{{$index}}-has-timing-info">
+                        <div class="date form-group">
+                            <label for="time-span-{{$index}}-end-date">Einde</label>
+                            <input id="time-span-{{$index}}-end-date" type="date" ng-model="timeSpan.endDate" class="form-control end-date">
+                        </div>
+                    </div>
+                    <div class="timing-control">
+                        <div class="checkbox whole-day">
+                            <label for="time-span-{{$index}}-has-timing-info">
                                     <input type="checkbox"
                                            id="time-span-{{$index}}-has-timing-info"
                                            ng-model="timeSpan.wholeDay"
                                            class="whole-day-check"> Hele dag
                                 </label>
-                            </div>
                         </div>
-                        <div class="timing" ng-show="!timeSpan.wholeDay">
-                            <div class="time form-group">
-                                <label for="time-span-{{$index}}-start-time">Beginuur</label>
-                                <input id="time-span-{{$index}}-start-time"
-                                       type="time"
-                                       ng-model="timeSpan.startTime"
-                                       class="form-control start-time">
-                            </div>
-                            <div class="time form-group">
-                                <label for="time-span-{{$index}}-end-time">Einduur</label>
-                                <input id="time-span-{{$index}}-end-time"
-                                       type="time"
-                                       ng-model="timeSpan.endTime"
-                                       class="form-control end-time">
-                            </div>
+                    </div>
+                    <div class="timing" ng-show="!timeSpan.wholeDay">
+                        <div class="time form-group">
+                            <label for="time-span-{{$index}}-start-time">Beginuur</label>
+                            <input id="time-span-{{$index}}-start-time" type="time" ng-model="timeSpan.startTime" class="form-control start-time">
                         </div>
-                        <div class="error alert alert-danger" ng-show="calendar.error">
+                        <div class="time form-group">
+                            <label for="time-span-{{$index}}-end-time">Einduur</label>
+                            <input id="time-span-{{$index}}-end-time" type="time" ng-model="timeSpan.endTime" class="form-control end-time">
                         </div>
+                    </div>
+                    <div class="error alert alert-danger" ng-show="calendar.error">
+                    </div>
                 </div>
 
                 <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link">Dag(en) toevoegen</a>
@@ -88,33 +72,90 @@
                     </label>
                     <div class="not-permanent">
                         <div class="form-inline">
-                            Van
-                            <div class="form-group">
-                                <label class="sr-only" for="calendar-period-start-date">Begindatum</label>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="calendar-period-start-date">van</span>
                                 <input type="date"
+                                       aria-describedby="calendar-period-start-date"
                                        id="calendar-period-start-date"
                                        ng-disabled="calendar.type !== 'periodic'"
-                                       ng-model="calendar.period.startDate"
+                                       ng-model="calendar.formData.startDate"
+                                       required="required"
+                                       ng-change="calendar.formData.periodicTimingChanged()"
                                        class="form-control calendar-period-start-date">
                             </div>
-                            tot
-                            <div class="form-group">
-                                <label class="sr-only" for="calendar-period-end-date">Einddatum</label>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="calendar-period-end-date">tot</span>
                                 <input type="date"
+                                       aria-describedby="calendar-period-end-date"
                                        id="calendar-period-end-date"
                                        ng-disabled="calendar.type !== 'periodic'"
-                                       ng-model="calendar.period.endDate"
+                                       ng-model="calendar.formData.endDate"
+                                       required="required"
+                                       ng-change="calendar.formData.periodicTimingChanged()"
                                        class="form-control calendar-period-end-date">
                             </div>
                         </div>
-                        <div class="alert alert-danger " style="margin-top: 10px; margin-bottom: 0; display: none">
+                        <div class="alert alert-danger " ng-show="calendar.formData.periodicRangeError" style="margin-top: 10px; margin-bottom: 0;">
                             <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
                         </div>
                     </div>
                 </div>
-
+                <hr>
                 <div class="calendar-opening-hours">
-
+                    <div class="opening-hours-collection">
+                        <div class="alert alert-danger" role="alert" ng-if="!!calendar.openingHoursErrors.length">
+                            <ul>
+                                <li ng-repeat="error in calendar.openingHoursErrors"
+                                    ng-bind="'OPENING_HOURS_ERROR.' + error | translate"></li>
+                            </ul>
+                        </div>
+                        <div class="opening-hours" ng-form="openingHoursInfo" ng-repeat="openingHours in calendar.openingHoursCollection.openingHours">
+                            <span aria-hidden="true"
+                                  class="close"
+                                  ng-show="calendar.openingHoursCollection.openingHours.length > 1"
+                                  ng-click="calendar.removeOpeningHours(openingHours)">×</span>
+                            <div class="weekdays">
+                                <label>Op</label>
+                                <br>
+                                <label class="checkbox-inline" ng-repeat="(day, weekday) in openingHours.dayOfWeek">
+                                    <input type="checkbox"
+                                           ng-change="calendar.validateOpeningHours()"
+                                           ng-model="openingHours.dayOfWeek[day].open">
+                                        <span ng-bind="::weekday.label"></span>
+                                </label>
+                            </div>
+                            <div class="opening-time form-group"
+                                 ng-class="{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}">
+                                <label class="control-label" for="opening-hours-{{$index}}-opens">Van</label>
+                                <input udb-time
+                                        id="opening-hours-{{$index}}-opens" 
+                                        type="time"
+                                        name="opens"
+                                        class="form-control starthour" 
+                                        ng-model="openingHours.opensAsDate"
+                                        ng-required="true"
+                                        ng-change="calendar.validateOpeningHours()"
+                                        placeholder="Bv. 09:00">
+                            </div>
+                            <div class="closing-time form-group"
+                                 ng-class="{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}">
+                                <label class="control-label" for="opening-hours-{{$index}}-closes">Tot</label>
+                                <input  udb-time
+                                        id="opening-hours-{{$index}}-closes" 
+                                        type="time" 
+                                        name="closes"
+                                        class="form-control endhour" 
+                                        ng-model="openingHours.closesAsDate"
+                                        ng-required="true"
+                                        ng-change="calendar.validateOpeningHours()"
+                                        placeholder="Bv. 17:00">
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <p><a href="#" 
+                        ng-click="calendar.createNewOpeningHours()" 
+                        class="add-period-link">Uren toevoegen</a></p>
                 </div>
             </div>
         </div>
