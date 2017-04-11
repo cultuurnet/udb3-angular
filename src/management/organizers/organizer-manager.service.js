@@ -109,6 +109,19 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   };
 
   /**
+   * Update the name of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} name
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerName = function(organizerId, name) {
+    return udbApi
+        .updateOrganizerName(organizerId, name)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */

@@ -187,6 +187,12 @@ function OrganizerEditController(
           .updateOrganizerWebsite(organizerId, controller.organizer.url)
           .catch(showProblem);
     }
+
+    if (isNameChanged) {
+      OrganizerManager
+          .updateOrganizerName(organizerId, controller.organizer.name)
+          .catch(showProblem);
+    }
   }
 
   /**

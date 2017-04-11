@@ -3049,6 +3049,21 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId
+   * @param {string} name
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerName = function(organizerId, name) {
+    var params = {
+      name: name
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {URL} eventId
    * @return {*}
    */
@@ -14280,6 +14295,12 @@ function OrganizerEditController(
           .updateOrganizerWebsite(organizerId, controller.organizer.url)
           .catch(showProblem);
     }
+
+    if (isNameChanged) {
+      OrganizerManager
+          .updateOrganizerName(organizerId, controller.organizer.name)
+          .catch(showProblem);
+    }
   }
 
   /**
@@ -14481,7 +14502,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -14493,7 +14514,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -14514,14 +14535,27 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.updateOrganizerWebsite = function(organizerId, website) {
     return udbApi
         .updateOrganizerWebsite(organizerId, website)
-        .then(logOrganizerLabelJob);
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update the name of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} name
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerName = function(organizerId, name) {
+    return udbApi
+        .updateOrganizerName(organizerId, name)
+        .then(logUpdateOrganizerJob);
   };
 
   /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
-  function logOrganizerLabelJob(commandInfo) {
+  function logUpdateOrganizerJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
     jobLogger.addJob(job);
 
@@ -23142,7 +23176,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organizer-edit.html',
-    "<h1 class=\"title\" ng-bind=\"oec.organizer.name\"></h1>\n" +
+    "<h1 class=\"title\" ng-bind=\"oec.oldOrganizer.name\"></h1>\n" +
     "\n" +
     "<div ng-show=\"!oec.organizer && !oec.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
