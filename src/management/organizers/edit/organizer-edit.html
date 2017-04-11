@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-sm-12 col-md-8">
                 <div class="form-group has-feedback"
-                     ng-class="{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }">
+                     ng-class="{'has-warning' : oec.organizersWebsiteFound || oec.organizerEditForm.website.$error.required }">
                     <label class="control-label" for="organizer-website">Website</label>
                     <input type="url"
                            id="organizer-website"
@@ -21,14 +21,14 @@
                            ng-change="oec.validateWebsite()"
                            autocomplete="off"
                            required>
-                    <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
+                    <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="oec.showWebsiteValidation" aria-hidden="true"></span>
                     <span id="organizer-website-status" class="sr-only">(warning)</span>
                 </div>
             </div>
 
 
             <div class="col-sm-12">
-                <p class="alert alert-warning" ng-show="organizersWebsiteFound">
+                <p class="alert alert-warning" ng-show="oec.organizersWebsiteFound">
                     Deze URL is al in gebruik door een andere organisatie.
                 </p>
             </div>
@@ -36,7 +36,7 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-8">
-                <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
+                <div class="form-group" ng-class="{'has-error' : oec.showValidation && oec.organizerEditForm.name.$error.required }">
                     <label>Naam</label>
                     <input type="text"
                            name="name"
@@ -45,7 +45,7 @@
                            ng-change="updateName()"
                            required>
                     <p class="help-block">De officiële publieke naam van de organisatie.</p>
-                    <span class="help-block" ng-show="showValidation && organizerForm.name.$error.required">
+                    <span class="help-block" ng-show="oec.showValidation && oec.organizerEditForm.name.$error.required">
           Gelieve een naam in te vullen
         </span>
                 </div>
@@ -64,17 +64,17 @@
         <div class="row">
             <div class="col-sm-12 col-md-8">
                 <div class="form-group">
-                    <label for="organizer-gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity !== ''">
+                    <label for="organizer-gemeente-autocomplete" id="gemeente-label" ng-hide="oec.selectedCity !== ''">
                         Gemeente
                     </label>
-                    <div id="gemeente-kiezer" ng-hide="selectedCity !== ''">
+                    <div id="gemeente-kiezer" ng-hide="oec.selectedCity !== ''">
                         <input id="organizer-gemeente-autocomplete"
                                type="text"
                                class="form-control uib-typeahead"
                                placeholder="Gemeente of postcode"
                                ng-model="cityAutocompleteTextField"
-                               uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:oec.filterCities($viewValue) | orderBy:oec.orderByLevenshteinDistance($viewValue)"
-                               typeahead-on-select="selectCity($item, $label)"
+                               uib-typeahead="city as city.zip + ' ' + city.name for city in oec.cities | filter:oec.filterCities($viewValue) | orderBy:oec.orderByLevenshteinDistance($viewValue)"
+                               typeahead-on-select="oec.selectCity($item, $label)"
                                typeahead-min-length="2"
                                typeahead-template-url="templates/city-suggestion.html"
                                autocomplete="off">
@@ -84,8 +84,8 @@
                     </div>
                 </div>
 
-                <div class="form-group" id="gemeente-gekozen" ng-if="selectedCity">
-                    <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::selectedCity"></span>
+                <div class="form-group" id="gemeente-gekozen" ng-if="oec.selectedCity">
+                    <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::oec.selectedCity"></span>
                     <a href="#" class="btn btn-default btn-link" ng-click="oec.changeCitySelection()">Wijzigen</a>
                 </div>
             </div>
@@ -97,7 +97,7 @@
             </div>
             <div class="col-sm-12">
 
-                <div ng-show="contact.length === 0">
+                <div ng-show="oec.contact.length === 0">
                     <ul class="list-unstyled">
                         <li><a ng-click="oec.addOrganizerContactInfo('phone')" href="#">Telefoonnummer toevoegen</a></li>
                         <li><a ng-click="oec.addOrganizerContactInfo('email')" href="#">E-mailadres toevoegen</a></li>
@@ -105,8 +105,8 @@
                     </ul>
                 </div>
 
-                <table class="table" ng-show="contact.length">
-                    <tr ng-repeat="(key, info) in contact"
+                <table class="table" ng-show="oec.contact.length">
+                    <tr ng-repeat="(key, info) in oec.contact"
                         ng-model="info"
                         udb-contact-info-validation
                         ng-class="{'has-error' : infoErrorMessage !== '' }">
@@ -149,6 +149,13 @@
             </div>
         </div>
     </form>
+
+    <button type="button"
+            class="btn btn-primary organisator-toevoegen-bewaren"
+            ng-disabled="oec.disableSubmit"
+            ng-click="oec.validateOrganizer()">
+        Bewaren
+    </button>
 </div>
 
 <div ng-show="oec.loadingError">

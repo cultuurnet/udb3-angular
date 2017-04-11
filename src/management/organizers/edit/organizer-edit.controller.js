@@ -12,7 +12,6 @@ angular
 
 /* @ngInject */
 function OrganizerEditController(
-    $scope,
     OrganizerManager,
     udbOrganizers,
     $uibModal,
@@ -23,9 +22,14 @@ function OrganizerEditController(
   var controller = this;
   var organizerId = $stateParams.id;
 
-  $scope.cities = cities;
-  $scope.selectedCity = '';
-  $scope.contact = [];
+  controller.cities = cities;
+  controller.selectedCity = '';
+  controller.contact = [];
+
+  controller.isUrlChanged = false;
+  controller.isNameChanged = false;
+  controller.isAddressChanged = false;
+  controller.isContactChanged = false;
 
   loadOrganizer(organizerId);
 
@@ -40,12 +44,12 @@ function OrganizerEditController(
    */
   function showOrganizer(organizer) {
     controller.organizer = organizer;
-    controller.oldOrganizer = organizer;
-    $scope.selectedCity = organizer.address.postalCode + ' - ' + organizer.address.addressLocality;
+    controller.oldOrganizer = angular.copy(organizer);
+    controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
     _.forEach(organizer.contactPoint, function(contactArray, key) {
       _.forEach(contactArray, function(value) {
-        $scope.contact.push({type: key, value: value});
+        controller.contact.push({type: key, value: value});
       });
     });
   }
@@ -54,10 +58,10 @@ function OrganizerEditController(
    * Validate the website of new organizer.
    */
   controller.validateWebsite = function() {
-    $scope.showWebsiteValidation = true;
+    controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
-      $scope.showWebsiteValidation = false;
+      controller.showWebsiteValidation = false;
       return;
     }
 
@@ -66,17 +70,17 @@ function OrganizerEditController(
         .then(function (data) {
           // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
-            $scope.organizersWebsiteFound = true;
-            $scope.showWebsiteValidation = false;
-            $scope.disableSubmit = true;
+            controller.organizersWebsiteFound = true;
+            controller.showWebsiteValidation = false;
+            controller.disableSubmit = true;
           }
           else {
-            $scope.showWebsiteValidation = false;
-            $scope.organizersWebsiteFound = false;
+            controller.showWebsiteValidation = false;
+            controller.organizersWebsiteFound = false;
           }
         }, function() {
-          $scope.websiteError = true;
-          $scope.showWebsiteValidation = false;
+          controller.websiteError = true;
+          controller.showWebsiteValidation = false;
         });
   };
 
@@ -84,7 +88,7 @@ function OrganizerEditController(
    * Add a contact info entry for an organizer.
    */
   controller.addOrganizerContactInfo = function(type) {
-    $scope.contact.push({
+    controller.contact.push({
       type : type,
       value : ''
     });
@@ -94,7 +98,7 @@ function OrganizerEditController(
    * Remove a given key of the contact info.
    */
   controller.deleteOrganizerContactInfo = function(index) {
-    $scope.contact.splice(index, 1);
+    controller.contact.splice(index, 1);
   };
 
   controller.filterCities = function(value) {
@@ -122,20 +126,64 @@ function OrganizerEditController(
    * Select City.
    */
   controller.selectCity = function ($item, $label) {
-    $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.addressLocality = $item.name;
+    controller.newOrganizer.address.postalCode = $item.zip;
+    controller.newOrganizer.address.addressLocality = $item.name;
 
-    $scope.cityAutocompleteTextField = '';
-    $scope.selectedCity = $label;
+    controller.cityAutocompleteTextField = '';
+    controller.selectedCity = $label;
   };
 
   /**
    * Change a city selection.
    */
   controller.changeCitySelection = function () {
-    $scope.selectedCity = '';
-    $scope.cityAutocompleteTextField = '';
+    controller.selectedCity = '';
+    controller.cityAutocompleteTextField = '';
   };
+
+  /**
+   * Validate the new organizer.
+   */
+  controller.validateOrganizer = function () {
+
+    controller.showValidation = true;
+    // Forms are automatically known in scope.
+    if (!controller.organizerEditForm.$valid) {
+      return;
+    }
+
+    controller.isUrlChanged = !_.isEqual(controller.organizer.url, controller.oldOrganizer.url);
+    controller.isNameChanged = !_.isEqual(controller.organizer.name, controller.oldOrganizer.name);
+    controller.isAddressChanged = !_.isEqual(controller.organizer.address, controller.oldOrganizer.address);
+
+    // overwrite all contactPoint info with info of controller.contact.
+    delete controller.organizer.contactPoint;
+    controller.organizer.contactPoint = {
+      phone: [],
+      email: [],
+      url: []
+    };
+    _.forEach(controller.contact, function(value) {
+      if (value.type === 'phone') {
+        controller.organizer.contactPoint.phone.push(value.value);
+      }
+      else if (value.type === 'email') {
+        controller.organizer.contactPoint.email.push(value.value);
+      }
+      else if (value.type === 'url') {
+        controller.organizer.contactPoint.url.push(value.value);
+      }
+    });
+
+    controller.isContactChanged = !_.isEqual(controller.organizer.contactPoint, controller.oldOrganizer.contactPoint);
+
+    saveOrganizer();
+
+  };
+
+  function saveOrganizer () {
+
+  }
 
   /**
    * @param {ApiProblem} problem
