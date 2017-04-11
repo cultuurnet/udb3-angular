@@ -17,7 +17,8 @@ function OrganizerEditController(
     $uibModal,
     $stateParams,
     cities,
-    Levenshtein
+    Levenshtein,
+    $q
   ) {
   var controller = this;
   var organizerId = $stateParams.id;
@@ -166,29 +167,24 @@ function OrganizerEditController(
   };
 
   function saveOrganizer () {
+    var promises = [];
     if (isUrlChanged) {
-      OrganizerManager
-          .updateOrganizerWebsite(organizerId, controller.organizer.url)
-          .catch(showProblem);
+      promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.url));
     }
 
     if (isNameChanged) {
-      OrganizerManager
-          .updateOrganizerName(organizerId, controller.organizer.name)
-          .catch(showProblem);
+      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name));
     }
 
     if (isAddressChanged) {
-      OrganizerManager
-          .updateOrganizerAddress(organizerId, controller.organizer.address)
-          .catch(showProblem);
+      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address));
     }
 
     if (isContactChanged) {
-      OrganizerManager
-          .updateOrganizerContact(organizerId, controller.contact)
-          .catch(showProblem);
+      promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
+
+    $q.all(promises).catch(showProblem);
   }
 
   /**
