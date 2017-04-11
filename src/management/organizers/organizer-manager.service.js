@@ -72,7 +72,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -84,7 +84,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -105,14 +105,14 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.updateOrganizerWebsite = function(organizerId, website) {
     return udbApi
         .updateOrganizerWebsite(organizerId, website)
-        .then(logOrganizerLabelJob);
+        .then(logUpdateOrganizerJob);
   };
 
   /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
-  function logOrganizerLabelJob(commandInfo) {
+  function logUpdateOrganizerJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
     jobLogger.addJob(job);
 
