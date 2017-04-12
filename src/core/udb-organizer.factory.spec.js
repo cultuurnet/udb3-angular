@@ -4,6 +4,33 @@ describe('Factory: UDB Organizer', function () {
 
   beforeEach(module('udb.core'));
 
+  var jsonOrganizer = {
+    '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
+    '@context': '/api/1.0/organizer.jsonld',
+    'created': '2017-03-28T12:09:18+00:00',
+    'creator': '357D5297-9E37-1DE9-62398987EA110D38',
+    'url': 'http://foo.bar',
+    'name': 'Club Silo',
+    'address': {
+      addressCountry: 'BE',
+      addressLocality: 'Leuven',
+      postalCode: '3000',
+      streetAddress: 'Vaartkom 39'
+    },
+    contactPoint: {
+      'email': [
+        'info@silo.be'
+      ],
+      'phone': [
+        '+32 476 838982'
+      ]
+    },
+    labels: [
+      'green',
+      'UiTPAS'
+    ]
+  };
+
   var jsonOrganizerWithHiddenLabel = {
     '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
     '@context': '/api/1.0/organizer.jsonld',
@@ -62,32 +89,6 @@ describe('Factory: UDB Organizer', function () {
       'isUitpas': true,
       'created': new Date('2017-03-28T12:09:18+00:00')
     };
-    var jsonOrganizer = {
-      '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
-      '@context': '/api/1.0/organizer.jsonld',
-      'created': '2017-03-28T12:09:18+00:00',
-      'creator': '357D5297-9E37-1DE9-62398987EA110D38',
-      'url': 'http://foo.bar',
-      'name': 'Club Silo',
-      'address': {
-        addressCountry: 'BE',
-        addressLocality: 'Leuven',
-        postalCode: '3000',
-        streetAddress: 'Vaartkom 39'
-      },
-      contactPoint: {
-        'email': [
-          'info@silo.be'
-        ],
-        'phone': [
-          '+32 476 838982'
-        ]
-      },
-      labels: [
-        'green',
-        'UiTPAS'
-      ]
-    };
 
     var organizerFromJson = new UdbOrganizer(jsonOrganizer);
     expect(organizerFromJson).toEqual(expectedOrganizer);
@@ -103,5 +104,13 @@ describe('Factory: UDB Organizer', function () {
     var organizer = new UdbOrganizer(jsonOrganizerWithHiddenLabel);
 
     expect(organizer.labels).toEqual(expectedCombinedLabels);
+  }));
+
+  it('it can take into account name_deprecated', inject(function (UdbOrganizer) {
+    jsonOrganizer.name_deprecated = jsonOrganizer.name;
+    jsonOrganizer.name = undefined;
+
+    var organizer = new UdbOrganizer(jsonOrganizer);
+    expect(organizer.name).toEqual('Club Silo');
   }));
 });

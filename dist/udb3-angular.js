@@ -4536,7 +4536,7 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = jsonOrganizer.name || '';
+      this.name = jsonOrganizer.name || _.get(jsonOrganizer, 'name_deprecated', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
@@ -14318,7 +14318,6 @@ function OrganizerEditController(
     }
 
     $q.all(promises).catch(showProblem);
-
     $state.go('management.organizers.search');
   }
 
