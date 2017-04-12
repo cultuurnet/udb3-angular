@@ -15,6 +15,7 @@ function OrganizerEditController(
     OrganizerManager,
     udbOrganizers,
     $uibModal,
+    $state,
     $stateParams,
     cities,
     Levenshtein,
@@ -28,7 +29,7 @@ function OrganizerEditController(
   controller.contact = [];
 
   var oldOrganizer = {};
-  var oldContact = {};
+  var oldContact = [];
   var isUrlChanged = false;
   var isNameChanged = false;
   var isAddressChanged = false;
@@ -50,7 +51,7 @@ function OrganizerEditController(
     oldOrganizer = _.cloneDeep(organizer);
     controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
-    _.forEach(organizer.contactPoint, function(contactArray, key) {
+    _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
       _.forEach(contactArray, function(value) {
         controller.contact.push({type: key, value: value});
       });
@@ -185,6 +186,7 @@ function OrganizerEditController(
     }
 
     $q.all(promises).catch(showProblem);
+    $state.go('management.organizers.search');
   }
 
   /**

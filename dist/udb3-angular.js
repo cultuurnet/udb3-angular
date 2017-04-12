@@ -14147,6 +14147,7 @@ function OrganizerEditController(
     OrganizerManager,
     udbOrganizers,
     $uibModal,
+    $state,
     $stateParams,
     cities,
     Levenshtein,
@@ -14160,7 +14161,7 @@ function OrganizerEditController(
   controller.contact = [];
 
   var oldOrganizer = {};
-  var oldContact = {};
+  var oldContact = [];
   var isUrlChanged = false;
   var isNameChanged = false;
   var isAddressChanged = false;
@@ -14182,7 +14183,7 @@ function OrganizerEditController(
     oldOrganizer = _.cloneDeep(organizer);
     controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
-    _.forEach(organizer.contactPoint, function(contactArray, key) {
+    _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
       _.forEach(contactArray, function(value) {
         controller.contact.push({type: key, value: value});
       });
@@ -14317,6 +14318,8 @@ function OrganizerEditController(
     }
 
     $q.all(promises).catch(showProblem);
+
+    $state.go('management.organizers.search');
   }
 
   /**
@@ -14339,7 +14342,7 @@ function OrganizerEditController(
     );
   }
 }
-OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$uibModal", "$stateParams", "cities", "Levenshtein", "$q"];
+OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$uibModal", "$state", "$stateParams", "cities", "Levenshtein", "$q"];
 
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
@@ -23326,7 +23329,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </div>\n" +
     "\n" +
     "                <table class=\"table\" ng-show=\"oec.contact.length\">\n" +
-    "                    <tr ng-repeat=\"(key, info) in oec.contact\"\n" +
+    "                    <tr ng-repeat=\"(key, info) in oec.contact track by key\"\n" +
     "                        ng-model=\"info\"\n" +
     "                        udb-contact-info-validation\n" +
     "                        ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +

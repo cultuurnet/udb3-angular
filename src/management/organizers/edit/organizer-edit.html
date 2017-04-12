@@ -106,7 +106,7 @@
                 </div>
 
                 <table class="table" ng-show="oec.contact.length">
-                    <tr ng-repeat="(key, info) in oec.contact"
+                    <tr ng-repeat="(key, info) in oec.contact track by key"
                         ng-model="info"
                         udb-contact-info-validation
                         ng-class="{'has-error' : infoErrorMessage !== '' }">
