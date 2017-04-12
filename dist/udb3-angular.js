@@ -20724,23 +20724,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"form-inline\">\n" +
     "            <div class=\"input-group\">\n" +
     "                <span class=\"input-group-addon\" id=\"calendar-period-start-date\">van</span>\n" +
-    "                <input type=\"date\" \n" +
-    "                       aria-describedby=\"calendar-period-start-date\" \n" +
-    "                       id=\"calendar-period-start-date\" \n" +
+    "                <input type=\"date\"\n" +
+    "                       aria-describedby=\"calendar-period-start-date\"\n" +
+    "                       id=\"calendar-period-start-date\"\n" +
     "                       ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                       ng-model=\"$ctrl.formData.startDate\" \n" +
-    "                       required=\"required\" \n" +
+    "                       ng-model=\"$ctrl.formData.startDate\"\n" +
+    "                       required=\"required\"\n" +
     "                       ng-change=\"$ctrl.formData.periodicTimingChanged()\"\n" +
     "                       class=\"form-control calendar-period-start-date\">\n" +
     "            </div>\n" +
     "            <div class=\"input-group\">\n" +
     "                <span class=\"input-group-addon\" id=\"calendar-period-end-date\">tot</span>\n" +
-    "                <input type=\"date\" \n" +
-    "                       aria-describedby=\"calendar-period-end-date\" \n" +
-    "                       id=\"calendar-period-end-date\" \n" +
+    "                <input type=\"date\"\n" +
+    "                       aria-describedby=\"calendar-period-end-date\"\n" +
+    "                       id=\"calendar-period-end-date\"\n" +
     "                       ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                       ng-model=\"$ctrl.formData.endDate\" \n" +
-    "                       required=\"required\" \n" +
+    "                       ng-model=\"$ctrl.formData.endDate\"\n" +
+    "                       required=\"required\"\n" +
     "                       ng-change=\"$ctrl.formData.periodicTimingChanged()\"\n" +
     "                       class=\"form-control calendar-period-end-date\">\n" +
     "            </div>\n" +
@@ -20859,12 +20859,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <hr>\n" +
     "                <div class=\"calendar-opening-hours\">\n" +
     "                    <div class=\"opening-hours-collection\">\n" +
-    "                        <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!calendar.openingHoursErrors.length\">\n" +
-    "                            <ul>\n" +
-    "                                <li ng-repeat=\"error in calendar.openingHoursErrors\"\n" +
-    "                                    ng-bind=\"'OPENING_HOURS_ERROR.' + error | translate\"></li>\n" +
-    "                            </ul>\n" +
-    "                        </div>\n" +
     "                        <div class=\"opening-hours\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in calendar.openingHoursCollection.openingHours\">\n" +
     "                            <span aria-hidden=\"true\"\n" +
     "                                  class=\"close\"\n" +
@@ -20909,6 +20903,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <hr>\n" +
+    "                    <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!calendar.openingHoursErrors.length\">\n" +
+    "                        <ul>\n" +
+    "                            <li ng-repeat=\"error in calendar.openingHoursErrors\"\n" +
+    "                                ng-bind=\"'OPENING_HOURS_ERROR.' + error | translate\"></li>\n" +
+    "                        </ul>\n" +
+    "                    </div>\n" +
     "                    <p><a href=\"#\" \n" +
     "                        ng-click=\"calendar.createNewOpeningHours()\" \n" +
     "                        class=\"add-period-link\">Uren toevoegen</a></p>\n" +

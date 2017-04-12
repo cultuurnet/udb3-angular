@@ -1,4 +1,4 @@
-<div class="calendar-period">
+<div class="form-calendar-period">
     <label>
         <input type="checkbox"
                class="permanent-check"
@@ -12,23 +12,23 @@
         <div class="form-inline">
             <div class="input-group">
                 <span class="input-group-addon" id="calendar-period-start-date">van</span>
-                <input type="date" 
-                       aria-describedby="calendar-period-start-date" 
-                       id="calendar-period-start-date" 
+                <input type="date"
+                       aria-describedby="calendar-period-start-date"
+                       id="calendar-period-start-date"
                        ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                       ng-model="$ctrl.formData.startDate" 
-                       required="required" 
+                       ng-model="$ctrl.formData.startDate"
+                       required="required"
                        ng-change="$ctrl.formData.periodicTimingChanged()"
                        class="form-control calendar-period-start-date">
             </div>
             <div class="input-group">
                 <span class="input-group-addon" id="calendar-period-end-date">tot</span>
-                <input type="date" 
-                       aria-describedby="calendar-period-end-date" 
-                       id="calendar-period-end-date" 
+                <input type="date"
+                       aria-describedby="calendar-period-end-date"
+                       id="calendar-period-end-date"
                        ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                       ng-model="$ctrl.formData.endDate" 
-                       required="required" 
+                       ng-model="$ctrl.formData.endDate"
+                       required="required"
                        ng-change="$ctrl.formData.periodicTimingChanged()"
                        class="form-control calendar-period-end-date">
             </div>

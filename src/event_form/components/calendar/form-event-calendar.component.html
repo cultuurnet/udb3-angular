@@ -64,12 +64,6 @@
                 <hr>
                 <div class="calendar-opening-hours">
                     <div class="opening-hours-collection">
-                        <div class="alert alert-danger" role="alert" ng-if="!!calendar.openingHoursErrors.length">
-                            <ul>
-                                <li ng-repeat="error in calendar.openingHoursErrors"
-                                    ng-bind="'OPENING_HOURS_ERROR.' + error | translate"></li>
-                            </ul>
-                        </div>
                         <div class="opening-hours" ng-form="openingHoursInfo" ng-repeat="openingHours in calendar.openingHoursCollection.openingHours">
                             <span aria-hidden="true"
                                   class="close"
@@ -114,6 +108,12 @@
                         </div>
                     </div>
                     <hr>
+                    <div class="alert alert-danger" role="alert" ng-if="!!calendar.openingHoursErrors.length">
+                        <ul>
+                            <li ng-repeat="error in calendar.openingHoursErrors"
+                                ng-bind="'OPENING_HOURS_ERROR.' + error | translate"></li>
+                        </ul>
+                    </div>
                     <p><a href="#" 
                         ng-click="calendar.createNewOpeningHours()" 
                         class="add-period-link">Uren toevoegen</a></p>
