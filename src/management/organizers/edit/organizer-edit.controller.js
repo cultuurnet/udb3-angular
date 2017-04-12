@@ -28,6 +28,15 @@ function OrganizerEditController(
   controller.selectedCity = '';
   controller.contact = [];
 
+  controller.validateWebsite = validateWebsite;
+  controller.addOrganizerContactInfo = addOrganizerContactInfo;
+  controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  controller.filterCities = filterCities;
+  controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
+  controller.selectCity = selectCity;
+  controller.changeCitySelection = changeCitySelection;
+  controller.validateOrganizer = validateOrganizer;
+
   var oldOrganizer = {};
   var oldContact = [];
   var isUrlChanged = false;
@@ -63,7 +72,7 @@ function OrganizerEditController(
   /**
    * Validate the website of new organizer.
    */
-  controller.validateWebsite = function() {
+  function validateWebsite() {
     controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
@@ -88,26 +97,26 @@ function OrganizerEditController(
           controller.websiteError = true;
           controller.showWebsiteValidation = false;
         });
-  };
+  }
 
   /**
    * Add a contact info entry for an organizer.
    */
-  controller.addOrganizerContactInfo = function(type) {
+  function addOrganizerContactInfo(type) {
     controller.contact.push({
       type : type,
       value : ''
     });
-  };
+  }
 
   /**
    * Remove a given key of the contact info.
    */
-  controller.deleteOrganizerContactInfo = function(index) {
+  function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
-  };
+  }
 
-  controller.filterCities = function(value) {
+  function filterCities(value) {
     return function (city) {
       var length = value.length;
       var words = value.match(/\w+/g);
@@ -120,37 +129,37 @@ function OrganizerEditController(
 
       return zipMatches.length + nameMatches.length >= words.length;
     };
-  };
+  }
 
-  controller.orderByLevenshteinDistance = function(value) {
+  function orderByLevenshteinDistance(value) {
     return function (city) {
       return new Levenshtein(value, city.zip + '' + city.name);
     };
-  };
+  }
 
   /**
    * Select City.
    */
-  controller.selectCity = function ($item, $label) {
+  function selectCity($item, $label) {
     controller.organizer.address.postalCode = $item.zip;
     controller.organizer.address.addressLocality = $item.name;
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
-  };
+  }
 
   /**
    * Change a city selection.
    */
-  controller.changeCitySelection = function () {
+  function changeCitySelection() {
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
-  };
+  }
 
   /**
    * Validate the new organizer.
    */
-  controller.validateOrganizer = function () {
+  function validateOrganizer() {
 
     controller.showValidation = true;
     // Forms are automatically known in scope.
@@ -165,7 +174,7 @@ function OrganizerEditController(
 
     saveOrganizer();
 
-  };
+  }
 
   function saveOrganizer () {
     var promises = [];
