@@ -23494,7 +23494,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
     "                Bewerken <span class=\"caret\"></span></button>\n" +
     "            <ul class=\"dropdown-menu dropdown-menu-right\">\n" +
-    "                <li><a ui-sref=\"management.organizers.detail({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
+    "                <li><a ui-sref=\"management.organizers.edit({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
     "                <li><a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a></li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
