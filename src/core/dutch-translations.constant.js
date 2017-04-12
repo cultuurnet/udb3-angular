@@ -367,9 +367,9 @@ angular.module('udb.core')
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
-      'openAndClose': 'Een openings- en sluitingsuur is verplicht.',
+      'openAndClose': 'Vul alle openings- en sluitingstijden in.',
       'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
-      'openIsBeforeClose': 'Het openingsuur mag niet na het sluitingsuur vallen.'
+      'openIsBeforeClose': 'Je moet minstens 1 weekdag selecteren.'
     }
   }
 );

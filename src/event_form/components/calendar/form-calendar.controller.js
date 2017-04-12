@@ -25,17 +25,10 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
   calendar.weeklyRecurring = false;
   calendar.openingHoursCollection = OpeningHoursCollection;
 
-  calendar.openingHoursErrors = [];
-  calendar.validateOpeningHours = validateOpeningHours;
-  calendar.removeOpeningHours = removeOpeningHours;
-  calendar.createNewOpeningHours = createNewOpeningHours;
-
   init();
 
   function init() {
     calendar.setType('single');
-    calendar.openingHoursCollection.setOpeningHours([]);
-    calendar.createNewOpeningHours();
   }
 
   function reset() {
@@ -85,22 +78,5 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     if (calendar.timeSpans.length > 1) {
       calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
     }
-  }
-
-  function validateOpeningHours() {
-    calendar.openingHoursErrors = calendar.openingHoursCollection.validate();
-  }
-
-  /**
-   * @param {OpeningHours} openingHours
-   */
-  function removeOpeningHours(openingHours) {
-    calendar.openingHoursCollection.removeOpeningHours(openingHours);
-    calendar.validateOpeningHours();
-  }
-
-  function createNewOpeningHours() {
-    calendar.openingHoursCollection.createNewOpeningHours();
-    calendar.validateOpeningHours();
   }
 }

@@ -36,9 +36,7 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
    * @param {string[]} errorList
    */
   function showErrors(errorList) {
-    controller.errors = _.zipObject(errorList, _.map(errorList, function() {
-      return true;
-    }));
+    controller.errors = errorList;
   }
 
   function clearErrors() {
