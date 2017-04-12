@@ -3122,6 +3122,14 @@ form.contact-info table,
 form.booking-period table {
   border: 1px solid #dddddd;
 }
+form.contact-info .input-group,
+form.booking-period .input-group {
+  z-index: -50;
+}
+form.contact-info .input-group-btn,
+form.booking-period .input-group-btn {
+  z-index: -50;
+}
 .npr {
   padding-right: 0px;
 }
