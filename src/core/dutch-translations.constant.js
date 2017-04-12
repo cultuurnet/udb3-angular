@@ -369,7 +369,7 @@ angular.module('udb.core')
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Een openings- en sluitingsuur is verplicht.',
       'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
-      'openIsBeforeClose': 'het openingsuur mag niet na het sluitingsuur vallen.'
+      'openIsBeforeClose': 'Het openingsuur mag niet na het sluitingsuur vallen.'
     }
   }
 );

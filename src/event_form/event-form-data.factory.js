@@ -614,12 +614,14 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       var formData = this;
 
       if (formData.id) {
-        if (formData.hasValidPeriodicRange()) {
-          formData.periodicRangeError = false;
-          formData.timingChanged();
-        } else {
-          formData.periodicRangeError = true;
-        }
+        //TODO: this was wrapping the code below, not sure why...
+      }
+
+      if (formData.hasValidPeriodicRange()) {
+        formData.periodicRangeError = false;
+        formData.timingChanged();
+      } else {
+        formData.periodicRangeError = true;
       }
     }
   };

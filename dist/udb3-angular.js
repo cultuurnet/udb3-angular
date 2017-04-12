@@ -2728,7 +2728,7 @@ angular.module('udb.core')
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Een openings- en sluitingsuur is verplicht.',
       'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
-      'openIsBeforeClose': 'het openingsuur mag niet na het sluitingsuur vallen.'
+      'openIsBeforeClose': 'Het openingsuur mag niet na het sluitingsuur vallen.'
     }
   }
 );
@@ -8021,6 +8021,23 @@ function AutoScroll($document) {
 }
 AutoScroll.$inject = ["$document"];
 
+// Source: src/event_form/components/calendar/form-calendar-period.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarPeriod
+ * @description
+ * # Form Calendar Period
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarPeriod', {
+    templateUrl: 'templates/form-calendar-period.component.html',
+    controller: function () {},
+    bindings: {
+      formData: '=',
+    }
+  });
+
 // Source: src/event_form/components/calendar/form-calendar.component.js
 /**
  * @ngdoc function
@@ -8099,8 +8116,8 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     }
 
     if (calendarType === 'periodic') {
-      calendar.formData.startDate = moment().startOf('day').toDate(),
-      calendar.formData.endDate = moment().add(1, 'y').startOf('day').toDate()
+      calendar.formData.startDate = moment().startOf('day').toDate();
+      calendar.formData.endDate = moment().add(1, 'y').startOf('day').toDate();
     }
   }
 
@@ -10586,12 +10603,14 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       var formData = this;
 
       if (formData.id) {
-        if (formData.hasValidPeriodicRange()) {
-          formData.periodicRangeError = false;
-          formData.timingChanged();
-        } else {
-          formData.periodicRangeError = true;
-        }
+        //TODO: this was wrapping the code below, not sure why...
+      }
+
+      if (formData.hasValidPeriodicRange()) {
+        formData.periodicRangeError = false;
+        formData.timingChanged();
+      } else {
+        formData.periodicRangeError = true;
       }
     }
   };
@@ -20690,6 +20709,50 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-calendar-period.component.html',
+    "<div class=\"calendar-period\">\n" +
+    "    <label>\n" +
+    "        <input type=\"checkbox\"\n" +
+    "               class=\"permanent-check\"\n" +
+    "               ng-model=\"$ctrl.formData.calendarType\"\n" +
+    "               ng-true-value=\"'periodic'\"\n" +
+    "               ng-false-value=\"'permanent'\"\n" +
+    "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.formData.calendarType)\">\n" +
+    "        <span>Start- en einddatum</span>\n" +
+    "    </label>\n" +
+    "    <div class=\"not-permanent\">\n" +
+    "        <div class=\"form-inline\">\n" +
+    "            <div class=\"input-group\">\n" +
+    "                <span class=\"input-group-addon\" id=\"calendar-period-start-date\">van</span>\n" +
+    "                <input type=\"date\" \n" +
+    "                       aria-describedby=\"calendar-period-start-date\" \n" +
+    "                       id=\"calendar-period-start-date\" \n" +
+    "                       ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                       ng-model=\"$ctrl.formData.startDate\" \n" +
+    "                       required=\"required\" \n" +
+    "                       ng-change=\"$ctrl.formData.periodicTimingChanged()\"\n" +
+    "                       class=\"form-control calendar-period-start-date\">\n" +
+    "            </div>\n" +
+    "            <div class=\"input-group\">\n" +
+    "                <span class=\"input-group-addon\" id=\"calendar-period-end-date\">tot</span>\n" +
+    "                <input type=\"date\" \n" +
+    "                       aria-describedby=\"calendar-period-end-date\" \n" +
+    "                       id=\"calendar-period-end-date\" \n" +
+    "                       ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                       ng-model=\"$ctrl.formData.endDate\" \n" +
+    "                       required=\"required\" \n" +
+    "                       ng-change=\"$ctrl.formData.periodicTimingChanged()\"\n" +
+    "                       class=\"form-control calendar-period-end-date\">\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"alert alert-danger \" ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
+    "            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/form-calendar.component.html',
     "<div class=\"row\" ng-show=\"calendar.formData.isEvent\">\n" +
     "    <div class=\"col-xs-12\">\n" +
@@ -20792,46 +20855,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
-    "                <div class=\"calendar-period\">\n" +
-    "                    <label>\n" +
-    "                        <input type=\"checkbox\"\n" +
-    "                               class=\"permanent-check\"\n" +
-    "                               ng-model=\"calendar.type\"\n" +
-    "                               ng-true-value=\"'periodic'\"\n" +
-    "                               ng-false-value=\"'permanent'\"\n" +
-    "                               ng-change=\"calendar.setType(calendar.type)\">\n" +
-    "                        Start- en einddatum\n" +
-    "                    </label>\n" +
-    "                    <div class=\"not-permanent\">\n" +
-    "                        <div class=\"form-inline\">\n" +
-    "                            <div class=\"input-group\">\n" +
-    "                                <span class=\"input-group-addon\" id=\"calendar-period-start-date\">van</span>\n" +
-    "                                <input type=\"date\"\n" +
-    "                                       aria-describedby=\"calendar-period-start-date\"\n" +
-    "                                       id=\"calendar-period-start-date\"\n" +
-    "                                       ng-disabled=\"calendar.type !== 'periodic'\"\n" +
-    "                                       ng-model=\"calendar.formData.startDate\"\n" +
-    "                                       required=\"required\"\n" +
-    "                                       ng-change=\"calendar.formData.periodicTimingChanged()\"\n" +
-    "                                       class=\"form-control calendar-period-start-date\">\n" +
-    "                            </div>\n" +
-    "                            <div class=\"input-group\">\n" +
-    "                                <span class=\"input-group-addon\" id=\"calendar-period-end-date\">tot</span>\n" +
-    "                                <input type=\"date\"\n" +
-    "                                       aria-describedby=\"calendar-period-end-date\"\n" +
-    "                                       id=\"calendar-period-end-date\"\n" +
-    "                                       ng-disabled=\"calendar.type !== 'periodic'\"\n" +
-    "                                       ng-model=\"calendar.formData.endDate\"\n" +
-    "                                       required=\"required\"\n" +
-    "                                       ng-change=\"calendar.formData.periodicTimingChanged()\"\n" +
-    "                                       class=\"form-control calendar-period-end-date\">\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "                        <div class=\"alert alert-danger \" ng-show=\"calendar.formData.periodicRangeError\" style=\"margin-top: 10px; margin-bottom: 0;\">\n" +
-    "                            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
+    "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
     "                <hr>\n" +
     "                <div class=\"calendar-opening-hours\">\n" +
     "                    <div class=\"opening-hours-collection\">\n" +

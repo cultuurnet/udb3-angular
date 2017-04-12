@@ -61,8 +61,8 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     }
 
     if (calendarType === 'periodic') {
-      calendar.formData.startDate = moment().startOf('day').toDate(),
-      calendar.formData.endDate = moment().add(1, 'y').startOf('day').toDate()
+      calendar.formData.startDate = moment().startOf('day').toDate();
+      calendar.formData.endDate = moment().add(1, 'y').startOf('day').toDate();
     }
   }
 

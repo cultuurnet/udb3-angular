@@ -60,46 +60,7 @@
             </div>
 
             <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
-                <div class="calendar-period">
-                    <label>
-                        <input type="checkbox"
-                               class="permanent-check"
-                               ng-model="calendar.type"
-                               ng-true-value="'periodic'"
-                               ng-false-value="'permanent'"
-                               ng-change="calendar.setType(calendar.type)">
-                        Start- en einddatum
-                    </label>
-                    <div class="not-permanent">
-                        <div class="form-inline">
-                            <div class="input-group">
-                                <span class="input-group-addon" id="calendar-period-start-date">van</span>
-                                <input type="date"
-                                       aria-describedby="calendar-period-start-date"
-                                       id="calendar-period-start-date"
-                                       ng-disabled="calendar.type !== 'periodic'"
-                                       ng-model="calendar.formData.startDate"
-                                       required="required"
-                                       ng-change="calendar.formData.periodicTimingChanged()"
-                                       class="form-control calendar-period-start-date">
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-addon" id="calendar-period-end-date">tot</span>
-                                <input type="date"
-                                       aria-describedby="calendar-period-end-date"
-                                       id="calendar-period-end-date"
-                                       ng-disabled="calendar.type !== 'periodic'"
-                                       ng-model="calendar.formData.endDate"
-                                       required="required"
-                                       ng-change="calendar.formData.periodicTimingChanged()"
-                                       class="form-control calendar-period-end-date">
-                            </div>
-                        </div>
-                        <div class="alert alert-danger " ng-show="calendar.formData.periodicRangeError" style="margin-top: 10px; margin-bottom: 0;">
-                            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
-                        </div>
-                    </div>
-                </div>
+                <udb-form-calendar-period form-data="calendar.formData"></udb-form-calendar-period>
                 <hr>
                 <div class="calendar-opening-hours">
                     <div class="opening-hours-collection">
