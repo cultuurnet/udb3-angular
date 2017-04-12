@@ -91,10 +91,10 @@ describe('Factory: Opening hours collection', function () {
           'saturday': {label: 'Za', name: 'Zaterdag', open: false},
           'sunday': {label: 'Zo', name: 'Zondag', open: false}
         },
-        'opens': '09:00',
-        'opensAsDate': new Date(1970, 0, 1, 9),
-        'closes': '17:00',
-        'closesAsDate': new Date(1970, 0, 1, 17),
+        'opens': '00:00',
+        'opensAsDate': new Date(1970, 0, 1),
+        'closes': '00:00',
+        'closesAsDate': new Date(1970, 0, 1),
         'label': ''
       }
     ];

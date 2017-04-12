@@ -369,7 +369,7 @@ angular.module('udb.core')
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
       'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
-      'openIsBeforeClose': 'Je moet minstens 1 weekdag selecteren.'
+      'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
     }
   }
 );

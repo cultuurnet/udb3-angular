@@ -2728,7 +2728,7 @@ angular.module('udb.core')
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
       'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
-      'openIsBeforeClose': 'Je moet minstens 1 weekdag selecteren.'
+      'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
     }
   }
 );
@@ -8742,9 +8742,9 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
       var openingHours = {
         'dayOfWeek': _.cloneDeep(weekdays),
         'opens': '00:00',
-        'opensAsDate': new Date(1970, 0, 1, 9),
+        'opensAsDate': new Date(1970, 0, 1),
         'closes': '00:00',
-        'closesAsDate': new Date(1970, 0, 1, 17)
+        'closesAsDate': new Date(1970, 0, 1)
       };
 
       openingHoursList.push(openingHours);
@@ -8768,12 +8768,12 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
           'opensAsDate':
             jsonOpeningHours.opens ?
               resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() :
-              new Date(1970, 0, 1, 9),
+              new Date(1970, 0, 1),
           'closes': jsonOpeningHours.closes || '00:00',
           'closesAsDate':
             jsonOpeningHours.closes ?
               resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() :
-              new Date(1970, 0, 1, 17)
+              new Date(1970, 0, 1)
         };
       }));
     },

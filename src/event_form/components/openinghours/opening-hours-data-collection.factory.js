@@ -111,9 +111,9 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
       var openingHours = {
         'dayOfWeek': _.cloneDeep(weekdays),
         'opens': '00:00',
-        'opensAsDate': new Date(1970, 0, 1, 9),
+        'opensAsDate': new Date(1970, 0, 1),
         'closes': '00:00',
-        'closesAsDate': new Date(1970, 0, 1, 17)
+        'closesAsDate': new Date(1970, 0, 1)
       };
 
       openingHoursList.push(openingHours);
@@ -137,12 +137,12 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
           'opensAsDate':
             jsonOpeningHours.opens ?
               resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() :
-              new Date(1970, 0, 1, 9),
+              new Date(1970, 0, 1),
           'closes': jsonOpeningHours.closes || '00:00',
           'closesAsDate':
             jsonOpeningHours.closes ?
               resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() :
-              new Date(1970, 0, 1, 17)
+              new Date(1970, 0, 1)
         };
       }));
     },
