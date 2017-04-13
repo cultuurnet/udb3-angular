@@ -1,7 +1,12 @@
 <div class="opening-hours-week-schedule">
   <div class="empty" ng-hide="!!cm.openingHoursCollection.openingHours.length">
-    <a href="#" class="btn btn-link btn-plus wanneer-openingsuren-link"
-      ng-click="cm.edit()">Openingsuren toevoegen</a>
+    <div class="well text-center add-opening-hours">
+        <span>24/24 7/7</span>
+        <br>
+        <span>Elke dag, ieder uur</span>
+        <br>
+        <button type="button" class="btn btn-primary" ng-click="cm.edit()">Uren toevoegen</button>
+    </div>
   </div>
   <div class="time-table">
     <table class="table table-condensed" ng-if="!!cm.openingHoursCollection.openingHours.length">

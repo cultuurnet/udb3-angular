@@ -8032,11 +8032,16 @@ angular
   .module('udb.event-form')
   .component('udbFormCalendarPeriod', {
     templateUrl: 'templates/form-calendar-period.component.html',
-    controller: function () {},
+    controller: FormCalendarPeriodComponentController,
     bindings: {
       formData: '=',
     }
   });
+
+function FormCalendarPeriodComponentController() {
+  var controller = this;
+  controller.calendarType = controller.formData.calendarType;
+}
 
 // Source: src/event_form/components/calendar/form-calendar.component.js
 /**
@@ -8610,6 +8615,7 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
 
   function removeOpeningHours(openingHours) {
     controller.openingHoursCollection.removeOpeningHours(openingHours);
+    clearErrors();
   }
 }
 OpeningHoursEditorModalController.$inject = ["$uibModalInstance", "openingHoursCollection"];
@@ -20715,7 +20721,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </label>\n" +
     "            </div>\n" +
     "            <div class=\"opening-time form-group\"\n" +
-    "                    ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
+    "                 ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
     "                <label class=\"control-label\" for=\"opening-hours-{{$index}}-opens\">Van</label>\n" +
     "                <input udb-time\n" +
     "                        id=\"opening-hours-{{$index}}-opens\" \n" +
@@ -20728,7 +20734,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        placeholder=\"Bv. 09:00\">\n" +
     "            </div>\n" +
     "            <div class=\"closing-time form-group\"\n" +
-    "                    ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
+    "                 ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
     "                <label class=\"control-label\" for=\"opening-hours-{{$index}}-closes\">Tot</label>\n" +
     "                <input  udb-time\n" +
     "                        id=\"opening-hours-{{$index}}-closes\" \n" +
@@ -20761,10 +20767,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <label>\n" +
     "        <input type=\"checkbox\"\n" +
     "               class=\"permanent-check\"\n" +
-    "               ng-model=\"$ctrl.formData.calendarType\"\n" +
+    "               ng-model=\"$ctrl.calendarType\"\n" +
     "               ng-true-value=\"'periodic'\"\n" +
     "               ng-false-value=\"'permanent'\"\n" +
-    "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.formData.calendarType)\">\n" +
+    "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
     "        <span>Start- en einddatum</span>\n" +
     "    </label>\n" +
     "    <div class=\"not-permanent\">\n" +
@@ -21222,66 +21228,78 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
+    "    <div class=\"well text-center add-opening-hours\" \n" +
+    "         ng-show=\"ohemc.openingHoursCollection.openingHours.length === 0\">\n" +
+    "        <span>24/24 7/7</span>\n" +
+    "        <br>\n" +
+    "        <span>Elke dag, ieder uur</span>\n" +
+    "        <br>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\">Uren toevoegen</button>\n" +
+    "    </div>\n" +
     "    <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!ohemc.errors.length\">\n" +
     "        <ul>\n" +
     "            <li ng-repeat=\"error in ohemc.errors\"\n" +
     "                ng-bind=\"'OPENING_HOURS_ERROR.' + error | translate\"></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
-    "    <div class=\"opening-hours-header\">\n" +
-    "        <div class=\"weekdays\">\n" +
-    "            Dagen\n" +
-    "        </div>\n" +
-    "        <div class=\"opening-time\">\n" +
-    "            Van\n" +
-    "        </div>\n" +
-    "        <div class=\"closing-time\">\n" +
-    "            Tot\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"opening-hours\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
-    "        <ng-form name=\"openingHoursInfo\">\n" +
+    "    <div class=\"opening-hours\" ng-show=\"ohemc.openingHoursCollection.openingHours.length > 0\">\n" +
+    "        <div class=\"opening-hours-labels\">\n" +
     "            <div class=\"weekdays\">\n" +
-    "                <label class=\"checkbox-inline\" ng-repeat=\"(day, weekday) in openingHours.dayOfWeek\">\n" +
-    "                    <input type=\"checkbox\" ng-model=\"openingHours.dayOfWeek[day].open\">\n" +
-    "                        <span ng-bind=\"::weekday.label\"></span>\n" +
-    "                </label>\n" +
+    "                Dagen\n" +
     "            </div>\n" +
     "            <div class=\"opening-time\">\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
-    "                    <input udb-time\n" +
-    "                           type=\"time\"\n" +
-    "                           name=\"opens\"\n" +
-    "                           class=\"form-control uur\"\n" +
-    "                           placeholder=\"Bv. 08:00\"\n" +
-    "                           ng-required=\"true\"\n" +
-    "                           ng-model=\"openingHours.opensAsDate\"/>\n" +
-    "                </div>\n" +
+    "                Van\n" +
     "            </div>\n" +
     "            <div class=\"closing-time\">\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
-    "                    <input udb-time\n" +
-    "                           type=\"time\"\n" +
-    "                           name=\"closes\"\n" +
-    "                           class=\"form-control uur\"\n" +
-    "                           placeholder=\"Bv. 08:00\"\n" +
-    "                           ng-required=\"true\"\n" +
-    "                           ng-model=\"openingHours.closesAsDate\"/>\n" +
+    "                Tot\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"opening-hours-collection\">\n" +
+    "            <div class=\"opening-hours-set\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
+    "                <div class=\"weekdays\">\n" +
+    "                    <label class=\"checkbox-inline\" ng-repeat=\"(day, weekday) in openingHours.dayOfWeek\">\n" +
+    "                        <input type=\"checkbox\" ng-model=\"openingHours.dayOfWeek[day].open\">\n" +
+    "                            <span ng-bind=\"::weekday.label\"></span>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "                <div class=\"opening-time\">\n" +
+    "                    <div class=\"form-group\"\n" +
+    "                        ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
+    "                        <input udb-time\n" +
+    "                            type=\"time\"\n" +
+    "                            name=\"opens\"\n" +
+    "                            class=\"form-control uur\"\n" +
+    "                            placeholder=\"Bv. 08:00\"\n" +
+    "                            ng-required=\"true\"\n" +
+    "                            ng-model=\"openingHours.opensAsDate\"/>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"closing-time\">\n" +
+    "                    <div class=\"form-group\"\n" +
+    "                        ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
+    "                        <input udb-time\n" +
+    "                            type=\"time\"\n" +
+    "                            name=\"closes\"\n" +
+    "                            class=\"form-control uur\"\n" +
+    "                            placeholder=\"Bv. 08:00\"\n" +
+    "                            ng-required=\"true\"\n" +
+    "                            ng-model=\"openingHours.closesAsDate\"/>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"remove\">\n" +
+    "                    <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
+    "                        <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
+    "                    </button>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"remove\">\n" +
-    "                <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
-    "                    <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "        </ng-form>\n" +
-    "    </div>\n" +
+    "        </div>\n" +
     "\n" +
-    "    <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
-    "        Meer openingstijden toevoegen\n" +
-    "    </a>\n" +
+    "        <div class=\"add\">\n" +
+    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
+    "                Meer openingstijden toevoegen\n" +
+    "            </a>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\">Annuleren</button>\n" +
@@ -21297,8 +21315,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/event-form-openinghours.html',
     "<div class=\"opening-hours-week-schedule\">\n" +
     "  <div class=\"empty\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
-    "    <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
-    "      ng-click=\"cm.edit()\">Openingsuren toevoegen</a>\n" +
+    "    <div class=\"well text-center add-opening-hours\">\n" +
+    "        <span>24/24 7/7</span>\n" +
+    "        <br>\n" +
+    "        <span>Elke dag, ieder uur</span>\n" +
+    "        <br>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\">Uren toevoegen</button>\n" +
+    "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"time-table\">\n" +
     "    <table class=\"table table-condensed\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +

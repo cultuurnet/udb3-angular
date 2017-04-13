@@ -16,7 +16,7 @@
                 </label>
             </div>
             <div class="opening-time form-group"
-                    ng-class="{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}">
+                 ng-class="{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}">
                 <label class="control-label" for="opening-hours-{{$index}}-opens">Van</label>
                 <input udb-time
                         id="opening-hours-{{$index}}-opens" 
@@ -29,7 +29,7 @@
                         placeholder="Bv. 09:00">
             </div>
             <div class="closing-time form-group"
-                    ng-class="{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}">
+                 ng-class="{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}">
                 <label class="control-label" for="opening-hours-{{$index}}-closes">Tot</label>
                 <input  udb-time
                         id="opening-hours-{{$index}}-closes" 

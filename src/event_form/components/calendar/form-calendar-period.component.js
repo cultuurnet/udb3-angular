@@ -10,8 +10,13 @@ angular
   .module('udb.event-form')
   .component('udbFormCalendarPeriod', {
     templateUrl: 'templates/form-calendar-period.component.html',
-    controller: function () {},
+    controller: FormCalendarPeriodComponentController,
     bindings: {
       formData: '=',
     }
   });
+
+function FormCalendarPeriodComponentController() {
+  var controller = this;
+  controller.calendarType = controller.formData.calendarType;
+}

@@ -35,7 +35,7 @@ describe('Controller: Opening hours editor', function () {
     var openingHoursCollection = OpeningHoursCollection.deserialize([]);
     var expectedErrors = ['dayOfWeek', 'openIsBeforeClose'];
     var controller = getController(openingHoursCollection);
-    
+
     controller.saveOpeningHours();
 
     expect(controller.errors).toEqual(expectedErrors);
@@ -51,7 +51,7 @@ describe('Controller: Opening hours editor', function () {
         dayOfWeek: ['monday', 'friday']
       }
     ];
-    
+
     controller.openingHoursCollection.deserialize(newOpeningHoursData);
     controller.saveOpeningHours();
     expect($uibModalInstance.close).toHaveBeenCalledWith(newOpeningHoursData);

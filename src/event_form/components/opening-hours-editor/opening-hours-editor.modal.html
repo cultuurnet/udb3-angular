@@ -2,66 +2,78 @@
     <h4 class="modal-title">Openingsuren</h4>
 </div>
 <div class="modal-body">
+    <div class="well text-center add-opening-hours" 
+         ng-show="ohemc.openingHoursCollection.openingHours.length === 0">
+        <span>24/24 7/7</span>
+        <br>
+        <span>Elke dag, ieder uur</span>
+        <br>
+        <button type="button" class="btn btn-primary" ng-click="ohemc.createNewOpeningHours()">Uren toevoegen</button>
+    </div>
     <div class="alert alert-danger" role="alert" ng-if="!!ohemc.errors.length">
         <ul>
             <li ng-repeat="error in ohemc.errors"
                 ng-bind="'OPENING_HOURS_ERROR.' + error | translate"></li>
         </ul>
     </div>
-    <div class="opening-hours-header">
-        <div class="weekdays">
-            Dagen
-        </div>
-        <div class="opening-time">
-            Van
-        </div>
-        <div class="closing-time">
-            Tot
-        </div>
-    </div>
-    <div class="opening-hours" ng-repeat="openingHours in ohemc.openingHoursCollection.openingHours">
-        <ng-form name="openingHoursInfo">
+    <div class="opening-hours" ng-show="ohemc.openingHoursCollection.openingHours.length > 0">
+        <div class="opening-hours-labels">
             <div class="weekdays">
-                <label class="checkbox-inline" ng-repeat="(day, weekday) in openingHours.dayOfWeek">
-                    <input type="checkbox" ng-model="openingHours.dayOfWeek[day].open">
-                        <span ng-bind="::weekday.label"></span>
-                </label>
+                Dagen
             </div>
             <div class="opening-time">
-                <div class="form-group"
-                     ng-class="{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}">
-                    <input udb-time
-                           type="time"
-                           name="opens"
-                           class="form-control uur"
-                           placeholder="Bv. 08:00"
-                           ng-required="true"
-                           ng-model="openingHours.opensAsDate"/>
-                </div>
+                Van
             </div>
             <div class="closing-time">
-                <div class="form-group"
-                     ng-class="{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}">
-                    <input udb-time
-                           type="time"
-                           name="closes"
-                           class="form-control uur"
-                           placeholder="Bv. 08:00"
-                           ng-required="true"
-                           ng-model="openingHours.closesAsDate"/>
+                Tot
+            </div>
+        </div>
+        <div class="opening-hours-collection">
+            <div class="opening-hours-set" ng-form="openingHoursInfo" ng-repeat="openingHours in ohemc.openingHoursCollection.openingHours">
+                <div class="weekdays">
+                    <label class="checkbox-inline" ng-repeat="(day, weekday) in openingHours.dayOfWeek">
+                        <input type="checkbox" ng-model="openingHours.dayOfWeek[day].open">
+                            <span ng-bind="::weekday.label"></span>
+                    </label>
+                </div>
+                <div class="opening-time">
+                    <div class="form-group"
+                        ng-class="{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}">
+                        <input udb-time
+                            type="time"
+                            name="opens"
+                            class="form-control uur"
+                            placeholder="Bv. 08:00"
+                            ng-required="true"
+                            ng-model="openingHours.opensAsDate"/>
+                    </div>
+                </div>
+                <div class="closing-time">
+                    <div class="form-group"
+                        ng-class="{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}">
+                        <input udb-time
+                            type="time"
+                            name="closes"
+                            class="form-control uur"
+                            placeholder="Bv. 08:00"
+                            ng-required="true"
+                            ng-model="openingHours.closesAsDate"/>
+                    </div>
+                </div>
+                <div class="remove">
+                    <button class="btn btn-link" ng-click="ohemc.removeOpeningHours(openingHours)">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
-            <div class="remove">
-                <button class="btn btn-link" ng-click="ohemc.removeOpeningHours(openingHours)">
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-        </ng-form>
-    </div>
+        </div>
 
-    <a class="btn btn-link btn-plus" ng-click="ohemc.createNewOpeningHours()">
-        Meer openingstijden toevoegen
-    </a>
+        <div class="add">
+            <a class="btn btn-link btn-plus" ng-click="ohemc.createNewOpeningHours()">
+                Meer openingstijden toevoegen
+            </a>
+        </div>
+    </div>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="$dismiss()">Annuleren</button>

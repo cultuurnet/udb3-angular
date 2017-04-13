@@ -60,5 +60,6 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
 
   function removeOpeningHours(openingHours) {
     controller.openingHoursCollection.removeOpeningHours(openingHours);
+    clearErrors();
   }
 }
