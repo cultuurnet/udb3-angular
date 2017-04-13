@@ -194,8 +194,11 @@ function OrganizerEditController(
       promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
 
-    $q.all(promises).catch(showProblem);
-    $state.go('management.organizers.search');
+    $q.all(promises)
+        .then(function() {
+          $state.go('management.organizers.search', {}, {reload: true});
+        })
+        .catch(showProblem);
   }
 
   /**

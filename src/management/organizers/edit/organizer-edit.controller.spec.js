@@ -2,7 +2,7 @@
 
 describe('Controller: Organizer Edit', function() {
   var OrganizerManager, udbOrganizers, $uibModal, $state, $stateParams,
-      cities, Levenshtein, $q, $controller, $scope, organizerEditForm;
+      $q, $controller, $scope, organizerEditForm;
 
   var fakeOrganizer = {
     "name": "STUK",
@@ -108,7 +108,7 @@ describe('Controller: Organizer Edit', function() {
     ]);
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['findOrganizersWebsite']);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
-    $state = jasmine.createSpy('$state', 'go');
+    $state = jasmine.createSpyObj('$state', ['go']);
     $stateParams = { "id": id };
     organizerEditForm = {
       website: {
@@ -270,5 +270,133 @@ describe('Controller: Organizer Edit', function() {
     controller.deleteOrganizerContactInfo(2);
 
     expect(controller.contact).toEqual(expectedContact);
+  });
+
+  it ('should select a given city', function () {
+    var item = {
+      zip: '3000',
+      name: 'Leuven'
+    };
+    var label = '3000 Leuven';
+
+    getMockUps();
+    var controller = getController();
+    $scope.$digest();
+
+    controller.selectCity(item, label);
+
+    expect(controller.organizer.address.postalCode).toEqual(item.zip);
+    expect(controller.organizer.address.addressLocality).toEqual(item.name);
+    expect(controller.cityAutocompleteTextField).toEqual('');
+    expect(controller.selectedCity).toEqual(label);
+  });
+
+  it ('should reset the selected city', function () {
+    getMockUps();
+    var controller = getController();
+    $scope.$digest();
+
+    controller.changeCitySelection();
+
+    expect(controller.selectedCity).toEqual('');
+    expect(controller.cityAutocompleteTextField).toEqual('');
+  });
+
+  it ('shouldn\'t validate the organizer when the form is invalid', function () {
+    organizerEditForm = {
+      $valid: false
+    };
+
+    getMockUps();
+    var controller = getController();
+    $scope.$digest();
+
+    controller.organizerEditForm = organizerEditForm;
+    controller.organizer.url = 'http://asdfasdf.com';
+    controller.validateOrganizer();
+
+    expect(OrganizerManager.updateOrganizerWebsite).not.toHaveBeenCalled();
+  });
+
+  it ('should validate the organizer and save the changes', function () {
+    organizerEditForm = {
+      $valid: true
+    };
+
+    getMockUps();
+    spyOn($q, 'all').and.returnValue($q.resolve());
+    var controller = getController();
+    $scope.$digest();
+
+    controller.organizerEditForm = organizerEditForm;
+
+    controller.organizer.url = 'http://yahoo.com';
+    controller.organizer.name = 'Cnet Vlaanderen';
+    controller.organizer.address = {
+      addressCountry: 'BE',
+      addressLocality: 'Brussel',
+      postalCode: 1080,
+      streetAddress: 'Henegouwenkaai 41-43'
+    };
+    controller.contact = [
+      {
+        type: 'url',
+        value: 'http://google.be'
+      },
+      {
+        type: 'email',
+        value: 'joske@2dotstwice.be'
+      },
+      {
+        type: 'phone',
+        value: '0123456789'
+      },
+      {
+        type: 'url',
+        value: 'http://cultuurnet.be'
+      },
+      {
+        type: 'email',
+        value: 'test@cultuurnet.be'
+      }
+    ];
+
+    controller.validateOrganizer();
+    $scope.$apply();
+
+    expect(OrganizerManager.updateOrganizerWebsite).toHaveBeenCalledWith(id, controller.organizer.url);
+    expect(OrganizerManager.updateOrganizerName).toHaveBeenCalledWith(id, controller.organizer.name);
+    expect(OrganizerManager.updateOrganizerAddress).toHaveBeenCalledWith(id, controller.organizer.address);
+    expect(OrganizerManager.updateOrganizerContact).toHaveBeenCalledWith(id, controller.contact);
+    expect($state.go).toHaveBeenCalledWith('management.organizers.search', {}, {reload:true});
+  });
+
+  it ('should open a modal with an error message when saving failed', function () {
+    organizerEditForm = {
+      $valid: true
+    };
+
+    var problem = {
+      title: 'API problem',
+      detail: 'API detail problem message'
+    };
+
+    getMockUps();
+    $uibModal.open.and.returnValue({
+      result: $q.resolve()
+    });
+    spyOn($q, 'all').and.returnValue($q.reject(problem));
+    var controller = getController();
+    $scope.$digest();
+
+    controller.organizerEditForm = organizerEditForm;
+    controller.organizer.url = 'http://yahoo.com';
+
+    controller.validateOrganizer();
+    $scope.$apply();
+
+    expect($uibModal.open).toHaveBeenCalled();
+    expect(controller.errorMessage).toEqual('API problem API detail problem message');
+
   });
 });
