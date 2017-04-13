@@ -145,6 +145,8 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
               new Date(1970, 0, 1)
         };
       }));
+
+      return this;
     },
 
     serialize: function () {

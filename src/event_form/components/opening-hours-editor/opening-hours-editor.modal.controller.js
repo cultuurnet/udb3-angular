@@ -14,12 +14,23 @@ angular
 /* @ngInject */
 function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollection) {
   var controller = this;
+  var originalOpeningHoursList;
 
-  controller.openingHoursCollection = openingHoursCollection;
+  init(openingHoursCollection);
   controller.saveOpeningHours = saveOpeningHours;
   controller.createNewOpeningHours = createNewOpeningHours;
   controller.removeOpeningHours = removeOpeningHours;
   controller.errors = {};
+
+  function init(openingHoursCollection) {
+    originalOpeningHoursList = _.cloneDeep(openingHoursCollection.getOpeningHours());
+
+    if (originalOpeningHoursList.length === 0) {
+      openingHoursCollection.createNewOpeningHours();
+    }
+
+    controller.openingHoursCollection = openingHoursCollection;
+  }
 
   function saveOpeningHours() {
     clearErrors();
