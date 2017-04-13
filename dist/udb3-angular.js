@@ -8112,11 +8112,6 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     if (calendarType === 'single' && calendar.timeSpans.length === 0) {
       createTimeSpan();
     }
-
-    if (calendarType === 'periodic') {
-      calendar.formData.startDate = moment().startOf('day').toDate();
-      calendar.formData.endDate = moment().add(1, 'y').startOf('day').toDate();
-    }
   }
 
   function createTimeSpan() {
@@ -10480,6 +10475,12 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         formData.timingChanged();
       }
 
+      if (formData.calendarType === 'periodic') {
+        formData.startDate = moment().startOf('day').toDate();
+        formData.endDate = moment().add(1, 'y').startOf('day').toDate();
+        formData.timingChanged();
+      }
+
       formData.initCalendar();
 
       if (formData.id) {
@@ -10515,18 +10516,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         this.timingChanged();
       }
       else {
-        var nextHour = moment().add(1, 'hours').minutes(0);
-        var startHourAsDate = angular.copy(timestamp.date);
-        var endHourAsDate = angular.copy(timestamp.date);
-        startHourAsDate.setHours(nextHour.hours());
-        startHourAsDate.setMinutes(nextHour.minutes());
-        endHourAsDate.setHours(23);
-        endHourAsDate.setMinutes(59);
+        var startHour = moment(timestamp.date);
+        var endHour = moment(timestamp.date).endOf('day');
 
-        timestamp.startHour = moment(startHourAsDate).format('HH:mm');
-        timestamp.startHourAsDate = startHourAsDate;
-        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
-        timestamp.endHourAsDate = endHourAsDate;
+        timestamp.startHour = startHour.format('HH:mm');
+        timestamp.startHourAsDate = startHour.toDate();
+        timestamp.endHour = endHour.format('HH:mm');
+        timestamp.endHourAsDate = endHour.toDate();
         timestamp.showEndHour = false;
       }
     },
