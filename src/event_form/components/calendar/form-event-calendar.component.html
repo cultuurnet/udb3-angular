@@ -20,7 +20,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="calendar-time-spans" ng-if="!calendar.weeklyRecurring">
-                <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans">
+                <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans track by $index">
                     <span ng-show="calendar.timeSpans.length > 1" aria-hidden="true" ng-click="calendar.removeTimeSpan(timeSpan)" class="close">×</span>
                     <div class="dates">
                         <div class="date form-group">

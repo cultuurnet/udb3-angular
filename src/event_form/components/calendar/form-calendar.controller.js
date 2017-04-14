@@ -18,12 +18,11 @@ angular
   .controller('FormCalendarController', FormCalendarController);
 
 /* @ngInject */
-function FormCalendarController(EventFormData, OpeningHoursCollection, calendarLabels) {
+function FormCalendarController(EventFormData, OpeningHoursCollection) {
   var calendar = this;
 
   calendar.formData = {};
   calendar.type = '';
-  calendar.types = calendarLabels;
   calendar.setType = setType;
   calendar.reset = reset;
   calendar.createTimeSpan = createTimeSpan;
@@ -41,7 +40,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
   function init(formData) {
     calendar.formData = formData;
     calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
-    calendar.setType(formData.calendarType);
+    calendar.setType(formData.calendarType ? formData.calendarType : 'single');
   }
 
   function reset() {
@@ -62,19 +61,29 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
     calendar.type = EventFormData.activeCalendarType;
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
-    if (calendarType === 'single' && calendar.timeSpans.length === 0) {
-      createTimeSpan();
+    if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
+      initTimeSpans();
     }
   }
 
-  function createTimeSpan() {
-    var newTimeSpan = {
-      allDay: true,
-      start: moment().startOf('hour').add(1, 'h').toDate(),
-      end: moment().startOf('hour').add(4, 'h').toDate()
-    };
+  function initTimeSpans() {
+    calendar.timeSpans = [
+      {
+        allDay: true,
+        start: moment().startOf('hour').add(1, 'h').toDate(),
+        end: moment().startOf('hour').add(4, 'h').toDate()
+      }
+    ];
+  }
 
-    calendar.timeSpans.push(newTimeSpan);
+  function createTimeSpan() {
+    if (_.isEmpty(calendar.timeSpans)) {
+      initTimeSpans();
+      timeSpanChanged();
+    } else {
+      calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
+      // Do not trigger timeSpanChanged to prevent saving duplicates.
+    }
   }
 
   /**
@@ -83,13 +92,12 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
   function removeTimeSpan(timeSpan) {
     if (calendar.timeSpans.length > 1) {
       calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
+      timeSpanChanged();
     }
   }
 
   function timeSpanChanged() {
     var timestamps = timeSpansToTimestamps(calendar.timeSpans);
-
-    console.log(timestamps);
     calendar.formData.saveTimestamps(timestamps);
   }
 
@@ -106,8 +114,10 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, calendarL
         date: start.toDate(),
         startHour: start.format('HH:mm'),
         startHourAsDate: start.toDate(),
+        showStartHour: true,
         endHour: end.format('HH:mm'),
-        endHourAsDate: end.toDate()
+        endHourAsDate: end.toDate(),
+        showEndHour: true
       };
     });
   }
