@@ -25,31 +25,48 @@
                     <div class="dates">
                         <div class="date form-group">
                             <label for="time-span-{{$index}}-start-date">Start</label>
-                            <input id="time-span-{{$index}}-start-date" type="date" ng-model="timeSpan.startDate" class="form-control start-date">
+                            <input id="time-span-{{$index}}-start-date"
+                                   type="date"
+                                   ng-model="timeSpan.start"
+                                   class="form-control start-date"
+                                   ng-change="calendar.timeSpanChanged()">
                         </div>
                         <div class="date form-group">
                             <label for="time-span-{{$index}}-end-date">Einde</label>
-                            <input id="time-span-{{$index}}-end-date" type="date" ng-model="timeSpan.endDate" class="form-control end-date">
+                            <input id="time-span-{{$index}}-end-date"
+                                   type="date"
+                                   ng-model="timeSpan.end"
+                                   class="form-control end-date"
+                                   ng-change="calendar.timeSpanChanged()">
                         </div>
                     </div>
                     <div class="timing-control">
                         <div class="checkbox whole-day">
                             <label for="time-span-{{$index}}-has-timing-info">
-                                    <input type="checkbox"
-                                           id="time-span-{{$index}}-has-timing-info"
-                                           ng-model="timeSpan.wholeDay"
-                                           class="whole-day-check"> Hele dag
-                                </label>
+                                <input type="checkbox"
+                                       id="time-span-{{$index}}-has-timing-info"
+                                       ng-model="timeSpan.allDay"
+                                       ng-change="calendar.timeSpanChanged()"
+                                       class="whole-day-check"> <span>Hele dag</span>
+                            </label>
                         </div>
                     </div>
-                    <div class="timing" ng-show="!timeSpan.wholeDay">
+                    <div class="timing" ng-show="!timeSpan.allDay">
                         <div class="time form-group">
                             <label for="time-span-{{$index}}-start-time">Beginuur</label>
-                            <input id="time-span-{{$index}}-start-time" type="time" ng-model="timeSpan.startTime" class="form-control start-time">
+                            <input id="time-span-{{$index}}-start-time"
+                                   type="time"
+                                   ng-model="timeSpan.start"
+                                   class="form-control start-time"
+                                   ng-change="calendar.timeSpanChanged()">
                         </div>
                         <div class="time form-group">
                             <label for="time-span-{{$index}}-end-time">Einduur</label>
-                            <input id="time-span-{{$index}}-end-time" type="time" ng-model="timeSpan.endTime" class="form-control end-time">
+                            <input id="time-span-{{$index}}-end-time"
+                                   type="time"
+                                   ng-model="timeSpan.end"
+                                   class="form-control end-time"
+                                   ng-change="calendar.timeSpanChanged()">
                         </div>
                     </div>
                     <div class="error alert alert-danger" ng-show="calendar.error">

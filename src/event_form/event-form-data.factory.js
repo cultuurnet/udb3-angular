@@ -285,10 +285,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     /**
      * @param {Date} date
-     * @param {string} startHour HH:MM
+     * @param {string} startHour HH:mm
      * @param {Date|string} startHourAsDate
      *  An empty string when not set.
-     * @param {string} endHour HH:MM
+     * @param {string} endHour HH:mm
      * @param {Date|string} endHourAsDate
      *  An empty string when not set.
      */
@@ -608,6 +608,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     saveOpeningHours: function (openingHours) {
       this.openingHours = openingHours;
+      this.timingChanged();
+    },
+
+    saveTimestamps: function (timestamps) {
+      this.timestamps = timestamps;
       this.timingChanged();
     },
 
