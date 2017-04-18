@@ -61,7 +61,7 @@ function EventFormPublishController(
       });
   }
 
-  function publishLater() {
+  function publishLater(isEdit) {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-publish-modal.html',
       controller: 'EventFormPublishModalController',
@@ -72,6 +72,9 @@ function EventFormPublishController(
         },
         eventCrud : function () {
           return eventCrud;
+        },
+        publishEvent : function() {
+          return controller.publish;
         }
       }
     });

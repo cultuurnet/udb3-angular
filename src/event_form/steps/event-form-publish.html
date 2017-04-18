@@ -2,8 +2,9 @@
     <div class="text-danger" ng-if="efpc.error" ng-bind="efpc.error"></div>
 
     <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>
-    <button type="submit" class="btn btn-success" ng-click="efpc.publish()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus)">Publiceren</button>
+    <button type="submit" class="btn btn-success" ng-click="efpc.publish()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus)">Meteen publiceren</button>
     <a href="" ng-click="efpc.publishLater()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.toBePublishedLater && efpc.hasNoDefault">Later publiceren</a>
-    <a href="" ng-click="efpc.publishLater()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater && efpc.hasNoDefault">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>
+    <button class="btn btn-success" ng-click="efpc.publishLater()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater && efpc.hasNoDefault">Later publiceren</button>
     <button type="submit" class="btn btn-success" ng-click="efpc.preview()" ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)">Klaar met bewerken</button>
+    <a href="" ng-click="efpc.publishLater()" ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.eventFormData.availableFrom">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>
 </div>

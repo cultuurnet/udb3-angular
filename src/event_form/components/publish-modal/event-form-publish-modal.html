@@ -3,25 +3,17 @@
 </div>
 <div id="event-form-publish-modal" class="modal-body">
   <p>Vanaf wanneer mag dit online verschijnen?</p>
-    <div class="radio">
-      <label>
-        <input type="radio" ng-model="efpmc.hasPublicationDate" ng-checked="efpmc.isToday" ng-change="efpmc.disableDate()" value="false" name="publishDate" value="now">
-        Meteen
-      </label>
-    </div>
-    <div class="form-inline">
+    <div ng-if="!efpmc.eventFormData.availableFrom" class="form-inline">
       <div class="form-group">
         <div class="radio">
           <label>
-            <input type="radio" name="publishDate" ng-model="efpmc.hasPublicationDate" ng-checked="!efpmc.isToday" value="true" aria-label="Later, vanaf">
-            Later, vanaf
+            Op
           </label>
         </div>
         <div class="form-group">
           <div class="input-group">
             <input  type="text"
                     class="form-control"
-                    ng-focus="efpmc.onFocus()"
                     uib-datepicker-popup="{{efpmc.drp.dateFormat}}"
                     ng-model="efpmc.publicationDate"
                     is-open="efpmc.drp.startOpened"
@@ -44,6 +36,6 @@
     Annuleren
   </button>
   <button type="button" class="btn btn-primary" ng-click="efpmc.savePublicationDate()">
-    Bevestigen
+    Klaar met bewerken
   </button>
 </div>

@@ -9366,7 +9366,7 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     .controller('EventFormPublishModalController', EventFormPublishModalController);
 
   /* @ngInject */
-  function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
+  function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud, publishEvent) {
     var efpmc = this;
     efpmc.error = false;
     efpmc.hasPublicationDate = false;
@@ -9413,6 +9413,7 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;
+        publishEvent();
         $uibModalInstance.close();
       } else {
         efpmc.error = true;
@@ -9420,7 +9421,7 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     }
 
   }
-  EventFormPublishModalController.$inject = ["$scope", "$uibModalInstance", "eventFormData", "eventCrud"];
+  EventFormPublishModalController.$inject = ["$scope", "$uibModalInstance", "eventFormData", "eventCrud", "publishEvent"];
 
 })();
 
@@ -10965,7 +10966,7 @@ function EventFormPublishController(
       });
   }
 
-  function publishLater() {
+  function publishLater(isEdit) {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-publish-modal.html',
       controller: 'EventFormPublishModalController',
@@ -10976,6 +10977,9 @@ function EventFormPublishController(
         },
         eventCrud : function () {
           return eventCrud;
+        },
+        publishEvent : function() {
+          return controller.publish;
         }
       }
     });
@@ -19809,7 +19813,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
     "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{cm.status | translate }}</span>\n" +
-    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date}}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
@@ -21531,25 +21535,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
     "  <p>Vanaf wanneer mag dit online verschijnen?</p>\n" +
-    "    <div class=\"radio\">\n" +
-    "      <label>\n" +
-    "        <input type=\"radio\" ng-model=\"efpmc.hasPublicationDate\" ng-checked=\"efpmc.isToday\" ng-change=\"efpmc.disableDate()\" value=\"false\" name=\"publishDate\" value=\"now\">\n" +
-    "        Meteen\n" +
-    "      </label>\n" +
-    "    </div>\n" +
-    "    <div class=\"form-inline\">\n" +
+    "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
     "      <div class=\"form-group\">\n" +
     "        <div class=\"radio\">\n" +
     "          <label>\n" +
-    "            <input type=\"radio\" name=\"publishDate\" ng-model=\"efpmc.hasPublicationDate\" ng-checked=\"!efpmc.isToday\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
-    "            Later, vanaf\n" +
+    "            Op\n" +
     "          </label>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\">\n" +
     "          <div class=\"input-group\">\n" +
     "            <input  type=\"text\"\n" +
     "                    class=\"form-control\"\n" +
-    "                    ng-focus=\"efpmc.onFocus()\"\n" +
     "                    uib-datepicker-popup=\"{{efpmc.drp.dateFormat}}\"\n" +
     "                    ng-model=\"efpmc.publicationDate\"\n" +
     "                    is-open=\"efpmc.drp.startOpened\"\n" +
@@ -21572,7 +21568,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    Annuleren\n" +
     "  </button>\n" +
     "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\">\n" +
-    "    Bevestigen\n" +
+    "    Klaar met bewerken\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -21839,10 +21835,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
     "\n" +
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
+    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Meteen publiceren</button>\n" +
     "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.toBePublishedLater && efpc.hasNoDefault\">Later publiceren</a>\n" +
-    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater && efpc.hasNoDefault\">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>\n" +
+    "    <button class=\"btn btn-success\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater && efpc.hasNoDefault\">Later publiceren</button>\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
+    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.eventFormData.availableFrom\">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>\n" +
     "</div>\n"
   );
 

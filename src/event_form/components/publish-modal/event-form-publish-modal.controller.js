@@ -13,7 +13,7 @@
     .controller('EventFormPublishModalController', EventFormPublishModalController);
 
   /* @ngInject */
-  function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
+  function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud, publishEvent) {
     var efpmc = this;
     efpmc.error = false;
     efpmc.hasPublicationDate = false;
@@ -60,6 +60,7 @@
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;
+        publishEvent();
         $uibModalInstance.close();
       } else {
         efpmc.error = true;
