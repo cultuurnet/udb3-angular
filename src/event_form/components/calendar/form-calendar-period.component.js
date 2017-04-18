@@ -12,7 +12,7 @@ angular
     templateUrl: 'templates/form-calendar-period.component.html',
     controller: FormCalendarPeriodComponentController,
     bindings: {
-      formData: '=',
+      formData: '='
     }
   });
 

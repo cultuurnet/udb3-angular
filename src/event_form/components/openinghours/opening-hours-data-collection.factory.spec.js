@@ -2,7 +2,7 @@
 
 describe('Factory: Opening hours collection', function () {
 
-  var OpeningHoursCollection, givenOpeningHours, $scope, dayNames;
+  var OpeningHoursCollection, givenOpeningHours, $scope;
   var formDataOpeningHours = [
     {
       "dayOfWeek": [
@@ -25,7 +25,6 @@ describe('Factory: Opening hours collection', function () {
   beforeEach(inject(function ($rootScope, $injector) {
     $scope = $rootScope;
     OpeningHoursCollection = $injector.get('OpeningHoursCollection');
-    dayNames = $injector.get('dayNames');
 
     givenOpeningHours = [
       'openingHour1', 'openingHour2', 'openingHour3', 'openingHour4'

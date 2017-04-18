@@ -11,7 +11,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment, dayNames) {
+function OpeningHoursCollectionFactory(moment) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,
