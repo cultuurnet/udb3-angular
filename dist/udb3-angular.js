@@ -8214,6 +8214,22 @@ angular
     controllerAs: 'calendar'
   });
 
+// Source: src/event_form/components/calendar/form-place-calendar.component.js
+/**
+ * @ngdoc function
+ * @name udb.event-form.component:udbFormPlaceCalendar
+ * @description
+ * # Form Place Calendar
+ * The form calendar component for places.
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormPlaceCalendar', {
+    templateUrl: 'templates/form-place-calendar.component.html',
+    controller: 'FormCalendarController',
+    controllerAs: 'calendar'
+  });
+
 // Source: src/event_form/components/calendartypes/event-form-period.directive.js
 /**
  * @ngdoc directive
@@ -20997,6 +21013,21 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-place-calendar.component.html',
+    "<div class=\"calendar-timing-info\">\n" +
+    "    <div class=\"panel panel-default\">\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
+    "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
+    "                <hr>\n" +
+    "                <udb-event-form-opening-hours opening-hours=\"calendar.openingHoursCollection\"></udb-event-form-opening-hours>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/event-form-period.html',
     "<div id=\"wanneer-periode\">\n" +
     "  <div class=\"col-xs-12 col-sm-4\">\n" +
@@ -22225,7 +22256,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span ng-show=\"eventFormData.isPlace\">Wanneer is deze plaats of locatie open?</span>\n" +
     "    </h2>\n" +
     "\n" +
-    "    <udb-form-calendar ng-if=\"eventFormData.isPlace\"></udb-form-calendar>\n" +
+    "    <udb-form-place-calendar ng-if=\"eventFormData.isPlace\"></udb-form-place-calendar>\n" +
     "    <udb-form-event-calendar ng-if=\"eventFormData.isEvent\"></udb-form-event-calendar>\n" +
     "  </section>\n" +
     "</div>\n"
