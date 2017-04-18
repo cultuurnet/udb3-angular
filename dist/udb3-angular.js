@@ -2342,6 +2342,7 @@ function WorkflowStatusDirectiveController($scope, $translate) {
   cm.status = translateStatus(cm.event.workflowStatus);
   cm.eventIds = eventIds;
   cm.isUrl = isUrl;
+  cm.dateFrom = cm.event.availableFrom;
 
   function eventIds (event) {
     return _.union([event.id], event.sameAs);
@@ -4232,6 +4233,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.availableFrom = jsonEvent.availableFrom;
       this.uitpasData = {};
 
       this.audience = {
