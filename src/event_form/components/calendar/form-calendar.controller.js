@@ -108,10 +108,10 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   function timeSpansToTimestamps(timeSpans) {
     return _.map(timeSpans, function (timeSpan) {
       var start = timeSpan.allDay ? moment(timeSpan.start).startOf('day') : moment(timeSpan.start);
-      var end = timeSpan.allDay ? moment(timeSpan.end).endOf('day') : moment(timeSpan.end);
+      var end = timeSpan.allDay ? moment(timeSpan.end).endOf('day').startOf('minute') : moment(timeSpan.end);
 
       return {
-        date: start.toDate(),
+        date: moment(timeSpan.start).startOf('day').toDate(),
         startHour: start.format('HH:mm'),
         startHourAsDate: start.toDate(),
         showStartHour: true,

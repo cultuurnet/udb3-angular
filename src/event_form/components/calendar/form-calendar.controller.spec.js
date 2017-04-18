@@ -12,13 +12,15 @@ describe('Controller: Form Calendar', function () {
 
   function getController(formData) {
     if (!formData) {
-      formData = EventFormData;
+      EventFormData.init();
       EventFormData.initCalendar();
+
+      formData = EventFormData;
     }
     return $controller('FormCalendarController', {
       EventFormData: formData
     });
-  };
+  }
 
   it('should default to the "single" calendar type when initializing', function () {
     var controller = getController();
@@ -73,4 +75,117 @@ describe('Controller: Form Calendar', function () {
     controller.createTimeSpan();
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
+
+  it('should save timestamps to form-data when time-spans change', function (){
+    var controller = getController();
+    controller.timeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 2),
+        end: new Date(2013, 9, 23, 5)
+      },
+      {
+        allDay: false,
+        start: new Date(2013, 9, 23, 9),
+        end: new Date(2013, 9, 23, 17)
+      }
+    ];
+    var expectedTimestamps = [
+      {
+        date: new Date(2013, 9, 23),
+        startHour: '00:00',
+        startHourAsDate: new Date(2013, 9, 23, 0, 0),
+        showStartHour: true,
+        endHour: '23:59',
+        endHourAsDate: new Date(2013, 9, 23, 23, 59),
+        showEndHour: true
+      },
+      {
+        date: new Date(2013, 9, 23),
+        startHour: '09:00',
+        startHourAsDate: new Date(2013, 9, 23, 9),
+        showStartHour: true,
+        endHour: '17:00',
+        endHourAsDate: new Date(2013, 9, 23, 17),
+        showEndHour: true
+      }
+    ];
+    spyOn(controller.formData, 'timingChanged');
+    controller.timeSpanChanged();
+    expect(controller.formData.timestamps).toEqual(expectedTimestamps);
+  });
+
+  it('should load form-data timestamps as time-spans', function (){
+    var formData = EventFormData;
+
+    var expectedTimeSpans = [
+      {
+        start: new Date(2013, 9, 23),
+        end: new Date(2013, 9, 23, 23, 59),
+        allDay: true
+      },
+      {
+        start: new Date(2013, 9, 23, 9),
+        end: new Date(2013, 9, 23, 17),
+        allDay: false
+      }
+    ];
+    var timestamps = [
+      {
+        date: new Date(2013, 9, 23),
+        startHour: '00:00',
+        startHourAsDate: new Date(2013, 9, 23, 0, 0),
+        showStartHour: true,
+        endHour: '23:59',
+        endHourAsDate: moment(new Date(2013, 9, 23)).endOf('day').startOf('minute').toDate(),
+        showEndHour: true
+      },
+      {
+        date: new Date(2013, 9, 23),
+        startHour: '09:00',
+        startHourAsDate: new Date(2013, 9, 23, 9),
+        showStartHour: true,
+        endHour: '17:00',
+        endHourAsDate: new Date(2013, 9, 23, 17),
+        showEndHour: true
+      }
+    ];
+
+    EventFormData.init();
+    EventFormData.initCalendar();
+    spyOn(EventFormData, 'timingChanged');
+    EventFormData.saveTimestamps(timestamps);
+
+    var controller = getController(formData);
+
+    controller.timeSpanChanged();
+    expect(controller.timeSpans).toEqual(expectedTimeSpans);
+  });
+
+  it('should update the time-span list when removing a time-span', function () {
+    var controller = getController();
+    controller.timeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 2),
+        end: new Date(2013, 9, 23, 5)
+      },
+      {
+        allDay: false,
+        start: new Date(2013, 9, 23, 9),
+        end: new Date(2013, 9, 23, 17)
+      }
+    ];
+    var expectedTimeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 2),
+        end: new Date(2013, 9, 23, 5)
+      }
+    ];
+    spyOn(controller.formData, 'timingChanged');
+    controller.removeTimeSpan(controller.timeSpans[1]);
+    expect(controller.timeSpans).toEqual(expectedTimeSpans);
+  })
 });
+
