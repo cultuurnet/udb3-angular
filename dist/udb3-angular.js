@@ -2342,7 +2342,6 @@ function WorkflowStatusDirectiveController($scope, $translate) {
   cm.status = translateStatus(cm.event.workflowStatus);
   cm.eventIds = eventIds;
   cm.isUrl = isUrl;
-  cm.dateFrom = cm.event.availableFrom;
 
   function eventIds (event) {
     return _.union([event.id], event.sameAs);
@@ -19809,7 +19808,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
-    "        <span ng-if=\"!cm.event.available\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date}}</span>\n" +
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
