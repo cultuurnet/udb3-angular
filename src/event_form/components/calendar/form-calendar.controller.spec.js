@@ -1,13 +1,14 @@
 'use strict';
 
 describe('Controller: Form Calendar', function () {
-  var $controller, EventFormData;
+  var $controller, EventFormData, $scope;
 
   beforeEach(module('udb.event-form'));
 
-  beforeEach(inject(function($injector) {
+  beforeEach(inject(function($injector, $rootScope) {
     $controller = $injector.get('$controller');
     EventFormData = $injector.get('EventFormData');
+    $scope = $rootScope.$new();
   }));
 
   function getController(formData) {
@@ -18,7 +19,8 @@ describe('Controller: Form Calendar', function () {
       formData = EventFormData;
     }
     return $controller('FormCalendarController', {
-      EventFormData: formData
+      EventFormData: formData,
+      $scope: $scope
     });
   }
 
@@ -71,11 +73,11 @@ describe('Controller: Form Calendar', function () {
         end: new Date(2013, 9, 23, 17)
       }
     ];
-    spyOn(controller, 'timeSpanChanged');
+    spyOn(controller, 'instantTimeSpanChanged');
 
     controller.createTimeSpan();
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
-    expect(controller.timeSpanChanged).not.toHaveBeenCalled();
+    expect(controller.instantTimeSpanChanged).not.toHaveBeenCalled();
   });
 
   it('should initialize time-spans and trigger a change when starting a new list', function () {
@@ -87,13 +89,13 @@ describe('Controller: Form Calendar', function () {
         end: new Date(2013, 9, 23, 5)
       }
     ];
-    spyOn(controller, 'timeSpanChanged');
+    spyOn(controller, 'instantTimeSpanChanged');
 
     controller.timeSpans = [];
     controller.createTimeSpan();
 
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
-    expect(controller.timeSpanChanged).toHaveBeenCalled();
+    expect(controller.instantTimeSpanChanged).toHaveBeenCalled();
   });
 
   it('should save timestamps to form-data when time-spans change', function (){
@@ -131,7 +133,7 @@ describe('Controller: Form Calendar', function () {
       }
     ];
     spyOn(controller.formData, 'timingChanged');
-    controller.timeSpanChanged();
+    controller.instantTimeSpanChanged();
     expect(controller.formData.timestamps).toEqual(expectedTimestamps);
   });
 
@@ -178,7 +180,7 @@ describe('Controller: Form Calendar', function () {
 
     var controller = getController(formData);
 
-    controller.timeSpanChanged();
+    controller.instantTimeSpanChanged();
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
 

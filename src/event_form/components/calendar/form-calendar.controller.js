@@ -18,7 +18,7 @@ angular
   .controller('FormCalendarController', FormCalendarController);
 
 /* @ngInject */
-function FormCalendarController(EventFormData, OpeningHoursCollection) {
+function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
   var calendar = this;
 
   calendar.formData = {};
@@ -29,7 +29,8 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   calendar.removeTimeSpan = removeTimeSpan;
   calendar.weeklyRecurring = false;
   calendar.openingHoursCollection = OpeningHoursCollection;
-  calendar.timeSpanChanged = timeSpanChanged;
+  calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
+  calendar.instantTimeSpanChanged = instantTimeSpanChanged;
 
   init(EventFormData);
 
@@ -73,7 +74,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   function createTimeSpan() {
     if (_.isEmpty(calendar.timeSpans)) {
       initTimeSpans();
-      calendar.timeSpanChanged();
+      calendar.instantTimeSpanChanged();
     } else {
       calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
       // Do not trigger timeSpanChanged to prevent saving duplicates.
@@ -86,8 +87,17 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   function removeTimeSpan(timeSpan) {
     if (calendar.timeSpans.length > 1) {
       calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
-      calendar.timeSpanChanged();
+      calendar.instantTimeSpanChanged();
     }
+  }
+
+  function digestTimeSpanChanged() {
+    $scope.$apply(timeSpanChanged);
+  }
+
+  function instantTimeSpanChanged() {
+    calendar.delayedTimeSpanChanged.cancel();
+    timeSpanChanged();
   }
 
   function timeSpanChanged() {

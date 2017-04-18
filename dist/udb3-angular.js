@@ -8062,7 +8062,7 @@ angular
   .controller('FormCalendarController', FormCalendarController);
 
 /* @ngInject */
-function FormCalendarController(EventFormData, OpeningHoursCollection) {
+function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
   var calendar = this;
 
   calendar.formData = {};
@@ -8073,7 +8073,8 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   calendar.removeTimeSpan = removeTimeSpan;
   calendar.weeklyRecurring = false;
   calendar.openingHoursCollection = OpeningHoursCollection;
-  calendar.timeSpanChanged = timeSpanChanged;
+  calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
+  calendar.instantTimeSpanChanged = instantTimeSpanChanged;
 
   init(EventFormData);
 
@@ -8117,7 +8118,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   function createTimeSpan() {
     if (_.isEmpty(calendar.timeSpans)) {
       initTimeSpans();
-      calendar.timeSpanChanged();
+      calendar.instantTimeSpanChanged();
     } else {
       calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
       // Do not trigger timeSpanChanged to prevent saving duplicates.
@@ -8130,8 +8131,17 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   function removeTimeSpan(timeSpan) {
     if (calendar.timeSpans.length > 1) {
       calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
-      calendar.timeSpanChanged();
+      calendar.instantTimeSpanChanged();
     }
+  }
+
+  function digestTimeSpanChanged() {
+    $scope.$apply(timeSpanChanged);
+  }
+
+  function instantTimeSpanChanged() {
+    calendar.delayedTimeSpanChanged.cancel();
+    timeSpanChanged();
   }
 
   function timeSpanChanged() {
@@ -8180,7 +8190,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
     });
   }
 }
-FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection"];
+FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope"];
 
 // Source: src/event_form/components/calendar/form-event-calendar.component.js
 /**
@@ -20829,7 +20839,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   type=\"date\"\n" +
     "                                   ng-model=\"timeSpan.start\"\n" +
     "                                   class=\"form-control start-date\"\n" +
-    "                                   ng-change=\"calendar.timeSpanChanged()\">\n" +
+    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                        </div>\n" +
     "                        <div class=\"date form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
@@ -20837,7 +20848,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   type=\"date\"\n" +
     "                                   ng-model=\"timeSpan.end\"\n" +
     "                                   class=\"form-control end-date\"\n" +
-    "                                   ng-change=\"calendar.timeSpanChanged()\">\n" +
+    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"timing-control\">\n" +
@@ -20846,7 +20858,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                <input type=\"checkbox\"\n" +
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
-    "                                       ng-change=\"calendar.timeSpanChanged()\"\n" +
+    "                                       ng-change=\"calendar.delayedTimeSpanChanged()\"\n" +
     "                                       class=\"whole-day-check\"> <span>Hele dag</span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +
@@ -20858,7 +20870,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   type=\"time\"\n" +
     "                                   ng-model=\"timeSpan.start\"\n" +
     "                                   class=\"form-control start-time\"\n" +
-    "                                   ng-change=\"calendar.timeSpanChanged()\">\n" +
+    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                        </div>\n" +
     "                        <div class=\"time form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-time\">Einduur</label>\n" +
@@ -20866,7 +20879,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   type=\"time\"\n" +
     "                                   ng-model=\"timeSpan.end\"\n" +
     "                                   class=\"form-control end-time\"\n" +
-    "                                   ng-change=\"calendar.timeSpanChanged()\">\n" +
+    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"error alert alert-danger\" ng-show=\"calendar.error\">\n" +

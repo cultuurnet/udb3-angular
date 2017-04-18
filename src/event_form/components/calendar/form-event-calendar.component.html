@@ -29,7 +29,8 @@
                                    type="date"
                                    ng-model="timeSpan.start"
                                    class="form-control start-date"
-                                   ng-change="calendar.timeSpanChanged()">
+                                   ng-blur="calendar.instantTimeSpanChanged()"
+                                   ng-change="calendar.delayedTimeSpanChanged()">
                         </div>
                         <div class="date form-group">
                             <label for="time-span-{{$index}}-end-date">Einde</label>
@@ -37,7 +38,8 @@
                                    type="date"
                                    ng-model="timeSpan.end"
                                    class="form-control end-date"
-                                   ng-change="calendar.timeSpanChanged()">
+                                   ng-blur="calendar.instantTimeSpanChanged()"
+                                   ng-change="calendar.delayedTimeSpanChanged()">
                         </div>
                     </div>
                     <div class="timing-control">
@@ -46,7 +48,7 @@
                                 <input type="checkbox"
                                        id="time-span-{{$index}}-has-timing-info"
                                        ng-model="timeSpan.allDay"
-                                       ng-change="calendar.timeSpanChanged()"
+                                       ng-change="calendar.delayedTimeSpanChanged()"
                                        class="whole-day-check"> <span>Hele dag</span>
                             </label>
                         </div>
@@ -58,7 +60,8 @@
                                    type="time"
                                    ng-model="timeSpan.start"
                                    class="form-control start-time"
-                                   ng-change="calendar.timeSpanChanged()">
+                                   ng-blur="calendar.instantTimeSpanChanged()"
+                                   ng-change="calendar.delayedTimeSpanChanged()">
                         </div>
                         <div class="time form-group">
                             <label for="time-span-{{$index}}-end-time">Einduur</label>
@@ -66,7 +69,8 @@
                                    type="time"
                                    ng-model="timeSpan.end"
                                    class="form-control end-time"
-                                   ng-change="calendar.timeSpanChanged()">
+                                   ng-blur="calendar.instantTimeSpanChanged()"
+                                   ng-change="calendar.delayedTimeSpanChanged()">
                         </div>
                     </div>
                     <div class="error alert alert-danger" ng-show="calendar.error">
