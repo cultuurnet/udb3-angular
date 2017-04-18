@@ -9372,7 +9372,11 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     efpmc.publicationDate = eventFormData.availableFrom;
     var today = new Date();
     today.setHours(0, 0, 0, 0);
-
+    if (typeof eventFormData.availableFrom === 'string' || typeof eventFormData.availableFrom === 'undefined') {
+      efpmc.isToday = true;
+    } else {
+      efpmc.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
+    }
     efpmc.dismiss = dismiss;
     efpmc.savePublicationDate = savePublicationDate;
     efpmc.onFocus = onFocus;
@@ -10977,7 +10981,6 @@ function EventFormPublishController(
   }
 
   function toBePublishedLater() {
-    console.log('toBePublishedLater');
     var today = new Date();
     today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
     return today !== controller.eventFormData.availableFrom;
@@ -21536,7 +21539,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div class=\"form-group\">\n" +
     "        <div class=\"radio\">\n" +
     "          <label>\n" +
-    "            <input type=\"radio\" name=\"publishDate\" ng-model=\"efpmc.hasPublicationDate\" ng-checked=\"efpmc.hasPublicationDate\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
+    "            <input type=\"radio\" name=\"publishDate\" ng-model=\"efpmc.hasPublicationDate\" ng-checked=\"!efpmc.isToday\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
     "            Later, vanaf\n" +
     "          </label>\n" +
     "        </div>\n" +
