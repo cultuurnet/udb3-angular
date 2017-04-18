@@ -1,33 +1,49 @@
 <div class="modal-header">
-    <h4 class="modal-title">Kies een publicatiedatum</h4>
+  <h4 class="modal-title">Kies een publicatiedatum</h4>
 </div>
 <div id="event-form-publish-modal" class="modal-body">
-    <p>Vanaf wanneer mag dit online verschijnen?</p>
-    <div class="radio padding-left-12-5">
-        <label>
-        <input type="radio" ng-model="enableDate" ng-checked="isToday" value="false" name="publishDate" value="now">
+  <p>Vanaf wanneer mag dit online verschijnen?</p>
+    <div class="radio">
+      <label>
+        <input type="radio" ng-model="efpmc.hasPublicationDate" ng-checked="efpmc.isToday" ng-change="efpmc.disableDate()" value="false" name="publishDate" value="now">
         Meteen
-    </label>
+      </label>
     </div>
-    <div class="input-group">
-        <span class="input-group-addon">
-        <input type="radio" name="publishDate" ng-model="enableDate" ng-checked="!isToday" value="true" aria-label="Later, vanaf">
-        Later, vanaf
-      </span>
-   <input type="text" class="form-control" ng-focus="onFocus()" uib-datepicker-popup="{{drp.dateFormat}}" ng-model="date"
-           is-open="drp.startOpened" ng-required="true" datepicker-options="drp.options"/>
-    <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="drp.startOpened = !drp.startOpened">
-          <i class="fa fa-calendar"></i>
-        </button>
-    </span>
+    <div class="form-inline">
+      <div class="form-group">
+        <div class="radio">
+          <label>
+            <input type="radio" name="publishDate" ng-model="efpmc.hasPublicationDate" ng-checked="efpmc.hasPublicationDate" value="true" aria-label="Later, vanaf">
+            Later, vanaf
+          </label>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <input  type="text"
+                    class="form-control"
+                    ng-focus="efpmc.onFocus()"
+                    uib-datepicker-popup="{{efpmc.drp.dateFormat}}"
+                    ng-model="efpmc.publicationDate"
+                    is-open="efpmc.drp.startOpened"
+                    ng-required="true"
+                    datepicker-options="efpmc.drp.options"/>
+            <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="efpmc.drp.startOpened = !efpmc.drp.startOpened">
+            <i class="fa fa-calendar"></i>
+            </button>
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
     <br>
-    <div class="alert alert-warning" ng-if="error">Een publicatiedatum kan niet in het verleden liggen.</div>
+    <div class="alert alert-warning" ng-if="efpmc.error">Een publicatiedatum kan niet in het verleden liggen.</div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="dismiss()" data-dismiss="modal">Annuleren</button>
-    <button type="button" class="btn btn-primary" ng-click="publish()">
-    Bevestigen <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+  <button type="button" class="btn btn-default" ng-click="efpmc.dismiss();" data-dismiss="modal">
+    Annuleren
+  </button>
+  <button type="button" class="btn btn-primary" ng-click="efpmc.savePublicationDate()">
+    Bevestigen
   </button>
 </div>

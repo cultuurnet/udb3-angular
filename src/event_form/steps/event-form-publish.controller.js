@@ -65,6 +65,7 @@ function EventFormPublishController(
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-publish-modal.html',
       controller: 'EventFormPublishModalController',
+      controllerAs: 'efpmc',
       resolve: {
         eventFormData: function () {
           return controller.eventFormData;

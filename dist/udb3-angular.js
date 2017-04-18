@@ -9366,51 +9366,52 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
 
   /* @ngInject */
   function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
-
-    $scope.date = eventFormData.availableFrom;
-    $scope.enableDate = false;
+    var efpmc = this;
+    efpmc.error = false;
+    efpmc.hasPublicationDate = false;
+    efpmc.publicationDate = eventFormData.availableFrom;
     var today = new Date();
-    if (typeof eventFormData.availableFrom === 'string') {
-      $scope.isToday = true;
-    } else {
-      $scope.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
-    }
-    $scope.dismiss = dismiss;
-    $scope.convertDate = convertDate;
-    $scope.publish = publish;
-    $scope.drp = {
+    today.setHours(0, 0, 0, 0);
+
+    efpmc.dismiss = dismiss;
+    efpmc.savePublicationDate = savePublicationDate;
+    efpmc.onFocus = onFocus;
+    efpmc.disablePublicationDate = disablePublicationDate;
+
+    efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
       options : {
         minDate : today
       }
     };
-    $scope.error = false;
-    $scope.onFocus = onFocus;
 
     function dismiss() {
       $uibModalInstance.dismiss();
-
     }
 
-    function convertDate() {
-      $scope.date = new Date($scope.date.getFullYear(), $scope.date.getMonth(), $scope.date.getDate(), 0, 0, 0);
+    function disablePublicationDate() {
+      efpmc.error = false;
+      efpmc.hasPublicationDate = false;
+      efpmc.publicationDate = today;
     }
 
     function onFocus() {
-      $scope.isToday = false;
-      $scope.error = false;
-      $scope.drp.startOpened = !$scope.drp.startOpened;
+      efpmc.hasPublicationDate = true;
+      efpmc.isToday = false;
+      efpmc.error = false;
+      efpmc.drp.startOpened = !efpmc.drp.startOpened;
     }
 
-    function publish() {
-      if (today < $scope.date) {
-        eventFormData.availableFrom = $scope.date;
+    function savePublicationDate() {
+      if (today <= efpmc.publicationDate) {
+        var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
+        efpmc.publicationDate.getDate(), 0, 0, 0);
+        eventFormData.availableFrom = availableFrom;
         $uibModalInstance.close();
       } else {
-        $scope.error = true;
+        efpmc.error = true;
       }
-
     }
 
   }
@@ -10963,6 +10964,7 @@ function EventFormPublishController(
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-publish-modal.html',
       controller: 'EventFormPublishModalController',
+      controllerAs: 'efpmc',
       resolve: {
         eventFormData: function () {
           return controller.eventFormData;
@@ -10975,6 +10977,7 @@ function EventFormPublishController(
   }
 
   function toBePublishedLater() {
+    console.log('toBePublishedLater');
     var today = new Date();
     today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
     return today !== controller.eventFormData.availableFrom;
@@ -21519,36 +21522,52 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/event-form-publish-modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
+    "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
-    "    <p>Vanaf wanneer mag dit online verschijnen?</p>\n" +
-    "    <div class=\"radio padding-left-12-5\">\n" +
-    "        <label>\n" +
-    "        <input type=\"radio\" ng-model=\"enableDate\" ng-checked=\"isToday\" value=\"false\" name=\"publishDate\" value=\"now\">\n" +
+    "  <p>Vanaf wanneer mag dit online verschijnen?</p>\n" +
+    "    <div class=\"radio\">\n" +
+    "      <label>\n" +
+    "        <input type=\"radio\" ng-model=\"efpmc.hasPublicationDate\" ng-checked=\"efpmc.isToday\" ng-change=\"efpmc.disableDate()\" value=\"false\" name=\"publishDate\" value=\"now\">\n" +
     "        Meteen\n" +
-    "    </label>\n" +
+    "      </label>\n" +
     "    </div>\n" +
-    "    <div class=\"input-group\">\n" +
-    "        <span class=\"input-group-addon\">\n" +
-    "        <input type=\"radio\" name=\"publishDate\" ng-model=\"enableDate\" ng-checked=\"!isToday\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
-    "        Later, vanaf\n" +
-    "      </span>\n" +
-    "   <input type=\"text\" class=\"form-control\" ng-focus=\"onFocus()\" uib-datepicker-popup=\"{{drp.dateFormat}}\" ng-model=\"date\"\n" +
-    "           is-open=\"drp.startOpened\" ng-required=\"true\" datepicker-options=\"drp.options\"/>\n" +
-    "    <span class=\"input-group-btn\">\n" +
-    "        <button type=\"button\" class=\"btn btn-default\" ng-click=\"drp.startOpened = !drp.startOpened\">\n" +
-    "          <i class=\"fa fa-calendar\"></i>\n" +
-    "        </button>\n" +
-    "    </span>\n" +
+    "    <div class=\"form-inline\">\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <div class=\"radio\">\n" +
+    "          <label>\n" +
+    "            <input type=\"radio\" name=\"publishDate\" ng-model=\"efpmc.hasPublicationDate\" ng-checked=\"efpmc.hasPublicationDate\" value=\"true\" aria-label=\"Later, vanaf\">\n" +
+    "            Later, vanaf\n" +
+    "          </label>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\">\n" +
+    "          <div class=\"input-group\">\n" +
+    "            <input  type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    ng-focus=\"efpmc.onFocus()\"\n" +
+    "                    uib-datepicker-popup=\"{{efpmc.drp.dateFormat}}\"\n" +
+    "                    ng-model=\"efpmc.publicationDate\"\n" +
+    "                    is-open=\"efpmc.drp.startOpened\"\n" +
+    "                    ng-required=\"true\"\n" +
+    "                    datepicker-options=\"efpmc.drp.options\"/>\n" +
+    "            <span class=\"input-group-btn\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.drp.startOpened = !efpmc.drp.startOpened\">\n" +
+    "            <i class=\"fa fa-calendar\"></i>\n" +
+    "            </button>\n" +
+    "            </span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "    </div>\n" +
     "    <br>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"error\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"dismiss()\" data-dismiss=\"modal\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"publish()\">\n" +
-    "    Bevestigen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
+    "    Annuleren\n" +
+    "  </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\">\n" +
+    "    Bevestigen\n" +
     "  </button>\n" +
     "</div>\n"
   );

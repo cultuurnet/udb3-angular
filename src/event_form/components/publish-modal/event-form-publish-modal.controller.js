@@ -14,46 +14,52 @@
 
   /* @ngInject */
   function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud) {
-    var vm = this;
-    vm.date = eventFormData.availableFrom;
-    vm.enableDate = false;
+    var efpmc = this;
+    efpmc.error = false;
+    efpmc.hasPublicationDate = false;
+    efpmc.publicationDate = eventFormData.availableFrom;
     var today = new Date();
-    if (typeof eventFormData.availableFrom === 'string' || typeof eventFormData.availableFrom === 'undefined') {
-      vm.isToday = true;
-    } else {
-      vm.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
-    }
-    vm.dismiss = dismiss;
-    vm.publish = publish;
-    vm.drp = {
+    today.setHours(0, 0, 0, 0);
+
+    efpmc.dismiss = dismiss;
+    efpmc.savePublicationDate = savePublicationDate;
+    efpmc.onFocus = onFocus;
+    efpmc.disablePublicationDate = disablePublicationDate;
+
+    efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
       options : {
         minDate : today
       }
     };
-    vm.error = false;
-    vm.onFocus = onFocus;
 
     function dismiss() {
       $uibModalInstance.dismiss();
+    }
 
+    function disablePublicationDate() {
+      efpmc.error = false;
+      efpmc.hasPublicationDate = false;
+      efpmc.publicationDate = today;
     }
 
     function onFocus() {
-      vm.isToday = false;
-      vm.error = false;
-      vm.drp.startOpened = !vm.drp.startOpened;
+      efpmc.hasPublicationDate = true;
+      efpmc.isToday = false;
+      efpmc.error = false;
+      efpmc.drp.startOpened = !efpmc.drp.startOpened;
     }
 
-    function publish() {
-      if (today < vm.date) {
-        eventFormData.availableFrom = vm.date;
+    function savePublicationDate() {
+      if (today <= efpmc.publicationDate) {
+        var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
+        efpmc.publicationDate.getDate(), 0, 0, 0);
+        eventFormData.availableFrom = availableFrom;
         $uibModalInstance.close();
       } else {
-        vm.error = true;
+        efpmc.error = true;
       }
-
     }
 
   }
