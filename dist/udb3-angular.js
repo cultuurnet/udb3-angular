@@ -20853,13 +20853,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"timing-control\">\n" +
-    "                        <div class=\"checkbox whole-day\">\n" +
+    "                        <div class=\"checkbox all-day\">\n" +
     "                            <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
     "                                <input type=\"checkbox\"\n" +
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
     "                                       ng-change=\"calendar.delayedTimeSpanChanged()\"\n" +
-    "                                       class=\"whole-day-check\"> <span>Hele dag</span>\n" +
+    "                                       class=\"all-day-check\"> <span>Hele dag</span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
