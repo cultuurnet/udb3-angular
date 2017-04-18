@@ -24,7 +24,6 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   calendar.formData = {};
   calendar.type = '';
   calendar.setType = setType;
-  calendar.reset = reset;
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
   calendar.removeTimeSpan = removeTimeSpan;
@@ -41,11 +40,6 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
     calendar.formData = formData;
     calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
     calendar.setType(formData.calendarType ? formData.calendarType : 'single');
-  }
-
-  function reset() {
-    EventFormData.resetCalendar();
-    calendar.type = EventFormData.calendarType;
   }
 
   function isTypeWeeklyRecurring(type) {
