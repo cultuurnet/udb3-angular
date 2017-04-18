@@ -40,7 +40,7 @@ describe('Controller: Form Calendar', function () {
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
 
-  it('should copy the last time-span when creating a new one', function () {
+  it('should copy the last time-span without triggering a change when creating a new one', function () {
     var controller = getController();
     controller.timeSpans = [
       {
@@ -71,9 +71,29 @@ describe('Controller: Form Calendar', function () {
         end: new Date(2013, 9, 23, 17)
       }
     ];
+    spyOn(controller, 'timeSpanChanged');
 
     controller.createTimeSpan();
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
+    expect(controller.timeSpanChanged).not.toHaveBeenCalled();
+  });
+
+  it('should initialize time-spans and trigger a change when starting a new list', function () {
+    var controller = getController();
+    var expectedTimeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 2),
+        end: new Date(2013, 9, 23, 5)
+      }
+    ];
+    spyOn(controller, 'timeSpanChanged');
+
+    controller.timeSpans = [];
+    controller.createTimeSpan();
+
+    expect(controller.timeSpans).toEqual(expectedTimeSpans);
+    expect(controller.timeSpanChanged).toHaveBeenCalled();
   });
 
   it('should save timestamps to form-data when time-spans change', function (){

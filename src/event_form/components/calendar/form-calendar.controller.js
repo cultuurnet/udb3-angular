@@ -79,7 +79,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   function createTimeSpan() {
     if (_.isEmpty(calendar.timeSpans)) {
       initTimeSpans();
-      timeSpanChanged();
+      calendar.timeSpanChanged();
     } else {
       calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
       // Do not trigger timeSpanChanged to prevent saving duplicates.
@@ -92,7 +92,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection) {
   function removeTimeSpan(timeSpan) {
     if (calendar.timeSpans.length > 1) {
       calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
-      timeSpanChanged();
+      calendar.timeSpanChanged();
     }
   }
 
