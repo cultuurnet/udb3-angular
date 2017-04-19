@@ -8070,6 +8070,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
+  calendar.timeSpanRequirements = [];
   calendar.removeTimeSpan = removeTimeSpan;
   calendar.weeklyRecurring = false;
   calendar.openingHoursCollection = OpeningHoursCollection;
@@ -8145,8 +8146,22 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
   }
 
   function timeSpanChanged() {
-    var timestamps = timeSpansToTimestamps(calendar.timeSpans);
-    calendar.formData.saveTimestamps(timestamps);
+    var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
+
+    if (!_.isEmpty(_.flatten(unmetRequirements))) {
+      showTimeSpanRequirements(unmetRequirements);
+    } else {
+      clearTimeSpanRequirements();
+      calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
+    }
+  }
+
+  function clearTimeSpanRequirements() {
+    calendar.timeSpanRequirements = [];
+  }
+
+  function showTimeSpanRequirements(unmetRequirements) {
+    calendar.timeSpanRequirements = unmetRequirements;
   }
 
   /**
@@ -8188,6 +8203,29 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
         allDay: allDay
       };
     });
+  }
+
+  /**
+   * Validates a time-span and returns a list of unmet requirements.
+   *
+   * @param {TimeSpan} timeSpan
+   * @return {string[]}
+   */
+  function validateTimeSpan(timeSpan) {
+    var requirements = {
+      'timedWhenNotAllDay': function (timeSpan) {
+        return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
+      },
+      'startBeforeEnd': function (timeSpan) {
+        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end);
+      }
+    };
+
+    var unmetRequirements = _.pick(requirements, function (check) {
+      return check(timeSpan);
+    });
+
+    return _.keys(unmetRequirements);
   }
 }
 FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope"];
@@ -20871,7 +20909,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   ng-model=\"timeSpan.start\"\n" +
     "                                   class=\"form-control start-time\"\n" +
     "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\"\n" +
+    "                                   required>\n" +
     "                        </div>\n" +
     "                        <div class=\"time form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-time\">Einduur</label>\n" +
@@ -20880,10 +20919,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                   ng-model=\"timeSpan.end\"\n" +
     "                                   class=\"form-control end-time\"\n" +
     "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\"\n" +
+    "                                   required>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
-    "                    <div class=\"error alert alert-danger\" ng-show=\"calendar.error\">\n" +
+    "                    <div class=\"requirements\" ng-show=\"calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length\">\n" +
+    "                        <div class=\"error alert alert-danger\">\n" +
+    "                            <p ng-repeat=\"requirement in calendar.timeSpanRequirements[$index]\" ng-bind=\"requirement\"></p>\n" +
+    "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +

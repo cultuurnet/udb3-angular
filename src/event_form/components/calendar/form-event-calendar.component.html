@@ -61,7 +61,8 @@
                                    ng-model="timeSpan.start"
                                    class="form-control start-time"
                                    ng-blur="calendar.instantTimeSpanChanged()"
-                                   ng-change="calendar.delayedTimeSpanChanged()">
+                                   ng-change="calendar.delayedTimeSpanChanged()"
+                                   required>
                         </div>
                         <div class="time form-group">
                             <label for="time-span-{{$index}}-end-time">Einduur</label>
@@ -70,10 +71,14 @@
                                    ng-model="timeSpan.end"
                                    class="form-control end-time"
                                    ng-blur="calendar.instantTimeSpanChanged()"
-                                   ng-change="calendar.delayedTimeSpanChanged()">
+                                   ng-change="calendar.delayedTimeSpanChanged()"
+                                   required>
                         </div>
                     </div>
-                    <div class="error alert alert-danger" ng-show="calendar.error">
+                    <div class="requirements" ng-show="calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length">
+                        <div class="error alert alert-danger">
+                            <p ng-repeat="requirement in calendar.timeSpanRequirements[$index]" ng-bind="requirement"></p>
+                        </div>
                     </div>
                 </div>
 

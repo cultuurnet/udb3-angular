@@ -10082,15 +10082,14 @@ button.close {
     width: 16.66666667%;
   }
 }
-.calendar-time-span .error {
+.calendar-time-span .requirements {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
-  margin-top: 10px;
 }
 @media (min-width: 768px) {
-  .calendar-time-span .error {
+  .calendar-time-span .requirements {
     float: left;
     width: 100%;
   }

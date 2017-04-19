@@ -98,7 +98,7 @@ describe('Controller: Form Calendar', function () {
     expect(controller.instantTimeSpanChanged).toHaveBeenCalled();
   });
 
-  it('should save timestamps to form-data when time-spans change', function (){
+  it('should save timestamps to form-data when time-spans change', function () {
     var controller = getController();
     controller.timeSpans = [
       {
@@ -137,7 +137,7 @@ describe('Controller: Form Calendar', function () {
     expect(controller.formData.timestamps).toEqual(expectedTimestamps);
   });
 
-  it('should load form-data timestamps as time-spans', function (){
+  it('should load form-data timestamps as time-spans', function () {
     var formData = EventFormData;
 
     var expectedTimeSpans = [
@@ -208,6 +208,31 @@ describe('Controller: Form Calendar', function () {
     spyOn(controller.formData, 'timingChanged');
     controller.removeTimeSpan(controller.timeSpans[1]);
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
+  })
+
+  it('should validate time-spans before saving them and show missing requirements', function () {
+    var controller = getController();
+    controller.timeSpans = [
+      {
+        allDay: false,
+        start: undefined,
+        end: undefined
+      },
+      {
+        allDay: false,
+        start: new Date(2013, 9, 23, 13),
+        end: new Date(2013, 9, 23, 9)
+      }
+    ];
+    var expectedRequirements = [
+      ['timedWhenNotAllDay'],
+      ['startBeforeEnd']
+    ];
+    spyOn(controller.formData, 'saveTimestamps');
+
+    controller.instantTimeSpanChanged();
+    expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
+    expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
   })
 });
 

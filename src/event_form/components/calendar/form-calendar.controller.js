@@ -26,6 +26,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
+  calendar.timeSpanRequirements = [];
   calendar.removeTimeSpan = removeTimeSpan;
   calendar.weeklyRecurring = false;
   calendar.openingHoursCollection = OpeningHoursCollection;
@@ -101,8 +102,22 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
   }
 
   function timeSpanChanged() {
-    var timestamps = timeSpansToTimestamps(calendar.timeSpans);
-    calendar.formData.saveTimestamps(timestamps);
+    var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
+
+    if (!_.isEmpty(_.flatten(unmetRequirements))) {
+      showTimeSpanRequirements(unmetRequirements);
+    } else {
+      clearTimeSpanRequirements();
+      calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
+    }
+  }
+
+  function clearTimeSpanRequirements() {
+    calendar.timeSpanRequirements = [];
+  }
+
+  function showTimeSpanRequirements(unmetRequirements) {
+    calendar.timeSpanRequirements = unmetRequirements;
   }
 
   /**
@@ -144,5 +159,28 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
         allDay: allDay
       };
     });
+  }
+
+  /**
+   * Validates a time-span and returns a list of unmet requirements.
+   *
+   * @param {TimeSpan} timeSpan
+   * @return {string[]}
+   */
+  function validateTimeSpan(timeSpan) {
+    var requirements = {
+      'timedWhenNotAllDay': function (timeSpan) {
+        return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
+      },
+      'startBeforeEnd': function (timeSpan) {
+        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end);
+      }
+    };
+
+    var unmetRequirements = _.pick(requirements, function (check) {
+      return check(timeSpan);
+    });
+
+    return _.keys(unmetRequirements);
   }
 }
