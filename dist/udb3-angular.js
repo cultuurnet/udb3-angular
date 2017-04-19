@@ -20904,7 +20904,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                <input type=\"checkbox\"\n" +
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
-    "                                       ng-change=\"calendar.delayedTimeSpanChanged()\"\n" +
+    "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
     "                                       class=\"all-day-check\"> <span>Hele dag</span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +
