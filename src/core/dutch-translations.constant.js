@@ -370,6 +370,11 @@ angular.module('udb.core')
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
       'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
       'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
+    },
+    'TIME_SPAN_REQUIREMENTS': {
+      'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
+      'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
     }
   }
 );

@@ -77,7 +77,8 @@
                     </div>
                     <div class="requirements" ng-show="calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length">
                         <div class="error alert alert-danger">
-                            <p ng-repeat="requirement in calendar.timeSpanRequirements[$index]" ng-bind="requirement"></p>
+                            <p ng-repeat="requirement in calendar.timeSpanRequirements[$index]" 
+                               ng-bind="'TIME_SPAN_REQUIREMENTS.' + requirement | translate"></p>
                         </div>
                     </div>
                 </div>
