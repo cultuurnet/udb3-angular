@@ -8216,8 +8216,11 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
       'timedWhenNotAllDay': function (timeSpan) {
         return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
       },
+      'startBeforeEndDay': function (timeSpan) {
+        return timeSpan.allDay && timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
+      },
       'startBeforeEnd': function (timeSpan) {
-        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end);
+        return !timeSpan.allDay && timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end);
       }
     };
 
