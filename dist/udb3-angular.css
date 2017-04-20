@@ -10067,6 +10067,12 @@ button.close {
 @media (min-width: 768px) {
   .calendar-time-span .date {
     float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 992px) {
+  .calendar-time-span .date {
+    float: left;
     width: 25%;
   }
 }
@@ -10077,6 +10083,12 @@ button.close {
   padding-right: 15px;
 }
 @media (min-width: 768px) {
+  .calendar-time-span .time {
+    float: left;
+    width: 25%;
+  }
+}
+@media (min-width: 992px) {
   .calendar-time-span .time {
     float: left;
     width: 16.66666667%;
@@ -10101,6 +10113,12 @@ button.close {
   padding-right: 15px;
 }
 @media (min-width: 768px) {
+  .calendar-time-span .timing-control {
+    float: left;
+    width: 25%;
+  }
+}
+@media (min-width: 992px) {
   .calendar-time-span .timing-control {
     float: left;
     width: 16.66666667%;

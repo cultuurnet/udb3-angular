@@ -8026,6 +8026,46 @@ function AutoScroll($document) {
 }
 AutoScroll.$inject = ["$document"];
 
+// Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarDatepicker', {
+    templateUrl: 'templates/form-calendar-datepicker.component.html',
+    controller: FormCalendarDatepickerController,
+    require: {
+      ngModel: '^ngModel',
+    },
+    controllerAs: 'datepicker'
+  });
+
+/** @inject */
+function FormCalendarDatepickerController() {
+  var datepicker = this;
+  var options = {
+    minDate: new Date()
+  };
+
+  datepicker.$onInit = function() {
+    datepicker.isOpen = false;
+    datepicker.options = options;
+    datepicker.ngModel.$render = function () {
+      datepicker.date = new Date(datepicker.ngModel.$viewValue);
+    };
+  };
+
+  datepicker.open = function() {
+    datepicker.isOpen = true;
+  };
+
+  datepicker.changed = function() {
+    if (datepicker.date) {
+      var time = moment(datepicker.ngModel.$viewValue);
+      var day = moment(datepicker.date).hour(time.hour()).minute(time.minute());
+      datepicker.ngModel.$setViewValue(day.toDate());
+    }
+  };
+}
+
 // Source: src/event_form/components/calendar/form-calendar-period.component.js
 /**
  * @ngdoc function
@@ -20778,6 +20818,27 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-calendar-datepicker.component.html',
+    "<p class=\"input-group\" ng-class=\"{'has-error': !datepicker.date}\">\n" +
+    "    <input type=\"text\" \n" +
+    "           class=\"form-control\" \n" +
+    "           uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "           ng-model=\"datepicker.date\"\n" +
+    "           is-open=\"datepicker.isOpen\"\n" +
+    "           datepicker-options=\"datepicker.options\"\n" +
+    "           ng-required=\"true\"\n" +
+    "           ng-change=\"datepicker.changed()\"\n" +
+    "           show-button-bar=\"false\"/>\n" +
+    "    <span class=\"input-group-btn\">\n" +
+    "        <button type=\"button\"\n" +
+    "                class=\"btn btn-default\"\n" +
+    "                ng-class=\"{'btn-danger': !datepicker.date}\"\n" +
+    "                ng-click=\"datepicker.open()\"><i class=\"fa fa-calendar\"></i></button>\n" +
+    "    </span>\n" +
+    "</p>"
+  );
+
+
   $templateCache.put('templates/form-calendar-period.component.html',
     "<div class=\"form-calendar-period\">\n" +
     "    <label>\n" +
@@ -20861,21 +20922,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <div class=\"dates\">\n" +
     "                        <div class=\"date form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
-    "                            <input id=\"time-span-{{$index}}-start-date\"\n" +
-    "                                   type=\"date\"\n" +
-    "                                   ng-model=\"timeSpan.start\"\n" +
-    "                                   class=\"form-control start-date\"\n" +
-    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                        <div class=\"date form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
-    "                            <input id=\"time-span-{{$index}}-end-date\"\n" +
-    "                                   type=\"date\"\n" +
-    "                                   ng-model=\"timeSpan.end\"\n" +
-    "                                   class=\"form-control end-date\"\n" +
-    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"timing-control\">\n" +

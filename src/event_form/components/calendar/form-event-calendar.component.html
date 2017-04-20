@@ -25,21 +25,13 @@
                     <div class="dates">
                         <div class="date form-group">
                             <label for="time-span-{{$index}}-start-date">Start</label>
-                            <input id="time-span-{{$index}}-start-date"
-                                   type="date"
-                                   ng-model="timeSpan.start"
-                                   class="form-control start-date"
-                                   ng-blur="calendar.instantTimeSpanChanged()"
-                                   ng-change="calendar.delayedTimeSpanChanged()">
+                            <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()">
+                            </udb-form-calendar-datepicker>
                         </div>
                         <div class="date form-group">
                             <label for="time-span-{{$index}}-end-date">Einde</label>
-                            <input id="time-span-{{$index}}-end-date"
-                                   type="date"
-                                   ng-model="timeSpan.end"
-                                   class="form-control end-date"
-                                   ng-blur="calendar.instantTimeSpanChanged()"
-                                   ng-change="calendar.delayedTimeSpanChanged()">
+                            <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()">
+                            </udb-form-calendar-datepicker>
                         </div>
                     </div>
                     <div class="timing-control">
