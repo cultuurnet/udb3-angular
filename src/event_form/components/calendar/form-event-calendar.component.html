@@ -56,23 +56,12 @@
                     <div class="timing" ng-show="!timeSpan.allDay">
                         <div class="time form-group">
                             <label for="time-span-{{$index}}-start-time">Beginuur</label>
-                            <input id="time-span-{{$index}}-start-time"
-                                   type="time"
-                                   ng-model="timeSpan.start"
-                                   class="form-control start-time"
-                                   ng-blur="calendar.instantTimeSpanChanged()"
-                                   ng-change="calendar.delayedTimeSpanChanged()"
-                                   required>
+                            <udb-form-calendar-timepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
                         </div>
+
                         <div class="time form-group">
                             <label for="time-span-{{$index}}-end-time">Einduur</label>
-                            <input id="time-span-{{$index}}-end-time"
-                                   type="time"
-                                   ng-model="timeSpan.end"
-                                   class="form-control end-time"
-                                   ng-blur="calendar.instantTimeSpanChanged()"
-                                   ng-change="calendar.delayedTimeSpanChanged()"
-                                   required>
+                            <udb-form-calendar-timepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
                         </div>
                     </div>
                     <div class="requirements" ng-show="calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length">

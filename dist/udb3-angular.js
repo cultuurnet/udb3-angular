@@ -8048,6 +8048,35 @@ function FormCalendarPeriodComponentController() {
   controller.calendarType = controller.formData.calendarType;
 }
 
+// Source: src/event_form/components/calendar/form-calendar-timepicker.component.js
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarTimepicker', {
+    templateUrl: 'templates/form-calendar-timepicker.component.html',
+    controller: FormCalendarTimepickerController,
+    require: {
+      ngModel: '^ngModel',
+    },
+    controllerAs: 'timepicker'
+  });
+
+/** @inject */
+function FormCalendarTimepickerController() {
+  var timepicker = this;
+
+  timepicker.$onInit = function() {
+    timepicker.ngModel.$render = function () {
+      timepicker.time = new Date(timepicker.ngModel.$viewValue);
+    };
+  };
+
+  timepicker.changed = function() {
+    if (timepicker.time) {
+      timepicker.ngModel.$setViewValue(timepicker.time);
+    }
+  };
+}
+
 // Source: src/event_form/components/calendar/form-calendar.controller.js
 /**
  * @typedef {Object} TimeSpan
@@ -20853,6 +20882,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/form-calendar-timepicker.component.html',
+    "<uib-timepicker ng-model=\"timepicker.time\" \n" +
+    "                ng-change=\"timepicker.changed()\" \n" +
+    "                hour-step=\"1\" \n" +
+    "                minute-step=\"15\" \n" +
+    "                show-spinners=\"false\" \n" +
+    "                show-meridian=\"false\">\n" +
+    "</uib-timepicker>"
+  );
+
+
   $templateCache.put('templates/form-event-calendar.component.html',
     "<div class=\"calendar-type-picker\">\n" +
     "    <div class=\"calendar-type-options\">\n" +
@@ -20912,23 +20952,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <div class=\"timing\" ng-show=\"!timeSpan.allDay\">\n" +
     "                        <div class=\"time form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-start-time\">Beginuur</label>\n" +
-    "                            <input id=\"time-span-{{$index}}-start-time\"\n" +
-    "                                   type=\"time\"\n" +
-    "                                   ng-model=\"timeSpan.start\"\n" +
-    "                                   class=\"form-control start-time\"\n" +
-    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\"\n" +
-    "                                   required>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
+    "\n" +
     "                        <div class=\"time form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-time\">Einduur</label>\n" +
-    "                            <input id=\"time-span-{{$index}}-end-time\"\n" +
-    "                                   type=\"time\"\n" +
-    "                                   ng-model=\"timeSpan.end\"\n" +
-    "                                   class=\"form-control end-time\"\n" +
-    "                                   ng-blur=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                   ng-change=\"calendar.delayedTimeSpanChanged()\"\n" +
-    "                                   required>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"requirements\" ng-show=\"calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length\">\n" +
