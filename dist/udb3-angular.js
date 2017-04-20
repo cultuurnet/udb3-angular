@@ -21240,25 +21240,21 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <div class=\"opening-time\">\n" +
     "                    <div class=\"form-group\"\n" +
     "                        ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
-    "                        <input udb-time\n" +
-    "                            type=\"time\"\n" +
+    "                        <udb-form-calendar-timepicker\n" +
     "                            name=\"opens\"\n" +
-    "                            class=\"form-control uur\"\n" +
-    "                            placeholder=\"Bv. 08:00\"\n" +
+    "                            class=\"uur\"\n" +
     "                            ng-required=\"true\"\n" +
-    "                            ng-model=\"openingHours.opensAsDate\"/>\n" +
+    "                            ng-model=\"openingHours.opensAsDate\"></udb-form-calendar-timepicker>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "                <div class=\"closing-time\">\n" +
     "                    <div class=\"form-group\"\n" +
     "                        ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
-    "                        <input udb-time\n" +
-    "                            type=\"time\"\n" +
+    "                        <udb-form-calendar-timepicker\n" +
     "                            name=\"closes\"\n" +
-    "                            class=\"form-control uur\"\n" +
-    "                            placeholder=\"Bv. 08:00\"\n" +
+    "                            class=\"uur\"\n" +
     "                            ng-required=\"true\"\n" +
-    "                            ng-model=\"openingHours.closesAsDate\"/>\n" +
+    "                            ng-model=\"openingHours.closesAsDate\"></udb-form-calendar-timepicker>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "                <div class=\"remove\">\n" +

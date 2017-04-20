@@ -39,25 +39,21 @@
                 <div class="opening-time">
                     <div class="form-group"
                         ng-class="{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}">
-                        <input udb-time
-                            type="time"
+                        <udb-form-calendar-timepicker
                             name="opens"
-                            class="form-control uur"
-                            placeholder="Bv. 08:00"
+                            class="uur"
                             ng-required="true"
-                            ng-model="openingHours.opensAsDate"/>
+                            ng-model="openingHours.opensAsDate"></udb-form-calendar-timepicker>
                     </div>
                 </div>
                 <div class="closing-time">
                     <div class="form-group"
                         ng-class="{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}">
-                        <input udb-time
-                            type="time"
+                        <udb-form-calendar-timepicker
                             name="closes"
-                            class="form-control uur"
-                            placeholder="Bv. 08:00"
+                            class="uur"
                             ng-required="true"
-                            ng-model="openingHours.closesAsDate"/>
+                            ng-model="openingHours.closesAsDate"></udb-form-calendar-timepicker>
                     </div>
                 </div>
                 <div class="remove">
