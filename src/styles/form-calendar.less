@@ -6,16 +6,27 @@
 
 .calendar-type-options {
   .make-sm-column(12);
+
+  @media (max-width: @screen-sm-min) {
+    text-align: center;
+  }
 }
 
 .calendar-type-options a,
 .calendar-type-options span {
   min-height: 50px;
-  float: left;
+
+  @media (min-width: @screen-sm-min) {
+      float: left;
+  }
 }
 
 .or {
-  padding: 40px 20px;
+  padding: 20px;
+
+  @media (min-width: @screen-sm-min) {
+      padding: 40px 20px;
+  }
 }
 
 .calendar-type-options a {
