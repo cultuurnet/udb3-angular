@@ -8,31 +8,23 @@
                ng-change="$ctrl.formData.setCalendarType($ctrl.calendarType)">
         <span>Start- en einddatum</span>
     </label>
-    <div class="not-permanent">
-        <div class="form-inline">
-            <div class="input-group">
-                <span class="input-group-addon" id="calendar-period-start-date">van</span>
-                <input type="date"
-                       aria-describedby="calendar-period-start-date"
-                       id="calendar-period-start-date"
-                       ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                       ng-model="$ctrl.formData.startDate"
-                       required="required"
-                       ng-change="$ctrl.formData.periodicTimingChanged()"
-                       class="form-control calendar-period-start-date">
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon" id="calendar-period-end-date">tot</span>
-                <input type="date"
-                       aria-describedby="calendar-period-end-date"
-                       id="calendar-period-end-date"
-                       ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                       ng-model="$ctrl.formData.endDate"
-                       required="required"
-                       ng-change="$ctrl.formData.periodicTimingChanged()"
-                       class="form-control calendar-period-end-date">
-            </div>
+    <div class="periodic-info">
+        <div class="start-date">
+            <label>van</label>
+            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
+                                            ng-model="$ctrl.formData.startDate" 
+                                            ng-change="$ctrl.formData.periodicTimingChanged()">
+            </udb-form-calendar-datepicker>
         </div>
+
+        <div class="end-date">
+            <label>tot</label>
+            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
+                                            ng-model="$ctrl.formData.endDate" 
+                                            ng-change="$ctrl.formData.periodicTimingChanged()">
+            </udb-form-calendar-datepicker>
+        </div>
+        
         <div class="alert alert-danger " ng-show="$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError">
             <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
         </div>

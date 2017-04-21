@@ -8035,6 +8035,9 @@ angular
     require: {
       ngModel: '^ngModel',
     },
+    bindings: {
+      disabled: '=ngDisabled'
+    },
     controllerAs: 'datepicker'
   });
 
@@ -20828,10 +20831,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "           datepicker-options=\"datepicker.options\"\n" +
     "           ng-required=\"true\"\n" +
     "           ng-change=\"datepicker.changed()\"\n" +
-    "           show-button-bar=\"false\"/>\n" +
+    "           show-button-bar=\"false\"\n" +
+    "           ng-disabled=\"datepicker.disabled\"/>\n" +
     "    <span class=\"input-group-btn\">\n" +
     "        <button type=\"button\"\n" +
     "                class=\"btn btn-default\"\n" +
+    "                ng-disabled=\"datepicker.disabled\"\n" +
     "                ng-class=\"{'btn-danger': !datepicker.date}\"\n" +
     "                ng-click=\"datepicker.open()\"><i class=\"fa fa-calendar\"></i></button>\n" +
     "    </span>\n" +
@@ -20850,31 +20855,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
     "        <span>Start- en einddatum</span>\n" +
     "    </label>\n" +
-    "    <div class=\"not-permanent\">\n" +
-    "        <div class=\"form-inline\">\n" +
-    "            <div class=\"input-group\">\n" +
-    "                <span class=\"input-group-addon\" id=\"calendar-period-start-date\">van</span>\n" +
-    "                <input type=\"date\"\n" +
-    "                       aria-describedby=\"calendar-period-start-date\"\n" +
-    "                       id=\"calendar-period-start-date\"\n" +
-    "                       ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                       ng-model=\"$ctrl.formData.startDate\"\n" +
-    "                       required=\"required\"\n" +
-    "                       ng-change=\"$ctrl.formData.periodicTimingChanged()\"\n" +
-    "                       class=\"form-control calendar-period-start-date\">\n" +
-    "            </div>\n" +
-    "            <div class=\"input-group\">\n" +
-    "                <span class=\"input-group-addon\" id=\"calendar-period-end-date\">tot</span>\n" +
-    "                <input type=\"date\"\n" +
-    "                       aria-describedby=\"calendar-period-end-date\"\n" +
-    "                       id=\"calendar-period-end-date\"\n" +
-    "                       ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                       ng-model=\"$ctrl.formData.endDate\"\n" +
-    "                       required=\"required\"\n" +
-    "                       ng-change=\"$ctrl.formData.periodicTimingChanged()\"\n" +
-    "                       class=\"form-control calendar-period-end-date\">\n" +
-    "            </div>\n" +
+    "    <div class=\"periodic-info\">\n" +
+    "        <div class=\"start-date\">\n" +
+    "            <label>van</label>\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.startDate\" \n" +
+    "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
+    "            </udb-form-calendar-datepicker>\n" +
     "        </div>\n" +
+    "\n" +
+    "        <div class=\"end-date\">\n" +
+    "            <label>tot</label>\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.endDate\" \n" +
+    "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
+    "            </udb-form-calendar-datepicker>\n" +
+    "        </div>\n" +
+    "        \n" +
     "        <div class=\"alert alert-danger \" ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
     "            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
     "        </div>\n" +

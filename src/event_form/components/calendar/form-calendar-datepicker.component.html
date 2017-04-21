@@ -7,10 +7,12 @@
            datepicker-options="datepicker.options"
            ng-required="true"
            ng-change="datepicker.changed()"
-           show-button-bar="false"/>
+           show-button-bar="false"
+           ng-disabled="datepicker.disabled"/>
     <span class="input-group-btn">
         <button type="button"
                 class="btn btn-default"
+                ng-disabled="datepicker.disabled"
                 ng-class="{'btn-danger': !datepicker.date}"
                 ng-click="datepicker.open()"><i class="fa fa-calendar"></i></button>
     </span>

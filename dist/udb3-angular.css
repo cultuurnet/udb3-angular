@@ -9722,7 +9722,9 @@ button.close {
 .opening-hours .opening-hours-set:before,
 .opening-hours .opening-hours-set:after,
 .opening-hours-week-schedule:before,
-.opening-hours-week-schedule:after {
+.opening-hours-week-schedule:after,
+.form-calendar-period .periodic-info:before,
+.form-calendar-period .periodic-info:after {
   content: " ";
   display: table;
 }
@@ -9746,7 +9748,8 @@ button.close {
 .calendar-time-span:after,
 .opening-hours .opening-hours-labels:after,
 .opening-hours .opening-hours-set:after,
-.opening-hours-week-schedule:after {
+.opening-hours-week-schedule:after,
+.form-calendar-period .periodic-info:after {
   clear: both;
 }
 .center-block {
@@ -10232,6 +10235,31 @@ button.close {
   .opening-hours-week-schedule .empty {
     float: left;
     width: 66.66666667%;
+  }
+}
+.form-calendar-period .periodic-info {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+.form-calendar-period .periodic-info .start-date,
+.form-calendar-period .periodic-info .end-date {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 768px) {
+  .form-calendar-period .periodic-info .start-date,
+  .form-calendar-period .periodic-info .end-date {
+    float: left;
+    width: 50%;
+  }
+}
+@media (min-width: 992px) {
+  .form-calendar-period .periodic-info .start-date,
+  .form-calendar-period .periodic-info .end-date {
+    float: left;
+    width: 25%;
   }
 }
 .loading-search-result {
