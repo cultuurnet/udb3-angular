@@ -20939,14 +20939,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                            </label>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
-    "                    <div class=\"timing\" ng-show=\"!timeSpan.allDay\">\n" +
+    "                    <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-start-time\">Beginuur</label>\n" +
+    "                            <label>Beginuur</label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-end-time\">Einduur</label>\n" +
+    "                            <label>Einduur</label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +

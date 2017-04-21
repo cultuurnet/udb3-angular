@@ -45,14 +45,14 @@
                             </label>
                         </div>
                     </div>
-                    <div class="timing" ng-show="!timeSpan.allDay">
+                    <div class="timing" ng-if="!timeSpan.allDay">
                         <div class="time form-group">
-                            <label for="time-span-{{$index}}-start-time">Beginuur</label>
+                            <label>Beginuur</label>
                             <udb-form-calendar-timepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
                         </div>
 
                         <div class="time form-group">
-                            <label for="time-span-{{$index}}-end-time">Einduur</label>
+                            <label>Einduur</label>
                             <udb-form-calendar-timepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
                         </div>
                     </div>
