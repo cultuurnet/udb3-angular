@@ -612,8 +612,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     saveTimestamps: function (timestamps) {
+      var oldTimestamps = _.cloneDeep(this.timestamps);
+      
       this.timestamps = timestamps;
-      this.timingChanged();
+
+      if (!_.isEqual(oldTimestamps, timestamps)) {
+        this.timingChanged();
+      }
     },
 
     periodicTimingChanged: function () {
