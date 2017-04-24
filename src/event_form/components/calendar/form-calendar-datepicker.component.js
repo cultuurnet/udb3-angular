@@ -6,7 +6,7 @@ angular
     templateUrl: 'templates/form-calendar-datepicker.component.html',
     controller: FormCalendarDatepickerController,
     require: {
-      ngModel: '^ngModel',
+      ngModel: '^ngModel'
     },
     bindings: {
       disabled: '=ngDisabled'

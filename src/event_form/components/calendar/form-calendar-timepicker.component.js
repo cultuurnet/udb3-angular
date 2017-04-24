@@ -6,7 +6,7 @@ angular
     templateUrl: 'templates/form-calendar-timepicker.component.html',
     controller: FormCalendarTimepickerController,
     require: {
-      ngModel: '^ngModel',
+      ngModel: '^ngModel'
     },
     controllerAs: 'timepicker'
   });
