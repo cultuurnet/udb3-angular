@@ -167,9 +167,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       EventFormData.initCalendar();
     }
 
-    if (!!EventFormData.openingHours.length) {
-      EventFormData.initOpeningHours(EventFormData.openingHours);
-    }
+    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
     $scope.loaded = true;
     EventFormData.showStep(1);
