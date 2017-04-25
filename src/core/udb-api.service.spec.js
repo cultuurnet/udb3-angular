@@ -413,7 +413,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectGET(baseUrl + 'organizers/?limit=10&name=foo-bar&start=0')
+      .expectGET(baseUrl + 'organizers/?embed=true&limit=10&name=foo-bar&start=0')
       .respond(JSON.stringify(response));
     service
       .findOrganisations(0, 10, null, organizerName)
@@ -462,7 +462,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectGET(baseUrl + 'organizers/?limit=10&start=0&website=www.stuk.be')
+      .expectGET(baseUrl + 'organizers/?embed=true&limit=10&start=0&website=www.stuk.be')
       .respond(JSON.stringify(response));
     service
       .findOrganisations(0, 10, organizerWebsite, null)
