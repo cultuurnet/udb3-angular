@@ -18,23 +18,18 @@
     efpmc.error = false;
     efpmc.hasPublicationDate = false;
     efpmc.publicationDate = eventFormData.availableFrom;
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (typeof eventFormData.availableFrom === 'string' || typeof eventFormData.availableFrom === 'undefined') {
-      efpmc.isToday = true;
-    } else {
-      efpmc.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
-    }
+    var tomorrow = new Date();
+    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow = new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000);
     efpmc.dismiss = dismiss;
     efpmc.savePublicationDate = savePublicationDate;
     efpmc.onFocus = onFocus;
-    efpmc.disablePublicationDate = disablePublicationDate;
 
     efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
       options : {
-        minDate : today
+        minDate : tomorrow
       }
     };
 
@@ -42,21 +37,14 @@
       $uibModalInstance.dismiss();
     }
 
-    function disablePublicationDate() {
-      efpmc.error = false;
-      efpmc.hasPublicationDate = false;
-      efpmc.publicationDate = today;
-    }
-
     function onFocus() {
       efpmc.hasPublicationDate = true;
-      efpmc.isToday = false;
       efpmc.error = false;
       efpmc.drp.startOpened = !efpmc.drp.startOpened;
     }
 
     function savePublicationDate() {
-      if (today <= efpmc.publicationDate) {
+      if (tomorrow <= efpmc.publicationDate) {
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;

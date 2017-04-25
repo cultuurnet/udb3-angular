@@ -4389,6 +4389,21 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
+    },
+    hasFutureAvailableFrom: function() {
+      var today = new Date();
+      today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (publicationDate > today) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   };
 
@@ -4890,6 +4905,22 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+
+    hasFutureAvailableFrom: function() {
+      var today = new Date();
+      today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (publicationDate > today) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
 
   };
@@ -9371,23 +9402,18 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     efpmc.error = false;
     efpmc.hasPublicationDate = false;
     efpmc.publicationDate = eventFormData.availableFrom;
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (typeof eventFormData.availableFrom === 'string' || typeof eventFormData.availableFrom === 'undefined') {
-      efpmc.isToday = true;
-    } else {
-      efpmc.isToday = (today.toDateString() === eventFormData.availableFrom.toDateString()) ;
-    }
+    var tomorrow = new Date();
+    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow = new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000);
     efpmc.dismiss = dismiss;
     efpmc.savePublicationDate = savePublicationDate;
     efpmc.onFocus = onFocus;
-    efpmc.disablePublicationDate = disablePublicationDate;
 
     efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
       options : {
-        minDate : today
+        minDate : tomorrow
       }
     };
 
@@ -9395,21 +9421,14 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
       $uibModalInstance.dismiss();
     }
 
-    function disablePublicationDate() {
-      efpmc.error = false;
-      efpmc.hasPublicationDate = false;
-      efpmc.publicationDate = today;
-    }
-
     function onFocus() {
       efpmc.hasPublicationDate = true;
-      efpmc.isToday = false;
       efpmc.error = false;
       efpmc.drp.startOpened = !efpmc.drp.startOpened;
     }
 
     function savePublicationDate() {
-      if (today <= efpmc.publicationDate) {
+      if (tomorrow <= efpmc.publicationDate) {
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;
@@ -10004,7 +10023,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
-
+      this.availableFrom = '';
       /**
        * @type {string[]}
        */
@@ -10643,6 +10662,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'additionalData',
       'apiUrl',
       'workflowStatus',
+      'availableFrom',
       'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
@@ -10933,24 +10953,15 @@ function EventFormPublishController(
   controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
-  controller.toBePublishedLater = toBePublishedLater;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
   var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  var publicationDate = '';
-
-  if (angular.isUndefined(controller.eventFormData.availableFrom) || controller.eventFormData.availableFrom === '') {
-    if (angular.isUndefined(defaultPublicationDate)) {
-      var today = new Date();
-      publicationDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    } else {
-      publicationDate = defaultPublicationDate;
-    }
-  }
-  controller.eventFormData.availableFrom = publicationDate;
   controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  if (!controller.hasNoDefault && isDraft) {
+    controller.eventFormData.availableFrom = defaultPublicationDate;
+  }
 
   function publish() {
     controller.error = '';
@@ -10985,15 +10996,8 @@ function EventFormPublishController(
     });
   }
 
-  function toBePublishedLater() {
-    var today = new Date();
-    today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    return today !== controller.eventFormData.availableFrom;
-  }
-
   function setEventAsReadyForValidation() {
     EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
-
     return $q.resolve();
   }
 
@@ -18884,8 +18888,8 @@ function OfferController(
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
+          controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
-
           watchLabels();
           return cachedOffer;
         });
@@ -19906,6 +19910,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT'\" >Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
     "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
@@ -21534,7 +21539,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
-    "  <p>Vanaf wanneer mag dit online verschijnen?</p>\n" +
+    "  <p>Vanaf wanneer mag dit online verschijnen? </strong><em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze publicatiedatum kan je maar één keer instellen en nadien niet meer wijzigen.</em></strong></p>\n" +
     "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
     "      <div class=\"form-group\">\n" +
     "        <div class=\"radio\">\n" +
@@ -21836,10 +21841,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Meteen publiceren</button>\n" +
-    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.toBePublishedLater && efpc.hasNoDefault\">Later publiceren</a>\n" +
-    "    <button class=\"btn btn-success\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.toBePublishedLater && efpc.hasNoDefault\">Later publiceren</button>\n" +
+    "    <button class=\"btn btn-success\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
     "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
-    "    <a href=\"\" ng-click=\"efpc.publishLater()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.eventFormData.availableFrom\">Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }} (wijzigen)</a>\n" +
+    "    <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }}</span>\n" +
     "</div>\n"
   );
 

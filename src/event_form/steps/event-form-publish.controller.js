@@ -28,24 +28,15 @@ function EventFormPublishController(
   controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
-  controller.toBePublishedLater = toBePublishedLater;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
   var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  var publicationDate = '';
-
-  if (angular.isUndefined(controller.eventFormData.availableFrom) || controller.eventFormData.availableFrom === '') {
-    if (angular.isUndefined(defaultPublicationDate)) {
-      var today = new Date();
-      publicationDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    } else {
-      publicationDate = defaultPublicationDate;
-    }
-  }
-  controller.eventFormData.availableFrom = publicationDate;
   controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  if (!controller.hasNoDefault && isDraft) {
+    controller.eventFormData.availableFrom = defaultPublicationDate;
+  }
 
   function publish() {
     controller.error = '';
@@ -80,15 +71,8 @@ function EventFormPublishController(
     });
   }
 
-  function toBePublishedLater() {
-    var today = new Date();
-    today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    return today !== controller.eventFormData.availableFrom;
-  }
-
   function setEventAsReadyForValidation() {
     EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
-
     return $q.resolve();
   }
 

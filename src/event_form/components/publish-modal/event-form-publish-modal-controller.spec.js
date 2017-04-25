@@ -5,7 +5,9 @@ describe('Controller: Publish Form Modal', function() {
     $scope,
     $controller,
     $uibModalInstance,
-    eventFormData;
+    eventFormData,
+    eventCrud,
+    publishEvent;
 
   beforeEach(module('udb.event-form'));
 
@@ -14,6 +16,10 @@ describe('Controller: Publish Form Modal', function() {
     $scope = $rootScope.$new();
     $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close','dismiss']);
     eventFormData = $injector.get('EventFormData');
+    eventCrud = jasmine.createSpyObj('eventCrud', [
+      'publishOffer'
+    ]);
+    publishEvent = eventCrud.publishOffer;
   }));
 
   function getController() {
@@ -21,7 +27,9 @@ describe('Controller: Publish Form Modal', function() {
       'EventFormPublishModalController', {
         $scope: $scope,
         $uibModalInstance: $uibModalInstance,
-        eventFormData : eventFormData,
+        eventFormData: eventFormData,
+        eventCrud: eventCrud,
+        publishEvent: publishEvent,
       }
     );
   }
