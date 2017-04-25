@@ -8294,10 +8294,13 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
         return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
       },
       'startBeforeEndDay': function (timeSpan) {
-        return timeSpan.allDay && timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
+        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
       },
       'startBeforeEnd': function (timeSpan) {
-        return !timeSpan.allDay && timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end);
+        return !timeSpan.allDay &&
+            (timeSpan.start && timeSpan.end) &&
+            moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
+            moment(timeSpan.start).isAfter(timeSpan.end);
       }
     };
 

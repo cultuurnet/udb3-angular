@@ -208,7 +208,7 @@ describe('Controller: Form Calendar', function () {
     spyOn(controller.formData, 'timingChanged');
     controller.removeTimeSpan(controller.timeSpans[1]);
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
-  })
+  });
 
   it('should validate time-spans before saving them and show missing requirements', function () {
     var controller = getController();
@@ -233,23 +233,50 @@ describe('Controller: Form Calendar', function () {
     controller.instantTimeSpanChanged();
     expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
     expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
-  })
+  });
 
   it('should show a time-span requirement when the start- is before end-day', function () {
     var controller = getController();
     controller.timeSpans = [
+      {
+        allDay: false,
+        start: new Date(2013, 9, 23, 13),
+        end: new Date(2013, 9, 21, 9)
+      },
       {
         allDay: true,
         start: new Date(2013, 9, 23, 13),
         end: new Date(2013, 9, 21, 9)
       }
     ];
-    var expectedRequirements = [['startBeforeEndDay']];
+    var expectedRequirements = [['startBeforeEndDay'], ['startBeforeEndDay']];
     spyOn(controller.formData, 'saveTimestamps');
 
     controller.instantTimeSpanChanged();
     expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
     expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
-  })
+  });
+
+  it('should show a time-span requirement when the begin- is before end-time', function () {
+    var controller = getController();
+    controller.timeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 13),
+        end: new Date(2013, 9, 23, 9)
+      },
+      {
+        allDay: false,
+        start: new Date(2013, 9, 23, 13),
+        end: new Date(2013, 9, 23, 9)
+      }
+    ];
+    var expectedRequirements = [[], ['startBeforeEnd']];
+    spyOn(controller.formData, 'saveTimestamps');
+
+    controller.instantTimeSpanChanged();
+    expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
+    expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
+  });
 });
 
