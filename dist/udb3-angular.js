@@ -20876,9 +20876,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
     "            </udb-form-calendar-datepicker>\n" +
     "        </div>\n" +
-    "        \n" +
-    "        <div class=\"alert alert-danger \" ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
-    "            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
+    "\n" +
+    "        <div class=\"requirements\"\n" +
+    "             ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
+    "            <div class=\"alert alert-danger\">\n" +
+    "                <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>"

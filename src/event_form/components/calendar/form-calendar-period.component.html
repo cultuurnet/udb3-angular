@@ -24,9 +24,12 @@
                                             ng-change="$ctrl.formData.periodicTimingChanged()">
             </udb-form-calendar-datepicker>
         </div>
-        
-        <div class="alert alert-danger " ng-show="$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError">
-            <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
+
+        <div class="requirements"
+             ng-show="$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError">
+            <div class="alert alert-danger">
+                <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
+            </div>
         </div>
     </div>
 </div>

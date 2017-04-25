@@ -10279,6 +10279,21 @@ button.close {
     width: 25%;
   }
 }
+.form-calendar-period .periodic-info .requirements {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 768px) {
+  .form-calendar-period .periodic-info .requirements {
+    float: left;
+    width: 100%;
+  }
+}
+.form-calendar-period .periodic-info .requirements .alert {
+  margin-bottom: 0;
+}
 .loading-search-result {
   opacity: 0.4;
   pointer-events: none;
