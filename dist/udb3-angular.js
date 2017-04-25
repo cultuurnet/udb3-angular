@@ -8033,7 +8033,7 @@ angular
     templateUrl: 'templates/form-calendar-datepicker.component.html',
     controller: FormCalendarDatepickerController,
     require: {
-      ngModel: '^ngModel',
+      ngModel: '^ngModel'
     },
     bindings: {
       disabled: '=ngDisabled'
@@ -8098,7 +8098,7 @@ angular
     templateUrl: 'templates/form-calendar-timepicker.component.html',
     controller: FormCalendarTimepickerController,
     require: {
-      ngModel: '^ngModel',
+      ngModel: '^ngModel'
     },
     controllerAs: 'timepicker'
   });
