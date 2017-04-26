@@ -5269,12 +5269,20 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.username = '';
+    dash.hideOnlineDate = false;
 
     if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
       dash.toggleAddOffer = appConfig.toggleAddOffer;
     }
     else {
       dash.toggleAddOffer = true;
+    }
+
+    if (typeof(appConfig.offerEditor.defaultPublicationDate) !== 'undefined') {
+      var defaultPublicationDate = appConfig.offerEditor.defaultPublicationDate;
+      if (defaultPublicationDate !== '') {
+        dash.hideOnlineDate = true;
+      }
     }
 
     udbApi
@@ -19911,7 +19919,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
-    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT'\" >Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
     "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
