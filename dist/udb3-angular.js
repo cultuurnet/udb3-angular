@@ -3000,7 +3000,8 @@ function UdbApi(
   this.findOrganisations = function(start, limit, website, name) {
     var params = {
       limit: limit ? limit : 10,
-      start: start ? start : 0
+      start: start ? start : 0,
+      embed: true
     };
     if (website) { params.website = website; }
     if (name) { params.name = name; }
@@ -20970,7 +20971,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/city-suggestion.html',
-    "<a href tabindex=\"-1\" ng-bind-html=\"match.label | uibTypeaheadHighlight:query\"></a>"
+    "<a href tabindex=\"-1\" ng-bind-html=\"match.label | uibTypeaheadHighlight:query\" class=\"city-suggestion\"></a>\n"
   );
 
 
