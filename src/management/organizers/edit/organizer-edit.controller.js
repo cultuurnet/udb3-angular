@@ -27,8 +27,14 @@ function OrganizerEditController(
   controller.cities = cities;
   controller.selectedCity = '';
   controller.contact = [];
+  controller.showWebsiteValidation = false;
+  controller.websiteError = false;
+  controller.validUrl = true;
+  controller.hasErrors = false;
+  controller.disableSubmit = false;
 
   controller.validateWebsite = validateWebsite;
+  controller.validateName = validateName;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.filterCities = filterCities;
@@ -58,6 +64,7 @@ function OrganizerEditController(
   function showOrganizer(organizer) {
     controller.organizer = organizer;
     oldOrganizer = _.cloneDeep(organizer);
+    controller.originalName = oldOrganizer.name;
     controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
     _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
@@ -76,27 +83,42 @@ function OrganizerEditController(
     controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
+      controller.validUrl = false;
       controller.showWebsiteValidation = false;
+      controller.disableSubmit = true;
       return;
     }
+    controller.validUrl = true;
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer)
         .then(function (data) {
-          // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
             controller.organizersWebsiteFound = true;
             controller.showWebsiteValidation = false;
             controller.disableSubmit = true;
+            controller.hasErrors = true;
           }
           else {
             controller.showWebsiteValidation = false;
             controller.organizersWebsiteFound = false;
+            controller.disableSubmit = false;
+            controller.hasErrors = false;
           }
         }, function() {
           controller.websiteError = true;
           controller.showWebsiteValidation = false;
+          controller.hasErrors = true;
+          controller.disableSubmit = true;
         });
+  }
+
+  function validateName() {
+    if (!controller.organizerEditForm.name.$valid) {
+      controller.hasErrors = true;
+      return;
+    }
+    controller.hasErrors = false;
   }
 
   /**
@@ -164,6 +186,8 @@ function OrganizerEditController(
     controller.showValidation = true;
     // Forms are automatically known in scope.
     if (!controller.organizerEditForm.$valid) {
+      controller.hasErrors = true;
+      controller.disableSubmit = true;
       return;
     }
 

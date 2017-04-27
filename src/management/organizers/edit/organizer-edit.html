@@ -1,4 +1,4 @@
-<h1 class="title" ng-bind="oec.oldOrganizer.name"></h1>
+<h1 class="title" ng-bind="oec.originalName"></h1>
 
 <div ng-show="!oec.organizer && !oec.loadingError">
     <i class="fa fa-circle-o-notch fa-spin"></i>
@@ -8,11 +8,20 @@
     <form name="oec.organizerEditForm" class="organizer-edit-form">
         <div class="row">
             <div class="col-sm-12 col-md-8">
+                <p class="alert alert-danger" ng-show="oec.hasErrors">
+                    <span ng-show="oec.organizersWebsiteFound">Deze URL is al in gebruik door een andere organisatie.<br /></span>
+                    <span ng-show="oec.validUrl"Gelieve een gelidge URL op te geven.<br /></span>
+                    <span ng-show="oec.websiteError">Er ging iets mis met het controleren van de website.<br /></span>
+                    <span ng-show="oec.organizerEditForm.website.$error.required">Gelieve een website in te vullen.<br /></span>
+                    <span ng-show="oec.organizerEditForm.name.$error.required">Gelieve een naam in te vullen.<br /></span>
+                </p>
+
                 <div class="form-group has-feedback"
-                     ng-class="{'has-warning' : oec.organizersWebsiteFound || oec.organizerEditForm.website.$error.required }">
+                     ng-class="{'has-error' : oec.organizersWebsiteFound || oec.organizerEditForm.website.$error.required }">
                     <label class="control-label" for="organizer-website">Website</label>
                     <input type="url"
                            id="organizer-website"
+                           udb-http-prefix
                            name="website"
                            class="form-control"
                            ng-model-options="{ debounce: 300 }"
@@ -22,32 +31,21 @@
                            autocomplete="off"
                            required>
                     <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="oec.showWebsiteValidation" aria-hidden="true"></span>
-                    <span id="organizer-website-status" class="sr-only">(warning)</span>
                 </div>
-            </div>
-
-
-            <div class="col-sm-12">
-                <p class="alert alert-warning" ng-show="oec.organizersWebsiteFound">
-                    Deze URL is al in gebruik door een andere organisatie.
-                </p>
             </div>
         </div>
 
         <div class="row">
             <div class="col-sm-12 col-md-8">
-                <div class="form-group" ng-class="{'has-error' : oec.showValidation && oec.organizerEditForm.name.$error.required }">
+                <div class="form-group" ng-class="{'has-error' : oec.organizerEditForm.name.$error.required }">
                     <label>Naam</label>
                     <input type="text"
                            name="name"
                            class="form-control"
                            ng-model="oec.organizer.name"
-                           ng-change="updateName()"
+                           ng-change="oec.validateName()"
                            required>
                     <p class="help-block">De officiële publieke naam van de organisatie.</p>
-                    <span class="help-block" ng-show="oec.showValidation && oec.organizerEditForm.name.$error.required">
-          Gelieve een naam in te vullen
-        </span>
                 </div>
             </div>
         </div>

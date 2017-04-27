@@ -14160,8 +14160,14 @@ function OrganizerEditController(
   controller.cities = cities;
   controller.selectedCity = '';
   controller.contact = [];
+  controller.showWebsiteValidation = false;
+  controller.websiteError = false;
+  controller.validUrl = true;
+  controller.hasErrors = false;
+  controller.disableSubmit = false;
 
   controller.validateWebsite = validateWebsite;
+  controller.validateName = validateName;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.filterCities = filterCities;
@@ -14191,6 +14197,7 @@ function OrganizerEditController(
   function showOrganizer(organizer) {
     controller.organizer = organizer;
     oldOrganizer = _.cloneDeep(organizer);
+    controller.originalName = oldOrganizer.name;
     controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
     _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
@@ -14209,27 +14216,42 @@ function OrganizerEditController(
     controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
+      controller.validUrl = false;
       controller.showWebsiteValidation = false;
+      controller.disableSubmit = true;
       return;
     }
+    controller.validUrl = true;
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer)
         .then(function (data) {
-          // Set the results for the duplicates modal,
           if (data.totalItems > 0) {
             controller.organizersWebsiteFound = true;
             controller.showWebsiteValidation = false;
             controller.disableSubmit = true;
+            controller.hasErrors = true;
           }
           else {
             controller.showWebsiteValidation = false;
             controller.organizersWebsiteFound = false;
+            controller.disableSubmit = false;
+            controller.hasErrors = false;
           }
         }, function() {
           controller.websiteError = true;
           controller.showWebsiteValidation = false;
+          controller.hasErrors = true;
+          controller.disableSubmit = true;
         });
+  }
+
+  function validateName() {
+    if (!controller.organizerEditForm.name.$valid) {
+      controller.hasErrors = true;
+      return;
+    }
+    controller.hasErrors = false;
   }
 
   /**
@@ -14297,6 +14319,8 @@ function OrganizerEditController(
     controller.showValidation = true;
     // Forms are automatically known in scope.
     if (!controller.organizerEditForm.$valid) {
+      controller.hasErrors = true;
+      controller.disableSubmit = true;
       return;
     }
 
@@ -23233,7 +23257,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/organizer-edit.html',
-    "<h1 class=\"title\" ng-bind=\"oec.oldOrganizer.name\"></h1>\n" +
+    "<h1 class=\"title\" ng-bind=\"oec.originalName\"></h1>\n" +
     "\n" +
     "<div ng-show=\"!oec.organizer && !oec.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -23243,11 +23267,20 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <form name=\"oec.organizerEditForm\" class=\"organizer-edit-form\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <p class=\"alert alert-danger\" ng-show=\"oec.hasErrors\">\n" +
+    "                    <span ng-show=\"oec.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
+    "                    <span ng-show=\"oec.validUrl\"Gelieve een gelidge URL op te geven.<br /></span>\n" +
+    "                    <span ng-show=\"oec.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.website.$error.required\">Gelieve een website in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                </p>\n" +
+    "\n" +
     "                <div class=\"form-group has-feedback\"\n" +
-    "                     ng-class=\"{'has-warning' : oec.organizersWebsiteFound || oec.organizerEditForm.website.$error.required }\">\n" +
+    "                     ng-class=\"{'has-error' : oec.organizersWebsiteFound || oec.organizerEditForm.website.$error.required }\">\n" +
     "                    <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
     "                    <input type=\"url\"\n" +
     "                           id=\"organizer-website\"\n" +
+    "                           udb-http-prefix\n" +
     "                           name=\"website\"\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model-options=\"{ debounce: 300 }\"\n" +
@@ -23257,32 +23290,21 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           autocomplete=\"off\"\n" +
     "                           required>\n" +
     "                    <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"oec.showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
-    "                    <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
     "                </div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "\n" +
-    "            <div class=\"col-sm-12\">\n" +
-    "                <p class=\"alert alert-warning\" ng-show=\"oec.organizersWebsiteFound\">\n" +
-    "                    Deze URL is al in gebruik door een andere organisatie.\n" +
-    "                </p>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-sm-12 col-md-8\">\n" +
-    "                <div class=\"form-group\" ng-class=\"{'has-error' : oec.showValidation && oec.organizerEditForm.name.$error.required }\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : oec.organizerEditForm.name.$error.required }\">\n" +
     "                    <label>Naam</label>\n" +
     "                    <input type=\"text\"\n" +
     "                           name=\"name\"\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"oec.organizer.name\"\n" +
-    "                           ng-change=\"updateName()\"\n" +
+    "                           ng-change=\"oec.validateName()\"\n" +
     "                           required>\n" +
     "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
-    "                    <span class=\"help-block\" ng-show=\"oec.showValidation && oec.organizerEditForm.name.$error.required\">\n" +
-    "          Gelieve een naam in te vullen\n" +
-    "        </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
