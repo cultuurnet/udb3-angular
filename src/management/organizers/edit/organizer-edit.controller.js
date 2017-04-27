@@ -31,7 +31,7 @@ function OrganizerEditController(
   controller.websiteError = false;
   controller.validUrl = true;
   controller.hasErrors = false;
-  controller.disableSubmit = false;
+  controller.disableSubmit = true;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
@@ -88,6 +88,7 @@ function OrganizerEditController(
       controller.disableSubmit = true;
       return;
     }
+
     controller.validUrl = true;
 
     udbOrganizers
@@ -111,6 +112,8 @@ function OrganizerEditController(
           controller.hasErrors = true;
           controller.disableSubmit = true;
         });
+
+    checkChanges();
   }
 
   function validateName() {
@@ -119,6 +122,7 @@ function OrganizerEditController(
       return;
     }
     controller.hasErrors = false;
+    checkChanges();
   }
 
   /**
@@ -191,13 +195,17 @@ function OrganizerEditController(
       return;
     }
 
+    saveOrganizer();
+
+  }
+
+  function checkChanges() {
     isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
     isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
 
-    saveOrganizer();
-
+    (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) ? controller.disableSubmit = false : controller.disableSubmit = true;
   }
 
   function saveOrganizer () {
