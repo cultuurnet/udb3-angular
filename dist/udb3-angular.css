@@ -3124,11 +3124,11 @@ form.booking-period table {
 }
 form.contact-info .input-group,
 form.booking-period .input-group {
-  z-index: -50;
+  z-index: 0;
 }
 form.contact-info .input-group-btn,
 form.booking-period .input-group-btn {
-  z-index: -50;
+  z-index: 0;
 }
 .npr {
   padding-right: 0px;
