@@ -53,64 +53,7 @@
     </form>
 
     <udb-organizer-address address="oec.organizer.address"></udb-organizer-address>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <p><strong>Contact</strong></p>
-            </div>
-            <div class="col-sm-12">
-
-                <div ng-show="oec.contact.length === 0">
-                    <ul class="list-unstyled">
-                        <li><a ng-click="oec.addOrganizerContactInfo('phone')" href="#">Telefoonnummer toevoegen</a></li>
-                        <li><a ng-click="oec.addOrganizerContactInfo('email')" href="#">E-mailadres toevoegen</a></li>
-                        <li><a ng-click="oec.addOrganizerContactInfo('url')" href="#">Andere website toevoegen</a></li>
-                    </ul>
-                </div>
-
-                <table class="table" ng-show="oec.contact.length">
-                    <tr ng-repeat="(key, info) in oec.contact track by key"
-                        ng-model="info"
-                        udb-contact-info-validation
-                        ng-class="{'has-error' : infoErrorMessage !== '' }">
-                        <td>
-                            <select class="form-control" ng-model="info.type" ng-change="clearInfo();">
-                              <option value="url">Website</option>
-                              <option value="phone">Telefoonnummer</option>
-                              <option value="email">E-mailadres</option>
-                            </select>
-                        </td>
-                        <td ng-switch="info.type">
-                            <input type="text"
-                                   ng-switch-when="url"
-                                   udb-http-prefix
-                                   class="form-control"
-                                   ng-model="info.value"
-                                   name="contact[{{key}}]"
-                                   ng-change="validateInfo()"
-                                   ng-model-options="{ updateOn: 'blur' }"/>
-                            <input type="text"
-                                   ng-switch-default
-                                   class="form-control"
-                                   ng-model="info.value"
-                                   name="contact[{{key}}]"
-                                   ng-change="validateInfo()"
-                                   ng-model-options="{ updateOn: 'blur' }"/>
-                            <span class="help-block" ng-if="infoErrorMessage" ng-bind="::infoErrorMessage"></span>
-                        </td>
-                        <td>
-                            <button type="button" class="close" aria-label="Close" ng-click="oec.deleteOrganizerContactInfo(key)">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3"><a ng-click="oec.addOrganizerContactInfo('url')" href="#">Meer contactgegevens toevoegen</a>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+    <udb-organizer-contact contact-point="oec.organizer.contactPoint"></udb-organizer-contact>
 
     <button type="button"
             class="btn btn-primary organisator-toevoegen-bewaren"

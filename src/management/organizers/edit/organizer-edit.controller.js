@@ -31,8 +31,6 @@ function OrganizerEditController(
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
   controller.checkChanges = checkChanges;
-  controller.addOrganizerContactInfo = addOrganizerContactInfo;
-  controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.validateOrganizer = validateOrganizer;
 
   var oldOrganizer = {};
@@ -113,23 +111,6 @@ function OrganizerEditController(
   }
 
   /**
-   * Add a contact info entry for an organizer.
-   */
-  function addOrganizerContactInfo(type) {
-    controller.contact.push({
-      type : type,
-      value : ''
-    });
-  }
-
-  /**
-   * Remove a given key of the contact info.
-   */
-  function deleteOrganizerContactInfo(index) {
-    controller.contact.splice(index, 1);
-  }
-
-  /**
    * Validate the new organizer.
    */
   function validateOrganizer() {
@@ -150,8 +131,6 @@ function OrganizerEditController(
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
     isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
-
-    console.log('jes');
   }
 
   function saveOrganizer () {
