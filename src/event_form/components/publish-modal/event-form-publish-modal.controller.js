@@ -13,14 +13,15 @@
     .controller('EventFormPublishModalController', EventFormPublishModalController);
 
   /* @ngInject */
-  function EventFormPublishModalController($scope, $uibModalInstance, eventFormData, eventCrud, publishEvent) {
+  function EventFormPublishModalController($uibModalInstance, eventFormData, publishEvent) {
     var efpmc = this;
     efpmc.error = false;
     efpmc.hasPublicationDate = false;
     efpmc.publicationDate = eventFormData.availableFrom;
-    var tomorrow = new Date();
-    tomorrow.setHours(0, 0, 0, 0);
-    tomorrow = new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000);
+    var tomorrow = moment(new Date()).add(1, 'days');
+    tomorrow.hours(0);
+    tomorrow.minutes(0);
+    tomorrow.seconds(0);
     efpmc.dismiss = dismiss;
     efpmc.savePublicationDate = savePublicationDate;
     efpmc.onFocus = onFocus;
@@ -29,7 +30,7 @@
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
       options : {
-        minDate : tomorrow
+        minDate : tomorrow.toDate()
       }
     };
 
@@ -38,8 +39,6 @@
     }
 
     function onFocus() {
-      efpmc.hasPublicationDate = true;
-      efpmc.error = false;
       efpmc.drp.startOpened = !efpmc.drp.startOpened;
     }
 

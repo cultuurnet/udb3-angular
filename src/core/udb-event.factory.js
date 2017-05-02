@@ -335,11 +335,13 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
     },
     hasFutureAvailableFrom: function() {
-      var today = new Date();
-      today = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
       if (this.availableFrom || this.availableFrom !== '') {
         var publicationDate = new Date(this.availableFrom);
-        if (publicationDate > today) {
+        if (tomorrow < publicationDate) {
           return true;
         }
         else {

@@ -18,6 +18,7 @@
                     ng-model="efpmc.publicationDate"
                     is-open="efpmc.drp.startOpened"
                     ng-required="true"
+                    ng-focus="efpmc.onFocus()"
                     datepicker-options="efpmc.drp.options"/>
             <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="efpmc.drp.startOpened = !efpmc.drp.startOpened">

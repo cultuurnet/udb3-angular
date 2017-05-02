@@ -28,6 +28,7 @@ function EventFormPublishController(
   controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
+  controller.saving = false;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
@@ -39,6 +40,7 @@ function EventFormPublishController(
   }
 
   function publish() {
+    controller.saving = true;
     controller.error = '';
     eventCrud
       .publishOffer(EventFormData, controller.eventFormData.availableFrom)
@@ -52,7 +54,7 @@ function EventFormPublishController(
       });
   }
 
-  function publishLater(isEdit) {
+  function publishLater() {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-publish-modal.html',
       controller: 'EventFormPublishModalController',
@@ -60,9 +62,6 @@ function EventFormPublishController(
       resolve: {
         eventFormData: function () {
           return controller.eventFormData;
-        },
-        eventCrud : function () {
-          return eventCrud;
         },
         publishEvent : function() {
           return controller.publish;

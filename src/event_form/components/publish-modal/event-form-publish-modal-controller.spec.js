@@ -43,8 +43,6 @@ describe('Controller: Publish Form Modal', function() {
   it('should set the necessary fields when on focus', function () {
     var controller = getController();
     controller.onFocus();
-    expect(controller.error).toBeFalsy();
-    expect(controller.hasPublicationDate).toBeTruthy();
     expect(controller.drp.startOpened).toBeTruthy();
   });
 
