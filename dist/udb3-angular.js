@@ -8784,6 +8784,90 @@ function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormDa
 }
 OpeningHourComponentController.$inject = ["moment", "dayNames", "$uibModal", "EventFormData"];
 
+// Source: src/event_form/components/organizer-address/organizer-address.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormOrganizerAddressController
+ * @description
+ * # EventFormOrganizerAddressController
+ * Modal for setting the reservation period.
+ */
+angular
+    .module('udb.event-form')
+    .component('udbOrganizerAddress', {
+      templateUrl: 'templates/organizer-address.html',
+      controller: OrganizerAddressComponent,
+      controllerAs: 'oac',
+      bindings: {
+        address: '<'
+      }
+    });
+
+/* @ngInject */
+function OrganizerAddressComponent(cities, Levenshtein) {
+  var controller = this;
+
+  controller.cities = cities;
+  controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
+
+  controller.hasErrors = false;
+
+  controller.validateStreet = validateStreet;
+  controller.filterCities = filterCities;
+  controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
+  controller.selectCity = selectCity;
+  controller.changeCitySelection = changeCitySelection;
+
+  function validateStreet() {
+    if (!controller.organizerAddressForm.street.$valid) {
+      controller.hasErrors = true;
+      return;
+    }
+    controller.hasErrors = false;
+  }
+
+  function filterCities(value) {
+    return function (city) {
+      var length = value.length;
+      var words = value.match(/\w+/g);
+      var zipMatches = words.filter(function (word) {
+        return city.zip.substring(0, length) === word;
+      });
+      var nameMatches = words.filter(function (word) {
+        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+      });
+
+      return zipMatches.length + nameMatches.length >= words.length;
+    };
+  }
+
+  function orderByLevenshteinDistance(value) {
+    return function (city) {
+      return new Levenshtein(value, city.zip + '' + city.name);
+    };
+  }
+
+  /**
+   * Select City.
+   */
+  function selectCity($item, $label) {
+    controller.address.postalCode = $item.zip;
+    controller.address.addressLocality = $item.name;
+
+    controller.cityAutocompleteTextField = '';
+    controller.selectedCity = $label;
+  }
+
+  /**
+   * Change a city selection.
+   */
+  function changeCitySelection() {
+    controller.selectedCity = '';
+    controller.cityAutocompleteTextField = '';
+  }
+}
+OrganizerAddressComponent.$inject = ["cities", "Levenshtein"];
+
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
  * @ngdoc function
@@ -14150,30 +14234,22 @@ function OrganizerEditController(
     $uibModal,
     $state,
     $stateParams,
-    cities,
-    Levenshtein,
     $q
   ) {
   var controller = this;
   var organizerId = $stateParams.id;
 
-  controller.cities = cities;
-  controller.selectedCity = '';
   controller.contact = [];
   controller.showWebsiteValidation = false;
   controller.websiteError = false;
   controller.validUrl = true;
   controller.hasErrors = false;
-  controller.disableSubmit = true;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
+  controller.checkChanges = checkChanges;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
-  controller.filterCities = filterCities;
-  controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
-  controller.selectCity = selectCity;
-  controller.changeCitySelection = changeCitySelection;
   controller.validateOrganizer = validateOrganizer;
 
   var oldOrganizer = {};
@@ -14198,7 +14274,6 @@ function OrganizerEditController(
     controller.organizer = organizer;
     oldOrganizer = _.cloneDeep(organizer);
     controller.originalName = oldOrganizer.name;
-    controller.selectedCity = organizer.address.postalCode + ' ' + organizer.address.addressLocality;
 
     _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
       _.forEach(contactArray, function(value) {
@@ -14218,7 +14293,6 @@ function OrganizerEditController(
     if (!controller.organizerEditForm.website.$valid) {
       controller.validUrl = false;
       controller.showWebsiteValidation = false;
-      controller.disableSubmit = true;
       return;
     }
 
@@ -14230,20 +14304,17 @@ function OrganizerEditController(
           if (data.totalItems > 0) {
             controller.organizersWebsiteFound = true;
             controller.showWebsiteValidation = false;
-            controller.disableSubmit = true;
             controller.hasErrors = true;
           }
           else {
             controller.showWebsiteValidation = false;
             controller.organizersWebsiteFound = false;
-            controller.disableSubmit = false;
             controller.hasErrors = false;
           }
         }, function() {
           controller.websiteError = true;
           controller.showWebsiteValidation = false;
           controller.hasErrors = true;
-          controller.disableSubmit = true;
         });
 
     checkChanges();
@@ -14275,46 +14346,6 @@ function OrganizerEditController(
     controller.contact.splice(index, 1);
   }
 
-  function filterCities(value) {
-    return function (city) {
-      var length = value.length;
-      var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return zipMatches.length + nameMatches.length >= words.length;
-    };
-  }
-
-  function orderByLevenshteinDistance(value) {
-    return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
-    };
-  }
-
-  /**
-   * Select City.
-   */
-  function selectCity($item, $label) {
-    controller.organizer.address.postalCode = $item.zip;
-    controller.organizer.address.addressLocality = $item.name;
-
-    controller.cityAutocompleteTextField = '';
-    controller.selectedCity = $label;
-  }
-
-  /**
-   * Change a city selection.
-   */
-  function changeCitySelection() {
-    controller.selectedCity = '';
-    controller.cityAutocompleteTextField = '';
-  }
-
   /**
    * Validate the new organizer.
    */
@@ -14324,7 +14355,6 @@ function OrganizerEditController(
     // Forms are automatically known in scope.
     if (!controller.organizerEditForm.$valid) {
       controller.hasErrors = true;
-      controller.disableSubmit = true;
       return;
     }
 
@@ -14338,7 +14368,7 @@ function OrganizerEditController(
     isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
 
-    (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) ? controller.disableSubmit = false : controller.disableSubmit = true;
+    console.log('jes');
   }
 
   function saveOrganizer () {
@@ -14386,7 +14416,7 @@ function OrganizerEditController(
     );
   }
 }
-OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$uibModal", "$state", "$stateParams", "cities", "Levenshtein", "$q"];
+OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$uibModal", "$state", "$stateParams", "$q"];
 
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
@@ -21328,6 +21358,55 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/organizer-address.html',
+    "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error' : oac.organizerAddressForm.street.$error.required }\">\n" +
+    "                <label>Straat en nummer</label>\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"street\"\n" +
+    "                       ng-blur=\"oac.validateStreet()\"\n" +
+    "                       ng-model=\"oac.address.streetAddress\"\n" +
+    "                       required>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "            <div class=\"form-group\" ng-hide=\"oac.selectedCity !== ''\">\n" +
+    "                <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"oac.selectedCity !== ''\">\n" +
+    "                    Gemeente\n" +
+    "                </label>\n" +
+    "                <div id=\"gemeente-kiezer\">\n" +
+    "                    <input id=\"organizer-gemeente-autocomplete\"\n" +
+    "                           type=\"text\"\n" +
+    "                           class=\"form-control uib-typeahead\"\n" +
+    "                           placeholder=\"Gemeente of postcode\"\n" +
+    "                           ng-model=\"cityAutocompleteTextField\"\n" +
+    "                           uib-typeahead=\"city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
+    "                           typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
+    "                           typeahead-min-length=\"2\"\n" +
+    "                           typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                           autocomplete=\"off\">\n" +
+    "                    <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
+    "                        Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
+    "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\">Wijzigen</a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</form>"
+  );
+
+
   $templateCache.put('templates/event-form-organizer-modal.html',
     "\n" +
     "<div class=\"modal-header\">\n" +
@@ -23281,6 +23360,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <span ng-show=\"oec.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.website.$error.required\">Gelieve een website in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.street.$error.required\">Gelieve een straat en huisnummer in te vullen.<br /></span>\n" +
     "                </p>\n" +
     "\n" +
     "                <div class=\"form-group has-feedback\"\n" +
@@ -23310,51 +23390,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           name=\"name\"\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"oec.organizer.name\"\n" +
-    "                           ng-change=\"oec.validateName()\"\n" +
+    "                           ng-blur=\"oec.validateName()\"\n" +
     "                           required>\n" +
     "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
+    "    </form>\n" +
     "\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-sm-12 col-md-8\">\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label>Straat en nummer</label>\n" +
-    "                    <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"oec.organizer.address.streetAddress\">\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-sm-12 col-md-8\">\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"oec.selectedCity !== ''\">\n" +
-    "                        Gemeente\n" +
-    "                    </label>\n" +
-    "                    <div id=\"gemeente-kiezer\" ng-hide=\"oec.selectedCity !== ''\">\n" +
-    "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
-    "                               type=\"text\"\n" +
-    "                               class=\"form-control uib-typeahead\"\n" +
-    "                               placeholder=\"Gemeente of postcode\"\n" +
-    "                               ng-model=\"cityAutocompleteTextField\"\n" +
-    "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in oec.cities | filter:oec.filterCities($viewValue) | orderBy:oec.orderByLevenshteinDistance($viewValue)\"\n" +
-    "                               typeahead-on-select=\"oec.selectCity($item, $label)\"\n" +
-    "                               typeahead-min-length=\"2\"\n" +
-    "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                               autocomplete=\"off\">\n" +
-    "                        <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
-    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "\n" +
-    "                <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oec.selectedCity\">\n" +
-    "                    <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oec.selectedCity\"></span>\n" +
-    "                    <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oec.changeCitySelection()\">Wijzigen</a>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
+    "    <udb-organizer-address address=\"oec.organizer.address\"></udb-organizer-address>\n" +
     "\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-sm-12\">\n" +
@@ -23413,11 +23457,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </table>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "    </form>\n" +
     "\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "            ng-disabled=\"oec.disableSubmit\"\n" +
     "            ng-click=\"oec.validateOrganizer()\">\n" +
     "        Bewaren\n" +
     "    </button>\n" +

@@ -14,6 +14,7 @@
                     <span ng-show="oec.websiteError">Er ging iets mis met het controleren van de website.<br /></span>
                     <span ng-show="oec.organizerEditForm.website.$error.required">Gelieve een website in te vullen.<br /></span>
                     <span ng-show="oec.organizerEditForm.name.$error.required">Gelieve een naam in te vullen.<br /></span>
+                    <span ng-show="oec.organizerEditForm.street.$error.required">Gelieve een straat en huisnummer in te vullen.<br /></span>
                 </p>
 
                 <div class="form-group has-feedback"
@@ -43,51 +44,15 @@
                            name="name"
                            class="form-control"
                            ng-model="oec.organizer.name"
-                           ng-change="oec.validateName()"
+                           ng-blur="oec.validateName()"
                            required>
                     <p class="help-block">De officiële publieke naam van de organisatie.</p>
                 </div>
             </div>
         </div>
+    </form>
 
-        <div class="row">
-            <div class="col-sm-12 col-md-8">
-                <div class="form-group">
-                    <label>Straat en nummer</label>
-                    <input type="text" class="form-control" name="street" ng-model="oec.organizer.address.streetAddress">
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12 col-md-8">
-                <div class="form-group">
-                    <label for="organizer-gemeente-autocomplete" id="gemeente-label" ng-hide="oec.selectedCity !== ''">
-                        Gemeente
-                    </label>
-                    <div id="gemeente-kiezer" ng-hide="oec.selectedCity !== ''">
-                        <input id="organizer-gemeente-autocomplete"
-                               type="text"
-                               class="form-control uib-typeahead"
-                               placeholder="Gemeente of postcode"
-                               ng-model="cityAutocompleteTextField"
-                               uib-typeahead="city as city.zip + ' ' + city.name for city in oec.cities | filter:oec.filterCities($viewValue) | orderBy:oec.orderByLevenshteinDistance($viewValue)"
-                               typeahead-on-select="oec.selectCity($item, $label)"
-                               typeahead-min-length="2"
-                               typeahead-template-url="templates/city-suggestion.html"
-                               autocomplete="off">
-                        <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
-                            Er was een probleem tijdens het ophalen van de steden.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" id="gemeente-gekozen" ng-if="oec.selectedCity">
-                    <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::oec.selectedCity"></span>
-                    <a href="#" class="btn btn-default btn-link" ng-click="oec.changeCitySelection()">Wijzigen</a>
-                </div>
-            </div>
-        </div>
+    <udb-organizer-address address="oec.organizer.address"></udb-organizer-address>
 
         <div class="row">
             <div class="col-sm-12">
@@ -146,11 +111,9 @@
                 </table>
             </div>
         </div>
-    </form>
 
     <button type="button"
             class="btn btn-primary organisator-toevoegen-bewaren"
-            ng-disabled="oec.disableSubmit"
             ng-click="oec.validateOrganizer()">
         Bewaren
     </button>
