@@ -27,9 +27,11 @@ function OrganizerEditController(
   controller.websiteError = false;
   controller.validUrl = true;
   controller.hasErrors = false;
+  controller.disableSubmit = true;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
+  controller.validateAddress = validateAddress;
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
 
@@ -110,6 +112,11 @@ function OrganizerEditController(
     checkChanges();
   }
 
+  function validateAddress(address) {
+    controller.organizer.address = address;
+    checkChanges();
+  }
+
   /**
    * Validate the new organizer.
    */
@@ -131,6 +138,9 @@ function OrganizerEditController(
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
     isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
+
+    (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) ?
+        controller.disableSubmit = false : controller.disableSubmit = true;
   }
 
   function saveOrganizer () {

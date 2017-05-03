@@ -8799,7 +8799,8 @@ angular
       controller: OrganizerAddressComponent,
       controllerAs: 'oac',
       bindings: {
-        address: '<'
+        address: '<',
+        onUpdate: '&'
       }
     });
 
@@ -8824,6 +8825,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
       return;
     }
     controller.hasErrors = false;
+    sendUpdate();
   }
 
   function filterCities(value) {
@@ -8856,6 +8858,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
+    sendUpdate();
   }
 
   /**
@@ -8864,6 +8867,10 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   function changeCitySelection() {
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
+  }
+
+  function sendUpdate() {
+    controller.onUpdate({address: controller.address});
   }
 }
 OrganizerAddressComponent.$inject = ["cities", "Levenshtein"];
@@ -14298,9 +14305,11 @@ function OrganizerEditController(
   controller.websiteError = false;
   controller.validUrl = true;
   controller.hasErrors = false;
+  controller.disableSubmit = true;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
+  controller.validateAddress = validateAddress;
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
 
@@ -14381,6 +14390,11 @@ function OrganizerEditController(
     checkChanges();
   }
 
+  function validateAddress(address) {
+    controller.organizer.address = address;
+    checkChanges();
+  }
+
   /**
    * Validate the new organizer.
    */
@@ -14402,6 +14416,9 @@ function OrganizerEditController(
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
     isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
+
+    (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) ?
+        controller.disableSubmit = false : controller.disableSubmit = true;
   }
 
   function saveOrganizer () {
@@ -21400,7 +21417,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
-    "                       ng-blur=\"oac.validateStreet()\"\n" +
+    "                       ng-change=\"oac.validateStreet()\"\n" +
     "                       ng-model=\"oac.address.streetAddress\"\n" +
     "                       required>\n" +
     "            </div>\n" +
@@ -23492,11 +23509,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </div>\n" +
     "    </form>\n" +
     "\n" +
-    "    <udb-organizer-address address=\"oec.organizer.address\"></udb-organizer-address>\n" +
+    "    <udb-organizer-address address=\"oec.organizer.address\"\n" +
+    "                           on-update=\"oec.validateAddress(address)\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact-point=\"oec.organizer.contactPoint\"></udb-organizer-contact>\n" +
     "\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "            ng-disabled=\"oec.disableSubmit\"\n" +
     "            ng-click=\"oec.validateOrganizer()\">\n" +
     "        Bewaren\n" +
     "    </button>\n" +

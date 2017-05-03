@@ -52,11 +52,13 @@
         </div>
     </form>
 
-    <udb-organizer-address address="oec.organizer.address"></udb-organizer-address>
+    <udb-organizer-address address="oec.organizer.address"
+                           on-update="oec.validateAddress(address)"></udb-organizer-address>
     <udb-organizer-contact contact-point="oec.organizer.contactPoint"></udb-organizer-contact>
 
     <button type="button"
             class="btn btn-primary organisator-toevoegen-bewaren"
+            ng-disabled="oec.disableSubmit"
             ng-click="oec.validateOrganizer()">
         Bewaren
     </button>

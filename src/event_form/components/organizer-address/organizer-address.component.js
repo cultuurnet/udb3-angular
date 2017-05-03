@@ -14,7 +14,8 @@ angular
       controller: OrganizerAddressComponent,
       controllerAs: 'oac',
       bindings: {
-        address: '<'
+        address: '<',
+        onUpdate: '&'
       }
     });
 
@@ -39,6 +40,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
       return;
     }
     controller.hasErrors = false;
+    sendUpdate();
   }
 
   function filterCities(value) {
@@ -71,6 +73,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
+    sendUpdate();
   }
 
   /**
@@ -79,5 +82,9 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   function changeCitySelection() {
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
+  }
+
+  function sendUpdate() {
+    controller.onUpdate({address: controller.address});
   }
 }
