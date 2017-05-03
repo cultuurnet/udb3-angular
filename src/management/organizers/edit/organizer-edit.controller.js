@@ -25,7 +25,8 @@ function OrganizerEditController(
   controller.contact = [];
   controller.showWebsiteValidation = false;
   controller.websiteError = false;
-  controller.validUrl = true;
+  controller.invalidUrl = false;
+  controller.addressError = false;
   controller.hasErrors = false;
   controller.disableSubmit = true;
 
@@ -74,12 +75,12 @@ function OrganizerEditController(
     controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
-      controller.validUrl = false;
+      controller.invalidUrl = true;
       controller.showWebsiteValidation = false;
       return;
     }
 
-    controller.validUrl = true;
+    controller.invalidUrl = false;
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer)
@@ -114,7 +115,15 @@ function OrganizerEditController(
 
   function validateAddress(address) {
     controller.organizer.address = address;
-    checkChanges();
+    if (address.streetAddress) {
+      controller.hasErrors = false;
+      controller.addressError = false;
+      checkChanges();
+    }
+    else {
+      controller.hasErrors = true;
+      controller.addressError = true;
+    }
   }
 
   /**

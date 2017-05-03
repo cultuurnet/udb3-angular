@@ -37,9 +37,10 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   function validateStreet() {
     if (!controller.organizerAddressForm.street.$valid) {
       controller.hasErrors = true;
-      return;
     }
-    controller.hasErrors = false;
+    else {
+      controller.hasErrors = false;
+    }
     sendUpdate();
   }
 

@@ -8822,9 +8822,10 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   function validateStreet() {
     if (!controller.organizerAddressForm.street.$valid) {
       controller.hasErrors = true;
-      return;
     }
-    controller.hasErrors = false;
+    else {
+      controller.hasErrors = false;
+    }
     sendUpdate();
   }
 
@@ -14303,7 +14304,8 @@ function OrganizerEditController(
   controller.contact = [];
   controller.showWebsiteValidation = false;
   controller.websiteError = false;
-  controller.validUrl = true;
+  controller.invalidUrl = false;
+  controller.addressError = false;
   controller.hasErrors = false;
   controller.disableSubmit = true;
 
@@ -14352,12 +14354,12 @@ function OrganizerEditController(
     controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
-      controller.validUrl = false;
+      controller.invalidUrl = true;
       controller.showWebsiteValidation = false;
       return;
     }
 
-    controller.validUrl = true;
+    controller.invalidUrl = false;
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer)
@@ -14392,7 +14394,15 @@ function OrganizerEditController(
 
   function validateAddress(address) {
     controller.organizer.address = address;
-    checkChanges();
+    if (address.streetAddress) {
+      controller.hasErrors = false;
+      controller.addressError = false;
+      checkChanges();
+    }
+    else {
+      controller.hasErrors = true;
+      controller.addressError = true;
+    }
   }
 
   /**
@@ -23467,11 +23477,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"col-sm-12 col-md-8\">\n" +
     "                <p class=\"alert alert-danger\" ng-show=\"oec.hasErrors\">\n" +
     "                    <span ng-show=\"oec.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
-    "                    <span ng-show=\"oec.validUrl\"Gelieve een gelidge URL op te geven.<br /></span>\n" +
+    "                    <span ng-show=\"oec.invalidUrl\">Gelieve een gelidge URL op te geven.<br /></span>\n" +
     "                    <span ng-show=\"oec.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.website.$error.required\">Gelieve een website in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
-    "                    <span ng-show=\"oec.organizerEditForm.street.$error.required\">Gelieve een straat en huisnummer in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.addressError\">Gelieve een straat en huisnummer in te vullen.<br /></span>\n" +
     "                </p>\n" +
     "\n" +
     "                <div class=\"form-group has-feedback\"\n" +
