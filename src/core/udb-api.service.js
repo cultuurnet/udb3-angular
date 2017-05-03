@@ -247,7 +247,8 @@ function UdbApi(
   this.findOrganisations = function(start, limit, website, name) {
     var params = {
       limit: limit ? limit : 10,
-      start: start ? start : 0
+      start: start ? start : 0,
+      embed: true
     };
     if (website) { params.website = website; }
     if (name) { params.name = name; }
