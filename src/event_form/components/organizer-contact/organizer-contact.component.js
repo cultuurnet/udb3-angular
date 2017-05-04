@@ -29,8 +29,8 @@ function OrganizerContactComponent() {
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
 
   function validateContact() {
-    if (_.find(controller.contact, { 'value': '' }) ||
-        _.find(controller.contact, { 'value': undefined })) {
+    if (_.find(controller.contact, {'value': ''}) ||
+        _.find(controller.contact, {'value': undefined})) {
       controller.contactHasErrors = true;
     }
     else {

@@ -1,14 +1,16 @@
 <form name="oac.organizerAddressForm" class="organizer-address-form">
     <div class="row">
         <div class="col-sm-12 col-md-8">
-            <div class="form-group" ng-class="{'has-error' : oac.organizerAddressForm.street.$error.required }">
+            <div class="form-group" ng-class="{'has-error' : oac.streetHasErrors}">
                 <label>Straat en nummer</label>
                 <input type="text"
                        class="form-control"
                        name="street"
                        ng-change="oac.validateStreet()"
-                       ng-model="oac.address.streetAddress"
-                       required>
+                       ng-model="oac.address.streetAddress">
+                <div class="alert alert-danger" role="alert" ng-show="oac.streetHasErrors">
+                    Gelieve straat en nummer in te geven.
+                </div>
             </div>
         </div>
     </div>
@@ -16,7 +18,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-8">
             <div class="form-group" ng-hide="oac.selectedCity !== ''">
-                <label for="organizer-gemeente-autocomplete" id="gemeente-label" ng-hide="oac.selectedCity !== ''">
+                <label for="organizer-gemeente-autocomplete" id="gemeente-label">
                     Gemeente
                 </label>
                 <div id="gemeente-kiezer">
@@ -24,13 +26,13 @@
                            type="text"
                            class="form-control uib-typeahead"
                            placeholder="Gemeente of postcode"
-                           ng-model="cityAutocompleteTextField"
+                           ng-model="oac.cityAutocompleteTextField"
                            uib-typeahead="city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
                            typeahead-on-select="oac.selectCity($item, $label)"
                            typeahead-min-length="2"
                            typeahead-template-url="templates/city-suggestion.html"
                            autocomplete="off">
-                    <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
+                    <div class="alert alert-danger" role="alert" ng-show="oac.cityAutoCompleteError">
                         Er was een probleem tijdens het ophalen van de steden.
                     </div>
                 </div>

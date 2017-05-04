@@ -117,16 +117,15 @@ function OrganizerEditController(
     checkChanges();
   }
 
-  function validateAddress(address) {
+  function validateAddress(address, error) {
     controller.organizer.address = address;
-    if (address.streetAddress) {
-      controller.hasErrors = false;
-      controller.addressError = false;
-      checkChanges();
+    console.log(error);
+
+    if (error) {
+      controller.disableSubmit = true;
     }
     else {
-      controller.hasErrors = true;
-      controller.addressError = true;
+      checkChanges();
     }
   }
 
@@ -164,8 +163,12 @@ function OrganizerEditController(
     isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
 
-    (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) ?
-        controller.disableSubmit = false : controller.disableSubmit = true;
+    if (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) {
+      controller.disableSubmit = false;
+    }
+    else {
+      controller.disableSubmit = true;
+    }
   }
 
   function saveOrganizer () {
