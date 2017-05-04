@@ -21445,9 +21445,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       name=\"street\"\n" +
     "                       ng-change=\"oac.validateStreet()\"\n" +
     "                       ng-model=\"oac.address.streetAddress\">\n" +
-    "                <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"oac.streetHasErrors\">\n" +
+    "                <span class=\"help-block\" ng-show=\"oac.streetHasErrors\">\n" +
     "                    Gelieve straat en nummer in te geven.\n" +
-    "                </div>\n" +
+    "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -21469,9 +21469,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           typeahead-min-length=\"2\"\n" +
     "                           typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                           autocomplete=\"off\">\n" +
-    "                    <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"oac.cityAutoCompleteError\">\n" +
+    "                    <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
     "                        Er was een probleem tijdens het ophalen van de steden.\n" +
-    "                    </div>\n" +
+    "                    </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +

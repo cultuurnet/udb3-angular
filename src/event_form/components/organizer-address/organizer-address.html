@@ -8,9 +8,9 @@
                        name="street"
                        ng-change="oac.validateStreet()"
                        ng-model="oac.address.streetAddress">
-                <div class="alert alert-danger" role="alert" ng-show="oac.streetHasErrors">
+                <span class="help-block" ng-show="oac.streetHasErrors">
                     Gelieve straat en nummer in te geven.
-                </div>
+                </span>
             </div>
         </div>
     </div>
@@ -32,9 +32,9 @@
                            typeahead-min-length="2"
                            typeahead-template-url="templates/city-suggestion.html"
                            autocomplete="off">
-                    <div class="alert alert-danger" role="alert" ng-show="oac.cityAutoCompleteError">
+                    <span class="help-block" ng-show="oac.cityAutoCompleteError">
                         Er was een probleem tijdens het ophalen van de steden.
-                    </div>
+                    </span>
                 </div>
             </div>
 
