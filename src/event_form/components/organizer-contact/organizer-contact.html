@@ -18,7 +18,7 @@
                 udb-contact-info-validation
                 ng-class="{'has-error' : infoErrorMessage !== '' }">
                 <td>
-                    <select class="form-control" ng-model="info.type" ng-change="clearInfo();">
+                    <select class="form-control" ng-model="info.type" ng-change="clearInfo(); occ.validateContact()">
                         <option value="url">Website</option>
                         <option value="phone">Telefoonnummer</option>
                         <option value="email">E-mailadres</option>
@@ -31,15 +31,17 @@
                            class="form-control"
                            ng-model="info.value"
                            name="contact[{{key}}]"
-                           ng-change="validateInfo()"
-                           ng-model-options="{ updateOn: 'blur' }"/>
+                           ng-change="validateInfo(); occ.validateContact()"
+                           ng-model-options="{ updateOn: 'blur' }"
+                           required/>
                     <input type="text"
                            ng-switch-default
                            class="form-control"
                            ng-model="info.value"
                            name="contact[{{key}}]"
-                           ng-change="validateInfo()"
-                           ng-model-options="{ updateOn: 'blur' }"/>
+                           ng-change="validateInfo(); occ.validateContact()"
+                           ng-model-options="{ updateOn: 'blur' }"
+                           required/>
                     <span class="help-block" ng-if="infoErrorMessage" ng-bind="::infoErrorMessage"></span>
                 </td>
                 <td>

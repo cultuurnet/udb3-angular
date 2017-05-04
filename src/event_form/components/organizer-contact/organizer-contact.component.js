@@ -14,25 +14,29 @@ angular
       controller: OrganizerContactComponent,
       controllerAs: 'occ',
       bindings: {
-        contactPoint: '<'
+        contact: '<',
+        onUpdate: '&'
       }
     });
 
 /* @ngInject */
 function OrganizerContactComponent() {
   var controller = this;
+  controller.contactHasErrors = false;
 
-  controller.contact = [];
-
+  controller.validateContact = validateContact;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
 
-  if (controller.contactPoint !== null) {
-    _.forEach(controller.contactPoint, function(contactArray, key) {
-      _.forEach(contactArray, function(value) {
-        controller.contact.push({type: key, value: value});
-      });
-    });
+  function validateContact() {
+    if (_.find(controller.contact, { 'value': '' }) ||
+        _.find(controller.contact, { 'value': undefined })) {
+      controller.contactHasErrors = true;
+    }
+    else {
+      controller.contactHasErrors = false;
+    }
+    sendUpdate();
   }
 
   /**
@@ -43,6 +47,7 @@ function OrganizerContactComponent() {
       type : type,
       value : ''
     });
+    validateContact();
   }
 
   /**
@@ -50,5 +55,10 @@ function OrganizerContactComponent() {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
+    validateContact();
+  }
+
+  function sendUpdate() {
+    controller.onUpdate({contact: controller.contact, error: controller.contactHasErrors});
   }
 }

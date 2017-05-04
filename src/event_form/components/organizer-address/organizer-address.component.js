@@ -26,8 +26,6 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   controller.cities = cities;
   controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
 
-  controller.hasErrors = false;
-
   controller.validateStreet = validateStreet;
   controller.filterCities = filterCities;
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
@@ -35,12 +33,6 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   controller.changeCitySelection = changeCitySelection;
 
   function validateStreet() {
-    if (!controller.organizerAddressForm.street.$valid) {
-      controller.hasErrors = true;
-    }
-    else {
-      controller.hasErrors = false;
-    }
     sendUpdate();
   }
 

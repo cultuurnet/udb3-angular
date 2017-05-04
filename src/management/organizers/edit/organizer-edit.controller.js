@@ -12,6 +12,7 @@ angular
 
 /* @ngInject */
 function OrganizerEditController(
+    $scope,
     OrganizerManager,
     udbOrganizers,
     $uibModal,
@@ -27,12 +28,14 @@ function OrganizerEditController(
   controller.websiteError = false;
   controller.invalidUrl = false;
   controller.addressError = false;
+  controller.contactError = false;
   controller.hasErrors = false;
   controller.disableSubmit = true;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
   controller.validateAddress = validateAddress;
+  controller.validateContact = validateContact;
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
 
@@ -59,13 +62,14 @@ function OrganizerEditController(
     oldOrganizer = _.cloneDeep(organizer);
     controller.originalName = oldOrganizer.name;
 
-    _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
-      _.forEach(contactArray, function(value) {
-        controller.contact.push({type: key, value: value});
+    if (controller.organizer.contactPoint !== null) {
+      _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
+        _.forEach(contactArray, function(value) {
+          controller.contact.push({type: key, value: value});
+        });
       });
-    });
-
-    oldContact = _.cloneDeep(controller.contact);
+      oldContact = _.cloneDeep(controller.contact);
+    }
   }
 
   /**
@@ -123,6 +127,18 @@ function OrganizerEditController(
     else {
       controller.hasErrors = true;
       controller.addressError = true;
+    }
+  }
+
+  function validateContact(contact, error) {
+    controller.contact = contact;
+    controller.contactError = error;
+
+    if (controller.contactError) {
+      controller.disableSubmit = true;
+    }
+    else {
+      checkChanges();
     }
   }
 

@@ -54,7 +54,8 @@
 
     <udb-organizer-address address="oec.organizer.address"
                            on-update="oec.validateAddress(address)"></udb-organizer-address>
-    <udb-organizer-contact contact-point="oec.organizer.contactPoint"></udb-organizer-contact>
+    <udb-organizer-contact contact="oec.contact"
+                           on-update="oec.validateContact(contact, error)"></udb-organizer-contact>
 
     <button type="button"
             class="btn btn-primary organisator-toevoegen-bewaren"

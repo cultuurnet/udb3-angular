@@ -8811,8 +8811,6 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   controller.cities = cities;
   controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
 
-  controller.hasErrors = false;
-
   controller.validateStreet = validateStreet;
   controller.filterCities = filterCities;
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
@@ -8820,12 +8818,6 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   controller.changeCitySelection = changeCitySelection;
 
   function validateStreet() {
-    if (!controller.organizerAddressForm.street.$valid) {
-      controller.hasErrors = true;
-    }
-    else {
-      controller.hasErrors = false;
-    }
     sendUpdate();
   }
 
@@ -8891,25 +8883,29 @@ angular
       controller: OrganizerContactComponent,
       controllerAs: 'occ',
       bindings: {
-        contactPoint: '<'
+        contact: '<',
+        onUpdate: '&'
       }
     });
 
 /* @ngInject */
 function OrganizerContactComponent() {
   var controller = this;
+  controller.contactHasErrors = false;
 
-  controller.contact = [];
-
+  controller.validateContact = validateContact;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
 
-  if (controller.contactPoint !== null) {
-    _.forEach(controller.contactPoint, function(contactArray, key) {
-      _.forEach(contactArray, function(value) {
-        controller.contact.push({type: key, value: value});
-      });
-    });
+  function validateContact() {
+    if (_.find(controller.contact, { 'value': '' }) ||
+        _.find(controller.contact, { 'value': undefined })) {
+      controller.contactHasErrors = true;
+    }
+    else {
+      controller.contactHasErrors = false;
+    }
+    sendUpdate();
   }
 
   /**
@@ -8920,6 +8916,7 @@ function OrganizerContactComponent() {
       type : type,
       value : ''
     });
+    validateContact();
   }
 
   /**
@@ -8927,6 +8924,11 @@ function OrganizerContactComponent() {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
+    validateContact();
+  }
+
+  function sendUpdate() {
+    controller.onUpdate({contact: controller.contact, error: controller.contactHasErrors});
   }
 }
 
@@ -14291,6 +14293,7 @@ angular
 
 /* @ngInject */
 function OrganizerEditController(
+    $scope,
     OrganizerManager,
     udbOrganizers,
     $uibModal,
@@ -14306,12 +14309,14 @@ function OrganizerEditController(
   controller.websiteError = false;
   controller.invalidUrl = false;
   controller.addressError = false;
+  controller.contactError = false;
   controller.hasErrors = false;
   controller.disableSubmit = true;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
   controller.validateAddress = validateAddress;
+  controller.validateContact = validateContact;
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
 
@@ -14338,13 +14343,14 @@ function OrganizerEditController(
     oldOrganizer = _.cloneDeep(organizer);
     controller.originalName = oldOrganizer.name;
 
-    _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
-      _.forEach(contactArray, function(value) {
-        controller.contact.push({type: key, value: value});
+    if (controller.organizer.contactPoint !== null) {
+      _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
+        _.forEach(contactArray, function(value) {
+          controller.contact.push({type: key, value: value});
+        });
       });
-    });
-
-    oldContact = _.cloneDeep(controller.contact);
+      oldContact = _.cloneDeep(controller.contact);
+    }
   }
 
   /**
@@ -14402,6 +14408,18 @@ function OrganizerEditController(
     else {
       controller.hasErrors = true;
       controller.addressError = true;
+    }
+  }
+
+  function validateContact(contact, error) {
+    controller.contact = contact;
+    controller.contactError = error;
+
+    if (controller.contactError) {
+      controller.disableSubmit = true;
+    }
+    else {
+      checkChanges();
     }
   }
 
@@ -14476,7 +14494,7 @@ function OrganizerEditController(
     );
   }
 }
-OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$uibModal", "$state", "$stateParams", "$q"];
+OrganizerEditController.$inject = ["$scope", "OrganizerManager", "udbOrganizers", "$uibModal", "$state", "$stateParams", "$q"];
 
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
@@ -21488,7 +21506,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                udb-contact-info-validation\n" +
     "                ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
     "                <td>\n" +
-    "                    <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
+    "                    <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo(); occ.validateContact()\">\n" +
     "                        <option value=\"url\">Website</option>\n" +
     "                        <option value=\"phone\">Telefoonnummer</option>\n" +
     "                        <option value=\"email\">E-mailadres</option>\n" +
@@ -21501,15 +21519,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"info.value\"\n" +
     "                           name=\"contact[{{key}}]\"\n" +
-    "                           ng-change=\"validateInfo()\"\n" +
-    "                           ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                           ng-change=\"validateInfo(); occ.validateContact()\"\n" +
+    "                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
+    "                           required/>\n" +
     "                    <input type=\"text\"\n" +
     "                           ng-switch-default\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"info.value\"\n" +
     "                           name=\"contact[{{key}}]\"\n" +
-    "                           ng-change=\"validateInfo()\"\n" +
-    "                           ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
+    "                           ng-change=\"validateInfo(); occ.validateContact()\"\n" +
+    "                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
+    "                           required/>\n" +
     "                    <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
     "                </td>\n" +
     "                <td>\n" +
@@ -23521,7 +23541,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <udb-organizer-address address=\"oec.organizer.address\"\n" +
     "                           on-update=\"oec.validateAddress(address)\"></udb-organizer-address>\n" +
-    "    <udb-organizer-contact contact-point=\"oec.organizer.contactPoint\"></udb-organizer-contact>\n" +
+    "    <udb-organizer-contact contact=\"oec.contact\"\n" +
+    "                           on-update=\"oec.validateContact(contact, error)\"></udb-organizer-contact>\n" +
     "\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
