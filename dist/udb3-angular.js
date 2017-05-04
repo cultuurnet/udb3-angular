@@ -8999,8 +8999,6 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
   $scope.updateName = updateName;
   $scope.validateNewOrganizer = validateNewOrganizer;
@@ -9012,23 +9010,6 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
-  }
-
-  /**
-   * Add a contact info entry for an organizer.
-   */
-  function addOrganizerContactInfo(type) {
-    $scope.newOrganizer.contact.push({
-      type : type,
-      value : ''
-    });
-  }
-
-  /**
-   * Remove a given key of the contact info.
-   */
-  function deleteOrganizerContactInfo(index) {
-    $scope.newOrganizer.contact.splice(index, 1);
   }
 
   /**
@@ -21628,67 +21609,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12\">\n" +
-    "          <p><strong>Contact</strong></p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-12\">\n" +
-    "\n" +
-    "          <div ng-show=\"newOrganizer.contact.length === 0\">\n" +
-    "            <ul class=\"list-unstyled\">\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "\n" +
-    "          <table class=\"table\" ng-show=\"newOrganizer.contact.length\">\n" +
-    "            <tr ng-repeat=\"(key, info) in newOrganizer.contact\"\n" +
-    "                ng-model=\"info\"\n" +
-    "                udb-contact-info-validation\n" +
-    "                ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
-    "              <td>\n" +
-    "                <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
-    "                  <option value=\"url\">Website</option>\n" +
-    "                  <option value=\"phone\">Telefoonnummer</option>\n" +
-    "                  <option value=\"email\">E-mailadres</option>\n" +
-    "                </select>\n" +
-    "              </td>\n" +
-    "              <td ng-switch=\"info.type\">\n" +
-    "                <input type=\"text\"\n" +
-    "                       ng-switch-when=\"url\"\n" +
-    "                       udb-http-prefix\n" +
-    "                       class=\"form-control\"\n" +
-    "                       ng-model=\"info.value\"\n" +
-    "                       name=\"contact[{{key}}]\"\n" +
-    "                       ng-change=\"validateInfo()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                <input type=\"text\"\n" +
-    "                       ng-switch-default\n" +
-    "                       class=\"form-control\"\n" +
-    "                       ng-model=\"info.value\"\n" +
-    "                       name=\"contact[{{key}}]\"\n" +
-    "                       ng-change=\"validateInfo()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteOrganizerContactInfo(key)\">\n" +
-    "                  <span aria-hidden=\"true\">&times;</span>\n" +
-    "                </button>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
     "    </form>\n" +
     "\n" +
     "    <udb-organizer-address address=\"newOrganizer.address\"></udb-organizer-address>\n" +
+    "    <udb-organizer-contact contact=\"newOrganizer.contact\"></udb-organizer-contact>\n" +
     "\n" +
     "  </section>\n" +
     "\n" +

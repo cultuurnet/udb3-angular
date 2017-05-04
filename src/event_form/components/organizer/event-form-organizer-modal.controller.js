@@ -52,8 +52,6 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
   $scope.updateName = updateName;
   $scope.validateNewOrganizer = validateNewOrganizer;
@@ -65,23 +63,6 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
-  }
-
-  /**
-   * Add a contact info entry for an organizer.
-   */
-  function addOrganizerContactInfo(type) {
-    $scope.newOrganizer.contact.push({
-      type : type,
-      value : ''
-    });
-  }
-
-  /**
-   * Remove a given key of the contact info.
-   */
-  function deleteOrganizerContactInfo(index) {
-    $scope.newOrganizer.contact.splice(index, 1);
   }
 
   /**
