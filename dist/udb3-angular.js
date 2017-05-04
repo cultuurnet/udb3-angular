@@ -14307,6 +14307,7 @@ function OrganizerEditController(
   controller.contactError = false;
   controller.hasErrors = false;
   controller.disableSubmit = true;
+  controller.saveError = false;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
@@ -14469,27 +14470,10 @@ function OrganizerEditController(
         .then(function() {
           $state.go('management.organizers.search', {}, {reload: true});
         })
-        .catch(showProblem);
-  }
-
-  /**
-   * @param {ApiProblem} problem
-   */
-  function showProblem(problem) {
-    controller.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
-
-    var modalInstance = $uibModal.open(
-      {
-        templateUrl: 'templates/unexpected-error-modal.html',
-        controller: 'UnexpectedErrorModalController',
-        size: 'sm',
-        resolve: {
-          errorMessage: function() {
-            return controller.errorMessage;
-          }
-        }
-      }
-    );
+        .catch(function () {
+          controller.hasErrors = true;
+          controller.saveError = true;
+        });
   }
 }
 OrganizerEditController.$inject = ["$scope", "OrganizerManager", "udbOrganizers", "$uibModal", "$state", "$stateParams", "$q"];
@@ -23409,6 +23393,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <span ng-show=\"oec.organizerEditForm.website.$error.required\">Gelieve een website in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"oec.addressError\">Gelieve een straat en huisnummer in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +
     "                </p>\n" +
     "\n" +
     "                <div class=\"form-group has-feedback\"\n" +

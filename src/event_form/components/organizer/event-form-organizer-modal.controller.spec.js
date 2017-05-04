@@ -88,32 +88,6 @@ describe('Controller: Event Form Organizer Modal', function() {
     expect($uibModalInstance.dismiss).toHaveBeenCalled();
   });
 
-  it('should add contact info type', function() {
-    var controller = getController();
-    $scope.$digest();
-
-    $scope.addOrganizerContactInfo('email');
-
-    expect($scope.newOrganizer.contact).toEqual([{
-      type : 'email',
-      value : ''
-    }]);
-  });
-
-  it('should remove contact info type', function() {
-    var controller = getController();
-    $scope.$digest();
-
-    $scope.newOrganizer.contact = [{
-      type : 'email',
-      value : ''
-    }];
-
-    $scope.deleteOrganizerContactInfo(0);
-
-    expect($scope.newOrganizer.contact).toEqual([]);
-  });
-
   it('should return the chosen organizer', function() {
     // aka the origanizer found with the same url
     var controller = getController();

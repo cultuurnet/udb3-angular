@@ -12,10 +12,8 @@ angular
 
 /* @ngInject */
 function OrganizerEditController(
-    $scope,
     OrganizerManager,
     udbOrganizers,
-    $uibModal,
     $state,
     $stateParams,
     $q
@@ -31,6 +29,7 @@ function OrganizerEditController(
   controller.contactError = false;
   controller.hasErrors = false;
   controller.disableSubmit = true;
+  controller.saveError = false;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
@@ -119,7 +118,6 @@ function OrganizerEditController(
 
   function validateAddress(address, error) {
     controller.organizer.address = address;
-    console.log(error);
 
     if (error) {
       controller.disableSubmit = true;
@@ -173,6 +171,7 @@ function OrganizerEditController(
 
   function saveOrganizer () {
     var promises = [];
+
     if (isUrlChanged) {
       promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.url));
     }
@@ -193,26 +192,9 @@ function OrganizerEditController(
         .then(function() {
           $state.go('management.organizers.search', {}, {reload: true});
         })
-        .catch(showProblem);
-  }
-
-  /**
-   * @param {ApiProblem} problem
-   */
-  function showProblem(problem) {
-    controller.errorMessage = problem.title + (problem.detail ? ' ' + problem.detail : '');
-
-    var modalInstance = $uibModal.open(
-      {
-        templateUrl: 'templates/unexpected-error-modal.html',
-        controller: 'UnexpectedErrorModalController',
-        size: 'sm',
-        resolve: {
-          errorMessage: function() {
-            return controller.errorMessage;
-          }
-        }
-      }
-    );
+        .catch(function () {
+          controller.hasErrors = true;
+          controller.saveError = true;
+        });
   }
 }
