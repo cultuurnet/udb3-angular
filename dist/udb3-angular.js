@@ -20396,7 +20396,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
-    "            <tbody udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
+    "            <tbody ng-if=\"!isEmpty(event.bookingInfo)\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
