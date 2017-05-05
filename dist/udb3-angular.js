@@ -20345,15 +20345,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>\n" +
+    "                ui-sref='duplication.event({id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  Kopiëren en aanpassen</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
+    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
@@ -20463,20 +20463,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "<!--\n" +
-    "              <tr ng-class=\"::{muted: !event.image}\">\n" +
-    "                <td><strong>Afbeeldingen</strong></td>\n" +
-    "                <td>\n" +
-    "                  <img ng-if=\"::event.image\" class=\"img-responsive\" ng-src=\"{{::event.image}}?width=400\" />\n" +
-    "                  <p>\n" +
-    "                    <span ng-repeat=\"image in ::event.images\">\n" +
-    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
-    "                    </span>\n" +
-    "                    <span ng-if=\"::!event.image\">Geen afbeeldingen</span>\n" +
-    "                  </p>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "-->\n" +
     "            </tbody>\n" +
     "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
     "          </table>\n" +
@@ -23680,11 +23666,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deletePlace()\">Verwijderen</button>\n" +
+    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -23755,19 +23741,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <span ng-if=\"!place.typicalAgeRange\">Alle leeftijden</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "              <tr ng-class=\"::{muted: !place.image}\">\n" +
-    "                <td><strong>Afbeeldingen</strong></td>\n" +
-    "                <td>\n" +
-    "                  <img ng-if=\"::place.image\" class=\"img-responsive\" ng-src=\"{{::place.image}}?width=400\" />\n" +
-    "                  <p>\n" +
-    "                    <span ng-repeat=\"image in ::place.images\">\n" +
-    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
-    "                    </span>\n" +
-    "                    <span ng-if=\"::!place.image\">Geen afbeeldingen</span>\n" +
-    "                  </p>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
     "            </tbody>\n" +
+    "            <tbody udb-image-detail=\"::place.mediaObject\" image=\"::place.image\"></tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
     "      </div>\n" +
