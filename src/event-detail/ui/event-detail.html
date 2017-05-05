@@ -137,6 +137,7 @@
                   <span ng-if="!event.typicalAgeRange">Alle leeftijden</span>
                 </td>
               </tr>
+<!--
               <tr ng-class="::{muted: !event.image}">
                 <td><strong>Afbeeldingen</strong></td>
                 <td>
@@ -149,7 +150,9 @@
                   </p>
                 </td>
               </tr>
+-->
             </tbody>
+            <tbody udb-image-detail="::event.mediaObject"></tbody>
           </table>
         </div>
       </div>

@@ -2228,6 +2228,32 @@ function udbCalendarSummary() {
   udbDatepickerDirective.$inject = ["appConfig"];
 })();
 
+// Source: src/core/components/image-detail/image-detail.directive.js
+/**
+ * @ngdoc component
+ * @name udb.image-detail.directive:Image-detail
+ * @description
+ * # Image-detail
+ */
+angular
+  .module('udb.core')
+  .directive('udbImageDetail', function () {
+    return {
+      templateUrl: 'templates/image-detail.directive.html',
+      controller: ImageDetailController,
+      restrict: 'A',
+      scope: {
+        images: '<udbImageDetail'
+      }
+    };
+  });
+
+/* @ngInject */
+function ImageDetailController($scope) {
+
+}
+ImageDetailController.$inject = ["$scope"];
+
 // Source: src/core/components/multiselect/multiselect.directive.js
 (function () {
 /**
@@ -7538,6 +7564,7 @@ function EventDetail(
         });
 
     $scope.event = jsonLDLangFilter(event, language);
+    console.log(event);
 
     $scope.eventIdIsInvalid = false;
 
@@ -19717,6 +19744,29 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/image-detail.directive.html',
+    "<tr ng-class=\"::{muted: !images.length}\">\n" +
+    "    <td>\n" +
+    "        <strong>Afbeeldingen</strong>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::images.length\">\n" +
+    "        <ul class=\"list-unstyled media-list\">\n" +
+    "            <li ng-repeat=\"image in images\" class=\"media\">\n" +
+    "                <div class=\"media-left\">\n" +
+    "                    <img class=\"media-object\" src=\"{{image.contentUrl}}?height=100\" alt=\"{{'Afbeelding '+$index}}\">\n" +
+    "                </div>\n" +
+    "                <div class=\"media-body\">\n" +
+    "                    <p>{{image.description}}</p>\n" +
+    "                    <p>© {{image.copyrightHolder}}</p>\n" +
+    "                </div>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::!images.length\">Geen afbeeldingen</td>\n" +
+    "</tr>\n"
+  );
+
+
   $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
     "    <td><strong>Publicatiestatus</strong></td>\n" +
@@ -20407,6 +20457,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
+    "<!--\n" +
     "              <tr ng-class=\"::{muted: !event.image}\">\n" +
     "                <td><strong>Afbeeldingen</strong></td>\n" +
     "                <td>\n" +
@@ -20419,7 +20470,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </p>\n" +
     "                </td>\n" +
     "              </tr>\n" +
+    "-->\n" +
     "            </tbody>\n" +
+    "            <tbody udb-image-detail=\"::event.mediaObject\"></tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
     "      </div>\n" +

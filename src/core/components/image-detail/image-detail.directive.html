@@ -1,0 +1,19 @@
+<tr ng-class="::{muted: !images.length}">
+    <td>
+        <strong>Afbeeldingen</strong>
+    </td>
+    <td ng-if="::images.length">
+        <ul class="list-unstyled media-list">
+            <li ng-repeat="image in images" class="media">
+                <div class="media-left">
+                    <img class="media-object" src="{{image.contentUrl}}?height=100" alt="{{'Afbeelding '+$index}}">
+                </div>
+                <div class="media-body">
+                    <p>{{image.description}}</p>
+                    <p class="text-muted">© {{image.copyrightHolder}}</p>
+                </div>
+            </li>
+        </ul>
+    </td>
+    <td ng-if="::!images.length">Geen afbeeldingen</td>
+</tr>
