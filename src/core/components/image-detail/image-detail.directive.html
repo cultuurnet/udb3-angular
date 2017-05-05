@@ -4,14 +4,18 @@
     </td>
     <td ng-if="::images.length">
         <ul class="list-unstyled media-list">
-            <li ng-repeat="image in images" class="media">
+            <li ng-repeat="image in images | orderBy: '-main' " class="media">
                 <div class="media-left">
-                    <img class="media-object" src="{{image.contentUrl}}?height=100" alt="{{'Afbeelding '+$index}}">
+                    <a target="_blank" href="{{image.contentUrl}}">
+                        <img class="media-object" src="{{image.contentUrl}}?height=100" alt="{{'Afbeelding '+$index}}">
+                    </a>
                 </div>
                 <div class="media-body">
+                   <span ng-if="$first" class="label label-primary">Hoofdafbeelding</span>
                     <p>{{image.description}}</p>
                     <p class="text-muted">© {{image.copyrightHolder}}</p>
                 </div>
+                <hr ng-if="!$last">
             </li>
         </ul>
     </td>

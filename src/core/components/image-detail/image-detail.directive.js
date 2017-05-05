@@ -14,12 +14,15 @@ angular
       controller: ImageDetailController,
       restrict: 'A',
       scope: {
-        images: '<udbImageDetail'
+        images: '<udbImageDetail',
+        main : '<image'
       }
     };
   });
 
 /* @ngInject */
 function ImageDetailController($scope) {
-
+  angular.forEach($scope.images, function(image) {
+    image.main = (image.contentUrl === $scope.main);
+  });
 }

@@ -2243,14 +2243,17 @@ angular
       controller: ImageDetailController,
       restrict: 'A',
       scope: {
-        images: '<udbImageDetail'
+        images: '<udbImageDetail',
+        main : '<image'
       }
     };
   });
 
 /* @ngInject */
 function ImageDetailController($scope) {
-
+  angular.forEach($scope.images, function(image) {
+    image.main = (image.contentUrl === $scope.main);
+  });
 }
 ImageDetailController.$inject = ["$scope"];
 
@@ -7564,7 +7567,6 @@ function EventDetail(
         });
 
     $scope.event = jsonLDLangFilter(event, language);
-    console.log(event);
 
     $scope.eventIdIsInvalid = false;
 
@@ -19751,14 +19753,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </td>\n" +
     "    <td ng-if=\"::images.length\">\n" +
     "        <ul class=\"list-unstyled media-list\">\n" +
-    "            <li ng-repeat=\"image in images\" class=\"media\">\n" +
+    "            <li ng-repeat=\"image in images | orderBy: '-main' \" class=\"media\">\n" +
     "                <div class=\"media-left\">\n" +
-    "                    <img class=\"media-object\" src=\"{{image.contentUrl}}?height=100\" alt=\"{{'Afbeelding '+$index}}\">\n" +
+    "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
+    "                        <img class=\"media-object\" src=\"{{image.contentUrl}}?height=100\" alt=\"{{'Afbeelding '+$index}}\">\n" +
+    "                    </a>\n" +
     "                </div>\n" +
     "                <div class=\"media-body\">\n" +
+    "                   <span ng-if=\"$first\" class=\"label label-primary\">Hoofdafbeelding</span>\n" +
     "                    <p>{{image.description}}</p>\n" +
-    "                    <p>© {{image.copyrightHolder}}</p>\n" +
+    "                    <p class=\"text-muted\">© {{image.copyrightHolder}}</p>\n" +
     "                </div>\n" +
+    "                <hr ng-if=\"!$last\">\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
@@ -20472,7 +20478,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </tr>\n" +
     "-->\n" +
     "            </tbody>\n" +
-    "            <tbody udb-image-detail=\"::event.mediaObject\"></tbody>\n" +
+    "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
     "          </table>\n" +
     "        </div>\n" +
     "      </div>\n" +
