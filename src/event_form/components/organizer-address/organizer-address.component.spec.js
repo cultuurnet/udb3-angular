@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Component: Organizer Address', function() {
-  var $scope, $controller, $componentController, cities, component, Levenshtein;
+  var $scope, $componentController, cities, component, Levenshtein;
 
   var fakeAddress =  {
     addressCountry: 'BE',
@@ -12,8 +12,7 @@ describe('Component: Organizer Address', function() {
 
   beforeEach(module('udb.event-form'));
 
-  beforeEach(inject(function(_$controller_, $rootScope, _$componentController_, $injector) {
-    $controller = _$controller_;
+  beforeEach(inject(function($rootScope, _$componentController_, $injector) {
     $scope = $rootScope.$new();
     $componentController = _$componentController_;
     cities = $injector.get('cities');
@@ -36,20 +35,20 @@ describe('Component: Organizer Address', function() {
     );
   }
 
-  it ('should initialise the organizer address component', function () {
+  it('should initialise the organizer address component', function () {
     component = getComponent();
     expect(component.selectedCity).toEqual('3000 Leuven');
     expect(component.cities).toEqual(cities);
   });
 
-  it ('should initialise the component even when the address is empty', function () {
+  it('should initialise the component even when the address is empty', function () {
     fakeAddress.addressLocality = '';
     component = getComponent();
 
     expect(component.selectedCity).toEqual('');
   });
 
-  it ('should validate the input of streetAddress', function () {
+  it('should validate the input of streetAddress', function () {
     fakeAddress.addressLocality = 'Leuven';
     component = getComponent();
     component.onUpdate = function() {
@@ -61,7 +60,7 @@ describe('Component: Organizer Address', function() {
     expect(component.streetHasErrors).toBeFalsy();
   });
 
-  it ('should validate the input of streetAddress and throw an error when not valid', function () {
+  it('should validate the input of streetAddress and throw an error when not valid', function () {
     fakeAddress.streetAddress = '';
     component = getComponent();
     component.onUpdate = function() {
@@ -73,7 +72,7 @@ describe('Component: Organizer Address', function() {
     expect(component.streetHasErrors).toBeTruthy();
   });
 
-  it ('should select a city', function() {
+  it('should select a city', function() {
     var item = {
       name: 'Turnhout',
       zip: '2300'
@@ -91,7 +90,7 @@ describe('Component: Organizer Address', function() {
     expect(component.selectedCity).toEqual('2300 Turnhout');
   });
 
-  it ('should reset the city selection', function () {
+  it('should reset the city selection', function () {
     component = getComponent();
     component.onUpdate = function() {
       sendUpdateMock();
