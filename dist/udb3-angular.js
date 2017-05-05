@@ -4755,6 +4755,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.workflowStatus) {
         this.workflowStatus = jsonPlace.workflowStatus;
       }
+
+      if (jsonPlace.availableFrom) {
+        this.availableFrom = jsonPlace.availableFrom;
+      }
     },
 
     /**
