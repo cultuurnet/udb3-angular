@@ -20226,11 +20226,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </span>\n" +
     "            </li>\n" +
     "            <li ng-if=\"::bookingInfo.phone\" ng-bind=\"::bookingInfo.phone\"></li>\n" +
-    "            <li ng-if=\"::bookingInfo.email\" ng-bind=\"::bookingInfo.email\"></li>\n" +
+    "            <li ng-if=\"::bookingInfo.email\"> <a href=\"{{'mailto:'+ bookingInfo.email}}\">{{::bookingInfo.email}}</a></li>\n" +
+    "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::isEmpty(bookingInfo)\">Geen reservatie info</td>\n" +
-    "</tr>"
+    "</tr>\n"
   );
 
 
