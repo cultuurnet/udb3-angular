@@ -24,11 +24,9 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   var controller = this;
 
   controller.cities = cities;
+  controller.selectedCity = '';
   if (controller.address.addressLocality) {
     controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
-  }
-  else {
-    controller.selectedCity = '';
   }
 
   controller.streetHasErrors = false;
