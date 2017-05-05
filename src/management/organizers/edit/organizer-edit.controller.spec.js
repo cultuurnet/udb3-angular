@@ -1,8 +1,8 @@
 'use strict';
 
 describe('Controller: Organizer Edit', function() {
-  var OrganizerManager, udbOrganizers, $uibModal, $state, $stateParams,
-      $q, $controller, $scope, organizerEditForm;
+  var OrganizerManager, udbOrganizers, $state, $stateParams,
+      $q, $controller, $scope, organizerEditForm, fakeSearchResult;
 
   var fakeOrganizer = {
     "name": "STUK",
@@ -31,43 +31,6 @@ describe('Controller: Organizer Edit', function() {
       {
         "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
         "name": "Mijn label"
-      }
-    ]
-  };
-
-  var fakeSearchResult = {
-    "itemsPerPage": 30,
-    "totalItems": 3562,
-    "member": [
-      {
-        "name": "STUK",
-        "address": {
-          "addressCountry": "BE",
-          "addressLocality": "Leuven",
-          "postalCode": 3000,
-          "streetAddress": "Sluisstraat 79"
-        },
-        "contactPoint": {
-          "url": [
-            "http://google.be"
-          ],
-          "email": [
-            "joske@2dotstwice.be"
-          ],
-          "phone": [
-            "0123456789"
-          ]
-        },
-        "creator": "evenementen@stad.diksmuide.be",
-        "created": "2015-05-07T12:02:53+00:00",
-        "modified": "2015-05-07T12:02:53+00:00",
-        "url": "http://www.stuk.be/",
-        "labels": [
-          {
-            "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
-            "name": "Mijn label"
-          }
-        ]
       }
     ]
   };
@@ -114,6 +77,43 @@ describe('Controller: Organizer Edit', function() {
         $valid: true
       },
       name: 'STUK'
+    };
+
+    fakeSearchResult = {
+      "itemsPerPage": 30,
+      "totalItems": 3562,
+      "member": [
+        {
+          "name": "STUK2",
+          "address": {
+            "addressCountry": "BE",
+            "addressLocality": "Leuven",
+            "postalCode": 3000,
+            "streetAddress": "Sluisstraat 79"
+          },
+          "contactPoint": {
+            "url": [
+              "http://google.be"
+            ],
+            "email": [
+              "joske@2dotstwice.be"
+            ],
+            "phone": [
+              "0123456789"
+            ]
+          },
+          "creator": "evenementen@stad.diksmuide.be",
+          "created": "2015-05-07T12:02:53+00:00",
+          "modified": "2015-05-07T12:02:53+00:00",
+          "url": "http://www.stuk.be/",
+          "labels": [
+            {
+              "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
+              "name": "Mijn label"
+            }
+          ]
+        }
+      ]
     };
 
   }));
@@ -181,7 +181,7 @@ describe('Controller: Organizer Edit', function() {
     controller.validateWebsite();
     $scope.$digest();
 
-    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer);
+    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
     expect(controller.organizersWebsiteFound).toBeTruthy();
     expect(controller.showWebsiteValidation).toBeFalsy();
     expect(controller.disableSubmit).toBeTruthy();
@@ -199,10 +199,31 @@ describe('Controller: Organizer Edit', function() {
     controller.validateWebsite();
     $scope.$digest();
 
-    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer);
+    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
     expect(controller.organizersWebsiteFound).toBeFalsy();
     expect(controller.showWebsiteValidation).toBeFalsy();
   });
+
+  it ('should validate the website and don\'t throw an error when the given website is used by the current organizer',
+      function () {
+        getMockUps();
+
+        var controller = getController();
+        $scope.$digest();
+
+        controller.organizerEditForm = organizerEditForm;
+        fakeSearchResult.totalItems = 1;
+        fakeSearchResult.member[0].name = 'STUK';
+
+        udbOrganizers.findOrganizersWebsite.and.returnValue($q.resolve(fakeSearchResult));
+        controller.validateWebsite();
+        $scope.$digest();
+
+        expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
+        expect(controller.organizersWebsiteFound).toBeFalsy();
+        expect(controller.showWebsiteValidation).toBeFalsy();
+        expect(controller.hasErrors).toBeFalsy();
+      });
 
   it ('should fail in validating the website', function () {
     getMockUps();
@@ -215,7 +236,7 @@ describe('Controller: Organizer Edit', function() {
     controller.validateWebsite();
     $scope.$digest();
 
-    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer);
+    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
     expect(controller.websiteError).toBeTruthy();
     expect(controller.showWebsiteValidation).toBeFalsy();
   });

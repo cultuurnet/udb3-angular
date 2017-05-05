@@ -8809,11 +8809,9 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   var controller = this;
 
   controller.cities = cities;
+  controller.selectedCity = '';
   if (controller.address.addressLocality) {
     controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
-  }
-  else {
-    controller.selectedCity = '';
   }
 
   controller.streetHasErrors = false;
@@ -14288,10 +14286,8 @@ angular
 
 /* @ngInject */
 function OrganizerEditController(
-    $scope,
     OrganizerManager,
     udbOrganizers,
-    $uibModal,
     $state,
     $stateParams,
     $q
@@ -14364,12 +14360,20 @@ function OrganizerEditController(
     controller.invalidUrl = false;
 
     udbOrganizers
-        .findOrganizersWebsite(controller.organizer)
+        .findOrganizersWebsite(controller.organizer.url)
         .then(function (data) {
+          console.log(data);
           if (data.totalItems > 0) {
-            controller.organizersWebsiteFound = true;
-            controller.showWebsiteValidation = false;
-            controller.hasErrors = true;
+            if (data.member[0].name === controller.originalName) {
+              controller.showWebsiteValidation = false;
+              controller.organizersWebsiteFound = false;
+              controller.hasErrors = false;
+            }
+            else {
+              controller.organizersWebsiteFound = true;
+              controller.showWebsiteValidation = false;
+              controller.hasErrors = true;
+            }
           }
           else {
             controller.showWebsiteValidation = false;
@@ -14396,7 +14400,6 @@ function OrganizerEditController(
 
   function validateAddress(address, error) {
     controller.organizer.address = address;
-    console.log(error);
 
     if (error) {
       controller.disableSubmit = true;
@@ -14450,6 +14453,7 @@ function OrganizerEditController(
 
   function saveOrganizer () {
     var promises = [];
+
     if (isUrlChanged) {
       promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.url));
     }
@@ -14476,7 +14480,7 @@ function OrganizerEditController(
         });
   }
 }
-OrganizerEditController.$inject = ["$scope", "OrganizerManager", "udbOrganizers", "$uibModal", "$state", "$stateParams", "$q"];
+OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q"];
 
 // Source: src/management/organizers/organizer-detail.controller.js
 /**

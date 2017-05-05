@@ -86,12 +86,19 @@ function OrganizerEditController(
     controller.invalidUrl = false;
 
     udbOrganizers
-        .findOrganizersWebsite(controller.organizer)
+        .findOrganizersWebsite(controller.organizer.url)
         .then(function (data) {
           if (data.totalItems > 0) {
-            controller.organizersWebsiteFound = true;
-            controller.showWebsiteValidation = false;
-            controller.hasErrors = true;
+            if (data.member[0].name === controller.originalName) {
+              controller.showWebsiteValidation = false;
+              controller.organizersWebsiteFound = false;
+              controller.hasErrors = false;
+            }
+            else {
+              controller.organizersWebsiteFound = true;
+              controller.showWebsiteValidation = false;
+              controller.hasErrors = true;
+            }
           }
           else {
             controller.showWebsiteValidation = false;
