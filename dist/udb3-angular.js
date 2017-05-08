@@ -14487,7 +14487,7 @@ function OrganizerEditController(
         .then(function() {
           $state.go('management.organizers.search', {}, {reload: true});
         })
-        .catch(function (error) {
+        .catch(function () {
           controller.hasErrors = true;
           controller.saveError = true;
         });
@@ -23440,7 +23440,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           name=\"name\"\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"oec.organizer.name\"\n" +
-    "                           ng-blur=\"oec.validateName()\"\n" +
+    "                           ng-change=\"oec.validateName()\"\n" +
     "                           required>\n" +
     "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
     "                </div>\n" +
@@ -23454,11 +23454,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           on-update=\"oec.validateContact(contact, error)\"></udb-organizer-contact>\n" +
     "\n" +
     "    <button type=\"button\"\n" +
-    "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "            class=\"btn btn-primary organisator-bewerken-bewaren\"\n" +
     "            ng-disabled=\"oec.disableSubmit\"\n" +
     "            ng-click=\"oec.validateOrganizer()\">\n" +
     "        Bewaren\n" +
     "    </button>\n" +
+    "    <a class=\"btn btn-default organisator-bewerken-annuleren\"\n" +
+    "       ui-sref=\"management.organizers.search\">Annuleren</a>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-show=\"oec.loadingError\">\n" +

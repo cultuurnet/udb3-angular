@@ -208,7 +208,7 @@ function OrganizerEditController(
         .then(function() {
           $state.go('management.organizers.search', {}, {reload: true});
         })
-        .catch(function (error) {
+        .catch(function () {
           controller.hasErrors = true;
           controller.saveError = true;
         });

@@ -45,7 +45,7 @@
                            name="name"
                            class="form-control"
                            ng-model="oec.organizer.name"
-                           ng-blur="oec.validateName()"
+                           ng-change="oec.validateName()"
                            required>
                     <p class="help-block">De officiële publieke naam van de organisatie.</p>
                 </div>
@@ -59,11 +59,13 @@
                            on-update="oec.validateContact(contact, error)"></udb-organizer-contact>
 
     <button type="button"
-            class="btn btn-primary organisator-toevoegen-bewaren"
+            class="btn btn-primary organisator-bewerken-bewaren"
             ng-disabled="oec.disableSubmit"
             ng-click="oec.validateOrganizer()">
         Bewaren
     </button>
+    <a class="btn btn-default organisator-bewerken-annuleren"
+       ui-sref="management.organizers.search">Annuleren</a>
 </div>
 
 <div ng-show="oec.loadingError">
