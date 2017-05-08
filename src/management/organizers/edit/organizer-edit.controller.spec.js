@@ -150,7 +150,7 @@ describe('Controller: Organizer Edit', function() {
     expect(controller.contact).toEqual(contact);
   });
 
-  it ('shouldn\'t validate the website when the formfield isn\'t valid', function () {
+  it ('shouldn\'t validate the website when the form field isn\'t valid', function () {
     organizerEditForm = {
       website: {
         $valid: false
@@ -239,6 +239,84 @@ describe('Controller: Organizer Edit', function() {
     expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
     expect(controller.websiteError).toBeTruthy();
     expect(controller.showWebsiteValidation).toBeFalsy();
+  });
+
+  it ('should validate the name', function () {
+    organizerEditForm = {
+      name: {
+        $valid: true
+      }
+    };
+
+    getMockUps();
+    var controller = getController();
+    controller.organizerEditForm = organizerEditForm;
+    $scope.$digest();
+
+    controller.validateName();
+
+    expect(controller.hasErrors).toBeFalsy();
+  });
+
+  it ('should validate the address', function () {
+    var address = {
+      addressCountry: 'BE',
+      addressLocality: 'Leuven',
+      postalCode: 3000,
+      streetAddress: 'Andere straat 179'
+    };
+
+    getMockUps();
+    var controller = getController();
+    $scope.$digest();
+    controller.validateAddress(address, false);
+
+    expect(controller.addressError).toBeFalsy();
+    expect(controller.hasErrors).toBeFalsy();
+    expect(controller.disableSubmit).toBeFalsy();
+  });
+
+  it ('should validate the address and throw an error when an existing address is changed to empty', function () {
+    var address = {
+      addressCountry: '',
+      addressLocality: '',
+      postalCode: '',
+      streetAddress: ''
+    };
+
+    getMockUps();
+    var controller = getController();
+    $scope.$digest();
+    controller.validateAddress(address, false);
+
+    expect(controller.disableSubmit).toBeTruthy();
+    expect(controller.addressError).toBeTruthy();
+    expect(controller.hasErrors).toBeTruthy();
+  });
+
+  it ('should validate the address and disable submit when address component throws an error', function () {
+    var address = {
+      addressCountry: 'BE',
+      addressLocality: 'Leuven',
+      postalCode: 3000,
+      streetAddress: ''
+    };
+
+    getMockUps();
+    var controller = getController();
+    $scope.$digest();
+    controller.validateAddress(address, true);
+
+    expect(controller.disableSubmit).toBeTruthy();
+  });
+
+  it ('should validate the contact info and throw an error when not valid', function () {
+    getMockUps();
+    var controller = getController();
+    $scope.$digest();
+    controller.validateContact([], true);
+
+    expect(controller.contactError).toBeTruthy();
   });
 
   it ('shouldn\'t validate the organizer when the form is invalid', function () {
