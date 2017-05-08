@@ -8968,8 +8968,6 @@ function EventFormOrganizerModalController(
   udbOrganizers,
   UdbOrganizer,
   eventCrud,
-  cities,
-  Levenshtein,
   $q,
   organizerName
 ) {
@@ -9134,53 +9132,8 @@ function EventFormOrganizerModalController(
       });
   }
 
-  // Scope functions.
-  $scope.cities = cities;
-  $scope.changeCitySelection = changeCitySelection;
-
-  $scope.filterCities = function(value) {
-    return function (city) {
-      var length = value.length;
-      var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return zipMatches.length + nameMatches.length >= words.length;
-    };
-  };
-
-  $scope.orderByLevenshteinDistance = function(value) {
-    return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
-    };
-  };
-
-  /**
-   * Select City.
-   */
-  controller.selectCity = function ($item, $label) {
-    $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.addressLocality = $item.name;
-
-    $scope.cityAutocompleteTextField = '';
-    $scope.selectedCity = $label;
-  };
-  $scope.selectCity = controller.selectCity;
-
-  /**
-   * Change a city selection.
-   */
-  function changeCitySelection() {
-    $scope.selectedCity = '';
-    $scope.cityAutocompleteTextField = '';
-  }
-
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
