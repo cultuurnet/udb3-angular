@@ -74,6 +74,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   function selectCity($item, $label) {
     controller.address.postalCode = $item.zip;
     controller.address.addressLocality = $item.name;
+    controller.address.addressCountry = 'BE';
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
@@ -84,6 +85,10 @@ function OrganizerAddressComponent(cities, Levenshtein) {
    * Change a city selection.
    */
   function changeCitySelection() {
+    controller.address.postalCode = '';
+    controller.address.addressLocality = '';
+    controller.address.addressCountry = '';
+
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
     validateStreet();

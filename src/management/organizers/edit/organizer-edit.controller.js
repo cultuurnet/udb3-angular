@@ -126,11 +126,20 @@ function OrganizerEditController(
   function validateAddress(address, error) {
     controller.organizer.address = address;
 
-    if (error) {
+    if (oldOrganizer.address.addressLocality !== '' && address.addressLocality === '') {
       controller.disableSubmit = true;
+      controller.addressError = true;
+      controller.hasErrors = true;
     }
     else {
-      checkChanges();
+      if (error) {
+        controller.disableSubmit = true;
+      }
+      else {
+        controller.addressError = false;
+        controller.hasErrors = false;
+        checkChanges();
+      }
     }
   }
 
@@ -199,7 +208,7 @@ function OrganizerEditController(
         .then(function() {
           $state.go('management.organizers.search', {}, {reload: true});
         })
-        .catch(function () {
+        .catch(function (error) {
           controller.hasErrors = true;
           controller.saveError = true;
         });

@@ -8859,6 +8859,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   function selectCity($item, $label) {
     controller.address.postalCode = $item.zip;
     controller.address.addressLocality = $item.name;
+    controller.address.addressCountry = 'BE';
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
@@ -8869,6 +8870,10 @@ function OrganizerAddressComponent(cities, Levenshtein) {
    * Change a city selection.
    */
   function changeCitySelection() {
+    controller.address.postalCode = '';
+    controller.address.addressLocality = '';
+    controller.address.addressCountry = '';
+
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
     validateStreet();
@@ -14400,11 +14405,20 @@ function OrganizerEditController(
   function validateAddress(address, error) {
     controller.organizer.address = address;
 
-    if (error) {
+    if (oldOrganizer.address.addressLocality !== '' && address.addressLocality === '') {
       controller.disableSubmit = true;
+      controller.addressError = true;
+      controller.hasErrors = true;
     }
     else {
-      checkChanges();
+      if (error) {
+        controller.disableSubmit = true;
+      }
+      else {
+        controller.addressError = false;
+        controller.hasErrors = false;
+        checkChanges();
+      }
     }
   }
 
@@ -14473,7 +14487,7 @@ function OrganizerEditController(
         .then(function() {
           $state.go('management.organizers.search', {}, {reload: true});
         })
-        .catch(function () {
+        .catch(function (error) {
           controller.hasErrors = true;
           controller.saveError = true;
         });
