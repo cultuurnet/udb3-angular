@@ -14362,7 +14362,6 @@ function OrganizerEditController(
     udbOrganizers
         .findOrganizersWebsite(controller.organizer.url)
         .then(function (data) {
-          console.log(data);
           if (data.totalItems > 0) {
             if (data.member[0].name === controller.originalName) {
               controller.showWebsiteValidation = false;
@@ -23558,12 +23557,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </span>\n" +
     "    </td>\n" +
     "    <td class=\"text-right\">\n" +
-    "        <div class=\"btn-group\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
-    "                Bewerken <span class=\"caret\"></span></button>\n" +
-    "            <ul class=\"dropdown-menu dropdown-menu-right\">\n" +
-    "                <li><a ui-sref=\"management.organizers.edit({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
-    "                <li><a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a></li>\n" +
+    "        <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "            <a class=\"btn btn-default\" ui-sref=\"management.organizers.edit({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a>\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "            <ul uib-dropdown-menu role=\"menu\">\n" +
+    "                <li role=\"menuitem\">\n" +
+    "                    <a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a>\n" +
+    "                </li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
     "    </td>\n" +

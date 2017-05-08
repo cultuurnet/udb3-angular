@@ -15,12 +15,13 @@
         </span>
     </td>
     <td class="text-right">
-        <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Bewerken <span class="caret"></span></button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li><a ui-sref="management.organizers.edit({id: osic.organization.id})" ui-sref-opts="{reload:true}">Bewerken</a></li>
-                <li><a ui-sref="management.organizers.search.delete({id: osic.organization.id})">Verwijderen</a></li>
+        <div class="pull-right btn-group" uib-dropdown>
+            <a class="btn btn-default" ui-sref="management.organizers.edit({id: osic.organization.id})" ui-sref-opts="{reload:true}">Bewerken</a>
+            <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
+            <ul uib-dropdown-menu role="menu">
+                <li role="menuitem">
+                    <a ui-sref="management.organizers.search.delete({id: osic.organization.id})">Verwijderen</a>
+                </li>
             </ul>
         </div>
     </td>
