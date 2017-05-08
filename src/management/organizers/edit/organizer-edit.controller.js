@@ -25,7 +25,6 @@ function OrganizerEditController(
   controller.contact = [];
   controller.showWebsiteValidation = false;
   controller.websiteError = false;
-  controller.invalidUrl = false;
   controller.addressError = false;
   controller.contactError = false;
   controller.hasErrors = false;
@@ -81,12 +80,10 @@ function OrganizerEditController(
     controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
-      controller.invalidUrl = true;
       controller.showWebsiteValidation = false;
+      controller.hasErrors = true;
       return;
     }
-
-    controller.invalidUrl = false;
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer.url)

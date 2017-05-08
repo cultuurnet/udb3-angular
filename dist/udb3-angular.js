@@ -9895,18 +9895,24 @@ function UdbContactInfoValidationDirective() {
       ngModel.$setValidity('contactinfo', true);
       scope.infoErrorMessage = '';
 
-      if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-        EMAIL_REGEXP.test(ngModel.$modelValue.value);
-        scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+      if (!ngModel.$viewValue.value) {
+        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten';
         ngModel.$setValidity('contactinfo', false);
-
       }
-      else if (ngModel.$modelValue.type === 'url') {
-        var viewValue = ngModel.$viewValue;
-
-        if (!URL_REGEXP.test(viewValue.value)) {
-          scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+      else {
+        if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
+          EMAIL_REGEXP.test(ngModel.$modelValue.value);
+          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
           ngModel.$setValidity('contactinfo', false);
+
+        }
+        else if (ngModel.$modelValue.type === 'url') {
+          var viewValue = ngModel.$viewValue;
+
+          if (!URL_REGEXP.test(viewValue.value)) {
+            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+            ngModel.$setValidity('contactinfo', false);
+          }
         }
       }
     }
@@ -14257,7 +14263,6 @@ function OrganizerEditController(
   controller.contact = [];
   controller.showWebsiteValidation = false;
   controller.websiteError = false;
-  controller.invalidUrl = false;
   controller.addressError = false;
   controller.contactError = false;
   controller.hasErrors = false;
@@ -14313,12 +14318,10 @@ function OrganizerEditController(
     controller.showWebsiteValidation = true;
 
     if (!controller.organizerEditForm.website.$valid) {
-      controller.invalidUrl = true;
       controller.showWebsiteValidation = false;
+      controller.hasErrors = true;
       return;
     }
-
-    controller.invalidUrl = false;
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer.url)
@@ -21497,6 +21500,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </button>\n" +
     "                </td>\n" +
     "            </tr>\n" +
+    "            <tr ng-if=\"occ.contactHasErrors\">\n" +
+    "                <td colspan=\"3\">\n" +
+    "                    <p class=\"bg-info\">Gelieve alle contact info velden in te vullen.</p>\n" +
+    "                </td>\n" +
+    "            </tr>\n" +
     "            <tr ng-if=\"occ.contact.length > 0\">\n" +
     "                <td colspan=\"3\"><a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
     "                </td>\n" +
@@ -23363,7 +23371,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"col-sm-12 col-md-8\">\n" +
     "                <p class=\"alert alert-danger\" ng-show=\"oec.hasErrors\">\n" +
     "                    <span ng-show=\"oec.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
-    "                    <span ng-show=\"oec.invalidUrl\">Gelieve een gelidge URL op te geven.<br /></span>\n" +
     "                    <span ng-show=\"oec.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.website.$error.required\">Gelieve een website in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
