@@ -13,6 +13,7 @@ angular
 /* @ngInject */
 function OrganizerEditController(
     OrganizerManager,
+    udbApi,
     udbOrganizers,
     $state,
     $stateParams,
@@ -48,6 +49,8 @@ function OrganizerEditController(
   loadOrganizer(organizerId);
 
   function loadOrganizer(organizerId) {
+    udbApi.removeItemFromCache(organizerId);
+
     OrganizerManager
       .get(organizerId)
       .then(showOrganizer);
@@ -203,6 +206,8 @@ function OrganizerEditController(
     if (isContactChanged) {
       promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
+
+    promises.push(udbApi.removeItemFromCache(organizerId));
 
     $q.all(promises)
         .then(function() {

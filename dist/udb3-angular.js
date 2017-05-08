@@ -14245,6 +14245,7 @@ angular
 /* @ngInject */
 function OrganizerEditController(
     OrganizerManager,
+    udbApi,
     udbOrganizers,
     $state,
     $stateParams,
@@ -14280,6 +14281,8 @@ function OrganizerEditController(
   loadOrganizer(organizerId);
 
   function loadOrganizer(organizerId) {
+    udbApi.removeItemFromCache(organizerId);
+
     OrganizerManager
       .get(organizerId)
       .then(showOrganizer);
@@ -14436,6 +14439,8 @@ function OrganizerEditController(
       promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
 
+    promises.push(udbApi.removeItemFromCache(organizerId));
+
     $q.all(promises)
         .then(function() {
           $state.go('management.organizers.search', {}, {reload: true});
@@ -14446,7 +14451,7 @@ function OrganizerEditController(
         });
   }
 }
-OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q"];
+OrganizerEditController.$inject = ["OrganizerManager", "udbApi", "udbOrganizers", "$state", "$stateParams", "$q"];
 
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
@@ -23527,7 +23532,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </td>\n" +
     "    <td class=\"text-right\">\n" +
     "        <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "            <a class=\"btn btn-default\" ui-sref=\"management.organizers.edit({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a>\n" +
+    "            <a class=\"btn btn-default\" ui-sref=\"management.organizers.edit({id: osic.organization.id})\">Bewerken</a>\n" +
     "            <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "            <ul uib-dropdown-menu role=\"menu\">\n" +
     "                <li role=\"menuitem\">\n" +
