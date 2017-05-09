@@ -11,14 +11,15 @@
                 <p class="alert alert-danger" ng-show="oec.hasErrors">
                     <span ng-show="oec.organizersWebsiteFound">Deze URL is al in gebruik door een andere organisatie.<br /></span>
                     <span ng-show="oec.websiteError">Er ging iets mis met het controleren van de website.<br /></span>
-                    <span ng-show="oec.organizerEditForm.website.$error.required">Gelieve een website in te vullen.<br /></span>
+                    <span ng-show="oec.organizerEditForm.website.$error.required || oec.urlError">Gelieve een website in te vullen.<br /></span>
                     <span ng-show="oec.organizerEditForm.name.$error.required">Gelieve een naam in te vullen.<br /></span>
-                    <span ng-show="oec.addressError">Gelieve een straat en huisnummer in te vullen.<br /></span>
+                    <span ng-show="oec.addressError">Gelieve een geldig adres in te vullen.<br /></span>
+                    <span ng-show="oec.contactError">Gelieve alle contactinfo in te vullen.<br /></span>
                     <span ng-show="oec.saveError">Er ging iets mis tijdens het opslaan.<br /></span>
                 </p>
 
                 <div class="form-group has-feedback"
-                     ng-class="{'has-error' : oec.organizersWebsiteFound || oec.organizerEditForm.website.$error.required }">
+                     ng-class="{'has-error' : (oec.organizersWebsiteFound || oec.urlError || oec.organizerEditForm.website.$error.required) && oec.hasErrors }">
                     <label class="control-label" for="organizer-website">Website</label>
                     <input type="url"
                            id="organizer-website"
@@ -38,7 +39,7 @@
 
         <div class="row">
             <div class="col-sm-12 col-md-8">
-                <div class="form-group" ng-class="{'has-error' : oec.organizerEditForm.name.$error.required }">
+                <div class="form-group" ng-class="{'has-error' : oec.nameError && oec.hasErrors }">
                     <label>Naam</label>
                     <input type="text"
                            name="name"
@@ -53,9 +54,11 @@
     </form>
 
     <udb-organizer-address address="oec.organizer.address"
-                           on-update="oec.validateAddress(address, error)"></udb-organizer-address>
+                           on-update="oec.validateAddress(address, error)"
+                           ng-class="{'has-error' : oec.addressError && oec.hasErrors }"></udb-organizer-address>
     <udb-organizer-contact contact="oec.contact"
-                           on-update="oec.validateContact(contact, error)"></udb-organizer-contact>
+                           on-update="oec.validateContact(contact, error)"
+                           ng-class="{'has-error' : oec.contactError && oec.hasErrors }"></udb-organizer-contact>
 
     <button type="button"
             class="btn btn-primary organisator-bewerken-bewaren"

@@ -14262,7 +14262,9 @@ function OrganizerEditController(
 
   controller.contact = [];
   controller.showWebsiteValidation = false;
+  controller.urlError = false;
   controller.websiteError = false;
+  controller.nameError = false;
   controller.addressError = false;
   controller.contactError = false;
   controller.hasErrors = false;
@@ -14319,78 +14321,71 @@ function OrganizerEditController(
 
     if (!controller.organizerEditForm.website.$valid) {
       controller.showWebsiteValidation = false;
-      controller.hasErrors = true;
+      controller.urlError = true;
       return;
     }
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer.url)
         .then(function (data) {
+          controller.urlError = false;
           if (data.totalItems > 0) {
             if (data.member[0].name === controller.originalName) {
               controller.showWebsiteValidation = false;
               controller.organizersWebsiteFound = false;
-              controller.hasErrors = false;
             }
             else {
               controller.organizersWebsiteFound = true;
               controller.showWebsiteValidation = false;
-              controller.hasErrors = true;
             }
           }
           else {
             controller.showWebsiteValidation = false;
             controller.organizersWebsiteFound = false;
-            controller.hasErrors = false;
           }
-        }, function() {
+        }, function () {
           controller.websiteError = true;
           controller.showWebsiteValidation = false;
-          controller.hasErrors = true;
+        })
+        .finally(function() {
+          checkChanges()
         });
-
-    checkChanges();
   }
 
   function validateName() {
     if (!controller.organizerEditForm.name.$valid) {
-      controller.hasErrors = true;
-      return;
+      controller.nameError = true;
     }
-    controller.hasErrors = false;
+    else {
+      controller.nameError = false;
+    }
+
     checkChanges();
   }
 
-  function validateAddress(address, error) {
+  function validateAddress(address) {
     controller.organizer.address = address;
 
-    if (oldOrganizer.address.addressLocality !== '' && address.addressLocality === '') {
-      controller.disableSubmit = true;
+    if (controller.organizer.address.addressLocality === '' ||
+        controller.organizer.address.streetAddress === '') {
       controller.addressError = true;
-      controller.hasErrors = true;
     }
     else {
-      if (error) {
-        controller.disableSubmit = true;
-      }
-      else {
-        controller.addressError = false;
-        controller.hasErrors = false;
-        checkChanges();
-      }
+      controller.addressError = false;
     }
+    checkChanges();
   }
 
   function validateContact(contact, error) {
     controller.contact = contact;
-    controller.contactError = error;
 
-    if (controller.contactError) {
-      controller.disableSubmit = true;
+    if (error) {
+      controller.contactError = true;
     }
     else {
-      checkChanges();
+      controller.contactError = false;
     }
+    checkChanges();
   }
 
   /**
@@ -14399,14 +14394,16 @@ function OrganizerEditController(
   function validateOrganizer() {
 
     controller.showValidation = true;
-    // Forms are automatically known in scope.
-    if (!controller.organizerEditForm.$valid) {
+
+    if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
+        controller.websiteError || controller.urlError || controller.nameError ||
+        controller.addressError || controller.contactError) {
       controller.hasErrors = true;
+      controller.disableSubmit = true;
       return;
     }
 
     saveOrganizer();
-
   }
 
   function checkChanges() {
@@ -14420,6 +14417,12 @@ function OrganizerEditController(
     }
     else {
       controller.disableSubmit = true;
+    }
+
+    if (controller.organizerEditForm.$valid && !controller.organizersWebsiteFound &&
+        !controller.websiteError && !controller.urlError && !controller.nameError &&
+        !controller.addressError && !controller.contactError) {
+      controller.hasErrors = false;
     }
   }
 
@@ -14442,10 +14445,9 @@ function OrganizerEditController(
       promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
 
-    promises.push(udbApi.removeItemFromCache(organizerId));
-
     $q.all(promises)
         .then(function() {
+          udbApi.removeItemFromCache(organizerId);
           $state.go('management.organizers.search', {}, {reload: true});
         })
         .catch(function () {
@@ -21500,11 +21502,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </button>\n" +
     "                </td>\n" +
     "            </tr>\n" +
-    "            <tr ng-if=\"occ.contactHasErrors\">\n" +
-    "                <td colspan=\"3\">\n" +
-    "                    <p class=\"bg-info\">Gelieve alle contact info velden in te vullen.</p>\n" +
-    "                </td>\n" +
-    "            </tr>\n" +
     "            <tr ng-if=\"occ.contact.length > 0\">\n" +
     "                <td colspan=\"3\"><a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
     "                </td>\n" +
@@ -23372,14 +23369,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p class=\"alert alert-danger\" ng-show=\"oec.hasErrors\">\n" +
     "                    <span ng-show=\"oec.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
     "                    <span ng-show=\"oec.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
-    "                    <span ng-show=\"oec.organizerEditForm.website.$error.required\">Gelieve een website in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.website.$error.required || oec.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
-    "                    <span ng-show=\"oec.addressError\">Gelieve een straat en huisnummer in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.addressError\">Gelieve een geldig adres in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.contactError\">Gelieve alle contactinfo in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"oec.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +
     "                </p>\n" +
     "\n" +
     "                <div class=\"form-group has-feedback\"\n" +
-    "                     ng-class=\"{'has-error' : oec.organizersWebsiteFound || oec.organizerEditForm.website.$error.required }\">\n" +
+    "                     ng-class=\"{'has-error' : (oec.organizersWebsiteFound || oec.urlError || oec.organizerEditForm.website.$error.required) && oec.hasErrors }\">\n" +
     "                    <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
     "                    <input type=\"url\"\n" +
     "                           id=\"organizer-website\"\n" +
@@ -23399,7 +23397,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-sm-12 col-md-8\">\n" +
-    "                <div class=\"form-group\" ng-class=\"{'has-error' : oec.organizerEditForm.name.$error.required }\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : oec.nameError && oec.hasErrors }\">\n" +
     "                    <label>Naam</label>\n" +
     "                    <input type=\"text\"\n" +
     "                           name=\"name\"\n" +
@@ -23414,9 +23412,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </form>\n" +
     "\n" +
     "    <udb-organizer-address address=\"oec.organizer.address\"\n" +
-    "                           on-update=\"oec.validateAddress(address, error)\"></udb-organizer-address>\n" +
+    "                           on-update=\"oec.validateAddress(address, error)\"\n" +
+    "                           ng-class=\"{'has-error' : oec.addressError && oec.hasErrors }\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact=\"oec.contact\"\n" +
-    "                           on-update=\"oec.validateContact(contact, error)\"></udb-organizer-contact>\n" +
+    "                           on-update=\"oec.validateContact(contact, error)\"\n" +
+    "                           ng-class=\"{'has-error' : oec.contactError && oec.hasErrors }\"></udb-organizer-contact>\n" +
     "\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-bewerken-bewaren\"\n" +

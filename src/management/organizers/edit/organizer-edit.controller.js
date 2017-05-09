@@ -13,7 +13,6 @@ angular
 /* @ngInject */
 function OrganizerEditController(
     OrganizerManager,
-    udbApi,
     udbOrganizers,
     $state,
     $stateParams,
@@ -24,7 +23,9 @@ function OrganizerEditController(
 
   controller.contact = [];
   controller.showWebsiteValidation = false;
+  controller.urlError = false;
   controller.websiteError = false;
+  controller.nameError = false;
   controller.addressError = false;
   controller.contactError = false;
   controller.hasErrors = false;
@@ -48,7 +49,7 @@ function OrganizerEditController(
   loadOrganizer(organizerId);
 
   function loadOrganizer(organizerId) {
-    udbApi.removeItemFromCache(organizerId);
+    OrganizerManager.removeOrganizerFromCache(organizerId);
 
     OrganizerManager
       .get(organizerId)
@@ -81,78 +82,71 @@ function OrganizerEditController(
 
     if (!controller.organizerEditForm.website.$valid) {
       controller.showWebsiteValidation = false;
-      controller.hasErrors = true;
+      controller.urlError = true;
       return;
     }
 
     udbOrganizers
         .findOrganizersWebsite(controller.organizer.url)
         .then(function (data) {
+          controller.urlError = false;
           if (data.totalItems > 0) {
             if (data.member[0].name === controller.originalName) {
               controller.showWebsiteValidation = false;
               controller.organizersWebsiteFound = false;
-              controller.hasErrors = false;
             }
             else {
               controller.organizersWebsiteFound = true;
               controller.showWebsiteValidation = false;
-              controller.hasErrors = true;
             }
           }
           else {
             controller.showWebsiteValidation = false;
             controller.organizersWebsiteFound = false;
-            controller.hasErrors = false;
           }
-        }, function() {
+        }, function () {
           controller.websiteError = true;
           controller.showWebsiteValidation = false;
-          controller.hasErrors = true;
+        })
+        .finally(function() {
+          checkChanges()
         });
-
-    checkChanges();
   }
 
   function validateName() {
     if (!controller.organizerEditForm.name.$valid) {
-      controller.hasErrors = true;
-      return;
+      controller.nameError = true;
     }
-    controller.hasErrors = false;
+    else {
+      controller.nameError = false;
+    }
+
     checkChanges();
   }
 
-  function validateAddress(address, error) {
+  function validateAddress(address) {
     controller.organizer.address = address;
 
-    if (oldOrganizer.address.addressLocality !== '' && address.addressLocality === '') {
-      controller.disableSubmit = true;
+    if (controller.organizer.address.addressLocality === '' ||
+        controller.organizer.address.streetAddress === '') {
       controller.addressError = true;
-      controller.hasErrors = true;
     }
     else {
-      if (error) {
-        controller.disableSubmit = true;
-      }
-      else {
-        controller.addressError = false;
-        controller.hasErrors = false;
-        checkChanges();
-      }
+      controller.addressError = false;
     }
+    checkChanges();
   }
 
   function validateContact(contact, error) {
     controller.contact = contact;
-    controller.contactError = error;
 
-    if (controller.contactError) {
-      controller.disableSubmit = true;
+    if (error) {
+      controller.contactError = true;
     }
     else {
-      checkChanges();
+      controller.contactError = false;
     }
+    checkChanges();
   }
 
   /**
@@ -161,14 +155,16 @@ function OrganizerEditController(
   function validateOrganizer() {
 
     controller.showValidation = true;
-    // Forms are automatically known in scope.
-    if (!controller.organizerEditForm.$valid) {
+
+    if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
+        controller.websiteError || controller.urlError || controller.nameError ||
+        controller.addressError || controller.contactError) {
       controller.hasErrors = true;
+      controller.disableSubmit = true;
       return;
     }
 
     saveOrganizer();
-
   }
 
   function checkChanges() {
@@ -182,6 +178,12 @@ function OrganizerEditController(
     }
     else {
       controller.disableSubmit = true;
+    }
+
+    if (controller.organizerEditForm.$valid && !controller.organizersWebsiteFound &&
+        !controller.websiteError && !controller.urlError && !controller.nameError &&
+        !controller.addressError && !controller.contactError) {
+      controller.hasErrors = false;
     }
   }
 
@@ -204,10 +206,9 @@ function OrganizerEditController(
       promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
 
-    promises.push(udbApi.removeItemFromCache(organizerId));
-
     $q.all(promises)
         .then(function() {
+          OrganizerManager.removeOrganizerFromCache(organizerId);
           $state.go('management.organizers.search', {}, {reload: true});
         })
         .catch(function () {

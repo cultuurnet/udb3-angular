@@ -67,12 +67,14 @@ describe('Controller: Organizer Edit', function() {
       'updateOrganizerWebsite',
       'updateOrganizerName',
       'updateOrganizerAddress',
-      'updateOrganizerContact'
+      'updateOrganizerContact',
+      'removeOrganizerFromCache'
     ]);
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['findOrganizersWebsite']);
     $state = jasmine.createSpyObj('$state', ['go']);
     $stateParams = { "id": id };
     organizerEditForm = {
+      $valid: true,
       website: {
         $valid: true
       },
@@ -136,6 +138,7 @@ describe('Controller: Organizer Edit', function() {
     OrganizerManager.updateOrganizerName.and.returnValue($q.resolve(result));
     OrganizerManager.updateOrganizerAddress.and.returnValue($q.resolve(result));
     OrganizerManager.updateOrganizerContact.and.returnValue($q.resolve(result));
+    OrganizerManager.removeOrganizerFromCache.and.returnValue($q.resolve());
   }
 
   it ('should load the organizer detail', function () {
@@ -255,7 +258,24 @@ describe('Controller: Organizer Edit', function() {
 
     controller.validateName();
 
-    expect(controller.hasErrors).toBeFalsy();
+    expect(controller.nameError).toBeFalsy();
+  });
+
+  it ('should throw an error when the name is not valid', function() {
+    organizerEditForm = {
+      name: {
+        $valid: false
+      }
+    };
+
+    getMockUps();
+    var controller = getController();
+    controller.organizerEditForm = organizerEditForm;
+    $scope.$digest();
+
+    controller.validateName();
+
+    expect(controller.nameError).toBeTruthy();
   });
 
   it ('should validate the address', function () {
@@ -269,11 +289,13 @@ describe('Controller: Organizer Edit', function() {
     getMockUps();
     var controller = getController();
     $scope.$digest();
-    controller.validateAddress(address, false);
+    controller.organizerEditForm = {
+      $valid: true
+    };
+    controller.validateAddress(address);
 
+    expect(controller.organizer.address).toEqual(address);
     expect(controller.addressError).toBeFalsy();
-    expect(controller.hasErrors).toBeFalsy();
-    expect(controller.disableSubmit).toBeFalsy();
   });
 
   it ('should validate the address and throw an error when an existing address is changed to empty', function () {
@@ -287,33 +309,34 @@ describe('Controller: Organizer Edit', function() {
     getMockUps();
     var controller = getController();
     $scope.$digest();
-    controller.validateAddress(address, false);
+    controller.organizerEditForm = {
+      $valid: true
+    };
+    controller.validateAddress(address);
 
-    expect(controller.disableSubmit).toBeTruthy();
     expect(controller.addressError).toBeTruthy();
-    expect(controller.hasErrors).toBeTruthy();
+    expect(controller.organizer.address).toEqual(address);
   });
 
-  it ('should validate the address and disable submit when address component throws an error', function () {
-    var address = {
-      addressCountry: 'BE',
-      addressLocality: 'Leuven',
-      postalCode: 3000,
-      streetAddress: ''
-    };
-
+  it ('should validate the contact info', function () {
     getMockUps();
     var controller = getController();
     $scope.$digest();
-    controller.validateAddress(address, true);
+    controller.organizerEditForm = {
+      $valid: true
+    };
+    controller.validateContact([], false);
 
-    expect(controller.disableSubmit).toBeTruthy();
+    expect(controller.contactError).toBeFalsy();
   });
 
   it ('should validate the contact info and throw an error when not valid', function () {
     getMockUps();
     var controller = getController();
     $scope.$digest();
+    controller.organizerEditForm = {
+      $valid: true
+    };
     controller.validateContact([], true);
 
     expect(controller.contactError).toBeTruthy();
@@ -347,6 +370,7 @@ describe('Controller: Organizer Edit', function() {
     getMockUps();
     udbOrganizers.findOrganizersWebsite.and.returnValue($q.resolve(fakeSearchResult));
     spyOn($q, 'all').and.returnValue($q.resolve());
+
     var controller = getController();
     $scope.$digest();
 
@@ -383,18 +407,22 @@ describe('Controller: Organizer Edit', function() {
       }
     ];
 
-    controller.validateWebsite();
-    controller.validateName();
-    controller.validateAddress(controller.organizer.address, false);
-    controller.validateContact(controller.contact, false);
+    controller.organizersWebsiteFound = false;
+    controller.websiteError = false;
+    controller.urlError = false;
+    controller.nameError = false;
+    controller.addressError = false;
+    controller.contactError = false;
 
+    controller.checkChanges();
     controller.validateOrganizer();
-    $scope.$digest();
+    $scope.$apply();
 
     expect(OrganizerManager.updateOrganizerWebsite).toHaveBeenCalledWith(id, controller.organizer.url);
     expect(OrganizerManager.updateOrganizerName).toHaveBeenCalledWith(id, controller.organizer.name);
     expect(OrganizerManager.updateOrganizerAddress).toHaveBeenCalledWith(id, controller.organizer.address);
     expect(OrganizerManager.updateOrganizerContact).toHaveBeenCalledWith(id, controller.contact);
+    expect(OrganizerManager.removeOrganizerFromCache).toHaveBeenCalledWith(id);
     expect($state.go).toHaveBeenCalledWith('management.organizers.search', {}, {reload:true});
   });
 
