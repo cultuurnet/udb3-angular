@@ -7548,7 +7548,6 @@ function EventDetail(
     });
     query = (query ? '(' + query + ')' : '');
     query = '(' + query + ' AND cdbid:' + $scope.cbid + ')';
-    console.log(query);
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
