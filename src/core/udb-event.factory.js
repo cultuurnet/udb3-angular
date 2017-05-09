@@ -176,6 +176,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.availableFrom = jsonEvent.availableFrom;
       this.uitpasData = {};
 
       this.audience = {
@@ -332,6 +333,23 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
+    },
+    hasFutureAvailableFrom: function() {
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (tomorrow < publicationDate) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   };
 

@@ -109,7 +109,7 @@ function OrganizerEditController(
           controller.showWebsiteValidation = false;
         })
         .finally(function() {
-          checkChanges()
+          checkChanges();
         });
   }
 

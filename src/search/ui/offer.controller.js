@@ -50,8 +50,8 @@ function OfferController(
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
+          controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
-
           watchLabels();
           return cachedOffer;
         });

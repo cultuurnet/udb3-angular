@@ -185,6 +185,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.workflowStatus) {
         this.workflowStatus = jsonPlace.workflowStatus;
       }
+
+      if (jsonPlace.availableFrom) {
+        this.availableFrom = jsonPlace.availableFrom;
+      }
     },
 
     /**
@@ -338,6 +342,24 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+
+    hasFutureAvailableFrom: function() {
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (tomorrow < publicationDate) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
 
   };

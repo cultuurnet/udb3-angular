@@ -21,12 +21,20 @@
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.username = '';
+    dash.hideOnlineDate = false;
 
     if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
       dash.toggleAddOffer = appConfig.toggleAddOffer;
     }
     else {
       dash.toggleAddOffer = true;
+    }
+
+    if (typeof(appConfig.offerEditor.defaultPublicationDate) !== 'undefined') {
+      var defaultPublicationDate = appConfig.offerEditor.defaultPublicationDate;
+      if (defaultPublicationDate !== '') {
+        dash.hideOnlineDate = true;
+      }
     }
 
     udbApi
