@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc component
- * @name udb.search.directive:udbSearchBar
+ * @name udb.management.moderation.directive:udbModerationOffer
  * @description
- * # udbQuerySearchBar
+ * # udbModerationOffer
  */
 angular
   .module('udb.management.moderation')
@@ -13,6 +13,7 @@ angular
     controller: ModerationOfferComponent,
     controllerAs: 'moc',
     bindings: {
+      continue: '@',
       offerId: '@',
       offerType: '@'
     }
@@ -33,6 +34,8 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
+  moc.continueValidation = continueValidation;
+
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
@@ -48,6 +51,10 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
 
   function showLoadingError(problem) {
     showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
+
+  function continueValidation() {
+    return moc.continue === 'true';
   }
 
   function isReadyForValidation() {

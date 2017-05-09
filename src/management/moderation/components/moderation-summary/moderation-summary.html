@@ -35,7 +35,7 @@
     <footer class="row" ng-hide="moc.loading">
         <div class="col-md-6">Toegevoegd door {{moc.offer.creator}}</div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
-            <udb-moderation-offer offer="moc.offer" continueValidation="false"></udb-moderation-offer>
+            <udb-moderation-offer offer-id="{{moc.offerId}}" continue="false"></udb-moderation-offer>
         </div>
     </footer>
 </article>

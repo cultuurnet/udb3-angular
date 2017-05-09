@@ -4233,6 +4233,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.availableFrom = jsonEvent.availableFrom;
       this.uitpasData = {};
 
       this.audience = {
@@ -4389,6 +4390,23 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
+    },
+    hasFutureAvailableFrom: function() {
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (tomorrow < publicationDate) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   };
 
@@ -4737,6 +4755,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.workflowStatus) {
         this.workflowStatus = jsonPlace.workflowStatus;
       }
+
+      if (jsonPlace.availableFrom) {
+        this.availableFrom = jsonPlace.availableFrom;
+      }
     },
 
     /**
@@ -4890,6 +4912,24 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+
+    hasFutureAvailableFrom: function() {
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (tomorrow < publicationDate) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
 
   };
@@ -5237,12 +5277,20 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.username = '';
+    dash.hideOnlineDate = false;
 
     if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
       dash.toggleAddOffer = appConfig.toggleAddOffer;
     }
     else {
       dash.toggleAddOffer = true;
+    }
+
+    if (typeof(appConfig.offerEditor.defaultPublicationDate) !== 'undefined') {
+      var defaultPublicationDate = appConfig.offerEditor.defaultPublicationDate;
+      if (defaultPublicationDate !== '') {
+        dash.hideOnlineDate = true;
+      }
     }
 
     udbApi
@@ -9383,6 +9431,66 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
 }
 PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
 
+// Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
+(function () {
+/**
+   * @ngdoc function
+   * @name udbApp.controller:EventFormPublishModalController
+   * @description
+   * # EventFormPublishModalController
+   * Modal for postponing a publish.
+   */
+  angular
+    .module('udb.event-form')
+    .controller('EventFormPublishModalController', EventFormPublishModalController);
+
+  /* @ngInject */
+  function EventFormPublishModalController($uibModalInstance, eventFormData, publishEvent) {
+    var efpmc = this;
+    efpmc.error = false;
+    efpmc.hasPublicationDate = false;
+    efpmc.publicationDate = eventFormData.availableFrom;
+    var tomorrow = moment(new Date()).add(1, 'days');
+    tomorrow.hours(0);
+    tomorrow.minutes(0);
+    tomorrow.seconds(0);
+    efpmc.dismiss = dismiss;
+    efpmc.savePublicationDate = savePublicationDate;
+    efpmc.onFocus = onFocus;
+
+    efpmc.drp = {
+      dateFormat: 'dd/MM/yyyy',
+      startOpened: false,
+      options : {
+        minDate : tomorrow.toDate()
+      }
+    };
+
+    function dismiss() {
+      $uibModalInstance.dismiss();
+    }
+
+    function onFocus() {
+      efpmc.drp.startOpened = !efpmc.drp.startOpened;
+    }
+
+    function savePublicationDate() {
+      if (tomorrow <= efpmc.publicationDate) {
+        var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
+        efpmc.publicationDate.getDate(), 0, 0, 0);
+        eventFormData.availableFrom = availableFrom;
+        publishEvent();
+        $uibModalInstance.close();
+      } else {
+        efpmc.error = true;
+      }
+    }
+
+  }
+  EventFormPublishModalController.$inject = ["$uibModalInstance", "eventFormData", "publishEvent"];
+
+})();
+
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
 /**
  * @ngdoc function
@@ -9962,7 +10070,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
-
+      this.availableFrom = '';
       /**
        * @type {string[]}
        */
@@ -10601,6 +10709,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'additionalData',
       'apiUrl',
       'workflowStatus',
+      'availableFrom',
       'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
@@ -10881,24 +10990,32 @@ function EventFormPublishController(
     eventCrud,
     OfferWorkflowStatus,
     $q,
-    $location
+    $location,
+    $uibModal
 ) {
 
   var controller = this;
 
   controller.publish = publish;
+  controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
+  controller.saving = false;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  function publish() {
-    controller.error = '';
-    var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  if (!controller.hasNoDefault && isDraft) {
+    controller.eventFormData.availableFrom = defaultPublicationDate;
+  }
 
+  function publish() {
+    controller.saving = true;
+    controller.error = '';
     eventCrud
-      .publishOffer(EventFormData, defaultPublicationDate)
+      .publishOffer(EventFormData, controller.eventFormData.availableFrom)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
@@ -10909,9 +11026,24 @@ function EventFormPublishController(
       });
   }
 
+  function publishLater() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-publish-modal.html',
+      controller: 'EventFormPublishModalController',
+      controllerAs: 'efpmc',
+      resolve: {
+        eventFormData: function () {
+          return controller.eventFormData;
+        },
+        publishEvent : function() {
+          return controller.publish;
+        }
+      }
+    });
+  }
+
   function setEventAsReadyForValidation() {
     EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
-
     return $q.resolve();
   }
 
@@ -10927,7 +11059,7 @@ function EventFormPublishController(
     return (status === OfferWorkflowStatus.DRAFT);
   }
 }
-EventFormPublishController.$inject = ["appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
+EventFormPublishController.$inject = ["appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location", "$uibModal"];
 
 // Source: src/event_form/steps/event-form-step1.controller.js
 /**
@@ -13571,9 +13703,9 @@ listItems.$inject = ["RolePermission", "authorizationService", "ModerationServic
 // Source: src/management/moderation/components/moderation-offer/moderation-offer.component.js
 /**
  * @ngdoc component
- * @name udb.search.directive:udbSearchBar
+ * @name udb.management.moderation.directive:udbModerationOffer
  * @description
- * # udbQuerySearchBar
+ * # udbModerationOffer
  */
 angular
   .module('udb.management.moderation')
@@ -13582,6 +13714,7 @@ angular
     controller: ModerationOfferComponent,
     controllerAs: 'moc',
     bindings: {
+      continue: '@',
       offerId: '@',
       offerType: '@'
     }
@@ -13602,6 +13735,8 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
+  moc.continueValidation = continueValidation;
+
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
@@ -13617,6 +13752,10 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
 
   function showLoadingError(problem) {
     showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
+
+  function continueValidation() {
+    return moc.continue === 'true';
   }
 
   function isReadyForValidation() {
@@ -18860,8 +18999,8 @@ function OfferController(
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
+          controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
-
           watchLabels();
           return cachedOffer;
         });
@@ -19788,7 +19927,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
-    "        <span ng-if=\"!cm.event.available\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
@@ -19881,6 +20021,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
     "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
@@ -20361,7 +20502,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
-    "        <udb-moderation-offer ng-if=\"moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{event['@id']}}\" next=\"true\"></udb-moderation-offer>\n" +
+    "        <udb-moderation-offer ng-if=\"moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
@@ -21504,6 +21645,52 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/event-form-publish-modal.html',
+    "<div class=\"modal-header\">\n" +
+    "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
+    "</div>\n" +
+    "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
+    "  <p>Vanaf wanneer mag dit online verschijnen? </strong><em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze publicatiedatum kan je maar één keer instellen en nadien niet meer wijzigen.</em></strong></p>\n" +
+    "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <div class=\"radio\">\n" +
+    "          <label>\n" +
+    "            Op\n" +
+    "          </label>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\">\n" +
+    "          <div class=\"input-group\">\n" +
+    "            <input  type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    uib-datepicker-popup=\"{{efpmc.drp.dateFormat}}\"\n" +
+    "                    ng-model=\"efpmc.publicationDate\"\n" +
+    "                    is-open=\"efpmc.drp.startOpened\"\n" +
+    "                    ng-required=\"true\"\n" +
+    "                    ng-focus=\"efpmc.onFocus()\"\n" +
+    "                    datepicker-options=\"efpmc.drp.options\"/>\n" +
+    "            <span class=\"input-group-btn\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.drp.startOpened = !efpmc.drp.startOpened\">\n" +
+    "            <i class=\"fa fa-calendar\"></i>\n" +
+    "            </button>\n" +
+    "            </span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <br>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
+    "    Annuleren\n" +
+    "  </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\">\n" +
+    "    Klaar met bewerken\n" +
+    "  </button>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/reservation-period.html',
     "<div class=\"col-sm-12\" ng-hide=\"haveBookingPeriod\">\n" +
     "    <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"changeHaveBookingPeriod()\">\n" +
@@ -21765,9 +21952,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
     "\n" +
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
-    "\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\" focus-if >Klaar met bewerken</button>\n" +
+    "    <div ng-if=\"!efpc.saving\">\n" +
+    "      <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Meteen publiceren</button>\n" +
+    "      <button class=\"btn btn-success\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
+    "      <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
+    "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }}</span>\n" +
+    "    </div>\n" +
+    "    <div ng-if=\"efpc.saving\">\n" +
+    "      <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i>\n" +
+    "      <span class=\"sr-only\">Loading...</span>\n" +
+    "    </div>\n" +
     "</div>\n"
   );
 
@@ -22819,7 +23013,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<small ng-if=\"moc.next\" class=\"muted\">Valideren</small>\n" +
+    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\">Valideren</p>\n" +
+    "\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
     "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
@@ -22827,7 +23022,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
     "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
-    "<a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">Verder valideren</a>\n"
+    "\n" +
+    "<span ng-show=\"moc.continueValidation()\"><a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">Verder valideren</a></span>\n"
   );
 
 
@@ -22869,7 +23065,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
     "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
     "        <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right\">\n" +
-    "            <udb-moderation-offer offer=\"moc.offer\" continueValidation=\"false\"></udb-moderation-offer>\n" +
+    "            <udb-moderation-offer offer-id=\"{{moc.offerId}}\" continue=\"false\"></udb-moderation-offer>\n" +
     "        </div>\n" +
     "    </footer>\n" +
     "</article>\n"
@@ -22921,9 +23117,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Valideren</h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Valideren</h1>\n" +
     "\n" +
     "<div ng-show=\"moderator.loading && !moderator.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +

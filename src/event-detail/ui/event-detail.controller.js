@@ -83,7 +83,7 @@ function EventDetail(
       }
     });
     query = (query ? '(' + query + ')' : '');
-    query = '(' + query + ' OR cdbid:' + $scope.cbid + ')';
+    query = '(' + query + ' AND cdbid:' + $scope.cbid + ')';
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {

@@ -40,16 +40,18 @@ udb-moderation-summary {
                 margin-left: 1em;
 
                 i {
-                    margin-right: 8px;
+                  margin-right: 8px;
                 }
 
                 i.text-danger {
-                    color: darken(@brand-danger, 20%);
+                  color: darken(@brand-danger, 20%);
                 }
 
                 i.text-success {
-                    color: darken(@brand-success, 20%);
+                  color: darken(@brand-success, 20%);
                 }
+
+
             }
         }
     }
@@ -57,25 +59,31 @@ udb-moderation-summary {
 
 .moderation-detail{
     button {
-        display: block;
-        width: 100%;
-        text-align: left;
-        margin-bottom: 1em;
-    }
-    a{
-        display: block;
-        text-decoration: underline;
-    }
-    small{
-        color: @udb-gray-dark;
-        display: block;
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 1em;
+
+      i {
+        color: #FFF;
+      }
     }
 
-    i{
-        margin-right: 1em;
+    a {
+      display: block;
+      text-decoration: underline;
     }
 
-    #continue-validation{
-        margin-left: 2em;
+    small {
+      color: @udb-gray-dark;
+      display: block;
+    }
+
+    i {
+      margin-right: 1em;
+    }
+
+    #continue-validation {
+      margin-left: 2em;
     }
 }
