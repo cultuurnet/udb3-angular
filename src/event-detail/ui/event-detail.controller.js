@@ -97,16 +97,6 @@ function EventDetail(
       .getHistory($scope.eventId)
       .then(showHistory);
 
-    udbApi
-      .getCalendarSummary($scope.eventId, 'lg')
-      .then(
-        function(success) {
-          console.log(success);
-        },
-        function(err) {
-          console.log(err);
-        });
-
     $scope.event = jsonLDLangFilter(event, language);
 
     $scope.eventIdIsInvalid = false;
