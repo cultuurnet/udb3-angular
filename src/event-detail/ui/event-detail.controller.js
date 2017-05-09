@@ -25,7 +25,8 @@ function EventDetail(
   $window,
   offerLabeller,
   $translate,
-  appConfig
+  appConfig,
+   ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -33,6 +34,19 @@ function EventDetail(
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
+    var splitLocation = offerLocation.split('/');
+    $scope.cbid = splitLocation[splitLocation.length - 1];
+    ModerationService
+      .getMyRoles()
+      .then(function(roles) {
+        getModerationItems(roles).then(function(result) {
+          angular.forEach(result.member, function(member) {
+            if (member['@id'] === $scope.eventId) {
+              $scope.moderationPermission = true;
+            }
+          });
+        });
+      });
 
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
@@ -58,6 +72,23 @@ function EventDetail(
 
   function denyAllPermissions() {
     $scope.permissions = {editing: false, duplication: false};
+  }
+
+  function getModerationItems(roles) {
+    var query = '';
+
+    _.forEach(roles, function(role) {
+      if (role.constraint) {
+        query += (query ? ' OR ' : '') + role.constraint;
+      }
+    });
+    query = (query ? '(' + query + ')' : '');
+    query = '(' + query + ' AND cdbid:' + $scope.cbid + ')';
+    return ModerationService
+      .find(query, 10, 0)
+      .then(function(searchResult) {
+        return searchResult;
+      });
   }
 
   $scope.eventIdIsInvalid = false;

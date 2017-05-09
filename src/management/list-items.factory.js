@@ -47,7 +47,6 @@ function listItems(
       }
     });
     query = (query ? '(' + query + ')' : '');
-
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
