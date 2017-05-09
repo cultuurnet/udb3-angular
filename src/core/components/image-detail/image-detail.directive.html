@@ -1,6 +1,6 @@
 <tr ng-class="::{muted: !images.length}">
     <td>
-        <strong>Afbeeldingen</strong>
+        <span class="def">Afbeeldingen</span>
     </td>
     <td ng-if="::images.length">
         <ul class="list-unstyled media-list">
@@ -11,9 +11,9 @@
                     </a>
                 </div>
                 <div class="media-body">
-                   <span ng-if="$first" class="label label-primary">Hoofdafbeelding</span>
+                   <span ng-if="$first" class="label label-default">Hoofdafbeelding</span>
                     <p>{{image.description}}</p>
-                    <p class="text-muted">© {{image.copyrightHolder}}</p>
+                    <p class="text-muted">&copy; {{image.copyrightHolder}}</p>
                 </div>
                 <hr ng-if="!$last">
             </li>

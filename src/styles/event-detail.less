@@ -6,11 +6,12 @@
 }
 
 h2.block-header {
-  font-size: 1.067em;
-  font-weight: 500;
+  font-size: 0.85em;
+  font-weight: 300;
   margin-bottom: 1em;
   margin-top: .85em;
   text-transform: uppercase;
+  color: @gray-light;
 }
 
 .panel-default > .table:first-child tr:first-child > td {
@@ -19,14 +20,15 @@ h2.block-header {
 
 .timeline {
   position: relative;
-  padding-left: 20px;
+  padding-left: 40px;
+  margin-top: 20px;
 }
 
 .timeline dl:before {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: 20px;
   width: 2px;
   content: '';
   background-color: @udb-gray;
@@ -70,4 +72,52 @@ img.offer-image-main {
 
 table.event-detail-price-table {
   background-color: #fff !important;
+}
+
+.def {
+  font-weight: 300;
+  color: @gray;
+}
+
+.muted .def {
+  color: @text-color;
+}
+
+.udb3-data-table tr:first-child td {
+  border-top: none;
+}
+
+@keyframes placeHolderShimmer{
+  0%{
+      background-position: -468px 0
+  }
+  100%{
+      background-position: 468px 0
+  }
+}
+
+.animated-background {
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #CCC;
+  background: linear-gradient(to right, #CCC 8%, #f0f0f0 18%, #CCC 33%);
+  background-size: 800px 104px;
+  height: 96px;
+  position: relative;
+}
+
+.placeholder-title {
+  &:extend(.animated-background);
+  display: inline-block;
+  height: 24px;
+  line-height: 56px;
+  width: 160px;
+  border-radius: 12px;
+}
+
+.table > tbody + tbody {
+  border-top: 1px solid #DDD;
 }

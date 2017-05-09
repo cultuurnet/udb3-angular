@@ -10,7 +10,12 @@
   </div>
 </div>
 
-<div ng-if="place">
+<div ng-if="!finishedLoading">
+  <p class="title"><span class="placeholder-title"></span></p>
+  <p class="text-center"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i><span class="sr-only">Aan het laden...</span></p>
+</div>
+
+<div ng-if="place && finishedLoading">
   <h1 class="title" ng-bind="place.name"></h1>
 
   <div class="row">
@@ -30,74 +35,71 @@
     <div class="col-xs-9 col-sm-pull-3">
       <ul class="nav nav-tabs">
         <li ng-repeat="tab in tabs" ng-class="{active: isTabActive(tab.id)}" role="tab">
-          <a ng-click="makeTabActive(tab.id)" role="tab" ng-bind="tab.header"></a>
+          <a ng-click="makeTabActive(tab.id)" role="tab" ng-bind="tab.header" href="#"></a>
         </li>
       </ul>
 
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('data')">
-        <h2 class="block-header">Voorbeeld</h2>
-        <div class="panel panel-default">
-          <table class="table udb3-data-table">
-            <colgroup>
-              <col style="width:20%"/>
-              <col style="width:80%"/>
-            </colgroup>
-            <tbody>
-              <tr>
-                <td><strong>Titel</strong></td>
-                <td>{{place.name}}</td>
-              </tr>
-              <tr>
-                <td><strong>Type</strong></td>
-                <td>{{place.type.label}}</td>
-              </tr>
-              <tr>
-                <td><strong>Beschrijving</strong></td>
-                <td>
-                  <div ng-bind-html="place.description" class="event-detail-description"></div>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Waar</strong></td>
-                <td>{{place.address.streetAddress}}<br />
-                  {{place.address.postalCode}} {{place.address.addressLocality}}<br />
-                  {{place.address.addressCountry}}</td>
-              </tr>
-            </tbody>
-            <tbody udb-booking-info-detail="::place.bookingInfo"></tbody>
-            <tbody udb-contact-point-detail="::place.contactPoint"></tbody>
-            <tbody>
-              <tr>
-                <td>
-                  <strong>Labels</strong>
-                </td>
-                <td>
-                  <udb-label-select labels="place.labels"
-                                    label-added="labelAdded(label)"
-                                    label-removed="labelRemoved(label)">
-                  </udb-label-select>
-                  <div ng-if="labelResponse === 'error'" class="alert alert-danger">
-                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.
-                  </div>
-                  <div ng-if="labelResponse === 'success'" class="alert alert-success">
-                    Het label '{{addedLabel}}' werd succesvol toegevoegd.
-                  </div>
-                  <div ng-if="labelResponse === 'unlabelError'" class="alert alert-danger">
-                    <span ng-bind="labelsError"></span>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><strong>Geschikt voor</strong></td>
-                <td>
-                  <span ng-if="place.typicalAgeRange">{{place.typicalAgeRange}}</span>
-                  <span ng-if="!place.typicalAgeRange">Alle leeftijden</span>
-                </td>
-              </tr>
-            </tbody>
-            <tbody udb-image-detail="::place.mediaObject" image="::place.image"></tbody>
-          </table>
-        </div>
+        <table class="table udb3-data-table">
+          <colgroup>
+            <col style="width:20%"/>
+            <col style="width:80%"/>
+          </colgroup>
+          <tbody>
+            <tr>
+              <td><span class="def">Titel</span></td>
+              <td>{{place.name}}</td>
+            </tr>
+            <tr>
+              <td><span class="def">Type</span></td>
+              <td>{{place.type.label}}</td>
+            </tr>
+            <tr>
+              <td><span class="def">Beschrijving</span></td>
+              <td>
+                <div ng-bind-html="place.description" class="event-detail-description"></div>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="def">Waar</span></td>
+              <td>{{place.address.streetAddress}}<br />
+                {{place.address.postalCode}} {{place.address.addressLocality}}<br />
+                {{place.address.addressCountry}}</td>
+            </tr>
+          </tbody>
+          <tbody udb-booking-info-detail="::place.bookingInfo"></tbody>
+          <tbody udb-contact-point-detail="::place.contactPoint"></tbody>
+          <tbody>
+            <tr>
+              <td>
+                <span class="def">Labels</span>
+              </td>
+              <td>
+                <p><udb-label-select labels="place.labels"
+                                  label-added="labelAdded(label)"
+                                  label-removed="labelRemoved(label)">
+                </udb-label-select></p>
+                <p ng-if="labelResponse === 'error'" class="alert alert-danger">
+                  Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.
+                </p>
+                <p ng-if="labelResponse === 'success'" class="alert alert-success">
+                  Het label '{{addedLabel}}' werd succesvol toegevoegd.
+                </p>
+                <p ng-if="labelResponse === 'unlabelError'" class="alert alert-danger">
+                  <span ng-bind="labelsError"></span>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="def">Geschikt voor</span></td>
+              <td>
+                <span ng-if="place.typicalAgeRange">{{place.typicalAgeRange}}</span>
+                <span ng-if="!place.typicalAgeRange">Alle leeftijden</span>
+              </td>
+            </tr>
+          </tbody>
+          <tbody udb-image-detail="::place.mediaObject" image="::place.image"></tbody>
+        </table>
       </div>
 
       <div role="tabpanel" class="tab-pane" ng-show="isTabActive('history')">
@@ -113,16 +115,14 @@
       </div>
 
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('publication')">
-        <div class="panel panel-default">
-          <table class="table">
-            <colgroup>
-              <col style="width:20%"/>
-              <col style="width:80%"/>
-            </colgroup>
-            <tbody udb-workflow-status="::place">
-            </tbody>
-          </table>
-        </div>
+        <table class="table udb3-data-table">
+          <colgroup>
+            <col style="width:20%"/>
+            <col style="width:80%"/>
+          </colgroup>
+          <tbody udb-workflow-status="::place">
+          </tbody>
+        </table>
       </div>
 
     </div>
