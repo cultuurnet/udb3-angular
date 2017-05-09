@@ -3145,6 +3145,9 @@ form.booking-period .input-group-btn {
 .audience .help-block {
   font-size: small;
 }
+.padding-left-12-5 {
+  padding-left: 12.5px;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;

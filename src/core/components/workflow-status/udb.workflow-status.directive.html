@@ -3,7 +3,8 @@
     <td>
         <span ng-if="cm.event.available" ng-bind="cm.event.available | date: 'dd/MM/yyyy'">
                     </span>
-        <span ng-if="!cm.event.available">{{cm.status | translate }}</span>
+        <span ng-if="!cm.event.available && !cm.event.availableFrom">{{cm.status | translate }}</span>
+        <span ng-if="!cm.event.available && cm.event.availableFrom">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>
     </td>
 </tr>
 <tr>

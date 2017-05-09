@@ -2,6 +2,11 @@
 
 describe('Controller: Dashboard', function () {
   var $controller, $scope, $q, udbApi;
+  var appConfig =  {
+    "offerEditor": {
+      "defaultPublicationDate": "2017-08-01"
+    }
+  };
   var pagedDashboardItems = {
     '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
     '@type': 'PagedCollection',
@@ -45,7 +50,8 @@ describe('Controller: Dashboard', function () {
 
     return $controller('DashboardController', {
       '$document': jasmine.createSpyObj('$document', ['scrollTop']),
-      'udbApi': udbApi
+      'udbApi': udbApi,
+      'appConfig': appConfig
     });
   }
 
@@ -71,6 +77,19 @@ describe('Controller: Dashboard', function () {
     $scope.$digest();
 
     expect(controller.pagedItemViewer.events).toEqual(expectedItems);
-  })
+  });
+
+  it('should hide the publicationdate if a default is set', function () {
+    var controller = getController(activeUser, pagedDashboardItems);
+    $scope.$digest();
+    expect(controller.hideOnlineDate).toBeTruthy();
+  });
+
+  it('should show the publicationdate if the default date is empty', function () {
+    appConfig.offerEditor.defaultPublicationDate = '';
+    var controller = getController(activeUser, pagedDashboardItems);
+    $scope.$digest();
+    expect(controller.hideOnlineDate).toBeFalsy();
+  });
 
 });
