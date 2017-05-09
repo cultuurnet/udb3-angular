@@ -92,4 +92,11 @@ describe('Controller: Event Form Publish', function () {
     var controller = getController();
     expect(controller.isDraft('READY_FOR_VALIDATION')).toEqual(false);
   });
+
+  it('should show the publicationDate in the future', function () {
+    var controller = getController();
+    EventFormData.init();
+    EventFormData.availableFrom = 'da86358c-d52c-429b-89c6-7adffd64ab55';
+    
+  });
 });

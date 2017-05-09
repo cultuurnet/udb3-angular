@@ -18,24 +18,32 @@ function EventFormPublishController(
     eventCrud,
     OfferWorkflowStatus,
     $q,
-    $location
+    $location,
+    $uibModal
 ) {
 
   var controller = this;
 
   controller.publish = publish;
+  controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
+  controller.saving = false;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  function publish() {
-    controller.error = '';
-    var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  if (!controller.hasNoDefault && isDraft) {
+    controller.eventFormData.availableFrom = defaultPublicationDate;
+  }
 
+  function publish() {
+    controller.saving = true;
+    controller.error = '';
     eventCrud
-      .publishOffer(EventFormData, defaultPublicationDate)
+      .publishOffer(EventFormData, controller.eventFormData.availableFrom)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
@@ -46,9 +54,24 @@ function EventFormPublishController(
       });
   }
 
+  function publishLater() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-publish-modal.html',
+      controller: 'EventFormPublishModalController',
+      controllerAs: 'efpmc',
+      resolve: {
+        eventFormData: function () {
+          return controller.eventFormData;
+        },
+        publishEvent : function() {
+          return controller.publish;
+        }
+      }
+    });
+  }
+
   function setEventAsReadyForValidation() {
     EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
-
     return $q.resolve();
   }
 
