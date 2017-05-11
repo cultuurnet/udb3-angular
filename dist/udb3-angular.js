@@ -23674,7 +23674,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "                <div class=\"form-group has-feedback\"\n" +
     "                     ng-class=\"{'has-error' : (oec.organizersWebsiteFound || oec.urlError || oec.organizerEditForm.website.$error.required) && oec.hasErrors }\">\n" +
-    "                    <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
+    "                    <label>Website</label>\n" +
     "                    <input type=\"url\"\n" +
     "                           id=\"organizer-website\"\n" +
     "                           udb-http-prefix\n" +
