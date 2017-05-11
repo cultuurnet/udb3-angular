@@ -74,12 +74,12 @@ table.event-detail-price-table {
   background-color: #fff !important;
 }
 
-.def {
+.row-label {
   font-weight: 300;
   color: @gray;
 }
 
-.muted .def {
+.muted .row-label  {
   color: @text-color;
 }
 
@@ -120,4 +120,10 @@ table.event-detail-price-table {
 
 .table > tbody + tbody {
   border-top: 1px solid #DDD;
+}
+
+.event-detail, .place-detail {
+  .media-object {
+    max-height: 100px;
+  }
 }

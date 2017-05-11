@@ -15,8 +15,8 @@
   <p class="text-center"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i><span class="sr-only">Aan het laden...</span></p>
 </div>
 
-<div ng-if="finishedLoading()">
-  <h1 class="title" ng-bind="event.name"></h1>
+<div ng-if="finishedLoading()" class="event-detail">
+  <h1 class="title" ng-bind="::event.name"></h1>
   <div class="row">
     <div class="col-sm-3 col-sm-push-9">
       <div class="list-group" ng-if="::permissions">
@@ -32,7 +32,7 @@
                 class="list-group-item"
                 href="#"
                 ng-click="deleteEvent()"><i class="fa fa-trash" aria-hidden="true"></i>  Verwijderen</button>
-        <udb-moderation-offer ng-if="moderationPermission" class="list-group-item moderation-detail" offer-id="{{event['@id']}}" continue="true"></udb-moderation-offer>
+        <udb-moderation-offer ng-if="::moderationPermission" class="list-group-item moderation-detail" offer-id="{{::event['@id']}}" continue="true"></udb-moderation-offer>
       </div>
     </div>
     <div class="col-sm-9 col-sm-pull-3">
@@ -50,27 +50,29 @@
             </colgroup>
             <tbody>
               <tr>
-                <td><span class="def">Titel</span></td>
-                <td>{{event.name}}</td>
+                <td><span class="row-label">Titel</span></td>
+                <td>{{::event.name}}</td>
               </tr>
               <tr>
-                <td><span class="def">Type</span></td>
-                <td>{{event.type.label}}</td>
+                <td><span class="row-label">Type</span></td>
+                <td>{{::event.type.label}}</td>
               </tr>
               <tr ng-if="event.audience.audienceType !== 'everyone'">
-                <td><span class="def">Toegang</span></td>
-                <td>{{translateAudience(event.audience.audienceType)}}
+                <td><span class="row-label">Toegang</span></td>
+                <td>{{translateAudience(::event.audience.audienceType)}}
                 <udb-event-cultuurkuur-component event="event" permission="::permissions.editing" ></udb-event-cultuurkuur-component></td>
               </tr>
               <tr>
                 <td>
-                  <span class="def">Labels</span>
+                  <span class="row-label">Labels</span>
                 </td>
                 <td>
-                  <p><udb-label-select labels="event.labels"
+                  <p>
+                    <udb-label-select labels="::event.labels"
                                     label-added="labelAdded(label)"
                                     label-removed="labelRemoved(label)">
-                  </udb-label-select></p>
+                    </udb-label-select>
+                  </p>
                   <p ng-if="labelResponse === 'error'" class="alert alert-danger">
                     Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.
                   </p>
@@ -82,64 +84,67 @@
                   </p>
                 </td>
               </tr>
+              <tr ng-class="::{muted: isEmpty(event.description)}">
+                <td><span class="row-label">Beschrijving</span></td>
+                <td ng-if="::(!isEmpty(event.description))">
+                  <div ng-bind-html="::event.description" class="event-detail-description"></div>
+                </td>
+                <td ng-if="::(isEmpty(event.description))">
+                  Geen beschrijving
+                </td>
+              </tr>
               <tr>
-                <td><span class="def">Beschrijving</span></td>
+                <td><span class="row-label">Waar</span></td>
+                <td ng-show="::event.location.url"><a ui-sref="split.footer.place-preview({id: event.location.id})">{{eventLocation(event)}}</a></td>
+                <td ng-hide="::event.location.url">
+                  {{::event.location.name.nl}},
+                  {{::event.location.address.streetAddress}},
+                  {{::event.location.address.postalCode}}
+                  {{::event.location.address.addressLocality}}
+                </td>
+              </tr>
+              <tr>
+                <td><span class="row-label">Wanneer</span></td>
                 <td>
-                  <div ng-bind-html="event.description" class="event-detail-description"></div>
+                  <udb-calendar-summary offer="::event" show-opening-hours="true"></udb-calendar-summary>
                 </td>
               </tr>
-              <tr>
-                <td><span class="def">Waar</span></td>
-                <td ng-show="event.location.url"><a ui-sref="split.footer.place-preview({id: event.location.id})">{{eventLocation(event)}}</a></td>
-                <td ng-hide="event.location.url">
-                  {{event.location.name.nl}},
-                  {{event.location.address.streetAddress}},
-                  {{event.location.address.postalCode}}
-                  {{event.location.address.addressLocality}}
-                </td>
-              </tr>
-              <tr>
-                <td><span class="def">Wanneer</span></td>
-                <td>
-                  <udb-calendar-summary offer="event" show-opening-hours="true"></udb-calendar-summary>
-                </td>
-              </tr>
-              <tr ng-class="{muted: !event.organizer}">
-                <td><span class="def">Organisatie</span></td>
-                <td ng-if="event.organizer">{{event.organizer.name}}</td>
-                <td ng-if="!event.organizer">
+              <tr ng-class="::{muted: (!event.organizer)}">
+                <td><span class="row-label">Organisatie</span></td>
+                <td ng-if="::event.organizer">{{::event.organizer.name}}</td>
+                <td ng-if="::(!event.organizer)">
                   Geen organisatie-informatie
                 </td>
               </tr>
-              <tr class="rv-event-info-price" ng-class="{muted: !event.priceInfo.length}">
-                <td><span class="def">Prijs</span></td>
-                <td ng-if="event.priceInfo.length">
+              <tr class="rv-event-info-price" ng-class="::{muted:  !event.priceInfo.length}">
+                <td><span class="row-label">Prijs</span></td>
+                <td ng-if="::event.priceInfo.length">
                   <table class="table event-detail-price-table">
-                    <tr ng-repeat="priceInfo in event.priceInfo">
-                      <td>{{priceInfo.name}}</td>
+                    <tr ng-repeat="::priceInfo in ::event.priceInfo">
+                      <td>{{::priceInfo.name}}</td>
                       <td>
-                        <span ng-if="priceInfo.price == 0">
+                        <span ng-if="::priceInfo.price == 0">
                           Gratis
                         </span>
-                        <span ng-if="priceInfo.price != 0">
-                          {{priceInfo.price | currency}} euro
+                        <span ng-if="::priceInfo.price != 0">
+                          {{::priceInfo.price | currency}} euro
                         </span>
                       </td>
                     </tr>
                   </table>
                 </td>
-                <td ng-if="!event.priceInfo.length">
+                <td ng-if="::(event.priceInfo.length == 0)">
                   Geen prijsinformatie
                 </td>
               </tr>
             </tbody>
-            <tbody ng-if="!isEmpty(event.bookingInfo)" udb-booking-info-detail="::event.bookingInfo"></tbody>
+            <tbody ng-if="::(!isEmpty(event.bookingInfo))" udb-booking-info-detail="::event.bookingInfo"></tbody>
             <tbody udb-contact-point-detail="::event.contactPoint"></tbody>
             <tbody>
               <tr>
-                <td><span class="def">Geschikt voor</span></td>
+                <td><span class="row-label">Geschikt voor</span></td>
                 <td>
-                  <span ng-if="event.typicalAgeRange">{{event.typicalAgeRange}}</span>
+                  <span ng-if="event.typicalAgeRange">{{::event.typicalAgeRange}}</span>
                   <span ng-if="!event.typicalAgeRange">Alle leeftijden</span>
                 </td>
               </tr>
@@ -150,11 +155,11 @@
 
       <div role="tabpanel" class="tab-pane" ng-show="isTabActive('history')">
         <div class="timeline">
-          <dl ng-repeat="eventAction in eventHistory track by $index">
-            <dt ng-bind="eventAction.date | date:'dd/MM/yyyy H:mm'"></dt>
+          <dl ng-repeat="eventAction in ::eventHistory track by $index">
+            <dt ng-bind="::eventAction.date | date:'dd/MM/yyyy H:mm'"></dt>
             <dd>
-              <span class="author" ng-if="eventAction.author">{{eventAction.author}}</span><br ng-if="eventAction.author"/>
-              <span class="description">{{eventAction.description}}</span>
+              <span class="author" ng-if="eventAction.author">{{::eventAction.author}}</span><br ng-if="eventAction.author"/>
+              <span class="description">{{::eventAction.description}}</span>
             </dd>
           </dl>
         </div>
