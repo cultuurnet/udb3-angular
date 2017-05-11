@@ -16,7 +16,7 @@
 </div>
 
 <div ng-if="place && finishedLoading" class="page-detail">
-  <h1 class="title" ng-bind="place.name"></h1>
+  <h1 class="title" ng-bind="::place.name"></h1>
 
   <div class="row">
     <div class="col-sm-3 col-sm-push-9">
@@ -108,10 +108,10 @@
       <div role="tabpanel" class="tab-pane" ng-show="isTabActive('history')">
         <div class="timeline">
           <dl ng-repeat="placeAction in ::placeHistory track by $index">
-            <dt ng-bind="::placeAction.date | date:'dd / MM / yyyy H:mm'"></dt>
+            <dt ng-bind="placeAction.date | date:'dd / MM / yyyy H:mm'"></dt>
             <dd>
-              <span class="author" ng-if="::placeAction.author">{{::placeAction.author}}</span><br ng-if="::placeAction.author"/>
-              <span class="description">{{::placeAction.description}}</span>
+              <span class="author" ng-if="placeAction.author">{{placeAction.author}}</span><br ng-if="placeAction.author"/>
+              <span class="description">{{placeAction.description}}</span>
             </dd>
           </dl>
         </div>
