@@ -17,7 +17,6 @@
 
 <div ng-if="finishedLoading()">
   <h1 class="title" ng-bind="event.name"></h1>
-
   <div class="row">
     <div class="col-sm-3 col-sm-push-9">
       <div class="list-group" ng-if="::permissions">
@@ -33,6 +32,7 @@
                 class="list-group-item"
                 href="#"
                 ng-click="deleteEvent()"><i class="fa fa-trash" aria-hidden="true"></i>  Verwijderen</button>
+        <udb-moderation-offer ng-if="moderationPermission" class="list-group-item moderation-detail" offer-id="{{event['@id']}}" continue="true"></udb-moderation-offer>
       </div>
     </div>
     <div class="col-sm-9 col-sm-pull-3">
@@ -70,7 +70,7 @@
                   <p><udb-label-select labels="event.labels"
                                     label-added="labelAdded(label)"
                                     label-removed="labelRemoved(label)">
-                  </udb-label-select></p>                  
+                  </udb-label-select></p>
                   <p ng-if="labelResponse === 'error'" class="alert alert-danger">
                     Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.
                   </p>
