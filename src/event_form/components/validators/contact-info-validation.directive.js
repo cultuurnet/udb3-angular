@@ -36,13 +36,13 @@ function UdbContactInfoValidationDirective() {
       scope.infoErrorMessage = '';
 
       if (!ngModel.$viewValue.value) {
-        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten';
+        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
         ngModel.$setValidity('contactinfo', false);
       }
       else {
         if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
           EMAIL_REGEXP.test(ngModel.$modelValue.value);
-          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen.';
           ngModel.$setValidity('contactinfo', false);
 
         }
@@ -50,7 +50,7 @@ function UdbContactInfoValidationDirective() {
           var viewValue = ngModel.$viewValue;
 
           if (!URL_REGEXP.test(viewValue.value)) {
-            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen.';
             ngModel.$setValidity('contactinfo', false);
           }
         }
