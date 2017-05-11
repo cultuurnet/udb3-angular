@@ -14504,6 +14504,7 @@ function OrganizerEditController(
   controller.validateContact = validateContact;
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
+  controller.cancel = cancel;
 
   var oldOrganizer = {};
   var oldContact = [];
@@ -14653,7 +14654,7 @@ function OrganizerEditController(
     }
   }
 
-  function saveOrganizer () {
+  function saveOrganizer() {
     var promises = [];
 
     if (isUrlChanged) {
@@ -14672,15 +14673,21 @@ function OrganizerEditController(
       promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
 
+    promises.push(OrganizerManager.removeOrganizerFromCache(organizerId));
+
     $q.all(promises)
         .then(function() {
-          OrganizerManager.removeOrganizerFromCache(organizerId);
           $state.go('management.organizers.search', {}, {reload: true});
         })
         .catch(function () {
           controller.hasErrors = true;
           controller.saveError = true;
         });
+  }
+
+  function cancel() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+    $state.go('management.organizers.search', {}, {reload: true});
   }
 }
 OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q"];
@@ -23714,7 +23721,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        Bewaren\n" +
     "    </button>\n" +
     "    <a class=\"btn btn-default organisator-bewerken-annuleren\"\n" +
-    "       ui-sref=\"management.organizers.search\">Annuleren</a>\n" +
+    "       ng-click=\"oec.cancel()\">Annuleren</a>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-show=\"oec.loadingError\">\n" +

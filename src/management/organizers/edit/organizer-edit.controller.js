@@ -38,6 +38,7 @@ function OrganizerEditController(
   controller.validateContact = validateContact;
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
+  controller.cancel = cancel;
 
   var oldOrganizer = {};
   var oldContact = [];
@@ -187,7 +188,7 @@ function OrganizerEditController(
     }
   }
 
-  function saveOrganizer () {
+  function saveOrganizer() {
     var promises = [];
 
     if (isUrlChanged) {
@@ -206,14 +207,20 @@ function OrganizerEditController(
       promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
     }
 
+    promises.push(OrganizerManager.removeOrganizerFromCache(organizerId));
+
     $q.all(promises)
         .then(function() {
-          OrganizerManager.removeOrganizerFromCache(organizerId);
           $state.go('management.organizers.search', {}, {reload: true});
         })
         .catch(function () {
           controller.hasErrors = true;
           controller.saveError = true;
         });
+  }
+
+  function cancel() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+    $state.go('management.organizers.search', {}, {reload: true});
   }
 }

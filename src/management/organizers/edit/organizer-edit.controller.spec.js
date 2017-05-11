@@ -446,4 +446,14 @@ describe('Controller: Organizer Edit', function() {
     expect(controller.saveError).toBeTruthy();
 
   });
+
+  it ('should handle the cancel request', function () {
+    getMockUps();
+    var controller = getController();
+
+    controller.cancel();
+
+    expect(OrganizerManager.removeOrganizerFromCache).toHaveBeenCalledWith(id);
+    expect($state.go).toHaveBeenCalledWith('management.organizers.search', {}, {reload:true});
+  });
 });
