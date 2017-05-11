@@ -20562,7 +20562,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event({id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  Kopiëren en aanpassen</button>\n" +
+    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  Kopiëren en aanpassen</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
@@ -20592,9 +20592,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <td><span class=\"row-label\">Type</span></td>\n" +
     "                <td>{{::event.type.label}}</td>\n" +
     "              </tr>\n" +
-    "              <tr ng-if=\"event.audience.audienceType !== 'everyone'\">\n" +
+    "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
-    "                <td>{{translateAudience(::event.audience.audienceType)}}\n" +
+    "                <td>{{::translateAudience(event.audience.audienceType)}}\n" +
     "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
@@ -20630,7 +20630,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Waar</span></td>\n" +
-    "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
+    "                <td ng-show=\"::event.location.url\"><a ui-sref=\"::split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
     "                  {{::event.location.name.nl}},\n" +
     "                  {{::event.location.address.streetAddress}},\n" +
@@ -20651,18 +20651,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  Geen organisatie-informatie\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted:  !event.priceInfo.length}\">\n" +
+    "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
     "                <td><span class=\"row-label\">Prijs</span></td>\n" +
     "                <td ng-if=\"::event.priceInfo.length\">\n" +
-    "                  <table class=\"table event-detail-price-table\">\n" +
-    "                    <tr ng-repeat=\"::priceInfo in ::event.priceInfo\">\n" +
-    "                      <td>{{::priceInfo.name}}</td>\n" +
+    "                  <table class=\"table table-bordered event-detail-price-table\">\n" +
+    "                    <tr ng-repeat=\"priceInfo in ::event.priceInfo\">\n" +
+    "                      <td>{{priceInfo.name}}</td>\n" +
     "                      <td>\n" +
-    "                        <span ng-if=\"::priceInfo.price == 0\">\n" +
+    "                        <span ng-if=\"priceInfo.price == 0\">\n" +
     "                          Gratis\n" +
     "                        </span>\n" +
     "                        <span ng-if=\"::priceInfo.price != 0\">\n" +
-    "                          {{::priceInfo.price | currency}} euro\n" +
+    "                          {{priceInfo.price | currency}} euro\n" +
     "                        </span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
@@ -20679,8 +20679,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"event.typicalAgeRange\">{{::event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"::event.typicalAgeRange\">{{::event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::(!event.typicalAgeRange)\">Alle leeftijden</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
@@ -20691,10 +20691,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
     "          <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
-    "            <dt ng-bind=\"::eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
+    "            <dt ng-bind=\"eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
     "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"eventAction.author\">{{::eventAction.author}}</span><br ng-if=\"eventAction.author\"/>\n" +
-    "              <span class=\"description\">{{::eventAction.description}}</span>\n" +
+    "              <span class=\"author\" ng-if=\"eventAction.author\">{{eventAction.author}}</span><br ng-if=\"eventAction.author\"/>\n" +
+    "              <span class=\"description\">{{eventAction.description}}</span>\n" +
     "            </dd>\n" +
     "          </dl>\n" +
     "        </div>\n" +

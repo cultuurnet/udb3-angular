@@ -3208,8 +3208,8 @@ img.offer-image-main {
   max-width: 400px;
   max-height: 300px;
 }
-table.event-detail-price-table {
-  background-color: #fff !important;
+.event-detail-price-table {
+  margin-bottom: 0;
 }
 .row-label {
   font-weight: 300;
