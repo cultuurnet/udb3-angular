@@ -8979,7 +8979,7 @@ angular
       controller: OrganizerContactComponent,
       controllerAs: 'occ',
       bindings: {
-        contact: '<',
+        contact: '=',
         onUpdate: '&'
       }
     });
@@ -8987,22 +8987,10 @@ angular
 /* @ngInject */
 function OrganizerContactComponent() {
   var controller = this;
-  controller.contactHasErrors = false;
 
-  controller.validateContact = validateContact;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
-
-  function validateContact() {
-    if (_.find(controller.contact, {'value': ''}) ||
-        _.find(controller.contact, {'value': undefined})) {
-      controller.contactHasErrors = true;
-    }
-    else {
-      controller.contactHasErrors = false;
-    }
-    sendUpdate();
-  }
+  controller.sendUpdate = sendUpdate;
 
   /**
    * Add a contact info entry for an organizer.
@@ -9012,7 +9000,7 @@ function OrganizerContactComponent() {
       type : type,
       value : ''
     });
-    validateContact();
+    sendUpdate();
   }
 
   /**
@@ -9020,12 +9008,13 @@ function OrganizerContactComponent() {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
-    validateContact();
+    sendUpdate();
   }
 
   function sendUpdate() {
-    controller.onUpdate({contact: controller.contact, error: controller.contactHasErrors});
+    controller.onUpdate();
   }
+
 }
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
@@ -10034,22 +10023,20 @@ function UdbContactInfoValidationDirective() {
       ngModel.$setValidity('contactinfo', true);
       scope.infoErrorMessage = '';
 
-      if (!ngModel.$viewValue.value) {
-        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten';
+      if (ngModel.$modelValue.value === '' || ngModel.$modelValue.value === undefined) {
+        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
         ngModel.$setValidity('contactinfo', false);
       }
       else {
         if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-          EMAIL_REGEXP.test(ngModel.$modelValue.value);
-          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen.';
           ngModel.$setValidity('contactinfo', false);
-
         }
         else if (ngModel.$modelValue.type === 'url') {
           var viewValue = ngModel.$viewValue;
 
           if (!URL_REGEXP.test(viewValue.value)) {
-            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen.';
             ngModel.$setValidity('contactinfo', false);
           }
         }
@@ -14604,15 +14591,15 @@ function OrganizerEditController(
     checkChanges();
   }
 
-  function validateContact(contact, error) {
-    controller.contact = contact;
-
-    if (error) {
+  function validateContact() {
+    if (_.find(controller.contact, {'value': ''}) ||
+        _.find(controller.contact, {'value': undefined})) {
       controller.contactError = true;
     }
     else {
       controller.contactError = false;
     }
+
     checkChanges();
   }
 
@@ -14622,6 +14609,10 @@ function OrganizerEditController(
   function validateOrganizer() {
 
     controller.showValidation = true;
+
+    if (isUrlChanged) {validateWebsite();}
+    if (isNameChanged) {validateName();}
+    if (isContactChanged) {validateContact();}
 
     if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||
@@ -21703,37 +21694,37 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <table class=\"table\" ng-show=\"occ.contact.length\">\n" +
     "            <tr ng-repeat=\"(key, info) in occ.contact track by key\"\n" +
     "                ng-model=\"info\"\n" +
-    "                udb-contact-info-validation\n" +
-    "                ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
+    "                udb-contact-info-validation>\n" +
     "                <td>\n" +
-    "                    <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo(); occ.validateContact()\">\n" +
+    "                    <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo(); occ.sendUpdate()\">\n" +
     "                        <option value=\"url\">Website</option>\n" +
     "                        <option value=\"phone\">Telefoonnummer</option>\n" +
     "                        <option value=\"email\">E-mailadres</option>\n" +
     "                    </select>\n" +
     "                </td>\n" +
-    "                <td ng-switch=\"info.type\">\n" +
+    "                <td ng-switch=\"info.type\"\n" +
+    "                    ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
     "                    <input type=\"text\"\n" +
     "                           ng-switch-when=\"url\"\n" +
     "                           udb-http-prefix\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"info.value\"\n" +
     "                           name=\"contact[{{key}}]\"\n" +
-    "                           ng-change=\"validateInfo(); occ.validateContact()\"\n" +
-    "                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
+    "                           ng-blur=\"validateInfo()\"\n" +
+    "                           ng-change=\"occ.sendUpdate()\"\n" +
     "                           required/>\n" +
     "                    <input type=\"text\"\n" +
     "                           ng-switch-default\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"info.value\"\n" +
     "                           name=\"contact[{{key}}]\"\n" +
-    "                           ng-change=\"validateInfo(); occ.validateContact()\"\n" +
-    "                           ng-model-options=\"{ updateOn: 'blur' }\"\n" +
+    "                           ng-blur=\"validateInfo()\"\n" +
+    "                           ng-change=\"occ.sendUpdate()\"\n" +
     "                           required/>\n" +
-    "                    <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
+    "                    <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"infoErrorMessage\"></span>\n" +
     "                </td>\n" +
     "                <td>\n" +
-    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"occ.deleteOrganizerContactInfo(key)\">\n" +
+    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"clearInfo(); occ.deleteOrganizerContactInfo(key)\">\n" +
     "                        <span aria-hidden=\"true\">&times;</span>\n" +
     "                    </button>\n" +
     "                </td>\n" +
@@ -23682,8 +23673,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           class=\"form-control\"\n" +
     "                           ng-model-options=\"{ debounce: 300 }\"\n" +
     "                           ng-model=\"oec.organizer.url\"\n" +
-    "                           aria-describedby=\"organizer-website-status\"\n" +
     "                           ng-change=\"oec.validateWebsite()\"\n" +
+    "                           aria-describedby=\"organizer-website-status\"\n" +
     "                           autocomplete=\"off\"\n" +
     "                           required>\n" +
     "                    <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"oec.showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
@@ -23711,8 +23702,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           on-update=\"oec.validateAddress(address, error)\"\n" +
     "                           ng-class=\"{'has-error' : oec.addressError && oec.hasErrors }\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact=\"oec.contact\"\n" +
-    "                           on-update=\"oec.validateContact(contact, error)\"\n" +
-    "                           ng-class=\"{'has-error' : oec.contactError && oec.hasErrors }\"></udb-organizer-contact>\n" +
+    "                           on-update=\"oec.validateContact()\"></udb-organizer-contact>\n" +
     "\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-bewerken-bewaren\"\n" +

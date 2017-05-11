@@ -138,15 +138,15 @@ function OrganizerEditController(
     checkChanges();
   }
 
-  function validateContact(contact, error) {
-    controller.contact = contact;
-
-    if (error) {
+  function validateContact() {
+    if (_.find(controller.contact, {'value': ''}) ||
+        _.find(controller.contact, {'value': undefined})) {
       controller.contactError = true;
     }
     else {
       controller.contactError = false;
     }
+
     checkChanges();
   }
 
@@ -156,6 +156,10 @@ function OrganizerEditController(
   function validateOrganizer() {
 
     controller.showValidation = true;
+
+    if (isUrlChanged) {validateWebsite();}
+    if (isNameChanged) {validateName();}
+    if (isContactChanged) {validateContact();}
 
     if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||

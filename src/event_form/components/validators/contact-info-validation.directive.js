@@ -35,16 +35,14 @@ function UdbContactInfoValidationDirective() {
       ngModel.$setValidity('contactinfo', true);
       scope.infoErrorMessage = '';
 
-      if (!ngModel.$viewValue.value) {
+      if (ngModel.$modelValue.value === '' || ngModel.$modelValue.value === undefined) {
         scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
         ngModel.$setValidity('contactinfo', false);
       }
       else {
         if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-          EMAIL_REGEXP.test(ngModel.$modelValue.value);
           scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen.';
           ngModel.$setValidity('contactinfo', false);
-
         }
         else if (ngModel.$modelValue.type === 'url') {
           var viewValue = ngModel.$viewValue;

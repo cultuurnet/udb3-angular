@@ -15,37 +15,37 @@
         <table class="table" ng-show="occ.contact.length">
             <tr ng-repeat="(key, info) in occ.contact track by key"
                 ng-model="info"
-                udb-contact-info-validation
-                ng-class="{'has-error' : infoErrorMessage !== '' }">
+                udb-contact-info-validation>
                 <td>
-                    <select class="form-control" ng-model="info.type" ng-change="clearInfo(); occ.validateContact()">
+                    <select class="form-control" ng-model="info.type" ng-change="clearInfo(); occ.sendUpdate()">
                         <option value="url">Website</option>
                         <option value="phone">Telefoonnummer</option>
                         <option value="email">E-mailadres</option>
                     </select>
                 </td>
-                <td ng-switch="info.type">
+                <td ng-switch="info.type"
+                    ng-class="{'has-error' : infoErrorMessage !== '' }">
                     <input type="text"
                            ng-switch-when="url"
                            udb-http-prefix
                            class="form-control"
                            ng-model="info.value"
                            name="contact[{{key}}]"
-                           ng-change="validateInfo(); occ.validateContact()"
-                           ng-model-options="{ updateOn: 'blur' }"
+                           ng-blur="validateInfo()"
+                           ng-change="occ.sendUpdate()"
                            required/>
                     <input type="text"
                            ng-switch-default
                            class="form-control"
                            ng-model="info.value"
                            name="contact[{{key}}]"
-                           ng-change="validateInfo(); occ.validateContact()"
-                           ng-model-options="{ updateOn: 'blur' }"
+                           ng-blur="validateInfo()"
+                           ng-change="occ.sendUpdate()"
                            required/>
-                    <span class="help-block" ng-if="infoErrorMessage" ng-bind="::infoErrorMessage"></span>
+                    <span class="help-block" ng-if="infoErrorMessage" ng-bind="infoErrorMessage"></span>
                 </td>
                 <td>
-                    <button type="button" class="close" aria-label="Close" ng-click="occ.deleteOrganizerContactInfo(key)">
+                    <button type="button" class="close" aria-label="Close" ng-click="clearInfo(); occ.deleteOrganizerContactInfo(key)">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>

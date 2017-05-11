@@ -14,7 +14,7 @@ angular
       controller: OrganizerContactComponent,
       controllerAs: 'occ',
       bindings: {
-        contact: '<',
+        contact: '=',
         onUpdate: '&'
       }
     });
@@ -22,22 +22,10 @@ angular
 /* @ngInject */
 function OrganizerContactComponent() {
   var controller = this;
-  controller.contactHasErrors = false;
 
-  controller.validateContact = validateContact;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
-
-  function validateContact() {
-    if (_.find(controller.contact, {'value': ''}) ||
-        _.find(controller.contact, {'value': undefined})) {
-      controller.contactHasErrors = true;
-    }
-    else {
-      controller.contactHasErrors = false;
-    }
-    sendUpdate();
-  }
+  controller.sendUpdate = sendUpdate;
 
   /**
    * Add a contact info entry for an organizer.
@@ -47,7 +35,7 @@ function OrganizerContactComponent() {
       type : type,
       value : ''
     });
-    validateContact();
+    sendUpdate();
   }
 
   /**
@@ -55,10 +43,11 @@ function OrganizerContactComponent() {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
-    validateContact();
+    sendUpdate();
   }
 
   function sendUpdate() {
-    controller.onUpdate({contact: controller.contact, error: controller.contactHasErrors});
+    controller.onUpdate();
   }
+
 }
