@@ -1956,7 +1956,7 @@ input + .alert {
   background: #ffffff;
   border-right: silver;
   padding: 10px;
-  z-index: 75;
+  z-index: 1029;
 }
 .udb-job-log .repeat-animation.ng-enter {
   -webkit-transition: all linear 1s;
@@ -2016,7 +2016,7 @@ input + .alert {
   bottom: 0;
   background: #000;
   opacity: 0.5;
-  z-index: 50;
+  z-index: 1028;
   display: none;
 }
 .udb-job-log-overlay.shown {
@@ -3042,6 +3042,7 @@ input + .alert {
   margin-left: -15px;
   border-top: 1px solid #dddddd;
   width: 100%;
+  z-index: 1030;
 }
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
@@ -3121,14 +3122,6 @@ input + .alert {
 form.contact-info table,
 form.booking-period table {
   border: 1px solid #dddddd;
-}
-form.contact-info .input-group,
-form.booking-period .input-group {
-  z-index: 0;
-}
-form.contact-info .input-group-btn,
-form.booking-period .input-group-btn {
-  z-index: 0;
 }
 .npr {
   padding-right: 0px;
