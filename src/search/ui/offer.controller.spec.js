@@ -248,6 +248,35 @@ describe('Controller: Offer', function() {
     expect(offerController.offerExpired).toBeFalsy();
   });
 
+  it('should hide a publicationdate in the past', function () {
+    var eventJson = angular.copy(exampleEventJson);
+    eventJson.availableFrom = '1900-06-20T19:00:00+02:00';
+
+    deferredEvent.resolve(new UdbEvent(eventJson));
+    $scope.$digest();
+    expect(offerController.hasFutureAvailableFrom).toBeFalsy();
+  });
+
+  it('should show a publicationdate in the future', function () {
+    var eventJson = angular.copy(exampleEventJson);
+    eventJson.availableFrom = '3000-06-20T19:00:00+02:00';
+
+    deferredEvent.resolve(new UdbEvent(eventJson));
+    $scope.$digest();
+    expect(offerController.hasFutureAvailableFrom).toBeTruthy();
+  });
+
+
+  it('should handle an empty publicationdate', function () {
+
+    var eventJson = angular.copy(exampleEventJson);
+    eventJson.availableFrom = '';
+
+    deferredEvent.resolve(new UdbEvent(eventJson));
+    $scope.$digest();
+    expect(offerController.hasFutureAvailableFrom).toBeFalsy();
+  });
+
   describe('variations: ', function () {
     beforeEach(function () {
       deferredEvent.resolve(new UdbEvent(exampleEventJson));

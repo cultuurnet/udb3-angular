@@ -1,0 +1,11 @@
+<div class="calendar-timing-info">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
+                <udb-form-calendar-period form-data="calendar.formData"></udb-form-calendar-period>
+                <hr>
+                <udb-event-form-opening-hours opening-hours="calendar.openingHoursCollection"></udb-event-form-opening-hours>
+            </div>
+        </div>
+    </div>
+</div>
