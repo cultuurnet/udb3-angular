@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc module
- * @name udb.export
+ * @name udb.event-form
  * @description
- * The udb eventform module
+ * The udb form module
  */
 angular
   .module('udb.event-form', [
