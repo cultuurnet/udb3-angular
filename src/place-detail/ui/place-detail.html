@@ -54,12 +54,13 @@
               <td><span class="row-label">Type</span></td>
               <td>{{::place.type.label}}</td>
             </tr>
-            <tr ng-class="::{ muted: (isEmpty(place.description) || place.description == null)}">
+
+            <tr ng-class="::{muted: place.description==undefined}">
               <td><span class="row-label">Beschrijving</span></td>
-              <td ng-if="::(!isEmpty(place.description) && place.description !== null)">
+              <td ng-if="::(place.description!==undefined)">
                 <div ng-bind-html="::place.description" class="event-detail-description"></div>
               </td>
-              <td ng-if="::(isEmpty(place.description) || place.description == null)">
+              <td ng-if="::(place.description==undefined)">
                 Geen beschrijving
               </td>
             </tr>

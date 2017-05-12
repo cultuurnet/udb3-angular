@@ -20630,7 +20630,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Waar</span></td>\n" +
-    "                <td ng-show=\"::event.location.url\"><a ui-sref=\"::split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
+    "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
     "                  {{::event.location.name.nl}},\n" +
     "                  {{::event.location.address.streetAddress}},\n" +
@@ -23939,7 +23939,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "</div>\n" +
     "\n" +
     "<div ng-if=\"place && finishedLoading\" class=\"page-detail\">\n" +
-    "  <h1 class=\"title\" ng-bind=\"place.name\"></h1>\n" +
+    "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
@@ -23977,12 +23977,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <td><span class=\"row-label\">Type</span></td>\n" +
     "              <td>{{::place.type.label}}</td>\n" +
     "            </tr>\n" +
-    "            <tr ng-class=\"::{ muted: (isEmpty(place.description) || place.description == null)}\">\n" +
+    "\n" +
+    "            <tr ng-class=\"::{muted: place.description==undefined}\">\n" +
     "              <td><span class=\"row-label\">Beschrijving</span></td>\n" +
-    "              <td ng-if=\"::(!isEmpty(place.description) && place.description !== null)\">\n" +
+    "              <td ng-if=\"::(place.description!==undefined)\">\n" +
     "                <div ng-bind-html=\"::place.description\" class=\"event-detail-description\"></div>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"::(isEmpty(place.description) || place.description == null)\">\n" +
+    "              <td ng-if=\"::(place.description==undefined)\">\n" +
     "                Geen beschrijving\n" +
     "              </td>\n" +
     "            </tr>\n" +
@@ -24031,10 +24032,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
     "          <dl ng-repeat=\"placeAction in ::placeHistory track by $index\">\n" +
-    "            <dt ng-bind=\"::placeAction.date | date:'dd / MM / yyyy H:mm'\"></dt>\n" +
+    "            <dt ng-bind=\"placeAction.date | date:'dd / MM / yyyy H:mm'\"></dt>\n" +
     "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"::placeAction.author\">{{::placeAction.author}}</span><br ng-if=\"::placeAction.author\"/>\n" +
-    "              <span class=\"description\">{{::placeAction.description}}</span>\n" +
+    "              <span class=\"author\" ng-if=\"placeAction.author\">{{placeAction.author}}</span><br ng-if=\"placeAction.author\"/>\n" +
+    "              <span class=\"description\">{{placeAction.description}}</span>\n" +
     "            </dd>\n" +
     "          </dl>\n" +
     "        </div>\n" +
