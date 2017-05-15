@@ -15,7 +15,7 @@
   /* @ngInject */
   function EventFormPublishModalController($uibModalInstance, eventFormData, publishEvent) {
     var efpmc = this;
-    efpmc.error = false;
+    efpmc.error = '';
     efpmc.hasPublicationDate = false;
     efpmc.publicationDate = eventFormData.availableFrom;
     var tomorrow = moment(new Date()).add(1, 'days');
@@ -29,8 +29,10 @@
     efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
-      options : {
-        minDate : tomorrow.toDate()
+      options: {
+        minDate: tomorrow.toDate(),
+        maxDate: moment(eventFormData.startDate).subtract(1, 'd'),
+        showWeeks: false,
       }
     };
 
@@ -43,14 +45,16 @@
     }
 
     function savePublicationDate() {
-      if (tomorrow <= efpmc.publicationDate) {
+      if (!efpmc.publicationDate) {
+        efpmc.error = 'empty';
+      } else if (tomorrow <= efpmc.publicationDate) {
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;
         publishEvent();
         $uibModalInstance.close();
       } else {
-        efpmc.error = true;
+        efpmc.error = 'past';
       }
     }
 

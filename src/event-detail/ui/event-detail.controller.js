@@ -26,7 +26,7 @@ function EventDetail(
   offerLabeller,
   $translate,
   appConfig,
-   ModerationService
+  ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -34,19 +34,6 @@ function EventDetail(
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
-    var splitLocation = offerLocation.split('/');
-    $scope.cbid = splitLocation[splitLocation.length - 1];
-    ModerationService
-      .getMyRoles()
-      .then(function(roles) {
-        getModerationItems(roles).then(function(result) {
-          angular.forEach(result.member, function(member) {
-            if (member['@id'] === $scope.eventId) {
-              $scope.moderationPermission = true;
-            }
-          });
-        });
-      });
 
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
@@ -83,7 +70,7 @@ function EventDetail(
       }
     });
     query = (query ? '(' + query + ')' : '');
-    query = '(' + query + ' AND cdbid:' + $scope.cbid + ')';
+    query = '(' + query + ' AND cdbid:' + $scope.event.id + ')';
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
@@ -140,6 +127,18 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
+
+    ModerationService
+      .getMyRoles()
+      .then(function(roles) {
+        getModerationItems(roles).then(function(result) {
+          angular.forEach(result.member, function(member) {
+            if (member['@id'] === $scope.eventId) {
+              $scope.moderationPermission = true;
+            }
+          });
+        });
+      });
   }
 
   function showVariation(variation) {
