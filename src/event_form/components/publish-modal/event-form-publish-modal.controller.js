@@ -29,9 +29,10 @@
     efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
-      options : {
-        minDate : tomorrow.toDate(),
-        maxDate : moment(eventFormData.startDate).subtract(1, 'd')
+      options: {
+        minDate: tomorrow.toDate(),
+        maxDate: moment(eventFormData.startDate).subtract(1, 'd'),
+        showWeeks: false,
       }
     };
 
