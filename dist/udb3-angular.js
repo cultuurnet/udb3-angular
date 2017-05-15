@@ -8985,7 +8985,7 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent($scope) {
+function OrganizerContactComponent() {
   var controller = this;
 
   controller.validateContact = validateContact;
@@ -9012,7 +9012,6 @@ function OrganizerContactComponent($scope) {
       type : type,
       value : ''
     });
-    $scope.$broadcast('organizerContactRefresh');
     validateContact();
   }
 
@@ -9021,7 +9020,6 @@ function OrganizerContactComponent($scope) {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
-    $scope.$broadcast('organizerContactRefresh');
     validateContact();
   }
 
@@ -9030,7 +9028,6 @@ function OrganizerContactComponent($scope) {
   }
 
 }
-OrganizerContactComponent.$inject = ["$scope"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -21702,7 +21699,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <p><strong>Contact</strong></p>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-12\">\n" +
-    "\n" +
     "        <div ng-show=\"occ.contact.length === 0\">\n" +
     "            <ul class=\"list-unstyled\">\n" +
     "                <li><a ng-click=\"occ.addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
@@ -21710,51 +21706,79 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <li><a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
-    "        <table class=\"table\" ng-show=\"occ.contact.length\">\n" +
-    "            <tr ng-repeat=\"(key, info) in occ.contact track by key\"\n" +
-    "                ng-model=\"info\"\n" +
-    "                udb-contact-info-validation>\n" +
-    "                <td>\n" +
-    "                    <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo(); occ.validateContact()\">\n" +
-    "                        <option value=\"url\">Website</option>\n" +
-    "                        <option value=\"phone\">Telefoonnummer</option>\n" +
-    "                        <option value=\"email\">E-mailadres</option>\n" +
-    "                    </select>\n" +
-    "                </td>\n" +
-    "                <td ng-switch=\"info.type\"\n" +
-    "                    ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
-    "                    <input type=\"text\"\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-sm-12\"\n" +
+    "         ng-show=\"occ.contact.length\">\n" +
+    "\n" +
+    "        <div class=\"row\"\n" +
+    "             ng-repeat=\"contact in occ.contact\">\n" +
+    "\n" +
+    "            <div class=\"col-sm-5\">\n" +
+    "                <select class=\"form-control\"\n" +
+    "                        ng-model=\"contact.type\"\n" +
+    "                        ng-change=\"occ.validateContact()\">\n" +
+    "                    <option value=\"url\">Website</option>\n" +
+    "                    <option value=\"phone\">Telefoonnummer</option>\n" +
+    "                    <option value=\"email\">E-mailadres</option>\n" +
+    "                </select>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-6\">\n" +
+    "                <ng-form name=\"organizerContact\"\n" +
+    "                         ng-switch=\"contact.type\"\n" +
+    "                         ng-class=\"{'has-error' : organizerContact.contact.$touched && organizerContact.contact.$invalid }\">\n" +
+    "                    <input type=\"url\"\n" +
     "                           ng-switch-when=\"url\"\n" +
     "                           udb-http-prefix\n" +
     "                           class=\"form-control\"\n" +
-    "                           ng-model=\"info.value\"\n" +
-    "                           name=\"contact[{{key}}]\"\n" +
-    "                           ng-init=\"loadInfo()\"\n" +
-    "                           ng-change=\"occ.validateContact()\"\n" +
-    "                           ng-blur=\"validateInfo()\"\n" +
+    "                           ng-model=\"contact.value\"\n" +
+    "                           name=\"contact\"\n" +
+    "                           ng-pattern=\"/^(ftp|http|https):\\/\\/(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(\\/|\\/([\\w#!:.?+=&%@!\\-\\/]))?$/\"\n" +
+    "                           required/>\n" +
+    "                    <input type=\"email\"\n" +
+    "                           ng-switch-when=\"email\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           ng-model=\"contact.value\"\n" +
+    "                           name=\"contact\"\n" +
+    "                           ng-pattern=\"/^[a-z0-9!#$%&'*+\\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i\"\n" +
     "                           required/>\n" +
     "                    <input type=\"text\"\n" +
     "                           ng-switch-default\n" +
     "                           class=\"form-control\"\n" +
-    "                           ng-model=\"info.value\"\n" +
-    "                           name=\"contact[{{key}}]\"\n" +
-    "                           ng-init=\"loadInfo()\"\n" +
-    "                           ng-change=\"occ.validateContact()\"\n" +
-    "                           ng-blur=\"validateInfo()\"\n" +
+    "                           ng-model=\"contact.value\"\n" +
+    "                           name=\"contact\"\n" +
     "                           required/>\n" +
-    "                    <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"infoErrorMessage\"></span>\n" +
-    "                </td>\n" +
-    "                <td>\n" +
-    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"occ.deleteOrganizerContactInfo(key)\">\n" +
-    "                        <span aria-hidden=\"true\">&times;</span>\n" +
-    "                    </button>\n" +
-    "                </td>\n" +
-    "            </tr>\n" +
-    "            <tr ng-if=\"occ.contact.length > 0\">\n" +
-    "                <td colspan=\"3\"><a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
-    "                </td>\n" +
-    "            </tr>\n" +
-    "        </table>\n" +
+    "                </ng-form>\n" +
+    "                <div ng-messages=\"organizerContact.contact.$error\"\n" +
+    "                      ng-show=\"organizerContact.contact.$touched\"\n" +
+    "                      ng-switch=\"contact.type\">\n" +
+    "                        <span ng-message=\"required\"\n" +
+    "                              ng-if=\"!contact.value\"\n" +
+    "                              class=\"help-block\">Gelieve dit veld niet leeg te laten.</span>\n" +
+    "                        <span ng-message=\"invalid\">\n" +
+    "                            <span ng-switch-when=\"url\"\n" +
+    "                                  class=\"help-block\">\n" +
+    "                            Gelieve een geldige url in te vullen.\n" +
+    "                            </span>\n" +
+    "                            <span ng-switch-when=\"email\"\n" +
+    "                                  class=\"help-block\">\n" +
+    "                                Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                            </span>\n" +
+    "                        </span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-1\">\n" +
+    "                <button type=\"button\"\n" +
+    "                        class=\"close\"\n" +
+    "                        aria-label=\"Close\"\n" +
+    "                        ng-click=\"occ.deleteOrganizerContactInfo($index)\">\n" +
+    "                    <span aria-hidden=\"true\">&times;</span>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-12\">\n" +
+    "        <a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
     "    </div>\n" +
     "</div>"
   );

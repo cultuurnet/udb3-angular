@@ -20,7 +20,7 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent($scope) {
+function OrganizerContactComponent() {
   var controller = this;
 
   controller.validateContact = validateContact;
@@ -47,7 +47,6 @@ function OrganizerContactComponent($scope) {
       type : type,
       value : ''
     });
-    $scope.$broadcast('organizerContactRefresh');
     validateContact();
   }
 
@@ -56,7 +55,6 @@ function OrganizerContactComponent($scope) {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
-    $scope.$broadcast('organizerContactRefresh');
     validateContact();
   }
 
