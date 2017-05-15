@@ -1248,9 +1248,10 @@ function UdbApi(
 
   this.getCalendarSummary = function(eventId, format) {
     var deferred = $q.defer();
-
+    var config = defaultApiConfig;
+    config.headers['Content-Type'] ='text/plain';
     var request  = $http.get(
-      eventId + '/calendar-summary?format=' + format, defaultApiConfig
+      eventId + '/calendar-summary?format=' + format, config
     );
 
     request.success(function(result) {

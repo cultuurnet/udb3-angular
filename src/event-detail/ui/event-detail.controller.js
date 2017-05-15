@@ -48,6 +48,16 @@ function EventDetail(
         });
       });
 
+    udbApi
+      .getCalendarSummary($scope.eventId, 'lg')
+      .then(
+        function(success) {
+          console.log(success);
+        },
+        function(err) {
+          console.log(err);
+        });
+
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
 
