@@ -11037,10 +11037,10 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  var dPD = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = (dPD === null || typeof dPD === 'undefined' || dPD === '');
   if (!controller.hasNoDefault && isDraft) {
-    controller.eventFormData.availableFrom = defaultPublicationDate;
+    controller.eventFormData.availableFrom = dPD;
   }
 
   function publish() {
