@@ -7519,7 +7519,7 @@ function EventDetail(
   offerLabeller,
   $translate,
   appConfig,
-   ModerationService
+  ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7527,19 +7527,6 @@ function EventDetail(
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
-    var splitLocation = offerLocation.split('/');
-    $scope.cbid = splitLocation[splitLocation.length - 1];
-    ModerationService
-      .getMyRoles()
-      .then(function(roles) {
-        getModerationItems(roles).then(function(result) {
-          angular.forEach(result.member, function(member) {
-            if (member['@id'] === $scope.eventId) {
-              $scope.moderationPermission = true;
-            }
-          });
-        });
-      });
 
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
@@ -7576,7 +7563,7 @@ function EventDetail(
       }
     });
     query = (query ? '(' + query + ')' : '');
-    query = '(' + query + ' AND cdbid:' + $scope.cbid + ')';
+    query = '(' + query + ' AND cdbid:' + $scope.event.id + ')';
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
@@ -7633,6 +7620,18 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
+
+    ModerationService
+      .getMyRoles()
+      .then(function(roles) {
+        getModerationItems(roles).then(function(result) {
+          angular.forEach(result.member, function(member) {
+            if (member['@id'] === $scope.eventId) {
+              $scope.moderationPermission = true;
+            }
+          });
+        });
+      });
   }
 
   function showVariation(variation) {
@@ -9476,7 +9475,7 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
   /* @ngInject */
   function EventFormPublishModalController($uibModalInstance, eventFormData, publishEvent) {
     var efpmc = this;
-    efpmc.error = false;
+    efpmc.error = '';
     efpmc.hasPublicationDate = false;
     efpmc.publicationDate = eventFormData.availableFrom;
     var tomorrow = moment(new Date()).add(1, 'days');
@@ -9490,8 +9489,10 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
-      options : {
-        minDate : tomorrow.toDate()
+      options: {
+        minDate: tomorrow.toDate(),
+        maxDate: moment(eventFormData.startDate).subtract(1, 'd'),
+        showWeeks: false,
       }
     };
 
@@ -9504,14 +9505,16 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     }
 
     function savePublicationDate() {
-      if (tomorrow <= efpmc.publicationDate) {
+      if (!efpmc.publicationDate) {
+        efpmc.error = 'empty';
+      } else if (tomorrow <= efpmc.publicationDate) {
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;
         publishEvent();
         $uibModalInstance.close();
       } else {
-        efpmc.error = true;
+        efpmc.error = 'past';
       }
     }
 
@@ -21726,7 +21729,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
-    "  <p>Vanaf wanneer mag dit online verschijnen? </strong><em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze publicatiedatum kan je maar één keer instellen en nadien niet meer wijzigen.</em></strong></p>\n" +
+    "  <p>Vanaf wanneer mag dit online verschijnen? <em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>\n" +
     "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
     "      <div class=\"form-group\">\n" +
     "        <div class=\"radio\">\n" +
@@ -21754,7 +21757,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "    <br>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum.</div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
