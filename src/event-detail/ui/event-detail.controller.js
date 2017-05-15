@@ -79,7 +79,7 @@ function EventDetail(
 
     _.forEach(roles, function(role) {
       if (role.constraint) {
-        query += (query ? ' OR ' : '') + role.constraint;
+        query += (query ? ' OR ' : '') + '(' + role.constraint + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
