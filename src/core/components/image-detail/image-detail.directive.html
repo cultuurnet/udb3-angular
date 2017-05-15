@@ -1,0 +1,23 @@
+<tr ng-class="::{muted: !images.length}">
+    <td>
+        <span class="row-label">Afbeeldingen</span>
+    </td>
+    <td ng-if="::images.length">
+        <ul class="list-unstyled media-list">
+            <li ng-repeat="image in images | orderBy: '-main' " class="media">
+                <div class="media-left">
+                    <a target="_blank" href="{{image.contentUrl}}">
+                        <img class="media-object" src="{{image.contentUrl}}?height=100" alt="{{'Afbeelding '+$index}}">
+                    </a>
+                </div>
+                <div class="media-body">
+                   <span ng-if="$first" class="label label-default">Hoofdafbeelding</span>
+                    <p>{{image.description}}</p>
+                    <p class="text-muted">&copy; {{image.copyrightHolder}}</p>
+                </div>
+                <hr ng-if="!$last">
+            </li>
+        </ul>
+    </td>
+    <td ng-if="::!images.length">Geen afbeeldingen</td>
+</tr>

@@ -60,6 +60,7 @@ function PlaceDetail(
   $scope.labelRemoved = labelRemoved;
   $scope.labelResponse = '';
   $scope.labelsError = '';
+  $scope.finishedLoading = false;
 
   $scope.placeHistory = [];
   $scope.tabs = [
@@ -90,6 +91,8 @@ function PlaceDetail(
         .getPersonalVariation(place)
         .then(showVariation);
     }
+
+    $scope.finishedLoading = true;
   }
 
   function showVariation(variation) {

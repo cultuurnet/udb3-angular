@@ -3158,24 +3158,26 @@ form.booking-period .input-group-btn {
   color: #777777;
 }
 h2.block-header {
-  font-size: 1.067em;
-  font-weight: 500;
+  font-size: 0.85em;
+  font-weight: 300;
   margin-bottom: 1em;
   margin-top: .85em;
   text-transform: uppercase;
+  color: #777777;
 }
 .panel-default > .table:first-child tr:first-child > td {
   border-top: none;
 }
 .timeline {
   position: relative;
-  padding-left: 20px;
+  padding-left: 40px;
+  margin-top: 20px;
 }
 .timeline dl:before {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: 20px;
   width: 2px;
   content: '';
   background-color: #cccccc;
@@ -3211,8 +3213,53 @@ img.offer-image-main {
   max-width: 400px;
   max-height: 300px;
 }
-table.event-detail-price-table {
-  background-color: #fff !important;
+.event-detail-price-table {
+  margin-bottom: 0;
+}
+.row-label {
+  font-weight: 300;
+  color: #555555;
+}
+.muted .row-label {
+  color: #333333;
+}
+.udb3-data-table tr:first-child td {
+  border-top: none;
+}
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+.animated-background,
+.placeholder-title {
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #CCC;
+  background: linear-gradient(to right, #cccccc 8%, #f0f0f0 18%, #cccccc 33%);
+  background-size: 800px 104px;
+  height: 96px;
+  position: relative;
+}
+.placeholder-title {
+  display: inline-block;
+  height: 24px;
+  line-height: 56px;
+  width: 160px;
+  border-radius: 12px;
+}
+.table > tbody + tbody {
+  border-top: 1px solid #DDD;
+}
+.event-detail .media-object,
+.place-detail .media-object {
+  max-height: 100px;
 }
 .editable-click {
   border: 1px solid #eeeeee;
