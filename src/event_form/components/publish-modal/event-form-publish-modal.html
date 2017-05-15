@@ -2,7 +2,7 @@
   <h4 class="modal-title">Kies een publicatiedatum</h4>
 </div>
 <div id="event-form-publish-modal" class="modal-body">
-  <p>Vanaf wanneer mag dit online verschijnen? </strong><em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze publicatiedatum kan je maar één keer instellen en nadien niet meer wijzigen.</em></strong></p>
+  <p>Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>
     <div ng-if="!efpmc.eventFormData.availableFrom" class="form-inline">
       <div class="form-group">
         <div class="radio">
@@ -30,7 +30,8 @@
       </div>
     </div>
     <br>
-    <div class="alert alert-warning" ng-if="efpmc.error">Een publicatiedatum kan niet in het verleden liggen.</div>
+    <div class="alert alert-warning" ng-if="efpmc.error==='past'">Een publicatiedatum kan niet in het verleden liggen.</div>
+    <div class="alert alert-warning" ng-if="efpmc.error==='empty'">Kies een publicatiedatum alvorens op te slaan.</div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" ng-click="efpmc.dismiss();" data-dismiss="modal">

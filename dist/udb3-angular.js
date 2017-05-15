@@ -7530,7 +7530,7 @@ function EventDetail(
 
     _.forEach(roles, function(role) {
       if (role.constraint) {
-        query += (query ? ' OR ' : '') + role.constraint;
+        query += (query ? ' OR ' : '') + '(' + role.constraint + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
@@ -9446,7 +9446,7 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
   /* @ngInject */
   function EventFormPublishModalController($uibModalInstance, eventFormData, publishEvent) {
     var efpmc = this;
-    efpmc.error = false;
+    efpmc.error = '';
     efpmc.hasPublicationDate = false;
     efpmc.publicationDate = eventFormData.availableFrom;
     var tomorrow = moment(new Date()).add(1, 'days');
@@ -9461,7 +9461,8 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
       options : {
-        minDate : tomorrow.toDate()
+        minDate : tomorrow.toDate(),
+        maxDate : moment(eventFormData.startDate).subtract(1, 'd')
       }
     };
 
@@ -9474,14 +9475,16 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     }
 
     function savePublicationDate() {
-      if (tomorrow <= efpmc.publicationDate) {
+      if (!efpmc.publicationDate) {
+        efpmc.error = 'empty';
+      } else if (tomorrow <= efpmc.publicationDate) {
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;
         publishEvent();
         $uibModalInstance.close();
       } else {
-        efpmc.error = true;
+        efpmc.error = 'past';
       }
     }
 
@@ -21649,7 +21652,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
-    "  <p>Vanaf wanneer mag dit online verschijnen? </strong><em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze publicatiedatum kan je maar één keer instellen en nadien niet meer wijzigen.</em></strong></p>\n" +
+    "  <p>Vanaf wanneer mag dit online verschijnen? <em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>\n" +
     "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
     "      <div class=\"form-group\">\n" +
     "        <div class=\"radio\">\n" +
@@ -21677,7 +21680,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "    <br>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum alvorens op te slaan.</div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
