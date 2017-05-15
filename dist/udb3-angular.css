@@ -3148,6 +3148,11 @@ form.booking-period .input-group-btn {
 .padding-left-12-5 {
   padding-left: 12.5px;
 }
+.uib-datepicker-popup .btn.disabled,
+.uib-datepicker-popup .btn[disabled],
+.uib-datepicker-popup fieldset[disabled] .btn {
+  display: none;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;

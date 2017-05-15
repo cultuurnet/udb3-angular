@@ -21681,7 +21681,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </div>\n" +
     "    <br>\n" +
     "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum alvorens op te slaan.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum.</div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
