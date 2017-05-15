@@ -4001,10 +4001,10 @@ function UdbApi(
 
   this.getCalendarSummary = function(eventId, format) {
     var deferred = $q.defer();
-    var config = defaultApiConfig;
-    config.headers['Content-Type'] ='text/plain';
+    var plainConfig = _.cloneDeep(defaultApiConfig);
+    plainConfig.headers['Content-Type'] = 'text/plain';
     var request  = $http.get(
-      eventId + '/calendar-summary?format=' + format, config
+      eventId + '/calendar-summary?format=' + format, plainConfig
     );
 
     request.success(function(result) {
@@ -7505,7 +7505,7 @@ function EventDetail(
   offerLabeller,
   $translate,
   appConfig,
-   ModerationService
+  ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7536,7 +7536,6 @@ function EventDetail(
         function(err) {
           console.log(err);
         });
-
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
 
