@@ -2228,6 +2228,35 @@ function udbCalendarSummary() {
   udbDatepickerDirective.$inject = ["appConfig"];
 })();
 
+// Source: src/core/components/image-detail/image-detail.directive.js
+/**
+ * @ngdoc component
+ * @name udb.image-detail.directive:Image-detail
+ * @description
+ * # Image-detail
+ */
+angular
+  .module('udb.core')
+  .directive('udbImageDetail', function () {
+    return {
+      templateUrl: 'templates/image-detail.directive.html',
+      controller: ImageDetailController,
+      restrict: 'A',
+      scope: {
+        images: '<udbImageDetail',
+        main : '<image'
+      }
+    };
+  });
+
+/* @ngInject */
+function ImageDetailController($scope) {
+  angular.forEach($scope.images, function(image) {
+    image.main = (image.contentUrl === $scope.main);
+  });
+}
+ImageDetailController.$inject = ["$scope"];
+
 // Source: src/core/components/multiselect/multiselect.directive.js
 (function () {
 /**
@@ -7544,7 +7573,7 @@ function EventDetail(
   offerLabeller,
   $translate,
   appConfig,
-   ModerationService
+  ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -7552,19 +7581,6 @@ function EventDetail(
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
-    var splitLocation = offerLocation.split('/');
-    $scope.cbid = splitLocation[splitLocation.length - 1];
-    ModerationService
-      .getMyRoles()
-      .then(function(roles) {
-        getModerationItems(roles).then(function(result) {
-          angular.forEach(result.member, function(member) {
-            if (member['@id'] === $scope.eventId) {
-              $scope.moderationPermission = true;
-            }
-          });
-        });
-      });
 
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
@@ -7597,11 +7613,11 @@ function EventDetail(
 
     _.forEach(roles, function(role) {
       if (role.constraint) {
-        query += (query ? ' OR ' : '') + role.constraint;
+        query += (query ? ' OR ' : '') + '(' + role.constraint + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
-    query = '(' + query + ' AND cdbid:' + $scope.cbid + ')';
+    query = '(' + query + ' AND cdbid:' + $scope.event.id + ')';
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
@@ -7658,6 +7674,18 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
+
+    ModerationService
+      .getMyRoles()
+      .then(function(roles) {
+        getModerationItems(roles).then(function(result) {
+          angular.forEach(result.member, function(member) {
+            if (member['@id'] === $scope.eventId) {
+              $scope.moderationPermission = true;
+            }
+          });
+        });
+      });
   }
 
   function showVariation(variation) {
@@ -9601,7 +9629,7 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
   /* @ngInject */
   function EventFormPublishModalController($uibModalInstance, eventFormData, publishEvent) {
     var efpmc = this;
-    efpmc.error = false;
+    efpmc.error = '';
     efpmc.hasPublicationDate = false;
     efpmc.publicationDate = eventFormData.availableFrom;
     var tomorrow = moment(new Date()).add(1, 'days');
@@ -9615,8 +9643,10 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     efpmc.drp = {
       dateFormat: 'dd/MM/yyyy',
       startOpened: false,
-      options : {
-        minDate : tomorrow.toDate()
+      options: {
+        minDate: tomorrow.toDate(),
+        maxDate: moment(eventFormData.startDate).subtract(1, 'd'),
+        showWeeks: false,
       }
     };
 
@@ -9629,14 +9659,16 @@ PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootS
     }
 
     function savePublicationDate() {
-      if (tomorrow <= efpmc.publicationDate) {
+      if (!efpmc.publicationDate) {
+        efpmc.error = 'empty';
+      } else if (tomorrow <= efpmc.publicationDate) {
         var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
         efpmc.publicationDate.getDate(), 0, 0, 0);
         eventFormData.availableFrom = availableFrom;
         publishEvent();
         $uibModalInstance.close();
       } else {
-        efpmc.error = true;
+        efpmc.error = 'past';
       }
     }
 
@@ -16860,6 +16892,7 @@ function PlaceDetail(
   $scope.labelRemoved = labelRemoved;
   $scope.labelResponse = '';
   $scope.labelsError = '';
+  $scope.finishedLoading = false;
 
   $scope.placeHistory = [];
   $scope.tabs = [
@@ -16890,6 +16923,8 @@ function PlaceDetail(
         .getPersonalVariation(place)
         .then(showVariation);
     }
+
+    $scope.finishedLoading = true;
   }
 
   function showVariation(variation) {
@@ -20367,9 +20402,36 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/image-detail.directive.html',
+    "<tr ng-class=\"::{muted: !images.length}\">\n" +
+    "    <td>\n" +
+    "        <span class=\"row-label\">Afbeeldingen</span>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::images.length\">\n" +
+    "        <ul class=\"list-unstyled media-list\">\n" +
+    "            <li ng-repeat=\"image in images | orderBy: '-main' \" class=\"media\">\n" +
+    "                <div class=\"media-left\">\n" +
+    "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
+    "                        <img class=\"media-object\" src=\"{{image.contentUrl}}?height=100\" alt=\"{{'Afbeelding '+$index}}\">\n" +
+    "                    </a>\n" +
+    "                </div>\n" +
+    "                <div class=\"media-body\">\n" +
+    "                   <span ng-if=\"$first\" class=\"label label-default\">Hoofdafbeelding</span>\n" +
+    "                    <p>{{image.description}}</p>\n" +
+    "                    <p class=\"text-muted\">&copy; {{image.copyrightHolder}}</p>\n" +
+    "                </div>\n" +
+    "                <hr ng-if=\"!$last\">\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::!images.length\">Geen afbeeldingen</td>\n" +
+    "</tr>\n"
+  );
+
+
   $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
-    "    <td><strong>Publicatiestatus</strong></td>\n" +
+    "    <td><span class=\"row-label\">Publicatiestatus</span></td>\n" +
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
@@ -20378,7 +20440,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
-    "    <td><strong>ID</strong></td>\n" +
+    "    <td><span class=\"row-label\">ID</span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
     "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
@@ -20865,11 +20927,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/booking-info-detail.directive.html',
-    "<tr ng-class=\"::{muted: isEmpty(bookingInfo)}\">\n" +
+    "<tr ng-class=\"::{muted: isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null)}\">\n" +
     "    <td>\n" +
-    "        <strong>Reservaties</strong>\n" +
+    "        <span class=\"row-label\">Reservatie</span>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::!isEmpty(bookingInfo)\">\n" +
+    "    <td ng-if=\"::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null && bookingInfo.email !== null && bookingInfo.url !== null))\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
     "            <li ng-if=\"::bookingInfo.url\">\n" +
     "                    <span>\n" +
@@ -20878,18 +20940,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </span>\n" +
     "            </li>\n" +
     "            <li ng-if=\"::bookingInfo.phone\" ng-bind=\"::bookingInfo.phone\"></li>\n" +
-    "            <li ng-if=\"::bookingInfo.email\" ng-bind=\"::bookingInfo.email\"></li>\n" +
+    "            <li ng-if=\"::bookingInfo.email\"> <a href=\"{{'mailto:'+ ::bookingInfo.email}}\">{{::bookingInfo.email}}</a></li>\n" +
+    "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(bookingInfo)\">Geen reservatie info</td>\n" +
-    "</tr>"
+    "    <td ng-if=\"::(isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null))\">Geen reservatie-informatie</td>\n" +
+    "</tr>\n"
   );
 
 
   $templateCache.put('templates/contact-point-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(contactPoint)}\">\n" +
     "    <td>\n" +
-    "        <strong>Contact</strong>\n" +
+    "        <span class=\"row-label\">Contact</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::!isEmpty(contactPoint)\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
@@ -20913,8 +20976,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(contactPoint)\">Geen contactgegevens</td>\n" +
-    "</tr>"
+    "    <td ng-if=\"::isEmpty(contactPoint)\">Geen contactinformatie</td>\n" +
+    "</tr>\n"
   );
 
 
@@ -20931,24 +20994,29 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"finishedLoading()\">\n" +
-    "  <h1 class=\"title\" ng-bind=\"event.name\"></h1>\n" +
+    "<div ng-if=\"!finishedLoading()\">\n" +
+    "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-if=\"finishedLoading()\" class=\"event-detail\">\n" +
+    "  <h1 class=\"title\" ng-bind=\"::event.name\"></h1>\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>\n" +
+    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  Kopiëren en aanpassen</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
-    "        <udb-moderation-offer ng-if=\"moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
+    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
+    "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
@@ -20959,8 +21027,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </ul>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
-    "        <div class=\"panel panel-default\">\n" +
     "          <table class=\"table udb3-data-table\">\n" +
     "            <colgroup>\n" +
     "              <col style=\"width:20%\"/>\n" +
@@ -20968,117 +21034,112 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </colgroup>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
-    "                <td><strong>Titel</strong></td>\n" +
-    "                <td>{{event.name}}</td>\n" +
+    "                <td><span class=\"row-label\">Titel</span></td>\n" +
+    "                <td>{{::event.name}}</td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><strong>Type</strong></td>\n" +
-    "                <td>{{event.type.label}}</td>\n" +
+    "                <td><span class=\"row-label\">Type</span></td>\n" +
+    "                <td>{{::event.type.label}}</td>\n" +
     "              </tr>\n" +
-    "              <tr ng-if=\"event.audience.audienceType !== 'everyone'\">\n" +
-    "                <td><strong>Toegang</strong></td>\n" +
-    "                <td>{{translateAudience(event.audience.audienceType)}}\n" +
+    "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
+    "                <td><span class=\"row-label\">Toegang</span></td>\n" +
+    "                <td>{{::translateAudience(event.audience.audienceType)}}\n" +
     "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td>\n" +
-    "                  <strong>Labels</strong>\n" +
+    "                  <span class=\"row-label\">Labels</span>\n" +
     "                </td>\n" +
     "                <td>\n" +
-    "                  <udb-label-select labels=\"event.labels\"\n" +
+    "                  <p>\n" +
+    "                    <udb-label-select labels=\"::event.labels\"\n" +
     "                                    label-added=\"labelAdded(label)\"\n" +
     "                                    label-removed=\"labelRemoved(label)\">\n" +
-    "                  </udb-label-select>\n" +
-    "                  <div ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "                    </udb-label-select>\n" +
+    "                  </p>\n" +
+    "                  <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
     "                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "                  </p>\n" +
+    "                  <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                  </p>\n" +
+    "                  <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                    <span ng-bind=\"labelsError\"></span>\n" +
-    "                  </div>\n" +
+    "                  </p>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr ng-class=\"::{muted: isEmpty(event.description)}\">\n" +
+    "                <td><span class=\"row-label\">Beschrijving</span></td>\n" +
+    "                <td ng-if=\"::(!isEmpty(event.description))\">\n" +
+    "                  <div ng-bind-html=\"::event.description\" class=\"event-detail-description\"></div>\n" +
+    "                </td>\n" +
+    "                <td ng-if=\"::(isEmpty(event.description))\">\n" +
+    "                  Geen beschrijving\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><strong>Beschrijving</strong></td>\n" +
+    "                <td><span class=\"row-label\">Waar</span></td>\n" +
+    "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
+    "                <td ng-hide=\"::event.location.url\">\n" +
+    "                  {{::event.location.name.nl}},\n" +
+    "                  {{::event.location.address.streetAddress}},\n" +
+    "                  {{::event.location.address.postalCode}}\n" +
+    "                  {{::event.location.address.addressLocality}}\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
     "                <td>\n" +
-    "                  <div ng-bind-html=\"event.description\" class=\"event-detail-description\"></div>\n" +
+    "                  <udb-calendar-summary offer=\"::event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Waar</strong></td>\n" +
-    "                <td ng-show=\"event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
-    "                <td ng-hide=\"event.location.url\">\n" +
-    "                  {{event.location.name.nl}},\n" +
-    "                  {{event.location.address.streetAddress}},\n" +
-    "                  {{event.location.address.postalCode}}\n" +
-    "                  {{event.location.address.addressLocality}}\n" +
+    "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
+    "                <td><span class=\"row-label\">Organisatie</span></td>\n" +
+    "                <td ng-if=\"::event.organizer\">{{::event.organizer.name}}</td>\n" +
+    "                <td ng-if=\"::(!event.organizer)\">\n" +
+    "                  Geen organisatie-informatie\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Wanneer</strong></td>\n" +
-    "                <td>\n" +
-    "                  <udb-calendar-summary offer=\"event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr ng-class=\"{muted: !event.organizer}\">\n" +
-    "                <td><strong>Organisatie</strong></td>\n" +
-    "                <td>{{event.organizer.name}}</td>\n" +
-    "              </tr>\n" +
-    "              <tr class=\"rv-event-info-price\" ng-class=\"{muted: !event.priceInfo.length}\">\n" +
-    "                <td><strong>Prijs</strong></td>\n" +
-    "                <td ng-if=\"event.priceInfo.length\">\n" +
-    "                  <table class=\"table event-detail-price-table\">\n" +
-    "                    <tr ng-repeat=\"priceInfo in event.priceInfo\">\n" +
+    "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
+    "                <td><span class=\"row-label\">Prijs</span></td>\n" +
+    "                <td ng-if=\"::event.priceInfo.length\">\n" +
+    "                  <table class=\"table table-bordered event-detail-price-table\">\n" +
+    "                    <tr ng-repeat=\"priceInfo in ::event.priceInfo\">\n" +
     "                      <td>{{priceInfo.name}}</td>\n" +
     "                      <td>\n" +
     "                        <span ng-if=\"priceInfo.price == 0\">\n" +
     "                          Gratis\n" +
     "                        </span>\n" +
-    "                        <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                        <span ng-if=\"::priceInfo.price != 0\">\n" +
     "                          {{priceInfo.price | currency}} euro\n" +
     "                        </span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </table>\n" +
     "                </td>\n" +
-    "                <td ng-if=\"!event.priceInfo.length\">\n" +
+    "                <td ng-if=\"::(event.priceInfo.length == 0)\">\n" +
     "                  Geen prijsinformatie\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
-    "            <tbody udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
+    "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
-    "                <td><strong>Geschikt voor</strong></td>\n" +
+    "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"event.typicalAgeRange\">{{event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr ng-class=\"::{muted: !event.image}\">\n" +
-    "                <td><strong>Afbeeldingen</strong></td>\n" +
-    "                <td>\n" +
-    "                  <img ng-if=\"::event.image\" class=\"img-responsive\" ng-src=\"{{::event.image}}?width=400\" />\n" +
-    "                  <p>\n" +
-    "                    <span ng-repeat=\"image in ::event.images\">\n" +
-    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
-    "                    </span>\n" +
-    "                    <span ng-if=\"::!event.image\">Geen afbeeldingen</span>\n" +
-    "                  </p>\n" +
+    "                  <span ng-if=\"::event.typicalAgeRange\">{{::event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::(!event.typicalAgeRange)\">Alle leeftijden</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
+    "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
     "          </table>\n" +
-    "        </div>\n" +
     "      </div>\n" +
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
-    "        <h2 class=\"block-header\">Geschiedenis</h2>\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"eventAction in eventHistory track by $index\">\n" +
+    "          <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
     "            <dt ng-bind=\"eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
     "            <dd>\n" +
     "              <span class=\"author\" ng-if=\"eventAction.author\">{{eventAction.author}}</span><br ng-if=\"eventAction.author\"/>\n" +
@@ -21089,16 +21150,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('publication')\">\n" +
-    "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table\">\n" +
-    "            <colgroup>\n" +
-    "              <col style=\"width:20%\"/>\n" +
-    "              <col style=\"width:80%\"/>\n" +
-    "            </colgroup>\n" +
-    "            <tbody udb-workflow-status=\"::event\">\n" +
-    "            </tbody>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
+    "        <table class=\"table udb3-data-table\">\n" +
+    "          <colgroup>\n" +
+    "            <col style=\"width:20%\"/>\n" +
+    "            <col style=\"width:80%\"/>\n" +
+    "          </colgroup>\n" +
+    "          <tbody udb-workflow-status=\"::event\">\n" +
+    "          </tbody>\n" +
+    "        </table>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
@@ -22145,7 +22204,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
-    "  <p>Vanaf wanneer mag dit online verschijnen? </strong><em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze publicatiedatum kan je maar één keer instellen en nadien niet meer wijzigen.</em></strong></p>\n" +
+    "  <p>Vanaf wanneer mag dit online verschijnen? <em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>\n" +
     "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
     "      <div class=\"form-group\">\n" +
     "        <div class=\"radio\">\n" +
@@ -22173,7 +22232,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "    </div>\n" +
     "    <br>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum.</div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
@@ -24451,8 +24511,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"place\">\n" +
-    "  <h1 class=\"title\" ng-bind=\"place.name\"></h1>\n" +
+    "<div ng-if=\"!finishedLoading\">\n" +
+    "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-if=\"place && finishedLoading\" class=\"page-detail\">\n" +
+    "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
@@ -24460,101 +24525,91 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deletePlace()\">Verwijderen</button>\n" +
+    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"col-xs-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
-    "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table udb3-data-table\">\n" +
-    "            <colgroup>\n" +
-    "              <col style=\"width:20%\"/>\n" +
-    "              <col style=\"width:80%\"/>\n" +
-    "            </colgroup>\n" +
-    "            <tbody>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Titel</strong></td>\n" +
-    "                <td>{{place.name}}</td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Type</strong></td>\n" +
-    "                <td>{{place.type.label}}</td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Beschrijving</strong></td>\n" +
-    "                <td>\n" +
-    "                  <div ng-bind-html=\"place.description\" class=\"event-detail-description\"></div>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Waar</strong></td>\n" +
-    "                <td>{{place.address.streetAddress}}<br />\n" +
-    "                  {{place.address.postalCode}} {{place.address.addressLocality}}<br />\n" +
-    "                  {{place.address.addressCountry}}</td>\n" +
-    "              </tr>\n" +
-    "            </tbody>\n" +
-    "            <tbody udb-booking-info-detail=\"::place.bookingInfo\"></tbody>\n" +
-    "            <tbody udb-contact-point-detail=\"::place.contactPoint\"></tbody>\n" +
-    "            <tbody>\n" +
-    "              <tr>\n" +
-    "                <td>\n" +
-    "                  <strong>Labels</strong>\n" +
-    "                </td>\n" +
-    "                <td>\n" +
-    "                  <udb-label-select labels=\"place.labels\"\n" +
-    "                                    label-added=\"labelAdded(label)\"\n" +
-    "                                    label-removed=\"labelRemoved(label)\">\n" +
-    "                  </udb-label-select>\n" +
-    "                  <div ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "                    <span ng-bind=\"labelsError\"></span>\n" +
-    "                  </div>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Geschikt voor</strong></td>\n" +
-    "                <td>\n" +
-    "                  <span ng-if=\"place.typicalAgeRange\">{{place.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"!place.typicalAgeRange\">Alle leeftijden</span>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr ng-class=\"::{muted: !place.image}\">\n" +
-    "                <td><strong>Afbeeldingen</strong></td>\n" +
-    "                <td>\n" +
-    "                  <img ng-if=\"::place.image\" class=\"img-responsive\" ng-src=\"{{::place.image}}?width=400\" />\n" +
-    "                  <p>\n" +
-    "                    <span ng-repeat=\"image in ::place.images\">\n" +
-    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
-    "                    </span>\n" +
-    "                    <span ng-if=\"::!place.image\">Geen afbeeldingen</span>\n" +
-    "                  </p>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "            </tbody>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
+    "        <table class=\"table udb3-data-table\">\n" +
+    "          <colgroup>\n" +
+    "            <col style=\"width:20%\"/>\n" +
+    "            <col style=\"width:80%\"/>\n" +
+    "          </colgroup>\n" +
+    "          <tbody>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Titel</span></td>\n" +
+    "              <td>{{::place.name}}</td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Type</span></td>\n" +
+    "              <td>{{::place.type.label}}</td>\n" +
+    "            </tr>\n" +
+    "\n" +
+    "            <tr ng-class=\"::{muted: place.description==undefined}\">\n" +
+    "              <td><span class=\"row-label\">Beschrijving</span></td>\n" +
+    "              <td ng-if=\"::(place.description!==undefined)\">\n" +
+    "                <div ng-bind-html=\"::place.description\" class=\"event-detail-description\"></div>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"::(place.description==undefined)\">\n" +
+    "                Geen beschrijving\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Waar</span></td>\n" +
+    "              <td>{{::place.address.streetAddress}}<br />\n" +
+    "                {{::place.address.postalCode}} {{::place.address.addressLocality}}<br />\n" +
+    "                {{::place.address.addressCountry}}</td>\n" +
+    "            </tr>\n" +
+    "          </tbody>\n" +
+    "          <tbody udb-booking-info-detail=\"::place.bookingInfo\"></tbody>\n" +
+    "          <tbody udb-contact-point-detail=\"::place.contactPoint\"></tbody>\n" +
+    "          <tbody>\n" +
+    "            <tr>\n" +
+    "              <td>\n" +
+    "                <span class=\"row-label\">Labels</span>\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                <p><udb-label-select labels=\"::place.labels\"\n" +
+    "                                  label-added=\"labelAdded(label)\"\n" +
+    "                                  label-removed=\"labelRemoved(label)\">\n" +
+    "                </udb-label-select></p>\n" +
+    "                <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "                  Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                </p>\n" +
+    "                <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "                  Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
+    "                </p>\n" +
+    "                <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                  <span ng-bind=\"labelsError\"></span>\n" +
+    "                </p>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
+    "              <td>\n" +
+    "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
+    "                <span ng-if=\"::(!place.typicalAgeRange)\">Alle leeftijden</span>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "          </tbody>\n" +
+    "          <tbody udb-image-detail=\"::place.mediaObject\" image=\"::place.image\"></tbody>\n" +
+    "        </table>\n" +
     "      </div>\n" +
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"placeAction in placeHistory track by $index\">\n" +
+    "          <dl ng-repeat=\"placeAction in ::placeHistory track by $index\">\n" +
     "            <dt ng-bind=\"placeAction.date | date:'dd / MM / yyyy H:mm'\"></dt>\n" +
     "            <dd>\n" +
     "              <span class=\"author\" ng-if=\"placeAction.author\">{{placeAction.author}}</span><br ng-if=\"placeAction.author\"/>\n" +
@@ -24565,16 +24620,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('publication')\">\n" +
-    "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table\">\n" +
-    "            <colgroup>\n" +
-    "              <col style=\"width:20%\"/>\n" +
-    "              <col style=\"width:80%\"/>\n" +
-    "            </colgroup>\n" +
-    "            <tbody udb-workflow-status=\"::place\">\n" +
-    "            </tbody>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
+    "        <table class=\"table udb3-data-table\">\n" +
+    "          <colgroup>\n" +
+    "            <col style=\"width:20%\"/>\n" +
+    "            <col style=\"width:80%\"/>\n" +
+    "          </colgroup>\n" +
+    "          <tbody udb-workflow-status=\"::place\">\n" +
+    "          </tbody>\n" +
+    "        </table>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
