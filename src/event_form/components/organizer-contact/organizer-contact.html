@@ -11,13 +11,12 @@
                 <li><a ng-click="occ.addOrganizerContactInfo('url')" href="#">Andere website toevoegen</a></li>
             </ul>
         </div>
-
         <table class="table" ng-show="occ.contact.length">
             <tr ng-repeat="(key, info) in occ.contact track by key"
                 ng-model="info"
                 udb-contact-info-validation>
                 <td>
-                    <select class="form-control" ng-model="info.type" ng-change="clearInfo(); occ.sendUpdate()">
+                    <select class="form-control" ng-model="info.type" ng-change="clearInfo(); occ.validateContact()">
                         <option value="url">Website</option>
                         <option value="phone">Telefoonnummer</option>
                         <option value="email">E-mailadres</option>
@@ -31,21 +30,23 @@
                            class="form-control"
                            ng-model="info.value"
                            name="contact[{{key}}]"
+                           ng-init="loadInfo()"
+                           ng-change="occ.validateContact()"
                            ng-blur="validateInfo()"
-                           ng-change="occ.sendUpdate()"
                            required/>
                     <input type="text"
                            ng-switch-default
                            class="form-control"
                            ng-model="info.value"
                            name="contact[{{key}}]"
+                           ng-init="loadInfo()"
+                           ng-change="occ.validateContact()"
                            ng-blur="validateInfo()"
-                           ng-change="occ.sendUpdate()"
                            required/>
                     <span class="help-block" ng-if="infoErrorMessage" ng-bind="infoErrorMessage"></span>
                 </td>
                 <td>
-                    <button type="button" class="close" aria-label="Close" ng-click="clearInfo(); occ.deleteOrganizerContactInfo(key)">
+                    <button type="button" class="close" aria-label="Close" ng-click="occ.deleteOrganizerContactInfo(key)">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </td>

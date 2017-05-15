@@ -57,7 +57,7 @@
                            on-update="oec.validateAddress(address, error)"
                            ng-class="{'has-error' : oec.addressError && oec.hasErrors }"></udb-organizer-address>
     <udb-organizer-contact contact="oec.contact"
-                           on-update="oec.validateContact()"></udb-organizer-contact>
+                           on-update="oec.validateContact(error)"></udb-organizer-contact>
 
     <button type="button"
             class="btn btn-primary organisator-bewerken-bewaren"

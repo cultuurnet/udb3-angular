@@ -16,7 +16,8 @@ function OrganizerEditController(
     udbOrganizers,
     $state,
     $stateParams,
-    $q
+    $q,
+    $scope
   ) {
   var controller = this;
   var organizerId = $stateParams.id;
@@ -138,15 +139,8 @@ function OrganizerEditController(
     checkChanges();
   }
 
-  function validateContact() {
-    if (_.find(controller.contact, {'value': ''}) ||
-        _.find(controller.contact, {'value': undefined})) {
-      controller.contactError = true;
-    }
-    else {
-      controller.contactError = false;
-    }
-
+  function validateContact(error) {
+    controller.contactError = error;
     checkChanges();
   }
 
@@ -157,15 +151,16 @@ function OrganizerEditController(
 
     controller.showValidation = true;
 
-    if (isUrlChanged) {validateWebsite();}
-    if (isNameChanged) {validateName();}
-    if (isContactChanged) {validateContact();}
-
     if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||
         controller.addressError || controller.contactError) {
       controller.hasErrors = true;
       controller.disableSubmit = true;
+
+      if (controller.contactError) {
+        $scope.$broadcast('organizerContactRefresh');
+      }
+
       return;
     }
 

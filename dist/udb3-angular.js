@@ -8985,12 +8985,24 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent() {
+function OrganizerContactComponent($scope) {
   var controller = this;
 
+  controller.validateContact = validateContact;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
+
+  function validateContact() {
+    if (_.find(controller.contact, {'value': ''}) ||
+        _.find(controller.contact, {'value': undefined})) {
+      controller.contactHasErrors = true;
+    }
+    else {
+      controller.contactHasErrors = false;
+    }
+    sendUpdate();
+  }
 
   /**
    * Add a contact info entry for an organizer.
@@ -9000,7 +9012,8 @@ function OrganizerContactComponent() {
       type : type,
       value : ''
     });
-    sendUpdate();
+    $scope.$broadcast('organizerContactRefresh');
+    validateContact();
   }
 
   /**
@@ -9008,14 +9021,16 @@ function OrganizerContactComponent() {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
-    sendUpdate();
+    $scope.$broadcast('organizerContactRefresh');
+    validateContact();
   }
 
   function sendUpdate() {
-    controller.onUpdate();
+    controller.onUpdate({error: controller.contactHasErrors});
   }
 
 }
+OrganizerContactComponent.$inject = ["$scope"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -10011,17 +10026,27 @@ function UdbContactInfoValidationDirective() {
 
   function link (scope, elem, attrs, ngModel) {
     // Scope methods.
+    scope.loadInfo = loadInfo;
     scope.validateInfo = validateInfo;
     scope.clearInfo = clearInfo;
     scope.infoErrorMessage = '';
+
+    scope.$on('organizerContactRefresh', function() {
+      validateInfo();
+    });
+
+    function loadInfo() {
+      if (ngModel.$modelValue.value !== '') {
+        ngModel.$setValidity('contactinfo', true);
+        scope.infoErrorMessage = '';
+        validateInfo();
+      }
+    }
 
     /**
      * Validate the entered info.
      */
     function validateInfo() {
-
-      ngModel.$setValidity('contactinfo', true);
-      scope.infoErrorMessage = '';
 
       if (ngModel.$modelValue.value === '' || ngModel.$modelValue.value === undefined) {
         scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
@@ -14469,7 +14494,8 @@ function OrganizerEditController(
     udbOrganizers,
     $state,
     $stateParams,
-    $q
+    $q,
+    $scope
   ) {
   var controller = this;
   var organizerId = $stateParams.id;
@@ -14591,15 +14617,8 @@ function OrganizerEditController(
     checkChanges();
   }
 
-  function validateContact() {
-    if (_.find(controller.contact, {'value': ''}) ||
-        _.find(controller.contact, {'value': undefined})) {
-      controller.contactError = true;
-    }
-    else {
-      controller.contactError = false;
-    }
-
+  function validateContact(error) {
+    controller.contactError = error;
     checkChanges();
   }
 
@@ -14610,15 +14629,16 @@ function OrganizerEditController(
 
     controller.showValidation = true;
 
-    if (isUrlChanged) {validateWebsite();}
-    if (isNameChanged) {validateName();}
-    if (isContactChanged) {validateContact();}
-
     if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||
         controller.addressError || controller.contactError) {
       controller.hasErrors = true;
       controller.disableSubmit = true;
+
+      if (controller.contactError) {
+        $scope.$broadcast('organizerContactRefresh');
+      }
+
       return;
     }
 
@@ -14681,7 +14701,7 @@ function OrganizerEditController(
     $state.go('management.organizers.search', {}, {reload: true});
   }
 }
-OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q"];
+OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope"];
 
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
@@ -21690,13 +21710,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <li><a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
-    "\n" +
     "        <table class=\"table\" ng-show=\"occ.contact.length\">\n" +
     "            <tr ng-repeat=\"(key, info) in occ.contact track by key\"\n" +
     "                ng-model=\"info\"\n" +
     "                udb-contact-info-validation>\n" +
     "                <td>\n" +
-    "                    <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo(); occ.sendUpdate()\">\n" +
+    "                    <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo(); occ.validateContact()\">\n" +
     "                        <option value=\"url\">Website</option>\n" +
     "                        <option value=\"phone\">Telefoonnummer</option>\n" +
     "                        <option value=\"email\">E-mailadres</option>\n" +
@@ -21710,21 +21729,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"info.value\"\n" +
     "                           name=\"contact[{{key}}]\"\n" +
+    "                           ng-init=\"loadInfo()\"\n" +
+    "                           ng-change=\"occ.validateContact()\"\n" +
     "                           ng-blur=\"validateInfo()\"\n" +
-    "                           ng-change=\"occ.sendUpdate()\"\n" +
     "                           required/>\n" +
     "                    <input type=\"text\"\n" +
     "                           ng-switch-default\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"info.value\"\n" +
     "                           name=\"contact[{{key}}]\"\n" +
+    "                           ng-init=\"loadInfo()\"\n" +
+    "                           ng-change=\"occ.validateContact()\"\n" +
     "                           ng-blur=\"validateInfo()\"\n" +
-    "                           ng-change=\"occ.sendUpdate()\"\n" +
     "                           required/>\n" +
     "                    <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"infoErrorMessage\"></span>\n" +
     "                </td>\n" +
     "                <td>\n" +
-    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"clearInfo(); occ.deleteOrganizerContactInfo(key)\">\n" +
+    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"occ.deleteOrganizerContactInfo(key)\">\n" +
     "                        <span aria-hidden=\"true\">&times;</span>\n" +
     "                    </button>\n" +
     "                </td>\n" +
@@ -23702,7 +23723,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           on-update=\"oec.validateAddress(address, error)\"\n" +
     "                           ng-class=\"{'has-error' : oec.addressError && oec.hasErrors }\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact=\"oec.contact\"\n" +
-    "                           on-update=\"oec.validateContact()\"></udb-organizer-contact>\n" +
+    "                           on-update=\"oec.validateContact(error)\"></udb-organizer-contact>\n" +
     "\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary organisator-bewerken-bewaren\"\n" +

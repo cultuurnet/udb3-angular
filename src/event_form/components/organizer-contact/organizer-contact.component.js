@@ -20,12 +20,24 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent() {
+function OrganizerContactComponent($scope) {
   var controller = this;
 
+  controller.validateContact = validateContact;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
+
+  function validateContact() {
+    if (_.find(controller.contact, {'value': ''}) ||
+        _.find(controller.contact, {'value': undefined})) {
+      controller.contactHasErrors = true;
+    }
+    else {
+      controller.contactHasErrors = false;
+    }
+    sendUpdate();
+  }
 
   /**
    * Add a contact info entry for an organizer.
@@ -35,7 +47,8 @@ function OrganizerContactComponent() {
       type : type,
       value : ''
     });
-    sendUpdate();
+    $scope.$broadcast('organizerContactRefresh');
+    validateContact();
   }
 
   /**
@@ -43,11 +56,12 @@ function OrganizerContactComponent() {
    */
   function deleteOrganizerContactInfo(index) {
     controller.contact.splice(index, 1);
-    sendUpdate();
+    $scope.$broadcast('organizerContactRefresh');
+    validateContact();
   }
 
   function sendUpdate() {
-    controller.onUpdate();
+    controller.onUpdate({error: controller.contactHasErrors});
   }
 
 }

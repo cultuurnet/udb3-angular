@@ -23,17 +23,27 @@ function UdbContactInfoValidationDirective() {
 
   function link (scope, elem, attrs, ngModel) {
     // Scope methods.
+    scope.loadInfo = loadInfo;
     scope.validateInfo = validateInfo;
     scope.clearInfo = clearInfo;
     scope.infoErrorMessage = '';
+
+    scope.$on('organizerContactRefresh', function() {
+      validateInfo();
+    });
+
+    function loadInfo() {
+      if (ngModel.$modelValue.value !== '') {
+        ngModel.$setValidity('contactinfo', true);
+        scope.infoErrorMessage = '';
+        validateInfo();
+      }
+    }
 
     /**
      * Validate the entered info.
      */
     function validateInfo() {
-
-      ngModel.$setValidity('contactinfo', true);
-      scope.infoErrorMessage = '';
 
       if (ngModel.$modelValue.value === '' || ngModel.$modelValue.value === undefined) {
         scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
