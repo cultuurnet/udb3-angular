@@ -3999,6 +3999,20 @@ function UdbApi(
       .then(returnUnwrappedData, returnApiProblem);
   };
 
+  this.getCalendarSummary = function(eventId, format) {
+    var deferred = $q.defer();
+
+    var request  = $http.get(
+      eventId + '/calendar-summary?format=' + format, defaultApiConfig
+    );
+
+    request.success(function(result) {
+        deferred.resolve(result);
+      });
+
+    return deferred.promise;
+  };
+
   /**
    * @param {URL} eventUrl
    * @param {Object} newCalendarData
