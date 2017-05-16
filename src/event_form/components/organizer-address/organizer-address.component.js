@@ -38,12 +38,24 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   controller.changeCitySelection = changeCitySelection;
 
   function validateStreet() {
-    if (controller.address.streetAddress === '' && controller.selectedCity !== '') {
+    if (controller.address.streetAddress === '') {
       controller.streetHasErrors = true;
     }
     else {
       controller.streetHasErrors = false;
     }
+
+    sendUpdate();
+  }
+
+  function validateAddress() {
+    if (controller.selectedCity === '') {
+      controller.cityHasErrors = true;
+    }
+    else {
+      controller.cityHasErrors = false;
+    }
+
     sendUpdate();
   }
 
@@ -78,7 +90,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
-    validateStreet();
+    validateAddress();
   }
 
   /**
@@ -91,10 +103,11 @@ function OrganizerAddressComponent(cities, Levenshtein) {
 
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
-    validateStreet();
+    validateAddress();
   }
 
   function sendUpdate() {
-    controller.onUpdate({address: controller.address, error: controller.streetHasErrors});
+    controller.addressHasErrors = controller.streetHasErrors && controller.cityHasErrors;
+    controller.onUpdate({error: controller.streetHasErrors});
   }
 }

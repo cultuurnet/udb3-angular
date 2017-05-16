@@ -126,16 +126,8 @@ function OrganizerEditController(
     checkChanges();
   }
 
-  function validateAddress(address) {
-    controller.organizer.address = address;
-
-    if (controller.organizer.address.addressLocality === '' ||
-        controller.organizer.address.streetAddress === '') {
-      controller.addressError = true;
-    }
-    else {
-      controller.addressError = false;
-    }
+  function validateAddress(error) {
+    controller.addressError = error;
     checkChanges();
   }
 

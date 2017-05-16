@@ -17,7 +17,9 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-8">
-            <div class="form-group" ng-hide="oac.selectedCity !== ''">
+            <div class="form-group"
+                 ng-hide="oac.selectedCity !== ''"
+                 ng-class="{'has-error' : oac.cityHasErrors}">
                 <label for="organizer-gemeente-autocomplete" id="gemeente-label">
                     Gemeente
                 </label>
@@ -34,6 +36,9 @@
                            autocomplete="off">
                     <span class="help-block" ng-show="oac.cityAutoCompleteError">
                         Er was een probleem tijdens het ophalen van de steden.
+                    </span>
+                    <span class="help-block" ng-show="oac.cityHasErrors">
+                        Gelieve een gemeente in te geven.
                     </span>
                 </div>
             </div>

@@ -14,8 +14,7 @@
 
     <div class="col-sm-12"
          ng-show="occ.contact.length">
-
-        <div class="row"
+        <div class="row contact-row"
              ng-repeat="contact in occ.contact">
 
             <div class="col-sm-5">
@@ -36,6 +35,7 @@
                            udb-http-prefix
                            class="form-control"
                            ng-model="contact.value"
+                           ng-change="occ.validateContact()"
                            name="contact"
                            ng-pattern="/^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/"
                            required/>
@@ -43,6 +43,7 @@
                            ng-switch-when="email"
                            class="form-control"
                            ng-model="contact.value"
+                           ng-change="occ.validateContact()"
                            name="contact"
                            ng-pattern="/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i"
                            required/>
@@ -50,12 +51,14 @@
                            ng-switch-default
                            class="form-control"
                            ng-model="contact.value"
+                           ng-change="occ.validateContact()"
                            name="contact"
                            required/>
                 </ng-form>
                 <div ng-messages="organizerContact.contact.$error"
-                      ng-show="organizerContact.contact.$touched"
-                      ng-switch="contact.type">
+                     ng-class="{'has-error' : organizerContact.contact.$touched && organizerContact.contact.$invalid }"
+                     ng-show="organizerContact.contact.$touched"
+                     ng-switch="contact.type">
                         <span ng-message="required"
                               ng-if="!contact.value"
                               class="help-block">Gelieve dit veld niet leeg te laten.</span>

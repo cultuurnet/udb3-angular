@@ -8930,12 +8930,24 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   controller.changeCitySelection = changeCitySelection;
 
   function validateStreet() {
-    if (controller.address.streetAddress === '' && controller.selectedCity !== '') {
+    if (controller.address.streetAddress === '') {
       controller.streetHasErrors = true;
     }
     else {
       controller.streetHasErrors = false;
     }
+
+    sendUpdate();
+  }
+
+  function validateAddress() {
+    if (controller.selectedCity === '') {
+      controller.cityHasErrors = true;
+    }
+    else {
+      controller.cityHasErrors = false;
+    }
+
     sendUpdate();
   }
 
@@ -8970,7 +8982,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
-    validateStreet();
+    validateAddress();
   }
 
   /**
@@ -8983,11 +8995,12 @@ function OrganizerAddressComponent(cities, Levenshtein) {
 
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
-    validateStreet();
+    validateAddress();
   }
 
   function sendUpdate() {
-    controller.onUpdate({address: controller.address, error: controller.streetHasErrors});
+    controller.addressHasErrors = controller.streetHasErrors && controller.cityHasErrors;
+    controller.onUpdate({error: controller.streetHasErrors});
   }
 }
 OrganizerAddressComponent.$inject = ["cities", "Levenshtein"];
@@ -14633,16 +14646,8 @@ function OrganizerEditController(
     checkChanges();
   }
 
-  function validateAddress(address) {
-    controller.organizer.address = address;
-
-    if (controller.organizer.address.addressLocality === '' ||
-        controller.organizer.address.streetAddress === '') {
-      controller.addressError = true;
-    }
-    else {
-      controller.addressError = false;
-    }
+  function validateAddress(error) {
+    controller.addressError = error;
     checkChanges();
   }
 
@@ -15101,6 +15106,7 @@ function OrganizationSearchController(SearchResultGenerator, rx, $scope, Organiz
    * @param {ApiProblem} problem
    */
   function showProblem(problem) {
+    console.log(problem);
     controller.problem = problem;
   }
 
@@ -21721,7 +21727,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "            <div class=\"form-group\" ng-hide=\"oac.selectedCity !== ''\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-hide=\"oac.selectedCity !== ''\"\n" +
+    "                 ng-class=\"{'has-error' : oac.cityHasErrors}\">\n" +
     "                <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
     "                    Gemeente\n" +
     "                </label>\n" +
@@ -21738,6 +21746,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           autocomplete=\"off\">\n" +
     "                    <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
     "                        Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                    </span>\n" +
+    "                    <span class=\"help-block\" ng-show=\"oac.cityHasErrors\">\n" +
+    "                        Gelieve een gemeente in te geven.\n" +
     "                    </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -21769,8 +21780,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <div class=\"col-sm-12\"\n" +
     "         ng-show=\"occ.contact.length\">\n" +
-    "\n" +
-    "        <div class=\"row\"\n" +
+    "        <div class=\"row contact-row\"\n" +
     "             ng-repeat=\"contact in occ.contact\">\n" +
     "\n" +
     "            <div class=\"col-sm-5\">\n" +
@@ -21791,6 +21801,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           udb-http-prefix\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"contact.value\"\n" +
+    "                           ng-change=\"occ.validateContact()\"\n" +
     "                           name=\"contact\"\n" +
     "                           ng-pattern=\"/^(ftp|http|https):\\/\\/(\\w+:{0,1}\\w*@)?(\\S+)(:[0-9]+)?(\\/|\\/([\\w#!:.?+=&%@!\\-\\/]))?$/\"\n" +
     "                           required/>\n" +
@@ -21798,6 +21809,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           ng-switch-when=\"email\"\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"contact.value\"\n" +
+    "                           ng-change=\"occ.validateContact()\"\n" +
     "                           name=\"contact\"\n" +
     "                           ng-pattern=\"/^[a-z0-9!#$%&'*+\\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i\"\n" +
     "                           required/>\n" +
@@ -21805,16 +21817,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           ng-switch-default\n" +
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"contact.value\"\n" +
+    "                           ng-change=\"occ.validateContact()\"\n" +
     "                           name=\"contact\"\n" +
     "                           required/>\n" +
     "                </ng-form>\n" +
     "                <div ng-messages=\"organizerContact.contact.$error\"\n" +
-    "                      ng-show=\"organizerContact.contact.$touched\"\n" +
-    "                      ng-switch=\"contact.type\">\n" +
+    "                     ng-class=\"{'has-error' : organizerContact.contact.$touched && organizerContact.contact.$invalid }\"\n" +
+    "                     ng-show=\"organizerContact.contact.$touched\"\n" +
+    "                     ng-switch=\"contact.type\">\n" +
     "                        <span ng-message=\"required\"\n" +
     "                              ng-if=\"!contact.value\"\n" +
     "                              class=\"help-block\">Gelieve dit veld niet leeg te laten.</span>\n" +
-    "                        <span ng-message=\"invalid\">\n" +
+    "                        <span ng-message=\"invalid\"\n" +
+    "                              ng-if=\"contact.value\">\n" +
     "                            <span ng-switch-when=\"url\"\n" +
     "                                  class=\"help-block\">\n" +
     "                            Gelieve een geldige url in te vullen.\n" +
@@ -23804,8 +23819,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    </form>\n" +
     "\n" +
     "    <udb-organizer-address address=\"oec.organizer.address\"\n" +
-    "                           on-update=\"oec.validateAddress(address, error)\"\n" +
-    "                           ng-class=\"{'has-error' : oec.addressError && oec.hasErrors }\"></udb-organizer-address>\n" +
+    "                           on-update=\"oec.validateAddress(error)\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact=\"oec.contact\"\n" +
     "                           on-update=\"oec.validateContact(error)\"></udb-organizer-contact>\n" +
     "\n" +

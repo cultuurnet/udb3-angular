@@ -54,8 +54,7 @@
     </form>
 
     <udb-organizer-address address="oec.organizer.address"
-                           on-update="oec.validateAddress(address, error)"
-                           ng-class="{'has-error' : oec.addressError && oec.hasErrors }"></udb-organizer-address>
+                           on-update="oec.validateAddress(error)"></udb-organizer-address>
     <udb-organizer-contact contact="oec.contact"
                            on-update="oec.validateContact(error)"></udb-organizer-contact>
 
