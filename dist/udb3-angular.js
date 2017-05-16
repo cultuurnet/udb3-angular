@@ -8922,6 +8922,8 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   }
 
   controller.streetHasErrors = false;
+  controller.cityHasErrors = false;
+  controller.addressHasErrors = false;
 
   controller.validateStreet = validateStreet;
   controller.filterCities = filterCities;
@@ -21711,13 +21713,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error' : oac.streetHasErrors}\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-class=\"{'has-error' : oac.streetHasErrors}\">\n" +
     "                <label>Straat en nummer</label>\n" +
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
     "                       ng-change=\"oac.validateStreet()\"\n" +
-    "                       ng-model=\"oac.address.streetAddress\">\n" +
+    "                       ng-model=\"oac.address.streetAddress\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
     "                <span class=\"help-block\" ng-show=\"oac.streetHasErrors\">\n" +
     "                    Gelieve straat en nummer in te geven.\n" +
     "                </span>\n" +
@@ -21828,8 +21832,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <span ng-message=\"required\"\n" +
     "                              ng-if=\"!contact.value\"\n" +
     "                              class=\"help-block\">Gelieve dit veld niet leeg te laten.</span>\n" +
-    "                        <span ng-message=\"invalid\"\n" +
-    "                              ng-if=\"contact.value\">\n" +
+    "                        <span ng-message=\"invalid\">\n" +
     "                            <span ng-switch-when=\"url\"\n" +
     "                                  class=\"help-block\">\n" +
     "                            Gelieve een geldige url in te vullen.\n" +

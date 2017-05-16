@@ -1,13 +1,15 @@
 <form name="oac.organizerAddressForm" class="organizer-address-form">
     <div class="row">
         <div class="col-sm-12 col-md-8">
-            <div class="form-group" ng-class="{'has-error' : oac.streetHasErrors}">
+            <div class="form-group"
+                 ng-class="{'has-error' : oac.streetHasErrors}">
                 <label>Straat en nummer</label>
                 <input type="text"
                        class="form-control"
                        name="street"
                        ng-change="oac.validateStreet()"
-                       ng-model="oac.address.streetAddress">
+                       ng-model="oac.address.streetAddress"
+                       ng-model-options="{ updateOn: 'blur' }">
                 <span class="help-block" ng-show="oac.streetHasErrors">
                     Gelieve straat en nummer in te geven.
                 </span>

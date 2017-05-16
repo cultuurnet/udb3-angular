@@ -30,6 +30,8 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   }
 
   controller.streetHasErrors = false;
+  controller.cityHasErrors = false;
+  controller.addressHasErrors = false;
 
   controller.validateStreet = validateStreet;
   controller.filterCities = filterCities;
