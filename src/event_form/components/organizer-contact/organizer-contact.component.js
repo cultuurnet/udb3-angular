@@ -20,13 +20,17 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent() {
+function OrganizerContactComponent($scope) {
   var controller = this;
 
   controller.validateContact = validateContact;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
+
+  $scope.$on('organizerContactSubmit', function() {
+    controller.organizerContactWrapper.$setSubmitted();
+  });
 
   function validateContact() {
     if (_.find(controller.contact, {'value': ''}) ||

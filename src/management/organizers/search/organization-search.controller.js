@@ -41,7 +41,6 @@ function OrganizationSearchController(SearchResultGenerator, rx, $scope, Organiz
    * @param {ApiProblem} problem
    */
   function showProblem(problem) {
-    console.log(problem);
     controller.problem = problem;
   }
 
