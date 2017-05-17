@@ -148,6 +148,7 @@ function OrganizerEditController(
         controller.addressError || controller.contactError) {
       controller.hasErrors = true;
       controller.disableSubmit = true;
+      $scope.$broadcast('organizerAddressSubmit');
       $scope.$broadcast('organizerContactSubmit');
       return;
     }

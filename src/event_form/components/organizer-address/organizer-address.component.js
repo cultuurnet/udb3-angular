@@ -20,42 +20,39 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent(cities, Levenshtein) {
+function OrganizerAddressComponent($scope, cities, Levenshtein) {
   var controller = this;
 
   controller.cities = cities;
   controller.selectedCity = '';
+  controller.requiredAddress = false;
+
   if (controller.address.addressLocality) {
     controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
+    controller.requiredAddress = true;
   }
 
   controller.streetHasErrors = false;
   controller.cityHasErrors = false;
   controller.addressHasErrors = false;
 
-  controller.validateStreet = validateStreet;
+  controller.validateAddress = validateAddress;
   controller.filterCities = filterCities;
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
 
-  function validateStreet() {
-    if (controller.address.streetAddress === '') {
-      controller.streetHasErrors = true;
-    }
-    else {
-      controller.streetHasErrors = false;
-    }
-
-    sendUpdate();
-  }
+  $scope.$on('organizerContactSubmit', function () {
+    controller.organizerAddressForm.$setSubmitted();
+  });
 
   function validateAddress() {
-    if (controller.selectedCity === '') {
-      controller.cityHasErrors = true;
+    if (((controller.address.streetAddress === '' || controller.address.streetAddress === undefined)
+        || controller.selectedCity === '') && controller.requiredAddress) {
+      controller.addressHasErrors = true;
     }
     else {
-      controller.cityHasErrors = false;
+      controller.addressHasErrors = false;
     }
 
     sendUpdate();
@@ -92,6 +89,7 @@ function OrganizerAddressComponent(cities, Levenshtein) {
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
+    controller.organizerAddressForm.city.$setUntouched();
     validateAddress();
   }
 
@@ -109,7 +107,6 @@ function OrganizerAddressComponent(cities, Levenshtein) {
   }
 
   function sendUpdate() {
-    controller.addressHasErrors = controller.streetHasErrors && controller.cityHasErrors;
-    controller.onUpdate({error: controller.streetHasErrors});
+    controller.onUpdate({error: controller.addressHasErrors});
   }
 }

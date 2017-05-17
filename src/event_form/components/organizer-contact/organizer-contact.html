@@ -16,7 +16,7 @@
         <div class="col-sm-12"
              ng-show="occ.contact.length">
             <div class="row contact-row"
-                 ng-repeat="contact in occ.contact">
+                 ng-repeat="contact in occ.contact track by $index">
 
                 <div class="col-sm-5">
                     <select class="form-control"
@@ -83,7 +83,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-12">
+        <div class="col-sm-12"
+             ng-show="occ.contact.length">
             <p>
                 <a ng-click="occ.addOrganizerContactInfo('url')" href="#">Meer contactgegevens toevoegen</a>
             </p>
