@@ -20939,7 +20939,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <td>\n" +
     "        <span class=\"row-label\">Reservatie</span>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null && bookingInfo.email !== null && bookingInfo.url !== null))\">\n" +
+    "    <td ng-if=\"::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null || bookingInfo.email !== null || bookingInfo.url !== null))\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
     "            <li ng-if=\"::bookingInfo.url\">\n" +
     "                    <span>\n" +
@@ -20947,8 +20947,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                         ng-bind=\"::bookingInfo.urlLabel\"></a>\n" +
     "                    </span>\n" +
     "            </li>\n" +
+    "\n" +
     "            <li ng-if=\"::bookingInfo.phone\" ng-bind=\"::bookingInfo.phone\"></li>\n" +
-    "            <li ng-if=\"::bookingInfo.email\"> <a href=\"{{'mailto:'+ ::bookingInfo.email}}\">{{::bookingInfo.email}}</a></li>\n" +
+    "            <li ng-if=\"::bookingInfo.email\"> <a href=\"::{{'mailto:'+ bookingInfo.email}}\">{{::bookingInfo.email}}</a></li>\n" +
     "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
