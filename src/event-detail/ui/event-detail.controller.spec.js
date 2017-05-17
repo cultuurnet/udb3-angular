@@ -14,6 +14,35 @@ describe('Controller: Event Detail', function() {
       offerLabeller,
       $window,
       $uibModal,
+      ModerationService,
+      roles = [
+    {
+      "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
+      "name": "Moderator Leuven",
+      "constraint": "city:leuven",
+      "permissions": [
+        "AANBOD_MODEREREN"
+      ]
+    },
+    {
+      "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
+      "name": "Beheerder Leuven",
+      "constraint": "city:leuven",
+      "permissions": [
+        "GEBRUIKERS_BEHEREN"
+      ]
+    }
+  ],
+      events = {
+    "itemsPerPage": 30,
+    "totalItems": 3562,
+    "member": [
+      {
+        "@id": "http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc",
+        "@type": "Event"
+      }
+    ]
+  },
       exampleEventJson = {
         "@id": "http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc",
         "@context": "/api/1.0/event.jsonld",
@@ -173,7 +202,9 @@ describe('Controller: Event Detail', function() {
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
     offerLabeller = jasmine.createSpyObj('offerLabeller', ['recentLabels', 'label', 'unlabel']);
     $window = $injector.get('$window');
-
+    ModerationService = jasmine.createSpyObj('ModerationService', ['getMyRoles', 'find']);
+    ModerationService.getMyRoles.and.returnValue($q.resolve(roles));
+    ModerationService.find.and.returnValue($q.resolve(events));
     deferredEvent = $q.defer(); deferredVariation = $q.defer();
     deferredPermission = $q.defer();
 
@@ -198,7 +229,8 @@ describe('Controller: Event Detail', function() {
         offerEditor: offerEditor,
         $uibModal: $uibModal,
         $window: $window,
-        offerLabeller: offerLabeller
+        offerLabeller: offerLabeller,
+        ModerationService : ModerationService
       }
     );
   }));
@@ -442,5 +474,23 @@ describe('Controller: Event Detail', function() {
     expect($scope.event.labels).toEqual(expectedLabels);
     expect($scope.labelResponse).toEqual('unlabelError');
     expect($scope.labelsError).toEqual('You do not have the required permission to unlabel this event.');
+  });
+
+  it('should show validation buttons when the user has permission to validate', function () {
+    var event = new UdbEvent(exampleEventJson);
+    deferredEvent.resolve(event);
+    deferredPermission.reject();
+
+    $scope.$digest();
+    expect($scope.moderationPermission).toEqual(true);
+  });
+
+  it('should not show validation buttons when the user does not have permission to validate', function () {
+    var event = new UdbEvent(exampleEventJson);
+    deferredEvent.resolve(event);
+    deferredPermission.reject();
+    ModerationService.find.and.returnValue($q.resolve({}));
+    $scope.$digest();
+    expect($scope.moderationPermission).toEqual(undefined);
   });
 });

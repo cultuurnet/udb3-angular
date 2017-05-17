@@ -1958,7 +1958,7 @@ input + .alert {
   background: #ffffff;
   border-right: silver;
   padding: 10px;
-  z-index: 75;
+  z-index: 1029;
 }
 .udb-job-log .repeat-animation.ng-enter {
   -webkit-transition: all linear 1s;
@@ -2018,7 +2018,7 @@ input + .alert {
   bottom: 0;
   background: #000;
   opacity: 0.5;
-  z-index: 50;
+  z-index: 1028;
   display: none;
 }
 .udb-job-log-overlay.shown {
@@ -3044,6 +3044,7 @@ input + .alert {
   margin-left: -15px;
   border-top: 1px solid #dddddd;
   width: 100%;
+  z-index: 1030;
 }
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
@@ -3139,29 +3140,39 @@ form.booking-period table {
 .audience .help-block {
   font-size: small;
 }
+.padding-left-12-5 {
+  padding-left: 12.5px;
+}
+.uib-datepicker-popup .btn.disabled,
+.uib-datepicker-popup .btn[disabled],
+.uib-datepicker-popup fieldset[disabled] .btn {
+  display: none;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;
 }
 h2.block-header {
-  font-size: 1.067em;
-  font-weight: 500;
+  font-size: 0.85em;
+  font-weight: 300;
   margin-bottom: 1em;
   margin-top: .85em;
   text-transform: uppercase;
+  color: #777777;
 }
 .panel-default > .table:first-child tr:first-child > td {
   border-top: none;
 }
 .timeline {
   position: relative;
-  padding-left: 20px;
+  padding-left: 40px;
+  margin-top: 20px;
 }
 .timeline dl:before {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
+  left: 20px;
   width: 2px;
   content: '';
   background-color: #cccccc;
@@ -3197,8 +3208,53 @@ img.offer-image-main {
   max-width: 400px;
   max-height: 300px;
 }
-table.event-detail-price-table {
-  background-color: #fff !important;
+.event-detail-price-table {
+  margin-bottom: 0;
+}
+.row-label {
+  font-weight: 300;
+  color: #555555;
+}
+.muted .row-label {
+  color: #333333;
+}
+.udb3-data-table tr:first-child td {
+  border-top: none;
+}
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+.animated-background,
+.placeholder-title {
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #CCC;
+  background: linear-gradient(to right, #cccccc 8%, #f0f0f0 18%, #cccccc 33%);
+  background-size: 800px 104px;
+  height: 96px;
+  position: relative;
+}
+.placeholder-title {
+  display: inline-block;
+  height: 24px;
+  line-height: 56px;
+  width: 160px;
+  border-radius: 12px;
+}
+.table > tbody + tbody {
+  border-top: 1px solid #DDD;
+}
+.event-detail .media-object,
+.place-detail .media-object {
+  max-height: 100px;
 }
 .editable-click {
   border: 1px solid #eeeeee;
@@ -10325,27 +10381,27 @@ udb-search-label i.caret {
 .form-group udb-search-label input {
   max-width: none;
 }
-udb-moderation-offer .moderation-offer {
+udb-moderation-summary .moderation-summary {
   border: 1px solid #dddddd;
   background: #f5f5f5;
   padding: 1em;
   margin-bottom: 1em;
   min-height: 300px;
 }
-udb-moderation-offer .moderation-offer h2 {
+udb-moderation-summary .moderation-summary h2 {
   margin-top: 12px;
 }
-udb-moderation-offer .moderation-offer div.content {
+udb-moderation-summary .moderation-summary div.content {
   height: 150px;
   overflow-y: auto;
   white-space: pre-line;
 }
-udb-moderation-offer .moderation-offer img {
+udb-moderation-summary .moderation-summary img {
   max-height: 200px;
   max-width: 200px;
   margin-top: 7px;
 }
-udb-moderation-offer .moderation-offer .no-img {
+udb-moderation-summary .moderation-summary .no-img {
   height: 200px;
   width: 200px;
   border: 1px solid #dddddd;
@@ -10354,21 +10410,44 @@ udb-moderation-offer .moderation-offer .no-img {
   padding-top: 20px;
   margin-top: 7px;
 }
-udb-moderation-offer .moderation-offer footer {
+udb-moderation-summary .moderation-summary footer {
   color: #919191;
   margin-top: 2ex;
 }
-udb-moderation-offer .moderation-offer footer .btn-moderation {
+udb-moderation-summary .moderation-summary footer .btn-moderation {
   margin-left: 1em;
 }
-udb-moderation-offer .moderation-offer footer .btn-moderation i {
+udb-moderation-summary .moderation-summary footer .btn-moderation i {
   margin-right: 8px;
 }
-udb-moderation-offer .moderation-offer footer .btn-moderation i.text-danger {
+udb-moderation-summary .moderation-summary footer .btn-moderation i.text-danger {
   color: #a02622;
 }
-udb-moderation-offer .moderation-offer footer .btn-moderation i.text-success {
+udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success {
   color: #357935;
+}
+.moderation-detail button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 1em;
+}
+.moderation-detail button i {
+  color: #FFF;
+}
+.moderation-detail a {
+  display: block;
+  text-decoration: underline;
+}
+.moderation-detail small {
+  color: #777777;
+  display: block;
+}
+.moderation-detail i {
+  margin-right: 1em;
+}
+.moderation-detail #continue-validation {
+  margin-left: 2em;
 }
 .organization-search-item.deleted {
   opacity: 0.2;

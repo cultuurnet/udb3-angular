@@ -120,7 +120,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
-
+      this.availableFrom = '';
       /**
        * @type {string[]}
        */

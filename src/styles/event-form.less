@@ -665,6 +665,7 @@
     margin-left: -15px;
     border-top: 1px solid @border-color;
     width: 100%;
+    z-index: @zindex-navbar-fixed;
 
     div.text-danger {
       margin-bottom: 1ex;
@@ -774,4 +775,14 @@ form.booking-period {
 
 .audience .help-block {
   font-size: small;
+}
+
+.padding-left-12-5{
+    padding-left: 12.5px;
+}
+
+.uib-datepicker-popup{
+    .btn.disabled, .btn[disabled], fieldset[disabled] .btn{
+        display: none;
+    }
 }

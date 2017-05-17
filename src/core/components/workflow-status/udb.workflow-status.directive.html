@@ -1,13 +1,14 @@
 <tr>
-    <td><strong>Publicatiestatus</strong></td>
+    <td><span class="row-label">Publicatiestatus</span></td>
     <td>
         <span ng-if="cm.event.available" ng-bind="cm.event.available | date: 'dd/MM/yyyy'">
                     </span>
-        <span ng-if="!cm.event.available">{{cm.status | translate }}</span>
+        <span ng-if="!cm.event.available && !cm.event.availableFrom">{{cm.status | translate }}</span>
+        <span ng-if="!cm.event.available && cm.event.availableFrom">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>
     </td>
 </tr>
 <tr>
-    <td><strong>ID</strong></td>
+    <td><span class="row-label">ID</span></td>
     <td>
         <ul>
             <li ng-repeat="id in cm.eventIds(cm.event)" ng-switch="cm.isUrl(id)">

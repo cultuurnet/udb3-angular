@@ -25,7 +25,8 @@ function EventDetail(
   $window,
   offerLabeller,
   $translate,
-  appConfig
+  appConfig,
+  ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -58,6 +59,23 @@ function EventDetail(
 
   function denyAllPermissions() {
     $scope.permissions = {editing: false, duplication: false};
+  }
+
+  function getModerationItems(roles) {
+    var query = '';
+
+    _.forEach(roles, function(role) {
+      if (role.constraint) {
+        query += (query ? ' OR ' : '') + '(' + role.constraint + ')';
+      }
+    });
+    query = (query ? '(' + query + ')' : '');
+    query = '(' + query + ' AND cdbid:' + $scope.event.id + ')';
+    return ModerationService
+      .find(query, 10, 0)
+      .then(function(searchResult) {
+        return searchResult;
+      });
   }
 
   $scope.eventIdIsInvalid = false;
@@ -109,6 +127,18 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
+
+    ModerationService
+      .getMyRoles()
+      .then(function(roles) {
+        getModerationItems(roles).then(function(result) {
+          angular.forEach(result.member, function(member) {
+            if (member['@id'] === $scope.eventId) {
+              $scope.moderationPermission = true;
+            }
+          });
+        });
+      });
   }
 
   function showVariation(variation) {

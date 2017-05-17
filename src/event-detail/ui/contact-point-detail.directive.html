@@ -1,6 +1,6 @@
 <tr ng-class="::{muted: isEmpty(contactPoint)}">
     <td>
-        <strong>Contact</strong>
+        <span class="row-label">Contact</span>
     </td>
     <td ng-if="::!isEmpty(contactPoint)">
         <ul class="list-unstyled">
@@ -24,5 +24,5 @@
             </li>
         </ul>
     </td>
-    <td ng-if="::isEmpty(contactPoint)">Geen contactgegevens</td>
+    <td ng-if="::isEmpty(contactPoint)">Geen contactinformatie</td>
 </tr>

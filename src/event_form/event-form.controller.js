@@ -122,6 +122,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'additionalData',
       'apiUrl',
       'workflowStatus',
+      'availableFrom',
       'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
