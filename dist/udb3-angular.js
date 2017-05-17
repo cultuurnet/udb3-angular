@@ -21825,24 +21825,21 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           name=\"contact\"\n" +
     "                           required/>\n" +
     "                </ng-form>\n" +
-    "                <div ng-messages=\"organizerContact.contact.$error\"\n" +
-    "                     ng-class=\"{'has-error' : organizerContact.contact.$touched && organizerContact.contact.$invalid }\"\n" +
-    "                     ng-show=\"organizerContact.contact.$touched\"\n" +
-    "                     ng-switch=\"contact.type\">\n" +
-    "                        <span ng-message=\"required\"\n" +
-    "                              ng-if=\"!contact.value\"\n" +
-    "                              class=\"help-block\">Gelieve dit veld niet leeg te laten.</span>\n" +
-    "                        <span ng-message=\"invalid\">\n" +
-    "                            <span ng-switch-when=\"url\"\n" +
-    "                                  class=\"help-block\">\n" +
-    "                            Gelieve een geldige url in te vullen.\n" +
-    "                            </span>\n" +
-    "                            <span ng-switch-when=\"email\"\n" +
-    "                                  class=\"help-block\">\n" +
-    "                                Gelieve een geldig e-mailadres in te vullen.\n" +
-    "                            </span>\n" +
-    "                        </span>\n" +
-    "                </div>\n" +
+    "                <span ng-class=\"{'has-error' : organizerContact.contact.$touched && organizerContact.contact.$invalid }\"\n" +
+    "                      ng-show=\"organizerContact.contact.$touched\">\n" +
+    "                    <span class=\"help-block\"\n" +
+    "                          ng-if=\"organizerContact.contact.$error.required\">\n" +
+    "                        Gelieve dit veld niet leeg te laten.\n" +
+    "                    </span>\n" +
+    "                    <span class=\"help-block\"\n" +
+    "                          ng-if=\"organizerContact.contact.$error.url\">\n" +
+    "                        Gelieve een geldige url in te vullen.\n" +
+    "                    </span>\n" +
+    "                    <span class=\"help-block\"\n" +
+    "                          ng-if=\"organizerContact.contact.$error.email\">\n" +
+    "                        Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                    </span>\n" +
+    "                </span>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-1\">\n" +
     "                <button type=\"button\"\n" +

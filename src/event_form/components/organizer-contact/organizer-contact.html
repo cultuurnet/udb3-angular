@@ -55,24 +55,21 @@
                            name="contact"
                            required/>
                 </ng-form>
-                <div ng-messages="organizerContact.contact.$error"
-                     ng-class="{'has-error' : organizerContact.contact.$touched && organizerContact.contact.$invalid }"
-                     ng-show="organizerContact.contact.$touched"
-                     ng-switch="contact.type">
-                        <span ng-message="required"
-                              ng-if="!contact.value"
-                              class="help-block">Gelieve dit veld niet leeg te laten.</span>
-                        <span ng-message="invalid">
-                            <span ng-switch-when="url"
-                                  class="help-block">
-                            Gelieve een geldige url in te vullen.
-                            </span>
-                            <span ng-switch-when="email"
-                                  class="help-block">
-                                Gelieve een geldig e-mailadres in te vullen.
-                            </span>
-                        </span>
-                </div>
+                <span ng-class="{'has-error' : organizerContact.contact.$touched && organizerContact.contact.$invalid }"
+                      ng-show="organizerContact.contact.$touched">
+                    <span class="help-block"
+                          ng-if="organizerContact.contact.$error.required">
+                        Gelieve dit veld niet leeg te laten.
+                    </span>
+                    <span class="help-block"
+                          ng-if="organizerContact.contact.$error.url">
+                        Gelieve een geldige url in te vullen.
+                    </span>
+                    <span class="help-block"
+                          ng-if="organizerContact.contact.$error.email">
+                        Gelieve een geldig e-mailadres in te vullen.
+                    </span>
+                </span>
             </div>
             <div class="col-sm-1">
                 <button type="button"
