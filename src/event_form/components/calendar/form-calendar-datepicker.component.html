@@ -1,0 +1,19 @@
+<p class="input-group" ng-class="{'has-error': !datepicker.date}">
+    <input type="text" 
+           class="form-control" 
+           uib-datepicker-popup="dd/MM/yyyy"
+           ng-model="datepicker.date"
+           is-open="datepicker.isOpen"
+           datepicker-options="datepicker.options"
+           ng-required="true"
+           ng-change="datepicker.changed()"
+           show-button-bar="false"
+           ng-disabled="datepicker.disabled"/>
+    <span class="input-group-btn">
+        <button type="button"
+                class="btn btn-default"
+                ng-disabled="datepicker.disabled"
+                ng-class="{'btn-danger': !datepicker.date}"
+                ng-click="datepicker.open()"><i class="fa fa-calendar"></i></button>
+    </span>
+</p>

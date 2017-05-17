@@ -2,7 +2,7 @@
 
 describe('Factory: Opening hours collection', function () {
 
-  var OpeningHoursCollection, givenOpeningHours, $scope, dayNames;
+  var OpeningHoursCollection, givenOpeningHours, $scope;
   var formDataOpeningHours = [
     {
       "dayOfWeek": [
@@ -25,7 +25,6 @@ describe('Factory: Opening hours collection', function () {
   beforeEach(inject(function ($rootScope, $injector) {
     $scope = $rootScope;
     OpeningHoursCollection = $injector.get('OpeningHoursCollection');
-    dayNames = $injector.get('dayNames');
 
     givenOpeningHours = [
       'openingHour1', 'openingHour2', 'openingHour3', 'openingHour4'
@@ -41,9 +40,15 @@ describe('Factory: Opening hours collection', function () {
     OpeningHoursCollection.deserialize(formDataOpeningHours);
     var expectedOpeningHours = [
       {
-        'dayOfWeek': [
-          'monday'
-        ],
+        'dayOfWeek': {
+          'monday': {label: 'Ma', name: 'Maandag', open: true},
+          'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
+          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+          'thursday': {label: 'Do', name: 'Donderdag', open: false},
+          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+          'sunday': {label: 'Zo', name: 'Zondag', open: false}
+        },
         'opens': '11:00',
         'opensAsDate': new Date(1970, 0, 1, 11),
         'closes': '14:00',
@@ -51,9 +56,15 @@ describe('Factory: Opening hours collection', function () {
         'label': 'Maandag'
       },
       {
-        'dayOfWeek': [
-          'tuesday'
-        ],
+        'dayOfWeek': {
+          'monday': {label: 'Ma', name: 'Maandag', open: false},
+          'tuesday': {label: 'Di', name: 'Dinsdag', open: true},
+          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+          'thursday': {label: 'Do', name: 'Donderdag', open: false},
+          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+          'sunday': {label: 'Zo', name: 'Zondag', open: false}
+        },
         'opens': '12:00',
         'opensAsDate': new Date(1970, 0, 1, 12),
         'closes': '14:00',
@@ -70,7 +81,15 @@ describe('Factory: Opening hours collection', function () {
 
     var expectedOpeningHours = [
       {
-        'dayOfWeek': [],
+        'dayOfWeek': {
+          'monday': {label: 'Ma', name: 'Maandag', open: false},
+          'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
+          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+          'thursday': {label: 'Do', name: 'Donderdag', open: false},
+          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+          'sunday': {label: 'Zo', name: 'Zondag', open: false}
+        },
         'opens': '00:00',
         'opensAsDate': new Date(1970, 0, 1),
         'closes': '00:00',
@@ -86,9 +105,15 @@ describe('Factory: Opening hours collection', function () {
     var formDataOpeningHours = giveSomeOpeningHours();
     var expectedOpeningHours = [
       {
-        'dayOfWeek': [
-          'tuesday'
-        ],
+        'dayOfWeek': {
+          'monday': {label: 'Ma', name: 'Maandag', open: false},
+          'tuesday': {label: 'Di', name: 'Dinsdag', open: true},
+          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+          'thursday': {label: 'Do', name: 'Donderdag', open: false},
+          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+          'sunday': {label: 'Zo', name: 'Zondag', open: false}
+        },
         'opens': '12:00',
         'opensAsDate': new Date(1970, 0, 1, 12),
         'closes': '14:00',
