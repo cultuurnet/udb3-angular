@@ -1,0 +1,170 @@
+@import 'bootstrap.less';
+
+.calendar-type-picker {
+  .make-row();
+}
+
+.calendar-type-options {
+  .make-sm-column(12);
+
+  @media (max-width: @screen-sm-min) {
+    text-align: center;
+  }
+}
+
+.calendar-type-options a,
+.calendar-type-options span {
+  min-height: 50px;
+
+  @media (min-width: @screen-sm-min) {
+      float: left;
+  }
+}
+
+.or {
+  padding: 20px;
+
+  @media (min-width: @screen-sm-min) {
+      padding: 40px 20px;
+  }
+}
+
+.calendar-type-options a {
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: inline-block;
+  width: 220px;
+  position: relative;
+}
+
+.calendar-type-icon {
+  margin: 0 auto;
+  width: 50px;
+  display: block
+}
+
+.selected {
+  background-color: #CFE5D0;
+}
+
+.selected:after {
+  font-family: "FontAwesome";
+  color: green;
+  content: "\f058";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  font-size: 16px;
+}
+
+.selected:before {
+  font-family: "FontAwesome";
+  color: white;
+  content: "\f111";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  font-size: 16px;
+}
+
+.calendar-timing-info {
+  margin-top: 10px;
+}
+
+.calendar-time-span {
+  .make-row();
+  position: relative;
+  padding-right: 30px;
+
+  .date {
+    .make-sm-column(6);
+    .make-md-column(3);
+  }
+
+  .time {
+    .make-sm-column(3);
+    .make-md-column(2);
+  }
+
+  .requirements {
+    .make-sm-column(12);
+  }
+
+  .timing-control {
+    .make-sm-column(3);
+    .make-md-column(2);
+
+    .all-day {
+      margin-top: 2.2em;
+    }
+  }
+}
+
+.opening-hours .opening-hours-labels,
+.opening-hours .opening-hours-set {
+  .make-row();
+  position: relative;
+  padding-right: 30px;
+
+  .weekdays {
+    .make-sm-column(5);
+  }
+
+  .opening-time {
+    .make-sm-column(3);
+  }
+
+  .closing-time {
+    .make-sm-column(3);
+  }
+
+  .remove {
+    .make-sm-column(1);
+  }
+
+  .add {
+    .make-sm-column(12);
+  }
+}
+
+.close {
+  right: 15px;
+  z-index: 9999;
+  position: absolute;
+}
+
+.calendar-time-span:not(:first-child),
+.opening-hours-set:not(:first-child){
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.opening-hours-week-schedule {
+  .make-row();
+  
+  .time-table,
+  .empty {
+    .make-xs-column(12);
+    .make-sm-column(8);
+  }
+}
+
+.form-calendar-period {
+  .periodic-info {
+    .make-row();
+
+    .start-date,
+    .end-date {
+      .make-sm-column(6);
+      .make-md-column(3);
+    }
+
+    .requirements {
+      .make-sm-column(12);
+
+      .alert {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

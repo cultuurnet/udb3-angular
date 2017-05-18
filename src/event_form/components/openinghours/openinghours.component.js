@@ -23,7 +23,7 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormData) {
+function OpeningHourComponentController($uibModal, EventFormData) {
   var cm = this;
 
   cm.edit = openEditorModal;
