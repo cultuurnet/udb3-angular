@@ -60,8 +60,10 @@
       </div>
     </form>
 
-    <udb-organizer-address address="newOrganizer.address"></udb-organizer-address>
-    <udb-organizer-contact contact="newOrganizer.contact"></udb-organizer-contact>
+    <udb-organizer-address address="newOrganizer.address"
+                           on-update="validateAddress(error)"></udb-organizer-address>
+    <udb-organizer-contact contact="newOrganizer.contact"
+                           on-update="validateContact(error)"></udb-organizer-contact>
 
   </section>
 
@@ -103,8 +105,12 @@
 
   </section>
 
-  <div class="alert alert-danger" ng-show="error">
+  <div class="alert alert-danger" ng-show="saveError">
     Er ging iets fout tijdens het opslaan van je organisatie.
+  </div>
+  <div class="alert alert-danger" ng-show="error">
+    <p ng-show="addressError">Gelieve een geldig adres in te vullen.<br /></p>
+    <p ng-show="contactError">Gelieve alle contactinfo correct in te vullen.<br /></p>
   </div>
 
 </div>

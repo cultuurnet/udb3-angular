@@ -36,7 +36,6 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   controller.cityHasErrors = false;
   controller.addressHasErrors = false;
 
-  controller.validateAddress = validateAddress;
   controller.filterCities = filterCities;
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
   controller.selectCity = selectCity;
@@ -44,15 +43,30 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
   $scope.$on('organizerContactSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
+    controller.streetHasErrors = false;
+    controller.cityHasErrors = false;
+    validateAddress();
   });
 
   function validateAddress() {
-    if (((controller.address.streetAddress === '' || controller.address.streetAddress === undefined)
-        || controller.selectedCity === '') && controller.requiredAddress) {
-      controller.addressHasErrors = true;
+    if (controller.requiredAddress) {
+      if (controller.address.streetAddress === ''
+          || controller.address.streetAddress === undefined) {
+        controller.streetHasErrors = true;
+      }
+      if (controller.selectedCity === '') {
+        controller.cityHasErrors = true;
+      }
     }
     else {
-      controller.addressHasErrors = false;
+      if ((controller.address.streetAddress === ''
+          || controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
+        controller.streetHasErrors = true;
+      }
+      if (controller.selectedCity === ''
+          && controller.address.streetAddress !== '') {
+        controller.cityHasErrors = true;
+      }
     }
 
     sendUpdate();
@@ -90,7 +104,6 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
     controller.organizerAddressForm.city.$setUntouched();
-    validateAddress();
   }
 
   /**
@@ -103,10 +116,10 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
-    validateAddress();
   }
 
   function sendUpdate() {
+    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors;
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }
