@@ -28,8 +28,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.sendingJob = false;
   moc.error = false;
 
-  moc.isReadyForValidation = isReadyForValidation;
-
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
@@ -47,10 +45,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
 
   function showLoadingError(problem) {
     showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
-  }
-
-  function isReadyForValidation() {
-    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
   }
 
   /**
