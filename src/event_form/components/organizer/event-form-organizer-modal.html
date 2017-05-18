@@ -108,7 +108,7 @@
   <div class="alert alert-danger" ng-show="saveError">
     Er ging iets fout tijdens het opslaan van je organisatie.
   </div>
-  <div class="alert alert-danger" ng-show="error">
+  <div class="alert alert-danger" ng-show="error && (addressError || contactError)">
     <p ng-show="addressError">Gelieve een geldig adres in te vullen.<br /></p>
     <p ng-show="contactError">Gelieve alle contactinfo correct in te vullen.<br /></p>
   </div>

@@ -68,7 +68,7 @@ function OrganizerEditController(
         addressLocality : '',
         postalCode: '',
         addressCountry : ''
-      }
+      };
     }
     controller.organizer = organizer;
     oldOrganizer = _.cloneDeep(organizer);

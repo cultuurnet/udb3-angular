@@ -76,9 +76,9 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
       }
 
       // Reset form submit to reset error messages when both fields are empty.
-      if (controller.organizerAddressForm.$submitted
-          && (controller.address.streetAddress === '' || controller.address.streetAddress === undefined)
-          && controller.selectedCity === '') {
+      if (controller.organizerAddressForm.$submitted &&
+          (controller.address.streetAddress === '' || controller.address.streetAddress === undefined) &&
+          controller.selectedCity === '') {
         controller.organizerAddressForm.$submitted = false;
       }
     }

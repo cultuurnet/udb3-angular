@@ -9256,9 +9256,9 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
       }
 
       // Reset form submit to reset error messages when both fields are empty.
-      if (controller.organizerAddressForm.$submitted
-          && (controller.address.streetAddress === '' || controller.address.streetAddress === undefined)
-          && controller.selectedCity === '') {
+      if (controller.organizerAddressForm.$submitted &&
+          (controller.address.streetAddress === '' || controller.address.streetAddress === undefined) &&
+          controller.selectedCity === '') {
         controller.organizerAddressForm.$submitted = false;
       }
     }
@@ -14934,7 +14934,7 @@ function OrganizerEditController(
         addressLocality : '',
         postalCode: '',
         addressCountry : ''
-      }
+      };
     }
     controller.organizer = organizer;
     oldOrganizer = _.cloneDeep(organizer);
@@ -22392,7 +22392,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"alert alert-danger\" ng-show=\"saveError\">\n" +
     "    Er ging iets fout tijdens het opslaan van je organisatie.\n" +
     "  </div>\n" +
-    "  <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "  <div class=\"alert alert-danger\" ng-show=\"error && (addressError || contactError)\">\n" +
     "    <p ng-show=\"addressError\">Gelieve een geldig adres in te vullen.<br /></p>\n" +
     "    <p ng-show=\"contactError\">Gelieve alle contactinfo correct in te vullen.<br /></p>\n" +
     "  </div>\n" +
