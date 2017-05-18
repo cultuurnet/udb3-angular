@@ -127,7 +127,8 @@ describe('Controller: Organizer Edit', function() {
         udbOrganizers: udbOrganizers,
         $state: $state,
         $stateParams: $stateParams,
-        $q: $q
+        $q: $q,
+        $scope: $scope
       }
     );
   }
@@ -151,6 +152,25 @@ describe('Controller: Organizer Edit', function() {
     expect(controller.organizer).toEqual(fakeOrganizer);
     expect(controller.originalName).toEqual(fakeOrganizer.name);
     expect(controller.contact).toEqual(contact);
+  });
+
+  it ('should load the organizer detail and set an empty address object when address is empty', function () {
+    fakeOrganizer.address = {};
+    var emptyAddress = {
+      streetAddress : '',
+      addressLocality : '',
+      postalCode: '',
+      addressCountry : ''
+    };
+    getMockUps();
+
+    var controller = getController();
+    $scope.$digest();
+
+    expect(OrganizerManager.get).toHaveBeenCalledWith(id);
+    expect(controller.originalName).toEqual(fakeOrganizer.name);
+    expect(controller.contact).toEqual(contact);
+    expect(controller.organizer.address).toEqual(emptyAddress);
   });
 
   it ('shouldn\'t validate the website when the form field isn\'t valid', function () {
@@ -279,43 +299,15 @@ describe('Controller: Organizer Edit', function() {
   });
 
   it ('should validate the address', function () {
-    var address = {
-      addressCountry: 'BE',
-      addressLocality: 'Leuven',
-      postalCode: 3000,
-      streetAddress: 'Andere straat 179'
-    };
-
     getMockUps();
     var controller = getController();
     $scope.$digest();
     controller.organizerEditForm = {
       $valid: true
     };
-    controller.validateAddress(address);
+    controller.validateAddress(false);
 
-    expect(controller.organizer.address).toEqual(address);
     expect(controller.addressError).toBeFalsy();
-  });
-
-  it ('should validate the address and throw an error when an existing address is changed to empty', function () {
-    var address = {
-      addressCountry: '',
-      addressLocality: '',
-      postalCode: '',
-      streetAddress: ''
-    };
-
-    getMockUps();
-    var controller = getController();
-    $scope.$digest();
-    controller.organizerEditForm = {
-      $valid: true
-    };
-    controller.validateAddress(address);
-
-    expect(controller.addressError).toBeTruthy();
-    expect(controller.organizer.address).toEqual(address);
   });
 
   it ('should validate the contact info', function () {
@@ -325,21 +317,9 @@ describe('Controller: Organizer Edit', function() {
     controller.organizerEditForm = {
       $valid: true
     };
-    controller.validateContact([], false);
+    controller.validateContact(false);
 
     expect(controller.contactError).toBeFalsy();
-  });
-
-  it ('should validate the contact info and throw an error when not valid', function () {
-    getMockUps();
-    var controller = getController();
-    $scope.$digest();
-    controller.organizerEditForm = {
-      $valid: true
-    };
-    controller.validateContact([], true);
-
-    expect(controller.contactError).toBeTruthy();
   });
 
   it ('shouldn\'t validate the organizer when the form is invalid', function () {

@@ -42,7 +42,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
 
-  $scope.$on('organizerContactSubmit', function () {
+  $scope.$on('organizerAddressSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
     reset();
     validateAddress();
@@ -117,7 +117,6 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
-    controller.organizerAddressForm.city.$setUntouched();
     validateAddress();
   }
 

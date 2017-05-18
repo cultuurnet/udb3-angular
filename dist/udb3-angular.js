@@ -9297,7 +9297,6 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
-    controller.organizerAddressForm.city.$setUntouched();
     validateAddress();
   }
 
