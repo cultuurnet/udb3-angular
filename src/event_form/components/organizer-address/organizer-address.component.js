@@ -14,7 +14,7 @@ angular
       controller: OrganizerAddressComponent,
       controllerAs: 'oac',
       bindings: {
-        address: '<',
+        address: '=',
         onUpdate: '&'
       }
     });
@@ -36,6 +36,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   controller.cityHasErrors = false;
   controller.addressHasErrors = false;
 
+  controller.validateAddress = validateAddress;
   controller.filterCities = filterCities;
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
   controller.selectCity = selectCity;
@@ -43,15 +44,21 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
   $scope.$on('organizerContactSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
-    controller.streetHasErrors = false;
-    controller.cityHasErrors = false;
+    reset();
     validateAddress();
   });
 
+  function reset() {
+    controller.streetHasErrors = false;
+    controller.cityHasErrors = false;
+    controller.addressHasErrors = false;
+  }
+
   function validateAddress() {
+    reset();
     if (controller.requiredAddress) {
-      if (controller.address.streetAddress === ''
-          || controller.address.streetAddress === undefined) {
+      if (controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) {
         controller.streetHasErrors = true;
       }
       if (controller.selectedCity === '') {
@@ -59,13 +66,20 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
       }
     }
     else {
-      if ((controller.address.streetAddress === ''
-          || controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
+      if ((controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
         controller.streetHasErrors = true;
       }
-      if (controller.selectedCity === ''
-          && controller.address.streetAddress !== '') {
+
+      if (controller.selectedCity === '' && controller.address.streetAddress !== '') {
         controller.cityHasErrors = true;
+      }
+
+      // Reset form submit to reset error messages when both fields are empty.
+      if (controller.organizerAddressForm.$submitted
+          && (controller.address.streetAddress === '' || controller.address.streetAddress === undefined)
+          && controller.selectedCity === '') {
+        controller.organizerAddressForm.$submitted = false;
       }
     }
 
@@ -104,6 +118,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
     controller.organizerAddressForm.city.$setUntouched();
+    validateAddress();
   }
 
   /**
@@ -116,6 +131,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
+    validateAddress();
   }
 
   function sendUpdate() {

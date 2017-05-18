@@ -2,33 +2,15 @@
     <div class="row">
         <div class="col-sm-12 col-md-8">
             <div class="form-group"
-                 ng-if="oac.requiredAddress"
-                 ng-class="{'has-error' : oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid}">
-                <label>Straat en nummer</label>
-                <input type="text"
-                       class="form-control"
-                       name="street"
-                       placeholder="Straat en nummer"
-                       ng-model="oac.address.streetAddress"
-                       required>
-                <ng-messages for="oac.organizerAddressForm.street.$error"
-                             class="has-error"
-                             ng-show="oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid">
-                    <ng-message when="required"
-                                class="help-block">
-                        Gelieve straat en nummer in te geven.
-                    </ng-message>
-                </ng-messages>
-            </div>
-            <div class="form-group"
-                 ng-if="!oac.requiredAddress"
                  ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
                 <label>Straat en nummer</label>
                 <input type="text"
                        class="form-control"
                        name="street"
                        placeholder="Straat en nummer"
-                       ng-model="oac.address.streetAddress">
+                       ng-model="oac.address.streetAddress"
+                       ng-change="oac.validateAddress()"
+                       ng-model-options="{ updateOn: 'blur' }">
                 <span class="has-error"
                       ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
                     <span class="help-block">
@@ -43,41 +25,6 @@
         <div class="col-sm-12 col-md-8">
             <div ng-hide="oac.selectedCity !== ''">
                 <div class="form-group"
-                     ng-if="oac.requiredAddress"
-                     ng-class="{'has-error' : (oac.organizerAddressForm.city.$touched && oac.organizerAddressForm.city.$invalid)
-                     || (oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid)}">
-                    <label for="organizer-gemeente-autocomplete" id="gemeente-label">
-                        Gemeente
-                    </label>
-                    <div id="gemeente-kiezer">
-                        <input id="organizer-gemeente-autocomplete"
-                               type="text"
-                               name="city"
-                               class="form-control uib-typeahead"
-                               placeholder="Gemeente of postcode"
-                               ng-model="oac.cityAutocompleteTextField"
-                               uib-typeahead="city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
-                               typeahead-on-select="oac.selectCity($item, $label)"
-                               typeahead-min-length="2"
-                               typeahead-template-url="templates/city-suggestion.html"
-                               autocomplete="off"
-                               required>
-                        <span class="help-block" ng-show="oac.cityAutoCompleteError">
-                            Er was een probleem tijdens het ophalen van de steden.
-                        </span>
-                        <ng-messages for="oac.organizerAddressForm.city.$error"
-                                     class="has-error"
-                                     ng-show="(oac.organizerAddressForm.city.$touched && oac.organizerAddressForm.city.$invalid)
-                                     || (oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid)">
-                            <ng-message when="required"
-                                        class="help-block">
-                                Gelieve een gemeente in te geven.
-                            </ng-message>
-                        </ng-messages>
-                    </div>
-                </div>
-                <div class="form-group"
-                     ng-if="!oac.requiredAddress"
                      ng-class="{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}">
                     <label for="organizer-gemeente-autocomplete" id="gemeente-label">
                         Gemeente

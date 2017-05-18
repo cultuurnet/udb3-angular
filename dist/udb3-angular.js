@@ -9194,7 +9194,7 @@ angular
       controller: OrganizerAddressComponent,
       controllerAs: 'oac',
       bindings: {
-        address: '<',
+        address: '=',
         onUpdate: '&'
       }
     });
@@ -9216,6 +9216,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   controller.cityHasErrors = false;
   controller.addressHasErrors = false;
 
+  controller.validateAddress = validateAddress;
   controller.filterCities = filterCities;
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
   controller.selectCity = selectCity;
@@ -9223,15 +9224,21 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
   $scope.$on('organizerContactSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
-    controller.streetHasErrors = false;
-    controller.cityHasErrors = false;
+    reset();
     validateAddress();
   });
 
+  function reset() {
+    controller.streetHasErrors = false;
+    controller.cityHasErrors = false;
+    controller.addressHasErrors = false;
+  }
+
   function validateAddress() {
+    reset();
     if (controller.requiredAddress) {
-      if (controller.address.streetAddress === ''
-          || controller.address.streetAddress === undefined) {
+      if (controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) {
         controller.streetHasErrors = true;
       }
       if (controller.selectedCity === '') {
@@ -9239,13 +9246,20 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
       }
     }
     else {
-      if ((controller.address.streetAddress === ''
-          || controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
+      if ((controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
         controller.streetHasErrors = true;
       }
-      if (controller.selectedCity === ''
-          && controller.address.streetAddress !== '') {
+
+      if (controller.selectedCity === '' && controller.address.streetAddress !== '') {
         controller.cityHasErrors = true;
+      }
+
+      // Reset form submit to reset error messages when both fields are empty.
+      if (controller.organizerAddressForm.$submitted
+          && (controller.address.streetAddress === '' || controller.address.streetAddress === undefined)
+          && controller.selectedCity === '') {
+        controller.organizerAddressForm.$submitted = false;
       }
     }
 
@@ -9284,6 +9298,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
     controller.organizerAddressForm.city.$setUntouched();
+    validateAddress();
   }
 
   /**
@@ -9296,6 +9311,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
 
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
+    validateAddress();
   }
 
   function sendUpdate() {
@@ -9519,7 +9535,7 @@ function EventFormOrganizerModalController(
     if ($scope.addressError || $scope.contactError) {
       $scope.error = true;
       $scope.saving = false;
-      return
+      return;
     }
 
     promise.then(function (data) {
@@ -14912,6 +14928,14 @@ function OrganizerEditController(
    * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
+    if (_.isEmpty(organizer.address)) {
+      organizer.address = {
+        streetAddress : '',
+        addressLocality : '',
+        postalCode: '',
+        addressCountry : ''
+      }
+    }
     controller.organizer = organizer;
     oldOrganizer = _.cloneDeep(organizer);
     controller.originalName = oldOrganizer.name;
@@ -22099,33 +22123,15 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "            <div class=\"form-group\"\n" +
-    "                 ng-if=\"oac.requiredAddress\"\n" +
-    "                 ng-class=\"{'has-error' : oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid}\">\n" +
-    "                <label>Straat en nummer</label>\n" +
-    "                <input type=\"text\"\n" +
-    "                       class=\"form-control\"\n" +
-    "                       name=\"street\"\n" +
-    "                       placeholder=\"Straat en nummer\"\n" +
-    "                       ng-model=\"oac.address.streetAddress\"\n" +
-    "                       required>\n" +
-    "                <ng-messages for=\"oac.organizerAddressForm.street.$error\"\n" +
-    "                             class=\"has-error\"\n" +
-    "                             ng-show=\"oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid\">\n" +
-    "                    <ng-message when=\"required\"\n" +
-    "                                class=\"help-block\">\n" +
-    "                        Gelieve straat en nummer in te geven.\n" +
-    "                    </ng-message>\n" +
-    "                </ng-messages>\n" +
-    "            </div>\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-if=\"!oac.requiredAddress\"\n" +
     "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
     "                <label>Straat en nummer</label>\n" +
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
     "                       placeholder=\"Straat en nummer\"\n" +
-    "                       ng-model=\"oac.address.streetAddress\">\n" +
+    "                       ng-model=\"oac.address.streetAddress\"\n" +
+    "                       ng-change=\"oac.validateAddress()\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
     "                <span class=\"has-error\"\n" +
     "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
     "                    <span class=\"help-block\">\n" +
@@ -22140,41 +22146,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
     "                <div class=\"form-group\"\n" +
-    "                     ng-if=\"oac.requiredAddress\"\n" +
-    "                     ng-class=\"{'has-error' : (oac.organizerAddressForm.city.$touched && oac.organizerAddressForm.city.$invalid)\n" +
-    "                     || (oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid)}\">\n" +
-    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
-    "                        Gemeente\n" +
-    "                    </label>\n" +
-    "                    <div id=\"gemeente-kiezer\">\n" +
-    "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
-    "                               type=\"text\"\n" +
-    "                               name=\"city\"\n" +
-    "                               class=\"form-control uib-typeahead\"\n" +
-    "                               placeholder=\"Gemeente of postcode\"\n" +
-    "                               ng-model=\"oac.cityAutocompleteTextField\"\n" +
-    "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
-    "                               typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
-    "                               typeahead-min-length=\"2\"\n" +
-    "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                               autocomplete=\"off\"\n" +
-    "                               required>\n" +
-    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
-    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
-    "                        </span>\n" +
-    "                        <ng-messages for=\"oac.organizerAddressForm.city.$error\"\n" +
-    "                                     class=\"has-error\"\n" +
-    "                                     ng-show=\"(oac.organizerAddressForm.city.$touched && oac.organizerAddressForm.city.$invalid)\n" +
-    "                                     || (oac.organizerAddressForm.street.$touched && oac.organizerAddressForm.street.$invalid)\">\n" +
-    "                            <ng-message when=\"required\"\n" +
-    "                                        class=\"help-block\">\n" +
-    "                                Gelieve een gemeente in te geven.\n" +
-    "                            </ng-message>\n" +
-    "                        </ng-messages>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-if=\"!oac.requiredAddress\"\n" +
     "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
     "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
     "                        Gemeente\n" +

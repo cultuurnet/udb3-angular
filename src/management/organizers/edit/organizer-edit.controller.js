@@ -62,6 +62,14 @@ function OrganizerEditController(
    * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
+    if (_.isEmpty(organizer.address)) {
+      organizer.address = {
+        streetAddress : '',
+        addressLocality : '',
+        postalCode: '',
+        addressCountry : ''
+      }
+    }
     controller.organizer = organizer;
     oldOrganizer = _.cloneDeep(organizer);
     controller.originalName = oldOrganizer.name;

@@ -143,7 +143,7 @@ function EventFormOrganizerModalController(
     if ($scope.addressError || $scope.contactError) {
       $scope.error = true;
       $scope.saving = false;
-      return
+      return;
     }
 
     promise.then(function (data) {
