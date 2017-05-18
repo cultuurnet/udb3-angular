@@ -36,6 +36,9 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      if(moc.offer.image) {
+        moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
+      }
     })
     .catch(showLoadingError)
     .finally(function() {
