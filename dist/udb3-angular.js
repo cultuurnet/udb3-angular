@@ -14215,8 +14215,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.sendingJob = false;
   moc.error = false;
 
-  moc.isReadyForValidation = isReadyForValidation;
-
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
@@ -14234,10 +14232,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
 
   function showLoadingError(problem) {
     showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
-  }
-
-  function isReadyForValidation() {
-    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
   }
 
   /**
@@ -21953,9 +21947,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
     "                                <div class=\"form-group\">\n" +
-    "                                    <input type=\"number\"\n" +
+    "                                    <input type=\"text\"\n" +
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
+    "                                           ng-pattern=\"/^\\d+(,\\d{1,2})?$/\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
