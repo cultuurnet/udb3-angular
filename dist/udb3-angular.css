@@ -3148,6 +3148,36 @@ form.booking-period table {
 .uib-datepicker-popup fieldset[disabled] .btn {
   display: none;
 }
+.permanent-title {
+  font-size: 2rem;
+  font-weight: 300;
+  color: #555555;
+  display: block;
+  line-height: 1.5;
+}
+.permanent-subtitle {
+  font-size: 1.25rem;
+  color: #555555;
+  display: block;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+.uib-separator {
+  padding: 0 5px;
+  color: #222222;
+}
+.uib-timepicker {
+  display: inline-block;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  height: 34px;
+}
+.uib-timepicker input {
+  margin-top: -1px;
+}
+.opening-hours-labels {
+  font-weight: 700;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;
@@ -9779,8 +9809,6 @@ button.close {
 .opening-hours .opening-hours-labels:after,
 .opening-hours .opening-hours-set:before,
 .opening-hours .opening-hours-set:after,
-.opening-hours-week-schedule:before,
-.opening-hours-week-schedule:after,
 .form-calendar-period .periodic-info:before,
 .form-calendar-period .periodic-info:after {
   content: " ";
@@ -9806,7 +9834,6 @@ button.close {
 .calendar-time-span:after,
 .opening-hours .opening-hours-labels:after,
 .opening-hours .opening-hours-set:after,
-.opening-hours-week-schedule:after,
 .form-calendar-period .periodic-info:after {
   clear: both;
 }
@@ -10280,7 +10307,7 @@ button.close {
     width: 100%;
   }
 }
-.close {
+.calendar-time-spans .close {
   right: 15px;
   z-index: 9999;
   position: absolute;
@@ -10289,26 +10316,6 @@ button.close {
 .opening-hours-set:not(:first-child) {
   border-top: 1px solid #eee;
   padding-top: 10px;
-}
-.opening-hours-week-schedule {
-  margin-left: -15px;
-  margin-right: -15px;
-}
-.opening-hours-week-schedule .time-table,
-.opening-hours-week-schedule .empty {
-  float: left;
-  width: 100%;
-  position: relative;
-  min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-@media (min-width: 768px) {
-  .opening-hours-week-schedule .time-table,
-  .opening-hours-week-schedule .empty {
-    float: left;
-    width: 66.66666667%;
-  }
 }
 .form-calendar-period .periodic-info {
   margin-left: -15px;
@@ -10332,7 +10339,7 @@ button.close {
   .form-calendar-period .periodic-info .start-date,
   .form-calendar-period .periodic-info .end-date {
     float: left;
-    width: 25%;
+    width: 33.33333333%;
   }
 }
 .form-calendar-period .periodic-info .requirements {

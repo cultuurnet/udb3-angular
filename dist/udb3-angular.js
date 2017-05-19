@@ -2756,7 +2756,7 @@ angular.module('udb.core')
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
-      'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
+      'dayOfWeek': 'Kies minstens één dag in elke rij die je toevoegde.',
       'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
     },
     'TIME_SPAN_REQUIREMENTS': {
@@ -21143,6 +21143,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/form-calendar-period.component.html',
     "<div class=\"form-calendar-period\">\n" +
+    "  <div class=\"row\">\n" +
+    "    <div class=\"col-sm-4\">\n" +
     "    <label>\n" +
     "        <input type=\"checkbox\"\n" +
     "               class=\"permanent-check\"\n" +
@@ -21152,19 +21154,21 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
     "        <span>Start- en einddatum</span>\n" +
     "    </label>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-sm-8\">\n" +
     "    <div class=\"periodic-info\">\n" +
     "        <div class=\"start-date\">\n" +
-    "            <label>van</label>\n" +
+    "            <label>Van</label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                                            ng-model=\"$ctrl.formData.startDate\" \n" +
+    "                                            ng-model=\"$ctrl.formData.startDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
     "            </udb-form-calendar-datepicker>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"end-date\">\n" +
-    "            <label>tot</label>\n" +
+    "            <label>Tot</label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                                            ng-model=\"$ctrl.formData.endDate\" \n" +
+    "                                            ng-model=\"$ctrl.formData.endDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
     "            </udb-form-calendar-datepicker>\n" +
     "        </div>\n" +
@@ -21176,7 +21180,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>"
+    "  </div>\n" +
+    "</div>\n" +
+    "</div>\n"
   );
 
 
@@ -21493,7 +21499,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "    <div class=\"well text-center add-opening-hours\" \n" +
+    "    <div class=\"well text-center add-opening-hours\"\n" +
     "         ng-show=\"ohemc.openingHoursCollection.openingHours.length === 0\">\n" +
     "        <span>24/24 7/7</span>\n" +
     "        <br>\n" +
@@ -21548,9 +21554,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </div>\n" +
     "                </div>\n" +
     "                <div class=\"remove\">\n" +
-    "                    <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
-    "                        <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
-    "                    </button>\n" +
+    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"ohemc.removeOpeningHours(openingHours)\"><span aria-hidden=\"true\">&times;</span></button>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -21568,8 +21572,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            ng-click=\"ohemc.saveOpeningHours()\">\n" +
     "        Opslaan\n" +
     "    </button>\n" +
-    "</div>\n" +
-    "\n"
+    "</div>\n"
   );
 
 
@@ -21577,10 +21580,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "<div class=\"opening-hours-week-schedule\">\n" +
     "  <div class=\"empty\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "    <div class=\"well text-center add-opening-hours\">\n" +
-    "        <span>24/24 7/7</span>\n" +
-    "        <br>\n" +
-    "        <span>Elke dag, ieder uur</span>\n" +
-    "        <br>\n" +
+    "        <p>\n" +
+    "          <span class=\"permanent-title\">24/24, 7/7</span> \n" +
+    "          <span class=\"permanent-subtitle\">Elke dag, ieder uur</span>\n" +
+    "        </p>\n" +
     "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\">Uren toevoegen</button>\n" +
     "    </div>\n" +
     "  </div>\n" +
@@ -21604,7 +21607,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </tbody>\n" +
     "    </table>\n" +
     "  </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
