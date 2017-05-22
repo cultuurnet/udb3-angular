@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Component: Organizer Contact', function() {
-  var $scope, $componentController, component, fakeContact;
+  var $scope, $componentController, component, fakeContact, organizerContactWrapper;
 
 
   beforeEach(module('udb.event-form'));
@@ -24,6 +24,10 @@ describe('Component: Organizer Contact', function() {
         value: '0123456789'
       }
     ];
+
+    organizerContactWrapper = {
+      $invalid: false
+    }
   }));
 
   function sendUpdateMock(contact, error) {
@@ -42,7 +46,7 @@ describe('Component: Organizer Contact', function() {
 
   it('should initialize the component', function () {
     component = getComponent();
-
+    component.organizerContactWrapper = organizerContactWrapper;
     expect(component.contactHasErrors).toBeFalsy();
   });
 
@@ -51,6 +55,7 @@ describe('Component: Organizer Contact', function() {
     component.onUpdate = function() {
       sendUpdateMock();
     };
+    component.organizerContactWrapper = organizerContactWrapper;
     component.validateContact();
 
     expect(component.contactHasErrors).toBeFalsy();
@@ -87,6 +92,7 @@ describe('Component: Organizer Contact', function() {
     component.onUpdate = function() {
       sendUpdateMock();
     };
+    component.organizerContactWrapper = organizerContactWrapper;
     component.deleteOrganizerContactInfo(2);
 
     expect(component.contact).toEqual(expectedContact);
@@ -116,6 +122,7 @@ describe('Component: Organizer Contact', function() {
     component.onUpdate = function() {
       sendUpdateMock();
     };
+    component.organizerContactWrapper = organizerContactWrapper;
     component.addOrganizerContactInfo('phone');
 
     expect(component.contact).toEqual(expectedContact);
