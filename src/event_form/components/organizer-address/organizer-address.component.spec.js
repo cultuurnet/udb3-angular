@@ -101,23 +101,6 @@ describe('Component: Organizer Address', function() {
     expect(component.cityHasErrors).toBeTruthy();
   });
 
-  it('should reset form submit to reset error messages when both fields are empty.', function () {
-    fakeAddress.streetAddress = '';
-
-    component = getComponent();
-    component.organizerAddressForm = organizerAddressForm;
-    component.organizerAddressForm.$submitted = true;
-    component.requiredAddress = false;
-    component.selectedCity = '';
-    component.onUpdate = function() {
-      sendUpdateMock();
-    };
-
-    component.validateAddress();
-
-    expect(component.organizerAddressForm.$submitted).toBeFalsy();
-  });
-
   it('should select a city', function() {
     var item = {
       name: 'Turnhout',
