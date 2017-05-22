@@ -73,8 +73,8 @@
     <div ng-show="pfmc.priceError" class="alert alert-danger">
         Er ging iets fout bij het opslaan van de prijs.
     </div>
-    <div ng-show="pfmc.invalidPrice" class="alert alert-danger">
-        Gelieve een geldige prijs en omschrijving in te voeren.
+    <div ng-show="pfmc.priceForm.priceFieldForm.price.$invalid" class="alert alert-danger">
+        Geef een geldig bedrag in. Decimalen noteer je met een komma.
     </div>
 
 </div>

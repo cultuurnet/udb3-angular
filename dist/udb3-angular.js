@@ -21987,8 +21987,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
     "        Er ging iets fout bij het opslaan van de prijs.\n" +
     "    </div>\n" +
-    "    <div ng-show=\"pfmc.invalidPrice\" class=\"alert alert-danger\">\n" +
-    "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
+    "    <div ng-show=\"pfmc.priceForm.priceFieldForm.price.$invalid\" class=\"alert alert-danger\">\n" +
+    "        Geef een geldig bedrag in. Decimalen noteer je met een komma.\n" +
     "    </div>\n" +
     "\n" +
     "</div>\n" +
