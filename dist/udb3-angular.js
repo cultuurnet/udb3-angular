@@ -10734,6 +10734,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
+      this.showStep(3);
       this.timingChangedCallback(this);
     },
 
@@ -10747,8 +10748,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     setCalendarType: function (type) {
       var formData = this;
-
-      formData.showStep(3);
 
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.
@@ -10962,6 +10961,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
         moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
+    EventFormData.showStep(3);
   }
 
   /**
@@ -11502,12 +11502,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     controller.updateEventTypeAndThemePicker(EventFormData);
 
     EventFormData.showStep(2);
-
-    // immediately show step 3 if the form contains a place or an event with a preselected date
-    // in both cases the calendar type will already be set
-    if (EventFormData.calendarType) {
-      EventFormData.showStep(3);
-    }
   }
 
   /**

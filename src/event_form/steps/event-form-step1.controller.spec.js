@@ -47,11 +47,4 @@ describe('Controller: event form step 1', function () {
 
     expect(scope.splitTypes).toEqual(false);
   });
-
-  it('should immediately show step 3 when the event type is set and a date is preselected', function () {
-    EventFormData.setCalendarType('single');
-
-    stepController.init(EventFormData);
-    expect(EventFormData.showStep3).toEqual(true);
-  });
 });

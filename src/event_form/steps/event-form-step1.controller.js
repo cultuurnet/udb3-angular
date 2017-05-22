@@ -114,12 +114,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     controller.updateEventTypeAndThemePicker(EventFormData);
 
     EventFormData.showStep(2);
-
-    // immediately show step 3 if the form contains a place or an event with a preselected date
-    // in both cases the calendar type will already be set
-    if (EventFormData.calendarType) {
-      EventFormData.showStep(3);
-    }
   }
 
   /**
