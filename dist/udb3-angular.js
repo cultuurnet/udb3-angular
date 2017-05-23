@@ -21124,7 +21124,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "           ng-required=\"true\"\n" +
     "           ng-change=\"datepicker.changed()\"\n" +
     "           show-button-bar=\"false\"\n" +
-    "           ng-disabled=\"datepicker.disabled\"/>\n" +
+    "           ng-disabled=\"datepicker.disabled\"\n" +
+    "           ng-focus=\"datepicker.open()\"/>\n" +
     "    <span class=\"input-group-btn\">\n" +
     "        <button type=\"button\"\n" +
     "                class=\"btn btn-default\"\n" +
