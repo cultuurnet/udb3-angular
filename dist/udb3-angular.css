@@ -9803,9 +9803,7 @@ button.close {
 .opening-hours .opening-hours-labels:before,
 .opening-hours .opening-hours-labels:after,
 .opening-hours .opening-hours-set:before,
-.opening-hours .opening-hours-set:after,
-.form-calendar-period .periodic-info:before,
-.form-calendar-period .periodic-info:after {
+.opening-hours .opening-hours-set:after {
   content: " ";
   display: table;
 }
@@ -9828,8 +9826,7 @@ button.close {
 .calendar-type-picker:after,
 .calendar-time-span:after,
 .opening-hours .opening-hours-labels:after,
-.opening-hours .opening-hours-set:after,
-.form-calendar-period .periodic-info:after {
+.opening-hours .opening-hours-set:after {
   clear: both;
 }
 .center-block {
@@ -10099,44 +10096,49 @@ button.close {
 .calendar-type-options a,
 .calendar-type-options span {
   min-height: 50px;
+  display: inline-block;
+  width: 20%;
 }
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .calendar-type-options a,
   .calendar-type-options span {
-    float: left;
+    width: 100%;
+    min-height: 0;
   }
 }
 .or {
-  padding: 20px;
-}
-@media (min-width: 768px) {
-  .or {
-    padding: 40px 20px;
-  }
+  text-align: center;
+  font-style: italic;
 }
 .calendar-type-options a {
+  background-color: #FFF;
   border: 1px solid #ccc;
   padding: 10px;
   display: inline-block;
-  width: 220px;
+  width: 40%;
   position: relative;
+}
+@media (max-width: 768px) {
+  .calendar-type-options a {
+    width: 100%;
+  }
 }
 .calendar-type-icon {
   margin: 0 auto;
   width: 50px;
   display: block;
 }
-.selected {
-  background-color: #CFE5D0;
+.calendar-type-options a.selected {
+  background-color: #c7e6c7;
 }
 .selected:after {
   font-family: "FontAwesome";
-  color: green;
+  color: #5cb85c;
   content: "\f058";
   position: absolute;
   top: -6px;
   left: -6px;
-  font-size: 16px;
+  font-size: 17px;
 }
 .selected:before {
   font-family: "FontAwesome";
@@ -10191,6 +10193,9 @@ button.close {
     float: left;
     width: 16.66666667%;
   }
+}
+.calendar-time-span .time label {
+  display: block;
 }
 .calendar-time-span .requirements {
   position: relative;
@@ -10312,9 +10317,21 @@ button.close {
   border-top: 1px solid #eee;
   padding-top: 10px;
 }
-.form-calendar-period .periodic-info {
-  margin-left: -15px;
-  margin-right: -15px;
+.form-calendar-period .periodic-info:before,
+.form-calendar-period .periodic-info:after {
+  content: " ";
+  display: table;
+}
+.form-calendar-period .periodic-info:after {
+  clear: both;
+}
+.form-calendar-period .periodic-info:before,
+.form-calendar-period .periodic-info:after {
+  content: " ";
+  display: table;
+}
+.form-calendar-period .periodic-info:after {
+  clear: both;
 }
 .form-calendar-period .periodic-info .start-date,
 .form-calendar-period .periodic-info .end-date {

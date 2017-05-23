@@ -15,26 +15,31 @@
 .calendar-type-options a,
 .calendar-type-options span {
   min-height: 50px;
+  display: inline-block;
+  width: 20%;
 
-  @media (min-width: @screen-sm-min) {
-      float: left;
+  @media (max-width: @screen-sm-min) {
+    width: 100%;
+    min-height: 0;
   }
 }
 
 .or {
-  padding: 20px;
-
-  @media (min-width: @screen-sm-min) {
-      padding: 40px 20px;
-  }
+  text-align: center;
+  font-style: italic;
 }
 
 .calendar-type-options a {
+  background-color: #FFF;
   border: 1px solid #ccc;
   padding: 10px;
   display: inline-block;
-  width: 220px;
+  width: 40%;
   position: relative;
+
+  @media (max-width: @screen-sm-min) {
+    width: 100%;
+  }
 }
 
 .calendar-type-icon {
@@ -43,18 +48,18 @@
   display: block
 }
 
-.selected {
-  background-color: #CFE5D0;
+.calendar-type-options a.selected {
+  background-color: lighten(@brand-success, 30%);
 }
 
 .selected:after {
   font-family: "FontAwesome";
-  color: green;
+  color: @brand-success;
   content: "\f058";
   position: absolute;
   top: -6px;
   left: -6px;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .selected:before {
@@ -84,6 +89,10 @@
   .time {
     .make-sm-column(3);
     .make-md-column(2);
+
+    label {
+      display: block;
+    }
   }
 
   .requirements {
@@ -142,7 +151,8 @@
 
 .form-calendar-period {
   .periodic-info {
-    .make-row();
+    //.make-row();
+    .clearfix();
 
     .start-date,
     .end-date {

@@ -21139,8 +21139,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/form-calendar-period.component.html',
     "<div class=\"form-calendar-period\">\n" +
-    "  <div class=\"row\">\n" +
-    "    <div class=\"col-sm-4\">\n" +
     "    <label>\n" +
     "        <input type=\"checkbox\"\n" +
     "               class=\"permanent-check\"\n" +
@@ -21150,8 +21148,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
     "        <span>Start- en einddatum</span>\n" +
     "    </label>\n" +
-    "    </div>\n" +
-    "    <div class=\"col-sm-8\">\n" +
     "    <div class=\"periodic-info\">\n" +
     "        <div class=\"start-date\">\n" +
     "            <label>Van</label>\n" +
@@ -21176,8 +21172,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "  </div>\n" +
-    "</div>\n" +
     "</div>\n"
   );
 
@@ -21199,12 +21193,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
-    "            <p class=\"text-center\"><strong>Eén of meerdere dagen</strong></p>\n" +
-    "        </a>\n" +
-    "\n" +
-    "        <span class=\"or\">of</span>\n" +
-    "\n" +
-    "        <a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "            <p class=\"text-center\"><strong>Eén of meerdere dagen</strong></p></a><span class=\"or\">of</span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
     "            <p class=\"text-center\"><strong>Vaste dagen per week</strong></p>\n" +
     "        </a>\n" +
@@ -21254,7 +21243,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </div>\n" +
     "                    <div class=\"requirements\" ng-show=\"calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length\">\n" +
     "                        <div class=\"error alert alert-danger\">\n" +
-    "                            <p ng-repeat=\"requirement in calendar.timeSpanRequirements[$index]\" \n" +
+    "                            <p ng-repeat=\"requirement in calendar.timeSpanRequirements[$index]\"\n" +
     "                               ng-bind=\"'TIME_SPAN_REQUIREMENTS.' + requirement | translate\"></p>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
@@ -21270,7 +21259,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 
