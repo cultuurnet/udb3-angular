@@ -15,23 +15,25 @@ function udbEventDuplicationCalendar() {
   return {
     restrict: 'AE',
     controller: EventDuplicationCalendarController,
-    controllerAs: 'edc',
-    templateUrl: 'templates/event-duplication-calendar.directive.html'
+    controllerAs: 'calendar',
+    templateUrl: 'templates/form-event-calendar.component.html'
   };
 }
 
 /* @ngInject */
-function EventDuplicationCalendarController(EventFormData, $rootScope, calendarLabels) {
-  var controller = this;
+function EventDuplicationCalendarController(EventFormData, OpeningHoursCollection, $rootScope, $controller, $scope) {
+  var calendar = this;
+  var duplicateFormData = EventFormData.clone();
 
-  controller.calendarLabels = calendarLabels;
-  controller.duplicateFormData = EventFormData.clone();
-
-  controller.duplicateTimingChanged = function (formData) {
+  function duplicateTimingChanged(formData) {
     $rootScope.$emit('duplicateTimingChanged', formData);
-  };
+  }
 
-  controller.duplicateFormData
+  $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
+
+  calendar.init(duplicateFormData, _.cloneDeep(OpeningHoursCollection));
+
+  calendar.formData
     .timingChanged$
-    .subscribe(controller.duplicateTimingChanged);
+    .subscribe(duplicateTimingChanged);
 }

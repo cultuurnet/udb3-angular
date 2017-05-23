@@ -5381,27 +5381,29 @@ function udbEventDuplicationCalendar() {
   return {
     restrict: 'AE',
     controller: EventDuplicationCalendarController,
-    controllerAs: 'edc',
-    templateUrl: 'templates/event-duplication-calendar.directive.html'
+    controllerAs: 'calendar',
+    templateUrl: 'templates/form-event-calendar.component.html'
   };
 }
 
 /* @ngInject */
-function EventDuplicationCalendarController(EventFormData, $rootScope, calendarLabels) {
-  var controller = this;
+function EventDuplicationCalendarController(EventFormData, OpeningHoursCollection, $rootScope, $controller, $scope) {
+  var calendar = this;
+  var duplicateFormData = EventFormData.clone();
 
-  controller.calendarLabels = calendarLabels;
-  controller.duplicateFormData = EventFormData.clone();
-
-  controller.duplicateTimingChanged = function (formData) {
+  function duplicateTimingChanged(formData) {
     $rootScope.$emit('duplicateTimingChanged', formData);
-  };
+  }
 
-  controller.duplicateFormData
+  $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
+
+  calendar.init(duplicateFormData, _.cloneDeep(OpeningHoursCollection));
+
+  calendar.formData
     .timingChanged$
-    .subscribe(controller.duplicateTimingChanged);
+    .subscribe(duplicateTimingChanged);
 }
-EventDuplicationCalendarController.$inject = ["EventFormData", "$rootScope", "calendarLabels"];
+EventDuplicationCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$rootScope", "$controller", "$scope"];
 
 // Source: src/duplication/event-duplication-footer.component.js
 /**
@@ -8049,102 +8051,7 @@ function AutoScroll($document) {
 }
 AutoScroll.$inject = ["$document"];
 
-// Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
-angular
-  .module('udb.event-form')
-  .component('udbFormCalendarDatepicker', {
-    templateUrl: 'templates/form-calendar-datepicker.component.html',
-    controller: FormCalendarDatepickerController,
-    require: {
-      ngModel: '^ngModel'
-    },
-    bindings: {
-      disabled: '=ngDisabled'
-    },
-    controllerAs: 'datepicker'
-  });
-
-/** @inject */
-function FormCalendarDatepickerController() {
-  var datepicker = this;
-  var options = {
-    minDate: new Date(),
-    showWeeks: false
-  };
-
-  datepicker.$onInit = function() {
-    datepicker.isOpen = false;
-    datepicker.options = options;
-    datepicker.ngModel.$render = function () {
-      datepicker.date = new Date(datepicker.ngModel.$viewValue);
-    };
-  };
-
-  datepicker.open = function() {
-    datepicker.isOpen = true;
-  };
-
-  datepicker.changed = function() {
-    if (datepicker.date) {
-      var time = moment(datepicker.ngModel.$viewValue);
-      var day = moment(datepicker.date).hour(time.hour()).minute(time.minute());
-      datepicker.ngModel.$setViewValue(day.toDate());
-    }
-  };
-}
-
-// Source: src/event_form/components/calendar/form-calendar-period.component.js
-/**
- * @ngdoc function
- * @name udbApp.controller:FormCalendarPeriod
- * @description
- * # Form Calendar Period
- */
-angular
-  .module('udb.event-form')
-  .component('udbFormCalendarPeriod', {
-    templateUrl: 'templates/form-calendar-period.component.html',
-    controller: FormCalendarPeriodComponentController,
-    bindings: {
-      formData: '='
-    }
-  });
-
-function FormCalendarPeriodComponentController() {
-  var controller = this;
-  controller.calendarType = controller.formData.calendarType;
-}
-
-// Source: src/event_form/components/calendar/form-calendar-timepicker.component.js
-angular
-  .module('udb.event-form')
-  .component('udbFormCalendarTimepicker', {
-    templateUrl: 'templates/form-calendar-timepicker.component.html',
-    controller: FormCalendarTimepickerController,
-    require: {
-      ngModel: '^ngModel'
-    },
-    controllerAs: 'timepicker'
-  });
-
-/** @inject */
-function FormCalendarTimepickerController() {
-  var timepicker = this;
-
-  timepicker.$onInit = function() {
-    timepicker.ngModel.$render = function () {
-      timepicker.time = new Date(timepicker.ngModel.$viewValue);
-    };
-  };
-
-  timepicker.changed = function() {
-    if (timepicker.time) {
-      timepicker.ngModel.$setViewValue(timepicker.time);
-    }
-  };
-}
-
-// Source: src/event_form/components/calendar/form-calendar.controller.js
+// Source: src/event_form/components/calendar/base-calendar.controller.js
 /**
  * @typedef {Object} TimeSpan
  * @property {Date} start
@@ -8154,19 +8061,16 @@ function FormCalendarTimepickerController() {
 
 /**
  * @ngdoc function
- * @name udbApp.controller:FormCalendarController
+ * @name udbApp.controller:BaseCalendarController
  * @description
- * # Form Calendar Controller
+ * # Base Calendar Controller
  */
 angular
   .module('udb.event-form')
-  .controller('FormCalendarController', FormCalendarController);
+  .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
-  var calendar = this;
-
-  calendar.formData = {};
+function BaseCalendarController(calendar, $scope) {
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -8174,19 +8078,19 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
   calendar.timeSpanRequirements = [];
   calendar.removeTimeSpan = removeTimeSpan;
   calendar.weeklyRecurring = false;
-  calendar.openingHoursCollection = OpeningHoursCollection;
   calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
-
-  init(EventFormData);
+  calendar.init = init;
 
   /**
    * @param {EventFormData} formData
+   * @param {OpeningHoursCollection} openingHoursCollection
    */
-  function init(formData) {
+  function init(formData, openingHoursCollection) {
     calendar.formData = formData;
     calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
     calendar.setType(formData.calendarType ? formData.calendarType : 'single');
+    calendar.openingHoursCollection = openingHoursCollection;
   }
 
   function isTypeWeeklyRecurring(type) {
@@ -8197,9 +8101,8 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
    * @param {string} calendarType
    */
   function setType(calendarType) {
-    EventFormData.setCalendarType(calendarType);
-    calendar.formData = EventFormData;
-    calendar.type = EventFormData.activeCalendarType;
+    calendar.formData.setCalendarType(calendarType);
+    calendar.type = calendar.formData.activeCalendarType;
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
@@ -8335,7 +8238,123 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope) {
     return _.keys(unmetRequirements);
   }
 }
-FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope"];
+BaseCalendarController.$inject = ["calendar", "$scope"];
+
+// Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarDatepicker', {
+    templateUrl: 'templates/form-calendar-datepicker.component.html',
+    controller: FormCalendarDatepickerController,
+    require: {
+      ngModel: '^ngModel'
+    },
+    bindings: {
+      disabled: '=ngDisabled'
+    },
+    controllerAs: 'datepicker'
+  });
+
+/** @inject */
+function FormCalendarDatepickerController() {
+  var datepicker = this;
+  var options = {
+    minDate: new Date(),
+    showWeeks: false
+  };
+
+  datepicker.$onInit = function() {
+    datepicker.isOpen = false;
+    datepicker.options = options;
+    datepicker.ngModel.$render = function () {
+      datepicker.date = new Date(datepicker.ngModel.$viewValue);
+    };
+  };
+
+  datepicker.open = function() {
+    datepicker.isOpen = true;
+  };
+
+  datepicker.changed = function() {
+    if (datepicker.date) {
+      var time = moment(datepicker.ngModel.$viewValue);
+      var day = moment(datepicker.date).hour(time.hour()).minute(time.minute());
+      datepicker.ngModel.$setViewValue(day.toDate());
+    }
+  };
+}
+
+// Source: src/event_form/components/calendar/form-calendar-period.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarPeriod
+ * @description
+ * # Form Calendar Period
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarPeriod', {
+    templateUrl: 'templates/form-calendar-period.component.html',
+    controller: FormCalendarPeriodComponentController,
+    bindings: {
+      formData: '='
+    }
+  });
+
+function FormCalendarPeriodComponentController() {
+  var controller = this;
+  controller.calendarType = controller.formData.calendarType;
+}
+
+// Source: src/event_form/components/calendar/form-calendar-timepicker.component.js
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarTimepicker', {
+    templateUrl: 'templates/form-calendar-timepicker.component.html',
+    controller: FormCalendarTimepickerController,
+    require: {
+      ngModel: '^ngModel'
+    },
+    controllerAs: 'timepicker'
+  });
+
+/** @inject */
+function FormCalendarTimepickerController() {
+  var timepicker = this;
+
+  timepicker.$onInit = function() {
+    timepicker.ngModel.$render = function () {
+      timepicker.time = new Date(timepicker.ngModel.$viewValue);
+    };
+  };
+
+  timepicker.changed = function() {
+    if (timepicker.time) {
+      timepicker.ngModel.$setViewValue(timepicker.time);
+    }
+  };
+}
+
+// Source: src/event_form/components/calendar/form-calendar.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarController
+ * @description
+ * # Form Calendar Controller
+ */
+angular
+  .module('udb.event-form')
+  .controller('FormCalendarController', FormCalendarController);
+
+/* @ngInject */
+function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $controller) {
+  var calendar = this;
+
+  $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
+
+  calendar.init(EventFormData, OpeningHoursCollection);
+}
+FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller"];
 
 // Source: src/event_form/components/calendar/form-event-calendar.component.js
 /**
@@ -10235,7 +10254,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -10827,7 +10846,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "$rootScope"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -20450,53 +20469,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "\n" +
     "</div>\n"
-  );
-
-
-  $templateCache.put('templates/event-duplication-calendar.directive.html',
-    "<section id=\"wanneer\">\n" +
-    "    <h2 class=\"title-border\">\n" +
-    "        <span>Wanneer vindt dit evenement of deze activiteit plaats?</span>\n" +
-    "    </h2>\n" +
-    "\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-xs-12\">\n" +
-    "            <div class=\"form-group\">\n" +
-    "\n" +
-    "                <label class=\"wanneerkiezer-label\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    Maak een keuze\n" +
-    "                </label>\n" +
-    "                <div class=\"wanneerkiezer\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    <ul class=\"list-inline button-list\">\n" +
-    "                        <li ng-repeat=\"calendarLabel in ::edc.calendarLabels\">\n" +
-    "                            <button class=\"btn btn-default\"\n" +
-    "                                    ng-bind=\"::calendarLabel.label\"\n" +
-    "                                    udb-auto-scroll\n" +
-    "                                    ng-click=\"edc.duplicateFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
-    "                        </li>\n" +
-    "                    </ul>\n" +
-    "                </div>\n" +
-    "                <div class=\"wanneer-chosen\" ng-hide=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    <span class=\"btn-chosen\" ng-bind=\"edc.duplicateFormData.activeCalendarLabel\"></span>\n" +
-    "                    <a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.duplicateFormData.resetCalendar()\">Wijzigen</a>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'single'\">\n" +
-    "        <udb-event-form-timestamp form-data=\"edc.duplicateFormData\"></udb-event-form-timestamp>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-period form-data=\"edc.duplicateFormData\"></udb-event-form-period>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-opening-hours form-data=\"edc.duplicateFormData\"></udb-event-form-opening-hours>\n" +
-    "    </div>\n" +
-    "\n" +
-    "</section>\n"
   );
 
 

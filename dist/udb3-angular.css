@@ -10128,10 +10128,10 @@ button.close {
   width: 50px;
   display: block;
 }
-.calendar-type-options a.selected {
+.calendar-type-options .selected {
   background-color: #c7e6c7;
 }
-.selected:after {
+.calendar-type-options .selected:after {
   font-family: "FontAwesome";
   color: #5cb85c;
   content: "\f058";
@@ -10140,7 +10140,7 @@ button.close {
   left: -6px;
   font-size: 17px;
 }
-.selected:before {
+.calendar-type-options .selected:before {
   font-family: "FontAwesome";
   color: white;
   content: "\f111";
