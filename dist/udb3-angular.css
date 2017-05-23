@@ -3143,11 +3143,6 @@ form.booking-period table {
 .padding-left-12-5 {
   padding-left: 12.5px;
 }
-.uib-datepicker-popup .btn.disabled,
-.uib-datepicker-popup .btn[disabled],
-.uib-datepicker-popup fieldset[disabled] .btn {
-  display: none;
-}
 .permanent-title {
   font-size: 2rem;
   font-weight: 300;
