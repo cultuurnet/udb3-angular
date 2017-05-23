@@ -48,11 +48,10 @@
   display: block
 }
 
-.calendar-type-options a.selected {
+.calendar-type-options .selected {
   background-color: lighten(@brand-success, 30%);
-}
 
-.selected:after {
+  &:after {
   font-family: "FontAwesome";
   color: @brand-success;
   content: "\f058";
@@ -60,16 +59,17 @@
   top: -6px;
   left: -6px;
   font-size: 17px;
-}
+  }
 
-.selected:before {
-  font-family: "FontAwesome";
-  color: white;
-  content: "\f111";
-  position: absolute;
-  top: -6px;
-  left: -6px;
-  font-size: 16px;
+  &:before {
+    font-family: "FontAwesome";
+    color: white;
+    content: "\f111";
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    font-size: 16px;
+  }
 }
 
 .calendar-timing-info {
