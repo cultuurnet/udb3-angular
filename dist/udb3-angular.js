@@ -5365,29 +5365,19 @@ function udbDashboardDirective() {
   };
 }
 
-// Source: src/duplication/event-duplication-calendar.directive.js
+// Source: src/duplication/event-duplication-calendar.controller.js
 /**
- * @ngdoc directive
- * @name udb.duplication.directive:udbEventDuplicationCalendar
+ * @ngdoc function
+ * @name udbApp.controller:DuplicationCalendarController
  * @description
- *  Shows the calendar when you try to create a duplicate event.
+ * # Duplication Calendar Controller
  */
 angular
   .module('udb.duplication')
-  .directive('udbEventDuplicationCalendar', udbEventDuplicationCalendar);
+  .controller('DuplicationCalendarController', DuplicationCalendarController);
 
 /* @ngInject */
-function udbEventDuplicationCalendar() {
-  return {
-    restrict: 'AE',
-    controller: EventDuplicationCalendarController,
-    controllerAs: 'calendar',
-    templateUrl: 'templates/form-event-calendar.component.html'
-  };
-}
-
-/* @ngInject */
-function EventDuplicationCalendarController(EventFormData, OpeningHoursCollection, $rootScope, $controller, $scope) {
+function DuplicationCalendarController(EventFormData, OpeningHoursCollection, $rootScope, $controller, $scope) {
   var calendar = this;
   var duplicateFormData = EventFormData.clone();
 
@@ -5403,7 +5393,28 @@ function EventDuplicationCalendarController(EventFormData, OpeningHoursCollectio
     .timingChanged$
     .subscribe(duplicateTimingChanged);
 }
-EventDuplicationCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$rootScope", "$controller", "$scope"];
+DuplicationCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$rootScope", "$controller", "$scope"];
+
+// Source: src/duplication/event-duplication-calendar.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.duplication.directive:udbEventDuplicationCalendar
+ * @description
+ *  Shows the calendar when you try to create a duplicate event.
+ */
+angular
+  .module('udb.duplication')
+  .directive('udbEventDuplicationCalendar', udbEventDuplicationCalendar);
+
+/* @ngInject */
+function udbEventDuplicationCalendar() {
+  return {
+    restrict: 'AE',
+    controller: 'DuplicationCalendarController',
+    controllerAs: 'calendar',
+    templateUrl: 'templates/form-event-calendar.component.html'
+  };
+}
 
 // Source: src/duplication/event-duplication-footer.component.js
 /**
