@@ -9018,7 +9018,8 @@ angular
   .module('udb.event-form')
   .component('udbEventFormOpeningHours', {
     bindings: {
-      openingHoursCollection: '=openingHours'
+      openingHoursCollection: '=openingHours',
+      formData: '='
     },
     templateUrl: 'templates/event-form-openinghours.html',
     controller: OpeningHourComponentController,
@@ -9028,7 +9029,7 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController($uibModal, EventFormData) {
+function OpeningHourComponentController($uibModal) {
   var cm = this;
 
   cm.edit = openEditorModal;
@@ -9054,11 +9055,11 @@ function OpeningHourComponentController($uibModal, EventFormData) {
    * @param {OpeningHoursData[]} openingHoursList
    */
   function saveOpeningHours(openingHoursList) {
-    EventFormData.saveOpeningHours(openingHoursList);
+    cm.formData.saveOpeningHours(openingHoursList);
     cm.openingHoursCollection.deserialize(openingHoursList);
   }
 }
-OpeningHourComponentController.$inject = ["$uibModal", "EventFormData"];
+OpeningHourComponentController.$inject = ["$uibModal"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -21145,7 +21146,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
     "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
     "                <hr>\n" +
-    "                <udb-event-form-opening-hours opening-hours=\"calendar.openingHoursCollection\"></udb-event-form-opening-hours>\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                </udb-event-form-opening-hours>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -21160,7 +21162,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
     "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
     "                <hr>\n" +
-    "                <udb-event-form-opening-hours opening-hours=\"calendar.openingHoursCollection\"></udb-event-form-opening-hours>\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                </udb-event-form-opening-hours>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +

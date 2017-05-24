@@ -4,7 +4,8 @@
             <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
                 <udb-form-calendar-period form-data="calendar.formData"></udb-form-calendar-period>
                 <hr>
-                <udb-event-form-opening-hours opening-hours="calendar.openingHoursCollection"></udb-event-form-opening-hours>
+                <udb-event-form-opening-hours form-data="calendar.formData" opening-hours="calendar.openingHoursCollection">
+                </udb-event-form-opening-hours>
             </div>
         </div>
     </div>
