@@ -86,6 +86,7 @@ angular
 angular
   .module('udb.event-form', [
     'ngSanitize',
+    'ngMessages',
     'ui.bootstrap',
     'udb.config',
     'udb.entry',
@@ -244,6 +245,7 @@ angular
 angular
   .module('udb.management.organizers', [
     'rx',
+    'udb.event-form',
     'ngTagsInput'
   ]);
 /**
