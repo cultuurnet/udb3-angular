@@ -278,5 +278,45 @@ describe('Controller: Form Calendar', function () {
     expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
     expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
   });
+
+  it('should switch the calendar type to multiple when there is more than one time-span', function () {
+      var controller = getController();
+      controller.type = 'single';
+      controller.timeSpans = [
+          {
+              allDay: true,
+              start: new Date(2013, 9, 23, 2),
+              end: new Date(2013, 9, 23, 5)
+          },
+          {
+              allDay: false,
+              start: new Date(2013, 9, 23, 9),
+              end: new Date(2013, 9, 23, 19)
+          }
+      ];
+      spyOn(controller.formData, 'timingChanged');
+      controller.instantTimeSpanChanged();
+      expect(controller.type).toEqual('multiple');
+  });
+
+  it('should switch the calendar type to single when a time-span is removed and there is only one left', function () {
+      var controller = getController();
+      controller.type = 'multiple';
+      controller.timeSpans = [
+          {
+              allDay: true,
+              start: new Date(2013, 9, 23, 2),
+              end: new Date(2013, 9, 23, 5)
+          },
+          {
+              allDay: false,
+              start: new Date(2013, 9, 23, 9),
+              end: new Date(2013, 9, 23, 19)
+          }
+      ];
+      spyOn(controller.formData, 'timingChanged');
+      controller.removeTimeSpan(controller.timeSpans[1]);
+      expect(controller.type).toEqual('single');
+  });
 });
 

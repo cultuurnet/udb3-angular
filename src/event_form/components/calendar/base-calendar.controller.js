@@ -50,7 +50,7 @@ function BaseCalendarController(calendar, $scope) {
    */
   function setType(calendarType) {
     calendar.formData.setCalendarType(calendarType);
-    calendar.type = calendar.formData.activeCalendarType;
+    calendar.type = calendarType;
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
@@ -103,6 +103,13 @@ function BaseCalendarController(calendar, $scope) {
     if (!_.isEmpty(_.flatten(unmetRequirements))) {
       showTimeSpanRequirements(unmetRequirements);
     } else {
+      if (calendar.timeSpans.length > 1) {
+        if (calendar.type !== 'multiple') {
+          setType('multiple');
+        }
+      } else if (calendar.type !== 'single') {
+        setType('single');
+      }
       clearTimeSpanRequirements();
       calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
     }

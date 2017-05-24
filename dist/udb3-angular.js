@@ -8102,7 +8102,7 @@ function BaseCalendarController(calendar, $scope) {
    */
   function setType(calendarType) {
     calendar.formData.setCalendarType(calendarType);
-    calendar.type = calendar.formData.activeCalendarType;
+    calendar.type = calendarType;
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
@@ -8155,6 +8155,13 @@ function BaseCalendarController(calendar, $scope) {
     if (!_.isEmpty(_.flatten(unmetRequirements))) {
       showTimeSpanRequirements(unmetRequirements);
     } else {
+      if (calendar.timeSpans.length > 1) {
+        if (calendar.type !== 'multiple') {
+          setType('multiple');
+        }
+      } else if (calendar.type !== 'single') {
+        setType('single');
+      }
       clearTimeSpanRequirements();
       calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
     }
@@ -14000,7 +14007,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-      moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -14149,14 +14155,15 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.sendingJob = false;
   moc.error = false;
 
-  moc.isReadyForValidation = isReadyForValidation;
-
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      if (moc.offer.image) {
+        moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
+      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -14165,10 +14172,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
 
   function showLoadingError(problem) {
     showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
-  }
-
-  function isReadyForValidation() {
-    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
   }
 
   /**
