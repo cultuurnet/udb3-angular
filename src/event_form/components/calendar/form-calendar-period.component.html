@@ -1,0 +1,35 @@
+<div class="form-calendar-period">
+    <label>
+        <input type="checkbox"
+               class="permanent-check"
+               ng-model="$ctrl.calendarType"
+               ng-true-value="'periodic'"
+               ng-false-value="'permanent'"
+               ng-change="$ctrl.formData.setCalendarType($ctrl.calendarType)">
+        <span>Start- en einddatum</span>
+    </label>
+    <div class="periodic-info">
+        <div class="start-date">
+            <label>van</label>
+            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
+                                            ng-model="$ctrl.formData.startDate" 
+                                            ng-change="$ctrl.formData.periodicTimingChanged()">
+            </udb-form-calendar-datepicker>
+        </div>
+
+        <div class="end-date">
+            <label>tot</label>
+            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
+                                            ng-model="$ctrl.formData.endDate" 
+                                            ng-change="$ctrl.formData.periodicTimingChanged()">
+            </udb-form-calendar-datepicker>
+        </div>
+
+        <div class="requirements"
+             ng-show="$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError">
+            <div class="alert alert-danger">
+                <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
+            </div>
+        </div>
+    </div>
+</div>
