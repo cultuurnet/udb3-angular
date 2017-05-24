@@ -47,4 +47,28 @@ describe('Controller: event form step 1', function () {
 
     expect(scope.splitTypes).toEqual(false);
   });
+
+  it('should show both step 2 and 3 right away when creating an offer with a place type', function () {
+    stepController.init(EventFormData);
+    var placeType = {label:'Natuur, park of tuin',id:'0.15.0.0.0',primary:true};
+
+    scope.setEventType(placeType, false);
+
+    expect(EventFormData.showStep2).toEqual(true);
+    expect(EventFormData.showStep3).toEqual(true);
+    expect(EventFormData.showStep4).toEqual(false);
+    expect(EventFormData.showStep5).toEqual(false);
+  });
+
+  it('should only show the next step when creating an offer with an event type', function () {
+    stepController.init(EventFormData);
+    var eventType = {id:'1.2.1.0.0',label:'Architectuur'};
+
+    scope.setEventType(eventType, true);
+
+    expect(EventFormData.showStep2).toEqual(true);
+    expect(EventFormData.showStep3).toEqual(false);
+    expect(EventFormData.showStep4).toEqual(false);
+    expect(EventFormData.showStep5).toEqual(false);
+  });
 });
