@@ -103,6 +103,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Description functions.
   $scope.alterDescription = alterDescription;
   $scope.saveDescription = saveDescription;
+  $scope.countCharacters = countCharacters;
 
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
@@ -140,7 +141,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Save the description.
    */
   function saveDescription() {
-
+    $scope.showInfo = false;
     $scope.savingDescription = true;
     $scope.descriptionError = false;
     $scope.focusDescription = false;
@@ -168,6 +169,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.descriptionError = true;
     });
 
+  }
+  /**
+   * Count characters in the description.
+   */
+  function countCharacters() {
+    if ($scope.description) {
+      return $scope.description.length;
+    }
   }
 
   controller.eventFormSaved = function () {

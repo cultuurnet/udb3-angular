@@ -12596,6 +12596,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Description functions.
   $scope.alterDescription = alterDescription;
   $scope.saveDescription = saveDescription;
+  $scope.countCharacters = countCharacters;
 
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
@@ -12633,7 +12634,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Save the description.
    */
   function saveDescription() {
-
+    $scope.showInfo = false;
     $scope.savingDescription = true;
     $scope.descriptionError = false;
     $scope.focusDescription = false;
@@ -12661,6 +12662,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.descriptionError = true;
     });
 
+  }
+  /**
+   * Count characters in the description.
+   */
+  function countCharacters() {
+    if ($scope.description) {
+      return $scope.description.length;
+    }
   }
 
   controller.eventFormSaved = function () {
@@ -23359,11 +23368,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
     "\n" +
     "-->\n" +
-    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass==state-complete\">{{eventFormData.description.nl}}</textarea>\n" +
+    "             <textarea ng-blur=\"saveDescription()\" ng-focus=\"showInfo = true\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass==state-complete\">{{eventFormData.description.nl}}</textarea>\n" +
+    "             <p class=\"tip description-info\" ng-if=\"countCharacters() < 200 && showInfo\"> De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken. Nog {{200 - countCharacters()}} tekens.\n" +
+    "              <span class=\"loader\"><span class=\"empty\"></span><span class=\"bar\" ng-style=\"{width : (countCharacters()/2)+'%'}\" ></span></span>\n" +
+    "             </p>\n" +
+    "             <p class=\"tip description-info\" ng-if=\"countCharacters() >= 200 && showInfo\">Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.</p>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass == 'state-filling'\">{{}}</textarea>\n" +
+    "                  <textarea ng-blur=\"saveDescription()\" ng-focus=\"showInfo = true\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass == 'state-filling'\">{{}}</textarea>\n" +
+    "                    <p class=\"tip description-info\" ng-if=\"countCharacters() < 200 && showInfo\"> De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken. Nog {{200 - countCharacters()}} tekens.\n" +
+    "              <span class=\"loader\"><span class=\"empty\"></span><span class=\"bar\" ng-style=\"{width : (countCharacters()/2)+'%'}\" ></span></span>\n" +
+    "             </p>\n" +
+    "             <p class=\"tip description-info\" ng-if=\"countCharacters() >= 200 && showInfo\">Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.</p>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
