@@ -35,16 +35,6 @@ function EventDetail(
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
-    udbApi
-      .getCalendarSummary($scope.eventId, 'lg')
-      .then(
-        function(success) {
-          console.log(success);
-        },
-        function(err) {
-          console.log(err);
-        });
-
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
 
@@ -92,6 +82,7 @@ function EventDetail(
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = [];
+  $scope.calendarSummary = '';
   $scope.tabs = [
     {
       id: 'data',
@@ -118,12 +109,21 @@ function EventDetail(
     $scope.eventHistory = eventHistory;
   }
 
+  function showCalendarSummary(calendarSummary) {
+    $scope.calendarSummary = calendarSummary;
+    console.log(calendarSummary);
+  }
+
   function showOffer(event) {
     cachedEvent = event;
 
     udbApi
       .getHistory($scope.eventId)
       .then(showHistory);
+
+    udbApi
+      .getCalendarSummary($scope.eventId, 'lg')
+      .then(showCalendarSummary);
 
     $scope.event = jsonLDLangFilter(event, language);
 

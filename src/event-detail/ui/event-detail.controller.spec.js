@@ -218,6 +218,8 @@ describe('Controller: Event Detail', function() {
 
     spyOn(udbApi, 'getHistory').and.returnValue($q.reject());
 
+    spyOn(udbApi, 'getCalendarSummary').and.returnValue($q.reject());
+
     eventController = $controller(
       'EventDetailController', {
         $scope: $scope,
@@ -240,13 +242,21 @@ describe('Controller: Event Detail', function() {
     deferredVariation.reject('there is no personal variation for offer');
     $scope.$digest();
 
-    expect($scope.eventId).toEqual(eventId);
-    expect(udbApi.hasPermission).toHaveBeenCalledWith(
-        'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
-    );
     expect(udbApi.getOffer).toHaveBeenCalledWith(
         'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
+
+    expect(udbApi.hasPermission).toHaveBeenCalledWith(
+        'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+    );
+
+    expect(udbApi.getCalendarSummary).toHaveBeenCalledWith(
+        'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc',
+        'lg'
+    );
+
+    expect($scope.eventId).toEqual(eventId);
+
     expect(udbApi.getHistory).toHaveBeenCalledWith(
       'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );

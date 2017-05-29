@@ -1246,12 +1246,12 @@ function UdbApi(
       .then(returnUnwrappedData, returnApiProblem);
   };
 
-  this.getCalendarSummary = function(eventId, format) {
+  this.getCalendarSummary = function(offerUrl, format) {
     var deferred = $q.defer();
     var plainConfig = _.cloneDeep(defaultApiConfig);
-    plainConfig.headers['Content-Type'] = 'text/plain';
+    plainConfig.headers['Content-Type'] = 'application/text';
     var request  = $http.get(
-      eventId + '/calendar-summary?format=' + format, plainConfig
+      offerUrl + '/calendar-summary?format=' + format, plainConfig
     );
 
     request.success(function(result) {
