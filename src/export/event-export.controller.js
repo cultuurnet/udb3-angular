@@ -12,7 +12,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats,appConfig) {
 
   var exporter = this;
 
@@ -181,6 +181,21 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
     } else {
       customizations = {};
       includedProperties = _.pluck(_.filter(exporter.eventProperties, 'include'), 'name');
+    }
+
+    if (_.get(appConfig,'gaTagManager.containerId')) {
+      var gaObj = {};
+      gaObj.brand = customizations.brand || null;
+      gaObj.email = exporter.email || null;
+      gaObj.queryString = eventExporter.activeExport.query.queryString;
+
+      var dataLayer = window.tm = window.tm || [];
+      dataLayer.push({
+        'event' : 'GAEvent',
+        'eventCategory' : 'export',
+        'eventAction' : exporter.format,
+        'eventLabel' : gaObj.brand + ';' + gaObj.email +';' + gaObj.queryString
+      });
     }
 
     eventExporter.export(exporter.format, exporter.email, includedProperties, exporter.dayByDay, customizations);
