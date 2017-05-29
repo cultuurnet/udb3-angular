@@ -105,9 +105,7 @@
               </tr>
               <tr>
                 <td><span class="row-label">Wanneer</span></td>
-                <td>
-                  <udb-calendar-summary offer="::event" show-opening-hours="true"></udb-calendar-summary>
-                </td>
+                <td><span ng-bind-html="calendarSummary"></span></td>
               </tr>
               <tr ng-class="::{muted: (!event.organizer)}">
                 <td><span class="row-label">Organisatie</span></td>

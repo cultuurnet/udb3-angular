@@ -1249,8 +1249,8 @@ function UdbApi(
   this.getCalendarSummary = function(offerUrl, format) {
     var deferred = $q.defer();
     var plainConfig = _.cloneDeep(defaultApiConfig);
-    plainConfig.headers['Content-Type'] = 'application/text';
-    var request  = $http.get(
+    plainConfig.headers.Accept = 'text/html';
+    var request = $http.get(
       offerUrl + '/calendar-summary?format=' + format, plainConfig
     );
 

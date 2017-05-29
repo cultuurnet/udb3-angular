@@ -111,7 +111,6 @@ function EventDetail(
 
   function showCalendarSummary(calendarSummary) {
     $scope.calendarSummary = calendarSummary;
-    console.log(calendarSummary);
   }
 
   function showOffer(event) {

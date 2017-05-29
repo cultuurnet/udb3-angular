@@ -3956,8 +3956,8 @@ function UdbApi(
   this.getCalendarSummary = function(offerUrl, format) {
     var deferred = $q.defer();
     var plainConfig = _.cloneDeep(defaultApiConfig);
-    plainConfig.headers['Content-Type'] = 'application/text';
-    var request  = $http.get(
+    plainConfig.headers.Accept = 'text/html';
+    var request = $http.get(
       offerUrl + '/calendar-summary?format=' + format, plainConfig
     );
 
@@ -7544,7 +7544,6 @@ function EventDetail(
 
   function showCalendarSummary(calendarSummary) {
     $scope.calendarSummary = calendarSummary;
-    console.log(calendarSummary);
   }
 
   function showOffer(event) {
@@ -20879,9 +20878,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
-    "                <td>\n" +
-    "                  <udb-calendar-summary offer=\"::event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
-    "                </td>\n" +
+    "                <td><span ng-bind-html=\"calendarSummary\"></span></td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
     "                <td><span class=\"row-label\">Organisatie</span></td>\n" +
