@@ -368,7 +368,7 @@ angular.module('udb.core')
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
-      'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
+      'dayOfWeek': 'Kies minstens één dag in elke rij die je toevoegde.',
       'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
     },
     'TIME_SPAN_REQUIREMENTS': {

@@ -2,7 +2,7 @@
     <h4 class="modal-title">Openingsuren</h4>
 </div>
 <div class="modal-body">
-    <div class="well text-center add-opening-hours" 
+    <div class="well text-center add-opening-hours"
          ng-show="ohemc.openingHoursCollection.openingHours.length === 0">
         <span>24/24 7/7</span>
         <br>
@@ -57,9 +57,7 @@
                     </div>
                 </div>
                 <div class="remove">
-                    <button class="btn btn-link" ng-click="ohemc.removeOpeningHours(openingHours)">
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                    </button>
+                    <button type="button" class="close" aria-label="Close" ng-click="ohemc.removeOpeningHours(openingHours)"><span aria-hidden="true">&times;</span></button>
                 </div>
             </div>
         </div>
@@ -78,4 +76,3 @@
         Opslaan
     </button>
 </div>
-
