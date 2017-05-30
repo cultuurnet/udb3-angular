@@ -42,7 +42,6 @@ describe('Controller: Event Duplication Calendar', function () {
 
   it('should emit a message when the timing of a duplicate changes', function (done) {
     var calendarController = getController();
-    var expectedFormData = {};
     spyOn($rootScope, '$emit');
 
     calendarController.formData
