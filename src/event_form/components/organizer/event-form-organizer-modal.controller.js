@@ -18,8 +18,6 @@ function EventFormOrganizerModalController(
   udbOrganizers,
   UdbOrganizer,
   eventCrud,
-  cities,
-  Levenshtein,
   $q,
   organizerName
 ) {
@@ -32,6 +30,8 @@ function EventFormOrganizerModalController(
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.addressError = false;
+  $scope.contactError = false;
   $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
@@ -52,10 +52,10 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
   $scope.updateName = updateName;
+  $scope.validateAddress = validateAddress;
+  $scope.validateContact = validateContact;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -65,23 +65,6 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
-  }
-
-  /**
-   * Add a contact info entry for an organizer.
-   */
-  function addOrganizerContactInfo(type) {
-    $scope.newOrganizer.contact.push({
-      type : type,
-      value : ''
-    });
-  }
-
-  /**
-   * Remove a given key of the contact info.
-   */
-  function deleteOrganizerContactInfo(index) {
-    $scope.newOrganizer.contact.splice(index, 1);
   }
 
   /**
@@ -129,6 +112,14 @@ function EventFormOrganizerModalController(
     }
   }
 
+  function validateAddress(error) {
+    $scope.addressError = error;
+  }
+
+  function validateContact(error) {
+    $scope.contactError = error;
+  }
+
   /**
    * Validate the new organizer.
    */
@@ -140,11 +131,20 @@ function EventFormOrganizerModalController(
       return;
     }
 
+    $scope.$broadcast('organizerAddressSubmit');
+    $scope.$broadcast('organizerContactSubmit');
+
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
     $scope.error = false;
     $scope.saving = true;
+
+    if ($scope.addressError || $scope.contactError) {
+      $scope.error = true;
+      $scope.saving = false;
+      return;
+    }
 
     promise.then(function (data) {
 
@@ -179,7 +179,7 @@ function EventFormOrganizerModalController(
   function saveOrganizer() {
 
     $scope.saving = true;
-    $scope.error = false;
+    $scope.saveError = false;
 
     var organizer = _.clone($scope.newOrganizer);
     // remove the address when it's empty
@@ -198,54 +198,9 @@ function EventFormOrganizerModalController(
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;
       }, function() {
-        $scope.error = true;
+        $scope.saveError = true;
         $scope.saving = false;
       });
-  }
-
-  // Scope functions.
-  $scope.cities = cities;
-  $scope.changeCitySelection = changeCitySelection;
-
-  $scope.filterCities = function(value) {
-    return function (city) {
-      var length = value.length;
-      var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return zipMatches.length + nameMatches.length >= words.length;
-    };
-  };
-
-  $scope.orderByLevenshteinDistance = function(value) {
-    return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
-    };
-  };
-
-  /**
-   * Select City.
-   */
-  controller.selectCity = function ($item, $label) {
-    $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.addressLocality = $item.name;
-
-    $scope.cityAutocompleteTextField = '';
-    $scope.selectedCity = $label;
-  };
-  $scope.selectCity = controller.selectCity;
-
-  /**
-   * Change a city selection.
-   */
-  function changeCitySelection() {
-    $scope.selectedCity = '';
-    $scope.cityAutocompleteTextField = '';
   }
 
 }

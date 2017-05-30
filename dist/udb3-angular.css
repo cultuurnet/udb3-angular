@@ -10472,3 +10472,7 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success
   opacity: 0.2;
   pointer-events: none;
 }
+.contact-row {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
