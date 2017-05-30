@@ -1247,18 +1247,12 @@ function UdbApi(
   };
 
   this.getCalendarSummary = function(offerUrl, format) {
-    var deferred = $q.defer();
     var plainConfig = _.cloneDeep(defaultApiConfig);
     plainConfig.headers.Accept = 'text/html';
-    var request = $http.get(
-      offerUrl + '/calendar-summary?format=' + format, plainConfig
-    );
 
-    request.success(function(result) {
-        deferred.resolve(result);
-      });
-
-    return deferred.promise;
+    return $http
+      .get(offerUrl + '/calendar-summary?format=' + format, plainConfig)
+      .then(returnUnwrappedData);
   };
 
   /**
