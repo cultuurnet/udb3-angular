@@ -24844,7 +24844,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"place && finishedLoading\" class=\"page-detail\">\n" +
+    "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
     "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
