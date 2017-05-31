@@ -139,7 +139,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Save the description.
    */
   function saveDescription() {
-    $scope.showInfo = false;
+    $scope.descriptionInfoVisible = false;
     $scope.savingDescription = true;
     $scope.descriptionError = false;
 

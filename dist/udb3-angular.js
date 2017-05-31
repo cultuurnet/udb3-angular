@@ -12632,7 +12632,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Save the description.
    */
   function saveDescription() {
-    $scope.showInfo = false;
+    $scope.descriptionInfoVisible = false;
     $scope.savingDescription = true;
     $scope.descriptionError = false;
 
@@ -23362,13 +23362,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <section class=\"state complete filling\">\n" +
     "                <div class=\"form-group\">\n" +
     "                  <textarea ng-blur=\"saveDescription()\"\n" +
-    "                            ng-focus=\"showInfo = true\"\n" +
+    "                            ng-focus=\"descriptionInfoVisible = true\"\n" +
     "                            class=\"form-control\"\n" +
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
     "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
-    "                  <p class=\"tip description-info\" ng-if=\"countCharacters() < 200 && showInfo\">\n" +
+    "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
     "                    De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.\n" +
     "                    Nog <span ng-bind=\"(200 - countCharacters())\"></span> tekens.\n" +
     "                    <span class=\"loader\">\n" +
@@ -23376,7 +23376,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                      <span class=\"bar\" ng-style=\"{width : (countCharacters()/2)+'%'}\" ></span>\n" +
     "                    </span>\n" +
     "                  </p>\n" +
-    "                  <p class=\"tip description-info\" ng-if=\"countCharacters() >= 200 && showInfo\">\n" +
+    "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
     "                    Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.\n" +
     "                  </p>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
