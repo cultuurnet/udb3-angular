@@ -40,11 +40,6 @@
                 </div>
               </section>
               <section class="state complete">
-<!--
-                <div ng-bind-html="eventFormData.description.nl" class="description-text"></div>
-                <p><a href ng-click="alterDescription()">Wijzigen</a></p>
-
--->
              <textarea ng-blur="saveDescription()" ng-focus="showInfo = true" class="form-control" ng-model="description" rows="6" udb-auto-scroll focus-if="descriptionCssClass==state-complete">{{eventFormData.description.nl}}</textarea>
              <p class="tip description-info" ng-if="countCharacters() < 200 && showInfo"> De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken. Nog {{200 - countCharacters()}} tekens.
               <span class="loader"><span class="empty"></span><span class="bar" ng-style="{width : (countCharacters()/2)+'%'}" ></span></span>
