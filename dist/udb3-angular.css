@@ -3173,6 +3173,32 @@ form.booking-period table {
 .opening-hours-labels {
   font-weight: 700;
 }
+.loader {
+  border-radius: 6px;
+  margin-left: 6px;
+  width: 100px;
+  position: relative;
+  height: 1em;
+  display: inline-block;
+}
+.empty {
+  width: 100%;
+  background-color: #e0e0e0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+.bar {
+  background-color: #5cb85c;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+.description-info {
+  font-size: small;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;
