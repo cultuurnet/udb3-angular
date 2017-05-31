@@ -39,7 +39,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description vars.
   $scope.description = EventFormData.getDescription('nl');
-  $scope.focusDescription = false;
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -134,7 +133,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function alterDescription() {
     $scope.descriptionCssClass = 'state-filling';
-    $scope.focusDescription = true;
   }
 
   /**
@@ -144,7 +142,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.showInfo = false;
     $scope.savingDescription = true;
     $scope.descriptionError = false;
-    $scope.focusDescription = false;
 
     EventFormData.setDescription($scope.description, 'nl');
 
