@@ -375,8 +375,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 
                 return fieldexp;
             },
-        peg$c16 = /^[:]/,
-        peg$c17 = { type: "class", value: "[:]", description: "[:]" },
+        peg$c16 = /^[:<>]/,
+        peg$c17 = { type: "class", value: "[:<>]", description: "[:<>]" },
         peg$c18 = function(fieldname) {
                 return fieldname;
             },
@@ -426,8 +426,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$c28 = function(first_character, term) {
                 return first_character + term.join('');
             },
-        peg$c29 = /^[^, \t\r\n\f{}()+"\^~[\]]/,
-        peg$c30 = { type: "class", value: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]", description: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]" },
+        peg$c29 = /^[^, <>\t\r\n\f{}()"\^~[\]]/,
+        peg$c30 = { type: "class", value: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]", description: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]" },
         peg$c31 = "\"",
         peg$c32 = { type: "literal", value: "\"", description: "\"\\\"\"" },
         peg$c33 = /^[^"]/,
