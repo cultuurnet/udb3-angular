@@ -102,6 +102,39 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['term']).toBe('fizz buzz');
       expect(results['left']['prefix']).toBe('+');
     });
+
+    /**
+     * Range as term examples taken from Elasticsearch documentation
+     * @see: {@link https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_ranges}
+     */
+
+    it('parses a one sided lower bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:>10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('>10');
+    });
+
+    it('parses a one sided inclusive lower bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:>=10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('>=10');
+    });
+
+    it('parses a one sided upper bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:<10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('<10');
+    });
+
+    it('parses a one sided inclusive upper bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:<=10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('<=10');
+    });
   });
 
   describe('field name support', function() {
