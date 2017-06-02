@@ -84,6 +84,19 @@ describe('Service: LuceneQueryParser', function () {
 
       expect(results).toEqual(expectedResults);
     });
+
+    it("parses terms with underscores", function() {
+      var results = lucenequeryparser.parse('workflowStatus:READY_FOR_VALIDATION');
+
+      var expectedResults = {
+        left: {
+          field: 'workflowStatus',
+          term: 'READY_FOR_VALIDATION'
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
   });
 
   describe('term prefix operators', function() {
