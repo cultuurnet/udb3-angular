@@ -278,6 +278,24 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['upperBound']).toBe('baz');
       expect(results['left']['inclusive']).toBe(false);
     });
+
+    it('parses a range expression with curly and square brackets combined', function() {
+      var results = lucenequeryparser.parse('count:{1 TO 5]');
+
+      expect(results['left']['field']).toBe('count');
+      expect(results['left']['lowerBound']).toBe('1');
+      expect(results['left']['upperBound']).toBe('5');
+      expect(results['left']['inclusive']).toBe(true);
+    });
+
+    it('parses a range expression with square and curly brackets combined', function() {
+      var results = lucenequeryparser.parse('count:[1 TO 5}');
+
+      expect(results['left']['field']).toBe('count');
+      expect(results['left']['lowerBound']).toBe('1');
+      expect(results['left']['upperBound']).toBe('5');
+      expect(results['left']['inclusive']).toBe(true);
+    });
   });
 
   describe('Cultuurnet query dialect', function (){
