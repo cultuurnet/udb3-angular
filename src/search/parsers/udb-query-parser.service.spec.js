@@ -420,6 +420,21 @@ describe('Service: LuceneQueryParser', function () {
 
       expect(results).toEqual(expectedResults);
     });
+
+    it("parses a range bound by floating-point numbers", function() {
+      var results = lucenequeryparser.parse('price:[9.99 TO 19.99]');
+
+      var expectedResults = {
+        left: {
+          field: 'price',
+          lowerBound: '9.99',
+          upperBound: '19.99',
+          inclusive: true
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
   });
 
   describe('Cultuurnet query dialect', function (){
