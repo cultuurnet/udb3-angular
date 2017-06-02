@@ -71,6 +71,19 @@ describe('Service: LuceneQueryParser', function () {
 
       expect(results['left']['term']).toBe('>now+5d');
     });
+
+    it("parses terms with an ISO 8601 date", function() {
+      var results = lucenequeryparser.parse('published_at:2017-06-02T12:01:00+00:00');
+
+      var expectedResults = {
+        left: {
+          field: 'published_at',
+          term: '2017-06-02T12:01:00+00:00'
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
   });
 
   describe('term prefix operators', function() {
@@ -378,6 +391,21 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['lowerBound']).toBe('1');
       expect(results['left']['upperBound']).toBe('5');
       expect(results['left']['inclusive']).toBe(true);
+    });
+
+    it("parses a date range expression", function() {
+      var results = lucenequeryparser.parse('published_at:[2017-06-02T12:01:00+00:00 TO 2017-06-06T12:01:00+00:00]');
+
+      var expectedResults = {
+        left: {
+          field: 'published_at',
+          lowerBound: '2017-06-02T12:01:00+00:00',
+          upperBound: '2017-06-06T12:01:00+00:00',
+          inclusive: true
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
     });
   });
 
