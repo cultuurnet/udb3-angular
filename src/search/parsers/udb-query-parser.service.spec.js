@@ -160,13 +160,19 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['term']).toBe('bar');
     });
 
-    it("parses explicit field name for date term", function() {
+    it('parses explicit field name for date term', function() {
       var results = lucenequeryparser.parse('foo:2015-01-01');
 
       expect(results['left']['field']).toBe('foo');
       expect(results['left']['term']).toBe('2015-01-01');
     });
 
+    it('parses explicit field name delimited by underscores (e.g "_exists_") for term', function () {
+      var results = lucenequeryparser.parse('_exists_:name.fr');
+
+      expect(results['left']['field']).toBe('_exists_');
+      expect(results['left']['term']).toBe('name.fr');
+    });
 
     it('parses explicit field name including dots (e.g "sub.field") for term', function() {
       var results = lucenequeryparser.parse('sub.foo:bar');

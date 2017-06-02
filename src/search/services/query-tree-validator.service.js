@@ -13,7 +13,7 @@ angular.module('udb.search')
 /* @ngInject */
 function QueryTreeValidator(queryFields) {
 
-  var validFieldNames = _.map(queryFields, 'name'),
+  var validFieldNames = _.union(_.map(queryFields, 'name'), ['_exists_']),
     implicitToken = '<implicit>';
 
   var validateFields = function (current, depth, errors) {

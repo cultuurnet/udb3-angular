@@ -48,4 +48,17 @@ describe('Service: QueryTreeValidator', function () {
     expect(errors.length).toBe(0);
   });
 
+  it('should always allow the _exists_ field', function () {
+    var queryTree = {
+        left: {
+          field: '_exists_',
+          term: 'name.fr'
+        }
+      },
+      errors = [];
+
+    QueryTreeValidator.validate(queryTree, errors);
+
+    expect(errors.length).toBe(0);
+  });
 });
