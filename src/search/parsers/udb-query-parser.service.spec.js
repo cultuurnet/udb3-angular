@@ -265,7 +265,7 @@ describe('Service: LuceneQueryParser', function () {
 
   describe('parentheses groups', function() {
 
-    it('parses parentheses group', function() {
+    it('parses parentheses group', function () {
       var results = lucenequeryparser.parse('fizz (buzz baz)');
 
       expect(results['left']['term']).toBe('fizz');
@@ -278,7 +278,7 @@ describe('Service: LuceneQueryParser', function () {
       expect(rightNode['right']['term']).toBe('baz');
     });
 
-    it('parses parentheses groups with explicit conjunction operators ', function() {
+    it('parses parentheses groups with explicit conjunction operators ', function () {
       var results = lucenequeryparser.parse('fizz AND (buzz OR baz)');
 
       expect(results['left']['term']).toBe('fizz');
@@ -289,6 +289,50 @@ describe('Service: LuceneQueryParser', function () {
       expect(rightNode['left']['term']).toBe('buzz');
       expect(rightNode['operator']).toBe('OR');
       expect(rightNode['right']['term']).toBe('baz');
+    });
+
+    it('parses parentheses groups with bounded clauses and explicit conjunction operator', function () {
+      var results = lucenequeryparser.parse('age:(>=10 AND <20)');
+      var expectedResults = {
+        left: {
+          operator: 'AND',
+          field: 'age',
+          left: {
+            field: '<implicit>',
+            term: '>=10'
+          },
+          right: {
+            field: '<implicit>',
+            term: '<20'
+          }
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
+
+    it('parses parentheses groups with bounded clauses and explicit prefix operators', function () {
+      var results = lucenequeryparser.parse('age:(+>=10 +<20)');
+      var expectedResults = {
+        left: {
+          operator: '<implicit>',
+          field: 'age',
+          left: {
+            field: '<implicit>',
+            term: '>=10',
+            prefix: '+',
+            transformer: '+'
+          },
+          right: {
+            field: '<implicit>',
+            term: '<20',
+            prefix: '+',
+            transformer: '+'
+          }
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
     });
   });
 
