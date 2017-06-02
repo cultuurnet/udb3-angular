@@ -242,6 +242,26 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['prefix']).toBe('+');
     });
 
+    it('parses explicit field name with wildcard', function() {
+      var results = lucenequeryparser.parse('book.\\*:(quick brown)');
+
+      var expectedResults = {
+        left: {
+          field: 'book.\\*',
+          operator: '<implicit>',
+          left: {
+            field: '<implicit>',
+            term: 'quick'
+          },
+          right: {
+            field: '<implicit>',
+            term: 'brown'
+          }
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
   });
 
   describe('conjunction operators', function() {
