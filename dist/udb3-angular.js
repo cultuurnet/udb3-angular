@@ -79,13 +79,14 @@ angular
 
 /**
  * @ngdoc module
- * @name udb.export
+ * @name udb.event-form
  * @description
- * The udb eventform module
+ * The udb form module
  */
 angular
   .module('udb.event-form', [
     'ngSanitize',
+    'ngMessages',
     'ui.bootstrap',
     'udb.config',
     'udb.entry',
@@ -244,6 +245,7 @@ angular
 angular
   .module('udb.management.organizers', [
     'rx',
+    'udb.event-form',
     'ngTagsInput'
   ]);
 /**
@@ -2143,91 +2145,6 @@ function udbCalendarSummary() {
   };
 }
 
-// Source: src/core/components/datepicker/datepicker.directive.js
-(function () {
-/**
-   * @ngdoc directive
-   * @name udb.core.directive:udbDatepicker
-   * @description
-   * # directive for datepicker integration.
-   * https://github.com/eternicode/bootstrap-datepicker
-   */
-  angular
-    .module('udb.core')
-    .directive('udbDatepicker', udbDatepickerDirective);
-
-  /* @ngInject */
-  function udbDatepickerDirective(appConfig) {
-
-    return {
-      restrict: 'EA',
-      require: 'ngModel',
-      link: link
-    };
-
-    function link (scope, elem, attrs, ngModel) {
-
-      loadDatePicker();
-
-      ngModel.$render = function () {
-        // the datepicker component does not play well with date objects that are not set to midnight
-        var date = moment(ngModel.$viewValue);
-        elem.datepicker('update', date.startOf('day').toDate());
-      };
-
-      /**
-       * Load the date picker.
-       */
-      function loadDatePicker() {
-
-        var defaultViewDate = new Date();
-
-        if (scope.formData) {
-          for (var i = (scope.formData.timestamps.length - 1); i >= 0; i--) {
-            if (scope.formData.timestamps[i].date !== '') {
-              defaultViewDate = scope.formData.timestamps[i].date;
-              break;
-            }
-          }
-        }
-
-        var options = {
-          defaultViewDate: {year: defaultViewDate.getFullYear(), month: defaultViewDate.getMonth(), day: 1},
-          format: 'd MM yyyy',
-          language: 'nl-BE',
-          beforeShowDay: function (date) {
-            var highlightDateString = _.get(appConfig, 'calendarHighlight.date');
-            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.extraClass');
-
-            if (!highlightDateString) {
-              return;
-            }
-            // init Date with ISO string
-            var highlightDate = new Date(highlightDateString);
-            if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
-              var highlightClasses = 'highlight';
-
-              if (highlightExtraClass) {
-                highlightClasses += ' ' + highlightExtraClass;
-              }
-
-              return {classes: highlightClasses};
-            }
-          }
-        };
-
-        elem.datepicker(options).on('changeDate', function (newValue) {
-          scope.defaultViewDate = newValue.date;
-          if (!ngModel.$viewValue || ngModel.$viewValue.getTime() !== newValue.date.getTime()) {
-            ngModel.$setViewValue(newValue.date);
-          }
-        });
-      }
-    }
-  }
-  udbDatepickerDirective.$inject = ["appConfig"];
-})();
-
 // Source: src/core/components/image-detail/image-detail.directive.js
 /**
  * @ngdoc component
@@ -2753,7 +2670,17 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
-    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.'
+    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+    'OPENING_HOURS_ERROR': {
+      'openAndClose': 'Vul alle openings- en sluitingstijden in.',
+      'dayOfWeek': 'Kies minstens één dag in elke rij die je toevoegde.',
+      'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
+    },
+    'TIME_SPAN_REQUIREMENTS': {
+      'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
+      'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+    }
   }
 );
 
@@ -3061,6 +2988,59 @@ function UdbApi(
   this.deleteLabelFromOrganizer = function(organizerId, labelName) {
     return $http
         .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+  /**
+   * @param {string} organizerId
+   * @param {string} website
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerWebsite = function(organizerId, website) {
+    var params = {
+      url: website
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/url', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} name
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerName = function(organizerId, name) {
+    var params = {
+      name: name
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Object} address
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerAddress = function(organizerId, address) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Array} contact
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerContact = function(organizerId, contact) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/contactPoint', contact, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -4536,6 +4516,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       this.url = jsonOrganizer.url;
+      this.contactPoint = jsonOrganizer.contactPoint;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
@@ -5440,6 +5421,36 @@ function udbDashboardDirective() {
   };
 }
 
+// Source: src/duplication/event-duplication-calendar.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:DuplicationCalendarController
+ * @description
+ * # Duplication Calendar Controller
+ */
+angular
+  .module('udb.duplication')
+  .controller('DuplicationCalendarController', DuplicationCalendarController);
+
+/* @ngInject */
+function DuplicationCalendarController(EventFormData, OpeningHoursCollection, $rootScope, $controller, $scope) {
+  var calendar = this;
+  var duplicateFormData = EventFormData.clone();
+
+  function duplicateTimingChanged(formData) {
+    $rootScope.$emit('duplicateTimingChanged', formData);
+  }
+
+  $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
+
+  calendar.init(duplicateFormData, _.cloneDeep(OpeningHoursCollection));
+
+  calendar.formData
+    .timingChanged$
+    .subscribe(duplicateTimingChanged);
+}
+DuplicationCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$rootScope", "$controller", "$scope"];
+
 // Source: src/duplication/event-duplication-calendar.directive.js
 /**
  * @ngdoc directive
@@ -5455,28 +5466,11 @@ angular
 function udbEventDuplicationCalendar() {
   return {
     restrict: 'AE',
-    controller: EventDuplicationCalendarController,
-    controllerAs: 'edc',
-    templateUrl: 'templates/event-duplication-calendar.directive.html'
+    controller: 'DuplicationCalendarController',
+    controllerAs: 'calendar',
+    templateUrl: 'templates/form-event-calendar.component.html'
   };
 }
-
-/* @ngInject */
-function EventDuplicationCalendarController(EventFormData, $rootScope, calendarLabels) {
-  var controller = this;
-
-  controller.calendarLabels = calendarLabels;
-  controller.duplicateFormData = EventFormData.clone();
-
-  controller.duplicateTimingChanged = function (formData) {
-    $rootScope.$emit('duplicateTimingChanged', formData);
-  };
-
-  controller.duplicateFormData
-    .timingChanged$
-    .subscribe(controller.duplicateTimingChanged);
-}
-EventDuplicationCalendarController.$inject = ["EventFormData", "$rootScope", "calendarLabels"];
 
 // Source: src/duplication/event-duplication-footer.component.js
 /**
@@ -8124,49 +8118,349 @@ function AutoScroll($document) {
 }
 AutoScroll.$inject = ["$document"];
 
-// Source: src/event_form/components/calendartypes/event-form-period.directive.js
+// Source: src/event_form/components/calendar/base-calendar.controller.js
 /**
- * @ngdoc directive
- * @name udb.search.directive:tudbEventFormTimestampSelection
+ * @typedef {Object} TimeSpan
+ * @property {Date} start
+ * @property {Date} end
+ * @property {boolean} allDay
+ */
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:BaseCalendarController
  * @description
- * # timestamp selection for event form
+ * # Base Calendar Controller
  */
 angular
   .module('udb.event-form')
-  .directive('udbEventFormPeriod', EventFormPeriodDirective);
+  .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function EventFormPeriodDirective() {
-  return {
-    templateUrl: 'templates/event-form-period.html',
-    restrict: 'EA',
-    scope: {
-      formData: '='
+function BaseCalendarController(calendar, $scope) {
+  calendar.type = '';
+  calendar.setType = setType;
+  calendar.createTimeSpan = createTimeSpan;
+  calendar.timeSpans = [];
+  calendar.timeSpanRequirements = [];
+  calendar.removeTimeSpan = removeTimeSpan;
+  calendar.weeklyRecurring = false;
+  calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
+  calendar.instantTimeSpanChanged = instantTimeSpanChanged;
+  calendar.init = init;
+
+  /**
+   * @param {EventFormData} formData
+   * @param {OpeningHoursCollection} openingHoursCollection
+   */
+  function init(formData, openingHoursCollection) {
+    calendar.formData = formData;
+    calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
+    calendar.setType(formData.calendarType ? formData.calendarType : 'single');
+    calendar.openingHoursCollection = openingHoursCollection;
+  }
+
+  function isTypeWeeklyRecurring(type) {
+    return type === 'permanent' || type === 'periodic';
+  }
+
+  /**
+   * @param {string} calendarType
+   */
+  function setType(calendarType) {
+    calendar.formData.setCalendarType(calendarType);
+    calendar.type = calendarType;
+    calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
+
+    if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
+      initTimeSpans();
+    }
+  }
+
+  function initTimeSpans() {
+    calendar.timeSpans = [
+      {
+        allDay: true,
+        start: moment().startOf('hour').add(1, 'h').toDate(),
+        end: moment().startOf('hour').add(4, 'h').toDate()
+      }
+    ];
+  }
+
+  function createTimeSpan() {
+    if (_.isEmpty(calendar.timeSpans)) {
+      initTimeSpans();
+      calendar.instantTimeSpanChanged();
+    } else {
+      calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
+      // Do not trigger timeSpanChanged to prevent saving duplicates.
+    }
+  }
+
+  /**
+   * @param {Object} timeSpan
+   */
+  function removeTimeSpan(timeSpan) {
+    if (calendar.timeSpans.length > 1) {
+      calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
+      calendar.instantTimeSpanChanged();
+    }
+  }
+
+  function digestTimeSpanChanged() {
+    $scope.$apply(timeSpanChanged);
+  }
+
+  function instantTimeSpanChanged() {
+    calendar.delayedTimeSpanChanged.cancel();
+    timeSpanChanged();
+  }
+
+  function timeSpanChanged() {
+    var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
+
+    if (!_.isEmpty(_.flatten(unmetRequirements))) {
+      showTimeSpanRequirements(unmetRequirements);
+    } else {
+      if (calendar.timeSpans.length > 1) {
+        if (calendar.type !== 'multiple') {
+          setType('multiple');
+        }
+      } else if (calendar.type !== 'single') {
+        setType('single');
+      }
+      clearTimeSpanRequirements();
+      calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
+    }
+  }
+
+  function clearTimeSpanRequirements() {
+    calendar.timeSpanRequirements = [];
+  }
+
+  function showTimeSpanRequirements(unmetRequirements) {
+    calendar.timeSpanRequirements = unmetRequirements;
+  }
+
+  /**
+   * @param {TimeSpan[]} timeSpans
+   * @return {Timestamp[]}
+   */
+  function timeSpansToTimestamps(timeSpans) {
+    return _.map(timeSpans, function (timeSpan) {
+      var start = timeSpan.allDay ? moment(timeSpan.start).startOf('day') : moment(timeSpan.start);
+      var end = timeSpan.allDay ? moment(timeSpan.end).endOf('day').startOf('minute') : moment(timeSpan.end);
+
+      return {
+        date: moment(timeSpan.start).startOf('day').toDate(),
+        startHour: start.format('HH:mm'),
+        startHourAsDate: start.toDate(),
+        showStartHour: true,
+        endHour: end.format('HH:mm'),
+        endHourAsDate: end.toDate(),
+        showEndHour: true
+      };
+    });
+  }
+
+  /**
+   * @param {Timestamp[]} timestamps
+   * @return {TimeSpan[]}
+   */
+  function timestampsToTimeSpans(timestamps) {
+    return _.map(timestamps, function (timestamp) {
+      var start = timestamp.startHourAsDate;
+      var end = timestamp.endHourAsDate;
+      var allDay = moment(start).isSame(end, 'day') &&
+        moment(start).startOf('day').isSame(start) &&
+        moment(end).endOf('day').startOf('minute').isSame(end);
+
+      return {
+        start: start,
+        end: end,
+        allDay: allDay
+      };
+    });
+  }
+
+  /**
+   * Validates a time-span and returns a list of unmet requirements.
+   *
+   * @param {TimeSpan} timeSpan
+   * @return {string[]}
+   */
+  function validateTimeSpan(timeSpan) {
+    var requirements = {
+      'timedWhenNotAllDay': function (timeSpan) {
+        return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
+      },
+      'startBeforeEndDay': function (timeSpan) {
+        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
+      },
+      'startBeforeEnd': function (timeSpan) {
+        return !timeSpan.allDay &&
+            (timeSpan.start && timeSpan.end) &&
+            moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
+            moment(timeSpan.start).isAfter(timeSpan.end);
+      }
+    };
+
+    var unmetRequirements = _.pick(requirements, function (check) {
+      return check(timeSpan);
+    });
+
+    return _.keys(unmetRequirements);
+  }
+}
+BaseCalendarController.$inject = ["calendar", "$scope"];
+
+// Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarDatepicker', {
+    templateUrl: 'templates/form-calendar-datepicker.component.html',
+    controller: FormCalendarDatepickerController,
+    require: {
+      ngModel: '^ngModel'
+    },
+    bindings: {
+      disabled: '=ngDisabled'
+    },
+    controllerAs: 'datepicker'
+  });
+
+/** @inject */
+function FormCalendarDatepickerController() {
+  var datepicker = this;
+  var options = {
+    minDate: new Date(),
+    showWeeks: false
+  };
+
+  datepicker.$onInit = function() {
+    datepicker.isOpen = false;
+    datepicker.options = options;
+    datepicker.ngModel.$render = function () {
+      datepicker.date = new Date(datepicker.ngModel.$viewValue);
+    };
+  };
+
+  datepicker.open = function() {
+    datepicker.isOpen = true;
+  };
+
+  datepicker.changed = function() {
+    if (datepicker.date) {
+      var time = moment(datepicker.ngModel.$viewValue);
+      var day = moment(datepicker.date).hour(time.hour()).minute(time.minute());
+      datepicker.ngModel.$setViewValue(day.toDate());
     }
   };
 }
 
-// Source: src/event_form/components/calendartypes/event-form-timestamp.directive.js
+// Source: src/event_form/components/calendar/form-calendar-period.component.js
 /**
- * @ngdoc directive
- * @name udb.search.directive:tudbEventFormTimestampSelection
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarPeriod
  * @description
- * # timestamp selection for event form
+ * # Form Calendar Period
  */
 angular
   .module('udb.event-form')
-  .directive('udbEventFormTimestamp', EventFormTimestampDirective);
-
-/* @ngInject */
-function EventFormTimestampDirective() {
-  return {
-    templateUrl: 'templates/event-form-timestamp.html',
-    restrict: 'EA',
-    scope: {
+  .component('udbFormCalendarPeriod', {
+    templateUrl: 'templates/form-calendar-period.component.html',
+    controller: FormCalendarPeriodComponentController,
+    bindings: {
       formData: '='
+    }
+  });
+
+function FormCalendarPeriodComponentController() {
+  var controller = this;
+  controller.calendarType = controller.formData.calendarType;
+}
+
+// Source: src/event_form/components/calendar/form-calendar-timepicker.component.js
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarTimepicker', {
+    templateUrl: 'templates/form-calendar-timepicker.component.html',
+    controller: FormCalendarTimepickerController,
+    require: {
+      ngModel: '^ngModel'
+    },
+    controllerAs: 'timepicker'
+  });
+
+/** @inject */
+function FormCalendarTimepickerController() {
+  var timepicker = this;
+
+  timepicker.$onInit = function() {
+    timepicker.ngModel.$render = function () {
+      timepicker.time = new Date(timepicker.ngModel.$viewValue);
+    };
+  };
+
+  timepicker.changed = function() {
+    if (timepicker.time) {
+      timepicker.ngModel.$setViewValue(timepicker.time);
     }
   };
 }
+
+// Source: src/event_form/components/calendar/form-calendar.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarController
+ * @description
+ * # Form Calendar Controller
+ */
+angular
+  .module('udb.event-form')
+  .controller('FormCalendarController', FormCalendarController);
+
+/* @ngInject */
+function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $controller) {
+  var calendar = this;
+
+  $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
+
+  calendar.init(EventFormData, OpeningHoursCollection);
+}
+FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller"];
+
+// Source: src/event_form/components/calendar/form-event-calendar.component.js
+/**
+ * @ngdoc function
+ * @name udb.event-form.component:udbFormEventCalendar
+ * @description
+ * # Form Calendar
+ * The form calendar component for events.
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormEventCalendar', {
+    templateUrl: 'templates/form-event-calendar.component.html',
+    controller: 'FormCalendarController',
+    controllerAs: 'calendar'
+  });
+
+// Source: src/event_form/components/calendar/form-place-calendar.component.js
+/**
+ * @ngdoc function
+ * @name udb.event-form.component:udbFormPlaceCalendar
+ * @description
+ * # Form Place Calendar
+ * The form calendar component for places.
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormPlaceCalendar', {
+    templateUrl: 'templates/form-place-calendar.component.html',
+    controller: 'FormCalendarController',
+    controllerAs: 'calendar'
+  });
 
 // Source: src/event_form/components/facilities-modal/event-form-facilities-modal.controller.js
 /**
@@ -8535,12 +8829,23 @@ angular
 /* @ngInject */
 function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollection) {
   var controller = this;
+  var originalOpeningHoursList;
 
-  controller.openingHoursCollection = openingHoursCollection;
+  init(openingHoursCollection);
   controller.saveOpeningHours = saveOpeningHours;
   controller.createNewOpeningHours = createNewOpeningHours;
   controller.removeOpeningHours = removeOpeningHours;
   controller.errors = {};
+
+  function init(openingHoursCollection) {
+    originalOpeningHoursList = _.cloneDeep(openingHoursCollection.getOpeningHours());
+
+    if (originalOpeningHoursList.length === 0) {
+      openingHoursCollection.createNewOpeningHours();
+    }
+
+    controller.openingHoursCollection = openingHoursCollection;
+  }
 
   function saveOpeningHours() {
     clearErrors();
@@ -8557,9 +8862,7 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
    * @param {string[]} errorList
    */
   function showErrors(errorList) {
-    controller.errors = _.zipObject(errorList, _.map(errorList, function() {
-      return true;
-    }));
+    controller.errors = errorList;
   }
 
   function clearErrors() {
@@ -8572,36 +8875,10 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
 
   function removeOpeningHours(openingHours) {
     controller.openingHoursCollection.removeOpeningHours(openingHours);
+    clearErrors();
   }
 }
 OpeningHoursEditorModalController.$inject = ["$uibModalInstance", "openingHoursCollection"];
-
-// Source: src/event_form/components/openinghours/day-names.constant.js
-/* jshint sub: true */
-
-/**
- * @ngdoc constant
- * @name udb.event-form.dayNames
- * @description
- * # dayNames
- * Opening hours day names
- */
-angular
-  .module('udb.event-form')
-  .constant('dayNames',
-    /**
-     * list of day names
-     * @readonly
-     */
-    {
-      monday : 'Maandag',
-      tuesday : 'Dinsdag',
-      wednesday : 'Woensdag',
-      thursday : 'Donderdag',
-      friday : 'Vrijdag',
-      saturday : 'Zaterdag',
-      sunday : 'Zondag'
-    });
 
 // Source: src/event_form/components/openinghours/opening-hours-data-collection.factory.js
 /**
@@ -8615,12 +8892,22 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment, dayNames) {
+function OpeningHoursCollectionFactory(moment) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,
     'dayOfWeek': hasDayOfWeek,
     'openIsBeforeClose': openIsBeforeClose
+  };
+
+  var weekdays = {
+    'monday': {label: 'Ma', name: 'Maandag', open: false},
+    'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
+    'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+    'thursday': {label: 'Do', name: 'Donderdag', open: false},
+    'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+    'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+    'sunday': {label: 'Zo', name: 'Zondag', open: false}
   };
 
   /**
@@ -8649,7 +8936,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function hasDayOfWeek(openingHoursList) {
     return _.all(_.map(openingHoursList, function (openingHours) {
-      return !_.isEmpty(openingHours.dayOfWeek);
+      return !_.isUndefined(_.find(openingHours.dayOfWeek, 'open'));
     }));
   }
 
@@ -8660,16 +8947,9 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function prepareOpeningHoursForDisplay(openingHoursList) {
     angular.forEach (openingHoursList, function(openingHour, key) {
-      var humanValues = [];
-      if (openingHour.dayOfWeek instanceof Array) {
-        for (var i in openingHoursList[key].dayOfWeek) {
-          humanValues.push(dayNames[openingHour.dayOfWeek[i]]);
-        }
-      }
       openingHour.opens = moment(openingHour.opensAsDate).format('HH:mm');
       openingHour.closes = moment(openingHour.closesAsDate).format('HH:mm');
-
-      openingHour.label = humanValues.join(', ');
+      openingHour.label = _.pluck(_.filter(openingHour.dayOfWeek, 'open'), 'name').join(', ');
     });
 
     return openingHoursList;
@@ -8710,7 +8990,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     createNewOpeningHours: function () {
       var openingHoursList = this.openingHours || [];
       var openingHours = {
-        'dayOfWeek': [],
+        'dayOfWeek': _.cloneDeep(weekdays),
         'opens': '00:00',
         'opensAsDate': new Date(1970, 0, 1),
         'closes': '00:00',
@@ -8728,21 +9008,32 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     deserialize: function (jsonOpeningHoursList) {
       this.setOpeningHours(_.map(jsonOpeningHoursList, function (jsonOpeningHours) {
         return {
-          'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
+          'dayOfWeek': _.mapValues(weekdays, function (weekday, day) {
+            var dayOfWeek = _.cloneDeep(weekday);
+            dayOfWeek.open = _.includes(jsonOpeningHours.dayOfWeek, day);
+
+            return dayOfWeek;
+          }),
           'opens': jsonOpeningHours.opens || '00:00',
           'opensAsDate':
-            jsonOpeningHours.opens ? resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() : new Date(1970, 0, 1),
+            jsonOpeningHours.opens ?
+              resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1),
           'closes': jsonOpeningHours.closes || '00:00',
           'closesAsDate':
-            jsonOpeningHours.closes ? resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() : new Date(1970, 0, 1)
+            jsonOpeningHours.closes ?
+              resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1)
         };
       }));
+
+      return this;
     },
 
     serialize: function () {
       return _.map(this.openingHours, function (openingHours) {
         return {
-          dayOfWeek: openingHours.dayOfWeek,
+          dayOfWeek: _.keys(omitClosedDays(openingHours.dayOfWeek)),
           opens: moment(openingHours.opensAsDate).format('HH:mm'),
           closes: moment(openingHours.closesAsDate).format('HH:mm')
         };
@@ -8777,9 +9068,15 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     return moment.clone().year(1970).dayOfYear(1);
   }
 
+  function omitClosedDays(dayOfWeek) {
+    return _.pick(dayOfWeek, function(weekday) {
+      return weekday.open;
+    });
+  }
+
   return openingHoursCollection;
 }
-OpeningHoursCollectionFactory.$inject = ["moment", "dayNames"];
+OpeningHoursCollectionFactory.$inject = ["moment"];
 
 // Source: src/event_form/components/openinghours/openinghours.component.js
 /**
@@ -8795,7 +9092,8 @@ angular
   .module('udb.event-form')
   .component('udbEventFormOpeningHours', {
     bindings: {
-      openingHoursCollection: '=openingHours'
+      openingHoursCollection: '=openingHours',
+      formData: '='
     },
     templateUrl: 'templates/event-form-openinghours.html',
     controller: OpeningHourComponentController,
@@ -8805,7 +9103,7 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormData) {
+function OpeningHourComponentController($uibModal) {
   var cm = this;
 
   cm.edit = openEditorModal;
@@ -8831,11 +9129,216 @@ function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormDa
    * @param {OpeningHoursData[]} openingHoursList
    */
   function saveOpeningHours(openingHoursList) {
-    EventFormData.saveOpeningHours(openingHoursList);
+    cm.formData.saveOpeningHours(openingHoursList);
     cm.openingHoursCollection.deserialize(openingHoursList);
   }
 }
-OpeningHourComponentController.$inject = ["moment", "dayNames", "$uibModal", "EventFormData"];
+OpeningHourComponentController.$inject = ["$uibModal"];
+
+// Source: src/event_form/components/organizer-address/organizer-address.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormOrganizerAddressController
+ * @description
+ * # EventFormOrganizerAddressController
+ * Modal for setting the reservation period.
+ */
+angular
+    .module('udb.event-form')
+    .component('udbOrganizerAddress', {
+      templateUrl: 'templates/organizer-address.html',
+      controller: OrganizerAddressComponent,
+      controllerAs: 'oac',
+      bindings: {
+        address: '=',
+        onUpdate: '&'
+      }
+    });
+
+/* @ngInject */
+function OrganizerAddressComponent($scope, cities, Levenshtein) {
+  var controller = this;
+
+  controller.cities = cities;
+  controller.selectedCity = '';
+  controller.requiredAddress = false;
+
+  if (controller.address.addressLocality) {
+    controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
+    controller.requiredAddress = true;
+  }
+
+  controller.streetHasErrors = false;
+  controller.cityHasErrors = false;
+  controller.addressHasErrors = false;
+
+  controller.validateAddress = validateAddress;
+  controller.filterCities = filterCities;
+  controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
+  controller.selectCity = selectCity;
+  controller.changeCitySelection = changeCitySelection;
+
+  $scope.$on('organizerAddressSubmit', function () {
+    controller.organizerAddressForm.$setSubmitted();
+    reset();
+    validateAddress();
+  });
+
+  function reset() {
+    controller.streetHasErrors = false;
+    controller.cityHasErrors = false;
+    controller.addressHasErrors = false;
+  }
+
+  function validateAddress() {
+    reset();
+    if (controller.requiredAddress) {
+      if (controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) {
+        controller.streetHasErrors = true;
+      }
+      if (controller.selectedCity === '') {
+        controller.cityHasErrors = true;
+      }
+    }
+    else {
+      if ((controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
+        controller.streetHasErrors = true;
+      }
+
+      if (controller.selectedCity === '' && controller.address.streetAddress !== '') {
+        controller.cityHasErrors = true;
+      }
+    }
+
+    sendUpdate();
+  }
+
+  function filterCities(value) {
+    return function (city) {
+      var length = value.length;
+      var words = value.match(/\w+/g);
+      var zipMatches = words.filter(function (word) {
+        return city.zip.substring(0, length) === word;
+      });
+      var nameMatches = words.filter(function (word) {
+        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+      });
+
+      return zipMatches.length + nameMatches.length >= words.length;
+    };
+  }
+
+  function orderByLevenshteinDistance(value) {
+    return function (city) {
+      return new Levenshtein(value, city.zip + '' + city.name);
+    };
+  }
+
+  /**
+   * Select City.
+   */
+  function selectCity($item, $label) {
+    controller.address.postalCode = $item.zip;
+    controller.address.addressLocality = $item.name;
+    controller.address.addressCountry = 'BE';
+
+    controller.cityAutocompleteTextField = '';
+    controller.selectedCity = $label;
+    validateAddress();
+  }
+
+  /**
+   * Change a city selection.
+   */
+  function changeCitySelection() {
+    controller.address.postalCode = '';
+    controller.address.addressLocality = '';
+    controller.address.addressCountry = '';
+
+    controller.selectedCity = '';
+    controller.cityAutocompleteTextField = '';
+    validateAddress();
+  }
+
+  function sendUpdate() {
+    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors;
+    controller.onUpdate({error: controller.addressHasErrors});
+  }
+}
+OrganizerAddressComponent.$inject = ["$scope", "cities", "Levenshtein"];
+
+// Source: src/event_form/components/organizer-contact/organizer-contact.component.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormOrganizerAddressController
+ * @description
+ * # EventFormOrganizerAddressController
+ * Modal for setting the reservation period.
+ */
+angular
+    .module('udb.event-form')
+    .component('udbOrganizerContact', {
+      templateUrl: 'templates/organizer-contact.html',
+      controller: OrganizerContactComponent,
+      controllerAs: 'occ',
+      bindings: {
+        contact: '=',
+        onUpdate: '&'
+      }
+    });
+
+/* @ngInject */
+function OrganizerContactComponent($scope) {
+  var controller = this;
+
+  controller.validateContact = validateContact;
+  controller.addOrganizerContactInfo = addOrganizerContactInfo;
+  controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  controller.sendUpdate = sendUpdate;
+
+  $scope.$on('organizerContactSubmit', function() {
+    controller.organizerContactWrapper.$setSubmitted();
+  });
+
+  function validateContact() {
+    if (_.find(controller.contact, {'value': ''}) ||
+        _.find(controller.contact, {'value': undefined}) ||
+        controller.organizerContactWrapper.$invalid) {
+      controller.contactHasErrors = true;
+    }
+    else {
+      controller.contactHasErrors = false;
+    }
+    sendUpdate();
+  }
+
+  /**
+   * Add a contact info entry for an organizer.
+   */
+  function addOrganizerContactInfo(type) {
+    controller.contact.push({
+      type : type,
+      value : ''
+    });
+    validateContact();
+  }
+
+  /**
+   * Remove a given key of the contact info.
+   */
+  function deleteOrganizerContactInfo(index) {
+    controller.contact.splice(index, 1);
+    validateContact();
+  }
+
+  function sendUpdate() {
+    controller.onUpdate({error: controller.contactHasErrors});
+  }
+
+}
+OrganizerContactComponent.$inject = ["$scope"];
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
 /**
@@ -8856,8 +9359,6 @@ function EventFormOrganizerModalController(
   udbOrganizers,
   UdbOrganizer,
   eventCrud,
-  cities,
-  Levenshtein,
   $q,
   organizerName
 ) {
@@ -8870,6 +9371,8 @@ function EventFormOrganizerModalController(
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.addressError = false;
+  $scope.contactError = false;
   $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
@@ -8890,10 +9393,10 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
   $scope.updateName = updateName;
+  $scope.validateAddress = validateAddress;
+  $scope.validateContact = validateContact;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
@@ -8903,23 +9406,6 @@ function EventFormOrganizerModalController(
    */
   function cancel() {
     $uibModalInstance.dismiss('cancel');
-  }
-
-  /**
-   * Add a contact info entry for an organizer.
-   */
-  function addOrganizerContactInfo(type) {
-    $scope.newOrganizer.contact.push({
-      type : type,
-      value : ''
-    });
-  }
-
-  /**
-   * Remove a given key of the contact info.
-   */
-  function deleteOrganizerContactInfo(index) {
-    $scope.newOrganizer.contact.splice(index, 1);
   }
 
   /**
@@ -8967,6 +9453,14 @@ function EventFormOrganizerModalController(
     }
   }
 
+  function validateAddress(error) {
+    $scope.addressError = error;
+  }
+
+  function validateContact(error) {
+    $scope.contactError = error;
+  }
+
   /**
    * Validate the new organizer.
    */
@@ -8978,11 +9472,20 @@ function EventFormOrganizerModalController(
       return;
     }
 
+    $scope.$broadcast('organizerAddressSubmit');
+    $scope.$broadcast('organizerContactSubmit');
+
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
     $scope.error = false;
     $scope.saving = true;
+
+    if ($scope.addressError || $scope.contactError) {
+      $scope.error = true;
+      $scope.saving = false;
+      return;
+    }
 
     promise.then(function (data) {
 
@@ -9017,7 +9520,7 @@ function EventFormOrganizerModalController(
   function saveOrganizer() {
 
     $scope.saving = true;
-    $scope.error = false;
+    $scope.saveError = false;
 
     var organizer = _.clone($scope.newOrganizer);
     // remove the address when it's empty
@@ -9036,58 +9539,13 @@ function EventFormOrganizerModalController(
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;
       }, function() {
-        $scope.error = true;
+        $scope.saveError = true;
         $scope.saving = false;
       });
   }
 
-  // Scope functions.
-  $scope.cities = cities;
-  $scope.changeCitySelection = changeCitySelection;
-
-  $scope.filterCities = function(value) {
-    return function (city) {
-      var length = value.length;
-      var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return zipMatches.length + nameMatches.length >= words.length;
-    };
-  };
-
-  $scope.orderByLevenshteinDistance = function(value) {
-    return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
-    };
-  };
-
-  /**
-   * Select City.
-   */
-  controller.selectCity = function ($item, $label) {
-    $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.addressLocality = $item.name;
-
-    $scope.cityAutocompleteTextField = '';
-    $scope.selectedCity = $label;
-  };
-  $scope.selectCity = controller.selectCity;
-
-  /**
-   * Change a city selection.
-   */
-  function changeCitySelection() {
-    $scope.selectedCity = '';
-    $scope.cityAutocompleteTextField = '';
-  }
-
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName"];
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
@@ -9901,30 +10359,44 @@ function UdbContactInfoValidationDirective() {
 
   function link (scope, elem, attrs, ngModel) {
     // Scope methods.
+    scope.loadInfo = loadInfo;
     scope.validateInfo = validateInfo;
     scope.clearInfo = clearInfo;
     scope.infoErrorMessage = '';
+
+    scope.$on('organizerContactRefresh', function() {
+      validateInfo();
+    });
+
+    function loadInfo() {
+      if (ngModel.$modelValue.value !== '') {
+        ngModel.$setValidity('contactinfo', true);
+        scope.infoErrorMessage = '';
+        validateInfo();
+      }
+    }
 
     /**
      * Validate the entered info.
      */
     function validateInfo() {
 
-      ngModel.$setValidity('contactinfo', true);
-      scope.infoErrorMessage = '';
-
-      if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-        EMAIL_REGEXP.test(ngModel.$modelValue.value);
-        scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+      if (ngModel.$modelValue.value === '' || ngModel.$modelValue.value === undefined) {
+        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
         ngModel.$setValidity('contactinfo', false);
-
       }
-      else if (ngModel.$modelValue.type === 'url') {
-        var viewValue = ngModel.$viewValue;
-
-        if (!URL_REGEXP.test(viewValue.value)) {
-          scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+      else {
+        if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
+          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen.';
           ngModel.$setValidity('contactinfo', false);
+        }
+        else if (ngModel.$modelValue.type === 'url') {
+          var viewValue = ngModel.$viewValue;
+
+          if (!URL_REGEXP.test(viewValue.value)) {
+            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen.';
+            ngModel.$setValidity('contactinfo', false);
+          }
         }
       }
     }
@@ -10031,7 +10503,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -10267,10 +10739,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     /**
      * @param {Date} date
-     * @param {string} startHour HH:MM
+     * @param {string} startHour HH:mm
      * @param {Date|string} startHourAsDate
      *  An empty string when not set.
-     * @param {string} endHour HH:MM
+     * @param {string} endHour HH:mm
      * @param {Date|string} endHourAsDate
      *  An empty string when not set.
      */
@@ -10446,12 +10918,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
+      this.showStep(3);
       this.timingChangedCallback(this);
-    },
-
-    resetCalender: function () {
-      this.activeCalendarType = '';
-      this.calendarType = '';
     },
 
     initOpeningHours: function(openingHours) {
@@ -10464,8 +10932,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     setCalendarType: function (type) {
       var formData = this;
-
-      formData.showStep(3);
 
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.
@@ -10482,6 +10948,12 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
 
       if (formData.calendarType === 'permanent') {
+        formData.timingChanged();
+      }
+
+      if (formData.calendarType === 'periodic') {
+        formData.startDate = moment().startOf('day').toDate();
+        formData.endDate = moment().add(1, 'y').startOf('day').toDate();
         formData.timingChanged();
       }
 
@@ -10520,18 +10992,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         this.timingChanged();
       }
       else {
-        var nextHour = moment().add(1, 'hours').minutes(0);
-        var startHourAsDate = angular.copy(timestamp.date);
-        var endHourAsDate = angular.copy(timestamp.date);
-        startHourAsDate.setHours(nextHour.hours());
-        startHourAsDate.setMinutes(nextHour.minutes());
-        endHourAsDate.setHours(23);
-        endHourAsDate.setMinutes(59);
+        var startHour = moment(timestamp.date);
+        var endHour = moment(timestamp.date).endOf('day');
 
-        timestamp.startHour = moment(startHourAsDate).format('HH:mm');
-        timestamp.startHourAsDate = startHourAsDate;
-        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
-        timestamp.endHourAsDate = endHourAsDate;
+        timestamp.startHour = startHour.format('HH:mm');
+        timestamp.startHourAsDate = startHour.toDate();
+        timestamp.endHour = endHour.format('HH:mm');
+        timestamp.endHourAsDate = endHour.toDate();
         timestamp.showEndHour = false;
       }
     },
@@ -10597,16 +11064,28 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChanged();
     },
 
+    saveTimestamps: function (timestamps) {
+      var oldTimestamps = _.cloneDeep(this.timestamps);
+
+      this.timestamps = timestamps;
+
+      if (!_.isEqual(oldTimestamps, timestamps)) {
+        this.timingChanged();
+      }
+    },
+
     periodicTimingChanged: function () {
       var formData = this;
 
       if (formData.id) {
-        if (formData.hasValidPeriodicRange()) {
-          formData.periodicRangeError = false;
-          formData.timingChanged();
-        } else {
-          formData.periodicRangeError = true;
-        }
+        //TODO: this was wrapping the code below, not sure why...
+      }
+
+      if (formData.hasValidPeriodicRange()) {
+        formData.periodicRangeError = false;
+        formData.timingChanged();
+      } else {
+        formData.periodicRangeError = true;
       }
     }
   };
@@ -10616,7 +11095,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "$rootScope"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection"];
 
 // Source: src/event_form/event-form.controller.js
 /**
@@ -10666,6 +11145,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
         moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
+    EventFormData.showStep(3);
   }
 
   /**
@@ -10787,9 +11267,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       EventFormData.initCalendar();
     }
 
-    if (!!EventFormData.openingHours.length) {
-      EventFormData.initOpeningHours(EventFormData.openingHours);
-    }
+    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
     $scope.loaded = true;
     EventFormData.showStep(1);
@@ -11037,10 +11515,10 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  var dPD = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = (dPD === null || typeof dPD === 'undefined' || dPD === '');
   if (!controller.hasNoDefault && isDraft) {
-    controller.eventFormData.availableFrom = defaultPublicationDate;
+    controller.eventFormData.availableFrom = dPD;
   }
 
   function publish() {
@@ -11208,10 +11686,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     controller.updateEventTypeAndThemePicker(EventFormData);
 
     EventFormData.showStep(2);
-
-    // immediately show step 3 if the form contains a place or an event with a preselected date
-    // in both cases the calendar type will already be set
-    if (EventFormData.calendarType) {
+    if (EventFormData.isPlace) {
       EventFormData.showStep(3);
     }
   }
@@ -11301,14 +11776,12 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels, OpeningHoursCollection) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-  $scope.calendarLabels = calendarLabels;
-  $scope.openingHours = OpeningHoursCollection;
 
   /**
    * Mark the major info as changed.
@@ -11323,7 +11796,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels", "OpeningHoursCollection"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData"];
 
 // Source: src/event_form/steps/event-form-step3.controller.js
 /**
@@ -12003,7 +12476,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description vars.
   $scope.description = EventFormData.getDescription('nl');
-  $scope.focusDescription = false;
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -12067,6 +12539,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Description functions.
   $scope.alterDescription = alterDescription;
   $scope.saveDescription = saveDescription;
+  $scope.countCharacters = countCharacters;
 
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
@@ -12097,17 +12570,15 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function alterDescription() {
     $scope.descriptionCssClass = 'state-filling';
-    $scope.focusDescription = true;
   }
 
   /**
    * Save the description.
    */
   function saveDescription() {
-
+    $scope.descriptionInfoVisible = false;
     $scope.savingDescription = true;
     $scope.descriptionError = false;
-    $scope.focusDescription = false;
 
     EventFormData.setDescription($scope.description, 'nl');
 
@@ -12132,6 +12603,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.descriptionError = true;
     });
 
+  }
+  /**
+   * Count characters in the description.
+   */
+  function countCharacters() {
+    if ($scope.description) {
+      return $scope.description.length;
+    }
   }
 
   controller.eventFormSaved = function () {
@@ -13775,7 +14254,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-      moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -13924,14 +14402,15 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.sendingJob = false;
   moc.error = false;
 
-  moc.isReadyForValidation = isReadyForValidation;
-
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      if (moc.offer.image) {
+        moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
+      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -13940,10 +14419,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
 
   function showLoadingError(problem) {
     showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
-  }
-
-  function isReadyForValidation() {
-    return moc.offer.workflowStatus === OfferWorkflowStatus.READY_FOR_VALIDATION;
   }
 
   /**
@@ -14338,6 +14813,229 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
 }
 OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
 
+// Source: src/management/organizers/edit/organizer-edit.controller.js
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerEditController
+ * @description
+ * # OrganizerEditController
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizerEditController', OrganizerEditController);
+
+/* @ngInject */
+function OrganizerEditController(
+    OrganizerManager,
+    udbOrganizers,
+    $state,
+    $stateParams,
+    $q,
+    $scope
+  ) {
+  var controller = this;
+  var organizerId = $stateParams.id;
+
+  controller.contact = [];
+  controller.showWebsiteValidation = false;
+  controller.urlError = false;
+  controller.websiteError = false;
+  controller.nameError = false;
+  controller.addressError = false;
+  controller.contactError = false;
+  controller.hasErrors = false;
+  controller.disableSubmit = true;
+  controller.saveError = false;
+
+  controller.validateWebsite = validateWebsite;
+  controller.validateName = validateName;
+  controller.validateAddress = validateAddress;
+  controller.validateContact = validateContact;
+  controller.checkChanges = checkChanges;
+  controller.validateOrganizer = validateOrganizer;
+  controller.cancel = cancel;
+
+  var oldOrganizer = {};
+  var oldContact = [];
+  var isUrlChanged = false;
+  var isNameChanged = false;
+  var isAddressChanged = false;
+  var isContactChanged = false;
+
+  loadOrganizer(organizerId);
+
+  function loadOrganizer(organizerId) {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+
+    OrganizerManager
+      .get(organizerId)
+      .then(showOrganizer);
+  }
+
+  /**
+   * @param {udbOrganizer} organizer
+   */
+  function showOrganizer(organizer) {
+    if (_.isEmpty(organizer.address)) {
+      organizer.address = {
+        streetAddress : '',
+        addressLocality : '',
+        postalCode: '',
+        addressCountry : ''
+      };
+    }
+    controller.organizer = organizer;
+    oldOrganizer = _.cloneDeep(organizer);
+    controller.originalName = oldOrganizer.name;
+
+    if (controller.organizer.contactPoint !== null) {
+      _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
+        _.forEach(contactArray, function(value) {
+          controller.contact.push({type: key, value: value});
+        });
+      });
+      oldContact = _.cloneDeep(controller.contact);
+    }
+  }
+
+  /**
+   * Validate the website of new organizer.
+   */
+  function validateWebsite() {
+    controller.showWebsiteValidation = true;
+
+    if (!controller.organizerEditForm.website.$valid) {
+      controller.showWebsiteValidation = false;
+      controller.urlError = true;
+      return;
+    }
+
+    udbOrganizers
+        .findOrganizersWebsite(controller.organizer.url)
+        .then(function (data) {
+          controller.urlError = false;
+          if (data.totalItems > 0) {
+            if (data.member[0].name === controller.originalName) {
+              controller.showWebsiteValidation = false;
+              controller.organizersWebsiteFound = false;
+            }
+            else {
+              controller.organizersWebsiteFound = true;
+              controller.showWebsiteValidation = false;
+            }
+          }
+          else {
+            controller.showWebsiteValidation = false;
+            controller.organizersWebsiteFound = false;
+          }
+        }, function () {
+          controller.websiteError = true;
+          controller.showWebsiteValidation = false;
+        })
+        .finally(function() {
+          checkChanges();
+        });
+  }
+
+  function validateName() {
+    if (!controller.organizerEditForm.name.$valid) {
+      controller.nameError = true;
+    }
+    else {
+      controller.nameError = false;
+    }
+
+    checkChanges();
+  }
+
+  function validateAddress(error) {
+    controller.addressError = error;
+    checkChanges();
+  }
+
+  function validateContact(error) {
+    controller.contactError = error;
+    checkChanges();
+  }
+
+  /**
+   * Validate the new organizer.
+   */
+  function validateOrganizer() {
+
+    controller.showValidation = true;
+
+    if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
+        controller.websiteError || controller.urlError || controller.nameError ||
+        controller.addressError || controller.contactError) {
+      controller.hasErrors = true;
+      controller.disableSubmit = true;
+      $scope.$broadcast('organizerAddressSubmit');
+      $scope.$broadcast('organizerContactSubmit');
+      return;
+    }
+
+    saveOrganizer();
+  }
+
+  function checkChanges() {
+    isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
+    isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
+    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
+    isContactChanged = !_.isEqual(controller.contact, oldContact);
+
+    if (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) {
+      controller.disableSubmit = false;
+    }
+    else {
+      controller.disableSubmit = true;
+    }
+
+    if (controller.organizerEditForm.$valid && !controller.organizersWebsiteFound &&
+        !controller.websiteError && !controller.urlError && !controller.nameError &&
+        !controller.addressError && !controller.contactError) {
+      controller.hasErrors = false;
+    }
+  }
+
+  function saveOrganizer() {
+    var promises = [];
+
+    if (isUrlChanged) {
+      promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.url));
+    }
+
+    if (isNameChanged) {
+      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name));
+    }
+
+    if (isAddressChanged) {
+      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address));
+    }
+
+    if (isContactChanged) {
+      promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
+    }
+
+    promises.push(OrganizerManager.removeOrganizerFromCache(organizerId));
+
+    $q.all(promises)
+        .then(function() {
+          $state.go('management.organizers.search', {}, {reload: true});
+        })
+        .catch(function () {
+          controller.hasErrors = true;
+          controller.saveError = true;
+        });
+  }
+
+  function cancel() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+    $state.go('management.organizers.search', {}, {reload: true});
+  }
+}
+OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope"];
+
 // Source: src/management/organizers/organizer-detail.controller.js
 /**
  * @ngdoc function
@@ -14515,7 +15213,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -14527,7 +15225,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -14539,10 +15237,62 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   };
 
   /**
+   * Update the unique url of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} website
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerWebsite = function(organizerId, website) {
+    return udbApi
+        .updateOrganizerWebsite(organizerId, website)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update the name of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} name
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerName = function(organizerId, name) {
+    return udbApi
+        .updateOrganizerName(organizerId, name)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update the address of a specific organizer.
+   * @param {string} organizerId
+   * @param {Object} address
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerAddress = function(organizerId, address) {
+    return udbApi
+        .updateOrganizerAddress(organizerId, address)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update contact info of a specific organizer.
+   * @param {string} organizerId
+   * @param {Array} contact
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerContact = function(organizerId, contact) {
+    return udbApi
+        .updateOrganizerContact(organizerId, contact)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
-  function logOrganizerLabelJob(commandInfo) {
+  function logUpdateOrganizerJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
     jobLogger.addJob(job);
 
@@ -20251,53 +21001,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/event-duplication-calendar.directive.html',
-    "<section id=\"wanneer\">\n" +
-    "    <h2 class=\"title-border\">\n" +
-    "        <span>Wanneer vindt dit evenement of deze activiteit plaats?</span>\n" +
-    "    </h2>\n" +
-    "\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-xs-12\">\n" +
-    "            <div class=\"form-group\">\n" +
-    "\n" +
-    "                <label class=\"wanneerkiezer-label\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    Maak een keuze\n" +
-    "                </label>\n" +
-    "                <div class=\"wanneerkiezer\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    <ul class=\"list-inline button-list\">\n" +
-    "                        <li ng-repeat=\"calendarLabel in ::edc.calendarLabels\">\n" +
-    "                            <button class=\"btn btn-default\"\n" +
-    "                                    ng-bind=\"::calendarLabel.label\"\n" +
-    "                                    udb-auto-scroll\n" +
-    "                                    ng-click=\"edc.duplicateFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
-    "                        </li>\n" +
-    "                    </ul>\n" +
-    "                </div>\n" +
-    "                <div class=\"wanneer-chosen\" ng-hide=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    <span class=\"btn-chosen\" ng-bind=\"edc.duplicateFormData.activeCalendarLabel\"></span>\n" +
-    "                    <a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.duplicateFormData.resetCalendar()\">Wijzigen</a>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'single'\">\n" +
-    "        <udb-event-form-timestamp form-data=\"edc.duplicateFormData\"></udb-event-form-timestamp>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-period form-data=\"edc.duplicateFormData\"></udb-event-form-period>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-opening-hours form-data=\"edc.duplicateFormData\"></udb-event-form-opening-hours>\n" +
-    "    </div>\n" +
-    "\n" +
-    "</section>\n"
-  );
-
-
   $templateCache.put('templates/event-duplication-footer.component.html',
     "<div class=\"event-validation\">\n" +
     "    <button class=\"btn btn-success\"\n" +
@@ -20485,7 +21188,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <td>\n" +
     "        <span class=\"row-label\">Reservatie</span>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null && bookingInfo.email !== null && bookingInfo.url !== null))\">\n" +
+    "    <td ng-if=\"::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null || bookingInfo.email !== null || bookingInfo.url !== null))\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
     "            <li ng-if=\"::bookingInfo.url\">\n" +
     "                    <span>\n" +
@@ -20493,8 +21196,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                         ng-bind=\"::bookingInfo.urlLabel\"></a>\n" +
     "                    </span>\n" +
     "            </li>\n" +
+    "\n" +
     "            <li ng-if=\"::bookingInfo.phone\" ng-bind=\"::bookingInfo.phone\"></li>\n" +
-    "            <li ng-if=\"::bookingInfo.email\"> <a href=\"{{'mailto:'+ ::bookingInfo.email}}\">{{::bookingInfo.email}}</a></li>\n" +
+    "            <li ng-if=\"::bookingInfo.email\"> <a href=\"::{{'mailto:'+ bookingInfo.email}}\">{{::bookingInfo.email}}</a></li>\n" +
     "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
@@ -20825,107 +21529,170 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/event-form-period.html',
-    "<div id=\"wanneer-periode\">\n" +
-    "  <div class=\"col-xs-12 col-sm-4\">\n" +
-    "    <section class=\"add-date\">\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <p class=\"module-title\">Vanaf</p>\n" +
-    "        <div udb-datepicker\n" +
-    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
-    "             ng-model=\"formData.startDate\"></div>\n" +
-    "      </div>\n" +
-    "    </section>\n" +
-    "  </div>\n" +
+  $templateCache.put('templates/form-calendar-datepicker.component.html',
+    "<p class=\"input-group\" ng-class=\"{'has-error': !datepicker.date}\">\n" +
+    "    <input type=\"text\" \n" +
+    "           class=\"form-control\" \n" +
+    "           uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "           ng-model=\"datepicker.date\"\n" +
+    "           is-open=\"datepicker.isOpen\"\n" +
+    "           datepicker-options=\"datepicker.options\"\n" +
+    "           ng-required=\"true\"\n" +
+    "           ng-change=\"datepicker.changed()\"\n" +
+    "           show-button-bar=\"false\"\n" +
+    "           ng-disabled=\"datepicker.disabled\"\n" +
+    "           ng-focus=\"datepicker.open()\"/>\n" +
+    "    <span class=\"input-group-btn\">\n" +
+    "        <button type=\"button\"\n" +
+    "                class=\"btn btn-default\"\n" +
+    "                ng-disabled=\"datepicker.disabled\"\n" +
+    "                ng-class=\"{'btn-danger': !datepicker.date}\"\n" +
+    "                ng-click=\"datepicker.open()\"><i class=\"fa fa-calendar\"></i></button>\n" +
+    "    </span>\n" +
+    "</p>"
+  );
+
+
+  $templateCache.put('templates/form-calendar-period.component.html',
+    "<div class=\"form-calendar-period\">\n" +
+    "    <label>\n" +
+    "        <input type=\"checkbox\"\n" +
+    "               class=\"permanent-check\"\n" +
+    "               ng-model=\"$ctrl.calendarType\"\n" +
+    "               ng-true-value=\"'periodic'\"\n" +
+    "               ng-false-value=\"'permanent'\"\n" +
+    "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
+    "        <span>Start- en einddatum</span>\n" +
+    "    </label>\n" +
+    "    <div class=\"periodic-info\">\n" +
+    "        <div class=\"start-date\">\n" +
+    "            <label>Van</label>\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.startDate\"\n" +
+    "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
+    "            </udb-form-calendar-datepicker>\n" +
+    "        </div>\n" +
     "\n" +
-    "  <div class=\"col-xs-12 col-sm-4\">\n" +
-    "    <section class=\"add-date\">\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <p class=\"module-title\">Tot en met</p>\n" +
-    "        <div udb-datepicker\n" +
-    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
-    "             ng-model=\"formData.endDate\"></div>\n" +
-    "      </div>\n" +
-    "    </section>\n" +
-    "  </div>\n" +
+    "        <div class=\"end-date\">\n" +
+    "            <label>Tot</label>\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.endDate\"\n" +
+    "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
+    "            </udb-form-calendar-datepicker>\n" +
+    "        </div>\n" +
     "\n" +
-    "  <div class=\"col-xs-12\">\n" +
-    "    <div ng-show=\"formData.periodicRangeError\" class=\"alert alert-warning\" role=\"alert\">\n" +
-    "        Selecteer een geldige begin- en einddatum.\n" +
+    "        <div class=\"requirements\"\n" +
+    "             ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
+    "            <div class=\"alert alert-danger\">\n" +
+    "                <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
     "    </div>\n" +
-    "  </div>\n" +
     "</div>\n"
   );
 
 
-  $templateCache.put('templates/event-form-timestamp.html',
-    "<div id=\"wanneer-dagen\" ng-repeat=\"timestamp in formData.timestamps\">\n" +
+  $templateCache.put('templates/form-calendar-timepicker.component.html',
+    "<uib-timepicker ng-model=\"timepicker.time\" \n" +
+    "                ng-change=\"timepicker.changed()\" \n" +
+    "                hour-step=\"1\" \n" +
+    "                minute-step=\"15\" \n" +
+    "                show-spinners=\"false\" \n" +
+    "                show-meridian=\"false\">\n" +
+    "</uib-timepicker>"
+  );
+
+
+  $templateCache.put('templates/form-event-calendar.component.html',
+    "<div class=\"calendar-type-picker\">\n" +
+    "    <div class=\"calendar-type-options\">\n" +
     "\n" +
-    "  <div class=\"col-xs-12 col-sm-4 prototype-step\" id=\"add-date-form\">\n" +
-    "    <section class=\"add-date\">\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
+    "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
+    "            <p class=\"text-center\"><strong>Eén of meerdere dagen</strong></p></a><span class=\"or\">of</span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
+    "            <p class=\"text-center\"><strong>Vaste dagen per week</strong></p>\n" +
+    "        </a>\n" +
     "\n" +
-    "      <div udb-datepicker\n" +
-    "           ng-change=\"formData.timingChanged()\"\n" +
-    "           ng-model=\"timestamp.date\"></div>\n" +
-    "\n" +
-    "      <div class=\"row\"\n" +
-    "           ng-show=\"formData.isValidDate(timestamp.date)\">\n" +
-    "        <div class=\"col-xs-6\">\n" +
-    "          <label>\n" +
-    "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"formData.toggleStartHour(timestamp)\"\n" +
-    "                   value=\"\"\n" +
-    "                   ng-model=\"timestamp.showStartHour\"\n" +
-    "                   class=\"beginuur-toevoegen\">\n" +
-    "            Beginuur\n" +
-    "          </label>\n" +
-    "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
-    "            <input udb-time\n" +
-    "                   type=\"time\"\n" +
-    "                   required=\"required\"\n" +
-    "                   class=\"form-control uur\"\n" +
-    "                   ng-model=\"timestamp.startHourAsDate\"\n" +
-    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
-    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
-    "                   placeholder=\"Bv. 08:00\"\n" +
-    "                   focus-if=\"timestamp.showStartHour\"/>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
-    "          <label>\n" +
-    "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"formData.toggleEndHour(timestamp)\"\n" +
-    "                   value=\"\"\n" +
-    "                   ng-model=\"timestamp.showEndHour\"\n" +
-    "                   class=\"einduur-toevoegen\">\n" +
-    "            Einduur\n" +
-    "          </label>\n" +
-    "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
-    "            <input udb-time\n" +
-    "                   type=\"time\"\n" +
-    "                   required=\"required\"\n" +
-    "                   class=\"form-control uur\"\n" +
-    "                   ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
-    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
-    "                   placeholder=\"Bv. 23:00\"\n" +
-    "                   focus-if=\"timestamp.showEndHour\"/>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </section>\n" +
-    "  </div>\n" +
-    "\n" +
+    "    </div>\n" +
     "</div>\n" +
-    "<div class=\"col-xs-12 col-sm-4\">\n" +
-    "  <div class=\"add-date\">\n" +
-    "    <a href=\"#\" class=\"add-date-link\" ng-click=\"formData.addTimestamp('','','')\">\n" +
-    "      <p id=\"add-date-plus\">+</p>\n" +
-    "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
-    "      <p id=\"add-date-tip\" class=\"muted\">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>\n" +
-    "    </a>\n" +
-    "  </div>\n" +
+    "\n" +
+    "<div class=\"calendar-timing-info\">\n" +
+    "    <div class=\"panel panel-default\">\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div class=\"calendar-time-spans\" ng-if=\"!calendar.weeklyRecurring\">\n" +
+    "                <div class=\"calendar-time-span\" ng-repeat=\"timeSpan in calendar.timeSpans track by $index\">\n" +
+    "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
+    "                    <div class=\"dates\">\n" +
+    "                        <div class=\"date form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            </udb-form-calendar-datepicker>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"date form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            </udb-form-calendar-datepicker>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"timing-control\">\n" +
+    "                        <div class=\"checkbox all-day\">\n" +
+    "                            <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
+    "                                <input type=\"checkbox\"\n" +
+    "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
+    "                                       ng-model=\"timeSpan.allDay\"\n" +
+    "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                       class=\"all-day-check\"> <span>Hele dag</span>\n" +
+    "                            </label>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
+    "                        <div class=\"time form-group\">\n" +
+    "                            <label>Beginuur</label>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
+    "                        </div>\n" +
+    "\n" +
+    "                        <div class=\"time form-group\">\n" +
+    "                            <label>Einduur</label>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"requirements\" ng-show=\"calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length\">\n" +
+    "                        <div class=\"error alert alert-danger\">\n" +
+    "                            <p ng-repeat=\"requirement in calendar.timeSpanRequirements[$index]\"\n" +
+    "                               ng-bind=\"'TIME_SPAN_REQUIREMENTS.' + requirement | translate\"></p>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\">Dag(en) toevoegen</a>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
+    "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
+    "                <hr>\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                </udb-event-form-opening-hours>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/form-place-calendar.component.html',
+    "<div class=\"calendar-timing-info\">\n" +
+    "    <div class=\"panel panel-default\">\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
+    "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
+    "                <hr>\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                </udb-event-form-opening-hours>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
   );
 
 
@@ -21135,83 +21902,72 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openAndClose\">\n" +
-    "        <p class=\"text-danger\">Vul alle openings- en sluitingstijden in.</p>\n" +
+    "    <div class=\"well text-center add-opening-hours\"\n" +
+    "         ng-show=\"ohemc.openingHoursCollection.openingHours.length === 0\">\n" +
+    "        <span>24/24 7/7</span>\n" +
+    "        <br>\n" +
+    "        <span>Elke dag, ieder uur</span>\n" +
+    "        <br>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\">Uren toevoegen</button>\n" +
     "    </div>\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.dayOfWeek\">\n" +
-    "        <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "    <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!ohemc.errors.length\">\n" +
+    "        <ul>\n" +
+    "            <li ng-repeat=\"error in ohemc.errors\"\n" +
+    "                ng-bind=\"'OPENING_HOURS_ERROR.' + error | translate\"></li>\n" +
+    "        </ul>\n" +
     "    </div>\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openIsBeforeClose\">\n" +
-    "        <p class=\"text-danger\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "            Dagen\n" +
+    "    <div class=\"opening-hours\" ng-show=\"ohemc.openingHoursCollection.openingHours.length > 0\">\n" +
+    "        <div class=\"opening-hours-labels\">\n" +
+    "            <div class=\"weekdays\">\n" +
+    "                Dagen\n" +
+    "            </div>\n" +
+    "            <div class=\"opening-time\">\n" +
+    "                Van\n" +
+    "            </div>\n" +
+    "            <div class=\"closing-time\">\n" +
+    "                Tot\n" +
+    "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "            Van\n" +
-    "        </div>\n" +
-    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "            Tot\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
-    "        <ng-form name=\"openingHoursInfo\">\n" +
-    "            <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\"\n" +
-    "                 ng-class=\"{'has-error': openingHoursInfo.dayOfWeek.$invalid && openingHoursInfo.dayOfWeek.$touched}\">\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <select class=\"selectpicker\"\n" +
-    "                            name=\"dayOfWeek\"\n" +
-    "                            multiple\n" +
-    "                            start-label=\"Kies dag(en)\"\n" +
-    "                            ng-model=\"openingHours.dayOfWeek\"\n" +
-    "                            udb-multiselect\n" +
-    "                            ng-required=\"true\">\n" +
-    "                        <option value=\"monday\">maandag</option>\n" +
-    "                        <option value=\"tuesday\">dinsdag</option>\n" +
-    "                        <option value=\"wednesday\">woensdag</option>\n" +
-    "                        <option value=\"thursday\">donderdag</option>\n" +
-    "                        <option value=\"friday\">vrijdag</option>\n" +
-    "                        <option value=\"saturday\">zaterdag</option>\n" +
-    "                        <option value=\"sunday\">zondag</option>\n" +
-    "                    </select>\n" +
+    "        <div class=\"opening-hours-collection\">\n" +
+    "            <div class=\"opening-hours-set\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
+    "                <div class=\"weekdays\">\n" +
+    "                    <label class=\"checkbox-inline\" ng-repeat=\"(day, weekday) in openingHours.dayOfWeek\">\n" +
+    "                        <input type=\"checkbox\" ng-model=\"openingHours.dayOfWeek[day].open\">\n" +
+    "                            <span ng-bind=\"::weekday.label\"></span>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "                <div class=\"opening-time\">\n" +
+    "                    <div class=\"form-group\"\n" +
+    "                        ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
+    "                        <udb-form-calendar-timepicker\n" +
+    "                            name=\"opens\"\n" +
+    "                            class=\"uur\"\n" +
+    "                            ng-required=\"true\"\n" +
+    "                            ng-model=\"openingHours.opensAsDate\"></udb-form-calendar-timepicker>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"closing-time\">\n" +
+    "                    <div class=\"form-group\"\n" +
+    "                        ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
+    "                        <udb-form-calendar-timepicker\n" +
+    "                            name=\"closes\"\n" +
+    "                            class=\"uur\"\n" +
+    "                            ng-required=\"true\"\n" +
+    "                            ng-model=\"openingHours.closesAsDate\"></udb-form-calendar-timepicker>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"remove\">\n" +
+    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"ohemc.removeOpeningHours(openingHours)\"><span aria-hidden=\"true\">&times;</span></button>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
-    "                    <input udb-time\n" +
-    "                           type=\"time\"\n" +
-    "                           name=\"opens\"\n" +
-    "                           class=\"form-control uur\"\n" +
-    "                           placeholder=\"Bv. 08:00\"\n" +
-    "                           ng-required=\"true\"\n" +
-    "                           ng-model=\"openingHours.opensAsDate\"/>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
-    "                    <input udb-time\n" +
-    "                           type=\"time\"\n" +
-    "                           name=\"closes\"\n" +
-    "                           class=\"form-control uur\"\n" +
-    "                           placeholder=\"Bv. 08:00\"\n" +
-    "                           ng-required=\"true\"\n" +
-    "                           ng-model=\"openingHours.closesAsDate\"/>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
-    "                <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
-    "                    <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "        </ng-form>\n" +
-    "    </div>\n" +
+    "        </div>\n" +
     "\n" +
-    "    <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
-    "        Meer openingstijden toevoegen\n" +
-    "    </a>\n" +
+    "        <div class=\"add\">\n" +
+    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
+    "                Meer openingstijden toevoegen\n" +
+    "            </a>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\">Annuleren</button>\n" +
@@ -21219,20 +21975,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            ng-click=\"ohemc.saveOpeningHours()\">\n" +
     "        Opslaan\n" +
     "    </button>\n" +
-    "</div>\n" +
-    "\n"
+    "</div>\n"
   );
 
 
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
-    "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
-    "     ng-click=\"cm.edit()\">Openingsuren toevoegen</a>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
-    "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
-    "    <table class=\"table table-condensed \">\n" +
+    "<div class=\"opening-hours-week-schedule\">\n" +
+    "  <div class=\"empty\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
+    "    <div class=\"well text-center add-opening-hours\">\n" +
+    "        <p>\n" +
+    "          <span class=\"permanent-title\">24/24, 7/7</span> \n" +
+    "          <span class=\"permanent-subtitle\">Elke dag, ieder uur</span>\n" +
+    "        </p>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\">Uren toevoegen</button>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "  <div class=\"time-table\">\n" +
+    "    <table class=\"table table-condensed\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "      <thead>\n" +
     "      <th>Openingsuren</th>\n" +
     "      <th>\n" +
@@ -21247,11 +22006,203 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <td>\n" +
     "            <span ng-bind=\"openingHour.opens\"></span> – <span ng-bind=\"openingHour.closes\"></span>\n" +
     "          </td>\n" +
-    "         </tr>\n" +
+    "          </tr>\n" +
     "      </tbody>\n" +
     "    </table>\n" +
-    "  </section>\n" +
-    "</div>"
+    "  </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organizer-address.html',
+    "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "                <label>Straat en nummer</label>\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"street\"\n" +
+    "                       placeholder=\"Straat en nummer\"\n" +
+    "                       ng-model=\"oac.address.streetAddress\"\n" +
+    "                       ng-change=\"oac.validateAddress()\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
+    "                <span class=\"has-error\"\n" +
+    "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "                    <span class=\"help-block\">\n" +
+    "                        Gelieve straat en nummer in te geven.\n" +
+    "                    </span>\n" +
+    "                </span>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
+    "                <div class=\"form-group\"\n" +
+    "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
+    "                        Gemeente\n" +
+    "                    </label>\n" +
+    "                    <div id=\"gemeente-kiezer\">\n" +
+    "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
+    "                               type=\"text\"\n" +
+    "                               name=\"city\"\n" +
+    "                               class=\"form-control uib-typeahead\"\n" +
+    "                               placeholder=\"Gemeente of postcode\"\n" +
+    "                               ng-model=\"oac.cityAutocompleteTextField\"\n" +
+    "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
+    "                               typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
+    "                               typeahead-min-length=\"2\"\n" +
+    "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                               autocomplete=\"off\">\n" +
+    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
+    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                        </span>\n" +
+    "                        <span class=\"has-error\"\n" +
+    "                              ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "                            <span class=\"help-block\">\n" +
+    "                                Gelieve een gemeente in te geven.\n" +
+    "                            </span>\n" +
+    "                        </span>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
+    "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\">Wijzigen</a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</form>"
+  );
+
+
+  $templateCache.put('templates/organizer-contact.html',
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-sm-12\">\n" +
+    "        <p><strong>Contact</strong></p>\n" +
+    "    </div>\n" +
+    "    <form name=\"occ.organizerContactWrapper\">\n" +
+    "        <div class=\"col-sm-12\">\n" +
+    "            <div ng-show=\"occ.contact.length === 0\">\n" +
+    "                <ul class=\"list-unstyled\">\n" +
+    "                    <li><a ng-click=\"occ.addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
+    "                    <li><a ng-click=\"occ.addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
+    "                    <li><a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"col-sm-12\"\n" +
+    "             ng-show=\"occ.contact.length\">\n" +
+    "            <div class=\"row contact-row\"\n" +
+    "                 ng-repeat=\"contact in occ.contact track by $index\">\n" +
+    "\n" +
+    "                <div class=\"col-sm-5\">\n" +
+    "                    <select class=\"form-control\"\n" +
+    "                            ng-model=\"contact.type\"\n" +
+    "                            ng-change=\"occ.validateContact()\">\n" +
+    "                        <option value=\"url\">Website</option>\n" +
+    "                        <option value=\"phone\">Telefoonnummer</option>\n" +
+    "                        <option value=\"email\">E-mailadres</option>\n" +
+    "                    </select>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <ng-form name=\"organizerContact\"\n" +
+    "                             ng-switch=\"contact.type\"\n" +
+    "                             ng-class=\"{'has-error' : (organizerContact.contact.$touched && organizerContact.contact.$invalid) ||\n" +
+    "                             (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted)}\"\n" +
+    "                             >\n" +
+    "                        <input type=\"text\"\n" +
+    "                               ng-switch-when=\"url\"\n" +
+    "                               udb-http-prefix\n" +
+    "                               class=\"form-control\"\n" +
+    "                               ng-model=\"contact.value\"\n" +
+    "                               ng-model-options=\"{ updateOn: 'blur',allowInvalid: true}\"\n" +
+    "                               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\"\n" +
+    "                               ng-change=\"occ.validateContact()\"\n" +
+    "                               name=\"contact\"\n" +
+    "                               required/>\n" +
+    "                        <input type=\"text\"\n" +
+    "                               ng-switch-when=\"email\"\n" +
+    "                               ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\"\n" +
+    "                               class=\"form-control\"\n" +
+    "                               ng-model=\"contact.value\"\n" +
+    "                               ng-model-options=\"{ updateOn: 'blur',allowInvalid: true}\"\n" +
+    "                               ng-change=\"occ.validateContact()\"\n" +
+    "                               name=\"contact\"\n" +
+    "                               required/>\n" +
+    "                        <input type=\"text\"\n" +
+    "                               ng-switch-default\n" +
+    "                               class=\"form-control\"\n" +
+    "                               ng-model=\"contact.value\"\n" +
+    "                               ng-pattern=\"/^[^a-zA-Z]*$/\"\n" +
+    "                               ng-model-options=\"{ updateOn: 'blur',allowInvalid: true}\"\n" +
+    "                               ng-change=\"occ.validateContact()\"\n" +
+    "                               name=\"contact\"\n" +
+    "                               required/>\n" +
+    "                    </ng-form>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 ng-if=\"contact.type==='url'\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)\">\n" +
+    "                        <ng-message when=\"pattern\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve een geldige url in te vullen.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 ng-if=\"contact.type==='email'\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)\">\n" +
+    "                        <ng-message when=\"pattern\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 ng-if=\"contact.type==='phone'\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)\">\n" +
+    "                        <ng-message when=\"pattern\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve een geldig telefoonnummer in te vullen.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && !contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && !contact.value)\">\n" +
+    "                        <ng-message when=\"required\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve dit veld niet leeg te laten.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-1\">\n" +
+    "                    <button type=\"button\"\n" +
+    "                            class=\"close\"\n" +
+    "                            aria-label=\"Close\"\n" +
+    "                            ng-click=\"occ.deleteOrganizerContactInfo($index)\">\n" +
+    "                        <span aria-hidden=\"true\">&times;</span>\n" +
+    "                    </button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-12\"\n" +
+    "             ng-show=\"occ.contact.length\">\n" +
+    "            <p>\n" +
+    "                <a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
+    "            </p>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "</div>\n"
   );
 
 
@@ -21316,104 +22267,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "          <div class=\"form-group\">\n" +
-    "            <label>Straat en nummer</label>\n" +
-    "            <input type=\"text\" class=\"form-control\" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "          <div class=\"form-group\">\n" +
-    "            <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">\n" +
-    "              Gemeente\n" +
-    "            </label>\n" +
-    "            <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
-    "            <input id=\"organizer-gemeente-autocomplete\"\n" +
-    "                   type=\"text\"\n" +
-    "                   class=\"form-control uib-typeahead\"\n" +
-    "                   placeholder=\"Gemeente of postcode\"\n" +
-    "                   ng-model=\"cityAutocompleteTextField\"\n" +
-    "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
-    "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                   typeahead-min-length=\"2\"\n" +
-    "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                   autocomplete=\"off\">\n" +
-    "              <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
-    "                Er was een probleem tijdens het ophalen van de steden.\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "\n" +
-    "          <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
-    "            <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
-    "            <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12\">\n" +
-    "          <p><strong>Contact</strong></p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-12\">\n" +
-    "\n" +
-    "          <div ng-show=\"newOrganizer.contact.length === 0\">\n" +
-    "            <ul class=\"list-unstyled\">\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "\n" +
-    "          <table class=\"table\" ng-show=\"newOrganizer.contact.length\">\n" +
-    "            <tr ng-repeat=\"(key, info) in newOrganizer.contact\"\n" +
-    "                ng-model=\"info\"\n" +
-    "                udb-contact-info-validation\n" +
-    "                ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
-    "              <td>\n" +
-    "                <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
-    "                  <option value=\"url\">Website</option>\n" +
-    "                  <option value=\"phone\">Telefoonnummer</option>\n" +
-    "                  <option value=\"email\">E-mailadres</option>\n" +
-    "                </select>\n" +
-    "              </td>\n" +
-    "              <td ng-switch=\"info.type\">\n" +
-    "                <input type=\"text\"\n" +
-    "                       ng-switch-when=\"url\"\n" +
-    "                       udb-http-prefix\n" +
-    "                       class=\"form-control\"\n" +
-    "                       ng-model=\"info.value\"\n" +
-    "                       name=\"contact[{{key}}]\"\n" +
-    "                       ng-change=\"validateInfo()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                <input type=\"text\"\n" +
-    "                       ng-switch-default\n" +
-    "                       class=\"form-control\"\n" +
-    "                       ng-model=\"info.value\"\n" +
-    "                       name=\"contact[{{key}}]\"\n" +
-    "                       ng-change=\"validateInfo()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteOrganizerContactInfo(key)\">\n" +
-    "                  <span aria-hidden=\"true\">&times;</span>\n" +
-    "                </button>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
     "    </form>\n" +
+    "\n" +
+    "    <udb-organizer-address address=\"newOrganizer.address\"\n" +
+    "                           on-update=\"validateAddress(error)\"></udb-organizer-address>\n" +
+    "    <udb-organizer-contact contact=\"newOrganizer.contact\"\n" +
+    "                           on-update=\"validateContact(error)\"></udb-organizer-contact>\n" +
+    "\n" +
     "  </section>\n" +
     "\n" +
     "  <section ng-show=\"organizersFound\">\n" +
@@ -21454,8 +22314,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "  </section>\n" +
     "\n" +
-    "  <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "  <div class=\"alert alert-danger\" ng-show=\"saveError\">\n" +
     "    Er ging iets fout tijdens het opslaan van je organisatie.\n" +
+    "  </div>\n" +
+    "  <div class=\"alert alert-danger\" ng-show=\"error && (addressError || contactError)\">\n" +
+    "    <p ng-show=\"addressError\">Gelieve een geldig adres in te vullen.<br /></p>\n" +
+    "    <p ng-show=\"contactError\">Gelieve alle contactinfo correct in te vullen.<br /></p>\n" +
     "  </div>\n" +
     "\n" +
     "</div>\n" +
@@ -22128,42 +22992,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span ng-show=\"eventFormData.isPlace\">Wanneer is deze plaats of locatie open?</span>\n" +
     "    </h2>\n" +
     "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.isEvent\">\n" +
-    "      <div class=\"col-xs-12\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "\n" +
-    "          <label class=\"wanneerkiezer-label\" ng-show=\"eventFormData.activeCalendarType === ''\">Maak een keuze</label>\n" +
-    "          <div class=\"wanneerkiezer\" ng-show=\"eventFormData.activeCalendarType === ''\">\n" +
-    "            <ul class=\"list-inline button-list\">\n" +
-    "              <li ng-repeat=\"calendarLabel in ::calendarLabels\" ng-hide=\"eventFormData.isPlace && calendarLabel.eventOnly\">\n" +
-    "                <button\n" +
-    "                        class=\"btn btn-default\"\n" +
-    "                        ng-bind=\"::calendarLabel.label\"\n" +
-    "                        udb-auto-scroll\n" +
-    "                        ng-click=\"eventFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
-    "              </li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "          <div class=\"wanneer-chosen\" ng-hide=\"eventFormData.activeCalendarType === ''\">\n" +
-    "            <span class=\"btn-chosen\" ng-bind=\"eventFormData.activeCalendarLabel\">\n" +
-    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"eventFormData.resetCalendar()\">Wijzigen</a>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'single'\">\n" +
-    "      <udb-event-form-timestamp form-data=\"eventFormData\"></udb-event-form-timestamp>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-period form-data=\"eventFormData\"></udb-event-form-period>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'permanent' || eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-opening-hours opening-hours=\"openingHours\"></udb-event-form-opening-hours>\n" +
-    "    </div>\n" +
-    "\n" +
+    "    <udb-form-place-calendar ng-if=\"eventFormData.isPlace\"></udb-form-place-calendar>\n" +
+    "    <udb-form-event-calendar ng-if=\"eventFormData.isEvent\"></udb-form-event-calendar>\n" +
     "  </section>\n" +
     "</div>\n"
   );
@@ -22441,18 +23271,27 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </div>\n" +
     "                </div>\n" +
     "              </section>\n" +
-    "              <section class=\"state complete\">\n" +
-    "<!--\n" +
-    "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
-    "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
-    "\n" +
-    "-->\n" +
-    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass==state-complete\">{{eventFormData.description.nl}}</textarea>\n" +
-    "              </section>\n" +
-    "              <section class=\"state filling\">\n" +
+    "              <section class=\"state complete filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass == 'state-filling'\">{{}}</textarea>\n" +
-    "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
+    "                  <textarea ng-blur=\"saveDescription()\"\n" +
+    "                            ng-focus=\"descriptionInfoVisible = true\"\n" +
+    "                            class=\"form-control\"\n" +
+    "                            ng-model=\"description\"\n" +
+    "                            rows=\"6\"\n" +
+    "                            udb-auto-scroll\n" +
+    "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
+    "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
+    "                    De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.\n" +
+    "                    Nog <span ng-bind=\"(200 - countCharacters())\"></span> tekens.\n" +
+    "                    <span class=\"loader\">\n" +
+    "                      <span class=\"empty\"></span>\n" +
+    "                      <span class=\"bar\" ng-style=\"{width : (countCharacters()/2)+'%'}\" ></span>\n" +
+    "                    </span>\n" +
+    "                  </p>\n" +
+    "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
+    "                    Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.\n" +
+    "                  </p>\n" +
+    "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
     "                       de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops,\n" +
@@ -22470,13 +23309,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       beperkt opengesteld is (vb. enkel salons).\n" +
     "                    </p>\n" +
     "                  </div>\n" +
-    "\n" +
     "                </div>\n" +
-    "\n" +
     "                <div ng-show=\"descriptionError\" class=\"alert alert-danger\">\n" +
     "                  Er ging iets fout bij het opslaan van de beschrijving.\n" +
     "                </div>\n" +
-    "\n" +
     "              </section>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -23263,6 +24099,83 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/organizer-edit.html',
+    "<h1 class=\"title\" ng-bind=\"oec.originalName\"></h1>\n" +
+    "\n" +
+    "<div ng-show=\"!oec.organizer && !oec.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-if=\"oec.organizer\">\n" +
+    "    <form name=\"oec.organizerEditForm\" class=\"organizer-edit-form\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <p class=\"alert alert-danger\" ng-show=\"oec.hasErrors\">\n" +
+    "                    <span ng-show=\"oec.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
+    "                    <span ng-show=\"oec.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.website.$error.required || oec.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.addressError\">Gelieve een geldig adres in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.contactError\">Gelieve alle contactinfo correct in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +
+    "                </p>\n" +
+    "\n" +
+    "                <div class=\"form-group has-feedback\"\n" +
+    "                     ng-class=\"{'has-error' : (oec.organizersWebsiteFound || oec.urlError || oec.organizerEditForm.website.$error.required) && oec.hasErrors }\">\n" +
+    "                    <label>Website</label>\n" +
+    "                    <input type=\"url\"\n" +
+    "                           id=\"organizer-website\"\n" +
+    "                           udb-http-prefix\n" +
+    "                           name=\"website\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           ng-model-options=\"{ debounce: 300 }\"\n" +
+    "                           ng-model=\"oec.organizer.url\"\n" +
+    "                           ng-change=\"oec.validateWebsite()\"\n" +
+    "                           aria-describedby=\"organizer-website-status\"\n" +
+    "                           autocomplete=\"off\"\n" +
+    "                           required>\n" +
+    "                    <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"oec.showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : oec.nameError && oec.hasErrors }\">\n" +
+    "                    <label>Naam</label>\n" +
+    "                    <input type=\"text\"\n" +
+    "                           name=\"name\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           ng-model=\"oec.organizer.name\"\n" +
+    "                           ng-change=\"oec.validateName()\"\n" +
+    "                           required>\n" +
+    "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "\n" +
+    "    <udb-organizer-address address=\"oec.organizer.address\"\n" +
+    "                           on-update=\"oec.validateAddress(error)\"></udb-organizer-address>\n" +
+    "    <udb-organizer-contact contact=\"oec.contact\"\n" +
+    "                           on-update=\"oec.validateContact(error)\"></udb-organizer-contact>\n" +
+    "\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-primary organisator-bewerken-bewaren\"\n" +
+    "            ng-disabled=\"oec.disableSubmit\"\n" +
+    "            ng-click=\"oec.validateOrganizer()\">\n" +
+    "        Bewaren\n" +
+    "    </button>\n" +
+    "    <a class=\"btn btn-default organisator-bewerken-annuleren\"\n" +
+    "       ng-click=\"oec.cancel()\">Annuleren</a>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"oec.loadingError\">\n" +
+    "    <span ng-bind=\"oec.loadingError\"></span>\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/organizer-detail.html',
     "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
     "\n" +
@@ -23367,12 +24280,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </span>\n" +
     "    </td>\n" +
     "    <td class=\"text-right\">\n" +
-    "        <div class=\"btn-group\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
-    "                Bewerken <span class=\"caret\"></span></button>\n" +
-    "            <ul class=\"dropdown-menu dropdown-menu-right\">\n" +
-    "                <li><a ui-sref=\"management.organizers.detail({id: osic.organization.id})\" ui-sref-opts=\"{reload:true}\">Bewerken</a></li>\n" +
-    "                <li><a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a></li>\n" +
+    "        <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "            <a class=\"btn btn-default\" ui-sref=\"management.organizers.edit({id: osic.organization.id})\">Bewerken</a>\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "            <ul uib-dropdown-menu role=\"menu\">\n" +
+    "                <li role=\"menuitem\">\n" +
+    "                    <a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a>\n" +
+    "                </li>\n" +
     "            </ul>\n" +
     "        </div>\n" +
     "    </td>\n" +
@@ -23953,7 +24867,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"place && finishedLoading\" class=\"page-detail\">\n" +
+    "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
     "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
