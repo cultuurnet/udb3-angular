@@ -323,7 +323,6 @@ operator
   / 'AND'
   / 'NOT'
   / '||' { return 'OR'; }
-  / ',' { return 'OR'; }
   / '&&' { return 'AND'; }
 
 prefix_operator_exp

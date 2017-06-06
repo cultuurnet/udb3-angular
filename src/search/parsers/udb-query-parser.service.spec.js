@@ -457,36 +457,6 @@ describe('Service: LuceneQueryParser', function () {
     });
   });
 
-  describe('Cultuurnet query dialect', function (){
-
-    it('parses explicit fields and terms including hyphens (e.g "bar-stool")', function() {
-      var results = lucenequeryparser.parse('foo:bar-stool');
-
-      expect(results['left']['field']).toBe('foo');
-      expect(results['left']['term']).toBe('bar-stool');
-
-      results = lucenequeryparser.parse('foo-bar:stool');
-
-      expect(results['left']['field']).toBe('foo-bar');
-      expect(results['left']['term']).toBe('stool');
-    });
-
-    it('parses comma separated field groups: (jakarta, apache) AND website', function() {
-      var results = lucenequeryparser.parse('(jakarta, apache) AND website');
-
-      var leftNode = results['left'];
-      expect(leftNode['left']['field']).toBe('<implicit>');
-      expect(leftNode['left']['term']).toBe('jakarta');
-      expect(leftNode['operator']).toBe('OR');
-      expect(leftNode['right']['field']).toBe('<implicit>');
-      expect(leftNode['right']['term']).toBe('apache');
-
-      expect(results['operator']).toBe('AND');
-      expect(results['right']['field']).toBe('<implicit>');
-      expect(results['right']['term']).toBe('website');
-    });
-  });
-
   describe('Lucene Query syntax documentation examples', function() {
 
     /*
