@@ -504,6 +504,89 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should update the organizer\'s website', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var params = {
+      url: 'http://google.be'
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/url', params)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerWebsite(organizerId, 'http://google.be')
+        .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should update the organizer\'s name', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var params = {
+      name: 'blub'
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/name', params)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerName(organizerId, 'blub')
+        .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should update the organizer\'s address', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var contact = {
+      "url": [
+        "http://google.be"
+      ],
+      "email": [
+        "joske@2dotstwice.be"
+      ],
+      "phone": [
+        "0123456789"
+      ]
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/contactPoint', contact)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerContact(organizerId, contact)
+        .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should update the organizer\'s contact info', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var address = {
+      "addressCountry": "BE",
+      "addressLocality": "Leuven",
+      "postalCode": 3000,
+      "streetAddress": "Sluisstraat 79"
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/address', address)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerAddress(organizerId, address)
+        .then(done);
+    $httpBackend.flush();
+  });
+
   // createRole
   it('should post a new role to the api', function (done) {
     var expectedData = {
