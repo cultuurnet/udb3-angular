@@ -11,12 +11,22 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment, dayNames) {
+function OpeningHoursCollectionFactory(moment) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,
     'dayOfWeek': hasDayOfWeek,
     'openIsBeforeClose': openIsBeforeClose
+  };
+
+  var weekdays = {
+    'monday': {label: 'Ma', name: 'Maandag', open: false},
+    'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
+    'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+    'thursday': {label: 'Do', name: 'Donderdag', open: false},
+    'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+    'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+    'sunday': {label: 'Zo', name: 'Zondag', open: false}
   };
 
   /**
@@ -45,7 +55,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function hasDayOfWeek(openingHoursList) {
     return _.all(_.map(openingHoursList, function (openingHours) {
-      return !_.isEmpty(openingHours.dayOfWeek);
+      return !_.isUndefined(_.find(openingHours.dayOfWeek, 'open'));
     }));
   }
 
@@ -56,16 +66,9 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function prepareOpeningHoursForDisplay(openingHoursList) {
     angular.forEach (openingHoursList, function(openingHour, key) {
-      var humanValues = [];
-      if (openingHour.dayOfWeek instanceof Array) {
-        for (var i in openingHoursList[key].dayOfWeek) {
-          humanValues.push(dayNames[openingHour.dayOfWeek[i]]);
-        }
-      }
       openingHour.opens = moment(openingHour.opensAsDate).format('HH:mm');
       openingHour.closes = moment(openingHour.closesAsDate).format('HH:mm');
-
-      openingHour.label = humanValues.join(', ');
+      openingHour.label = _.pluck(_.filter(openingHour.dayOfWeek, 'open'), 'name').join(', ');
     });
 
     return openingHoursList;
@@ -106,7 +109,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     createNewOpeningHours: function () {
       var openingHoursList = this.openingHours || [];
       var openingHours = {
-        'dayOfWeek': [],
+        'dayOfWeek': _.cloneDeep(weekdays),
         'opens': '00:00',
         'opensAsDate': new Date(1970, 0, 1),
         'closes': '00:00',
@@ -124,21 +127,32 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     deserialize: function (jsonOpeningHoursList) {
       this.setOpeningHours(_.map(jsonOpeningHoursList, function (jsonOpeningHours) {
         return {
-          'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
+          'dayOfWeek': _.mapValues(weekdays, function (weekday, day) {
+            var dayOfWeek = _.cloneDeep(weekday);
+            dayOfWeek.open = _.includes(jsonOpeningHours.dayOfWeek, day);
+
+            return dayOfWeek;
+          }),
           'opens': jsonOpeningHours.opens || '00:00',
           'opensAsDate':
-            jsonOpeningHours.opens ? resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() : new Date(1970, 0, 1),
+            jsonOpeningHours.opens ?
+              resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1),
           'closes': jsonOpeningHours.closes || '00:00',
           'closesAsDate':
-            jsonOpeningHours.closes ? resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() : new Date(1970, 0, 1)
+            jsonOpeningHours.closes ?
+              resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1)
         };
       }));
+
+      return this;
     },
 
     serialize: function () {
       return _.map(this.openingHours, function (openingHours) {
         return {
-          dayOfWeek: openingHours.dayOfWeek,
+          dayOfWeek: _.keys(omitClosedDays(openingHours.dayOfWeek)),
           opens: moment(openingHours.opensAsDate).format('HH:mm'),
           closes: moment(openingHours.closesAsDate).format('HH:mm')
         };
@@ -171,6 +185,12 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function resetDay(moment) {
     return moment.clone().year(1970).dayOfYear(1);
+  }
+
+  function omitClosedDays(dayOfWeek) {
+    return _.pick(dayOfWeek, function(weekday) {
+      return weekday.open;
+    });
   }
 
   return openingHoursCollection;

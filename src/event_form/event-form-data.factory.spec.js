@@ -188,6 +188,24 @@ describe('Factory: Event form data', function () {
     EventFormData.setCalendarType('permanent');
   });
 
+  it('should prefill and update timing when the calendar type is set to periodic', function (done) {
+    var baseTime = new Date(3000, 0, 1);
+    jasmine.clock().mockDate(baseTime);
+    EventFormData.initCalendar();
+
+    function checkTiming(formData) {
+      expect(formData.startDate).toEqual(new Date(3000, 0, 1));
+      expect(formData.endDate).toEqual(new Date(3001, 0, 1));
+      done();
+    }
+
+    EventFormData
+      .timingChanged$
+      .subscribe(checkTiming);
+
+    EventFormData.setCalendarType('periodic');
+  });
+
   it('should notify that the event timing has changed when the start or end hour changed', function (done) {
     EventFormData.initCalendar();
 
@@ -281,5 +299,16 @@ describe('Factory: Event form data', function () {
       .subscribe(done);
 
     EventFormData.saveOpeningHours();
+  });
+
+  it('should show step 3 when timing changes', function (done) {
+    EventFormData.initCalendar();
+
+    EventFormData
+      .timingChanged$
+      .subscribe(done);
+
+    EventFormData.timingChanged();
+    expect(EventFormData.showStep3).toEqual(true);
   });
 });

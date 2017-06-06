@@ -365,6 +365,16 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
-    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.'
+    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+    'OPENING_HOURS_ERROR': {
+      'openAndClose': 'Vul alle openings- en sluitingstijden in.',
+      'dayOfWeek': 'Kies minstens één dag in elke rij die je toevoegde.',
+      'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
+    },
+    'TIME_SPAN_REQUIREMENTS': {
+      'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
+      'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+    }
   }
 );

@@ -1,0 +1,73 @@
+<div class="calendar-type-picker">
+    <div class="calendar-type-options">
+
+        <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': calendar.type === 'single'}">
+            <img src="../images/form-calendar/days.svg" class="calendar-type-icon">
+            <p class="text-center"><strong>Eén of meerdere dagen</strong></p></a><span class="or">of</span><a href="#" ng-click="calendar.setType('periodic')" ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
+            <img src="../images/form-calendar/period.svg" class="calendar-type-icon">
+            <p class="text-center"><strong>Vaste dagen per week</strong></p>
+        </a>
+
+    </div>
+</div>
+
+<div class="calendar-timing-info">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="calendar-time-spans" ng-if="!calendar.weeklyRecurring">
+                <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans track by $index">
+                    <span ng-show="calendar.timeSpans.length > 1" aria-hidden="true" ng-click="calendar.removeTimeSpan(timeSpan)" class="close">×</span>
+                    <div class="dates">
+                        <div class="date form-group">
+                            <label for="time-span-{{$index}}-start-date">Start</label>
+                            <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()">
+                            </udb-form-calendar-datepicker>
+                        </div>
+                        <div class="date form-group">
+                            <label for="time-span-{{$index}}-end-date">Einde</label>
+                            <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()">
+                            </udb-form-calendar-datepicker>
+                        </div>
+                    </div>
+                    <div class="timing-control">
+                        <div class="checkbox all-day">
+                            <label for="time-span-{{$index}}-has-timing-info">
+                                <input type="checkbox"
+                                       id="time-span-{{$index}}-has-timing-info"
+                                       ng-model="timeSpan.allDay"
+                                       ng-change="calendar.instantTimeSpanChanged()"
+                                       class="all-day-check"> <span>Hele dag</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="timing" ng-if="!timeSpan.allDay">
+                        <div class="time form-group">
+                            <label>Beginuur</label>
+                            <udb-form-calendar-timepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
+                        </div>
+
+                        <div class="time form-group">
+                            <label>Einduur</label>
+                            <udb-form-calendar-timepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
+                        </div>
+                    </div>
+                    <div class="requirements" ng-show="calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length">
+                        <div class="error alert alert-danger">
+                            <p ng-repeat="requirement in calendar.timeSpanRequirements[$index]"
+                               ng-bind="'TIME_SPAN_REQUIREMENTS.' + requirement | translate"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link">Dag(en) toevoegen</a>
+            </div>
+
+            <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
+                <udb-form-calendar-period form-data="calendar.formData"></udb-form-calendar-period>
+                <hr>
+                <udb-event-form-opening-hours form-data="calendar.formData" opening-hours="calendar.openingHoursCollection">
+                </udb-event-form-opening-hours>
+            </div>
+        </div>
+    </div>
+</div>

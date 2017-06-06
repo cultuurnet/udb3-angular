@@ -1,0 +1,62 @@
+<form name="oac.organizerAddressForm" class="organizer-address-form">
+    <div class="row">
+        <div class="col-sm-12 col-md-8">
+            <div class="form-group"
+                 ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
+                <label>Straat en nummer</label>
+                <input type="text"
+                       class="form-control"
+                       name="street"
+                       placeholder="Straat en nummer"
+                       ng-model="oac.address.streetAddress"
+                       ng-change="oac.validateAddress()"
+                       ng-model-options="{ updateOn: 'blur' }">
+                <span class="has-error"
+                      ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
+                    <span class="help-block">
+                        Gelieve straat en nummer in te geven.
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-8">
+            <div ng-hide="oac.selectedCity !== ''">
+                <div class="form-group"
+                     ng-class="{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}">
+                    <label for="organizer-gemeente-autocomplete" id="gemeente-label">
+                        Gemeente
+                    </label>
+                    <div id="gemeente-kiezer">
+                        <input id="organizer-gemeente-autocomplete"
+                               type="text"
+                               name="city"
+                               class="form-control uib-typeahead"
+                               placeholder="Gemeente of postcode"
+                               ng-model="oac.cityAutocompleteTextField"
+                               uib-typeahead="city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
+                               typeahead-on-select="oac.selectCity($item, $label)"
+                               typeahead-min-length="2"
+                               typeahead-template-url="templates/city-suggestion.html"
+                               autocomplete="off">
+                        <span class="help-block" ng-show="oac.cityAutoCompleteError">
+                            Er was een probleem tijdens het ophalen van de steden.
+                        </span>
+                        <span class="has-error"
+                              ng-show="oac.cityHasErrors && oac.organizerAddressForm.$submitted">
+                            <span class="help-block">
+                                Gelieve een gemeente in te geven.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="gemeente-gekozen" ng-if="oac.selectedCity">
+                <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::oac.selectedCity"></span>
+                <a href="#" class="btn btn-default btn-link" ng-click="oac.changeCitySelection()">Wijzigen</a>
+            </div>
+        </div>
+    </div>
+</form>
