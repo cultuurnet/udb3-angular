@@ -23,17 +23,17 @@ function QueryEditorController(
   var qe = this,
       queryBuilder = LuceneQueryBuilder;
 
-  qe.fields = _.filter(queryFields, 'editable');
+  qe.fieldOptions = _.filter(queryFields, 'editable');
 
   // use the first occurrence of a group name to order it against the other groups
-  var orderedGroups = _.chain(qe.fields)
+  var orderedGroups = _.chain(qe.fieldOptions)
     .map(function (field) {
            return field.group;
          })
     .uniq()
     .value();
 
-  _.forEach(qe.fields, function (field) {
+  _.forEach(qe.fieldOptions, function (field) {
     var fieldName = field.name.toUpperCase(),
         fieldGroup = 'queryFieldGroup.' + field.group;
 
@@ -53,7 +53,8 @@ function QueryEditorController(
           operator: 'OR',
           nodes: [
             {
-              field: 'title',
+              name: 'title',
+              field: 'name.*',
               term: '',
               fieldType: 'tokenized-string',
               transformer: '+'
@@ -220,11 +221,15 @@ function QueryEditorController(
     parentGroup.nodes.splice(fieldIndex + 1, 0, group);
   };
 
-  qe.updateFieldType = function (field) {
-    var fieldName = field.field,
+  qe.fieldTypeSelected = function (field) {
+    var fieldName = field.name,
         queryField = _.find(queryFields, function (field) {
           return field.name === fieldName;
         });
+
+    if (queryField) {
+      field.field = queryField.field;
+    }
 
     if (field.fieldType !== queryField.type) {
       // TODO: Maybe try to do a type conversion?

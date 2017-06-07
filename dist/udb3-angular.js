@@ -18143,17 +18143,17 @@ function QueryEditorController(
   var qe = this,
       queryBuilder = LuceneQueryBuilder;
 
-  qe.fields = _.filter(queryFields, 'editable');
+  qe.fieldOptions = _.filter(queryFields, 'editable');
 
   // use the first occurrence of a group name to order it against the other groups
-  var orderedGroups = _.chain(qe.fields)
+  var orderedGroups = _.chain(qe.fieldOptions)
     .map(function (field) {
            return field.group;
          })
     .uniq()
     .value();
 
-  _.forEach(qe.fields, function (field) {
+  _.forEach(qe.fieldOptions, function (field) {
     var fieldName = field.name.toUpperCase(),
         fieldGroup = 'queryFieldGroup.' + field.group;
 
@@ -18173,7 +18173,8 @@ function QueryEditorController(
           operator: 'OR',
           nodes: [
             {
-              field: 'title',
+              name: 'title',
+              field: 'name.*',
               term: '',
               fieldType: 'tokenized-string',
               transformer: '+'
@@ -18340,11 +18341,15 @@ function QueryEditorController(
     parentGroup.nodes.splice(fieldIndex + 1, 0, group);
   };
 
-  qe.updateFieldType = function (field) {
-    var fieldName = field.field,
+  qe.fieldTypeSelected = function (field) {
+    var fieldName = field.name,
         queryField = _.find(queryFields, function (field) {
           return field.name === fieldName;
         });
+
+    if (queryField) {
+      field.field = queryField.field;
+    }
 
     if (field.fieldType !== queryField.type) {
       // TODO: Maybe try to do a type conversion?
@@ -25299,8 +25304,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-md-3\">\n" +
     "    <div class=\"form-group\">\n" +
     "      <select\n" +
-    "          ng-options=\"field.name as field.label group by field.groupLabel for field in qe.fields | orderBy:['groupIndex','label']\"\n" +
-    "          ng-model=\"field.field\" class=\"form-control\" ng-change=\"qe.updateFieldType(field)\">\n" +
+    "          ng-options=\"fieldOption.name as fieldOption.label group by fieldOption.groupLabel for fieldOption in qe.fieldOptions | orderBy:['groupIndex','label']\"\n" +
+    "          ng-model=\"field.name\" class=\"form-control\" ng-change=\"qe.fieldTypeSelected(field)\">\n" +
     "      </select>\n" +
     "    </div>\n" +
     "\n" +
@@ -25308,7 +25313,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-md-3\">\n" +
     "    <div class=\"form-group\">\n" +
     "      <select ng-model=\"field.transformer\" class=\"form-control\"\n" +
-    "              ng-options=\"transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.field]\">\n" +
+    "              ng-options=\"transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.name]\">\n" +
     "      </select>\n" +
     "    </div>\n" +
     "  </div>\n" +
@@ -25323,14 +25328,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "             class=\"form-control\"/>\n" +
     "    </div>\n" +
     "    <div ng-switch-when=\"term\">\n" +
-    "      <select ng-options=\"term.label as term.label for term in qe.termOptions[field.field] | orderBy:'label'\"\n" +
+    "      <select ng-options=\"term.label as term.label for term in qe.termOptions[field.name] | orderBy:'label'\"\n" +
     "              ng-model=\"field.term\" class=\"form-control\">\n" +
     "        <option value=\"\">-- maak een keuze --</option>\n" +
     "      </select>\n" +
     "    </div>\n" +
     "\n" +
     "    <div ng-switch-when=\"choice\">\n" +
-    "      <select ng-options=\"'choice.' + option | translate for option in ::qe.termOptions[field.field]\"\n" +
+    "      <select ng-options=\"'choice.' + option | translate for option in ::qe.termOptions[field.name]\"\n" +
     "              ng-model=\"field.term\" class=\"form-control\">\n" +
     "        <option value=\"\">-- maak een keuze --</option>\n" +
     "      </select>\n" +
