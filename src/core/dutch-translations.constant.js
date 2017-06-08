@@ -46,6 +46,7 @@ angular.module('udb.core')
       'next12months': 'volgende 12 maanden',
       'permanent': 'permanent',
       'event': 'event',
+      'place': 'locatie',
       'actor': 'actor',
       'production': 'productie',
       'nl': 'Nederlands',

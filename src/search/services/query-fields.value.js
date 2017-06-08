@@ -19,6 +19,7 @@ angular
   .module('udb.search')
   .value('queryFields', [
     {name: 'cdbid', field:'id', type: 'string', group: 'what', editable: true},
+    {name: 'offertype', field:'_type', type: 'choice', group: 'what', editable: true, options: ['event', 'place']},
     {name: 'keywords', field: 'labels', type: 'string', group: 'what', editable: true},
     {name: 'title', field: 'name.*', type: 'tokenized-string', group: 'what', editable: true},
     {name: 'category_eventtype_name', field:'terms.label', type: 'term', group: 'what', editable: true},
