@@ -113,4 +113,12 @@ describe('Factory: UDB Organizer', function () {
     var organizer = new UdbOrganizer(jsonOrganizer);
     expect(organizer.name).toEqual('Club Silo');
   }));
+
+  it('it can take into account translated name', inject(function (UdbOrganizer) {
+    jsonOrganizer.name = {nl : jsonOrganizer.name_deprecated};
+    jsonOrganizer.name_deprecated = undefined;
+
+    var organizer = new UdbOrganizer(jsonOrganizer);
+    expect(organizer.name).toEqual('Club Silo');
+  }));
 });
