@@ -25,7 +25,9 @@ angular
       'CATEGORY_FACILITY_NAME' : 'facility',
       'CATEGORY_TARGETAUDIENCE_NAME' : 'targetaudience',
       'CATEGORY_FLANDERSREGION_NAME' : 'region',
-      'AVAILABLEFROM' : 'available'
+      'AVAILABLEFROM' : 'available',
+      'LOCATION_ID' : 'locationid',
+      'ORGANISER_ID' : 'organizationid'
     },
     fr: {
       'LOCATION_LABEL': 'location',
@@ -34,6 +36,8 @@ angular
     nl: {
       'TYPE' : 'type',
       'CDBID' : 'identificatiecode (CDBID)',
+      'LOCATION_ID' : 'locatieid',
+      'ORGANISER_ID' : 'organisatieid',
       'TITLE' : 'titel',
       'KEYWORDS' : 'label',
       'CITY' : 'gemeente (naam)',
