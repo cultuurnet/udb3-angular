@@ -23,7 +23,6 @@ angular
       'CATEGORY_FACILITY_NAME' : 'facility',
       'CATEGORY_TARGETAUDIENCE_NAME' : 'targetaudience',
       'CATEGORY_FLANDERSREGION_NAME' : 'region',
-      'CATEGORY_PUBLICSCOPE_NAME' : 'publicscope',
       'AVAILABLEFROM' : 'available'
     },
     fr: {
@@ -50,7 +49,6 @@ angular
       'LOCATION_LABEL' : 'locatie (naam)',
       'EXTERNALID' : 'externalid',
       'LASTUPDATED' : 'laatst aangepast',
-      'LASTUPDATEDBY' : 'laatst aangepast door',
       'CREATIONDATE' : 'gecreëerd',
       'CREATEDBY' : 'gecreëerd door',
       'PERMANENT' : 'permanent',
@@ -60,7 +58,6 @@ angular
       'CATEGORY_FACILITY_NAME' : 'voorzieningen',
       'CATEGORY_TARGETAUDIENCE_NAME' : 'doelgroep',
       'CATEGORY_FLANDERSREGION_NAME' : 'regio / gemeente',
-      'CATEGORY_PUBLICSCOPE_NAME' : 'publieksbereik',
       'LIKE_COUNT' : 'aantal keer \'geliket\'',
       'RECOMMEND_COUNT' : 'aantal keer aanbevolen',
       'ATTEND_COUNT' : 'aantal keer \'ik ga hierheen\'',
