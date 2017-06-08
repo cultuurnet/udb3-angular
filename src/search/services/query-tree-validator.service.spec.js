@@ -7,9 +7,10 @@ describe('Service: QueryTreeValidator', function () {
 
   beforeEach(module(function($provide) {
     var queryFields = [
-      {name: 'allowed-query-field', type: 'string'},
-      {name: 'name.nl', type: 'string'},
-      {name: 'name.fr', type: 'string'}
+      {name: 'allowed-query-field', field:'allowed.query.field', type: 'string'},
+      {field: 'workflowStatus', type: 'choice', options: ['DRAFT', 'READY_FOR_VALIDATION', 'APPROVED', 'REJECTED', 'DELETED']}
+      {field: 'name.nl', type: 'string'},
+      {field: 'name.fr', type: 'string'}
     ];
 
     $provide.value('queryFields', queryFields);
@@ -24,7 +25,7 @@ describe('Service: QueryTreeValidator', function () {
   it('should not allow unspecified query field', function () {
     var queryTree = {
           left: {
-            field: 'unapproved-query-field',
+            field: 'unapproved.query.field',
             term: 'some-search-term'
           }
         },
@@ -32,14 +33,14 @@ describe('Service: QueryTreeValidator', function () {
 
     QueryTreeValidator.validate(queryTree, errors);
 
-    expect(errors[0]).toBe('unapproved-query-field is not a valid search field');
+    expect(errors[0]).toBe('unapproved.query.field is not a valid search field');
 
   });
 
   it('should allow valid query field', function () {
     var queryTree = {
         left: {
-          field: 'allowed-query-field',
+          field: 'allowed.query.field',
           term: 'some-search-term'
         }
       },
@@ -81,7 +82,7 @@ describe('Service: QueryTreeValidator', function () {
   it('should not allow wildcards for fields without child properties', function () {
     var queryTree = {
         left: {
-          field: 'allowed-query-field.\\*',
+          field: 'allowed.query.field.\\*',
           term: 'nope'
         }
       },
@@ -90,9 +91,23 @@ describe('Service: QueryTreeValidator', function () {
     QueryTreeValidator.validate(queryTree, errors);
 
     var expectedErrors = [
-      'allowed-query-field is not a valid parent search field that can be used with a wildcard'
+      'allowed.query.field is not a valid parent search field that can be used with a wildcard'
     ];
 
     expect(errors).toEqual(expectedErrors);
+  });
+
+  it('should allow unnamed query field', function () {
+    var queryTree = {
+        left: {
+          field: 'workflowStatus',
+          term: 'APPROVED'
+        }
+      },
+      errors = [];
+
+    QueryTreeValidator.validate(queryTree, errors);
+
+    expect(errors.length).toBe(0);
   });
 });
