@@ -33,10 +33,10 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  var dPD = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  controller.hasNoDefault = (dPD === null || typeof dPD === 'undefined' || dPD === '');
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
   if (!controller.hasNoDefault && isDraft) {
-    controller.eventFormData.availableFrom = dPD;
+    controller.eventFormData.availableFrom = defaultPublicationDate;
   }
 
   function publish() {
