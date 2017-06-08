@@ -22,6 +22,7 @@ angular
     {name: 'keywords', field: 'labels', type: 'string', group: 'what', editable: true},
     {name: 'title', field: 'name.*', type: 'tokenized-string', group: 'what', editable: true},
     {name: 'category_eventtype_name', field:'terms.label', type: 'term', group: 'what', editable: true},
+    {name: 'locationtype', field:'location.terms.label', type: 'term', group: 'what', editable: true},
     {name: 'category_theme_name', field:'terms.label', type: 'term', group: 'what', editable: true},
 
     {name: 'city', field:'addressLocality', type: 'string', group:'where', editable: true},

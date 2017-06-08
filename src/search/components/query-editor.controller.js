@@ -71,6 +71,7 @@ function QueryEditorController(
   qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
     return 'category_' + term.domain + '_name';
   });
+  qe.termOptions.locationtype = _.filter(taxonomyTerms, {parentid: '8.15.0.0.0'});
   _.forEach(queryFields, function (field) {
     if (field.type === 'choice') {
       qe.termOptions[field.name] = field.options;
