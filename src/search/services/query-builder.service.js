@@ -422,9 +422,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
           // Make sure boolean field-query values are either true or false
           if (fieldType.type === 'check') {
-            if (_.contains(['TRUE', 'FALSE'], field.term.toUpperCase())) {
-              field.term = field.term.toUpperCase();
-            } else {
+            var trueValue = fieldType.name,
+                falseValue = '!(' + fieldType.name + ')';
+
+            if (!(field.term === trueValue || field.term === falseValue)) {
               field.invalid = true;
             }
           }

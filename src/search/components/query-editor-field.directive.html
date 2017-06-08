@@ -41,10 +41,10 @@
 
     <div ng-switch-when="check">
       <label class="radio-inline">
-        <input type="radio" ng-model="field.term" value="TRUE"> ja
+        <input type="radio" ng-model="field.term" value="{{::field.name}}"> ja
       </label>
       <label class="radio-inline">
-        <input type="radio" ng-model="field.term" value="FALSE"> nee
+        <input type="radio" ng-model="field.term" value="!({{::field.name}})"> nee
       </label>
     </div>
 

@@ -32,7 +32,7 @@ angular
 
     {name: 'startdate', field:'dateRange', type: 'date-range', group:'when', editable: true},
     {name: 'enddate', field:'dateRange', type: 'date-range', group:'when', editable: true},
-    {name: 'permanent', type: 'check', group:'when', editable: true, trueValue: 'calendarType:permanent', falseValue: '!(calendarType:permanent)'},
+    {name: 'permanent', field:'calendarType', type:'check', group:'when', editable: true},
 
     {name: 'lastupdated', field: 'modifiedRange', type: 'date-range', group:'input-information', editable: true},
     {name: 'creationdate', field: 'createdRange', type: 'date-range', group:'input-information', editable: true},

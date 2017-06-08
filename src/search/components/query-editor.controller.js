@@ -245,7 +245,7 @@ function QueryEditorController(
       }
 
       if (queryField.type === 'check') {
-        field.term = 'TRUE';
+        field.term = queryField.name;
       }
 
       if (queryField.type === 'number') {
