@@ -8,7 +8,7 @@ describe('Service: QueryTreeValidator', function () {
   beforeEach(module(function($provide) {
     var queryFields = [
       {name: 'allowed-query-field', field:'allowed.query.field', type: 'string'},
-      {field: 'workflowStatus', type: 'choice', options: ['DRAFT', 'READY_FOR_VALIDATION', 'APPROVED', 'REJECTED', 'DELETED']}
+      {field: 'workflowStatus', type: 'choice', options: ['DRAFT', 'READY_FOR_VALIDATION', 'APPROVED', 'REJECTED', 'DELETED']},
       {field: 'name.nl', type: 'string'},
       {field: 'name.fr', type: 'string'}
     ];
