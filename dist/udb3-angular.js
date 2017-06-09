@@ -14408,9 +14408,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-      if (moc.offer.image) {
-        moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
-      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -23968,7 +23965,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
-    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\" />\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image+'?maxwidth=150&maxheight=150'}}\" />\n" +
     "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
     "        </div>\n" +
     "    </div>\n" +

@@ -28,7 +28,7 @@
             </a>
         </div>
         <div class="col-md-3" ng-class="{muted: !moc.offer.image}">
-            <img ng-if="moc.offer.image" class="offer-image-thumbnail center-block" ng-src="{{moc.offer.image}}" />
+            <img ng-if="moc.offer.image" class="offer-image-thumbnail center-block" ng-src="{{moc.offer.image+'?maxwidth=150&maxheight=150'}}" />
             <div class="no-img center-block" ng-if="!moc.offer.image">Geen afbeelding</div>
         </div>
     </div>
