@@ -32,6 +32,9 @@ angular.module('udb.core')
     '=_DATE': 'is gelijk aan',
     '><_DATE': 'tussen',
     'choice': {
+      'everyone': 'iedereen',
+      'members': 'leden',
+      'education': 'onderwijs',
       'asc': 'oplopend',
       'desc': 'aflopend',
       'today': 'vandaag',
