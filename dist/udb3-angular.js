@@ -19230,6 +19230,39 @@ LuceneQueryBuilder.$inject = ["LuceneQueryParser", "QueryTreeValidator", "QueryT
 angular
   .module('udb.search')
   .constant('queryFieldTranslations', {
+    sapi2: {
+      'TYPE' : 'type',
+      'CDBID' : 'cdbid',
+      'LOCATION_ID' : 'location_id',
+      'ORGANISER_ID' : 'organiser_id',
+      'TITLE' : 'title',
+      'KEYWORDS' : 'keywords',
+      'CITY' : 'city',
+      'ORGANISER_KEYWORDS': 'organiser_keywords',
+      'ZIPCODE' : 'zipcode',
+      'COUNTRY' : 'country',
+      'CATEGORY_NAME' : 'category_name',
+      'AGEFROM' : 'agefrom',
+      'DETAIL_LANG' : 'detail_lang',
+      'PRICE' : 'price',
+      'STARTDATE' : 'startdate',
+      'ENDDATE' : 'enddate',
+      'ORGANISER_LABEL' : 'organiser_label',
+      'LOCATION_LABEL' : 'location_label',
+      'EXTERNALID' : 'externalid',
+      'LASTUPDATED' : 'lastupdated',
+      'CREATIONDATE' : 'creationdate',
+      'CREATEDBY' : 'createdby',
+      'PERMANENT' : 'permanent',
+      'CATEGORY_EVENTTYPE_NAME' : 'category_eventtype_name',
+      'LOCATIONTYPE' : 'locationtype',
+      'OFFERTYPE' : 'offertype',
+      'CATEGORY_THEME_NAME' : 'category_theme_name',
+      'CATEGORY_FACILITY_NAME' : 'category_facility_name',
+      'CATEGORY_TARGETAUDIENCE_NAME' : 'category_targetaudience_name',
+      'CATEGORY_FLANDERSREGION_NAME' : 'category_flandersregion_name',
+      'AVAILABLEFROM' : 'availablefrom'
+    },
     en: {
       'KEYWORDS' : 'label',
       'PHYSICAL_GIS' : 'geo',
@@ -19382,25 +19415,21 @@ angular
   .service('QueryTreeTranslator', QueryTreeTranslator);
 
 /* @ngInject */
-function QueryTreeTranslator(queryFieldTranslations) {
-
-  var translations = queryFieldTranslations;
-
+function QueryTreeTranslator(queryFieldTranslations, queryFields) {
   /**
    * @param {string} field    - The field to translate.
    * @param {string} srcLang  - To source language to translate from.
    */
   var translateField = function (field, srcLang) {
-    var translation = field,
-      identifier = _.findKey(translations[srcLang], function (src) {
-        return src === field;
-      });
+    var translatableFieldName = _.findKey(queryFieldTranslations[srcLang], function (src) {
+      return src === field;
+    });
 
-    if (identifier) {
-      translation = identifier.toLowerCase();
-    }
+    var queryField = (undefined === translatableFieldName) ?
+      undefined :
+      _.find(queryFields, {name: translatableFieldName.toLowerCase()});
 
-    return translation;
+    return (undefined === queryField) ? field : queryField.field;
   };
 
   var translateNode = function (node, depth) {
@@ -19423,6 +19452,7 @@ function QueryTreeTranslator(queryFieldTranslations) {
     }
 
     if (node.field) {
+      node.field = translateField(node.field, 'sapi2');
       node.field = translateField(node.field, 'en');
       node.field = translateField(node.field, 'nl');
     }
@@ -19433,7 +19463,7 @@ function QueryTreeTranslator(queryFieldTranslations) {
     return translateNode(queryTree, 0);
   };
 }
-QueryTreeTranslator.$inject = ["queryFieldTranslations"];
+QueryTreeTranslator.$inject = ["queryFieldTranslations", "queryFields"];
 
 // Source: src/search/services/query-tree-validator.service.js
 /**
