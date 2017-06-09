@@ -11515,10 +11515,10 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  var dPD = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  controller.hasNoDefault = (dPD === null || typeof dPD === 'undefined' || dPD === '');
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
   if (!controller.hasNoDefault && isDraft) {
-    controller.eventFormData.availableFrom = dPD;
+    controller.eventFormData.availableFrom = defaultPublicationDate;
   }
 
   function publish() {
@@ -22335,26 +22335,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/organizer-typeahead-popup-template.html',
-    "<ul class=\"dropdown-menu\" ng-show=\"isOpen() && !moveInProgress\" ng-style=\"{top: position().top+'px', left: position().left+'px'}\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
-    "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\">\n" +
-    "        <div uib-typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
-    "    </li>\n" +
-    "    <li>\n" +
-    "        <div class=\"panel panel-default text-center\">\n" +
-    "            <div class=\"panel-body\">\n" +
-    "                <p>Organisatie niet gevonden?</p>\n" +
-    "                <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
-    "                        data-target=\"#waar-organisatie-toevoegen\" ng-click=\"$parent.openOrganizerModal()\">\n" +
-    "                    Nieuwe organisator toevoegen\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </li>\n" +
-    "</ul>\n"
-  );
-
-
   $templateCache.put('templates/organizer-typeahead-template.html',
     "<a>{{match.model.name}}</a>"
   );
@@ -22897,10 +22877,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "    <div ng-if=\"!efpc.saving\">\n" +
-    "      <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Meteen publiceren</button>\n" +
-    "      <button class=\"btn btn-success\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
-    "      <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
-    "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }}</span>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publish()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
+    "      <button class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publishLater()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.preview()\"\n" +
+    "              ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publish()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault\">Klaar met bewerken</button>\n" +
+    "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>\n" +
+    "          Online vanaf <span ng-bind=\"efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'\"></span>\n" +
+    "      </span>\n" +
     "    </div>\n" +
     "    <div ng-if=\"efpc.saving\">\n" +
     "      <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i>\n" +
@@ -23354,20 +23348,18 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
     "                             typeahead-min-length=\"3\"\n" +
     "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
-    "                             typeahead-popup-template-url=\"templates/organizer-typeahead-popup-template.html\"\n" +
     "                             typeahead-wait-ms=\"300\"\n" +
     "                             focus-if=\"organizerCssClass == 'state-filling'\"\n" +
     "                             udb-auto-scroll/>\n" +
-    "                             <div class=\"dropdown-menu-no-results\"\n" +
-    "                             ng-show=\"emptyOrganizerAutocomplete && organizer\">\n" +
-    "                                <div class=\"panel panel-default text-center\">\n" +
-    "                                    <div class=\"panel-body\">\n" +
-    "                                        <p>Organisatie niet gevonden?</p>\n" +
-    "                                        <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" ng-click=\"openOrganizerModal()\">\n" +
-    "                                            Nieuwe organisatie toevoegen\n" +
-    "                                        </button>\n" +
-    "                                    </div>\n" +
-    "                                </div>\n" +
+    "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
+    "                        <div class=\"panel panel-default text-center\">\n" +
+    "                          <div class=\"panel-body\">\n" +
+    "                            <p>Organisatie niet gevonden?</p>\n" +
+    "                            <button type='button' class='btn btn-primary' ng-click=\"openOrganizerModal()\">\n" +
+    "                              Nieuwe organisator toevoegen\n" +
+    "                            </button>\n" +
+    "                          </div>\n" +
+    "                        </div>\n" +
     "                      </div>\n" +
     "                    </span>\n" +
     "                  </div>\n" +
