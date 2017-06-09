@@ -23358,6 +23358,17 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                             typeahead-wait-ms=\"300\"\n" +
     "                             focus-if=\"organizerCssClass == 'state-filling'\"\n" +
     "                             udb-auto-scroll/>\n" +
+    "                             <div class=\"dropdown-menu-no-results\"\n" +
+    "                             ng-show=\"emptyOrganizerAutocomplete && organizer\">\n" +
+    "                                <div class=\"panel panel-default text-center\">\n" +
+    "                                    <div class=\"panel-body\">\n" +
+    "                                        <p>Organisatie niet gevonden?</p>\n" +
+    "                                        <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" ng-click=\"openOrganizerModal()\">\n" +
+    "                                            Nieuwe organisatie toevoegen\n" +
+    "                                        </button>\n" +
+    "                                    </div>\n" +
+    "                                </div>\n" +
+    "                      </div>\n" +
     "                    </span>\n" +
     "                  </div>\n" +
     "                </div>\n" +
