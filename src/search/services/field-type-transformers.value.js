@@ -14,7 +14,7 @@ angular
     'tokenized-string': ['+', '-'],
     'choice': ['=', '!'],
     'term': ['=', '!'],
-    'number': ['=', '<', '>'],
+    'number': ['=', '><', '<', '>'],
     'check': ['='],
     'date-range': ['=', '><', '<', '>']
 });

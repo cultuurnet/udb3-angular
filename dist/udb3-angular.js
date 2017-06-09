@@ -18632,7 +18632,7 @@ angular
     'tokenized-string': ['+', '-'],
     'choice': ['=', '!'],
     'term': ['=', '!'],
-    'number': ['=', '<', '>'],
+    'number': ['=', '><', '<', '>'],
     'check': ['='],
     'date-range': ['=', '><', '<', '>']
 });
@@ -25384,6 +25384,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "\n" +
     "      <div ng-switch-when=\"<\">\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"field.upperBound\"/>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div ng-switch-when=\"><\">\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"field.lowerBound\"/>\n" +
+    "        <span>tot</span>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"field.upperBound\"/>\n" +
     "      </div>\n" +
     "    </div>\n" +
