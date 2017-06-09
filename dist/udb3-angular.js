@@ -375,8 +375,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 
                 return fieldexp;
             },
-        peg$c16 = /^[:]/,
-        peg$c17 = { type: "class", value: "[:]", description: "[:]" },
+        peg$c16 = /^[:<>]/,
+        peg$c17 = { type: "class", value: "[:<>]", description: "[:<>]" },
         peg$c18 = function(fieldname) {
                 return fieldname;
             },
@@ -426,8 +426,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$c28 = function(first_character, term) {
                 return first_character + term.join('');
             },
-        peg$c29 = /^[^, \t\r\n\f{}()+"\^~[\]]/,
-        peg$c30 = { type: "class", value: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]", description: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]" },
+        peg$c29 = /^[^, <>\t\r\n\f{}()"\^~[\]]/,
+        peg$c30 = { type: "class", value: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]", description: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]" },
         peg$c31 = "\"",
         peg$c32 = { type: "literal", value: "\"", description: "\"\\\"\"" },
         peg$c33 = /^[^"]/,
@@ -494,22 +494,20 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$c68 = "||",
         peg$c69 = { type: "literal", value: "||", description: "\"||\"" },
         peg$c70 = function() { return 'OR'; },
-        peg$c71 = ",",
-        peg$c72 = { type: "literal", value: ",", description: "\",\"" },
-        peg$c73 = "&&",
-        peg$c74 = { type: "literal", value: "&&", description: "\"&&\"" },
-        peg$c75 = function() { return 'AND'; },
-        peg$c76 = "+",
-        peg$c77 = { type: "literal", value: "+", description: "\"+\"" },
-        peg$c78 = "-",
-        peg$c79 = { type: "literal", value: "-", description: "\"-\"" },
-        peg$c80 = "!",
-        peg$c81 = { type: "literal", value: "!", description: "\"!\"" },
-        peg$c82 = { type: "other", description: "whitespace" },
-        peg$c83 = /^[ \t\r\n\f]/,
-        peg$c84 = { type: "class", value: "[ \\t\\r\\n\\f]", description: "[ \\t\\r\\n\\f]" },
-        peg$c85 = void 0,
-        peg$c86 = { type: "any", description: "any character" },
+        peg$c71 = "&&",
+        peg$c72 = { type: "literal", value: "&&", description: "\"&&\"" },
+        peg$c73 = function() { return 'AND'; },
+        peg$c74 = "+",
+        peg$c75 = { type: "literal", value: "+", description: "\"+\"" },
+        peg$c76 = "-",
+        peg$c77 = { type: "literal", value: "-", description: "\"-\"" },
+        peg$c78 = "!",
+        peg$c79 = { type: "literal", value: "!", description: "\"!\"" },
+        peg$c80 = { type: "other", description: "whitespace" },
+        peg$c81 = /^[ \t\r\n\f]/,
+        peg$c82 = { type: "class", value: "[ \\t\\r\\n\\f]", description: "[ \\t\\r\\n\\f]" },
+        peg$c83 = void 0,
+        peg$c84 = { type: "any", description: "any character" },
 
         peg$currPos          = 0,
         peg$reportedPos      = 0,
@@ -1625,6 +1623,166 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
           peg$currPos = s0;
           s0 = peg$c0;
         }
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 123) {
+            s1 = peg$c56;
+            peg$currPos++;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c57); }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parseunquoted_term();
+            if (s2 !== peg$FAILED) {
+              s3 = [];
+              s4 = peg$parse_();
+              while (s4 !== peg$FAILED) {
+                s3.push(s4);
+                s4 = peg$parse_();
+              }
+              if (s3 !== peg$FAILED) {
+                if (input.substr(peg$currPos, 2) === peg$c51) {
+                  s4 = peg$c51;
+                  peg$currPos += 2;
+                } else {
+                  s4 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c52); }
+                }
+                if (s4 !== peg$FAILED) {
+                  s5 = [];
+                  s6 = peg$parse_();
+                  if (s6 !== peg$FAILED) {
+                    while (s6 !== peg$FAILED) {
+                      s5.push(s6);
+                      s6 = peg$parse_();
+                    }
+                  } else {
+                    s5 = peg$c0;
+                  }
+                  if (s5 !== peg$FAILED) {
+                    s6 = peg$parseunquoted_term();
+                    if (s6 !== peg$FAILED) {
+                      if (input.charCodeAt(peg$currPos) === 93) {
+                        s7 = peg$c53;
+                        peg$currPos++;
+                      } else {
+                        s7 = peg$FAILED;
+                        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+                      }
+                      if (s7 !== peg$FAILED) {
+                        peg$reportedPos = s0;
+                        s1 = peg$c55(s2, s6);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            if (input.charCodeAt(peg$currPos) === 91) {
+              s1 = peg$c49;
+              peg$currPos++;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c50); }
+            }
+            if (s1 !== peg$FAILED) {
+              s2 = peg$parseunquoted_term();
+              if (s2 !== peg$FAILED) {
+                s3 = [];
+                s4 = peg$parse_();
+                while (s4 !== peg$FAILED) {
+                  s3.push(s4);
+                  s4 = peg$parse_();
+                }
+                if (s3 !== peg$FAILED) {
+                  if (input.substr(peg$currPos, 2) === peg$c51) {
+                    s4 = peg$c51;
+                    peg$currPos += 2;
+                  } else {
+                    s4 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c52); }
+                  }
+                  if (s4 !== peg$FAILED) {
+                    s5 = [];
+                    s6 = peg$parse_();
+                    if (s6 !== peg$FAILED) {
+                      while (s6 !== peg$FAILED) {
+                        s5.push(s6);
+                        s6 = peg$parse_();
+                      }
+                    } else {
+                      s5 = peg$c0;
+                    }
+                    if (s5 !== peg$FAILED) {
+                      s6 = peg$parseunquoted_term();
+                      if (s6 !== peg$FAILED) {
+                        if (input.charCodeAt(peg$currPos) === 125) {
+                          s7 = peg$c58;
+                          peg$currPos++;
+                        } else {
+                          s7 = peg$FAILED;
+                          if (peg$silentFails === 0) { peg$fail(peg$c59); }
+                        }
+                        if (s7 !== peg$FAILED) {
+                          peg$reportedPos = s0;
+                          s1 = peg$c55(s2, s6);
+                          s0 = s1;
+                        } else {
+                          peg$currPos = s0;
+                          s0 = peg$c0;
+                        }
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          }
+        }
       }
 
       return s0;
@@ -1744,33 +1902,18 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
             s0 = s1;
             if (s0 === peg$FAILED) {
               s0 = peg$currPos;
-              if (input.charCodeAt(peg$currPos) === 44) {
+              if (input.substr(peg$currPos, 2) === peg$c71) {
                 s1 = peg$c71;
-                peg$currPos++;
+                peg$currPos += 2;
               } else {
                 s1 = peg$FAILED;
                 if (peg$silentFails === 0) { peg$fail(peg$c72); }
               }
               if (s1 !== peg$FAILED) {
                 peg$reportedPos = s0;
-                s1 = peg$c70();
+                s1 = peg$c73();
               }
               s0 = s1;
-              if (s0 === peg$FAILED) {
-                s0 = peg$currPos;
-                if (input.substr(peg$currPos, 2) === peg$c73) {
-                  s1 = peg$c73;
-                  peg$currPos += 2;
-                } else {
-                  s1 = peg$FAILED;
-                  if (peg$silentFails === 0) { peg$fail(peg$c74); }
-                }
-                if (s1 !== peg$FAILED) {
-                  peg$reportedPos = s0;
-                  s1 = peg$c75();
-                }
-                s0 = s1;
-              }
             }
           }
         }
@@ -1811,27 +1954,27 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
       var s0;
 
       if (input.charCodeAt(peg$currPos) === 43) {
-        s0 = peg$c76;
+        s0 = peg$c74;
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c77); }
+        if (peg$silentFails === 0) { peg$fail(peg$c75); }
       }
       if (s0 === peg$FAILED) {
         if (input.charCodeAt(peg$currPos) === 45) {
-          s0 = peg$c78;
+          s0 = peg$c76;
           peg$currPos++;
         } else {
           s0 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c79); }
+          if (peg$silentFails === 0) { peg$fail(peg$c77); }
         }
         if (s0 === peg$FAILED) {
           if (input.charCodeAt(peg$currPos) === 33) {
-            s0 = peg$c80;
+            s0 = peg$c78;
             peg$currPos++;
           } else {
             s0 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c81); }
+            if (peg$silentFails === 0) { peg$fail(peg$c79); }
           }
         }
       }
@@ -1844,22 +1987,22 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 
       peg$silentFails++;
       s0 = [];
-      if (peg$c83.test(input.charAt(peg$currPos))) {
+      if (peg$c81.test(input.charAt(peg$currPos))) {
         s1 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c84); }
+        if (peg$silentFails === 0) { peg$fail(peg$c82); }
       }
       if (s1 !== peg$FAILED) {
         while (s1 !== peg$FAILED) {
           s0.push(s1);
-          if (peg$c83.test(input.charAt(peg$currPos))) {
+          if (peg$c81.test(input.charAt(peg$currPos))) {
             s1 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s1 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c84); }
+            if (peg$silentFails === 0) { peg$fail(peg$c82); }
           }
         }
       } else {
@@ -1868,7 +2011,7 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c82); }
+        if (peg$silentFails === 0) { peg$fail(peg$c80); }
       }
 
       return s0;
@@ -1884,11 +2027,11 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c86); }
+        if (peg$silentFails === 0) { peg$fail(peg$c84); }
       }
       peg$silentFails--;
       if (s1 === peg$FAILED) {
-        s0 = peg$c85;
+        s0 = peg$c83;
       } else {
         peg$currPos = s0;
         s0 = peg$c0;
@@ -19277,8 +19420,16 @@ angular.module('udb.search')
 /* @ngInject */
 function QueryTreeValidator(queryFields) {
 
-  var validFieldNames = _.map(queryFields, 'name'),
-    implicitToken = '<implicit>';
+  var validFieldNames = _.union(_.map(queryFields, 'name'), ['_exists_']),
+      implicitToken = '<implicit>',
+      validParentFieldNames = _(validFieldNames)
+        .filter(function (fieldName) {
+          return fieldName.indexOf('.') > 0;
+        })
+        .map(function (fieldName) {
+          return fieldName.split('.')[0];
+        })
+        .value();
 
   var validateFields = function (current, depth, errors) {
     var left = current.left || false,
@@ -19301,8 +19452,21 @@ function QueryTreeValidator(queryFields) {
 
     var field = current.field;
     if (typeof(field) !== 'undefined') {
-      if (field !== null && field !== implicitToken && !_.contains(validFieldNames, field)) {
-        errors.push(field + ' is not a valid search field');
+
+      var fieldName = _.trim(field, '.\\*');
+      var fieldHasWildcard = field !== fieldName;
+
+      if (fieldName !== null && fieldName !== implicitToken) {
+
+        if (fieldHasWildcard) {
+          if (!_.contains(validParentFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid parent search field that can be used with a wildcard');
+          }
+        } else {
+          if (!_.contains(validFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid search field');
+          }
+        }
       }
     }
   };
