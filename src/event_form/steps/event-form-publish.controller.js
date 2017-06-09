@@ -34,7 +34,7 @@ function EventFormPublishController(
   controller.eventFormData = EventFormData;
 
   var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
   if (!controller.hasNoDefault && isDraft) {
     controller.eventFormData.availableFrom = defaultPublicationDate;
   }

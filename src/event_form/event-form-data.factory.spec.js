@@ -300,4 +300,15 @@ describe('Factory: Event form data', function () {
 
     EventFormData.saveOpeningHours();
   });
+
+  it('should show step 3 when timing changes', function (done) {
+    EventFormData.initCalendar();
+
+    EventFormData
+      .timingChanged$
+      .subscribe(done);
+
+    EventFormData.timingChanged();
+    expect(EventFormData.showStep3).toEqual(true);
+  });
 });

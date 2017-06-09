@@ -1,6 +1,7 @@
 describe('Component: Opening Hours', function () {
 
-  var $componentController, OpeningHourComponent, OpeningHoursCollection, $scope, today, openingHour;
+  var $componentController, $uibModal, $scope;
+  var OpeningHourComponent, OpeningHoursCollection, today, openingHour, formData;
 
   beforeEach(module('udb.event-form'));
 
@@ -8,12 +9,20 @@ describe('Component: Opening Hours', function () {
     $componentController = _$componentController_;
     $scope = $rootScope.$new();
     OpeningHoursCollection = $injector.get('OpeningHoursCollection');
+    formData = $injector.get('EventFormData');
+    $uibModal = $injector.get('$uibModal');
+    $q = $injector.get('$q');
 
     OpeningHourComponent = $componentController(
       'udbEventFormOpeningHours',
       {
-        openingHours: OpeningHoursCollection
-      });
+        $uibModal: $uibModal
+      },
+      {
+        openingHoursCollection: OpeningHoursCollection,
+        formData: formData
+      }
+    );
 
     today = moment('2017-01-27 14:01').toDate();
     jasmine.clock().install();
@@ -31,4 +40,21 @@ describe('Component: Opening Hours', function () {
 
     OpeningHourComponent.prototype = openingHour;
   }));
+
+  it('should pass along data to the offer form when updating opening-hours', function () {
+    var expectedOpeningHoursList = ['foo', 'bar'];
+    function immediatelyResolveWithList() {
+      return {
+        result: $q.resolve(expectedOpeningHoursList)
+      };
+    }
+
+    spyOn($uibModal, "open").and.callFake(immediatelyResolveWithList);
+    spyOn(formData, "saveOpeningHours");
+
+    OpeningHourComponent.edit();
+    $scope.$digest();
+
+    expect(formData.saveOpeningHours).toHaveBeenCalledWith(expectedOpeningHoursList);
+  });
 });

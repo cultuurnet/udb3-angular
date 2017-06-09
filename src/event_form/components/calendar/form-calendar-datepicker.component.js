@@ -18,7 +18,8 @@ angular
 function FormCalendarDatepickerController() {
   var datepicker = this;
   var options = {
-    minDate: new Date()
+    minDate: new Date(),
+    showWeeks: false
   };
 
   datepicker.$onInit = function() {

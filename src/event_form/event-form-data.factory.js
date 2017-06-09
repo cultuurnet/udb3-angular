@@ -49,7 +49,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -464,6 +464,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
+      this.showStep(3);
       this.timingChangedCallback(this);
     },
 
@@ -477,8 +478,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     setCalendarType: function (type) {
       var formData = this;
-
-      formData.showStep(3);
 
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.
