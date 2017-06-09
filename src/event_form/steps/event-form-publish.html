@@ -3,10 +3,24 @@
 
     <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>
     <div ng-if="!efpc.saving">
-      <button type="submit" class="btn btn-success" ng-click="efpc.publish()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus)">Meteen publiceren</button>
-      <button class="btn btn-success" ng-click="efpc.publishLater()" ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault">Later publiceren</button>
-      <button type="submit" class="btn btn-success" ng-click="efpc.preview()" ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)">Klaar met bewerken</button>
-      <span ng-if="efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }}</span>
+      <button type="submit"
+              class="btn btn-success"
+              ng-click="efpc.publish()"
+              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault">Meteen publiceren</button>
+      <button class="btn btn-success"
+              ng-click="efpc.publishLater()"
+              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault">Later publiceren</button>
+      <button type="submit"
+              class="btn btn-success"
+              ng-click="efpc.preview()"
+              ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)">Klaar met bewerken</button>
+      <button type="submit"
+              class="btn btn-success"
+              ng-click="efpc.publish()"
+              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault">Klaar met bewerken</button>
+      <span ng-if="efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>
+          Online vanaf <span ng-bind="efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'"></span>
+      </span>
     </div>
     <div ng-if="efpc.saving">
       <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
