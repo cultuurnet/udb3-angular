@@ -18707,10 +18707,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
           inclusive = node.inclusive;
 
       if (min instanceof Date) {
-        min = min.toISOString();
+        min = moment(min).format();
       }
       if (max instanceof Date) {
-        max = max.toISOString();
+        max = moment(max).format();
       }
 
       term = min + ' TO ' + max;
