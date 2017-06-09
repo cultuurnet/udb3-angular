@@ -155,7 +155,7 @@
 
       <div role="tabpanel" class="tab-pane" ng-show="isTabActive('history')">
         <div class="timeline">
-          <dl ng-repeat="eventAction in ::eventHistory track by $index">
+          <dl ng-repeat="eventAction in eventHistory track by $index">
             <dt ng-bind="eventAction.date | date:'dd/MM/yyyy H:mm'"></dt>
             <dd>
               <span class="author" ng-if="eventAction.author">{{eventAction.author}}</span><br ng-if="eventAction.author"/>
