@@ -44,7 +44,6 @@ angular
       'ORGANISER_KEYWORDS': 'label organisatie',
       'ZIPCODE' : 'postcode',
       'COUNTRY' : 'land',
-      'PHYSICAL_GIS' : 'geo-coördinaten',
       'CATEGORY_NAME' : 'categorie',
       'AGEFROM' : 'leeftijd vanaf',
       'DETAIL_LANG' : 'vertaling',
@@ -58,7 +57,6 @@ angular
       'CREATIONDATE' : 'gecreëerd',
       'CREATEDBY' : 'gecreëerd door',
       'PERMANENT' : 'permanent',
-      'DATETYPE' : 'wanneer',
       'CATEGORY_EVENTTYPE_NAME' : 'type',
       'LOCATIONTYPE' : 'locatietype',
       'OFFERTYPE' : 'aanbodtype',
@@ -66,11 +64,6 @@ angular
       'CATEGORY_FACILITY_NAME' : 'voorzieningen',
       'CATEGORY_TARGETAUDIENCE_NAME' : 'doelgroep',
       'CATEGORY_FLANDERSREGION_NAME' : 'regio / gemeente',
-      'LIKE_COUNT' : 'aantal keer \'geliket\'',
-      'RECOMMEND_COUNT' : 'aantal keer aanbevolen',
-      'ATTEND_COUNT' : 'aantal keer \'ik ga hierheen\'',
-      'COMMENT_COUNT' : 'aantal reacties',
-      'PRIVATE' : 'privé',
       'AVAILABLEFROM' : 'datum beschikbaar'
     }
   });
