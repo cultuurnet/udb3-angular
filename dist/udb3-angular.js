@@ -21549,13 +21549,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
-    "              <tr>\n" +
+    "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
     "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
     "                  <span ng-if=\"::allAges && !noAgeInfo\">Alle leeftijden</span>\n" +
-    "                  <span ng-if=\"noAgeInfo\">Geen informatie</span>\n" +
+    "                  <span ng-if=\"noAgeInfo\">Geen leeftijdsinformatie</span>\n" +
     "                </td>\n" +
+    "\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
