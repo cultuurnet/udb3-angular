@@ -21602,8 +21602,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <a ng-bind=\"::ageRange.label\"\n" +
     "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
-    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
-    "                <span ng-if=\"::!$last\">, </span>\n" +
+    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "                <div class=\"form-group\" >\n" +
