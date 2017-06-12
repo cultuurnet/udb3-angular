@@ -10,7 +10,9 @@ describe('Service: QueryTreeValidator', function () {
       {name: 'allowed-query-field', field:'allowed.query.field', type: 'string'},
       {field: 'workflowStatus', type: 'choice', options: ['DRAFT', 'READY_FOR_VALIDATION', 'APPROVED', 'REJECTED', 'DELETED']},
       {field: 'name.nl', type: 'string'},
-      {field: 'name.fr', type: 'string'}
+      {field: 'name.fr', type: 'string'},
+      {field: 'location.name.nl', type: 'string'},
+      {field: 'location.name.fr', type: 'string'},
     ];
 
     $provide.value('queryFields', queryFields);
@@ -69,6 +71,20 @@ describe('Service: QueryTreeValidator', function () {
     var queryTree = {
         left: {
           field: 'name.\\*',
+          term: 'braderie'
+        }
+      },
+      errors = [];
+
+    QueryTreeValidator.validate(queryTree, errors);
+
+    expect(errors.length).toBe(0);
+  });
+
+  it('should allow wildcards for fields that have child properties more then one level deep', function () {
+    var queryTree = {
+        left: {
+          field: 'location.name.\\*',
           term: 'braderie'
         }
       },

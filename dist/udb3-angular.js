@@ -19490,7 +19490,9 @@ function QueryTreeValidator(queryFields) {
           return field.indexOf('.') > 0;
         })
         .map(function (field) {
-          return field.split('.')[0];
+          var fields = field.split('.');
+          fields.pop();
+          return fields.join('.');
         })
         .value();
 
