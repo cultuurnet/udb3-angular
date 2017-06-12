@@ -9549,7 +9549,8 @@ angular
 function PriceFormModalController(
   $uibModalInstance,
   EventFormData,
-  price
+  price,
+  $filter
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -9574,6 +9575,10 @@ function PriceFormModalController(
         price: ''
       };
       pfmc.price.push(priceItem);
+    } else {
+      angular.forEach(pfmc.price, function(info) {
+        info.price = $filter('currency')(info.price, ',', 0);
+      });
     }
 
     pfmc.priceError = false;
@@ -9636,12 +9641,15 @@ function PriceFormModalController(
   }
 
   function save() {
+    angular.forEach(pfmc.price, function(info) {
+      info.price = parseFloat(info.price.replace(',', '.'));
+    });
     EventFormData.priceInfo = pfmc.price;
     $uibModalInstance.close();
   }
 
 }
-PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price"];
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter"];
 
 // Source: src/event_form/components/price-info/price-info.component.js
 /**
@@ -21987,7 +21995,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
     "        Er ging iets fout bij het opslaan van de prijs.\n" +
     "    </div>\n" +
-    "    <div ng-show=\"pfmc.priceForm.priceFieldForm.price.$invalid && pfmc.priceForm.priceFieldForm.price.$touched\" class=\"alert alert-danger\">\n" +
+    "    <div ng-show=\"pfmc.priceForm.priceFieldForm.price.$invalid && pfmc.priceForm.priceFieldForm.price.$dirty\" class=\"alert alert-danger\">\n" +
     "        Geef een geldig bedrag in. Decimalen noteer je met een komma.\n" +
     "    </div>\n" +
     "\n" +
@@ -22041,7 +22049,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                Gratis\n" +
     "              </span>\n" +
     "              <span ng-if=\"priceInfo.price != 0\">\n" +
-    "                {{priceInfo.price}} euro\n" +
+    "                {{priceInfo.price | currency:'€' }} euro\n" +
     "              </span>\n" +
     "            </td>\n" +
     "          </tr>\n" +

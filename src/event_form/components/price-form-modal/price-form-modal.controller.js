@@ -15,7 +15,8 @@ angular
 function PriceFormModalController(
   $uibModalInstance,
   EventFormData,
-  price
+  price,
+  $filter
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -40,6 +41,10 @@ function PriceFormModalController(
         price: ''
       };
       pfmc.price.push(priceItem);
+    } else {
+      angular.forEach(pfmc.price, function(info) {
+        info.price = $filter('currency')(info.price, ',', 0);
+      });
     }
 
     pfmc.priceError = false;
@@ -102,6 +107,9 @@ function PriceFormModalController(
   }
 
   function save() {
+    angular.forEach(pfmc.price, function(info) {
+      info.price = parseFloat(info.price.replace(',', '.'));
+    });
     EventFormData.priceInfo = pfmc.price;
     $uibModalInstance.close();
   }
