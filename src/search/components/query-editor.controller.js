@@ -54,7 +54,7 @@ function QueryEditorController(
           nodes: [
             {
               name: 'title',
-              field: 'name.*',
+              field: 'name.\\*',
               term: '',
               fieldType: 'tokenized-string',
               transformer: '+'
@@ -102,7 +102,8 @@ function QueryEditorController(
 
     var insertIndex = fieldIndex + 1,
         field = {
-          field: 'title',
+          field: 'name.\\*',
+          name: 'title',
           term: '',
           fieldType: 'tokenized-string',
           transformer: '+'
@@ -194,7 +195,8 @@ function QueryEditorController(
       operator: 'OR',
       nodes: [
         {
-          field: 'title',
+          field: 'name.\\*',
+          name: 'title',
           term: '',
           fieldType: 'tokenized-string',
           transformer: '+'
@@ -211,7 +213,8 @@ function QueryEditorController(
       operator: 'AND',
       nodes: [
         {
-          field: 'title',
+          field: 'name.\\*',
+          name: 'title',
           term: '',
           fieldType: 'tokenized-string',
           transformer: '+'

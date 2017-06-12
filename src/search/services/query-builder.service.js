@@ -340,7 +340,8 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         operator: 'OR',
         nodes: [
           {
-            field: 'title',
+            field: 'name.\\*',
+            name: 'title',
             term: '',
             fieldType: 'tokenized-string',
             transformer: '+'
