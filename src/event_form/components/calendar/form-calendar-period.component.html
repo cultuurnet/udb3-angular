@@ -10,17 +10,17 @@
     </label>
     <div class="periodic-info">
         <div class="start-date">
-            <label>van</label>
+            <label>Van</label>
             <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                                            ng-model="$ctrl.formData.startDate" 
+                                            ng-model="$ctrl.formData.startDate"
                                             ng-change="$ctrl.formData.periodicTimingChanged()">
             </udb-form-calendar-datepicker>
         </div>
 
         <div class="end-date">
-            <label>tot</label>
+            <label>Tot</label>
             <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                                            ng-model="$ctrl.formData.endDate" 
+                                            ng-model="$ctrl.formData.endDate"
                                             ng-change="$ctrl.formData.periodicTimingChanged()">
             </udb-form-calendar-datepicker>
         </div>

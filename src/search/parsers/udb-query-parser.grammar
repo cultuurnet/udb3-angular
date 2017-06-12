@@ -172,7 +172,7 @@ field_exp
     }
 
 fieldname
-  = fieldname:unquoted_field [:]
+  = fieldname:unquoted_field [:<>]
     {
         return fieldname;
     }
@@ -231,7 +231,7 @@ unquoted_term
     }
 
 term_char
-  = [^, \t\r\n\f\{\}()+"^~\[\]]
+  = [^, <>\t\r\n\f\{\}()"^~\[\]]
 
 
 quoted_term
@@ -291,6 +291,22 @@ range_operator_exp
             'inclusive': false
         };
     }
+  / '{' term_min:unquoted_term _* 'TO' _+ term_max:unquoted_term ']'
+    {
+        return {
+            'lowerBound': term_min,
+            'upperBound': term_max,
+            'inclusive': true
+        };
+    }
+  / '[' term_min:unquoted_term _* 'TO' _+ term_max:unquoted_term '}'
+    {
+        return {
+            'lowerBound': term_min,
+            'upperBound': term_max,
+            'inclusive': true
+        };
+    }
 
 operator_exp
   = _* operator:operator _+
@@ -307,7 +323,6 @@ operator
   / 'AND'
   / 'NOT'
   / '||' { return 'OR'; }
-  / ',' { return 'OR'; }
   / '&&' { return 'AND'; }
 
 prefix_operator_exp

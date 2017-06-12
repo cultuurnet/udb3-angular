@@ -499,7 +499,6 @@ module.exports = function (grunt) {
     'cssmin',
     'uglify'
   ]);
-  grunt.registerTask('bild', ['lite-build']);
 
   grunt.registerTask('default', [
     'newer:jshint',

@@ -53,6 +53,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       this.url = jsonOrganizer.url;
+      this.contactPoint = jsonOrganizer.contactPoint;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);

@@ -281,6 +281,59 @@ function UdbApi(
         .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
+  /**
+   * @param {string} organizerId
+   * @param {string} website
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerWebsite = function(organizerId, website) {
+    var params = {
+      url: website
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/url', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} name
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerName = function(organizerId, name) {
+    var params = {
+      name: name
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Object} address
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerAddress = function(organizerId, address) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Array} contact
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerContact = function(organizerId, contact) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/contactPoint', contact, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId

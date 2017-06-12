@@ -116,6 +116,8 @@ function EventDetail(
       .then(showHistory);
 
     $scope.event = jsonLDLangFilter(event, language);
+    $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
+    $scope.noAgeInfo = event.typicalAgeRange === '';
 
     $scope.eventIdIsInvalid = false;
 
