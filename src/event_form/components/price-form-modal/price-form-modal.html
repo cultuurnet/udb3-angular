@@ -36,7 +36,7 @@
                                     <input type="text"
                                            class="form-control"
                                            name="price"
-                                           ng-pattern="/^(0,|[1-9]\d*|[1-9])(,\d{1,2})?$/"
+                                           ng-pattern="/^([1-9]\d*|[1-9]|[0])(,\d{1,2})?$/"
                                            ng-model="priceInfo.price"
                                            ng-model-options="{ updateOn: 'default' }"
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
