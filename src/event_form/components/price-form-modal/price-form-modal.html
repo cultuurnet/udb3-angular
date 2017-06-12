@@ -36,7 +36,7 @@
                                     <input type="text"
                                            class="form-control"
                                            name="price"
-                                           ng-pattern="/^\d+(,\d{1,2})?$/"
+                                           ng-pattern="/^(0,|[1-9]\d*|[1-9])(,\d{1,2})?$/"
                                            ng-model="priceInfo.price"
                                            ng-model-options="{ updateOn: 'default' }"
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
@@ -73,7 +73,7 @@
     <div ng-show="pfmc.priceError" class="alert alert-danger">
         Er ging iets fout bij het opslaan van de prijs.
     </div>
-    <div ng-show="pfmc.priceForm.priceFieldForm.price.$invalid" class="alert alert-danger">
+    <div ng-show="pfmc.priceForm.priceFieldForm.price.$invalid && pfmc.priceForm.priceFieldForm.price.$touched" class="alert alert-danger">
         Geef een geldig bedrag in. Decimalen noteer je met een komma.
     </div>
 

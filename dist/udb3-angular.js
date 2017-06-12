@@ -21950,7 +21950,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <input type=\"text\"\n" +
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
-    "                                           ng-pattern=\"/^\\d+(,\\d{1,2})?$/\"\n" +
+    "                                           ng-pattern=\"/^(0,|[1-9]\\d*|[1-9])(,\\d{1,2})?$/\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
@@ -21987,7 +21987,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
     "        Er ging iets fout bij het opslaan van de prijs.\n" +
     "    </div>\n" +
-    "    <div ng-show=\"pfmc.priceForm.priceFieldForm.price.$invalid\" class=\"alert alert-danger\">\n" +
+    "    <div ng-show=\"pfmc.priceForm.priceFieldForm.price.$invalid && pfmc.priceForm.priceFieldForm.price.$touched\" class=\"alert alert-danger\">\n" +
     "        Geef een geldig bedrag in. Decimalen noteer je met een komma.\n" +
     "    </div>\n" +
     "\n" +
