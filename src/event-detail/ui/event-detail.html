@@ -144,8 +144,9 @@
               <tr>
                 <td><span class="row-label">Geschikt voor</span></td>
                 <td>
-                  <span ng-if="::event.typicalAgeRange">{{::event.typicalAgeRange}}</span>
-                  <span ng-if="::(!event.typicalAgeRange)">Alle leeftijden</span>
+                  <span ng-if="::!allAges && !noAgeInfo">{{event.typicalAgeRange}}</span>
+                  <span ng-if="::allAges && !noAgeInfo">Alle leeftijden</span>
+                  <span ng-if="noAgeInfo">Geen informatie</span>
                 </td>
               </tr>
             </tbody>

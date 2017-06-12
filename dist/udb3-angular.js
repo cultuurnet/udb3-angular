@@ -7746,6 +7746,8 @@ function EventDetail(
       .then(showHistory);
 
     $scope.event = jsonLDLangFilter(event, language);
+    $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
+    $scope.noAgeInfo = event.typicalAgeRange === '';
 
     $scope.eventIdIsInvalid = false;
 
@@ -21550,8 +21552,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"::event.typicalAgeRange\">{{::event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"::(!event.typicalAgeRange)\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::allAges && !noAgeInfo\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"noAgeInfo\">Geen informatie</span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
