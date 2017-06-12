@@ -129,7 +129,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
 
       } else {
-        result = unparseNode(branch.left, depth + 1, sentence);
+        var singleTransformedGroupedTerm = branch.field && (branch.left.field === implicitToken) && branch.left.prefix;
+
+        result = singleTransformedGroupedTerm ?
+          branch.field + ':(' + printTerm(branch.left) + ')' :
+          unparseNode(branch.left, depth + 1, sentence);
       }
 
       return result;
@@ -151,10 +155,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       fieldQuery += term;
 
       return sentence += fieldQuery;
-    }
-
-    if (depth === 0) {
-      return sentence;
     }
   };
 
@@ -424,7 +424,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
           // Make sure boolean field-query values are either true or false
           if (fieldType.type === 'check') {
             var trueValue = fieldType.name,
-                falseValue = '!(' + fieldType.name + ')';
+                falseValue = '(!' + fieldType.name + ')';
 
             if (!(field.term === trueValue || field.term === falseValue)) {
               field.invalid = true;

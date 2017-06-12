@@ -58,6 +58,14 @@ describe('Service: LuceneQueryBuilder', function () {
       createAndCompareUnparsedQuery('title:(+return +"pink panther")');
     });
 
+    it('Unparses queries with field grouping containing a single negated term', function () {
+      createAndCompareUnparsedQuery('calendarType:(!permanent)');
+    });
+
+    it('Unparses queries with field grouping containing multiple negated terms', function () {
+      createAndCompareUnparsedQuery('calendarType:(!permanent !periodic)');
+    });
+
     it('Groups a query tree with a single field and term', function () {
       var queryString = 'battery:horse';
       var query = LuceneQueryBuilder.createQuery(queryString);
