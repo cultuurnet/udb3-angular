@@ -137,7 +137,7 @@ function EventFormStep4Controller(
 
     var queryString = expressions.join(' AND ');
 
-    return udbApi.findEvents(queryString);
+    return udbApi.findOffers(queryString);
   }
 
   /**
@@ -153,16 +153,16 @@ function EventFormStep4Controller(
       /*jshint camelcase: false*/
       /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
       return {
-        text: EventFormData.name.nl,
-        location_label : location.name
+        'name.\\*': EventFormData.name.nl,
+        'location.name.\\*' : location.name
       };
     }
     else {
       /*jshint camelcase: false */
       return {
-        text: EventFormData.name.nl,
-        zipcode: EventFormData.address.postalCode,
-        keywords: 'UDB3 place'
+        'name.\\*': EventFormData.name.nl,
+        'postalCode': EventFormData.address.postalCode,
+        'labels': 'UDB3 place'
       };
     }
   }

@@ -2991,12 +2991,12 @@ function UdbApi(
   };
 
   /**
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
+   * @param {string} queryString - The query used to find offers.
+   * @param {number} [start] - From which offset the result set should start.
    * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
    *  search results or a failure.
    */
-  this.findEvents = function (queryString, start) {
+  this.findOffers = function (queryString, start) {
     var offset = start || 0,
         searchParams = {
           start: offset
@@ -3005,11 +3005,11 @@ function UdbApi(
     requestOptions.params = searchParams;
 
     if (queryString.length) {
-      searchParams.query = queryString;
+      searchParams.q = queryString;
     }
 
     return $http
-      .get(apiUrl + 'search', requestOptions)
+      .get(appConfig.baseSearchUrl + 'offers/', withoutAuthorization(requestOptions))
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -12480,7 +12480,7 @@ function EventFormStep4Controller(
 
     var queryString = expressions.join(' AND ');
 
-    return udbApi.findEvents(queryString);
+    return udbApi.findOffers(queryString);
   }
 
   /**
@@ -12496,16 +12496,16 @@ function EventFormStep4Controller(
       /*jshint camelcase: false*/
       /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
       return {
-        text: EventFormData.name.nl,
-        location_label : location.name
+        'name.\\*': EventFormData.name.nl,
+        'location.name.\\*' : location.name
       };
     }
     else {
       /*jshint camelcase: false */
       return {
-        text: EventFormData.name.nl,
-        zipcode: EventFormData.address.postalCode,
-        keywords: 'UDB3 place'
+        'name.\\*': EventFormData.name.nl,
+        'postalCode': EventFormData.address.postalCode,
+        'labels': 'UDB3 place'
       };
     }
   }
@@ -17595,7 +17595,7 @@ function OfferLocator($q, udbApi) {
     }
 
     udbApi
-      .findEvents('cdbid:"' + uuid + '"')
+      .findOffers('id:"' + uuid + '"')
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
@@ -20301,14 +20301,12 @@ function Search(
   $scope.currentPage = getCurrentPage();
 
   /**
-   * Fires off a search for events using a plain query string or a query object.
+   * Fires off a search for offers using a plain query string or a query object.
    * @param {String|Query} query A query string or object to search with.
    */
-  var findEvents = function (query) {
+  var findOffers = function (query) {
     var offset = ($scope.resultViewer.currentPage - 1) * $scope.resultViewer.pageSize;
     var queryString = typeof query === 'string' ? query : query.queryString;
-    var eventPromise = udbApi.findEvents(queryString, offset);
-
     var pageSearchParameter = $scope.resultViewer.currentPage > 1 ? String($scope.resultViewer.currentPage) : null;
 
     $location.search({
@@ -20318,10 +20316,12 @@ function Search(
 
     $scope.resultViewer.loading = true;
 
-    eventPromise.then(function (pagedEvents) {
-      offerLocator.addPagedCollection(pagedEvents);
-      $scope.resultViewer.setResults(pagedEvents);
-    });
+    udbApi
+      .findOffers(queryString, offset)
+      .then(function (pagedEvents) {
+        offerLocator.addPagedCollection(pagedEvents);
+        $scope.resultViewer.setResults(pagedEvents);
+      });
   };
 
   /**
@@ -20333,7 +20333,7 @@ function Search(
     if (queryBuilder.isValid(query)) {
       var realQuery = queryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
-      findEvents(realQuery);
+      findOffers(realQuery);
 
       if (realQuery !== query.originalQueryString) {
         $scope.realQuery = realQuery;
@@ -20486,7 +20486,7 @@ function Search(
     } else {
       $scope.resultViewer.currentPage = newPageNumber;
 
-      findEvents($scope.activeQuery);
+      findOffers($scope.activeQuery);
       $window.scroll(0, 0);
     }
   };

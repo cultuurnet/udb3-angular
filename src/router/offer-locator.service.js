@@ -71,7 +71,7 @@ function OfferLocator($q, udbApi) {
     }
 
     udbApi
-      .findEvents('cdbid:"' + uuid + '"')
+      .findOffers('id:"' + uuid + '"')
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 

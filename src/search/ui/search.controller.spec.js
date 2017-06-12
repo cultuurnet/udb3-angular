@@ -35,8 +35,8 @@ describe('Controller: Search', function() {
     $window = {
       alert: jasmine.createSpy('alert')
     };
-    udbApi = jasmine.createSpyObj('udbApi', ['findEvents', 'getEventById', 'exportEvents']);
-    udbApi.findEvents.and.returnValue($q.reject('nope'));
+    udbApi = jasmine.createSpyObj('udbApi', ['findOffers', 'getEventById', 'exportEvents']);
+    udbApi.findOffers.and.returnValue($q.reject('nope'));
 
     $location = jasmine.createSpyObj('$location', ['search']);
     $location.search.and.returnValue({});
