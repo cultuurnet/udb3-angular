@@ -2822,9 +2822,6 @@ input + .alert {
 .offer-form .extra-leeftijd .form-inline {
   margin: 10px 0;
 }
-.offer-form .extra-leeftijd .comma-span {
-  margin-left: -2px;
-}
 .offer-form .extra-task .fa {
   color: #777777;
   margin-left: 0.85em;

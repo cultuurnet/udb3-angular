@@ -11,11 +11,13 @@
                    ng-click="fagec.setAgeRangeByType(type)"></a><span ng-if="::!$last">, </span>
             </span>
             <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
-                <div class="form-group" >
+               <form name="ageForm">
+                   <div class="form-group" >
                     <label for="min-age">Van</label>
                     <input type="text"
                            class="form-control"
                            id="min-age"
+                           name="min"
                            ng-model="fagec.minAge"
                            ng-blur="fagec.instantSaveAgeRange()"
                            ng-change="fagec.delayedSaveAgeRange()"
@@ -26,13 +28,14 @@
                     <input type="text"
                            class="form-control"
                            id="max-age"
+                           name="max"
                            ng-model="fagec.maxAge"
                            ng-blur="fagec.instantSaveAgeRange()"
                            ng-change="fagec.delayedSaveAgeRange()"
                            udb-age-input>
                 </div>
+               </form>
             </div>
-
             <div class="alert alert-danger" role="alert" ng-show="fagec.error">
                 <span ng-bind="fagec.error"></span>
             </div>

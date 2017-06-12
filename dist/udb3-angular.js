@@ -8076,7 +8076,7 @@ function FormAgeController($scope, EventFormData, eventCrud) {
     }
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
-      showError('De minimum ouderdom mag niet hoger zijn dan maximum.'); return;
+      showError('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
@@ -21605,11 +21605,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
-    "                <div class=\"form-group\" >\n" +
+    "               <form name=\"ageForm\">\n" +
+    "                   <div class=\"form-group\" >\n" +
     "                    <label for=\"min-age\">Van</label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"min-age\"\n" +
+    "                           name=\"min\"\n" +
     "                           ng-model=\"fagec.minAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
@@ -21620,13 +21622,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"max-age\"\n" +
+    "                           name=\"max\"\n" +
     "                           ng-model=\"fagec.maxAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
     "                </div>\n" +
+    "               </form>\n" +
     "            </div>\n" +
-    "\n" +
     "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
     "                <span ng-bind=\"fagec.error\"></span>\n" +
     "            </div>\n" +
