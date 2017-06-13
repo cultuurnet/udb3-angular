@@ -19309,7 +19309,7 @@ angular
       'ZIPCODE' : 'postcode',
       'COUNTRY' : 'land',
       'CATEGORY_NAME' : 'categorie',
-      'AGEFROM' : 'leeftijd vanaf',
+      'AGEFROM' : 'leeftijd',
       'DETAIL_LANG' : 'vertaling',
       'PRICE' : 'prijs',
       'DATE' : 'datum',
