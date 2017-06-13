@@ -61,7 +61,8 @@ angular
       'CATEGORY_FLANDERSREGION_NAME' : 'region',
       'AVAILABLEFROM' : 'available',
       'LOCATION_ID' : 'locationid',
-      'ORGANISER_ID' : 'organizationid'
+      'ORGANISER_ID' : 'organizationid',
+      'DATE' : 'date'
     },
     fr: {
       'LOCATION_LABEL': 'location',
@@ -83,6 +84,7 @@ angular
       'AGEFROM' : 'leeftijd vanaf',
       'DETAIL_LANG' : 'vertaling',
       'PRICE' : 'prijs',
+      'DATE' : 'datum',
       'STARTDATE' : 'startdatum',
       'ENDDATE' : 'einddatum',
       'ORGANISER_LABEL' : 'organisatie (naam)',

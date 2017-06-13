@@ -19289,7 +19289,8 @@ angular
       'CATEGORY_FLANDERSREGION_NAME' : 'region',
       'AVAILABLEFROM' : 'available',
       'LOCATION_ID' : 'locationid',
-      'ORGANISER_ID' : 'organizationid'
+      'ORGANISER_ID' : 'organizationid',
+      'DATE' : 'date'
     },
     fr: {
       'LOCATION_LABEL': 'location',
@@ -19311,6 +19312,7 @@ angular
       'AGEFROM' : 'leeftijd vanaf',
       'DETAIL_LANG' : 'vertaling',
       'PRICE' : 'prijs',
+      'DATE' : 'datum',
       'STARTDATE' : 'startdatum',
       'ENDDATE' : 'einddatum',
       'ORGANISER_LABEL' : 'organisatie (naam)',
@@ -19366,8 +19368,7 @@ angular
     {name: 'location_label', field: 'location.name.\\*', type: 'tokenized-string', group:'where', editable: true},
     {name: 'category_flandersregion_name', field:'regions', type: 'term' , group:'where', editable: true},
 
-    {name: 'startdate', field:'dateRange', type: 'date-range', group:'when', editable: true},
-    {name: 'enddate', field:'dateRange', type: 'date-range', group:'when', editable: true},
+    {name: 'date', field:'dateRange', type: 'date-range', group:'when', editable: true},
     {name: 'permanent', field:'calendarType', type:'check', group:'when', editable: true},
 
     {name: 'lastupdated', field: 'modifiedRange', type: 'date-range', group:'input-information', editable: true},
@@ -19410,7 +19411,11 @@ angular
     {field: 'organizer.name.nl', type: 'tokenized-string'},
     {field: 'organizer.name.fr', type: 'tokenized-string'},
     {field: 'organizer.name.de', type: 'tokenized-string'},
-    {field: 'organizer.name.en', type: 'tokenized-string'}
+    {field: 'organizer.name.en', type: 'tokenized-string'},
+
+    // Start- and end-date have been dropped in favor of a single date field. Keep these around to map SAPI2 translations.
+    {name: 'startdate', field:'dateRange', type: 'date-range'},
+    {name: 'enddate', field:'dateRange', type: 'date-range'}
   ]);
 
 // Source: src/search/services/query-tree-translator.service.js
