@@ -522,4 +522,66 @@ describe('Service: LuceneQueryBuilder', function () {
     var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('(title:a OR title:b) AND city:c');
   });
+
+  it('Creates a free-text query from <implicit> fields', function () {
+    var groupedTree = {
+      "type": "root",
+      "nodes": [
+        {
+          "type": "group",
+          "operator": "OR",
+          "nodes": [
+            {
+              "field": "<implicit>",
+              "name": "text",
+              "term": "red",
+              "fieldType": "tokenized-string",
+              "transformer": "+"
+            },
+            {
+              "field": "<implicit>",
+              "name": "text",
+              "term": "blue",
+              "fieldType": "tokenized-string",
+              "transformer": "-"
+            }
+          ]
+        }
+      ]
+    }
+
+    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    expect(queryString).toBe('red OR -blue');
+  });
+
+  it('Combines a free-text query from an <implicit> field with a regular query-field', function () {
+    var groupedTree =   {
+      "type": "root",
+      "nodes": [
+        {
+          "type": "group",
+          "operator": "OR",
+          "nodes": [
+            {
+              "name": "text",
+              "field": "<implicit>",
+              "term": "orange",
+              "fieldType": "tokenized-string",
+              "transformer": "+"
+            },
+            {
+              "field": "name.\\*",
+              "name": "title",
+              "term": "purple",
+              "fieldType": "tokenized-string",
+              "transformer": "+"
+            }
+          ],
+        }
+      ]
+    };
+
+    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    expect(queryString).toBe('orange OR name.\\*:purple');
+  });
 });

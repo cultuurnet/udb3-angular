@@ -44,6 +44,7 @@ angular
       'AVAILABLEFROM' : 'availablefrom'
     },
     en: {
+      'TEXT': 'text',
       'KEYWORDS' : 'label',
       'PHYSICAL_GIS' : 'geo',
       'CATEGORY_NAME' : 'category',
@@ -68,6 +69,7 @@ angular
     },
     nl: {
       'TYPE' : 'type',
+      'TEXT': 'tekst',
       'CDBID' : 'identificatiecode (CDBID)',
       'LOCATION_ID' : 'locatieid',
       'ORGANISER_ID' : 'organisatieid',

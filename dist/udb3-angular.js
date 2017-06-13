@@ -18822,7 +18822,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       cleanUpDateRangeField(field);
     }
     var transformedField = transformField(field);
-    return transformedField.field + ':' + printTerm(transformedField);
+    return transformedField.field + printTerm(transformedField);
   }
 
   /**
@@ -18935,13 +18935,15 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   function transformField(originalField) {
     var field = _.clone(originalField);
+    var isFieldImplicit = field.field === implicitToken;
+    var fieldOperator = '';
 
     switch (field.transformer) {
       case '!':
-        field.field = '!' + field.field;
+        fieldOperator = '!';
         break;
       case '-':
-        field.field = '-' + field.field;
+        fieldOperator = '-';
         break;
       case '<':
         field.lowerBound = '*';
@@ -18956,6 +18958,8 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
         break;
     }
+
+    field.field = fieldOperator + (isFieldImplicit ? '' : field.field + ':');
 
     return field;
   }
@@ -19268,6 +19272,7 @@ angular
       'AVAILABLEFROM' : 'availablefrom'
     },
     en: {
+      'TEXT': 'text',
       'KEYWORDS' : 'label',
       'PHYSICAL_GIS' : 'geo',
       'CATEGORY_NAME' : 'category',
@@ -19292,6 +19297,7 @@ angular
     },
     nl: {
       'TYPE' : 'type',
+      'TEXT': 'tekst',
       'CDBID' : 'identificatiecode (CDBID)',
       'LOCATION_ID' : 'locatieid',
       'ORGANISER_ID' : 'organisatieid',
@@ -19351,6 +19357,7 @@ angular
     {name: 'category_eventtype_name', field:'terms.label', type: 'term', group: 'what', editable: true},
     {name: 'locationtype', field:'location.terms.label', type: 'term', group: 'what', editable: true},
     {name: 'category_theme_name', field:'terms.label', type: 'term', group: 'what', editable: true},
+    {name: 'text', field:'<implicit>', type: 'tokenized-string', group: 'what', editable: true},
 
     {name: 'city', field:'addressLocality', type: 'string', group:'where', editable: true},
     {name: 'zipcode', field:'postalCode', type: 'string', group:'where', editable: true},

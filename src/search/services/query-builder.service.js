@@ -178,7 +178,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       cleanUpDateRangeField(field);
     }
     var transformedField = transformField(field);
-    return transformedField.field + ':' + printTerm(transformedField);
+    return transformedField.field + printTerm(transformedField);
   }
 
   /**
@@ -291,13 +291,15 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   function transformField(originalField) {
     var field = _.clone(originalField);
+    var isFieldImplicit = field.field === implicitToken;
+    var fieldOperator = '';
 
     switch (field.transformer) {
       case '!':
-        field.field = '!' + field.field;
+        fieldOperator = '!';
         break;
       case '-':
-        field.field = '-' + field.field;
+        fieldOperator = '-';
         break;
       case '<':
         field.lowerBound = '*';
@@ -312,6 +314,8 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
         break;
     }
+
+    field.field = fieldOperator + (isFieldImplicit ? '' : field.field + ':');
 
     return field;
   }
