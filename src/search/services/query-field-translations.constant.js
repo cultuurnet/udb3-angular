@@ -71,13 +71,12 @@ angular
     nl: {
       'TYPE' : 'type',
       'TEXT': 'tekst',
-      'CDBID' : 'identificatiecode (CDBID)',
       'LOCATION_ID' : 'locatieid',
       'ORGANISER_ID' : 'organisatieid',
       'TITLE' : 'titel',
       'KEYWORDS' : 'label',
-      'CITY' : 'gemeente (naam)',
-      'ORGANISER_KEYWORDS': 'label organisatie',
+      'CITY' : 'stad',
+      'ORGANISER_KEYWORDS': 'organisatielabel',
       'ZIPCODE' : 'postcode',
       'COUNTRY' : 'land',
       'CATEGORY_NAME' : 'categorie',
@@ -87,12 +86,12 @@ angular
       'DATE' : 'datum',
       'STARTDATE' : 'startdatum',
       'ENDDATE' : 'einddatum',
-      'ORGANISER_LABEL' : 'organisatie (naam)',
-      'LOCATION_LABEL' : 'locatie (naam)',
+      'ORGANISER_LABEL' : 'organisatienaam',
+      'LOCATION_LABEL' : 'locatienaam',
       'EXTERNALID' : 'externalid',
-      'LASTUPDATED' : 'laatst aangepast',
+      'LASTUPDATED' : 'laatst_aangepast',
       'CREATIONDATE' : 'gecreëerd',
-      'CREATEDBY' : 'gecreëerd door',
+      'CREATEDBY' : 'gecreëerd_door',
       'PERMANENT' : 'permanent',
       'CATEGORY_EVENTTYPE_NAME' : 'type',
       'LOCATIONTYPE' : 'locatietype',
@@ -100,7 +99,7 @@ angular
       'CATEGORY_THEME_NAME' : 'thema',
       'CATEGORY_FACILITY_NAME' : 'voorzieningen',
       'CATEGORY_TARGETAUDIENCE_NAME' : 'doelgroep',
-      'CATEGORY_FLANDERSREGION_NAME' : 'regio / gemeente',
-      'AVAILABLEFROM' : 'datum beschikbaar'
+      'CATEGORY_FLANDERSREGION_NAME' : 'gemeente',
+      'AVAILABLEFROM' : 'datum_beschikbaar'
     }
   });
