@@ -7711,7 +7711,7 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.eventHistory = [];
+  $scope.eventHistory = undefined;
   $scope.tabs = [
     {
       id: 'data',
@@ -7740,10 +7740,6 @@ function EventDetail(
 
   function showOffer(event) {
     cachedEvent = event;
-
-    udbApi
-      .getHistory($scope.eventId)
-      .then(showHistory);
 
     $scope.event = jsonLDLangFilter(event, language);
 
@@ -7829,6 +7825,10 @@ function EventDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.eventHistory) {
+      udbApi.getHistory($scope.eventId).then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {
@@ -21561,13 +21561,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"eventAction in eventHistory track by $index\">\n" +
-    "            <dt ng-bind=\"eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
-    "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"eventAction.author\">{{eventAction.author}}</span><br ng-if=\"eventAction.author\"/>\n" +
-    "              <span class=\"description\">{{eventAction.description}}</span>\n" +
-    "            </dd>\n" +
-    "          </dl>\n" +
+    "          <p ng-show=\"!eventHistory\" class=\"text-center\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span>\n" +
+    "          </p>\n" +
+    "          <div ng-if=\"::eventHistory\">\n" +
+    "            <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
+    "              <dt ng-bind=\"::eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
+    "              <dd>\n" +
+    "                <span class=\"author\" ng-if=\"eventAction.author\" ng-bind=\"::eventAction.author\"></span>\n" +
+    "                <br ng-if=\"::eventAction.author\"/>\n" +
+    "                <span class=\"description\" ng-bind=\"::eventAction.description\"></span>\n" +
+    "              </dd>\n" +
+    "            </dl>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +

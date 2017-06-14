@@ -81,7 +81,7 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.eventHistory = [];
+  $scope.eventHistory = undefined;
   $scope.tabs = [
     {
       id: 'data',
@@ -110,10 +110,6 @@ function EventDetail(
 
   function showOffer(event) {
     cachedEvent = event;
-
-    udbApi
-      .getHistory($scope.eventId)
-      .then(showHistory);
 
     $scope.event = jsonLDLangFilter(event, language);
 
@@ -199,6 +195,10 @@ function EventDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.eventHistory) {
+      udbApi.getHistory($scope.eventId).then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {
