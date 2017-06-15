@@ -4,8 +4,6 @@
  * @typedef {Object} UiTIDUser
  * @property {string} id        The UiTID of the user.
  * @property {string} nick      A user nickname.
- * @property {string} mbox      The email address of the user.
- * @property {string} givenName The user's given name.
  */
 
 /**
@@ -303,9 +301,7 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick,
-        mbox: userData.mbox,
-        givenName: userData.givenName
+        nick: userData.nick
       };
 
       $cookies.putObject('user', user);
