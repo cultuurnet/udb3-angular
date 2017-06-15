@@ -1460,7 +1460,8 @@ describe('Service: UDB3 Api', function () {
       url: baseUrl + 'images',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };
