@@ -141,12 +141,14 @@
             <tbody ng-if="::(!isEmpty(event.bookingInfo))" udb-booking-info-detail="::event.bookingInfo"></tbody>
             <tbody udb-contact-point-detail="::event.contactPoint"></tbody>
             <tbody>
-              <tr>
+              <tr  ng-class="::{muted: noAgeInfo}">
                 <td><span class="row-label">Geschikt voor</span></td>
                 <td>
-                  <span ng-if="::event.typicalAgeRange">{{::event.typicalAgeRange}}</span>
-                  <span ng-if="::(!event.typicalAgeRange)">Alle leeftijden</span>
+                  <span ng-if="::!allAges && !noAgeInfo">{{event.typicalAgeRange}}</span>
+                  <span ng-if="::allAges && !noAgeInfo">Alle leeftijden</span>
+                  <span ng-if="noAgeInfo">Geen leeftijdsinformatie</span>
                 </td>
+
               </tr>
             </tbody>
             <tbody udb-image-detail="::event.mediaObject" image="::event.image"></tbody>

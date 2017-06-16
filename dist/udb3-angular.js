@@ -2856,8 +2856,6 @@ UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorM
  * @typedef {Object} UiTIDUser
  * @property {string} id        The UiTID of the user.
  * @property {string} nick      A user nickname.
- * @property {string} mbox      The email address of the user.
- * @property {string} givenName The user's given name.
  */
 
 /**
@@ -3208,9 +3206,7 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick,
-        mbox: userData.mbox,
-        givenName: userData.givenName
+        nick: userData.nick
       };
 
       $cookies.putObject('user', user);
@@ -7742,6 +7738,8 @@ function EventDetail(
     cachedEvent = event;
 
     $scope.event = jsonLDLangFilter(event, language);
+    $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
+    $scope.noAgeInfo = event.typicalAgeRange === '';
 
     $scope.eventIdIsInvalid = false;
 
@@ -7771,13 +7769,9 @@ function EventDetail(
     $scope.event.description = variation.description[language];
   }
 
-  function failedToLoad(reason) {
+  function failedToLoad() {
     $scope.eventIdIsInvalid = true;
   }
-
-  var getActiveTabId = function() {
-    return activeTabId;
-  };
 
   $scope.eventLocation = function (event) {
     var location = jsonLDLangFilter(event.location, language);
@@ -8074,7 +8068,7 @@ function FormAgeController($scope, EventFormData, eventCrud) {
     }
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
-      showError('De minimum ouderdom mag niet hoger zijn dan maximum.'); return;
+      showError('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
@@ -13319,7 +13313,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats) {
 
   var exporter = this;
 
@@ -13497,19 +13491,13 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
   exporter.format = exporter.exportFormats[0].type;
   exporter.email = '';
 
-  udbApi.getMe().then(function (user) {
-    if (user.mbox) {
-      exporter.email = user.mbox;
-    }
-  });
-
   exporter.close = function () {
     $uibModalInstance.dismiss('cancel');
   };
 
   exporter.eventCount = eventExporter.activeExport.eventCount;
 }
-EventExportController.$inject = ["$uibModalInstance", "udbApi", "eventExporter", "ExportFormats"];
+EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats"];
 
 // Source: src/export/event-exporter.service.js
 /**
@@ -14551,9 +14539,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-      if (moc.offer.image) {
-        moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
-      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -21547,12 +21532,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
-    "              <tr>\n" +
+    "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
     "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"::event.typicalAgeRange\">{{::event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"::(!event.typicalAgeRange)\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::allAges && !noAgeInfo\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"noAgeInfo\">Geen leeftijdsinformatie</span>\n" +
     "                </td>\n" +
+    "\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
@@ -21605,15 +21592,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <a ng-bind=\"::ageRange.label\"\n" +
     "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
-    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
-    "                <span ng-if=\"::!$last\">, </span>\n" +
+    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
-    "                <div class=\"form-group\" >\n" +
+    "               <form name=\"ageForm\">\n" +
+    "                   <div class=\"form-group\" >\n" +
     "                    <label for=\"min-age\">Van</label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"min-age\"\n" +
+    "                           name=\"min\"\n" +
     "                           ng-model=\"fagec.minAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
@@ -21624,13 +21612,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"max-age\"\n" +
+    "                           name=\"max\"\n" +
     "                           ng-model=\"fagec.maxAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
     "                </div>\n" +
+    "               </form>\n" +
     "            </div>\n" +
-    "\n" +
     "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
     "                <span ng-bind=\"fagec.error\"></span>\n" +
     "            </div>\n" +
@@ -24138,7 +24127,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
-    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\" />\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image+'?maxwidth=150&maxheight=150'}}\" />\n" +
     "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
     "        </div>\n" +
     "    </div>\n" +
