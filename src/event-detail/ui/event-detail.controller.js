@@ -141,13 +141,9 @@ function EventDetail(
     $scope.event.description = variation.description[language];
   }
 
-  function failedToLoad(reason) {
+  function failedToLoad() {
     $scope.eventIdIsInvalid = true;
   }
-
-  var getActiveTabId = function() {
-    return activeTabId;
-  };
 
   $scope.eventLocation = function (event) {
     var location = jsonLDLangFilter(event.location, language);
