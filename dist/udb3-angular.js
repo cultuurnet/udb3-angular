@@ -9901,7 +9901,7 @@ function PriceFormModalController(
   }
 
   function setPriceItemFree(key) {
-    pfmc.price[key].price = 0;
+    pfmc.price[key].price = '0,00';
     pfmc.priceForm.$setDirty();
   }
 

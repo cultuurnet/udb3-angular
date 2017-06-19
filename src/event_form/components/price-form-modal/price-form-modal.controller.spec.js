@@ -54,9 +54,29 @@ describe('Controller: Price Form Modal', function() {
 
   it('should initialize the controller', function () {
     price = getPrice();
+   var expectedPrice = [
+     {
+       category: 'base',
+       name: 'Basistarief',
+       priceCurrency: 'EUR',
+       price: '4,00'
+     },
+     {
+       category: 'tariff',
+       name: 'tarief1',
+       priceCurrency: 'EUR',
+       price: '0,00'
+     },
+     {
+       category: 'tariff',
+       name: 'tarief2',
+       priceCurrency: 'EUR',
+       price: '2,00'
+     }
+   ];
     var controller = getController();
 
-    expect(controller.price).toEqual(price);
+    expect(controller.price).toEqual(expectedPrice);
     expect(controller.priceError).toBeFalsy();
     expect(controller.invalidPrice).toBeFalsy();
     expect(controller.savingPrice).toBeFalsy();
@@ -88,7 +108,7 @@ describe('Controller: Price Form Modal', function() {
         category: 'base',
         name: 'Basistarief',
         priceCurrency: 'EUR',
-        price: 4.00
+        price: '4,00'
       },
       {
         category: 'tariff',
@@ -100,7 +120,7 @@ describe('Controller: Price Form Modal', function() {
         category: 'tariff',
         name: 'tarief2',
         priceCurrency: 'EUR',
-        price: 2.00
+        price: '2,00'
       }
     ];
 
@@ -120,19 +140,19 @@ describe('Controller: Price Form Modal', function() {
         category: 'base',
         name: 'Basistarief',
         priceCurrency: 'EUR',
-        price: 0
+        price: '0,00'
       },
       {
         category: 'tariff',
         name: 'tarief1',
         priceCurrency: 'EUR',
-        price: 0
+        price: '0,00'
       },
       {
         category: 'tariff',
         name: 'tarief2',
         priceCurrency: 'EUR',
-        price: 2.00
+        price: '2,00'
       }
     ];
 
@@ -152,13 +172,13 @@ describe('Controller: Price Form Modal', function() {
         category: 'base',
         name: 'Basistarief',
         priceCurrency: 'EUR',
-        price: 4.00
+        price: '4,00'
       },
       {
         category: 'tariff',
         name: 'tarief1',
         priceCurrency: 'EUR',
-        price: 0
+        price: '0,00'
       }
     ];
 
@@ -184,19 +204,19 @@ describe('Controller: Price Form Modal', function() {
         category: 'base',
         name: 'Basistarief',
         priceCurrency: 'EUR',
-        price: 4.00
+        price: '4,00'
       },
       {
         category: 'tariff',
         name: 'tarief1',
         priceCurrency: 'EUR',
-        price: 0
+        price: '0,00'
       },
       {
         category: 'tariff',
         name: 'tarief2',
         priceCurrency: 'EUR',
-        price: 2.00
+        price: '2,00'
       },
       {
         category: 'tariff',
