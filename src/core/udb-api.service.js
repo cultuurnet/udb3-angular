@@ -153,7 +153,7 @@ function UdbApi(
     }
 
     return $http
-      .get(appConfig.baseSearchUrl + 'offers/', withoutAuthorization(requestOptions))
+      .get(appConfig.baseUrl + 'offers/', withoutAuthorization(requestOptions))
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -256,7 +256,7 @@ function UdbApi(
     var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
 
     return $http
-      .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
+      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
   };
 
