@@ -81,7 +81,7 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.eventHistory = [];
+  $scope.eventHistory = undefined;
   $scope.tabs = [
     {
       id: 'data',
@@ -111,11 +111,9 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    udbApi
-      .getHistory($scope.eventId)
-      .then(showHistory);
-
     $scope.event = jsonLDLangFilter(event, language);
+    $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
+    $scope.noAgeInfo = event.typicalAgeRange === '';
 
     $scope.eventIdIsInvalid = false;
 
@@ -145,13 +143,9 @@ function EventDetail(
     $scope.event.description = variation.description[language];
   }
 
-  function failedToLoad(reason) {
+  function failedToLoad() {
     $scope.eventIdIsInvalid = true;
   }
-
-  var getActiveTabId = function() {
-    return activeTabId;
-  };
 
   $scope.eventLocation = function (event) {
     var location = jsonLDLangFilter(event.location, language);
@@ -199,6 +193,10 @@ function EventDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.eventHistory) {
+      udbApi.getHistory($scope.eventId).then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {

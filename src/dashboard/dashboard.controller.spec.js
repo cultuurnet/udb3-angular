@@ -29,9 +29,7 @@ describe('Controller: Dashboard', function () {
   /** @type {UiTIDUser} */
   var activeUser = {
     id: '0075baee-344b-4bee-87de-baa123a458d5',
-    nick: 'dirk',
-    mbox: 'dirk@dirk.me',
-    givenName: 'Dirk Dirkington'
+    nick: 'dirk'
   };
 
   beforeEach(module('udb.core'));
