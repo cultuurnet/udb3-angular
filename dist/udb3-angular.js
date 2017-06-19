@@ -2856,8 +2856,6 @@ UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorM
  * @typedef {Object} UiTIDUser
  * @property {string} id        The UiTID of the user.
  * @property {string} nick      A user nickname.
- * @property {string} mbox      The email address of the user.
- * @property {string} givenName The user's given name.
  */
 
 /**
@@ -3208,9 +3206,7 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick,
-        mbox: userData.mbox,
-        givenName: userData.givenName
+        nick: userData.nick
       };
 
       $cookies.putObject('user', user);
@@ -7711,7 +7707,7 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.eventHistory = [];
+  $scope.eventHistory = undefined;
   $scope.tabs = [
     {
       id: 'data',
@@ -7740,10 +7736,6 @@ function EventDetail(
 
   function showOffer(event) {
     cachedEvent = event;
-
-    udbApi
-      .getHistory($scope.eventId)
-      .then(showHistory);
 
     $scope.event = jsonLDLangFilter(event, language);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -7777,13 +7769,9 @@ function EventDetail(
     $scope.event.description = variation.description[language];
   }
 
-  function failedToLoad(reason) {
+  function failedToLoad() {
     $scope.eventIdIsInvalid = true;
   }
-
-  var getActiveTabId = function() {
-    return activeTabId;
-  };
 
   $scope.eventLocation = function (event) {
     var location = jsonLDLangFilter(event.location, language);
@@ -7831,6 +7819,10 @@ function EventDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.eventHistory) {
+      udbApi.getHistory($scope.eventId).then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {
@@ -13329,7 +13321,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats) {
 
   var exporter = this;
 
@@ -13507,19 +13499,13 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
   exporter.format = exporter.exportFormats[0].type;
   exporter.email = '';
 
-  udbApi.getMe().then(function (user) {
-    if (user.mbox) {
-      exporter.email = user.mbox;
-    }
-  });
-
   exporter.close = function () {
     $uibModalInstance.dismiss('cancel');
   };
 
   exporter.eventCount = eventExporter.activeExport.eventCount;
 }
-EventExportController.$inject = ["$uibModalInstance", "udbApi", "eventExporter", "ExportFormats"];
+EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats"];
 
 // Source: src/export/event-exporter.service.js
 /**
@@ -14561,9 +14547,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-      if (moc.offer.image) {
-        moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
-      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -21573,13 +21556,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
-    "            <dt ng-bind=\"eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
-    "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"eventAction.author\">{{eventAction.author}}</span><br ng-if=\"eventAction.author\"/>\n" +
-    "              <span class=\"description\">{{eventAction.description}}</span>\n" +
-    "            </dd>\n" +
-    "          </dl>\n" +
+    "          <p ng-show=\"!eventHistory\" class=\"text-center\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span>\n" +
+    "          </p>\n" +
+    "          <div ng-if=\"::eventHistory\">\n" +
+    "            <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
+    "              <dt ng-bind=\"::eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
+    "              <dd>\n" +
+    "                <span class=\"author\" ng-if=\"eventAction.author\" ng-bind=\"::eventAction.author\"></span>\n" +
+    "                <br ng-if=\"::eventAction.author\"/>\n" +
+    "                <span class=\"description\" ng-bind=\"::eventAction.description\"></span>\n" +
+    "              </dd>\n" +
+    "            </dl>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
@@ -24147,7 +24136,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
-    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\" />\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image+'?maxwidth=150&maxheight=150'}}\" />\n" +
     "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
     "        </div>\n" +
     "    </div>\n" +
