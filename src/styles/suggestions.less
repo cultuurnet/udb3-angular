@@ -1,0 +1,89 @@
+.typeahead {
+  position: relative;
+  display: block;
+  direction: ltr;
+  width: 100%;
+  max-width: 420px;
+
+  .uib-typeahead,
+  .query,
+  .hint {
+    outline: none;
+    width: 100%;
+  }
+
+  .query {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
+
+  .hint {
+    color: #999999;
+  }
+
+  .dropdown-menu {
+    width: 100%;
+    margin-top: 0px;
+    padding: 0;
+    background-color: @white;
+    border: 1px solid @udb-gray;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    max-height: 350px;
+    overflow-y: auto;
+  }
+
+  .panel {
+    margin: 0;
+    border: 0;
+  }
+
+  .dropdown-menu-no-results {
+    position: static;
+    display: block;
+    margin-top: -1px;
+
+    .panel {
+      border: 1px solid @udb-gray;
+      border-top: 0;
+    }
+  }
+
+  .suggestion {
+    padding: 6px 90px 6px 20px;
+    color: @text-color;
+  }
+
+  .suggestion-name {
+    display: block;
+  }
+
+  .suggestion {
+    position: relative;
+    border-bottom: 1px solid @udb-gray;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .active, .suggestion:hover {
+    border-bottom: 1px solid @udb-gray;
+    background-color: lighten(@udb-gray, 10%);
+    cursor: pointer;
+    color: @link-color;
+
+    .suggestion-ghost-button {
+      display: block;
+    }
+  }
+
+  .suggestion-ghost-button {
+    padding: 2px 6px;
+    border: 1px solid @link-color;
+    color: @link-color;
+    display: none;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    font-size: 90%;
+  }
+}

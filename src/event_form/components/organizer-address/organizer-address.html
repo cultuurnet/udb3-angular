@@ -1,6 +1,6 @@
 <form name="oac.organizerAddressForm" class="organizer-address-form">
     <div class="row">
-        <div class="col-sm-12 col-md-8">
+        <div class="col-sm-12 col-md-9">
             <div class="form-group"
                  ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
                 <label>Straat en nummer</label>
@@ -29,7 +29,7 @@
                     <label for="organizer-gemeente-autocomplete" id="gemeente-label">
                         Gemeente
                     </label>
-                    <div id="gemeente-kiezer">
+                    <div id="gemeente-kiezer" class="typeahead">
                         <input id="organizer-gemeente-autocomplete"
                                type="text"
                                name="city"

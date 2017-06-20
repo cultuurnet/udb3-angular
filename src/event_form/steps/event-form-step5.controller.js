@@ -109,6 +109,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.selectOrganizer = selectOrganizer;
   $scope.deleteOrganizer = deleteOrganizer;
   $scope.openOrganizerModal = openOrganizerModal;
+  $scope.organizersSearched = false;
+  $scope.organizerFocus = false;
 
   // Contact info functions.
   $scope.deleteContactInfo = deleteContactInfo;
@@ -259,6 +261,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     modalInstance.result.then(controller.saveOrganizer, updateOrganizerInfo);
   }
+
+  /**
+   * Detect if an organizer is searched
+   */
+  controller.organizerSearched = function () {
+    $scope.organizersSearched = true;
+  };
+  $scope.organizerSearched = controller.organizerSearched;
 
   /**
    * Persist the organizer for the active event.

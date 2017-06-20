@@ -1,5 +1,6 @@
-<div class="place-suggestion">
-  <span class="place-suggestion-name" ng-bind-html="match.model.name | uibTypeaheadHighlight:query"></span>
-  <span class="place-suggestion-address" ng-bind-html="match.model.address.streetAddress | uibTypeaheadHighlight:query">
+<div class="suggestion">
+  <span class="suggestion-name" ng-bind-html="match.model.name | uibTypeaheadHighlight:query"></span>
+  <span class="suggestion-address" ng-bind-html="match.model.address.streetAddress | uibTypeaheadHighlight:query">
   </span>
+  <span class="suggestion-ghost-button">Selecteer</span>
 </div>

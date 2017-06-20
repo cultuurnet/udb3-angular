@@ -11,8 +11,7 @@
     <div class="row">
       <div class="col-xs-12">
         <label for="gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity">Kies een gemeente</label>
-        <div id="gemeente-kiezer" ng-hide="selectedCity">
-          <span style="position: relative; display: inline-block; direction: ltr;" class="twitter-typeahead">
+        <div id="gemeente-kiezer" ng-hide="selectedCity" class="typeahead">
             <input type="text"
                    id="gemeente-autocomplete"
                    class="form-control uib-typeahead"
@@ -23,8 +22,8 @@
                    typeahead-on-select="selectCity($item, $label)"
                    typeahead-min-length="2"
                    typeahead-template-url="templates/city-suggestion.html"
-                   autocomplete="off" />
-          </span>
+                   autocomplete="off"
+                   />
           <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
             Er was een probleem tijdens het ophalen van de steden
           </div>
@@ -42,8 +41,7 @@
           <label id="locatie-label" ng-show="!selectedLocation">
             Kies een locatie <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingPlaces"></i>
           </label>
-          <div id="locatie-kiezer" ng-hide="selectedLocation || loadingPlaces">
-            <span style="position: relative; display: block; direction: ltr;" class="twitter-typeahead">
+          <div id="locatie-kiezer" ng-hide="selectedLocation || loadingPlaces" class="typeahead">
               <input type="text" ng-change="locationSearched()"
                      placeholder="Naam of adres"
                      class="form-control typeahead"
@@ -67,7 +65,6 @@
                   </div>
                 </div>
               </div>
-            </span>
             <div class="alert alert-danger" role="alert" ng-show="locationAutoCompleteError">
               Er was een probleem tijdens het ophalen van de locaties
             </div>

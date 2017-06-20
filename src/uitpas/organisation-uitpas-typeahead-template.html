@@ -1,4 +1,5 @@
-<a>
-    <span class="organisation-name" ng-bind-html="match.model.name | uibTypeaheadHighlight:query"></span>
+<div class="suggestion">
+    <span class="suggestion-name" ng-bind-html="match.model.name | uibTypeaheadHighlight:query"></span>
     <small ng-if="match.model.isUitpas" class="label label-default uitpas-tag">UiTPAS</small>
-</a>
+    <span class="suggestion-ghost-button">Selecteer</span>
+</div>

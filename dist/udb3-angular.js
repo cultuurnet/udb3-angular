@@ -12683,6 +12683,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.selectOrganizer = selectOrganizer;
   $scope.deleteOrganizer = deleteOrganizer;
   $scope.openOrganizerModal = openOrganizerModal;
+  $scope.organizersSearched = false;
+  $scope.organizerFocus = false;
 
   // Contact info functions.
   $scope.deleteContactInfo = deleteContactInfo;
@@ -12833,6 +12835,14 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     modalInstance.result.then(controller.saveOrganizer, updateOrganizerInfo);
   }
+
+  /**
+   * Detect if an organizer is searched
+   */
+  controller.organizerSearched = function () {
+    $scope.organizersSearched = true;
+  };
+  $scope.organizerSearched = controller.organizerSearched;
 
   /**
    * Persist the organizer for the active event.
@@ -21856,7 +21866,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/city-suggestion.html',
-    "<a href tabindex=\"-1\" ng-bind-html=\"match.label | uibTypeaheadHighlight:query\" class=\"city-suggestion\"></a>\n"
+    "<div class=\"suggestion\">\n" +
+    "  <p href tabindex=\"-1\" ng-bind-html=\"match.label | uibTypeaheadHighlight:query\" class=\"city-suggestion\"></p>\n" +
+    "  <span class=\"suggestion-ghost-button\">Selecteer</span>\n" +
+    "</div>\n"
   );
 
 
@@ -22176,7 +22189,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
   $templateCache.put('templates/organizer-address.html',
     "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
     "    <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "        <div class=\"col-sm-12 col-md-9\">\n" +
     "            <div class=\"form-group\"\n" +
     "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
     "                <label>Straat en nummer</label>\n" +
@@ -22205,7 +22218,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
     "                        Gemeente\n" +
     "                    </label>\n" +
-    "                    <div id=\"gemeente-kiezer\">\n" +
+    "                    <div id=\"gemeente-kiezer\" class=\"typeahead\">\n" +
     "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
     "                               type=\"text\"\n" +
     "                               name=\"city\"\n" +
@@ -22235,7 +22248,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</form>"
+    "</form>\n"
   );
 
 
@@ -22494,8 +22507,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/organizer-typeahead-template.html',
-    "<a>{{match.model.name}}</a>"
+  $templateCache.put('templates/organizer-suggestion-popup.html',
+    "<ul class=\"dropdown-menu\" ng-show=\"isOpen() && !moveInProgress\" ng-style=\"{top: position().top+'px', left: position().left+'px'}\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
+    "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\">\n" +
+    "        <div uib-typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
+    "    </li>\n" +
+    "    <li>\n" +
+    "        <div class=\"panel panel-default text-center\">\n" +
+    "            <div class=\"panel-body\">\n" +
+    "                <p>Organisatie niet gevonden?</p>\n" +
+    "                <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
+    "                        data-target=\"#waar-organisatie-toevoegen\" ng-click=\"$parent.openOrganizerModal()\">\n" +
+    "                    Nieuwe organisatie toevoegen\n" +
+    "                </button>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </li>\n" +
+    "</ul>\n"
   );
 
 
@@ -22558,7 +22586,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/place-suggestion-popup.html',
     "<ul class=\"dropdown-menu\" ng-show=\"isOpen() && !moveInProgress\" ng-style=\"{top: position().top+'px', left: position().left+'px'}\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
-    "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\">\n" +
+    "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\" ng-blur=\"onLeave()\">\n" +
     "        <div uib-typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
     "    </li>\n" +
     "    <li>\n" +
@@ -22572,15 +22600,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </div>\n" +
     "        </div>\n" +
     "    </li>\n" +
-    "</ul>"
+    "</ul>\n"
   );
 
 
   $templateCache.put('templates/place-suggestion.html',
-    "<div class=\"place-suggestion\">\n" +
-    "  <span class=\"place-suggestion-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
-    "  <span class=\"place-suggestion-address\" ng-bind-html=\"match.model.address.streetAddress | uibTypeaheadHighlight:query\">\n" +
+    "<div class=\"suggestion\">\n" +
+    "  <span class=\"suggestion-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
+    "  <span class=\"suggestion-address\" ng-bind-html=\"match.model.address.streetAddress | uibTypeaheadHighlight:query\">\n" +
     "  </span>\n" +
+    "  <span class=\"suggestion-ghost-button\">Selecteer</span>\n" +
     "</div>\n"
   );
 
@@ -23166,8 +23195,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-12\">\n" +
     "        <label for=\"gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity\">Kies een gemeente</label>\n" +
-    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity\">\n" +
-    "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
+    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity\" class=\"typeahead\">\n" +
     "            <input type=\"text\"\n" +
     "                   id=\"gemeente-autocomplete\"\n" +
     "                   class=\"form-control uib-typeahead\"\n" +
@@ -23178,8 +23206,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
     "                   typeahead-min-length=\"2\"\n" +
     "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                   autocomplete=\"off\" />\n" +
-    "          </span>\n" +
+    "                   autocomplete=\"off\"\n" +
+    "                   />\n" +
     "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
     "            Er was een probleem tijdens het ophalen van de steden\n" +
     "          </div>\n" +
@@ -23197,8 +23225,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <label id=\"locatie-label\" ng-show=\"!selectedLocation\">\n" +
     "            Kies een locatie <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingPlaces\"></i>\n" +
     "          </label>\n" +
-    "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
-    "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
+    "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\" class=\"typeahead\">\n" +
     "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
     "                     placeholder=\"Naam of adres\"\n" +
     "                     class=\"form-control typeahead\"\n" +
@@ -23222,7 +23249,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </div>\n" +
     "                </div>\n" +
     "              </div>\n" +
-    "            </span>\n" +
     "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"locationAutoCompleteError\">\n" +
     "              Er was een probleem tijdens het ophalen van de locaties\n" +
     "            </div>\n" +
@@ -23499,28 +23525,34 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  <label>\n" +
     "                    Kies een organisatie <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingOrganizers\"></i>\n" +
     "                  </label>\n" +
-    "                  <div id=\"organisator-kiezer\">\n" +
-    "                    <span class=\"twitter-typeahead\" style=\"position: relative; display: inline-block; direction: ltr;\">\n" +
-    "                      <input type=\"text\" class=\"form-control uib-typeahead\" id=\"organisator-autocomplete\"\n" +
-    "                             ng-model=\"organizer\"\n" +
-    "                             uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +
-    "                             typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
-    "                             typeahead-min-length=\"3\"\n" +
-    "                             typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
-    "                             typeahead-wait-ms=\"300\"\n" +
-    "                             focus-if=\"organizerCssClass == 'state-filling'\"\n" +
-    "                             udb-auto-scroll/>\n" +
-    "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
-    "                        <div class=\"panel panel-default text-center\">\n" +
-    "                          <div class=\"panel-body\">\n" +
-    "                            <p>Organisatie niet gevonden?</p>\n" +
-    "                            <button type='button' class='btn btn-primary' ng-click=\"openOrganizerModal()\">\n" +
-    "                              Nieuwe organisator toevoegen\n" +
-    "                            </button>\n" +
-    "                          </div>\n" +
-    "                        </div>\n" +
-    "                      </div>\n" +
-    "                    </span>\n" +
+    "                  <div id=\"organisator-kiezer\" class=\"typeahead\">\n" +
+    "                    <input type=\"text\" class=\"form-control uib-typeahead\" id=\"organisator-autocomplete\"\n" +
+    "                           ng-change=\"organizerSearched()\"\n" +
+    "                           ng-focus=\"organizerFocus=true\"\n" +
+    "                           ng-blur=\"organizerFocus=false\"\n" +
+    "                           ng-model=\"organizer\"\n" +
+    "                           placeholder=\"Naam\"\n" +
+    "                           uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +
+    "                           typeahead-on-select=\"selectOrganizer(organizer)\"\n" +
+    "                           typeahead-min-length=\"3\"\n" +
+    "                           typeahead-template-url=\"templates/organisation-uitpas-typeahead-template.html\"\n" +
+    "                           typeahead-popup-template-url=\"templates/organizer-suggestion-popup.html\"\n" +
+    "                           typeahead-wait-ms=\"300\"\n" +
+    "                           focus-if=\"organizerCssClass == 'state-filling'\"\n" +
+    "                           udb-auto-scroll/>\n" +
+    "                           <div class=\"dropdown-menu-no-results open\"\n" +
+    "                           ng-show=\"organizerFocus && organizersSearched && emptyOrganizerAutocomplete\">\n" +
+    "                             <div class=\"dropdown-menu\">\n" +
+    "                                <div class=\"panel panel-default text-center\">\n" +
+    "                                    <div class=\"panel-body\">\n" +
+    "                                        <p>Organisatie niet gevonden?</p>\n" +
+    "                                        <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" ng-click=\"openOrganizerModal()\">\n" +
+    "                                            Nieuwe organisatie toevoegen\n" +
+    "                                        </button>\n" +
+    "                                    </div>\n" +
+    "                                  </div>\n" +
+    "                              </div>\n" +
+    "                            </div>\n" +
     "                  </div>\n" +
     "                </div>\n" +
     "              </section>\n" +
@@ -26085,15 +26117,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
   $templateCache.put('templates/organisation-suggestion.directive.html',
     "<span class=\"organisation-name\" ng-bind-html=\"os.organisation.name | uibTypeaheadHighlight:os.query\"></span>\n" +
-    "<small ng-if=\"os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>"
+    "<small ng-if=\"os.organisation.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>\n"
   );
 
 
   $templateCache.put('templates/organisation-uitpas-typeahead-template.html',
-    "<a>\n" +
-    "    <span class=\"organisation-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
+    "<div class=\"suggestion\">\n" +
+    "    <span class=\"suggestion-name\" ng-bind-html=\"match.model.name | uibTypeaheadHighlight:query\"></span>\n" +
     "    <small ng-if=\"match.model.isUitpas\" class=\"label label-default uitpas-tag\">UiTPAS</small>\n" +
-    "</a>"
+    "    <span class=\"suggestion-ghost-button\">Selecteer</span>\n" +
+    "</div>\n"
   );
 
 }]);
