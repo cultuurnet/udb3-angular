@@ -156,17 +156,6 @@ function UdbApi(
   };
 
   /**
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
-   * @param {number} [itemsPerPage] - How many items should be in the result set.
-   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
-   *  search results or a failure.
-   */
-  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    return find(apiUrl + 'search', queryString, start, itemsPerPage);
-  };
-
-  /**
    * @param {string} queryString - The query used to find offer to moderate.
    * @param {number} [start] - From which offset the result set should start.
    * @param {number} [itemsPerPage] - How many items should be in the result set.

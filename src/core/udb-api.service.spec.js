@@ -221,18 +221,6 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  // findEventsWithLimit
-  it('should find events when provided a query', function (done) {
-    var response = {};
-    $httpBackend
-      .expectGET(baseUrl + 'search?query=searchquery&start=0&limit=30')
-      .respond(JSON.stringify(response));
-    service
-      .findEventsWithLimit('searchquery', 0, 30)
-      .then(done);
-    $httpBackend.flush();
-  });
-
   // findToModerate
   it('should find offer to moderate when provided a query', function (done) {
     var response = {};
