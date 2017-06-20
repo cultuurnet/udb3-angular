@@ -12,7 +12,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats) {
 
   var exporter = this;
 
@@ -189,12 +189,6 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
 
   exporter.format = exporter.exportFormats[0].type;
   exporter.email = '';
-
-  udbApi.getMe().then(function (user) {
-    if (user.mbox) {
-      exporter.email = user.mbox;
-    }
-  });
 
   exporter.close = function () {
     $uibModalInstance.dismiss('cancel');

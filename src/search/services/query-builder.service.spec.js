@@ -32,7 +32,7 @@ describe('Service: LuceneQueryBuilder', function () {
       });
     });
 
-    it('Unparses queries with range expressions',function () {
+    it('Unparses queries with range expressions', function () {
       createAndCompareUnparsedQuery('foo:[bar TO baz]');
       createAndCompareUnparsedQuery('foo:{bar TO baz}');
     });
@@ -63,15 +63,26 @@ describe('Service: LuceneQueryBuilder', function () {
       var query = LuceneQueryBuilder.createQuery(queryString);
       var groupedQueryTree = LuceneQueryBuilder.groupQueryTree(query.queryTree);
 
-      expect(groupedQueryTree.operator).toBe('OR');
-      expect(groupedQueryTree.type).toBe('root');
+      var expectedQueryTree = {
+        operator: 'OR',
+        type: 'root',
+        nodes: [
+          {
+            type: 'field',
+            operator: 'OR',
+            nodes: [
+              {
+                field: 'battery',
+                fieldType: 'string',
+                transformer: '=',
+                term: 'horse'
+              }
+            ]
+          }
+        ]
+      };
 
-      expect(groupedQueryTree.nodes[0].type).toBe('field');
-      expect(groupedQueryTree.nodes[0].operator).toBe('OR');
-
-      expect(groupedQueryTree.nodes[0].nodes[0].field).toBe('battery');
-      expect(groupedQueryTree.nodes[0].nodes[0].term).toBe('horse');
-      expect(groupedQueryTree.nodes[0].nodes[0].fieldType).toBe('string');
+      expect(groupedQueryTree).toEqual(expectedQueryTree);
     });
 
     it('Groups query tree fields with different operators', function () {
@@ -79,25 +90,44 @@ describe('Service: LuceneQueryBuilder', function () {
       var query = LuceneQueryBuilder.createQuery(queryString);
       var groupedQueryTree = LuceneQueryBuilder.groupQueryTree(query.queryTree);
 
-      expect(groupedQueryTree.operator).toBe('AND');
-      expect(groupedQueryTree.type).toBe('root');
+      var expectedQueryTree = {
+        type: 'root',
+        operator: 'AND',
+        nodes: [
+          {
+            type: 'field',
+            operator: 'AND',
+            nodes: [
+              {
+                field: 'battery',
+                fieldType: 'string',
+                transformer: '=',
+                term: 'horse'
+              }
+            ]
+          },
+          {
+            type: 'group',
+            operator: 'OR',
+            nodes: [
+              {
+                field: 'staple',
+                fieldType: 'string',
+                transformer: '=',
+                term: 'chair'
+              },
+              {
+                field: 'car',
+                fieldType: 'string',
+                transformer: '=',
+                term: 'dinosaur'
+              }
+            ]
+          }
+        ]
+      };
 
-      expect(groupedQueryTree.nodes[0].type).toBe('field');
-
-      expect(groupedQueryTree.nodes[0].nodes[0].field).toBe('battery');
-      expect(groupedQueryTree.nodes[0].nodes[0].term).toBe('horse');
-      expect(groupedQueryTree.nodes[0].nodes[0].fieldType).toBe('string');
-
-      expect(groupedQueryTree.nodes[1].type).toBe('group');
-      expect(groupedQueryTree.nodes[1].operator).toBe('OR');
-
-      expect(groupedQueryTree.nodes[1].nodes[0].field).toBe('staple');
-      expect(groupedQueryTree.nodes[1].nodes[0].term).toBe('chair');
-      expect(groupedQueryTree.nodes[1].nodes[0].fieldType).toBe('string');
-
-      expect(groupedQueryTree.nodes[1].nodes[1].field).toBe('car');
-      expect(groupedQueryTree.nodes[1].nodes[1].term).toBe('dinosaur');
-      expect(groupedQueryTree.nodes[1].nodes[1].fieldType).toBe('string');
+      expect(groupedQueryTree).toEqual(expectedQueryTree);
     });
 
     it('Groups query tree fields with grouped terms', function () {
@@ -105,23 +135,38 @@ describe('Service: LuceneQueryBuilder', function () {
       var query = LuceneQueryBuilder.createQuery(queryString);
       var groupedQueryTree = LuceneQueryBuilder.groupQueryTree(query.queryTree);
 
-      expect(groupedQueryTree.operator).toBe('OR');
-      expect(groupedQueryTree.type).toBe('root');
+      var expectedQueryTree = {
+        operator: 'OR',
+        type: 'root',
+        nodes: [
+          {
+            type: 'group',
+            operator: 'OR',
+            nodes: [
+              {
+                field: 'animal',
+                term: 'cat',
+                transformer: '=',
+                fieldType: 'string'
+              },
+              {
+                field: 'animal',
+                term: 'dog',
+                transformer: '=',
+                fieldType: 'string'
+              },
+              {
+                field: 'animal',
+                term: 'deer',
+                transformer: '=',
+                fieldType: 'string'
+              }
+            ]
+          }
+        ]
+      };
 
-      expect(groupedQueryTree.nodes[0].type).toBe('group');
-      expect(groupedQueryTree.nodes[0].operator).toBe('OR');
-
-      expect(groupedQueryTree.nodes[0].nodes[0].field).toBe('animal');
-      expect(groupedQueryTree.nodes[0].nodes[0].term).toBe('cat');
-      expect(groupedQueryTree.nodes[0].nodes[0].fieldType).toBe('string');
-
-      expect(groupedQueryTree.nodes[0].nodes[1].field).toBe('animal');
-      expect(groupedQueryTree.nodes[0].nodes[1].term).toBe('dog');
-      expect(groupedQueryTree.nodes[0].nodes[1].fieldType).toBe('string');
-
-      expect(groupedQueryTree.nodes[0].nodes[2].field).toBe('animal');
-      expect(groupedQueryTree.nodes[0].nodes[2].term).toBe('deer');
-      expect(groupedQueryTree.nodes[0].nodes[2].fieldType).toBe('string');
+      expect(groupedQueryTree).toEqual(expectedQueryTree);
     });
 
 

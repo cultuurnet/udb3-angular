@@ -375,8 +375,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 
                 return fieldexp;
             },
-        peg$c16 = /^[:]/,
-        peg$c17 = { type: "class", value: "[:]", description: "[:]" },
+        peg$c16 = /^[:<>]/,
+        peg$c17 = { type: "class", value: "[:<>]", description: "[:<>]" },
         peg$c18 = function(fieldname) {
                 return fieldname;
             },
@@ -426,8 +426,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$c28 = function(first_character, term) {
                 return first_character + term.join('');
             },
-        peg$c29 = /^[^, \t\r\n\f{}()+"\^~[\]]/,
-        peg$c30 = { type: "class", value: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]", description: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]" },
+        peg$c29 = /^[^, <>\t\r\n\f{}()"\^~[\]]/,
+        peg$c30 = { type: "class", value: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]", description: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]" },
         peg$c31 = "\"",
         peg$c32 = { type: "literal", value: "\"", description: "\"\\\"\"" },
         peg$c33 = /^[^"]/,
@@ -494,22 +494,20 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$c68 = "||",
         peg$c69 = { type: "literal", value: "||", description: "\"||\"" },
         peg$c70 = function() { return 'OR'; },
-        peg$c71 = ",",
-        peg$c72 = { type: "literal", value: ",", description: "\",\"" },
-        peg$c73 = "&&",
-        peg$c74 = { type: "literal", value: "&&", description: "\"&&\"" },
-        peg$c75 = function() { return 'AND'; },
-        peg$c76 = "+",
-        peg$c77 = { type: "literal", value: "+", description: "\"+\"" },
-        peg$c78 = "-",
-        peg$c79 = { type: "literal", value: "-", description: "\"-\"" },
-        peg$c80 = "!",
-        peg$c81 = { type: "literal", value: "!", description: "\"!\"" },
-        peg$c82 = { type: "other", description: "whitespace" },
-        peg$c83 = /^[ \t\r\n\f]/,
-        peg$c84 = { type: "class", value: "[ \\t\\r\\n\\f]", description: "[ \\t\\r\\n\\f]" },
-        peg$c85 = void 0,
-        peg$c86 = { type: "any", description: "any character" },
+        peg$c71 = "&&",
+        peg$c72 = { type: "literal", value: "&&", description: "\"&&\"" },
+        peg$c73 = function() { return 'AND'; },
+        peg$c74 = "+",
+        peg$c75 = { type: "literal", value: "+", description: "\"+\"" },
+        peg$c76 = "-",
+        peg$c77 = { type: "literal", value: "-", description: "\"-\"" },
+        peg$c78 = "!",
+        peg$c79 = { type: "literal", value: "!", description: "\"!\"" },
+        peg$c80 = { type: "other", description: "whitespace" },
+        peg$c81 = /^[ \t\r\n\f]/,
+        peg$c82 = { type: "class", value: "[ \\t\\r\\n\\f]", description: "[ \\t\\r\\n\\f]" },
+        peg$c83 = void 0,
+        peg$c84 = { type: "any", description: "any character" },
 
         peg$currPos          = 0,
         peg$reportedPos      = 0,
@@ -1625,6 +1623,166 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
           peg$currPos = s0;
           s0 = peg$c0;
         }
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 123) {
+            s1 = peg$c56;
+            peg$currPos++;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c57); }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parseunquoted_term();
+            if (s2 !== peg$FAILED) {
+              s3 = [];
+              s4 = peg$parse_();
+              while (s4 !== peg$FAILED) {
+                s3.push(s4);
+                s4 = peg$parse_();
+              }
+              if (s3 !== peg$FAILED) {
+                if (input.substr(peg$currPos, 2) === peg$c51) {
+                  s4 = peg$c51;
+                  peg$currPos += 2;
+                } else {
+                  s4 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c52); }
+                }
+                if (s4 !== peg$FAILED) {
+                  s5 = [];
+                  s6 = peg$parse_();
+                  if (s6 !== peg$FAILED) {
+                    while (s6 !== peg$FAILED) {
+                      s5.push(s6);
+                      s6 = peg$parse_();
+                    }
+                  } else {
+                    s5 = peg$c0;
+                  }
+                  if (s5 !== peg$FAILED) {
+                    s6 = peg$parseunquoted_term();
+                    if (s6 !== peg$FAILED) {
+                      if (input.charCodeAt(peg$currPos) === 93) {
+                        s7 = peg$c53;
+                        peg$currPos++;
+                      } else {
+                        s7 = peg$FAILED;
+                        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+                      }
+                      if (s7 !== peg$FAILED) {
+                        peg$reportedPos = s0;
+                        s1 = peg$c55(s2, s6);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            if (input.charCodeAt(peg$currPos) === 91) {
+              s1 = peg$c49;
+              peg$currPos++;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c50); }
+            }
+            if (s1 !== peg$FAILED) {
+              s2 = peg$parseunquoted_term();
+              if (s2 !== peg$FAILED) {
+                s3 = [];
+                s4 = peg$parse_();
+                while (s4 !== peg$FAILED) {
+                  s3.push(s4);
+                  s4 = peg$parse_();
+                }
+                if (s3 !== peg$FAILED) {
+                  if (input.substr(peg$currPos, 2) === peg$c51) {
+                    s4 = peg$c51;
+                    peg$currPos += 2;
+                  } else {
+                    s4 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c52); }
+                  }
+                  if (s4 !== peg$FAILED) {
+                    s5 = [];
+                    s6 = peg$parse_();
+                    if (s6 !== peg$FAILED) {
+                      while (s6 !== peg$FAILED) {
+                        s5.push(s6);
+                        s6 = peg$parse_();
+                      }
+                    } else {
+                      s5 = peg$c0;
+                    }
+                    if (s5 !== peg$FAILED) {
+                      s6 = peg$parseunquoted_term();
+                      if (s6 !== peg$FAILED) {
+                        if (input.charCodeAt(peg$currPos) === 125) {
+                          s7 = peg$c58;
+                          peg$currPos++;
+                        } else {
+                          s7 = peg$FAILED;
+                          if (peg$silentFails === 0) { peg$fail(peg$c59); }
+                        }
+                        if (s7 !== peg$FAILED) {
+                          peg$reportedPos = s0;
+                          s1 = peg$c55(s2, s6);
+                          s0 = s1;
+                        } else {
+                          peg$currPos = s0;
+                          s0 = peg$c0;
+                        }
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          }
+        }
       }
 
       return s0;
@@ -1744,33 +1902,18 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
             s0 = s1;
             if (s0 === peg$FAILED) {
               s0 = peg$currPos;
-              if (input.charCodeAt(peg$currPos) === 44) {
+              if (input.substr(peg$currPos, 2) === peg$c71) {
                 s1 = peg$c71;
-                peg$currPos++;
+                peg$currPos += 2;
               } else {
                 s1 = peg$FAILED;
                 if (peg$silentFails === 0) { peg$fail(peg$c72); }
               }
               if (s1 !== peg$FAILED) {
                 peg$reportedPos = s0;
-                s1 = peg$c70();
+                s1 = peg$c73();
               }
               s0 = s1;
-              if (s0 === peg$FAILED) {
-                s0 = peg$currPos;
-                if (input.substr(peg$currPos, 2) === peg$c73) {
-                  s1 = peg$c73;
-                  peg$currPos += 2;
-                } else {
-                  s1 = peg$FAILED;
-                  if (peg$silentFails === 0) { peg$fail(peg$c74); }
-                }
-                if (s1 !== peg$FAILED) {
-                  peg$reportedPos = s0;
-                  s1 = peg$c75();
-                }
-                s0 = s1;
-              }
             }
           }
         }
@@ -1811,27 +1954,27 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
       var s0;
 
       if (input.charCodeAt(peg$currPos) === 43) {
-        s0 = peg$c76;
+        s0 = peg$c74;
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c77); }
+        if (peg$silentFails === 0) { peg$fail(peg$c75); }
       }
       if (s0 === peg$FAILED) {
         if (input.charCodeAt(peg$currPos) === 45) {
-          s0 = peg$c78;
+          s0 = peg$c76;
           peg$currPos++;
         } else {
           s0 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c79); }
+          if (peg$silentFails === 0) { peg$fail(peg$c77); }
         }
         if (s0 === peg$FAILED) {
           if (input.charCodeAt(peg$currPos) === 33) {
-            s0 = peg$c80;
+            s0 = peg$c78;
             peg$currPos++;
           } else {
             s0 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c81); }
+            if (peg$silentFails === 0) { peg$fail(peg$c79); }
           }
         }
       }
@@ -1844,22 +1987,22 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 
       peg$silentFails++;
       s0 = [];
-      if (peg$c83.test(input.charAt(peg$currPos))) {
+      if (peg$c81.test(input.charAt(peg$currPos))) {
         s1 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c84); }
+        if (peg$silentFails === 0) { peg$fail(peg$c82); }
       }
       if (s1 !== peg$FAILED) {
         while (s1 !== peg$FAILED) {
           s0.push(s1);
-          if (peg$c83.test(input.charAt(peg$currPos))) {
+          if (peg$c81.test(input.charAt(peg$currPos))) {
             s1 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s1 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c84); }
+            if (peg$silentFails === 0) { peg$fail(peg$c82); }
           }
         }
       } else {
@@ -1868,7 +2011,7 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c82); }
+        if (peg$silentFails === 0) { peg$fail(peg$c80); }
       }
 
       return s0;
@@ -1884,11 +2027,11 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c86); }
+        if (peg$silentFails === 0) { peg$fail(peg$c84); }
       }
       peg$silentFails--;
       if (s1 === peg$FAILED) {
-        s0 = peg$c85;
+        s0 = peg$c83;
       } else {
         peg$currPos = s0;
         s0 = peg$c0;
@@ -2713,8 +2856,6 @@ UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorM
  * @typedef {Object} UiTIDUser
  * @property {string} id        The UiTID of the user.
  * @property {string} nick      A user nickname.
- * @property {string} mbox      The email address of the user.
- * @property {string} givenName The user's given name.
  */
 
 /**
@@ -2864,17 +3005,6 @@ function UdbApi(
     return $http
       .get(apiUrl + 'search', requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
-  };
-
-  /**
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
-   * @param {number} [itemsPerPage] - How many items should be in the result set.
-   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
-   *  search results or a failure.
-   */
-  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    return find(apiUrl + 'search', queryString, start, itemsPerPage);
   };
 
   /**
@@ -3065,9 +3195,7 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick,
-        mbox: userData.mbox,
-        givenName: userData.givenName
+        nick: userData.nick
       };
 
       $cookies.putObject('user', user);
@@ -7569,7 +7697,7 @@ function EventDetail(
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.eventHistory = [];
+  $scope.eventHistory = undefined;
   $scope.tabs = [
     {
       id: 'data',
@@ -7599,11 +7727,9 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    udbApi
-      .getHistory($scope.eventId)
-      .then(showHistory);
-
     $scope.event = jsonLDLangFilter(event, language);
+    $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
+    $scope.noAgeInfo = event.typicalAgeRange === '';
 
     $scope.eventIdIsInvalid = false;
 
@@ -7633,13 +7759,9 @@ function EventDetail(
     $scope.event.description = variation.description[language];
   }
 
-  function failedToLoad(reason) {
+  function failedToLoad() {
     $scope.eventIdIsInvalid = true;
   }
-
-  var getActiveTabId = function() {
-    return activeTabId;
-  };
 
   $scope.eventLocation = function (event) {
     var location = jsonLDLangFilter(event.location, language);
@@ -7687,6 +7809,10 @@ function EventDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.eventHistory) {
+      udbApi.getHistory($scope.eventId).then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {
@@ -7932,7 +8058,7 @@ function FormAgeController($scope, EventFormData, eventCrud) {
     }
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
-      showError('De minimum ouderdom mag niet hoger zijn dan maximum.'); return;
+      showError('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
@@ -11516,10 +11642,10 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  var dPD = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  controller.hasNoDefault = (dPD === null || typeof dPD === 'undefined' || dPD === '');
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
   if (!controller.hasNoDefault && isDraft) {
-    controller.eventFormData.availableFrom = dPD;
+    controller.eventFormData.availableFrom = defaultPublicationDate;
   }
 
   function publish() {
@@ -13177,7 +13303,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats) {
 
   var exporter = this;
 
@@ -13355,19 +13481,13 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
   exporter.format = exporter.exportFormats[0].type;
   exporter.email = '';
 
-  udbApi.getMe().then(function (user) {
-    if (user.mbox) {
-      exporter.email = user.mbox;
-    }
-  });
-
   exporter.close = function () {
     $uibModalInstance.dismiss('cancel');
   };
 
   exporter.eventCount = eventExporter.activeExport.eventCount;
 }
-EventExportController.$inject = ["$uibModalInstance", "udbApi", "eventExporter", "ExportFormats"];
+EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats"];
 
 // Source: src/export/event-exporter.service.js
 /**
@@ -14409,9 +14529,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-      if (moc.offer.image) {
-        moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
-      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -19278,8 +19395,16 @@ angular.module('udb.search')
 /* @ngInject */
 function QueryTreeValidator(queryFields) {
 
-  var validFieldNames = _.map(queryFields, 'name'),
-    implicitToken = '<implicit>';
+  var validFieldNames = _.union(_.map(queryFields, 'name'), ['_exists_']),
+      implicitToken = '<implicit>',
+      validParentFieldNames = _(validFieldNames)
+        .filter(function (fieldName) {
+          return fieldName.indexOf('.') > 0;
+        })
+        .map(function (fieldName) {
+          return fieldName.split('.')[0];
+        })
+        .value();
 
   var validateFields = function (current, depth, errors) {
     var left = current.left || false,
@@ -19302,8 +19427,21 @@ function QueryTreeValidator(queryFields) {
 
     var field = current.field;
     if (typeof(field) !== 'undefined') {
-      if (field !== null && field !== implicitToken && !_.contains(validFieldNames, field)) {
-        errors.push(field + ' is not a valid search field');
+
+      var fieldName = _.trim(field, '.\\*');
+      var fieldHasWildcard = field !== fieldName;
+
+      if (fieldName !== null && fieldName !== implicitToken) {
+
+        if (fieldHasWildcard) {
+          if (!_.contains(validParentFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid parent search field that can be used with a wildcard');
+          }
+        } else {
+          if (!_.contains(validFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid search field');
+          }
+        }
       }
     }
   };
@@ -21384,12 +21522,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
-    "              <tr>\n" +
+    "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
     "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"::event.typicalAgeRange\">{{::event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"::(!event.typicalAgeRange)\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::allAges && !noAgeInfo\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"noAgeInfo\">Geen leeftijdsinformatie</span>\n" +
     "                </td>\n" +
+    "\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
@@ -21398,13 +21538,19 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
-    "            <dt ng-bind=\"eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
-    "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"eventAction.author\">{{eventAction.author}}</span><br ng-if=\"eventAction.author\"/>\n" +
-    "              <span class=\"description\">{{eventAction.description}}</span>\n" +
-    "            </dd>\n" +
-    "          </dl>\n" +
+    "          <p ng-show=\"!eventHistory\" class=\"text-center\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span>\n" +
+    "          </p>\n" +
+    "          <div ng-if=\"::eventHistory\">\n" +
+    "            <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
+    "              <dt ng-bind=\"::eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
+    "              <dd>\n" +
+    "                <span class=\"author\" ng-if=\"eventAction.author\" ng-bind=\"::eventAction.author\"></span>\n" +
+    "                <br ng-if=\"::eventAction.author\"/>\n" +
+    "                <span class=\"description\" ng-bind=\"::eventAction.description\"></span>\n" +
+    "              </dd>\n" +
+    "            </dl>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
@@ -21436,15 +21582,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <a ng-bind=\"::ageRange.label\"\n" +
     "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
-    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
-    "                <span ng-if=\"::!$last\">, </span>\n" +
+    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
-    "                <div class=\"form-group\" >\n" +
+    "               <form name=\"ageForm\">\n" +
+    "                   <div class=\"form-group\" >\n" +
     "                    <label for=\"min-age\">Van</label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"min-age\"\n" +
+    "                           name=\"min\"\n" +
     "                           ng-model=\"fagec.minAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
@@ -21455,13 +21602,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"max-age\"\n" +
+    "                           name=\"max\"\n" +
     "                           ng-model=\"fagec.maxAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
     "                </div>\n" +
+    "               </form>\n" +
     "            </div>\n" +
-    "\n" +
     "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
     "                <span ng-bind=\"fagec.error\"></span>\n" +
     "            </div>\n" +
@@ -22878,10 +23026,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
     "    <div ng-if=\"!efpc.saving\">\n" +
-    "      <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Meteen publiceren</button>\n" +
-    "      <button class=\"btn btn-success\" ng-click=\"efpc.publishLater()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
-    "      <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
-    "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>Online vanaf {{efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy' }}</span>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publish()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
+    "      <button class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publishLater()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.preview()\"\n" +
+    "              ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publish()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault\">Klaar met bewerken</button>\n" +
+    "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>\n" +
+    "          Online vanaf <span ng-bind=\"efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'\"></span>\n" +
+    "      </span>\n" +
     "    </div>\n" +
     "    <div ng-if=\"efpc.saving\">\n" +
     "      <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i>\n" +
@@ -23955,7 +24117,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
-    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\" />\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image+'?maxwidth=150&maxheight=150'}}\" />\n" +
     "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
     "        </div>\n" +
     "    </div>\n" +
