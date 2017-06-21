@@ -141,7 +141,8 @@ function UdbApi(
   this.findOffers = function (queryString, start) {
     var offset = start || 0,
         searchParams = {
-          start: offset
+          start: offset,
+          disableDefaultFilters: true
         };
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.params = searchParams;

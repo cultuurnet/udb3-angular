@@ -200,7 +200,7 @@ describe('Service: UDB3 Api', function () {
   it('should find offers when provided a query', function (done) {
     var response = {};
     $httpBackend
-      .expectGET(baseUrl + 'offers/?q=foo:bar&start=0')
+      .expectGET(baseUrl + 'offers/?q=foo:bar&start=0&disableDefaultFilters=true')
       .respond(JSON.stringify(response));
     service
       .findOffers('foo:bar')
@@ -211,7 +211,7 @@ describe('Service: UDB3 Api', function () {
   it('should find offers when provided no query', function (done) {
     var response = {};
     $httpBackend
-      .expectGET(baseUrl + 'offers/?start=0')
+      .expectGET(baseUrl + 'offers/?disableDefaultFilters=true&start=0')
       .respond(JSON.stringify(response));
     service
       .findOffers('')
