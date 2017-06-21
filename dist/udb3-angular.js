@@ -3008,17 +3008,6 @@ function UdbApi(
   };
 
   /**
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
-   * @param {number} [itemsPerPage] - How many items should be in the result set.
-   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
-   *  search results or a failure.
-   */
-  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    return find(apiUrl + 'search', queryString, start, itemsPerPage);
-  };
-
-  /**
    * @param {string} queryString - The query used to find offer to moderate.
    * @param {number} [start] - From which offset the result set should start.
    * @param {number} [itemsPerPage] - How many items should be in the result set.
@@ -4650,7 +4639,8 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = jsonOrganizer.name || _.get(jsonOrganizer, 'name_deprecated', '');
+      this.name = _.get(jsonOrganizer.name, 'nl', null) ||
+        _.get(jsonOrganizer, 'name', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
