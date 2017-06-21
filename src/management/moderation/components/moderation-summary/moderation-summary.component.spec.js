@@ -164,17 +164,4 @@ describe('Component: Moderation Summary', function () {
     expect(controller.error).toEqual('Dit aanbod kon niet geladen worden.');
   });
 
-  it('should alter the image with resizing-parameters', function () {
-    moderationManager.getModerationOffer.and.returnValue($q.resolve(new UdbEvent(offer)));
-
-    var controller = getController();
-    $scope.$digest();
-
-    expect(moderationManager.getModerationOffer).toHaveBeenCalledWith(
-      'http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043'
-    );
-
-    expect(controller.offer.image).toContain('maxwidth=150&maxheight=150');
-  });
-
 });
