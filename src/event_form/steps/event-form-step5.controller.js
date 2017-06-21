@@ -46,10 +46,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
   $scope.organizer = '';
-  $scope.emptyOrganizerAutocomplete = false;
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
+  $scope.foundOrganizers = 0;
 
   // Price info
   $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
@@ -109,6 +109,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.selectOrganizer = selectOrganizer;
   $scope.deleteOrganizer = deleteOrganizer;
   $scope.openOrganizerModal = openOrganizerModal;
+  $scope.organizerSearched = organizerSearched;
   $scope.organizersSearched = false;
   $scope.organizerFocus = false;
 
@@ -190,11 +191,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * @return {UdbOrganizer[]}
    */
   function getOrganizers(value) {
-    function suggestExistingOrNewOrganiser (organizers) {
-      $scope.emptyOrganizerAutocomplete = organizers.length <= 0;
+    function suggestExistingOrNewOrganiser (response) {
+      $scope.foundOrganizers = response.totalItems;
       $scope.loadingOrganizers = false;
 
-      return organizers;
+      return response.organizers;
     }
 
     $scope.loadingOrganizers = true;
@@ -250,7 +251,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function updateOrganizerInfo () {
       $scope.organizer = '';
-      $scope.emptyOrganizerAutocomplete = false;
       if (EventFormData.organizer.id) {
         $scope.organizerCssClass = 'state-complete';
       }
@@ -263,12 +263,20 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   /**
+   * Listener if an organizer is searched
+   */
+  function organizerSearched() {
+    controller.organizerSearched();
+  }
+
+  /**
    * Detect if an organizer is searched
    */
   controller.organizerSearched = function () {
-    $scope.organizersSearched = true;
+    if ($scope.organizer.length > 3) {
+      $scope.organizersSearched = true;
+    }
   };
-  $scope.organizerSearched = controller.organizerSearched;
 
   /**
    * Persist the organizer for the active event.
@@ -276,7 +284,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   controller.saveOrganizer = function (organizer) {
     function resetOrganizerFeedback() {
-      $scope.emptyOrganizerAutocomplete = false;
       $scope.organizerError = false;
       $scope.savingOrganizer = true;
       $scope.organizer = '';

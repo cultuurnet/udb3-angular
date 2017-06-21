@@ -130,7 +130,7 @@
                            focus-if="organizerCssClass == 'state-filling'"
                            udb-auto-scroll/>
                            <div class="dropdown-menu-no-results open"
-                           ng-show="organizerFocus && organizersSearched && emptyOrganizerAutocomplete">
+                            ng-show="organizerFocus && organizersSearched && foundOrganizers==0">
                              <div class="dropdown-menu">
                                 <div class="panel panel-default text-center">
                                     <div class="panel-body">

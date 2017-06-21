@@ -4695,7 +4695,9 @@ function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
         return new UdbOrganizer(jsonOrganizer);
       });
 
-      deferredOrganizer.resolve(organizers);
+      var response = {totalItems: pagedOrganizers.totalItems, organizers: organizers};
+
+      deferredOrganizer.resolve(response);
     }
 
     udbApi
@@ -12620,10 +12622,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
   $scope.organizer = '';
-  $scope.emptyOrganizerAutocomplete = false;
   $scope.loadingOrganizers = false;
   $scope.organizerError = false;
   $scope.savingOrganizer = false;
+  $scope.foundOrganizers = 0;
 
   // Price info
   $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
@@ -12683,6 +12685,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.selectOrganizer = selectOrganizer;
   $scope.deleteOrganizer = deleteOrganizer;
   $scope.openOrganizerModal = openOrganizerModal;
+  $scope.organizerSearched = organizerSearched;
   $scope.organizersSearched = false;
   $scope.organizerFocus = false;
 
@@ -12764,11 +12767,11 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * @return {UdbOrganizer[]}
    */
   function getOrganizers(value) {
-    function suggestExistingOrNewOrganiser (organizers) {
-      $scope.emptyOrganizerAutocomplete = organizers.length <= 0;
+    function suggestExistingOrNewOrganiser (response) {
+      $scope.foundOrganizers = response.totalItems;
       $scope.loadingOrganizers = false;
 
-      return organizers;
+      return response.organizers;
     }
 
     $scope.loadingOrganizers = true;
@@ -12824,7 +12827,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
     function updateOrganizerInfo () {
       $scope.organizer = '';
-      $scope.emptyOrganizerAutocomplete = false;
       if (EventFormData.organizer.id) {
         $scope.organizerCssClass = 'state-complete';
       }
@@ -12837,12 +12839,20 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
   /**
+   * Listener if an organizer is searched
+   */
+  function organizerSearched() {
+    controller.organizerSearched();
+  }
+
+  /**
    * Detect if an organizer is searched
    */
   controller.organizerSearched = function () {
-    $scope.organizersSearched = true;
+    if ($scope.organizer.length > 3) {
+      $scope.organizersSearched = true;
+    }
   };
-  $scope.organizerSearched = controller.organizerSearched;
 
   /**
    * Persist the organizer for the active event.
@@ -12850,7 +12860,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   controller.saveOrganizer = function (organizer) {
     function resetOrganizerFeedback() {
-      $scope.emptyOrganizerAutocomplete = false;
       $scope.organizerError = false;
       $scope.savingOrganizer = true;
       $scope.organizer = '';
@@ -22512,7 +22521,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <li class=\"uib-typeahead-match\" ng-repeat=\"match in matches track by $index\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index, $event)\" role=\"option\" id=\"{{::match.id}}\">\n" +
     "        <div uib-typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
     "    </li>\n" +
-    "    <li>\n" +
+    "    <li ng-show=\"$parent.foundOrganizers>=11\">\n" +
+    "      <div class=\"panel panel-default text-center\">\n" +
+    "          <div class=\"panel-body\">\n" +
+    "            <p class=\"text-muted text-center\">\n" +
+    "              <span ng-bind=\"$parent.foundOrganizers\"></span> organisaties gevonden. Vul de zoeknaam aan om verder te filteren of een organisatie toe te voegen.\n" +
+    "            </p>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "    </li>\n" +
+    "    <li ng-show=\"$parent.foundOrganizers<11\">\n" +
     "        <div class=\"panel panel-default text-center\">\n" +
     "            <div class=\"panel-body\">\n" +
     "                <p>Organisatie niet gevonden?</p>\n" +
@@ -23541,7 +23559,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           focus-if=\"organizerCssClass == 'state-filling'\"\n" +
     "                           udb-auto-scroll/>\n" +
     "                           <div class=\"dropdown-menu-no-results open\"\n" +
-    "                           ng-show=\"organizerFocus && organizersSearched && emptyOrganizerAutocomplete\">\n" +
+    "                            ng-show=\"organizerFocus && organizersSearched && foundOrganizers==0\">\n" +
     "                             <div class=\"dropdown-menu\">\n" +
     "                                <div class=\"panel panel-default text-center\">\n" +
     "                                    <div class=\"panel-body\">\n" +

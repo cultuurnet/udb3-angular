@@ -17,7 +17,7 @@ function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
    * @param {string} name
    *  The name of the organizer to fuzzy search against.
    *
-   * @return {Promise.<UdbOrganizer[]>}
+   * @return {Promise.<Object{totalItems: Integer, organizers:<UdbOrganizer[]>}}
    */
   this.suggestOrganizers = function(name) {
     var deferredOrganizer = $q.defer();
@@ -27,7 +27,9 @@ function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
         return new UdbOrganizer(jsonOrganizer);
       });
 
-      deferredOrganizer.resolve(organizers);
+      var response = {totalItems: pagedOrganizers.totalItems, organizers: organizers};
+
+      deferredOrganizer.resolve(response);
     }
 
     udbApi
