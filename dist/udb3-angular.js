@@ -5228,8 +5228,16 @@ function EventCultuurKuurComponentController(appConfig) {
     throw 'cultuurkuur url is not configured';
   }
 
-  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
-  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
+  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=preview1.0';
+  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=edit1.0';
   cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
 
   cm.cultuurKuurInfo = {
