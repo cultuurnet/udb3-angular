@@ -61,7 +61,7 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="cancel()">Annuleren</button>
-    <button type="button" class="btn btn-primary" ng-hide="showAgreements" ng-disabled="!allFieldsValid()" ng-click="addImage()">
+    <button type="button" class="btn btn-primary" ng-hide="showAgreements" ng-disabled="!allFieldsValid() || saving" ng-click="addImage()">
       Opladen <i ng-show="saving" class="fa fa-circle-o-notch fa-spin"></i>
     </button>
     <button class="btn btn-primary" ng-show="showAgreements" ng-click="acceptAgreements()">Akkoord</button>

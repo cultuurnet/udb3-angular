@@ -8899,6 +8899,8 @@ function EventFormImageUploadController(
       return;
     }
 
+    $scope.saving = true;
+
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
         deferredAddition = $q.defer();
@@ -8926,6 +8928,7 @@ function EventFormImageUploadController(
      */
     function addImageToEvent(mediaObject) {
       function updateEventFormAndResolve() {
+        $scope.saving = false;
         EventFormData.addImage(mediaObject);
         deferredAddition.resolve(mediaObject);
         $uibModalInstance.close(mediaObject);
@@ -22045,7 +22048,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid()\" ng-click=\"addImage()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
     "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
