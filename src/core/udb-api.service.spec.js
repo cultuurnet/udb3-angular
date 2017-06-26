@@ -208,6 +208,7 @@ describe('Service: UDB3 Api', function () {
       .then(done);
     $httpBackend.flush();
   });
+
   it('should find offers when provided no query', function (done) {
     var response = {};
     $httpBackend
@@ -215,6 +216,31 @@ describe('Service: UDB3 Api', function () {
       .respond(JSON.stringify(response));
     service
       .findOffers('')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  // findEvents
+  it('should find events when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'search?query=searchquery&start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findEvents('searchquery')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should find events when provided no query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'search?start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findEvents('')
 
       .then(done);
     $httpBackend.flush();

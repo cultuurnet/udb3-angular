@@ -3043,6 +3043,29 @@ function UdbApi(
   };
 
   /**
+   * @param {string} queryString - The query used to find events.
+   * @param {number} [start] - From which event offset the result set should start.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findEvents = function (queryString, start) {
+    var offset = start || 0,
+        searchParams = {
+          start: offset
+        };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.query = queryString;
+    }
+
+    return $http
+      .get(apiUrl + 'search', requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} queryString - The query used to find offer to moderate.
    * @param {number} [start] - From which offset the result set should start.
    * @param {number} [itemsPerPage] - How many items should be in the result set.
@@ -12373,7 +12396,7 @@ angular
 function EventFormStep4Controller(
   $scope,
   EventFormData,
-  udbApi,
+  searchApiSwitcher,
   appConfig,
   SearchResultViewer,
   eventCrud,
@@ -12495,7 +12518,7 @@ function EventFormStep4Controller(
 
     var queryString = expressions.join(' AND ');
 
-    return udbApi.findOffers(queryString);
+    return searchApiSwitcher.findOffers(queryString);
   }
 
   /**
@@ -12504,25 +12527,7 @@ function EventFormStep4Controller(
    * - on the same location
    */
   function duplicateSearchConditions(data) {
-
-    var location = data.getLocation();
-
-    if (EventFormData.isEvent) {
-      /*jshint camelcase: false*/
-      /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
-      return {
-        'name.\\*': EventFormData.name.nl,
-        'location.name.\\*' : location.name
-      };
-    }
-    else {
-      /*jshint camelcase: false */
-      return {
-        'name.\\*': EventFormData.name.nl,
-        'postalCode': EventFormData.address.postalCode,
-        'labels': 'UDB3 place'
-      };
-    }
+    return searchApiSwitcher.getDuplicateSearchConditions(data);
   }
 
   /**
@@ -12596,7 +12601,7 @@ function EventFormStep4Controller(
   }
 
 }
-EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
+EventFormStep4Controller.$inject = ["$scope", "EventFormData", "searchApiSwitcher", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
 
 // Source: src/event_form/steps/event-form-step5.controller.js
 /**
@@ -17540,7 +17545,7 @@ angular.module('udb.router')
   .service('offerLocator', OfferLocator);
 
 /* @ngInject */
-function OfferLocator($q, udbApi) {
+function OfferLocator($q, searchApiSwitcher) {
   // An associative array with UUIDs pointing to locations.
   // eg: 0586DF1-89D7-42F6-9804-DAE8878C2617 -> http://du.de/event/0586DF1-89D7-42F6-9804-DAE8878C2617
   var locations = {};
@@ -17600,7 +17605,7 @@ function OfferLocator($q, udbApi) {
       }
     }
 
-    udbApi
+    searchApiSwitcher
       .findOffers('id:"' + uuid + '"')
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
@@ -17608,7 +17613,7 @@ function OfferLocator($q, udbApi) {
     return deferredLocation.promise;
   }
 }
-OfferLocator.$inject = ["$q", "udbApi"];
+OfferLocator.$inject = ["$q", "searchApiSwitcher"];
 
 // Source: src/saved-searches/components/delete-search-modal.controller.js
 /**
@@ -18418,6 +18423,357 @@ function udbQueryEditor() {
     restrict: 'EA',
     controllerAs: 'qe',
     controller: 'QueryEditorController'
+  };
+}
+
+// Source: src/search/components/sapi2.query-editor-field.directive.js
+/**
+ * @ngdoc directive
+ * @name udb.search.directive:udb2QueryEditorField
+ * @description
+ * # udb2QueryEditorField
+ */
+angular
+  .module('udb.search')
+  .directive('udb2QueryEditorField', udbQueryEditorField);
+
+/* @ngInject */
+function udbQueryEditorField() {
+  return {
+    templateUrl: 'templates/sapi2.query-editor-field.directive.html',
+    restrict: 'E',
+    link: function postLink(scope, element, attrs) {
+
+      function getParentGroup() {
+        var parentGroup;
+
+        if (isSubGroup()) {
+          parentGroup = scope.$parent.field;
+        } else {
+          parentGroup = scope.rootGroup;
+        }
+
+        return parentGroup;
+      }
+
+      function getOperatorClass() {
+        var operatorClass;
+        if (isSubGroup() && scope.$index === 0) {
+          operatorClass = 'AND';
+        } else {
+          operatorClass = scope.$index ? 'OR' : 'FIRST';
+        }
+
+        return operatorClass;
+      }
+
+      function isSubGroup() {
+        var parentGroup = scope.$parent;
+        return parentGroup.field.type === 'group';
+      }
+
+      function canRemoveField() {
+        var group = scope.rootGroup;
+        return (group.nodes.length > 1);
+      }
+
+      scope.addField = function (index) {
+        scope.qe.addField(getParentGroup(), index);
+      };
+
+      scope.removeField = function (index) {
+        scope.qe.removeField(getParentGroup(), index, scope.rootGroup);
+      };
+
+      scope.addSubGroup = function (index) {
+        var rootGroup = scope.rootGroup,
+          treeGroupId = _.uniqueId(),
+          group = getParentGroup();
+
+        group.treeGroupId = treeGroupId;
+
+        if (isSubGroup()) {
+          index = _.findIndex(rootGroup.nodes, function (group) {
+            return group.treeGroupId === treeGroupId;
+          });
+        }
+
+        scope.qe.addSubGroup(rootGroup, index);
+      };
+
+      scope.isSubGroup = isSubGroup;
+      scope.getOperatorClass = getOperatorClass;
+      scope.canRemoveField = canRemoveField;
+    }
+  };
+}
+
+// Source: src/search/components/sapi2.query-editor.controller.js
+/**
+ * @ngdoc directive
+ * @name udb.search.controller:sapi2QueryEditorController
+ * @description
+ * # sapi2QueryEditorController
+ */
+angular
+  .module('udb.search')
+  .controller('sapi2QueryEditorController', QueryEditorController);
+
+QueryEditorController.$inject = [
+  'queryFields',
+  'LuceneQueryBuilder',
+  'taxonomyTerms',
+  'sapi2FieldTypeTransformers',
+  'searchHelper',
+  '$translate',
+  '$rootScope'
+];
+function QueryEditorController(
+  queryFields,
+  LuceneQueryBuilder,
+  taxonomyTerms,
+  fieldTypeTransformers,
+  searchHelper,
+  $translate,
+  $rootScope
+) {
+  var qe = this,
+    queryBuilder = LuceneQueryBuilder;
+
+  qe.fields = _.filter(queryFields, 'editable');
+
+  // use the first occurrence of a group name to order it against the other groups
+  var orderedGroups = _.chain(qe.fields)
+    .map(function (field) {
+      return field.group;
+    })
+    .uniq()
+    .value();
+
+  _.forEach(qe.fields, function (field) {
+    var fieldName = field.name.toUpperCase(),
+      fieldGroup = 'queryFieldGroup.' + field.group;
+
+    $translate([fieldName, fieldGroup]).then(function (translations) {
+      field.label = translations[fieldName];
+      field.groupIndex = _.indexOf(orderedGroups, field.group);
+      field.groupLabel = translations[fieldGroup];
+    });
+  });
+
+  qe.getDefaultQueryTree = function () {
+    return {
+      type: 'root',
+      nodes: [
+        {
+          type: 'group',
+          operator: 'OR',
+          nodes: [
+            {
+              field: 'title',
+              term: '',
+              fieldType: 'tokenized-string',
+              transformer: '+'
+            }
+          ]
+        }
+      ]
+    };
+  };
+  qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
+
+  // Holds options for both term and choice query-field types
+  qe.transformers = {};
+  qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
+    return 'category_' + term.domain + '_name';
+  });
+  _.forEach(queryFields, function (field) {
+    if (field.type === 'choice') {
+      qe.termOptions[field.name] = field.options;
+    }
+    qe.transformers[field.name] = fieldTypeTransformers[field.type];
+  });
+
+  /**
+   * Update the search input field with the data from the query editor
+   */
+  qe.updateQueryString = function () {
+    searchHelper.setQueryTree(qe.groupedQueryTree);
+    $rootScope.$emit('searchSubmitted');
+    qe.stopEditing();
+  };
+
+  qe.stopEditing = function () {
+    $rootScope.$emit('stopEditingQuery');
+  };
+
+  /**
+   * Add a field to a group
+   *
+   * @param  {object}  group       The group to add the field to
+   * @param {number}  fieldIndex  The index of the field after which to add
+   */
+  qe.addField = function (group, fieldIndex) {
+
+    var insertIndex = fieldIndex + 1,
+      field = {
+        field: 'title',
+        term: '',
+        fieldType: 'tokenized-string',
+        transformer: '+'
+      };
+
+    group.nodes.splice(insertIndex, 0, field);
+
+    if (group.nodes.length) {
+      group.type = 'group';
+    }
+  };
+
+  /**
+   * Remove a field from a group
+   *
+   * @param {object}    group       The group to delete a field from
+   * @param {number}    fieldIndex  The index of the field to delete
+   * @param {object=}   rootGroup   The root group of the field to delete
+   */
+  qe.removeField = function (group, fieldIndex, rootGroup) {
+    if (rootGroup.nodes.length > 1) {
+      group.nodes.splice(fieldIndex, 1);
+    }
+
+    qe.cleanUpGroups();
+  };
+
+  qe.cleanUpGroups = function () {
+    qe.removeEmptyGroups();
+    qe.unwrapSubGroups();
+  };
+
+  qe.unwrapSubGroups = function () {
+    var root = qe.groupedQueryTree;
+
+    _.forEach(root.nodes, function (group) {
+      var firstNode = group.nodes[0];
+
+      if (firstNode.nodes) {
+        var firstNodeChildren = firstNode.nodes;
+        group.nodes.splice(0, 1);
+        _.forEach(firstNodeChildren, function (node, index) {
+          group.nodes.splice(index, 0, node);
+        });
+      }
+    });
+  };
+
+  qe.removeEmptyGroups = function () {
+    var root = qe.groupedQueryTree;
+
+    _.forEach(root.nodes, function (group) {
+      _.remove(group.nodes, function (node) {
+        return node.nodes && node.nodes.length === 0;
+      });
+    });
+  };
+
+  qe.toggleExcludeGroup = function (group) {
+    group.excluded = !group.excluded;
+  };
+
+  qe.canRemoveGroup = function () {
+    return !qe.hasSingleGroup();
+  };
+
+  qe.removeGroup = function (groupIndex) {
+    if (qe.canRemoveGroup()) {
+      var root = qe.groupedQueryTree,
+        group = root.nodes[groupIndex];
+
+      if (qe.canRemoveGroup() && group) {
+        root.nodes.splice(groupIndex, 1);
+      }
+    }
+  };
+
+  qe.resetGroups = function () {
+    qe.groupedQueryTree = qe.getDefaultQueryTree();
+  };
+
+  /**
+   * Add a field group
+   */
+  qe.addGroup = function () {
+    var root = qe.groupedQueryTree;
+    var group = {
+      type: 'group',
+      operator: 'OR',
+      nodes: [
+        {
+          field: 'title',
+          term: '',
+          fieldType: 'tokenized-string',
+          transformer: '+'
+        }
+      ]
+    };
+
+    root.nodes.push(group);
+  };
+
+  qe.addSubGroup = function (parentGroup, fieldIndex) {
+    var group = {
+      type: 'group',
+      operator: 'AND',
+      nodes: [
+        {
+          field: 'title',
+          term: '',
+          fieldType: 'tokenized-string',
+          transformer: '+'
+        }
+      ]
+    };
+
+    parentGroup.nodes.splice(fieldIndex + 1, 0, group);
+  };
+
+  qe.updateFieldType = function (field) {
+    var fieldName = field.field,
+      queryField = _.find(queryFields, function (field) {
+        return field.name === fieldName;
+      });
+
+    if (field.fieldType !== queryField.type) {
+      // TODO: Maybe try to do a type conversion?
+      if (queryField.type === 'date-range') {
+        field.lowerBound = moment().startOf('day').toDate();
+        field.upperBound = moment().endOf('day').toDate();
+        field.inclusive = true;
+      } else {
+        field.term = '';
+        field.lowerBound = undefined;
+        field.upperBound = undefined;
+        field.inclusive = undefined;
+      }
+
+      if (queryField.type === 'check') {
+        field.term = 'TRUE';
+      }
+
+      if (queryField.type === 'number') {
+        field.inclusive = true;
+      }
+
+      if (!field.transformer || !_.contains(fieldTypeTransformers[queryField.type], field.transformer)) {
+        field.transformer = _.first(fieldTypeTransformers[queryField.type]);
+      }
+
+      field.fieldType = queryField.type;
+    }
+  };
+
+  qe.hasSingleGroup = function () {
+    return (qe.groupedQueryTree.nodes.length === 1);
   };
 }
 
@@ -19558,6 +19914,871 @@ function QueryTreeValidator(queryFields) {
 }
 QueryTreeValidator.$inject = ["queryFields"];
 
+// Source: src/search/services/sapi2.field-type-transformers.js
+/**
+ * @ngdoc service
+ * @name udb.search.sapi2FieldTypeTransformers
+ * @description
+ * # sapi2FieldTypeTransformers
+ * Value in udb.search module.
+ */
+angular
+  .module('udb.search')
+  .value('sapi2FieldTypeTransformers', {
+    'string': ['=', '!'],
+    'tokenized-string': ['+', '-'],
+    'choice': ['=', '!'],
+    'term': ['=', '!'],
+    'number': ['=', '<', '>'],
+    'check': ['='],
+    'date-range': ['=', '><', '<', '>']
+  });
+
+// Source: src/search/services/sapi2.query-builder.service.js
+/**
+ * @ngdoc service
+ * @name udbApp.sapi2QueryBuilder
+ * @description
+ * # sapi2QueryBuilder
+ * Service in the udb.search.
+ */
+angular.module('udb.search')
+  .service('sapi2QueryBuilder', QueryBuilder);
+
+QueryBuilder.$inject = [
+  'LuceneQueryParser',
+  'sapi2QueryTreeValidator',
+  'sapi2QueryTreeTranslator',
+  'sapi2QueryFields',
+  'taxonomyTerms'
+];
+function QueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTranslator, queryFields, taxonomyTerms) {
+  var implicitToken = '<implicit>';
+
+  this.translate = function (query) {
+    QueryTreeTranslator.translateQueryTree(query.queryTree);
+  };
+
+  this.validate = function (query) {
+    QueryTreeValidator.validate(query.queryTree, query.errors);
+  };
+
+  this.isValid = function (query) {
+    this.translate(query);
+    this.validate(query);
+
+    return query.errors.length === 0;
+  };
+
+  this.parseQueryString = function (query) {
+    try {
+      query.queryTree = LuceneQueryParser.parse(query.queryString);
+    } catch (e) {
+      query.errors.push(e.message);
+    }
+
+    return query.queryTree;
+  };
+
+  /**
+   *
+   * @param {string} queryString
+   */
+  this.createQuery = function (queryString) {
+    var query = {
+      originalQueryString: queryString,
+      queryString: queryString,
+      queryTree: {},
+      errors: []
+    };
+
+    this.parseQueryString(query);
+
+    return query;
+  };
+
+  var printTerm = function (node) {
+    var term = node.term,
+      isRangeExpression = (node.lowerBound || node.upperBound);
+
+    if (isRangeExpression) {
+      var min = node.lowerBound || '*',
+        max = node.upperBound || '*',
+        inclusive = node.inclusive;
+
+      if (min instanceof Date) {
+        min = min.toISOString();
+      }
+      if (max instanceof Date) {
+        max = max.toISOString();
+      }
+
+      term = min + ' TO ' + max;
+
+      if (inclusive) {
+        term = '[' + term + ']';
+      } else {
+        term = '{' + term + '}';
+      }
+    } else {
+      // if the term is a phrase surround it with double quotes
+      if (node.quoted || term.indexOf(' ') !== -1) {
+        term = '"' + term + '"';
+      }
+
+      // check for fuzzy search modifier
+      if (node.similarity) {
+        term += ('~' + node.similarity);
+      }
+
+      // check for proximity modifier
+      if (node.proximity) {
+        term += ('~' + node.proximity);
+      }
+
+      // check for prefix modifier
+      if (node.prefix) {
+        term = node.prefix + term;
+      }
+
+      // check for boost modifier
+      if (node.boost) {
+        term += ('^' + node.boost);
+      }
+    }
+
+    return term;
+  };
+
+  var unparseNode = function (branch, depth, sentence) {
+
+    if (branch.left) {
+      var result,
+        operator = (branch.operator === implicitToken) ? ' ' : (' ' + branch.operator + ' ');
+
+      if (branch.right) {
+        result = unparseNode(branch.left, depth + 1, sentence);
+        result += operator;
+        result += unparseNode(branch.right, depth + 1, sentence);
+
+        if (depth > 0) {
+          result = '(' + result + ')';
+        }
+
+        if (branch.field && branch.field !== implicitToken) {
+          result = (branch.field + ':') + result;
+        }
+
+      } else {
+        result = unparseNode(branch.left, depth + 1, sentence);
+      }
+
+      return result;
+
+    } else {
+      var fieldQuery = '',
+        term = printTerm(branch);
+
+      if (branch.field !== implicitToken && branch.field !== null) {
+        var fieldPrefix = '';
+
+        if (_.contains(['!', '+', '-'], branch.transformer)) {
+          fieldPrefix = branch.transformer;
+        }
+
+        fieldQuery += (fieldPrefix + branch.field + ':');
+      }
+
+      fieldQuery += term;
+
+      return sentence += fieldQuery;
+    }
+
+    if (depth === 0) {
+      return sentence;
+    }
+  };
+
+  this.unparse = function (query) {
+    query.queryString = this.unparseQueryTree(query.queryTree);
+    return query.queryString;
+  };
+
+  this.unparseQueryTree = function (queryTree) {
+    var queryString = '';
+
+    if (queryTree.left) {
+      queryString = unparseNode(queryTree, 0, '');
+    }
+
+    return queryString;
+  };
+
+  function printTreeField(field) {
+    if (field.fieldType === 'date-range') {
+      cleanUpDateRangeField(field);
+    }
+    var transformedField = transformField(field);
+    return transformedField.field + ':' + printTerm(transformedField);
+  }
+
+  /**
+   * @description
+   * Unparse a grouped field information tree to a query string
+   *
+   * @param   {object}  groupedTree     A tree structure with field groups
+   * @return  {string}  A query string
+   */
+  this.unparseGroupedTree = function (groupedTree) {
+    var root = groupedTree;
+    var queryString = '';
+
+    _.forEach(root.nodes, function (node, nodeIndex) {
+      var nodeString = '';
+      if (node.type === 'group') {
+        var group = node;
+
+        _.forEach(group.nodes, function (field, fieldIndex) {
+
+          // check if the field is actually a sub group
+          if (field.type === 'group') {
+
+            var subGroup = field,
+              subGroupString = ' ';
+
+            if (subGroup.nodes.length === 1) {
+              var singleField = subGroup.nodes[0];
+              subGroupString += subGroup.operator + ' ' + printTreeField(singleField);
+            } else {
+              subGroupString += subGroup.operator + ' (';
+              _.forEach(subGroup.nodes, function (field, fieldIndex) {
+                if (fieldIndex) {
+                  subGroupString += ' OR ';
+                }
+                subGroupString += printTreeField(field);
+              });
+              subGroupString += ')';
+            }
+
+            nodeString += subGroupString;
+          } else {
+            if (fieldIndex) {
+              nodeString += ' ' + node.operator + ' ';
+            }
+
+            nodeString += printTreeField(field);
+
+            var nextIndex = fieldIndex + 1;
+            if (fieldIndex && nextIndex < group.nodes.length && group.nodes[nextIndex].type === 'group') {
+              nodeString = '(' + nodeString + ')';
+            }
+          }
+        });
+
+        if (root.nodes.length > 1 && group.nodes.length > 1) {
+          nodeString = '(' + nodeString + ')';
+        }
+      } else {
+        console.log('Expecting a group but found: ' + node.type);
+      }
+
+      // do not prepend the first node with an operator
+      if (nodeIndex || node.excluded) {
+        var operator = node.excluded ? 'NOT' : 'OR';
+        queryString += ' ' + operator + ' ';
+      }
+      queryString += nodeString;
+    });
+
+    return queryString;
+  };
+
+  function cleanUpDateRangeField(field) {
+    if (field.transformer === '=' && moment(field.lowerBound).isValid()) {
+      field.lowerBound = moment(field.lowerBound).startOf('day').toDate();
+      field.upperBound = moment(field.lowerBound).endOf('day').toDate();
+    }
+
+    if (field.transformer === '><') {
+      if (moment(field.lowerBound).isValid()) {
+        field.lowerBound = moment(field.lowerBound).startOf('day').toDate();
+      } else {
+        field.lowerBound = '*';
+      }
+
+      if (moment(field.upperBound).isValid()) {
+        field.upperBound = moment(field.upperBound).endOf('day').toDate();
+      } else {
+        field.upperBound = '*';
+      }
+    }
+
+    if (field.transformer === '<') {
+      if (moment(field.upperBound).isValid()) {
+        field.upperBound = moment(field.upperBound).endOf('day').toDate();
+      } else {
+        field.upperBound = moment().endOf('day').toDate();
+      }
+    }
+
+    if (field.transformer === '>') {
+      if (moment(field.lowerBound).isValid()) {
+        field.lowerBound = moment(field.lowerBound).startOf('day').toDate();
+      } else {
+        field.lowerBound = moment().startOf('day').toDate();
+      }
+    }
+  }
+
+  function transformField(originalField) {
+    var field = _.clone(originalField);
+
+    switch (field.transformer) {
+      case '!':
+        field.field = '!' + field.field;
+        break;
+      case '-':
+        field.field = '-' + field.field;
+        break;
+      case '<':
+        field.lowerBound = '*';
+        break;
+      case '>':
+        field.upperBound = '*';
+        break;
+      case '=':
+        if (field.fieldType !== 'date-range') {
+          field.upperBound = undefined;
+          field.lowerBound = undefined;
+        }
+        break;
+    }
+
+    return field;
+  }
+
+  /**
+   * @description
+   * Generate a grouped field information tree from a query tree
+   * The query tree should not nest different operators deeper than 2 levels.
+   * Modifiers will be ignored.
+   *
+   * @param   {object}  queryTree   - The queryTree to get information from
+   *
+   * @return  {object}              - A grouped field information tree
+   */
+  this.groupQueryTree = function (queryTree) {
+    var groupedFieldTree = {
+      type: 'root',
+      nodes: [],
+      operator: queryTree.operator || 'OR'
+    };
+
+    // If the query tree of an empty search is used, add a default field and group
+    if (!queryTree.left) {
+      var group = {
+        type: 'field',
+        operator: 'OR',
+        nodes: [
+          {
+            field: 'title',
+            term: '',
+            fieldType: 'tokenized-string',
+            transformer: '+'
+          }
+        ]
+      };
+      groupedFieldTree.nodes.push(group);
+    } else {
+      this.groupNode(queryTree, groupedFieldTree);
+      this.cleanUpGroupedFieldTree(groupedFieldTree);
+    }
+
+    return groupedFieldTree;
+  };
+
+  /**
+   * @description
+   * Clean up a field tree after grouping.
+   * Used by groupQueryTree to cleanse a freshly grouped tree.
+   *
+   * @param {object} groupedFieldTree
+   */
+  this.cleanUpGroupedFieldTree = function (groupedFieldTree) {
+    _.forEach(groupedFieldTree.nodes, function (fieldGroup) {
+      // This property is just used to track implicit fields and can be removed when switching groups.
+      delete fieldGroup.implicitField;
+
+      // Switch the type of the node to field instead of group if it only contains one field.
+      if (fieldGroup.nodes && fieldGroup.nodes.length === 1) {
+        fieldGroup.type = 'field';
+      }
+
+      // Replace any remaining implicitly declared operators with OR.
+      // Assuming the following term grouping syntax was used "field:(term1 term2)".
+      if (fieldGroup.operator === implicitToken) {
+        fieldGroup.operator = 'OR';
+      }
+
+      // add field-query type and map options for term and choice fields
+      _.forEach(fieldGroup.nodes, function (field) {
+
+        // Find the field-query field type
+        var fieldType = _.find(queryFields, function (fieldType) {
+          return fieldType.name === field.field;
+        });
+
+        // Set the type and map options depending on field type
+        if (fieldType) {
+          field.fieldType = fieldType.type;
+
+          // terms should be matched to their domain and used as the field-query field
+          // if no matching taxonomy term is found the query-field should be removed
+          if (fieldType.type === 'term') {
+            var taxonomyTerm = _.find(taxonomyTerms, function (term) {
+              return term.label.toUpperCase() === field.term.toUpperCase();
+            });
+
+            if (taxonomyTerm) {
+              var domainFieldName = 'category_' + taxonomyTerm.domain + '_name';
+              field.field = domainFieldName;
+              field.term = taxonomyTerm.label;
+            } else {
+              field.invalid = true;
+            }
+          }
+
+          // Look up options for choice field-query
+          if (fieldType.type === 'choice') {
+            var option = _.find(fieldType.options, function (option) {
+              return option === field.term.toUpperCase();
+            });
+
+            if (option) {
+              field.term = option;
+            } else {
+              field.invalid = true;
+            }
+          }
+
+          // Make sure boolean field-query values are either true or false
+          if (fieldType.type === 'check') {
+            if (_.contains(['TRUE', 'FALSE'], field.term.toUpperCase())) {
+              field.term = field.term.toUpperCase();
+            } else {
+              field.invalid = true;
+            }
+          }
+
+          if (fieldType.type === 'tokenized-string') {
+            if (!field.transformer || field.transformer === '=') {
+              field.transformer = '+';
+            }
+
+            if (field.transformer === '!') {
+              field.transformer = '-';
+            }
+          }
+
+          if (fieldType.type === 'string') {
+            if (!field.transformer || field.transformer === '+') {
+              field.transformer = '=';
+            }
+
+            if (field.transformer === '-') {
+              field.transformer = '!';
+            }
+          }
+
+          // Numbers can be a single or ranged term
+          // The editor only handles ranges that have one of the boundaries set to infinity
+          if (fieldType.type === 'number') {
+            if (field.term) {
+              field.transformer = '=';
+            } else {
+              if (field.upperBound && field.lowerBound === '*') {
+                field.transformer = '<';
+              } else if (field.lowerBound && field.upperBound === '*') {
+                field.transformer = '>';
+              } else {
+                field.transformer = '=';
+                field.term = field.lowerBound || field.upperBound;
+                field.lowerBound = undefined;
+                field.upperBound = undefined;
+              }
+            }
+          }
+
+          if (fieldType.type === 'date-range') {
+            var startDate = moment(field.lowerBound),
+              endDate = moment(field.upperBound);
+
+            if (startDate.isValid() && endDate.isValid()) {
+              if (startDate.isSame(endDate, 'day')) {
+                field.transformer = '=';
+              } else {
+                field.transformer = '><';
+              }
+            } else {
+              if (!startDate.isValid() && endDate.isValid()) {
+                field.transformer = '<';
+              }
+
+              if (!endDate.isValid() && startDate.isValid()) {
+                field.transformer = '>';
+              }
+            }
+          }
+        }
+
+      });
+    });
+  };
+
+  /**
+   * @description
+   * Group a node in a query tree branch.
+   * You should not need to call this method directly, use groupQueryTree instead.
+   *
+   * @param {object}  branch        - The branch of a query tree
+   * @param {object}  fieldTree     - The field tree that will be returned
+   * @param {object}  [fieldGroup]  - Keeps track of the current field group
+   */
+  this.groupNode = function (branch, fieldTree, fieldGroup) {
+    // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
+    if (branch.operator === implicitToken) {
+      branch.operator = 'OR';
+    }
+    if (!fieldGroup || branch.operator && (branch.operator !== fieldGroup.operator)) {
+      var newFieldGroup = {
+        type: 'group',
+        operator: branch.operator || 'OR',
+        nodes: []
+      };
+
+      fieldTree.nodes.push(newFieldGroup);
+      fieldGroup = newFieldGroup;
+    }
+
+    // Track the last used field name to apply to implicitly defined terms
+    if (branch.field && branch.field !== implicitToken) {
+      fieldGroup.implicitField = branch.field;
+    }
+
+    if (branch.term || (branch.lowerBound && branch.upperBound)) {
+      var field = branch.field;
+
+      // Handle implicit field names by using the last used field name
+      if (field === implicitToken) {
+        if (fieldGroup.implicitField) {
+          field = fieldGroup.implicitField;
+        } else {
+          throw 'Field name is implicit and not defined elsewhere.';
+        }
+      }
+
+      fieldGroup.nodes.push(makeField(branch, field));
+    }
+
+    if (branch.left) {
+      this.groupNode(branch.left, fieldTree, fieldGroup);
+      if (branch.right) {
+        this.groupNode(branch.right, fieldTree, fieldGroup);
+      }
+    }
+  };
+
+  /**
+   * @description
+   * Generate a field object that's used to render the query editor fields.
+   *
+   * @param {object} node The node with all the necessary information
+   * @return {object} A field object used to render the query editor
+   */
+  function makeField(node, fieldName) {
+    var fieldType = _.find(queryFields, function (type) {
+        return type.name === node.field;
+      }),
+      field = {
+        field: fieldName || node.field,
+        fieldType: fieldType || 'string',
+        transformer: node.transformer || '='
+      };
+
+    if (node.lowerBound || node.upperBound) {
+      field.lowerBound = node.lowerBound || undefined;
+      field.upperBound = node.upperBound || undefined;
+      field.inclusive = node.inclusive || true;
+    } else {
+      field.term = node.term || undefined;
+    }
+
+    return field;
+  }
+}
+
+// Source: src/search/services/sapi2.query-fields.value.js
+/**
+ * @ngdoc service
+ * @name udb.search.sapi2QueryFields
+ * @description
+ * Query field types:
+ * - string
+ * - string
+ * - choice
+ * - check
+ * - date-range
+ * - term
+ *
+ * When displayed in the editor, the first occurrence of a group name will determine its order in relation to the other
+ * groups.
+ */
+angular
+  .module('udb.search')
+  .value('sapi2QueryFields', [
+    {name: 'cdbid', type: 'string', group: 'what', editable: true},
+    {name: 'keywords', type: 'string', group: 'what', editable: true},
+    {name: 'title', type: 'tokenized-string', group: 'what', editable: true},
+    {name: 'category_eventtype_name', type: 'term', group: 'what', editable: true},
+    {name: 'category_theme_name', type: 'term', group: 'what', editable: true},
+
+    {name: 'city', type: 'string', group:'where', editable: true},
+    {name: 'zipcode', type: 'string', group:'where', editable: true},
+    {name: 'country', type: 'choice', group:'where', editable: false, options: ['AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM']},
+    {name: 'location_label', type: 'tokenized-string', group:'where', editable: true},
+    {name: 'category_flandersregion_name', type: 'term' , group:'where', editable: true},
+
+    {name: 'startdate', type: 'date-range', group:'when', editable: true},
+    {name: 'enddate', type: 'date-range', group:'when', editable: true},
+    {name: 'permanent', type: 'check', group:'when', editable: true},
+
+    {name: 'lastupdated', type: 'date-range', group:'input-information', editable: true},
+    {name: 'lastupdatedby', type: 'string', group:'input-information', editable: true},
+    {name: 'creationdate', type: 'date-range', group:'input-information', editable: true},
+    {name: 'createdby', type: 'string', group:'input-information', editable: true},
+    {name: 'availablefrom', type: 'date-range', group:'input-information', editable: true},
+
+    {name: 'detail_lang', type: 'choice', group:'translations', editable: true, options: ['nl', 'fr', 'en', 'de']},
+
+    {name: 'organiser_keywords', type: 'string', group: 'other', editable: true},
+    {name: 'agefrom', type: 'number', group: 'other', editable: true},
+    {name: 'price', type: 'number' , group: 'other', editable: true},
+    {name: 'organiser_label', type: 'tokenized-string', group: 'other', editable: true},
+    {name: 'category_facility_name', type: 'term', group: 'other', editable: true},
+    {name: 'category_targetaudience_name', type: 'term', group: 'other', editable: true},
+    {name: 'category_publicscope_name', type: 'term', group: 'other', editable: true},
+
+    {name: 'like_count', type: 'number'},
+    {name: 'recommend_count', type: 'number'},
+    {name: 'attend_count', type: 'number'},
+    {name: 'comment_count', type: 'number'},
+    {name: 'category_name', type: 'term'},
+    {name: 'externalid', type: 'string'},
+    {name: 'private', type: 'check'},
+    {name: 'physical_gis', type: 'string'}
+  ]);
+
+// Source: src/search/services/sapi2.query-tree-translator.service.js
+/**
+ * @ngdoc service
+ * @name udb.search.sapi2QueryTreeTranslator
+ * @description
+ * # QueryTreeTranslator
+ * Service in the udb.search.
+ */
+angular
+  .module('udb.search')
+  .service('sapi2QueryTreeTranslator', QueryTreeTranslator);
+
+/* @ngInject */
+function QueryTreeTranslator(queryFieldTranslations) {
+
+  var translations = queryFieldTranslations;
+
+  /**
+   * @param {string} field    - The field to translate.
+   * @param {string} srcLang  - To source language to translate from.
+   */
+  var translateField = function (field, srcLang) {
+    var translation = field,
+      identifier = _.findKey(translations[srcLang], function (src) {
+        return src === field;
+      });
+
+    if (identifier) {
+      translation = identifier.toLowerCase();
+    }
+
+    return translation;
+  };
+
+  var translateNode = function (node, depth) {
+    var left = node.left || false,
+      right = node.right || false,
+      nodes = [];
+
+    if (left) {
+      nodes.push(left);
+    }
+    if (right) {
+      nodes.push(right);
+    }
+
+    for (var i = 0, len = nodes.length; i < len; i++) {
+      var iNode = nodes[i];
+      if (typeof iNode === 'object') {
+        translateNode(iNode, depth + 1);
+      }
+    }
+
+    if (node.field) {
+      node.field = translateField(node.field, 'en');
+      node.field = translateField(node.field, 'nl');
+    }
+
+  };
+
+  this.translateQueryTree = function (queryTree) {
+    return translateNode(queryTree, 0);
+  };
+}
+QueryTreeTranslator.$inject = ["queryFieldTranslations"];
+
+// Source: src/search/services/sapi2.query-tree-validator.service.js
+/**
+ * @ngdoc service
+ * @name udb.search.sapi2QueryTreeValidator
+ * @description
+ * # sapi2QueryTreeValidator
+ * Service in the udb.search.
+ */
+angular.module('udb.search')
+  .service('sapi2QueryTreeValidator', QueryTreeValidator);
+
+QueryTreeValidator.$inject = ['sapi2QueryFields'];
+function QueryTreeValidator(queryFields) {
+
+  var validFieldNames = _.union(_.map(queryFields, 'name'), ['_exists_']),
+    implicitToken = '<implicit>',
+    validParentFieldNames = _(validFieldNames)
+      .filter(function (fieldName) {
+        return fieldName.indexOf('.') > 0;
+      })
+      .map(function (fieldName) {
+        return fieldName.split('.')[0];
+      })
+      .value();
+
+  var validateFields = function (current, depth, errors) {
+    var left = current.left || false,
+      right = current.right || false,
+      nodes = [];
+
+    if (left) {
+      nodes.push(left);
+    }
+    if (right) {
+      nodes.push(right);
+    }
+
+    for (var i = 0, len = nodes.length; i < len; i++) {
+      var node = nodes[i];
+      if (typeof node === 'object') {
+        validateFields(node, depth + 1, errors);
+      }
+    }
+
+    var field = current.field;
+    if (typeof(field) !== 'undefined') {
+
+      var fieldName = _.trim(field, '.\\*');
+      var fieldHasWildcard = field !== fieldName;
+
+      if (fieldName !== null && fieldName !== implicitToken) {
+
+        if (fieldHasWildcard) {
+          if (!_.contains(validParentFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid parent search field that can be used with a wildcard');
+          }
+        } else {
+          if (!_.contains(validFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid search field');
+          }
+        }
+      }
+    }
+  };
+
+  this.validate = function (queryTree, errors) {
+    validateFields(queryTree, 0, errors);
+  };
+
+}
+
+// Source: src/search/services/search-api-switcher.js
+/**
+ * @ngdoc service
+ * @name udb.search.searchApiSwitcher
+ * @description
+ * # searchApiSwitcher
+ * This service provides context to switch between SAPI2 and SAPI3
+ */
+angular
+  .module('udb.search')
+  .service('searchApiSwitcher', SearchApiSwitcher);
+
+/* @ngInject */
+function SearchApiSwitcher(udbApi) {
+  var switcher = this;
+  var apiVersion = 3;
+
+  switcher.findOffers = function (queryString, start) {
+    start = start || 0;
+    return (apiVersion > 2) ? udbApi.findOffers(queryString, start) : udbApi.findEvents(queryString, start);
+  };
+
+  switcher.getDuplicateSearchConditions = function (formData) {
+    var location = formData.getLocation();
+
+    if (apiVersion > 2) {
+      if (formData.isEvent) {
+        /*jshint camelcase: false*/
+        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
+        return {
+          'name.\\*': formData.name.nl,
+          'location.name.\\*' : location.name
+        };
+      }
+      else {
+        /*jshint camelcase: false */
+        return {
+          'name.\\*': formData.name.nl,
+          'postalCode': formData.address.postalCode,
+          'labels': 'UDB3 place'
+        };
+      }
+    } else {
+      if (formData.isEvent) {
+        /*jshint camelcase: false*/
+        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
+        return {
+          text: formData.name.nl,
+          location_label : location.name
+        };
+      }
+      else {
+        /*jshint camelcase: false */
+        return {
+          text: formData.name.nl,
+          zipcode: formData.address.postalCode,
+          keywords: 'UDB3 place'
+        };
+      }
+    }
+  };
+}
+SearchApiSwitcher.$inject = ["udbApi"];
+
 // Source: src/search/services/search-helper.service.js
 /**
  * @ngdoc service
@@ -20294,7 +21515,8 @@ function Search(
   searchHelper,
   $rootScope,
   eventExporter,
-  $translate
+  $translate,
+  searchApiSwitcher
 ) {
   var queryBuilder = LuceneQueryBuilder;
 
@@ -20335,7 +21557,7 @@ function Search(
 
     $scope.resultViewer.loading = true;
 
-    udbApi
+    searchApiSwitcher
       .findOffers(queryString, offset)
       .then(function (pagedEvents) {
         offerLocator.addPagedCollection(pagedEvents);
@@ -20538,7 +21760,7 @@ function Search(
 
   initListeners();
 }
-Search.$inject = ["$scope", "udbApi", "LuceneQueryBuilder", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate"];
+Search.$inject = ["$scope", "udbApi", "LuceneQueryBuilder", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "searchApiSwitcher"];
 
 // Source: src/search/ui/search.directive.js
 /**
@@ -25616,6 +26838,101 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      Zoeken\n" +
     "    </button>\n" +
     "  </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/sapi2.query-editor-field.directive.html',
+    "<div class=\"row voorwaarde qe-field {{ getOperatorClass() }}\">\n" +
+    "    <div class=\"col-md-3\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <select\n" +
+    "                    ng-options=\"field.name as field.label group by field.groupLabel for field in qe.fields | orderBy:['groupIndex','label']\"\n" +
+    "                    ng-model=\"field.field\" class=\"form-control\" ng-change=\"qe.updateFieldType(field)\">\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-3\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <select ng-model=\"field.transformer\" class=\"form-control\"\n" +
+    "                    ng-options=\"transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.field]\">\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-md-3 field-query-term\" ng-switch=\"field.fieldType\">\n" +
+    "        <div ng-switch-when=\"string\">\n" +
+    "            <input type=\"text\" ng-model=\"field.term\"\n" +
+    "                   class=\"form-control\"/>\n" +
+    "        </div>\n" +
+    "        <div ng-switch-when=\"tokenized-string\">\n" +
+    "            <input type=\"text\" ng-model=\"field.term\"\n" +
+    "                   class=\"form-control\"/>\n" +
+    "        </div>\n" +
+    "        <div ng-switch-when=\"term\">\n" +
+    "            <select ng-options=\"term.label as term.label for term in qe.termOptions[field.field] | orderBy:'label'\"\n" +
+    "                    ng-model=\"field.term\" class=\"form-control\">\n" +
+    "                <option value=\"\">-- maak een keuze --</option>\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"choice\">\n" +
+    "            <select ng-options=\"'choice.' + option | translate for option in ::qe.termOptions[field.field]\"\n" +
+    "                    ng-model=\"field.term\" class=\"form-control\">\n" +
+    "                <option value=\"\">-- maak een keuze --</option>\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"check\">\n" +
+    "            <label class=\"radio-inline\">\n" +
+    "                <input type=\"radio\" ng-model=\"field.term\" value=\"TRUE\"> ja\n" +
+    "            </label>\n" +
+    "            <label class=\"radio-inline\">\n" +
+    "                <input type=\"radio\" ng-model=\"field.term\" value=\"FALSE\"> nee\n" +
+    "            </label>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"date-range\">\n" +
+    "            <udb-query-editor-daterangepicker>\n" +
+    "            </udb-query-editor-daterangepicker>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"number\" ng-switch=\"field.transformer\">\n" +
+    "            <div ng-switch-when=\"=\">\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.term\"/>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-switch-when=\">\">\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.lowerBound\"/>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-switch-when=\"<\">\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.upperBound\"/>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-md-2 col-xs-8\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <div class=\"btn-group btn-group-justified\" role=\"group\">\n" +
+    "                <a type=\"button\" class=\"btn btn-default\" ng-click=\"addSubGroup($index)\"\n" +
+    "                   ng-disabled=\"isSubGroup() && !$last\">\n" +
+    "                    AND\n" +
+    "                </a>\n" +
+    "                <a type=\"button\" class=\"btn btn-default\" ng-click=\"addField($index)\">\n" +
+    "                    OR\n" +
+    "                </a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-md-1 col-xs-4\">\n" +
+    "        <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"removeField($index)\"\n" +
+    "                ng-show=\"canRemoveField()\">\n" +
+    "            <span aria-hidden=\"true\">×</span>\n" +
+    "        </button>\n" +
+    "    </div>\n" +
     "</div>\n"
   );
 

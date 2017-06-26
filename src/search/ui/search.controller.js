@@ -25,7 +25,8 @@ function Search(
   searchHelper,
   $rootScope,
   eventExporter,
-  $translate
+  $translate,
+  searchApiSwitcher
 ) {
   var queryBuilder = LuceneQueryBuilder;
 
@@ -66,7 +67,7 @@ function Search(
 
     $scope.resultViewer.loading = true;
 
-    udbApi
+    searchApiSwitcher
       .findOffers(queryString, offset)
       .then(function (pagedEvents) {
         offerLocator.addPagedCollection(pagedEvents);
