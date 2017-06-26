@@ -17,9 +17,5 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $
   $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
 
   calendar.init(EventFormData, OpeningHoursCollection);
-  calendar.confirmStartDate = confirmStartDate;
 
-  function confirmStartDate(){
-    calendar.showEndDate = true;
-  }
 }

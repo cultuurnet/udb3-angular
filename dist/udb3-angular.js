@@ -8267,6 +8267,7 @@ angular
 function BaseCalendarController(calendar, $scope) {
   calendar.type = '';
   calendar.setType = setType;
+  calendar.showEndDate = false;
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
   calendar.timeSpanRequirements = [];
@@ -8275,6 +8276,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.init = init;
+  calendar.confirm = confirm;
 
   /**
    * @param {EventFormData} formData
@@ -8438,6 +8440,10 @@ function BaseCalendarController(calendar, $scope) {
 
     return _.keys(unmetRequirements);
   }
+
+  function confirm() {
+    calendar.showEndDate = true;
+  }
 }
 BaseCalendarController.$inject = ["calendar", "$scope"];
 
@@ -8554,11 +8560,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $
   $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
 
   calendar.init(EventFormData, OpeningHoursCollection);
-  calendar.confirmStartDate = confirmStartDate;
 
-  function confirmStartDate(){
-    calendar.showEndDate = true;
-  }
 }
 FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller"];
 
@@ -21778,21 +21780,24 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <div class=\"calendar-time-span\" ng-repeat=\"timeSpan in calendar.timeSpans track by $index\">\n" +
     "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
     "                    <div class=\"dates\">\n" +
+    "                       <div class=\"form-group form-group-pdn-15\" ng-if=\"!calendar.showEndDate\">\n" +
+    "                            <label for=\"time-span-{{$index}}-start-date\">Wanneer start je evenement?</label>\n" +
+    "                       </div>\n" +
     "                        <div class=\"date form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
+    "                            <label ng-if=\"calendar.showEndDate\" for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
-    "                        <div class=\"date form-group\" ng-if=\"!showEndDate\" >\n" +
-    "                            <button type=\"button\" class=\"btn btn-default\">Bevestigen</button>\n" +
+    "                        <div class=\"date form-group\" ng-if=\"!calendar.showEndDate\" >\n" +
+    "                            <button type=\"button\" ng-click=\"calendar.confirm()\" class=\"btn btn-default\">Bevestigen</button>\n" +
     "                        </div>\n" +
-    "                        <div ng-if=\"showEndDate\" class=\"date form-group\">\n" +
+    "                        <div ng-if=\"calendar.showEndDate\" class=\"date form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
-    "                    <div ng-if=\"showEndDate\"  class=\"timing-control\">\n" +
+    "                    <div ng-if=\"calendar.showEndDate\"  class=\"timing-control\">\n" +
     "                        <div class=\"checkbox all-day\">\n" +
     "                            <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
     "                                <input type=\"checkbox\"\n" +
@@ -21822,7 +21827,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +
-    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\">Dag(en) toevoegen</a>\n" +
+    "                <a ng-if=\"calendar.showEndDate\" href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\">Dag(en) toevoegen</a>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
