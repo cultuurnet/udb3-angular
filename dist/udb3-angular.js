@@ -23030,7 +23030,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.publish()\"\n" +
     "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
-    "      <button class=\"btn btn-success\"\n" +
+    "      <button class=\"btn \"\n" +
     "              ng-click=\"efpc.publishLater()\"\n" +
     "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
     "      <button type=\"submit\"\n" +
