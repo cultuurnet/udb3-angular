@@ -12801,6 +12801,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
+      backdrop: 'static',
       templateUrl: 'templates/event-form-organizer-modal.html',
       controller: 'EventFormOrganizerModalController',
       resolve: {
@@ -22422,7 +22423,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                           on-update=\"validateAddress(error)\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact=\"newOrganizer.contact\"\n" +
     "                           on-update=\"validateContact(error)\"></udb-organizer-contact>\n" +
-    "\n" +
     "  </section>\n" +
     "\n" +
     "  <section ng-show=\"organizersFound\">\n" +
