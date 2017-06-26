@@ -10014,6 +10014,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       templateUrl: 'templates/price-form-modal.html',
       controller: 'PriceFormModalController',
       controllerAs: 'pfmc',
+      size: 'lg',
       resolve: {
         price: function () {
           return controller.price;
@@ -22609,9 +22610,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    ng-form=\"pfmc.priceForm.priceFieldForm\">\n" +
     "                    <td ng-switch on=\"priceInfo.category\"\n" +
     "                        class=\"col-xs-4\">\n" +
-    "                        <span ng-switch-when=\"base\">\n" +
+    "                        <p ng-switch-when=\"base\" class=\"form-text\">\n" +
     "                            Basistarief\n" +
-    "                        </span>\n" +
+    "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
     "                                   class=\"form-control\"\n" +
@@ -22632,13 +22633,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                                    <input type=\"text\"\n" +
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
-    "                                           ng-pattern=\"/^([1-9]\\d*|[1-9]|[0])(,\\d{1,2})?$/\"\n" +
+    "                                           ng-pattern=\"/^([1-9][1-9]*|[1-9]|[0])(,[0-9]{1,2})?$/\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\">euro</div>\n" +
+    "                                <div class=\"form-group\"> <span class=\"text-muted\">euro</span></div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -22659,29 +22660,32 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </tr>\n" +
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "                        <a class=\"btn btn-default\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
     "                    </td>\n" +
     "                </tr>\n" +
     "            </div>\n" +
     "        </table>\n" +
     "    </form>\n" +
-    "\n" +
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
     "        Er ging iets fout bij het opslaan van de prijs.\n" +
     "    </div>\n" +
-    "    <div ng-show=\"pfmc.priceForm.priceFieldForm.price.$invalid && pfmc.priceForm.priceFieldForm.price.$dirty\" class=\"alert alert-danger\">\n" +
-    "        Geef een geldig bedrag in. Decimalen noteer je met een komma.\n" +
+    "    <div ng-show=\"(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving\" class=\"alert alert-info\">\n" +
+    "        <p>Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.</p>\n" +
+    "        <ul class=\"small\">\n" +
+    "          <li>Noteer decimalen met een komma.</li>\n" +
+    "          <li>Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.</li>\n" +
+    "          <li>Geef maximum twee cijfers na de komma.</li>\n" +
+    "        </ul>\n" +
     "    </div>\n" +
-    "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
-    "    <button type=\"button\"\n" +
-    "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "            ng-click=\"pfmc.validatePrice()\"\n" +
-    "            ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
-    "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
-    "    </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
+    "  <button type=\"button\"\n" +
+    "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "          ng-click=\"pfmc.validatePrice()\"\n" +
+    "          ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
+    "      Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  </button>\n" +
     "</div>\n"
   );
 
