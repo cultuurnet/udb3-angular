@@ -8554,6 +8554,11 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $
   $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
 
   calendar.init(EventFormData, OpeningHoursCollection);
+  calendar.confirmStartDate = confirmStartDate;
+
+  function confirmStartDate(){
+    calendar.showEndDate = true;
+  }
 }
 FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller"];
 
@@ -21778,13 +21783,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
-    "                        <div class=\"date form-group\">\n" +
+    "                        <div class=\"date form-group\" ng-if=\"!showEndDate\" >\n" +
+    "                            <button type=\"button\" class=\"btn btn-default\">Bevestigen</button>\n" +
+    "                        </div>\n" +
+    "                        <div ng-if=\"showEndDate\" class=\"date form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
-    "                    <div class=\"timing-control\">\n" +
+    "                    <div ng-if=\"showEndDate\"  class=\"timing-control\">\n" +
     "                        <div class=\"checkbox all-day\">\n" +
     "                            <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
     "                                <input type=\"checkbox\"\n" +

@@ -23,13 +23,16 @@
                             <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()">
                             </udb-form-calendar-datepicker>
                         </div>
-                        <div class="date form-group">
+                        <div class="date form-group" ng-if="!showEndDate" >
+                            <button type="button" class="btn btn-default">Bevestigen</button>
+                        </div>
+                        <div ng-if="showEndDate" class="date form-group">
                             <label for="time-span-{{$index}}-end-date">Einde</label>
                             <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()">
                             </udb-form-calendar-datepicker>
                         </div>
                     </div>
-                    <div class="timing-control">
+                    <div ng-if="showEndDate"  class="timing-control">
                         <div class="checkbox all-day">
                             <label for="time-span-{{$index}}-has-timing-info">
                                 <input type="checkbox"
