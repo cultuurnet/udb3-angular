@@ -38,6 +38,7 @@ function BaseCalendarController(calendar, $scope) {
    */
   function init(formData, openingHoursCollection) {
     calendar.formData = formData;
+    calendar.showEndDate = formData.startDate !== '';
     calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
     calendar.setType(formData.calendarType ? formData.calendarType : 'single');
     calendar.openingHoursCollection = openingHoursCollection;
