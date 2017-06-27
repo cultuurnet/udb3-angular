@@ -8,18 +8,18 @@
  */
 angular
   .module('udb.search')
-  .controller('sapi2QueryEditorController', QueryEditorController);
+  .controller('sapi2QueryEditorController', Sapi2QueryEditorController);
 
-QueryEditorController.$inject = [
-  'queryFields',
-  'LuceneQueryBuilder',
+Sapi2QueryEditorController.$inject = [
+  'sapi2QueryFields',
+  'sapi2QueryBuilder',
   'taxonomyTerms',
   'sapi2FieldTypeTransformers',
   'searchHelper',
   '$translate',
   '$rootScope'
 ];
-function QueryEditorController(
+function Sapi2QueryEditorController(
   queryFields,
   LuceneQueryBuilder,
   taxonomyTerms,

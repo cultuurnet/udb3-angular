@@ -12,19 +12,32 @@ angular
   .service('searchApiSwitcher', SearchApiSwitcher);
 
 /* @ngInject */
-function SearchApiSwitcher(udbApi) {
+function SearchApiSwitcher(udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuilder) {
   var switcher = this;
-  var apiVersion = 3;
+  var apiVersionCookieKey = 'search_api_version';
+
+  /**
+   * @returns {Number}
+   */
+  function getApiVersion() {
+    return parseInt($cookies.get(apiVersionCookieKey) || initApiVersion('3'));
+  }
+
+  function initApiVersion(searchApiVersion) {
+    $cookies.put(apiVersionCookieKey, searchApiVersion);
+
+    return searchApiVersion;
+  }
 
   switcher.findOffers = function (queryString, start) {
     start = start || 0;
-    return (apiVersion > 2) ? udbApi.findOffers(queryString, start) : udbApi.findEvents(queryString, start);
+    return (getApiVersion() > 2) ? udbApi.findOffers(queryString, start) : udbApi.findEvents(queryString, start);
   };
 
   switcher.getDuplicateSearchConditions = function (formData) {
     var location = formData.getLocation();
 
-    if (apiVersion > 2) {
+    if (getApiVersion() > 2) {
       if (formData.isEvent) {
         /*jshint camelcase: false*/
         /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
@@ -58,6 +71,38 @@ function SearchApiSwitcher(udbApi) {
           keywords: 'UDB3 place'
         };
       }
+    }
+  };
+
+  switcher.getQueryEditorFieldDefinition = function() {
+    if (getApiVersion() > 2) {
+      return {
+        templateUrl: 'templates/query-editor-field.directive.html',
+        restrict: 'E',
+        controller: 'QueryEditorFieldController'
+      };
+    } else {
+      return {
+        templateUrl: 'templates/sapi2.query-editor-field.directive.html',
+        restrict: 'E',
+        controller: 'sapi2QueryEditorFieldController'
+      };
+    }
+  };
+
+  switcher.getQueryEditorController = function() {
+    if (getApiVersion() > 2) {
+      return 'QueryEditorController';
+    } else {
+      return 'sapi2QueryEditorController';
+    }
+  };
+
+  switcher.getQueryBuilder = function () {
+    if (getApiVersion() > 2) {
+      return LuceneQueryBuilder;
+    } else {
+      return sapi2QueryBuilder;
     }
   };
 }

@@ -9,13 +9,12 @@
  */
 angular
   .module('udb.search')
-  .controller('Search', Search);
+  .controller('SearchController', SearchController);
 
 /* @ngInject */
-function Search(
+function SearchController(
   $scope,
   udbApi,
-  LuceneQueryBuilder,
   $window,
   $location,
   $uibModal,
@@ -28,7 +27,7 @@ function Search(
   $translate,
   searchApiSwitcher
 ) {
-  var queryBuilder = LuceneQueryBuilder;
+  var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
   function getSearchQuery() {
     return searchHelper.getQuery();

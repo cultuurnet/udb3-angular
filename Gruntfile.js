@@ -327,11 +327,11 @@ module.exports = function (grunt) {
         ],
         dest: 'dist/udb3-angular.js',
         options: {
-          banner: '\'use strict\';\n',
-          // TODO: wrap all js files in a IIFE, see: https://github.com/johnpapa/angularjs-styleguide#iife
           process: function(src, filepath) {
             return '// Source: ' + filepath + '\n' +
-              src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+                '(function () {' + '\n' +
+                src +
+                '})();' + '\n';
           }
         }
       }
