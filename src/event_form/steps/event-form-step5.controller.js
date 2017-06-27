@@ -42,6 +42,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
+  $scope.originalDescription = '';
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -101,6 +102,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description functions.
   $scope.alterDescription = alterDescription;
+  $scope.focusDescription = focusDescription;
   $scope.saveDescription = saveDescription;
   $scope.countCharacters = countCharacters;
 
@@ -135,11 +137,17 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.descriptionCssClass = 'state-filling';
   }
 
+  function focusDescription () {
+    $scope.descriptionInfoVisible = true;
+    $scope.originalDescription = $scope.description;
+  }
+
   /**
    * Save the description.
    */
   function saveDescription() {
-    if ($scope.description && $scope.description !== '') {
+    // only update description when there is one, it's not empty and it's not already saved
+    if ($scope.description && $scope.description !== '' && $scope.description !== $scope.originalDescription) {
 
       $scope.descriptionInfoVisible = false;
       $scope.savingDescription = true;
