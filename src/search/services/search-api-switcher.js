@@ -12,28 +12,42 @@ angular
   .service('searchApiSwitcher', SearchApiSwitcher);
 
 /* @ngInject */
-function SearchApiSwitcher(udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuilder) {
+function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuilder) {
   var switcher = this;
-  var apiVersionCookieKey = 'search_api_version';
+  var apiVersionCookieKey = 'search-api-version';
+  var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', "2");
 
   /**
    * @returns {Number}
    */
   function getApiVersion() {
-    return parseInt($cookies.get(apiVersionCookieKey) || initApiVersion('3'));
+    return parseInt($cookies.get(apiVersionCookieKey) || initApiVersion(defaultApiVersion));
   }
 
+  /**
+   * @param {string} searchApiVersion
+   * @returns {string}
+   */
   function initApiVersion(searchApiVersion) {
     $cookies.put(apiVersionCookieKey, searchApiVersion);
 
     return searchApiVersion;
   }
 
+  /**
+   * @param {string} queryString
+   * @param {number} start
+   * @returns {Promise.<PagedCollection>}
+   */
   switcher.findOffers = function (queryString, start) {
     start = start || 0;
     return (getApiVersion() > 2) ? udbApi.findOffers(queryString, start) : udbApi.findEvents(queryString, start);
   };
 
+  /**
+   * @param {EventFormData} formData
+   * @returns {object}
+   */
   switcher.getDuplicateSearchConditions = function (formData) {
     var location = formData.getLocation();
 
@@ -74,6 +88,10 @@ function SearchApiSwitcher(udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuild
     }
   };
 
+  /**
+   * @returns {object}
+   *  An angular directive definition object.
+   */
   switcher.getQueryEditorFieldDefinition = function() {
     if (getApiVersion() > 2) {
       return {
@@ -90,6 +108,10 @@ function SearchApiSwitcher(udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuild
     }
   };
 
+  /**
+   * @returns {string}
+   *  A query editor controller name.
+   */
   switcher.getQueryEditorController = function() {
     if (getApiVersion() > 2) {
       return 'QueryEditorController';
@@ -98,6 +120,10 @@ function SearchApiSwitcher(udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuild
     }
   };
 
+  /**
+   * @returns {object}
+   *  A query builder instance.
+   */
   switcher.getQueryBuilder = function () {
     if (getApiVersion() > 2) {
       return LuceneQueryBuilder;
