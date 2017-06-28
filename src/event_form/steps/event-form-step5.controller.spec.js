@@ -75,6 +75,39 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingDescription).toBeFalsy();
   });
 
+  it('should save an altered description', function () {
+    scope.originalDescription = 'same description';
+    scope.description = 'other description';
+
+    spyOn(EventFormData, 'setDescription');
+    spyOn(stepController, 'eventFormSaved');
+
+    eventCrud.updateDescription.and.returnValue($q.resolve());
+
+    scope.saveDescription();
+    scope.$apply();
+
+    expect(EventFormData.setDescription).toHaveBeenCalled();
+    expect(scope.savingDescription).toBeFalsy();
+    expect(stepController.eventFormSaved).toHaveBeenCalled();
+    expect(scope.descriptionCssClass).toEqual('state-complete');
+  });
+
+  it('should not save the same description', function () {
+    scope.description = 'same description';
+    scope.originalDescription = 'same description';
+
+    spyOn(EventFormData, 'setDescription');
+    spyOn(stepController, 'eventFormSaved');
+
+    eventCrud.updateDescription.and.returnValue($q.resolve());
+
+    scope.saveDescription();
+    scope.$apply();
+
+    expect(scope.savingDescription).toBeFalsy();
+  });
+
   it('should handle the error when save a description fails', function () {
     scope.description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in dui at dolor pretium consequat sit amet a erat. Quisque pretium dolor sed arcu fringilla elementum. Donec sodales vestibulum nibh, ut imperdiet est luctus sed. Sed vitae faucibus orci, rhoncus interdum eros. Aliquam commodo turpis sed metus tempus, vel mollis mi elementum. Donec finibus interdum magna non tristique. Praesent viverra ullamcorper nulla in tristique.';
     spyOn(EventFormData, 'setDescription');
