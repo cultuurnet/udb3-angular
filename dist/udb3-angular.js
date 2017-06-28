@@ -21434,17 +21434,7 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
    * @returns {Number}
    */
   function getApiVersion() {
-    return parseInt($cookies.get(apiVersionCookieKey) || initApiVersion(defaultApiVersion));
-  }
-
-  /**
-   * @param {string} searchApiVersion
-   * @returns {string}
-   */
-  function initApiVersion(searchApiVersion) {
-    $cookies.put(apiVersionCookieKey, searchApiVersion);
-
-    return searchApiVersion;
+    return parseInt($cookies.get(apiVersionCookieKey) || defaultApiVersion);
   }
 
   /**
