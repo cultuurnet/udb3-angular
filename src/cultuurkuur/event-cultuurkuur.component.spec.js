@@ -173,8 +173,8 @@ describe('Event Cultuurkuur Component', function () {
     var presumedEditLink = 'http://dev.cultuurkuur.be/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc/edit';
     var controller = getComponentController(event,permission);
 
-    expect(controller.previewLink).toEqual(presumedPreviewLink);
-    expect(controller.editLink).toEqual(presumedEditLink);
+    expect(controller.previewLink).toContain(presumedPreviewLink);
+    expect(controller.editLink).toContain(presumedEditLink);
   });
 
   it('should show CultuurKuur as incomplete if no educationfields/levels', function () {

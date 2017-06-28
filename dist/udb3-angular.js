@@ -3008,17 +3008,6 @@ function UdbApi(
   };
 
   /**
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
-   * @param {number} [itemsPerPage] - How many items should be in the result set.
-   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
-   *  search results or a failure.
-   */
-  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    return find(apiUrl + 'search', queryString, start, itemsPerPage);
-  };
-
-  /**
    * @param {string} queryString - The query used to find offer to moderate.
    * @param {number} [start] - From which offset the result set should start.
    * @param {number} [itemsPerPage] - How many items should be in the result set.
@@ -4650,7 +4639,8 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = jsonOrganizer.name || _.get(jsonOrganizer, 'name_deprecated', '');
+      this.name = _.get(jsonOrganizer.name, 'nl', null) ||
+        _.get(jsonOrganizer, 'name', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
@@ -4844,7 +4834,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.apiUrl = new URL(jsonPlace['@id']);
       }
       this.name = jsonPlace.name || {};
-      this.address = jsonPlace.address || this.address;
+      this.address = jsonPlace.address.nl || jsonPlace.address || this.address;
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
       this.calendarType = jsonPlace.calendarType || '';
@@ -5238,8 +5228,16 @@ function EventCultuurKuurComponentController(appConfig) {
     throw 'cultuurkuur url is not configured';
   }
 
-  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
-  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
+  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=preview1.0';
+  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=edit1.0';
   cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
 
   cm.cultuurKuurInfo = {
@@ -8901,6 +8899,8 @@ function EventFormImageUploadController(
       return;
     }
 
+    $scope.saving = true;
+
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
         deferredAddition = $q.defer();
@@ -8928,6 +8928,7 @@ function EventFormImageUploadController(
      */
     function addImageToEvent(mediaObject) {
       function updateEventFormAndResolve() {
+        $scope.saving = false;
         EventFormData.addImage(mediaObject);
         deferredAddition.resolve(mediaObject);
         $uibModalInstance.close(mediaObject);
@@ -12625,6 +12626,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
+  $scope.originalDescription = '';
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -12684,6 +12686,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description functions.
   $scope.alterDescription = alterDescription;
+  $scope.focusDescription = focusDescription;
   $scope.saveDescription = saveDescription;
   $scope.countCharacters = countCharacters;
 
@@ -12718,37 +12721,45 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.descriptionCssClass = 'state-filling';
   }
 
+  function focusDescription () {
+    $scope.descriptionInfoVisible = true;
+    $scope.originalDescription = $scope.description;
+  }
+
   /**
    * Save the description.
    */
   function saveDescription() {
-    $scope.descriptionInfoVisible = false;
-    $scope.savingDescription = true;
-    $scope.descriptionError = false;
+    // only update description when there is one, it's not empty and it's not already saved
+    if ($scope.description && $scope.description !== '' && $scope.description !== $scope.originalDescription) {
 
-    EventFormData.setDescription($scope.description, 'nl');
+      $scope.descriptionInfoVisible = false;
+      $scope.savingDescription = true;
+      $scope.descriptionError = false;
 
-    var promise = eventCrud.updateDescription(EventFormData, $scope.description);
-    promise.then(function() {
+      EventFormData.setDescription($scope.description, 'nl');
 
-      $scope.savingDescription = false;
-      controller.eventFormSaved();
+      var promise = eventCrud.updateDescription(EventFormData, $scope.description);
+      promise.then(function() {
 
-      // Toggle correct class.
-      if ($scope.description) {
-        $scope.descriptionCssClass = 'state-complete';
-      }
-      else {
-        $scope.descriptionCssClass = 'state-incomplete';
-      }
+        $scope.savingDescription = false;
+        controller.eventFormSaved();
 
-    },
-    // Error occured, show message.
-    function() {
-      $scope.savingDescription = false;
-      $scope.descriptionError = true;
-    });
+        // Toggle correct class.
+        if ($scope.description) {
+          $scope.descriptionCssClass = 'state-complete';
+        }
+        else {
+          $scope.descriptionCssClass = 'state-incomplete';
+        }
 
+      },
+       // Error occured, show message.
+      function() {
+        $scope.savingDescription = false;
+        $scope.descriptionError = true;
+      });
+    }
   }
   /**
    * Count characters in the description.
@@ -22056,7 +22067,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid()\" ng-click=\"addImage()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
     "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
@@ -23053,7 +23064,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.publish()\"\n" +
     "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
-    "      <button class=\"btn btn-success\"\n" +
+    "      <button class=\"btn btn-default\"\n" +
     "              ng-click=\"efpc.publishLater()\"\n" +
     "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
     "      <button type=\"submit\"\n" +
@@ -23440,7 +23451,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "              <section class=\"state complete filling\">\n" +
     "                <div class=\"form-group\">\n" +
     "                  <textarea ng-blur=\"saveDescription()\"\n" +
-    "                            ng-focus=\"descriptionInfoVisible = true\"\n" +
+    "                            ng-focus=\"focusDescription()\"\n" +
     "                            class=\"form-control\"\n" +
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +

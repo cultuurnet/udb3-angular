@@ -106,9 +106,8 @@ describe('Factory: UDB Organizer', function () {
     expect(organizer.labels).toEqual(expectedCombinedLabels);
   }));
 
-  it('it can take into account name_deprecated', inject(function (UdbOrganizer) {
-    jsonOrganizer.name_deprecated = jsonOrganizer.name;
-    jsonOrganizer.name = undefined;
+  it('it can take into account translated name', inject(function (UdbOrganizer) {
+    jsonOrganizer.name = {nl : jsonOrganizer.name};
 
     var organizer = new UdbOrganizer(jsonOrganizer);
     expect(organizer.name).toEqual('Club Silo');
