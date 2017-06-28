@@ -103,7 +103,7 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
       return {
         templateUrl: 'templates/sapi2.query-editor-field.directive.html',
         restrict: 'E',
-        controller: 'sapi2QueryEditorFieldController'
+        controller: 'QueryEditorFieldController'
       };
     }
   };

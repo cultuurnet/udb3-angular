@@ -2907,7 +2907,11 @@ angular.module('udb.core')
       'price': 'prijs',
       'organiser_label': 'organisatie (naam)',
       'category_facility_name': 'voorzieningen',
-      'category_targetaudience_name': 'doelgroep'
+      'category_targetaudience_name': 'doelgroep',
+      'startdate': 'startdatum',
+      'enddate': 'einddatum',
+      'lastupdatedby': 'laatst aangepast door',
+      'category_publicscope_name': 'publieksbereik'
     },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
@@ -19138,86 +19142,6 @@ function udbQueryEditor(searchApiSwitcher) {
 udbQueryEditor.$inject = ["searchApiSwitcher"];
 })();
 
-// Source: src/search/components/sapi2.query-editor-field.controller.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc controller
- * @name udb.search.controller:sapi2QueryEditorField
- * @description
- * # sapi2QueryEditorFieldController
- */
-angular
-  .module('udb.search')
-  .controller('sapi2QueryEditorFieldController', QueryEditorFieldController);
-
-/* @ngInject */
-function QueryEditorFieldController($scope) {
-  function getParentGroup() {
-    var parentGroup;
-
-    if (isSubGroup()) {
-      parentGroup = $scope.$parent.field;
-    } else {
-      parentGroup = $scope.rootGroup;
-    }
-
-    return parentGroup;
-  }
-
-  function getOperatorClass() {
-    var operatorClass;
-    if (isSubGroup() && $scope.$index === 0) {
-      operatorClass = 'AND';
-    } else {
-      operatorClass = $scope.$index ? 'OR' : 'FIRST';
-    }
-
-    return operatorClass;
-  }
-
-  function isSubGroup() {
-    var parentGroup = $scope.$parent;
-    return parentGroup.field.type === 'group';
-  }
-
-  function canRemoveField() {
-    var group = $scope.rootGroup;
-    return (group.nodes.length > 1);
-  }
-
-  $scope.addField = function (index) {
-    $scope.qe.addField(getParentGroup(), index);
-  };
-
-  $scope.removeField = function (index) {
-    $scope.qe.removeField(getParentGroup(), index, $scope.rootGroup);
-  };
-
-  $scope.addSubGroup = function (index) {
-    var rootGroup = $scope.rootGroup,
-      treeGroupId = _.uniqueId(),
-      group = getParentGroup();
-
-    group.treeGroupId = treeGroupId;
-
-    if (isSubGroup()) {
-      index = _.findIndex(rootGroup.nodes, function (group) {
-        return group.treeGroupId === treeGroupId;
-      });
-    }
-
-    $scope.qe.addSubGroup(rootGroup, index);
-  };
-
-  $scope.isSubGroup = isSubGroup;
-  $scope.getOperatorClass = getOperatorClass;
-  $scope.canRemoveField = canRemoveField;
-}
-QueryEditorFieldController.$inject = ["$scope"];
-})();
-
 // Source: src/search/components/sapi2.query-editor.controller.js
 (function () {
 'use strict';
@@ -19264,7 +19188,7 @@ function Sapi2QueryEditorController(
     .value();
 
   _.forEach(qe.fields, function (field) {
-    var fieldName = field.name.toUpperCase(),
+    var fieldName = 'queryFieldLabel.' + field.name,
       fieldGroup = 'queryFieldGroup.' + field.group;
 
     $translate([fieldName, fieldGroup]).then(function (translations) {
@@ -21592,7 +21516,7 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
       return {
         templateUrl: 'templates/sapi2.query-editor-field.directive.html',
         restrict: 'E',
-        controller: 'sapi2QueryEditorFieldController'
+        controller: 'QueryEditorFieldController'
       };
     }
   };

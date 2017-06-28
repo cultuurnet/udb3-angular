@@ -381,7 +381,11 @@ angular.module('udb.core')
       'price': 'prijs',
       'organiser_label': 'organisatie (naam)',
       'category_facility_name': 'voorzieningen',
-      'category_targetaudience_name': 'doelgroep'
+      'category_targetaudience_name': 'doelgroep',
+      'startdate': 'startdatum',
+      'enddate': 'einddatum',
+      'lastupdatedby': 'laatst aangepast door',
+      'category_publicscope_name': 'publieksbereik'
     },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'

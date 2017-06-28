@@ -42,7 +42,7 @@ function Sapi2QueryEditorController(
     .value();
 
   _.forEach(qe.fields, function (field) {
-    var fieldName = field.name.toUpperCase(),
+    var fieldName = 'queryFieldLabel.' + field.name,
       fieldGroup = 'queryFieldGroup.' + field.group;
 
     $translate([fieldName, fieldGroup]).then(function (translations) {
