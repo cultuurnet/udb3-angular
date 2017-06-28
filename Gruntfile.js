@@ -308,7 +308,7 @@ module.exports = function (grunt) {
           'src/management/moderation/udb.moderation.module.js',
           'src/management/organizers/udb.organizers.module.js',
           'src/management/udb.management.module.js',
-          'src/search/parsers/udb-query-parser.service.js',
+          'src/search/parsers/lucene-query-parser.service.js',
           'src/uitpas/udb.uitpas.module.js',
           'src/migration/udb.migration.module.js',
           'src/duplication/udb.duplication.module.js',
@@ -322,7 +322,7 @@ module.exports = function (grunt) {
           'src/**/*.js',
           '!src/**/*.spec.js',
           '!src/**/*.module.js',
-          '!src/search/parsers/udb-query-parser.service.js',
+          '!src/search/parsers/lucene-query-parser.service.js',
           '.tmp/udb3-angular.templates.js'
         ],
         dest: 'dist/udb3-angular.js',
@@ -361,8 +361,8 @@ module.exports = function (grunt) {
     peg: {
       options: { trackLineAndColumn: true },
       lucene : {
-        src: '<%= yeoman.app %>/search/parsers/udb-query-parser.grammar',
-        dest: '<%= yeoman.app %>/search/parsers/udb-query-parser.service.js',
+        src: '<%= yeoman.app %>/search/parsers/lucene-query-parser.grammar',
+        dest: '<%= yeoman.app %>/search/parsers/lucene-query-parser.service.js',
         options: {
           wrapper: function (src, parser) {
             return '\'use strict\';\n' +
@@ -435,7 +435,7 @@ module.exports = function (grunt) {
         '!src/**/*.spec.js',
         '!src/**/*.module.js',
         '!src/**/*.value.js',
-        '!src/search/parsers/udb-query-parser.service.js'
+        '!src/search/parsers/lucene-query-parser.service.js'
       ],
       options: {
         config: '.jscs.json'

@@ -15,7 +15,7 @@ angular
 function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuilder) {
   var switcher = this;
   var apiVersionCookieKey = 'search-api-version';
-  var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', "2");
+  var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
 
   /**
    * @returns {Number}
