@@ -2,31 +2,35 @@
 
 /**
  * @ngdoc service
- * @name udb.search.QueryTreeTranslator
+ * @name udb.search.sapi2QueryTreeTranslator
  * @description
  * # QueryTreeTranslator
  * Service in the udb.search.
  */
 angular
   .module('udb.search')
-  .service('QueryTreeTranslator', QueryTreeTranslator);
+  .service('sapi2QueryTreeTranslator', QueryTreeTranslator);
 
 /* @ngInject */
-function QueryTreeTranslator(queryFieldTranslations, queryFields) {
+function QueryTreeTranslator(queryFieldTranslations) {
+
+  var translations = queryFieldTranslations;
+
   /**
    * @param {string} field    - The field to translate.
    * @param {string} srcLang  - To source language to translate from.
    */
   var translateField = function (field, srcLang) {
-    var translatableFieldName = _.findKey(queryFieldTranslations[srcLang], function (src) {
-      return src === field;
-    });
+    var translation = field,
+      identifier = _.findKey(translations[srcLang], function (src) {
+        return src === field;
+      });
 
-    var queryField = (undefined === translatableFieldName) ?
-      undefined :
-      _.find(queryFields, {name: translatableFieldName.toLowerCase()});
+    if (identifier) {
+      translation = identifier.toLowerCase();
+    }
 
-    return (undefined === queryField) ? field : queryField.field;
+    return translation;
   };
 
   var translateNode = function (node, depth) {
@@ -49,7 +53,6 @@ function QueryTreeTranslator(queryFieldTranslations, queryFields) {
     }
 
     if (node.field) {
-      node.field = translateField(node.field, 'sapi2');
       node.field = translateField(node.field, 'en');
       node.field = translateField(node.field, 'nl');
     }

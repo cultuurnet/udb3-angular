@@ -2,19 +2,19 @@
 
 /**
  * @ngdoc service
- * @name udb.search.fieldTypeTransformers
+ * @name udb.search.sapi2FieldTypeTransformers
  * @description
- * # fieldTypeTransformers
+ * # sapi2FieldTypeTransformers
  * Value in udb.search module.
  */
 angular
   .module('udb.search')
-  .value('fieldTypeTransformers', {
+  .value('sapi2FieldTypeTransformers', {
     'string': ['=', '!'],
     'tokenized-string': ['+', '-'],
     'choice': ['=', '!'],
     'term': ['=', '!'],
-    'number': ['=', '><', '<', '>'],
+    'number': ['=', '<', '>'],
     'check': ['='],
     'date-range': ['=', '><', '<', '>']
-});
+  });
