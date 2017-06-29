@@ -5408,8 +5408,16 @@ function EventCultuurKuurComponentController(appConfig) {
     throw 'cultuurkuur url is not configured';
   }
 
-  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
-  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
+  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=preview1.0';
+  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=edit1.0';
   cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
 
   cm.cultuurKuurInfo = {
@@ -9291,6 +9299,8 @@ function EventFormImageUploadController(
       return;
     }
 
+    $scope.saving = true;
+
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
         deferredAddition = $q.defer();
@@ -9318,6 +9328,7 @@ function EventFormImageUploadController(
      */
     function addImageToEvent(mediaObject) {
       function updateEventFormAndResolve() {
+        $scope.saving = false;
         EventFormData.addImage(mediaObject);
         deferredAddition.resolve(mediaObject);
         $uibModalInstance.close(mediaObject);
@@ -10278,7 +10289,8 @@ angular
 function PriceFormModalController(
   $uibModalInstance,
   EventFormData,
-  price
+  price,
+  $filter
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -10303,6 +10315,10 @@ function PriceFormModalController(
         price: ''
       };
       pfmc.price.push(priceItem);
+    } else {
+      angular.forEach(pfmc.price, function(info) {
+        info.price = $filter('currency')(info.price, ',', 0);
+      });
     }
 
     pfmc.priceError = false;
@@ -10318,7 +10334,7 @@ function PriceFormModalController(
   }
 
   function setPriceItemFree(key) {
-    pfmc.price[key].price = 0;
+    pfmc.price[key].price = '0,00';
     pfmc.priceForm.$setDirty();
   }
 
@@ -10365,12 +10381,15 @@ function PriceFormModalController(
   }
 
   function save() {
+    angular.forEach(pfmc.price, function(info) {
+      info.price = parseFloat(info.price.replace(',', '.'));
+    });
     EventFormData.priceInfo = pfmc.price;
     $uibModalInstance.close();
   }
 
 }
-PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price"];
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter"];
 })();
 
 // Source: src/event_form/components/price-info/price-info.component.js
@@ -10432,6 +10451,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       templateUrl: 'templates/price-form-modal.html',
       controller: 'PriceFormModalController',
       controllerAs: 'pfmc',
+      size: 'lg',
       resolve: {
         price: function () {
           return controller.price;
@@ -13108,6 +13128,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
+  $scope.originalDescription = '';
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -13167,6 +13188,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description functions.
   $scope.alterDescription = alterDescription;
+  $scope.focusDescription = focusDescription;
   $scope.saveDescription = saveDescription;
   $scope.countCharacters = countCharacters;
 
@@ -13201,37 +13223,45 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.descriptionCssClass = 'state-filling';
   }
 
+  function focusDescription () {
+    $scope.descriptionInfoVisible = true;
+    $scope.originalDescription = $scope.description;
+  }
+
   /**
    * Save the description.
    */
   function saveDescription() {
-    $scope.descriptionInfoVisible = false;
-    $scope.savingDescription = true;
-    $scope.descriptionError = false;
+    // only update description when there is one, it's not empty and it's not already saved
+    if ($scope.description && $scope.description !== '' && $scope.description !== $scope.originalDescription) {
 
-    EventFormData.setDescription($scope.description, 'nl');
+      $scope.descriptionInfoVisible = false;
+      $scope.savingDescription = true;
+      $scope.descriptionError = false;
 
-    var promise = eventCrud.updateDescription(EventFormData, $scope.description);
-    promise.then(function() {
+      EventFormData.setDescription($scope.description, 'nl');
 
-      $scope.savingDescription = false;
-      controller.eventFormSaved();
+      var promise = eventCrud.updateDescription(EventFormData, $scope.description);
+      promise.then(function() {
 
-      // Toggle correct class.
-      if ($scope.description) {
-        $scope.descriptionCssClass = 'state-complete';
-      }
-      else {
-        $scope.descriptionCssClass = 'state-incomplete';
-      }
+        $scope.savingDescription = false;
+        controller.eventFormSaved();
 
-    },
-    // Error occured, show message.
-    function() {
-      $scope.savingDescription = false;
-      $scope.descriptionError = true;
-    });
+        // Toggle correct class.
+        if ($scope.description) {
+          $scope.descriptionCssClass = 'state-complete';
+        }
+        else {
+          $scope.descriptionCssClass = 'state-incomplete';
+        }
 
+      },
+       // Error occured, show message.
+      function() {
+        $scope.savingDescription = false;
+        $scope.descriptionError = true;
+      });
+    }
   }
   /**
    * Count characters in the description.
@@ -24188,7 +24218,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid()\" ng-click=\"addImage()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
     "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
@@ -24742,9 +24772,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    ng-form=\"pfmc.priceForm.priceFieldForm\">\n" +
     "                    <td ng-switch on=\"priceInfo.category\"\n" +
     "                        class=\"col-xs-4\">\n" +
-    "                        <span ng-switch-when=\"base\">\n" +
+    "                        <p ng-switch-when=\"base\" class=\"form-text\">\n" +
     "                            Basistarief\n" +
-    "                        </span>\n" +
+    "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
     "                                   class=\"form-control\"\n" +
@@ -24762,15 +24792,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
     "                                <div class=\"form-group\">\n" +
-    "                                    <input type=\"number\"\n" +
+    "                                    <input type=\"text\"\n" +
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
+    "                                           ng-pattern=\"/^([1-9][0-9]*|[0-9]|[0])(,[0-9]{1,2})?$/\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\">euro</div>\n" +
+    "                                <div class=\"form-group\"> <span class=\"text-muted\">euro</span></div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -24791,29 +24822,32 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </tr>\n" +
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "                        <a class=\"btn btn-default\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
     "                    </td>\n" +
     "                </tr>\n" +
     "            </div>\n" +
     "        </table>\n" +
     "    </form>\n" +
-    "\n" +
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
     "        Er ging iets fout bij het opslaan van de prijs.\n" +
     "    </div>\n" +
-    "    <div ng-show=\"pfmc.invalidPrice\" class=\"alert alert-danger\">\n" +
-    "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
+    "    <div ng-show=\"(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving\" class=\"alert alert-info\">\n" +
+    "        <p>Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.</p>\n" +
+    "        <ul class=\"small\">\n" +
+    "          <li>Noteer decimalen met een komma.</li>\n" +
+    "          <li>Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.</li>\n" +
+    "          <li>Geef maximum twee cijfers na de komma.</li>\n" +
+    "        </ul>\n" +
     "    </div>\n" +
-    "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
-    "    <button type=\"button\"\n" +
-    "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "            ng-click=\"pfmc.validatePrice()\"\n" +
-    "            ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
-    "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
-    "    </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
+    "  <button type=\"button\"\n" +
+    "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "          ng-click=\"pfmc.validatePrice()\"\n" +
+    "          ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
+    "      Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  </button>\n" +
     "</div>\n"
   );
 
@@ -24855,7 +24889,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                Gratis\n" +
     "              </span>\n" +
     "              <span ng-if=\"priceInfo.price != 0\">\n" +
-    "                {{priceInfo.price | currency}} euro\n" +
+    "                {{priceInfo.price | currency:'€' }} euro\n" +
     "              </span>\n" +
     "            </td>\n" +
     "          </tr>\n" +
@@ -25181,7 +25215,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.publish()\"\n" +
     "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
-    "      <button class=\"btn btn-success\"\n" +
+    "      <button class=\"btn btn-default\"\n" +
     "              ng-click=\"efpc.publishLater()\"\n" +
     "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
     "      <button type=\"submit\"\n" +
@@ -25568,7 +25602,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <section class=\"state complete filling\">\n" +
     "                <div class=\"form-group\">\n" +
     "                  <textarea ng-blur=\"saveDescription()\"\n" +
-    "                            ng-focus=\"descriptionInfoVisible = true\"\n" +
+    "                            ng-focus=\"focusDescription()\"\n" +
     "                            class=\"form-control\"\n" +
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
