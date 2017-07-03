@@ -332,12 +332,12 @@ describe('Controller: Event Detail', function() {
   });
 
   it('should redirect to the edit page with a known eventId', function () {
-    $scope.eventId = 'event/de84f1c4-d335-470a-924d-624982b87098';
+    $scope.eventId = 'event/1111be8c-a412-488d-9ecc-8fdf9e52edbc';
 
     $scope.openEditPage();
     $scope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/event/de84f1c4-d335-470a-924d-624982b87098/edit');
+    expect($location.path).toHaveBeenCalledWith('/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc/edit');
   });
 
   it('should redirect to the edit page without a known eventId', function () {
