@@ -200,14 +200,8 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-    var eventId;
 
-    // When an event is published $scope.eventId is empty,
-    // so get the eventId straight from the current url.
-    // Extra casting for IE
-    eventId = String($scope.eventId);
-
-    if (_.isEmpty($scope.eventId) && eventId === '') {
+    if (_.isEmpty($scope.eventId) && Object.keys($scope.eventId).length === 0) {
       eventId = $location.url().split('/')[2];
     }
     else {
