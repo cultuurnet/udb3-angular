@@ -8153,11 +8153,15 @@ function EventDetail(
 
   $scope.openEditPage = function() {
 
+    console.log(Object.keys($scope.eventId).length);
+
     if (_.isEmpty($scope.eventId) && Object.keys($scope.eventId).length === 0) {
       eventId = $location.url().split('/')[2];
+      console.log("a");
     }
     else {
-      eventId = eventId.split('/').pop();
+      eventId = $scope.eventId.split('/').pop();
+      console.log("b");
     }
     $location.path('/event/' + eventId + '/edit');
   };

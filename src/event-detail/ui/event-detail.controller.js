@@ -200,12 +200,11 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-
     if (_.isEmpty($scope.eventId) && Object.keys($scope.eventId).length === 0) {
       eventId = $location.url().split('/')[2];
     }
     else {
-      eventId = eventId.split('/').pop();
+      eventId = $scope.eventId.split('/').pop();
     }
     $location.path('/event/' + eventId + '/edit');
   };
