@@ -18,18 +18,24 @@
                 <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans track by $index">
                     <span ng-show="calendar.timeSpans.length > 1" aria-hidden="true" ng-click="calendar.removeTimeSpan(timeSpan)" class="close">×</span>
                     <div class="dates">
+                       <div class="form-group form-group-pdn-15" ng-if="!calendar.showEndDate">
+                            <label for="time-span-{{$index}}-start-date">Wanneer start je evenement?</label>
+                       </div>
                         <div class="date form-group">
-                            <label for="time-span-{{$index}}-start-date">Start</label>
+                            <label ng-if="calendar.showEndDate" for="time-span-{{$index}}-start-date">Start</label>
                             <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()">
                             </udb-form-calendar-datepicker>
                         </div>
-                        <div class="date form-group">
+                        <div class="date form-group" ng-if="!calendar.showEndDate" >
+                            <button type="button" ng-click="calendar.confirm()" class="btn btn-default">Bevestigen</button>
+                        </div>
+                        <div ng-if="calendar.showEndDate" class="date form-group">
                             <label for="time-span-{{$index}}-end-date">Einde</label>
                             <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()">
                             </udb-form-calendar-datepicker>
                         </div>
                     </div>
-                    <div class="timing-control">
+                    <div ng-if="calendar.showEndDate"  class="timing-control">
                         <div class="checkbox all-day">
                             <label for="time-span-{{$index}}-has-timing-info">
                                 <input type="checkbox"
@@ -59,7 +65,7 @@
                     </div>
                 </div>
 
-                <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link">Dag(en) toevoegen</a>
+                <a ng-if="calendar.showEndDate" href="#" ng-click="calendar.createTimeSpan()" class="add-day-link">Dag(en) toevoegen</a>
             </div>
 
             <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
