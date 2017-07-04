@@ -13,9 +13,9 @@
                     ng-form="pfmc.priceForm.priceFieldForm">
                     <td ng-switch on="priceInfo.category"
                         class="col-xs-4">
-                        <span ng-switch-when="base">
+                        <p ng-switch-when="base" class="form-text">
                             Basistarief
-                        </span>
+                        </p>
                         <span ng-switch-default>
                             <input type="text"
                                    class="form-control"
@@ -33,15 +33,16 @@
                         <span ng-if="priceInfo.price !== 0">
                             <div class="form-inline">
                                 <div class="form-group">
-                                    <input type="number"
+                                    <input type="text"
                                            class="form-control"
                                            name="price"
+                                           ng-pattern="/^([1-9][0-9]*|[0-9]|[0])(,[0-9]{1,2})?$/"
                                            ng-model="priceInfo.price"
                                            ng-model-options="{ updateOn: 'default' }"
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
                                            required />
                                 </div>
-                                <div class="form-group">euro</div>
+                                <div class="form-group"> <span class="text-muted">euro</span></div>
                             </div>
                         </span>
                     </td>
@@ -62,27 +63,30 @@
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <a class="btn btn-link" ng-click="pfmc.addPriceItem()">Tarief toevoegen</a>
+                        <a class="btn btn-default" ng-click="pfmc.addPriceItem()">Tarief toevoegen</a>
                     </td>
                 </tr>
             </div>
         </table>
     </form>
-
     <div ng-show="pfmc.priceError" class="alert alert-danger">
         Er ging iets fout bij het opslaan van de prijs.
     </div>
-    <div ng-show="pfmc.invalidPrice" class="alert alert-danger">
-        Gelieve een geldige prijs en omschrijving in te voeren.
+    <div ng-show="(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving" class="alert alert-info">
+        <p>Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.</p>
+        <ul class="small">
+          <li>Noteer decimalen met een komma.</li>
+          <li>Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.</li>
+          <li>Geef maximum twee cijfers na de komma.</li>
+        </ul>
     </div>
-
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="pfmc.cancelEditPrice()">Sluiten</button>
-    <button type="button"
-            class="btn btn-primary organisator-toevoegen-bewaren"
-            ng-click="pfmc.validatePrice()"
-            ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
-        Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
-    </button>
+  <button type="button" class="btn btn-default" ng-click="pfmc.cancelEditPrice()">Sluiten</button>
+  <button type="button"
+          class="btn btn-primary organisator-toevoegen-bewaren"
+          ng-click="pfmc.validatePrice()"
+          ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
+      Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+  </button>
 </div>

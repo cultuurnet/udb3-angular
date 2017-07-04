@@ -9,5 +9,5 @@ taxonomy-terms.xml
 coverage/
 
 #generated files
-src/search/parsers/udb-query-parser.service.js
+src/search/parsers/lucene-query-parser.service.js
 src/core/udb.config.module.js

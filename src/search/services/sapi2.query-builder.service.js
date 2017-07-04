@@ -2,16 +2,22 @@
 
 /**
  * @ngdoc service
- * @name udbApp.LuceneQueryBuilder
+ * @name udbApp.sapi2QueryBuilder
  * @description
- * # LuceneQueryBuilder
+ * # sapi2QueryBuilder
  * Service in the udb.search.
  */
 angular.module('udb.search')
-  .service('LuceneQueryBuilder', LuceneQueryBuilder);
+  .service('sapi2QueryBuilder', QueryBuilder);
 
-/* @ngInject */
-function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTranslator, queryFields, taxonomyTerms) {
+QueryBuilder.$inject = [
+  'LuceneQueryParser',
+  'sapi2QueryTreeValidator',
+  'sapi2QueryTreeTranslator',
+  'sapi2QueryFields',
+  'taxonomyTerms'
+];
+function QueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTranslator, queryFields, taxonomyTerms) {
   var implicitToken = '<implicit>';
 
   this.translate = function (query) {
@@ -58,18 +64,18 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   var printTerm = function (node) {
     var term = node.term,
-        isRangeExpression = (node.lowerBound || node.upperBound);
+      isRangeExpression = (node.lowerBound || node.upperBound);
 
     if (isRangeExpression) {
       var min = node.lowerBound || '*',
-          max = node.upperBound || '*',
-          inclusive = node.inclusive;
+        max = node.upperBound || '*',
+        inclusive = node.inclusive;
 
       if (min instanceof Date) {
-        min = moment(min).format();
+        min = min.toISOString();
       }
       if (max instanceof Date) {
-        max = moment(max).format();
+        max = max.toISOString();
       }
 
       term = min + ' TO ' + max;
@@ -113,7 +119,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
     if (branch.left) {
       var result,
-          operator = (branch.operator === implicitToken) ? ' ' : (' ' + branch.operator + ' ');
+        operator = (branch.operator === implicitToken) ? ' ' : (' ' + branch.operator + ' ');
 
       if (branch.right) {
         result = unparseNode(branch.left, depth + 1, sentence);
@@ -129,18 +135,14 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
 
       } else {
-        var singleTransformedGroupedTerm = branch.field && (branch.left.field === implicitToken) && branch.left.prefix;
-
-        result = singleTransformedGroupedTerm ?
-          branch.field + ':(' + printTerm(branch.left) + ')' :
-          unparseNode(branch.left, depth + 1, sentence);
+        result = unparseNode(branch.left, depth + 1, sentence);
       }
 
       return result;
 
     } else {
       var fieldQuery = '',
-          term = printTerm(branch);
+        term = printTerm(branch);
 
       if (branch.field !== implicitToken && branch.field !== null) {
         var fieldPrefix = '';
@@ -155,6 +157,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       fieldQuery += term;
 
       return sentence += fieldQuery;
+    }
+
+    if (depth === 0) {
+      return sentence;
     }
   };
 
@@ -178,7 +184,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       cleanUpDateRangeField(field);
     }
     var transformedField = transformField(field);
-    return transformedField.field + printTerm(transformedField);
+    return transformedField.field + ':' + printTerm(transformedField);
   }
 
   /**
@@ -203,7 +209,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
           if (field.type === 'group') {
 
             var subGroup = field,
-                subGroupString = ' ';
+              subGroupString = ' ';
 
             if (subGroup.nodes.length === 1) {
               var singleField = subGroup.nodes[0];
@@ -291,15 +297,13 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   function transformField(originalField) {
     var field = _.clone(originalField);
-    var isFieldImplicit = field.field === implicitToken;
-    var fieldOperator = '';
 
     switch (field.transformer) {
       case '!':
-        fieldOperator = '!';
+        field.field = '!' + field.field;
         break;
       case '-':
-        fieldOperator = '-';
+        field.field = '-' + field.field;
         break;
       case '<':
         field.lowerBound = '*';
@@ -314,8 +318,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
         break;
     }
-
-    field.field = fieldOperator + (isFieldImplicit ? '' : field.field + ':');
 
     return field;
   }
@@ -344,8 +346,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         operator: 'OR',
         nodes: [
           {
-            field: 'name.\\*',
-            name: 'title',
+            field: 'title',
             term: '',
             fieldType: 'tokenized-string',
             transformer: '+'
@@ -427,10 +428,9 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
           // Make sure boolean field-query values are either true or false
           if (fieldType.type === 'check') {
-            var trueValue = fieldType.name,
-                falseValue = '(!' + fieldType.name + ')';
-
-            if (!(field.term === trueValue || field.term === falseValue)) {
+            if (_.contains(['TRUE', 'FALSE'], field.term.toUpperCase())) {
+              field.term = field.term.toUpperCase();
+            } else {
               field.invalid = true;
             }
           }
@@ -476,7 +476,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
           if (fieldType.type === 'date-range') {
             var startDate = moment(field.lowerBound),
-                endDate = moment(field.upperBound);
+              endDate = moment(field.upperBound);
 
             if (startDate.isValid() && endDate.isValid()) {
               if (startDate.isSame(endDate, 'day')) {
@@ -562,13 +562,13 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    */
   function makeField(node, fieldName) {
     var fieldType = _.find(queryFields, function (type) {
-          return type.name === node.field;
-        }),
-        field = {
-          field: fieldName || node.field,
-          fieldType: fieldType || 'string',
-          transformer: node.transformer || '='
-        };
+        return type.name === node.field;
+      }),
+      field = {
+        field: fieldName || node.field,
+        fieldType: fieldType || 'string',
+        transformer: node.transformer || '='
+      };
 
     if (node.lowerBound || node.upperBound) {
       field.lowerBound = node.lowerBound || undefined;
