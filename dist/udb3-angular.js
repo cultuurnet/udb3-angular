@@ -8155,7 +8155,7 @@ function EventDetail(
     var eventId;
     // When an event is published $scope.eventId is empty,
     // so get the eventId straight from the current url.
-    if (_.isEmpty($scope.eventId) && Object.keys($scope.eventId).length === 0) {
+    if (_.isEmpty($scope.eventId)) {
       eventId = $location.url().split('/')[2];
     }
     else {
