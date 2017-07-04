@@ -8633,6 +8633,8 @@ angular
 
 /* @ngInject */
 function BaseCalendarController(calendar, $scope) {
+  calendar.showBootstrapTimeSpans = false;
+  calendar.bootstrapDate = moment().startOf('hour').add(1, 'h').toDate();
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -8643,6 +8645,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.init = init;
+  calendar.confirm = confirm;
 
   /**
    * @param {EventFormData} formData
@@ -8668,23 +8671,13 @@ function BaseCalendarController(calendar, $scope) {
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
-      initTimeSpans();
+      calendar.showBootstrapTimeSpans = true;
     }
-  }
-
-  function initTimeSpans() {
-    calendar.timeSpans = [
-      {
-        allDay: true,
-        start: moment().startOf('hour').add(1, 'h').toDate(),
-        end: moment().startOf('hour').add(4, 'h').toDate()
-      }
-    ];
   }
 
   function createTimeSpan() {
     if (_.isEmpty(calendar.timeSpans)) {
-      initTimeSpans();
+      calendar.showBootstrapTimeSpans = true;
       calendar.instantTimeSpanChanged();
     } else {
       calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
@@ -8805,6 +8798,17 @@ function BaseCalendarController(calendar, $scope) {
     });
 
     return _.keys(unmetRequirements);
+  }
+
+  function confirm() {
+    calendar.showBootstrapTimeSpans = false;
+    calendar.timeSpans = [
+      {
+        allDay: true,
+        start: moment(calendar.bootstrapDate).startOf('hour').add(1, 'h').toDate(),
+        end: moment(calendar.bootstrapDate).startOf('hour').add(4, 'h').toDate()
+      }
+    ];
   }
 }
 BaseCalendarController.$inject = ["calendar", "$scope"];
@@ -23950,7 +23954,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"calendar-timing-info\">\n" +
     "    <div class=\"panel panel-default\">\n" +
     "        <div class=\"panel-body\">\n" +
-    "            <div class=\"calendar-time-spans\" ng-if=\"!calendar.weeklyRecurring\">\n" +
+    "            <div class=\"calender-time-init\" ng-show=\"calendar.showBootstrapTimeSpans\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                  <label for=\"time-span-init-start-date\">Wanneer start je evenement?</label>\n" +
+    "                 </div>\n" +
+    "                <div class=\"form-inline\">\n" +
+    "                 <div class=\"date\">\n" +
+    "                   <udb-form-calendar-datepicker ng-model=\"calendar.bootstrapDate\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                   </udb-form-calendar-datepicker>\n" +
+    "                 </div>\n" +
+    "                 <button type=\"button\" ng-click=\"calendar.confirm()\" class=\"btn btn-primary\">Bevestigen</button>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"calendar-time-spans\" ng-if=\"!calendar.weeklyRecurring && !calendar.showBootstrapTimeSpans\">\n" +
     "                <div class=\"calendar-time-span\" ng-repeat=\"timeSpan in calendar.timeSpans track by $index\">\n" +
     "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
     "                    <div class=\"dates\">\n" +

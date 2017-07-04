@@ -19,6 +19,9 @@ angular
 
 /* @ngInject */
 function BaseCalendarController(calendar, $scope) {
+  calendar.confirmBootstrap = confirmBootstrap;
+  calendar.showBootstrapTimeSpans = false;
+  calendar.bootstrapDate = moment().startOf('hour').add(1, 'h').toDate();
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -54,23 +57,13 @@ function BaseCalendarController(calendar, $scope) {
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
-      initTimeSpans();
+      calendar.showBootstrapTimeSpans = true;
     }
-  }
-
-  function initTimeSpans() {
-    calendar.timeSpans = [
-      {
-        allDay: true,
-        start: moment().startOf('hour').add(1, 'h').toDate(),
-        end: moment().startOf('hour').add(4, 'h').toDate()
-      }
-    ];
   }
 
   function createTimeSpan() {
     if (_.isEmpty(calendar.timeSpans)) {
-      initTimeSpans();
+      calendar.showBootstrapTimeSpans = true;
       calendar.instantTimeSpanChanged();
     } else {
       calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
@@ -191,5 +184,16 @@ function BaseCalendarController(calendar, $scope) {
     });
 
     return _.keys(unmetRequirements);
+  }
+
+  function confirmBootstrap() {
+    calendar.showBootstrapTimeSpans = false;
+    calendar.timeSpans = [
+      {
+        allDay: true,
+        start: moment(calendar.bootstrapDate).toDate(),
+        end: moment(calendar.bootstrapDate).startOf('hour').add(4, 'h').toDate()
+      }
+    ];
   }
 }
