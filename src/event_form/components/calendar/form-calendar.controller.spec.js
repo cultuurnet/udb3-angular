@@ -79,8 +79,8 @@ describe('Controller: Form Calendar', function () {
   it('should bootstrap timestamps', function () {
     var controller = getController();
     controller.timeSpans = [];
-    controller.createTimeSpan();
     spyOn(controller.formData, 'timingChanged');
+    controller.createTimeSpan();
     expect(controller.showBootstrapTimeSpans).toEqual(true);
   });
 
