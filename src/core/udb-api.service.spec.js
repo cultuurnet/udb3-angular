@@ -63,40 +63,12 @@ describe('Service: UDB3 Api', function () {
   it('should only return the essential data when getting the currently logged in user', function (done) {
     var jsonUserResponse = {
       'id': 2,
-      'preferredLanguage': null,
-      'nick': 'foo',
-      'password': null,
-      'givenName': 'Dirk',
-      'familyName': null,
-      'mbox': 'foo@bar.com',
-      'mboxVerified': null,
-      'gender': null,
-      'hasChildren': null,
-      'dob': null,
-      'depiction': null,
-      'bio': null,
-      'street': null,
-      'zip': null,
-      'city': null,
-      'country': null,
-      'lifestyleProfile': null,
-      'homeLocation': null,
-      'currentLocation': null,
-      'status': null,
-      'points': null,
-      'openid': null,
-      'calendarId': null,
-      'holdsAccount': null,
-      'privacyConfig': null,
-      'pageMemberships': null,
-      'adminPagesCount': 0
+      'nick': 'foo'
     };
     var userUrl = baseUrl + 'user';
     var expectedUser = {
       id: 2,
-      nick: 'foo',
-      mbox: 'foo@bar.com',
-      givenName: 'Dirk'
+      nick: 'foo'
     };
 
     function assertUser (user) {
@@ -225,6 +197,30 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should find offers when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'offers/?q=foo:bar&start=0&disableDefaultFilters=true')
+      .respond(JSON.stringify(response));
+    service
+      .findOffers('foo:bar')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should find offers when provided no query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'offers/?disableDefaultFilters=true&start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findOffers('')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
   // findEvents
   it('should find events when provided a query', function (done) {
     var response = {};
@@ -237,6 +233,7 @@ describe('Service: UDB3 Api', function () {
       .then(done);
     $httpBackend.flush();
   });
+
   it('should find events when provided no query', function (done) {
     var response = {};
     $httpBackend
@@ -245,18 +242,6 @@ describe('Service: UDB3 Api', function () {
     service
       .findEvents('')
 
-      .then(done);
-    $httpBackend.flush();
-  });
-
-  // findEventsWithLimit
-  it('should find events when provided a query', function (done) {
-    var response = {};
-    $httpBackend
-      .expectGET(baseUrl + 'search?query=searchquery&start=0&limit=30')
-      .respond(JSON.stringify(response));
-    service
-      .findEventsWithLimit('searchquery', 0, 30)
       .then(done);
     $httpBackend.flush();
   });

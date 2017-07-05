@@ -42,6 +42,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
+  $scope.originalDescription = '';
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -101,6 +102,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description functions.
   $scope.alterDescription = alterDescription;
+  $scope.focusDescription = focusDescription;
   $scope.saveDescription = saveDescription;
   $scope.countCharacters = countCharacters;
 
@@ -135,37 +137,45 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.descriptionCssClass = 'state-filling';
   }
 
+  function focusDescription () {
+    $scope.descriptionInfoVisible = true;
+    $scope.originalDescription = $scope.description;
+  }
+
   /**
    * Save the description.
    */
   function saveDescription() {
-    $scope.descriptionInfoVisible = false;
-    $scope.savingDescription = true;
-    $scope.descriptionError = false;
+    // only update description when there is one, it's not empty and it's not already saved
+    if ($scope.description && $scope.description !== '' && $scope.description !== $scope.originalDescription) {
 
-    EventFormData.setDescription($scope.description, 'nl');
+      $scope.descriptionInfoVisible = false;
+      $scope.savingDescription = true;
+      $scope.descriptionError = false;
 
-    var promise = eventCrud.updateDescription(EventFormData, $scope.description);
-    promise.then(function() {
+      EventFormData.setDescription($scope.description, 'nl');
 
-      $scope.savingDescription = false;
-      controller.eventFormSaved();
+      var promise = eventCrud.updateDescription(EventFormData, $scope.description);
+      promise.then(function() {
 
-      // Toggle correct class.
-      if ($scope.description) {
-        $scope.descriptionCssClass = 'state-complete';
-      }
-      else {
-        $scope.descriptionCssClass = 'state-incomplete';
-      }
+        $scope.savingDescription = false;
+        controller.eventFormSaved();
 
-    },
-    // Error occured, show message.
-    function() {
-      $scope.savingDescription = false;
-      $scope.descriptionError = true;
-    });
+        // Toggle correct class.
+        if ($scope.description) {
+          $scope.descriptionCssClass = 'state-complete';
+        }
+        else {
+          $scope.descriptionCssClass = 'state-incomplete';
+        }
 
+      },
+       // Error occured, show message.
+      function() {
+        $scope.savingDescription = false;
+        $scope.descriptionError = true;
+      });
+    }
   }
   /**
    * Count characters in the description.

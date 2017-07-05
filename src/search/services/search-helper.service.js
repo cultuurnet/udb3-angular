@@ -12,9 +12,10 @@ angular
   .service('searchHelper', SearchHelper);
 
 /* @ngInject */
-function SearchHelper(LuceneQueryBuilder, $rootScope) {
+function SearchHelper(searchApiSwitcher, $rootScope) {
   var query = null;
   var queryTree = null;
+  var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
   this.clearQueryTree = function () {
     queryTree = null;
@@ -31,8 +32,8 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
     var newQuery = false;
 
     if (!query || query.queryString !== queryString) {
-      newQuery = LuceneQueryBuilder.createQuery(queryString);
-      LuceneQueryBuilder.isValid(newQuery);
+      newQuery = queryBuilder.createQuery(queryString);
+      queryBuilder.isValid(newQuery);
       this.setQuery(newQuery);
       queryTree = null;
     }
@@ -43,9 +44,9 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.setQueryTree = function (groupedQueryTree) {
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedQueryTree);
-    var newQuery = LuceneQueryBuilder.createQuery(queryString);
-    LuceneQueryBuilder.isValid(newQuery);
+    var queryString = queryBuilder.unparseGroupedTree(groupedQueryTree);
+    var newQuery = queryBuilder.createQuery(queryString);
+    queryBuilder.isValid(newQuery);
     this.setQuery(newQuery);
 
     queryTree = groupedQueryTree;
