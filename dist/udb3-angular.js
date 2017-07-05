@@ -3869,7 +3869,8 @@ function UdbApi(
       url: appConfig.baseUrl + 'images',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };
