@@ -18877,6 +18877,12 @@ udbQueryEditorField.$inject = ["searchApiSwitcher"];
 'use strict';
 
 /**
+ * @typedef {Object} OfferType
+ * @property {string} id
+ * @property {string} label
+ */
+
+/**
  * @ngdoc directive
  * @name udb.search.controller:QueryEditorController
  * @description
@@ -18894,7 +18900,9 @@ function QueryEditorController(
   fieldTypeTransformers,
   searchHelper,
   $translate,
-  $rootScope
+  $rootScope,
+  eventTypes,
+  placeTypes
 ) {
   var qe = this,
       queryBuilder = LuceneQueryBuilder;
@@ -18947,7 +18955,8 @@ function QueryEditorController(
   qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
     return 'category_' + term.domain + '_name';
   });
-  qe.termOptions.locationtype = _.filter(taxonomyTerms, {parentid: '8.15.0.0.0'});
+  qe.termOptions.locationtype = placeTypes;
+  qe.termOptions['category_eventtype_name'] = eventTypes; // jshint ignore:line
   _.forEach(queryFields, function (field) {
     if (field.type === 'choice') {
       qe.termOptions[field.name] = field.options;
@@ -19144,7 +19153,7 @@ function QueryEditorController(
     return (qe.groupedQueryTree.nodes.length === 1);
   };
 }
-QueryEditorController.$inject = ["queryFields", "LuceneQueryBuilder", "taxonomyTerms", "fieldTypeTransformers", "searchHelper", "$translate", "$rootScope"];
+QueryEditorController.$inject = ["queryFields", "LuceneQueryBuilder", "taxonomyTerms", "fieldTypeTransformers", "searchHelper", "$translate", "$rootScope", "eventTypes", "placeTypes"];
 })();
 
 // Source: src/search/components/query-editor.directive.js
@@ -19574,6 +19583,43 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService,
 udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService", "searchApiSwitcher"];
 })();
 
+// Source: src/search/event-types.value.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc value
+ * @name udb.search.eventTypes
+ * @description
+ * # Event Types
+ * A list of types you can use to find events.
+ */
+angular
+  .module('udb.search')
+  .value('eventTypes', [
+    {label: 'Begeleide rondleiding', id: '0.7.0.0.0'},
+    {label: 'Beurs', id: '0.6.0.0.0'},
+    {label: 'Concert', id: '0.50.4.0.0'},
+    {label: 'Cursus of workshop', id: '0.3.1.0.0'},
+    {label: 'Dansvoorstelling', id: '0.54.0.0.0'},
+    {label: 'Eten en drinken', id: '1.50.0.0.0'},
+    {label: 'Festival', id: '0.5.0.0.0'},
+    {label: 'Film', id: '0.50.6.0.0'},
+    {label: 'Kamp of vakantie', id: '0.57.0.0.0'},
+    {label: 'Kermis of feestelijkheid', id: '0.28.0.0.0'},
+    {label: 'Lezing of congres', id: '0.3.2.0.0'},
+    {label: 'Markt of braderie', id: '0.37.0.0.0'},
+    {label: 'Opendeurdag', id: '0.12.0.0.0'},
+    {label: 'Party of fuif', id: '0.49.0.0.0'},
+    {label: 'Route', id: '0.17.0.0.0'},
+    {label: 'Spel of quiz', id: '0.50.21.0.0'},
+    {label: 'Sport en beweging', id: '0.59.0.0.0 '},
+    {label: 'Sportwedstrijd bekijken', id: '0.19.0.0.0'},
+    {label: 'Tentoonstelling', id: '0.0.0.0.0'},
+    {label: 'Theatervoorstelling', id: '0.55.0.0.0'}
+  ]);
+})();
+
 // Source: src/search/filters/currency.filter.js
 (function () {
 'use strict';
@@ -19664,6 +19710,40 @@ function JsonLDLangFilter() {
     return translatedObject;
   };
 }
+})();
+
+// Source: src/search/place-types.value.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc value
+ * @name udb.search.placeTypes
+ * @description
+ * # Place Types
+ * A list of types you can use to find places.
+ */
+angular
+  .module('udb.search')
+  .value('placeTypes', [
+    {label: 'Archeologische site', id:'3CuHvenJ+EGkcvhXLg9Ykg'},
+    {label: 'Bibliotheek of documentatiecentrum', id: 'kI7uAyn2uUu9VV6Z3uWZTA'},
+    {label: 'Bioscoop', id: 'BtVNd33sR0WntjALVbyp3w'},
+    {label: 'Cultuur- of ontmoetingscentrum', id: 'Yf4aZBfsUEu2NsQqsprngw'},
+    {label: 'Discotheek', id: 'YVBc8KVdrU6XfTNvhMYUpg'},
+    {label: 'Horeca', id: 'ekdc4ATGoUitCa0e6me6xA'},
+    {label: 'Jeugdhuis of jeugdcentrum', id: 'JCjA0i5COUmdjMwcyjNAFA'},
+    {label: 'Monument', id: '0.14.0.0.0'},
+    {label: 'Museum of galerij', id: 'GnPFp9uvOUyqhOckIFMKmg'},
+    {label: 'Natuur, park of tuin', id: '0.15.0.0.0'},
+    {label: 'Openbare ruimte', id: '0.8.0.0.0'},
+    {label: 'Recreatiedomein of centrum', id: '0.53.0.0.0'},
+    {label: 'School of onderwijscentrum', id: 'rJRFUqmd6EiqTD4c7HS90w'},
+    {label: 'Sportcentrum', id: 'eBwaUAAhw0ur0Z02i5ttnw'},
+    {label: 'Thema of pretpark', id: '0.41.0.0.0'},
+    {label: 'Winkel', id: 'VRC6HX0Wa063sq98G5ciqw '},
+    {label: 'Zaal of expohal', id: 'OyaPaf64AEmEAYXHeLMAtA'},
+  ]);
 })();
 
 // Source: src/search/services/field-type-transformers.value.js
