@@ -27500,7 +27500,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <div ng-switch-when=\"choice\">\n" +
-    "      <select ng-options=\"'choice.' + option | translate for option in ::qe.termOptions[field.name]\"\n" +
+    "      <select ng-options=\"'choice.' + option | translate for option in qe.termOptions[field.name]\"\n" +
     "              ng-model=\"field.term\" class=\"form-control\">\n" +
     "        <option value=\"\">-- maak een keuze --</option>\n" +
     "      </select>\n" +
@@ -27508,10 +27508,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div ng-switch-when=\"check\">\n" +
     "      <label class=\"radio-inline\">\n" +
-    "        <input type=\"radio\" ng-model=\"field.term\" value=\"{{::field.name}}\"> ja\n" +
+    "        <input type=\"radio\" ng-model=\"field.term\" value=\"{{field.name}}\"> ja\n" +
     "      </label>\n" +
     "      <label class=\"radio-inline\">\n" +
-    "        <input type=\"radio\" ng-model=\"field.term\" value=\"(!{{::field.name}})\"> nee\n" +
+    "        <input type=\"radio\" ng-model=\"field.term\" value=\"(!{{field.name}})\"> nee\n" +
     "      </label>\n" +
     "    </div>\n" +
     "\n" +
