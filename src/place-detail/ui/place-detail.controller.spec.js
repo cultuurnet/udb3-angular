@@ -5,7 +5,7 @@ describe('Controller: Place Detail', function() {
       placeController,
       placeId,
       udbApi,
-      $location,
+      $state,
       jsonLDLangFilter,
       variationRepository,
       offerEditor,
@@ -67,7 +67,7 @@ describe('Controller: Place Detail', function() {
     $scope = $rootScope.$new();
     placeId = 'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702';
     udbApi = $injector.get('udbApi');
-    $location = jasmine.createSpyObj('$location', ['path', 'url']);
+    $state = jasmine.createSpyObj('$state', ['go']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     variationRepository = $injector.get('variationRepository');
     offerEditor = $injector.get('offerEditor');
@@ -96,7 +96,7 @@ describe('Controller: Place Detail', function() {
         $scope: $scope,
         placeId: placeId,
         udbApi: udbApi,
-        $location: $location,
+        $state: $state,
         jsonLDLangFilter: jsonLDLangFilter,
         variationRepository: variationRepository,
         offerEditor: offerEditor,
@@ -207,26 +207,29 @@ describe('Controller: Place Detail', function() {
     placeController.goToDashboardOnJobCompletion(job);
     $scope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/dashboard');
+    expect($state.go).toHaveBeenCalledWith('split.footer.dashboard');
   });
 
-  it('should redirect to the edit page with a known placeId', function () {
-    $scope.placeId = 'place/de84f1c4-d335-470a-924d-624982b87098';
+  it('should redirect to the edit page with a placeId resolved to a URL string', function () {
+    $scope.placeId = 'http://du.de/places/de84f1c4-d335-470a-924d-624982b87098';
 
     $scope.openEditPage();
     $scope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/place/de84f1c4-d335-470a-924d-624982b87098/edit');
+    expect($state.go).toHaveBeenCalledWith('split.placeEdit', {id: 'de84f1c4-d335-470a-924d-624982b87098'});
   });
 
-  it('should redirect to the edit page without a known placeId', function () {
-    $scope.placeId = {};
-    $location.url.and.returnValue('/place/de84f1c4-d335-470a-924d-624982b87098/saved');
+  it('should redirect to the edit page with a placeId resolved to an URL object', function () {
+    $scope.placeId = {
+      toString: function () {
+        return 'http://du.de/places/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+      } 
+    };
 
     $scope.openEditPage();
     $scope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/place/de84f1c4-d335-470a-924d-624982b87098/edit');
+    expect($state.go).toHaveBeenCalledWith('split.placeEdit', {id: '1111be8c-a412-488d-9ecc-8fdf9e52edbc'});
   });
 
   it('should update the place when adding a label', function () {

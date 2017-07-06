@@ -7971,7 +7971,7 @@ function EventDetail(
   jsonLDLangFilter,
   variationRepository,
   offerEditor,
-  $location,
+  $state,
   $uibModal,
   $q,
   $window,
@@ -8152,22 +8152,14 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
 
-    console.log(Object.keys($scope.eventId).length);
-
-    if (_.isEmpty($scope.eventId) && Object.keys($scope.eventId).length === 0) {
-      eventId = $location.url().split('/')[2];
-      console.log("a");
-    }
-    else {
-      eventId = $scope.eventId.split('/').pop();
-      console.log("b");
-    }
-    $location.path('/event/' + eventId + '/edit');
+    $state.go('split.eventEdit', {id: id});
   };
 
   function goToDashboard() {
-    $location.path('/dashboard');
+    $state.go('split.footer.dashboard');
   }
 
   /**
@@ -8269,7 +8261,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -17992,7 +17984,7 @@ function PlaceDetail(
   $scope,
   placeId,
   udbApi,
-  $location,
+  $state,
   jsonLDLangFilter,
   variationRepository,
   offerEditor,
@@ -18097,16 +18089,10 @@ function PlaceDetail(
   };
 
   $scope.openEditPage = function() {
-    var placeId;
-    // When a place is published $scope.placeId is empty,
-    // so get the placeId straight from the current url.
-    if (_.isEmpty($scope.placeId)) {
-      placeId = $location.url().split('/')[2];
-    }
-    else {
-      placeId = $scope.placeId.split('/').pop();
-    }
-    $location.path('/place/' + placeId + '/edit');
+    var placeLocation = $scope.placeId.toString();
+    var id = placeLocation.split('/').pop();
+
+    $state.go('split.placeEdit', {id: id});
   };
 
   $scope.updateDescription = function(description) {
@@ -18124,7 +18110,7 @@ function PlaceDetail(
   };
 
   function goToDashboard() {
-    $location.path('/dashboard');
+    $state.go('split.footer.dashboard');
   }
 
   /**
@@ -18214,7 +18200,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
 })();
 
 // Source: src/router/offer-locator.service.js
