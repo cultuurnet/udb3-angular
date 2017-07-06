@@ -33,7 +33,7 @@
     </div>
 
     <div ng-switch-when="choice">
-      <select ng-options="'choice.' + option | translate for option in ::qe.termOptions[field.name]"
+      <select ng-options="'choice.' + option | translate for option in qe.termOptions[field.name]"
               ng-model="field.term" class="form-control">
         <option value="">-- maak een keuze --</option>
       </select>
@@ -41,10 +41,10 @@
 
     <div ng-switch-when="check">
       <label class="radio-inline">
-        <input type="radio" ng-model="field.term" value="{{::field.name}}"> ja
+        <input type="radio" ng-model="field.term" value="{{field.name}}"> ja
       </label>
       <label class="radio-inline">
-        <input type="radio" ng-model="field.term" value="(!{{::field.name}})"> nee
+        <input type="radio" ng-model="field.term" value="(!{{field.name}})"> nee
       </label>
     </div>
 
