@@ -37,8 +37,8 @@ angular
     {name: 'date', field:'dateRange', type: 'date-range', group:'when', editable: true},
     {name: 'permanent', field:'calendarType', type:'check', group:'when', editable: true},
 
-    {name: 'lastupdated', field: 'modifiedRange', type: 'date-range', group:'input-information', editable: true},
-    {name: 'creationdate', field: 'createdRange', type: 'date-range', group:'input-information', editable: true},
+    {name: 'lastupdated', field: 'modified', type: 'date-range', group:'input-information', editable: true},
+    {name: 'creationdate', field: 'created', type: 'date-range', group:'input-information', editable: true},
     {name: 'createdby', field: 'creator', type: 'string', group:'input-information', editable: true},
     {name: 'availablefrom', field: 'availableRange', type: 'date-range', group:'input-information', editable: true},
 
