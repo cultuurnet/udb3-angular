@@ -30,6 +30,9 @@
             <span class="pull-right" ng-if="dash.toggleAddOffer">
               <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> Toevoegen</a>
             </span>
+            <span class="well well-sm pull-right" ng-if="!dash.toggleAddOffer && dash.addOfferReplaceMessage">
+              <span ng-bind-html="dash.addOfferReplaceMessage"></span>
+            </span>
           </p>
         </div>
 

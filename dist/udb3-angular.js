@@ -5291,11 +5291,12 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
    * dashboard
    */
   angular
-    .module('udb.dashboard')
-    .controller('DashboardController', DashboardController);
+      .module('udb.dashboard')
+      .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer,
+                               appConfig, moment) {
 
     var dash = this;
 
@@ -5305,11 +5306,29 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.username = '';
     dash.hideOnlineDate = false;
 
-    if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
-      dash.toggleAddOffer = appConfig.toggleAddOffer;
+    if (typeof(appConfig.addOffer.toggleAddOffer) !== 'undefined') {
+      dash.toggleAddOffer = appConfig.addOffer.toggleAddOffer;
+
+      if (typeof(appConfig.addOffer.embargoDate) !== 'undefined' ||
+          appConfig.addOffer.embargoDate !== '') {
+        if (moment() > moment(appConfig.addOffer.embargoDate)) {
+          dash.toggleAddOffer = false;
+        }
+        else {
+          dash.toggleAddOffer = true;
+        }
+      }
     }
     else {
       dash.toggleAddOffer = true;
+    }
+
+    if (typeof(appConfig.addOffer.replaceMessage) !== 'undefined' ||
+        appConfig.addOffer.replaceMessage !== '') {
+      dash.addOfferReplaceMessage = appConfig.addOffer.replaceMessage;
+    }
+    else {
+      dash.addOfferReplaceMessage = '';
     }
 
     if (typeof(appConfig.offerEditor.defaultPublicationDate) !== 'undefined') {
@@ -5320,8 +5339,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     }
 
     udbApi
-      .getMe()
-      .then(greetUser);
+        .getMe()
+        .then(greetUser);
 
     function greetUser(user) {
       dash.username = user.nick;
@@ -5338,8 +5357,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
 
     function updateItemViewer() {
       udbApi
-        .getDashboardItems(dash.pagedItemViewer.currentPage)
-        .then(setItemViewerResults);
+          .getDashboardItems(dash.pagedItemViewer.currentPage)
+          .then(setItemViewerResults);
     }
     updateItemViewer();
 
@@ -5381,8 +5400,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
 
       // Check if this place has planned events.
       eventCrud
-        .findEventsAtPlace(place.apiUrl)
-        .then(showModalWithEvents);
+          .findEventsAtPlace(place.apiUrl)
+          .then(showModalWithEvents);
     }
 
     /**
@@ -5412,7 +5431,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
 
 })();
 
@@ -20202,6 +20221,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
     "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
     "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
+    "            </span>\n" +
+    "            <span class=\"well well-sm pull-right\" ng-if=\"!dash.toggleAddOffer && dash.addOfferReplaceMessage\">\n" +
+    "              <span ng-bind-html=\"dash.addOfferReplaceMessage\"></span>\n" +
     "            </span>\n" +
     "          </p>\n" +
     "        </div>\n" +
