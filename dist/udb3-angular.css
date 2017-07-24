@@ -2486,6 +2486,7 @@ input + .alert {
   right: 5px;
   top: 5px;
   font-size: 90%;
+  height: 24px;
 }
 .udb-translation-info {
   font-size: 30px;
