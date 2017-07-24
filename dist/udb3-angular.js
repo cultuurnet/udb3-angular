@@ -27473,9 +27473,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <div class=\"extra-task\" ng-class=\"descriptionCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
     "              <em class=\"extra-task-label\">Beschrijving</em>\n" +
-    "              <a ng-if=\"description\" class=\"btn btn-link to-filling\" ng-click=\"saveDescription(true)\">\n" +
-    "                 Leegmaken\n" +
-    "              </a>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingDescription\"></i>\n" +
     "            </div>\n" +
@@ -27509,6 +27506,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </p>\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
     "                    Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.\n" +
+    "                  </p>\n" +
+    "                  <p>\n" +
+    "                    <a ng-if=\"description\" class=\"to-filling\" ng-click=\"saveDescription(true)\">\n" +
+    "                        Leegmaken\n" +
+    "                    </a>\n" +
     "                  </p>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +

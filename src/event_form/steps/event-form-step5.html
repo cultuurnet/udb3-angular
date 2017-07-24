@@ -26,9 +26,6 @@
           <div class="extra-task" ng-class="descriptionCssClass">
             <div class="col-sm-3">
               <em class="extra-task-label">Beschrijving</em>
-              <a ng-if="description" class="btn btn-link to-filling" ng-click="saveDescription(true)">
-                 Leegmaken
-              </a>
               <span> </span>
               <i class="fa fa-circle-o-notch fa-spin" ng-show="savingDescription"></i>
             </div>
@@ -62,6 +59,11 @@
                   </p>
                   <p class="tip description-info" ng-if="descriptionInfoVisible && countCharacters() >= 200">
                     Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.
+                  </p>
+                  <p>
+                    <a ng-if="description" class="to-filling" ng-click="saveDescription(true)">
+                        Leegmaken
+                    </a>
                   </p>
                   <div class="tip" ng-switch="eventFormData.type.id">
                     <p ng-switch-when="0.17.0.0.0">
