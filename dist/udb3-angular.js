@@ -13201,7 +13201,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.openOrganizerModal = openOrganizerModal;
   $scope.organizerSearched = organizerSearched;
   $scope.organizersSearched = false;
-  $scope.organizerFocus = false;
 
   // Contact info functions.
   $scope.deleteContactInfo = deleteContactInfo;
@@ -27521,8 +27520,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <div id=\"organisator-kiezer\" class=\"typeahead\">\n" +
     "                    <input type=\"text\" class=\"form-control uib-typeahead\" id=\"organisator-autocomplete\"\n" +
     "                           ng-change=\"organizerSearched()\"\n" +
-    "                           ng-focus=\"organizerFocus=true\"\n" +
-    "                           ng-blur=\"organizerFocus=false\"\n" +
     "                           ng-model=\"organizer\"\n" +
     "                           placeholder=\"Naam\"\n" +
     "                           uib-typeahead=\"organizer for organizer in getOrganizers($viewValue)\"\n" +

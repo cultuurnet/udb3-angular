@@ -117,8 +117,6 @@
                   <div id="organisator-kiezer" class="typeahead">
                     <input type="text" class="form-control uib-typeahead" id="organisator-autocomplete"
                            ng-change="organizerSearched()"
-                           ng-focus="organizerFocus=true"
-                           ng-blur="organizerFocus=false"
                            ng-model="organizer"
                            placeholder="Naam"
                            uib-typeahead="organizer for organizer in getOrganizers($viewValue)"

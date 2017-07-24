@@ -113,7 +113,6 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.openOrganizerModal = openOrganizerModal;
   $scope.organizerSearched = organizerSearched;
   $scope.organizersSearched = false;
-  $scope.organizerFocus = false;
 
   // Contact info functions.
   $scope.deleteContactInfo = deleteContactInfo;
