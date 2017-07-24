@@ -249,6 +249,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Open the organizer modal.
    */
   function openOrganizerModal() {
+    $scope.organizersSearched = false;
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-organizer-modal.html',
       controller: 'EventFormOrganizerModalController',

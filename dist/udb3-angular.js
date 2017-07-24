@@ -13337,6 +13337,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Open the organizer modal.
    */
   function openOrganizerModal() {
+    $scope.organizersSearched = false;
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/event-form-organizer-modal.html',
       controller: 'EventFormOrganizerModalController',
@@ -27533,7 +27534,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           focus-if=\"organizerCssClass == 'state-filling'\"\n" +
     "                           udb-auto-scroll/>\n" +
     "                           <div class=\"dropdown-menu-no-results open\"\n" +
-    "                            ng-show=\"organizerFocus && organizersSearched && foundOrganizers==0\">\n" +
+    "                            ng-show=\"organizersSearched && foundOrganizers==0\">\n" +
     "                             <div class=\"dropdown-menu\">\n" +
     "                                <div class=\"panel panel-default text-center\">\n" +
     "                                    <div class=\"panel-body\">\n" +
