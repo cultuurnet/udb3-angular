@@ -130,6 +130,14 @@ describe('Controller: event form step 5', function () {
     expect(rootScope.$emit).toHaveBeenCalledWith('eventFormSaved', EventFormData);
   });
 
+  it('should suggest creating a new organizer when looking for one yields no results', function () {
+    udbOrganizers.suggestOrganizers.and.returnValue($q.resolve([]));
+    scope.getOrganizers('club');
+    scope.$apply();
+    expect(udbOrganizers.suggestOrganizers).toHaveBeenCalledWith('club');
+    expect(scope.organizerSearched).toBeTruthy();
+  });
+
   it('should promise a list of organizers and show a loading state while waiting for it', function (done) {
     var organizer = new UdbOrganizer();
     udbOrganizers.suggestOrganizers.and.returnValue($q.resolve([organizer]));
