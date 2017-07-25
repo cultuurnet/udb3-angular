@@ -13097,7 +13097,7 @@ EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udb
  */
 angular
   .module('udb.export')
-  .service('eventExportGALogger', eventExportGALogger);
+  .factory('eventExportGALogger', eventExportGALogger);
 
 /* @ngInject */
 function eventExportGALogger() {
@@ -13108,6 +13108,15 @@ function eventExportGALogger() {
 
   ega.setGAInfo = function(info) {
     ega.gaInfo = info;
+  }
+
+  ega.getGAInfo = function(){
+      return JSON.stringify(ega.gaInfo);
+  }
+
+  return {
+      getGAInfo : ega.getGAInfo,
+      setGAInfo : ega.setGAInfo
   }
 
 }
@@ -13377,7 +13386,6 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
       gaObj.brand = customizations.brand || null;
       gaObj.email = exporter.email || null;
       gaObj.queryString = eventExporter.activeExport.query.queryString;
-      var dataLayer = window.tm = window.tm || [];
       udbApi.getMe().then(function(user) {
         eventExportGALogger.setGAInfo({
         'event' : 'GAEvent',
@@ -13385,6 +13393,7 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
         'eventAction' : exporter.format,
         'eventLabel' : gaObj.brand + ';' + user.id + ';' + gaObj.queryString
       });
+        eventExportGALogger.getGAInfo();
       });
     }
 

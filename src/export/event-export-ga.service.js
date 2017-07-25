@@ -9,7 +9,7 @@
  */
 angular
   .module('udb.export')
-  .service('eventExportGALogger', eventExportGALogger);
+  .factory('eventExportGALogger', eventExportGALogger);
 
 /* @ngInject */
 function eventExportGALogger() {
@@ -20,6 +20,15 @@ function eventExportGALogger() {
 
   ega.setGAInfo = function(info) {
     ega.gaInfo = info;
+  }
+
+  ega.getGAInfo = function(){
+      return JSON.stringify(ega.gaInfo);
+  }
+
+  return {
+      getGAInfo : ega.getGAInfo,
+      setGAInfo : ega.setGAInfo
   }
 
 }
