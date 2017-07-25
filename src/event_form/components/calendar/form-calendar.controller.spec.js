@@ -38,43 +38,6 @@ describe('Controller: Form Calendar', function () {
     expect(controller.bootstrapDate).toEqual(expectedStart);
   });
 
-  it('should copy the last time-span without triggering a change when creating a new one', function () {
-    var controller = getController();
-    controller.timeSpans = [
-      {
-        allDay: true,
-        start: new Date(2013, 9, 23, 2),
-        end: new Date(2013, 9, 23, 5)
-      },
-      {
-        allDay: false,
-        start: new Date(2013, 9, 23, 9),
-        end: new Date(2013, 9, 23, 17)
-      }
-    ];
-    var expectedTimeSpans = [
-      {
-        allDay: true,
-        start: new Date(2013, 9, 23, 2),
-        end: new Date(2013, 9, 23, 5)
-      },
-      {
-        allDay: false,
-        start: new Date(2013, 9, 23, 9),
-        end: new Date(2013, 9, 23, 17)
-      },
-      {
-        allDay: false,
-        start: new Date(2013, 9, 23, 9),
-        end: new Date(2013, 9, 23, 17)
-      }
-    ];
-    spyOn(controller, 'instantTimeSpanChanged');
-
-    controller.createTimeSpan();
-    expect(controller.timeSpans).toEqual(expectedTimeSpans);
-    expect(controller.instantTimeSpanChanged).not.toHaveBeenCalled();
-  });
 
   it('should bootstrap timestamps', function () {
     var controller = getController();
