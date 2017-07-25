@@ -13230,9 +13230,16 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   /**
    * Save the description.
    */
-  function saveDescription() {
-    // only update description when there is one, it's not empty and it's not already saved
-    if ($scope.description && $scope.description !== '' && $scope.description !== $scope.originalDescription) {
+  function saveDescription(allowEmpty) {
+
+    if (allowEmpty) {
+      $scope.description = '';
+    }
+
+    // only update description when there is one, it's not empty and it's not already saved; or when we allow empty
+    var emptyAllowed = ($scope.description && $scope.description !== '') || allowEmpty;
+    var notTheSame = ($scope.description !== $scope.originalDescription) || allowEmpty;
+    if (emptyAllowed && notTheSame) {
 
       $scope.descriptionInfoVisible = false;
       $scope.savingDescription = true;
@@ -13332,6 +13339,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
+      backdrop: 'static',
       templateUrl: 'templates/event-form-organizer-modal.html',
       controller: 'EventFormOrganizerModalController',
       resolve: {
@@ -19739,7 +19747,7 @@ angular
     {label: 'School of onderwijscentrum', id: 'rJRFUqmd6EiqTD4c7HS90w'},
     {label: 'Sportcentrum', id: 'eBwaUAAhw0ur0Z02i5ttnw'},
     {label: 'Thema of pretpark', id: '0.41.0.0.0'},
-    {label: 'Winkel', id: 'VRC6HX0Wa063sq98G5ciqw '},
+    {label: 'Winkel', id: 'VRC6HX0Wa063sq98G5ciqw'},
     {label: 'Zaal of expohal', id: 'OyaPaf64AEmEAYXHeLMAtA'},
   ]);
 })();
@@ -24682,7 +24690,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           on-update=\"validateAddress(error)\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact=\"newOrganizer.contact\"\n" +
     "                           on-update=\"validateContact(error)\"></udb-organizer-contact>\n" +
-    "\n" +
     "  </section>\n" +
     "\n" +
     "  <section ng-show=\"organizersFound\">\n" +
@@ -25687,6 +25694,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
     "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
+    "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
     "                    De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.\n" +
     "                    Nog <span ng-bind=\"(200 - countCharacters())\"></span> tekens.\n" +
@@ -25697,6 +25705,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </p>\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
     "                    Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.\n" +
+    "                  </p>\n" +
+    "                  <p>\n" +
+    "                    <a ng-if=\"description\" class=\"to-filling\" ng-click=\"saveDescription(true)\">\n" +
+    "                        Leegmaken\n" +
+    "                    </a>\n" +
     "                  </p>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
