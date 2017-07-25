@@ -30,16 +30,12 @@ describe('Controller: Form Calendar', function () {
     expect(controller.type).toEqual('single');
   });
 
-  it('should set today as the default time-span when creating a new offer', function () {
+  it('should set today as the default bootstrap start-time-span when creating a new offer', function () {
     var today = new Date(2013, 9, 23, 1);
     jasmine.clock().mockDate(today);
     var controller = getController();
-    var expectedTimeSpans = [{
-        allDay: true,
-        start: new Date(2013, 9, 23, 2),
-        end: new Date(2013, 9, 23, 5)
-    }];
-    expect(controller.timeSpans).toEqual(expectedTimeSpans);
+    var expectedStart = new Date(2013, 9, 23, 2);
+    expect(controller.bootstrapDate).toEqual(expectedStart);
   });
 
   it('should copy the last time-span without triggering a change when creating a new one', function () {
@@ -80,22 +76,28 @@ describe('Controller: Form Calendar', function () {
     expect(controller.instantTimeSpanChanged).not.toHaveBeenCalled();
   });
 
-  it('should initialize time-spans and trigger a change when starting a new list', function () {
+  it('should bootstrap timestamps', function () {
     var controller = getController();
+    controller.timeSpans = [];
+    spyOn(controller.formData, 'timingChanged');
+    controller.createTimeSpan();
+    expect(controller.showBootstrapTimeSpans).toEqual(true);
+  });
+
+  it('should init timestamps after bootstrapping', function () {
+    var controller = getController();
+    controller.bootstrapDate = new Date(2013, 9, 23, 2);
+    controller.timeSpans = [];
+    controller.confirmBootstrap();
     var expectedTimeSpans = [
       {
         allDay: true,
         start: new Date(2013, 9, 23, 2),
-        end: new Date(2013, 9, 23, 5)
+        end: new Date(2013, 9, 23, 6)
       }
     ];
-    spyOn(controller, 'instantTimeSpanChanged');
-
-    controller.timeSpans = [];
-    controller.createTimeSpan();
-
+    spyOn(controller.formData, 'timingChanged');
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
-    expect(controller.instantTimeSpanChanged).toHaveBeenCalled();
   });
 
   it('should save timestamps to form-data when time-spans change', function () {
@@ -319,4 +321,3 @@ describe('Controller: Form Calendar', function () {
       expect(controller.type).toEqual('single');
   });
 });
-

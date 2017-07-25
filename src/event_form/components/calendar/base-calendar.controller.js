@@ -19,9 +19,11 @@ angular
 
 /* @ngInject */
 function BaseCalendarController(calendar, $scope) {
+  calendar.confirmBootstrap = confirmBootstrap;
+  calendar.showBootstrapTimeSpans = false;
+  calendar.bootstrapDate = moment().startOf('hour').add(1, 'h').toDate();
   calendar.type = '';
   calendar.setType = setType;
-  calendar.showEndDate = false;
   calendar.createTimeSpan = createTimeSpan;
   calendar.timeSpans = [];
   calendar.timeSpanRequirements = [];
@@ -30,7 +32,6 @@ function BaseCalendarController(calendar, $scope) {
   calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.init = init;
-  calendar.confirm = confirm;
 
   /**
    * @param {EventFormData} formData
@@ -38,7 +39,6 @@ function BaseCalendarController(calendar, $scope) {
    */
   function init(formData, openingHoursCollection) {
     calendar.formData = formData;
-    calendar.showEndDate = formData.startDate !== '';
     calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
     calendar.setType(formData.calendarType ? formData.calendarType : 'single');
     calendar.openingHoursCollection = openingHoursCollection;
@@ -57,23 +57,13 @@ function BaseCalendarController(calendar, $scope) {
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
-      initTimeSpans();
+      calendar.showBootstrapTimeSpans = true;
     }
-  }
-
-  function initTimeSpans() {
-    calendar.timeSpans = [
-      {
-        allDay: true,
-        start: moment().startOf('hour').add(1, 'h').toDate(),
-        end: moment().startOf('hour').add(4, 'h').toDate()
-      }
-    ];
   }
 
   function createTimeSpan() {
     if (_.isEmpty(calendar.timeSpans)) {
-      initTimeSpans();
+      calendar.showBootstrapTimeSpans = true;
       calendar.instantTimeSpanChanged();
     } else {
       calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
@@ -196,7 +186,14 @@ function BaseCalendarController(calendar, $scope) {
     return _.keys(unmetRequirements);
   }
 
-  function confirm() {
-    calendar.showEndDate = true;
+  function confirmBootstrap() {
+    calendar.showBootstrapTimeSpans = false;
+    calendar.timeSpans = [
+      {
+        allDay: true,
+        start: moment(calendar.bootstrapDate).toDate(),
+        end: moment(calendar.bootstrapDate).startOf('hour').add(4, 'h').toDate()
+      }
+    ];
   }
 }

@@ -133,6 +133,30 @@ function UdbApi(
   };
 
   /**
+   * @param {string} queryString - The query used to find offers.
+   * @param {number} [start] - From which offset the result set should start.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findOffers = function (queryString, start) {
+    var offset = start || 0,
+        searchParams = {
+          start: offset,
+          disableDefaultFilters: true
+        };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.q = queryString;
+    }
+
+    return $http
+      .get(appConfig.baseSearchUrl + 'offers/', withoutAuthorization(requestOptions))
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} queryString - The query used to find events.
    * @param {number} [start] - From which event offset the result set should start.
    * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of

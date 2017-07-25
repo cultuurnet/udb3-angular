@@ -7,15 +7,23 @@ describe('Service: QueryTreeTranslator', function () {
 
   beforeEach(module(function($provide) {
     var translations = {
+      sapi2: {
+        LOCATION_LABEL: 'location_label'
+      },
       en: {
         LOCATION_LABEL: 'location'
       },
       nl: {
-        LOCATION_LABEL: 'locatie (naam)'
+        LOCATION_LABEL: 'locatie'
       }
     };
 
-    $provide.value('queryFieldTranslations', translations);
+    var queryFields = [
+      {name: 'location_label', field: 'location.name.*', type: 'tokenized-string', group:'where', editable: true}
+    ];
+
+    $provide.constant('queryFieldTranslations', translations);
+    $provide.value('queryFields', queryFields);
   }));
 
   // instantiate translator
@@ -27,14 +35,19 @@ describe('Service: QueryTreeTranslator', function () {
   it('should translate dutch query fields', function () {
     var queryTree = {
         left: {
-          field: 'locatie (naam)',
+          field: 'locatie',
           term: 'Tienen'
         }
       };
+    var expectedQueryTree = {
+      left: {
+        field: 'location.name.*',
+        term: 'Tienen'
+      }
+    };
 
     QueryTreeTranslator.translateQueryTree(queryTree);
-
-    expect(queryTree.left.field).toBe('location_label');
+    expect(queryTree).toEqual(expectedQueryTree);
 
   });
 
@@ -42,14 +55,35 @@ describe('Service: QueryTreeTranslator', function () {
     var queryTree = {
       left: {
         field: 'location',
-        term: 'Tienen'
+        term: 'Leuven'
+      }
+    };
+    var expectedQueryTree = {
+      left: {
+        field: 'location.name.*',
+        term: 'Leuven'
       }
     };
 
     QueryTreeTranslator.translateQueryTree(queryTree);
-
-    expect(queryTree.left.field).toBe('location_label');
-
+    expect(queryTree).toEqual(expectedQueryTree);
   });
 
+  it('should translate sapi2 query fields', function () {
+    var queryTree = {
+      left: {
+        field: 'location_label',
+        term: 'Brussel'
+      }
+    };
+    var expectedQueryTree = {
+      left: {
+        field: 'location.name.*',
+        term: 'Brussel'
+      }
+    };
+
+    QueryTreeTranslator.translateQueryTree(queryTree);
+    expect(queryTree).toEqual(expectedQueryTree);
+  });
 });
