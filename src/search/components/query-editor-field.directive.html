@@ -2,8 +2,8 @@
   <div class="col-md-3">
     <div class="form-group">
       <select
-          ng-options="field.name as field.label group by field.groupLabel for field in qe.fields | orderBy:['groupIndex','label']"
-          ng-model="field.field" class="form-control" ng-change="qe.updateFieldType(field)">
+          ng-options="fieldOption.name as fieldOption.label group by fieldOption.groupLabel for fieldOption in qe.fieldOptions | orderBy:['groupIndex','label']"
+          ng-model="field.name" class="form-control" ng-change="qe.fieldTypeSelected(field)">
       </select>
     </div>
 
@@ -11,7 +11,7 @@
   <div class="col-md-3">
     <div class="form-group">
       <select ng-model="field.transformer" class="form-control"
-              ng-options="transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.field]">
+              ng-options="transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.name]">
       </select>
     </div>
   </div>
@@ -26,14 +26,14 @@
              class="form-control"/>
     </div>
     <div ng-switch-when="term">
-      <select ng-options="term.label as term.label for term in qe.termOptions[field.field] | orderBy:'label'"
+      <select ng-options="term.label as term.label for term in qe.termOptions[field.name] | orderBy:'label'"
               ng-model="field.term" class="form-control">
         <option value="">-- maak een keuze --</option>
       </select>
     </div>
 
     <div ng-switch-when="choice">
-      <select ng-options="'choice.' + option | translate for option in ::qe.termOptions[field.field]"
+      <select ng-options="'choice.' + option | translate for option in qe.termOptions[field.name]"
               ng-model="field.term" class="form-control">
         <option value="">-- maak een keuze --</option>
       </select>
@@ -41,10 +41,10 @@
 
     <div ng-switch-when="check">
       <label class="radio-inline">
-        <input type="radio" ng-model="field.term" value="TRUE"> ja
+        <input type="radio" ng-model="field.term" value="{{field.name}}"> ja
       </label>
       <label class="radio-inline">
-        <input type="radio" ng-model="field.term" value="FALSE"> nee
+        <input type="radio" ng-model="field.term" value="(!{{field.name}})"> nee
       </label>
     </div>
 
@@ -63,6 +63,12 @@
       </div>
 
       <div ng-switch-when="<">
+        <input type="text" class="form-control" ng-model="field.upperBound"/>
+      </div>
+
+      <div ng-switch-when="><">
+        <input type="text" class="form-control" ng-model="field.lowerBound"/>
+        <span>tot</span>
         <input type="text" class="form-control" ng-model="field.upperBound"/>
       </div>
     </div>

@@ -1,21 +1,21 @@
 'use strict';
 
-describe('Service: LuceneQueryBuilder', function () {
+describe('Service: sapi2QueryBuilder', function () {
 
   // load the service's module
   beforeEach(module('udb.search'));
 
   // instantiate service
-  var LuceneQueryBuilder;
-  beforeEach(inject(function (_LuceneQueryBuilder_) {
-    LuceneQueryBuilder = _LuceneQueryBuilder_;
+  var sapi2QueryBuilder;
+  beforeEach(inject(function (_sapi2QueryBuilder_) {
+    sapi2QueryBuilder = _sapi2QueryBuilder_;
   }));
 
-  describe('Service: LuceneQueryBuilder', function () {
+  describe('Service: sapi2QueryBuilder', function () {
 
     var createAndCompareUnparsedQuery = function (queryString) {
-      var query = LuceneQueryBuilder.createQuery(queryString),
-        unparsedQueryString = LuceneQueryBuilder.unparse(query);
+      var query = sapi2QueryBuilder.createQuery(queryString),
+        unparsedQueryString = sapi2QueryBuilder.unparse(query);
 
       expect(unparsedQueryString).toEqual(queryString);
     };
@@ -58,18 +58,10 @@ describe('Service: LuceneQueryBuilder', function () {
       createAndCompareUnparsedQuery('title:(+return +"pink panther")');
     });
 
-    it('Unparses queries with field grouping containing a single negated term', function () {
-      createAndCompareUnparsedQuery('calendarType:(!permanent)');
-    });
-
-    it('Unparses queries with field grouping containing multiple negated terms', function () {
-      createAndCompareUnparsedQuery('calendarType:(!permanent !periodic)');
-    });
-
     it('Groups a query tree with a single field and term', function () {
       var queryString = 'battery:horse';
-      var query = LuceneQueryBuilder.createQuery(queryString);
-      var groupedQueryTree = LuceneQueryBuilder.groupQueryTree(query.queryTree);
+      var query = sapi2QueryBuilder.createQuery(queryString);
+      var groupedQueryTree = sapi2QueryBuilder.groupQueryTree(query.queryTree);
 
       var expectedQueryTree = {
         operator: 'OR',
@@ -95,8 +87,8 @@ describe('Service: LuceneQueryBuilder', function () {
 
     it('Groups query tree fields with different operators', function () {
       var queryString = 'battery:horse AND staple:chair OR car:dinosaur';
-      var query = LuceneQueryBuilder.createQuery(queryString);
-      var groupedQueryTree = LuceneQueryBuilder.groupQueryTree(query.queryTree);
+      var query = sapi2QueryBuilder.createQuery(queryString);
+      var groupedQueryTree = sapi2QueryBuilder.groupQueryTree(query.queryTree);
 
       var expectedQueryTree = {
         type: 'root',
@@ -140,8 +132,8 @@ describe('Service: LuceneQueryBuilder', function () {
 
     it('Groups query tree fields with grouped terms', function () {
       var queryString = 'animal:(cat dog deer)';
-      var query = LuceneQueryBuilder.createQuery(queryString);
-      var groupedQueryTree = LuceneQueryBuilder.groupQueryTree(query.queryTree);
+      var query = sapi2QueryBuilder.createQuery(queryString);
+      var groupedQueryTree = sapi2QueryBuilder.groupQueryTree(query.queryTree);
 
       var expectedQueryTree = {
         operator: 'OR',
@@ -210,7 +202,7 @@ describe('Service: LuceneQueryBuilder', function () {
         ]
       };
 
-      var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+      var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
       expect(queryString).toBe('city:Tienen NOT location_label:"Bibliotheek Tienen"');
     });
   });
@@ -240,7 +232,7 @@ describe('Service: LuceneQueryBuilder', function () {
       ]
     };
 
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('city:Leuven OR city:Tienen');
   });
 
@@ -281,7 +273,7 @@ describe('Service: LuceneQueryBuilder', function () {
       ]
     };
 
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('(city:Leuven OR city:Tienen) AND category_eventtype_name:Concert');
   });
 
@@ -322,7 +314,7 @@ describe('Service: LuceneQueryBuilder', function () {
       ]
     };
 
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('city:Leuven AND (category_eventtype_name:Concert OR category_eventtype_name:Film)');
   });
 
@@ -382,7 +374,7 @@ describe('Service: LuceneQueryBuilder', function () {
       ]
     };
 
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('(city:Gent AND category_eventtype_name:Concert) OR (city:Brugge AND category_eventtype_name:Film)');
   });
 
@@ -436,7 +428,7 @@ describe('Service: LuceneQueryBuilder', function () {
       ]
     };
 
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('(city:Gent OR city:Ledeberg) NOT (city:Ledeberg AND !category_eventtype_name:"Cursus of workshop")');
   });
 
@@ -477,7 +469,7 @@ describe('Service: LuceneQueryBuilder', function () {
       ]
     };
 
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('(city:Leuven OR city:Tienen) OR category_eventtype_name:Concert');
   });
 
@@ -519,69 +511,7 @@ describe('Service: LuceneQueryBuilder', function () {
       ]
     };
 
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
+    var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
     expect(queryString).toBe('(title:a OR title:b) AND city:c');
-  });
-
-  it('Creates a free-text query from <implicit> fields', function () {
-    var groupedTree = {
-      "type": "root",
-      "nodes": [
-        {
-          "type": "group",
-          "operator": "OR",
-          "nodes": [
-            {
-              "field": "<implicit>",
-              "name": "text",
-              "term": "red",
-              "fieldType": "tokenized-string",
-              "transformer": "+"
-            },
-            {
-              "field": "<implicit>",
-              "name": "text",
-              "term": "blue",
-              "fieldType": "tokenized-string",
-              "transformer": "-"
-            }
-          ]
-        }
-      ]
-    }
-
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
-    expect(queryString).toBe('red OR -blue');
-  });
-
-  it('Combines a free-text query from an <implicit> field with a regular query-field', function () {
-    var groupedTree =   {
-      "type": "root",
-      "nodes": [
-        {
-          "type": "group",
-          "operator": "OR",
-          "nodes": [
-            {
-              "name": "text",
-              "field": "<implicit>",
-              "term": "orange",
-              "fieldType": "tokenized-string",
-              "transformer": "+"
-            },
-            {
-              "field": "name.\\*",
-              "name": "title",
-              "term": "purple",
-              "fieldType": "tokenized-string",
-              "transformer": "+"
-            }
-          ],
-        }
-      ]
-    };
-
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedTree);
-    expect(queryString).toBe('orange OR name.\\*:purple');
   });
 });

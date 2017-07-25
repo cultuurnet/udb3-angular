@@ -197,6 +197,30 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should find offers when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'offers/?q=foo:bar&start=0&disableDefaultFilters=true')
+      .respond(JSON.stringify(response));
+    service
+      .findOffers('foo:bar')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should find offers when provided no query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'offers/?disableDefaultFilters=true&start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findOffers('')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
   // findEvents
   it('should find events when provided a query', function (done) {
     var response = {};
@@ -209,6 +233,7 @@ describe('Service: UDB3 Api', function () {
       .then(done);
     $httpBackend.flush();
   });
+
   it('should find events when provided no query', function (done) {
     var response = {};
     $httpBackend
@@ -1420,7 +1445,8 @@ describe('Service: UDB3 Api', function () {
       url: baseUrl + 'images',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };

@@ -1,49 +1,49 @@
 'use strict';
 
 /**
- * @typedef {Object} OfferType
- * @property {string} id
- * @property {string} label
- */
-
-/**
  * @ngdoc directive
- * @name udb.search.controller:QueryEditorController
+ * @name udb.search.controller:sapi2QueryEditorController
  * @description
- * # QueryEditorController
+ * # sapi2QueryEditorController
  */
 angular
   .module('udb.search')
-  .controller('QueryEditorController', QueryEditorController);
+  .controller('sapi2QueryEditorController', Sapi2QueryEditorController);
 
-/* @ngInject */
-function QueryEditorController(
+Sapi2QueryEditorController.$inject = [
+  'sapi2QueryFields',
+  'sapi2QueryBuilder',
+  'taxonomyTerms',
+  'sapi2FieldTypeTransformers',
+  'searchHelper',
+  '$translate',
+  '$rootScope'
+];
+function Sapi2QueryEditorController(
   queryFields,
   LuceneQueryBuilder,
   taxonomyTerms,
   fieldTypeTransformers,
   searchHelper,
   $translate,
-  $rootScope,
-  eventTypes,
-  placeTypes
+  $rootScope
 ) {
   var qe = this,
-      queryBuilder = LuceneQueryBuilder;
+    queryBuilder = LuceneQueryBuilder;
 
-  qe.fieldOptions = _.filter(queryFields, 'editable');
+  qe.fields = _.filter(queryFields, 'editable');
 
   // use the first occurrence of a group name to order it against the other groups
-  var orderedGroups = _.chain(qe.fieldOptions)
+  var orderedGroups = _.chain(qe.fields)
     .map(function (field) {
-           return field.group;
-         })
+      return field.group;
+    })
     .uniq()
     .value();
 
-  _.forEach(qe.fieldOptions, function (field) {
+  _.forEach(qe.fields, function (field) {
     var fieldName = 'queryFieldLabel.' + field.name,
-        fieldGroup = 'queryFieldGroup.' + field.group;
+      fieldGroup = 'queryFieldGroup.' + field.group;
 
     $translate([fieldName, fieldGroup]).then(function (translations) {
       field.label = translations[fieldName];
@@ -61,8 +61,7 @@ function QueryEditorController(
           operator: 'OR',
           nodes: [
             {
-              name: 'title',
-              field: 'name.\\*',
+              field: 'title',
               term: '',
               fieldType: 'tokenized-string',
               transformer: '+'
@@ -79,8 +78,6 @@ function QueryEditorController(
   qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
     return 'category_' + term.domain + '_name';
   });
-  qe.termOptions.locationtype = placeTypes;
-  qe.termOptions['category_eventtype_name'] = eventTypes; // jshint ignore:line
   _.forEach(queryFields, function (field) {
     if (field.type === 'choice') {
       qe.termOptions[field.name] = field.options;
@@ -110,13 +107,12 @@ function QueryEditorController(
   qe.addField = function (group, fieldIndex) {
 
     var insertIndex = fieldIndex + 1,
-        field = {
-          field: 'name.\\*',
-          name: 'title',
-          term: '',
-          fieldType: 'tokenized-string',
-          transformer: '+'
-        };
+      field = {
+        field: 'title',
+        term: '',
+        fieldType: 'tokenized-string',
+        transformer: '+'
+      };
 
     group.nodes.splice(insertIndex, 0, field);
 
@@ -182,7 +178,7 @@ function QueryEditorController(
   qe.removeGroup = function (groupIndex) {
     if (qe.canRemoveGroup()) {
       var root = qe.groupedQueryTree,
-          group = root.nodes[groupIndex];
+        group = root.nodes[groupIndex];
 
       if (qe.canRemoveGroup() && group) {
         root.nodes.splice(groupIndex, 1);
@@ -204,8 +200,7 @@ function QueryEditorController(
       operator: 'OR',
       nodes: [
         {
-          field: 'name.\\*',
-          name: 'title',
+          field: 'title',
           term: '',
           fieldType: 'tokenized-string',
           transformer: '+'
@@ -222,8 +217,7 @@ function QueryEditorController(
       operator: 'AND',
       nodes: [
         {
-          field: 'name.\\*',
-          name: 'title',
+          field: 'title',
           term: '',
           fieldType: 'tokenized-string',
           transformer: '+'
@@ -234,15 +228,11 @@ function QueryEditorController(
     parentGroup.nodes.splice(fieldIndex + 1, 0, group);
   };
 
-  qe.fieldTypeSelected = function (field) {
-    var fieldName = field.name,
-        queryField = _.find(queryFields, function (field) {
-          return field.name === fieldName;
-        });
-
-    if (queryField) {
-      field.field = queryField.field;
-    }
+  qe.updateFieldType = function (field) {
+    var fieldName = field.field,
+      queryField = _.find(queryFields, function (field) {
+        return field.name === fieldName;
+      });
 
     if (field.fieldType !== queryField.type) {
       // TODO: Maybe try to do a type conversion?
@@ -258,7 +248,7 @@ function QueryEditorController(
       }
 
       if (queryField.type === 'check') {
-        field.term = queryField.name;
+        field.term = 'TRUE';
       }
 
       if (queryField.type === 'number') {

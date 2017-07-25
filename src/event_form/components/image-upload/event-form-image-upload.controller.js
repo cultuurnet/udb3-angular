@@ -86,6 +86,8 @@ function EventFormImageUploadController(
       return;
     }
 
+    $scope.saving = true;
+
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
         deferredAddition = $q.defer();
@@ -113,6 +115,7 @@ function EventFormImageUploadController(
      */
     function addImageToEvent(mediaObject) {
       function updateEventFormAndResolve() {
+        $scope.saving = false;
         EventFormData.addImage(mediaObject);
         deferredAddition.resolve(mediaObject);
         $uibModalInstance.close(mediaObject);

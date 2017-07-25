@@ -9,13 +9,12 @@
  */
 angular
   .module('udb.search')
-  .controller('Search', Search);
+  .controller('SearchController', SearchController);
 
 /* @ngInject */
-function Search(
+function SearchController(
   $scope,
   udbApi,
-  LuceneQueryBuilder,
   $window,
   $location,
   $uibModal,
@@ -25,9 +24,10 @@ function Search(
   searchHelper,
   $rootScope,
   eventExporter,
-  $translate
+  $translate,
+  searchApiSwitcher
 ) {
-  var queryBuilder = LuceneQueryBuilder;
+  var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
   function getSearchQuery() {
     return searchHelper.getQuery();
@@ -51,14 +51,12 @@ function Search(
   $scope.currentPage = getCurrentPage();
 
   /**
-   * Fires off a search for events using a plain query string or a query object.
+   * Fires off a search for offers using a plain query string or a query object.
    * @param {String|Query} query A query string or object to search with.
    */
-  var findEvents = function (query) {
+  var findOffers = function (query) {
     var offset = ($scope.resultViewer.currentPage - 1) * $scope.resultViewer.pageSize;
     var queryString = typeof query === 'string' ? query : query.queryString;
-    var eventPromise = udbApi.findEvents(queryString, offset);
-
     var pageSearchParameter = $scope.resultViewer.currentPage > 1 ? String($scope.resultViewer.currentPage) : null;
 
     $location.search({
@@ -68,10 +66,12 @@ function Search(
 
     $scope.resultViewer.loading = true;
 
-    eventPromise.then(function (pagedEvents) {
-      offerLocator.addPagedCollection(pagedEvents);
-      $scope.resultViewer.setResults(pagedEvents);
-    });
+    searchApiSwitcher
+      .findOffers(queryString, offset)
+      .then(function (pagedEvents) {
+        offerLocator.addPagedCollection(pagedEvents);
+        $scope.resultViewer.setResults(pagedEvents);
+      });
   };
 
   /**
@@ -83,7 +83,7 @@ function Search(
     if (queryBuilder.isValid(query)) {
       var realQuery = queryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
-      findEvents(realQuery);
+      findOffers(realQuery);
 
       if (realQuery !== query.originalQueryString) {
         $scope.realQuery = realQuery;
@@ -236,7 +236,7 @@ function Search(
     } else {
       $scope.resultViewer.currentPage = newPageNumber;
 
-      findEvents($scope.activeQuery);
+      findOffers($scope.activeQuery);
       $window.scroll(0, 0);
     }
   };

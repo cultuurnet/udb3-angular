@@ -42,12 +42,13 @@
               <section class="state complete filling">
                 <div class="form-group">
                   <textarea ng-blur="saveDescription()"
-                            ng-focus="descriptionInfoVisible = true"
+                            ng-focus="focusDescription()"
                             class="form-control"
                             ng-model="description"
                             rows="6"
                             udb-auto-scroll
                             focus-if="descriptionCssClass == 'state-filling'"></textarea>
+
                   <p class="tip description-info" ng-if="descriptionInfoVisible && countCharacters() < 200">
                     De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.
                     Nog <span ng-bind="(200 - countCharacters())"></span> tekens.
@@ -58,6 +59,11 @@
                   </p>
                   <p class="tip description-info" ng-if="descriptionInfoVisible && countCharacters() >= 200">
                     Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.
+                  </p>
+                  <p>
+                    <a ng-if="description" class="to-filling" ng-click="saveDescription(true)">
+                        Leegmaken
+                    </a>
                   </p>
                   <div class="tip" ng-switch="eventFormData.type.id">
                     <p ng-switch-when="0.17.0.0.0">
