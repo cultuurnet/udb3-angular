@@ -14,7 +14,7 @@
 <div class="calendar-timing-info">
     <div class="panel panel-default">
         <div class="panel-body">
-            <div class="calender-time-init" ng-show="calendar.showBootstrapTimeSpans">
+            <div class="calender-time-init" ng-show="calendar.showBootstrapTimeSpans && calendar.type === 'single'">
                 <div class="form-group">
                   <label for="time-span-init-start-date">Wanneer start je evenement?</label>
                  </div>
@@ -37,9 +37,6 @@
                             <label ng-if="calendar.showEndDate" for="time-span-{{$index}}-start-date">Start</label>
                             <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()">
                             </udb-form-calendar-datepicker>
-                        </div>
-                        <div class="date form-group" ng-if="!calendar.showEndDate" >
-                            <button type="button" ng-click="calendar.confirm()" class="btn btn-default">Bevestigen</button>
                         </div>
                         <div ng-if="calendar.showEndDate" class="date form-group">
                             <label for="time-span-{{$index}}-end-date">Einde</label>

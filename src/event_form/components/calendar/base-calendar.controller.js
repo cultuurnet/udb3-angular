@@ -188,6 +188,7 @@ function BaseCalendarController(calendar, $scope) {
 
   function confirmBootstrap() {
     calendar.showBootstrapTimeSpans = false;
+    calendar.showEndDate = true;
     calendar.timeSpans = [
       {
         allDay: true,
