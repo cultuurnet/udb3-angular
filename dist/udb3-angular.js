@@ -9864,7 +9864,7 @@ function OrganizerContactComponent($scope) {
   function validateContact() {
     if (_.find(controller.contact, {'value': ''}) ||
         _.find(controller.contact, {'value': undefined}) ||
-        _.find(controller.contact,{valid: false})) {
+        controller.organizerContactWrapper.$invalid) {
       controller.contactHasErrors = true;
     }
     else {
@@ -26307,60 +26307,62 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "</div>\n" +
     "<div class=\"row\" ng-show=\"occ.contact.length\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
-    "        <div class=\"row contact-row\" ng-repeat=\"contact in occ.contact track by $index\">\n" +
-    "            <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                <select class=\"form-control\" ng-model=\"contact.type\" ng-change=\"occ.validateContact()\">\n" +
+    "        <form name=\"occ.organizerContactWrapper\">\n" +
+    "            <div class=\"row contact-row\" ng-repeat=\"contact in occ.contact track by $index\">\n" +
+    "                <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
+    "                    <select class=\"form-control\" ng-model=\"contact.type\" ng-change=\"occ.validateContact()\">\n" +
     "                        <option value=\"url\">Website</option>\n" +
     "                        <option value=\"phone\">Telefoonnummer</option>\n" +
     "                        <option value=\"email\">E-mailadres</option>\n" +
     "                    </select>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\" ng-switch=\"contact.type\">\n" +
-    "                <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
-    "                    <ng-form ng-init=\"contact.valid = !urlContactForm.url.$invalid\" name=\"urlContactForm\">\n" +
-    "                        <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" ng-change=\"occ.validateContact()\" required>\n" +
-    "                        <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"urlContactForm.url.$touched\">\n" +
-    "                            <p ng-message=\"required\">\n" +
-    "                                Gelieve dit veld niet leeg te laten.\n" +
-    "                            </p>\n" +
-    "                            <p ng-message=\"pattern\">\n" +
-    "                                Gelieve een geldige url in te vullen.\n" +
-    "                            </p>\n" +
-    "                        </div>\n" +
-    "                    </ng-form>\n" +
     "                </div>\n" +
-    "                <div ng-switch-when=\"email\" class=\"form-group\" ng-class=\"{ 'has-error': mailContactForm.email.$touched && mailContactForm.email.$invalid }\">\n" +
-    "                    <ng-form ng-init=\"contact.valid = !mailContactForm.email.$invalid\" name=\"mailContactForm\" >\n" +
-    "                        <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"contact.value\" ng-model-options=\"{allowInvalid:true}\" ng-change=\"occ.validateContact()\" required>\n" +
-    "                        <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"mailContactForm.email.$touched\">\n" +
-    "                            <p ng-message=\"required\">\n" +
-    "                                Gelieve dit veld niet leeg te laten.\n" +
-    "                            </p>\n" +
-    "                            <p ng-message=\"pattern\">\n" +
-    "                                Gelieve een geldig e-mailadres in te vullen.\n" +
-    "                            </p>\n" +
-    "                        </div>\n" +
-    "                    </ng-form>\n" +
+    "                <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\" ng-switch=\"contact.type\">\n" +
+    "                    <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
+    "                        <ng-form name=\"urlContactForm\">\n" +
+    "                            <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" ng-change=\"occ.validateContact()\" required>\n" +
+    "                            <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"urlContactForm.url.$touched\">\n" +
+    "                                <p ng-message=\"required\">\n" +
+    "                                    Gelieve dit veld niet leeg te laten.\n" +
+    "                                </p>\n" +
+    "                                <p ng-message=\"pattern\">\n" +
+    "                                    Gelieve een geldige url in te vullen.\n" +
+    "                                </p>\n" +
+    "                            </div>\n" +
+    "                        </ng-form>\n" +
+    "                    </div>\n" +
+    "                    <div ng-switch-when=\"email\" class=\"form-group\" ng-class=\"{ 'has-error': mailContactForm.email.$touched && mailContactForm.email.$invalid }\">\n" +
+    "                        <ng-form name=\"mailContactForm\">\n" +
+    "                            <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"contact.value\" ng-model-options=\"{allowInvalid:true}\" ng-change=\"occ.validateContact()\" required>\n" +
+    "                            <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"mailContactForm.email.$touched\">\n" +
+    "                                <p ng-message=\"required\">\n" +
+    "                                    Gelieve dit veld niet leeg te laten.\n" +
+    "                                </p>\n" +
+    "                                <p ng-message=\"pattern\">\n" +
+    "                                    Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                                </p>\n" +
+    "                            </div>\n" +
+    "                        </ng-form>\n" +
+    "                    </div>\n" +
+    "                    <div ng-switch-default class=\"form-group\" ng-class=\"{ 'has-error': phoneContactForm.phone.$touched && phoneContactForm.phone.$invalid }\">\n" +
+    "                        <ng-form name=\"phoneContactForm\">\n" +
+    "                            <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required ng-change=\"occ.validateContact()\">\n" +
+    "                            <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"phoneContactForm.phone.$touched\">\n" +
+    "                                <p ng-message=\"required\">\n" +
+    "                                    Gelieve dit veld niet leeg te laten.\n" +
+    "                                </p>\n" +
+    "                                <p ng-message=\"pattern\">\n" +
+    "                                    Gelieve een geldig telefoonnummer in te vullen.</p>\n" +
+    "                            </div>\n" +
+    "                        </ng-form>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
-    "                <div ng-switch-default class=\"form-group\" ng-class=\"{ 'has-error': phoneContactForm.phone.$touched && phoneContactForm.phone.$invalid }\">\n" +
-    "                    <ng-form ng-init=\"contact.valid = !phoneContactForm.phone.$invalid\" name=\"phoneContactForm\">\n" +
-    "                        <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required ng-change=\"occ.validateContact()\">\n" +
-    "                        <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"phoneContactForm.phone.$touched\">\n" +
-    "                            <p ng-message=\"required\">\n" +
-    "                                Gelieve dit veld niet leeg te laten.\n" +
-    "                            </p>\n" +
-    "                            <p ng-message=\"pattern\">\n" +
-    "                                Gelieve een geldig telefoonnummer in te vullen.</p>\n" +
-    "                        </div>\n" +
-    "                    </ng-form>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
-    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"occ.deleteOrganizerContactInfo($index)\">\n" +
+    "                <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
+    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"occ.deleteOrganizerContactInfo($index)\">\n" +
     "                        <span aria-hidden=\"true\">&times;</span>\n" +
     "                    </button>\n" +
+    "                </div>\n" +
     "            </div>\n" +
-    "        </div>\n" +
+    "        </form>\n" +
     "        <div class=\"row contact-row\" ng-show=\"occ.contact.length\">\n" +
     "            <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
     "                <p>\n" +
@@ -26620,7 +26622,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "          ng-disabled=\"disableSubmit\"\n" +
+    "          ng-disabled=\"disableSubmit || contactError\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
     "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
