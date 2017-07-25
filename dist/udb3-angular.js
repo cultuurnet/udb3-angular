@@ -9864,7 +9864,7 @@ function OrganizerContactComponent($scope) {
   function validateContact() {
     if (_.find(controller.contact, {'value': ''}) ||
         _.find(controller.contact, {'value': undefined}) ||
-        controller.organizerContactWrapper.$invalid) {
+        _.find(controller.contact,{valid: false})) {
       controller.contactHasErrors = true;
     }
     else {
@@ -26317,8 +26317,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "            <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\" ng-switch=\"contact.type\">\n" +
     "                <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
-    "                    <ng-form name=\"urlContactForm\">\n" +
-    "                        <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" required>\n" +
+    "                    <ng-form ng-init=\"contact.valid = !urlContactForm.url.$invalid\" name=\"urlContactForm\">\n" +
+    "                        <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" ng-change=\"occ.validateContact()\" required>\n" +
     "                        <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"urlContactForm.url.$touched\">\n" +
     "                            <p ng-message=\"required\">\n" +
     "                                Gelieve dit veld niet leeg te laten.\n" +
@@ -26330,8 +26330,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </ng-form>\n" +
     "                </div>\n" +
     "                <div ng-switch-when=\"email\" class=\"form-group\" ng-class=\"{ 'has-error': mailContactForm.email.$touched && mailContactForm.email.$invalid }\">\n" +
-    "                    <ng-form name=\"mailContactForm\">\n" +
-    "                        <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"contact.value\" required>\n" +
+    "                    <ng-form ng-init=\"contact.valid = !mailContactForm.email.$invalid\" name=\"mailContactForm\" >\n" +
+    "                        <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"contact.value\" ng-model-options=\"{allowInvalid:true}\" ng-change=\"occ.validateContact()\" required>\n" +
     "                        <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"mailContactForm.email.$touched\">\n" +
     "                            <p ng-message=\"required\">\n" +
     "                                Gelieve dit veld niet leeg te laten.\n" +
@@ -26343,8 +26343,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </ng-form>\n" +
     "                </div>\n" +
     "                <div ng-switch-default class=\"form-group\" ng-class=\"{ 'has-error': phoneContactForm.phone.$touched && phoneContactForm.phone.$invalid }\">\n" +
-    "                    <ng-form name=\"phoneContactForm\">\n" +
-    "                        <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" required>\n" +
+    "                    <ng-form ng-init=\"contact.valid = !phoneContactForm.phone.$invalid\" name=\"phoneContactForm\">\n" +
+    "                        <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"contact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required ng-change=\"occ.validateContact()\">\n" +
     "                        <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"phoneContactForm.phone.$touched\">\n" +
     "                            <p ng-message=\"required\">\n" +
     "                                Gelieve dit veld niet leeg te laten.\n" +
@@ -26361,10 +26361,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </button>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"row\" ng-show=\"occ.contact.length\">\n" +
-    "            <p>\n" +
-    "                <a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
-    "            </p>\n" +
+    "        <div class=\"row contact-row\" ng-show=\"occ.contact.length\">\n" +
+    "            <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
+    "                <p>\n" +
+    "                    <a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
+    "                </p>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
