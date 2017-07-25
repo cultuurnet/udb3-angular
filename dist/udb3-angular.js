@@ -12338,9 +12338,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     controller.updateEventTypeAndThemePicker(EventFormData);
 
     EventFormData.showStep(2);
-    if (EventFormData.isPlace) {
-      EventFormData.showStep(3);
-    }
+    EventFormData.showStep(3);
   }
 
   /**
