@@ -10,7 +10,7 @@
 angular
     .module('udb.event-form')
     .component('udbOrganizerContact', {
-      templateUrl: 'templates/organizer-contact.html',
+      templateUrl: 'templates/organizer-contact-v2.html',
       controller: OrganizerContactComponent,
       controllerAs: 'occ',
       bindings: {
