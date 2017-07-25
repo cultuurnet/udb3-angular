@@ -40,7 +40,7 @@ function BaseCalendarController(calendar, $scope) {
   function init(formData, openingHoursCollection) {
     calendar.formData = formData;
     calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
-    calendar.showEndDate = calendar.timeSpans
+    calendar.showEndDate = calendar.timeSpans;
     calendar.setType(formData.calendarType ? formData.calendarType : 'single');
     calendar.openingHoursCollection = openingHoursCollection;
   }
@@ -67,8 +67,8 @@ function BaseCalendarController(calendar, $scope) {
       calendar.showBootstrapTimeSpans = true;
       calendar.instantTimeSpanChanged();
     } else {
-      var newTimeSpan = _.cloneDeep(_.last(calendar.timeSpans))
-      newTimeSpan.start = moment(newTimeSpan.start).add(1,'days').toDate();
+      var newTimeSpan = _.cloneDeep(_.last(calendar.timeSpans));
+      newTimeSpan.start = moment(newTimeSpan.start).add(1, 'days').toDate();
       newTimeSpan.end = newTimeSpan.start;
       calendar.timeSpans.push(newTimeSpan);
       calendar.instantTimeSpanChanged();
