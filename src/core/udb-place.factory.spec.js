@@ -29,10 +29,12 @@ describe('Factory: UdbPlace', function () {
       available: "2015-08-03T00:00:00+02:00",
       sameAs: [ ],
       address: {
-        addressCountry: "BE",
-        addressLocality: "Ronse",
-        postalCode: "9600",
-        streetAddress: "Engelsenlaan 99"
+        nl: {
+          addressCountry: "BE",
+          addressLocality: "Ronse",
+          postalCode: "9600",
+          streetAddress: "Engelsenlaan 99"
+        }
       },
       bookingInfo: {
         description: "",
@@ -117,6 +119,13 @@ describe('Factory: UdbPlace', function () {
     var expectedDate = "2017-05-17T22:00:00+00:00";
 
     expect(place.availableFrom).toEqual(expectedDate);
+  });
+
+  it('should fallback to address when no nl address', function () {
+    var address = _.clone(place.address.nl);
+    place.address = place.address.nl;
+
+    expect(place.address).toEqual(address);
   });
 
   it('should combine regular and hidden labels as a single list', function () {

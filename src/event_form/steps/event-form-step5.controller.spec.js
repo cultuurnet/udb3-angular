@@ -62,8 +62,23 @@ describe('Controller: event form step 5', function () {
     expect(scope.descriptionCssClass).toEqual('state-complete');
   });
 
-  it('should save a description and toggle the state-incomplete class', function () {
+  it('should not save an empty description', function () {
     scope.description = '';
+    spyOn(EventFormData, 'setDescription');
+    spyOn(stepController, 'eventFormSaved');
+
+    eventCrud.updateDescription.and.returnValue($q.resolve());
+
+    scope.saveDescription();
+    scope.$apply();
+
+    expect(scope.savingDescription).toBeFalsy();
+  });
+
+  it('should save an altered description', function () {
+    scope.originalDescription = 'same description';
+    scope.description = 'other description';
+
     spyOn(EventFormData, 'setDescription');
     spyOn(stepController, 'eventFormSaved');
 
@@ -75,7 +90,22 @@ describe('Controller: event form step 5', function () {
     expect(EventFormData.setDescription).toHaveBeenCalled();
     expect(scope.savingDescription).toBeFalsy();
     expect(stepController.eventFormSaved).toHaveBeenCalled();
-    expect(scope.descriptionCssClass).toEqual('state-incomplete');
+    expect(scope.descriptionCssClass).toEqual('state-complete');
+  });
+
+  it('should not save the same description', function () {
+    scope.description = 'same description';
+    scope.originalDescription = 'same description';
+
+    spyOn(EventFormData, 'setDescription');
+    spyOn(stepController, 'eventFormSaved');
+
+    eventCrud.updateDescription.and.returnValue($q.resolve());
+
+    scope.saveDescription();
+    scope.$apply();
+
+    expect(scope.savingDescription).toBeFalsy();
   });
 
   it('should handle the error when save a description fails', function () {
