@@ -12,7 +12,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats, appConfig) {
+function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats, appConfig,eventExportGALogger) {
 
   var exporter = this;
 
@@ -190,7 +190,7 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
       gaObj.queryString = eventExporter.activeExport.query.queryString;
       var dataLayer = window.tm = window.tm || [];
       udbApi.getMe().then(function(user) {
-        dataLayer.push({
+        eventExportGALogger.setGAInfo({
         'event' : 'GAEvent',
         'eventCategory' : 'export',
         'eventAction' : exporter.format,
