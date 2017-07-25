@@ -25690,7 +25690,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"calendar-type-picker\">\n" +
     "    <div class=\"calendar-type-options\">\n" +
     "\n" +
-    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single' || calendar.type === 'multiple'}\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
     "            <p class=\"text-center\"><strong>Eén of meerdere dagen</strong></p></a><span class=\"or\">of</span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
