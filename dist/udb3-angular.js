@@ -9981,6 +9981,7 @@ function EventFormOrganizerModalController(
   $scope.organizers = [];
   $scope.selectedCity = '';
   $scope.disableSubmit = true;
+  $scope.websiteNotUnique = false;
 
   $scope.newOrganizer = {
     website: 'http://',
@@ -10016,6 +10017,7 @@ function EventFormOrganizerModalController(
    */
   function validateWebsite() {
     $scope.showWebsiteValidation = true;
+    $scope.websiteNotUnique = false;
     $scope.disableSubmit = true;
 
     if (!$scope.organizerForm.website.$valid) {
@@ -10143,9 +10145,14 @@ function EventFormOrganizerModalController(
         $scope.newOrganizer.id = jsonResponse.data.organizerId;
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;
-      }, function() {
+      }, function(err) {
         $scope.saveError = true;
         $scope.saving = false;
+        if (err.data.validation_messages.website) {
+          $scope.disableSubmit = true;
+          $scope.websiteNotUnique = true;
+          $scope.saveError = false;
+        }
       });
   }
 
@@ -26362,6 +26369,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <a ng-click=\"selectOrganizer(firstOrganizerFound)\" class=\"alert-link\" href=\"#\">\n" +
     "              gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie\n" +
     "            </a>.\n" +
+    "          </p>\n" +
+    "          <p class=\"alert alert-warning\" ng-show=\"websiteNotUnique\">\n" +
+    "            Dit adres is al gebruikt. Geef een unieke website op.\n" +
     "          </p>\n" +
     "        </div>\n" +
     "      </div>\n" +

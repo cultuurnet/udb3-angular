@@ -39,6 +39,9 @@
               gebruik <span ng-bind="firstOrganizerFound.name"></span> als organisatie
             </a>.
           </p>
+          <p class="alert alert-warning" ng-show="websiteNotUnique">
+            Dit adres is al gebruikt. Geef een unieke website op.
+          </p>
         </div>
       </div>
 
