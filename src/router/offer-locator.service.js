@@ -10,15 +10,21 @@ angular.module('udb.router')
   .service('offerLocator', OfferLocator);
 
 /* @ngInject */
-function OfferLocator($q, searchApiSwitcher) {
+function OfferLocator($q, searchApiSwitcher,appConfig,$cookies) {
   // An associative array with UUIDs pointing to locations.
   // eg: 0586DF1-89D7-42F6-9804-DAE8878C2617 -> http://du.de/event/0586DF1-89D7-42F6-9804-DAE8878C2617
   var locations = {};
+  var apiVersionCookieKey = 'search-api-version';
+  var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
 
   // public methods
   this.get = get;
   this.add = add;
   this.addPagedCollection = addPagedCollection;
+
+  function getApiVersion() {
+    return parseInt($cookies.get(apiVersionCookieKey) || defaultApiVersion);
+  }
 
   /**
    * @param {string} uuid
@@ -70,8 +76,13 @@ function OfferLocator($q, searchApiSwitcher) {
       }
     }
 
+    var queryString = 'cdbid:"' + uuid + '"';
+    if (getApiVersion() > 2) {
+      queryString = 'id:"' + uuid + '"';
+    }
+
     searchApiSwitcher
-      .findOffers('id:"' + uuid + '"')
+      .findOffers(queryString)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
