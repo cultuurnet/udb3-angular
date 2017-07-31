@@ -70,8 +70,13 @@ function OfferLocator($q, searchApiSwitcher) {
       }
     }
 
+    var queryString = 'cdbid:"' + uuid + '"';
+    if (searchApiSwitcher.getApiVersion() > 2) {
+      queryString = 'id:"' + uuid + '"';
+    }
+
     searchApiSwitcher
-      .findOffers('id:"' + uuid + '"')
+      .findOffers(queryString)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 

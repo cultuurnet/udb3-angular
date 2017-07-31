@@ -5449,16 +5449,9 @@ function EventCultuurKuurComponentController(appConfig) {
     throw 'cultuurkuur url is not configured';
   }
 
-  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id +
-    '?utm_source=uitdatabank.be' +
-    '&utm_medium=referral' +
-    '&utm_campaign=udb3' +
-    '&utm_content=preview1.0';
-  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' +
-    '?utm_source=uitdatabank.be' +
-    '&utm_medium=referral' +
-    '&utm_campaign=udb3' +
-    '&utm_content=edit1.0';
+  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id + getUTMParameters('preview1.0');
+  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
+  cm.continueLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('continue1.0');
   cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
 
   cm.cultuurKuurInfo = {
@@ -5468,6 +5461,14 @@ function EventCultuurKuurComponentController(appConfig) {
   };
 
   cm.forSchools = cm.event.audience.audienceType === 'education';
+
+  function getUTMParameters(type) {
+    return '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=' +
+    type;
+  }
 }
 EventCultuurKuurComponentController.$inject = ["appConfig"];
 })();
@@ -18346,8 +18347,13 @@ function OfferLocator($q, searchApiSwitcher) {
       }
     }
 
+    var queryString = 'cdbid:"' + uuid + '"';
+    if (searchApiSwitcher.getApiVersion() > 2) {
+      queryString = 'id:"' + uuid + '"';
+    }
+
     searchApiSwitcher
-      .findOffers('id:"' + uuid + '"')
+      .findOffers(queryString)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
@@ -21596,6 +21602,7 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
   var switcher = this;
   var apiVersionCookieKey = 'search-api-version';
   var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
+  switcher.getApiVersion = getApiVersion;
 
   /**
    * @returns {Number}
@@ -23277,7 +23284,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete && $ctrl.forSchools\">\n" +
     "            <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>\n" +
-    "            <a ng-href=\"{{::$ctrl.editLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
+    "            <a ng-href=\"{{::$ctrl.continueLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
