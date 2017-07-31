@@ -1,7 +1,7 @@
 <div class="calendar-type-picker">
     <div class="calendar-type-options">
 
-        <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': calendar.type === 'single' || calendar.type === 'multiple'}">
+        <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': !calendar.weeklyRecurring}">
             <img src="../images/form-calendar/days.svg" class="calendar-type-icon">
             <p class="text-center"><strong>Eén of meerdere dagen</strong></p></a><span class="or">of</span><a href="#" ng-click="calendar.setType('periodic')" ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
             <img src="../images/form-calendar/period.svg" class="calendar-type-icon">
