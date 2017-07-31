@@ -29,10 +29,12 @@ describe('Factory: UdbPlace', function () {
       available: "2015-08-03T00:00:00+02:00",
       sameAs: [ ],
       address: {
-        addressCountry: "BE",
-        addressLocality: "Ronse",
-        postalCode: "9600",
-        streetAddress: "Engelsenlaan 99"
+        nl: {
+          addressCountry: "BE",
+          addressLocality: "Ronse",
+          postalCode: "9600",
+          streetAddress: "Engelsenlaan 99"
+        }
       },
       bookingInfo: {
         description: "",
@@ -76,7 +78,8 @@ describe('Factory: UdbPlace', function () {
       "MediaObject":[
         {"@id":"http:\/\/culudb-silex.dev:8080\/media\/4125fbc0-88b9-4008-855e-1cae6bd1f775","@type":"schema:ImageObject","contentUrl":"http:\/\/culudb-silex.dev:8080\/media\/4125fbc0-88b9-4008-855e-1cae6bd1f775.jpeg","thumbnailUrl":"http:\/\/culudb-silex.dev:8080\/media\/4125fbc0-88b9-4008-855e-1cae6bd1f775.jpeg","description":"test1","copyrightHolder":"test"},
         {"@id":"http:\/\/culudb-silex.dev:8080\/media\/cb78ad42-90d6-4b70-a1d9-9bc016bdba73","@type":"schema:ImageObject","contentUrl":"http:\/\/culudb-silex.dev:8080\/media\/cb78ad42-90d6-4b70-a1d9-9bc016bdba73.png","thumbnailUrl":"http:\/\/culudb-silex.dev:8080\/media\/cb78ad42-90d6-4b70-a1d9-9bc016bdba73.png","description":"test256","copyrightHolder":"test"}
-      ]
+      ],
+      "availableFrom": "2017-05-17T22:00:00+00:00"
     })
   }
 
@@ -110,6 +113,19 @@ describe('Factory: UdbPlace', function () {
     var expectedImage = "http://culudb-silex.dev:8080/media/cb78ad42-90d6-4b70-a1d9-9bc016bdba73.png";
 
     expect(place.image).toEqual(expectedImage);
+  });
+
+  it('should parse the availableFrom date', function () {
+    var expectedDate = "2017-05-17T22:00:00+00:00";
+
+    expect(place.availableFrom).toEqual(expectedDate);
+  });
+
+  it('should fallback to address when no nl address', function () {
+    var address = _.clone(place.address.nl);
+    place.address = place.address.nl;
+
+    expect(place.address).toEqual(address);
   });
 
   it('should combine regular and hidden labels as a single list', function () {

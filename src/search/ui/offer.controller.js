@@ -21,7 +21,8 @@ function OfferController(
   $window,
   offerEditor,
   variationRepository,
-  $q
+  $q,
+  appConfig
 ) {
   var controller = this;
   var cachedOffer;
@@ -49,8 +50,8 @@ function OfferController(
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
+          controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
-
           watchLabels();
           return cachedOffer;
         });
@@ -223,14 +224,19 @@ function OfferController(
    * @return {Promise}
    */
   function fetchPersonalVariation(offer) {
-    return variationRepository
-      .getPersonalVariation(offer)
-      .then(function (personalVariation) {
-        $scope.event.description = personalVariation.description[defaultLanguage];
-        return personalVariation;
-      }, function () {
-        return $q.reject();
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      return variationRepository
+        .getPersonalVariation(offer)
+        .then(function (personalVariation) {
+          $scope.event.description = personalVariation.description[defaultLanguage];
+          return personalVariation;
+        }, function () {
+          return $q.reject();
+        });
+    } else {
+      return $q.reject();
+    }
   }
 
   /**

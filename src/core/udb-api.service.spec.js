@@ -63,40 +63,12 @@ describe('Service: UDB3 Api', function () {
   it('should only return the essential data when getting the currently logged in user', function (done) {
     var jsonUserResponse = {
       'id': 2,
-      'preferredLanguage': null,
-      'nick': 'foo',
-      'password': null,
-      'givenName': 'Dirk',
-      'familyName': null,
-      'mbox': 'foo@bar.com',
-      'mboxVerified': null,
-      'gender': null,
-      'hasChildren': null,
-      'dob': null,
-      'depiction': null,
-      'bio': null,
-      'street': null,
-      'zip': null,
-      'city': null,
-      'country': null,
-      'lifestyleProfile': null,
-      'homeLocation': null,
-      'currentLocation': null,
-      'status': null,
-      'points': null,
-      'openid': null,
-      'calendarId': null,
-      'holdsAccount': null,
-      'privacyConfig': null,
-      'pageMemberships': null,
-      'adminPagesCount': 0
+      'nick': 'foo'
     };
     var userUrl = baseUrl + 'user';
     var expectedUser = {
       id: 2,
-      nick: 'foo',
-      mbox: 'foo@bar.com',
-      givenName: 'Dirk'
+      nick: 'foo'
     };
 
     function assertUser (user) {
@@ -225,6 +197,30 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should find offers when provided a query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'offers/?q=foo:bar&start=0&disableDefaultFilters=true')
+      .respond(JSON.stringify(response));
+    service
+      .findOffers('foo:bar')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should find offers when provided no query', function (done) {
+    var response = {};
+    $httpBackend
+      .expectGET(baseUrl + 'offers/?disableDefaultFilters=true&start=0')
+      .respond(JSON.stringify(response));
+    service
+      .findOffers('')
+
+      .then(done);
+    $httpBackend.flush();
+  });
+
   // findEvents
   it('should find events when provided a query', function (done) {
     var response = {};
@@ -237,6 +233,7 @@ describe('Service: UDB3 Api', function () {
       .then(done);
     $httpBackend.flush();
   });
+
   it('should find events when provided no query', function (done) {
     var response = {};
     $httpBackend
@@ -245,18 +242,6 @@ describe('Service: UDB3 Api', function () {
     service
       .findEvents('')
 
-      .then(done);
-    $httpBackend.flush();
-  });
-
-  // findEventsWithLimit
-  it('should find events when provided a query', function (done) {
-    var response = {};
-    $httpBackend
-      .expectGET(baseUrl + 'search?query=searchquery&start=0&limit=30')
-      .respond(JSON.stringify(response));
-    service
-      .findEventsWithLimit('searchquery', 0, 30)
       .then(done);
     $httpBackend.flush();
   });
@@ -413,7 +398,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectGET(baseUrl + 'organizers/?limit=10&name=foo-bar&start=0')
+      .expectGET(baseUrl + 'organizers/?embed=true&limit=10&name=foo-bar&start=0')
       .respond(JSON.stringify(response));
     service
       .findOrganisations(0, 10, null, organizerName)
@@ -462,7 +447,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectGET(baseUrl + 'organizers/?limit=10&start=0&website=www.stuk.be')
+      .expectGET(baseUrl + 'organizers/?embed=true&limit=10&start=0&website=www.stuk.be')
       .respond(JSON.stringify(response));
     service
       .findOrganisations(0, 10, organizerWebsite, null)
@@ -501,6 +486,89 @@ describe('Service: UDB3 Api', function () {
     service
       .deleteLabelFromOrganizer(organizerId, labelId)
       .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should update the organizer\'s website', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var params = {
+      url: 'http://google.be'
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/url', params)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerWebsite(organizerId, 'http://google.be')
+        .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should update the organizer\'s name', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var params = {
+      name: 'blub'
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/name', params)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerName(organizerId, 'blub')
+        .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should update the organizer\'s address', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var contact = {
+      "url": [
+        "http://google.be"
+      ],
+      "email": [
+        "joske@2dotstwice.be"
+      ],
+      "phone": [
+        "0123456789"
+      ]
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/contactPoint', contact)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerContact(organizerId, contact)
+        .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should update the organizer\'s contact info', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+    var address = {
+      "addressCountry": "BE",
+      "addressLocality": "Leuven",
+      "postalCode": 3000,
+      "streetAddress": "Sluisstraat 79"
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/address', address)
+        .respond(JSON.stringify(response));
+    service
+        .updateOrganizerAddress(organizerId, address)
+        .then(done);
     $httpBackend.flush();
   });
 
@@ -1377,7 +1445,8 @@ describe('Service: UDB3 Api', function () {
       url: baseUrl + 'images',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };

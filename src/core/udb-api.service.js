@@ -4,8 +4,6 @@
  * @typedef {Object} UiTIDUser
  * @property {string} id        The UiTID of the user.
  * @property {string} nick      A user nickname.
- * @property {string} mbox      The email address of the user.
- * @property {string} givenName The user's given name.
  */
 
 /**
@@ -135,6 +133,30 @@ function UdbApi(
   };
 
   /**
+   * @param {string} queryString - The query used to find offers.
+   * @param {number} [start] - From which offset the result set should start.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findOffers = function (queryString, start) {
+    var offset = start || 0,
+        searchParams = {
+          start: offset,
+          disableDefaultFilters: true
+        };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.q = queryString;
+    }
+
+    return $http
+      .get(appConfig.baseSearchUrl + 'offers/', withoutAuthorization(requestOptions))
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} queryString - The query used to find events.
    * @param {number} [start] - From which event offset the result set should start.
    * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
@@ -155,17 +177,6 @@ function UdbApi(
     return $http
       .get(apiUrl + 'search', requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
-  };
-
-  /**
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
-   * @param {number} [itemsPerPage] - How many items should be in the result set.
-   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
-   *  search results or a failure.
-   */
-  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    return find(apiUrl + 'search', queryString, start, itemsPerPage);
   };
 
   /**
@@ -247,7 +258,8 @@ function UdbApi(
   this.findOrganisations = function(start, limit, website, name) {
     var params = {
       limit: limit ? limit : 10,
-      start: start ? start : 0
+      start: start ? start : 0,
+      embed: true
     };
     if (website) { params.website = website; }
     if (name) { params.name = name; }
@@ -280,6 +292,59 @@ function UdbApi(
         .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
+  /**
+   * @param {string} organizerId
+   * @param {string} website
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerWebsite = function(organizerId, website) {
+    var params = {
+      url: website
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/url', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} name
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerName = function(organizerId, name) {
+    var params = {
+      name: name
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Object} address
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerAddress = function(organizerId, address) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Array} contact
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerContact = function(organizerId, contact) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/contactPoint', contact, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId
@@ -302,9 +367,7 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick,
-        mbox: userData.mbox,
-        givenName: userData.givenName
+        nick: userData.nick
       };
 
       $cookies.putObject('user', user);
@@ -527,6 +590,17 @@ function UdbApi(
       offer['@id'],
       defaultApiConfig
     );
+  };
+
+  /**
+   * @param {udbOrganizer} organization
+   *
+   * @return {Promise.<Object|ApiProblem>}
+   */
+  this.deleteOrganization = function (organization) {
+    return $http
+      .delete(organization['@id'], defaultApiConfig)
+      .then(returnJobData, returnApiProblem);
   };
 
   /**
@@ -819,7 +893,8 @@ function UdbApi(
       url: appConfig.baseUrl + 'images',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };

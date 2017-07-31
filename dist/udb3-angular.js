@@ -1,5 +1,7 @@
-'use strict';
 // Source: .tmp/udb3-angular.modules.js
+(function () {
+  'use strict';
+
 /**
  * @ngdoc module
  * @name udb.core
@@ -30,6 +32,8 @@ angular
   ])
   .constant('Levenshtein', window.Levenshtein);
 
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.router
@@ -56,6 +60,8 @@ angular.module('udb.config', [])
 .constant('cities', [{name:'Vodelée',zip:'5680'},{name:'Vaucelles',zip:'5680'},{name:'Soulme',zip:'5680'},{name:'Romerée',zip:'5680'},{name:'Niverlée',zip:'5680'},{name:'Matagne-la-Petite',zip:'5680'},{name:'Matagne-la-Grande',zip:'5680'},{name:'Gochenée',zip:'5680'},{name:'Gimnée',zip:'5680'},{name:'Doische',zip:'5680'},{name:'Viroinval',zip:'5670'},{name:'Vierves-sur-Viroin',zip:'5670'},{name:'Treignes',zip:'5670'},{name:'Olloy-sur-Viroin',zip:'5670'},{name:'Oignies-en-Thiérache',zip:'5670'},{name:'Nismes',zip:'5670'},{name:'Mazée',zip:'5670'},{name:'Le Mesnil',zip:'5670'},{name:'Dourbes',zip:'5670'},{name:'Presgaux',zip:'5660'},{name:'Petite-Chapelle',zip:'5660'},{name:'Petigny',zip:'5660'},{name:'Pesche',zip:'5660'},{name:'Mariembourg',zip:'5660'},{name:'Gonrieux',zip:'5660'},{name:'Frasnes Namur',zip:'5660'},{name:'Dailly',zip:'5660'},{name:'Cul-des-Sarts',zip:'5660'},{name:'Couvin',zip:'5660'},{name:'Brûly-de-Pesche',zip:'5660'},{name:'Brûly',zip:'5660'},{name:'Boussu-en-Fagne',zip:'5660'},{name:'Aublain',zip:'5660'},{name:'Thy-le-Château',zip:'5651'},{name:'Tarcienne',zip:'5651'},{name:'Somzée',zip:'5651'},{name:'Rognée',zip:'5651'},{name:'Laneffe',zip:'5651'},{name:'Gourdinne',zip:'5651'},{name:'Berzée',zip:'5651'},{name:'Yves-Gomezée',zip:'5650'},{name:'Walcourt',zip:'5650'},{name:'Vogenée',zip:'5650'},{name:'Pry',zip:'5650'},{name:'Fraire',zip:'5650'},{name:'Fontenelle',zip:'5650'},{name:'Clermont Namur',zip:'5650'},{name:'Chastrès',zip:'5650'},{name:'Castillon',zip:'5650'},{name:'Stave',zip:'5646'},{name:'Ermeton-sur-Biert',zip:'5644'},{name:'Furnaux',zip:'5641'},{name:'Saint-Gérard',zip:'5640'},{name:'Oret',zip:'5640'},{name:'Mettet',zip:'5640'},{name:'Graux',zip:'5640'},{name:'Biesmerée',zip:'5640'},{name:'Biesme',zip:'5640'},{name:'Villers-Deux-Eglises',zip:'5630'},{name:'Soumoy',zip:'5630'},{name:'Silenrieux',zip:'5630'},{name:'Senzeille',zip:'5630'},{name:'Daussois',zip:'5630'},{name:'Cerfontaine',zip:'5630'},{name:'Thy-le-Bauduin',zip:'5621'},{name:'Morialmé',zip:'5621'},{name:'Hanzinne',zip:'5621'},{name:'Hanzinelle',zip:'5621'},{name:'Saint-Aubin',zip:'5620'},{name:'Rosée',zip:'5620'},{name:'Morville',zip:'5620'},{name:'Hemptinne-lez-Florennes',zip:'5620'},{name:'Florennes',zip:'5620'},{name:'Flavion',zip:'5620'},{name:'Corenne',zip:'5620'},{name:'Vodecée',zip:'5600'},{name:'Villers-le-Gambon',zip:'5600'},{name:'Villers-en-Fagne',zip:'5600'},{name:'Surice',zip:'5600'},{name:'Sautour',zip:'5600'},{name:'Sart-en-Fagne',zip:'5600'},{name:'Samart',zip:'5600'},{name:'Romedenne',zip:'5600'},{name:'Roly',zip:'5600'},{name:'Philippeville',zip:'5600'},{name:'Omezée',zip:'5600'},{name:'Neuville Philippeville',zip:'5600'},{name:'Merlemont',zip:'5600'},{name:'Jamiolle',zip:'5600'},{name:'Jamagne',zip:'5600'},{name:'Franchimont',zip:'5600'},{name:'Fagnolle',zip:'5600'},{name:'Sovet',zip:'5590'},{name:'Serinchamps',zip:'5590'},{name:'Pessoux',zip:'5590'},{name:'Leignon',zip:'5590'},{name:'Haversin',zip:'5590'},{name:'Conneux',zip:'5590'},{name:'Ciney',zip:'5590'},{name:'Chevetogne',zip:'5590'},{name:'Braibant',zip:'5590'},{name:'Achêne',zip:'5590'},{name:'Wavreille',zip:'5580'},{name:'Villers-sur-Lesse',zip:'5580'},{name:'Rochefort',zip:'5580'},{name:'Mont-Gauthier',zip:'5580'},{name:'Lessive',zip:'5580'},{name:'Lavaux-Sainte-Anne',zip:'5580'},{name:'Jemelle',zip:'5580'},{name:'Han-sur-Lesse',zip:'5580'},{name:'Eprave',zip:'5580'},{name:'Buissonville',zip:'5580'},{name:'Ave-et-Auffe',zip:'5580'},{name:'Willerzie',zip:'5575'},{name:'Vencimont',zip:'5575'},{name:'Sart-Custinne',zip:'5575'},{name:'Rienne',zip:'5575'},{name:'Patignies',zip:'5575'},{name:'Malvoisin',zip:'5575'},{name:'Louette-Saint-Pierre',zip:'5575'},{name:'Louette-Saint-Denis',zip:'5575'},{name:'Houdremont',zip:'5575'},{name:'Gedinne',zip:'5575'},{name:'Bourseigne-Vieille',zip:'5575'},{name:'Bourseigne-Neuve',zip:'5575'},{name:'Froidfontaine',zip:'5576'},{name:'Pondrôme',zip:'5574'},{name:'Martouzin-Neuville',zip:'5573'},{name:'Focant',zip:'5572'},{name:'Wiesme',zip:'5571'},{name:'Winenne',zip:'5570'},{name:'Wancennes',zip:'5570'},{name:'Vonêche',zip:'5570'},{name:'Javingue',zip:'5570'},{name:'Honnay',zip:'5570'},{name:'Feschaux',zip:'5570'},{name:'Felenne',zip:'5570'},{name:'Dion',zip:'5570'},{name:'Beauraing',zip:'5570'},{name:'Baronville',zip:'5570'},{name:'Wanlin',zip:'5564'},{name:'Hour',zip:'5563'},{name:'Custinne',zip:'5562'},{name:'Celles Namur',zip:'5561'},{name:'Mesnil-Saint-Blaise',zip:'5560'},{name:'Mesnil-Eglise',zip:'5560'},{name:'Hulsonniaux',zip:'5560'},{name:'Houyet',zip:'5560'},{name:'Finnevaux',zip:'5560'},{name:'Ciergnon',zip:'5560'},{name:'Petit-Fays',zip:'5555'},{name:'Oizy',zip:'5555'},{name:'Naomé',zip:'5555'},{name:'Monceau-en-Ardenne',zip:'5555'},{name:'Gros-Fays',zip:'5555'},{name:'Graide',zip:'5555'},{name:'Cornimont',zip:'5555'},{name:'Bièvre',zip:'5555'},{name:'Bellefontaine Namur',zip:'5555'},{name:'Baillamont',zip:'5555'},{name:'Vresse-sur-Semois',zip:'5550'},{name:'Sugny',zip:'5550'},{name:'Pussemange',zip:'5550'},{name:'Orchimont',zip:'5550'},{name:'Nafraiture',zip:'5550'},{name:'Mouzaive',zip:'5550'},{name:'Membre',zip:'5550'},{name:'Laforêt',zip:'5550'},{name:'Chairière',zip:'5550'},{name:'Bohan',zip:'5550'},{name:'Bagimont',zip:'5550'},{name:'Alle',zip:'5550'},{name:'Agimont',zip:'5544'},{name:'Heer',zip:'5543'},{name:'Blaimont',zip:'5542'},{name:'Hastière-par-Delà',zip:'5541'},{name:'Waulsort',zip:'5540'},{name:'Hermeton-sur-Meuse',zip:'5540'},{name:'Hastière-Lavaux',zip:'5540'},{name:'Hastière',zip:'5540'},{name:'Warnant',zip:'5537'},{name:'Sosoye',zip:'5537'},{name:'Haut-le-Wastia',zip:'5537'},{name:'Denée',zip:'5537'},{name:'Bioul',zip:'5537'},{name:'Annevoie-Rouillon',zip:'5537'},{name:'Anhée',zip:'5537'},{name:'Yvoir',zip:'5530'},{name:'Spontin',zip:'5530'},{name:'Purnode',zip:'5530'},{name:'Mont Namur',zip:'5530'},{name:'Houx',zip:'5530'},{name:'Godinne',zip:'5530'},{name:'Evrehailles',zip:'5530'},{name:'Durnal',zip:'5530'},{name:'Dorinne',zip:'5530'},{name:'Gerin',zip:'5524'},{name:'Weillen',zip:'5523'},{name:'Sommière',zip:'5523'},{name:'Falaën',zip:'5522'},{name:'Serville',zip:'5521'},{name:'Onhaye',zip:'5520'},{name:'Anthée',zip:'5520'},{name:'Foy-Notre-Dame',zip:'5504'},{name:'Sorinnes',zip:'5503'},{name:'Thynes',zip:'5502'},{name:'Lisogne',zip:'5501'},{name:'Furfooz',zip:'5500'},{name:'Falmignoul',zip:'5500'},{name:'Falmagne',zip:'5500'},{name:'Dréhance',zip:'5500'},{name:'Dinant',zip:'5500'},{name:'Bouvignes-sur-Meuse',zip:'5500'},{name:'Anseremme',zip:'5500'},{name:'Tillier',zip:'5380'},{name:'Pontillas',zip:'5380'},{name:'Noville-les-Bois',zip:'5380'},{name:'Marchovelette',zip:'5380'},{name:'Hingeon',zip:'5380'},{name:'Hemptinne Fernelmont',zip:'5380'},{name:'Franc-Waret',zip:'5380'},{name:'Forville',zip:'5380'},{name:'Fernelmont',zip:'5380'},{name:'Cortil-Wodon',zip:'5380'},{name:'Bierwart',zip:'5380'},{name:'Waillet',zip:'5377'},{name:'Somme-Leuze',zip:'5377'},{name:'Sinsin',zip:'5377'},{name:'Noiseux',zip:'5377'},{name:'Nettinne',zip:'5377'},{name:'Hogne',zip:'5377'},{name:'Heure Namur',zip:'5377'},{name:'Bonsin',zip:'5377'},{name:'Baillonville',zip:'5377'},{name:'Miécret',zip:'5376'},{name:'Maffe',zip:'5374'},{name:'Méan',zip:'5372'},{name:'Verlée',zip:'5370'},{name:'Porcheresse Namur',zip:'5370'},{name:'Jeneffe  Namur',zip:'5370'},{name:'Havelange',zip:'5370'},{name:'Flostoy',zip:'5370'},{name:'Barvaux-Condroz',zip:'5370'},{name:'Schaltin',zip:'5364'},{name:'Emptinne',zip:'5363'},{name:'Achet',zip:'5362'},{name:'Scy',zip:'5361'},{name:'Mohiville',zip:'5361'},{name:'Natoye',zip:'5360'},{name:'Hamois',zip:'5360'},{name:'Jallet',zip:'5354'},{name:'Goesnes',zip:'5353'},{name:'Perwez-Haillot',zip:'5352'},{name:'Haillot',zip:'5351'},{name:'Ohey',zip:'5350'},{name:'Evelette',zip:'5350'},{name:'Sorée',zip:'5340'},{name:'Mozet',zip:'5340'},{name:'Haltinne',zip:'5340'},{name:'Gesves',zip:'5340'},{name:'Faulx-les-Tombes',zip:'5340'},{name:'Courrière',zip:'5336'},{name:'Florée',zip:'5334'},{name:'Sorinne-la-Longue',zip:'5333'},{name:'Crupet',zip:'5332'},{name:'Sart-Bernard',zip:'5330'},{name:'Maillen',zip:'5330'},{name:'Assesse',zip:'5330'},{name:'Waret-la-Chaussée',zip:'5310'},{name:'Upigny',zip:'5310'},{name:'Taviers Namur',zip:'5310'},{name:'Saint-Germain',zip:'5310'},{name:'Noville-sur-Méhaigne',zip:'5310'},{name:'Mehaigne',zip:'5310'},{name:'Longchamps',zip:'5310'},{name:'Liernu',zip:'5310'},{name:'Leuze Namur',zip:'5310'},{name:'Hanret',zip:'5310'},{name:'Eghezée',zip:'5310'},{name:'Dhuy',zip:'5310'},{name:'Branchon',zip:'5310'},{name:'Boneffe',zip:'5310'},{name:'Bolinne',zip:'5310'},{name:'Aische-en-Refail',zip:'5310'},{name:'Vezin',zip:'5300'},{name:'Thon',zip:'5300'},{name:'Seilles',zip:'5300'},{name:'Sclayn',zip:'5300'},{name:'Namêche',zip:'5300'},{name:'Maizeret',zip:'5300'},{name:'Landenne',zip:'5300'},{name:'Coutisse',zip:'5300'},{name:'Bonneville',zip:'5300'},{name:'Andenne',zip:'5300'},{name:'Spy',zip:'5190'},{name:'Saint-Martin',zip:'5190'},{name:'Onoz',zip:'5190'},{name:'Moustier-sur-Sambre',zip:'5190'},{name:'Mornimont',zip:'5190'},{name:'Jemeppe-sur-Sambre',zip:'5190'},{name:'Ham-sur-Sambre',zip:'5190'},{name:'Balâtre',zip:'5190'},{name:'Rivière',zip:'5170'},{name:'Profondeville',zip:'5170'},{name:'Lustin',zip:'5170'},{name:'Lesve',zip:'5170'},{name:'Bois-de-Villers',zip:'5170'},{name:'Arbre Namur',zip:'5170'},{name:'Soye Namur',zip:'5150'},{name:'Franière',zip:'5150'},{name:'Floriffoux',zip:'5150'},{name:'Floreffe',zip:'5150'},{name:'Tongrinne',zip:'5140'},{name:'Sombreffe',zip:'5140'},{name:'Ligny',zip:'5140'},{name:'Boignée',zip:'5140'},{name:'Saint-Denis-Bovesse',zip:'5081'},{name:'Meux',zip:'5081'},{name:'Bovesse',zip:'5081'},{name:'Warisoulx',zip:'5080'},{name:'Villers-lez-Heest',zip:'5080'},{name:'Rhisnes',zip:'5080'},{name:'La Bruyère',zip:'5080'},{name:'Emines',zip:'5080'},{name:'Vitrival',zip:'5070'},{name:'Sart-Saint-Laurent',zip:'5070'},{name:'Sart-Eustache',zip:'5070'},{name:'Le Roux',zip:'5070'},{name:'Fosses-la-Ville',zip:'5070'},{name:'Aisemont',zip:'5070'},{name:'Velaine-sur-Sambre',zip:'5060'},{name:'Tamines',zip:'5060'},{name:'Sambreville',zip:'5060'},{name:'Moignelée',zip:'5060'},{name:'Keumiée',zip:'5060'},{name:'Falisolle',zip:'5060'},{name:'Auvelais',zip:'5060'},{name:'Arsimont',zip:'5060'},{name:'Mazy',zip:'5032'},{name:'Isnes',zip:'5032'},{name:'Corroy-le-Château',zip:'5032'},{name:'Bothey',zip:'5032'},{name:'Bossière',zip:'5032'},{name:'Grand-Leez',zip:'5031'},{name:'Sauvenière',zip:'5030'},{name:'Lonzée',zip:'5030'},{name:'Grand-Manil',zip:'5030'},{name:'Gembloux',zip:'5030'},{name:'Ernage',zip:'5030'},{name:'Beuzet',zip:'5030'},{name:'Loyers',zip:'5101'},{name:'Lives-sur-Meuse',zip:'5101'},{name:'Erpent',zip:'5101'},{name:'Wierde',zip:'5100'},{name:'Wépion',zip:'5100'},{name:'Naninne',zip:'5100'},{name:'Jambes',zip:'5100'},{name:'Dave',zip:'5100'},{name:'Marche-les-Dames',zip:'5024'},{name:'Gelbressée',zip:'5024'},{name:'Cognelée',zip:'5022'},{name:'Boninne',zip:'5021'},{name:'Vedrin',zip:'5020'},{name:'Temploux',zip:'5020'},{name:'Suarlée',zip:'5020'},{name:'Malonne',zip:'5020'},{name:'Flawinne',zip:'5020'},{name:'Daussoulx',zip:'5020'},{name:'Champion',zip:'5020'},{name:'Bouge',zip:'5004'},{name:'Saint-Marc',zip:'5003'},{name:'Saint-Servais',zip:'5002'},{name:'Belgrade',zip:'5001'},{name:'Namur',zip:'5000'},{name:'Beez',zip:'5000'},{name:'Soy',zip:'6997'},{name:'Mormont',zip:'6997'},{name:'Erezée',zip:'6997'},{name:'Amonines',zip:'6997'},{name:'Marenne',zip:'6990'},{name:'Hotton',zip:'6990'},{name:'Hampteau',zip:'6990'},{name:'Fronville',zip:'6990'},{name:'Rendeux',zip:'6987'},{name:'Marcourt',zip:'6987'},{name:'Hodister',zip:'6987'},{name:'Beffe',zip:'6987'},{name:'Halleux',zip:'6986'},{name:'Hives',zip:'6984'},{name:'Ortho',zip:'6983'},{name:'Samrée',zip:'6982'},{name:'La-Roche-en-Ardenne',zip:'6980'},{name:'Beausaint',zip:'6980'},{name:'Erneuville',zip:'6972'},{name:'Champlon',zip:'6971'},{name:'Tenneville',zip:'6970'},{name:'Vaux-Chavanne',zip:'6960'},{name:'Odeigne',zip:'6960'},{name:'Manhay',zip:'6960'},{name:'Malempré',zip:'6960'},{name:'Harre',zip:'6960'},{name:'Grandmenil',zip:'6960'},{name:'Dochamps',zip:'6960'},{name:'Masbourg',zip:'6953'},{name:'Lesterny',zip:'6953'},{name:'Forrières',zip:'6953'},{name:'Ambly',zip:'6953'},{name:'Grune',zip:'6952'},{name:'Bande',zip:'6951'},{name:'Nassogne',zip:'6950'},{name:'Harsin',zip:'6950'},{name:'Villers-Sainte-Gertrude',zip:'6941'},{name:'Tohogne',zip:'6941'},{name:'Izier',zip:'6941'},{name:'Heyd',zip:'6941'},{name:'Borlon',zip:'6941'},{name:'Bomal-sur-Ourthe',zip:'6941'},{name:'Bende',zip:'6941'},{name:'Wéris',zip:'6940'},{name:'Septon',zip:'6940'},{name:'Grandhan',zip:'6940'},{name:'Durbuy',zip:'6940'},{name:'Barvaux-sur-Ourthe',zip:'6940'},{name:'Porcheresse Luxembourg',zip:'6929'},{name:'Haut-Fays',zip:'6929'},{name:'Gembes',zip:'6929'},{name:'Daverdisse',zip:'6929'},{name:'Tellin',zip:'6927'},{name:'Resteigne',zip:'6927'},{name:'Grupont',zip:'6927'},{name:'Bure',zip:'6927'},{name:'Lomprez',zip:'6924'},{name:'Halma',zip:'6922'},{name:'Chanly',zip:'6921'},{name:'Wellin',zip:'6920'},{name:'Sohier',zip:'6920'},{name:'Waha',zip:'6900'},{name:'Roy',zip:'6900'},{name:'On',zip:'6900'},{name:'Marche-en-Famenne',zip:'6900'},{name:'Humain',zip:'6900'},{name:'Hargimont',zip:'6900'},{name:'Aye',zip:'6900'},{name:'Villance',zip:'6890'},{name:'Transinne',zip:'6890'},{name:'Smuid',zip:'6890'},{name:'Redu',zip:'6890'},{name:'Ochamps',zip:'6890'},{name:'Libin',zip:'6890'},{name:'Anloy',zip:'6890'},{name:'Straimont',zip:'6887'},{name:'Saint-Médard',zip:'6887'},{name:'Herbeumont',zip:'6887'},{name:'Orgeo',zip:'6880'},{name:'Jehonville',zip:'6880'},{name:'Cugnon',zip:'6880'},{name:'Bertrix',zip:'6880'},{name:'Auby-sur-Semois',zip:'6880'},{name:'Vesqueville',zip:'6870'},{name:'Saint-Hubert',zip:'6870'},{name:'Mirwart',zip:'6870'},{name:'Hatrival',zip:'6870'},{name:'Awenne',zip:'6870'},{name:'Arville',zip:'6870'},{name:'Witry',zip:'6860'},{name:'Mellier',zip:'6860'},{name:'Léglise',zip:'6860'},{name:'Ebly',zip:'6860'},{name:'Assenois',zip:'6860'},{name:'Fays-les-Veneurs',zip:'6856'},{name:'Framont',zip:'6853'},{name:'Opont',zip:'6852'},{name:'Maissin',zip:'6852'},{name:'Nollevaux',zip:'6851'},{name:'Paliseul',zip:'6850'},{name:'Offagne',zip:'6850'},{name:'Carlsbourg',zip:'6850'},{name:'Tournay',zip:'6840'},{name:'Neufchâteau',zip:'6840'},{name:'Longlier',zip:'6840'},{name:'Hamipré',zip:'6840'},{name:'Grapfontaine',zip:'6840'},{name:'Grandvoir',zip:'6840'},{name:'Corbion',zip:'6838'},{name:'Dohan',zip:'6836'},{name:'Bellevaux',zip:'6834'},{name:'Vivy',zip:'6833'},{name:'Ucimont',zip:'6833'},{name:'Sensenruth',zip:'6832'},{name:'Noirefontaine',zip:'6831'},{name:'Rochehaut',zip:'6830'},{name:'Poupehan',zip:'6830'},{name:'Les Hayons',zip:'6830'},{name:'Bouillon',zip:'6830'},{name:'Chassepierre',zip:'6824'},{name:'Villers-devant-Orval',zip:'6823'},{name:'Lacuisine',zip:'6821'},{name:'Sainte-Cécile',zip:'6820'},{name:'Muno',zip:'6820'},{name:'Fontenoille',zip:'6820'},{name:'Florenville',zip:'6820'},{name:'Termes',zip:'6813'},{name:'Suxy',zip:'6812'},{name:'Les Bulles',zip:'6811'},{name:'Jamoigne',zip:'6810'},{name:'Izel',zip:'6810'},{name:'Chiny',zip:'6810'},{name:'Saint-Pierre',zip:'6800'},{name:'Sainte-Marie-Chevigny',zip:'6800'},{name:'Remagne',zip:'6800'},{name:'Recogne',zip:'6800'},{name:'Moircy',zip:'6800'},{name:'Libramont-Chevigny',zip:'6800'},{name:'Libramont',zip:'6800'},{name:'Freux',zip:'6800'},{name:'Bras',zip:'6800'},{name:'Rachecourt',zip:'6792'},{name:'Halanzy',zip:'6792'},{name:'Athus',zip:'6791'},{name:'Aubange',zip:'6790'},{name:'Habergy',zip:'6782'},{name:'Sélange',zip:'6781'},{name:'Wolkrange',zip:'6780'},{name:'Messancy',zip:'6780'},{name:'Hondelange',zip:'6780'},{name:'Villers-la-Loue',zip:'6769'},{name:'Sommethonne',zip:'6769'},{name:'Robelmont',zip:'6769'},{name:'Meix-devant-Virton',zip:'6769'},{name:'Gérouville',zip:'6769'},{name:'Torgny',zip:'6767'},{name:'Rouvroy',zip:'6767'},{name:'Lamorteau',zip:'6767'},{name:'Harnoncourt',zip:'6767'},{name:'Dampicourt',zip:'6767'},{name:'Saint-Mard',zip:'6762'},{name:'Latour',zip:'6761'},{name:'Virton',zip:'6760'},{name:'Ruette',zip:'6760'},{name:'Ethe',zip:'6760'},{name:'Bleid',zip:'6760'},{name:'Signeulx',zip:'6750'},{name:'Mussy-la-Ville',zip:'6750'},{name:'Musson',zip:'6750'},{name:'Saint-Léger Luxembourg',zip:'6747'},{name:'Meix-le-Tige',zip:'6747'},{name:'Châtillon',zip:'6747'},{name:'Buzenol',zip:'6743'},{name:'Chantemelle',zip:'6742'},{name:'Vance',zip:'6741'},{name:'Villers-sur-Semois',zip:'6740'},{name:'Sainte-Marie-sur-Semois',zip:'6740'},{name:'Etalle',zip:'6740'},{name:'Tintigny',zip:'6730'},{name:'Saint-Vincent',zip:'6730'},{name:'Rossignol',zip:'6730'},{name:'Bellefontaine Luxembourg',zip:'6730'},{name:'Rulles',zip:'6724'},{name:'Marbehan Luxembourg',zip:'6724'},{name:'Houdemont',zip:'6724'},{name:'Habay-la-Vieille',zip:'6723'},{name:'Anlier',zip:'6721'},{name:'Hachy',zip:'6720'},{name:'Habay-la-Neuve',zip:'6720'},{name:'Habay',zip:'6720'},{name:'Tontelange',zip:'6717'},{name:'Thiaumont',zip:'6717'},{name:'Nothomb',zip:'6717'},{name:'Nobressart',zip:'6717'},{name:'Attert',zip:'6717'},{name:'Autelbas',zip:'6706'},{name:'Guirsch',zip:'6704'},{name:'Toernich',zip:'6700'},{name:'Heinsch',zip:'6700'},{name:'Bonnert',zip:'6700'},{name:'Arlon',zip:'6700'},{name:'Grand-Halleux',zip:'6698'},{name:'Petit-Thier',zip:'6692'},{name:'Vielsalm',zip:'6690'},{name:'Bihain',zip:'6690'},{name:'Longchamps Luxembourg',zip:'6688'},{name:'Bertogne',zip:'6687'},{name:'Flamierge',zip:'6686'},{name:'Lavacherie',zip:'6681'},{name:'Tillet',zip:'6680'},{name:'Sainte-Ode',zip:'6680'},{name:'Amberloup',zip:'6680'},{name:'Montleban',zip:'6674'},{name:'Cherain',zip:'6673'},{name:'Beho',zip:'6672'},{name:'Bovigny',zip:'6671'},{name:'Limerlé',zip:'6670'},{name:'Gouvy',zip:'6670'},{name:'Wibrin',zip:'6666'},{name:'Mabompré',zip:'6663'},{name:'Tavigny',zip:'6662'},{name:'Tailles',zip:'6661'},{name:'Mont Luxembourg',zip:'6661'},{name:'Nadrin',zip:'6660'},{name:'Houffalize',zip:'6660'},{name:'Juseret',zip:'6642'},{name:'Vaux-sur-Sûre',zip:'6640'},{name:'Vaux-lez-Rosières',zip:'6640'},{name:'Sibret',zip:'6640'},{name:'Nives',zip:'6640'},{name:'Morhet',zip:'6640'},{name:'Hompré',zip:'6640'},{name:'Tintange',zip:'6637'},{name:'Hollange',zip:'6637'},{name:'Fauvillers',zip:'6637'},{name:'Martelange',zip:'6630'},{name:'Wardin',zip:'6600'},{name:'Villers-la-Bonne-Eau',zip:'6600'},{name:'Noville Luxembourg',zip:'6600'},{name:'Longvilly',zip:'6600'},{name:'Bastogne',zip:'6600'},{name:'Villers-la-Ville',zip:'1495'},{name:'Tilly',zip:'1495'},{name:'Sart-Dames-Avelines',zip:'1495'},{name:'Mellery',zip:'1495'},{name:'Marbais Br.W.',zip:'1495'},{name:'Court-Saint-Etienne',zip:'1490'},{name:'Tubize',zip:'1480'},{name:'Saintes',zip:'1480'},{name:'Oisquercq',zip:'1480'},{name:'Clabecq',zip:'1480'},{name:'Houtain-le-Val',zip:'1476'},{name:'Ways',zip:'1474'},{name:'Glabais',zip:'1473'},{name:'Vieux-Genappe',zip:'1472'},{name:'Loupoigne',zip:'1471'},{name:'Genappe',zip:'1470'},{name:'Bousval',zip:'1470'},{name:'Baisy-Thy',zip:'1470'},{name:'Haut-Ittre',zip:'1461'},{name:'Virginal-Samme',zip:'1460'},{name:'Ittre',zip:'1460'},{name:'Walhain-Saint-Paul',zip:'1457'},{name:'Walhain',zip:'1457'},{name:'Tourinnes-Saint-Lambert',zip:'1457'},{name:'Nil-Saint-Vincent-Saint-Martin',zip:'1457'},{name:'Saint-Géry',zip:'1450'},{name:'Gentinnes',zip:'1450'},{name:'Cortil-Noirmont',zip:'1450'},{name:'Chastre-Villeroux-Blanmont',zip:'1450'},{name:'Chastre',zip:'1450'},{name:'Wauthier-Braine',zip:'1440'},{name:'Braine-le-Château',zip:'1440'},{name:'Mont-Saint-Guibert',zip:'1435'},{name:'Hévillers',zip:'1435'},{name:'Corbais',zip:'1435'},{name:'Rebecq-Rognon',zip:'1430'},{name:'Rebecq',zip:'1430'},{name:'Quenast',zip:'1430'},{name:'Bierghes',zip:'1430'},{name:'Lillois-Witterzée',zip:'1428'},{name:'Ophain-Bois-Seigneur-Isaac',zip:'1421'},{name:'Waterloo',zip:'1410'},{name:'Bornival',zip:'1404'},{name:'Thines',zip:'1402'},{name:'Baulers',zip:'1401'},{name:'Nivelles',zip:'1400'},{name:'Monstreux',zip:'1400'},{name:'Nethen',zip:'1390'},{name:'Grez-Doiceau',zip:'1390'},{name:'Bossut-Gottechain',zip:'1390'},{name:'Biez',zip:'1390'},{name:'Archennes',zip:'1390'},{name:'Plancenoit',zip:'1380'},{name:'Ohain',zip:'1380'},{name:'Maransart',zip:'1380'},{name:'Lasne-Chapelle-Saint-Lambert',zip:'1380'},{name:'Lasne',zip:'1380'},{name:'Couture-Saint-Germain',zip:'1380'},{name:'Zétrud-Lumay',zip:'1370'},{name:'Saint-Remy-Geest',zip:'1370'},{name:'Saint-Jean-Geest',zip:'1370'},{name:'Piétrain',zip:'1370'},{name:'Mélin',zip:'1370'},{name:'Lathuy',zip:'1370'},{name:'Jodoigne-Souveraine',zip:'1370'},{name:'Jodoigne',zip:'1370'},{name:'Jauchelette',zip:'1370'},{name:'Dongelberg',zip:'1370'},{name:'Ramillies-Offus',zip:'1367'},{name:'Mont-Saint-André',zip:'1367'},{name:'Huppaye',zip:'1367'},{name:'Grand-Rosière-Hottomont',zip:'1367'},{name:'Gérompont',zip:'1367'},{name:'Geest-Gérompont-Petit-Rosière',zip:'1367'},{name:'Bomal Br.W.',zip:'1367'},{name:'Autre-Eglise',zip:'1367'},{name:'Thorembais-Saint-Trond',zip:'1360'},{name:'Thorembais-les-Béguines',zip:'1360'},{name:'Perwez',zip:'1360'},{name:'Orbais',zip:'1360'},{name:'Malèves-Sainte-Marie-Wastines',zip:'1360'},{name:'Opheylissem',zip:'1357'},{name:'Neerheylissem',zip:'1357'},{name:'Linsmeau',zip:'1357'},{name:'Hélécine',zip:'1357'},{name:'Orp-le-Grand',zip:'1350'},{name:'Orp-Jauche',zip:'1350'},{name:'Noduwez',zip:'1350'},{name:'Marilles',zip:'1350'},{name:'Jauche',zip:'1350'},{name:'Jandrain-Jandrenouille',zip:'1350'},{name:'Folx-les-Caves',zip:'1350'},{name:'Enines',zip:'1350'},{name:'Louvain-la-Neuve',zip:'1348'},{name:'Limelette',zip:'1342'},{name:'Céroux-Mousty',zip:'1341'},{name:'Ottignies-Louvain-la-Neuve',zip:'1340'},{name:'Ottignies',zip:'1340'},{name:'Genval',zip:'1332'},{name:'Rosières',zip:'1331'},{name:'Rixensart',zip:'1330'},{name:'Longueville',zip:'1325'},{name:'Dion-Valmont',zip:'1325'},{name:'Corroy-le-Grand',zip:'1325'},{name:'Chaumont-Gistoux',zip:'1325'},{name:'Bonlez',zip:'1325'},{name:'Tourinnes-la-Grosse',zip:'1320'},{name:'Nodebais',zip:'1320'},{name:'Hamme-Mille',zip:'1320'},{name:'Beauvechain',zip:'1320'},{name:'Roux-Miroir',zip:'1315'},{name:'Piétrebais',zip:'1315'},{name:'Opprebais',zip:'1315'},{name:'Incourt',zip:'1315'},{name:'Glimes',zip:'1315'},{name:'La Hulpe',zip:'1310'},{name:'Bierges',zip:'1301'},{name:'Wavre',zip:'1300'},{name:'Limal',zip:'1300'},{name:'Lierneux',zip:'4990'},{name:'Bra',zip:'4990'},{name:'Arbrefontaine',zip:'4990'},{name:'Stoumont',zip:'4987'},{name:'Rahier',zip:'4987'},{name:'Lorcé',zip:'4987'},{name:'La Gleize',zip:'4987'},{name:'Chevron',zip:'4987'},{name:'Basse-Bodeux',zip:'4983'},{name:'Wanne',zip:'4980'},{name:'Trois-Ponts',zip:'4980'},{name:'Fosse Liège',zip:'4980'},{name:'Stavelot',zip:'4970'},{name:'Francorchamps',zip:'4970'},{name:'Malmedy',zip:'4960'},{name:'Bevercé',zip:'4960'},{name:'Bellevaux-Ligneuville',zip:'4960'},{name:'Waimes/Weismes',zip:'4950'},{name:'Sourbrodt',zip:'4950'},{name:'Robertville',zip:'4950'},{name:'Faymonville',zip:'4950'},{name:'Sougné-Remouchamps',zip:'4920'},{name:'Harzé',zip:'4920'},{name:'Ernonheid',zip:'4920'},{name:'Aywaille',zip:'4920'},{name:'Theux',zip:'4910'},{name:'Polleur',zip:'4910'},{name:'La Reid',zip:'4910'},{name:'Spa',zip:'4900'},{name:'Thimister-Clermont',zip:'4890'},{name:'Thimister',zip:'4890'},{name:'Clermont Liège',zip:'4890'},{name:'Aubel',zip:'4880'},{name:'Olne',zip:'4877'},{name:'Trooz',zip:'4870'},{name:'Nessonvaux',zip:'4870'},{name:'Fraipont',zip:'4870'},{name:'Forêt',zip:'4870'},{name:'Soiron',zip:'4861'},{name:'Wegnez',zip:'4860'},{name:'Pepinster',zip:'4860'},{name:'Cornesse',zip:'4860'},{name:'Hombourg',zip:'4852'},{name:'Sippenaeken',zip:'4851'},{name:'Gemmenich',zip:'4851'},{name:'Plombières',zip:'4850'},{name:'Moresnet',zip:'4850'},{name:'Montzen',zip:'4850'},{name:'Sart-lez-Spa',zip:'4845'},{name:'Jalhay',zip:'4845'},{name:'Henri-Chapelle',zip:'4841'},{name:'Welkenraedt',zip:'4840'},{name:'Membach',zip:'4837'},{name:'Baelen Liège',zip:'4837'},{name:'Goé',zip:'4834'},{name:'Bilstain',zip:'4831'},{name:'Limbourg',zip:'4830'},{name:'Andrimont',zip:'4821'},{name:'Dison',zip:'4820'},{name:'Heusy',zip:'4802'},{name:'Stembert',zip:'4801'},{name:'Verviers',zip:'4800'},{name:'Petit-Rechain',zip:'4800'},{name:'Lambermont',zip:'4800'},{name:'Ensival',zip:'4800'},{name:'Thommen',zip:'4791'},{name:'Reuland',zip:'4790'},{name:'Burg-Reuland',zip:'4790'},{name:'Crombach',zip:'4784'},{name:'Lommersweiler',zip:'4783'},{name:'Schönberg/Schoenberg',zip:'4782'},{name:'Sankt Vith/Saint-Vith',zip:'4780'},{name:'Recht',zip:'4780'},{name:'Heppenbach',zip:'4771'},{name:'Meyerode',zip:'4770'},{name:'Amel/Amblève',zip:'4770'},{name:'Rocherath',zip:'4761'},{name:'Manderfeld',zip:'4760'},{name:'Büllingen/Bullange',zip:'4760'},{name:'Elsenborn',zip:'4750'},{name:'Bütgenbach/Butgenbach',zip:'4750'},{name:'Eynatten',zip:'4731'},{name:'Raeren',zip:'4730'},{name:'Hauset',zip:'4730'},{name:'Hergenrath',zip:'4728'},{name:'Neu-Moresnet',zip:'4721'},{name:'Kelmis/La Calamine',zip:'4720'},{name:'Walhorn',zip:'4711'},{name:'Lontzen',zip:'4710'},{name:'Kettenis',zip:'4701'},{name:'Eupen',zip:'4700'},{name:'Wonck',zip:'4690'},{name:'Roclenge-sur-Geer',zip:'4690'},{name:'Glons',zip:'4690'},{name:'Eben-Emael',zip:'4690'},{name:'Boirs',zip:'4690'},{name:'Bassenge',zip:'4690'},{name:'Haccourt',zip:'4684'},{name:'Vivegnis',zip:'4683'},{name:'Houtain-Saint-Siméon',zip:'4682'},{name:'Heure-le-Romain',zip:'4682'},{name:'Hermalle-sous-Argenteau',zip:'4681'},{name:'Oupeye',zip:'4680'},{name:'Hermée',zip:'4680'},{name:'Saint-Remy Liège',zip:'4672'},{name:'Saive',zip:'4671'},{name:'Housse',zip:'4671'},{name:'Barchon',zip:'4671'},{name:'Trembleur',zip:'4670'},{name:'Mortier',zip:'4670'},{name:'Blégny',zip:'4670'},{name:'Charneux',zip:'4654'},{name:'Bolland',zip:'4653'},{name:'Xhendelesse',zip:'4652'},{name:'Battice',zip:'4651'},{name:'Julémont',zip:'4650'},{name:'Herve',zip:'4650'},{name:'Grand-Rechain',zip:'4650'},{name:'Chaineux',zip:'4650'},{name:'Melen',zip:'4633'},{name:'Cérexhe-Heuseux',zip:'4632'},{name:'Evegnée',zip:'4631'},{name:'Tignée',zip:'4630'},{name:'Soumagne',zip:'4630'},{name:'Micheroux',zip:'4630'},{name:'Ayeneux',zip:'4630'},{name:'Romsée',zip:'4624'},{name:'Magnée',zip:'4623'},{name:'Retinne',zip:'4621'},{name:'Fléron',zip:'4620'},{name:'Queue-du-Bois',zip:'4610'},{name:'Beyne-Heusay',zip:'4610'},{name:'Bellaire',zip:'4610'},{name:'Warsage',zip:'4608'},{name:'Neufchâteau Liège',zip:'4608'},{name:'Mortroux',zip:'4607'},{name:'Feneur',zip:'4607'},{name:'Dalhem',zip:'4607'},{name:'Bombaye',zip:'4607'},{name:'Berneau',zip:'4607'},{name:'Saint-André',zip:'4606'},{name:'Cheratte',zip:'4602'},{name:'Argenteau',zip:'4601'},{name:'Visé',zip:'4600'},{name:'Richelle',zip:'4600'},{name:'Lixhe',zip:'4600'},{name:'Lanaye',zip:'4600'},{name:'Warzée',zip:'4590'},{name:'Ouffet',zip:'4590'},{name:'Ellemelle',zip:'4590'},{name:'Vierset-Barse',zip:'4577'},{name:'Strée-lez-Huy',zip:'4577'},{name:'Outrelouxhe',zip:'4577'},{name:'Modave',zip:'4577'},{name:'Vyle-et-Tharoul',zip:'4570'},{name:'Marchin',zip:'4570'},{name:'Terwagne',zip:'4560'},{name:'Pailhe',zip:'4560'},{name:'Ocquier',zip:'4560'},{name:'Les Avins',zip:'4560'},{name:'Clavier',zip:'4560'},{name:'Bois-et-Borsu',zip:'4560'},{name:'Tinlot',zip:'4557'},{name:'Soheit-Tinlot',zip:'4557'},{name:'Seny',zip:'4557'},{name:'Ramelot',zip:'4557'},{name:'Fraiture',zip:'4557'},{name:'Abée',zip:'4557'},{name:'Yernée-Fraineux',zip:'4550'},{name:'Villers-le-Temple',zip:'4550'},{name:'Saint-Séverin',zip:'4550'},{name:'Nandrin',zip:'4550'},{name:'Ombret',zip:'4540'},{name:'Jehay',zip:'4540'},{name:'Flône',zip:'4540'},{name:'Ampsin',zip:'4540'},{name:'Amay',zip:'4540'},{name:'Verlaine',zip:'4537'},{name:'Seraing-le-Château',zip:'4537'},{name:'Chapon-Seraing',zip:'4537'},{name:'Warnant-Dreye',zip:'4530'},{name:'Villers-le-Bouillet',zip:'4530'},{name:'Vieux-Waleffe',zip:'4530'},{name:'Vaux-et-Borset',zip:'4530'},{name:'Fize-Fontaine',zip:'4530'},{name:'Wanze',zip:'4520'},{name:'Vinalmont',zip:'4520'},{name:'Moha',zip:'4520'},{name:'Huccorgne',zip:'4520'},{name:'Bas-Oha',zip:'4520'},{name:'Antheit',zip:'4520'},{name:'Tihange',zip:'4500'},{name:'Huy',zip:'4500'},{name:'Ben-Ahin',zip:'4500'},{name:'Hermalle-sous-Huy',zip:'4480'},{name:'Engis',zip:'4480'},{name:'Clermont-sous-Huy',zip:'4480'},{name:'Saint-Georges-sur-Meuse',zip:'4470'},{name:'Velroux',zip:'4460'},{name:'Horion-Hozémont',zip:'4460'},{name:'Hollogne-aux-Pierres',zip:'4460'},{name:'Grâce-Hollogne',zip:'4460'},{name:'Grâce-Berleur',zip:'4460'},{name:'Bierset',zip:'4460'},{name:'Fexhe-Slins',zip:'4458'},{name:'Villers-Saint-Siméon',zip:'4453'},{name:'Wihogne',zip:'4452'},{name:'Paifve',zip:'4452'},{name:'Voroux-lez-Liers',zip:'4451'},{name:'Slins',zip:'4450'},{name:'Lantin',zip:'4450'},{name:'Juprelle',zip:'4450'},{name:'Xhendremael',zip:'4432'},{name:'Alleur',zip:'4432'},{name:'Loncin',zip:'4431'},{name:'Ans',zip:'4430'},{name:'Tilleur',zip:'4420'},{name:'Saint-Nicolas Liège',zip:'4420'},{name:'Montegnée',zip:'4420'},{name:'Mons-lez-Liège',zip:'4400'},{name:'Ivoz-Ramet',zip:'4400'},{name:'Gleixhe',zip:'4400'},{name:'Flémalle-Haute',zip:'4400'},{name:'Flémalle-Grande',zip:'4400'},{name:'Flémalle',zip:'4400'},{name:'Chokier',zip:'4400'},{name:'Awirs',zip:'4400'},{name:'Thys',zip:'4367'},{name:'Odeur',zip:'4367'},{name:'Kemexhe',zip:'4367'},{name:'Fize-le-Marsal',zip:'4367'},{name:'Crisnée',zip:'4367'},{name:'Otrange',zip:'4360'},{name:'Oreye',zip:'4360'},{name:'Lens-sur-Geer',zip:'4360'},{name:'Grandville',zip:'4360'},{name:'Bergilers',zip:'4360'},{name:'Limont',zip:'4357'},{name:'Jeneffe Liège',zip:'4357'},{name:'Haneffe',zip:'4357'},{name:'Donceel',zip:'4357'},{name:'Hodeige',zip:'4351'},{name:'Remicourt',zip:'4350'},{name:'Pousset',zip:'4350'},{name:'Momalle',zip:'4350'},{name:'Lamine',zip:'4350'},{name:'Voroux-Goreux',zip:'4347'},{name:'Roloux',zip:'4347'},{name:'Noville Liège',zip:'4347'},{name:'Freloux',zip:'4347'},{name:'Fexhe-le-Haut-Clocher',zip:'4347'},{name:'Hognoul',zip:'4342'},{name:'Othée',zip:'4340'},{name:'Fooz',zip:'4340'},{name:'Awans',zip:'4340'},{name:'Viemme',zip:'4317'},{name:'Les Waleffes',zip:'4317'},{name:'Faimes',zip:'4317'},{name:'Celles Liège',zip:'4317'},{name:'Borlez',zip:'4317'},{name:'Aineffe',zip:'4317'},{name:'Waremme',zip:'4300'},{name:'Oleye',zip:'4300'},{name:'Lantremange',zip:'4300'},{name:'Grand-Axhe',zip:'4300'},{name:'Bovenistier',zip:'4300'},{name:'Bleret',zip:'4300'},{name:'Bettincourt',zip:'4300'},{name:'Racour',zip:'4287'},{name:'Pellaines',zip:'4287'},{name:'Lincent',zip:'4287'},{name:'Wansin',zip:'4280'},{name:'Villers-le-Peuplier',zip:'4280'},{name:'Trognée',zip:'4280'},{name:'Thisnes',zip:'4280'},{name:'Poucet',zip:'4280'},{name:'Petit-Hallet',zip:'4280'},{name:'Moxhe',zip:'4280'},{name:'Merdorp',zip:'4280'},{name:'Lens-Saint-Remy',zip:'4280'},{name:'Hannut',zip:'4280'},{name:'Grand-Hallet',zip:'4280'},{name:'Crehen',zip:'4280'},{name:'Cras-Avernas',zip:'4280'},{name:'Blehen',zip:'4280'},{name:'Bertrée',zip:'4280'},{name:'Avin',zip:'4280'},{name:'Avernas-le-Bauduin',zip:'4280'},{name:'Abolens',zip:'4280'},{name:'Tourinne Liège',zip:'4263'},{name:'Latinne',zip:'4261'},{name:'Ville-en-Hesbaye',zip:'4260'},{name:'Fumal',zip:'4260'},{name:'Fallais',zip:'4260'},{name:'Ciplet',zip:'4260'},{name:'Braives',zip:'4260'},{name:'Avennes',zip:'4260'},{name:'Rosoux-Crenwick',zip:'4257'},{name:'Corswarem',zip:'4257'},{name:'Berloz',zip:'4257'},{name:'Ligney',zip:'4254'},{name:'Darion',zip:'4253'},{name:'Omal',zip:'4252'},{name:'Lens-Saint-Servais',zip:'4250'},{name:'Hollogne-sur-Geer',zip:'4250'},{name:'Geer',zip:'4250'},{name:'Boëlhe',zip:'4250'},{name:'Wasseiges',zip:'4219'},{name:'Meeffe',zip:'4219'},{name:'Ambresin',zip:'4219'},{name:'Acosse',zip:'4219'},{name:'Couthuin',zip:'4218'},{name:'Lavoir',zip:'4217'},{name:'Héron',zip:'4217'},{name:'Oteppe',zip:'4210'},{name:'Marneffe',zip:'4210'},{name:'Lamontzée',zip:'4210'},{name:'Hannêche',zip:'4210'},{name:'Burdinne',zip:'4210'},{name:'Xhoris',zip:'4190'},{name:'Werbomont',zip:'4190'},{name:'Vieuxville',zip:'4190'},{name:'My',zip:'4190'},{name:'Ferrières',zip:'4190'},{name:'Filot',zip:'4181'},{name:'Hamoir',zip:'4180'},{name:'Comblain-la-Tour',zip:'4180'},{name:'Comblain-Fairon',zip:'4180'},{name:'Poulseur',zip:'4171'},{name:'Comblain-au-Pont',zip:'4170'},{name:'Tavier',zip:'4163'},{name:'Hody',zip:'4162'},{name:'Villers-aux-Tours',zip:'4161'},{name:'Anthisnes',zip:'4160'},{name:'Louveigné',zip:'4141'},{name:'Sprimont',zip:'4140'},{name:'Rouvreux',zip:'4140'},{name:'Gomzé-Andoumont',zip:'4140'},{name:'Dolembreux',zip:'4140'},{name:'Tilff',zip:'4130'},{name:'Esneux',zip:'4130'},{name:'Plainevaux',zip:'4122'},{name:'Neuville-en-Condroz',zip:'4121'},{name:'Rotheux-Rimière',zip:'4120'},{name:'Neupré',zip:'4120'},{name:'Ehein',zip:'4120'},{name:'Ougrée',zip:'4102'},{name:'Jemeppe-sur-Meuse',zip:'4101'},{name:'Seraing',zip:'4100'},{name:'Boncelles',zip:'4100'},{name:'Embourg',zip:'4053'},{name:'Beaufays',zip:'4052'},{name:'Vaux-sous-Chèvremont',zip:'4051'},{name:'Chaudfontaine',zip:'4050'},{name:'Liers',zip:'4042'},{name:'Vottem',zip:'4041'},{name:'Milmort',zip:'4041'},{name:'Herstal',zip:'4040'},{name:'Chênée',zip:'4032'},{name:'Angleur',zip:'4031'},{name:'Grivegnée',zip:'4030'},{name:'Wandre',zip:'4020'},{name:'Liège',zip:'4020'},{name:'Jupille-sur-Meuse',zip:'4020'},{name:'Bressoux',zip:'4020'},{name:'Rocourt',zip:'4000'},{name:'Liège',zip:'4000'},{name:'Glain',zip:'4000'},{name:'Stambruges',zip:'7973'},{name:'Grandglise',zip:'7973'},{name:'Quevaucamps',zip:'7972'},{name:'Ellignies-Sainte-Anne',zip:'7972'},{name:'Aubechies',zip:'7972'},{name:'Wadelincourt',zip:'7971'},{name:'Thumaide',zip:'7971'},{name:'Ramegnies',zip:'7971'},{name:'Basècles',zip:'7971'},{name:'Beloeil',zip:'7970'},{name:'Tongre-Notre-Dame',zip:'7951'},{name:'Tongre-Saint-Martin',zip:'7950'},{name:'Ladeuze',zip:'7950'},{name:'Huissignies',zip:'7950'},{name:'Grosage',zip:'7950'},{name:'Chièvres',zip:'7950'},{name:'Gages',zip:'7943'},{name:'Mévergnies-lez-Lens',zip:'7942'},{name:'Attre',zip:'7941'},{name:'Cambron-Casteau',zip:'7940'},{name:'Brugelette',zip:'7940'},{name:'Saint-Sauveur',zip:'7912'},{name:'Dergneau',zip:'7912'},{name:'Oeudeghien',zip:'7911'},{name:'Moustier Ht.',zip:'7911'},{name:'Montroeul-au-Bois',zip:'7911'},{name:'Herquegies',zip:'7911'},{name:'Hacquegnies',zip:'7911'},{name:'Frasnes-lez-Buissenal',zip:'7911'},{name:'Buissenal',zip:'7911'},{name:'Wattripont',zip:'7910'},{name:'Frasnes-lez-Anvaing',zip:'7910'},{name:'Forest Ht.',zip:'7910'},{name:'Ellignies-lez-Frasnes',zip:'7910'},{name:'Cordes',zip:'7910'},{name:'Arc-Wattripont',zip:'7910'},{name:'Arc-Ainières',zip:'7910'},{name:'Anvaing',zip:'7910'},{name:'Gallaix',zip:'7906'},{name:'Willaupuis',zip:'7904'},{name:'Tourpes',zip:'7904'},{name:'Pipaix',zip:'7904'},{name:'Chapelle-à-Wattines',zip:'7903'},{name:'Chapelle-à-Oie',zip:'7903'},{name:'Blicquy',zip:'7903'},{name:'Thieulain',zip:'7901'},{name:'Leuze-en-Hainaut',zip:'7900'},{name:'Grandmetz',zip:'7900'},{name:'Wodecq',zip:'7890'},{name:'Lahamaide',zip:'7890'},{name:'Ellezelles',zip:'7890'},{name:'Flobecq/Vloesberg',zip:'7880'},{name:'Montignies-lez-Lens',zip:'7870'},{name:'Lombise',zip:'7870'},{name:'Lens',zip:'7870'},{name:'Cambron-Saint-Vincent',zip:'7870'},{name:'Bauffe',zip:'7870'},{name:'Ollignies',zip:'7866'},{name:'Bois-de-Lessines',zip:'7866'},{name:'Deux-Acren',zip:'7864'},{name:'Ghoy',zip:'7863'},{name:'Ogy',zip:'7862'},{name:'Wannebecq',zip:'7861'},{name:'Papignies',zip:'7861'},{name:'Lessines',zip:'7860'},{name:'Petit-Enghien/Lettelingen',zip:'7850'},{name:'Marcq/Mark',zip:'7850'},{name:'Enghien/Edingen',zip:'7850'},{name:'Thoricourt',zip:'7830'},{name:'Silly',zip:'7830'},{name:'Hoves Ht.',zip:'7830'},{name:'Hellebecq',zip:'7830'},{name:'Graty',zip:'7830'},{name:'Gondregnies',zip:'7830'},{name:'Fouleng',zip:'7830'},{name:'Bassilly',zip:'7830'},{name:'Gibecq',zip:'7823'},{name:'Isières',zip:'7822'},{name:'Ghislenghien',zip:'7822'},{name:'Villers-Saint-Amand',zip:'7812'},{name:'Villers-Notre-Dame',zip:'7812'},{name:'Moulbaix',zip:'7812'},{name:'Mainvault',zip:'7812'},{name:'Ligne',zip:'7812'},{name:'Houtaing',zip:'7812'},{name:'Arbre Ht.',zip:'7811'},{name:'Maffle',zip:'7810'},{name:'Rebaix',zip:'7804'},{name:'Ostiches',zip:'7804'},{name:'Bouvignies',zip:'7803'},{name:'Ormeignies',zip:'7802'},{name:'Irchonwelz',zip:'7801'},{name:'Lanquesaint',zip:'7800'},{name:'Ath',zip:'7800'},{name:'Warneton/Waasten',zip:'7784'},{name:'Bas-Warneton/Neerwaasten',zip:'7784'},{name:'Bizet',zip:'7783'},{name:'Ploegsteert',zip:'7782'},{name:'Houthem Comines/Komen',zip:'7781'},{name:'Comines-Warneton/Komen-Waasten',zip:'7780'},{name:'Comines/Komen',zip:'7780'},{name:'Velaines',zip:'7760'},{name:'Pottes',zip:'7760'},{name:'Popuelles',zip:'7760'},{name:'Molenbaix',zip:'7760'},{name:'Escanaffles',zip:'7760'},{name:'Celles Ht.',zip:'7760'},{name:'Russeignies',zip:'7750'},{name:'Orroir',zip:'7750'},{name:'Anseroeul',zip:'7750'},{name:'Amougies',zip:'7750'},{name:'Obigies',zip:'7743'},{name:'Esquelmes',zip:'7743'},{name:'Hérinnes-lez-Pecq',zip:'7742'},{name:'Warcoing',zip:'7740'},{name:'Pecq',zip:'7740'},{name:'Saint-Léger Ht.',zip:'7730'},{name:'Néchin',zip:'7730'},{name:'Leers-Nord',zip:'7730'},{name:'Evregnies',zip:'7730'},{name:'Estaimpuis',zip:'7730'},{name:'Estaimbourg',zip:'7730'},{name:'Bailleul',zip:'7730'},{name:'Herseaux',zip:'7712'},{name:'Dottignies/Dottenijs',zip:'7711'},{name:'Mouscron/Moeskroen',zip:'7700'},{name:'Luingne',zip:'7700'},{name:'Fontenoy',zip:'7643'},{name:'Calonne',zip:'7642'},{name:'Bruyelle',zip:'7641'},{name:'Péronnes-lez-Antoing',zip:'7640'},{name:'Maubray',zip:'7640'},{name:'Antoing',zip:'7640'},{name:'Howardries',zip:'7624'},{name:'Rongy',zip:'7623'},{name:'Laplaigne',zip:'7622'},{name:'Lesdain',zip:'7621'},{name:'Wez-Velvain',zip:'7620'},{name:'Jollain-Merlin',zip:'7620'},{name:'Hollain',zip:'7620'},{name:'Guignies',zip:'7620'},{name:'Brunehaut',zip:'7620'},{name:'Bléharies',zip:'7620'},{name:'Taintignies',zip:'7618'},{name:'La Glanerie',zip:'7611'},{name:'Rumes',zip:'7610'},{name:'Wiers',zip:'7608'},{name:'Wasmes-Audemez-Briffoeil',zip:'7604'},{name:'Callenelle',zip:'7604'},{name:'Brasmenil',zip:'7604'},{name:'Braffe',zip:'7604'},{name:'Baugnies',zip:'7604'},{name:'Bon-Secours',zip:'7603'},{name:'Bury',zip:'7602'},{name:'Roucourt',zip:'7601'},{name:'Péruwelz',zip:'7600'},{name:'Warchin',zip:'7548'},{name:'Mourcourt',zip:'7543'},{name:'Mont-Saint-Aubert',zip:'7542'},{name:'Rumillies',zip:'7540'},{name:'Quartes',zip:'7540'},{name:'Melles',zip:'7540'},{name:'Kain',zip:'7540'},{name:'Vezon',zip:'7538'},{name:'Vaulx',zip:'7536'},{name:'Maulde',zip:'7534'},{name:'Barry',zip:'7534'},{name:'Thimougies',zip:'7533'},{name:'Beclers',zip:'7532'},{name:'Havinnes',zip:'7531'},{name:'Gaurain-Ramecroix',zip:'7530'},{name:'Marquain',zip:'7522'},{name:'Lamain',zip:'7522'},{name:'Hertain',zip:'7522'},{name:'Blandain',zip:'7522'},{name:'Chercq',zip:'7521'},{name:'Templeuve',zip:'7520'},{name:'Ramegnies-Chin',zip:'7520'},{name:'Willemeau',zip:'7506'},{name:'Froidmont',zip:'7504'},{name:'Froyennes',zip:'7503'},{name:'Esplechin',zip:'7502'},{name:'Orcq',zip:'7501'},{name:'Tournai',zip:'7500'},{name:'Saint-Maur',zip:'7500'},{name:'Ere',zip:'7500'},{name:'Wasmuel',zip:'7390'},{name:'Quaregnon',zip:'7390'},{name:'Roisin',zip:'7387'},{name:'Onnezies',zip:'7387'},{name:'Montignies-sur-Roc',zip:'7387'},{name:'Marchipont',zip:'7387'},{name:'Honnelles',zip:'7387'},{name:'Fayt-le-Franc',zip:'7387'},{name:'Erquennes',zip:'7387'},{name:'Autreppe',zip:'7387'},{name:'Athis',zip:'7387'},{name:'Angreau',zip:'7387'},{name:'Angre',zip:'7387'},{name:'Audregnies',zip:'7382'},{name:'Quiévrain',zip:'7380'},{name:'Baisieux',zip:'7380'},{name:'Wihéries',zip:'7370'},{name:'Elouges',zip:'7370'},{name:'Dour',zip:'7370'},{name:'Blaugies',zip:'7370'},{name:'Thulin',zip:'7350'},{name:'Montroeul-sur-Haine',zip:'7350'},{name:'Hensies',zip:'7350'},{name:'Hainin',zip:'7350'},{name:'Wasmes',zip:'7340'},{name:'Warquignies',zip:'7340'},{name:'Paturages',zip:'7340'},{name:'Colfontaine',zip:'7340'},{name:'Villerot',zip:'7334'},{name:'Hautrage',zip:'7334'},{name:'Tertre',zip:'7333'},{name:'Sirault',zip:'7332'},{name:'Neufmaison',zip:'7332'},{name:'Baudour',zip:'7331'},{name:'Saint-Ghislain',zip:'7330'},{name:'Ville-Pommeroeul',zip:'7322'},{name:'Pommeroeul',zip:'7322'},{name:'Harchies',zip:'7321'},{name:'Blaton',zip:'7321'},{name:'Bernissart',zip:'7320'},{name:'Hornu',zip:'7301'},{name:'Boussu',zip:'7300'},{name:'Ecaussinnes-Lalaing',zip:'7191'},{name:'Marche-lez-Ecaussinnes',zip:'7190'},{name:'Ecaussinnes',zip:'7190'},{name:'Petit-Roeulx-lez-Nivelles',zip:'7181'},{name:'Feluy',zip:'7181'},{name:'Familleureux',zip:'7181'},{name:'Arquennes',zip:'7181'},{name:'Seneffe',zip:'7180'},{name:'Manage',zip:'7170'},{name:'La Hestre',zip:'7170'},{name:'Fayt-lez-Manage',zip:'7170'},{name:'Bellecourt',zip:'7170'},{name:'Piéton',zip:'7160'},{name:'Godarville',zip:'7160'},{name:'Chapelle-lez-Herlaimont',zip:'7160'},{name:'Mont-Sainte-Aldegonde',zip:'7141'},{name:'Carnières',zip:'7141'},{name:'Morlanwelz-Mariemont',zip:'7140'},{name:'Morlanwelz',zip:'7140'},{name:'Ressaix',zip:'7134'},{name:'Péronnes-lez-Binche',zip:'7134'},{name:'Leval-Trahegnies',zip:'7134'},{name:'Epinois',zip:'7134'},{name:'Buvrinnes',zip:'7133'},{name:'Waudrez',zip:'7131'},{name:'Bray',zip:'7130'},{name:'Binche',zip:'7130'},{name:'Battignies',zip:'7130'},{name:'Vellereille-le-Sec',zip:'7120'},{name:'Vellereille-les-Brayeux',zip:'7120'},{name:'Rouveroy Ht.',zip:'7120'},{name:'Peissant',zip:'7120'},{name:'Haulchin',zip:'7120'},{name:'Fauroeulx',zip:'7120'},{name:'Estinnes-au-Val',zip:'7120'},{name:'Estinnes-au-Mont',zip:'7120'},{name:'Estinnes',zip:'7120'},{name:'Croix-lez-Rouveroy',zip:'7120'},{name:'Strépy-Bracquegnies',zip:'7110'},{name:'Maurage',zip:'7110'},{name:'Houdeng-Goegnies',zip:'7110'},{name:'Houdeng-Aimeries',zip:'7110'},{name:'Boussoit',zip:'7110'},{name:'Trivières',zip:'7100'},{name:'Saint-Vaast',zip:'7100'},{name:'La Louvière',zip:'7100'},{name:'Haine-Saint-Pierre',zip:'7100'},{name:'Haine-Saint-Paul',zip:'7100'},{name:'Steenkerque Ht.',zip:'7090'},{name:'Ronquières',zip:'7090'},{name:'Petit-Roeulx-lez-Braine',zip:'7090'},{name:'Henripont',zip:'7090'},{name:'Hennuyères',zip:'7090'},{name:'Braine-le-Comte',zip:'7090'},{name:'Sars-la-Bruyère',zip:'7080'},{name:'Noirchain',zip:'7080'},{name:'La Bouverie',zip:'7080'},{name:'Frameries',zip:'7080'},{name:'Eugies Frameries',zip:'7080'},{name:'Ville-sur-Haine Le Roeulx',zip:'7070'},{name:'Thieu',zip:'7070'},{name:'Mignault',zip:'7070'},{name:'Le Roeulx',zip:'7070'},{name:'Gottignies',zip:'7070'},{name:'Neufvilles',zip:'7063'},{name:'Chaussée-Notre-Dame-Louvignies',zip:'7063'},{name:'Naast',zip:'7062'},{name:'Thieusies',zip:'7061'},{name:'Casteau Soignies',zip:'7061'},{name:'Soignies',zip:'7060'},{name:'Horrues',zip:'7060'},{name:'Masnuy-Saint-Pierre',zip:'7050'},{name:'Masnuy-Saint-Jean Jurbise',zip:'7050'},{name:'Jurbise',zip:'7050'},{name:'Herchies',zip:'7050'},{name:'Erbisoeul',zip:'7050'},{name:'Erbaut',zip:'7050'},{name:'Havay',zip:'7041'},{name:'Givry',zip:'7041'},{name:'Quévy-le-Petit',zip:'7040'},{name:'Quévy-le-Grand',zip:'7040'},{name:'Quévy',zip:'7040'},{name:'Goegnies-Chaussée',zip:'7040'},{name:'Genly',zip:'7040'},{name:'Bougnies',zip:'7040'},{name:'Blaregnies',zip:'7040'},{name:'Aulnois',zip:'7040'},{name:'Asquillies',zip:'7040'},{name:'Saint-Denis Ht.',zip:'7034'},{name:'Obourg',zip:'7034'},{name:'Cuesmes',zip:'7033'},{name:'Spiennes',zip:'7032'},{name:'Villers-Saint-Ghislain',zip:'7031'},{name:'Saint-Symphorien',zip:'7030'},{name:'Ciply',zip:'7024'},{name:'Nouvelles',zip:'7022'},{name:'Mesvin',zip:'7022'},{name:'Hyon',zip:'7022'},{name:'Harveng',zip:'7022'},{name:'Harmignies',zip:'7022'},{name:'Havré',zip:'7021'},{name:'Nimy',zip:'7020'},{name:'Maisières',zip:'7020'},{name:'Jemappes',zip:'7012'},{name:'Flénu',zip:'7012'},{name:'Ghlin',zip:'7011'},{name:'Mons',zip:'7000'},{name:'Seloignes',zip:'6596'},{name:'Forges-Philippe',zip:'6596'},{name:'Beauwelz',zip:'6594'},{name:'Macquenoise',zip:'6593'},{name:'Monceau-Imbrechies',zip:'6592'},{name:'Macon',zip:'6591'},{name:'Momignies',zip:'6590'},{name:'Merbes-Sainte-Marie',zip:'6567'},{name:'Merbes-le-Château',zip:'6567'},{name:'Labuissière',zip:'6567'},{name:'Fontaine-Valmont',zip:'6567'},{name:'Solre-sur-Sambre',zip:'6560'},{name:'Montignies-Saint-Christophe',zip:'6560'},{name:'Hantes-Wihéries',zip:'6560'},{name:'Grand-Reng',zip:'6560'},{name:'Erquelinnes',zip:'6560'},{name:'Bienne-lez-Happart',zip:'6543'},{name:'Sars-la-Buissière',zip:'6542'},{name:'Mont-Sainte-Geneviève',zip:'6540'},{name:'Lobbes',zip:'6540'},{name:'Thuillies',zip:'6536'},{name:'Donstiennes',zip:'6536'},{name:'Gozée',zip:'6534'},{name:'Biercée',zip:'6533'},{name:'Ragnies',zip:'6532'},{name:'Biesme-sous-Thuin',zip:'6531'},{name:'Thuin',zip:'6530'},{name:'Leers-et-Fosteau',zip:'6530'},{name:'Strée Ht.',zip:'6511'},{name:'Thirimont',zip:'6500'},{name:'Solre-Saint-Géry',zip:'6500'},{name:'Renlies',zip:'6500'},{name:'Leval-Chaudeville',zip:'6500'},{name:'Leugnies',zip:'6500'},{name:'Beaumont',zip:'6500'},{name:'Barbençon',zip:'6500'},{name:'Sivry-Rance',zip:'6470'},{name:'Sivry',zip:'6470'},{name:'Sautin',zip:'6470'},{name:'Rance',zip:'6470'},{name:'Montbliart',zip:'6470'},{name:'Grandrieu',zip:'6470'},{name:'Rièzes',zip:'6464'},{name:'Forges',zip:'6464'},{name:'Bourlers',zip:'6464'},{name:'Baileux',zip:'6464'},{name:'Lompret',zip:'6463'},{name:'Vaulx-lez-Chimay',zip:'6462'},{name:'Virelles',zip:'6461'},{name:'Villers-la-Tour',zip:'6460'},{name:'Salles',zip:'6460'},{name:'Saint-Remy Ht.',zip:'6460'},{name:'Robechies',zip:'6460'},{name:'Chimay',zip:'6460'},{name:'Bailièvre',zip:'6460'},{name:'Erpion',zip:'6441'},{name:'Vergnies',zip:'6440'},{name:'Froidchapelle',zip:'6440'},{name:'Fourbechies',zip:'6440'},{name:'Boussu-lez-Walcourt',zip:'6440'},{name:'Villers-Poterie',zip:'6280'},{name:'Loverval',zip:'6280'},{name:'Joncret',zip:'6280'},{name:'Gougnies',zip:'6280'},{name:'Gerpinnes',zip:'6280'},{name:'Acoz',zip:'6280'},{name:'Roselies',zip:'6250'},{name:'Presles',zip:'6250'},{name:'Pont-de-Loup',zip:'6250'},{name:'Aiseau-Presles',zip:'6250'},{name:'Aiseau',zip:'6250'},{name:'Pironchamps',zip:'6240'},{name:'Farciennes',zip:'6240'},{name:'Luttre',zip:'6238'},{name:'Liberchies',zip:'6238'},{name:'Viesville',zip:'6230'},{name:'Thiméon',zip:'6230'},{name:'Pont-à-Celles',zip:'6230'},{name:'Obaix',zip:'6230'},{name:'Buzet',zip:'6230'},{name:'Wanfercée-Baulet',zip:'6224'},{name:'Wagnelée',zip:'6223'},{name:'Brye',zip:'6222'},{name:'Saint-Amand',zip:'6221'},{name:'Wangenies',zip:'6220'},{name:'Lambusart',zip:'6220'},{name:'Heppignies',zip:'6220'},{name:'Fleurus',zip:'6220'},{name:'Mellet',zip:'6211'},{name:'Wayaux',zip:'6210'},{name:'Villers-Perwin',zip:'6210'},{name:'Rèves',zip:'6210'},{name:'Les Bons Villers',zip:'6210'},{name:'Frasnes-lez-Gosselies',zip:'6210'},{name:'Châtelineau',zip:'6200'},{name:'Châtelet',zip:'6200'},{name:'Bouffioulx',zip:'6200'},{name:'Trazegnies',zip:'6183'},{name:'Souvret',zip:'6182'},{name:'Gouy-lez-Piéton',zip:'6181'},{name:'Courcelles',zip:'6180'},{name:'Anderlues',zip:'6150'},{name:'Leernes',zip:'6142'},{name:'Forchies-la-Marche',zip:'6141'},{name:'Nalinnes',zip:'6120'},{name:'Marbaix Ht.',zip:'6120'},{name:'Jamioulx',zip:'6120'},{name:'Ham-sur-Heure-Nalinnes',zip:'6120'},{name:'Ham-sur-Heure',zip:'6120'},{name:'Cour-sur-Heure',zip:'6120'},{name:'Landelies',zip:'6111'},{name:'Montigny-le-Tilleul',zip:'6110'},{name:'Montignies-sur-Sambre',zip:'6061'},{name:'Gilly',zip:'6060'},{name:'Roux',zip:'6044'},{name:'Ransart',zip:'6043'},{name:'Lodelinsart',zip:'6042'},{name:'Gosselies',zip:'6041'},{name:'Jumet',zip:'6040'},{name:'Mont-sur-Marchienne',zip:'6032'},{name:'Monceau-sur-Sambre',zip:'6031'},{name:'Marchienne-au-Pont',zip:'6030'},{name:'Goutroux',zip:'6030'},{name:'Dampremy',zip:'6020'},{name:'Couillet',zip:'6010'},{name:'Marcinelle',zip:'6001'},{name:'Charleroi',zip:'6000'},{name:'Zonnebeke',zip:'8980'},{name:'Passendale (Zonnebeke)',zip:'8980'},{name:'Geluveld (Zonnebeke)',zip:'8980'},{name:'Beselare (Zonnebeke)',zip:'8980'},{name:'Watou (Poperinge)',zip:'8978'},{name:'Roesbrugge-Haringe (Poperinge)',zip:'8972'},{name:'Proven (Poperinge)',zip:'8972'},{name:'Krombeke (Poperinge)',zip:'8972'},{name:'Reningelst (Poperinge)',zip:'8970'},{name:'Poperinge',zip:'8970'},{name:'Loker (Heuvelland)',zip:'8958'},{name:'Kemmel (Heuvelland)',zip:'8956'},{name:'Westouter (Heuvelland)',zip:'8954'},{name:'Wijtschate (Heuvelland)',zip:'8953'},{name:'Wulvergem (Heuvelland)',zip:'8952'},{name:'Dranouter (Heuvelland)',zip:'8951'},{name:'Nieuwkerke (Heuvelland)',zip:'8950'},{name:'Heuvelland',zip:'8950'},{name:'Wervik',zip:'8940'},{name:'Geluwe (Wervik)',zip:'8940'},{name:'Rekkem (Menen)',zip:'8930'},{name:'Menen',zip:'8930'},{name:'Lauwe (Menen)',zip:'8930'},{name:'Poelkapelle (Langemark-Poelkapelle)',zip:'8920'},{name:'Langemark-Poelkapelle',zip:'8920'},{name:'Langemark (Langemark-Poelkapelle)',zip:'8920'},{name:'Bikschote (Langemark-Poelkapelle)',zip:'8920'},{name:'Vlamertinge (Ieper)',zip:'8908'},{name:'Elverdinge (Ieper)',zip:'8906'},{name:'Zuidschote (Ieper)',zip:'8904'},{name:'Boezinge (Ieper)',zip:'8904'},{name:'Zillebeke (Ieper)',zip:'8902'},{name:'Voormezele (Ieper)',zip:'8902'},{name:'Hollebeke (Ieper)',zip:'8902'},{name:'Sint-Jan (Ieper)',zip:'8900'},{name:'Ieper',zip:'8900'},{name:'Dikkebus (Ieper)',zip:'8900'},{name:'Brielen (Ieper)',zip:'8900'},{name:'Moorslede',zip:'8890'},{name:'Dadizele (Moorslede)',zip:'8890'},{name:'Sint-Eloois-Winkel (Ledegem)',zip:'8880'},{name:'Rollegem-Kapelle (Ledegem)',zip:'8880'},{name:'Ledegem',zip:'8880'},{name:'Kachtem (Izegem)',zip:'8870'},{name:'Izegem',zip:'8870'},{name:'Emelgem (Izegem)',zip:'8870'},{name:'Lendelede',zip:'8860'},{name:'Koolskamp (Ardooie)',zip:'8851'},{name:'Ardooie',zip:'8850'},{name:'Westrozebeke (Staden)',zip:'8840'},{name:'Staden',zip:'8840'},{name:'Oostnieuwkerke (Staden)',zip:'8840'},{name:'Hooglede',zip:'8830'},{name:'Gits (Hooglede)',zip:'8830'},{name:'Torhout',zip:'8820'},{name:'Lichtervelde',zip:'8810'},{name:'Rumbeke (Roeselare)',zip:'8800'},{name:'Roeselare',zip:'8800'},{name:'Oekene (Roeselare)',zip:'8800'},{name:'Sint-Eloois-Vijve (Waregem)',zip:'8793'},{name:'Desselgem (Waregem)',zip:'8792'},{name:'Waregem',zip:'8790'},{name:'Oostrozebeke',zip:'8780'},{name:'Ingelmunster',zip:'8770'},{name:'Meulebeke',zip:'8760'},{name:'Ruiselede',zip:'8755'},{name:'Zwevezele (Wingene)',zip:'8750'},{name:'Wingene',zip:'8750'},{name:'Pittem',zip:'8740'},{name:'Egem (Pittem)',zip:'8740'},{name:'Oedelem (Beernem)',zip:'8730'},{name:'Beernem',zip:'8730'},{name:'Wakken (Dentergem)',zip:'8720'},{name:'Oeselgem (Dentergem)',zip:'8720'},{name:'Markegem (Dentergem)',zip:'8720'},{name:'Dentergem',zip:'8720'},{name:'Wielsbeke',zip:'8710'},{name:'Sint-Baafs-Vijve (Wielsbeke)',zip:'8710'},{name:'Ooigem (Wielsbeke)',zip:'8710'},{name:'Tielt',zip:'8700'},{name:'Schuiferskapelle (Tielt)',zip:'8700'},{name:'Kanegem (Tielt)',zip:'8700'},{name:'Aarsele (Tielt)',zip:'8700'},{name:'Stavele (Alveringem)',zip:'8691'},{name:'Leisele (Alveringem)',zip:'8691'},{name:'Izenberge (Alveringem)',zip:'8691'},{name:'Gijverinkhove (Alveringem)',zip:'8691'},{name:'Beveren-Aan-Den-Ijzer (Alveringem)',zip:'8691'},{name:'Sint-Rijkers (Alveringem)',zip:'8690'},{name:'Oeren (Alveringem)',zip:'8690'},{name:'Hoogstade (Alveringem)',zip:'8690'},{name:'Alveringem',zip:'8690'},{name:'Zande (Koekelare)',zip:'8680'},{name:'Koekelare',zip:'8680'},{name:'Bovekerke (Koekelare)',zip:'8680'},{name:'Wulpen (Koksijde)',zip:'8670'},{name:'Oostduinkerke (Koksijde)',zip:'8670'},{name:'Koksijde',zip:'8670'},{name:'Adinkerke (De Panne)',zip:'8660'},{name:'Merkem (Houthulst)',zip:'8650'},{name:'Klerken (Houthulst)',zip:'8650'},{name:'Houthulst',zip:'8650'},{name:'Reninge (Lo-Reninge)',zip:'8647'},{name:'Pollinkhove (Lo-Reninge)',zip:'8647'},{name:'Noordschote (Lo-Reninge)',zip:'8647'},{name:'Lo-Reninge',zip:'8647'},{name:'Lo (Lo-Reninge)',zip:'8647'},{name:'Woesten (Vleteren)',zip:'8640'},{name:'Westvleteren (Vleteren)',zip:'8640'},{name:'Vleteren',zip:'8640'},{name:'Oostvleteren (Vleteren)',zip:'8640'},{name:'Zoutenaaie (Veurne)',zip:'8630'},{name:'Wulveringem (Veurne)',zip:'8630'},{name:'Vinkem (Veurne)',zip:'8630'},{name:'Veurne',zip:'8630'},{name:'Eggewaartskapelle (Veurne)',zip:'8630'},{name:'Bulskamp (Veurne)',zip:'8630'},{name:'Booitshoeke (Veurne)',zip:'8630'},{name:'Beauvoorde',zip:'8630'},{name:'Avekapelle (Veurne)',zip:'8630'},{name:'Nieuwpoort',zip:'8620'},{name:'Zarren (Kortemark)',zip:'8610'},{name:'Werken (Kortemark)',zip:'8610'},{name:'Kortemark',zip:'8610'},{name:'Handzame (Kortemark)',zip:'8610'},{name:'Woumen (Diksmuide)',zip:'8600'},{name:'Vladslo (Diksmuide)',zip:'8600'},{name:'Stuivekenskerke (Diksmuide)',zip:'8600'},{name:'Sint-Jacobs-Kapelle (Diksmuide)',zip:'8600'},{name:'Pervijze (Diksmuide)',zip:'8600'},{name:'Oudekapelle (Diksmuide)',zip:'8600'},{name:'Nieuwkapelle (Diksmuide)',zip:'8600'},{name:'Leke (Diksmuide)',zip:'8600'},{name:'Lampernisse (Diksmuide)',zip:'8600'},{name:'Keiem (Diksmuide)',zip:'8600'},{name:'Kaaskerke (Diksmuide)',zip:'8600'},{name:'Esen (Diksmuide)',zip:'8600'},{name:'Driekapellen (Diksmuide)',zip:'8600'},{name:'Diksmuide',zip:'8600'},{name:'Beerst (Diksmuide)',zip:'8600'},{name:'Bossuit (Avelgem)',zip:'8583'},{name:'Outrijve (Avelgem)',zip:'8582'},{name:'Waarmaarde (Avelgem)',zip:'8581'},{name:'Kerkhove (Avelgem)',zip:'8581'},{name:'Avelgem',zip:'8580'},{name:'Tiegem (Anzegem)',zip:'8573'},{name:'Kaster (Anzegem)',zip:'8572'},{name:'Vichte (Anzegem)',zip:'8570'},{name:'Ingooigem (Anzegem)',zip:'8570'},{name:'Gijzelbrechtegem (Anzegem)',zip:'8570'},{name:'Anzegem',zip:'8570'},{name:'Wevelgem',zip:'8560'},{name:'Moorsele (Wevelgem)',zip:'8560'},{name:'Gullegem (Wevelgem)',zip:'8560'},{name:'Sint-Denijs (Zwevegem)',zip:'8554'},{name:'Otegem (Zwevegem)',zip:'8553'},{name:'Moen (Zwevegem)',zip:'8552'},{name:'Heestert (Zwevegem)',zip:'8551'},{name:'Zwevegem',zip:'8550'},{name:'Deerlijk',zip:'8540'},{name:'Hulste (Harelbeke)',zip:'8531'},{name:'Bavikhove (Harelbeke)',zip:'8531'},{name:'Harelbeke',zip:'8530'},{name:'Kuurne',zip:'8520'},{name:'Aalbeke (Kortrijk)',zip:'8511'},{name:'Rollegem (Kortrijk)',zip:'8510'},{name:'Marke (Kortrijk)',zip:'8510'},{name:'Kooigem (Kortrijk)',zip:'8510'},{name:'Bellegem (Kortrijk)',zip:'8510'},{name:'Heule (Kortrijk)',zip:'8501'},{name:'Bissegem (Kortrijk)',zip:'8501'},{name:'Kortrijk',zip:'8500'},{name:'Zerkegem (Jabbeke)',zip:'8490'},{name:'Varsenare (Jabbeke)',zip:'8490'},{name:'Stalhille (Jabbeke)',zip:'8490'},{name:'Snellegem (Jabbeke)',zip:'8490'},{name:'Jabbeke',zip:'8490'},{name:'Ichtegem',zip:'8480'},{name:'Eernegem (Ichtegem)',zip:'8480'},{name:'Bekegem (Ichtegem)',zip:'8480'},{name:'Zevekote (Gistel)',zip:'8470'},{name:'Snaaskerke (Gistel)',zip:'8470'},{name:'Moere (Gistel)',zip:'8470'},{name:'Gistel',zip:'8470'},{name:'Westkerke (Oudenburg)',zip:'8460'},{name:'Roksem (Oudenburg)',zip:'8460'},{name:'Oudenburg',zip:'8460'},{name:'Ettelgem (Oudenburg)',zip:'8460'},{name:'Bredene',zip:'8450'},{name:'Westende (Middelkerke)',zip:'8434'},{name:'Lombardsijde (Middelkerke)',zip:'8434'},{name:'Spermalie',zip:'8433'},{name:'Slijpe (Middelkerke)',zip:'8433'},{name:'Sint-Pieters-Kapelle West-Vlaanderen',zip:'8433'},{name:'Schore (Middelkerke)',zip:'8433'},{name:'Mannekensvere (Middelkerke)',zip:'8433'},{name:'Leffinge (Middelkerke)',zip:'8432'},{name:'Wilskerke (Middelkerke)',zip:'8431'},{name:'Middelkerke',zip:'8430'},{name:'Vlissegem (De Haan)',zip:'8421'},{name:'Wenduine (De Haan)',zip:'8420'},{name:'Klemskerke (De Haan)',zip:'8420'},{name:'Stene (Oostende)',zip:'8400'},{name:'Oostende',zip:'8400'},{name:'Zuienkerke',zip:'8377'},{name:'Nieuwmunster (Zuienkerke)',zip:'8377'},{name:'Meetkerke (Zuienkerke)',zip:'8377'},{name:'Houtave (Zuienkerke)',zip:'8377'},{name:'Uitkerke (Blankenberge)',zip:'8370'},{name:'Blankenberge',zip:'8370'},{name:'Sijsele (Damme)',zip:'8340'},{name:'Moerkerke (Damme)',zip:'8340'},{name:'Lapscheure (Damme)',zip:'8340'},{name:'Hoeke (Damme)',zip:'8340'},{name:'Damme',zip:'8340'},{name:'Heist-Aan-Zee (Knokke-Heist)',zip:'8301'},{name:'Westkapelle (Knokke-Heist)',zip:'8300'},{name:'Knokke-Heist',zip:'8300'},{name:'Knokke (Knokke-Heist)',zip:'8300'},{name:'Aartrijke (Zedelgem)',zip:'8211'},{name:'Zedelgem',zip:'8210'},{name:'Veldegem (Zedelgem)',zip:'8210'},{name:'Loppem (Zedelgem)',zip:'8210'},{name:'Waardamme (Oostkamp)',zip:'8020'},{name:'Ruddervoorde (Oostkamp)',zip:'8020'},{name:'Oostkamp',zip:'8020'},{name:'Hertsberge (Oostkamp)',zip:'8020'},{name:'Zeebrugge (Brugge)',zip:'8380'},{name:'Lissewege (Brugge)',zip:'8380'},{name:'Dudzele (Brugge)',zip:'8380'},{name:'Sint-Kruis (Brugge)',zip:'8310'},{name:'Assebroek (Brugge)',zip:'8310'},{name:'Sint-Michiels (Brugge)',zip:'8200'},{name:'Sint-Andries (Brugge)',zip:'8200'},{name:'Koolkerke (Brugge)',zip:'8000'},{name:'Brugge',zip:'8000'},{name:'Waanrode (Kortenaken)',zip:'3473'},{name:'Kersbeek-Miskom (Kortenaken)',zip:'3472'},{name:'Hoeleden (Kortenaken)',zip:'3471'},{name:'Ransberg (Kortenaken)',zip:'3470'},{name:'Kortenaken',zip:'3470'},{name:'Molenbeek-Wersbeek (Bekkevoort)',zip:'3461'},{name:'Bekkevoort',zip:'3460'},{name:'Assent (Bekkevoort)',zip:'3460'},{name:'Rummen (Geetbets)',zip:'3454'},{name:'Grazen (Geetbets)',zip:'3450'},{name:'Geetbets',zip:'3450'},{name:'Zoutleeuw',zip:'3440'},{name:'Helen-Bos (Zoutleeuw)',zip:'3440'},{name:'Halle-Booienhoven (Zoutleeuw)',zip:'3440'},{name:'Dormaal (Zoutleeuw)',zip:'3440'},{name:'Budingen (Zoutleeuw)',zip:'3440'},{name:'Neerlanden (Landen)',zip:'3404'},{name:'Attenhoven (Landen)',zip:'3404'},{name:'Wezeren (Landen)',zip:'3401'},{name:'Walshoutem (Landen)',zip:'3401'},{name:'Walsbets (Landen)',zip:'3401'},{name:'Waasmont (Landen)',zip:'3401'},{name:'Wange (Landen)',zip:'3400'},{name:'Rumsdorp (Landen)',zip:'3400'},{name:'Overwinden (Landen)',zip:'3400'},{name:'Neerwinden (Landen)',zip:'3400'},{name:'Landen',zip:'3400'},{name:'Laar (Landen)',zip:'3400'},{name:'Ezemaal (Landen)',zip:'3400'},{name:'Eliksem (Landen)',zip:'3400'},{name:'Meensel-Kiezegem (Tielt-Winge)',zip:'3391'},{name:'Tielt-Winge',zip:'3390'},{name:'Sint-Joris-Winge (Tielt-Winge)',zip:'3390'},{name:'Houwaart (Tielt-Winge)',zip:'3390'},{name:'Attenrode (Glabbeek)',zip:'3384'},{name:'Bunsbeek (Glabbeek)',zip:'3380'},{name:'Willebringen (Boutersem)',zip:'3370'},{name:'Vertrijk (Boutersem)',zip:'3370'},{name:'Roosbeek (Boutersem)',zip:'3370'},{name:'Neervelp (Boutersem)',zip:'3370'},{name:'Kerkom (Boutersem)',zip:'3370'},{name:'Boutersem',zip:'3370'},{name:'Opvelp (Bierbeek)',zip:'3360'},{name:'Lovenjoel (Bierbeek)',zip:'3360'},{name:'Korbeek-Lo (Bierbeek)',zip:'3360'},{name:'Bierbeek',zip:'3360'},{name:'Wommersom (Linter)',zip:'3350'},{name:'Overhespen (Linter)',zip:'3350'},{name:'Orsmaal-Gussenhoven (Linter)',zip:'3350'},{name:'Neerlinter (Linter)',zip:'3350'},{name:'Neerhespen (Linter)',zip:'3350'},{name:'Melkwezer (Linter)',zip:'3350'},{name:'Linter',zip:'3350'},{name:'Drieslinter (Linter)',zip:'3350'},{name:'Outgaarden (Hoegaarden)',zip:'3321'},{name:'Hoegaarden',zip:'3320'},{name:'Vissenaken (Tienen)',zip:'3300'},{name:'Tienen',zip:'3300'},{name:'Sint-Margriete-Houtem Tienen',zip:'3300'},{name:'Oplinter (Tienen)',zip:'3300'},{name:'Oorbeek (Tienen)',zip:'3300'},{name:'Kumtich (Tienen)',zip:'3300'},{name:'Hakendover (Tienen)',zip:'3300'},{name:'Goetsenhoven (Tienen)',zip:'3300'},{name:'Bost (Tienen)',zip:'3300'},{name:'Molenstede (Diest)',zip:'3294'},{name:'Kaggevinne (Diest)',zip:'3293'},{name:'Webbekom (Diest)',zip:'3290'},{name:'Schaffen (Diest)',zip:'3290'},{name:'Diest',zip:'3290'},{name:'Testelt (Scherpenheuvel-Zichem)',zip:'3272'},{name:'Messelbroek (Scherpenheuvel-Zichem)',zip:'3272'},{name:'Zichem (Scherpenheuvel-Zichem)',zip:'3271'},{name:'Averbode (Scherpenheuvel-Zichem)',zip:'3271'},{name:'Scherpenheuvel (Scherpenheuvel-Zichem)',zip:'3270'},{name:'Nieuwrode (Holsbeek)',zip:'3221'},{name:'Sint-Pieters-Rode (Holsbeek)',zip:'3220'},{name:'Holsbeek',zip:'3220'},{name:'Pellenberg (Lubbeek)',zip:'3212'},{name:'Binkom (Lubbeek)',zip:'3211'},{name:'Lubbeek',zip:'3210'},{name:'Linden (Lubbeek)',zip:'3210'},{name:'Rillaar (Aarschot)',zip:'3202'},{name:'Langdorp (Aarschot)',zip:'3201'},{name:'Gelrode (Aarschot)',zip:'3200'},{name:'Aarschot',zip:'3200'},{name:'Hever (Boortmeerbeek)',zip:'3191'},{name:'Boortmeerbeek',zip:'3190'},{name:'Wespelaar (Haacht)',zip:'3150'},{name:'Tildonk (Haacht)',zip:'3150'},{name:'Haacht',zip:'3150'},{name:'Keerbergen',zip:'3140'},{name:'Betekom (Begijnendijk)',zip:'3130'},{name:'Begijnendijk',zip:'3130'},{name:'Baal (Tremelo)',zip:'3128'},{name:'Tremelo',zip:'3120'},{name:'Werchter (Rotselaar)',zip:'3118'},{name:'Wezemaal (Rotselaar)',zip:'3111'},{name:'Rotselaar',zip:'3110'},{name:'Overijse',zip:'3090'},{name:'Vossem (Tervuren)',zip:'3080'},{name:'Tervuren',zip:'3080'},{name:'Duisburg (Tervuren)',zip:'3080'},{name:'Meerbeek (Kortenberg)',zip:'3078'},{name:'Everberg (Kortenberg)',zip:'3078'},{name:'Erps-Kwerps (Kortenberg)',zip:'3071'},{name:'Kortenberg',zip:'3070'},{name:'Leefdaal (Bertem)',zip:'3061'},{name:'Korbeek-Dijle (Bertem)',zip:'3060'},{name:'Bertem',zip:'3060'},{name:'Vaalbeek (Oud-Heverlee)',zip:'3054'},{name:'Haasrode (Oud-Heverlee)',zip:'3053'},{name:'Blanden (Oud-Heverlee)',zip:'3052'},{name:'Sint-Joris-Weert (Oud-Heverlee)',zip:'3051'},{name:'Oud-Heverlee',zip:'3050'},{name:'Sint-Agatha-Rode (Huldenberg)',zip:'3040'},{name:'Ottenburg (Huldenberg)',zip:'3040'},{name:'Neerijse (Huldenberg)',zip:'3040'},{name:'Loonbeek (Huldenberg)',zip:'3040'},{name:'Huldenberg',zip:'3040'},{name:'Winksele (Herent)',zip:'3020'},{name:'Veltem-Beisem (Herent)',zip:'3020'},{name:'Herent',zip:'3020'},{name:'Wilsele (Leuven)',zip:'3012'},{name:'Kessel-Lo (Leuven)',zip:'3010'},{name:'Heverlee (Leuven)',zip:'3001'},{name:'Leuven',zip:'3000'},{name:'Weerde (Zemst)',zip:'1982'},{name:'Elewijt (Zemst)',zip:'1982'},{name:'Zemst',zip:'1980'},{name:'Eppegem (Zemst)',zip:'1980'},{name:'Wezembeek-Oppem',zip:'1970'},{name:'Kraainem',zip:'1950'},{name:'Sterrebeek (Zaventem)',zip:'1933'},{name:'Sint-Stevens-Woluwe (Zaventem)',zip:'1932'},{name:'Zaventem',zip:'1930'},{name:'Nossegem (Zaventem)',zip:'1930'},{name:'Nederokkerzeel (Kampenhout)',zip:'1910'},{name:'Kampenhout',zip:'1910'},{name:'Buken (Kampenhout)',zip:'1910'},{name:'Ramsdonk (Kapelle-Op-Den-Bos)',zip:'1880'},{name:'Nieuwenrode (Kapelle-Op-Den-Bos)',zip:'1880'},{name:'Kapelle-op-den-Bos',zip:'1880'},{name:'Wolvertem (Meise)',zip:'1861'},{name:'Meise',zip:'1860'},{name:'Strombeek-Bever (Grimbergen)',zip:'1853'},{name:'Beigem (Grimbergen)',zip:'1852'},{name:'Humbeek (Grimbergen)',zip:'1851'},{name:'Grimbergen',zip:'1850'},{name:'Steenhuffel (Londerzeel)',zip:'1840'},{name:'Malderen (Londerzeel)',zip:'1840'},{name:'Londerzeel',zip:'1840'},{name:'Diegem (Machelen)',zip:'1831'},{name:'Steenokkerzeel',zip:'1820'},{name:'Perk (Steenokkerzeel)',zip:'1820'},{name:'Melsbroek (Steenokkerzeel)',zip:'1820'},{name:'Vilvoorde',zip:'1800'},{name:'Peutie (Vilvoorde)',zip:'1800'},{name:'Teralfene (Affligem)',zip:'1790'},{name:'Hekelgem (Affligem)',zip:'1790'},{name:'Essene (Affligem)',zip:'1790'},{name:'Affligem',zip:'1790'},{name:'Merchtem',zip:'1785'},{name:'Brussegem (Merchtem)',zip:'1785'},{name:'Wemmel',zip:'1780'},{name:'Liedekerke',zip:'1770'},{name:'Borchtlombeek (Roosdaal)',zip:'1761'},{name:'Strijtem (Roosdaal)',zip:'1760'},{name:'Roosdaal',zip:'1760'},{name:'Pamel (Roosdaal)',zip:'1760'},{name:'Onze-Lieve-Vrouw-Lombeek (Roosdaal)',zip:'1760'},{name:'Oetingen (Gooik)',zip:'1755'},{name:'Leerbeek (Gooik)',zip:'1755'},{name:'Kester (Gooik)',zip:'1755'},{name:'Gooik',zip:'1755'},{name:'Sint-Martens-Lennik (Lennik)',zip:'1750'},{name:'Sint-Kwintens-Lennik (Lennik)',zip:'1750'},{name:'Lennik',zip:'1750'},{name:'Gaasbeek (Lennik)',zip:'1750'},{name:'Opwijk',zip:'1745'},{name:'Mazenzele (Opwijk)',zip:'1745'},{name:'Sint-Katherina-Lombeek (Ternat)',zip:'1742'},{name:'Wambeek (Ternat)',zip:'1741'},{name:'Ternat',zip:'1740'},{name:'Zellik (Asse)',zip:'1731'},{name:'Relegem (Asse)',zip:'1731'},{name:'Mollem (Asse)',zip:'1730'},{name:'Kobbegem (Asse)',zip:'1730'},{name:'Bekkerzeel (Asse)',zip:'1730'},{name:'Asse',zip:'1730'},{name:'Schepdaal (Dilbeek)',zip:'1703'},{name:'Groot-Bijgaarden (Dilbeek)',zip:'1702'},{name:'Itterbeek (Dilbeek)',zip:'1701'},{name:'Sint-Ulriks-Kapelle (Dilbeek)',zip:'1700'},{name:'Sint-Martens-Bodegem (Dilbeek)',zip:'1700'},{name:'Dilbeek',zip:'1700'},{name:'Bellingen (Pepingen)',zip:'1674'},{name:'Beert (Pepingen)',zip:'1673'},{name:'Elingen (Pepingen)',zip:'1671'},{name:'Pepingen',zip:'1670'},{name:'Heikruis (Pepingen)',zip:'1670'},{name:'Bogaarden (Pepingen)',zip:'1670'},{name:'Huizingen (Beersel)',zip:'1654'},{name:'Dworp (Beersel)',zip:'1653'},{name:'Alsemberg (Beersel)',zip:'1652'},{name:'Lot (Beersel)',zip:'1651'},{name:'Beersel',zip:'1650'},{name:'Linkebeek',zip:'1630'},{name:'Drogenbos',zip:'1620'},{name:'Vlezenbeek (Sint-Pieters-Leeuw)',zip:'1602'},{name:'Sint-Pieters-Leeuw',zip:'1600'},{name:'Sint-Laureins-Berchem (Sint-Pieters-Leeuw)',zip:'1600'},{name:'Oudenaken (Sint-Pieters-Leeuw)',zip:'1600'},{name:'Vollezele (Galmaarden)',zip:'1570'},{name:'Tollembeek (Galmaarden)',zip:'1570'},{name:'Galmaarden',zip:'1570'},{name:'Hoeilaart',zip:'1560'},{name:'Herne',zip:'1540'},{name:'Herfelingen (Herne)',zip:'1540'},{name:'Lembeek (Halle)',zip:'1502'},{name:'Buizingen (Halle)',zip:'1501'},{name:'Halle',zip:'1500'},{name:'Middelburg (Maldegem)',zip:'9992'},{name:'Adegem (Maldegem)',zip:'9991'},{name:'Maldegem',zip:'9990'},{name:'Watervliet (Sint-Laureins)',zip:'9988'},{name:'Waterland-Oudeman (Sint-Laureins)',zip:'9988'},{name:'Sint-Jan-In-Eremo (Sint-Laureins)',zip:'9982'},{name:'Sint-Margriete (Sint-Laureins)',zip:'9981'},{name:'Sint-Laureins',zip:'9980'},{name:'Lembeke (Kaprijke)',zip:'9971'},{name:'Kaprijke',zip:'9970'},{name:'Oosteeklo (Assenede)',zip:'9968'},{name:'Bassevelde (Assenede)',zip:'9968'},{name:'Boekhoute (Assenede)',zip:'9961'},{name:'Assenede',zip:'9960'},{name:'Waarschoot',zip:'9950'},{name:'Sleidinge (Evergem)',zip:'9940'},{name:'Kluizen (Evergem)',zip:'9940'},{name:'Evergem',zip:'9940'},{name:'Ertvelde (Evergem)',zip:'9940'},{name:'Ronsele (Zomergem)',zip:'9932'},{name:'Oostwinkel (Zomergem)',zip:'9931'},{name:'Zomergem',zip:'9930'},{name:'Vinderhoute (Lovendegem)',zip:'9921'},{name:'Lovendegem',zip:'9920'},{name:'Ursel (Knesselare)',zip:'9910'},{name:'Knesselare',zip:'9910'},{name:'Eeklo',zip:'9900'},{name:'Vurste (Gavere)',zip:'9890'},{name:'Semmerzake (Gavere)',zip:'9890'},{name:'Gavere',zip:'9890'},{name:'Dikkelvenne (Gavere)',zip:'9890'},{name:'Baaigem (Gavere)',zip:'9890'},{name:'Asper (Gavere)',zip:'9890'},{name:'Bellem (Aalter)',zip:'9881'},{name:'Poeke (Aalter)',zip:'9880'},{name:'Lotenhulle (Aalter)',zip:'9880'},{name:'Aalter',zip:'9880'},{name:'Zulte',zip:'9870'},{name:'Olsene (Zulte)',zip:'9870'},{name:'Scheldewindeke (Oosterzele)',zip:'9860'},{name:'Oosterzele',zip:'9860'},{name:'Moortsele (Oosterzele)',zip:'9860'},{name:'Landskouter (Oosterzele)',zip:'9860'},{name:'Gijzenzele (Oosterzele)',zip:'9860'},{name:'Balegem (Oosterzele)',zip:'9860'},{name:'Vosselare (Nevele)',zip:'9850'},{name:'Poesele (Nevele)',zip:'9850'},{name:'Nevele',zip:'9850'},{name:'Merendree (Nevele)',zip:'9850'},{name:'Landegem (Nevele)',zip:'9850'},{name:'Hansbeke (Nevele)',zip:'9850'},{name:'Zevergem (De Pinte)',zip:'9840'},{name:'Deurle (Sint-Martens-Latem)',zip:'9831'},{name:'Sint-Martens-Latem',zip:'9830'},{name:'Schelderode (Merelbeke)',zip:'9820'},{name:'Munte (Merelbeke)',zip:'9820'},{name:'Merelbeke',zip:'9820'},{name:'Melsen (Merelbeke)',zip:'9820'},{name:'Lemberge (Merelbeke)',zip:'9820'},{name:'Bottelare (Merelbeke)',zip:'9820'},{name:'Nazareth',zip:'9810'},{name:'Eke (Nazareth)',zip:'9810'},{name:'Zeveren (Deinze)',zip:'9800'},{name:'Wontergem (Deinze)',zip:'9800'},{name:'Vinkt (Deinze)',zip:'9800'},{name:'Sint-Martens-Leerne (Deinze)',zip:'9800'},{name:'Petegem-Aan-De-Leie (Deinze)',zip:'9800'},{name:'Meigem (Deinze)',zip:'9800'},{name:'Grammene (Deinze)',zip:'9800'},{name:'Gottem (Deinze)',zip:'9800'},{name:'Deinze',zip:'9800'},{name:'Bachte-Maria-Leerne (Deinze)',zip:'9800'},{name:'Astene (Deinze)',zip:'9800'},{name:'Wortegem-Petegem',zip:'9790'},{name:'Wortegem (Wortegem-Petegem)',zip:'9790'},{name:'Petegem-Aan-De-Schelde (Wortegem-Petegem)',zip:'9790'},{name:'Moregem (Wortegem-Petegem)',zip:'9790'},{name:'Elsegem (Wortegem-Petegem)',zip:'9790'},{name:'Wannegem-Lede (Kruishoutem)',zip:'9772'},{name:'Nokere (Kruishoutem)',zip:'9771'},{name:'Kruishoutem',zip:'9770'},{name:'Zingem',zip:'9750'},{name:'Ouwegem (Zingem)',zip:'9750'},{name:'Huise (Zingem)',zip:'9750'},{name:'Welden (Oudenaarde)',zip:'9700'},{name:'Volkegem (Oudenaarde)',zip:'9700'},{name:'Oudenaarde',zip:'9700'},{name:'Nederename (Oudenaarde)',zip:'9700'},{name:'Mullem (Oudenaarde)',zip:'9700'},{name:'Melden (Oudenaarde)',zip:'9700'},{name:'Mater (Oudenaarde)',zip:'9700'},{name:'Leupegem (Oudenaarde)',zip:'9700'},{name:'Heurne (Oudenaarde)',zip:'9700'},{name:'Ename (Oudenaarde)',zip:'9700'},{name:'Eine (Oudenaarde)',zip:'9700'},{name:'Edelare (Oudenaarde)',zip:'9700'},{name:'Bevere (Oudenaarde)',zip:'9700'},{name:'Zulzeke (Kluisbergen)',zip:'9690'},{name:'Ruien (Kluisbergen)',zip:'9690'},{name:'Kluisbergen',zip:'9690'},{name:'Schorisse (Maarkedal)',zip:'9688'},{name:'Nukerke (Maarkedal)',zip:'9681'},{name:'Maarke-Kerkem (Maarkedal)',zip:'9680'},{name:'Maarkedal',zip:'9680'},{name:'Etikhove (Maarkedal)',zip:'9680'},{name:'Sint-Maria-Horebeke (Horebeke)',zip:'9667'},{name:'Sint-Kornelis-Horebeke (Horebeke)',zip:'9667'},{name:'Horebeke',zip:'9667'},{name:'Parike (Brakel)',zip:'9661'},{name:'Zegelsem (Brakel)',zip:'9660'},{name:'Sint-Maria-Oudenhove Brakel',zip:'9660'},{name:'Opbrakel (Brakel)',zip:'9660'},{name:'Nederbrakel (Brakel)',zip:'9660'},{name:'Michelbeke (Brakel)',zip:'9660'},{name:'Everbeek (Brakel)',zip:'9660'},{name:'Elst (Brakel)',zip:'9660'},{name:'Brakel',zip:'9660'},{name:'Nederzwalm-Hermelgem (Zwalm)',zip:'9636'},{name:'Zwalm',zip:'9630'},{name:'Sint-Maria-Latem (Zwalm)',zip:'9630'},{name:'Sint-Denijs-Boekel (Zwalm)',zip:'9630'},{name:'Sint-Blasius-Boekel (Zwalm)',zip:'9630'},{name:'Rozebeke (Zwalm)',zip:'9630'},{name:'Roborst (Zwalm)',zip:'9630'},{name:'Paulatem (Zwalm)',zip:'9630'},{name:'Munkzwalm (Zwalm)',zip:'9630'},{name:'Meilegem (Zwalm)',zip:'9630'},{name:'Hundelgem (Zwalm)',zip:'9630'},{name:'Dikkele (Zwalm)',zip:'9630'},{name:'Beerlegem (Zwalm)',zip:'9630'},{name:'Zottegem',zip:'9620'},{name:'Velzeke-Ruddershove (Zottegem)',zip:'9620'},{name:'Strijpen (Zottegem)',zip:'9620'},{name:'Sint-Maria-Oudenhove Zottegem',zip:'9620'},{name:'Sint-Goriks-Oudenhove (Zottegem)',zip:'9620'},{name:'Leeuwergem (Zottegem)',zip:'9620'},{name:'Grotenberge (Zottegem)',zip:'9620'},{name:'Godveerdegem (Zottegem)',zip:'9620'},{name:'Erwetegem (Zottegem)',zip:'9620'},{name:'Elene (Zottegem)',zip:'9620'},{name:'Kwaremont (Kluisbergen)',zip:'9690'},{name:'Sint-Martens-Lierde (Lierde)',zip:'9572'},{name:'Hemelveerdegem (Lierde)',zip:'9571'},{name:'Sint-Maria-Lierde (Lierde)',zip:'9570'},{name:'Lierde',zip:'9570'},{name:'Deftinge (Lierde)',zip:'9570'},{name:'Borsbeke (Herzele)',zip:'9552'},{name:'Ressegem (Herzele)',zip:'9551'},{name:'Woubrechtegem (Herzele)',zip:'9550'},{name:'Steenhuize-Wijnhuize (Herzele)',zip:'9550'},{name:'Sint-Lievens-Esse (Herzele)',zip:'9550'},{name:'Sint-Antelinks (Herzele)',zip:'9550'},{name:'Hillegem (Herzele)',zip:'9550'},{name:'Herzele',zip:'9550'},{name:'Letterhoutem (Sint-Lievens-Houtem)',zip:'9521'},{name:'Zonnegem (Sint-Lievens-Houtem)',zip:'9520'},{name:'Vlierzele (Sint-Lievens-Houtem)',zip:'9520'},{name:'Sint-Lievens-Houtem',zip:'9520'},{name:'Bavegem (Sint-Lievens-Houtem)',zip:'9520'},{name:'Zandbergen (Geraardsbergen)',zip:'9506'},{name:'Waarbeke (Geraardsbergen)',zip:'9506'},{name:'Smeerebbe-Vloerzegem (Geraardsbergen)',zip:'9506'},{name:'Schendelbeke (Geraardsbergen)',zip:'9506'},{name:'Nieuwenhove (Geraardsbergen)',zip:'9506'},{name:'Idegem (Geraardsbergen)',zip:'9506'},{name:'Grimminge (Geraardsbergen)',zip:'9506'},{name:'Zarlardinge (Geraardsbergen)',zip:'9500'},{name:'Viane (Geraardsbergen)',zip:'9500'},{name:'Overboelare (Geraardsbergen)',zip:'9500'},{name:'Ophasselt (Geraardsbergen)',zip:'9500'},{name:'Onkerzele (Geraardsbergen)',zip:'9500'},{name:'Nederboelare (Geraardsbergen)',zip:'9500'},{name:'Moerbeke (Geraardsbergen)',zip:'9500'},{name:'Goeferdinge (Geraardsbergen)',zip:'9500'},{name:'Geraardsbergen',zip:'9500'},{name:'Welle (Denderleeuw)',zip:'9473'},{name:'Iddergem (Denderleeuw)',zip:'9472'},{name:'Denderleeuw',zip:'9470'},{name:'Kerksken (Haaltert)',zip:'9451'},{name:'Heldergem (Haaltert)',zip:'9450'},{name:'Haaltert',zip:'9450'},{name:'Denderhoutem (Haaltert)',zip:'9450'},{name:'Vlekkem (Erpe-Mere)',zip:'9420'},{name:'Ottergem (Erpe-Mere)',zip:'9420'},{name:'Mere (Erpe-Mere)',zip:'9420'},{name:'Erpe-Mere',zip:'9420'},{name:'Erpe (Erpe-Mere)',zip:'9420'},{name:'Erondegem (Erpe-Mere)',zip:'9420'},{name:'Burst (Erpe-Mere)',zip:'9420'},{name:'Bambrugge (Erpe-Mere)',zip:'9420'},{name:'Aaigem (Erpe-Mere)',zip:'9420'},{name:'Outer (Ninove)',zip:'9406'},{name:'Aspelare (Ninove)',zip:'9404'},{name:'Neigem (Ninove)',zip:'9403'},{name:'Meerbeke (Ninove)',zip:'9402'},{name:'Pollare (Ninove)',zip:'9401'},{name:'Voorde (Ninove)',zip:'9400'},{name:'Okegem (Ninove)',zip:'9400'},{name:'Ninove',zip:'9400'},{name:'Nederhasselt (Ninove)',zip:'9400'},{name:'Lieferinge (Ninove)',zip:'9400'},{name:'Denderwindeke (Ninove)',zip:'9400'},{name:'Appelterre-Eichem (Ninove)',zip:'9400'},{name:'Wanzele (Lede)',zip:'9340'},{name:'Smetlede (Lede)',zip:'9340'},{name:'Oordegem (Lede)',zip:'9340'},{name:'Lede',zip:'9340'},{name:'Impe (Lede)',zip:'9340'},{name:'Nieuwerkerken (Aalst)',zip:'9320'},{name:'Erembodegem (Aalst)',zip:'9320'},{name:'Moorsel (Aalst)',zip:'9310'},{name:'Herdersem (Aalst)',zip:'9310'},{name:'Baardegem (Aalst)',zip:'9310'},{name:'Gijzegem (Aalst)',zip:'9308'},{name:'Aalst',zip:'9300'},{name:'Uitbergen (Berlare)',zip:'9290'},{name:'Overmere (Berlare)',zip:'9290'},{name:'Berlare',zip:'9290'},{name:'Wieze (Lebbeke)',zip:'9280'},{name:'Lebbeke',zip:'9280'},{name:'Denderbelle (Lebbeke)',zip:'9280'},{name:'Laarne',zip:'9270'},{name:'Kalken (Laarne)',zip:'9270'},{name:'Wichelen',zip:'9260'},{name:'Serskamp (Wichelen)',zip:'9260'},{name:'Schellebelle (Wichelen)',zip:'9260'},{name:'Opdorp (Buggenhout)',zip:'9255'},{name:'Buggenhout',zip:'9255'},{name:'Waasmunster',zip:'9250'},{name:'Zele',zip:'9240'},{name:'Wetteren',zip:'9230'},{name:'Westrem (Wetteren)',zip:'9230'},{name:'Massemen (Wetteren)',zip:'9230'},{name:'Moerzeke (Hamme)',zip:'9220'},{name:'Schoonaarde (Dendermonde)',zip:'9200'},{name:'Oudegem (Dendermonde)',zip:'9200'},{name:'Mespelare (Dendermonde)',zip:'9200'},{name:'Grembergen (Dendermonde)',zip:'9200'},{name:'Dendermonde',zip:'9200'},{name:'Baasrode (Dendermonde)',zip:'9200'},{name:'Appels (Dendermonde)',zip:'9200'},{name:'Stekene',zip:'9190'},{name:'Kemzeke (Stekene)',zip:'9190'},{name:'Wachtebeke',zip:'9185'},{name:'Moerbeke-Waas',zip:'9180'},{name:'Sint-Pauwels (Sint-Gillis-Waas)',zip:'9170'},{name:'Sint-Gillis-Waas',zip:'9170'},{name:'Meerdonk (Sint-Gillis-Waas)',zip:'9170'},{name:'Lokeren',zip:'9160'},{name:'Eksaarde (Lokeren)',zip:'9160'},{name:'Daknam (Lokeren)',zip:'9160'},{name:'Rupelmonde (Kruibeke)',zip:'9150'},{name:'Kruibeke',zip:'9150'},{name:'Bazel (Kruibeke)',zip:'9150'},{name:'Tielrode (Temse)',zip:'9140'},{name:'Temse',zip:'9140'},{name:'Steendorp (Temse)',zip:'9140'},{name:'Elversele (Temse)',zip:'9140'},{name:'Verrebroek (Beveren)',zip:'9130'},{name:'Kieldrecht (Beveren)',zip:'9130'},{name:'Doel (Beveren)',zip:'9130'},{name:'Vrasene (Beveren)',zip:'9120'},{name:'Melsele (Beveren)',zip:'9120'},{name:'Haasdonk (Beveren)',zip:'9120'},{name:'Sinaai-Waas (Sint-Niklaas)',zip:'9112'},{name:'Belsele (Sint-Niklaas)',zip:'9111'},{name:'Sint-Niklaas',zip:'9100'},{name:'Nieuwkerken-Waas (Sint-Niklaas)',zip:'9100'},{name:'Melle',zip:'9090'},{name:'Gontrode (Melle)',zip:'9090'},{name:'Zeveneken (Lochristi)',zip:'9080'},{name:'Zaffelare (Lochristi)',zip:'9080'},{name:'Lochristi',zip:'9080'},{name:'Beervelde (Lochristi)',zip:'9080'},{name:'Destelbergen',zip:'9070'},{name:'Zelzate',zip:'9060'},{name:'Zwijnaarde (Gent)',zip:'9052'},{name:'Sint-Denijs-Westrem (Gent)',zip:'9051'},{name:'Afsnee (Gent)',zip:'9051'},{name:'Ledeberg (Gent)',zip:'9050'},{name:'Gentbrugge (Gent)',zip:'9050'},{name:'Sint-Kruis-Winkel (Gent)',zip:'9042'},{name:'Mendonk (Gent)',zip:'9042'},{name:'Desteldonk',zip:'9042'},{name:'Oostakker (Gent)',zip:'9041'},{name:'Sint-Amandsberg (Gent)',zip:'9040'},{name:'Wondelgem (Gent)',zip:'9032'},{name:'Drongen (Gent)',zip:'9031'},{name:'Mariakerke (Gent)',zip:'9030'},{name:'Gent',zip:'9000'},{name:'Wijchmaal (Peer)',zip:'3990'},{name:'Peer',zip:'3990'},{name:'Kleine-Brogel (Peer)',zip:'3990'},{name:'Grote-Brogel (Peer)',zip:'3990'},{name:'Tessenderlo',zip:'3980'},{name:'Heppen (Leopoldsburg)',zip:'3971'},{name:'Leopoldsburg',zip:'3970'},{name:'Opitter (Bree)',zip:'3960'},{name:'Gerdingen (Bree)',zip:'3960'},{name:'Bree',zip:'3960'},{name:'Beek (Bree)',zip:'3960'},{name:'Reppel (Bocholt)',zip:'3950'},{name:'Kaulille (Bocholt)',zip:'3950'},{name:'Bocholt',zip:'3950'},{name:'Oostham (Ham)',zip:'3945'},{name:'Kwaadmechelen (Ham)',zip:'3945'},{name:'Ham',zip:'3945'},{name:'Eksel (Hechtel-Eksel)',zip:'3941'},{name:'Hechtel-Eksel',zip:'3940'},{name:'Hechtel',zip:'3940'},{name:'Hamont-Achel',zip:'3930'},{name:'Hamont (Hamont-Achel)',zip:'3930'},{name:'Achel (Hamont-Achel)',zip:'3930'},{name:'Lommel',zip:'3920'},{name:'Sint-Huibrechts-Lille (Neerpelt)',zip:'3910'},{name:'Neerpelt',zip:'3910'},{name:'Overpelt',zip:'3900'},{name:'Mielen-Boven-Aalst (Gingelom)',zip:'3891'},{name:'Buvingen (Gingelom)',zip:'3891'},{name:'Borlo (Gingelom)',zip:'3891'},{name:'Vorsen (Gingelom)',zip:'3890'},{name:'Niel-Bij-Sint-Truiden (Gingelom)',zip:'3890'},{name:'Montenaken (Gingelom)',zip:'3890'},{name:'Kortijs (Gingelom)',zip:'3890'},{name:'Jeuk (Gingelom)',zip:'3890'},{name:'Gingelom',zip:'3890'},{name:'Boekhout (Gingelom)',zip:'3890'},{name:'Veulen (Heers)',zip:'3870'},{name:'Vechmaal (Heers)',zip:'3870'},{name:'Rukkelingen-Loon (Heers)',zip:'3870'},{name:'Opheers (Heers)',zip:'3870'},{name:'Mettekoven (Heers)',zip:'3870'},{name:'Mechelen-Bovelingen (Heers)',zip:'3870'},{name:'Klein-Gelmen (Heers)',zip:'3870'},{name:'Horpmaal (Heers)',zip:'3870'},{name:'Heks (Heers)',zip:'3870'},{name:'Heers',zip:'3870'},{name:'Gutschoven (Heers)',zip:'3870'},{name:'Bovelingen (Heers)',zip:'3870'},{name:'Batsheers (Heers)',zip:'3870'},{name:'Wijer (Nieuwerkerken)',zip:'3850'},{name:'Kozen (Nieuwerkerken)',zip:'3850'},{name:'Binderveld (Nieuwerkerken)',zip:'3850'},{name:'Voort (Borgloon)',zip:'3840'},{name:'Rijkel (Borgloon)',zip:'3840'},{name:'Kuttekoven (Borgloon)',zip:'3840'},{name:'Kerniel (Borgloon)',zip:'3840'},{name:'Hoepertingen (Borgloon)',zip:'3840'},{name:'Hendrieken (Borgloon)',zip:'3840'},{name:'Groot-Loon (Borgloon)',zip:'3840'},{name:'Gotem (Borgloon)',zip:'3840'},{name:'Gors-Opleeuw (Borgloon)',zip:'3840'},{name:'Broekom (Borgloon)',zip:'3840'},{name:'Borgloon',zip:'3840'},{name:'Ulbeek (Wellen)',zip:'3832'},{name:'Herten (Wellen)',zip:'3831'},{name:'Wellen',zip:'3830'},{name:'Berlingen (Wellen)',zip:'3830'},{name:'Velm (Sint-Truiden)',zip:'3806'},{name:'Wilderen (Sint-Truiden)',zip:'3803'},{name:'Runkelen (Sint-Truiden)',zip:'3803'},{name:'Gorsem (Sint-Truiden)',zip:'3803'},{name:'Duras (Sint-Truiden)',zip:'3803'},{name:'Zepperen (Sint-Truiden)',zip:'3800'},{name:'Sint-Truiden',zip:'3800'},{name:'Ordingen (Sint-Truiden)',zip:'3800'},{name:'Kerkom-Bij-Sint-Truiden (Sint-Truiden)',zip:'3800'},{name:'Halmaal (Sint-Truiden)',zip:'3800'},{name:'Groot-Gelmen (Sint-Truiden)',zip:'3800'},{name:'Gelinden (Sint-Truiden)',zip:'3800'},{name:'Engelmanshoven (Sint-Truiden)',zip:'3800'},{name:'Brustem (Sint-Truiden)',zip:'3800'},{name:'Teuven (Voeren)',zip:'3793'},{name:'Remersdaal (Voeren)',zip:'3791'},{name:'Zichen-Zussen-Bolder (Riemst)',zip:'3770'},{name:'Vroenhoven (Riemst)',zip:'3770'},{name:'Vlijtingen (Riemst)',zip:'3770'},{name:'Val-Meer (Riemst)',zip:'3770'},{name:'Riemst',zip:'3770'},{name:'Millen (Riemst)',zip:'3770'},{name:'Membruggen (Riemst)',zip:'3770'},{name:'Kanne (Riemst)',zip:'3770'},{name:'Herderen (Riemst)',zip:'3770'},{name:'Genoelselderen (Riemst)',zip:'3770'},{name:'Hoelbeek (Bilzen)',zip:'3746'},{name:'Martenslinde (Bilzen)',zip:'3742'},{name:'Waltwilder (Bilzen)',zip:'3740'},{name:'Spouwen',zip:'3740'},{name:'Rosmeer (Bilzen)',zip:'3740'},{name:'Rijkhoven (Bilzen)',zip:'3740'},{name:'Munsterbilzen (Bilzen)',zip:'3740'},{name:'Mopertingen (Bilzen)',zip:'3740'},{name:'Kleine-Spouwen (Bilzen)',zip:'3740'},{name:'Hees (Bilzen)',zip:'3740'},{name:'Grote-Spouwen (Bilzen)',zip:'3740'},{name:'Eigenbilzen (Bilzen)',zip:'3740'},{name:'Bilzen',zip:'3740'},{name:'Beverst (Bilzen)',zip:'3740'},{name:'Schalkhoven (Hoeselt)',zip:'3732'},{name:'Werm (Hoeselt)',zip:'3730'},{name:'Sint-Huibrechts-Hern (Hoeselt)',zip:'3730'},{name:'Romershoven (Hoeselt)',zip:'3730'},{name:'Hoeselt',zip:'3730'},{name:'Vliermaal (Kortessem)',zip:'3724'},{name:'Guigoven (Kortessem)',zip:'3723'},{name:'Wintershoven (Kortessem)',zip:'3722'},{name:'Vliermaalroot (Kortessem)',zip:'3721'},{name:'Kortessem',zip:'3720'},{name:'Herstappe',zip:'3717'},{name:'Vreren (Tongeren)',zip:'3700'},{name:'Tongeren',zip:'3700'},{name:'Sluizen (Tongeren)',zip:'3700'},{name:'Rutten (Tongeren)',zip:'3700'},{name:'Riksingen (Tongeren)',zip:'3700'},{name:'Nerem (Tongeren)',zip:'3700'},{name:'Neerrepen (Tongeren)',zip:'3700'},{name:'Mal (Tongeren)',zip:'3700'},{name:'Lauw (Tongeren)',zip:'3700'},{name:'Koninksem (Tongeren)',zip:'3700'},{name:'Henis (Tongeren)',zip:'3700'},{name:'Diets-Heur (Tongeren)',zip:'3700'},{name:'Zutendaal',zip:'3690'},{name:'Opoeteren (Maaseik)',zip:'3680'},{name:'Neeroeteren (Maaseik)',zip:'3680'},{name:'Maaseik',zip:'3680'},{name:'Wijshagen (Meeuwen-Gruitrode)',zip:'3670'},{name:'Neerglabbeek (Meeuwen-Gruitrode)',zip:'3670'},{name:'Meeuwen-Gruitrode',zip:'3670'},{name:'Meeuwen (Meeuwen-Gruitrode)',zip:'3670'},{name:'Gruitrode (Meeuwen-Gruitrode)',zip:'3670'},{name:'Ellikom (Meeuwen-Gruitrode)',zip:'3670'},{name:'Niel-Bij-As (As)',zip:'3668'},{name:'As',zip:'3665'},{name:'Opglabbeek',zip:'3660'},{name:'Rotem (Dilsen-Stokkem)',zip:'3650'},{name:'Lanklaar (Dilsen-Stokkem)',zip:'3650'},{name:'Elen (Dilsen-Stokkem)',zip:'3650'},{name:'Dilsen-Stokkem',zip:'3650'},{name:'Ophoven (Kinrooi)',zip:'3640'},{name:'Molenbeersel (Kinrooi)',zip:'3640'},{name:'Kinrooi',zip:'3640'},{name:'Kessenich (Kinrooi)',zip:'3640'},{name:'Uikhoven (Maasmechelen)',zip:'3631'},{name:'Boorsem (Maasmechelen)',zip:'3631'},{name:'Vucht (Maasmechelen)',zip:'3630'},{name:'Opgrimbie (Maasmechelen)',zip:'3630'},{name:'Meeswijk (Maasmechelen)',zip:'3630'},{name:'Mechelen-Aan-De-Maas (Maasmechelen)',zip:'3630'},{name:'Maasmechelen',zip:'3630'},{name:'Leut (Maasmechelen)',zip:'3630'},{name:'Eisden (Maasmechelen)',zip:'3630'},{name:'Rekem (Lanaken)',zip:'3621'},{name:'Veldwezelt (Lanaken)',zip:'3620'},{name:'Neerharen (Lanaken)',zip:'3620'},{name:'Lanaken',zip:'3620'},{name:'Gellik (Lanaken)',zip:'3620'},{name:'Genk',zip:'3600'},{name:'Diepenbeek',zip:'3590'},{name:'Paal (Beringen)',zip:'3583'},{name:'Koersel (Beringen)',zip:'3582'},{name:'Beverlo (Beringen)',zip:'3581'},{name:'Beringen',zip:'3580'},{name:'Alken',zip:'3570'},{name:'Lummen',zip:'3560'},{name:'Linkhout (Lummen)',zip:'3560'},{name:'Zolder (Heusden-Zolder)',zip:'3550'},{name:'Heusden-Zolder',zip:'3550'},{name:'Zelem (Halen)',zip:'3545'},{name:'Loksbergen (Halen)',zip:'3545'},{name:'Halen',zip:'3545'},{name:'Schulen (Herk-De-Stad)',zip:'3540'},{name:'Herk-de-Stad',zip:'3540'},{name:'Donk (Herk-De-Stad)',zip:'3540'},{name:'Berbroek (Herk-De-Stad)',zip:'3540'},{name:'Houthalen-Helchteren',zip:'3530'},{name:'Houthalen (Houthalen-Helchteren)',zip:'3530'},{name:'Helchteren (Houthalen-Helchteren)',zip:'3530'},{name:'Zonhoven',zip:'3520'},{name:'Stevoort (Hasselt)',zip:'3512'},{name:'Stokrooie (Hasselt)',zip:'3511'},{name:'Kuringen (Hasselt)',zip:'3511'},{name:'Spalbeek (Hasselt)',zip:'3510'},{name:'Kermt (Hasselt)',zip:'3510'},{name:'Wimmertingen (Hasselt)',zip:'3501'},{name:'Sint-Lambrechts-Herk (Hasselt)',zip:'3500'},{name:'Hasselt',zip:'3500'},{name:'Wuustwezel',zip:'2990'},{name:'Loenhout (Wuustwezel)',zip:'2990'},{name:'Zoersel',zip:'2980'},{name:'Schilde',zip:'2970'},{name:'Brecht',zip:'2960'},{name:'Stabroek',zip:'2940'},{name:'Hoevenen (Stabroek)',zip:'2940'},{name:'Brasschaat',zip:'2930'},{name:'Kalmthout',zip:'2920'},{name:'Essen',zip:'2910'},{name:'Schoten',zip:'2900'},{name:'Sint-Amands',zip:'2890'},{name:'Oppuurs (Sint-Amands)',zip:'2890'},{name:'Lippelo (Sint-Amands)',zip:'2890'},{name:'Weert (Bornem)',zip:'2880'},{name:'Hingene (Bornem)',zip:'2880'},{name:'Bornem',zip:'2880'},{name:'Puurs',zip:'2870'},{name:'Liezele (Puurs)',zip:'2870'},{name:'Breendonk (Puurs)',zip:'2870'},{name:'Onze-Lieve-Vrouw-Waver (Sint-Katelijne-Waver)',zip:'2861'},{name:'Sint-Katelijne-Waver',zip:'2860'},{name:'Boom',zip:'2850'},{name:'Niel',zip:'2845'},{name:'Terhagen (Rumst)',zip:'2840'},{name:'Rumst',zip:'2840'},{name:'Reet (Rumst)',zip:'2840'},{name:'Willebroek',zip:'2830'},{name:'Tisselt (Willebroek)',zip:'2830'},{name:'Heindonk (Willebroek)',zip:'2830'},{name:'Blaasveld (Willebroek)',zip:'2830'},{name:'Rijmenam (Bonheiden)',zip:'2820'},{name:'Bonheiden',zip:'2820'},{name:'Leest (Mechelen)',zip:'2811'},{name:'Hombeek (Mechelen)',zip:'2811'},{name:'Heffen (Mechelen)',zip:'2801'},{name:'Walem (Mechelen)',zip:'2800'},{name:'Mechelen',zip:'2800'},{name:'Edegem',zip:'2650'},{name:'Mortsel',zip:'2640'},{name:'Aartselaar',zip:'2630'},{name:'Schelle',zip:'2627'},{name:'Hemiksem',zip:'2620'},{name:'Gestel (Berlaar)',zip:'2590'},{name:'Berlaar',zip:'2590'},{name:'Putte',zip:'2580'},{name:'Beerzel (Putte)',zip:'2580'},{name:'Duffel',zip:'2570'},{name:'Nijlen',zip:'2560'},{name:'Kessel (Nijlen)',zip:'2560'},{name:'Bevel (Nijlen)',zip:'2560'},{name:'Waarloos (Kontich)',zip:'2550'},{name:'Kontich',zip:'2550'},{name:'Lint',zip:'2547'},{name:'Hove',zip:'2540'},{name:'Vremde (Boechout)',zip:'2531'},{name:'Boechout',zip:'2530'},{name:'Ranst',zip:'2520'},{name:'Oelegem (Ranst)',zip:'2520'},{name:'Emblem (Ranst)',zip:'2520'},{name:'Broechem (Ranst)',zip:'2520'},{name:'Lier',zip:'2500'},{name:'Koningshooikt (Lier)',zip:'2500'},{name:'Olmen (Balen)',zip:'2491'},{name:'Balen',zip:'2490'},{name:'Dessel',zip:'2480'},{name:'Retie',zip:'2470'},{name:'Tielen (Kasterlee)',zip:'2460'},{name:'Lichtaart (Kasterlee)',zip:'2460'},{name:'Kasterlee',zip:'2460'},{name:'Meerhout',zip:'2450'},{name:'Geel',zip:'2440'},{name:'Veerle (Laakdal)',zip:'2431'},{name:'Varendonk (Laakdal)',zip:'2431'},{name:'Laakdal',zip:'2430'},{name:'Eindhout (Laakdal)',zip:'2430'},{name:'Mol',zip:'2400'},{name:'Westmalle (Malle)',zip:'2390'},{name:'Oostmalle (Malle)',zip:'2390'},{name:'Malle',zip:'2390'},{name:'Baarle-Hertog',zip:'2387'},{name:'Poppel (Ravels)',zip:'2382'},{name:'Weelde (Ravels)',zip:'2381'},{name:'Ravels',zip:'2380'},{name:'Arendonk',zip:'2370'},{name:'Oud-Turnhout',zip:'2360'},{name:'Vosselaar',zip:'2350'},{name:'Vlimmeren (Beerse)',zip:'2340'},{name:'Beerse',zip:'2340'},{name:'Merksplas',zip:'2330'},{name:'Meerle (Hoogstraten)',zip:'2328'},{name:'Wortel (Hoogstraten)',zip:'2323'},{name:'Minderhout (Hoogstraten)',zip:'2322'},{name:'Meer (Hoogstraten)',zip:'2321'},{name:'Hoogstraten',zip:'2320'},{name:'Rijkevorsel',zip:'2310'},{name:'Turnhout',zip:'2300'},{name:'Vorselaar',zip:'2290'},{name:'Bouwel (Grobbendonk)',zip:'2288'},{name:'Grobbendonk',zip:'2280'},{name:'Wechelderzande (Lille)',zip:'2275'},{name:'Poederlee (Lille)',zip:'2275'},{name:'Lille',zip:'2275'},{name:'Gierle (Lille)',zip:'2275'},{name:'Herenthout',zip:'2270'},{name:'Zoerle-Parwijs (Westerlo)',zip:'2260'},{name:'Westerlo',zip:'2260'},{name:'Oevel (Westerlo)',zip:'2260'},{name:'Olen',zip:'2250'},{name:'Pulle (Zandhoven)',zip:'2243'},{name:'Pulderbos (Zandhoven)',zip:'2242'},{name:'Zandhoven',zip:'2240'},{name:'Viersel (Zandhoven)',zip:'2240'},{name:'Massenhoven (Zandhoven)',zip:'2240'},{name:'Westmeerbeek (Hulshout)',zip:'2235'},{name:'Hulshout',zip:'2235'},{name:'Houtvenne (Hulshout)',zip:'2235'},{name:'Ramsel (Herselt)',zip:'2230'},{name:'Herselt',zip:'2230'},{name:'Schriek (Heist-Op-Den-Berg)',zip:'2223'},{name:'Wiekevorst (Heist-Op-Den-Berg)',zip:'2222'},{name:'Itegem (Heist-Op-Den-Berg)',zip:'2222'},{name:'Booischot (Heist-Op-Den-Berg)',zip:'2221'},{name:'Heist-op-den-Berg',zip:'2220'},{name:'Hallaar (Heist-Op-Den-Berg)',zip:'2220'},{name:'Noorderwijk (Herentals)',zip:'2200'},{name:'Morkhoven (Herentals)',zip:'2200'},{name:'Herentals',zip:'2200'},{name:'Wommelgem',zip:'2160'},{name:'Wijnegem',zip:'2110'},{name:'Zwijndrecht',zip:'2070'},{name:'Burcht (Zwijndrecht)',zip:'2070'},{name:'Hoboken (Antwerpen)',zip:'2660'},{name:'Wilrijk (Antwerpen)',zip:'2610'},{name:'Berchem (Antwerpen)',zip:'2600'},{name:'Ekeren (Antwerpen)',zip:'2180'},{name:'Merksem (Antwerpen)',zip:'2170'},{name:'Borgerhout (Antwerpen)',zip:'2140'},{name:'Deurne (Antwerpen)',zip:'2100'},{name:'Zandvliet (Antwerpen)',zip:'2040'},{name:'Lillo (Antwerpen)',zip:'2040'},{name:'Berendrecht (Antwerpen)',zip:'2040'},{name:'Antwerpen',zip:'2000'},{name:'Brussel',zip:'1000'},{name:'Schaarbeek (Brussel)',zip:'1030'},{name:'Etterbeek (Brussel)',zip:'1040'},{name:'Elsene (Brussel)',zip:'1050'},{name:'Sint-Gillis (Brussel)',zip:'1060'},{name:'Anderlecht (Brussel)',zip:'1070'},{name:'Sint-Jans-Molenbeek (Brussel)',zip:'1080'},{name:'Koekelberg (Brussel)',zip:'1081'},{name:'Sint-Agatha-Berchem (Brussel)',zip:'1082'},{name:'Ganshoren (Brussel)',zip:'1083'},{name:'Jette (Brussel)',zip:'1090'},{name:'Evere (Brussel)',zip:'1140'},{name:'Sint-Pieters-Woluwe (Brussel)',zip:'1150'},{name:'Oudergem (Brussel)',zip:'1160'},{name:'Watermaal-Bosvoorde (Brussel)',zip:'1170'},{name:'Ukkel (Brussel)',zip:'1180'},{name:'Vorst (Brussel)',zip:'1190'},{name:'Sint-Lambrechts-Woluwe (Brussel)',zip:'1200'},{name:'Sint-Joost-Ten-Node (Brussel)',zip:'1210'},{name:'\'s Gravenwezel (Schilde)',zip:'2970'},{name:'\'s Herenelderen (Tongeren)',zip:'3700'},{name:'Brugge 2 (Brugge)',zip:'8200'},{name:'Haren (Brussel)',zip:'1130'},{name:'Laken (Brussel)',zip:'1020'},{name:'Neder-Over-Heembeek (Brussel)',zip:'1120'},{name:'Ooike (Oudenaarde)',zip:'9700'},{name:'Sint-Job-In-\'t-Goor (Brecht)',zip:'2960'},{name:'Sint-Margriete-Houtem (Tienen)',zip:'3300'},{name:'Sint-Maria-Oudenhove (Brakel)',zip:'9660'},{name:'Sint-Margriete (Kortenaken)',zip:'3470'},{name:'Sint-Maria-Oudenhove (Zottegem)',zip:'9620'},{name:'Sint-Pieters-Kapelle (Middelkerke)',zip:'8433'},{name:'Voortkapel (Westerlo)',zip:'2260'},{name:'Sint-Pieters-Kapelle (Herne)',zip:'1541'},{name:'Bever',zip:'1547'},{name:'Ruisbroek (Sint-Pieters-Leeuw)',zip:'1601'},{name:'Sint-Genesius-Rode',zip:'1640'},{name:'Hamme (Merchtem)',zip:'1785'},{name:'Machelen',zip:'1830'},{name:'Berg (Kampenhout)',zip:'1910'},{name:'Hofstade (Zemst)',zip:'1981'},{name:'Antwerpen 18 (Antwerpen)',zip:'2018'},{name:'Antwerpen 2 (Antwerpen)',zip:'2020'},{name:'Antwerpen 3 (Antwerpen)',zip:'2030'},{name:'Antwerpen 5 (Antwerpen)',zip:'2050'},{name:'Antwerpen 6 (Antwerpen)',zip:'2060'},{name:'Borsbeek',zip:'2150'},{name:'Tongerlo (Westerlo)',zip:'2260'},{name:'Vorst (Laakdal)',zip:'2430'},{name:'Muizen (Mechelen)',zip:'2812'},{name:'Ruisbroek (Puurs)',zip:'2870'},{name:'Mariekerke (Bornem)',zip:'2880'},{name:'Kapellen',zip:'2950'},{name:'Sint-Lenaarts (Brecht)',zip:'2960'},{name:'Halle (Zoersel)',zip:'2980'},{name:'Wijgmaal (Leuven)',zip:'3018'},{name:'Kortrijk-Dutsel (Holsbeek)',zip:'3220'},{name:'Deurne (Diest)',zip:'3290'},{name:'Meldert (Hoegaarden)',zip:'3320'},{name:'Glabbeek',zip:'3380'},{name:'Kapellen (Glabbeek)',zip:'3381'},{name:'Tielt (Tielt-Winge)',zip:'3390'},{name:'Heusden (Heusden-Zolder)',zip:'3550'},{name:'Meldert (Lummen)',zip:'3560'},{name:'Berg (Tongeren)',zip:'3700'},{name:'Haren (Tongeren)',zip:'3700'},{name:'Kolmont (Tongeren)',zip:'3700'},{name:'Overrepen (Tongeren)',zip:'3700'},{name:'Piringen (Tongeren)',zip:'3700'},{name:'Widooie (Tongeren)',zip:'3700'},{name:'Moelingen (Voeren)',zip:'3790'},{name:'Sint-Martens-Voeren (Voeren)',zip:'3790'},{name:'Voeren',zip:'3790'},{name:'Sint-Pieters-Voeren (Voeren)',zip:'3792'},{name:'\'s Gravenvoeren (Voeren)',zip:'3798'},{name:'Aalst (Sint-Truiden)',zip:'3800'},{name:'Bommershoven (Borgloon)',zip:'3840'},{name:'Haren (Borgloon)',zip:'3840'},{name:'Jesseren (Borgloon)',zip:'3840'},{name:'Kolmont (Borgloon)',zip:'3840'},{name:'Nieuwerkerken',zip:'3850'},{name:'Muizen (Gingelom)',zip:'3891'},{name:'Tongerlo (Bree)',zip:'3960'},{name:'Ramskapelle (Knokke-Heist)',zip:'8301'},{name:'Oostkerke (Damme)',zip:'8340'},{name:'Zandvoorde (Oostende)',zip:'8400'},{name:'De Haan',zip:'8420'},{name:'Helkijn (Spiere-Helkijn)',zip:'8587'},{name:'Spiere (Spiere-Helkijn)',zip:'8587'},{name:'Spiere-Helkijn',zip:'8587'},{name:'Oostkerke (Diksmuide)',zip:'8600'},{name:'Ramskapelle (Nieuwpoort)',zip:'8620'},{name:'Sint-Joris (Nieuwpoort)',zip:'8620'},{name:'De Moeren (Veurne)',zip:'8630'},{name:'Houtem (Veurne)',zip:'8630'},{name:'Steenkerke (Veurne)',zip:'8630'},{name:'De Panne',zip:'8660'},{name:'Sint-Joris (Beernem)',zip:'8730'},{name:'Beveren-Leie (Waregem)',zip:'8791'},{name:'Beveren (Roeselare)',zip:'8800'},{name:'Mesen',zip:'8957'},{name:'Zandvoorde (Zonnebeke)',zip:'8980'},{name:'Heusden (Destelbergen)',zip:'9070'},{name:'Beveren-Waas',zip:'9120'},{name:'Kallo (Beveren-Waas)',zip:'9120'},{name:'Kallo (Kieldrecht - Beveren-Waas)',zip:'9130'},{name:'De Klinge (Sint-Gillis-Waas)',zip:'9170'},{name:'Sint-Gillis-Bij-Dendermonde (Dendermonde)',zip:'9200'},{name:'Hamme',zip:'9220'},{name:'Hofstade (Aalst)',zip:'9308'},{name:'Meldert (Aalst)',zip:'9310'},{name:'Ronse',zip:'9600'},{name:'Oombergen (Zottegem)',zip:'9620'},{name:'Berchem (Kluisbergen)',zip:'9690'},{name:'Ooike (Wortegem-Petegem)',zip:'9790'},{name:'De Pinte',zip:'9840'},{name:'Machelen (Zulte)',zip:'9870'},{name:'l\'Ecluse',zip:'1320'},{name:'Braine l\'Alleud',zip:'1420'},{name:'Waret-l\'Evêque',zip:'4217'},{name:'Villers-l\'Evêque',zip:'4340'},{name:'Fontaine-l\'Evêque',zip:'6140'},{name:'l\'Escaillère',zip:'6464'},{name:'Bersillies-l\'Abbaye',zip:'6560'},{name:'Bois-d\'Haine',zip:'7170'},{name:'Ecaussinnes-d\'Enghien',zip:'7190'},{name:'Mont-de-l\'Enclus',zip:'7750'},{name:'Meslin-l\'Evêque',zip:'7822'},{name:'Heultje (Westerlo)',zip:'2260'},{name:'Oosterwijk (Westerlo)',zip:'2260'},{name:'Dilsen',zip:'3650'},{name:'Stokkem',zip:'3650'},{name:'Oombergen (Sint-Lievens-Houtem)',zip:'9520'},{name:'Scherpenheuvel-Zichem',zip:'3270'}])
 
 ;
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.search
@@ -77,15 +83,18 @@ angular
     'xeditable'
   ]);
 
+'use strict';
+
 /**
  * @ngdoc module
- * @name udb.export
+ * @name udb.event-form
  * @description
- * The udb eventform module
+ * The udb form module
  */
 angular
   .module('udb.event-form', [
     'ngSanitize',
+    'ngMessages',
     'ui.bootstrap',
     'udb.config',
     'udb.entry',
@@ -94,6 +103,8 @@ angular
     'duScroll',
     'focus-if'
   ]);
+
+'use strict';
 
 /**
  * @ngdoc module
@@ -107,6 +118,8 @@ angular
     'ui.bootstrap',
     'udb.config'
   ]);
+
+'use strict';
 
 /**
  * @ngdoc module
@@ -126,6 +139,8 @@ angular
     'angularMoment'
   ]);
 
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.event-detail
@@ -139,6 +154,8 @@ angular
     'udb.config',
     'udb.entry'
   ]);
+
+'use strict';
 
 /**
  * @ngdoc module
@@ -154,6 +171,8 @@ angular
     'udb.entry'
   ]);
 
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.saved-searches
@@ -166,6 +185,8 @@ angular
     'ui.bootstrap',
     'ui.codemirror'
   ]);
+
+'use strict';
 
 /**
  * @ngdoc module
@@ -181,6 +202,8 @@ angular
     'udb.search'
   ]);
 
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.media
@@ -195,6 +218,8 @@ angular
     'udb.config'
   ]);
 
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.management.roles
@@ -205,6 +230,8 @@ angular
   .module('udb.management.roles', [
     'rx'
   ]);
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.management.labels
@@ -215,6 +242,8 @@ angular
   .module('udb.management.labels', [
     'rx'
   ]);
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.management.users
@@ -225,6 +254,8 @@ angular
   .module('udb.management.users', [
     'rx'
   ]);
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.management.moderation
@@ -235,6 +266,8 @@ angular
   .module('udb.management.moderation', [
     'rx'
   ]);
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.management.organizers
@@ -244,8 +277,11 @@ angular
 angular
   .module('udb.management.organizers', [
     'rx',
+    'udb.event-form',
     'ngTagsInput'
   ]);
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.management
@@ -262,6 +298,7 @@ angular
     'udb.management.organizers'
   ]);
 
+'use strict';
 angular.module('peg', []).factory('LuceneQueryParser', function () {
  return (function() {
   /*
@@ -373,8 +410,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 
                 return fieldexp;
             },
-        peg$c16 = /^[:]/,
-        peg$c17 = { type: "class", value: "[:]", description: "[:]" },
+        peg$c16 = /^[:<>]/,
+        peg$c17 = { type: "class", value: "[:<>]", description: "[:<>]" },
         peg$c18 = function(fieldname) {
                 return fieldname;
             },
@@ -424,8 +461,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$c28 = function(first_character, term) {
                 return first_character + term.join('');
             },
-        peg$c29 = /^[^, \t\r\n\f{}()+"\^~[\]]/,
-        peg$c30 = { type: "class", value: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]", description: "[^, \\t\\r\\n\\f{}()+\"\\^~[\\]]" },
+        peg$c29 = /^[^, <>\t\r\n\f{}()"\^~[\]]/,
+        peg$c30 = { type: "class", value: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]", description: "[^, <>\\t\\r\\n\\f{}()\"\\^~[\\]]" },
         peg$c31 = "\"",
         peg$c32 = { type: "literal", value: "\"", description: "\"\\\"\"" },
         peg$c33 = /^[^"]/,
@@ -492,22 +529,20 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$c68 = "||",
         peg$c69 = { type: "literal", value: "||", description: "\"||\"" },
         peg$c70 = function() { return 'OR'; },
-        peg$c71 = ",",
-        peg$c72 = { type: "literal", value: ",", description: "\",\"" },
-        peg$c73 = "&&",
-        peg$c74 = { type: "literal", value: "&&", description: "\"&&\"" },
-        peg$c75 = function() { return 'AND'; },
-        peg$c76 = "+",
-        peg$c77 = { type: "literal", value: "+", description: "\"+\"" },
-        peg$c78 = "-",
-        peg$c79 = { type: "literal", value: "-", description: "\"-\"" },
-        peg$c80 = "!",
-        peg$c81 = { type: "literal", value: "!", description: "\"!\"" },
-        peg$c82 = { type: "other", description: "whitespace" },
-        peg$c83 = /^[ \t\r\n\f]/,
-        peg$c84 = { type: "class", value: "[ \\t\\r\\n\\f]", description: "[ \\t\\r\\n\\f]" },
-        peg$c85 = void 0,
-        peg$c86 = { type: "any", description: "any character" },
+        peg$c71 = "&&",
+        peg$c72 = { type: "literal", value: "&&", description: "\"&&\"" },
+        peg$c73 = function() { return 'AND'; },
+        peg$c74 = "+",
+        peg$c75 = { type: "literal", value: "+", description: "\"+\"" },
+        peg$c76 = "-",
+        peg$c77 = { type: "literal", value: "-", description: "\"-\"" },
+        peg$c78 = "!",
+        peg$c79 = { type: "literal", value: "!", description: "\"!\"" },
+        peg$c80 = { type: "other", description: "whitespace" },
+        peg$c81 = /^[ \t\r\n\f]/,
+        peg$c82 = { type: "class", value: "[ \\t\\r\\n\\f]", description: "[ \\t\\r\\n\\f]" },
+        peg$c83 = void 0,
+        peg$c84 = { type: "any", description: "any character" },
 
         peg$currPos          = 0,
         peg$reportedPos      = 0,
@@ -1623,6 +1658,166 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
           peg$currPos = s0;
           s0 = peg$c0;
         }
+        if (s0 === peg$FAILED) {
+          s0 = peg$currPos;
+          if (input.charCodeAt(peg$currPos) === 123) {
+            s1 = peg$c56;
+            peg$currPos++;
+          } else {
+            s1 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c57); }
+          }
+          if (s1 !== peg$FAILED) {
+            s2 = peg$parseunquoted_term();
+            if (s2 !== peg$FAILED) {
+              s3 = [];
+              s4 = peg$parse_();
+              while (s4 !== peg$FAILED) {
+                s3.push(s4);
+                s4 = peg$parse_();
+              }
+              if (s3 !== peg$FAILED) {
+                if (input.substr(peg$currPos, 2) === peg$c51) {
+                  s4 = peg$c51;
+                  peg$currPos += 2;
+                } else {
+                  s4 = peg$FAILED;
+                  if (peg$silentFails === 0) { peg$fail(peg$c52); }
+                }
+                if (s4 !== peg$FAILED) {
+                  s5 = [];
+                  s6 = peg$parse_();
+                  if (s6 !== peg$FAILED) {
+                    while (s6 !== peg$FAILED) {
+                      s5.push(s6);
+                      s6 = peg$parse_();
+                    }
+                  } else {
+                    s5 = peg$c0;
+                  }
+                  if (s5 !== peg$FAILED) {
+                    s6 = peg$parseunquoted_term();
+                    if (s6 !== peg$FAILED) {
+                      if (input.charCodeAt(peg$currPos) === 93) {
+                        s7 = peg$c53;
+                        peg$currPos++;
+                      } else {
+                        s7 = peg$FAILED;
+                        if (peg$silentFails === 0) { peg$fail(peg$c54); }
+                      }
+                      if (s7 !== peg$FAILED) {
+                        peg$reportedPos = s0;
+                        s1 = peg$c55(s2, s6);
+                        s0 = s1;
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$c0;
+          }
+          if (s0 === peg$FAILED) {
+            s0 = peg$currPos;
+            if (input.charCodeAt(peg$currPos) === 91) {
+              s1 = peg$c49;
+              peg$currPos++;
+            } else {
+              s1 = peg$FAILED;
+              if (peg$silentFails === 0) { peg$fail(peg$c50); }
+            }
+            if (s1 !== peg$FAILED) {
+              s2 = peg$parseunquoted_term();
+              if (s2 !== peg$FAILED) {
+                s3 = [];
+                s4 = peg$parse_();
+                while (s4 !== peg$FAILED) {
+                  s3.push(s4);
+                  s4 = peg$parse_();
+                }
+                if (s3 !== peg$FAILED) {
+                  if (input.substr(peg$currPos, 2) === peg$c51) {
+                    s4 = peg$c51;
+                    peg$currPos += 2;
+                  } else {
+                    s4 = peg$FAILED;
+                    if (peg$silentFails === 0) { peg$fail(peg$c52); }
+                  }
+                  if (s4 !== peg$FAILED) {
+                    s5 = [];
+                    s6 = peg$parse_();
+                    if (s6 !== peg$FAILED) {
+                      while (s6 !== peg$FAILED) {
+                        s5.push(s6);
+                        s6 = peg$parse_();
+                      }
+                    } else {
+                      s5 = peg$c0;
+                    }
+                    if (s5 !== peg$FAILED) {
+                      s6 = peg$parseunquoted_term();
+                      if (s6 !== peg$FAILED) {
+                        if (input.charCodeAt(peg$currPos) === 125) {
+                          s7 = peg$c58;
+                          peg$currPos++;
+                        } else {
+                          s7 = peg$FAILED;
+                          if (peg$silentFails === 0) { peg$fail(peg$c59); }
+                        }
+                        if (s7 !== peg$FAILED) {
+                          peg$reportedPos = s0;
+                          s1 = peg$c55(s2, s6);
+                          s0 = s1;
+                        } else {
+                          peg$currPos = s0;
+                          s0 = peg$c0;
+                        }
+                      } else {
+                        peg$currPos = s0;
+                        s0 = peg$c0;
+                      }
+                    } else {
+                      peg$currPos = s0;
+                      s0 = peg$c0;
+                    }
+                  } else {
+                    peg$currPos = s0;
+                    s0 = peg$c0;
+                  }
+                } else {
+                  peg$currPos = s0;
+                  s0 = peg$c0;
+                }
+              } else {
+                peg$currPos = s0;
+                s0 = peg$c0;
+              }
+            } else {
+              peg$currPos = s0;
+              s0 = peg$c0;
+            }
+          }
+        }
       }
 
       return s0;
@@ -1742,33 +1937,18 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
             s0 = s1;
             if (s0 === peg$FAILED) {
               s0 = peg$currPos;
-              if (input.charCodeAt(peg$currPos) === 44) {
+              if (input.substr(peg$currPos, 2) === peg$c71) {
                 s1 = peg$c71;
-                peg$currPos++;
+                peg$currPos += 2;
               } else {
                 s1 = peg$FAILED;
                 if (peg$silentFails === 0) { peg$fail(peg$c72); }
               }
               if (s1 !== peg$FAILED) {
                 peg$reportedPos = s0;
-                s1 = peg$c70();
+                s1 = peg$c73();
               }
               s0 = s1;
-              if (s0 === peg$FAILED) {
-                s0 = peg$currPos;
-                if (input.substr(peg$currPos, 2) === peg$c73) {
-                  s1 = peg$c73;
-                  peg$currPos += 2;
-                } else {
-                  s1 = peg$FAILED;
-                  if (peg$silentFails === 0) { peg$fail(peg$c74); }
-                }
-                if (s1 !== peg$FAILED) {
-                  peg$reportedPos = s0;
-                  s1 = peg$c75();
-                }
-                s0 = s1;
-              }
             }
           }
         }
@@ -1809,27 +1989,27 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
       var s0;
 
       if (input.charCodeAt(peg$currPos) === 43) {
-        s0 = peg$c76;
+        s0 = peg$c74;
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c77); }
+        if (peg$silentFails === 0) { peg$fail(peg$c75); }
       }
       if (s0 === peg$FAILED) {
         if (input.charCodeAt(peg$currPos) === 45) {
-          s0 = peg$c78;
+          s0 = peg$c76;
           peg$currPos++;
         } else {
           s0 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c79); }
+          if (peg$silentFails === 0) { peg$fail(peg$c77); }
         }
         if (s0 === peg$FAILED) {
           if (input.charCodeAt(peg$currPos) === 33) {
-            s0 = peg$c80;
+            s0 = peg$c78;
             peg$currPos++;
           } else {
             s0 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c81); }
+            if (peg$silentFails === 0) { peg$fail(peg$c79); }
           }
         }
       }
@@ -1842,22 +2022,22 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
 
       peg$silentFails++;
       s0 = [];
-      if (peg$c83.test(input.charAt(peg$currPos))) {
+      if (peg$c81.test(input.charAt(peg$currPos))) {
         s1 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c84); }
+        if (peg$silentFails === 0) { peg$fail(peg$c82); }
       }
       if (s1 !== peg$FAILED) {
         while (s1 !== peg$FAILED) {
           s0.push(s1);
-          if (peg$c83.test(input.charAt(peg$currPos))) {
+          if (peg$c81.test(input.charAt(peg$currPos))) {
             s1 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s1 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c84); }
+            if (peg$silentFails === 0) { peg$fail(peg$c82); }
           }
         }
       } else {
@@ -1866,7 +2046,7 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c82); }
+        if (peg$silentFails === 0) { peg$fail(peg$c80); }
       }
 
       return s0;
@@ -1882,11 +2062,11 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
         peg$currPos++;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c86); }
+        if (peg$silentFails === 0) { peg$fail(peg$c84); }
       }
       peg$silentFails--;
       if (s1 === peg$FAILED) {
-        s0 = peg$c85;
+        s0 = peg$c83;
       } else {
         peg$currPos = s0;
         s0 = peg$c0;
@@ -1914,6 +2094,8 @@ angular.module('peg', []).factory('LuceneQueryParser', function () {
   };
 })()
 });
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.uitpas
@@ -1924,6 +2106,8 @@ angular
   .module('udb.uitpas', [
     'ui.bootstrap'
   ]);
+
+'use strict';
 
 /**
  * @ngdoc module
@@ -1938,6 +2122,8 @@ angular
     'ui.router'
   ]);
 
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.duplication
@@ -1951,6 +2137,8 @@ angular
     'udb.migration'
   ]);
 
+'use strict';
+
 /**
  * @ngdoc module
  * @name udb.cultuurkuur
@@ -1962,8 +2150,12 @@ angular
     'udb.core',
     'udb.event-detail',
   ]);
+})();
 
 // Source: src/core/authorization-service.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.authorizationService
@@ -2056,8 +2248,12 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope"];
+})();
 
 // Source: src/core/city-autocomplete.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.CityAutocomplete
@@ -2107,8 +2303,12 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
 
 }
 CityAutocomplete.$inject = ["$q", "$http", "appConfig", "UdbPlace", "jsonLDLangFilter"];
+})();
 
 // Source: src/core/components/calendar-summary/calendar-summary.controller.js
+(function () {
+'use strict';
+
 angular
   .module('udb.core')
   .controller('CalendarSummaryController', calendarSummaryController);
@@ -2125,8 +2325,12 @@ function calendarSummaryController($scope) {
   };
 }
 calendarSummaryController.$inject = ["$scope"];
+})();
 
 // Source: src/core/components/calendar-summary/calendar-summary.directive.js
+(function () {
+'use strict';
+
 angular
   .module('udb.core')
   .directive('udbCalendarSummary', udbCalendarSummary);
@@ -2142,132 +2346,47 @@ function udbCalendarSummary() {
     controller: 'CalendarSummaryController'
   };
 }
-
-// Source: src/core/components/datepicker/datepicker.directive.js
-(function () {
-/**
-   * @ngdoc directive
-   * @name udb.core.directive:udbDatepicker
-   * @description
-   * # directive for datepicker integration.
-   * https://github.com/eternicode/bootstrap-datepicker
-   */
-  angular
-    .module('udb.core')
-    .directive('udbDatepicker', udbDatepickerDirective);
-
-  /* @ngInject */
-  function udbDatepickerDirective(appConfig) {
-
-    return {
-      restrict: 'EA',
-      require: 'ngModel',
-      link: link
-    };
-
-    function link (scope, elem, attrs, ngModel) {
-
-      loadDatePicker();
-
-      ngModel.$render = function () {
-        // the datepicker component does not play well with date objects that are not set to midnight
-        var date = moment(ngModel.$viewValue);
-        elem.datepicker('update', date.startOf('day').toDate());
-      };
-
-      /**
-       * Load the date picker.
-       */
-      function loadDatePicker() {
-
-        var lastSelectedYear;
-        var lastSelectedMonth;
-        var selectedDate = ngModel.$viewValue;
-
-        if (selectedDate) {
-          lastSelectedYear = selectedDate.getFullYear();
-          lastSelectedMonth = selectedDate.getMonth();
-        } else {
-          var today = new Date();
-          lastSelectedYear = today.getFullYear();
-          lastSelectedMonth = today.getMonth();
-        }
-
-        var options = {
-          defaultViewDate: {year: lastSelectedYear, month: lastSelectedMonth, day: 1},
-          format: 'd MM yyyy',
-          language: 'nl-BE',
-          beforeShowDay: function (date) {
-            var highlightDateString = _.get(appConfig, 'calendarHighlight.date');
-            var highlightExtraClass = _.get(appConfig, 'calendarHighlight.extraClass');
-
-            if (!highlightDateString) {
-              return;
-            }
-            // init Date with ISO string
-            var highlightDate = new Date(highlightDateString);
-            if (highlightDate.toLocaleDateString() === date.toLocaleDateString()) {
-              var highlightClasses = 'highlight';
-
-              if (highlightExtraClass) {
-                highlightClasses += ' ' + highlightExtraClass;
-              }
-
-              return {classes: highlightClasses};
-            }
-          }
-        };
-
-        elem.datepicker(options).on('changeDate', function (newValue) {
-          if (!ngModel.$viewValue || ngModel.$viewValue.getTime() !== newValue.date.getTime()) {
-            ngModel.$setViewValue(newValue.date);
-          }
-        });
-      }
-    }
-  }
-  udbDatepickerDirective.$inject = ["appConfig"];
 })();
 
-// Source: src/core/components/input-extension/http.extension.directive.js
+// Source: src/core/components/image-detail/image-detail.directive.js
+(function () {
+'use strict';
+
 /**
-* @ngdoc directive
-* @name udb.http.extension.directive:udbHttpExtension
-* @description
-* # directive to add http if it isn't already in the link
-*/
+ * @ngdoc component
+ * @name udb.image-detail.directive:Image-detail
+ * @description
+ * # Image-detail
+ */
 angular
   .module('udb.core')
-  .directive('udbHttpExtension', UdbHttpExtensionDirective);
-
-function UdbHttpExtensionDirective($parse) {
-
-  return {
-    restrict: 'A',
-    require: 'ngModel',
-    link: link
-  };
-
-  function link (scope, elem, attrs) {
-
-    var model = $parse(attrs.ngModel);
-    var modelSetter = model.assign;
-
-    elem.on('blur', attachHttp());
-
-    function attachHttp() {
-      if (!elem.val().includes(attrs.udbHttpExtension) || !elem.val().includes(attrs.udbHttpsExtension)) {
-        var val = attrs.udbHttpExtension + elem.val();
-        modelSetter(scope, val);
+  .directive('udbImageDetail', function () {
+    return {
+      templateUrl: 'templates/image-detail.directive.html',
+      controller: ImageDetailController,
+      restrict: 'A',
+      scope: {
+        images: '<udbImageDetail',
+        main : '<image'
       }
-    }
-  }
+    };
+  });
+
+/* @ngInject */
+function ImageDetailController($scope) {
+  angular.forEach($scope.images, function(image) {
+    image.main = (image.contentUrl === $scope.main);
+  });
 }
-UdbHttpExtensionDirective.$inject = ["$parse"];
+ImageDetailController.$inject = ["$scope"];
+})();
 
 // Source: src/core/components/multiselect/multiselect.directive.js
 (function () {
-/**
+(function () {
+  'use strict';
+
+  /**
    * @ngdoc directive
    * @name udb.core.directive:udbMultiselect
    * @description
@@ -2310,9 +2429,13 @@ UdbHttpExtensionDirective.$inject = ["$parse"];
   }
 
 })();
+})();
 
 // Source: src/core/components/time/time.directive.js
 (function () {
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.core.directive:udbTime
@@ -2350,8 +2473,12 @@ function udbTimeDirective() {
   }
 }
 })();
+})();
 
 // Source: src/core/components/workflow-status/udb.workflow-status.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.core.directive: udbWorkflowStatus
@@ -2393,8 +2520,11 @@ function WorkflowStatusDirectiveController($scope, $translate) {
   }
 }
 WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
+})();
 
 // Source: src/core/dutch-translations.constant.js
+(function () {
+'use strict';
 // jscs:disable maximumLineLength
 
 /**
@@ -2428,6 +2558,9 @@ angular.module('udb.core')
     '=_DATE': 'is gelijk aan',
     '><_DATE': 'tussen',
     'choice': {
+      'everyone': 'iedereen',
+      'members': 'leden',
+      'education': 'onderwijs',
       'asc': 'oplopend',
       'desc': 'aflopend',
       'today': 'vandaag',
@@ -2442,6 +2575,7 @@ angular.module('udb.core')
       'next12months': 'volgende 12 maanden',
       'permanent': 'permanent',
       'event': 'event',
+      'place': 'locatie',
       'actor': 'actor',
       'production': 'productie',
       'nl': 'Nederlands',
@@ -2745,6 +2879,40 @@ angular.module('udb.core')
       'translations': 'Vertalingen',
       'other': 'Andere'
     },
+    'queryFieldLabel': {
+      'cdbid': 'identificatiecode (CDBID)',
+      'offertype': 'type (aanbod)',
+      'keywords': 'label',
+      'title': 'titel',
+      'category_eventtype_name': 'type (activiteit)',
+      'locationtype': 'type (locatie)',
+      'category_theme_name': 'thema',
+      'text': 'tekst',
+      'city': 'gemeente (naam)',
+      'zipcode': 'postcode',
+      'location_id': 'locatie (id)',
+      'country': 'land',
+      'location_label': 'locatie (naam)',
+      'category_flandersregion_name': 'regio / gemeente',
+      'date': 'datum',
+      'permanent': 'permanent',
+      'lastupdated': 'laatst aangepast',
+      'creationdate': 'gecreëerd',
+      'createdby': 'gecreëerd door',
+      'availablefrom': 'datum beschikbaar',
+      'detail_lang': 'vertaling',
+      'organiser_keywords': 'label organisatie',
+      'organiser_id': 'organisatie (id)',
+      'agefrom': 'leeftijd',
+      'price': 'prijs',
+      'organiser_label': 'organisatie (naam)',
+      'category_facility_name': 'voorzieningen',
+      'category_targetaudience_name': 'doelgroep',
+      'startdate': 'startdatum',
+      'enddate': 'einddatum',
+      'lastupdatedby': 'laatst aangepast door',
+      'category_publicscope_name': 'publieksbereik'
+    },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
     },
@@ -2761,11 +2929,25 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
-    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.'
+    'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+    'OPENING_HOURS_ERROR': {
+      'openAndClose': 'Vul alle openings- en sluitingstijden in.',
+      'dayOfWeek': 'Kies minstens één dag in elke rij die je toevoegde.',
+      'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
+    },
+    'TIME_SPAN_REQUIREMENTS': {
+      'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
+      'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+    }
   }
 );
+})();
 
 // Source: src/core/error-handling/unexpected-error-modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.core.controller:UnexpectedErrorModalController
@@ -2788,14 +2970,16 @@ function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage)
   $scope.errorMessage = errorMessage;
 }
 UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
+})();
 
 // Source: src/core/udb-api.service.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} UiTIDUser
  * @property {string} id        The UiTID of the user.
  * @property {string} nick      A user nickname.
- * @property {string} mbox      The email address of the user.
- * @property {string} givenName The user's given name.
  */
 
 /**
@@ -2925,6 +3109,30 @@ function UdbApi(
   };
 
   /**
+   * @param {string} queryString - The query used to find offers.
+   * @param {number} [start] - From which offset the result set should start.
+   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
+   *  search results or a failure.
+   */
+  this.findOffers = function (queryString, start) {
+    var offset = start || 0,
+        searchParams = {
+          start: offset,
+          disableDefaultFilters: true
+        };
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    if (queryString.length) {
+      searchParams.q = queryString;
+    }
+
+    return $http
+      .get(appConfig.baseSearchUrl + 'offers/', withoutAuthorization(requestOptions))
+      .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} queryString - The query used to find events.
    * @param {number} [start] - From which event offset the result set should start.
    * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
@@ -2945,17 +3153,6 @@ function UdbApi(
     return $http
       .get(apiUrl + 'search', requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
-  };
-
-  /**
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
-   * @param {number} [itemsPerPage] - How many items should be in the result set.
-   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
-   *  search results or a failure.
-   */
-  this.findEventsWithLimit = function (queryString, start, itemsPerPage) {
-    return find(apiUrl + 'search', queryString, start, itemsPerPage);
   };
 
   /**
@@ -3037,7 +3234,8 @@ function UdbApi(
   this.findOrganisations = function(start, limit, website, name) {
     var params = {
       limit: limit ? limit : 10,
-      start: start ? start : 0
+      start: start ? start : 0,
+      embed: true
     };
     if (website) { params.website = website; }
     if (name) { params.name = name; }
@@ -3070,6 +3268,59 @@ function UdbApi(
         .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/labels/' + labelName, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
+  /**
+   * @param {string} organizerId
+   * @param {string} website
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerWebsite = function(organizerId, website) {
+    var params = {
+      url: website
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/url', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {string} name
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerName = function(organizerId, name) {
+    var params = {
+      name: name
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Object} address
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerAddress = function(organizerId, address) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @param {Array} contact
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.updateOrganizerContact = function(organizerId, contact) {
+
+    return $http
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/contactPoint', contact, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
 
   /**
    * @param {URL} eventId
@@ -3092,9 +3343,7 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick,
-        mbox: userData.mbox,
-        givenName: userData.givenName
+        nick: userData.nick
       };
 
       $cookies.putObject('user', user);
@@ -3317,6 +3566,17 @@ function UdbApi(
       offer['@id'],
       defaultApiConfig
     );
+  };
+
+  /**
+   * @param {udbOrganizer} organization
+   *
+   * @return {Promise.<Object|ApiProblem>}
+   */
+  this.deleteOrganization = function (organization) {
+    return $http
+      .delete(organization['@id'], defaultApiConfig)
+      .then(returnJobData, returnApiProblem);
   };
 
   /**
@@ -3609,7 +3869,8 @@ function UdbApi(
       url: appConfig.baseUrl + 'images',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };
@@ -4080,8 +4341,12 @@ function UdbApi(
   }
 }
 UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
+})();
 
 // Source: src/core/udb-event.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.UdbEvent
@@ -4258,6 +4523,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       if (jsonEvent.workflowStatus) {
         this.workflowStatus = jsonEvent.workflowStatus;
       }
+      this.availableFrom = jsonEvent.availableFrom;
       this.uitpasData = {};
 
       this.audience = {
@@ -4414,14 +4680,35 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
+    },
+    hasFutureAvailableFrom: function() {
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (tomorrow < publicationDate) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
   };
 
   return (UdbEvent);
 }
 UdbEventFactory.$inject = ["EventTranslationState", "UdbPlace", "UdbOrganizer"];
+})();
 
 // Source: src/core/udb-organizer.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.core.directive:udbOrganizer
@@ -4459,8 +4746,12 @@ function udbOrganizer(udbApi) {
   return event;
 }
 udbOrganizer.$inject = ["udbApi"];
+})();
 
 // Source: src/core/udb-organizer.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.UdbOrganizer
@@ -4507,23 +4798,31 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   UdbOrganizer.prototype = {
     parseJson: function (jsonOrganizer) {
+      this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = jsonOrganizer.name || '';
+      this.name = _.get(jsonOrganizer.name, 'nl', null) ||
+        _.get(jsonOrganizer, 'name', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
-      this.url = getFirst(jsonOrganizer, 'contactPoint.url');
+      this.url = jsonOrganizer.url;
+      this.contactPoint = jsonOrganizer.contactPoint;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
+      this.created = new Date(jsonOrganizer.created);
     }
   };
 
   return (UdbOrganizer);
 }
 UdbOrganizerFactory.$inject = ["UitpasLabels"];
+})();
 
 // Source: src/core/udb-organizers.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.organizers
@@ -4573,8 +4872,12 @@ function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
 
 }
 UdbOrganizers.$inject = ["$q", "udbApi", "udbUitpasApi", "UdbOrganizer"];
+})();
 
 // Source: src/core/udb-place.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.UdbTimestamps
@@ -4700,7 +5003,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.apiUrl = new URL(jsonPlace['@id']);
       }
       this.name = jsonPlace.name || {};
-      this.address = jsonPlace.address || this.address;
+      this.address = jsonPlace.address.nl || jsonPlace.address || this.address;
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
       this.calendarType = jsonPlace.calendarType || '';
@@ -4759,6 +5062,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
       if (jsonPlace.workflowStatus) {
         this.workflowStatus = jsonPlace.workflowStatus;
+      }
+
+      if (jsonPlace.availableFrom) {
+        this.availableFrom = jsonPlace.availableFrom;
       }
     },
 
@@ -4913,6 +5220,24 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+
+    hasFutureAvailableFrom: function() {
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (tomorrow < publicationDate) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
 
   };
@@ -4920,8 +5245,12 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
   return (UdbPlace);
 }
 UdbPlaceFactory.$inject = ["EventTranslationState", "placeCategories", "UdbOrganizer"];
+})();
 
 // Source: src/core/udb3-content.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.Udb3Content
@@ -4947,8 +5276,12 @@ function Udb3Content($q, $http, appConfig) {
 
 }
 Udb3Content.$inject = ["$q", "$http", "appConfig"];
+})();
 
 // Source: src/core/uitid-auth.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.core.uitidAuth
@@ -5048,8 +5381,12 @@ function UitidAuth($window, $location, appConfig, $cookies) {
   };
 }
 UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
+})();
 
 // Source: src/cultuurkuur/event-cultuurkuur.component.js
+(function () {
+'use strict';
+
 angular
   .module('udb.cultuurkuur')
   .component('udbEventCultuurkuurComponent', {
@@ -5072,8 +5409,16 @@ function EventCultuurKuurComponentController(appConfig) {
     throw 'cultuurkuur url is not configured';
   }
 
-  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id;
-  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit';
+  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=preview1.0';
+  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' +
+    '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content=edit1.0';
   cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
 
   cm.cultuurKuurInfo = {
@@ -5085,8 +5430,12 @@ function EventCultuurKuurComponentController(appConfig) {
   cm.forSchools = cm.event.audience.audienceType === 'education';
 }
 EventCultuurKuurComponentController.$inject = ["appConfig"];
+})();
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.dashboard.directive:udbDashboardEventItem
@@ -5108,8 +5457,12 @@ function udbDashboardEventItem() {
 
   return dashboardEventItemDirective;
 }
+})();
 
 // Source: src/dashboard/components/dashboard-place-item.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.dashboard.directive:udbDashboardPlaceItem
@@ -5131,8 +5484,12 @@ function udbDashboardPlaceItem() {
 
   return dashboardPlaceItemDirective;
 }
+})();
 
 // Source: src/dashboard/components/event-delete-confirm-modal.controller.js
+(function () {
+
+'use strict';
 
 /**
  * @ngdoc function
@@ -5182,8 +5539,12 @@ function EventDeleteConfirmModalController($scope, $uibModalInstance, eventCrud,
 
 }
 EventDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "item"];
+})();
 
 // Source: src/dashboard/components/place-delete-confirm-modal.controller.js
+(function () {
+
+'use strict';
 
 /**
  * @ngdoc function
@@ -5237,10 +5598,14 @@ function PlaceDeleteConfirmModalController(
 
 }
 PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "place", "events", "appConfig"];
+})();
 
 // Source: src/dashboard/dashboard.controller.js
 (function () {
-/**
+(function () {
+  'use strict';
+
+  /**
    * @ngdoc function
    * @name udbApp.controller:DashboardCtrl
    * @description
@@ -5252,7 +5617,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($scope, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
 
     var dash = this;
 
@@ -5260,12 +5625,20 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.username = '';
+    dash.hideOnlineDate = false;
 
     if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
       dash.toggleAddOffer = appConfig.toggleAddOffer;
     }
     else {
       dash.toggleAddOffer = true;
+    }
+
+    if (typeof(appConfig.offerEditor.defaultPublicationDate) !== 'undefined') {
+      var defaultPublicationDate = appConfig.offerEditor.defaultPublicationDate;
+      if (defaultPublicationDate !== '') {
+        dash.hideOnlineDate = true;
+      }
     }
 
     udbApi
@@ -5282,6 +5655,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function setItemViewerResults(results) {
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
+      $document.scrollTop(0);
     }
 
     function updateItemViewer() {
@@ -5359,13 +5733,16 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         openPlaceDeleteConfirmModal(item);
       }
     }
-
   }
-  DashboardController.$inject = ["$scope", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
 
+})();
 })();
 
 // Source: src/dashboard/dashboard.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.dashboard.directive:dashboard.html
@@ -5385,8 +5762,46 @@ function udbDashboardDirective() {
     restrict: 'EA'
   };
 }
+})();
+
+// Source: src/duplication/event-duplication-calendar.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:DuplicationCalendarController
+ * @description
+ * # Duplication Calendar Controller
+ */
+angular
+  .module('udb.duplication')
+  .controller('DuplicationCalendarController', DuplicationCalendarController);
+
+/* @ngInject */
+function DuplicationCalendarController(EventFormData, OpeningHoursCollection, $rootScope, $controller, $scope) {
+  var calendar = this;
+  var duplicateFormData = EventFormData.clone();
+
+  function duplicateTimingChanged(formData) {
+    $rootScope.$emit('duplicateTimingChanged', formData);
+  }
+
+  $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
+
+  calendar.init(duplicateFormData, _.cloneDeep(OpeningHoursCollection));
+
+  calendar.formData
+    .timingChanged$
+    .subscribe(duplicateTimingChanged);
+}
+DuplicationCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$rootScope", "$controller", "$scope"];
+})();
 
 // Source: src/duplication/event-duplication-calendar.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.duplication.directive:udbEventDuplicationCalendar
@@ -5401,30 +5816,17 @@ angular
 function udbEventDuplicationCalendar() {
   return {
     restrict: 'AE',
-    controller: EventDuplicationCalendarController,
-    controllerAs: 'edc',
-    templateUrl: 'templates/event-duplication-calendar.directive.html'
+    controller: 'DuplicationCalendarController',
+    controllerAs: 'calendar',
+    templateUrl: 'templates/form-event-calendar.component.html'
   };
 }
-
-/* @ngInject */
-function EventDuplicationCalendarController(EventFormData, $rootScope, calendarLabels) {
-  var controller = this;
-
-  controller.calendarLabels = calendarLabels;
-  controller.duplicateFormData = EventFormData.clone();
-
-  controller.duplicateTimingChanged = function (formData) {
-    $rootScope.$emit('duplicateTimingChanged', formData);
-  };
-
-  controller.duplicateFormData
-    .timingChanged$
-    .subscribe(controller.duplicateTimingChanged);
-}
-EventDuplicationCalendarController.$inject = ["EventFormData", "$rootScope", "calendarLabels"];
+})();
 
 // Source: src/duplication/event-duplication-footer.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.duplication.component:udbEventDuplicationFooter
@@ -5488,8 +5890,12 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
   }
 }
 EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx"];
+})();
 
 // Source: src/duplication/event-duplication-step.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.duplication.component:udbEventDuplicationStep
@@ -5516,8 +5922,12 @@ function EventDuplicationStepController(EventFormData) {
   };
 }
 EventDuplicationStepController.$inject = ["EventFormData"];
+})();
 
 // Source: src/duplication/event-duplicator.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.duplication.eventDuplicator
@@ -5563,8 +5973,12 @@ function EventDuplicatorService(udbApi, offerLocator) {
   };
 }
 EventDuplicatorService.$inject = ["udbApi", "offerLocator"];
+})();
 
 // Source: src/entry/components/job-logo-states.constant.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -5588,8 +6002,12 @@ angular
     BUSY: 'busy',
     IDLE: 'idle'
   });
+})();
 
 // Source: src/entry/components/job-logo.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.entry.controller:JobLogoController
@@ -5647,8 +6065,12 @@ function JobLogoController(JobLogoStates, jobLogger, $rootScope) {
   $rootScope.$on('jobListsUpdated', jl.updateCurrentState);
 }
 JobLogoController.$inject = ["JobLogoStates", "jobLogger", "$rootScope"];
+})();
 
 // Source: src/entry/components/job-logo.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.entry.directive:jobLogo
@@ -5673,8 +6095,12 @@ function udbJobLogo() {
   function link(scope, element, attrs) {
   }
 }
+})();
 
 // Source: src/entry/crud/event-crud-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.EventCreationJob
@@ -5777,8 +6203,12 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
   return (EventCrudJob);
 }
 EventCrudJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
+})();
 
 // Source: src/entry/crud/event-crud.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.eventCrud
@@ -6209,8 +6639,12 @@ function EventCrud(
   $rootScope.$on('eventTitleChanged', updateMajorInfo);
 }
 EventCrud.$inject = ["jobLogger", "udbApi", "udbUitpasApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
+})();
 
 // Source: src/entry/delete/delete-offer-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.DeleteOfferJob
@@ -6261,8 +6695,12 @@ function DeleteOfferJobFactory(BaseJob, $q, JobStates) {
   return (DeleteOfferJob);
 }
 DeleteOfferJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
+})();
 
 // Source: src/entry/editing/offer-editor.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.offerEditor
@@ -6356,8 +6794,12 @@ function OfferEditor(jobLogger, udbApi, VariationCreationJob, BaseJob, $q, varia
   };
 }
 OfferEditor.$inject = ["jobLogger", "udbApi", "VariationCreationJob", "BaseJob", "$q", "variationRepository"];
+})();
 
 // Source: src/entry/editing/variation-creation-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.VariationCreationJob
@@ -6409,8 +6851,12 @@ function VariationCreationJobFactory(BaseJob, JobStates, $q) {
   return (VariationCreationJob);
 }
 VariationCreationJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
+})();
 
 // Source: src/entry/labelling/offer-label-batch-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.OfferLabelBatchJob
@@ -6465,8 +6911,12 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
   return (OfferLabelBatchJob);
 }
 OfferLabelBatchJobFactory.$inject = ["BaseJob", "JobStates"];
+})();
 
 // Source: src/entry/labelling/offer-label-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.OfferLabelJob
@@ -6519,8 +6969,12 @@ function OfferLabelJobFactory(BaseJob, JobStates) {
   return (OfferLabelJob);
 }
 OfferLabelJobFactory.$inject = ["BaseJob", "JobStates"];
+})();
 
 // Source: src/entry/labelling/offer-label-modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.entry.controller:OfferLabelModalCtrl
@@ -6607,8 +7061,12 @@ function OfferLabelModalCtrl($uibModalInstance) {
   }
 }
 OfferLabelModalCtrl.$inject = ["$uibModalInstance"];
+})();
 
 // Source: src/entry/labelling/offer-labeller.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.evenLabeller
@@ -6736,8 +7194,12 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
   };
 }
 OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$uibModal"];
+})();
 
 // Source: src/entry/labelling/query-label-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.QueryLabelJob
@@ -6780,8 +7242,12 @@ function QueryLabelJobFactory(BaseJob) {
   return (QueryLabelJob);
 }
 QueryLabelJobFactory.$inject = ["BaseJob"];
+})();
 
 // Source: src/entry/logging/base-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.BaseJob
@@ -6965,8 +7431,12 @@ function BaseJobFactory(JobStates) {
   return (BaseJob);
 }
 BaseJobFactory.$inject = ["JobStates"];
+})();
 
 // Source: src/entry/logging/job-log.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc component
  * @name udb.entry.component:udbJobLog
@@ -6994,8 +7464,12 @@ function JobLogController(jobLogger, $scope) {
   $scope.hideJob = jobLogger.hideJob;
 }
 JobLogController.$inject = ["jobLogger", "$scope"];
+})();
 
 // Source: src/entry/logging/job-logger.service.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -7150,8 +7624,12 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
   };
 }
 JobLogger.$inject = ["udbSocket", "JobStates", "EventExportJob", "$rootScope"];
+})();
 
 // Source: src/entry/logging/job-states.constant.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -7175,8 +7653,12 @@ angular
     FAILED: 'failed',
     FINISHED: 'finished'
   });
+})();
 
 // Source: src/entry/logging/job.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.entry.directive:udbJob
@@ -7204,8 +7686,12 @@ function jobDirective() {
 
   return job;
 }
+})();
 
 // Source: src/entry/logging/udb-socket.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.udbSocket
@@ -7228,8 +7714,12 @@ function UdbSocketFactory (socketFactory, appConfig) {
   return socket;
 }
 UdbSocketFactory.$inject = ["socketFactory", "appConfig"];
+})();
 
 // Source: src/entry/logging/work-indicator.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.entry.directive:udbWorkIndicator
@@ -7255,8 +7745,12 @@ function udbWorkIndicator ($window, jobLogger) {
   };
 }
 udbWorkIndicator.$inject = ["$window", "jobLogger"];
+})();
 
 // Source: src/entry/translation/offer-translation-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.OfferTranslationJob
@@ -7320,8 +7814,12 @@ function OfferTranslationJobFactory(BaseJob, JobStates) {
   return (OfferTranslationJob);
 }
 OfferTranslationJobFactory.$inject = ["BaseJob", "JobStates"];
+})();
 
 // Source: src/entry/translation/offer-translator.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.offerTranslator
@@ -7363,8 +7861,12 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
   };
 }
 OfferTranslator.$inject = ["jobLogger", "udbApi", "OfferTranslationJob"];
+})();
 
 // Source: src/event-detail/event-detail.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.event-detail.directive:event-detail.html
@@ -7383,8 +7885,12 @@ function udbEventDetailDirective() {
     controller: EventDetail // jshint ignore:line
   };
 }
+})();
 
 // Source: src/event-detail/ui/booking-info-detail.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc component
  * @name udb.event-detail.component:BookingInfoDetail
@@ -7409,8 +7915,12 @@ function BookingInfoDetailController($scope) {
   $scope.isEmpty = _.isEmpty;
 }
 BookingInfoDetailController.$inject = ["$scope"];
+})();
 
 // Source: src/event-detail/ui/contact-point-detail.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc component
  * @name udb.event-detail.component:ContactPointDetail
@@ -7437,8 +7947,12 @@ function ContactPointDetailController($scope) {
   };
 }
 ContactPointDetailController.$inject = ["$scope"];
+})();
 
 // Source: src/event-detail/ui/event-detail.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.event-detail.controller:EventDetailController
@@ -7463,10 +7977,14 @@ function EventDetail(
   $q,
   $window,
   offerLabeller,
-   $translate
+  $translate,
+  appConfig,
+  ModerationService
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
+
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
@@ -7496,10 +8014,27 @@ function EventDetail(
     $scope.permissions = {editing: false, duplication: false};
   }
 
+  function getModerationItems(roles) {
+    var query = '';
+
+    _.forEach(roles, function(role) {
+      if (role.constraint) {
+        query += (query ? ' OR ' : '') + '(' + role.constraint + ')';
+      }
+    });
+    query = (query ? '(' + query + ')' : '');
+    query = '(' + query + ' AND cdbid:' + $scope.event.id + ')';
+    return ModerationService
+      .find(query, 10, 0)
+      .then(function(searchResult) {
+        return searchResult;
+      });
+  }
+
   $scope.eventIdIsInvalid = false;
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
-  $scope.eventHistory = [];
+  $scope.eventHistory = undefined;
   $scope.tabs = [
     {
       id: 'data',
@@ -7529,34 +8064,41 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    var personalVariationLoaded = variationRepository.getPersonalVariation(event);
-
-    udbApi
-      .getHistory($scope.eventId)
-      .then(showHistory);
-
     $scope.event = jsonLDLangFilter(event, language);
+    $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
+    $scope.noAgeInfo = event.typicalAgeRange === '';
 
     $scope.eventIdIsInvalid = false;
 
-    personalVariationLoaded
-      .then(function (variation) {
-        $scope.event.description = variation.description[language];
-      })
-      .finally(function () {
-        $scope.eventIsEditable = true;
-      });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(event)
+        .then(showVariation);
+    }
+
     hasContactPoint();
     hasBookingInfo();
+
+    ModerationService
+      .getMyRoles()
+      .then(function(roles) {
+        getModerationItems(roles).then(function(result) {
+          angular.forEach(result.member, function(member) {
+            if (member['@id'] === $scope.eventId) {
+              $scope.moderationPermission = true;
+            }
+          });
+        });
+      });
   }
 
-  function failedToLoad(reason) {
+  function showVariation(variation) {
+    $scope.event.description = variation.description[language];
+  }
+
+  function failedToLoad() {
     $scope.eventIdIsInvalid = true;
   }
-
-  var getActiveTabId = function() {
-    return activeTabId;
-  };
 
   $scope.eventLocation = function (event) {
     var location = jsonLDLangFilter(event.location, language);
@@ -7604,6 +8146,10 @@ function EventDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.eventHistory) {
+      udbApi.getHistory($scope.eventId).then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {
@@ -7722,9 +8268,13 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$location", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService"];
+})();
 
 // Source: src/event_form/calendar-labels.constant.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -7746,8 +8296,12 @@ angular
       {'label': 'Van ... tot ... ', 'id' : 'periodic', 'eventOnly' : true},
       {'label' : 'Permanent', 'id' : 'permanent', 'eventOnly' : false}
     ]);
+})();
 
 // Source: src/event_form/components/age/age-input.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.event-form.directive:udbAgeInput
@@ -7788,8 +8342,12 @@ function AgeInputDirective() {
     }
   };
 }
+})();
 
 // Source: src/event_form/components/age/form-age.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc controller
  * @name udb.event-form:FormAgeController
@@ -7849,7 +8407,7 @@ function FormAgeController($scope, EventFormData, eventCrud) {
     }
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
-      showError('De minimum ouderdom mag niet hoger zijn dan maximum.'); return;
+      showError('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
@@ -7933,8 +8491,12 @@ function FormAgeController($scope, EventFormData, eventCrud) {
   }
 }
 FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud"];
+})();
 
 // Source: src/event_form/components/age/form-age.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.event-form.directive:udbFormAge
@@ -7954,8 +8516,12 @@ function FormAgeDirective() {
     controllerAs: 'fagec'
   };
 }
+})();
 
 // Source: src/event_form/components/audience/form-audience.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.event-form:FormAudienceController
@@ -7981,8 +8547,12 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
   }
 }
 FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig"];
+})();
 
 // Source: src/event_form/components/audience/form-audience.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.event-form.directive:udbFormAudience
@@ -8002,8 +8572,12 @@ function FormAudienceDirective() {
     controllerAs: 'fac'
   };
 }
+})();
 
 // Source: src/event_form/components/auto-scroll.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.event-form.directive:udbAutoScroll
@@ -8035,52 +8609,384 @@ function AutoScroll($document) {
   }
 }
 AutoScroll.$inject = ["$document"];
+})();
 
-// Source: src/event_form/components/calendartypes/event-form-period.directive.js
+// Source: src/event_form/components/calendar/base-calendar.controller.js
+(function () {
+'use strict';
+
 /**
- * @ngdoc directive
- * @name udb.search.directive:tudbEventFormTimestampSelection
+ * @typedef {Object} TimeSpan
+ * @property {Date} start
+ * @property {Date} end
+ * @property {boolean} allDay
+ */
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:BaseCalendarController
  * @description
- * # timestamp selection for event form
+ * # Base Calendar Controller
  */
 angular
   .module('udb.event-form')
-  .directive('udbEventFormPeriod', EventFormPeriodDirective);
+  .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function EventFormPeriodDirective() {
-  return {
-    templateUrl: 'templates/event-form-period.html',
-    restrict: 'EA',
-    scope: {
-      formData: '='
+function BaseCalendarController(calendar, $scope) {
+  calendar.type = '';
+  calendar.setType = setType;
+  calendar.createTimeSpan = createTimeSpan;
+  calendar.timeSpans = [];
+  calendar.timeSpanRequirements = [];
+  calendar.removeTimeSpan = removeTimeSpan;
+  calendar.weeklyRecurring = false;
+  calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
+  calendar.instantTimeSpanChanged = instantTimeSpanChanged;
+  calendar.init = init;
+
+  /**
+   * @param {EventFormData} formData
+   * @param {OpeningHoursCollection} openingHoursCollection
+   */
+  function init(formData, openingHoursCollection) {
+    calendar.formData = formData;
+    calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
+    calendar.setType(formData.calendarType ? formData.calendarType : 'single');
+    calendar.openingHoursCollection = openingHoursCollection;
+  }
+
+  function isTypeWeeklyRecurring(type) {
+    return type === 'permanent' || type === 'periodic';
+  }
+
+  /**
+   * @param {string} calendarType
+   */
+  function setType(calendarType) {
+    calendar.formData.setCalendarType(calendarType);
+    calendar.type = calendarType;
+    calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
+
+    if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
+      initTimeSpans();
+    }
+  }
+
+  function initTimeSpans() {
+    calendar.timeSpans = [
+      {
+        allDay: true,
+        start: moment().startOf('hour').add(1, 'h').toDate(),
+        end: moment().startOf('hour').add(4, 'h').toDate()
+      }
+    ];
+  }
+
+  function createTimeSpan() {
+    if (_.isEmpty(calendar.timeSpans)) {
+      initTimeSpans();
+      calendar.instantTimeSpanChanged();
+    } else {
+      calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
+      // Do not trigger timeSpanChanged to prevent saving duplicates.
+    }
+  }
+
+  /**
+   * @param {Object} timeSpan
+   */
+  function removeTimeSpan(timeSpan) {
+    if (calendar.timeSpans.length > 1) {
+      calendar.timeSpans = _.without(calendar.timeSpans, timeSpan);
+      calendar.instantTimeSpanChanged();
+    }
+  }
+
+  function digestTimeSpanChanged() {
+    $scope.$apply(timeSpanChanged);
+  }
+
+  function instantTimeSpanChanged() {
+    calendar.delayedTimeSpanChanged.cancel();
+    timeSpanChanged();
+  }
+
+  function timeSpanChanged() {
+    var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
+
+    if (!_.isEmpty(_.flatten(unmetRequirements))) {
+      showTimeSpanRequirements(unmetRequirements);
+    } else {
+      if (calendar.timeSpans.length > 1) {
+        if (calendar.type !== 'multiple') {
+          setType('multiple');
+        }
+      } else if (calendar.type !== 'single') {
+        setType('single');
+      }
+      clearTimeSpanRequirements();
+      calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
+    }
+  }
+
+  function clearTimeSpanRequirements() {
+    calendar.timeSpanRequirements = [];
+  }
+
+  function showTimeSpanRequirements(unmetRequirements) {
+    calendar.timeSpanRequirements = unmetRequirements;
+  }
+
+  /**
+   * @param {TimeSpan[]} timeSpans
+   * @return {Timestamp[]}
+   */
+  function timeSpansToTimestamps(timeSpans) {
+    return _.map(timeSpans, function (timeSpan) {
+      var start = timeSpan.allDay ? moment(timeSpan.start).startOf('day') : moment(timeSpan.start);
+      var end = timeSpan.allDay ? moment(timeSpan.end).endOf('day').startOf('minute') : moment(timeSpan.end);
+
+      return {
+        date: moment(timeSpan.start).startOf('day').toDate(),
+        startHour: start.format('HH:mm'),
+        startHourAsDate: start.toDate(),
+        showStartHour: true,
+        endHour: end.format('HH:mm'),
+        endHourAsDate: end.toDate(),
+        showEndHour: true
+      };
+    });
+  }
+
+  /**
+   * @param {Timestamp[]} timestamps
+   * @return {TimeSpan[]}
+   */
+  function timestampsToTimeSpans(timestamps) {
+    return _.map(timestamps, function (timestamp) {
+      var start = timestamp.startHourAsDate;
+      var end = timestamp.endHourAsDate;
+      var allDay = moment(start).isSame(end, 'day') &&
+        moment(start).startOf('day').isSame(start) &&
+        moment(end).endOf('day').startOf('minute').isSame(end);
+
+      return {
+        start: start,
+        end: end,
+        allDay: allDay
+      };
+    });
+  }
+
+  /**
+   * Validates a time-span and returns a list of unmet requirements.
+   *
+   * @param {TimeSpan} timeSpan
+   * @return {string[]}
+   */
+  function validateTimeSpan(timeSpan) {
+    var requirements = {
+      'timedWhenNotAllDay': function (timeSpan) {
+        return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
+      },
+      'startBeforeEndDay': function (timeSpan) {
+        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
+      },
+      'startBeforeEnd': function (timeSpan) {
+        return !timeSpan.allDay &&
+            (timeSpan.start && timeSpan.end) &&
+            moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
+            moment(timeSpan.start).isAfter(timeSpan.end);
+      }
+    };
+
+    var unmetRequirements = _.pick(requirements, function (check) {
+      return check(timeSpan);
+    });
+
+    return _.keys(unmetRequirements);
+  }
+}
+BaseCalendarController.$inject = ["calendar", "$scope"];
+})();
+
+// Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
+(function () {
+'use strict';
+
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarDatepicker', {
+    templateUrl: 'templates/form-calendar-datepicker.component.html',
+    controller: FormCalendarDatepickerController,
+    require: {
+      ngModel: '^ngModel'
+    },
+    bindings: {
+      disabled: '=ngDisabled'
+    },
+    controllerAs: 'datepicker'
+  });
+
+/** @inject */
+function FormCalendarDatepickerController() {
+  var datepicker = this;
+  var options = {
+    minDate: new Date(),
+    showWeeks: false
+  };
+
+  datepicker.$onInit = function() {
+    datepicker.isOpen = false;
+    datepicker.options = options;
+    datepicker.ngModel.$render = function () {
+      datepicker.date = new Date(datepicker.ngModel.$viewValue);
+    };
+  };
+
+  datepicker.open = function() {
+    datepicker.isOpen = true;
+  };
+
+  datepicker.changed = function() {
+    if (datepicker.date) {
+      var time = moment(datepicker.ngModel.$viewValue);
+      var day = moment(datepicker.date).hour(time.hour()).minute(time.minute());
+      datepicker.ngModel.$setViewValue(day.toDate());
     }
   };
 }
+})();
 
-// Source: src/event_form/components/calendartypes/event-form-timestamp.directive.js
+// Source: src/event_form/components/calendar/form-calendar-period.component.js
+(function () {
+'use strict';
+
 /**
- * @ngdoc directive
- * @name udb.search.directive:tudbEventFormTimestampSelection
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarPeriod
  * @description
- * # timestamp selection for event form
+ * # Form Calendar Period
  */
 angular
   .module('udb.event-form')
-  .directive('udbEventFormTimestamp', EventFormTimestampDirective);
-
-/* @ngInject */
-function EventFormTimestampDirective() {
-  return {
-    templateUrl: 'templates/event-form-timestamp.html',
-    restrict: 'EA',
-    scope: {
+  .component('udbFormCalendarPeriod', {
+    templateUrl: 'templates/form-calendar-period.component.html',
+    controller: FormCalendarPeriodComponentController,
+    bindings: {
       formData: '='
+    }
+  });
+
+function FormCalendarPeriodComponentController() {
+  var controller = this;
+  controller.calendarType = controller.formData.calendarType;
+}
+})();
+
+// Source: src/event_form/components/calendar/form-calendar-timepicker.component.js
+(function () {
+'use strict';
+
+angular
+  .module('udb.event-form')
+  .component('udbFormCalendarTimepicker', {
+    templateUrl: 'templates/form-calendar-timepicker.component.html',
+    controller: FormCalendarTimepickerController,
+    require: {
+      ngModel: '^ngModel'
+    },
+    controllerAs: 'timepicker'
+  });
+
+/** @inject */
+function FormCalendarTimepickerController() {
+  var timepicker = this;
+
+  timepicker.$onInit = function() {
+    timepicker.ngModel.$render = function () {
+      timepicker.time = new Date(timepicker.ngModel.$viewValue);
+    };
+  };
+
+  timepicker.changed = function() {
+    if (timepicker.time) {
+      timepicker.ngModel.$setViewValue(timepicker.time);
     }
   };
 }
+})();
+
+// Source: src/event_form/components/calendar/form-calendar.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:FormCalendarController
+ * @description
+ * # Form Calendar Controller
+ */
+angular
+  .module('udb.event-form')
+  .controller('FormCalendarController', FormCalendarController);
+
+/* @ngInject */
+function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $controller) {
+  var calendar = this;
+
+  $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
+
+  calendar.init(EventFormData, OpeningHoursCollection);
+}
+FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller"];
+})();
+
+// Source: src/event_form/components/calendar/form-event-calendar.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.event-form.component:udbFormEventCalendar
+ * @description
+ * # Form Calendar
+ * The form calendar component for events.
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormEventCalendar', {
+    templateUrl: 'templates/form-event-calendar.component.html',
+    controller: 'FormCalendarController',
+    controllerAs: 'calendar'
+  });
+})();
+
+// Source: src/event_form/components/calendar/form-place-calendar.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.event-form.component:udbFormPlaceCalendar
+ * @description
+ * # Form Place Calendar
+ * The form calendar component for places.
+ */
+angular
+  .module('udb.event-form')
+  .component('udbFormPlaceCalendar', {
+    templateUrl: 'templates/form-place-calendar.component.html',
+    controller: 'FormCalendarController',
+    controllerAs: 'calendar'
+  });
+})();
 
 // Source: src/event_form/components/facilities-modal/event-form-facilities-modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormFacilitiesModalController
@@ -8170,8 +9076,12 @@ function EventFormFacilitiesModalController($scope, $uibModalInstance, EventForm
 
 }
 EventFormFacilitiesModalController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "facilities"];
+})();
 
 // Source: src/event_form/components/image-edit/event-form-image-edit.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormImageEditController
@@ -8238,8 +9148,12 @@ function EventFormImageEditController(
 
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
+})();
 
 // Source: src/event_form/components/image-remove/event-form-image-remove.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormImageRemoveController
@@ -8294,8 +9208,12 @@ function EventFormImageRemoveController($scope, $uibModalInstance, EventFormData
   }
 }
 EventFormImageRemoveController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "image"];
+})();
 
 // Source: src/event_form/components/image-upload/event-form-image-upload.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormImageUploadController
@@ -8382,6 +9300,8 @@ function EventFormImageUploadController(
       return;
     }
 
+    $scope.saving = true;
+
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
         deferredAddition = $q.defer();
@@ -8409,6 +9329,7 @@ function EventFormImageUploadController(
      */
     function addImageToEvent(mediaObject) {
       function updateEventFormAndResolve() {
+        $scope.saving = false;
         EventFormData.addImage(mediaObject);
         deferredAddition.resolve(mediaObject);
         $uibModalInstance.close(mediaObject);
@@ -8431,8 +9352,12 @@ function EventFormImageUploadController(
   }
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
+})();
 
 // Source: src/event_form/components/opening-hours-editor/opening-hours-editor.modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc controller
  * @name udb.event-form.controller:OpeningHoursEditorModalController
@@ -8447,12 +9372,23 @@ angular
 /* @ngInject */
 function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollection) {
   var controller = this;
+  var originalOpeningHoursList;
 
-  controller.openingHoursCollection = openingHoursCollection;
+  init(openingHoursCollection);
   controller.saveOpeningHours = saveOpeningHours;
   controller.createNewOpeningHours = createNewOpeningHours;
   controller.removeOpeningHours = removeOpeningHours;
   controller.errors = {};
+
+  function init(openingHoursCollection) {
+    originalOpeningHoursList = _.cloneDeep(openingHoursCollection.getOpeningHours());
+
+    if (originalOpeningHoursList.length === 0) {
+      openingHoursCollection.createNewOpeningHours();
+    }
+
+    controller.openingHoursCollection = openingHoursCollection;
+  }
 
   function saveOpeningHours() {
     clearErrors();
@@ -8469,9 +9405,7 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
    * @param {string[]} errorList
    */
   function showErrors(errorList) {
-    controller.errors = _.zipObject(errorList, _.map(errorList, function() {
-      return true;
-    }));
+    controller.errors = errorList;
   }
 
   function clearErrors() {
@@ -8484,38 +9418,16 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
 
   function removeOpeningHours(openingHours) {
     controller.openingHoursCollection.removeOpeningHours(openingHours);
+    clearErrors();
   }
 }
 OpeningHoursEditorModalController.$inject = ["$uibModalInstance", "openingHoursCollection"];
-
-// Source: src/event_form/components/openinghours/day-names.constant.js
-/* jshint sub: true */
-
-/**
- * @ngdoc constant
- * @name udb.event-form.dayNames
- * @description
- * # dayNames
- * Opening hours day names
- */
-angular
-  .module('udb.event-form')
-  .constant('dayNames',
-    /**
-     * list of day names
-     * @readonly
-     */
-    {
-      monday : 'Maandag',
-      tuesday : 'Dinsdag',
-      wednesday : 'Woensdag',
-      thursday : 'Donderdag',
-      friday : 'Vrijdag',
-      saturday : 'Zaterdag',
-      sunday : 'Zondag'
-    });
+})();
 
 // Source: src/event_form/components/openinghours/opening-hours-data-collection.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.event-form.service:OpeningHoursCollection
@@ -8527,12 +9439,22 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment, dayNames) {
+function OpeningHoursCollectionFactory(moment) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,
     'dayOfWeek': hasDayOfWeek,
     'openIsBeforeClose': openIsBeforeClose
+  };
+
+  var weekdays = {
+    'monday': {label: 'Ma', name: 'Maandag', open: false},
+    'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
+    'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
+    'thursday': {label: 'Do', name: 'Donderdag', open: false},
+    'friday': {label: 'Vr', name: 'Vrijdag', open: false},
+    'saturday': {label: 'Za', name: 'Zaterdag', open: false},
+    'sunday': {label: 'Zo', name: 'Zondag', open: false}
   };
 
   /**
@@ -8561,7 +9483,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function hasDayOfWeek(openingHoursList) {
     return _.all(_.map(openingHoursList, function (openingHours) {
-      return !_.isEmpty(openingHours.dayOfWeek);
+      return !_.isUndefined(_.find(openingHours.dayOfWeek, 'open'));
     }));
   }
 
@@ -8572,16 +9494,9 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
    */
   function prepareOpeningHoursForDisplay(openingHoursList) {
     angular.forEach (openingHoursList, function(openingHour, key) {
-      var humanValues = [];
-      if (openingHour.dayOfWeek instanceof Array) {
-        for (var i in openingHoursList[key].dayOfWeek) {
-          humanValues.push(dayNames[openingHour.dayOfWeek[i]]);
-        }
-      }
       openingHour.opens = moment(openingHour.opensAsDate).format('HH:mm');
       openingHour.closes = moment(openingHour.closesAsDate).format('HH:mm');
-
-      openingHour.label = humanValues.join(', ');
+      openingHour.label = _.pluck(_.filter(openingHour.dayOfWeek, 'open'), 'name').join(', ');
     });
 
     return openingHoursList;
@@ -8622,7 +9537,7 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     createNewOpeningHours: function () {
       var openingHoursList = this.openingHours || [];
       var openingHours = {
-        'dayOfWeek': [],
+        'dayOfWeek': _.cloneDeep(weekdays),
         'opens': '00:00',
         'opensAsDate': new Date(1970, 0, 1),
         'closes': '00:00',
@@ -8640,21 +9555,32 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     deserialize: function (jsonOpeningHoursList) {
       this.setOpeningHours(_.map(jsonOpeningHoursList, function (jsonOpeningHours) {
         return {
-          'dayOfWeek': jsonOpeningHours.dayOfWeek || [],
+          'dayOfWeek': _.mapValues(weekdays, function (weekday, day) {
+            var dayOfWeek = _.cloneDeep(weekday);
+            dayOfWeek.open = _.includes(jsonOpeningHours.dayOfWeek, day);
+
+            return dayOfWeek;
+          }),
           'opens': jsonOpeningHours.opens || '00:00',
           'opensAsDate':
-            jsonOpeningHours.opens ? resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() : new Date(1970, 0, 1),
+            jsonOpeningHours.opens ?
+              resetDay(moment(jsonOpeningHours.opens, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1),
           'closes': jsonOpeningHours.closes || '00:00',
           'closesAsDate':
-            jsonOpeningHours.closes ? resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() : new Date(1970, 0, 1)
+            jsonOpeningHours.closes ?
+              resetDay(moment(jsonOpeningHours.closes, 'HH:mm')).toDate() :
+              new Date(1970, 0, 1)
         };
       }));
+
+      return this;
     },
 
     serialize: function () {
       return _.map(this.openingHours, function (openingHours) {
         return {
-          dayOfWeek: openingHours.dayOfWeek,
+          dayOfWeek: _.keys(omitClosedDays(openingHours.dayOfWeek)),
           opens: moment(openingHours.opensAsDate).format('HH:mm'),
           closes: moment(openingHours.closesAsDate).format('HH:mm')
         };
@@ -8689,11 +9615,21 @@ function OpeningHoursCollectionFactory(moment, dayNames) {
     return moment.clone().year(1970).dayOfYear(1);
   }
 
+  function omitClosedDays(dayOfWeek) {
+    return _.pick(dayOfWeek, function(weekday) {
+      return weekday.open;
+    });
+  }
+
   return openingHoursCollection;
 }
-OpeningHoursCollectionFactory.$inject = ["moment", "dayNames"];
+OpeningHoursCollectionFactory.$inject = ["moment"];
+})();
 
 // Source: src/event_form/components/openinghours/openinghours.component.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} OpeningHours
  * @property {Date} opensAsDate
@@ -8707,7 +9643,8 @@ angular
   .module('udb.event-form')
   .component('udbEventFormOpeningHours', {
     bindings: {
-      openingHoursCollection: '=openingHours'
+      openingHoursCollection: '=openingHours',
+      formData: '='
     },
     templateUrl: 'templates/event-form-openinghours.html',
     controller: OpeningHourComponentController,
@@ -8717,7 +9654,7 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormData) {
+function OpeningHourComponentController($uibModal) {
   var cm = this;
 
   cm.edit = openEditorModal;
@@ -8743,13 +9680,230 @@ function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormDa
    * @param {OpeningHoursData[]} openingHoursList
    */
   function saveOpeningHours(openingHoursList) {
-    EventFormData.saveOpeningHours(openingHoursList);
+    cm.formData.saveOpeningHours(openingHoursList);
     cm.openingHoursCollection.deserialize(openingHoursList);
   }
 }
-OpeningHourComponentController.$inject = ["moment", "dayNames", "$uibModal", "EventFormData"];
+OpeningHourComponentController.$inject = ["$uibModal"];
+})();
+
+// Source: src/event_form/components/organizer-address/organizer-address.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormOrganizerAddressController
+ * @description
+ * # EventFormOrganizerAddressController
+ * Modal for setting the reservation period.
+ */
+angular
+    .module('udb.event-form')
+    .component('udbOrganizerAddress', {
+      templateUrl: 'templates/organizer-address.html',
+      controller: OrganizerAddressComponent,
+      controllerAs: 'oac',
+      bindings: {
+        address: '=',
+        onUpdate: '&'
+      }
+    });
+
+/* @ngInject */
+function OrganizerAddressComponent($scope, cities, Levenshtein) {
+  var controller = this;
+
+  controller.cities = cities;
+  controller.selectedCity = '';
+  controller.requiredAddress = false;
+
+  if (controller.address.addressLocality) {
+    controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
+    controller.requiredAddress = true;
+  }
+
+  controller.streetHasErrors = false;
+  controller.cityHasErrors = false;
+  controller.addressHasErrors = false;
+
+  controller.validateAddress = validateAddress;
+  controller.filterCities = filterCities;
+  controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
+  controller.selectCity = selectCity;
+  controller.changeCitySelection = changeCitySelection;
+
+  $scope.$on('organizerAddressSubmit', function () {
+    controller.organizerAddressForm.$setSubmitted();
+    reset();
+    validateAddress();
+  });
+
+  function reset() {
+    controller.streetHasErrors = false;
+    controller.cityHasErrors = false;
+    controller.addressHasErrors = false;
+  }
+
+  function validateAddress() {
+    reset();
+    if (controller.requiredAddress) {
+      if (controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) {
+        controller.streetHasErrors = true;
+      }
+      if (controller.selectedCity === '') {
+        controller.cityHasErrors = true;
+      }
+    }
+    else {
+      if ((controller.address.streetAddress === '' ||
+          controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
+        controller.streetHasErrors = true;
+      }
+
+      if (controller.selectedCity === '' && controller.address.streetAddress !== '') {
+        controller.cityHasErrors = true;
+      }
+    }
+
+    sendUpdate();
+  }
+
+  function filterCities(value) {
+    return function (city) {
+      var length = value.length;
+      var words = value.match(/\w+/g);
+      var zipMatches = words.filter(function (word) {
+        return city.zip.substring(0, length) === word;
+      });
+      var nameMatches = words.filter(function (word) {
+        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+      });
+
+      return zipMatches.length + nameMatches.length >= words.length;
+    };
+  }
+
+  function orderByLevenshteinDistance(value) {
+    return function (city) {
+      return new Levenshtein(value, city.zip + '' + city.name);
+    };
+  }
+
+  /**
+   * Select City.
+   */
+  function selectCity($item, $label) {
+    controller.address.postalCode = $item.zip;
+    controller.address.addressLocality = $item.name;
+    controller.address.addressCountry = 'BE';
+
+    controller.cityAutocompleteTextField = '';
+    controller.selectedCity = $label;
+    validateAddress();
+  }
+
+  /**
+   * Change a city selection.
+   */
+  function changeCitySelection() {
+    controller.address.postalCode = '';
+    controller.address.addressLocality = '';
+    controller.address.addressCountry = '';
+
+    controller.selectedCity = '';
+    controller.cityAutocompleteTextField = '';
+    validateAddress();
+  }
+
+  function sendUpdate() {
+    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors;
+    controller.onUpdate({error: controller.addressHasErrors});
+  }
+}
+OrganizerAddressComponent.$inject = ["$scope", "cities", "Levenshtein"];
+})();
+
+// Source: src/event_form/components/organizer-contact/organizer-contact.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:EventFormOrganizerAddressController
+ * @description
+ * # EventFormOrganizerAddressController
+ * Modal for setting the reservation period.
+ */
+angular
+    .module('udb.event-form')
+    .component('udbOrganizerContact', {
+      templateUrl: 'templates/organizer-contact.html',
+      controller: OrganizerContactComponent,
+      controllerAs: 'occ',
+      bindings: {
+        contact: '=',
+        onUpdate: '&'
+      }
+    });
+
+/* @ngInject */
+function OrganizerContactComponent($scope) {
+  var controller = this;
+
+  controller.validateContact = validateContact;
+  controller.addOrganizerContactInfo = addOrganizerContactInfo;
+  controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
+  controller.sendUpdate = sendUpdate;
+
+  $scope.$on('organizerContactSubmit', function() {
+    controller.organizerContactWrapper.$setSubmitted();
+  });
+
+  function validateContact() {
+    if (_.find(controller.contact, {'value': ''}) ||
+        _.find(controller.contact, {'value': undefined}) ||
+        controller.organizerContactWrapper.$invalid) {
+      controller.contactHasErrors = true;
+    }
+    else {
+      controller.contactHasErrors = false;
+    }
+    sendUpdate();
+  }
+
+  /**
+   * Add a contact info entry for an organizer.
+   */
+  function addOrganizerContactInfo(type) {
+    controller.contact.push({
+      type : type,
+      value : ''
+    });
+    validateContact();
+  }
+
+  /**
+   * Remove a given key of the contact info.
+   */
+  function deleteOrganizerContactInfo(index) {
+    controller.contact.splice(index, 1);
+    validateContact();
+  }
+
+  function sendUpdate() {
+    controller.onUpdate({error: controller.contactHasErrors});
+  }
+
+}
+OrganizerContactComponent.$inject = ["$scope"];
+})();
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormOrganizerModalController
@@ -8768,8 +9922,6 @@ function EventFormOrganizerModalController(
   udbOrganizers,
   UdbOrganizer,
   eventCrud,
-  cities,
-  Levenshtein,
   $q,
   organizerName
 ) {
@@ -8782,6 +9934,8 @@ function EventFormOrganizerModalController(
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.addressError = false;
+  $scope.contactError = false;
   $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
@@ -8789,7 +9943,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
-    website: '',
+    website: 'http://',
     name : $scope.organizer,
     address : {
       streetAddress : '',
@@ -8802,13 +9956,13 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
+  $scope.updateName = updateName;
+  $scope.validateAddress = validateAddress;
+  $scope.validateContact = validateContact;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
-  $scope.addressCompleteOrEmpty = addressCompleteOrEmpty;
 
   /**
    * Cancel the modal.
@@ -8818,27 +9972,9 @@ function EventFormOrganizerModalController(
   }
 
   /**
-   * Add a contact info entry for an organizer.
-   */
-  function addOrganizerContactInfo(type) {
-    $scope.newOrganizer.contact.push({
-      type : type,
-      value : ''
-    });
-  }
-
-  /**
-   * Remove a given key of the contact info.
-   */
-  function deleteOrganizerContactInfo(index) {
-    $scope.newOrganizer.contact.splice(index, 1);
-  }
-
-  /**
    * Validate the website of new organizer.
    */
   function validateWebsite() {
-
     $scope.showWebsiteValidation = true;
 
     if (!$scope.organizerForm.website.$valid) {
@@ -8867,7 +10003,25 @@ function EventFormOrganizerModalController(
           $scope.websiteError = true;
           $scope.showWebsiteValidation = false;
         });
+  }
 
+  /**
+   * When the name is changed by a user, submit state needs to be updated also.
+   */
+  function updateName() {
+    if ($scope.newOrganizer.name && !$scope.websiteError) {
+      $scope.disableSubmit = false;
+    } else {
+      $scope.disableSubmit = true;
+    }
+  }
+
+  function validateAddress(error) {
+    $scope.addressError = error;
+  }
+
+  function validateContact(error) {
+    $scope.contactError = error;
   }
 
   /**
@@ -8875,26 +10029,26 @@ function EventFormOrganizerModalController(
    */
   function validateNewOrganizer() {
 
-    var newContact = [];
-    angular.forEach($scope.newOrganizer.contact, function(contact) {
-      if (contact.value !== '') {
-        newContact.push(contact);
-      }
-    });
-
-    $scope.newOrganizer.contact = newContact;
-
     $scope.showValidation = true;
     // Forms are automatically known in scope.
     if (!$scope.organizerForm.$valid) {
       return;
     }
 
+    $scope.$broadcast('organizerAddressSubmit');
+    $scope.$broadcast('organizerContactSubmit');
+
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
     $scope.error = false;
     $scope.saving = true;
+
+    if ($scope.addressError || $scope.contactError) {
+      $scope.error = true;
+      $scope.saving = false;
+      return;
+    }
 
     promise.then(function (data) {
 
@@ -8916,14 +10070,6 @@ function EventFormOrganizerModalController(
 
   }
 
-  function addressCompleteOrEmpty() {
-    var address = $scope.newOrganizer.address;
-    var empty = (address.streetAddress === ''  && address.postalCode === '' && address.addressLocality === '');
-    var streedAddressComplete = (address.streetAddress !== '' && address.streetAddress !== undefined);
-    var complete = (streedAddressComplete && address.postalCode !== '' && address.addressLocality !== '');
-    return (empty || complete);
-  }
-
   /**
    * Select the organizer that should be used.
    */
@@ -8937,7 +10083,7 @@ function EventFormOrganizerModalController(
   function saveOrganizer() {
 
     $scope.saving = true;
-    $scope.error = false;
+    $scope.saveError = false;
 
     var organizer = _.clone($scope.newOrganizer);
     // remove the address when it's empty
@@ -8956,64 +10102,21 @@ function EventFormOrganizerModalController(
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;
       }, function() {
-        $scope.error = true;
+        $scope.saveError = true;
         $scope.saving = false;
       });
   }
 
-  // Scope functions.
-  $scope.cities = cities;
-  $scope.changeCitySelection = changeCitySelection;
-
-  $scope.filterCities = function(value) {
-    return function (city) {
-      var length = value.length;
-      var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return zipMatches.length + nameMatches.length >= words.length;
-    };
-  };
-
-  $scope.orderByLevenshteinDistance = function(value) {
-    return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
-    };
-  };
-
-  /**
-   * Select City.
-   */
-  controller.selectCity = function ($item, $label) {
-    $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.addressLocality = $item.name;
-
-    $scope.cityAutocompleteTextField = '';
-    $scope.selectedCity = $label;
-  };
-  $scope.selectCity = controller.selectCity;
-
-  /**
-   * Change a city selection.
-   */
-  function changeCitySelection() {
-    $scope.selectedCity = '';
-    $scope.cityAutocompleteTextField = '';
-    $scope.newOrganizer.address.postalCode = '';
-    $scope.newOrganizer.address.addressLocality = '';
-  }
-
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "cities", "Levenshtein", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName"];
+})();
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
 (function () {
-/**
+(function () {
+  'use strict';
+
+  /**
    * @ngdoc function
    * @name udbApp.controller:EventFormPlaceModalController
    * @description
@@ -9166,8 +10269,12 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
   EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
 })();
+})();
 
 // Source: src/event_form/components/price-form-modal/price-form-modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:PriceFormModalController
@@ -9183,7 +10290,8 @@ angular
 function PriceFormModalController(
   $uibModalInstance,
   EventFormData,
-  price
+  price,
+  $filter
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -9208,6 +10316,10 @@ function PriceFormModalController(
         price: ''
       };
       pfmc.price.push(priceItem);
+    } else {
+      angular.forEach(pfmc.price, function(info) {
+        info.price = $filter('currency')(info.price, ',', 0);
+      });
     }
 
     pfmc.priceError = false;
@@ -9223,7 +10335,7 @@ function PriceFormModalController(
   }
 
   function setPriceItemFree(key) {
-    pfmc.price[key].price = 0;
+    pfmc.price[key].price = '0,00';
     pfmc.priceForm.$setDirty();
   }
 
@@ -9270,14 +10382,21 @@ function PriceFormModalController(
   }
 
   function save() {
+    angular.forEach(pfmc.price, function(info) {
+      info.price = parseFloat(info.price.replace(',', '.'));
+    });
     EventFormData.priceInfo = pfmc.price;
     $uibModalInstance.close();
   }
 
 }
-PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price"];
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter"];
+})();
 
 // Source: src/event_form/components/price-info/price-info.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormPriceInfoController
@@ -9333,6 +10452,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       templateUrl: 'templates/price-form-modal.html',
       controller: 'PriceFormModalController',
       controllerAs: 'pfmc',
+      size: 'lg',
       resolve: {
         price: function () {
           return controller.price;
@@ -9380,8 +10500,80 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
   }
 }
 PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
+})();
+
+// Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
+(function () {
+(function () {
+  'use strict';
+
+  /**
+   * @ngdoc function
+   * @name udbApp.controller:EventFormPublishModalController
+   * @description
+   * # EventFormPublishModalController
+   * Modal for postponing a publish.
+   */
+  angular
+    .module('udb.event-form')
+    .controller('EventFormPublishModalController', EventFormPublishModalController);
+
+  /* @ngInject */
+  function EventFormPublishModalController($uibModalInstance, eventFormData, publishEvent) {
+    var efpmc = this;
+    efpmc.error = '';
+    efpmc.hasPublicationDate = false;
+    efpmc.publicationDate = eventFormData.availableFrom;
+    var tomorrow = moment(new Date()).add(1, 'days');
+    tomorrow.hours(0);
+    tomorrow.minutes(0);
+    tomorrow.seconds(0);
+    efpmc.dismiss = dismiss;
+    efpmc.savePublicationDate = savePublicationDate;
+    efpmc.onFocus = onFocus;
+
+    efpmc.drp = {
+      dateFormat: 'dd/MM/yyyy',
+      startOpened: false,
+      options: {
+        minDate: tomorrow.toDate(),
+        maxDate: moment(eventFormData.startDate).subtract(1, 'd'),
+        showWeeks: false,
+      }
+    };
+
+    function dismiss() {
+      $uibModalInstance.dismiss();
+    }
+
+    function onFocus() {
+      efpmc.drp.startOpened = !efpmc.drp.startOpened;
+    }
+
+    function savePublicationDate() {
+      if (!efpmc.publicationDate) {
+        efpmc.error = 'empty';
+      } else if (tomorrow <= efpmc.publicationDate) {
+        var availableFrom = new Date(efpmc.publicationDate.getFullYear(), efpmc.publicationDate.getMonth(),
+        efpmc.publicationDate.getDate(), 0, 0, 0);
+        eventFormData.availableFrom = availableFrom;
+        publishEvent();
+        $uibModalInstance.close();
+      } else {
+        efpmc.error = 'past';
+      }
+    }
+
+  }
+  EventFormPublishModalController.$inject = ["$uibModalInstance", "eventFormData", "publishEvent"];
+
+})();
+})();
 
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:ReservationPeriodController
@@ -9503,8 +10695,12 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
   }
 }
 ReservationPeriodController.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
+})();
 
 // Source: src/event_form/components/reservation-period/reservation-period.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.event_form.directive:udbReservationPeriod
@@ -9525,8 +10721,12 @@ function ReservationPeriodDirective() {
   };
 
 }
+})();
 
 // Source: src/event_form/components/save-time-tracker/save-time-tracker.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbEventFormSaveTimeTracker
@@ -9563,8 +10763,12 @@ function TimeTrackerDirective($rootScope) {
   }
 }
 TimeTrackerDirective.$inject = ["$rootScope"];
+})();
 
 // Source: src/event_form/components/suggestions/event-preview.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbEventPreview
@@ -9586,8 +10790,12 @@ function udbEventPreview() {
 
   return eventPreviewDirective;
 }
+})();
 
 // Source: src/event_form/components/suggestions/event-suggestion.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbEventSuggestion
@@ -9609,8 +10817,12 @@ function udbEventSuggestion() {
 
   return eventSuggestionDirective;
 }
+})();
 
 // Source: src/event_form/components/suggestions/place-preview.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbPlacePreview
@@ -9632,8 +10844,12 @@ function udbPlacePreview() {
 
   return placePreviewDirective;
 }
+})();
 
 // Source: src/event_form/components/suggestions/place-suggestion.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbPlaceSuggestion
@@ -9655,10 +10871,14 @@ function udbPlaceSuggestion() {
 
   return placeSuggestionDirective;
 }
+})();
 
 // Source: src/event_form/components/suggestions/suggestion-preview-modal.controller.js
 (function () {
-/**
+(function () {
+  'use strict';
+
+  /**
    * @ngdoc function
    * @name udbApp.controller:SuggestionPreviewModalController
    * @description
@@ -9734,8 +10954,12 @@ function udbPlaceSuggestion() {
   SuggestionPreviewModalController.$inject = ["$scope", "$uibModalInstance", "selectedSuggestionId", "resultViewer", "suggestionType"];
 
 })();
+})();
 
 // Source: src/event_form/components/validators/contact-info-validation.directive.js
+(function () {
+'use strict';
+
 /**
 * @ngdoc directive
 * @name udb.event-form.directive:udbContactInfoValidation
@@ -9759,30 +10983,44 @@ function UdbContactInfoValidationDirective() {
 
   function link (scope, elem, attrs, ngModel) {
     // Scope methods.
+    scope.loadInfo = loadInfo;
     scope.validateInfo = validateInfo;
     scope.clearInfo = clearInfo;
     scope.infoErrorMessage = '';
+
+    scope.$on('organizerContactRefresh', function() {
+      validateInfo();
+    });
+
+    function loadInfo() {
+      if (ngModel.$modelValue.value !== '') {
+        ngModel.$setValidity('contactinfo', true);
+        scope.infoErrorMessage = '';
+        validateInfo();
+      }
+    }
 
     /**
      * Validate the entered info.
      */
     function validateInfo() {
 
-      ngModel.$setValidity('contactinfo', true);
-      scope.infoErrorMessage = '';
-
-      if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-        EMAIL_REGEXP.test(ngModel.$modelValue.value);
-        scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+      if (ngModel.$modelValue.value === '' || ngModel.$modelValue.value === undefined) {
+        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
         ngModel.$setValidity('contactinfo', false);
-
       }
-      else if (ngModel.$modelValue.type === 'url') {
-        var viewValue = ngModel.$viewValue;
-
-        if (!URL_REGEXP.test(viewValue.value)) {
-          scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+      else {
+        if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
+          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen.';
           ngModel.$setValidity('contactinfo', false);
+        }
+        else if (ngModel.$modelValue.type === 'url') {
+          var viewValue = ngModel.$viewValue;
+
+          if (!URL_REGEXP.test(viewValue.value)) {
+            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen.';
+            ngModel.$setValidity('contactinfo', false);
+          }
         }
       }
     }
@@ -9799,8 +11037,12 @@ function UdbContactInfoValidationDirective() {
 
   }
 }
+})();
 
 // Source: src/event_form/copyright-negotiator.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.event-form.copyrightNegotiator
@@ -9838,8 +11080,12 @@ function CopyrightNegotiator($cookies) {
   };
 }
 CopyrightNegotiator.$inject = ["$cookies"];
+})();
 
 // Source: src/event_form/event-form-data.factory.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} EventType
  * @property {string} id
@@ -9889,7 +11135,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -9960,7 +11206,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
-
+      this.availableFrom = '';
       /**
        * @type {string[]}
        */
@@ -10125,10 +11371,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     /**
      * @param {Date} date
-     * @param {string} startHour HH:MM
+     * @param {string} startHour HH:mm
      * @param {Date|string} startHourAsDate
      *  An empty string when not set.
-     * @param {string} endHour HH:MM
+     * @param {string} endHour HH:mm
      * @param {Date|string} endHourAsDate
      *  An empty string when not set.
      */
@@ -10304,12 +11550,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
+      this.showStep(3);
       this.timingChangedCallback(this);
-    },
-
-    resetCalender: function () {
-      this.activeCalendarType = '';
-      this.calendarType = '';
     },
 
     initOpeningHours: function(openingHours) {
@@ -10322,8 +11564,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     setCalendarType: function (type) {
       var formData = this;
-
-      formData.showStep(3);
 
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.
@@ -10340,6 +11580,12 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
 
       if (formData.calendarType === 'permanent') {
+        formData.timingChanged();
+      }
+
+      if (formData.calendarType === 'periodic') {
+        formData.startDate = moment().startOf('day').toDate();
+        formData.endDate = moment().add(1, 'y').startOf('day').toDate();
         formData.timingChanged();
       }
 
@@ -10378,18 +11624,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         this.timingChanged();
       }
       else {
-        var nextHour = moment().add(1, 'hours').minutes(0);
-        var startHourAsDate = angular.copy(timestamp.date);
-        var endHourAsDate = angular.copy(timestamp.date);
-        startHourAsDate.setHours(nextHour.hours());
-        startHourAsDate.setMinutes(nextHour.minutes());
-        endHourAsDate.setHours(23);
-        endHourAsDate.setMinutes(59);
+        var startHour = moment(timestamp.date);
+        var endHour = moment(timestamp.date).endOf('day');
 
-        timestamp.startHour = moment(startHourAsDate).format('HH:mm');
-        timestamp.startHourAsDate = startHourAsDate;
-        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
-        timestamp.endHourAsDate = endHourAsDate;
+        timestamp.startHour = startHour.format('HH:mm');
+        timestamp.startHourAsDate = startHour.toDate();
+        timestamp.endHour = endHour.format('HH:mm');
+        timestamp.endHourAsDate = endHour.toDate();
         timestamp.showEndHour = false;
       }
     },
@@ -10455,16 +11696,28 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChanged();
     },
 
+    saveTimestamps: function (timestamps) {
+      var oldTimestamps = _.cloneDeep(this.timestamps);
+
+      this.timestamps = timestamps;
+
+      if (!_.isEqual(oldTimestamps, timestamps)) {
+        this.timingChanged();
+      }
+    },
+
     periodicTimingChanged: function () {
       var formData = this;
 
       if (formData.id) {
-        if (formData.hasValidPeriodicRange()) {
-          formData.periodicRangeError = false;
-          formData.timingChanged();
-        } else {
-          formData.periodicRangeError = true;
-        }
+        //TODO: this was wrapping the code below, not sure why...
+      }
+
+      if (formData.hasValidPeriodicRange()) {
+        formData.periodicRangeError = false;
+        formData.timingChanged();
+      } else {
+        formData.periodicRangeError = true;
       }
     }
   };
@@ -10474,9 +11727,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "$rootScope"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection"];
+})();
 
 // Source: src/event_form/event-form.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormController
@@ -10524,6 +11781,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
         moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
+    EventFormData.showStep(3);
   }
 
   /**
@@ -10599,6 +11857,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'additionalData',
       'apiUrl',
       'workflowStatus',
+      'availableFrom',
       'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
@@ -10644,9 +11903,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       EventFormData.initCalendar();
     }
 
-    if (!!EventFormData.openingHours.length) {
-      EventFormData.initOpeningHours(EventFormData.openingHours);
-    }
+    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
     $scope.loaded = true;
     EventFormData.showStep(1);
@@ -10680,8 +11937,12 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
   }
 }
 EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
+})();
 
 // Source: src/event_form/event-form.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:event-form.html
@@ -10827,8 +12088,12 @@ function EventFormPublishDirective() {
     controllerAs: 'efpc'
   };
 }
+})();
 
 // Source: src/event_form/http-prefix.directive.js
+(function () {
+'use strict';
+
 angular
   .module('udb.event-form')
   .directive('udbHttpPrefix', HttpPrefixDirective);
@@ -10859,8 +12124,12 @@ function HttpPrefixDirective() {
     }
   };
 }
+})();
 
 // Source: src/event_form/steps/event-form-publish.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep3Controller
@@ -10879,24 +12148,32 @@ function EventFormPublishController(
     eventCrud,
     OfferWorkflowStatus,
     $q,
-    $location
+    $location,
+    $uibModal
 ) {
 
   var controller = this;
 
   controller.publish = publish;
+  controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
+  controller.saving = false;
 
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  function publish() {
-    controller.error = '';
-    var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
+  if (!controller.hasNoDefault && isDraft) {
+    controller.eventFormData.availableFrom = defaultPublicationDate;
+  }
 
+  function publish() {
+    controller.saving = true;
+    controller.error = '';
     eventCrud
-      .publishOffer(EventFormData, defaultPublicationDate)
+      .publishOffer(EventFormData, controller.eventFormData.availableFrom)
       .then(function(job) {
         job.task.promise
           .then(setEventAsReadyForValidation)
@@ -10907,9 +12184,24 @@ function EventFormPublishController(
       });
   }
 
+  function publishLater() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-publish-modal.html',
+      controller: 'EventFormPublishModalController',
+      controllerAs: 'efpmc',
+      resolve: {
+        eventFormData: function () {
+          return controller.eventFormData;
+        },
+        publishEvent : function() {
+          return controller.publish;
+        }
+      }
+    });
+  }
+
   function setEventAsReadyForValidation() {
     EventFormData.workflowStatus = OfferWorkflowStatus.READY_FOR_VALIDATION;
-
     return $q.resolve();
   }
 
@@ -10925,9 +12217,13 @@ function EventFormPublishController(
     return (status === OfferWorkflowStatus.DRAFT);
   }
 }
-EventFormPublishController.$inject = ["appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location"];
+EventFormPublishController.$inject = ["appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location", "$uibModal"];
+})();
 
 // Source: src/event_form/steps/event-form-step1.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep1Controller
@@ -11042,12 +12338,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     controller.updateEventTypeAndThemePicker(EventFormData);
 
     EventFormData.showStep(2);
-
-    // immediately show step 3 if the form contains a place or an event with a preselected date
-    // in both cases the calendar type will already be set
-    if (EventFormData.calendarType) {
-      EventFormData.showStep(3);
-    }
+    EventFormData.showStep(3);
   }
 
   /**
@@ -11121,8 +12412,12 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
   controller.init(EventFormData);
 }
 EventFormStep1Controller.$inject = ["$scope", "$rootScope", "EventFormData", "eventCategories", "placeCategories"];
+})();
 
 // Source: src/event_form/steps/event-form-step2.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep2Controller
@@ -11135,14 +12430,12 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels, OpeningHoursCollection) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-  $scope.calendarLabels = calendarLabels;
-  $scope.openingHours = OpeningHoursCollection;
 
   /**
    * Mark the major info as changed.
@@ -11157,9 +12450,13 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLab
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
-EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData", "calendarLabels", "OpeningHoursCollection"];
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData"];
+})();
 
 // Source: src/event_form/steps/event-form-step3.controller.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} City
  * @property {string} zip
@@ -11555,8 +12852,12 @@ function EventFormStep3Controller(
   controller.init(EventFormData);
 }
 EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope"];
+})();
 
 // Source: src/event_form/steps/event-form-step4.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormStep4Controller
@@ -11572,7 +12873,7 @@ angular
 function EventFormStep4Controller(
   $scope,
   EventFormData,
-  udbApi,
+  searchApiSwitcher,
   appConfig,
   SearchResultViewer,
   eventCrud,
@@ -11694,7 +12995,7 @@ function EventFormStep4Controller(
 
     var queryString = expressions.join(' AND ');
 
-    return udbApi.findEvents(queryString);
+    return searchApiSwitcher.findOffers(queryString);
   }
 
   /**
@@ -11703,25 +13004,7 @@ function EventFormStep4Controller(
    * - on the same location
    */
   function duplicateSearchConditions(data) {
-
-    var location = data.getLocation();
-
-    if (EventFormData.isEvent) {
-      /*jshint camelcase: false*/
-      /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
-      return {
-        text: EventFormData.name.nl,
-        location_label : location.name
-      };
-    }
-    else {
-      /*jshint camelcase: false */
-      return {
-        text: EventFormData.name.nl,
-        zipcode: EventFormData.address.postalCode,
-        keywords: 'UDB3 place'
-      };
-    }
+    return searchApiSwitcher.getDuplicateSearchConditions(data);
   }
 
   /**
@@ -11795,9 +13078,13 @@ function EventFormStep4Controller(
   }
 
 }
-EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
+EventFormStep4Controller.$inject = ["$scope", "EventFormData", "searchApiSwitcher", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
+})();
 
 // Source: src/event_form/steps/event-form-step5.controller.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} ContactInfoItem
  * @property {ContactInfoTypeEnum} type
@@ -11837,10 +13124,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description vars.
   $scope.description = EventFormData.getDescription('nl');
-  $scope.focusDescription = false;
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
+  $scope.originalDescription = '';
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -11900,7 +13187,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description functions.
   $scope.alterDescription = alterDescription;
+  $scope.focusDescription = focusDescription;
   $scope.saveDescription = saveDescription;
+  $scope.countCharacters = countCharacters;
 
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
@@ -11931,41 +13220,62 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function alterDescription() {
     $scope.descriptionCssClass = 'state-filling';
-    $scope.focusDescription = true;
+  }
+
+  function focusDescription () {
+    $scope.descriptionInfoVisible = true;
+    $scope.originalDescription = $scope.description;
   }
 
   /**
    * Save the description.
    */
-  function saveDescription() {
+  function saveDescription(allowEmpty) {
 
-    $scope.savingDescription = true;
-    $scope.descriptionError = false;
-    $scope.focusDescription = false;
+    if (allowEmpty) {
+      $scope.description = '';
+    }
 
-    EventFormData.setDescription($scope.description, 'nl');
+    // only update description when there is one, it's not empty and it's not already saved; or when we allow empty
+    var emptyAllowed = ($scope.description && $scope.description !== '') || allowEmpty;
+    var notTheSame = ($scope.description !== $scope.originalDescription) || allowEmpty;
+    if (emptyAllowed && notTheSame) {
 
-    var promise = eventCrud.updateDescription(EventFormData, $scope.description);
-    promise.then(function() {
+      $scope.descriptionInfoVisible = false;
+      $scope.savingDescription = true;
+      $scope.descriptionError = false;
 
-      $scope.savingDescription = false;
-      controller.eventFormSaved();
+      EventFormData.setDescription($scope.description, 'nl');
 
-      // Toggle correct class.
-      if ($scope.description) {
-        $scope.descriptionCssClass = 'state-complete';
-      }
-      else {
-        $scope.descriptionCssClass = 'state-incomplete';
-      }
+      var promise = eventCrud.updateDescription(EventFormData, $scope.description);
+      promise.then(function() {
 
-    },
-    // Error occured, show message.
-    function() {
-      $scope.savingDescription = false;
-      $scope.descriptionError = true;
-    });
+        $scope.savingDescription = false;
+        controller.eventFormSaved();
 
+        // Toggle correct class.
+        if ($scope.description) {
+          $scope.descriptionCssClass = 'state-complete';
+        }
+        else {
+          $scope.descriptionCssClass = 'state-incomplete';
+        }
+
+      },
+       // Error occured, show message.
+      function() {
+        $scope.savingDescription = false;
+        $scope.descriptionError = true;
+      });
+    }
+  }
+  /**
+   * Count characters in the description.
+   */
+  function countCharacters() {
+    if ($scope.description) {
+      return $scope.description.length;
+    }
   }
 
   controller.eventFormSaved = function () {
@@ -12029,6 +13339,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
+      backdrop: 'static',
       templateUrl: 'templates/event-form-organizer-modal.html',
       controller: 'EventFormOrganizerModalController',
       resolve: {
@@ -12441,8 +13752,12 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
 }
 EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig"];
+})();
 
 // Source: src/export/event-export-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.EventExportJob
@@ -12517,8 +13832,12 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
   return (EventExportJob);
 }
 EventExportJobFactory.$inject = ["BaseJob", "JobStates", "ExportFormats"];
+})();
 
 // Source: src/export/event-export.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.export.controller:EventExportController
@@ -12531,7 +13850,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, udbApi, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats) {
 
   var exporter = this;
 
@@ -12709,21 +14028,19 @@ function EventExportController($uibModalInstance, udbApi, eventExporter, ExportF
   exporter.format = exporter.exportFormats[0].type;
   exporter.email = '';
 
-  udbApi.getMe().then(function (user) {
-    if (user.mbox) {
-      exporter.email = user.mbox;
-    }
-  });
-
   exporter.close = function () {
     $uibModalInstance.dismiss('cancel');
   };
 
   exporter.eventCount = eventExporter.activeExport.eventCount;
 }
-EventExportController.$inject = ["$uibModalInstance", "udbApi", "eventExporter", "ExportFormats"];
+EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats"];
+})();
 
 // Source: src/export/event-exporter.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.entry.eventExporter
@@ -12774,8 +14091,12 @@ function eventExporter(jobLogger, udbApi, EventExportJob) {
   };
 }
 eventExporter.$inject = ["jobLogger", "udbApi", "EventExportJob"];
+})();
 
 // Source: src/export/export-formats.constant.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -12814,8 +14135,12 @@ angular
       description: 'Exporteren naar event-ld om de informatie voor ontwikkelaars beschikbaar te maken.'
     }
   });
+})();
 
 // Source: src/export/export-modal-buttons.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.export.directive:udbExportModalButtons
@@ -12833,8 +14158,12 @@ function udbExportModalButtons() {
     restrict: 'E'
   };
 }
+})();
 
 // Source: src/management/components/query-search-bar.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc component
  * @name udb.search.directive:udbSearchBar
@@ -12872,8 +14201,12 @@ function QuerySearchBarComponent() {
     qsb.onChange({query: query});
   }
 }
+})();
 
 // Source: src/management/directives/form-group.directive.js
+(function () {
+'use strict';
+
 angular
   .module('udb.management')
   .directive('udbFormGroup', FormGroupDirective);
@@ -12896,8 +14229,12 @@ function FormGroupDirective() {
     }
   };
 }
+})();
 
 // Source: src/management/labels/label-creator.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:LabelCreatorController
@@ -12952,8 +14289,12 @@ function LabelCreatorController(LabelManager, $uibModal, $state) {
   }
 }
 LabelCreatorController.$inject = ["LabelManager", "$uibModal", "$state"];
+})();
 
 // Source: src/management/labels/label-editor.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:LabelEditorController
@@ -13096,8 +14437,12 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
   loadLabelFromParams();
 }
 LabelEditorController.$inject = ["LabelManager", "$uibModal", "$stateParams", "$q"];
+})();
 
 // Source: src/management/labels/label-manager.service.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} Label
  * @property {string}   id
@@ -13239,8 +14584,12 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
   }
 }
 LabelManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+})();
 
 // Source: src/management/labels/labels-list.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:LabelsListController
@@ -13328,8 +14677,12 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
     .subscribe();
 }
 LabelsListController.$inject = ["SearchResultGenerator", "rx", "$scope", "LabelManager"];
+})();
 
 // Source: src/management/labels/semicolon-label-check.directive.js
+(function () {
+'use strict';
+
 angular
   .module('udb.management.labels')
   .directive('udbSemicolonLabelCheck', SemicolonLabelCheckDirective);
@@ -13350,8 +14703,12 @@ function SemicolonLabelCheckDirective($q) {
   };
 }
 SemicolonLabelCheckDirective.$inject = ["$q"];
+})();
 
 // Source: src/management/labels/unique-label.directive.js
+(function () {
+'use strict';
+
 angular
   .module('udb.management.labels')
   .directive('udbUniqueLabel', UniqueLabelDirective);
@@ -13381,8 +14738,12 @@ function UniqueLabelDirective(LabelManager, $q) {
   };
 }
 UniqueLabelDirective.$inject = ["LabelManager", "$q"];
+})();
 
 // Source: src/management/list-item-defaults.factory.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} ManagementListItem
  * @property {string} name
@@ -13447,14 +14808,18 @@ function listItemDefaults(RolePermission) {
       permission: RolePermission.ORGANISATIES_BEHEREN,
       notificationCount: 0,
       index: 5,
-      sref: 'management.organizers',
+      sref: 'management.organizers.search',
       icon: 'fa-slideshare'
     }
   ];
 }
 listItemDefaults.$inject = ["RolePermission"];
+})();
 
 // Source: src/management/list-items.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.management.listItems
@@ -13502,7 +14867,6 @@ function listItems(
       }
     });
     query = (query ? '(' + query + ')' : '');
-
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
@@ -13566,13 +14930,17 @@ function listItems(
   }
 }
 listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults"];
+})();
 
-// Source: src/management/moderation/components/moderation-offer.component.js
+// Source: src/management/moderation/components/moderation-offer/moderation-offer.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc component
- * @name udb.search.directive:udbSearchBar
+ * @name udb.management.moderation.directive:udbModerationOffer
  * @description
- * # udbQuerySearchBar
+ * # udbModerationOffer
  */
 angular
   .module('udb.management.moderation')
@@ -13581,6 +14949,7 @@ angular
     controller: ModerationOfferComponent,
     controllerAs: 'moc',
     bindings: {
+      continue: '@',
       offerId: '@',
       offerType: '@'
     }
@@ -13601,6 +14970,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.isRejected = isRejected;
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
+  moc.continueValidation = continueValidation;
 
   // fetch offer
   ModerationService
@@ -13608,7 +14978,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
-      moc.offer.image = moc.offer.image + '?maxwidth=150&maxheight=150';
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -13617,6 +14986,10 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
 
   function showLoadingError(problem) {
     showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
+
+  function continueValidation() {
+    return moc.continue === 'true';
   }
 
   function isReadyForValidation() {
@@ -13723,8 +15096,70 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   }
 }
 ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
+})();
+
+// Source: src/management/moderation/components/moderation-summary/moderation-summary.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc component
+ * @name udb.management.moderation:udbModerationSummaryComponent
+ * @description
+ * # udbModerationSummary
+ */
+angular
+  .module('udb.management.moderation')
+  .component('udbModerationSummary', {
+    templateUrl: 'templates/moderation-summary.html',
+    controller: ModerationSummaryComponent,
+    controllerAs: 'moc',
+    bindings: {
+      offerId: '@',
+      offerType: '@'
+    }
+  });
+
+/* @ngInject */
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+  var moc = this;
+  var defaultLanguage = 'nl';
+
+  moc.loading = true;
+  moc.offer = {};
+  moc.sendingJob = false;
+  moc.error = false;
+
+  // fetch offer
+  ModerationService
+    .getModerationOffer(moc.offerId)
+    .then(function(offer) {
+      offer.updateTranslationState();
+      moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+    })
+    .catch(showLoadingError)
+    .finally(function() {
+      moc.loading = false;
+    });
+
+  function showLoadingError(problem) {
+    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
+  }
+}
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
+})();
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
+(function () {
+
+'use strict';
 
 /**
  * @ngdoc function
@@ -13777,8 +15212,12 @@ function RejectOfferConfirmModalCtrl($scope, $uibModalInstance, $q) {
 
 }
 RejectOfferConfirmModalCtrl.$inject = ["$scope", "$uibModalInstance", "$q"];
+})();
 
 // Source: src/management/moderation/moderation-list.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:ModerationListController
@@ -13804,7 +15243,8 @@ function ModerationListController(
   SearchResultGenerator,
   rx,
   $scope,
-  $q
+  $q,
+  $document
 ) {
   var moderator = this;
 
@@ -13850,6 +15290,10 @@ function ModerationListController(
         moderator.loading = true;
       })
       .subscribe();
+
+    page$.subscribe(function () {
+      $document.scrollTop(0);
+    });
 
     return $q.resolve();
   }
@@ -13915,9 +15359,13 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
+})();
 
 // Source: src/management/moderation/moderation.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.management.moderation
@@ -14022,8 +15470,12 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
   }
 }
 ModerationService.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
+})();
 
 // Source: src/management/moderation/workflow.constant.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -14050,8 +15502,294 @@ angular
       'DELETED': 'DELETED'
     }
   );
+})();
+
+// Source: src/management/organizers/delete/organization-delete.modal.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc controller
+ * @name udbApp.management.organizers.controller:OrganizationDeleteModalController
+ * @var OrganizationDeleteModalController odc
+ * @description
+ * # OrganizationDeleteModalController
+ * Modal to delete an organization
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizationDeleteModalController', OrganizationDeleteModalController);
+
+/* @ngInject */
+function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization) {
+  var controller = this;
+
+  controller.organization = organization;
+  controller.saving = false;
+  controller.error = false;
+
+  controller.cancelRemoval = cancelRemoval;
+  controller.deleteOrganization = deleteOrganization;
+
+  /**
+   * Delete the role.
+   */
+  function deleteOrganization() {
+    controller.error = false;
+    controller.saving = true;
+
+    function showError() {
+      controller.saving = false;
+      controller.error = true;
+    }
+
+    OrganizerManager
+      .delete(organization)
+      .then($uibModalInstance.close)
+      .catch(showError);
+  }
+
+  /**
+   * Cancel, modal dismiss.
+   */
+  function cancelRemoval() {
+    $uibModalInstance.dismiss();
+  }
+}
+OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
+})();
+
+// Source: src/management/organizers/edit/organizer-edit.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerEditController
+ * @description
+ * # OrganizerEditController
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizerEditController', OrganizerEditController);
+
+/* @ngInject */
+function OrganizerEditController(
+    OrganizerManager,
+    udbOrganizers,
+    $state,
+    $stateParams,
+    $q,
+    $scope
+  ) {
+  var controller = this;
+  var organizerId = $stateParams.id;
+
+  controller.contact = [];
+  controller.showWebsiteValidation = false;
+  controller.urlError = false;
+  controller.websiteError = false;
+  controller.nameError = false;
+  controller.addressError = false;
+  controller.contactError = false;
+  controller.hasErrors = false;
+  controller.disableSubmit = true;
+  controller.saveError = false;
+
+  controller.validateWebsite = validateWebsite;
+  controller.validateName = validateName;
+  controller.validateAddress = validateAddress;
+  controller.validateContact = validateContact;
+  controller.checkChanges = checkChanges;
+  controller.validateOrganizer = validateOrganizer;
+  controller.cancel = cancel;
+
+  var oldOrganizer = {};
+  var oldContact = [];
+  var isUrlChanged = false;
+  var isNameChanged = false;
+  var isAddressChanged = false;
+  var isContactChanged = false;
+
+  loadOrganizer(organizerId);
+
+  function loadOrganizer(organizerId) {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+
+    OrganizerManager
+      .get(organizerId)
+      .then(showOrganizer);
+  }
+
+  /**
+   * @param {udbOrganizer} organizer
+   */
+  function showOrganizer(organizer) {
+    if (_.isEmpty(organizer.address)) {
+      organizer.address = {
+        streetAddress : '',
+        addressLocality : '',
+        postalCode: '',
+        addressCountry : ''
+      };
+    }
+    controller.organizer = organizer;
+    oldOrganizer = _.cloneDeep(organizer);
+    controller.originalName = oldOrganizer.name;
+
+    if (controller.organizer.contactPoint !== null) {
+      _.forEach(controller.organizer.contactPoint, function(contactArray, key) {
+        _.forEach(contactArray, function(value) {
+          controller.contact.push({type: key, value: value});
+        });
+      });
+      oldContact = _.cloneDeep(controller.contact);
+    }
+  }
+
+  /**
+   * Validate the website of new organizer.
+   */
+  function validateWebsite() {
+    controller.showWebsiteValidation = true;
+
+    if (!controller.organizerEditForm.website.$valid) {
+      controller.showWebsiteValidation = false;
+      controller.urlError = true;
+      return;
+    }
+
+    udbOrganizers
+        .findOrganizersWebsite(controller.organizer.url)
+        .then(function (data) {
+          controller.urlError = false;
+          if (data.totalItems > 0) {
+            if (data.member[0].name === controller.originalName) {
+              controller.showWebsiteValidation = false;
+              controller.organizersWebsiteFound = false;
+            }
+            else {
+              controller.organizersWebsiteFound = true;
+              controller.showWebsiteValidation = false;
+            }
+          }
+          else {
+            controller.showWebsiteValidation = false;
+            controller.organizersWebsiteFound = false;
+          }
+        }, function () {
+          controller.websiteError = true;
+          controller.showWebsiteValidation = false;
+        })
+        .finally(function() {
+          checkChanges();
+        });
+  }
+
+  function validateName() {
+    if (!controller.organizerEditForm.name.$valid) {
+      controller.nameError = true;
+    }
+    else {
+      controller.nameError = false;
+    }
+
+    checkChanges();
+  }
+
+  function validateAddress(error) {
+    controller.addressError = error;
+    checkChanges();
+  }
+
+  function validateContact(error) {
+    controller.contactError = error;
+    checkChanges();
+  }
+
+  /**
+   * Validate the new organizer.
+   */
+  function validateOrganizer() {
+
+    controller.showValidation = true;
+
+    if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
+        controller.websiteError || controller.urlError || controller.nameError ||
+        controller.addressError || controller.contactError) {
+      controller.hasErrors = true;
+      controller.disableSubmit = true;
+      $scope.$broadcast('organizerAddressSubmit');
+      $scope.$broadcast('organizerContactSubmit');
+      return;
+    }
+
+    saveOrganizer();
+  }
+
+  function checkChanges() {
+    isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
+    isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
+    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
+    isContactChanged = !_.isEqual(controller.contact, oldContact);
+
+    if (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) {
+      controller.disableSubmit = false;
+    }
+    else {
+      controller.disableSubmit = true;
+    }
+
+    if (controller.organizerEditForm.$valid && !controller.organizersWebsiteFound &&
+        !controller.websiteError && !controller.urlError && !controller.nameError &&
+        !controller.addressError && !controller.contactError) {
+      controller.hasErrors = false;
+    }
+  }
+
+  function saveOrganizer() {
+    var promises = [];
+
+    if (isUrlChanged) {
+      promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.url));
+    }
+
+    if (isNameChanged) {
+      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name));
+    }
+
+    if (isAddressChanged) {
+      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address));
+    }
+
+    if (isContactChanged) {
+      promises.push(OrganizerManager.updateOrganizerContact(organizerId, controller.contact));
+    }
+
+    promises.push(OrganizerManager.removeOrganizerFromCache(organizerId));
+
+    $q.all(promises)
+        .then(function() {
+          $state.go('management.organizers.search', {}, {reload: true});
+        })
+        .catch(function () {
+          controller.hasErrors = true;
+          controller.saveError = true;
+        });
+  }
+
+  function cancel() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
+    $state.go('management.organizers.search', {}, {reload: true});
+  }
+}
+OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope"];
+})();
 
 // Source: src/management/organizers/organizer-detail.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:OrganizerDetailController
@@ -14154,8 +15892,12 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   }
 }
 OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams"];
+})();
 
 // Source: src/management/organizers/organizer-manager.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.management.organizers
@@ -14168,13 +15910,52 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
   var service = this;
+
+  /**
+   * @param {UdbOrganizer} organization
+   */
+  service.delete = function (organization) {
+    return udbApi
+      .deleteOrganization(organization)
+      .then(logOrganizationDeleted(organization));
+  };
+
+  /**
+   * @param {UdbOrganizer} organization
+   * @return {Function}
+   */
+  function logOrganizationDeleted(organization) {
+    /**
+     * @param {Object} commandInfo
+     * @return {Promise.<BaseJob>}
+     */
+    return function (commandInfo) {
+      var job = new BaseJob(commandInfo.commandId);
+      jobLogger.addJob(job);
+
+      $rootScope.$emit('organizationDeleted', organization);
+      return $q.resolve(job);
+    };
+
+  }
+
+  /**
+   * @param {string} query
+   * @param {int} limit
+   * @param {int} start
+   *
+   * @return {Promise.<PagedCollection>}
+   */
+  service.find = function(query, limit, start) {
+    return udbApi.findOrganisations(start, limit, null, query);
+  };
 
   /**
    * @param {string} organizerId
    *
-   * @returns {Promise.<Organizer>}
+   * @returns {Promise.<UdbOrganizer>}
    */
   service.get = function(organizerId) {
     return udbApi.getOrganizerById(organizerId);
@@ -14189,7 +15970,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -14201,7 +15982,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
       .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logOrganizerLabelJob);
+      .then(logUpdateOrganizerJob);
   };
 
   /**
@@ -14213,19 +15994,236 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q) {
   };
 
   /**
+   * Update the unique url of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} website
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerWebsite = function(organizerId, website) {
+    return udbApi
+        .updateOrganizerWebsite(organizerId, website)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update the name of a specific organizer.
+   * @param {string} organizerId
+   * @param {string} name
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerName = function(organizerId, name) {
+    return udbApi
+        .updateOrganizerName(organizerId, name)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update the address of a specific organizer.
+   * @param {string} organizerId
+   * @param {Object} address
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerAddress = function(organizerId, address) {
+    return udbApi
+        .updateOrganizerAddress(organizerId, address)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
+   * Update contact info of a specific organizer.
+   * @param {string} organizerId
+   * @param {Array} contact
+   *
+   * @returns {Promise}
+   */
+  service.updateOrganizerContact = function(organizerId, contact) {
+    return udbApi
+        .updateOrganizerContact(organizerId, contact)
+        .then(logUpdateOrganizerJob);
+  };
+
+  /**
    * @param {Object} commandInfo
    * @return {Promise.<BaseJob>}
    */
-  function logOrganizerLabelJob(commandInfo) {
+  function logUpdateOrganizerJob(commandInfo) {
     var job = new BaseJob(commandInfo.commandId);
     jobLogger.addJob(job);
 
     return $q.resolve(job);
   }
 }
-OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope"];
+})();
+
+// Source: src/management/organizers/search/organization-search-item.directive.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.management.organizers.directive:udbOrganizationSearchItem
+ * @var udbOrganizationSearchItem osic
+ * @description
+ * # Organizer search item Directive
+ */
+angular
+  .module('udb.management.organizers')
+  .directive('udbOrganizationSearchItem', OrganizationSearchItem);
+
+function OrganizationSearchItem() {
+  return {
+    restrict: 'A',
+    templateUrl: 'templates/organization-search-item.html',
+    bindToController: {
+      organizationSearchItem: '<udbOrganizationSearchItem'
+    },
+    controller: OrganizationSearchItemController,
+    controllerAs: 'osic'
+  };
+}
+
+/* @ngInject */
+function OrganizationSearchItemController(udbApi, $rootScope) {
+  var controller = this;
+  var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
+
+  udbApi
+    .getOrganizerByLDId(controller.organizationSearchItem['@id'])
+    .then(showOrganization);
+
+  /**
+   *
+   * @param {UdbOrganizer} organization
+   */
+  function showOrganization(organization) {
+    controller.organization = organization;
+  }
+
+  function markAsDeleted() {
+    organizationDeletedListener();
+    controller.organizationDeleted = true;
+  }
+
+  /**
+   * @param {Object} angularEvent
+   * @param {UdbOrganizer} deletedOrganization
+   */
+  function matchAndMarkAsDeleted(angularEvent, deletedOrganization) {
+    if (!controller.organization) {
+      return;
+    }
+
+    if (controller.organization.id === deletedOrganization.id) {
+      markAsDeleted();
+    }
+  }
+}
+OrganizationSearchItemController.$inject = ["udbApi", "$rootScope"];
+})();
+
+// Source: src/management/organizers/search/organization-search.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.management.organizers.controller:OrganizationSearchController
+ * @description
+ * # Organization Search Controller
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizationSearchController', OrganizationSearchController);
+
+/**
+ * @inject
+ */
+function OrganizationSearchController(SearchResultGenerator, rx, $scope, OrganizerManager) {
+  var controller = this;
+
+  var itemsPerPage = 10;
+  var minQueryLength = 3;
+  var query$ = rx.createObservableFunction(controller, 'queryChanged');
+  var filteredQuery$ = query$.filter(ignoreShortQueries(minQueryLength));
+  var page$ = rx.createObservableFunction(controller, 'pageChanged');
+  var searchResultGenerator = new SearchResultGenerator(OrganizerManager, filteredQuery$, page$, itemsPerPage);
+  var searchResult$ = searchResultGenerator.getSearchResult$();
+
+  /**
+   * @param {number} minQueryLength
+   * @return {Function}
+   */
+  function ignoreShortQueries(minQueryLength) {
+    /**
+     * @param {string} query
+     */
+    return function (query) {
+      return query === '' || query.length >= minQueryLength;
+    };
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    controller.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    controller.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
+   */
+  function showSearchResult(searchResult) {
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      controller.searchResult = {};
+    } else {
+      clearProblem();
+      controller.searchResult = searchResult;
+    }
+
+    controller.loading = false;
+  }
+
+  controller.loading = false;
+  controller.query = '';
+  controller.page = 0;
+  controller.minQueryLength = minQueryLength;
+
+  query$
+    .safeApply($scope, function (query) {
+      controller.query = query;
+    })
+    .subscribe();
+
+  searchResult$
+    .safeApply($scope, showSearchResult)
+    .subscribe();
+
+  filteredQuery$
+    .merge(page$)
+    .safeApply($scope, function () {
+      controller.loading = true;
+    })
+    .subscribe();
+}
+OrganizationSearchController.$inject = ["SearchResultGenerator", "rx", "$scope", "OrganizerManager"];
+})();
 
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
+(function () {
+
+'use strict';
 
 /**
  * @ngdoc function
@@ -14275,8 +16273,12 @@ function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager
 
 }
 RoleDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "RoleManager", "item"];
+})();
 
 // Source: src/management/roles/delete-role-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.management.roles.DeleteRoleJob
@@ -14327,8 +16329,12 @@ function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
   return (DeleteRoleJob);
 }
 DeleteRoleJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
+})();
 
 // Source: src/management/roles/permission.constant.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -14356,8 +16362,12 @@ angular
       'LABELS_BEHEREN': 'LABELS_BEHEREN'
     }
   );
+})();
 
 // Source: src/management/roles/role-form.controller.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} TranslatedPermission
  * @property {RolePermission} key
@@ -14689,8 +16699,12 @@ function RoleFormController(
   init();
 }
 RoleFormController.$inject = ["RoleManager", "UserManager", "$uibModal", "$stateParams", "$q", "$translate", "RolePermission"];
+})();
 
 // Source: src/management/roles/role-manager.service.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} Role
  * @property {string}   uuid
@@ -14918,8 +16932,12 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
   }
 }
 RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob", "UserRoleJob"];
+})();
 
 // Source: src/management/roles/roles-list.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:RolesListController
@@ -14931,7 +16949,7 @@ angular
   .controller('RolesListController', RolesListController);
 
 /* @ngInject */
-function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state) {
+function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $uibModal, $state, $document) {
   var rlc = this;
 
   var itemsPerPage = 10;
@@ -15024,10 +17042,19 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       rlc.loading = true;
     })
     .subscribe();
+
+  page$
+    .subscribe(function () {
+      $document.scrollTop(0);
+    });
 }
-RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state"];
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
+})();
 
 // Source: src/management/roles/search-label.component.js
+(function () {
+'use strict';
+
 angular
   .module('udb.management.roles')
   .component('udbSearchLabel', {
@@ -15073,8 +17100,12 @@ function LabelSearchComponent(LabelManager) {
   }
 }
 LabelSearchComponent.$inject = ["LabelManager"];
+})();
 
 // Source: src/management/roles/unique-role.directive.js
+(function () {
+'use strict';
+
 angular
   .module('udb.management.roles')
   .directive('udbUniqueRole', UniqueRoleDirective);
@@ -15104,8 +17135,12 @@ function UniqueRoleDirective(RoleManager, $q) {
   };
 }
 UniqueRoleDirective.$inject = ["RoleManager", "$q"];
+})();
 
 // Source: src/management/search-result-generator.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc factory
  * @name udb.management.SearchResultGenerator
@@ -15192,8 +17227,12 @@ function SearchResultGenerator(rx) {
   return (SearchResultGenerator);
 }
 SearchResultGenerator.$inject = ["rx"];
+})();
 
 // Source: src/management/search.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.management.SearchService
@@ -15230,8 +17269,12 @@ function SearchService($q) {
   };
 }
 SearchService.$inject = ["$q"];
+})();
 
 // Source: src/management/users/user-editor.controller.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} RoleAction
  * @property {Role} item
@@ -15421,8 +17464,12 @@ function UserEditorController(UserManager, RoleManager, $stateParams, $q) {
   };
 }
 UserEditorController.$inject = ["UserManager", "RoleManager", "$stateParams", "$q"];
+})();
 
 // Source: src/management/users/user-manager.service.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} User
  * @property {string}   uuid
@@ -15486,8 +17533,12 @@ function UserManager(udbApi, $q) {
   };
 }
 UserManager.$inject = ["udbApi", "$q"];
+})();
 
 // Source: src/management/users/user-role-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.management.users.UserRoleJob
@@ -15557,8 +17608,12 @@ function UserRoleJobFactory(BaseJob, JobStates, $q) {
   return (UserRoleJob);
 }
 UserRoleJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
+})();
 
 // Source: src/management/users/users-list.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:UsersListController
@@ -15570,7 +17625,7 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state) {
+function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state, $document) {
   var ulc = this;
 
   var itemsPerPage = 20;
@@ -15661,10 +17716,18 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
       ulc.loading = true;
     })
     .subscribe();
+
+  page$.subscribe(function () {
+    $document.scrollTop(0);
+  });
 }
-UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state"];
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
+})();
 
 // Source: src/media/create-image-job.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.media.CreateImageJob
@@ -15714,8 +17777,12 @@ function CreateImageJobFactory(BaseJob, JobStates, $q) {
   return (CreateImageJob);
 }
 CreateImageJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
+})();
 
 // Source: src/media/media-manager.service.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} MediaObject
  * @property {string}   @id
@@ -15796,8 +17863,12 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, $http, udbApi) {
   };
 }
 MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "$http", "udbApi"];
+})();
 
 // Source: src/migration/event-migration-footer.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.migration.component:udbEventMigrationFooter
@@ -15832,8 +17903,12 @@ function EventMigrationFooterController(EventFormData, $stateParams, $state) {
   }
 }
 EventMigrationFooterController.$inject = ["EventFormData", "$stateParams", "$state"];
+})();
 
 // Source: src/migration/event-migration.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.migration.eventMigration
@@ -15876,8 +17951,12 @@ function EventMigrationService() {
   };
 
 }
+})();
 
 // Source: src/place-detail/place-detail.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.place-detail.directive:place-detail.html
@@ -15896,8 +17975,12 @@ function udbPlaceDetailDirective() {
     controller: PlaceDetail // jshint ignore:line
   };
 }
+})();
 
 // Source: src/place-detail/ui/place-detail.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.place-detail.controller:PlaceDetailController
@@ -15922,12 +18005,14 @@ function PlaceDetail(
   $uibModal,
   $q,
   $window,
-  offerLabeller
+  offerLabeller,
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var disableVariations = _.get(appConfig, 'disableVariations');
 
-  $q.when(placeId, function(offerLocation) {
+  $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
@@ -15956,6 +18041,7 @@ function PlaceDetail(
   $scope.labelRemoved = labelRemoved;
   $scope.labelResponse = '';
   $scope.labelsError = '';
+  $scope.finishedLoading = false;
 
   $scope.placeHistory = [];
   $scope.tabs = [
@@ -15976,21 +18062,23 @@ function PlaceDetail(
   var cachedPlace;
 
   function showOffer(place) {
-      cachedPlace = place;
+    cachedPlace = place;
 
-      var personalVariationLoaded = variationRepository.getPersonalVariation(place);
+    $scope.place = jsonLDLangFilter(place, language);
+    $scope.placeIdIsInvalid = false;
 
-      $scope.place = jsonLDLangFilter(place, language);
-      $scope.placeIdIsInvalid = false;
-
-      personalVariationLoaded
-        .then(function (variation) {
-          $scope.place.description = variation.description[language];
-        })
-        .finally(function () {
-          $scope.placeIsEditable = true;
-        });
+    if (!disableVariations) {
+      variationRepository
+        .getPersonalVariation(place)
+        .then(showVariation);
     }
+
+    $scope.finishedLoading = true;
+  }
+
+  function showVariation(variation) {
+    $scope.place.description = variation.description[language];
+  }
 
   function failedToLoad(reason) {
     $scope.placeIdIsInvalid = true;
@@ -16131,9 +18219,13 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
+})();
 
 // Source: src/router/offer-locator.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udbApp.OfferLocator
@@ -16144,7 +18236,7 @@ angular.module('udb.router')
   .service('offerLocator', OfferLocator);
 
 /* @ngInject */
-function OfferLocator($q, udbApi) {
+function OfferLocator($q, searchApiSwitcher) {
   // An associative array with UUIDs pointing to locations.
   // eg: 0586DF1-89D7-42F6-9804-DAE8878C2617 -> http://du.de/event/0586DF1-89D7-42F6-9804-DAE8878C2617
   var locations = {};
@@ -16204,17 +18296,21 @@ function OfferLocator($q, udbApi) {
       }
     }
 
-    udbApi
-      .findEvents('cdbid:"' + uuid + '"')
+    searchApiSwitcher
+      .findOffers('id:"' + uuid + '"')
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
     return deferredLocation.promise;
   }
 }
-OfferLocator.$inject = ["$q", "udbApi"];
+OfferLocator.$inject = ["$q", "searchApiSwitcher"];
+})();
 
 // Source: src/saved-searches/components/delete-search-modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.entry.controller:DeleteSearchModalController
@@ -16241,8 +18337,12 @@ function DeleteSearchModalController($scope, $uibModalInstance) {
   $scope.confirm = confirm;
 }
 DeleteSearchModalController.$inject = ["$scope", "$uibModalInstance"];
+})();
 
 // Source: src/saved-searches/components/save-search-modal.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.entry.controller:SaveSearchModalController
@@ -16276,8 +18376,12 @@ function SaveSearchModalController($scope, $uibModalInstance) {
   $scope.wasSubmitted = false;
 }
 SaveSearchModalController.$inject = ["$scope", "$uibModalInstance"];
+})();
 
 // Source: src/saved-searches/components/save-search.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.savedSearches.directive:udbSaveSearch
@@ -16331,8 +18435,12 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
   }
 }
 udbSaveSearch.$inject = ["savedSearchesService", "$uibModal"];
+})();
 
 // Source: src/saved-searches/udb.saved-searches.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.saved-searches.savedSearchesService
@@ -16387,8 +18495,12 @@ function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
 }
 SavedSearchesService.$inject = ["$q", "$http", "appConfig", "$rootScope", "udbApi"];
 
+})();
 
 // Source: src/saved-searches/ui/saved-searches-list.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.saved-searches-list.controller:SavedSearchesListController
@@ -16458,8 +18570,12 @@ function SavedSearchesList($scope, savedSearchesService, $uibModal, $rootScope) 
   $scope.deleteSavedSearch = this.deleteSavedSearch;
 }
 SavedSearchesList.$inject = ["$scope", "savedSearchesService", "$uibModal", "$rootScope"];
+})();
 
 // Source: src/search/components/event-link.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbEventLink
@@ -16481,8 +18597,12 @@ function udbEventLink() {
 
   return eventLinkDirective;
 }
+})();
 
 // Source: src/search/components/label-select.component.js
+(function () {
+'use strict';
+
 angular
   .module('udb.search')
   .component('udbLabelSelect', {
@@ -16582,8 +18702,12 @@ function LabelSelectComponent(offerLabeller, $q) {
   }
 }
 LabelSelectComponent.$inject = ["offerLabeller", "$q"];
+})();
 
 // Source: src/search/components/query-editor-daterangepicker.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbQueryEditorDaterangepicker
@@ -16650,8 +18774,93 @@ function datepickerPopup() {
     }
   };
 }
+})();
+
+// Source: src/search/components/query-editor-field.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc controller
+ * @name udb.search.controller:QueryEditorField
+ * @description
+ * # QueryEditorFieldController
+ */
+angular
+  .module('udb.search')
+  .controller('QueryEditorFieldController', QueryEditorFieldController);
+
+/* @ngInject */
+function QueryEditorFieldController($scope) {
+
+  function getParentGroup() {
+    var parentGroup;
+
+    if (isSubGroup()) {
+      parentGroup = $scope.$parent.field;
+    } else {
+      parentGroup = $scope.rootGroup;
+    }
+
+    return parentGroup;
+  }
+
+  function getOperatorClass() {
+    var operatorClass;
+    if (isSubGroup() && $scope.$index === 0) {
+      operatorClass = 'AND';
+    } else {
+      operatorClass = $scope.$index ? 'OR' : 'FIRST';
+    }
+
+    return operatorClass;
+  }
+
+  function isSubGroup() {
+    var parentGroup = $scope.$parent;
+    return parentGroup.field.type === 'group';
+  }
+
+  function canRemoveField() {
+    var group = $scope.rootGroup;
+    return (group.nodes.length > 1);
+  }
+
+  $scope.addField = function (index) {
+    $scope.qe.addField(getParentGroup(), index);
+  };
+
+  $scope.removeField = function (index) {
+    $scope.qe.removeField(getParentGroup(), index, $scope.rootGroup);
+  };
+
+  $scope.addSubGroup = function (index) {
+    var rootGroup = $scope.rootGroup,
+      treeGroupId = _.uniqueId(),
+      group = getParentGroup();
+
+    group.treeGroupId = treeGroupId;
+
+    if (isSubGroup()) {
+      index = _.findIndex(rootGroup.nodes, function (group) {
+        return group.treeGroupId === treeGroupId;
+      });
+    }
+
+    $scope.qe.addSubGroup(rootGroup, index);
+  };
+
+  $scope.isSubGroup = isSubGroup;
+  $scope.getOperatorClass = getOperatorClass;
+  $scope.canRemoveField = canRemoveField;
+}
+QueryEditorFieldController.$inject = ["$scope"];
+})();
 
 // Source: src/search/components/query-editor-field.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbQueryEditorField
@@ -16663,77 +18872,22 @@ angular
   .directive('udbQueryEditorField', udbQueryEditorField);
 
 /* @ngInject */
-function udbQueryEditorField() {
-  return {
-    templateUrl: 'templates/query-editor-field.directive.html',
-    restrict: 'E',
-    link: function postLink(scope, element, attrs) {
-
-      function getParentGroup() {
-        var parentGroup;
-
-        if (isSubGroup()) {
-          parentGroup = scope.$parent.field;
-        } else {
-          parentGroup = scope.rootGroup;
-        }
-
-        return parentGroup;
-      }
-
-      function getOperatorClass() {
-        var operatorClass;
-        if (isSubGroup() && scope.$index === 0) {
-          operatorClass = 'AND';
-        } else {
-          operatorClass = scope.$index ? 'OR' : 'FIRST';
-        }
-
-        return operatorClass;
-      }
-
-      function isSubGroup() {
-        var parentGroup = scope.$parent;
-        return parentGroup.field.type === 'group';
-      }
-
-      function canRemoveField() {
-        var group = scope.rootGroup;
-        return (group.nodes.length > 1);
-      }
-
-      scope.addField = function (index) {
-        scope.qe.addField(getParentGroup(), index);
-      };
-
-      scope.removeField = function (index) {
-        scope.qe.removeField(getParentGroup(), index, scope.rootGroup);
-      };
-
-      scope.addSubGroup = function (index) {
-        var rootGroup = scope.rootGroup,
-            treeGroupId = _.uniqueId(),
-            group = getParentGroup();
-
-        group.treeGroupId = treeGroupId;
-
-        if (isSubGroup()) {
-          index = _.findIndex(rootGroup.nodes, function (group) {
-            return group.treeGroupId === treeGroupId;
-          });
-        }
-
-        scope.qe.addSubGroup(rootGroup, index);
-      };
-
-      scope.isSubGroup = isSubGroup;
-      scope.getOperatorClass = getOperatorClass;
-      scope.canRemoveField = canRemoveField;
-    }
-  };
+function udbQueryEditorField(searchApiSwitcher) {
+  return searchApiSwitcher.getQueryEditorFieldDefinition();
 }
+udbQueryEditorField.$inject = ["searchApiSwitcher"];
+})();
 
 // Source: src/search/components/query-editor.controller.js
+(function () {
+'use strict';
+
+/**
+ * @typedef {Object} OfferType
+ * @property {string} id
+ * @property {string} label
+ */
+
 /**
  * @ngdoc directive
  * @name udb.search.controller:QueryEditorController
@@ -16752,23 +18906,25 @@ function QueryEditorController(
   fieldTypeTransformers,
   searchHelper,
   $translate,
-  $rootScope
+  $rootScope,
+  eventTypes,
+  placeTypes
 ) {
   var qe = this,
       queryBuilder = LuceneQueryBuilder;
 
-  qe.fields = _.filter(queryFields, 'editable');
+  qe.fieldOptions = _.filter(queryFields, 'editable');
 
   // use the first occurrence of a group name to order it against the other groups
-  var orderedGroups = _.chain(qe.fields)
+  var orderedGroups = _.chain(qe.fieldOptions)
     .map(function (field) {
            return field.group;
          })
     .uniq()
     .value();
 
-  _.forEach(qe.fields, function (field) {
-    var fieldName = field.name.toUpperCase(),
+  _.forEach(qe.fieldOptions, function (field) {
+    var fieldName = 'queryFieldLabel.' + field.name,
         fieldGroup = 'queryFieldGroup.' + field.group;
 
     $translate([fieldName, fieldGroup]).then(function (translations) {
@@ -16787,7 +18943,8 @@ function QueryEditorController(
           operator: 'OR',
           nodes: [
             {
-              field: 'title',
+              name: 'title',
+              field: 'name.\\*',
               term: '',
               fieldType: 'tokenized-string',
               transformer: '+'
@@ -16804,6 +18961,8 @@ function QueryEditorController(
   qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
     return 'category_' + term.domain + '_name';
   });
+  qe.termOptions.locationtype = placeTypes;
+  qe.termOptions['category_eventtype_name'] = eventTypes; // jshint ignore:line
   _.forEach(queryFields, function (field) {
     if (field.type === 'choice') {
       qe.termOptions[field.name] = field.options;
@@ -16834,7 +18993,8 @@ function QueryEditorController(
 
     var insertIndex = fieldIndex + 1,
         field = {
-          field: 'title',
+          field: 'name.\\*',
+          name: 'title',
           term: '',
           fieldType: 'tokenized-string',
           transformer: '+'
@@ -16926,6 +19086,312 @@ function QueryEditorController(
       operator: 'OR',
       nodes: [
         {
+          field: 'name.\\*',
+          name: 'title',
+          term: '',
+          fieldType: 'tokenized-string',
+          transformer: '+'
+        }
+      ]
+    };
+
+    root.nodes.push(group);
+  };
+
+  qe.addSubGroup = function (parentGroup, fieldIndex) {
+    var group = {
+      type: 'group',
+      operator: 'AND',
+      nodes: [
+        {
+          field: 'name.\\*',
+          name: 'title',
+          term: '',
+          fieldType: 'tokenized-string',
+          transformer: '+'
+        }
+      ]
+    };
+
+    parentGroup.nodes.splice(fieldIndex + 1, 0, group);
+  };
+
+  qe.fieldTypeSelected = function (field) {
+    var fieldName = field.name,
+        queryField = _.find(queryFields, function (field) {
+          return field.name === fieldName;
+        });
+
+    if (queryField) {
+      field.field = queryField.field;
+    }
+
+    if (field.fieldType !== queryField.type) {
+      // TODO: Maybe try to do a type conversion?
+      if (queryField.type === 'date-range') {
+        field.lowerBound = moment().startOf('day').toDate();
+        field.upperBound = moment().endOf('day').toDate();
+        field.inclusive = true;
+      } else {
+        field.term = '';
+        field.lowerBound = undefined;
+        field.upperBound = undefined;
+        field.inclusive = undefined;
+      }
+
+      if (queryField.type === 'check') {
+        field.term = queryField.name;
+      }
+
+      if (queryField.type === 'number') {
+        field.inclusive = true;
+      }
+
+      if (!field.transformer || !_.contains(fieldTypeTransformers[queryField.type], field.transformer)) {
+        field.transformer = _.first(fieldTypeTransformers[queryField.type]);
+      }
+
+      field.fieldType = queryField.type;
+    }
+  };
+
+  qe.hasSingleGroup = function () {
+    return (qe.groupedQueryTree.nodes.length === 1);
+  };
+}
+QueryEditorController.$inject = ["queryFields", "LuceneQueryBuilder", "taxonomyTerms", "fieldTypeTransformers", "searchHelper", "$translate", "$rootScope", "eventTypes", "placeTypes"];
+})();
+
+// Source: src/search/components/query-editor.directive.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.search.directive:udbQueryEditor
+ * @description
+ * # udbQueryEditor
+ */
+angular
+  .module('udb.search')
+  .directive('udbQueryEditor', udbQueryEditor);
+
+/* @ngInject */
+function udbQueryEditor(searchApiSwitcher) {
+  return {
+    templateUrl: 'templates/query-editor.directive.html',
+    restrict: 'EA',
+    controllerAs: 'qe',
+    controller: searchApiSwitcher.getQueryEditorController()
+  };
+}
+udbQueryEditor.$inject = ["searchApiSwitcher"];
+})();
+
+// Source: src/search/components/sapi2.query-editor.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.search.controller:sapi2QueryEditorController
+ * @description
+ * # sapi2QueryEditorController
+ */
+angular
+  .module('udb.search')
+  .controller('sapi2QueryEditorController', Sapi2QueryEditorController);
+
+Sapi2QueryEditorController.$inject = [
+  'sapi2QueryFields',
+  'sapi2QueryBuilder',
+  'taxonomyTerms',
+  'sapi2FieldTypeTransformers',
+  'searchHelper',
+  '$translate',
+  '$rootScope'
+];
+function Sapi2QueryEditorController(
+  queryFields,
+  LuceneQueryBuilder,
+  taxonomyTerms,
+  fieldTypeTransformers,
+  searchHelper,
+  $translate,
+  $rootScope
+) {
+  var qe = this,
+    queryBuilder = LuceneQueryBuilder;
+
+  qe.fields = _.filter(queryFields, 'editable');
+
+  // use the first occurrence of a group name to order it against the other groups
+  var orderedGroups = _.chain(qe.fields)
+    .map(function (field) {
+      return field.group;
+    })
+    .uniq()
+    .value();
+
+  _.forEach(qe.fields, function (field) {
+    var fieldName = 'queryFieldLabel.' + field.name,
+      fieldGroup = 'queryFieldGroup.' + field.group;
+
+    $translate([fieldName, fieldGroup]).then(function (translations) {
+      field.label = translations[fieldName];
+      field.groupIndex = _.indexOf(orderedGroups, field.group);
+      field.groupLabel = translations[fieldGroup];
+    });
+  });
+
+  qe.getDefaultQueryTree = function () {
+    return {
+      type: 'root',
+      nodes: [
+        {
+          type: 'group',
+          operator: 'OR',
+          nodes: [
+            {
+              field: 'title',
+              term: '',
+              fieldType: 'tokenized-string',
+              transformer: '+'
+            }
+          ]
+        }
+      ]
+    };
+  };
+  qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
+
+  // Holds options for both term and choice query-field types
+  qe.transformers = {};
+  qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
+    return 'category_' + term.domain + '_name';
+  });
+  _.forEach(queryFields, function (field) {
+    if (field.type === 'choice') {
+      qe.termOptions[field.name] = field.options;
+    }
+    qe.transformers[field.name] = fieldTypeTransformers[field.type];
+  });
+
+  /**
+   * Update the search input field with the data from the query editor
+   */
+  qe.updateQueryString = function () {
+    searchHelper.setQueryTree(qe.groupedQueryTree);
+    $rootScope.$emit('searchSubmitted');
+    qe.stopEditing();
+  };
+
+  qe.stopEditing = function () {
+    $rootScope.$emit('stopEditingQuery');
+  };
+
+  /**
+   * Add a field to a group
+   *
+   * @param  {object}  group       The group to add the field to
+   * @param {number}  fieldIndex  The index of the field after which to add
+   */
+  qe.addField = function (group, fieldIndex) {
+
+    var insertIndex = fieldIndex + 1,
+      field = {
+        field: 'title',
+        term: '',
+        fieldType: 'tokenized-string',
+        transformer: '+'
+      };
+
+    group.nodes.splice(insertIndex, 0, field);
+
+    if (group.nodes.length) {
+      group.type = 'group';
+    }
+  };
+
+  /**
+   * Remove a field from a group
+   *
+   * @param {object}    group       The group to delete a field from
+   * @param {number}    fieldIndex  The index of the field to delete
+   * @param {object=}   rootGroup   The root group of the field to delete
+   */
+  qe.removeField = function (group, fieldIndex, rootGroup) {
+    if (rootGroup.nodes.length > 1) {
+      group.nodes.splice(fieldIndex, 1);
+    }
+
+    qe.cleanUpGroups();
+  };
+
+  qe.cleanUpGroups = function () {
+    qe.removeEmptyGroups();
+    qe.unwrapSubGroups();
+  };
+
+  qe.unwrapSubGroups = function () {
+    var root = qe.groupedQueryTree;
+
+    _.forEach(root.nodes, function (group) {
+      var firstNode = group.nodes[0];
+
+      if (firstNode.nodes) {
+        var firstNodeChildren = firstNode.nodes;
+        group.nodes.splice(0, 1);
+        _.forEach(firstNodeChildren, function (node, index) {
+          group.nodes.splice(index, 0, node);
+        });
+      }
+    });
+  };
+
+  qe.removeEmptyGroups = function () {
+    var root = qe.groupedQueryTree;
+
+    _.forEach(root.nodes, function (group) {
+      _.remove(group.nodes, function (node) {
+        return node.nodes && node.nodes.length === 0;
+      });
+    });
+  };
+
+  qe.toggleExcludeGroup = function (group) {
+    group.excluded = !group.excluded;
+  };
+
+  qe.canRemoveGroup = function () {
+    return !qe.hasSingleGroup();
+  };
+
+  qe.removeGroup = function (groupIndex) {
+    if (qe.canRemoveGroup()) {
+      var root = qe.groupedQueryTree,
+        group = root.nodes[groupIndex];
+
+      if (qe.canRemoveGroup() && group) {
+        root.nodes.splice(groupIndex, 1);
+      }
+    }
+  };
+
+  qe.resetGroups = function () {
+    qe.groupedQueryTree = qe.getDefaultQueryTree();
+  };
+
+  /**
+   * Add a field group
+   */
+  qe.addGroup = function () {
+    var root = qe.groupedQueryTree;
+    var group = {
+      type: 'group',
+      operator: 'OR',
+      nodes: [
+        {
           field: 'title',
           term: '',
           fieldType: 'tokenized-string',
@@ -16956,9 +19422,9 @@ function QueryEditorController(
 
   qe.updateFieldType = function (field) {
     var fieldName = field.field,
-        queryField = _.find(queryFields, function (field) {
-          return field.name === fieldName;
-        });
+      queryField = _.find(queryFields, function (field) {
+        return field.name === fieldName;
+      });
 
     if (field.fieldType !== queryField.type) {
       // TODO: Maybe try to do a type conversion?
@@ -16993,30 +19459,12 @@ function QueryEditorController(
     return (qe.groupedQueryTree.nodes.length === 1);
   };
 }
-QueryEditorController.$inject = ["queryFields", "LuceneQueryBuilder", "taxonomyTerms", "fieldTypeTransformers", "searchHelper", "$translate", "$rootScope"];
-
-// Source: src/search/components/query-editor.directive.js
-/**
- * @ngdoc directive
- * @name udb.search.directive:udbQueryEditor
- * @description
- * # udbQueryEditor
- */
-angular
-  .module('udb.search')
-  .directive('udbQueryEditor', udbQueryEditor);
-
-/* @ngInject */
-function udbQueryEditor() {
-  return {
-    templateUrl: 'templates/query-editor.directive.html',
-    restrict: 'EA',
-    controllerAs: 'qe',
-    controller: 'QueryEditorController'
-  };
-}
+})();
 
 // Source: src/search/components/search-bar.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbSearchBar
@@ -17028,7 +19476,7 @@ angular
   .directive('udbSearchBar', udbSearchBar);
 
 /* @ngInject */
-function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService) {
+function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService, searchApiSwitcher) {
   return {
     templateUrl: 'templates/search-bar.directive.html',
     restrict: 'E',
@@ -17050,7 +19498,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
 
         editorModal = $uibModal.open({
           templateUrl: 'templates/query-editor-modal.html',
-          controller: 'QueryEditorController',
+          controller: searchApiSwitcher.getQueryEditorController(),
           controllerAs: 'qe',
           size: 'lg'
         });
@@ -17138,9 +19586,50 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
     }
   };
 }
-udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService"];
+udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService", "searchApiSwitcher"];
+})();
+
+// Source: src/search/event-types.value.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc value
+ * @name udb.search.eventTypes
+ * @description
+ * # Event Types
+ * A list of types you can use to find events.
+ */
+angular
+  .module('udb.search')
+  .value('eventTypes', [
+    {label: 'Begeleide rondleiding', id: '0.7.0.0.0'},
+    {label: 'Beurs', id: '0.6.0.0.0'},
+    {label: 'Concert', id: '0.50.4.0.0'},
+    {label: 'Cursus of workshop', id: '0.3.1.0.0'},
+    {label: 'Dansvoorstelling', id: '0.54.0.0.0'},
+    {label: 'Eten en drinken', id: '1.50.0.0.0'},
+    {label: 'Festival', id: '0.5.0.0.0'},
+    {label: 'Film', id: '0.50.6.0.0'},
+    {label: 'Kamp of vakantie', id: '0.57.0.0.0'},
+    {label: 'Kermis of feestelijkheid', id: '0.28.0.0.0'},
+    {label: 'Lezing of congres', id: '0.3.2.0.0'},
+    {label: 'Markt of braderie', id: '0.37.0.0.0'},
+    {label: 'Opendeurdag', id: '0.12.0.0.0'},
+    {label: 'Party of fuif', id: '0.49.0.0.0'},
+    {label: 'Route', id: '0.17.0.0.0'},
+    {label: 'Spel of quiz', id: '0.50.21.0.0'},
+    {label: 'Sport en beweging', id: '0.59.0.0.0 '},
+    {label: 'Sportwedstrijd bekijken', id: '0.19.0.0.0'},
+    {label: 'Tentoonstelling', id: '0.0.0.0.0'},
+    {label: 'Theatervoorstelling', id: '0.55.0.0.0'}
+  ]);
+})();
 
 // Source: src/search/filters/currency.filter.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc filter
  * @name udb.search.filter:currency
@@ -17178,8 +19667,12 @@ function CurrencyFilter() {
     return accounting.formatMoney(number, currency);
   };
 }
+})();
 
 // Source: src/search/filters/json-ld-lang.filter.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc filter
  * @name udb.search.filter:jsonLDLang
@@ -17223,8 +19716,46 @@ function JsonLDLangFilter() {
     return translatedObject;
   };
 }
+})();
+
+// Source: src/search/place-types.value.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc value
+ * @name udb.search.placeTypes
+ * @description
+ * # Place Types
+ * A list of types you can use to find places.
+ */
+angular
+  .module('udb.search')
+  .value('placeTypes', [
+    {label: 'Archeologische site', id:'3CuHvenJ+EGkcvhXLg9Ykg'},
+    {label: 'Bibliotheek of documentatiecentrum', id: 'kI7uAyn2uUu9VV6Z3uWZTA'},
+    {label: 'Bioscoop', id: 'BtVNd33sR0WntjALVbyp3w'},
+    {label: 'Cultuur- of ontmoetingscentrum', id: 'Yf4aZBfsUEu2NsQqsprngw'},
+    {label: 'Discotheek', id: 'YVBc8KVdrU6XfTNvhMYUpg'},
+    {label: 'Horeca', id: 'ekdc4ATGoUitCa0e6me6xA'},
+    {label: 'Jeugdhuis of jeugdcentrum', id: 'JCjA0i5COUmdjMwcyjNAFA'},
+    {label: 'Monument', id: '0.14.0.0.0'},
+    {label: 'Museum of galerij', id: 'GnPFp9uvOUyqhOckIFMKmg'},
+    {label: 'Natuur, park of tuin', id: '0.15.0.0.0'},
+    {label: 'Openbare ruimte', id: '0.8.0.0.0'},
+    {label: 'Recreatiedomein of centrum', id: '0.53.0.0.0'},
+    {label: 'School of onderwijscentrum', id: 'rJRFUqmd6EiqTD4c7HS90w'},
+    {label: 'Sportcentrum', id: 'eBwaUAAhw0ur0Z02i5ttnw'},
+    {label: 'Thema of pretpark', id: '0.41.0.0.0'},
+    {label: 'Winkel', id: 'VRC6HX0Wa063sq98G5ciqw'},
+    {label: 'Zaal of expohal', id: 'OyaPaf64AEmEAYXHeLMAtA'},
+  ]);
+})();
 
 // Source: src/search/services/field-type-transformers.value.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.search.fieldTypeTransformers
@@ -17239,12 +19770,16 @@ angular
     'tokenized-string': ['+', '-'],
     'choice': ['=', '!'],
     'term': ['=', '!'],
-    'number': ['=', '<', '>'],
+    'number': ['=', '><', '<', '>'],
     'check': ['='],
     'date-range': ['=', '><', '<', '>']
 });
+})();
 
 // Source: src/search/services/query-builder.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udbApp.LuceneQueryBuilder
@@ -17311,10 +19846,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
           inclusive = node.inclusive;
 
       if (min instanceof Date) {
-        min = min.toISOString();
+        min = moment(min).format();
       }
       if (max instanceof Date) {
-        max = max.toISOString();
+        max = moment(max).format();
       }
 
       term = min + ' TO ' + max;
@@ -17374,7 +19909,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
 
       } else {
-        result = unparseNode(branch.left, depth + 1, sentence);
+        var singleTransformedGroupedTerm = branch.field && (branch.left.field === implicitToken) && branch.left.prefix;
+
+        result = singleTransformedGroupedTerm ?
+          branch.field + ':(' + printTerm(branch.left) + ')' :
+          unparseNode(branch.left, depth + 1, sentence);
       }
 
       return result;
@@ -17382,6 +19921,961 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     } else {
       var fieldQuery = '',
           term = printTerm(branch);
+
+      if (branch.field !== implicitToken && branch.field !== null) {
+        var fieldPrefix = '';
+
+        if (_.contains(['!', '+', '-'], branch.transformer)) {
+          fieldPrefix = branch.transformer;
+        }
+
+        fieldQuery += (fieldPrefix + branch.field + ':');
+      }
+
+      fieldQuery += term;
+
+      return sentence += fieldQuery;
+    }
+  };
+
+  this.unparse = function (query) {
+    query.queryString = this.unparseQueryTree(query.queryTree);
+    return query.queryString;
+  };
+
+  this.unparseQueryTree = function (queryTree) {
+    var queryString = '';
+
+    if (queryTree.left) {
+      queryString = unparseNode(queryTree, 0, '');
+    }
+
+    return queryString;
+  };
+
+  function printTreeField(field) {
+    if (field.fieldType === 'date-range') {
+      cleanUpDateRangeField(field);
+    }
+    var transformedField = transformField(field);
+    return transformedField.field + printTerm(transformedField);
+  }
+
+  /**
+   * @description
+   * Unparse a grouped field information tree to a query string
+   *
+   * @param   {object}  groupedTree     A tree structure with field groups
+   * @return  {string}  A query string
+   */
+  this.unparseGroupedTree = function (groupedTree) {
+    var root = groupedTree;
+    var queryString = '';
+
+    _.forEach(root.nodes, function (node, nodeIndex) {
+      var nodeString = '';
+      if (node.type === 'group') {
+        var group = node;
+
+        _.forEach(group.nodes, function (field, fieldIndex) {
+
+          // check if the field is actually a sub group
+          if (field.type === 'group') {
+
+            var subGroup = field,
+                subGroupString = ' ';
+
+            if (subGroup.nodes.length === 1) {
+              var singleField = subGroup.nodes[0];
+              subGroupString += subGroup.operator + ' ' + printTreeField(singleField);
+            } else {
+              subGroupString += subGroup.operator + ' (';
+              _.forEach(subGroup.nodes, function (field, fieldIndex) {
+                if (fieldIndex) {
+                  subGroupString += ' OR ';
+                }
+                subGroupString += printTreeField(field);
+              });
+              subGroupString += ')';
+            }
+
+            nodeString += subGroupString;
+          } else {
+            if (fieldIndex) {
+              nodeString += ' ' + node.operator + ' ';
+            }
+
+            nodeString += printTreeField(field);
+
+            var nextIndex = fieldIndex + 1;
+            if (fieldIndex && nextIndex < group.nodes.length && group.nodes[nextIndex].type === 'group') {
+              nodeString = '(' + nodeString + ')';
+            }
+          }
+        });
+
+        if (root.nodes.length > 1 && group.nodes.length > 1) {
+          nodeString = '(' + nodeString + ')';
+        }
+      } else {
+        console.log('Expecting a group but found: ' + node.type);
+      }
+
+      // do not prepend the first node with an operator
+      if (nodeIndex || node.excluded) {
+        var operator = node.excluded ? 'NOT' : 'OR';
+        queryString += ' ' + operator + ' ';
+      }
+      queryString += nodeString;
+    });
+
+    return queryString;
+  };
+
+  function cleanUpDateRangeField(field) {
+    if (field.transformer === '=' && moment(field.lowerBound).isValid()) {
+      field.lowerBound = moment(field.lowerBound).startOf('day').toDate();
+      field.upperBound = moment(field.lowerBound).endOf('day').toDate();
+    }
+
+    if (field.transformer === '><') {
+      if (moment(field.lowerBound).isValid()) {
+        field.lowerBound = moment(field.lowerBound).startOf('day').toDate();
+      } else {
+        field.lowerBound = '*';
+      }
+
+      if (moment(field.upperBound).isValid()) {
+        field.upperBound = moment(field.upperBound).endOf('day').toDate();
+      } else {
+        field.upperBound = '*';
+      }
+    }
+
+    if (field.transformer === '<') {
+      if (moment(field.upperBound).isValid()) {
+        field.upperBound = moment(field.upperBound).endOf('day').toDate();
+      } else {
+        field.upperBound = moment().endOf('day').toDate();
+      }
+    }
+
+    if (field.transformer === '>') {
+      if (moment(field.lowerBound).isValid()) {
+        field.lowerBound = moment(field.lowerBound).startOf('day').toDate();
+      } else {
+        field.lowerBound = moment().startOf('day').toDate();
+      }
+    }
+  }
+
+  function transformField(originalField) {
+    var field = _.clone(originalField);
+    var isFieldImplicit = field.field === implicitToken;
+    var fieldOperator = '';
+
+    switch (field.transformer) {
+      case '!':
+        fieldOperator = '!';
+        break;
+      case '-':
+        fieldOperator = '-';
+        break;
+      case '<':
+        field.lowerBound = '*';
+        break;
+      case '>':
+        field.upperBound = '*';
+        break;
+      case '=':
+        if (field.fieldType !== 'date-range') {
+          field.upperBound = undefined;
+          field.lowerBound = undefined;
+        }
+        break;
+    }
+
+    field.field = fieldOperator + (isFieldImplicit ? '' : field.field + ':');
+
+    return field;
+  }
+
+  /**
+   * @description
+   * Generate a grouped field information tree from a query tree
+   * The query tree should not nest different operators deeper than 2 levels.
+   * Modifiers will be ignored.
+   *
+   * @param   {object}  queryTree   - The queryTree to get information from
+   *
+   * @return  {object}              - A grouped field information tree
+   */
+  this.groupQueryTree = function (queryTree) {
+    var groupedFieldTree = {
+      type: 'root',
+      nodes: [],
+      operator: queryTree.operator || 'OR'
+    };
+
+    // If the query tree of an empty search is used, add a default field and group
+    if (!queryTree.left) {
+      var group = {
+        type: 'field',
+        operator: 'OR',
+        nodes: [
+          {
+            field: 'name.\\*',
+            name: 'title',
+            term: '',
+            fieldType: 'tokenized-string',
+            transformer: '+'
+          }
+        ]
+      };
+      groupedFieldTree.nodes.push(group);
+    } else {
+      this.groupNode(queryTree, groupedFieldTree);
+      this.cleanUpGroupedFieldTree(groupedFieldTree);
+    }
+
+    return groupedFieldTree;
+  };
+
+  /**
+   * @description
+   * Clean up a field tree after grouping.
+   * Used by groupQueryTree to cleanse a freshly grouped tree.
+   *
+   * @param {object} groupedFieldTree
+   */
+  this.cleanUpGroupedFieldTree = function (groupedFieldTree) {
+    _.forEach(groupedFieldTree.nodes, function (fieldGroup) {
+      // This property is just used to track implicit fields and can be removed when switching groups.
+      delete fieldGroup.implicitField;
+
+      // Switch the type of the node to field instead of group if it only contains one field.
+      if (fieldGroup.nodes && fieldGroup.nodes.length === 1) {
+        fieldGroup.type = 'field';
+      }
+
+      // Replace any remaining implicitly declared operators with OR.
+      // Assuming the following term grouping syntax was used "field:(term1 term2)".
+      if (fieldGroup.operator === implicitToken) {
+        fieldGroup.operator = 'OR';
+      }
+
+      // add field-query type and map options for term and choice fields
+      _.forEach(fieldGroup.nodes, function (field) {
+
+        // Find the field-query field type
+        var fieldType = _.find(queryFields, function (fieldType) {
+          return fieldType.name === field.field;
+        });
+
+        // Set the type and map options depending on field type
+        if (fieldType) {
+          field.fieldType = fieldType.type;
+
+          // terms should be matched to their domain and used as the field-query field
+          // if no matching taxonomy term is found the query-field should be removed
+          if (fieldType.type === 'term') {
+            var taxonomyTerm = _.find(taxonomyTerms, function (term) {
+              return term.label.toUpperCase() === field.term.toUpperCase();
+            });
+
+            if (taxonomyTerm) {
+              var domainFieldName = 'category_' + taxonomyTerm.domain + '_name';
+              field.field = domainFieldName;
+              field.term = taxonomyTerm.label;
+            } else {
+              field.invalid = true;
+            }
+          }
+
+          // Look up options for choice field-query
+          if (fieldType.type === 'choice') {
+            var option = _.find(fieldType.options, function (option) {
+              return option === field.term.toUpperCase();
+            });
+
+            if (option) {
+              field.term = option;
+            } else {
+              field.invalid = true;
+            }
+          }
+
+          // Make sure boolean field-query values are either true or false
+          if (fieldType.type === 'check') {
+            var trueValue = fieldType.name,
+                falseValue = '(!' + fieldType.name + ')';
+
+            if (!(field.term === trueValue || field.term === falseValue)) {
+              field.invalid = true;
+            }
+          }
+
+          if (fieldType.type === 'tokenized-string') {
+            if (!field.transformer || field.transformer === '=') {
+              field.transformer = '+';
+            }
+
+            if (field.transformer === '!') {
+              field.transformer = '-';
+            }
+          }
+
+          if (fieldType.type === 'string') {
+            if (!field.transformer || field.transformer === '+') {
+              field.transformer = '=';
+            }
+
+            if (field.transformer === '-') {
+              field.transformer = '!';
+            }
+          }
+
+          // Numbers can be a single or ranged term
+          // The editor only handles ranges that have one of the boundaries set to infinity
+          if (fieldType.type === 'number') {
+            if (field.term) {
+              field.transformer = '=';
+            } else {
+              if (field.upperBound && field.lowerBound === '*') {
+                field.transformer = '<';
+              } else if (field.lowerBound && field.upperBound === '*') {
+                field.transformer = '>';
+              } else {
+                field.transformer = '=';
+                field.term = field.lowerBound || field.upperBound;
+                field.lowerBound = undefined;
+                field.upperBound = undefined;
+              }
+            }
+          }
+
+          if (fieldType.type === 'date-range') {
+            var startDate = moment(field.lowerBound),
+                endDate = moment(field.upperBound);
+
+            if (startDate.isValid() && endDate.isValid()) {
+              if (startDate.isSame(endDate, 'day')) {
+                field.transformer = '=';
+              } else {
+                field.transformer = '><';
+              }
+            } else {
+              if (!startDate.isValid() && endDate.isValid()) {
+                field.transformer = '<';
+              }
+
+              if (!endDate.isValid() && startDate.isValid()) {
+                field.transformer = '>';
+              }
+            }
+          }
+        }
+
+      });
+    });
+  };
+
+  /**
+   * @description
+   * Group a node in a query tree branch.
+   * You should not need to call this method directly, use groupQueryTree instead.
+   *
+   * @param {object}  branch        - The branch of a query tree
+   * @param {object}  fieldTree     - The field tree that will be returned
+   * @param {object}  [fieldGroup]  - Keeps track of the current field group
+   */
+  this.groupNode = function (branch, fieldTree, fieldGroup) {
+    // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
+    if (branch.operator === implicitToken) {
+      branch.operator = 'OR';
+    }
+    if (!fieldGroup || branch.operator && (branch.operator !== fieldGroup.operator)) {
+      var newFieldGroup = {
+        type: 'group',
+        operator: branch.operator || 'OR',
+        nodes: []
+      };
+
+      fieldTree.nodes.push(newFieldGroup);
+      fieldGroup = newFieldGroup;
+    }
+
+    // Track the last used field name to apply to implicitly defined terms
+    if (branch.field && branch.field !== implicitToken) {
+      fieldGroup.implicitField = branch.field;
+    }
+
+    if (branch.term || (branch.lowerBound && branch.upperBound)) {
+      var field = branch.field;
+
+      // Handle implicit field names by using the last used field name
+      if (field === implicitToken) {
+        if (fieldGroup.implicitField) {
+          field = fieldGroup.implicitField;
+        } else {
+          throw 'Field name is implicit and not defined elsewhere.';
+        }
+      }
+
+      fieldGroup.nodes.push(makeField(branch, field));
+    }
+
+    if (branch.left) {
+      this.groupNode(branch.left, fieldTree, fieldGroup);
+      if (branch.right) {
+        this.groupNode(branch.right, fieldTree, fieldGroup);
+      }
+    }
+  };
+
+  /**
+   * @description
+   * Generate a field object that's used to render the query editor fields.
+   *
+   * @param {object} node The node with all the necessary information
+   * @return {object} A field object used to render the query editor
+   */
+  function makeField(node, fieldName) {
+    var fieldType = _.find(queryFields, function (type) {
+          return type.name === node.field;
+        }),
+        field = {
+          field: fieldName || node.field,
+          fieldType: fieldType || 'string',
+          transformer: node.transformer || '='
+        };
+
+    if (node.lowerBound || node.upperBound) {
+      field.lowerBound = node.lowerBound || undefined;
+      field.upperBound = node.upperBound || undefined;
+      field.inclusive = node.inclusive || true;
+    } else {
+      field.term = node.term || undefined;
+    }
+
+    return field;
+  }
+}
+LuceneQueryBuilder.$inject = ["LuceneQueryParser", "QueryTreeValidator", "QueryTreeTranslator", "queryFields", "taxonomyTerms"];
+})();
+
+// Source: src/search/services/query-field-translations.constant.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udb.search.queryFieldTranslations
+ * @description
+ * # queryFieldTranslations
+ * Value in the udb.search.
+ */
+angular
+  .module('udb.search')
+  .constant('queryFieldTranslations', {
+    sapi2: {
+      'TYPE' : 'type',
+      'CDBID' : 'cdbid',
+      'LOCATION_ID' : 'location_id',
+      'ORGANISER_ID' : 'organiser_id',
+      'TITLE' : 'title',
+      'KEYWORDS' : 'keywords',
+      'CITY' : 'city',
+      'ORGANISER_KEYWORDS': 'organiser_keywords',
+      'ZIPCODE' : 'zipcode',
+      'COUNTRY' : 'country',
+      'CATEGORY_NAME' : 'category_name',
+      'AGEFROM' : 'agefrom',
+      'DETAIL_LANG' : 'detail_lang',
+      'PRICE' : 'price',
+      'STARTDATE' : 'startdate',
+      'ENDDATE' : 'enddate',
+      'ORGANISER_LABEL' : 'organiser_label',
+      'LOCATION_LABEL' : 'location_label',
+      'EXTERNALID' : 'externalid',
+      'LASTUPDATED' : 'lastupdated',
+      'CREATIONDATE' : 'creationdate',
+      'CREATEDBY' : 'createdby',
+      'PERMANENT' : 'permanent',
+      'CATEGORY_EVENTTYPE_NAME' : 'category_eventtype_name',
+      'LOCATIONTYPE' : 'locationtype',
+      'OFFERTYPE' : 'offertype',
+      'CATEGORY_THEME_NAME' : 'category_theme_name',
+      'CATEGORY_FACILITY_NAME' : 'category_facility_name',
+      'CATEGORY_TARGETAUDIENCE_NAME' : 'category_targetaudience_name',
+      'CATEGORY_FLANDERSREGION_NAME' : 'category_flandersregion_name',
+      'AVAILABLEFROM' : 'availablefrom'
+    },
+    en: {
+      'TEXT': 'text',
+      'KEYWORDS' : 'label',
+      'PHYSICAL_GIS' : 'geo',
+      'CATEGORY_NAME' : 'category',
+      'DETAIL_LANG' : 'translation',
+      'ORGANISER_LABEL' : 'organiser',
+      'LOCATION_LABEL' : 'location',
+      'CREATIONDATE' : 'created',
+      'CATEGORY_EVENTTYPE_NAME' : 'eventtype',
+      'LOCATIONTYPE' : 'locationtype',
+      'OFFERTYPE' : 'offertype',
+      'CATEGORY_THEME_NAME' : 'theme',
+      'CATEGORY_FACILITY_NAME' : 'facility',
+      'CATEGORY_TARGETAUDIENCE_NAME' : 'targetaudience',
+      'CATEGORY_FLANDERSREGION_NAME' : 'region',
+      'AVAILABLEFROM' : 'available',
+      'LOCATION_ID' : 'locationid',
+      'ORGANISER_ID' : 'organizationid',
+      'DATE' : 'date'
+    },
+    fr: {
+      'LOCATION_LABEL': 'location',
+      'TITLE': 'titre'
+    },
+    nl: {
+      'TYPE' : 'type',
+      'TEXT': 'tekst',
+      'LOCATION_ID' : 'locatieid',
+      'ORGANISER_ID' : 'organisatieid',
+      'TITLE' : 'titel',
+      'KEYWORDS' : 'label',
+      'CITY' : 'stad',
+      'ORGANISER_KEYWORDS': 'organisatielabel',
+      'ZIPCODE' : 'postcode',
+      'COUNTRY' : 'land',
+      'CATEGORY_NAME' : 'categorie',
+      'AGEFROM' : 'leeftijd',
+      'DETAIL_LANG' : 'vertaling',
+      'PRICE' : 'prijs',
+      'DATE' : 'datum',
+      'STARTDATE' : 'startdatum',
+      'ENDDATE' : 'einddatum',
+      'ORGANISER_LABEL' : 'organisatienaam',
+      'LOCATION_LABEL' : 'locatienaam',
+      'EXTERNALID' : 'externalid',
+      'LASTUPDATED' : 'laatst_aangepast',
+      'CREATIONDATE' : 'gecreëerd',
+      'CREATEDBY' : 'gecreëerd_door',
+      'PERMANENT' : 'permanent',
+      'CATEGORY_EVENTTYPE_NAME' : 'type',
+      'LOCATIONTYPE' : 'locatietype',
+      'OFFERTYPE' : 'aanbodtype',
+      'CATEGORY_THEME_NAME' : 'thema',
+      'CATEGORY_FACILITY_NAME' : 'voorzieningen',
+      'CATEGORY_TARGETAUDIENCE_NAME' : 'doelgroep',
+      'CATEGORY_FLANDERSREGION_NAME' : 'gemeente',
+      'AVAILABLEFROM' : 'datum_beschikbaar'
+    }
+  });
+})();
+
+// Source: src/search/services/query-fields.value.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udb.search.queryFields
+ * @description
+ * Query field types:
+ * - string
+ * - string
+ * - choice
+ * - check
+ * - date-range
+ * - term
+ *
+ * When displayed in the editor, the first occurrence of a group name will determine its order in relation to the other
+ * groups.
+ */
+angular
+  .module('udb.search')
+  .value('queryFields', [
+    {name: 'cdbid', field:'id', type: 'string', group: 'what', editable: true},
+    {name: 'offertype', field:'_type', type: 'choice', group: 'what', editable: true, options: ['event', 'place']},
+    {name: 'keywords', field: 'labels', type: 'string', group: 'what', editable: true},
+    {name: 'title', field: 'name.\\*', type: 'tokenized-string', group: 'what', editable: true},
+    {name: 'category_eventtype_name', field:'terms.label', type: 'term', group: 'what', editable: true},
+    {name: 'locationtype', field:'terms.label', type: 'term', group: 'what', editable: true},
+    {name: 'category_theme_name', field:'terms.label', type: 'term', group: 'what', editable: true},
+    {name: 'text', field:'<implicit>', type: 'tokenized-string', group: 'what', editable: true},
+
+    {name: 'city', field:'addressLocality', type: 'string', group:'where', editable: true},
+    {name: 'zipcode', field:'postalCode', type: 'string', group:'where', editable: true},
+    {name: 'location_id', field:'location.id', type: 'string', group:'where', editable: true},
+    {name: 'country', field: 'addressCountry', type: 'choice', group:'where', editable: false, options: ['AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM']},
+    {name: 'location_label', field: 'location.name.\\*', type: 'tokenized-string', group:'where', editable: true},
+    {name: 'category_flandersregion_name', field:'regions', type: 'term' , group:'where', editable: true},
+
+    {name: 'date', field:'dateRange', type: 'date-range', group:'when', editable: true},
+    {name: 'permanent', field:'calendarType', type:'check', group:'when', editable: true},
+
+    {name: 'lastupdated', field: 'modified', type: 'date-range', group:'input-information', editable: true},
+    {name: 'creationdate', field: 'created', type: 'date-range', group:'input-information', editable: true},
+    {name: 'createdby', field: 'creator', type: 'string', group:'input-information', editable: true},
+    {name: 'availablefrom', field: 'availableRange', type: 'date-range', group:'input-information', editable: true},
+
+    {name: 'detail_lang', field: 'languages', type: 'choice', group:'translations', editable: true, options: ['nl', 'fr', 'en', 'de']},
+
+    {name: 'organiser_keywords', field: 'organizer.labels', type: 'string', group: 'other', editable: true},
+    {name: 'organiser_id', field: 'organizer.id', type: 'string', group: 'other', editable: true},
+    {name: 'agefrom', field:'typicalAgeRange', type: 'number', group: 'other', editable: true},
+    {name: 'price', field: 'price', type: 'number' , group: 'other', editable: true},
+    {name: 'organiser_label', field: 'organizer.name.\\*', type: 'tokenized-string', group: 'other', editable: true},
+    {name: 'category_facility_name', field:'location.terms.label', type: 'term', group: 'other', editable: true},
+    {name: 'category_targetaudience_name', field: 'audienceType', type: 'choice', group: 'other', editable: true, options: ['everyone', 'members', 'education']},
+
+    // The following fields are supported but not named and do not show up in the builder
+    // https://github.com/cultuurnet/udb3-search-docs/blob/master/advanced-queries.md#supported-fields
+    {field: 'calendarType', type: 'string'},
+    {field: 'workflowStatus', type: 'choice', options: ['DRAFT', 'READY_FOR_VALIDATION', 'APPROVED', 'REJECTED', 'DELETED']},
+    {field: 'name.nl', type: 'tokenized-string'},
+    {field: 'name.fr', type: 'tokenized-string'},
+    {field: 'name.de', type: 'tokenized-string'},
+    {field: 'name.en', type: 'tokenized-string'},
+    {field: 'description.nl', type: 'tokenized-string'},
+    {field: 'description.fr', type: 'tokenized-string'},
+    {field: 'description.de', type: 'tokenized-string'},
+    {field: 'description.en', type: 'tokenized-string'},
+    {field: 'terms.id', type: 'string'},
+    {field: 'mediaObjectsCount', type: 'number'},
+    {field: 'streetAddress', type: 'string'},
+    {field: 'location.id', type: 'string'},
+    {field: 'location.name.nl', type: 'tokenized-string'},
+    {field: 'location.name.fr', type: 'tokenized-string'},
+    {field: 'location.name.de', type: 'tokenized-string'},
+    {field: 'location.name.en', type: 'tokenized-string'},
+    {field: 'location.terms.id', type: 'string'},
+    {field: 'organizer.id', type: 'string'},
+    {field: 'organizer.name.nl', type: 'tokenized-string'},
+    {field: 'organizer.name.fr', type: 'tokenized-string'},
+    {field: 'organizer.name.de', type: 'tokenized-string'},
+    {field: 'organizer.name.en', type: 'tokenized-string'},
+
+    // Start- and end-date have been dropped in favor of a single date field. Keep these around to map SAPI2 translations.
+    {name: 'startdate', field:'dateRange', type: 'date-range'},
+    {name: 'enddate', field:'dateRange', type: 'date-range'}
+  ]);
+})();
+
+// Source: src/search/services/query-tree-translator.service.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udb.search.QueryTreeTranslator
+ * @description
+ * # QueryTreeTranslator
+ * Service in the udb.search.
+ */
+angular
+  .module('udb.search')
+  .service('QueryTreeTranslator', QueryTreeTranslator);
+
+/* @ngInject */
+function QueryTreeTranslator(queryFieldTranslations, queryFields) {
+  /**
+   * @param {string} field    - The field to translate.
+   * @param {string} srcLang  - To source language to translate from.
+   */
+  var translateField = function (field, srcLang) {
+    var translatableFieldName = _.findKey(queryFieldTranslations[srcLang], function (src) {
+      return src === field;
+    });
+
+    var queryField = (undefined === translatableFieldName) ?
+      undefined :
+      _.find(queryFields, {name: translatableFieldName.toLowerCase()});
+
+    return (undefined === queryField) ? field : queryField.field;
+  };
+
+  var translateNode = function (node, depth) {
+    var left = node.left || false,
+      right = node.right || false,
+      nodes = [];
+
+    if (left) {
+      nodes.push(left);
+    }
+    if (right) {
+      nodes.push(right);
+    }
+
+    for (var i = 0, len = nodes.length; i < len; i++) {
+      var iNode = nodes[i];
+      if (typeof iNode === 'object') {
+        translateNode(iNode, depth + 1);
+      }
+    }
+
+    if (node.field) {
+      node.field = translateField(node.field, 'sapi2');
+      node.field = translateField(node.field, 'en');
+      node.field = translateField(node.field, 'nl');
+    }
+
+  };
+
+  this.translateQueryTree = function (queryTree) {
+    return translateNode(queryTree, 0);
+  };
+}
+QueryTreeTranslator.$inject = ["queryFieldTranslations", "queryFields"];
+})();
+
+// Source: src/search/services/query-tree-validator.service.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udb.search.QueryTreeValidator
+ * @description
+ * # QueryTreeValidator
+ * Service in the udb.search.
+ */
+angular.module('udb.search')
+  .service('QueryTreeValidator', QueryTreeValidator);
+
+/* @ngInject */
+function QueryTreeValidator(queryFields) {
+
+  var validFields = _.union(_.map(queryFields, 'field'), ['_exists_']),
+      implicitToken = '<implicit>',
+      validParentFields = _(validFields)
+        .filter(function (field) {
+          return field.indexOf('.') > 0;
+        })
+        .map(function (field) {
+          var fields = field.split('.');
+          fields.pop();
+          return fields.join('.');
+        })
+        .value();
+
+  var validateFields = function (current, depth, errors) {
+    var left = current.left || false,
+      right = current.right || false,
+      nodes = [];
+
+    if (left) {
+      nodes.push(left);
+    }
+    if (right) {
+      nodes.push(right);
+    }
+
+    for (var i = 0, len = nodes.length; i < len; i++) {
+      var node = nodes[i];
+      if (typeof node === 'object') {
+        validateFields(node, depth + 1, errors);
+      }
+    }
+
+    var queryField = current.field;
+    if (typeof(queryField) !== 'undefined') {
+      var field = _.trim(queryField, '.\\*');
+      var fieldHasWildcard = queryField !== field;
+
+      if (field !== null && field !== implicitToken) {
+        if (fieldHasWildcard) {
+          if (!_.contains(validParentFields, field)) {
+            errors.push(field + ' is not a valid parent search field that can be used with a wildcard');
+          }
+        } else {
+          if (!_.contains(validFields, field)) {
+            errors.push(field + ' is not a valid search field');
+          }
+        }
+      }
+    }
+  };
+
+  this.validate = function (queryTree, errors) {
+    validateFields(queryTree, 0, errors);
+  };
+
+}
+QueryTreeValidator.$inject = ["queryFields"];
+})();
+
+// Source: src/search/services/sapi2.field-type-transformers.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udb.search.sapi2FieldTypeTransformers
+ * @description
+ * # sapi2FieldTypeTransformers
+ * Value in udb.search module.
+ */
+angular
+  .module('udb.search')
+  .value('sapi2FieldTypeTransformers', {
+    'string': ['=', '!'],
+    'tokenized-string': ['+', '-'],
+    'choice': ['=', '!'],
+    'term': ['=', '!'],
+    'number': ['=', '<', '>'],
+    'check': ['='],
+    'date-range': ['=', '><', '<', '>']
+  });
+})();
+
+// Source: src/search/services/sapi2.query-builder.service.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udbApp.sapi2QueryBuilder
+ * @description
+ * # sapi2QueryBuilder
+ * Service in the udb.search.
+ */
+angular.module('udb.search')
+  .service('sapi2QueryBuilder', QueryBuilder);
+
+QueryBuilder.$inject = [
+  'LuceneQueryParser',
+  'sapi2QueryTreeValidator',
+  'sapi2QueryTreeTranslator',
+  'sapi2QueryFields',
+  'taxonomyTerms'
+];
+function QueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTranslator, queryFields, taxonomyTerms) {
+  var implicitToken = '<implicit>';
+
+  this.translate = function (query) {
+    QueryTreeTranslator.translateQueryTree(query.queryTree);
+  };
+
+  this.validate = function (query) {
+    QueryTreeValidator.validate(query.queryTree, query.errors);
+  };
+
+  this.isValid = function (query) {
+    this.translate(query);
+    this.validate(query);
+
+    return query.errors.length === 0;
+  };
+
+  this.parseQueryString = function (query) {
+    try {
+      query.queryTree = LuceneQueryParser.parse(query.queryString);
+    } catch (e) {
+      query.errors.push(e.message);
+    }
+
+    return query.queryTree;
+  };
+
+  /**
+   *
+   * @param {string} queryString
+   */
+  this.createQuery = function (queryString) {
+    var query = {
+      originalQueryString: queryString,
+      queryString: queryString,
+      queryTree: {},
+      errors: []
+    };
+
+    this.parseQueryString(query);
+
+    return query;
+  };
+
+  var printTerm = function (node) {
+    var term = node.term,
+      isRangeExpression = (node.lowerBound || node.upperBound);
+
+    if (isRangeExpression) {
+      var min = node.lowerBound || '*',
+        max = node.upperBound || '*',
+        inclusive = node.inclusive;
+
+      if (min instanceof Date) {
+        min = min.toISOString();
+      }
+      if (max instanceof Date) {
+        max = max.toISOString();
+      }
+
+      term = min + ' TO ' + max;
+
+      if (inclusive) {
+        term = '[' + term + ']';
+      } else {
+        term = '{' + term + '}';
+      }
+    } else {
+      // if the term is a phrase surround it with double quotes
+      if (node.quoted || term.indexOf(' ') !== -1) {
+        term = '"' + term + '"';
+      }
+
+      // check for fuzzy search modifier
+      if (node.similarity) {
+        term += ('~' + node.similarity);
+      }
+
+      // check for proximity modifier
+      if (node.proximity) {
+        term += ('~' + node.proximity);
+      }
+
+      // check for prefix modifier
+      if (node.prefix) {
+        term = node.prefix + term;
+      }
+
+      // check for boost modifier
+      if (node.boost) {
+        term += ('^' + node.boost);
+      }
+    }
+
+    return term;
+  };
+
+  var unparseNode = function (branch, depth, sentence) {
+
+    if (branch.left) {
+      var result,
+        operator = (branch.operator === implicitToken) ? ' ' : (' ' + branch.operator + ' ');
+
+      if (branch.right) {
+        result = unparseNode(branch.left, depth + 1, sentence);
+        result += operator;
+        result += unparseNode(branch.right, depth + 1, sentence);
+
+        if (depth > 0) {
+          result = '(' + result + ')';
+        }
+
+        if (branch.field && branch.field !== implicitToken) {
+          result = (branch.field + ':') + result;
+        }
+
+      } else {
+        result = unparseNode(branch.left, depth + 1, sentence);
+      }
+
+      return result;
+
+    } else {
+      var fieldQuery = '',
+        term = printTerm(branch);
 
       if (branch.field !== implicitToken && branch.field !== null) {
         var fieldPrefix = '';
@@ -17448,7 +20942,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
           if (field.type === 'group') {
 
             var subGroup = field,
-                subGroupString = ' ';
+              subGroupString = ' ';
 
             if (subGroup.nodes.length === 1) {
               var singleField = subGroup.nodes[0];
@@ -17715,7 +21209,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
           if (fieldType.type === 'date-range') {
             var startDate = moment(field.lowerBound),
-                endDate = moment(field.upperBound);
+              endDate = moment(field.upperBound);
 
             if (startDate.isValid() && endDate.isValid()) {
               if (startDate.isSame(endDate, 'day')) {
@@ -17801,13 +21295,13 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    */
   function makeField(node, fieldName) {
     var fieldType = _.find(queryFields, function (type) {
-          return type.name === node.field;
-        }),
-        field = {
-          field: fieldName || node.field,
-          fieldType: fieldType || 'string',
-          transformer: node.transformer || '='
-        };
+        return type.name === node.field;
+      }),
+      field = {
+        field: fieldName || node.field,
+        fieldType: fieldType || 'string',
+        transformer: node.transformer || '='
+      };
 
     if (node.lowerBound || node.upperBound) {
       field.lowerBound = node.lowerBound || undefined;
@@ -17820,83 +21314,15 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     return field;
   }
 }
-LuceneQueryBuilder.$inject = ["LuceneQueryParser", "QueryTreeValidator", "QueryTreeTranslator", "queryFields", "taxonomyTerms"];
+})();
 
-// Source: src/search/services/query-field-translations.constant.js
+// Source: src/search/services/sapi2.query-fields.value.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
- * @name udb.search.queryFieldTranslations
- * @description
- * # queryFieldTranslations
- * Value in the udb.search.
- */
-angular
-  .module('udb.search')
-  .constant('queryFieldTranslations', {
-    en: {
-      'KEYWORDS' : 'label',
-      'PHYSICAL_GIS' : 'geo',
-      'CATEGORY_NAME' : 'category',
-      'DETAIL_LANG' : 'translation',
-      'ORGANISER_LABEL' : 'organiser',
-      'LOCATION_LABEL' : 'location',
-      'CREATIONDATE' : 'created',
-      'CATEGORY_EVENTTYPE_NAME' : 'eventtype',
-      'CATEGORY_THEME_NAME' : 'theme',
-      'CATEGORY_FACILITY_NAME' : 'facility',
-      'CATEGORY_TARGETAUDIENCE_NAME' : 'targetaudience',
-      'CATEGORY_FLANDERSREGION_NAME' : 'region',
-      'CATEGORY_PUBLICSCOPE_NAME' : 'publicscope',
-      'AVAILABLEFROM' : 'available'
-    },
-    fr: {
-      'LOCATION_LABEL': 'location',
-      'TITLE': 'titre'
-    },
-    nl: {
-      'TYPE' : 'type',
-      'CDBID' : 'identificatiecode (CDBID)',
-      'TITLE' : 'titel',
-      'KEYWORDS' : 'label',
-      'CITY' : 'gemeente (naam)',
-      'ORGANISER_KEYWORDS': 'label organisatie',
-      'ZIPCODE' : 'postcode',
-      'COUNTRY' : 'land',
-      'PHYSICAL_GIS' : 'geo-coördinaten',
-      'CATEGORY_NAME' : 'categorie',
-      'AGEFROM' : 'leeftijd vanaf',
-      'DETAIL_LANG' : 'vertaling',
-      'PRICE' : 'prijs',
-      'STARTDATE' : 'startdatum',
-      'ENDDATE' : 'einddatum',
-      'ORGANISER_LABEL' : 'organisatie (naam)',
-      'LOCATION_LABEL' : 'locatie (naam)',
-      'EXTERNALID' : 'externalid',
-      'LASTUPDATED' : 'laatst aangepast',
-      'LASTUPDATEDBY' : 'laatst aangepast door',
-      'CREATIONDATE' : 'gecreëerd',
-      'CREATEDBY' : 'gecreëerd door',
-      'PERMANENT' : 'permanent',
-      'DATETYPE' : 'wanneer',
-      'CATEGORY_EVENTTYPE_NAME' : 'type',
-      'CATEGORY_THEME_NAME' : 'thema',
-      'CATEGORY_FACILITY_NAME' : 'voorzieningen',
-      'CATEGORY_TARGETAUDIENCE_NAME' : 'doelgroep',
-      'CATEGORY_FLANDERSREGION_NAME' : 'regio / gemeente',
-      'CATEGORY_PUBLICSCOPE_NAME' : 'publieksbereik',
-      'LIKE_COUNT' : 'aantal keer \'geliket\'',
-      'RECOMMEND_COUNT' : 'aantal keer aanbevolen',
-      'ATTEND_COUNT' : 'aantal keer \'ik ga hierheen\'',
-      'COMMENT_COUNT' : 'aantal reacties',
-      'PRIVATE' : 'privé',
-      'AVAILABLEFROM' : 'datum beschikbaar'
-    }
-  });
-
-// Source: src/search/services/query-fields.value.js
-/**
- * @ngdoc service
- * @name udb.search.queryFields
+ * @name udb.search.sapi2QueryFields
  * @description
  * Query field types:
  * - string
@@ -17911,7 +21337,7 @@ angular
  */
 angular
   .module('udb.search')
-  .value('queryFields', [
+  .value('sapi2QueryFields', [
     {name: 'cdbid', type: 'string', group: 'what', editable: true},
     {name: 'keywords', type: 'string', group: 'what', editable: true},
     {name: 'title', type: 'tokenized-string', group: 'what', editable: true},
@@ -17953,18 +21379,22 @@ angular
     {name: 'private', type: 'check'},
     {name: 'physical_gis', type: 'string'}
   ]);
+})();
 
-// Source: src/search/services/query-tree-translator.service.js
+// Source: src/search/services/sapi2.query-tree-translator.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
- * @name udb.search.QueryTreeTranslator
+ * @name udb.search.sapi2QueryTreeTranslator
  * @description
  * # QueryTreeTranslator
  * Service in the udb.search.
  */
 angular
   .module('udb.search')
-  .service('QueryTreeTranslator', QueryTreeTranslator);
+  .service('sapi2QueryTreeTranslator', QueryTreeTranslator);
 
 /* @ngInject */
 function QueryTreeTranslator(queryFieldTranslations) {
@@ -18019,23 +21449,35 @@ function QueryTreeTranslator(queryFieldTranslations) {
   };
 }
 QueryTreeTranslator.$inject = ["queryFieldTranslations"];
+})();
 
-// Source: src/search/services/query-tree-validator.service.js
+// Source: src/search/services/sapi2.query-tree-validator.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
- * @name udb.search.QueryTreeValidator
+ * @name udb.search.sapi2QueryTreeValidator
  * @description
- * # QueryTreeValidator
+ * # sapi2QueryTreeValidator
  * Service in the udb.search.
  */
 angular.module('udb.search')
-  .service('QueryTreeValidator', QueryTreeValidator);
+  .service('sapi2QueryTreeValidator', QueryTreeValidator);
 
-/* @ngInject */
+QueryTreeValidator.$inject = ['sapi2QueryFields'];
 function QueryTreeValidator(queryFields) {
 
-  var validFieldNames = _.map(queryFields, 'name'),
-    implicitToken = '<implicit>';
+  var validFieldNames = _.union(_.map(queryFields, 'name'), ['_exists_']),
+    implicitToken = '<implicit>',
+    validParentFieldNames = _(validFieldNames)
+      .filter(function (fieldName) {
+        return fieldName.indexOf('.') > 0;
+      })
+      .map(function (fieldName) {
+        return fieldName.split('.')[0];
+      })
+      .value();
 
   var validateFields = function (current, depth, errors) {
     var left = current.left || false,
@@ -18058,8 +21500,21 @@ function QueryTreeValidator(queryFields) {
 
     var field = current.field;
     if (typeof(field) !== 'undefined') {
-      if (field !== null && field !== implicitToken && !_.contains(validFieldNames, field)) {
-        errors.push(field + ' is not a valid search field');
+
+      var fieldName = _.trim(field, '.\\*');
+      var fieldHasWildcard = field !== fieldName;
+
+      if (fieldName !== null && fieldName !== implicitToken) {
+
+        if (fieldHasWildcard) {
+          if (!_.contains(validParentFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid parent search field that can be used with a wildcard');
+          }
+        } else {
+          if (!_.contains(validFieldNames, fieldName)) {
+            errors.push(fieldName + ' is not a valid search field');
+          }
+        }
       }
     }
   };
@@ -18069,9 +21524,141 @@ function QueryTreeValidator(queryFields) {
   };
 
 }
-QueryTreeValidator.$inject = ["queryFields"];
+})();
+
+// Source: src/search/services/search-api-switcher.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udb.search.searchApiSwitcher
+ * @description
+ * # searchApiSwitcher
+ * This service provides context to switch between SAPI2 and SAPI3
+ */
+angular
+  .module('udb.search')
+  .service('searchApiSwitcher', SearchApiSwitcher);
+
+/* @ngInject */
+function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuilder) {
+  var switcher = this;
+  var apiVersionCookieKey = 'search-api-version';
+  var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
+
+  /**
+   * @returns {Number}
+   */
+  function getApiVersion() {
+    return parseInt($cookies.get(apiVersionCookieKey) || defaultApiVersion);
+  }
+
+  /**
+   * @param {string} queryString
+   * @param {number} start
+   * @returns {Promise.<PagedCollection>}
+   */
+  switcher.findOffers = function (queryString, start) {
+    start = start || 0;
+    return (getApiVersion() > 2) ? udbApi.findOffers(queryString, start) : udbApi.findEvents(queryString, start);
+  };
+
+  /**
+   * @param {EventFormData} formData
+   * @returns {object}
+   */
+  switcher.getDuplicateSearchConditions = function (formData) {
+    var location = formData.getLocation();
+
+    if (getApiVersion() > 2) {
+      if (formData.isEvent) {
+        /*jshint camelcase: false*/
+        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
+        return {
+          'name.\\*': formData.name.nl,
+          'location.name.\\*' : location.name
+        };
+      }
+      else {
+        /*jshint camelcase: false */
+        return {
+          'name.\\*': formData.name.nl,
+          'postalCode': formData.address.postalCode,
+          'labels': 'UDB3 place'
+        };
+      }
+    } else {
+      if (formData.isEvent) {
+        /*jshint camelcase: false*/
+        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
+        return {
+          text: formData.name.nl,
+          location_label : location.name
+        };
+      }
+      else {
+        /*jshint camelcase: false */
+        return {
+          text: formData.name.nl,
+          zipcode: formData.address.postalCode,
+          keywords: 'UDB3 place'
+        };
+      }
+    }
+  };
+
+  /**
+   * @returns {object}
+   *  An angular directive definition object.
+   */
+  switcher.getQueryEditorFieldDefinition = function() {
+    if (getApiVersion() > 2) {
+      return {
+        templateUrl: 'templates/query-editor-field.directive.html',
+        restrict: 'E',
+        controller: 'QueryEditorFieldController'
+      };
+    } else {
+      return {
+        templateUrl: 'templates/sapi2.query-editor-field.directive.html',
+        restrict: 'E',
+        controller: 'QueryEditorFieldController'
+      };
+    }
+  };
+
+  /**
+   * @returns {string}
+   *  A query editor controller name.
+   */
+  switcher.getQueryEditorController = function() {
+    if (getApiVersion() > 2) {
+      return 'QueryEditorController';
+    } else {
+      return 'sapi2QueryEditorController';
+    }
+  };
+
+  /**
+   * @returns {object}
+   *  A query builder instance.
+   */
+  switcher.getQueryBuilder = function () {
+    if (getApiVersion() > 2) {
+      return LuceneQueryBuilder;
+    } else {
+      return sapi2QueryBuilder;
+    }
+  };
+}
+SearchApiSwitcher.$inject = ["appConfig", "udbApi", "$cookies", "sapi2QueryBuilder", "LuceneQueryBuilder"];
+})();
 
 // Source: src/search/services/search-helper.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.search.searchHelper
@@ -18084,9 +21671,10 @@ angular
   .service('searchHelper', SearchHelper);
 
 /* @ngInject */
-function SearchHelper(LuceneQueryBuilder, $rootScope) {
+function SearchHelper(searchApiSwitcher, $rootScope) {
   var query = null;
   var queryTree = null;
+  var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
   this.clearQueryTree = function () {
     queryTree = null;
@@ -18103,8 +21691,8 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
     var newQuery = false;
 
     if (!query || query.queryString !== queryString) {
-      newQuery = LuceneQueryBuilder.createQuery(queryString);
-      LuceneQueryBuilder.isValid(newQuery);
+      newQuery = queryBuilder.createQuery(queryString);
+      queryBuilder.isValid(newQuery);
       this.setQuery(newQuery);
       queryTree = null;
     }
@@ -18115,9 +21703,9 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.setQueryTree = function (groupedQueryTree) {
-    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedQueryTree);
-    var newQuery = LuceneQueryBuilder.createQuery(queryString);
-    LuceneQueryBuilder.isValid(newQuery);
+    var queryString = queryBuilder.unparseGroupedTree(groupedQueryTree);
+    var newQuery = queryBuilder.createQuery(queryString);
+    queryBuilder.isValid(newQuery);
     this.setQuery(newQuery);
 
     queryTree = groupedQueryTree;
@@ -18136,9 +21724,13 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
     return angular.copy(queryTree);
   };
 }
-SearchHelper.$inject = ["LuceneQueryBuilder", "$rootScope"];
+SearchHelper.$inject = ["searchApiSwitcher", "$rootScope"];
+})();
 
 // Source: src/search/services/search-result-viewer.factory.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.search.SearchResultViewer
@@ -18337,8 +21929,12 @@ function SearchResultViewerFactory() {
 
   return (SearchResultViewer);
 }
+})();
 
 // Source: src/search/services/variation-repository.service.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc service
  * @name udb.search.variationRepository
@@ -18440,8 +22036,12 @@ function VariationRepository(udbApi, $cacheFactory, $q, UdbEvent, $rootScope, Ud
   });
 }
 VariationRepository.$inject = ["udbApi", "$cacheFactory", "$q", "UdbEvent", "$rootScope", "UdbPlace"];
+})();
 
 // Source: src/search/ui/event-translation-state.constant.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
@@ -18466,8 +22066,12 @@ angular
     SOME: {'name': 'some', 'icon': 'fa-dot-circle-o'}
   }
 );
+})();
 
 // Source: src/search/ui/event.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbEvent
@@ -18489,8 +22093,12 @@ function udbEvent() {
 
   return eventDirective;
 }
+})();
 
 // Source: src/search/ui/offer.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.controller:OfferController
@@ -18512,7 +22120,8 @@ function OfferController(
   $window,
   offerEditor,
   variationRepository,
-  $q
+  $q,
+  appConfig
 ) {
   var controller = this;
   var cachedOffer;
@@ -18540,8 +22149,8 @@ function OfferController(
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
+          controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
-
           watchLabels();
           return cachedOffer;
         });
@@ -18714,14 +22323,19 @@ function OfferController(
    * @return {Promise}
    */
   function fetchPersonalVariation(offer) {
-    return variationRepository
-      .getPersonalVariation(offer)
-      .then(function (personalVariation) {
-        $scope.event.description = personalVariation.description[defaultLanguage];
-        return personalVariation;
-      }, function () {
-        return $q.reject();
-      });
+    var disableVariations = _.get(appConfig, 'disableVariations');
+    if (!disableVariations) {
+      return variationRepository
+        .getPersonalVariation(offer)
+        .then(function (personalVariation) {
+          $scope.event.description = personalVariation.description[defaultLanguage];
+          return personalVariation;
+        }, function () {
+          return $q.reject();
+        });
+    } else {
+      return $q.reject();
+    }
   }
 
   /**
@@ -18750,9 +22364,13 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig"];
+})();
 
 // Source: src/search/ui/place.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbPlace
@@ -18774,8 +22392,12 @@ function udbPlace() {
 
   return placeDirective;
 }
+})();
 
 // Source: src/search/ui/search.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udb.search.controller:SearchCtrl
@@ -18785,13 +22407,12 @@ function udbPlace() {
  */
 angular
   .module('udb.search')
-  .controller('Search', Search);
+  .controller('SearchController', SearchController);
 
 /* @ngInject */
-function Search(
+function SearchController(
   $scope,
   udbApi,
-  LuceneQueryBuilder,
   $window,
   $location,
   $uibModal,
@@ -18801,9 +22422,10 @@ function Search(
   searchHelper,
   $rootScope,
   eventExporter,
-  $translate
+  $translate,
+  searchApiSwitcher
 ) {
-  var queryBuilder = LuceneQueryBuilder;
+  var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
   function getSearchQuery() {
     return searchHelper.getQuery();
@@ -18827,14 +22449,12 @@ function Search(
   $scope.currentPage = getCurrentPage();
 
   /**
-   * Fires off a search for events using a plain query string or a query object.
+   * Fires off a search for offers using a plain query string or a query object.
    * @param {String|Query} query A query string or object to search with.
    */
-  var findEvents = function (query) {
+  var findOffers = function (query) {
     var offset = ($scope.resultViewer.currentPage - 1) * $scope.resultViewer.pageSize;
     var queryString = typeof query === 'string' ? query : query.queryString;
-    var eventPromise = udbApi.findEvents(queryString, offset);
-
     var pageSearchParameter = $scope.resultViewer.currentPage > 1 ? String($scope.resultViewer.currentPage) : null;
 
     $location.search({
@@ -18844,10 +22464,12 @@ function Search(
 
     $scope.resultViewer.loading = true;
 
-    eventPromise.then(function (pagedEvents) {
-      offerLocator.addPagedCollection(pagedEvents);
-      $scope.resultViewer.setResults(pagedEvents);
-    });
+    searchApiSwitcher
+      .findOffers(queryString, offset)
+      .then(function (pagedEvents) {
+        offerLocator.addPagedCollection(pagedEvents);
+        $scope.resultViewer.setResults(pagedEvents);
+      });
   };
 
   /**
@@ -18859,7 +22481,7 @@ function Search(
     if (queryBuilder.isValid(query)) {
       var realQuery = queryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
-      findEvents(realQuery);
+      findOffers(realQuery);
 
       if (realQuery !== query.originalQueryString) {
         $scope.realQuery = realQuery;
@@ -19012,7 +22634,7 @@ function Search(
     } else {
       $scope.resultViewer.currentPage = newPageNumber;
 
-      findEvents($scope.activeQuery);
+      findOffers($scope.activeQuery);
       $window.scroll(0, 0);
     }
   };
@@ -19045,9 +22667,13 @@ function Search(
 
   initListeners();
 }
-Search.$inject = ["$scope", "udbApi", "LuceneQueryBuilder", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate"];
+SearchController.$inject = ["$scope", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "searchApiSwitcher"];
+})();
 
 // Source: src/search/ui/search.directive.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.directive:udbEvent
@@ -19060,16 +22686,18 @@ angular
 
 /* @ngInject */
 function searchDirective() {
-  var search = {
+  return {
     templateUrl: 'templates/search.html',
     restrict: 'EA',
-    controller: Search // jshint ignore:line
+    controller: 'SearchController'
   };
-
-  return search;
 }
+})();
 
 // Source: src/uitpas/components/card-systems/card-system-selector.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:CardSystemSelector
@@ -19155,8 +22783,12 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   };
 }
 CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels", "$rootScope"];
+})();
 
 // Source: src/uitpas/components/uitpas-info/uitpas-info.component.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc function
  * @name udbApp.controller:EventFormUitpasInfoController
@@ -19231,8 +22863,58 @@ function UitpasInfoComponent(
   };
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
+})();
+
+// Source: src/uitpas/default-uitpas-labels.constant.js
+(function () {
+'use strict';
+
+/* jshint sub: true */
+
+/**
+ * @ngdoc service
+ * @name udb.uitpas.DefaultUitpasLabels
+ * @description
+ * # Default UiTPAS Labels
+ *
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-30.
+ * This file used to be updated each time labels changed but now acts as a placeholder.
+ *
+ * The actual labels should be fetched when building or bootstrapping your app and written to the UitpasLabels constant.
+ * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * e.g.: https://uitpas.uitdatabank.be/labels for production
+ */
+angular
+  .module('udb.uitpas')
+  .constant('DefaultUitpasLabels',
+  /**
+   * Enum for UiTPAS labels
+   * @readonly
+   * @enum {string}
+   */
+  {
+    'PASPARTOE': 'Paspartoe',
+    'UITPAS': 'UiTPAS',
+    'UITPAS_GENT': 'UiTPAS Gent',
+    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
+    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
+    'UITPAS_DENDER': 'UiTPAS Dender',
+    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
+    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
+    'UITPAS_KEMPEN': 'UiTPAS Kempen',
+    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
+    'UITPAS_LEUVEN': 'UiTPAS Leuven',
+    'UITPAS_LIER': 'UiTPAS Lier',
+    'UITPAS_HEIST-OP-DEN-BERG': 'UiTPAS Heist-op-den-Berg',
+    'UITPAS_MEETJESLAND': 'UiTPAS Meetjesland',
+    'UITPAS_WESTHOEK': 'UiTPAS Westhoek'
+  });
+})();
 
 // Source: src/uitpas/organisation-suggestion.controller.js
+(function () {
+'use strict';
+
 /**
  * @ngdoc directive
  * @name udb.search.controller:OfferController
@@ -19250,8 +22932,12 @@ function OrganisationSuggestionController($scope) {
   controller.query = $scope.query;
 }
 OrganisationSuggestionController.$inject = ["$scope"];
+})();
 
 // Source: src/uitpas/organisation-suggestion.directive.js
+(function () {
+'use strict';
+
 angular
   .module('udb.uitpas')
   .directive('uitpasOrganisationSuggestion', uitpasOrganisationSuggestion);
@@ -19269,8 +22955,12 @@ function uitpasOrganisationSuggestion() {
     restrict: 'A'
   };
 }
+})();
 
 // Source: src/uitpas/udb-uitpas-api.service.js
+(function () {
+'use strict';
+
 /**
  * @typedef {Object} Cardsystem
  * @property {string} id
@@ -19341,49 +23031,54 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
   }
 }
 UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
+})();
 
-// Source: src/uitpas/uitpas-labels.constant.js
+// Source: src/uitpas/uitpas-labels.provider.js
+(function () {
+'use strict';
+
 /* jshint sub: true */
 
 /**
  * @ngdoc service
- * @name udb.entry.uitpasLabels
+ * @name udb.uitpas.UitpasLabelsProvider
  * @description
- * # UiTPAS Labels
+ * # UiTPAS Labels Provider
  *
- * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01.
- * This file used to be updated each time labels changed but now acts as a placeholder.
+ * All the known UiTPAS labels that link an organizer to card-systems on 2017-03-01 are in the DefaultUitpasLabels
+ * constant. The file used to be updated each time labels changed but now acts as a placeholder.
  *
- * The actual labels should be fetched when building your app and overwrite this UitpasLabels constant.
- * The UiTPAS service should have an endpoint with all the labels for your environment.
+ * The actual labels should be fetched when building or bootstrapping your app and written to the ExtermalUitpasLabels
+ * constant. The UiTPAS service should have an endpoint with all the labels for your environment.
  * e.g.: https://uitpas.uitdatabank.be/labels for production
  */
 angular
   .module('udb.uitpas')
-  .constant('UitpasLabels',
+  .provider('UitpasLabels', UitpasLabelsProvider);
+
+function UitpasLabelsProvider() {
+  var customUitpasLabels;
+
   /**
-   * Enum for UiTPAS labels
-   * @readonly
-   * @enum {string}
+   * Configure the UiTPAS labels by providing a map of {LABEL_KEY: label name}
+   * @param {object} labels
    */
-  {
-    'PASPARTOE': 'Paspartoe',
-    'UITPAS': 'UiTPAS',
-    'UITPAS_GENT': 'UiTPAS Gent',
-    'UITPAS_OOSTENDE': 'UiTPAS Oostende',
-    'UITPAS_REGIO_AALST': 'UiTPAS Regio Aalst',
-    'UITPAS_DENDER': 'UiTPAS Dender',
-    'UITPAS_ZUIDWEST': 'UiTPAS Zuidwest',
-    'UITPAS_MECHELEN': 'UiTPAS Mechelen',
-    'UITPAS_KEMPEN': 'UiTPAS Kempen',
-    'UITPAS_MAASMECHELEN': 'UiTPAS Maasmechelen',
-    'UITPAS_LEUVEN': 'UiTPAS Leuven',
-    'UITPAS_SYX': 'UiTPAS Syx'
-  });
+  this.useLabels = function(labels) {
+    customUitpasLabels = labels;
+  };
+
+  this.$get = ['DefaultUitpasLabels', function(DefaultUitpasLabels) {
+    return !!customUitpasLabels ? customUitpasLabels : DefaultUitpasLabels;
+  }];
+}
+})();
 
 // Source: .tmp/udb3-angular.templates.js
+(function () {
 angular.module('udb.core').run(['$templateCache', function($templateCache) {
-$templateCache.put('templates/calendar-summary.directive.html',
+  'use strict';
+
+  $templateCache.put('templates/calendar-summary.directive.html',
     "<span ng-if=\"offer.calendarType\" ng-switch=\"offer.calendarType\">\n" +
     "\n" +
     "  <span ng-switch-when=\"single\">\n" +
@@ -19418,17 +23113,45 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
+  $templateCache.put('templates/image-detail.directive.html',
+    "<tr ng-class=\"::{muted: !images.length}\">\n" +
+    "    <td>\n" +
+    "        <span class=\"row-label\">Afbeeldingen</span>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::images.length\">\n" +
+    "        <ul class=\"list-unstyled media-list\">\n" +
+    "            <li ng-repeat=\"image in images | orderBy: '-main' \" class=\"media\">\n" +
+    "                <div class=\"media-left\">\n" +
+    "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
+    "                        <img class=\"media-object\" src=\"{{image.contentUrl}}?height=100\" alt=\"{{'Afbeelding '+$index}}\">\n" +
+    "                    </a>\n" +
+    "                </div>\n" +
+    "                <div class=\"media-body\">\n" +
+    "                   <span ng-if=\"$first\" class=\"label label-default\">Hoofdafbeelding</span>\n" +
+    "                    <p>{{image.description}}</p>\n" +
+    "                    <p class=\"text-muted\">&copy; {{image.copyrightHolder}}</p>\n" +
+    "                </div>\n" +
+    "                <hr ng-if=\"!$last\">\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </td>\n" +
+    "    <td ng-if=\"::!images.length\">Geen afbeeldingen</td>\n" +
+    "</tr>\n"
+  );
+
+
   $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
-    "    <td><strong>Publicatiestatus</strong></td>\n" +
+    "    <td><span class=\"row-label\">Publicatiestatus</span></td>\n" +
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
-    "        <span ng-if=\"!cm.event.available\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
-    "    <td><strong>ID</strong></td>\n" +
+    "    <td><span class=\"row-label\">ID</span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
     "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
@@ -19517,6 +23240,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
     "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
@@ -19681,53 +23405,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "\n" +
     "</div>\n"
-  );
-
-
-  $templateCache.put('templates/event-duplication-calendar.directive.html',
-    "<section id=\"wanneer\">\n" +
-    "    <h2 class=\"title-border\">\n" +
-    "        <span>Wanneer vindt dit evenement of deze activiteit plaats?</span>\n" +
-    "    </h2>\n" +
-    "\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-xs-12\">\n" +
-    "            <div class=\"form-group\">\n" +
-    "\n" +
-    "                <label class=\"wanneerkiezer-label\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    Maak een keuze\n" +
-    "                </label>\n" +
-    "                <div class=\"wanneerkiezer\" ng-show=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    <ul class=\"list-inline button-list\">\n" +
-    "                        <li ng-repeat=\"calendarLabel in ::edc.calendarLabels\">\n" +
-    "                            <button class=\"btn btn-default\"\n" +
-    "                                    ng-bind=\"::calendarLabel.label\"\n" +
-    "                                    udb-auto-scroll\n" +
-    "                                    ng-click=\"edc.duplicateFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
-    "                        </li>\n" +
-    "                    </ul>\n" +
-    "                </div>\n" +
-    "                <div class=\"wanneer-chosen\" ng-hide=\"edc.duplicateFormData.activeCalendarType === ''\">\n" +
-    "                    <span class=\"btn-chosen\" ng-bind=\"edc.duplicateFormData.activeCalendarLabel\"></span>\n" +
-    "                    <a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"edc.duplicateFormData.resetCalendar()\">Wijzigen</a>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'single'\">\n" +
-    "        <udb-event-form-timestamp form-data=\"edc.duplicateFormData\"></udb-event-form-timestamp>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-period form-data=\"edc.duplicateFormData\"></udb-event-form-period>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"edc.duplicateFormData.activeCalendarType === 'permanent' || edc.duplicateFormData.activeCalendarType === 'periodic'\">\n" +
-    "        <udb-event-form-opening-hours form-data=\"edc.duplicateFormData\"></udb-event-form-opening-hours>\n" +
-    "    </div>\n" +
-    "\n" +
-    "</section>\n"
   );
 
 
@@ -19914,11 +23591,11 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/booking-info-detail.directive.html',
-    "<tr ng-class=\"::{muted: isEmpty(bookingInfo)}\">\n" +
+    "<tr ng-class=\"::{muted: isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null)}\">\n" +
     "    <td>\n" +
-    "        <strong>Reservaties</strong>\n" +
+    "        <span class=\"row-label\">Reservatie</span>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::!isEmpty(bookingInfo)\">\n" +
+    "    <td ng-if=\"::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null || bookingInfo.email !== null || bookingInfo.url !== null))\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
     "            <li ng-if=\"::bookingInfo.url\">\n" +
     "                    <span>\n" +
@@ -19926,19 +23603,21 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                         ng-bind=\"::bookingInfo.urlLabel\"></a>\n" +
     "                    </span>\n" +
     "            </li>\n" +
+    "\n" +
     "            <li ng-if=\"::bookingInfo.phone\" ng-bind=\"::bookingInfo.phone\"></li>\n" +
-    "            <li ng-if=\"::bookingInfo.email\" ng-bind=\"::bookingInfo.email\"></li>\n" +
+    "            <li ng-if=\"::bookingInfo.email\"> <a href=\"::{{'mailto:'+ bookingInfo.email}}\">{{::bookingInfo.email}}</a></li>\n" +
+    "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(bookingInfo)\">Geen reservatie info</td>\n" +
-    "</tr>"
+    "    <td ng-if=\"::(isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null))\">Geen reservatie-informatie</td>\n" +
+    "</tr>\n"
   );
 
 
   $templateCache.put('templates/contact-point-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(contactPoint)}\">\n" +
     "    <td>\n" +
-    "        <strong>Contact</strong>\n" +
+    "        <span class=\"row-label\">Contact</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::!isEmpty(contactPoint)\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
@@ -19962,8 +23641,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(contactPoint)\">Geen contactgegevens</td>\n" +
-    "</tr>"
+    "    <td ng-if=\"::isEmpty(contactPoint)\">Geen contactinformatie</td>\n" +
+    "</tr>\n"
   );
 
 
@@ -19980,24 +23659,29 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"finishedLoading()\">\n" +
-    "  <h1 class=\"title\" ng-bind=\"event.name\"></h1>\n" +
+    "<div ng-if=\"!finishedLoading()\">\n" +
+    "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
+    "</div>\n" +
     "\n" +
+    "<div ng-if=\"finishedLoading()\" class=\"event-detail\">\n" +
+    "  <h1 class=\"title\" ng-bind=\"::event.name\"></h1>\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event({id: event.id})'>Kopiëren en aanpassen</button>\n" +
+    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  Kopiëren en aanpassen</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deleteEvent()\">Verwijderen</button>\n" +
+    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
+    "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
@@ -20008,8 +23692,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </ul>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
-    "        <div class=\"panel panel-default\">\n" +
     "          <table class=\"table udb3-data-table\">\n" +
     "            <colgroup>\n" +
     "              <col style=\"width:20%\"/>\n" +
@@ -20017,137 +23699,138 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </colgroup>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
-    "                <td><strong>Titel</strong></td>\n" +
-    "                <td>{{event.name}}</td>\n" +
+    "                <td><span class=\"row-label\">Titel</span></td>\n" +
+    "                <td>{{::event.name}}</td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><strong>Type</strong></td>\n" +
-    "                <td>{{event.type.label}}</td>\n" +
+    "                <td><span class=\"row-label\">Type</span></td>\n" +
+    "                <td>{{::event.type.label}}</td>\n" +
     "              </tr>\n" +
-    "              <tr ng-if=\"event.audience.audienceType !== 'everyone'\">\n" +
-    "                <td><strong>Toegang</strong></td>\n" +
-    "                <td>{{translateAudience(event.audience.audienceType)}}\n" +
+    "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
+    "                <td><span class=\"row-label\">Toegang</span></td>\n" +
+    "                <td>{{::translateAudience(event.audience.audienceType)}}\n" +
     "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td>\n" +
-    "                  <strong>Labels</strong>\n" +
+    "                  <span class=\"row-label\">Labels</span>\n" +
     "                </td>\n" +
     "                <td>\n" +
-    "                  <udb-label-select labels=\"event.labels\"\n" +
+    "                  <p>\n" +
+    "                    <udb-label-select labels=\"::event.labels\"\n" +
     "                                    label-added=\"labelAdded(label)\"\n" +
     "                                    label-removed=\"labelRemoved(label)\">\n" +
-    "                  </udb-label-select>\n" +
-    "                  <div ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "                    </udb-label-select>\n" +
+    "                  </p>\n" +
+    "                  <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
     "                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "                  </p>\n" +
+    "                  <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                  </p>\n" +
+    "                  <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                    <span ng-bind=\"labelsError\"></span>\n" +
-    "                  </div>\n" +
+    "                  </p>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr ng-class=\"::{muted: isEmpty(event.description)}\">\n" +
+    "                <td><span class=\"row-label\">Beschrijving</span></td>\n" +
+    "                <td ng-if=\"::(!isEmpty(event.description))\">\n" +
+    "                  <div ng-bind-html=\"::event.description\" class=\"event-detail-description\"></div>\n" +
+    "                </td>\n" +
+    "                <td ng-if=\"::(isEmpty(event.description))\">\n" +
+    "                  Geen beschrijving\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><strong>Beschrijving</strong></td>\n" +
+    "                <td><span class=\"row-label\">Waar</span></td>\n" +
+    "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
+    "                <td ng-hide=\"::event.location.url\">\n" +
+    "                  {{::event.location.name.nl}},\n" +
+    "                  {{::event.location.address.streetAddress}},\n" +
+    "                  {{::event.location.address.postalCode}}\n" +
+    "                  {{::event.location.address.addressLocality}}\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
     "                <td>\n" +
-    "                  <div ng-bind-html=\"event.description\" class=\"event-detail-description\"></div>\n" +
+    "                  <udb-calendar-summary offer=\"::event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Waar</strong></td>\n" +
-    "                <td ng-show=\"event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
-    "                <td ng-hide=\"event.location.url\">\n" +
-    "                  {{event.location.name.nl}},\n" +
-    "                  {{event.location.address.streetAddress}},\n" +
-    "                  {{event.location.address.postalCode}}\n" +
-    "                  {{event.location.address.addressLocality}}\n" +
+    "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
+    "                <td><span class=\"row-label\">Organisatie</span></td>\n" +
+    "                <td ng-if=\"::event.organizer\">{{::event.organizer.name}}</td>\n" +
+    "                <td ng-if=\"::(!event.organizer)\">\n" +
+    "                  Geen organisatie-informatie\n" +
     "                </td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Wanneer</strong></td>\n" +
-    "                <td>\n" +
-    "                  <udb-calendar-summary offer=\"event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr ng-class=\"{muted: !event.organizer}\">\n" +
-    "                <td><strong>Organisatie</strong></td>\n" +
-    "                <td>{{event.organizer.name}}</td>\n" +
-    "              </tr>\n" +
-    "              <tr class=\"rv-event-info-price\" ng-class=\"{muted: !event.priceInfo.length}\">\n" +
-    "                <td><strong>Prijs</strong></td>\n" +
-    "                <td ng-if=\"event.priceInfo.length\">\n" +
-    "                  <table class=\"table event-detail-price-table\">\n" +
-    "                    <tr ng-repeat=\"priceInfo in event.priceInfo\">\n" +
+    "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
+    "                <td><span class=\"row-label\">Prijs</span></td>\n" +
+    "                <td ng-if=\"::event.priceInfo.length\">\n" +
+    "                  <table class=\"table table-bordered event-detail-price-table\">\n" +
+    "                    <tr ng-repeat=\"priceInfo in ::event.priceInfo\">\n" +
     "                      <td>{{priceInfo.name}}</td>\n" +
     "                      <td>\n" +
     "                        <span ng-if=\"priceInfo.price == 0\">\n" +
     "                          Gratis\n" +
     "                        </span>\n" +
-    "                        <span ng-if=\"priceInfo.price != 0\">\n" +
+    "                        <span ng-if=\"::priceInfo.price != 0\">\n" +
     "                          {{priceInfo.price | currency}} euro\n" +
     "                        </span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </table>\n" +
     "                </td>\n" +
-    "                <td ng-if=\"!event.priceInfo.length\">\n" +
+    "                <td ng-if=\"::(event.priceInfo.length == 0)\">\n" +
     "                  Geen prijsinformatie\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
-    "            <tbody udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
+    "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Geschikt voor</strong></td>\n" +
+    "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
+    "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"event.typicalAgeRange\">{{event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"!event.typicalAgeRange\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::allAges && !noAgeInfo\">Alle leeftijden</span>\n" +
+    "                  <span ng-if=\"noAgeInfo\">Geen leeftijdsinformatie</span>\n" +
     "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr ng-class=\"::{muted: !event.image}\">\n" +
-    "                <td><strong>Afbeeldingen</strong></td>\n" +
-    "                <td>\n" +
-    "                  <img ng-if=\"::event.image\" class=\"img-responsive\" ng-src=\"{{::event.image}}?width=400\" />\n" +
-    "                  <p>\n" +
-    "                    <span ng-repeat=\"image in ::event.images\">\n" +
-    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
-    "                    </span>\n" +
-    "                    <span ng-if=\"::!event.image\">Geen afbeeldingen</span>\n" +
-    "                  </p>\n" +
-    "                </td>\n" +
+    "\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
+    "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
     "          </table>\n" +
-    "        </div>\n" +
     "      </div>\n" +
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
-    "        <h2 class=\"block-header\">Geschiedenis</h2>\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"eventAction in eventHistory track by $index\">\n" +
-    "            <dt ng-bind=\"eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
-    "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"eventAction.author\">{{eventAction.author}}</span><br ng-if=\"eventAction.author\"/>\n" +
-    "              <span class=\"description\">{{eventAction.description}}</span>\n" +
-    "            </dd>\n" +
-    "          </dl>\n" +
+    "          <p ng-show=\"!eventHistory\" class=\"text-center\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span>\n" +
+    "          </p>\n" +
+    "          <div ng-if=\"::eventHistory\">\n" +
+    "            <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
+    "              <dt ng-bind=\"::eventAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
+    "              <dd>\n" +
+    "                <span class=\"author\" ng-if=\"eventAction.author\" ng-bind=\"::eventAction.author\"></span>\n" +
+    "                <br ng-if=\"::eventAction.author\"/>\n" +
+    "                <span class=\"description\" ng-bind=\"::eventAction.description\"></span>\n" +
+    "              </dd>\n" +
+    "            </dl>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('publication')\">\n" +
-    "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table\">\n" +
-    "            <colgroup>\n" +
-    "              <col style=\"width:20%\"/>\n" +
-    "              <col style=\"width:80%\"/>\n" +
-    "            </colgroup>\n" +
-    "            <tbody udb-workflow-status=\"::event\">\n" +
-    "            </tbody>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
+    "        <table class=\"table udb3-data-table\">\n" +
+    "          <colgroup>\n" +
+    "            <col style=\"width:20%\"/>\n" +
+    "            <col style=\"width:80%\"/>\n" +
+    "          </colgroup>\n" +
+    "          <tbody udb-workflow-status=\"::event\">\n" +
+    "          </tbody>\n" +
+    "        </table>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
@@ -20167,15 +23850,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                <a ng-bind=\"::ageRange.label\"\n" +
     "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
-    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a>\n" +
-    "                <span ng-if=\"::!$last\">, </span>\n" +
+    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
-    "                <div class=\"form-group\" >\n" +
+    "               <form name=\"ageForm\">\n" +
+    "                   <div class=\"form-group\" >\n" +
     "                    <label for=\"min-age\">Van</label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"min-age\"\n" +
+    "                           name=\"min\"\n" +
     "                           ng-model=\"fagec.minAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
@@ -20186,13 +23870,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"max-age\"\n" +
+    "                           name=\"max\"\n" +
     "                           ng-model=\"fagec.maxAge\"\n" +
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
     "                </div>\n" +
+    "               </form>\n" +
     "            </div>\n" +
-    "\n" +
     "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
     "                <span ng-bind=\"fagec.error\"></span>\n" +
     "            </div>\n" +
@@ -20261,112 +23946,175 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 
-  $templateCache.put('templates/event-form-period.html',
-    "<div id=\"wanneer-periode\">\n" +
-    "  <div class=\"col-xs-12 col-sm-4\">\n" +
-    "    <section class=\"add-date\">\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <p class=\"module-title\">Vanaf</p>\n" +
-    "        <div udb-datepicker\n" +
-    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
-    "             ng-model=\"formData.startDate\"></div>\n" +
-    "      </div>\n" +
-    "    </section>\n" +
-    "  </div>\n" +
+  $templateCache.put('templates/form-calendar-datepicker.component.html',
+    "<p class=\"input-group\" ng-class=\"{'has-error': !datepicker.date}\">\n" +
+    "    <input type=\"text\" \n" +
+    "           class=\"form-control\" \n" +
+    "           uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "           ng-model=\"datepicker.date\"\n" +
+    "           is-open=\"datepicker.isOpen\"\n" +
+    "           datepicker-options=\"datepicker.options\"\n" +
+    "           ng-required=\"true\"\n" +
+    "           ng-change=\"datepicker.changed()\"\n" +
+    "           show-button-bar=\"false\"\n" +
+    "           ng-disabled=\"datepicker.disabled\"\n" +
+    "           ng-focus=\"datepicker.open()\"/>\n" +
+    "    <span class=\"input-group-btn\">\n" +
+    "        <button type=\"button\"\n" +
+    "                class=\"btn btn-default\"\n" +
+    "                ng-disabled=\"datepicker.disabled\"\n" +
+    "                ng-class=\"{'btn-danger': !datepicker.date}\"\n" +
+    "                ng-click=\"datepicker.open()\"><i class=\"fa fa-calendar\"></i></button>\n" +
+    "    </span>\n" +
+    "</p>"
+  );
+
+
+  $templateCache.put('templates/form-calendar-period.component.html',
+    "<div class=\"form-calendar-period\">\n" +
+    "    <label>\n" +
+    "        <input type=\"checkbox\"\n" +
+    "               class=\"permanent-check\"\n" +
+    "               ng-model=\"$ctrl.calendarType\"\n" +
+    "               ng-true-value=\"'periodic'\"\n" +
+    "               ng-false-value=\"'permanent'\"\n" +
+    "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
+    "        <span>Start- en einddatum</span>\n" +
+    "    </label>\n" +
+    "    <div class=\"periodic-info\">\n" +
+    "        <div class=\"start-date\">\n" +
+    "            <label>Van</label>\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.startDate\"\n" +
+    "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
+    "            </udb-form-calendar-datepicker>\n" +
+    "        </div>\n" +
     "\n" +
-    "  <div class=\"col-xs-12 col-sm-4\">\n" +
-    "    <section class=\"add-date\">\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <p class=\"module-title\">Tot en met</p>\n" +
-    "        <div udb-datepicker\n" +
-    "             ng-change=\"formData.periodicTimingChanged()\"\n" +
-    "             ng-model=\"formData.endDate\"></div>\n" +
-    "      </div>\n" +
-    "    </section>\n" +
-    "  </div>\n" +
+    "        <div class=\"end-date\">\n" +
+    "            <label>Tot</label>\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.endDate\"\n" +
+    "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
+    "            </udb-form-calendar-datepicker>\n" +
+    "        </div>\n" +
     "\n" +
-    "  <div class=\"col-xs-12\">\n" +
-    "    <div ng-show=\"formData.periodicRangeError\" class=\"alert alert-warning\" role=\"alert\">\n" +
-    "        Selecteer een geldige begin- en einddatum.\n" +
+    "        <div class=\"requirements\"\n" +
+    "             ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
+    "            <div class=\"alert alert-danger\">\n" +
+    "                <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
     "    </div>\n" +
-    "  </div>\n" +
     "</div>\n"
   );
 
 
-  $templateCache.put('templates/event-form-timestamp.html',
-    "<div id=\"wanneer-dagen\" ng-repeat=\"timestamp in formData.timestamps\">\n" +
+  $templateCache.put('templates/form-calendar-timepicker.component.html',
+    "<uib-timepicker ng-model=\"timepicker.time\" \n" +
+    "                ng-change=\"timepicker.changed()\" \n" +
+    "                hour-step=\"1\" \n" +
+    "                minute-step=\"15\" \n" +
+    "                show-spinners=\"false\" \n" +
+    "                show-meridian=\"false\">\n" +
+    "</uib-timepicker>"
+  );
+
+
+  $templateCache.put('templates/form-event-calendar.component.html',
+    "<div class=\"calendar-type-picker\">\n" +
+    "    <div class=\"calendar-type-options\">\n" +
     "\n" +
-    "  <div class=\"col-xs-12 col-sm-4 prototype-step\" id=\"add-date-form\">\n" +
-    "    <section class=\"add-date\">\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
+    "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
+    "            <p class=\"text-center\"><strong>Eén of meerdere dagen</strong></p></a><span class=\"or\">of</span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
+    "            <p class=\"text-center\"><strong>Vaste dagen per week</strong></p>\n" +
+    "        </a>\n" +
     "\n" +
-    "      <div udb-datepicker\n" +
-    "           ng-change=\"formData.timingChanged()\"\n" +
-    "           ng-model=\"timestamp.date\"></div>\n" +
-    "\n" +
-    "      <div class=\"row\"\n" +
-    "           ng-show=\"formData.isValidDate(timestamp.date)\">\n" +
-    "        <div class=\"col-xs-6\">\n" +
-    "          <label>\n" +
-    "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"formData.toggleStartHour(timestamp)\"\n" +
-    "                   value=\"\"\n" +
-    "                   ng-model=\"timestamp.showStartHour\"\n" +
-    "                   class=\"beginuur-toevoegen\">\n" +
-    "            Beginuur\n" +
-    "          </label>\n" +
-    "          <div class=\"beginuur-invullen\" ng-show=\"timestamp.showStartHour\">\n" +
-    "            <input udb-time\n" +
-    "                   type=\"time\"\n" +
-    "                   required=\"required\"\n" +
-    "                   class=\"form-control uur\"\n" +
-    "                   ng-model=\"timestamp.startHourAsDate\"\n" +
-    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
-    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
-    "                   placeholder=\"Bv. 08:00\"\n" +
-    "                   focus-if=\"timestamp.showStartHour\"/>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-xs-6 einduur\" ng-show=\"timestamp.showStartHour\">\n" +
-    "          <label>\n" +
-    "            <input type=\"checkbox\"\n" +
-    "                   ng-change=\"formData.toggleEndHour(timestamp)\"\n" +
-    "                   value=\"\"\n" +
-    "                   ng-model=\"timestamp.showEndHour\"\n" +
-    "                   class=\"einduur-toevoegen\">\n" +
-    "            Einduur\n" +
-    "          </label>\n" +
-    "          <div class=\"einduur-invullen\" ng-show=\"timestamp.showEndHour\">\n" +
-    "            <input udb-time\n" +
-    "                   type=\"time\"\n" +
-    "                   required=\"required\"\n" +
-    "                   class=\"form-control uur\"\n" +
-    "                   ng-model=\"timestamp.endHourAsDate\"\n" +
-    "                   ng-change=\"formData.hoursChanged(timestamp)\"\n" +
-    "                   ng-model-options=\"{ updateOn: 'blur', debounce: 500 }\"\n" +
-    "                   placeholder=\"Bv. 23:00\"\n" +
-    "                   focus-if=\"timestamp.showEndHour\"/>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </section>\n" +
-    "  </div>\n" +
-    "\n" +
+    "    </div>\n" +
     "</div>\n" +
-    "<div class=\"col-xs-12 col-sm-4\">\n" +
-    "  <div class=\"add-date\">\n" +
-    "    <a href=\"#\" class=\"add-date-link\" ng-click=\"formData.addTimestamp('','','')\">\n" +
-    "      <p id=\"add-date-plus\">+</p>\n" +
-    "      <p id=\"add-date-label\">Nog een dag toevoegen</p>\n" +
-    "      <p id=\"add-date-tip\" class=\"muted\">Tip: Gaat dit evenement meerdere malen per dag door? Voeg dan dezelfde dag met een ander beginuur toe.</p>\n" +
-    "    </a>\n" +
-    "  </div>\n" +
+    "\n" +
+    "<div class=\"calendar-timing-info\">\n" +
+    "    <div class=\"panel panel-default\">\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div class=\"calendar-time-spans\" ng-if=\"!calendar.weeklyRecurring\">\n" +
+    "                <div class=\"calendar-time-span\" ng-repeat=\"timeSpan in calendar.timeSpans track by $index\">\n" +
+    "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
+    "                    <div class=\"dates\">\n" +
+    "                        <div class=\"date form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            </udb-form-calendar-datepicker>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"date form-group\">\n" +
+    "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            </udb-form-calendar-datepicker>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"timing-control\">\n" +
+    "                        <div class=\"checkbox all-day\">\n" +
+    "                            <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
+    "                                <input type=\"checkbox\"\n" +
+    "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
+    "                                       ng-model=\"timeSpan.allDay\"\n" +
+    "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                       class=\"all-day-check\"> <span>Hele dag</span>\n" +
+    "                            </label>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
+    "                        <div class=\"time form-group\">\n" +
+    "                            <label>Beginuur</label>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
+    "                        </div>\n" +
+    "\n" +
+    "                        <div class=\"time form-group\">\n" +
+    "                            <label>Einduur</label>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"requirements\" ng-show=\"calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length\">\n" +
+    "                        <div class=\"error alert alert-danger\">\n" +
+    "                            <p ng-repeat=\"requirement in calendar.timeSpanRequirements[$index]\"\n" +
+    "                               ng-bind=\"'TIME_SPAN_REQUIREMENTS.' + requirement | translate\"></p>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\">Dag(en) toevoegen</a>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
+    "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
+    "                <hr>\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                </udb-event-form-opening-hours>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n"
+  );
+
+
+  $templateCache.put('templates/form-place-calendar.component.html',
+    "<div class=\"calendar-timing-info\">\n" +
+    "    <div class=\"panel panel-default\">\n" +
+    "        <div class=\"panel-body\">\n" +
+    "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
+    "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
+    "                <hr>\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                </udb-event-form-opening-hours>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>"
   );
 
 
   $templateCache.put('templates/city-suggestion.html',
-    "<a href tabindex=\"-1\" ng-bind-html=\"match.label | uibTypeaheadHighlight:query\"></a>"
+    "<a href tabindex=\"-1\" ng-bind-html=\"match.label | uibTypeaheadHighlight:query\" class=\"city-suggestion\"></a>\n"
   );
 
 
@@ -20557,7 +24305,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid()\" ng-click=\"addImage()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
     "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
@@ -20571,83 +24319,72 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openAndClose\">\n" +
-    "        <p class=\"text-danger\">Vul alle openings- en sluitingstijden in.</p>\n" +
+    "    <div class=\"well text-center add-opening-hours\"\n" +
+    "         ng-show=\"ohemc.openingHoursCollection.openingHours.length === 0\">\n" +
+    "        <span>24/24 7/7</span>\n" +
+    "        <br>\n" +
+    "        <span>Elke dag, ieder uur</span>\n" +
+    "        <br>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\">Uren toevoegen</button>\n" +
     "    </div>\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.dayOfWeek\">\n" +
-    "        <p class=\"text-danger\">Je moet minstens 1 weekdag selecteren.</p>\n" +
+    "    <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!ohemc.errors.length\">\n" +
+    "        <ul>\n" +
+    "            <li ng-repeat=\"error in ohemc.errors\"\n" +
+    "                ng-bind=\"'OPENING_HOURS_ERROR.' + error | translate\"></li>\n" +
+    "        </ul>\n" +
     "    </div>\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"ohemc.errors.openIsBeforeClose\">\n" +
-    "        <p class=\"text-danger\">Gelieve een sluitingstijd in te geven die later is dan de openingstijd.</p>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "            Dagen\n" +
+    "    <div class=\"opening-hours\" ng-show=\"ohemc.openingHoursCollection.openingHours.length > 0\">\n" +
+    "        <div class=\"opening-hours-labels\">\n" +
+    "            <div class=\"weekdays\">\n" +
+    "                Dagen\n" +
+    "            </div>\n" +
+    "            <div class=\"opening-time\">\n" +
+    "                Van\n" +
+    "            </div>\n" +
+    "            <div class=\"closing-time\">\n" +
+    "                Tot\n" +
+    "            </div>\n" +
     "        </div>\n" +
-    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "            Van\n" +
-    "        </div>\n" +
-    "        <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "            Tot\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
-    "        <ng-form name=\"openingHoursInfo\">\n" +
-    "            <div class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\"\n" +
-    "                 ng-class=\"{'has-error': openingHoursInfo.dayOfWeek.$invalid && openingHoursInfo.dayOfWeek.$touched}\">\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <select class=\"selectpicker\"\n" +
-    "                            name=\"dayOfWeek\"\n" +
-    "                            multiple\n" +
-    "                            start-label=\"Kies dag(en)\"\n" +
-    "                            ng-model=\"openingHours.dayOfWeek\"\n" +
-    "                            udb-multiselect\n" +
-    "                            ng-required=\"true\">\n" +
-    "                        <option value=\"monday\">maandag</option>\n" +
-    "                        <option value=\"tuesday\">dinsdag</option>\n" +
-    "                        <option value=\"wednesday\">woensdag</option>\n" +
-    "                        <option value=\"thursday\">donderdag</option>\n" +
-    "                        <option value=\"friday\">vrijdag</option>\n" +
-    "                        <option value=\"saturday\">zaterdag</option>\n" +
-    "                        <option value=\"sunday\">zondag</option>\n" +
-    "                    </select>\n" +
+    "        <div class=\"opening-hours-collection\">\n" +
+    "            <div class=\"opening-hours-set\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
+    "                <div class=\"weekdays\">\n" +
+    "                    <label class=\"checkbox-inline\" ng-repeat=\"(day, weekday) in openingHours.dayOfWeek\">\n" +
+    "                        <input type=\"checkbox\" ng-model=\"openingHours.dayOfWeek[day].open\">\n" +
+    "                            <span ng-bind=\"::weekday.label\"></span>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "                <div class=\"opening-time\">\n" +
+    "                    <div class=\"form-group\"\n" +
+    "                        ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
+    "                        <udb-form-calendar-timepicker\n" +
+    "                            name=\"opens\"\n" +
+    "                            class=\"uur\"\n" +
+    "                            ng-required=\"true\"\n" +
+    "                            ng-model=\"openingHours.opensAsDate\"></udb-form-calendar-timepicker>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"closing-time\">\n" +
+    "                    <div class=\"form-group\"\n" +
+    "                        ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
+    "                        <udb-form-calendar-timepicker\n" +
+    "                            name=\"closes\"\n" +
+    "                            class=\"uur\"\n" +
+    "                            ng-required=\"true\"\n" +
+    "                            ng-model=\"openingHours.closesAsDate\"></udb-form-calendar-timepicker>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "                <div class=\"remove\">\n" +
+    "                    <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"ohemc.removeOpeningHours(openingHours)\"><span aria-hidden=\"true\">&times;</span></button>\n" +
     "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-class=\"{'has-error': openingHoursInfo.opens.$invalid && openingHoursInfo.opens.$touched}\">\n" +
-    "                    <input udb-time\n" +
-    "                           type=\"time\"\n" +
-    "                           name=\"opens\"\n" +
-    "                           class=\"form-control uur\"\n" +
-    "                           placeholder=\"Bv. 08:00\"\n" +
-    "                           ng-required=\"true\"\n" +
-    "                           ng-model=\"openingHours.opensAsDate\"/>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-3 col-sm-3 col-md-3 col-lg-3\">\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-class=\"{'has-error': openingHoursInfo.closes.$invalid && openingHoursInfo.closes.$touched}\">\n" +
-    "                    <input udb-time\n" +
-    "                           type=\"time\"\n" +
-    "                           name=\"closes\"\n" +
-    "                           class=\"form-control uur\"\n" +
-    "                           placeholder=\"Bv. 08:00\"\n" +
-    "                           ng-required=\"true\"\n" +
-    "                           ng-model=\"openingHours.closesAsDate\"/>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-1 col-sm-1 col-md-1 col-lg-1\">\n" +
-    "                <button class=\"btn btn-link\" ng-click=\"ohemc.removeOpeningHours(openingHours)\">\n" +
-    "                    <i class=\"fa fa-times\" aria-hidden=\"true\"></i>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "        </ng-form>\n" +
-    "    </div>\n" +
+    "        </div>\n" +
     "\n" +
-    "    <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
-    "        Meer openingstijden toevoegen\n" +
-    "    </a>\n" +
+    "        <div class=\"add\">\n" +
+    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
+    "                Meer openingstijden toevoegen\n" +
+    "            </a>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\">Annuleren</button>\n" +
@@ -20655,20 +24392,23 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            ng-click=\"ohemc.saveOpeningHours()\">\n" +
     "        Opslaan\n" +
     "    </button>\n" +
-    "</div>\n" +
-    "\n"
+    "</div>\n"
   );
 
 
   $templateCache.put('templates/event-form-openinghours.html',
-    "<div class=\"col-xs-12\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
-    "  <a href=\"#\" class=\"btn btn-link btn-plus wanneer-openingsuren-link\"\n" +
-    "     ng-click=\"cm.edit()\">Openingsuren toevoegen</a>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"col-xs-12 col-sm-8\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
-    "  <section class=\"wanneer-openingsuren-resultaat\">\n" +
-    "    <table class=\"table table-condensed \">\n" +
+    "<div class=\"opening-hours-week-schedule\">\n" +
+    "  <div class=\"empty\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
+    "    <div class=\"well text-center add-opening-hours\">\n" +
+    "        <p>\n" +
+    "          <span class=\"permanent-title\">24/24, 7/7</span> \n" +
+    "          <span class=\"permanent-subtitle\">Elke dag, ieder uur</span>\n" +
+    "        </p>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\">Uren toevoegen</button>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "  <div class=\"time-table\">\n" +
+    "    <table class=\"table table-condensed\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "      <thead>\n" +
     "      <th>Openingsuren</th>\n" +
     "      <th>\n" +
@@ -20683,11 +24423,203 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          <td>\n" +
     "            <span ng-bind=\"openingHour.opens\"></span> – <span ng-bind=\"openingHour.closes\"></span>\n" +
     "          </td>\n" +
-    "         </tr>\n" +
+    "          </tr>\n" +
     "      </tbody>\n" +
     "    </table>\n" +
-    "  </section>\n" +
-    "</div>"
+    "  </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organizer-address.html',
+    "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "                <label>Straat en nummer</label>\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"street\"\n" +
+    "                       placeholder=\"Straat en nummer\"\n" +
+    "                       ng-model=\"oac.address.streetAddress\"\n" +
+    "                       ng-change=\"oac.validateAddress()\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
+    "                <span class=\"has-error\"\n" +
+    "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "                    <span class=\"help-block\">\n" +
+    "                        Gelieve straat en nummer in te geven.\n" +
+    "                    </span>\n" +
+    "                </span>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
+    "                <div class=\"form-group\"\n" +
+    "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
+    "                        Gemeente\n" +
+    "                    </label>\n" +
+    "                    <div id=\"gemeente-kiezer\">\n" +
+    "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
+    "                               type=\"text\"\n" +
+    "                               name=\"city\"\n" +
+    "                               class=\"form-control uib-typeahead\"\n" +
+    "                               placeholder=\"Gemeente of postcode\"\n" +
+    "                               ng-model=\"oac.cityAutocompleteTextField\"\n" +
+    "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
+    "                               typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
+    "                               typeahead-min-length=\"2\"\n" +
+    "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                               autocomplete=\"off\">\n" +
+    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
+    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                        </span>\n" +
+    "                        <span class=\"has-error\"\n" +
+    "                              ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "                            <span class=\"help-block\">\n" +
+    "                                Gelieve een gemeente in te geven.\n" +
+    "                            </span>\n" +
+    "                        </span>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
+    "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\">Wijzigen</a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</form>"
+  );
+
+
+  $templateCache.put('templates/organizer-contact.html',
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-sm-12\">\n" +
+    "        <p><strong>Contact</strong></p>\n" +
+    "    </div>\n" +
+    "    <form name=\"occ.organizerContactWrapper\">\n" +
+    "        <div class=\"col-sm-12\">\n" +
+    "            <div ng-show=\"occ.contact.length === 0\">\n" +
+    "                <ul class=\"list-unstyled\">\n" +
+    "                    <li><a ng-click=\"occ.addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
+    "                    <li><a ng-click=\"occ.addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
+    "                    <li><a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "                </ul>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"col-sm-12\"\n" +
+    "             ng-show=\"occ.contact.length\">\n" +
+    "            <div class=\"row contact-row\"\n" +
+    "                 ng-repeat=\"contact in occ.contact track by $index\">\n" +
+    "\n" +
+    "                <div class=\"col-sm-5\">\n" +
+    "                    <select class=\"form-control\"\n" +
+    "                            ng-model=\"contact.type\"\n" +
+    "                            ng-change=\"occ.validateContact()\">\n" +
+    "                        <option value=\"url\">Website</option>\n" +
+    "                        <option value=\"phone\">Telefoonnummer</option>\n" +
+    "                        <option value=\"email\">E-mailadres</option>\n" +
+    "                    </select>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <ng-form name=\"organizerContact\"\n" +
+    "                             ng-switch=\"contact.type\"\n" +
+    "                             ng-class=\"{'has-error' : (organizerContact.contact.$touched && organizerContact.contact.$invalid) ||\n" +
+    "                             (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted)}\"\n" +
+    "                             >\n" +
+    "                        <input type=\"text\"\n" +
+    "                               ng-switch-when=\"url\"\n" +
+    "                               udb-http-prefix\n" +
+    "                               class=\"form-control\"\n" +
+    "                               ng-model=\"contact.value\"\n" +
+    "                               ng-model-options=\"{ updateOn: 'blur',allowInvalid: true}\"\n" +
+    "                               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\"\n" +
+    "                               ng-change=\"occ.validateContact()\"\n" +
+    "                               name=\"contact\"\n" +
+    "                               required/>\n" +
+    "                        <input type=\"text\"\n" +
+    "                               ng-switch-when=\"email\"\n" +
+    "                               ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\"\n" +
+    "                               class=\"form-control\"\n" +
+    "                               ng-model=\"contact.value\"\n" +
+    "                               ng-model-options=\"{ updateOn: 'blur',allowInvalid: true}\"\n" +
+    "                               ng-change=\"occ.validateContact()\"\n" +
+    "                               name=\"contact\"\n" +
+    "                               required/>\n" +
+    "                        <input type=\"text\"\n" +
+    "                               ng-switch-default\n" +
+    "                               class=\"form-control\"\n" +
+    "                               ng-model=\"contact.value\"\n" +
+    "                               ng-pattern=\"/^[^a-zA-Z]*$/\"\n" +
+    "                               ng-model-options=\"{ updateOn: 'blur',allowInvalid: true}\"\n" +
+    "                               ng-change=\"occ.validateContact()\"\n" +
+    "                               name=\"contact\"\n" +
+    "                               required/>\n" +
+    "                    </ng-form>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 ng-if=\"contact.type==='url'\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)\">\n" +
+    "                        <ng-message when=\"pattern\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve een geldige url in te vullen.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 ng-if=\"contact.type==='email'\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)\">\n" +
+    "                        <ng-message when=\"pattern\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 ng-if=\"contact.type==='phone'\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)\">\n" +
+    "                        <ng-message when=\"pattern\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve een geldig telefoonnummer in te vullen.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                    <ng-messages for=\"organizerContact.contact.$error\"\n" +
+    "                                 class=\"has-error\"\n" +
+    "                                 ng-show=\"(organizerContact.contact.$dirty && organizerContact.contact.$invalid && !contact.value) ||\n" +
+    "                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && !contact.value)\">\n" +
+    "                        <ng-message when=\"required\"\n" +
+    "                                    class=\"help-block\">\n" +
+    "                            Gelieve dit veld niet leeg te laten.\n" +
+    "                        </ng-message>\n" +
+    "                    </ng-messages>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-1\">\n" +
+    "                    <button type=\"button\"\n" +
+    "                            class=\"close\"\n" +
+    "                            aria-label=\"Close\"\n" +
+    "                            ng-click=\"occ.deleteOrganizerContactInfo($index)\">\n" +
+    "                        <span aria-hidden=\"true\">&times;</span>\n" +
+    "                    </button>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-12\"\n" +
+    "             ng-show=\"occ.contact.length\">\n" +
+    "            <p>\n" +
+    "                <a ng-click=\"occ.addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
+    "            </p>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "</div>\n"
   );
 
 
@@ -20716,8 +24648,6 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                   ng-model=\"newOrganizer.website\"\n" +
     "                   aria-describedby=\"organizer-website-status\"\n" +
     "                   ng-change=\"validateWebsite()\"\n" +
-    "                   udb-http-extension=\"http://\"\n" +
-    "                   udb-https-extension=\"https://\"\n" +
     "                   autocomplete=\"off\"\n" +
     "                   required>\n" +
     "            <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
@@ -20741,7 +24671,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
     "            <label>Naam</label>\n" +
-    "            <input type=\"text\" name=\"name\" class=\"form-control\" ng-model=\"newOrganizer.name\" required>\n" +
+    "            <input type=\"text\"\n" +
+    "                   name=\"name\"\n" +
+    "                   class=\"form-control\"\n" +
+    "                   ng-model=\"newOrganizer.name\"\n" +
+    "                   ng-change=\"updateName()\"\n" +
+    "                   required>\n" +
     "            <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
     "          Gelieve een naam in te vullen\n" +
@@ -20749,105 +24684,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "          <div class=\"form-group\">\n" +
-    "            <label>Straat en nummer</label>\n" +
-    "            <input type=\"text\" class=\"form-control\" ng-required=\"newOrganizer.address.postalCode !== '' \" name=\"street\" ng-model=\"newOrganizer.address.streetAddress\">\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "          <div class=\"form-group\">\n" +
-    "            <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity !== ''\">\n" +
-    "              Gemeente\n" +
-    "            </label>\n" +
-    "            <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity !== ''\">\n" +
-    "            <input id=\"organizer-gemeente-autocomplete\"\n" +
-    "                   ng-required=\"newOrganizer.address.streetAddress !== ''\"\n" +
-    "                   type=\"text\"\n" +
-    "                   class=\"form-control uib-typeahead\"\n" +
-    "                   placeholder=\"Gemeente of postcode\"\n" +
-    "                   ng-model=\"cityAutocompleteTextField\"\n" +
-    "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
-    "                   typeahead-on-select=\"selectCity($item, $label)\"\n" +
-    "                   typeahead-min-length=\"2\"\n" +
-    "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                   autocomplete=\"off\">\n" +
-    "              <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
-    "                Er was een probleem tijdens het ophalen van de steden.\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "\n" +
-    "          <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"selectedCity\">\n" +
-    "            <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::selectedCity\"></span>\n" +
-    "            <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">Wijzigen</a>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12\">\n" +
-    "          <p><strong>Contact</strong></p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-12\">\n" +
-    "\n" +
-    "          <div ng-show=\"newOrganizer.contact.length === 0\">\n" +
-    "            <ul class=\"list-unstyled\">\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "              <li><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "\n" +
-    "          <table class=\"table\" ng-show=\"newOrganizer.contact.length\">\n" +
-    "            <tr ng-repeat=\"(key, info) in newOrganizer.contact\"\n" +
-    "                ng-model=\"info\"\n" +
-    "                udb-contact-info-validation\n" +
-    "                ng-class=\"{'has-error' : infoErrorMessage !== '' }\">\n" +
-    "              <td>\n" +
-    "                <select class=\"form-control\" ng-model=\"info.type\" ng-change=\"clearInfo();\">\n" +
-    "                  <option value=\"url\">Website</option>\n" +
-    "                  <option value=\"phone\">Telefoonnummer</option>\n" +
-    "                  <option value=\"email\">E-mailadres</option>\n" +
-    "                </select>\n" +
-    "              </td>\n" +
-    "              <td ng-switch=\"info.type\">\n" +
-    "                <input type=\"text\"\n" +
-    "                       ng-switch-when=\"url\"\n" +
-    "                       udb-http-prefix\n" +
-    "                       class=\"form-control\"\n" +
-    "                       ng-model=\"info.value\"\n" +
-    "                       name=\"contact[{{key}}]\"\n" +
-    "                       ng-change=\"validateInfo()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                <input type=\"text\"\n" +
-    "                       ng-switch-default\n" +
-    "                       class=\"form-control\"\n" +
-    "                       ng-model=\"info.value\"\n" +
-    "                       name=\"contact[{{key}}]\"\n" +
-    "                       ng-change=\"validateInfo()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\"/>\n" +
-    "                <span class=\"help-block\" ng-if=\"infoErrorMessage\" ng-bind=\"::infoErrorMessage\"></span>\n" +
-    "              </td>\n" +
-    "              <td>\n" +
-    "                <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteOrganizerContactInfo(key)\">\n" +
-    "                  <span aria-hidden=\"true\">&times;</span>\n" +
-    "                </button>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "            <tr>\n" +
-    "              <td colspan=\"3\"><a ng-click=\"addOrganizerContactInfo('url')\" href=\"#\">Meer contactgegevens toevoegen</a>\n" +
-    "              </td>\n" +
-    "            </tr>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
     "    </form>\n" +
+    "\n" +
+    "    <udb-organizer-address address=\"newOrganizer.address\"\n" +
+    "                           on-update=\"validateAddress(error)\"></udb-organizer-address>\n" +
+    "    <udb-organizer-contact contact=\"newOrganizer.contact\"\n" +
+    "                           on-update=\"validateContact(error)\"></udb-organizer-contact>\n" +
     "  </section>\n" +
     "\n" +
     "  <section ng-show=\"organizersFound\">\n" +
@@ -20888,8 +24730,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "  </section>\n" +
     "\n" +
-    "  <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "  <div class=\"alert alert-danger\" ng-show=\"saveError\">\n" +
     "    Er ging iets fout tijdens het opslaan van je organisatie.\n" +
+    "  </div>\n" +
+    "  <div class=\"alert alert-danger\" ng-show=\"error && (addressError || contactError)\">\n" +
+    "    <p ng-show=\"addressError\">Gelieve een geldig adres in te vullen.<br /></p>\n" +
+    "    <p ng-show=\"contactError\">Gelieve alle contactinfo correct in te vullen.<br /></p>\n" +
     "  </div>\n" +
     "\n" +
     "</div>\n" +
@@ -20897,7 +24743,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "          ng-disabled=\"disableSubmit || !addressCompleteOrEmpty()\"\n" +
+    "          ng-disabled=\"disableSubmit\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
     "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
@@ -21012,9 +24858,9 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                    ng-form=\"pfmc.priceForm.priceFieldForm\">\n" +
     "                    <td ng-switch on=\"priceInfo.category\"\n" +
     "                        class=\"col-xs-4\">\n" +
-    "                        <span ng-switch-when=\"base\">\n" +
+    "                        <p ng-switch-when=\"base\" class=\"form-text\">\n" +
     "                            Basistarief\n" +
-    "                        </span>\n" +
+    "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
     "                                   class=\"form-control\"\n" +
@@ -21032,15 +24878,16 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
     "                                <div class=\"form-group\">\n" +
-    "                                    <input type=\"number\"\n" +
+    "                                    <input type=\"text\"\n" +
     "                                           class=\"form-control\"\n" +
     "                                           name=\"price\"\n" +
+    "                                           ng-pattern=\"/^([1-9][0-9]*|[0-9]|[0])(,[0-9]{1,2})?$/\"\n" +
     "                                           ng-model=\"priceInfo.price\"\n" +
     "                                           ng-model-options=\"{ updateOn: 'default' }\"\n" +
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\">euro</div>\n" +
+    "                                <div class=\"form-group\"> <span class=\"text-muted\">euro</span></div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -21061,29 +24908,32 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </tr>\n" +
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-link\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "                        <a class=\"btn btn-default\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
     "                    </td>\n" +
     "                </tr>\n" +
     "            </div>\n" +
     "        </table>\n" +
     "    </form>\n" +
-    "\n" +
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
     "        Er ging iets fout bij het opslaan van de prijs.\n" +
     "    </div>\n" +
-    "    <div ng-show=\"pfmc.invalidPrice\" class=\"alert alert-danger\">\n" +
-    "        Gelieve een geldige prijs en omschrijving in te voeren.\n" +
+    "    <div ng-show=\"(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving\" class=\"alert alert-info\">\n" +
+    "        <p>Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.</p>\n" +
+    "        <ul class=\"small\">\n" +
+    "          <li>Noteer decimalen met een komma.</li>\n" +
+    "          <li>Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.</li>\n" +
+    "          <li>Geef maximum twee cijfers na de komma.</li>\n" +
+    "        </ul>\n" +
     "    </div>\n" +
-    "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
-    "    <button type=\"button\"\n" +
-    "            class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "            ng-click=\"pfmc.validatePrice()\"\n" +
-    "            ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
-    "        Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
-    "    </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
+    "  <button type=\"button\"\n" +
+    "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
+    "          ng-click=\"pfmc.validatePrice()\"\n" +
+    "          ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
+    "      Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "  </button>\n" +
     "</div>\n"
   );
 
@@ -21125,7 +24975,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                Gratis\n" +
     "              </span>\n" +
     "              <span ng-if=\"priceInfo.price != 0\">\n" +
-    "                {{priceInfo.price | currency}} euro\n" +
+    "                {{priceInfo.price | currency:'€' }} euro\n" +
     "              </span>\n" +
     "            </td>\n" +
     "          </tr>\n" +
@@ -21134,6 +24984,53 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    </div>\n" +
     "  </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/event-form-publish-modal.html',
+    "<div class=\"modal-header\">\n" +
+    "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
+    "</div>\n" +
+    "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
+    "  <p>Vanaf wanneer mag dit online verschijnen? <em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>\n" +
+    "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <div class=\"radio\">\n" +
+    "          <label>\n" +
+    "            Op\n" +
+    "          </label>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\">\n" +
+    "          <div class=\"input-group\">\n" +
+    "            <input  type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    uib-datepicker-popup=\"{{efpmc.drp.dateFormat}}\"\n" +
+    "                    ng-model=\"efpmc.publicationDate\"\n" +
+    "                    is-open=\"efpmc.drp.startOpened\"\n" +
+    "                    ng-required=\"true\"\n" +
+    "                    ng-focus=\"efpmc.onFocus()\"\n" +
+    "                    datepicker-options=\"efpmc.drp.options\"/>\n" +
+    "            <span class=\"input-group-btn\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.drp.startOpened = !efpmc.drp.startOpened\">\n" +
+    "            <i class=\"fa fa-calendar\"></i>\n" +
+    "            </button>\n" +
+    "            </span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <br>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum.</div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
+    "    Annuleren\n" +
+    "  </button>\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\">\n" +
+    "    Klaar met bewerken\n" +
+    "  </button>\n" +
     "</div>\n"
   );
 
@@ -21399,9 +25296,30 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "    <div class=\"text-danger\" ng-if=\"efpc.error\" ng-bind=\"efpc.error\"></div>\n" +
     "\n" +
     "    <udb-event-form-save-time-tracker></udb-event-form-save-time-tracker>\n" +
-    "\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.publish()\" ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus)\">Publiceren</button>\n" +
-    "    <button type=\"submit\" class=\"btn btn-success\" ng-click=\"efpc.preview()\" ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\" focus-if >Klaar met bewerken</button>\n" +
+    "    <div ng-if=\"!efpc.saving\">\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publish()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
+    "      <button class=\"btn btn-default\"\n" +
+    "              ng-click=\"efpc.publishLater()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.preview()\"\n" +
+    "              ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
+    "      <button type=\"submit\"\n" +
+    "              class=\"btn btn-success\"\n" +
+    "              ng-click=\"efpc.publish()\"\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault\">Klaar met bewerken</button>\n" +
+    "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>\n" +
+    "          Online vanaf <span ng-bind=\"efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'\"></span>\n" +
+    "      </span>\n" +
+    "    </div>\n" +
+    "    <div ng-if=\"efpc.saving\">\n" +
+    "      <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i>\n" +
+    "      <span class=\"sr-only\">Loading...</span>\n" +
+    "    </div>\n" +
     "</div>\n"
   );
 
@@ -21488,42 +25406,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      <span ng-show=\"eventFormData.isPlace\">Wanneer is deze plaats of locatie open?</span>\n" +
     "    </h2>\n" +
     "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.isEvent\">\n" +
-    "      <div class=\"col-xs-12\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "\n" +
-    "          <label class=\"wanneerkiezer-label\" ng-show=\"eventFormData.activeCalendarType === ''\">Maak een keuze</label>\n" +
-    "          <div class=\"wanneerkiezer\" ng-show=\"eventFormData.activeCalendarType === ''\">\n" +
-    "            <ul class=\"list-inline button-list\">\n" +
-    "              <li ng-repeat=\"calendarLabel in ::calendarLabels\" ng-hide=\"eventFormData.isPlace && calendarLabel.eventOnly\">\n" +
-    "                <button\n" +
-    "                        class=\"btn btn-default\"\n" +
-    "                        ng-bind=\"::calendarLabel.label\"\n" +
-    "                        udb-auto-scroll\n" +
-    "                        ng-click=\"eventFormData.setCalendarType(calendarLabel.id);\"></button>\n" +
-    "              </li>\n" +
-    "            </ul>\n" +
-    "          </div>\n" +
-    "          <div class=\"wanneer-chosen\" ng-hide=\"eventFormData.activeCalendarType === ''\">\n" +
-    "            <span class=\"btn-chosen\" ng-bind=\"eventFormData.activeCalendarLabel\">\n" +
-    "            </span><a class=\"btn btn-link wanneerrestore\" href=\"#\" ng-click=\"eventFormData.resetCalendar()\">Wijzigen</a>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'single'\">\n" +
-    "      <udb-event-form-timestamp form-data=\"eventFormData\"></udb-event-form-timestamp>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-period form-data=\"eventFormData\"></udb-event-form-period>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"row\" ng-show=\"eventFormData.activeCalendarType === 'permanent' || eventFormData.activeCalendarType === 'periodic'\">\n" +
-    "      <udb-event-form-opening-hours opening-hours=\"openingHours\"></udb-event-form-opening-hours>\n" +
-    "    </div>\n" +
-    "\n" +
+    "    <udb-form-place-calendar ng-if=\"eventFormData.isPlace\"></udb-form-place-calendar>\n" +
+    "    <udb-form-event-calendar ng-if=\"eventFormData.isEvent\"></udb-form-event-calendar>\n" +
     "  </section>\n" +
     "</div>\n"
   );
@@ -21801,18 +25685,33 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                  </div>\n" +
     "                </div>\n" +
     "              </section>\n" +
-    "              <section class=\"state complete\">\n" +
-    "<!--\n" +
-    "                <div ng-bind-html=\"eventFormData.description.nl\" class=\"description-text\"></div>\n" +
-    "                <p><a href ng-click=\"alterDescription()\">Wijzigen</a></p>\n" +
-    "\n" +
-    "-->\n" +
-    "             <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass==state-complete\">{{eventFormData.description.nl}}</textarea>\n" +
-    "              </section>\n" +
-    "              <section class=\"state filling\">\n" +
+    "              <section class=\"state complete filling\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                  <textarea ng-blur=\"saveDescription()\" class=\"form-control\" ng-model=\"description\" rows=\"6\" udb-auto-scroll focus-if=\"descriptionCssClass == 'state-filling'\">{{}}</textarea>\n" +
-    "                  <div class=\"tip\" ng-switch=\"eventFormData.eventType\">\n" +
+    "                  <textarea ng-blur=\"saveDescription()\"\n" +
+    "                            ng-focus=\"focusDescription()\"\n" +
+    "                            class=\"form-control\"\n" +
+    "                            ng-model=\"description\"\n" +
+    "                            rows=\"6\"\n" +
+    "                            udb-auto-scroll\n" +
+    "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
+    "\n" +
+    "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
+    "                    De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.\n" +
+    "                    Nog <span ng-bind=\"(200 - countCharacters())\"></span> tekens.\n" +
+    "                    <span class=\"loader\">\n" +
+    "                      <span class=\"empty\"></span>\n" +
+    "                      <span class=\"bar\" ng-style=\"{width : (countCharacters()/2)+'%'}\" ></span>\n" +
+    "                    </span>\n" +
+    "                  </p>\n" +
+    "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
+    "                    Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.\n" +
+    "                  </p>\n" +
+    "                  <p>\n" +
+    "                    <a ng-if=\"description\" class=\"to-filling\" ng-click=\"saveDescription(true)\">\n" +
+    "                        Leegmaken\n" +
+    "                    </a>\n" +
+    "                  </p>\n" +
+    "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
     "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
     "                       de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops,\n" +
@@ -21830,13 +25729,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                       beperkt opengesteld is (vb. enkel salons).\n" +
     "                    </p>\n" +
     "                  </div>\n" +
-    "\n" +
     "                </div>\n" +
-    "\n" +
     "                <div ng-show=\"descriptionError\" class=\"alert alert-danger\">\n" +
     "                  Er ging iets fout bij het opslaan van de beschrijving.\n" +
     "                </div>\n" +
-    "\n" +
     "              </section>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -22453,7 +26349,22 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<article class=\"moderation-offer\">\n" +
+    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\">Valideren</p>\n" +
+    "\n" +
+    "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
+    "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
+    "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
+    "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
+    "\n" +
+    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
+    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "\n" +
+    "<span ng-show=\"moc.continueValidation()\"><a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">Verder valideren</a></span>\n"
+  );
+
+
+  $templateCache.put('templates/moderation-summary.html',
+    "<article class=\"moderation-summary\">\n" +
     "    <div class=\"error text-danger\" ng-show=\"moc.error\" ng-bind=\"moc.error\"></div>\n" +
     "    <div class=\"text-info\" ng-show=\"moc.loading\"><i class=\"fa fa-circle-o-notch fa-spin\"></i> Moderatie aanbod \"{{moc.offerId}}\" wordt geladen.</div>\n" +
     "\n" +
@@ -22469,34 +26380,28 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "                </a>\n" +
     "            </header>\n" +
     "\n" +
-    "            <p class=\"text-muted\"><udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary></p>\n" +
+    "            <p class=\"text-muted\">\n" +
+    "                <udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
+    "            </p>\n" +
     "\n" +
     "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
     "\n" +
     "            <a ng-href=\"{{ ::moc.offer.url  + '/preview' }}\">\n" +
     "                Alle info bekijken\n" +
-    "            </a>\n" +
-    "            &nbsp;\n" +
+    "            </a> &nbsp;\n" +
     "            <a ng-href=\"{{ ::moc.offer.url  + '/edit' }}\">\n" +
     "                Bewerken\n" +
     "            </a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-3\" ng-class=\"{muted: !moc.offer.image}\">\n" +
-    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image}}\"/>\n" +
+    "            <img ng-if=\"moc.offer.image\" class=\"offer-image-thumbnail center-block\" ng-src=\"{{moc.offer.image+'?maxwidth=150&maxheight=150'}}\" />\n" +
     "            <div class=\"no-img center-block\" ng-if=\"!moc.offer.image\">Geen afbeelding</div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
     "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
-    "        <div class=\"col-md-6 text-right\">\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
-    "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
-    "            <button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
-    "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
-    "\n" +
-    "            <span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
-    "            <span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "        <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right\">\n" +
+    "            <udb-moderation-offer offer-id=\"{{moc.offerId}}\" continue=\"false\"></udb-moderation-offer>\n" +
     "        </div>\n" +
     "    </footer>\n" +
     "</article>\n"
@@ -22548,9 +26453,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
 
 
   $templateCache.put('templates/moderation-list.html',
-    "<div class=\"page-header\">\n" +
-    "    <h1>Valideren</h1>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\">Valideren</h1>\n" +
     "\n" +
     "<div ng-show=\"moderator.loading && !moderator.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
@@ -22580,8 +26483,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        </p>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\" ng-repeat=\"offer in moderator.searchResult.member\">\n" +
-    "        <udb-moderation-offer offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
-    "        </udb-moderation-offer>\n" +
+    "        <udb-moderation-summary offer-id=\"{{offer['@id']}}\" offer-type=\"{{offer['@type']}}\">\n" +
+    "        </udb-moderation-summary>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12\">\n" +
     "        <div class=\"panel-footer\">\n" +
@@ -22594,6 +26497,110 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "            </uib-pagination>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organization-delete.modal.html',
+    "<div class=\"modal-body\">\n" +
+    "    <div class=\"row\">\n" +
+    "\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <p>Ben je zeker dat je \"<span ng-bind=\"::odc.organization.name\"></span>\" wil verwijderen? Deze actie kan niet ongedaan worden.</p>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "            <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
+    "                Er ging iets fout bij het verwijderen van de organisatie.\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"odc.cancelRemoval()\">\n" +
+    "        Annuleren\n" +
+    "    </button>\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"odc.deleteOrganization()\">\n" +
+    "        Definitief verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"odc.saving\"></i>\n" +
+    "    </button>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organizer-edit.html',
+    "<h1 class=\"title\" ng-bind=\"oec.originalName\"></h1>\n" +
+    "\n" +
+    "<div ng-show=\"!oec.organizer && !oec.loadingError\">\n" +
+    "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-if=\"oec.organizer\">\n" +
+    "    <form name=\"oec.organizerEditForm\" class=\"organizer-edit-form\">\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <p class=\"alert alert-danger\" ng-show=\"oec.hasErrors\">\n" +
+    "                    <span ng-show=\"oec.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
+    "                    <span ng-show=\"oec.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.website.$error.required || oec.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.addressError\">Gelieve een geldig adres in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.contactError\">Gelieve alle contactinfo correct in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"oec.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +
+    "                </p>\n" +
+    "\n" +
+    "                <div class=\"form-group has-feedback\"\n" +
+    "                     ng-class=\"{'has-error' : (oec.organizersWebsiteFound || oec.urlError || oec.organizerEditForm.website.$error.required) && oec.hasErrors }\">\n" +
+    "                    <label>Website</label>\n" +
+    "                    <input type=\"url\"\n" +
+    "                           id=\"organizer-website\"\n" +
+    "                           udb-http-prefix\n" +
+    "                           name=\"website\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           ng-model-options=\"{ debounce: 300 }\"\n" +
+    "                           ng-model=\"oec.organizer.url\"\n" +
+    "                           ng-change=\"oec.validateWebsite()\"\n" +
+    "                           aria-describedby=\"organizer-website-status\"\n" +
+    "                           autocomplete=\"off\"\n" +
+    "                           required>\n" +
+    "                    <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"oec.showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : oec.nameError && oec.hasErrors }\">\n" +
+    "                    <label>Naam</label>\n" +
+    "                    <input type=\"text\"\n" +
+    "                           name=\"name\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           ng-model=\"oec.organizer.name\"\n" +
+    "                           ng-change=\"oec.validateName()\"\n" +
+    "                           required>\n" +
+    "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </form>\n" +
+    "\n" +
+    "    <udb-organizer-address address=\"oec.organizer.address\"\n" +
+    "                           on-update=\"oec.validateAddress(error)\"></udb-organizer-address>\n" +
+    "    <udb-organizer-contact contact=\"oec.contact\"\n" +
+    "                           on-update=\"oec.validateContact(error)\"></udb-organizer-contact>\n" +
+    "\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-primary organisator-bewerken-bewaren\"\n" +
+    "            ng-disabled=\"oec.disableSubmit\"\n" +
+    "            ng-click=\"oec.validateOrganizer()\">\n" +
+    "        Bewaren\n" +
+    "    </button>\n" +
+    "    <a class=\"btn btn-default organisator-bewerken-annuleren\"\n" +
+    "       ng-click=\"oec.cancel()\">Annuleren</a>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"oec.loadingError\">\n" +
+    "    <span ng-bind=\"oec.loadingError\"></span>\n" +
     "</div>\n"
   );
 
@@ -22680,6 +26687,101 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "<div ng-show=\"odc.loadingError\">\n" +
     "    <span ng-bind=\"odc.loadingError\"></span>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organization-search-item.html',
+    "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\" ng-if=\"::osic.organization\">\n" +
+    "    <td ng-bind=\"::osic.organization.name\"></td>\n" +
+    "    <td>\n" +
+    "        <span ng-bind=\"::osic.organization.address.streetAddress\"></span>\n" +
+    "        <br>\n" +
+    "        <span ng-bind=\"::osic.organization.address.addressLocality\"></span>\n" +
+    "    </td>\n" +
+    "    <td>\n" +
+    "        <span ng-bind=\"::osic.organization.created | amDateFormat:'DD/MM/YYYY HH:mm'\"></span>\n" +
+    "        <span class=\"organization-search-item-email\" ng-if=\"::osic.organization.email\">\n" +
+    "            <br><span ng-bind=\"::osic.organization.email\"></span>\n" +
+    "        </span>\n" +
+    "        <span class=\"organization-search-item-url\" ng-if=\"::osic.organization.url\">\n" +
+    "            <br><a ng-href=\"{{::osic.organization.url}}\" target=\"_blank\" ng-bind=\"::osic.organization.url\"></a>\n" +
+    "        </span>\n" +
+    "    </td>\n" +
+    "    <td class=\"text-right\">\n" +
+    "        <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "            <a class=\"btn btn-default\" ui-sref=\"management.organizers.edit({id: osic.organization.id})\">Bewerken</a>\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "            <ul uib-dropdown-menu role=\"menu\">\n" +
+    "                <li role=\"menuitem\">\n" +
+    "                    <a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "    </td>\n" +
+    "</tr>"
+  );
+
+
+  $templateCache.put('templates/organization-search.html',
+    "<h1 class=\"title\">Organisaties</h1>\n" +
+    "\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-6\">\n" +
+    "        <udb-query-search-bar search-label=\"Zoeken op organisatie naam\"\n" +
+    "                              on-change=\"$ctrl.queryChanged(query)\"></udb-query-search-bar>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-1\">\n" +
+    "        <i ng-show=\"$ctrl.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-5 text-right\">\n" +
+    "        <a class=\"btn btn-primary\" ui-sref=\"management.organizers.search.create\">\n" +
+    "            <i class=\"fa fa-plus-circle\"></i> Organisatie toevoegen\n" +
+    "        </a>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <div class=\"alert alert-info\" role=\"alert\" ng-show=\"$ctrl.query.length < $ctrl.minQueryLength\">\n" +
+    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om organisaties te zoeken.</p>\n" +
+    "            <p>Laat het veld leeg om alle organisaties op te vragen in alfabetische volgorde.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"$ctrl.query.length >= $ctrl.minQueryLength && $ctrl.searchResult.totalItems === 0\"\n" +
+    "             class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <p>Geen organisaties gevonden.</p>\n" +
+    "        </div>\n" +
+    "        <div ng-show=\"$ctrl.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
+    "            <br>\n" +
+    "            <strong ng-bind=\"$ctrl.problem.title\"></strong>\n" +
+    "        </div>\n" +
+    "        <div class=\"query-search-result organization-search-results\"\n" +
+    "             ng-class=\"{'loading-search-result': $ctrl.loading}\"\n" +
+    "             ng-show=\"$ctrl.searchResult.totalItems > 0\">\n" +
+    "            <table class=\"table table-hover table-striped\">\n" +
+    "                <thead>\n" +
+    "                <tr>\n" +
+    "                    <th>Naam</th>\n" +
+    "                    <th>Adres</th>\n" +
+    "                    <th></th>\n" +
+    "                    <th class=\"text-right\">Opties</th>\n" +
+    "                </tr>\n" +
+    "                </thead>\n" +
+    "                <tbody udb-organization-search-item=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
+    "                </tbody>\n" +
+    "            </table>\n" +
+    "            <div class=\"panel-footer\">\n" +
+    "                <uib-pagination\n" +
+    "                        total-items=\"$ctrl.searchResult.totalItems\"\n" +
+    "                        ng-model=\"$ctrl.page\"\n" +
+    "                        items-per-page=\"$ctrl.searchResult.itemsPerPage\"\n" +
+    "                        max-size=\"10\"\n" +
+    "                        ng-change=\"$ctrl.pageChanged($ctrl.page)\">\n" +
+    "                </uib-pagination>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>\n"
   );
 
@@ -23189,8 +27291,13 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  </div>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"place\">\n" +
-    "  <h1 class=\"title\" ng-bind=\"place.name\"></h1>\n" +
+    "<div ng-if=\"!finishedLoading\">\n" +
+    "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
+    "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
@@ -23198,101 +27305,91 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\">Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deletePlace()\">Verwijderen</button>\n" +
+    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"col-xs-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
-    "        <h2 class=\"block-header\">Voorbeeld</h2>\n" +
-    "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table udb3-data-table\">\n" +
-    "            <colgroup>\n" +
-    "              <col style=\"width:20%\"/>\n" +
-    "              <col style=\"width:80%\"/>\n" +
-    "            </colgroup>\n" +
-    "            <tbody>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Titel</strong></td>\n" +
-    "                <td>{{place.name}}</td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Type</strong></td>\n" +
-    "                <td>{{place.type.label}}</td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Beschrijving</strong></td>\n" +
-    "                <td>\n" +
-    "                  <div ng-bind-html=\"place.description\" class=\"event-detail-description\"></div>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Waar</strong></td>\n" +
-    "                <td>{{place.address.streetAddress}}<br />\n" +
-    "                  {{place.address.postalCode}} {{place.address.addressLocality}}<br />\n" +
-    "                  {{place.address.addressCountry}}</td>\n" +
-    "              </tr>\n" +
-    "            </tbody>\n" +
-    "            <tbody udb-booking-info-detail=\"::place.bookingInfo\"></tbody>\n" +
-    "            <tbody udb-contact-point-detail=\"::place.contactPoint\"></tbody>\n" +
-    "            <tbody>\n" +
-    "              <tr>\n" +
-    "                <td>\n" +
-    "                  <strong>Labels</strong>\n" +
-    "                </td>\n" +
-    "                <td>\n" +
-    "                  <udb-label-select labels=\"place.labels\"\n" +
-    "                                    label-added=\"labelAdded(label)\"\n" +
-    "                                    label-removed=\"labelRemoved(label)\">\n" +
-    "                  </udb-label-select>\n" +
-    "                  <div ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
-    "                  </div>\n" +
-    "                  <div ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "                    <span ng-bind=\"labelsError\"></span>\n" +
-    "                  </div>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr>\n" +
-    "                <td><strong>Geschikt voor</strong></td>\n" +
-    "                <td>\n" +
-    "                  <span ng-if=\"place.typicalAgeRange\">{{place.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"!place.typicalAgeRange\">Alle leeftijden</span>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "              <tr ng-class=\"::{muted: !place.image}\">\n" +
-    "                <td><strong>Afbeeldingen</strong></td>\n" +
-    "                <td>\n" +
-    "                  <img ng-if=\"::place.image\" class=\"img-responsive\" ng-src=\"{{::place.image}}?width=400\" />\n" +
-    "                  <p>\n" +
-    "                    <span ng-repeat=\"image in ::place.images\">\n" +
-    "                      <img ng-src=\"{{::image.contentUrl}}?height=100\" class=\"offer-image-thumbnail img-responsive\" />\n" +
-    "                    </span>\n" +
-    "                    <span ng-if=\"::!place.image\">Geen afbeeldingen</span>\n" +
-    "                  </p>\n" +
-    "                </td>\n" +
-    "              </tr>\n" +
-    "            </tbody>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
+    "        <table class=\"table udb3-data-table\">\n" +
+    "          <colgroup>\n" +
+    "            <col style=\"width:20%\"/>\n" +
+    "            <col style=\"width:80%\"/>\n" +
+    "          </colgroup>\n" +
+    "          <tbody>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Titel</span></td>\n" +
+    "              <td>{{::place.name}}</td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Type</span></td>\n" +
+    "              <td>{{::place.type.label}}</td>\n" +
+    "            </tr>\n" +
+    "\n" +
+    "            <tr ng-class=\"::{muted: place.description==undefined}\">\n" +
+    "              <td><span class=\"row-label\">Beschrijving</span></td>\n" +
+    "              <td ng-if=\"::(place.description!==undefined)\">\n" +
+    "                <div ng-bind-html=\"::place.description\" class=\"event-detail-description\"></div>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"::(place.description==undefined)\">\n" +
+    "                Geen beschrijving\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Waar</span></td>\n" +
+    "              <td>{{::place.address.streetAddress}}<br />\n" +
+    "                {{::place.address.postalCode}} {{::place.address.addressLocality}}<br />\n" +
+    "                {{::place.address.addressCountry}}</td>\n" +
+    "            </tr>\n" +
+    "          </tbody>\n" +
+    "          <tbody udb-booking-info-detail=\"::place.bookingInfo\"></tbody>\n" +
+    "          <tbody udb-contact-point-detail=\"::place.contactPoint\"></tbody>\n" +
+    "          <tbody>\n" +
+    "            <tr>\n" +
+    "              <td>\n" +
+    "                <span class=\"row-label\">Labels</span>\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                <p><udb-label-select labels=\"::place.labels\"\n" +
+    "                                  label-added=\"labelAdded(label)\"\n" +
+    "                                  label-removed=\"labelRemoved(label)\">\n" +
+    "                </udb-label-select></p>\n" +
+    "                <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
+    "                  Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                </p>\n" +
+    "                <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
+    "                  Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
+    "                </p>\n" +
+    "                <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                  <span ng-bind=\"labelsError\"></span>\n" +
+    "                </p>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "            <tr>\n" +
+    "              <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
+    "              <td>\n" +
+    "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
+    "                <span ng-if=\"::(!place.typicalAgeRange)\">Alle leeftijden</span>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "          </tbody>\n" +
+    "          <tbody udb-image-detail=\"::place.mediaObject\" image=\"::place.image\"></tbody>\n" +
+    "        </table>\n" +
     "      </div>\n" +
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"placeAction in placeHistory track by $index\">\n" +
+    "          <dl ng-repeat=\"placeAction in ::placeHistory track by $index\">\n" +
     "            <dt ng-bind=\"placeAction.date | date:'dd / MM / yyyy H:mm'\"></dt>\n" +
     "            <dd>\n" +
     "              <span class=\"author\" ng-if=\"placeAction.author\">{{placeAction.author}}</span><br ng-if=\"placeAction.author\"/>\n" +
@@ -23303,16 +27400,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('publication')\">\n" +
-    "        <div class=\"panel panel-default\">\n" +
-    "          <table class=\"table\">\n" +
-    "            <colgroup>\n" +
-    "              <col style=\"width:20%\"/>\n" +
-    "              <col style=\"width:80%\"/>\n" +
-    "            </colgroup>\n" +
-    "            <tbody udb-workflow-status=\"::place\">\n" +
-    "            </tbody>\n" +
-    "          </table>\n" +
-    "        </div>\n" +
+    "        <table class=\"table udb3-data-table\">\n" +
+    "          <colgroup>\n" +
+    "            <col style=\"width:20%\"/>\n" +
+    "            <col style=\"width:80%\"/>\n" +
+    "          </colgroup>\n" +
+    "          <tbody udb-workflow-status=\"::place\">\n" +
+    "          </tbody>\n" +
+    "        </table>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
@@ -23466,8 +27561,8 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-md-3\">\n" +
     "    <div class=\"form-group\">\n" +
     "      <select\n" +
-    "          ng-options=\"field.name as field.label group by field.groupLabel for field in qe.fields | orderBy:['groupIndex','label']\"\n" +
-    "          ng-model=\"field.field\" class=\"form-control\" ng-change=\"qe.updateFieldType(field)\">\n" +
+    "          ng-options=\"fieldOption.name as fieldOption.label group by fieldOption.groupLabel for fieldOption in qe.fieldOptions | orderBy:['groupIndex','label']\"\n" +
+    "          ng-model=\"field.name\" class=\"form-control\" ng-change=\"qe.fieldTypeSelected(field)\">\n" +
     "      </select>\n" +
     "    </div>\n" +
     "\n" +
@@ -23475,7 +27570,7 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "  <div class=\"col-md-3\">\n" +
     "    <div class=\"form-group\">\n" +
     "      <select ng-model=\"field.transformer\" class=\"form-control\"\n" +
-    "              ng-options=\"transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.field]\">\n" +
+    "              ng-options=\"transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.name]\">\n" +
     "      </select>\n" +
     "    </div>\n" +
     "  </div>\n" +
@@ -23490,14 +27585,14 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "             class=\"form-control\"/>\n" +
     "    </div>\n" +
     "    <div ng-switch-when=\"term\">\n" +
-    "      <select ng-options=\"term.label as term.label for term in qe.termOptions[field.field] | orderBy:'label'\"\n" +
+    "      <select ng-options=\"term.label as term.label for term in qe.termOptions[field.name] | orderBy:'label'\"\n" +
     "              ng-model=\"field.term\" class=\"form-control\">\n" +
     "        <option value=\"\">-- maak een keuze --</option>\n" +
     "      </select>\n" +
     "    </div>\n" +
     "\n" +
     "    <div ng-switch-when=\"choice\">\n" +
-    "      <select ng-options=\"'choice.' + option | translate for option in ::qe.termOptions[field.field]\"\n" +
+    "      <select ng-options=\"'choice.' + option | translate for option in qe.termOptions[field.name]\"\n" +
     "              ng-model=\"field.term\" class=\"form-control\">\n" +
     "        <option value=\"\">-- maak een keuze --</option>\n" +
     "      </select>\n" +
@@ -23505,10 +27600,10 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "\n" +
     "    <div ng-switch-when=\"check\">\n" +
     "      <label class=\"radio-inline\">\n" +
-    "        <input type=\"radio\" ng-model=\"field.term\" value=\"TRUE\"> ja\n" +
+    "        <input type=\"radio\" ng-model=\"field.term\" value=\"{{field.name}}\"> ja\n" +
     "      </label>\n" +
     "      <label class=\"radio-inline\">\n" +
-    "        <input type=\"radio\" ng-model=\"field.term\" value=\"FALSE\"> nee\n" +
+    "        <input type=\"radio\" ng-model=\"field.term\" value=\"(!{{field.name}})\"> nee\n" +
     "      </label>\n" +
     "    </div>\n" +
     "\n" +
@@ -23527,6 +27622,12 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      </div>\n" +
     "\n" +
     "      <div ng-switch-when=\"<\">\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"field.upperBound\"/>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div ng-switch-when=\"><\">\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"field.lowerBound\"/>\n" +
+    "        <span>tot</span>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"field.upperBound\"/>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -23687,6 +27788,101 @@ $templateCache.put('templates/calendar-summary.directive.html',
     "      Zoeken\n" +
     "    </button>\n" +
     "  </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/sapi2.query-editor-field.directive.html',
+    "<div class=\"row voorwaarde qe-field {{ getOperatorClass() }}\">\n" +
+    "    <div class=\"col-md-3\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <select\n" +
+    "                    ng-options=\"field.name as field.label group by field.groupLabel for field in qe.fields | orderBy:['groupIndex','label']\"\n" +
+    "                    ng-model=\"field.field\" class=\"form-control\" ng-change=\"qe.updateFieldType(field)\">\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-3\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <select ng-model=\"field.transformer\" class=\"form-control\"\n" +
+    "                    ng-options=\"transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.field]\">\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-md-3 field-query-term\" ng-switch=\"field.fieldType\">\n" +
+    "        <div ng-switch-when=\"string\">\n" +
+    "            <input type=\"text\" ng-model=\"field.term\"\n" +
+    "                   class=\"form-control\"/>\n" +
+    "        </div>\n" +
+    "        <div ng-switch-when=\"tokenized-string\">\n" +
+    "            <input type=\"text\" ng-model=\"field.term\"\n" +
+    "                   class=\"form-control\"/>\n" +
+    "        </div>\n" +
+    "        <div ng-switch-when=\"term\">\n" +
+    "            <select ng-options=\"term.label as term.label for term in qe.termOptions[field.field] | orderBy:'label'\"\n" +
+    "                    ng-model=\"field.term\" class=\"form-control\">\n" +
+    "                <option value=\"\">-- maak een keuze --</option>\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"choice\">\n" +
+    "            <select ng-options=\"'choice.' + option | translate for option in ::qe.termOptions[field.field]\"\n" +
+    "                    ng-model=\"field.term\" class=\"form-control\">\n" +
+    "                <option value=\"\">-- maak een keuze --</option>\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"check\">\n" +
+    "            <label class=\"radio-inline\">\n" +
+    "                <input type=\"radio\" ng-model=\"field.term\" value=\"TRUE\"> ja\n" +
+    "            </label>\n" +
+    "            <label class=\"radio-inline\">\n" +
+    "                <input type=\"radio\" ng-model=\"field.term\" value=\"FALSE\"> nee\n" +
+    "            </label>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"date-range\">\n" +
+    "            <udb-query-editor-daterangepicker>\n" +
+    "            </udb-query-editor-daterangepicker>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-switch-when=\"number\" ng-switch=\"field.transformer\">\n" +
+    "            <div ng-switch-when=\"=\">\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.term\"/>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-switch-when=\">\">\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.lowerBound\"/>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div ng-switch-when=\"<\">\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.upperBound\"/>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-md-2 col-xs-8\">\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <div class=\"btn-group btn-group-justified\" role=\"group\">\n" +
+    "                <a type=\"button\" class=\"btn btn-default\" ng-click=\"addSubGroup($index)\"\n" +
+    "                   ng-disabled=\"isSubGroup() && !$last\">\n" +
+    "                    AND\n" +
+    "                </a>\n" +
+    "                <a type=\"button\" class=\"btn btn-default\" ng-click=\"addField($index)\">\n" +
+    "                    OR\n" +
+    "                </a>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"col-md-1 col-xs-4\">\n" +
+    "        <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"removeField($index)\"\n" +
+    "                ng-show=\"canRemoveField()\">\n" +
+    "            <span aria-hidden=\"true\">×</span>\n" +
+    "        </button>\n" +
+    "    </div>\n" +
     "</div>\n"
   );
 
@@ -24269,3 +28465,4 @@ $templateCache.put('templates/calendar-summary.directive.html',
   );
 
 }]);
+})();

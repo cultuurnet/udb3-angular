@@ -47,6 +47,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
         moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
+    EventFormData.showStep(3);
   }
 
   /**
@@ -122,6 +123,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       'additionalData',
       'apiUrl',
       'workflowStatus',
+      'availableFrom',
       'labels'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
@@ -167,9 +169,7 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
       EventFormData.initCalendar();
     }
 
-    if (!!EventFormData.openingHours.length) {
-      EventFormData.initOpeningHours(EventFormData.openingHours);
-    }
+    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
     $scope.loaded = true;
     EventFormData.showStep(1);

@@ -17,13 +17,19 @@ describe('Controller: Event Form Publish', function () {
     $location = jasmine.createSpyObj('$location', ['path']);
   }));
 
-  function getController() {
-    return $controller('EventFormPublishController', {
+  function getController(appConfig) {
+    var dependencies = {
       $scope: $scope,
       EventFormData: EventFormData,
       eventCrud: eventCrud,
       $location: $location
-    });
+    };
+
+    if (appConfig) {
+      dependencies.appConfig = appConfig;
+    }
+
+    return $controller('EventFormPublishController', dependencies);
   }
 
   it('should publish an offer when not published already', function () {
@@ -92,4 +98,32 @@ describe('Controller: Event Form Publish', function () {
     var controller = getController();
     expect(controller.isDraft('READY_FOR_VALIDATION')).toEqual(false);
   });
+
+  it('should show the publicationDate in the future', function () {
+    var controller = getController();
+    EventFormData.init();
+    EventFormData.availableFrom = 'da86358c-d52c-429b-89c6-7adffd64ab55';
+  });
+
+  it('should use the default publication date if a valid date is configured', function () {
+    var configWithDefaultPublicationDate = {
+      offerEditor: {
+        defaultPublicationDate: "2017-08-01"
+      }
+    };
+    var controller = getController(configWithDefaultPublicationDate);
+
+    expect(controller.hasNoDefault).toEqual(false);
+  });
+
+  it('should ask for a publication date if no valid date is configured', function () {
+    var configWithEmptyPublicationDate = {
+      offerEditor: {
+        defaultPublicationDate: ""
+      }
+    };
+    var controller = getController(configWithEmptyPublicationDate);
+
+    expect(controller.hasNoDefault).toEqual(true);
+  })
 });

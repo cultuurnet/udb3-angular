@@ -13,7 +13,8 @@ angular
   .module('udb.event-form')
   .component('udbEventFormOpeningHours', {
     bindings: {
-      openingHoursCollection: '=openingHours'
+      openingHoursCollection: '=openingHours',
+      formData: '='
     },
     templateUrl: 'templates/event-form-openinghours.html',
     controller: OpeningHourComponentController,
@@ -23,7 +24,7 @@ angular
 /**
  * @ngInject
  */
-function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormData) {
+function OpeningHourComponentController($uibModal) {
   var cm = this;
 
   cm.edit = openEditorModal;
@@ -49,7 +50,7 @@ function OpeningHourComponentController(moment, dayNames, $uibModal, EventFormDa
    * @param {OpeningHoursData[]} openingHoursList
    */
   function saveOpeningHours(openingHoursList) {
-    EventFormData.saveOpeningHours(openingHoursList);
+    cm.formData.saveOpeningHours(openingHoursList);
     cm.openingHoursCollection.deserialize(openingHoursList);
   }
 }

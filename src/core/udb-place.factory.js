@@ -125,7 +125,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.apiUrl = new URL(jsonPlace['@id']);
       }
       this.name = jsonPlace.name || {};
-      this.address = jsonPlace.address || this.address;
+      this.address = jsonPlace.address.nl || jsonPlace.address || this.address;
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
       this.calendarType = jsonPlace.calendarType || '';
@@ -184,6 +184,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
       if (jsonPlace.workflowStatus) {
         this.workflowStatus = jsonPlace.workflowStatus;
+      }
+
+      if (jsonPlace.availableFrom) {
+        this.availableFrom = jsonPlace.availableFrom;
       }
     },
 
@@ -338,6 +342,24 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
     updateTranslationState: function () {
       updateTranslationState(this);
+    },
+
+    hasFutureAvailableFrom: function() {
+      var tomorrow = moment(new Date()).add(1, 'days');
+      tomorrow.hours(0);
+      tomorrow.minutes(0);
+      tomorrow.seconds(0);
+      if (this.availableFrom || this.availableFrom !== '') {
+        var publicationDate = new Date(this.availableFrom);
+        if (tomorrow < publicationDate) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      } else {
+        return false;
+      }
     }
 
   };

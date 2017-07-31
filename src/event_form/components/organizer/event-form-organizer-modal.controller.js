@@ -18,8 +18,6 @@ function EventFormOrganizerModalController(
   udbOrganizers,
   UdbOrganizer,
   eventCrud,
-  cities,
-  Levenshtein,
   $q,
   organizerName
 ) {
@@ -32,6 +30,8 @@ function EventFormOrganizerModalController(
   $scope.organizersFound = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.addressError = false;
+  $scope.contactError = false;
   $scope.showWebsiteValidation = false;
   $scope.showValidation = false;
   $scope.organizers = [];
@@ -39,7 +39,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
-    website: '',
+    website: 'http://',
     name : $scope.organizer,
     address : {
       streetAddress : '',
@@ -52,13 +52,13 @@ function EventFormOrganizerModalController(
 
   // Scope functions.
   $scope.cancel = cancel;
-  $scope.addOrganizerContactInfo = addOrganizerContactInfo;
-  $scope.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   $scope.validateWebsite = validateWebsite;
+  $scope.updateName = updateName;
+  $scope.validateAddress = validateAddress;
+  $scope.validateContact = validateContact;
   $scope.validateNewOrganizer = validateNewOrganizer;
   $scope.selectOrganizer = selectOrganizer;
   $scope.saveOrganizer = saveOrganizer;
-  $scope.addressCompleteOrEmpty = addressCompleteOrEmpty;
 
   /**
    * Cancel the modal.
@@ -68,27 +68,9 @@ function EventFormOrganizerModalController(
   }
 
   /**
-   * Add a contact info entry for an organizer.
-   */
-  function addOrganizerContactInfo(type) {
-    $scope.newOrganizer.contact.push({
-      type : type,
-      value : ''
-    });
-  }
-
-  /**
-   * Remove a given key of the contact info.
-   */
-  function deleteOrganizerContactInfo(index) {
-    $scope.newOrganizer.contact.splice(index, 1);
-  }
-
-  /**
    * Validate the website of new organizer.
    */
   function validateWebsite() {
-
     $scope.showWebsiteValidation = true;
 
     if (!$scope.organizerForm.website.$valid) {
@@ -117,7 +99,25 @@ function EventFormOrganizerModalController(
           $scope.websiteError = true;
           $scope.showWebsiteValidation = false;
         });
+  }
 
+  /**
+   * When the name is changed by a user, submit state needs to be updated also.
+   */
+  function updateName() {
+    if ($scope.newOrganizer.name && !$scope.websiteError) {
+      $scope.disableSubmit = false;
+    } else {
+      $scope.disableSubmit = true;
+    }
+  }
+
+  function validateAddress(error) {
+    $scope.addressError = error;
+  }
+
+  function validateContact(error) {
+    $scope.contactError = error;
   }
 
   /**
@@ -125,26 +125,26 @@ function EventFormOrganizerModalController(
    */
   function validateNewOrganizer() {
 
-    var newContact = [];
-    angular.forEach($scope.newOrganizer.contact, function(contact) {
-      if (contact.value !== '') {
-        newContact.push(contact);
-      }
-    });
-
-    $scope.newOrganizer.contact = newContact;
-
     $scope.showValidation = true;
     // Forms are automatically known in scope.
     if (!$scope.organizerForm.$valid) {
       return;
     }
 
+    $scope.$broadcast('organizerAddressSubmit');
+    $scope.$broadcast('organizerContactSubmit');
+
     // resolve for now, will re-introduce duplicate detection later on
     var promise = $q.resolve([]);
 
     $scope.error = false;
     $scope.saving = true;
+
+    if ($scope.addressError || $scope.contactError) {
+      $scope.error = true;
+      $scope.saving = false;
+      return;
+    }
 
     promise.then(function (data) {
 
@@ -166,14 +166,6 @@ function EventFormOrganizerModalController(
 
   }
 
-  function addressCompleteOrEmpty() {
-    var address = $scope.newOrganizer.address;
-    var empty = (address.streetAddress === ''  && address.postalCode === '' && address.addressLocality === '');
-    var streedAddressComplete = (address.streetAddress !== '' && address.streetAddress !== undefined);
-    var complete = (streedAddressComplete && address.postalCode !== '' && address.addressLocality !== '');
-    return (empty || complete);
-  }
-
   /**
    * Select the organizer that should be used.
    */
@@ -187,7 +179,7 @@ function EventFormOrganizerModalController(
   function saveOrganizer() {
 
     $scope.saving = true;
-    $scope.error = false;
+    $scope.saveError = false;
 
     var organizer = _.clone($scope.newOrganizer);
     // remove the address when it's empty
@@ -206,56 +198,9 @@ function EventFormOrganizerModalController(
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;
       }, function() {
-        $scope.error = true;
+        $scope.saveError = true;
         $scope.saving = false;
       });
-  }
-
-  // Scope functions.
-  $scope.cities = cities;
-  $scope.changeCitySelection = changeCitySelection;
-
-  $scope.filterCities = function(value) {
-    return function (city) {
-      var length = value.length;
-      var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return zipMatches.length + nameMatches.length >= words.length;
-    };
-  };
-
-  $scope.orderByLevenshteinDistance = function(value) {
-    return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
-    };
-  };
-
-  /**
-   * Select City.
-   */
-  controller.selectCity = function ($item, $label) {
-    $scope.newOrganizer.address.postalCode = $item.zip;
-    $scope.newOrganizer.address.addressLocality = $item.name;
-
-    $scope.cityAutocompleteTextField = '';
-    $scope.selectedCity = $label;
-  };
-  $scope.selectCity = controller.selectCity;
-
-  /**
-   * Change a city selection.
-   */
-  function changeCitySelection() {
-    $scope.selectedCity = '';
-    $scope.cityAutocompleteTextField = '';
-    $scope.newOrganizer.address.postalCode = '';
-    $scope.newOrganizer.address.addressLocality = '';
   }
 
 }

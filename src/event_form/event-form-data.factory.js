@@ -49,7 +49,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -120,7 +120,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.additionalData = {};
       this.priceInfo = [];
       this.workflowStatus = 'DRAFT';
-
+      this.availableFrom = '';
       /**
        * @type {string[]}
        */
@@ -285,10 +285,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     /**
      * @param {Date} date
-     * @param {string} startHour HH:MM
+     * @param {string} startHour HH:mm
      * @param {Date|string} startHourAsDate
      *  An empty string when not set.
-     * @param {string} endHour HH:MM
+     * @param {string} endHour HH:mm
      * @param {Date|string} endHourAsDate
      *  An empty string when not set.
      */
@@ -464,12 +464,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
+      this.showStep(3);
       this.timingChangedCallback(this);
-    },
-
-    resetCalender: function () {
-      this.activeCalendarType = '';
-      this.calendarType = '';
     },
 
     initOpeningHours: function(openingHours) {
@@ -482,8 +478,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     setCalendarType: function (type) {
       var formData = this;
-
-      formData.showStep(3);
 
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.
@@ -500,6 +494,12 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
 
       if (formData.calendarType === 'permanent') {
+        formData.timingChanged();
+      }
+
+      if (formData.calendarType === 'periodic') {
+        formData.startDate = moment().startOf('day').toDate();
+        formData.endDate = moment().add(1, 'y').startOf('day').toDate();
         formData.timingChanged();
       }
 
@@ -538,18 +538,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         this.timingChanged();
       }
       else {
-        var nextHour = moment().add(1, 'hours').minutes(0);
-        var startHourAsDate = angular.copy(timestamp.date);
-        var endHourAsDate = angular.copy(timestamp.date);
-        startHourAsDate.setHours(nextHour.hours());
-        startHourAsDate.setMinutes(nextHour.minutes());
-        endHourAsDate.setHours(23);
-        endHourAsDate.setMinutes(59);
+        var startHour = moment(timestamp.date);
+        var endHour = moment(timestamp.date).endOf('day');
 
-        timestamp.startHour = moment(startHourAsDate).format('HH:mm');
-        timestamp.startHourAsDate = startHourAsDate;
-        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
-        timestamp.endHourAsDate = endHourAsDate;
+        timestamp.startHour = startHour.format('HH:mm');
+        timestamp.startHourAsDate = startHour.toDate();
+        timestamp.endHour = endHour.format('HH:mm');
+        timestamp.endHourAsDate = endHour.toDate();
         timestamp.showEndHour = false;
       }
     },
@@ -615,16 +610,28 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChanged();
     },
 
+    saveTimestamps: function (timestamps) {
+      var oldTimestamps = _.cloneDeep(this.timestamps);
+
+      this.timestamps = timestamps;
+
+      if (!_.isEqual(oldTimestamps, timestamps)) {
+        this.timingChanged();
+      }
+    },
+
     periodicTimingChanged: function () {
       var formData = this;
 
       if (formData.id) {
-        if (formData.hasValidPeriodicRange()) {
-          formData.periodicRangeError = false;
-          formData.timingChanged();
-        } else {
-          formData.periodicRangeError = true;
-        }
+        //TODO: this was wrapping the code below, not sure why...
+      }
+
+      if (formData.hasValidPeriodicRange()) {
+        formData.periodicRangeError = false;
+        formData.timingChanged();
+      } else {
+        formData.periodicRangeError = true;
       }
     }
   };

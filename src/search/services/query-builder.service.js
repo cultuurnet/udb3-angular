@@ -66,10 +66,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
           inclusive = node.inclusive;
 
       if (min instanceof Date) {
-        min = min.toISOString();
+        min = moment(min).format();
       }
       if (max instanceof Date) {
-        max = max.toISOString();
+        max = moment(max).format();
       }
 
       term = min + ' TO ' + max;
@@ -129,7 +129,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
 
       } else {
-        result = unparseNode(branch.left, depth + 1, sentence);
+        var singleTransformedGroupedTerm = branch.field && (branch.left.field === implicitToken) && branch.left.prefix;
+
+        result = singleTransformedGroupedTerm ?
+          branch.field + ':(' + printTerm(branch.left) + ')' :
+          unparseNode(branch.left, depth + 1, sentence);
       }
 
       return result;
@@ -151,10 +155,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       fieldQuery += term;
 
       return sentence += fieldQuery;
-    }
-
-    if (depth === 0) {
-      return sentence;
     }
   };
 
@@ -178,7 +178,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       cleanUpDateRangeField(field);
     }
     var transformedField = transformField(field);
-    return transformedField.field + ':' + printTerm(transformedField);
+    return transformedField.field + printTerm(transformedField);
   }
 
   /**
@@ -291,13 +291,15 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   function transformField(originalField) {
     var field = _.clone(originalField);
+    var isFieldImplicit = field.field === implicitToken;
+    var fieldOperator = '';
 
     switch (field.transformer) {
       case '!':
-        field.field = '!' + field.field;
+        fieldOperator = '!';
         break;
       case '-':
-        field.field = '-' + field.field;
+        fieldOperator = '-';
         break;
       case '<':
         field.lowerBound = '*';
@@ -312,6 +314,8 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         }
         break;
     }
+
+    field.field = fieldOperator + (isFieldImplicit ? '' : field.field + ':');
 
     return field;
   }
@@ -340,7 +344,8 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         operator: 'OR',
         nodes: [
           {
-            field: 'title',
+            field: 'name.\\*',
+            name: 'title',
             term: '',
             fieldType: 'tokenized-string',
             transformer: '+'
@@ -422,9 +427,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
           // Make sure boolean field-query values are either true or false
           if (fieldType.type === 'check') {
-            if (_.contains(['TRUE', 'FALSE'], field.term.toUpperCase())) {
-              field.term = field.term.toUpperCase();
-            } else {
+            var trueValue = fieldType.name,
+                falseValue = '(!' + fieldType.name + ')';
+
+            if (!(field.term === trueValue || field.term === falseValue)) {
               field.invalid = true;
             }
           }

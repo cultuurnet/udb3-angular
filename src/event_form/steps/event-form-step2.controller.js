@@ -12,14 +12,12 @@ angular
   .controller('EventFormStep2Controller', EventFormStep2Controller);
 
 /* @ngInject */
-function EventFormStep2Controller($scope, $rootScope, EventFormData, calendarLabels, OpeningHoursCollection) {
+function EventFormStep2Controller($scope, $rootScope, EventFormData) {
   var controller = this;
 
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
-  $scope.calendarLabels = calendarLabels;
-  $scope.openingHours = OpeningHoursCollection;
 
   /**
    * Mark the major info as changed.

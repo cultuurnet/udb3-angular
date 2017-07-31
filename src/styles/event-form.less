@@ -665,6 +665,7 @@
     margin-left: -15px;
     border-top: 1px solid @border-color;
     width: 100%;
+    z-index: @zindex-navbar-fixed;
 
     div.text-danger {
       margin-bottom: 1ex;
@@ -774,4 +775,75 @@ form.booking-period {
 
 .audience .help-block {
   font-size: small;
+}
+
+.padding-left-12-5{
+    padding-left: 12.5px;
+}
+
+.permanent-title {
+  font-size: 2rem;
+  font-weight: 300;
+  color: @gray;
+  display: block;
+  line-height: 1.5;
+}
+
+.permanent-subtitle {
+  font-size: 1.25rem;
+  color: @gray;
+  display: block;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+
+.uib-separator {
+  padding: 0 5px;
+  color: @gray-darker;
+}
+
+.uib-timepicker {
+  display: inline-block;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  height: 34px;
+
+  input {
+    margin-top: -1px;
+  }
+}
+
+.opening-hours-labels {
+  font-weight: 700;
+}
+.extra-beschrijving {
+  .loader {
+    border-radius: 6px;
+    margin-left: 6px;
+    width: 100px;
+    position: relative;
+    height: 1em;
+    display: inline-block;
+  }
+
+  .empty {
+    width: 100%;
+    background-color: darken(#EDEDED,5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+  }
+
+  .bar {
+    background-color: #5cb85c;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+  }
+
+  .description-info{
+    font-size: small;
+  }
 }
