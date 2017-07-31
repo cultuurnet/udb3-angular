@@ -39,7 +39,7 @@ function EventCultuurKuurComponentController(appConfig) {
     return '?utm_source=uitdatabank.be' +
     '&utm_medium=referral' +
     '&utm_campaign=udb3' +
-    '&utm_content='+
+    '&utm_content=' +
     type;
   }
 }
