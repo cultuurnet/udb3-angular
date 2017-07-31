@@ -72,9 +72,11 @@ function EventFormOrganizerModalController(
    */
   function validateWebsite() {
     $scope.showWebsiteValidation = true;
+    $scope.disableSubmit = true;
 
     if (!$scope.organizerForm.website.$valid) {
       $scope.showWebsiteValidation = false;
+      $scope.disableSubmit = true;
       return;
     }
     udbOrganizers
