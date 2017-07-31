@@ -10,7 +10,7 @@ angular.module('udb.router')
   .service('offerLocator', OfferLocator);
 
 /* @ngInject */
-function OfferLocator($q, searchApiSwitcher,appConfig,$cookies) {
+function OfferLocator($q, searchApiSwitcher, appConfig, $cookies) {
   // An associative array with UUIDs pointing to locations.
   // eg: 0586DF1-89D7-42F6-9804-DAE8878C2617 -> http://du.de/event/0586DF1-89D7-42F6-9804-DAE8878C2617
   var locations = {};
