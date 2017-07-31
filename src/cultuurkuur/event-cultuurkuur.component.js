@@ -22,16 +22,9 @@ function EventCultuurKuurComponentController(appConfig) {
     throw 'cultuurkuur url is not configured';
   }
 
-  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id +
-    '?utm_source=uitdatabank.be' +
-    '&utm_medium=referral' +
-    '&utm_campaign=udb3' +
-    '&utm_content=preview1.0';
-  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' +
-    '?utm_source=uitdatabank.be' +
-    '&utm_medium=referral' +
-    '&utm_campaign=udb3' +
-    '&utm_content=edit1.0';
+  cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id + getUTMParameters('preview1.0');
+  cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
+  cm.continueLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('continue1.0');
   cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
 
   cm.cultuurKuurInfo = {
@@ -41,4 +34,12 @@ function EventCultuurKuurComponentController(appConfig) {
   };
 
   cm.forSchools = cm.event.audience.audienceType === 'education';
+
+  function getUTMParameters(type) {
+    return '?utm_source=uitdatabank.be' +
+    '&utm_medium=referral' +
+    '&utm_campaign=udb3' +
+    '&utm_content='+
+    type;
+  }
 }

@@ -169,12 +169,11 @@ describe('Event Cultuurkuur Component', function () {
   it('should have a previewLink and editLink', function () {
     var event = new UdbEvent(exampleEventJson);
     var permission = false;
-    var presumedPreviewLink = 'http://dev.cultuurkuur.be/agenda/e//1111be8c-a412-488d-9ecc-8fdf9e52edbc';
-    var presumedEditLink = 'http://dev.cultuurkuur.be/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc/edit';
     var controller = getComponentController(event,permission);
 
-    expect(controller.previewLink).toContain(presumedPreviewLink);
-    expect(controller.editLink).toContain(presumedEditLink);
+    expect(controller.previewLink).toContain('preview');
+    expect(controller.editLink).toContain('edit');
+    expect(controller.continueLink).toContain('continue');
   });
 
   it('should show CultuurKuur as incomplete if no educationfields/levels', function () {
