@@ -18297,8 +18297,13 @@ function OfferLocator($q, searchApiSwitcher) {
       }
     }
 
+    var queryString = 'cdbid:"' + uuid + '"';
+    if (searchApiSwitcher.getApiVersion() > 2) {
+      queryString = 'id:"' + uuid + '"';
+    }
+
     searchApiSwitcher
-      .findOffers('id:"' + uuid + '"')
+      .findOffers(queryString)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
@@ -21547,6 +21552,7 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
   var switcher = this;
   var apiVersionCookieKey = 'search-api-version';
   var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
+  switcher.getApiVersion = getApiVersion;
 
   /**
    * @returns {Number}
