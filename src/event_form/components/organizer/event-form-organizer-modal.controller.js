@@ -204,7 +204,8 @@ function EventFormOrganizerModalController(
       }, function(err) {
         $scope.saveError = true;
         $scope.saving = false;
-        if (err.data.validation_messages.website) {
+        //JSHint ignore here, because style error for validation_messages
+        if (err.data['validation_messages'].website) {// jshint ignore:line
           $scope.disableSubmit = true;
           $scope.websiteNotUnique = true;
           $scope.saveError = false;
