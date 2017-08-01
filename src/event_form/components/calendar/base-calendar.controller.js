@@ -20,7 +20,7 @@ angular
 /* @ngInject */
 function BaseCalendarController(calendar, $scope) {
   calendar.confirmBootstrap = confirmBootstrap;
-  calendar.showBootstrapTimeSpans = false;
+  calendar.noFirstDateChosen = false;
   calendar.bootstrapDate = moment().startOf('hour').add(1, 'h').toDate();
   calendar.type = '';
   calendar.setType = setType;
@@ -58,13 +58,13 @@ function BaseCalendarController(calendar, $scope) {
     calendar.weeklyRecurring = isTypeWeeklyRecurring(calendarType);
 
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
-      calendar.showBootstrapTimeSpans = true;
+      calendar.noFirstDateChosen = true;
     }
   }
 
   function createTimeSpan() {
     if (_.isEmpty(calendar.timeSpans)) {
-      calendar.showBootstrapTimeSpans = true;
+      calendar.noFirstDateChosen = true;
       calendar.instantTimeSpanChanged();
     } else {
       var newTimeSpan = _.cloneDeep(_.last(calendar.timeSpans));
@@ -191,7 +191,7 @@ function BaseCalendarController(calendar, $scope) {
   }
 
   function confirmBootstrap() {
-    calendar.showBootstrapTimeSpans = false;
+    calendar.noFirstDateChosen = false;
     calendar.showEndDate = true;
     calendar.timeSpans = [
       {
@@ -200,5 +200,6 @@ function BaseCalendarController(calendar, $scope) {
         end: moment(calendar.bootstrapDate).startOf('hour').add(4, 'h').toDate()
       }
     ];
+    timeSpanChanged();
   }
 }
