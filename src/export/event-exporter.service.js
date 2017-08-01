@@ -12,7 +12,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, udbApi, EventExportJob, appConfig, $cookies) {
+function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
 
   var ex = this; // jshint ignore:line
 
@@ -37,19 +37,17 @@ function eventExporter(jobLogger, udbApi, EventExportJob, appConfig, $cookies) {
     var queryString = ex.activeExport.query.queryString,
         selection = ex.activeExport.selection || [],
         eventCount = ex.activeExport.eventCount,
-        gaBrand = customizations.brand || '',
+        brand = customizations.brand || '',
         details = null,
         user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(queryString, email, format, properties, perDay, selection, customizations);
-    if (_.get(appConfig, 'gaTagManager.containerId')) {
-      details = {
+    details = {
         format : format,
         user : user.id,
-        brand : gaBrand,
+        brand : brand,
         queryString : queryString
       };
-    }
 
     jobPromise.success(function (jobData) {
       var job = new EventExportJob(jobData.commandId, eventCount, format, details);
