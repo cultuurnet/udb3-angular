@@ -38,7 +38,6 @@ describe('Controller: Form Calendar', function () {
     expect(controller.bootstrapDate).toEqual(expectedStart);
   });
 
-
   it('should bootstrap timestamps', function () {
     var controller = getController();
     controller.timeSpans = [];
@@ -62,6 +61,44 @@ describe('Controller: Form Calendar', function () {
     spyOn(controller.formData, 'timingChanged');
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
+
+  it('should automatically move to the next day and save on adding new day', function(){
+      var controller = getController();
+      controller.timeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 2),
+        end: new Date(2013, 9, 23, 5)
+      },
+      {
+        allDay: false,
+        start: new Date(2013, 9, 23, 9),
+        end: new Date(2013, 9, 23, 17)
+      }
+    ];
+    var expectedTimeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 2),
+        end: new Date(2013, 9, 23, 5)
+      },
+      {
+        allDay: false,
+        start: new Date(2013, 9, 23, 9),
+        end: new Date(2013, 9, 23, 17)
+     },
+      {
+        allDay: false,
+        start: new Date(2013, 9, 24, 9),
+        end: new Date(2013, 9, 24, 9)
+      }
+    ];
+    spyOn(controller, 'instantTimeSpanChanged');
+
+    controller.createTimeSpan();
+    expect(controller.timeSpans).toEqual(expectedTimeSpans);
+    expect(controller.instantTimeSpanChanged).toHaveBeenCalled();
+  })
 
   it('should save timestamps to form-data when time-spans change', function () {
     var controller = getController();
