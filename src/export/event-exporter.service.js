@@ -38,21 +38,21 @@ function eventExporter(jobLogger, udbApi, EventExportJob, appConfig, $cookies) {
         selection = ex.activeExport.selection || [],
         eventCount = ex.activeExport.eventCount,
         gaBrand = customizations.brand || '',
-        gaObject = null,
+        details = null,
         user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(queryString, email, format, properties, perDay, selection, customizations);
     if (_.get(appConfig, 'gaTagManager.containerId')) {
-      gaObject = {
-        'event' : 'GAEvent',
-        'eventCategory' : 'export',
-        'eventAction' : format,
-        'eventLabel' : gaBrand + ';' + user.id + ';' + queryString
+      details = {
+        format : format,
+        user : user.id,
+        brand : gaBrand,
+        queryString : queryString
       };
     }
 
     jobPromise.success(function (jobData) {
-      var job = new EventExportJob(jobData.commandId, eventCount, format, gaObject);
+      var job = new EventExportJob(jobData.commandId, eventCount, format, details);
       jobLogger.addJob(job);
       job.start();
     });
