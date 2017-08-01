@@ -20,6 +20,7 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
       queuedJobs = [],
       failedJobs = [],
       finishedExportJobs = [],
+      startedExportJobs = [],
       hiddenJobs = [];
 
   /**
@@ -94,6 +95,9 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
         activeJobs = _.filter(visibleJobs, {state: JobStates.STARTED});
 
     failedJobs = _.filter(visibleJobs, {state: JobStates.FAILED});
+    startedExportJobs = _.filter(visibleJobs, function (job) {
+      return job instanceof EventExportJob && job.state === JobStates.STARTED;
+    });
     finishedExportJobs = _.filter(visibleJobs, function (job) {
       return job instanceof EventExportJob && job.state === JobStates.FINISHED;
     });
@@ -138,6 +142,10 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
 
   this.getFinishedExportJobs = function () {
     return finishedExportJobs;
+  };
+
+  this.getStartedExportJobs = function () {
+    return startedExportJobs;
   };
 
   this.hideJob = hideJob;

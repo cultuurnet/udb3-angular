@@ -12,7 +12,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, udbApi, EventExportJob) {
+function eventExporter(jobLogger, udbApi, EventExportJob, appConfig, $cookies) {
 
   var ex = this; // jshint ignore:line
 
@@ -36,12 +36,23 @@ function eventExporter(jobLogger, udbApi, EventExportJob) {
   ex.export = function (format, email, properties, perDay, customizations) {
     var queryString = ex.activeExport.query.queryString,
         selection = ex.activeExport.selection || [],
-        eventCount = ex.activeExport.eventCount;
+        eventCount = ex.activeExport.eventCount,
+        gaBrand = customizations.brand || '',
+        gaObject = null,
+        user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(queryString, email, format, properties, perDay, selection, customizations);
+    if (_.get(appConfig, 'gaTagManager.containerId')) {
+      gaObject = {
+        'event' : 'GAEvent',
+        'eventCategory' : 'export',
+        'eventAction' : format,
+        'eventLabel' : gaBrand + ';' + user.id + ';' + queryString
+      };
+    }
 
     jobPromise.success(function (jobData) {
-      var job = new EventExportJob(jobData.commandId, eventCount, format);
+      var job = new EventExportJob(jobData.commandId, eventCount, format, gaObject);
       jobLogger.addJob(job);
       job.start();
     });
