@@ -59,6 +59,44 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['term']).toBe('fizz buzz');
       expect(results['left']['quoted']).toBe(true);
     });
+
+    it("accepts terms with '-'", function() {
+      var results = lucenequeryparser.parse('created_at:>now-5d');
+
+      expect(results['left']['term']).toBe('>now-5d');
+    });
+
+    it("accepts terms with '+'", function() {
+      var results = lucenequeryparser.parse('published_at:>now+5d');
+
+      expect(results['left']['term']).toBe('>now+5d');
+    });
+
+    it("parses terms with an ISO 8601 date", function() {
+      var results = lucenequeryparser.parse('published_at:2017-06-02T12:01:00+00:00');
+
+      var expectedResults = {
+        left: {
+          field: 'published_at',
+          term: '2017-06-02T12:01:00+00:00'
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
+
+    it("parses terms with underscores", function() {
+      var results = lucenequeryparser.parse('workflowStatus:READY_FOR_VALIDATION');
+
+      var expectedResults = {
+        left: {
+          field: 'workflowStatus',
+          term: 'READY_FOR_VALIDATION'
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
   });
 
   describe('term prefix operators', function() {
@@ -90,6 +128,39 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['term']).toBe('fizz buzz');
       expect(results['left']['prefix']).toBe('+');
     });
+
+    /**
+     * Range as term examples taken from Elasticsearch documentation
+     * @see: {@link https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_ranges}
+     */
+
+    it('parses a one sided lower bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:>10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('>10');
+    });
+
+    it('parses a one sided inclusive lower bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:>=10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('>=10');
+    });
+
+    it('parses a one sided upper bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:<10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('<10');
+    });
+
+    it('parses a one sided inclusive upper bounded range as a term', function() {
+      var results = lucenequeryparser.parse('age:<=10');
+
+      expect(results['left']['field']).toBe('age');
+      expect(results['left']['term']).toBe('<=10');
+    });
   });
 
   describe('field name support', function() {
@@ -113,6 +184,20 @@ describe('Service: LuceneQueryParser', function () {
 
       expect(results['left']['field']).toBe('foo');
       expect(results['left']['term']).toBe('bar');
+    });
+
+    it('parses explicit field name for date term', function() {
+      var results = lucenequeryparser.parse('foo:2015-01-01');
+
+      expect(results['left']['field']).toBe('foo');
+      expect(results['left']['term']).toBe('2015-01-01');
+    });
+
+    it('parses explicit field name delimited by underscores (e.g "_exists_") for term', function () {
+      var results = lucenequeryparser.parse('_exists_:name.fr');
+
+      expect(results['left']['field']).toBe('_exists_');
+      expect(results['left']['term']).toBe('name.fr');
     });
 
     it('parses explicit field name including dots (e.g "sub.field") for term', function() {
@@ -157,6 +242,26 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['prefix']).toBe('+');
     });
 
+    it('parses explicit field name with wildcard', function() {
+      var results = lucenequeryparser.parse('book.\\*:(quick brown)');
+
+      var expectedResults = {
+        left: {
+          field: 'book.\\*',
+          operator: '<implicit>',
+          left: {
+            field: '<implicit>',
+            term: 'quick'
+          },
+          right: {
+            field: '<implicit>',
+            term: 'brown'
+          }
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
   });
 
   describe('conjunction operators', function() {
@@ -212,7 +317,7 @@ describe('Service: LuceneQueryParser', function () {
 
   describe('parentheses groups', function() {
 
-    it('parses parentheses group', function() {
+    it('parses parentheses group', function () {
       var results = lucenequeryparser.parse('fizz (buzz baz)');
 
       expect(results['left']['term']).toBe('fizz');
@@ -225,7 +330,7 @@ describe('Service: LuceneQueryParser', function () {
       expect(rightNode['right']['term']).toBe('baz');
     });
 
-    it('parses parentheses groups with explicit conjunction operators ', function() {
+    it('parses parentheses groups with explicit conjunction operators ', function () {
       var results = lucenequeryparser.parse('fizz AND (buzz OR baz)');
 
       expect(results['left']['term']).toBe('fizz');
@@ -236,6 +341,50 @@ describe('Service: LuceneQueryParser', function () {
       expect(rightNode['left']['term']).toBe('buzz');
       expect(rightNode['operator']).toBe('OR');
       expect(rightNode['right']['term']).toBe('baz');
+    });
+
+    it('parses parentheses groups with bounded clauses and explicit conjunction operator', function () {
+      var results = lucenequeryparser.parse('age:(>=10 AND <20)');
+      var expectedResults = {
+        left: {
+          operator: 'AND',
+          field: 'age',
+          left: {
+            field: '<implicit>',
+            term: '>=10'
+          },
+          right: {
+            field: '<implicit>',
+            term: '<20'
+          }
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
+
+    it('parses parentheses groups with bounded clauses and explicit prefix operators', function () {
+      var results = lucenequeryparser.parse('age:(+>=10 +<20)');
+      var expectedResults = {
+        left: {
+          operator: '<implicit>',
+          field: 'age',
+          left: {
+            field: '<implicit>',
+            term: '>=10',
+            prefix: '+',
+            transformer: '+'
+          },
+          right: {
+            field: '<implicit>',
+            term: '<20',
+            prefix: '+',
+            transformer: '+'
+          }
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
     });
   });
 
@@ -258,35 +407,53 @@ describe('Service: LuceneQueryParser', function () {
       expect(results['left']['upperBound']).toBe('baz');
       expect(results['left']['inclusive']).toBe(false);
     });
-  });
 
-  describe('Cultuurnet query dialect', function (){
+    it('parses a range expression with curly and square brackets combined', function() {
+      var results = lucenequeryparser.parse('count:{1 TO 5]');
 
-    it('parses explicit fields and terms including hyphens (e.g "bar-stool")', function() {
-      var results = lucenequeryparser.parse('foo:bar-stool');
-
-      expect(results['left']['field']).toBe('foo');
-      expect(results['left']['term']).toBe('bar-stool');
-
-      results = lucenequeryparser.parse('foo-bar:stool');
-
-      expect(results['left']['field']).toBe('foo-bar');
-      expect(results['left']['term']).toBe('stool');
+      expect(results['left']['field']).toBe('count');
+      expect(results['left']['lowerBound']).toBe('1');
+      expect(results['left']['upperBound']).toBe('5');
+      expect(results['left']['inclusive']).toBe(true);
     });
 
-    it('parses comma separated field groups: (jakarta, apache) AND website', function() {
-      var results = lucenequeryparser.parse('(jakarta, apache) AND website');
+    it('parses a range expression with square and curly brackets combined', function() {
+      var results = lucenequeryparser.parse('count:[1 TO 5}');
 
-      var leftNode = results['left'];
-      expect(leftNode['left']['field']).toBe('<implicit>');
-      expect(leftNode['left']['term']).toBe('jakarta');
-      expect(leftNode['operator']).toBe('OR');
-      expect(leftNode['right']['field']).toBe('<implicit>');
-      expect(leftNode['right']['term']).toBe('apache');
+      expect(results['left']['field']).toBe('count');
+      expect(results['left']['lowerBound']).toBe('1');
+      expect(results['left']['upperBound']).toBe('5');
+      expect(results['left']['inclusive']).toBe(true);
+    });
 
-      expect(results['operator']).toBe('AND');
-      expect(results['right']['field']).toBe('<implicit>');
-      expect(results['right']['term']).toBe('website');
+    it("parses a date range expression", function() {
+      var results = lucenequeryparser.parse('published_at:[2017-06-02T12:01:00+00:00 TO 2017-06-06T12:01:00+00:00]');
+
+      var expectedResults = {
+        left: {
+          field: 'published_at',
+          lowerBound: '2017-06-02T12:01:00+00:00',
+          upperBound: '2017-06-06T12:01:00+00:00',
+          inclusive: true
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
+    });
+
+    it("parses a range bound by floating-point numbers", function() {
+      var results = lucenequeryparser.parse('price:[9.99 TO 19.99]');
+
+      var expectedResults = {
+        left: {
+          field: 'price',
+          lowerBound: '9.99',
+          upperBound: '19.99',
+          inclusive: true
+        }
+      };
+
+      expect(results).toEqual(expectedResults);
     });
   });
 

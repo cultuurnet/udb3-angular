@@ -12,11 +12,9 @@ angular
 
 /* @ngInject */
 function searchDirective() {
-  var search = {
+  return {
     templateUrl: 'templates/search.html',
     restrict: 'EA',
-    controller: Search // jshint ignore:line
+    controller: 'SearchController'
   };
-
-  return search;
 }

@@ -13,8 +13,18 @@ angular.module('udb.search')
 /* @ngInject */
 function QueryTreeValidator(queryFields) {
 
-  var validFieldNames = _.map(queryFields, 'name'),
-    implicitToken = '<implicit>';
+  var validFields = _.union(_.map(queryFields, 'field'), ['_exists_']),
+      implicitToken = '<implicit>',
+      validParentFields = _(validFields)
+        .filter(function (field) {
+          return field.indexOf('.') > 0;
+        })
+        .map(function (field) {
+          var fields = field.split('.');
+          fields.pop();
+          return fields.join('.');
+        })
+        .value();
 
   var validateFields = function (current, depth, errors) {
     var left = current.left || false,
@@ -35,10 +45,21 @@ function QueryTreeValidator(queryFields) {
       }
     }
 
-    var field = current.field;
-    if (typeof(field) !== 'undefined') {
-      if (field !== null && field !== implicitToken && !_.contains(validFieldNames, field)) {
-        errors.push(field + ' is not a valid search field');
+    var queryField = current.field;
+    if (typeof(queryField) !== 'undefined') {
+      var field = _.trim(queryField, '.\\*');
+      var fieldHasWildcard = queryField !== field;
+
+      if (field !== null && field !== implicitToken) {
+        if (fieldHasWildcard) {
+          if (!_.contains(validParentFields, field)) {
+            errors.push(field + ' is not a valid parent search field that can be used with a wildcard');
+          }
+        } else {
+          if (!_.contains(validFields, field)) {
+            errors.push(field + ' is not a valid search field');
+          }
+        }
       }
     }
   };

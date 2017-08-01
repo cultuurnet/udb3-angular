@@ -11,7 +11,7 @@ angular
   .directive('udbSearchBar', udbSearchBar);
 
 /* @ngInject */
-function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService) {
+function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService, searchApiSwitcher) {
   return {
     templateUrl: 'templates/search-bar.directive.html',
     restrict: 'E',
@@ -33,7 +33,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
 
         editorModal = $uibModal.open({
           templateUrl: 'templates/query-editor-modal.html',
-          controller: 'QueryEditorController',
+          controller: searchApiSwitcher.getQueryEditorController(),
           controllerAs: 'qe',
           size: 'lg'
         });
