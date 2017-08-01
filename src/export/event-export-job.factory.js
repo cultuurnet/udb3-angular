@@ -20,7 +20,7 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
    * @param   {string}    commandId
    * @param   {number}    eventCount
    * @param   {string}    format
-   * @param   {Object}    gaObject
+   * @param   {Object}    details
    */
   var EventExportJob = function (commandId, eventCount, format, details) {
     BaseJob.call(this, commandId);
