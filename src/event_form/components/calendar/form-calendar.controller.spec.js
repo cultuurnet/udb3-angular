@@ -50,6 +50,7 @@ describe('Controller: Form Calendar', function () {
     var controller = getController();
     controller.firstDate = new Date(2013, 9, 23, 2);
     controller.timeSpans = [];
+    spyOn(controller.formData, 'timingChanged');
     controller.confirmFirstDate();
     var expectedTimeSpans = [
       {
