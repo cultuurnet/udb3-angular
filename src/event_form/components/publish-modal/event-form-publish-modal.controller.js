@@ -31,7 +31,7 @@
       startOpened: false,
       options: {
         minDate: tomorrow.toDate(),
-        maxDate: moment(eventFormData.startDate).subtract(1, 'd'),
+        maxDate: moment(eventFormData.timestamps[0].date).subtract(1, 'd'),
         showWeeks: false,
       }
     };

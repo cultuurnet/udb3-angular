@@ -16,6 +16,11 @@ describe('Controller: Publish Form Modal', function() {
     $scope = $rootScope.$new();
     $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close','dismiss']);
     eventFormData = $injector.get('EventFormData');
+    eventFormData.timestamps = [
+        {
+            date : new Date()
+        }
+    ];
     eventCrud = jasmine.createSpyObj('eventCrud', [
       'publishOffer'
     ]);
