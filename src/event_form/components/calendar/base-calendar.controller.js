@@ -19,9 +19,9 @@ angular
 
 /* @ngInject */
 function BaseCalendarController(calendar, $scope) {
-  calendar.confirmBootstrap = confirmBootstrap;
+  calendar.confirmFirstDate = confirmFirstDate;
   calendar.noFirstDateChosen = false;
-  calendar.bootstrapDate = moment().startOf('hour').add(1, 'h').toDate();
+  calendar.firstDate = moment().startOf('hour').add(1, 'h').toDate();
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -190,16 +190,16 @@ function BaseCalendarController(calendar, $scope) {
     return _.keys(unmetRequirements);
   }
 
-  function confirmBootstrap() {
+  function confirmFirstDate() {
     calendar.noFirstDateChosen = false;
     calendar.showEndDate = true;
     calendar.timeSpans = [
       {
         allDay: true,
-        start: moment(calendar.bootstrapDate).toDate(),
-        end: moment(calendar.bootstrapDate).startOf('hour').add(4, 'h').toDate()
+        start: moment(calendar.firstDate).toDate(),
+        end: moment(calendar.firstDate).startOf('hour').add(4, 'h').toDate()
       }
     ];
-    timeSpanChanged();
+    instantTimeSpanChanged();
   }
 }

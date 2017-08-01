@@ -30,27 +30,27 @@ describe('Controller: Form Calendar', function () {
     expect(controller.type).toEqual('single');
   });
 
-  it('should set today as the default bootstrap start-time-span when creating a new offer', function () {
+  it('should set today as the default start-time-span when creating a new offer', function () {
     var today = new Date(2013, 9, 23, 1);
     jasmine.clock().mockDate(today);
     var controller = getController();
     var expectedStart = new Date(2013, 9, 23, 2);
-    expect(controller.bootstrapDate).toEqual(expectedStart);
+    expect(controller.firstDate).toEqual(expectedStart);
   });
 
-  it('should bootstrap timestamps', function () {
+  it('should have no chosen first date on init', function () {
     var controller = getController();
     controller.timeSpans = [];
     spyOn(controller.formData, 'timingChanged');
     controller.createTimeSpan();
-    expect(controller.showBootstrapTimeSpans).toEqual(true);
+    expect(controller.noFirstDateChosen).toEqual(true);
   });
 
-  it('should init timestamps after bootstrapping', function () {
+  it('should init timestamps after choosing a first date', function () {
     var controller = getController();
-    controller.bootstrapDate = new Date(2013, 9, 23, 2);
+    controller.firstDate = new Date(2013, 9, 23, 2);
     controller.timeSpans = [];
-    controller.confirmBootstrap();
+    controller.confirmFirstDate();
     var expectedTimeSpans = [
       {
         allDay: true,
@@ -58,7 +58,6 @@ describe('Controller: Form Calendar', function () {
         end: new Date(2013, 9, 23, 6)
       }
     ];
-    spyOn(controller.formData, 'timingChanged');
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
 
