@@ -22,12 +22,12 @@ describe('Controller: Publish Form Modal', function() {
     publishEvent = eventCrud.publishOffer;
   }));
 
-  function getController() {
+  function getController(formData) {
     return $controller(
       'EventFormPublishModalController', {
         $scope: $scope,
         $uibModalInstance: $uibModalInstance,
-        eventFormData: eventFormData,
+        eventFormData: formData || eventFormData,
         eventCrud: eventCrud,
         publishEvent: publishEvent
       }
@@ -64,6 +64,28 @@ describe('Controller: Publish Form Modal', function() {
     var controller = getController();
     controller.dismiss();
     expect($uibModalInstance.dismiss).toHaveBeenCalled();
-  })
+  });
 
+  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer', function () {
+    var formData = _.cloneDeep(eventFormData);
+    formData.setStartDate(new Date('10/03/3000'));
+
+    var controller = getController(formData);
+    var latestPublicationDate = controller.drp.options.maxDate.toDate();
+
+    expect(latestPublicationDate).toEqual(new Date('10/02/3000'));
+  });
+
+  it('should lower limit the publication dates to choose from to a day after today', function () {
+    var formData = _.cloneDeep(eventFormData);
+    var today = new Date(2017, 9, 23);
+
+    formData.setStartDate(new Date('10/03/3000'));
+    jasmine.clock().mockDate(today);
+
+    var controller = getController(formData);
+    var earliestPublicationDate = controller.drp.options.minDate;
+
+    expect(earliestPublicationDate).toEqual(new Date('10/24/2017'));
+  });
 });
