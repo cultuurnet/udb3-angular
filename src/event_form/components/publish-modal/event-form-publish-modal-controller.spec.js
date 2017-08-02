@@ -14,7 +14,7 @@ describe('Controller: Publish Form Modal', function() {
   beforeEach(inject(function($rootScope, _$controller_, $injector) {
     $controller = _$controller_;
     $scope = $rootScope.$new();
-    $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close','dismiss']);
+    $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close', 'dismiss']);
     eventFormData = $injector.get('EventFormData');
     eventCrud = jasmine.createSpyObj('eventCrud', [
       'publishOffer'
@@ -63,6 +63,7 @@ describe('Controller: Publish Form Modal', function() {
   it('should dismiss the modal when dismissed', function(){
     var controller = getController();
     controller.dismiss();
+    expect($uibModalInstance.dismiss).toHaveBeenCalled();
   })
 
 });
