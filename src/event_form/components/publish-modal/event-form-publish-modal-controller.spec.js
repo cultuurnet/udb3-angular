@@ -29,7 +29,7 @@ describe('Controller: Publish Form Modal', function() {
         $uibModalInstance: $uibModalInstance,
         eventFormData: eventFormData,
         eventCrud: eventCrud,
-        publishEvent: publishEvent,
+        publishEvent: publishEvent
       }
     );
   }
@@ -46,21 +46,21 @@ describe('Controller: Publish Form Modal', function() {
     expect(controller.drp.startOpened).toBeTruthy();
   });
 
- it('should not throw an error when the publicationdate is a day in the future', function(){
+ it('should not throw an error when the publication date is a day in the future', function(){
     var controller = getController();
     controller.publicationDate = new Date('10/03/3000');
     controller.savePublicationDate();
     expect(controller.error).toBeFalsy();
   });
 
-  it('should throw an error when the publicationdate is a day in the past',function(){
+  it('should throw an error when the publication date is a day in the past',function(){
     var controller = getController();
     controller.publicationDate = new Date('10/03/300');
     controller.savePublicationDate();
     expect(controller.error).toBeTruthy();
   });
 
-  it('should dismiss the modal when dimissed', function(){
+  it('should dismiss the modal when dismissed', function(){
     var controller = getController();
     controller.dismiss();
   })
