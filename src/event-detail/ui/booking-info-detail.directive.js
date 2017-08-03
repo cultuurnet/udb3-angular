@@ -22,4 +22,7 @@ angular
 /* @ngInject */
 function BookingInfoDetailController($scope) {
   $scope.isEmpty = _.isEmpty;
+  $scope.hasAtLeastOneContactPoint = function() {
+    return $scope.bookingInfo.phone || $scope.bookingInfo.url || $scope.bookingInfo.email;
+  };
 }

@@ -7914,6 +7914,9 @@ angular
 /* @ngInject */
 function BookingInfoDetailController($scope) {
   $scope.isEmpty = _.isEmpty;
+  $scope.hasAtLeastOneContactPoint = function() {
+    return $scope.bookingInfo.phone || $scope.bookingInfo.url || $scope.bookingInfo.email;
+  };
 }
 BookingInfoDetailController.$inject = ["$scope"];
 })();
@@ -23602,7 +23605,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <td>\n" +
     "        <span class=\"row-label\">Reservatie</span>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null || bookingInfo.email !== null || bookingInfo.url !== null))\">\n" +
+    "    <td ng-if=\"hasAtLeastOneContactPoint()\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
     "            <li ng-if=\"::bookingInfo.url\">\n" +
     "                    <span>\n" +
@@ -23616,7 +23619,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::(isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null))\">Geen reservatie-informatie</td>\n" +
+    "    <td ng-if=\"!hasAtLeastOneContactPoint()\">Geen reservatie-informatie</td>\n" +
     "</tr>\n"
   );
 
