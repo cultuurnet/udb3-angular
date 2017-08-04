@@ -3552,7 +3552,7 @@ function UdbApi(
    */
   this.unlabelOffer = function (offerLocation, label) {
     return $http
-      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .delete(offerLocation + '/labels/' + encodeURIComponent(label), defaultApiConfig)
       .catch(returnApiProblem);
   };
 
