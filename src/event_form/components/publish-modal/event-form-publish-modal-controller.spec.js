@@ -16,6 +16,13 @@ describe('Controller: Publish Form Modal', function() {
     $scope = $rootScope.$new();
     $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close', 'dismiss']);
     eventFormData = $injector.get('EventFormData');
+    eventFormData.calendarType = 'single';
+    eventFormData.timestamps = [
+      {
+        date : new Date(),
+        startHourAsDate: new Date()
+      }
+    ];
     eventCrud = jasmine.createSpyObj('eventCrud', [
       'publishOffer'
     ]);
@@ -66,14 +73,38 @@ describe('Controller: Publish Form Modal', function() {
     expect($uibModalInstance.dismiss).toHaveBeenCalled();
   });
 
-  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer', function () {
+  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer with timestamps', function () {
     var formData = _.cloneDeep(eventFormData);
+    formData.timestamps = [
+      {
+        startHourAsDate: new Date(2017, 9, 23)
+      },
+      {
+        startHourAsDate: new Date(2017, 8, 16)
+      }
+    ];
+    var today = new Date(2017, 6, 23);
+
     formData.setStartDate(new Date('10/03/3000'));
+    jasmine.clock().mockDate(today);
 
     var controller = getController(formData);
-    var latestPublicationDate = controller.drp.options.maxDate.toDate();
+    var latestPublicationDate = controller.drp.options.maxDate;
 
-    expect(latestPublicationDate).toEqual(new Date('10/02/3000'));
+    expect(latestPublicationDate).toEqual(new Date(2017, 8, 15));
+  });
+
+  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer with a period', function () {
+    var formData = _.cloneDeep(eventFormData);
+    var today = new Date(2017, 6, 23);
+
+    formData.setStartDate(new Date(2017, 6, 23));
+    jasmine.clock().mockDate(today);
+
+    var controller = getController(formData);
+    var latestPublicationDate = controller.drp.options.maxDate;
+
+    expect(latestPublicationDate).toEqual(new Date(2017, 6, 22));
   });
 
   it('should lower limit the publication dates to choose from to a day after today', function () {

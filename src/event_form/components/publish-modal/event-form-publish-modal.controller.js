@@ -17,6 +17,7 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   efpmc.error = '';
   efpmc.hasPublicationDate = false;
   efpmc.publicationDate = eventFormData.availableFrom;
+  efpmc.maxDate = null;
   var tomorrow = moment()
     .add(1, 'days')
     .startOf('day');
@@ -24,12 +25,22 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   efpmc.savePublicationDate = savePublicationDate;
   efpmc.onFocus = onFocus;
 
+  if (eventFormData.calendarType === 'single' || eventFormData.calendarType === 'multiple') {
+    var allStartHoursAsDate = _.pluck(eventFormData.timestamps, 'startHourAsDate');
+    var earliestStartDate = Math.min.apply(null, allStartHoursAsDate);
+    efpmc.maxDate = moment(earliestStartDate).subtract(1, 'days');
+  }
+
+  if (eventFormData.calendarType === 'periodic') {
+    efpmc.maxDate = eventFormData.getStartDate();
+  }
+
   efpmc.drp = {
     dateFormat: 'dd/MM/yyyy',
     startOpened: false,
     options: {
       minDate: tomorrow.toDate(),
-      maxDate: moment(eventFormData.startDate).subtract(1, 'd'),
+      maxDate: efpmc.maxDate.toDate(),
       showWeeks: false
     }
   };
