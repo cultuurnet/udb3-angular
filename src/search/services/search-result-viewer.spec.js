@@ -49,18 +49,21 @@ describe('Service: SearchResultViewer', function () {
   it('should be able to mark all offers on a page', function () {
     var viewer = new SearchResultViewer(10);
     var results = {
-      '@context':'http://www.w3.org/ns/hydra/context.jsonld',
-      '@type':'PagedCollection',
+      '@context': {
+        'hydra': 'http://www.w3.org/ns/hydra/context.jsonld',
+        'udb': 'https://io.uitdatabank.be/contexts/'
+      },
+      '@type':'hydra:PagedCollection',
       'itemsPerPage':30,
       'totalItems':7,
       'member':[
-        {'@id':'http://culudb-silex.dev:8080/place/3aad5023-84e2-4ba9-b1ce-201cee64504c','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/event/35560d45-984c-47f2-b392-f40c2b8f9b45','@type':'Event'},
-        {'@id':'http://culudb-silex.dev:8080/place/c17124ac-4f47-4e7d-82c3-9ffb9aa3dbd5','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/place/e69100b8-fb3a-470f-af95-e7d5baf7c469','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/event/afb77a75-dfe9-4bb8-831c-d34a4593ad52','@type':'Event'},
-        {'@id':'http://culudb-silex.dev:8080/place/67a2bd40-39fe-4dd8-98a0-ede200d087f8','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/place/e742efc8-183a-42c4-97c9-7f6ccc79fd09','@type':'Place'}
+        {'@id':'http://culudb-silex.dev:8080/place/3aad5023-84e2-4ba9-b1ce-201cee64504c','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/event/35560d45-984c-47f2-b392-f40c2b8f9b45','@type':'udb:Event'},
+        {'@id':'http://culudb-silex.dev:8080/place/c17124ac-4f47-4e7d-82c3-9ffb9aa3dbd5','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/place/e69100b8-fb3a-470f-af95-e7d5baf7c469','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/event/afb77a75-dfe9-4bb8-831c-d34a4593ad52','@type':'udb:Event'},
+        {'@id':'http://culudb-silex.dev:8080/place/67a2bd40-39fe-4dd8-98a0-ede200d087f8','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/place/e742efc8-183a-42c4-97c9-7f6ccc79fd09','@type':'udb:Place'}
       ]
     };
 
@@ -79,18 +82,21 @@ describe('Service: SearchResultViewer', function () {
   it('should be able to select the query', function () {
     var viewer = new SearchResultViewer(10);
     var results = {
-      '@context':'http://www.w3.org/ns/hydra/context.jsonld',
-      '@type':'PagedCollection',
+      '@context': {
+        'hydra': 'http://www.w3.org/ns/hydra/context.jsonld',
+        'udb': 'https://io.uitdatabank.be/contexts/'
+      },
+      '@type':'hydra:PagedCollection',
       'itemsPerPage':30,
       'totalItems':7,
       'member':[
-        {'@id':'http://culudb-silex.dev:8080/place/3aad5023-84e2-4ba9-b1ce-201cee64504c','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/event/35560d45-984c-47f2-b392-f40c2b8f9b45','@type':'Event'},
-        {'@id':'http://culudb-silex.dev:8080/place/c17124ac-4f47-4e7d-82c3-9ffb9aa3dbd5','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/place/e69100b8-fb3a-470f-af95-e7d5baf7c469','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/event/afb77a75-dfe9-4bb8-831c-d34a4593ad52','@type':'Event'},
-        {'@id':'http://culudb-silex.dev:8080/place/67a2bd40-39fe-4dd8-98a0-ede200d087f8','@type':'Place'},
-        {'@id':'http://culudb-silex.dev:8080/place/e742efc8-183a-42c4-97c9-7f6ccc79fd09','@type':'Place'}
+        {'@id':'http://culudb-silex.dev:8080/place/3aad5023-84e2-4ba9-b1ce-201cee64504c','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/event/35560d45-984c-47f2-b392-f40c2b8f9b45','@type':'udb:Event'},
+        {'@id':'http://culudb-silex.dev:8080/place/c17124ac-4f47-4e7d-82c3-9ffb9aa3dbd5','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/place/e69100b8-fb3a-470f-af95-e7d5baf7c469','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/event/afb77a75-dfe9-4bb8-831c-d34a4593ad52','@type':'udb:Event'},
+        {'@id':'http://culudb-silex.dev:8080/place/67a2bd40-39fe-4dd8-98a0-ede200d087f8','@type':'udb:Place'},
+        {'@id':'http://culudb-silex.dev:8080/place/e742efc8-183a-42c4-97c9-7f6ccc79fd09','@type':'udb:Place'}
       ]
     };
 

@@ -10,9 +10,11 @@ describe('Controller: Event Form', function() {
     "@context":"\/api\/1.0\/event.jsonld",
     "name":{"nl":"Uitgebreide beschrijving"},
     "location":{
-      "@type":"Place",
+      "@context": {
+        'udb': 'https:\/\/io.uitdatabank.be\/contexts\/'
+      },
       "@id":"http:\/\/udb-silex.dev\/place\/661bb247-1fc0-4268-9e6c-3c6df6997cca",
-      "@context":"\/api\/1.0\/place.jsonld",
+      "@type":"udb:Place",
       "name":{"nl":"Test place"},
       "address":{"addressCountry":"BE",
       "addressLocality":"Leuven",

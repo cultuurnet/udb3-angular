@@ -15,11 +15,11 @@ describe('Controller: Dashboard', function () {
     'member': [
       {
         '@id': 'http://culudb-silex.dev:8080/event/316f4b6c-0908-45df-a5cd-42ea7a2506ca',
-        '@type': 'Event'
+        '@type': 'udb:Event'
       },
       {
         '@id': 'http://culudb-silex.dev:8080/place/a5924dc0-e06a-4450-8151-cae5486ed4d7',
-        '@type': 'Place'
+        '@type': 'udb:Place'
       }
     ],
     'firstPage': 'http://culudb-silex.dev:8080/dashboard/items?page=1',
@@ -64,11 +64,11 @@ describe('Controller: Dashboard', function () {
     var expectedItems = [
       {
         '@id': 'http://culudb-silex.dev:8080/event/316f4b6c-0908-45df-a5cd-42ea7a2506ca',
-        '@type': 'Event'
+        '@type': 'udb:Event'
       },
       {
         '@id': 'http://culudb-silex.dev:8080/place/a5924dc0-e06a-4450-8151-cae5486ed4d7',
-        '@type': 'Place'
+        '@type': 'udb:Place'
       }
     ];
     var controller = getController(activeUser, pagedDashboardItems);

@@ -37,12 +37,12 @@
           <table class="table">
             <tbody>
               <tr udb-dashboard-event-item
-                  ng-if="event['@type'] === 'Event'"
+                  ng-if="event['@type'] === 'udb:Event'"
                   class="dashboard-item" ng-class="{'deleting': event.showDeleted}"
                   ng-repeat-start="event in dash.pagedItemViewer.events">
               </tr>
               <tr udb-dashboard-place-item
-                  ng-if="event['@type'] === 'Place'"
+                  ng-if="event['@type'] === 'udb:Place'"
                   class="dashboard-item" ng-class="{'deleting': event.showDeleted}"
                   ng-repeat-end>
               </tr>

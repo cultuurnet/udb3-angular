@@ -20,8 +20,11 @@ describe('Service: City autocomplete', function () {
     'itemsPerPage': 1000,
     'totalItems': 4,
     'member': [{
+      "@context": {
+        'udb': 'https:\/\/io.uitdatabank.be\/contexts\/'
+      },
       '@id': 'http:\/\/culudb-silex.dev:8080\/place\/7540A176-F9DE-A04E-D0592C7E3006528C',
-      '@context': '\/api\/1.0\/place.jsonld',
+      '@type': 'udb:Place',
       'description': 'Voedselteams vzw ijvert voor een duurzame en eerlijke landbouwpolitiek door het bevorderen van kleinschalige, duurzame land-en tuinbouw en het stimuleren van een streekgebonden economie. Daartoe begeleidt en ondersteunt Voedselteams sociale netwerken van solidaire consumenten en producenten. Voedselteams doet aan sensibilisering over het thema met als doel mensen aan te zetten tot actie.',
       'name': {
         'nl': 'Voedselteams'
@@ -56,8 +59,11 @@ describe('Service: City autocomplete', function () {
         'id': '3.14.0.0.0'
       }, {'label': 'Wijk of buurt', 'domain': 'publicscope', 'id': '6.0.0.0.0'}]
     }, {
+      "@context": {
+        'udb': 'https:\/\/io.uitdatabank.be\/contexts\/'
+      },
       '@id': 'http:\/\/culudb-silex.dev:8080\/place\/56AF6D44-0DDA-76D4-2F5EE4184024FD78',
-      '@context': '\/api\/1.0\/place.jsonld',
+      '@type': 'udb:Place',
       'description': 'curieus is de nieuwe naam voor CSC-vormingswerk.\ncurieus kom je tegen op meer dan 300 plaatsen in Vlaanderen en Brussel. cultuur in de breedste zin van het woord is ons handelsmerk. curieus wil je nieuwsgierig maken naar elke vorm van cultuur. Want cultuur is meer dan schone kunsten alleen. Cultuur kan meer dan mensen vermaken. Van Arbeidscultuur tot Zapcultuur.',
       'name': {
         'nl': 'curieus Vlaams-Brabant'
@@ -88,8 +94,9 @@ describe('Service: City autocomplete', function () {
         'id': '8.0.0.0.0'
       }, {'label': 'Wijk of buurt', 'domain': 'publicscope', 'id': '6.0.0.0.0'}]
     }, {
-      '@id': 'http:\/\/culudb-silex.dev:8080\/place\/429A87B3-E3B7-697C-5C94A5159389EF25',
       '@context': '\/api\/1.0\/place.jsonld',
+      '@id': 'http:\/\/culudb-silex.dev:8080\/place\/429A87B3-E3B7-697C-5C94A5159389EF25',
+      '@type': 'udb:Place',
       'description': 'Bibliotheek De Bib Leuven is een bruisende plek waar heel wat te beleven valt. Evenementen, lezingen, tentoonstellingen en workshops bewijzen dat de bibliotheek leeft.  De bib heeft een aparte exporuimte en aan de onthaalbalie kan je ook tickets kopen voor voorstellingen van 30CC. Daarnaast werd in hetzelfde gebouw ook het stadsarchief ondergebracht. Documenten kan je raadplegen in de leeszaal.',
       'name': {
         'nl': 'De Bib Leuven'

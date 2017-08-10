@@ -3846,7 +3846,22 @@ function UdbApi(
   };
 
   function returnUnwrappedData(response) {
-    return $q.resolve(response.data);
+    var data = response.data;
+    /**
+     * @deprecated
+     * Make sure paged collection members and the collection itself have the @type properties namespaced.
+     */
+    if (data['@type'] === 'PagedCollection') {
+      data['@type'] = 'hydra:PagedCollection';
+      data.member = _.map(data.member, function (member) {
+        if (_.contains(['Event', 'Place', 'Organizer'], member['@type'])) {
+          member['@type'] = 'udb:' + member['@type'];
+        }
+        return member;
+      });
+    }
+
+    return $q.resolve(data);
   }
 
   /**
@@ -4464,7 +4479,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     parseJson: function (jsonEvent) {
       this.id = jsonEvent['@id'].split('/').pop();
       this['@id'] = jsonEvent['@id'];
-      this['@type'] = jsonEvent['@type'];
+      this['@type'] = jsonEvent['@type'] === 'Event' ? 'udb:Event' : jsonEvent['@type'];
       this.apiUrl = new URL(jsonEvent['@id']);
       this.name = jsonEvent.name || {};
       this.description = angular.copy(jsonEvent.description) || {};
@@ -22585,7 +22600,7 @@ function SearchController(
       eventCount = $scope.resultViewer.totalItems;
     } else {
       selectedIds = _.chain($scope.resultViewer.selectedOffers)
-        .filter({'@type': 'Event'})
+        .filter({'@type': 'udb:Event'})
         .map(function(offer) {
           return new URL(offer['@id']);
         })
@@ -23386,12 +23401,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <table class=\"table\">\n" +
     "            <tbody>\n" +
     "              <tr udb-dashboard-event-item\n" +
-    "                  ng-if=\"event['@type'] === 'Event'\"\n" +
+    "                  ng-if=\"event['@type'] === 'udb:Event'\"\n" +
     "                  class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
     "                  ng-repeat-start=\"event in dash.pagedItemViewer.events\">\n" +
     "              </tr>\n" +
     "              <tr udb-dashboard-place-item\n" +
-    "                  ng-if=\"event['@type'] === 'Place'\"\n" +
+    "                  ng-if=\"event['@type'] === 'udb:Place'\"\n" +
     "                  class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
     "                  ng-repeat-end>\n" +
     "              </tr>\n" +
@@ -25620,13 +25635,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <p>We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.</p>\n" +
     "\n" +
     "        <div class=\"row clearfix\" ng-if=\"eventFormData.getType() === 'event'\">\n" +
-    "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Event'}\">\n" +
+    "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'udb:Event'}\">\n" +
     "            <udb-event-suggestion></udb-event-suggestion>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"row clearfix\" ng-if=\"eventFormData.getType() === 'place'\">\n" +
-    "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Place'}\">\n" +
+    "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'udb:Place'}\">\n" +
     "            <udb-place-suggestion></udb-place-suggestion>\n" +
     "          </div>\n" +
     "        </div>\n" +
@@ -28375,11 +28390,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <div ng-repeat=\"event in resultViewer.events\">\n" +
-    "            <udb-event class=\"row rv-item\" ng-hide=\"eventCtrl.fetching\" ng-if=\"event['@type'] == 'Event'\"\n" +
+    "            <udb-event class=\"row rv-item\" ng-hide=\"eventCtrl.fetching\" ng-if=\"event['@type'] == 'udb:Event'\"\n" +
     "                       ng-class=\"{selected: resultViewer.isOfferSelected(event)}\">\n" +
     "            </udb-event>\n" +
     "\n" +
-    "            <udb-place class=\"row rv-item\" ng-hide=\"placeCtrl.fetching\" ng-if=\"event['@type'] == 'Place'\"\n" +
+    "            <udb-place class=\"row rv-item\" ng-hide=\"placeCtrl.fetching\" ng-if=\"event['@type'] == 'udb:Place'\"\n" +
     "                       ng-class=\"{selected: resultViewer.isOfferSelected(event)}\">\n" +
     "            </udb-place>\n" +
     "        </div>\n" +

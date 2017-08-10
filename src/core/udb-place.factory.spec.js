@@ -19,8 +19,11 @@ describe('Factory: UdbPlace', function () {
    */
   function getPlaceJson() {
     return angular.copy({
+      "@context": {
+        'udb': 'https:\/\/io.uitdatabank.be\/contexts\/'
+      },
       '@id': "http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702",
-      '@context': "/api/1.0/place.jsonld",
+      '@type': "udb:Place",
       name: "Villa 99, een art deco pareltje",
       creator: "christophe.vanthuyne@ronse.be",
       created: "2015-06-14T15:22:33+02:00",

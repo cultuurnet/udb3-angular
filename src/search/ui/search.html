@@ -98,11 +98,11 @@
         </div>
 
         <div ng-repeat="event in resultViewer.events">
-            <udb-event class="row rv-item" ng-hide="eventCtrl.fetching" ng-if="event['@type'] == 'Event'"
+            <udb-event class="row rv-item" ng-hide="eventCtrl.fetching" ng-if="event['@type'] == 'udb:Event'"
                        ng-class="{selected: resultViewer.isOfferSelected(event)}">
             </udb-event>
 
-            <udb-place class="row rv-item" ng-hide="placeCtrl.fetching" ng-if="event['@type'] == 'Place'"
+            <udb-place class="row rv-item" ng-hide="placeCtrl.fetching" ng-if="event['@type'] == 'udb:Place'"
                        ng-class="{selected: resultViewer.isOfferSelected(event)}">
             </udb-place>
         </div>

@@ -177,7 +177,7 @@ function SearchController(
       eventCount = $scope.resultViewer.totalItems;
     } else {
       selectedIds = _.chain($scope.resultViewer.selectedOffers)
-        .filter({'@type': 'Event'})
+        .filter({'@type': 'udb:Event'})
         .map(function(offer) {
           return new URL(offer['@id']);
         })

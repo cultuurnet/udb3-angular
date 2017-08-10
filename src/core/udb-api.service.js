@@ -870,7 +870,22 @@ function UdbApi(
   };
 
   function returnUnwrappedData(response) {
-    return $q.resolve(response.data);
+    var data = response.data;
+    /**
+     * @deprecated
+     * Make sure paged collection members and the collection itself have the @type properties namespaced.
+     */
+    if (data['@type'] === 'PagedCollection') {
+      data['@type'] = 'hydra:PagedCollection';
+      data.member = _.map(data.member, function (member) {
+        if (_.contains(['Event', 'Place', 'Organizer'], member['@type'])) {
+          member['@type'] = 'udb:' + member['@type'];
+        }
+        return member;
+      });
+    }
+
+    return $q.resolve(data);
   }
 
   /**

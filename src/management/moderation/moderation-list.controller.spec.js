@@ -130,7 +130,7 @@ describe('Controller: Moderation List', function() {
       "member": [
         {
           "@id": "http://culudb-silex.dev/event/0823f57e-a6bd-450a-b4f5-8459b4b11043",
-          "@type": "Event"
+          "@type": "udb:Event"
         }
       ]
     };

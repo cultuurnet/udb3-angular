@@ -24,50 +24,53 @@ describe('Factory: List Items', function () {
   ];
 
   var resultset = {
-    "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-    "@type": "PagedCollection",
+    "@context": {
+      "hydra": "http://www.w3.org/ns/hydra/context.jsonld",
+      "udb": "https://io.uitdatabank.be/contexts/"
+    },
+    "@type": "hydra:PagedCollection",
     "itemsPerPage": 10,
     "totalItems": 387380,
     "member": [
       {
         "@id": "https://udb-silex-test.uitdatabank.be/place/878453da-aa40-4cf6-bda5-cc59ca6bb215",
-        "@type": "Place"
+        "@type": "udb:Place"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/event/6fbb8091-f353-4ac2-8813-fd55bdf5519b",
-        "@type": "Event"
+        "@type": "udb:Event"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/place/53cd5d3f-82d4-49c2-96a9-57aefbf68153",
-        "@type": "Place"
+        "@type": "udb:Place"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/place/3256ce1f-b8dd-4291-9cfe-037ebacb3184",
-        "@type": "Place"
+        "@type": "udb:Place"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/event/e8fb3966-dd0c-4144-847c-9705f5a2debb",
-        "@type": "Event"
+        "@type": "udb:Event"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/event/b0ff0ed0-0301-4c3e-98dc-2034d6035883",
-        "@type": "Event"
+        "@type": "udb:Event"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/place/7ea6e13d-ca5d-4511-9756-8f5b596470ca",
-        "@type": "Place"
+        "@type": "udb:Place"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/event/5355d81e-0ef7-4e5e-a8a5-59feedd22cd6",
-        "@type": "Event"
+        "@type": "udb:Event"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/event/fb2cc53b-097f-41d2-a4c3-27e2bd58b57a",
-        "@type": "Event"
+        "@type": "udb:Event"
       },
       {
         "@id": "https://udb-silex-test.uitdatabank.be/event/cfe6dc1b-db21-4e2d-b363-e385f019c5f4",
-        "@type": "Event"
+        "@type": "udb:Event"
       }
     ]
   };

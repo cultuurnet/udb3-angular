@@ -39,13 +39,16 @@ describe('Controller: Event Detail', function() {
     "member": [
       {
         "@id": "http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc",
-        "@type": "Event"
+        "@type": "udb:Event"
       }
     ]
   },
       exampleEventJson = {
+        "@context": {
+          'udb': 'https:\/\/io.uitdatabank.be\/contexts\/'
+        },
         "@id": "http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc",
-        "@context": "/api/1.0/event.jsonld",
+        "@type": "udb:Event",
         "name": {"nl": "70 mijl in vogelvlucht"},
         "description": {"nl": "Toto is geen zeekoe"},
         "available": "2015-06-05T00:00:00+02:00",
@@ -53,9 +56,11 @@ describe('Controller: Event Detail', function() {
         "calendarSummary": "vrij 19/06/15 om 19:00 ",
         "labels": ['some label'],
         "location": {
-          "@type": "Place",
+          "@context": {
+            'udb': 'https:\/\/io.uitdatabank.be\/contexts\/'
+          },
           "@id": "http://culudb-silex.dev:8080/place/4D6DD711-CB4F-168D-C8B1DB1D1F8335B4",
-          "@context": "/api/1.0/place.jsonld",
+          "@type": "udb:Place",
           "description": "De werking van het Cultuurcentrum Knokke-Heist is zeer gevarieerd: podiumkunsten, beeldende kunsten, sociaal-cultureel werk met volwassenen, jeugdwerking en jongerencultuur, artistiek-kunstzinnige opleidingen, openluchtanimatie,... Elke bezoeker vindt hier zijn gading!",
           "name": "Cultuurcentrum Scharpoord - Knokke-Heist",
           "address": {
@@ -114,9 +119,11 @@ describe('Controller: Event Detail', function() {
           ]
         },
         "organizer": {
-          "@type":"Organizer",
+          "@context": {
+            'udb': 'https:\/\/io.uitdatabank.be\/contexts\/'
+          },
           "@id":"http:\/\/culudb-silex.dev\/organizer\/8ee68d6d-c118-4b34-8be7-dd8a7321b6d2",
-          "@context":"\/api\/1.0\/organizer.jsonld",
+          "@type":"udb:Organizer",
           "name":"mijn organisator bis",
           "addresses":[
             {

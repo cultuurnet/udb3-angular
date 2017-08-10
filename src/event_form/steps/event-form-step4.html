@@ -66,13 +66,13 @@
         <p>We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.</p>
 
         <div class="row clearfix" ng-if="eventFormData.getType() === 'event'">
-          <div ng-repeat="event in resultViewer.events | filter:{'@type': 'Event'}">
+          <div ng-repeat="event in resultViewer.events | filter:{'@type': 'udb:Event'}">
             <udb-event-suggestion></udb-event-suggestion>
           </div>
         </div>
 
         <div class="row clearfix" ng-if="eventFormData.getType() === 'place'">
-          <div ng-repeat="event in resultViewer.events | filter:{'@type': 'Place'}">
+          <div ng-repeat="event in resultViewer.events | filter:{'@type': 'udb:Place'}">
             <udb-place-suggestion></udb-place-suggestion>
           </div>
         </div>

@@ -22,7 +22,7 @@ describe('Service: Moderation Service', function () {
     "member": [
       {
         "@id": "http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043",
-        "@type": "Event"
+        "@type": "udb:Event"
       }
     ]
   };

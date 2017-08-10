@@ -731,11 +731,11 @@ describe('Service: UDB3 Api', function () {
     var offers = [
       {
         '@id': 'http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043',
-        '@type': 'Event'
+        '@type': 'udb:Event'
       },
       {
         '@id': 'http://culudb-silex.dev:8080/event/1823f57e-e6bd-250a-a4f5-2459b4b11045',
-        '@type': 'Place'
+        '@type': 'udb:Place'
       }
     ];
     var expectedBody = {
@@ -1471,7 +1471,7 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend
       .expectGET(baseUrl + 'media/' + imageId)
-      .respond();
+      .respond(response);
     service
       .getMedia(imageId)
       .then(done);

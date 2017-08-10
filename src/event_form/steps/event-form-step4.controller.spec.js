@@ -32,9 +32,9 @@ describe('Controller: event form step 4', function (){
     resultViewer.setResults({
       itemsPerPage: 12,
       member: [
-        {'@id': 'http://culudb-silex.dev:8080/place/f01900c5-4384-49fb-92a8-5019f7470973', '@type': 'Place'},
-        {'@id': 'http://culudb-silex.dev:8080/place/cb3a4573-5612-4b1c-8a3d-3ba4bcd1d031', '@type': 'Place'},
-        {'@id': 'http://culudb-silex.dev:8080/event/9ca8f1e9-40bf-4719-9449-c4f0d92d98ee', '@type': 'Place'}
+        {'@id': 'http://culudb-silex.dev:8080/place/f01900c5-4384-49fb-92a8-5019f7470973', '@type': 'udb:Place'},
+        {'@id': 'http://culudb-silex.dev:8080/place/cb3a4573-5612-4b1c-8a3d-3ba4bcd1d031', '@type': 'udb:Place'},
+        {'@id': 'http://culudb-silex.dev:8080/event/9ca8f1e9-40bf-4719-9449-c4f0d92d98ee', '@type': 'udb:Place'}
       ],
       totalItems: 3
     });
