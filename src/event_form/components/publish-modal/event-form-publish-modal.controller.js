@@ -17,33 +17,31 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   efpmc.error = '';
   efpmc.hasPublicationDate = false;
   efpmc.publicationDate = eventFormData.availableFrom;
-  efpmc.maxDate = null;
-  var tomorrow = moment()
-    .add(1, 'days')
-    .startOf('day');
+  efpmc.maxDate = moment(eventFormData.getEarliestStartDate()).subtract(1, 'days').toDate();
+  efpmc.opened = false;
   efpmc.dismiss = dismiss;
   efpmc.savePublicationDate = savePublicationDate;
   efpmc.onFocus = onFocus;
+  efpmc.toggleDatePicker = toggleDatePicker;
 
-  if (eventFormData.calendarType === 'single' || eventFormData.calendarType === 'multiple') {
-    var allStartHoursAsDate = _.pluck(eventFormData.timestamps, 'startHourAsDate');
-    var earliestStartDate = Math.min.apply(null, allStartHoursAsDate);
-    efpmc.maxDate = moment(earliestStartDate).subtract(1, 'days');
-  }
-
-  if (eventFormData.calendarType === 'periodic') {
-    efpmc.maxDate = eventFormData.getStartDate();
-  }
+  var tomorrow = moment()
+    .add(1, 'days')
+    .startOf('day')
+    .toDate();
 
   efpmc.drp = {
     dateFormat: 'dd/MM/yyyy',
     startOpened: false,
     options: {
-      minDate: tomorrow.toDate(),
-      maxDate: efpmc.maxDate.toDate(),
+      minDate: tomorrow,
+      maxDate: efpmc.maxDate,
       showWeeks: false
     }
   };
+
+  function toggleDatePicker() {
+    efpmc.opened = !efpmc.opened;
+  }
 
   function dismiss() {
     $uibModalInstance.dismiss();

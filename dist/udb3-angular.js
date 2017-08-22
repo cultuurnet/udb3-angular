@@ -10524,33 +10524,31 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   efpmc.error = '';
   efpmc.hasPublicationDate = false;
   efpmc.publicationDate = eventFormData.availableFrom;
-  efpmc.maxDate = null;
-  var tomorrow = moment()
-    .add(1, 'days')
-    .startOf('day');
+  efpmc.maxDate = moment(eventFormData.getEarliestStartDate()).subtract(1, 'days').toDate();
+  efpmc.opened = false;
   efpmc.dismiss = dismiss;
   efpmc.savePublicationDate = savePublicationDate;
   efpmc.onFocus = onFocus;
+  efpmc.toggleDatePicker = toggleDatePicker;
 
-  if (eventFormData.calendarType === 'single' || eventFormData.calendarType === 'multiple') {
-    var allStartHoursAsDate = _.pluck(eventFormData.timestamps, 'startHourAsDate');
-    var earliestStartDate = Math.min.apply(null, allStartHoursAsDate);
-    efpmc.maxDate = moment(earliestStartDate).subtract(1, 'days');
-  }
-
-  if (eventFormData.calendarType === 'periodic') {
-    efpmc.maxDate = eventFormData.getStartDate();
-  }
+  var tomorrow = moment()
+    .add(1, 'days')
+    .startOf('day')
+    .toDate();
 
   efpmc.drp = {
     dateFormat: 'dd/MM/yyyy',
     startOpened: false,
     options: {
-      minDate: tomorrow.toDate(),
-      maxDate: efpmc.maxDate.toDate(),
+      minDate: tomorrow,
+      maxDate: efpmc.maxDate,
       showWeeks: false
     }
   };
+
+  function toggleDatePicker() {
+    efpmc.opened = !efpmc.opened;
+  }
 
   function dismiss() {
     $uibModalInstance.dismiss();
@@ -11409,6 +11407,20 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.activeCalendarType = '';
     },
 
+    getEarliestStartDate: function() {
+      var earliestStartDate = null;
+      if (this.calendarType === 'single' || this.calendarType === 'multiple') {
+        console.log(this.timestamps);
+        var allStartHoursAsDate = _.pluck(this.timestamps, 'startHourAsDate');
+        earliestStartDate = moment(Math.min.apply(null, allStartHoursAsDate)).toDate();
+      }
+
+      if (eventFormData.calendarType === 'periodic') {
+        earliestStartDate = this.getStartDate();
+      }
+      return earliestStartDate;
+    },
+
     /**
      * Get the type that will be saved.
      */
@@ -12162,6 +12174,7 @@ function EventFormPublishController(
   var controller = this;
 
   controller.publish = publish;
+  controller.canPublishLater = canPublishLater;
   controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
@@ -12170,10 +12183,29 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate', '');
+
   controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
   if (!controller.hasNoDefault && isDraft) {
     controller.eventFormData.availableFrom = defaultPublicationDate;
+  }
+
+  function canPublishLater() {
+    var tomorrow = moment()
+      .add(1, 'days')
+      .startOf('day')
+      .toDate();
+
+    var check;
+    if (controller.eventFormData.getEarliestStartDate()) {
+      check = controller.eventFormData.getEarliestStartDate() > tomorrow;
+    } else {
+      check = true;
+    }
+
+    check = check && controller.hasNoDefault;
+    check = check && isDraft(controller.eventFormData.workflowStatus);
+    return check;
   }
 
   function publish() {
@@ -25008,29 +25040,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
     "  <p>Vanaf wanneer mag dit online verschijnen? <em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>\n" +
     "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <div class=\"radio\">\n" +
-    "          <label>\n" +
-    "            Op\n" +
-    "          </label>\n" +
-    "        </div>\n" +
-    "        <div class=\"form-group\">\n" +
-    "          <div class=\"input-group\">\n" +
-    "            <input  type=\"text\"\n" +
-    "                    class=\"form-control\"\n" +
-    "                    uib-datepicker-popup=\"{{efpmc.drp.dateFormat}}\"\n" +
-    "                    ng-model=\"efpmc.publicationDate\"\n" +
-    "                    is-open=\"efpmc.drp.startOpened\"\n" +
-    "                    ng-required=\"true\"\n" +
-    "                    ng-focus=\"efpmc.onFocus()\"\n" +
-    "                    datepicker-options=\"efpmc.drp.options\"/>\n" +
-    "            <span class=\"input-group-btn\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.drp.startOpened = !efpmc.drp.startOpened\">\n" +
-    "            <i class=\"fa fa-calendar\"></i>\n" +
-    "            </button>\n" +
-    "            </span>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
+    "      <div class=\"input-group\">\n" +
+    "      <input\n" +
+    "             class=\"form-control\"\n" +
+    "             type=\"text\"\n" +
+    "             uib-datepicker-popup=\"dd/MM/yyyy\"\n" +
+    "             datepicker-options=\"efpmc.drp.options\"\n" +
+    "             ng-model=\"efpmc.publicationDate\"\n" +
+    "             show-button-bar=\"false\"\n" +
+    "             on-open-focus=\"true\"\n" +
+    "             is-open=\"efpmc.opened\"\n" +
+    "             ng-required=\"true\"\n" +
+    "             ng-click=\"efpmc.toggleDatePicker()\" />\n" +
+    "      <span class=\"input-group-btn\">\n" +
+    "          <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.toggleDatePicker()\">\n" +
+    "              <i class=\"fa fa-calendar\" aria-hidden=\"true\"></i>\n" +
+    "          </button>\n" +
+    "      </span>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <br>\n" +
@@ -25316,7 +25342,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
     "      <button class=\"btn btn-default\"\n" +
     "              ng-click=\"efpc.publishLater()\"\n" +
-    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Later publiceren</button>\n" +
+    "              ng-if=\"efpc.canPublishLater()\">Later publiceren</button>\n" +
     "      <button type=\"submit\"\n" +
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.preview()\"\n" +
