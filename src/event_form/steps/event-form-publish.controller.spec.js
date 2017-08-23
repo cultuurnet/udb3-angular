@@ -163,7 +163,7 @@ describe('Controller: Event Form Publish', function () {
     jasmine.clock().mockDate(today);
     var controller = getController();
     expect(controller.canPublishLater()).toEqual(false);
-  })
+  });
 
   it('should show the "Publish later"-button for permanent events ', function () {
     EventFormData.init();

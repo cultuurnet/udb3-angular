@@ -46,16 +46,13 @@ function EventFormPublishController(
       .startOf('day')
       .toDate();
 
-    var check;
-    if (controller.eventFormData.getEarliestStartDate()) {
-      check = controller.eventFormData.getEarliestStartDate() > tomorrow;
-    } else {
-      check = true;
+    var startDate = controller.eventFormData.getEarliestStartDate();
+
+    if (startDate && startDate < tomorrow) {
+      return false;
     }
 
-    check = check && controller.hasNoDefault;
-    check = check && isDraft(controller.eventFormData.workflowStatus);
-    return check;
+    return controller.hasNoDefault && isDraft(controller.eventFormData.workflowStatus);
   }
 
   function publish() {
