@@ -146,7 +146,7 @@ describe('Controller: Event Form Publish', function () {
     expect(controller.canPublishLater()).toEqual(true);
   });
 
-  it('should show the "Publish later"-button if an event has an earliest startdate earlier then tomorrow', function () {
+  it('should not show the "Publish later"-button if an event has an earliest startdate earlier then tomorrow', function () {
     EventFormData.init();
     EventFormData.calendarType = "multiple";
     EventFormData.timestamps = [

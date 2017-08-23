@@ -11407,10 +11407,12 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.activeCalendarType = '';
     },
 
+    /**
+     * Get the earliest date of an offer, or null for permanent events
+     */
     getEarliestStartDate: function() {
       var earliestStartDate = null;
       if (this.calendarType === 'single' || this.calendarType === 'multiple') {
-        console.log(this.timestamps);
         var allStartHoursAsDate = _.pluck(this.timestamps, 'startHourAsDate');
         earliestStartDate = moment(Math.min.apply(null, allStartHoursAsDate)).toDate();
       }
@@ -12183,8 +12185,7 @@ function EventFormPublishController(
   // main storage for event form.
   controller.eventFormData = EventFormData;
 
-  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate', '');
-
+  var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
   controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
   if (!controller.hasNoDefault && isDraft) {
     controller.eventFormData.availableFrom = defaultPublicationDate;
