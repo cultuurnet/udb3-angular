@@ -14,22 +14,29 @@ describe('Controller: Publish Form Modal', function() {
   beforeEach(inject(function($rootScope, _$controller_, $injector) {
     $controller = _$controller_;
     $scope = $rootScope.$new();
-    $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close','dismiss']);
+    $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close', 'dismiss']);
     eventFormData = $injector.get('EventFormData');
+    eventFormData.calendarType = 'single';
+    eventFormData.timestamps = [
+      {
+        date : new Date(),
+        startHourAsDate: new Date()
+      }
+    ];
     eventCrud = jasmine.createSpyObj('eventCrud', [
       'publishOffer'
     ]);
     publishEvent = eventCrud.publishOffer;
   }));
 
-  function getController() {
+  function getController(formData) {
     return $controller(
       'EventFormPublishModalController', {
         $scope: $scope,
         $uibModalInstance: $uibModalInstance,
-        eventFormData: eventFormData,
+        eventFormData: formData || eventFormData,
         eventCrud: eventCrud,
-        publishEvent: publishEvent,
+        publishEvent: publishEvent
       }
     );
   }
@@ -46,23 +53,70 @@ describe('Controller: Publish Form Modal', function() {
     expect(controller.drp.startOpened).toBeTruthy();
   });
 
- it('should not throw an error when the publicationdate is a day in the future', function(){
+ it('should not throw an error when the publication date is a day in the future', function(){
     var controller = getController();
     controller.publicationDate = new Date('10/03/3000');
     controller.savePublicationDate();
     expect(controller.error).toBeFalsy();
   });
 
-  it('should throw an error when the publicationdate is a day in the past',function(){
+  it('should throw an error when the publication date is a day in the past',function(){
     var controller = getController();
     controller.publicationDate = new Date('10/03/300');
     controller.savePublicationDate();
     expect(controller.error).toBeTruthy();
   });
 
-  it('should dismiss the modal when dimissed', function(){
+  it('should dismiss the modal when dismissed', function(){
     var controller = getController();
     controller.dismiss();
-  })
+    expect($uibModalInstance.dismiss).toHaveBeenCalled();
+  });
 
+  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer with timestamps', function () {
+    var formData = _.cloneDeep(eventFormData);
+    formData.timestamps = [
+      {
+        startHourAsDate: new Date(2017, 9, 23)
+      },
+      {
+        startHourAsDate: new Date(2017, 8, 16)
+      }
+    ];
+    var today = new Date(2017, 6, 23);
+
+    formData.setStartDate(new Date('10/03/3000'));
+    jasmine.clock().mockDate(today);
+
+    var controller = getController(formData);
+    var latestPublicationDate = controller.drp.options.maxDate;
+
+    expect(latestPublicationDate).toEqual(new Date(2017, 8, 15));
+  });
+
+  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer with a period', function () {
+    var formData = _.cloneDeep(eventFormData);
+    var today = new Date(2017, 6, 23);
+
+    formData.setStartDate(new Date(2017, 6, 23));
+    jasmine.clock().mockDate(today);
+
+    var controller = getController(formData);
+    var latestPublicationDate = controller.drp.options.maxDate;
+
+    expect(latestPublicationDate).toEqual(new Date(2017, 6, 22));
+  });
+
+  it('should lower limit the publication dates to choose from to a day after today', function () {
+    var formData = _.cloneDeep(eventFormData);
+    var today = new Date(2017, 9, 23);
+
+    formData.setStartDate(new Date('10/03/3000'));
+    jasmine.clock().mockDate(today);
+
+    var controller = getController(formData);
+    var earliestPublicationDate = controller.drp.options.minDate;
+
+    expect(earliestPublicationDate).toEqual(new Date('10/24/2017'));
+  });
 });
