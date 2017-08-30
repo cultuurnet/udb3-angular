@@ -953,6 +953,22 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  // unlabelOffer
+  it('should unlabel an offer and encode url', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var label = '#hash';
+    var url = offerLocation + '/labels/' + encodeURIComponent(label);
+
+    $httpBackend
+      .expectDELETE(url)
+      .respond();
+    service
+      .unlabelOffer(offerLocation, label)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
   // deleteOffer
   it('should delete an offer', function(done){
     var offer = {

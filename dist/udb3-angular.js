@@ -3551,8 +3551,9 @@ function UdbApi(
    * @return {Promise}
    */
   this.unlabelOffer = function (offerLocation, label) {
+    // @see https://stackoverflow.com/questions/332872/encode-url-in-javascript
     return $http
-      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .delete(offerLocation + '/labels/' + encodeURIComponent(label), defaultApiConfig)
       .catch(returnApiProblem);
   };
 
