@@ -3056,7 +3056,7 @@ function UdbApi(
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + uitidAuth.getToken(),
-      'x-api-key': _.get(appConfig, 'apiKey')
+      'X-Api-Key': _.get(appConfig, 'apiKey')
     },
     params: {}
   };

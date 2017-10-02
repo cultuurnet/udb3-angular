@@ -8,6 +8,7 @@ describe('Service: UDB3 Api', function () {
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
       baseUrl: baseUrl,
+      apiKey: 'secret api key',
       baseApiUrl: baseUrl,
       baseSearchUrl: baseUrl
     };
@@ -43,7 +44,8 @@ describe('Service: UDB3 Api', function () {
     var headers = {
       'Content-Type': 'application/ld+json;domain-model=RenameRole',
       'Authorization': 'Bearer ' + jwt,
-      'Accept': 'application/json, text/plain, */*'
+      'Accept': 'application/json, text/plain, */*',
+      'X-Api-Key': 'secret api key'
     };
 
     // in order for the headers to match we also need the getMe()
@@ -614,6 +616,7 @@ describe('Service: UDB3 Api', function () {
     var expectedHeaders = {
       'Content-Type': 'application/ld+json;domain-model=SetConstraint',
       'Authorization': 'Bearer bob',
+      'X-Api-Key': 'secret api key',
       'Accept': 'application/json, text/plain, */*'
     };
 
@@ -1455,7 +1458,8 @@ describe('Service: UDB3 Api', function () {
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer undefined'
+        'Authorization': 'Bearer undefined',
+        'X-Api-Key': 'secret api key'
       },
       params: {},
       url: baseUrl + 'images',
@@ -2276,6 +2280,7 @@ describe('Service: UDB3 Api', function () {
     var headers = {
       'Content-Type': 'application/ld+json;domain-model=Approve',
       "Authorization":"Bearer undefined",
+      "X-Api-Key":"secret api key",
       "Accept":"application/json, text/plain, */*"
     };
 
@@ -2303,6 +2308,7 @@ describe('Service: UDB3 Api', function () {
     var headers = {
       'Content-Type': 'application/ld+json;domain-model=Reject',
       "Authorization":"Bearer undefined",
+      "X-Api-Key":"secret api key",
       "Accept":"application/json, text/plain, */*"
     };
 
