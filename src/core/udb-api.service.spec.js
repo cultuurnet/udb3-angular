@@ -1462,7 +1462,7 @@ describe('Service: UDB3 Api', function () {
         'X-Api-Key': 'secret api key'
       },
       params: {},
-      url: baseUrl + 'images',
+      url: baseUrl + 'images/',
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,

@@ -892,7 +892,7 @@ function UdbApi(
 
   this.uploadMedia = function (imageFile, description, copyrightHolder) {
     var uploadOptions = {
-      url: appConfig.baseUrl + 'images',
+      url: appConfig.baseUrl + 'images/',
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,
