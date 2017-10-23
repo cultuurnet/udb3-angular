@@ -9,7 +9,7 @@
               ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault">Meteen publiceren</button>
       <button class="btn btn-default"
               ng-click="efpc.publishLater()"
-              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault">Later publiceren</button>
+              ng-if="efpc.canPublishLater()">Later publiceren</button>
       <button type="submit"
               class="btn btn-success"
               ng-click="efpc.preview()"

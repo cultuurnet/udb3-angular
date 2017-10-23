@@ -317,6 +317,22 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
+     * Get the earliest date of an offer, or null for permanent events
+     */
+    getEarliestStartDate: function() {
+      var earliestStartDate = null;
+      if (this.calendarType === 'single' || this.calendarType === 'multiple') {
+        var allStartHoursAsDate = _.pluck(this.timestamps, 'startHourAsDate');
+        earliestStartDate = moment(Math.min.apply(null, allStartHoursAsDate)).toDate();
+      }
+
+      if (eventFormData.calendarType === 'periodic') {
+        earliestStartDate = this.getStartDate();
+      }
+      return earliestStartDate;
+    },
+
+    /**
      * Get the type that will be saved.
      */
     getType: function() {
