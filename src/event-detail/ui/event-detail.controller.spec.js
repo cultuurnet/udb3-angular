@@ -216,8 +216,6 @@ describe('Controller: Event Detail', function() {
     deferredUpdate = $q.defer();
     spyOn(offerEditor, 'editDescription').and.returnValue(deferredUpdate.promise);
 
-    spyOn(udbApi, 'getHistory').and.returnValue($q.reject());
-
     spyOn(udbApi, 'getCalendarSummary').and.returnValue($q.reject());
 
     eventController = $controller(
@@ -256,10 +254,6 @@ describe('Controller: Event Detail', function() {
     );
 
     expect($scope.eventId).toEqual(eventId);
-
-    expect(udbApi.getHistory).toHaveBeenCalledWith(
-      'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
-    );
 
   });
 
