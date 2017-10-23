@@ -24,9 +24,8 @@ angular
 /**
  * @ngInject
  */
-function MediaManager(jobLogger, appConfig, CreateImageJob, $q, $http, udbApi) {
+function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
   var service = this;
-  var baseUrl = appConfig.baseUrl;
 
   /**
    * @param {File} imageFile

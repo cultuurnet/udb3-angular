@@ -260,6 +260,7 @@ describe('Controller: Event Detail', function() {
     expect(udbApi.getHistory).toHaveBeenCalledWith(
       'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
+
   });
 
   it('should loads the event description from the variation', function () {
@@ -502,5 +503,29 @@ describe('Controller: Event Detail', function() {
     ModerationService.find.and.returnValue($q.resolve({}));
     $scope.$digest();
     expect($scope.moderationPermission).toEqual(undefined);
+  });
+
+  it('should fetch the history when activating the tab', function () {
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    deferredVariation.reject('there is no personal variation for offer');
+    var expectedHistory = [
+      {
+        "date":"2017-06-13T08:48:25+00:00",
+        "description":"Aangemaakt in UiTdatabank",
+        "author":"bramcordie_1"
+      }
+    ];
+    spyOn(udbApi, 'getHistory').and.returnValue($q.resolve(expectedHistory));
+    $scope.$digest();
+
+    expect($scope.eventHistory).toEqual(undefined);
+
+    $scope.makeTabActive('history');
+    $scope.$digest();
+
+    expect(udbApi.getHistory).toHaveBeenCalledWith(
+      'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+    );
+    expect($scope.eventHistory).toEqual(expectedHistory);
   });
 });

@@ -23,30 +23,44 @@ function UdbContactInfoValidationDirective() {
 
   function link (scope, elem, attrs, ngModel) {
     // Scope methods.
+    scope.loadInfo = loadInfo;
     scope.validateInfo = validateInfo;
     scope.clearInfo = clearInfo;
     scope.infoErrorMessage = '';
+
+    scope.$on('organizerContactRefresh', function() {
+      validateInfo();
+    });
+
+    function loadInfo() {
+      if (ngModel.$modelValue.value !== '') {
+        ngModel.$setValidity('contactinfo', true);
+        scope.infoErrorMessage = '';
+        validateInfo();
+      }
+    }
 
     /**
      * Validate the entered info.
      */
     function validateInfo() {
 
-      ngModel.$setValidity('contactinfo', true);
-      scope.infoErrorMessage = '';
-
-      if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
-        EMAIL_REGEXP.test(ngModel.$modelValue.value);
-        scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen';
+      if (ngModel.$modelValue.value === '' || ngModel.$modelValue.value === undefined) {
+        scope.infoErrorMessage = 'Gelieve dit veld niet leeg te laten.';
         ngModel.$setValidity('contactinfo', false);
-
       }
-      else if (ngModel.$modelValue.type === 'url') {
-        var viewValue = ngModel.$viewValue;
-
-        if (!URL_REGEXP.test(viewValue.value)) {
-          scope.infoErrorMessage = 'Gelieve een geldige url in te vullen';
+      else {
+        if (ngModel.$modelValue.type === 'email' && !EMAIL_REGEXP.test(ngModel.$modelValue.value)) {
+          scope.infoErrorMessage = 'Gelieve een geldig e-mailadres in te vullen.';
           ngModel.$setValidity('contactinfo', false);
+        }
+        else if (ngModel.$modelValue.type === 'url') {
+          var viewValue = ngModel.$viewValue;
+
+          if (!URL_REGEXP.test(viewValue.value)) {
+            scope.infoErrorMessage = 'Gelieve een geldige url in te vullen.';
+            ngModel.$setValidity('contactinfo', false);
+          }
         }
       }
     }

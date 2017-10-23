@@ -49,7 +49,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, $rootScope) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
 
   /**
    * @class EventFormData
@@ -317,6 +317,22 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
+     * Get the earliest date of an offer, or null for permanent events
+     */
+    getEarliestStartDate: function() {
+      var earliestStartDate = null;
+      if (this.calendarType === 'single' || this.calendarType === 'multiple') {
+        var allStartHoursAsDate = _.pluck(this.timestamps, 'startHourAsDate');
+        earliestStartDate = moment(Math.min.apply(null, allStartHoursAsDate)).toDate();
+      }
+
+      if (eventFormData.calendarType === 'periodic') {
+        earliestStartDate = this.getStartDate();
+      }
+      return earliestStartDate;
+    },
+
+    /**
      * Get the type that will be saved.
      */
     getType: function() {
@@ -464,6 +480,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
+      this.showStep(3);
       this.timingChangedCallback(this);
     },
 
@@ -477,8 +494,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     setCalendarType: function (type) {
       var formData = this;
-
-      formData.showStep(3);
 
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.

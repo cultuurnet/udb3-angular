@@ -32,6 +32,9 @@ angular.module('udb.core')
     '=_DATE': 'is gelijk aan',
     '><_DATE': 'tussen',
     'choice': {
+      'everyone': 'iedereen',
+      'members': 'leden',
+      'education': 'onderwijs',
       'asc': 'oplopend',
       'desc': 'aflopend',
       'today': 'vandaag',
@@ -46,6 +49,7 @@ angular.module('udb.core')
       'next12months': 'volgende 12 maanden',
       'permanent': 'permanent',
       'event': 'event',
+      'place': 'locatie',
       'actor': 'actor',
       'production': 'productie',
       'nl': 'Nederlands',
@@ -349,6 +353,40 @@ angular.module('udb.core')
       'translations': 'Vertalingen',
       'other': 'Andere'
     },
+    'queryFieldLabel': {
+      'cdbid': 'identificatiecode (CDBID)',
+      'offertype': 'type (aanbod)',
+      'keywords': 'label',
+      'title': 'titel',
+      'category_eventtype_name': 'type (activiteit)',
+      'locationtype': 'type (locatie)',
+      'category_theme_name': 'thema',
+      'text': 'tekst',
+      'city': 'gemeente (naam)',
+      'zipcode': 'postcode',
+      'location_id': 'locatie (id)',
+      'country': 'land',
+      'location_label': 'locatie (naam)',
+      'category_flandersregion_name': 'regio / gemeente',
+      'date': 'datum',
+      'permanent': 'permanent',
+      'lastupdated': 'laatst aangepast',
+      'creationdate': 'gecreëerd',
+      'createdby': 'gecreëerd door',
+      'availablefrom': 'datum beschikbaar',
+      'detail_lang': 'vertaling',
+      'organiser_keywords': 'label organisatie',
+      'organiser_id': 'organisatie (id)',
+      'agefrom': 'leeftijd',
+      'price': 'prijs',
+      'organiser_label': 'organisatie (naam)',
+      'category_facility_name': 'voorzieningen',
+      'category_targetaudience_name': 'doelgroep',
+      'startdate': 'startdatum',
+      'enddate': 'einddatum',
+      'lastupdatedby': 'laatst aangepast door',
+      'category_publicscope_name': 'publieksbereik'
+    },
     'EVENT-EXPORT': {
       'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
     },
@@ -368,7 +406,7 @@ angular.module('udb.core')
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
-      'dayOfWeek': 'Er is minstens 1 openingsdag verplicht voor elke set van openingsuren.',
+      'dayOfWeek': 'Kies minstens één dag in elke rij die je toevoegde.',
       'openIsBeforeClose': 'Gelieve een sluitingstijd in te geven die later is dan de openingstijd.'
     },
     'TIME_SPAN_REQUIREMENTS': {

@@ -17,13 +17,19 @@ describe('Controller: Event Form Publish', function () {
     $location = jasmine.createSpyObj('$location', ['path']);
   }));
 
-  function getController() {
-    return $controller('EventFormPublishController', {
+  function getController(appConfig) {
+    var dependencies = {
       $scope: $scope,
       EventFormData: EventFormData,
       eventCrud: eventCrud,
       $location: $location
-    });
+    };
+
+    if (appConfig) {
+      dependencies.appConfig = appConfig;
+    }
+
+    return $controller('EventFormPublishController', dependencies);
   }
 
   it('should publish an offer when not published already', function () {
@@ -97,6 +103,115 @@ describe('Controller: Event Form Publish', function () {
     var controller = getController();
     EventFormData.init();
     EventFormData.availableFrom = 'da86358c-d52c-429b-89c6-7adffd64ab55';
-    
+  });
+
+  it('should use the default publication date if a valid date is configured', function () {
+    var configWithDefaultPublicationDate = {
+      offerEditor: {
+        defaultPublicationDate: "2017-08-01"
+      }
+    };
+    var controller = getController(configWithDefaultPublicationDate);
+
+    expect(controller.hasNoDefault).toEqual(false);
+  });
+
+  it('should ask for a publication date if no valid date is configured', function () {
+    var configWithEmptyPublicationDate = {
+      offerEditor: {
+        defaultPublicationDate: ""
+      }
+    };
+    var controller = getController(configWithEmptyPublicationDate);
+
+    expect(controller.hasNoDefault).toEqual(true);
+  });
+
+  it('should show the "Publish later"-button if an event has an earliest startdate later then tomorrow', function () {
+    EventFormData.init();
+    EventFormData.calendarType = "multiple";
+    EventFormData.timestamps = [
+      {
+        startHourAsDate: new Date(2017, 9, 23)
+      },
+      {
+        startHourAsDate: new Date(2017, 8, 22)
+      }
+    ];
+    EventFormData.hasNoDefault = true;
+    EventFormData.workflowStatus = 'DRAFT';
+    var today = new Date(2017, 8, 19);
+    jasmine.clock().mockDate(today);
+    var controller = getController();
+    expect(controller.canPublishLater()).toEqual(true);
+  });
+
+  it('should not show the "Publish later"-button if an event has an earliest startdate earlier then tomorrow', function () {
+    EventFormData.init();
+    EventFormData.calendarType = "multiple";
+    EventFormData.timestamps = [
+      {
+        startHourAsDate: new Date(2017, 9, 23)
+      },
+      {
+        startHourAsDate: new Date(2017, 8, 22)
+      }
+    ];
+    EventFormData.hasNoDefault = true;
+    EventFormData.workflowStatus = 'DRAFT';
+    var today = new Date(2017, 8, 23);
+    jasmine.clock().mockDate(today);
+    var controller = getController();
+    expect(controller.canPublishLater()).toEqual(false);
+  });
+
+  it('should show the "Publish later"-button for periodic events that start after today', function () {
+    EventFormData.init();
+    EventFormData.calendarType = "periodic";
+    EventFormData.hasNoDefault = true;
+    EventFormData.workflowStatus = 'DRAFT';
+    EventFormData.setStartDate(new Date(2017, 8, 24));
+    EventFormData.setEndDate(new Date(2018, 8, 23));
+    var today = new Date(2017, 8, 23);
+    jasmine.clock().mockDate(today);
+    var controller = getController();
+    expect(controller.canPublishLater()).toEqual(true);
+  });
+
+  it('should not show the "Publish later"-button for periodic events that start today', function () {
+    EventFormData.init();
+    EventFormData.calendarType = "periodic";
+    EventFormData.hasNoDefault = true;
+    EventFormData.workflowStatus = 'DRAFT';
+    EventFormData.setStartDate(new Date(2017, 8, 23));
+    EventFormData.setEndDate(new Date(2018, 8, 23));
+    var today = new Date(2017, 8, 23);
+    jasmine.clock().mockDate(today);
+    var controller = getController();
+    expect(controller.canPublishLater()).toEqual(false);
+  });
+
+  it('should not show the "Publish later"-button for periodic events that already started', function () {
+    EventFormData.init();
+    EventFormData.calendarType = "periodic";
+    EventFormData.hasNoDefault = true;
+    EventFormData.workflowStatus = 'DRAFT';
+    EventFormData.setStartDate(new Date(2016, 8, 23));
+    EventFormData.setEndDate(new Date(2018, 8, 23));
+    var today = new Date(2017, 8, 23);
+    jasmine.clock().mockDate(today);
+    var controller = getController();
+    expect(controller.canPublishLater()).toEqual(false);
+  });
+
+  it('should always show the "Publish later"-button for permanent events ', function () {
+    EventFormData.init();
+    EventFormData.calendarType = "permanent";
+    EventFormData.hasNoDefault = true;
+    EventFormData.workflowStatus = 'DRAFT';
+    var today = new Date(2017, 8, 23);
+    jasmine.clock().mockDate(today);
+    var controller = getController();
+    expect(controller.canPublishLater()).toEqual(true);
   });
 });

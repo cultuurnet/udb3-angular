@@ -1,6 +1,6 @@
 'use strict';
 
-describe('Controller: Search', function() {
+describe('Controller: SearchController', function() {
   var $scope,
     $window,
     udbApi,
@@ -9,7 +9,9 @@ describe('Controller: Search', function() {
     $location,
     $q,
     $uibModal,
-    searchHelper;
+    searchHelper,
+    searchApiSwitcher,
+    queryBuilder;
 
   beforeEach(module('udb.core', function ($translateProvider) {
     $translateProvider.translations('en', {
@@ -35,8 +37,12 @@ describe('Controller: Search', function() {
     $window = {
       alert: jasmine.createSpy('alert')
     };
-    udbApi = jasmine.createSpyObj('udbApi', ['findEvents', 'getEventById', 'exportEvents']);
-    udbApi.findEvents.and.returnValue($q.reject('nope'));
+    udbApi = jasmine.createSpyObj('udbApi', ['getEventById', 'exportEvents']);
+    searchApiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['findOffers', 'getQueryBuilder']);
+    searchApiSwitcher.findOffers.and.returnValue($q.reject('nope'));
+
+    queryBuilder = jasmine.createSpyObj('queryBuilder', ['isValid']);
+    searchApiSwitcher.getQueryBuilder.and.returnValue(queryBuilder);
 
     $location = jasmine.createSpyObj('$location', ['search']);
     $location.search.and.returnValue({});
@@ -46,14 +52,15 @@ describe('Controller: Search', function() {
 
   function getController() {
     return $controller(
-      'Search', {
+      'SearchController', {
         $scope: $scope,
         $window: $window,
         udbApi: udbApi,
         offerLabeller: offerLabeller,
         $location: $location,
         searchHelper: searchHelper,
-        $uibModal: $uibModal
+        $uibModal: $uibModal,
+        searchApiSwitcher: searchApiSwitcher
       }
     );
   }
@@ -70,6 +77,7 @@ describe('Controller: Search', function() {
       '@type':'Event'
     };
 
+    queryBuilder.isValid.and.returnValue(true);
 
     $scope.resultViewer.selectedOffers = [event, place];
     $scope.exportEvents();

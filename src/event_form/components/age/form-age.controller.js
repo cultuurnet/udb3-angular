@@ -59,7 +59,7 @@ function FormAgeController($scope, EventFormData, eventCrud) {
     }
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
-      showError('De minimum ouderdom mag niet hoger zijn dan maximum.'); return;
+      showError('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);

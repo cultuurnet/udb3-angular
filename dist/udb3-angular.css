@@ -3143,10 +3143,61 @@ form.booking-period table {
 .padding-left-12-5 {
   padding-left: 12.5px;
 }
-.uib-datepicker-popup .btn.disabled,
-.uib-datepicker-popup .btn[disabled],
-.uib-datepicker-popup fieldset[disabled] .btn {
-  display: none;
+.permanent-title {
+  font-size: 2rem;
+  font-weight: 300;
+  color: #555555;
+  display: block;
+  line-height: 1.5;
+}
+.permanent-subtitle {
+  font-size: 1.25rem;
+  color: #555555;
+  display: block;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+.uib-separator {
+  padding: 0 5px;
+  color: #222222;
+}
+.uib-timepicker {
+  display: inline-block;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  height: 34px;
+}
+.uib-timepicker input {
+  margin-top: -1px;
+}
+.opening-hours-labels {
+  font-weight: 700;
+}
+.extra-beschrijving .loader {
+  border-radius: 6px;
+  margin-left: 6px;
+  width: 100px;
+  position: relative;
+  height: 1em;
+  display: inline-block;
+}
+.extra-beschrijving .empty {
+  width: 100%;
+  background-color: #e0e0e0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+.extra-beschrijving .bar {
+  background-color: #5cb85c;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+.extra-beschrijving .description-info {
+  font-size: small;
 }
 .muted td {
   background-color: #EDEDED;
@@ -9778,11 +9829,7 @@ button.close {
 .opening-hours .opening-hours-labels:before,
 .opening-hours .opening-hours-labels:after,
 .opening-hours .opening-hours-set:before,
-.opening-hours .opening-hours-set:after,
-.opening-hours-week-schedule:before,
-.opening-hours-week-schedule:after,
-.form-calendar-period .periodic-info:before,
-.form-calendar-period .periodic-info:after {
+.opening-hours .opening-hours-set:after {
   content: " ";
   display: table;
 }
@@ -9805,9 +9852,7 @@ button.close {
 .calendar-type-picker:after,
 .calendar-time-span:after,
 .opening-hours .opening-hours-labels:after,
-.opening-hours .opening-hours-set:after,
-.opening-hours-week-schedule:after,
-.form-calendar-period .periodic-info:after {
+.opening-hours .opening-hours-set:after {
   clear: both;
 }
 .center-block {
@@ -10077,46 +10122,51 @@ button.close {
 .calendar-type-options a,
 .calendar-type-options span {
   min-height: 50px;
+  display: inline-block;
+  width: 20%;
 }
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .calendar-type-options a,
   .calendar-type-options span {
-    float: left;
+    width: 100%;
+    min-height: 0;
   }
 }
 .or {
-  padding: 20px;
-}
-@media (min-width: 768px) {
-  .or {
-    padding: 40px 20px;
-  }
+  text-align: center;
+  font-style: italic;
 }
 .calendar-type-options a {
+  background-color: #FFF;
   border: 1px solid #ccc;
   padding: 10px;
   display: inline-block;
-  width: 220px;
+  width: 40%;
   position: relative;
+}
+@media (max-width: 768px) {
+  .calendar-type-options a {
+    width: 100%;
+  }
 }
 .calendar-type-icon {
   margin: 0 auto;
   width: 50px;
   display: block;
 }
-.selected {
-  background-color: #CFE5D0;
+.calendar-type-options .selected {
+  background-color: #c7e6c7;
 }
-.selected:after {
+.calendar-type-options .selected:after {
   font-family: "FontAwesome";
-  color: green;
+  color: #5cb85c;
   content: "\f058";
   position: absolute;
   top: -6px;
   left: -6px;
-  font-size: 16px;
+  font-size: 17px;
 }
-.selected:before {
+.calendar-type-options .selected:before {
   font-family: "FontAwesome";
   color: white;
   content: "\f111";
@@ -10169,6 +10219,9 @@ button.close {
     float: left;
     width: 16.66666667%;
   }
+}
+.calendar-time-span .time label {
+  display: block;
 }
 .calendar-time-span .requirements {
   position: relative;
@@ -10280,7 +10333,7 @@ button.close {
     width: 100%;
   }
 }
-.close {
+.calendar-time-spans .close {
   right: 15px;
   z-index: 9999;
   position: absolute;
@@ -10290,29 +10343,21 @@ button.close {
   border-top: 1px solid #eee;
   padding-top: 10px;
 }
-.opening-hours-week-schedule {
-  margin-left: -15px;
-  margin-right: -15px;
+.form-calendar-period .periodic-info:before,
+.form-calendar-period .periodic-info:after {
+  content: " ";
+  display: table;
 }
-.opening-hours-week-schedule .time-table,
-.opening-hours-week-schedule .empty {
-  float: left;
-  width: 100%;
-  position: relative;
-  min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+.form-calendar-period .periodic-info:after {
+  clear: both;
 }
-@media (min-width: 768px) {
-  .opening-hours-week-schedule .time-table,
-  .opening-hours-week-schedule .empty {
-    float: left;
-    width: 66.66666667%;
-  }
+.form-calendar-period .periodic-info:before,
+.form-calendar-period .periodic-info:after {
+  content: " ";
+  display: table;
 }
-.form-calendar-period .periodic-info {
-  margin-left: -15px;
-  margin-right: -15px;
+.form-calendar-period .periodic-info:after {
+  clear: both;
 }
 .form-calendar-period .periodic-info .start-date,
 .form-calendar-period .periodic-info .end-date {
@@ -10332,7 +10377,7 @@ button.close {
   .form-calendar-period .periodic-info .start-date,
   .form-calendar-period .periodic-info .end-date {
     float: left;
-    width: 25%;
+    width: 33.33333333%;
   }
 }
 .form-calendar-period .periodic-info .requirements {
@@ -10452,4 +10497,8 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success
 .organization-search-item.deleted {
   opacity: 0.2;
   pointer-events: none;
+}
+.contact-row {
+  margin-top: 15px;
+  margin-bottom: 15px;
 }

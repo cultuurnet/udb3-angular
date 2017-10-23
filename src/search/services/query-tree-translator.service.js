@@ -12,25 +12,21 @@ angular
   .service('QueryTreeTranslator', QueryTreeTranslator);
 
 /* @ngInject */
-function QueryTreeTranslator(queryFieldTranslations) {
-
-  var translations = queryFieldTranslations;
-
+function QueryTreeTranslator(queryFieldTranslations, queryFields) {
   /**
    * @param {string} field    - The field to translate.
    * @param {string} srcLang  - To source language to translate from.
    */
   var translateField = function (field, srcLang) {
-    var translation = field,
-      identifier = _.findKey(translations[srcLang], function (src) {
-        return src === field;
-      });
+    var translatableFieldName = _.findKey(queryFieldTranslations[srcLang], function (src) {
+      return src === field;
+    });
 
-    if (identifier) {
-      translation = identifier.toLowerCase();
-    }
+    var queryField = (undefined === translatableFieldName) ?
+      undefined :
+      _.find(queryFields, {name: translatableFieldName.toLowerCase()});
 
-    return translation;
+    return (undefined === queryField) ? field : queryField.field;
   };
 
   var translateNode = function (node, depth) {
@@ -53,6 +49,7 @@ function QueryTreeTranslator(queryFieldTranslations) {
     }
 
     if (node.field) {
+      node.field = translateField(node.field, 'sapi2');
       node.field = translateField(node.field, 'en');
       node.field = translateField(node.field, 'nl');
     }

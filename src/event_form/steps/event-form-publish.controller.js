@@ -25,6 +25,7 @@ function EventFormPublishController(
   var controller = this;
 
   controller.publish = publish;
+  controller.canPublishLater = canPublishLater;
   controller.publishLater = publishLater;
   controller.preview = preview;
   controller.isDraft = isDraft;
@@ -34,9 +35,24 @@ function EventFormPublishController(
   controller.eventFormData = EventFormData;
 
   var defaultPublicationDate = _.get(appConfig, 'offerEditor.defaultPublicationDate');
-  controller.hasNoDefault = (defaultPublicationDate === null || typeof defaultPublicationDate === 'undefined');
+  controller.hasNoDefault = isNaN(Date.parse(defaultPublicationDate));
   if (!controller.hasNoDefault && isDraft) {
     controller.eventFormData.availableFrom = defaultPublicationDate;
+  }
+
+  function canPublishLater() {
+    var tomorrow = moment()
+      .add(1, 'days')
+      .startOf('day')
+      .toDate();
+
+    var startDate = controller.eventFormData.getEarliestStartDate();
+
+    if (startDate && startDate < tomorrow) {
+      return false;
+    }
+
+    return controller.hasNoDefault && isDraft(controller.eventFormData.workflowStatus);
   }
 
   function publish() {

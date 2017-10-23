@@ -71,6 +71,14 @@ describe('Factory: UDB Organizer', function () {
       'email': 'info@silo.be',
       'phone': '+32 476 838982',
       'url': 'http://foo.bar',
+      'contactPoint': {
+        'email': [
+          'info@silo.be'
+        ],
+        'phone': [
+          '+32 476 838982'
+        ]
+      },
       'labels': [
         'green',
         'UiTPAS'
@@ -98,9 +106,8 @@ describe('Factory: UDB Organizer', function () {
     expect(organizer.labels).toEqual(expectedCombinedLabels);
   }));
 
-  it('it can take into account name_deprecated', inject(function (UdbOrganizer) {
-    jsonOrganizer.name_deprecated = jsonOrganizer.name;
-    jsonOrganizer.name = undefined;
+  it('it can take into account translated name', inject(function (UdbOrganizer) {
+    jsonOrganizer.name = {nl : jsonOrganizer.name};
 
     var organizer = new UdbOrganizer(jsonOrganizer);
     expect(organizer.name).toEqual('Club Silo');

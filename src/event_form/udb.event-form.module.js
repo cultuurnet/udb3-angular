@@ -9,6 +9,7 @@
 angular
   .module('udb.event-form', [
     'ngSanitize',
+    'ngMessages',
     'ui.bootstrap',
     'udb.config',
     'udb.entry',

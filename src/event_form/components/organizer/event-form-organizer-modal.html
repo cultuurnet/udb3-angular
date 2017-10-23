@@ -58,104 +58,12 @@
           </div>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-sm-12 col-md-8">
-          <div class="form-group">
-            <label>Straat en nummer</label>
-            <input type="text" class="form-control" name="street" ng-model="newOrganizer.address.streetAddress">
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-sm-12 col-md-8">
-          <div class="form-group">
-            <label for="organizer-gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity !== ''">
-              Gemeente
-            </label>
-            <div id="gemeente-kiezer" ng-hide="selectedCity !== ''">
-            <input id="organizer-gemeente-autocomplete"
-                   type="text"
-                   class="form-control uib-typeahead"
-                   placeholder="Gemeente of postcode"
-                   ng-model="cityAutocompleteTextField"
-                   uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
-                   typeahead-on-select="selectCity($item, $label)"
-                   typeahead-min-length="2"
-                   typeahead-template-url="templates/city-suggestion.html"
-                   autocomplete="off">
-              <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
-                Er was een probleem tijdens het ophalen van de steden.
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group" id="gemeente-gekozen" ng-if="selectedCity">
-            <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::selectedCity"></span>
-            <a href="#" class="btn btn-default btn-link" ng-click="changeCitySelection()">Wijzigen</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-sm-12">
-          <p><strong>Contact</strong></p>
-        </div>
-        <div class="col-sm-12">
-
-          <div ng-show="newOrganizer.contact.length === 0">
-            <ul class="list-unstyled">
-              <li><a ng-click="addOrganizerContactInfo('phone')" href="#">Telefoonnummer toevoegen</a></li>
-              <li><a ng-click="addOrganizerContactInfo('email')" href="#">E-mailadres toevoegen</a></li>
-              <li><a ng-click="addOrganizerContactInfo('url')" href="#">Andere website toevoegen</a></li>
-            </ul>
-          </div>
-
-          <table class="table" ng-show="newOrganizer.contact.length">
-            <tr ng-repeat="(key, info) in newOrganizer.contact"
-                ng-model="info"
-                udb-contact-info-validation
-                ng-class="{'has-error' : infoErrorMessage !== '' }">
-              <td>
-                <select class="form-control" ng-model="info.type" ng-change="clearInfo();">
-                  <option value="url">Website</option>
-                  <option value="phone">Telefoonnummer</option>
-                  <option value="email">E-mailadres</option>
-                </select>
-              </td>
-              <td ng-switch="info.type">
-                <input type="text"
-                       ng-switch-when="url"
-                       udb-http-prefix
-                       class="form-control"
-                       ng-model="info.value"
-                       name="contact[{{key}}]"
-                       ng-change="validateInfo()"
-                       ng-model-options="{ updateOn: 'blur' }"/>
-                <input type="text"
-                       ng-switch-default
-                       class="form-control"
-                       ng-model="info.value"
-                       name="contact[{{key}}]"
-                       ng-change="validateInfo()"
-                       ng-model-options="{ updateOn: 'blur' }"/>
-                <span class="help-block" ng-if="infoErrorMessage" ng-bind="::infoErrorMessage"></span>
-              </td>
-              <td>
-                <button type="button" class="close" aria-label="Close" ng-click="deleteOrganizerContactInfo(key)">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="3"><a ng-click="addOrganizerContactInfo('url')" href="#">Meer contactgegevens toevoegen</a>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
     </form>
+
+    <udb-organizer-address address="newOrganizer.address"
+                           on-update="validateAddress(error)"></udb-organizer-address>
+    <udb-organizer-contact contact="newOrganizer.contact"
+                           on-update="validateContact(error)"></udb-organizer-contact>
   </section>
 
   <section ng-show="organizersFound">
@@ -196,8 +104,12 @@
 
   </section>
 
-  <div class="alert alert-danger" ng-show="error">
+  <div class="alert alert-danger" ng-show="saveError">
     Er ging iets fout tijdens het opslaan van je organisatie.
+  </div>
+  <div class="alert alert-danger" ng-show="error && (addressError || contactError)">
+    <p ng-show="addressError">Gelieve een geldig adres in te vullen.<br /></p>
+    <p ng-show="contactError">Gelieve alle contactinfo correct in te vullen.<br /></p>
   </div>
 
 </div>

@@ -39,10 +39,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description vars.
   $scope.description = EventFormData.getDescription('nl');
-  $scope.focusDescription = false;
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
+  $scope.originalDescription = '';
 
   // Organizer vars.
   $scope.organizerCssClass = EventFormData.organizer.name ? 'state-complete' : 'state-incomplete';
@@ -102,7 +102,9 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
 
   // Description functions.
   $scope.alterDescription = alterDescription;
+  $scope.focusDescription = focusDescription;
   $scope.saveDescription = saveDescription;
+  $scope.countCharacters = countCharacters;
 
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
@@ -133,41 +135,62 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function alterDescription() {
     $scope.descriptionCssClass = 'state-filling';
-    $scope.focusDescription = true;
+  }
+
+  function focusDescription () {
+    $scope.descriptionInfoVisible = true;
+    $scope.originalDescription = $scope.description;
   }
 
   /**
    * Save the description.
    */
-  function saveDescription() {
+  function saveDescription(allowEmpty) {
 
-    $scope.savingDescription = true;
-    $scope.descriptionError = false;
-    $scope.focusDescription = false;
+    if (allowEmpty) {
+      $scope.description = '';
+    }
 
-    EventFormData.setDescription($scope.description, 'nl');
+    // only update description when there is one, it's not empty and it's not already saved; or when we allow empty
+    var emptyAllowed = ($scope.description && $scope.description !== '') || allowEmpty;
+    var notTheSame = ($scope.description !== $scope.originalDescription) || allowEmpty;
+    if (emptyAllowed && notTheSame) {
 
-    var promise = eventCrud.updateDescription(EventFormData, $scope.description);
-    promise.then(function() {
+      $scope.descriptionInfoVisible = false;
+      $scope.savingDescription = true;
+      $scope.descriptionError = false;
 
-      $scope.savingDescription = false;
-      controller.eventFormSaved();
+      EventFormData.setDescription($scope.description, 'nl');
 
-      // Toggle correct class.
-      if ($scope.description) {
-        $scope.descriptionCssClass = 'state-complete';
-      }
-      else {
-        $scope.descriptionCssClass = 'state-incomplete';
-      }
+      var promise = eventCrud.updateDescription(EventFormData, $scope.description);
+      promise.then(function() {
 
-    },
-    // Error occured, show message.
-    function() {
-      $scope.savingDescription = false;
-      $scope.descriptionError = true;
-    });
+        $scope.savingDescription = false;
+        controller.eventFormSaved();
 
+        // Toggle correct class.
+        if ($scope.description) {
+          $scope.descriptionCssClass = 'state-complete';
+        }
+        else {
+          $scope.descriptionCssClass = 'state-incomplete';
+        }
+
+      },
+       // Error occured, show message.
+      function() {
+        $scope.savingDescription = false;
+        $scope.descriptionError = true;
+      });
+    }
+  }
+  /**
+   * Count characters in the description.
+   */
+  function countCharacters() {
+    if ($scope.description) {
+      return $scope.description.length;
+    }
   }
 
   controller.eventFormSaved = function () {
@@ -231,6 +254,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
+      backdrop: 'static',
       templateUrl: 'templates/event-form-organizer-modal.html',
       controller: 'EventFormOrganizerModalController',
       resolve: {
