@@ -23,7 +23,12 @@ angular
 function OrganizerContactComponent($scope) {
   var controller = this;
 
+  controller.newContact = {};
+
+  controller.addingContactEntry = false;
   controller.validateContact = validateContact;
+  controller.addOrganizerContactEntry = addOrganizerContactEntry;
+  controller.cancelOrganizerContactEntry = cancelOrganizerContactEntry;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
@@ -44,15 +49,39 @@ function OrganizerContactComponent($scope) {
     sendUpdate();
   }
 
+  function resetOrganizerContactEntry() {
+    controller.newContact = {
+      type : '',
+      value : ''
+    };
+  }
+
   /**
    * Add a contact info entry for an organizer.
    */
-  function addOrganizerContactInfo(type) {
-    controller.contact.push({
+  function addOrganizerContactEntry(type) {
+    controller.newContact = {
       type : type,
       value : ''
-    });
+    };
+    controller.addingContactEntry = true;
+  }
+
+  /**
+   * Add a contact info entry for an organizer.
+   */
+  function cancelOrganizerContactEntry() {
+    resetOrganizerContactEntry();
+    controller.addingContactEntry = false;
+  }
+
+  /* */
+  function addOrganizerContactInfo() {
     validateContact();
+    if(!controller.contactHasErrors) {
+      controller.addingContactEntry = false;
+      controller.contact.push(controller.newContact);
+    }
   }
 
   /**
