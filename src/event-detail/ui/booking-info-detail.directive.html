@@ -2,7 +2,7 @@
     <td>
         <span class="row-label">Reservatie</span>
     </td>
-    <td ng-if="::(!isEmpty(bookingInfo) && (bookingInfo.phone !== null || bookingInfo.email !== null || bookingInfo.url !== null))">
+    <td ng-if="hasAtLeastOneContactPoint()">
         <ul class="list-unstyled" >
             <li ng-if="::bookingInfo.url">
                     <span>
@@ -16,5 +16,5 @@
             <li ng-if="::bookingInfo.availabilityStarts" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>
         </ul>
     </td>
-    <td ng-if="::(isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null))">Geen reservatie-informatie</td>
+    <td ng-if="!hasAtLeastOneContactPoint()">Geen reservatie-informatie</td>
 </tr>
