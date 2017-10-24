@@ -78,7 +78,7 @@ function OrganizerContactComponent($scope) {
   /* */
   function addOrganizerContactInfo() {
     validateContact();
-    if(!controller.contactHasErrors) {
+    if (!controller.contactHasErrors) {
       controller.contact.push(controller.newContact);
       resetOrganizerContactEntry();
       controller.addingContactEntry = false;
