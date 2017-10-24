@@ -79,7 +79,8 @@ function UdbApi(
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + uitidAuth.getToken()
+      'Authorization': 'Bearer ' + uitidAuth.getToken(),
+      'X-Api-Key': _.get(appConfig, 'apiKey')
     },
     params: {}
   };
@@ -152,7 +153,7 @@ function UdbApi(
     }
 
     return $http
-      .get(appConfig.baseSearchUrl + 'offers/', withoutAuthorization(requestOptions))
+      .get(appConfig.baseUrl + 'offers/', withoutAuthorization(requestOptions))
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -267,7 +268,7 @@ function UdbApi(
     var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
 
     return $http
-      .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
+      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
   };
 
@@ -575,8 +576,9 @@ function UdbApi(
    * @return {Promise}
    */
   this.unlabelOffer = function (offerLocation, label) {
+    // @see https://stackoverflow.com/questions/332872/encode-url-in-javascript
     return $http
-      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .delete(offerLocation + '/labels/' + encodeURIComponent(label), defaultApiConfig)
       .catch(returnApiProblem);
   };
 
@@ -890,7 +892,7 @@ function UdbApi(
 
   this.uploadMedia = function (imageFile, description, copyrightHolder) {
     var uploadOptions = {
-      url: appConfig.baseUrl + 'images',
+      url: appConfig.baseUrl + 'images/',
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,

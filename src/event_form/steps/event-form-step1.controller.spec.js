@@ -60,14 +60,14 @@ describe('Controller: event form step 1', function () {
     expect(EventFormData.showStep5).toEqual(false);
   });
 
-  it('should only show the next step when creating an offer with an event type', function () {
+  it('should only show the next two steps when creating an offer with an event type', function () {
     stepController.init(EventFormData);
     var eventType = {id:'1.2.1.0.0',label:'Architectuur'};
 
     scope.setEventType(eventType, true);
 
     expect(EventFormData.showStep2).toEqual(true);
-    expect(EventFormData.showStep3).toEqual(false);
+    expect(EventFormData.showStep3).toEqual(true);
     expect(EventFormData.showStep4).toEqual(false);
     expect(EventFormData.showStep5).toEqual(false);
   });

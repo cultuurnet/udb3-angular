@@ -145,9 +145,16 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   /**
    * Save the description.
    */
-  function saveDescription() {
-    // only update description when there is one, it's not empty and it's not already saved
-    if ($scope.description && $scope.description !== '' && $scope.description !== $scope.originalDescription) {
+  function saveDescription(allowEmpty) {
+
+    if (allowEmpty) {
+      $scope.description = '';
+    }
+
+    // only update description when there is one, it's not empty and it's not already saved; or when we allow empty
+    var emptyAllowed = ($scope.description && $scope.description !== '') || allowEmpty;
+    var notTheSame = ($scope.description !== $scope.originalDescription) || allowEmpty;
+    if (emptyAllowed && notTheSame) {
 
       $scope.descriptionInfoVisible = false;
       $scope.savingDescription = true;
@@ -247,6 +254,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function openOrganizerModal() {
     var modalInstance = $uibModal.open({
+      backdrop: 'static',
       templateUrl: 'templates/event-form-organizer-modal.html',
       controller: 'EventFormOrganizerModalController',
       resolve: {
