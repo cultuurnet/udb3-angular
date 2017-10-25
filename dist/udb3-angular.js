@@ -9154,7 +9154,7 @@ function EventFormImageEditController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyrightHolder;
+    return $scope.description && $scope.copyrightHolder && $scope.copyrightHolder.length >= 3;
   }
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
@@ -9358,7 +9358,7 @@ function EventFormImageUploadController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyright && $scope.selectedFile;
+    return $scope.description && $scope.copyright && $scope.selectedFile && $scope.copyright.length >= 3;
   }
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
@@ -24238,7 +24238,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\" required>\n" +
     "        <p class=\"help-block\">\n" +
-    "          Vermeld de naam van de rechtenhoudende fotograaf.</p>\n" +
+    "          Vermeld de naam van de rechtenhoudende fotograaf (minimum 3 karakters).</p>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -24336,7 +24336,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyright\" required>\n" +
     "        <p class=\"help-block\">\n" +
-    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit.</p>\n" +
+    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).</p>\n" +
     "      </div>\n" +
     "\n" +
     "      <p class=\"image-copyright-agreements\">\n" +
