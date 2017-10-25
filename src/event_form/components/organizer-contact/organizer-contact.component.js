@@ -32,6 +32,7 @@ function OrganizerContactComponent($scope) {
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
+  controller.isPristine = true;
 
   $scope.$on('organizerContactSubmit', function() {
     controller.organizerContactWrapper.$setSubmitted();
@@ -73,6 +74,7 @@ function OrganizerContactComponent($scope) {
   function cancelOrganizerContactEntry() {
     resetOrganizerContactEntry();
     controller.addingContactEntry = false;
+    controller.isPristine = true;
   }
 
   /* */
@@ -82,6 +84,7 @@ function OrganizerContactComponent($scope) {
       controller.contact.push(controller.newContact);
       resetOrganizerContactEntry();
       controller.addingContactEntry = false;
+      controller.isPristine = true;
     }
   }
 
@@ -97,4 +100,12 @@ function OrganizerContactComponent($scope) {
     controller.onUpdate({error: controller.contactHasErrors});
   }
 
+  $scope.$watch(function() {
+      return controller.newContact;
+  }, function(value) {
+      console.log(value);
+      if (value && value.value !== '') {
+          controller.isPristine = false;
+      }
+  }, true);
 }
