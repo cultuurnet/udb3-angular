@@ -9154,7 +9154,7 @@ function EventFormImageEditController(
   }
 
   function allFieldsValid() {
-    return ($scope.description !== '') && ($scope.copyrightHolder !== '');
+    return $scope.description && $scope.copyrightHolder;
   }
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
