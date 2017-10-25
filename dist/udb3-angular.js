@@ -9118,6 +9118,7 @@ function EventFormImageEditController(
   // Scope functions.
   $scope.cancel = cancel;
   $scope.updateImageInfo = updateImageInfo;
+  $scope.allFieldsValid = allFieldsValid;
 
   /**
    * Cancel the modal.
@@ -9152,6 +9153,9 @@ function EventFormImageEditController(
       .then(updateEventFormDataAndClose, displayErrors);
   }
 
+  function allFieldsValid() {
+    return $scope.description && $scope.copyrightHolder;
+  }
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
 })();
@@ -24251,7 +24255,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-footer\">\n" +
     "\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateImageInfo()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateImageInfo()\" ng-disabled=\"!allFieldsValid() && saving\">\n" +
     "      Bijwerken <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
