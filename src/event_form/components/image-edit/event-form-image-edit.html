@@ -9,16 +9,16 @@
 
     <div>
       <div class="form-group">
-        <label>Beschrijving</label>
-        <input type="text" class="form-control" ng-model="description">
+        <label>Beschrijving <strong class="text-danger">*</strong></label>
+        <input type="text" class="form-control" ng-model="description" required>
         <p class="help-block">
           Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.
         </p>
       </div>
 
       <div class="form-group">
-        <label>Copyright</label>
-        <input type="text" class="form-control" ng-model="copyrightHolder">
+        <label>Copyright <strong class="text-danger">*</strong></label>
+        <input type="text" class="form-control" ng-model="copyrightHolder" required>
         <p class="help-block">
           Vermeld de naam van de rechtenhoudende fotograaf.</p>
       </div>
@@ -43,4 +43,3 @@
 
   </div>
 </div>
-
