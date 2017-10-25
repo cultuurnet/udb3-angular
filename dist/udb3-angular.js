@@ -9921,6 +9921,7 @@ function OrganizerContactComponent($scope) {
       resetOrganizerContactEntry();
       controller.addingContactEntry = false;
       controller.isPristine = true;
+      sendUpdate();
     }
   }
 
@@ -9937,12 +9938,11 @@ function OrganizerContactComponent($scope) {
   }
 
   $scope.$watch(function() {
-      return controller.newContact;
+    return controller.newContact;
   }, function(value) {
-      if (value && value.value && value.value !== '') {
-          console.log(value.value);
-          controller.isPristine = false;
-      }
+    if (value && value.value && value.value !== '') {
+      controller.isPristine = false;
+    }
   }, true);
 }
 OrganizerContactComponent.$inject = ["$scope"];
@@ -15795,9 +15795,7 @@ function OrganizerEditController(
    * Validate the new organizer.
    */
   function validateOrganizer() {
-
     controller.showValidation = true;
-
     if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||
         controller.addressError || controller.contactError) {
