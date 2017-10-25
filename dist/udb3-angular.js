@@ -24223,16 +24223,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div>\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving</label>\n" +
-    "        <input type=\"text\" class=\"form-control\" ng-model=\"description\">\n" +
+    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "        <p class=\"help-block\">\n" +
     "          Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.\n" +
     "        </p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright</label>\n" +
-    "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\">\n" +
+    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\" required>\n" +
     "        <p class=\"help-block\">\n" +
     "          Vermeld de naam van de rechtenhoudende fotograaf.</p>\n" +
     "      </div>\n" +
@@ -24256,8 +24256,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
-    "</div>\n" +
-    "\n"
+    "</div>\n"
   );
 
 
