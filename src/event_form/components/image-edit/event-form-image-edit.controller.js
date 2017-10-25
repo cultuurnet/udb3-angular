@@ -30,6 +30,7 @@ function EventFormImageEditController(
   // Scope functions.
   $scope.cancel = cancel;
   $scope.updateImageInfo = updateImageInfo;
+  $scope.allFieldsValid = allFieldsValid;
 
   /**
    * Cancel the modal.
@@ -64,4 +65,7 @@ function EventFormImageEditController(
       .then(updateEventFormDataAndClose, displayErrors);
   }
 
+  function allFieldsValid() {
+    return $scope.description && $scope.copyrightHolder && $scope.copyrightHolder.length >= 3;
+  }
 }
