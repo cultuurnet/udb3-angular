@@ -9118,6 +9118,7 @@ function EventFormImageEditController(
   // Scope functions.
   $scope.cancel = cancel;
   $scope.updateImageInfo = updateImageInfo;
+  $scope.allFieldsValid = allFieldsValid;
 
   /**
    * Cancel the modal.
@@ -9152,6 +9153,9 @@ function EventFormImageEditController(
       .then(updateEventFormDataAndClose, displayErrors);
   }
 
+  function allFieldsValid() {
+    return $scope.description && $scope.copyrightHolder && $scope.copyrightHolder.length >= 3;
+  }
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
 })();
@@ -9354,7 +9358,7 @@ function EventFormImageUploadController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyright && $scope.selectedFile;
+    return $scope.description && $scope.copyright && $scope.selectedFile && $scope.copyright.length >= 3;
   }
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
@@ -24223,18 +24227,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div>\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving</label>\n" +
-    "        <input type=\"text\" class=\"form-control\" ng-model=\"description\">\n" +
+    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "        <p class=\"help-block\">\n" +
     "          Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.\n" +
     "        </p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright</label>\n" +
-    "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\">\n" +
+    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\" required>\n" +
     "        <p class=\"help-block\">\n" +
-    "          Vermeld de naam van de rechtenhoudende fotograaf.</p>\n" +
+    "          Vermeld de naam van de rechtenhoudende fotograaf (minimum 3 karakters).</p>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -24251,13 +24255,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-footer\">\n" +
     "\n" +
     "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateImageInfo()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateImageInfo()\" ng-disabled=\"!allFieldsValid() || saving\">\n" +
     "      Bijwerken <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
-    "</div>\n" +
-    "\n"
+    "</div>\n"
   );
 
 
@@ -24333,7 +24336,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyright\" required>\n" +
     "        <p class=\"help-block\">\n" +
-    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit.</p>\n" +
+    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).</p>\n" +
     "      </div>\n" +
     "\n" +
     "      <p class=\"image-copyright-agreements\">\n" +
