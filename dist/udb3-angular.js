@@ -9861,13 +9861,13 @@ function OrganizerContactComponent($scope) {
   controller.newContact = {};
 
   controller.addingContactEntry = false;
+  controller.isPristine = true;
   controller.validateContact = validateContact;
   controller.addOrganizerContactEntry = addOrganizerContactEntry;
   controller.cancelOrganizerContactEntry = cancelOrganizerContactEntry;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
-  controller.isPristine = true;
 
   $scope.$on('organizerContactSubmit', function() {
     controller.organizerContactWrapper.$setSubmitted();
@@ -9900,6 +9900,7 @@ function OrganizerContactComponent($scope) {
       type : type,
       value : ''
     };
+    controller.isPristine = true;
     controller.addingContactEntry = true;
   }
 
@@ -9938,8 +9939,8 @@ function OrganizerContactComponent($scope) {
   $scope.$watch(function() {
       return controller.newContact;
   }, function(value) {
-      console.log(value);
-      if (value && value.value !== '') {
+      if (value && value.value && value.value !== '') {
+          console.log(value.value);
           controller.isPristine = false;
       }
   }, true);
@@ -24618,8 +24619,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
     "              <ng-form name=\"urlContactForm\">\n" +
-    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true, updateOn: 'change'}\" required>\n" +
-    "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!controller.isPristine && urlContactForm.url.$error\">\n" +
+    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          Gelieve dit veld niet leeg te laten.\n" +
     "                      </p>\n" +
@@ -24631,8 +24632,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "          <div ng-switch-when=\"email\" class=\"form-group\" ng-class=\"{ 'has-error': mailContactForm.email.$touched && mailContactForm.email.$invalid }\">\n" +
     "              <ng-form name=\"mailContactForm\">\n" +
-    "                  <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-model-options=\"{allowInvalid:true, updateOn: 'change'}\" required>\n" +
-    "                  <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"!controller.isPristine && mailContactForm.email.$error\">\n" +
+    "                  <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"!occ.isPristine && mailContactForm.email.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          Gelieve dit veld niet leeg te laten.\n" +
     "                      </p>\n" +
@@ -24644,8 +24645,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "          <div ng-switch-default class=\"form-group\" ng-class=\"{ 'has-error': phoneContactForm.phone.$touched && phoneContactForm.phone.$invalid }\">\n" +
     "              <ng-form name=\"phoneContactForm\">\n" +
-    "                  <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true, updateOn: 'change'}\" required>\n" +
-    "                  <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"!controller.isPristine && phoneContactForm.phone.$error\">\n" +
+    "                  <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"!occ.isPristine && phoneContactForm.phone.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          Gelieve dit veld niet leeg te laten.\n" +
     "                      </p>\n" +
@@ -24660,7 +24661,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            Annuleren\n" +
     "        </button>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\">\n" +
+    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\">\n" +
     "            Toevoegen\n" +
     "        </button>\n" +
     "\n" +
