@@ -37,7 +37,7 @@
   <div class="modal-footer">
 
     <button type="button" class="btn btn-default" ng-click="cancel()">Annuleren</button>
-    <button type="button" class="btn btn-primary" ng-click="updateImageInfo()" ng-disabled="!allFieldsValid() && saving">
+    <button type="button" class="btn btn-primary" ng-click="updateImageInfo()" ng-disabled="!allFieldsValid() || saving">
       Bijwerken <i ng-show="saving" class="fa fa-circle-o-notch fa-spin"></i>
     </button>
 
