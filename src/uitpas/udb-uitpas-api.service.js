@@ -30,42 +30,75 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
     },
     params: {}
   };
-  /**
-   * @param {string} eventId
-   *
-   * @return {Promise.<string[]>}
-   */
-  this.getEventUitpasData = function(eventId) {
-    return $http
-      .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', defaultApiConfig)
-      .then(returnUnwrappedData);
-  };
 
   /**
-   * Update UiTPAS info for an event.
-   * @param {string[]} distributionKeys
    * @param {string} eventId
-   *
-   * @return {Promise.<CommandInfo>}
+   * @return {Promise.<CardSystem[]>}
    */
-  this.updateEventUitpasData = function(distributionKeys, eventId) {
+  this.getEventCardSystems = function(eventId) {
     return $http
-      .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', distributionKeys, defaultApiConfig)
-      .then(returnUnwrappedData);
+      .get(uitpasApiUrl + 'events/' + eventId + '/cardSystems/', defaultApiConfig)
+      .then(returnUnwrappedData, returnEmptyCollection);
   };
 
   /**
    * @param {string} organizerId of the organizer
-   *
    * @return {Promise.<Cardsystem[]>}
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
       .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
+      .then(returnUnwrappedData, returnEmptyCollection);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @return {Promise.<Object>}
+   */
+  this.addEventCardSystem = function(eventId, cardSystemId) {
+    return $http
+      .put(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        defaultApiConfig
+      )
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @return {Promise.<Object>}
+   */
+  this.removeEventCardSystem = function(eventId, cardSystemId) {
+    return $http
+      .delete(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        defaultApiConfig
+      )
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @param {string} distributionKeyId
+   * @return {Promise.<Object>}
+   */
+  this.addEventCardSystemDistributionKey = function(eventId, cardSystemId, distributionKeyId) {
+    return $http
+      .put(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/' + distributionKeyId,
+        defaultApiConfig
+      )
       .then(returnUnwrappedData);
   };
 
   function returnUnwrappedData(response) {
     return $q.resolve(response.data);
+  }
+
+  function returnEmptyCollection() {
+    return $q.resolve([]);
   }
 }
