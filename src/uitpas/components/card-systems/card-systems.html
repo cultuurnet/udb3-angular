@@ -9,7 +9,7 @@
                         <input type="checkbox"
                                disabled="disabled"
                                ng-model="cardSystem.active"
-                               ng-change="cardSystemSelector.activeCardSystemsChanged()">
+                               ng-change="cardSystemSelector.activeCardSystemsChanged(cardSystem)">
                             <span ng-bind="::cardSystem.name"></span>
                     </label>
                 </div>
@@ -19,7 +19,7 @@
             <div class="col-sm-6" ng-if="cardSystem.distributionKeys.length">
                 <select ng-model="cardSystem.assignedDistributionKey"
                         ng-options="key as key.name for key in cardSystem.distributionKeys track by key.id"
-                        ng-change="cardSystemSelector.distributionKeyAssigned()">
+                        ng-change="cardSystemSelector.distributionKeyAssigned(cardSystem)">
                     <option value="">--Selecteer een verdeelsleutel--</option>
                 </select>
             </div>
