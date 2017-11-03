@@ -23062,8 +23062,9 @@ angular
   .module('udb.uitpas')
   .service('udbUitpasApi', UdbUitpasApi);
 
-function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout) {
+function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
+  var uitpasMaxDelay = _.get(appConfig, 'uitpasMaxDelay', 8);
   var defaultApiConfig = {
     withCredentials: true,
     headers: {
@@ -23088,7 +23089,9 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout) {
       return $http.get(uitpasApiUrl + 'events/' + eventId + '/cardSystems/', defaultApiConfig);
     }
 
-    return retry(request, 1, 8).then(returnUnwrappedData, returnEmptyCollection);
+    var until = moment().add(uitpasMaxDelay, 's');
+
+    return retry(request, 2, until).then(returnUnwrappedData, returnEmptyCollection);
   };
 
   /**
@@ -23156,25 +23159,25 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout) {
    * @param {function} repeatable
    *  A promise returning function without arguments.
    *
-   *  @param {number} delay
+   * @param {number} delay
+   *  The number of seconds to delay between consecutive requests.
    *
-   *  @param {number} maxDelay
+   * @param {moment} limit
+   *  The moment that marks the time limit.
    */
-  function retry(repeatable, delay, maxDelay) {
-    delay = delay < 0 ? 1 : delay;
-
+  function retry(repeatable, delay, limit) {
     function retryLater(error) {
-      return delay > maxDelay ?
+      return moment().add(delay, 'seconds').isAfter(limit) ?
         $q.reject(error) :
         $timeout(function () {
-          return retry(repeatable, (delay * 2), maxDelay);
+          return retry(repeatable, delay, limit);
         }, delay);
     }
 
     return repeatable().catch(retryLater);
   }
 }
-UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth", "$timeout"];
+UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth", "$timeout", "moment"];
 })();
 
 // Source: src/uitpas/uitpas-labels.provider.js
