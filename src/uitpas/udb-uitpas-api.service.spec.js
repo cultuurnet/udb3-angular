@@ -2,7 +2,7 @@
 
 describe('Service: UDB3 Uitpas Api', function () {
 
-  var $httpBackend, $scope, service, uitidAuth;
+  var $httpBackend, $scope, $timeout, service, uitidAuth;
 
   var appConfig = {
     uitpasUrl: 'http://uit.pas/'
@@ -10,12 +10,21 @@ describe('Service: UDB3 Uitpas Api', function () {
 
   beforeEach(module('udb.core', function ($provide) {
     uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
+    $timeout = function (callable) {
+      return callable();
+    };
 
     $provide.constant('appConfig', appConfig);
 
     $provide.provider('uitidAuth', {
       $get: function () {
         return uitidAuth;
+      }
+    });
+
+    $provide.provider('$timeout', {
+      $get: function () {
+        return $timeout;
       }
     });
   }));
@@ -46,6 +55,62 @@ describe('Service: UDB3 Uitpas Api', function () {
     service
       .getEventCardSystems(cdbid)
       .then(done);
+
+    $httpBackend.flush();
+  });
+
+  it('should poke UiTPAS a few times until the card systems of an event return', function (done) {
+    var response = [{
+      id: 'D0AB7BED-4073-4566-B984-BD48D7B016FE',
+      name: 'test system',
+      distributionKeys: [
+        {
+          id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
+          name: 'test key'
+        }
+      ]
+    }];
+    var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+
+    $httpBackend
+      .expectGET('http://uit.pas/events/' + cdbid + '/cardSystems/')
+      .respond(404, 'unknown event');
+
+    $httpBackend
+      .expectGET('http://uit.pas/events/' + cdbid + '/cardSystems/')
+      .respond(404, 'unknown event');
+
+    $httpBackend
+      .expectGET('http://uit.pas/events/' + cdbid + '/cardSystems/')
+      .respond(JSON.stringify(response));
+
+    service
+      .getEventCardSystems(cdbid)
+      .then(function (cardSystems) {
+        expect(cardSystems.length).toEqual(1);
+        done();
+      });
+
+    $httpBackend.flush();
+  });
+
+  it('should return an empty collection when UiTPAS repeatedly fails to return the card systems for an event', function (done) {
+    var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+
+    function expectCardSystemsRequest() {
+      $httpBackend
+        .expectGET('http://uit.pas/events/' + cdbid + '/cardSystems/')
+        .respond(404, 'unknown event');
+    }
+
+    function assertEmptyCollection(cardSystems) {
+      expect(cardSystems).toEqual([]);
+      done();
+    }
+
+    _.times(5, expectCardSystemsRequest);
+
+    service.getEventCardSystems(cdbid).then(assertEmptyCollection);
 
     $httpBackend.flush();
   });

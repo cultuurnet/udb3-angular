@@ -23043,7 +23043,7 @@ function uitpasOrganisationSuggestion() {
 'use strict';
 
 /**
- * @typedef {Object} Cardsystem
+ * @typedef {Object} CardSystem
  * @property {string} id
  *  a number serialized as a string
  * @property {string} name
@@ -23062,7 +23062,7 @@ angular
   .module('udb.uitpas')
   .service('udbUitpasApi', UdbUitpasApi);
 
-function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
+function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout) {
   var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
   var defaultApiConfig = {
     withCredentials: true,
@@ -23074,18 +23074,26 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
   };
 
   /**
+   * Events are automatically registered by UiTPAS but there can be some delay.
+   * In the meantime the UiTPAS API will not known about the event.
+   * Make sure to poke UiTPAS a few times before giving up.
+   *
+   * An empty collection is returned if UiTPAS repeatedly fails on an event.
+   *
    * @param {string} eventId
    * @return {Promise.<CardSystem[]>}
    */
   this.getEventCardSystems = function(eventId) {
-    return $http
-      .get(uitpasApiUrl + 'events/' + eventId + '/cardSystems/', defaultApiConfig)
-      .then(returnUnwrappedData, returnEmptyCollection);
+    function request () {
+      return $http.get(uitpasApiUrl + 'events/' + eventId + '/cardSystems/', defaultApiConfig);
+    }
+
+    return retry(request, 1, 8).then(returnUnwrappedData, returnEmptyCollection);
   };
 
   /**
    * @param {string} organizerId of the organizer
-   * @return {Promise.<Cardsystem[]>}
+   * @return {Promise.<CardSystem[]>}
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
@@ -23143,8 +23151,30 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
   function returnEmptyCollection() {
     return $q.resolve([]);
   }
+
+  /**
+   * @param {function} repeatable
+   *  A promise returning function without arguments.
+   *
+   *  @param {number} delay
+   *
+   *  @param {number} maxDelay
+   */
+  function retry(repeatable, delay, maxDelay) {
+    delay = delay < 0 ? 1 : delay;
+
+    function retryLater(error) {
+      return delay > maxDelay ?
+        $q.reject(error) :
+        $timeout(function () {
+          return retry(repeatable, (delay * 2), maxDelay);
+        }, delay);
+    }
+
+    return repeatable().catch(retryLater);
+  }
 }
-UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
+UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth", "$timeout"];
 })();
 
 // Source: src/uitpas/uitpas-labels.provider.js
