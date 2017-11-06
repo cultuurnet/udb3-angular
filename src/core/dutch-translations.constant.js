@@ -333,6 +333,22 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    prices: {
+      'title': 'Prijzen toevoegen',
+      'base': 'Basistarief',
+      'target_group': 'Doelgroep',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'add_price': 'Prijs invoeren',
+      'add_tarriff': 'Tarief toevoegen',
+      'error': 'Er ging iets fout bij het opslaan van de prijs.',
+      'invalid': 'Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.',
+      'invalid_tip1': 'Noteer decimalen met een komma.',
+      'invalid_tip2': 'Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.',
+      'invalid_tip3': 'Geef maximum twee cijfers na de komma.',
+      'close': 'Sluiten',
+      'save': 'Bewaren'
+    },
     audience: {
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
