@@ -342,6 +342,10 @@ angular.module('udb.core')
         'location_label': 'Een locatie',
         'change': 'Wijzigen',
         'refine': 'Verfijn'
+      },
+      step2: {
+        'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
+        'date_help_place': 'Wanneer is deze plaats of locatie open?'
       }
     },
     audience: {

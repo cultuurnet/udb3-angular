@@ -2868,6 +2868,10 @@ angular.module('udb.core')
         'location_label': 'Een locatie',
         'change': 'Wijzigen',
         'refine': 'Verfijn'
+      },
+      step2: {
+        'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
+        'date_help_place': 'Wanneer is deze plaats of locatie open?'
       }
     },
     audience: {
@@ -25461,8 +25465,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section id=\"wanneer\" ng-show=\"eventFormData.showStep2\">\n" +
     "    <h2 class=\"title-border\">\n" +
     "      <span class=\"number\">2</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\">Wanneer vindt dit evenement of deze activiteit plaats?</span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\">Wanneer is deze plaats of locatie open?</span>\n" +
+    "      <span ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step2', 'date_help_event')}}</span>\n" +
+    "      <span ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step2', 'date_help_place')}}</span>\n" +
     "    </h2>\n" +
     "\n" +
     "    <udb-form-place-calendar ng-if=\"eventFormData.isPlace\"></udb-form-place-calendar>\n" +
