@@ -345,8 +345,16 @@ angular.module('udb.core')
       },
       step2: {
         'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
-        'date_help_place': 'Wanneer is deze plaats of locatie open?'
+        'date_help_place': 'Wanneer is deze plaats of locatie open?',
       }
+    },
+    calendar: {
+      period: {
+        'title': 'Start- en einddatum',
+        'from': 'Van',
+        'till': 'Tot',
+        'alert': 'Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.'
+      },
     },
     audience: {
       'everyone': 'Voor iedereen',

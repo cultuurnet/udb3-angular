@@ -2871,8 +2871,16 @@ angular.module('udb.core')
       },
       step2: {
         'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
-        'date_help_place': 'Wanneer is deze plaats of locatie open?'
+        'date_help_place': 'Wanneer is deze plaats of locatie open?',
       }
+    },
+    calendar: {
+      period: {
+        'title': 'Start- en einddatum',
+        'from': 'Van',
+        'till': 'Tot',
+        'alert': 'Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.'
+      },
     },
     audience: {
       'everyone': 'Voor iedereen',
@@ -24049,11 +24057,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               ng-true-value=\"'periodic'\"\n" +
     "               ng-false-value=\"'permanent'\"\n" +
     "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
-    "        <span>Start- en einddatum</span>\n" +
+    "        <span translate=\"calendar.period.title\"></span>\n" +
     "    </label>\n" +
     "    <div class=\"periodic-info\">\n" +
     "        <div class=\"start-date\">\n" +
-    "            <label>Van</label>\n" +
+    "            <label translate=\"calendar.period.from\"></label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
     "                                            ng-model=\"$ctrl.formData.startDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
@@ -24061,7 +24069,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <div class=\"end-date\">\n" +
-    "            <label>Tot</label>\n" +
+    "            <label translate=\"calendar.period.till\"></label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
     "                                            ng-model=\"$ctrl.formData.endDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
@@ -24071,7 +24079,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"requirements\"\n" +
     "             ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
     "            <div class=\"alert alert-danger\">\n" +
-    "                <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>\n" +
+    "                <p translate=\"calendar.period.alert\"></p>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
