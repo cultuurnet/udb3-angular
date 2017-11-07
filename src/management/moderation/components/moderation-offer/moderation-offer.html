@@ -1,11 +1,11 @@
-<p ng-show="moc.continueValidation()" class="text-muted">Valideren</p>
+<p ng-show="moc.continueValidation()" class="text-muted">{{moc.translateModerationOffer('validate')}}</p>
 
 <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-success btn-moderation" ng-click="moc.approve()">
-                <i class="fa fa-flag text-success"></i>Goedkeuren</button>
+                <i class="fa fa-flag text-success"></i>{{moc.translateModerationOffer('approve')}}</button>
 <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-danger btn-moderation" ng-click="moc.askForRejectionReasons()">
-                <i class="fa fa-flag text-danger"></i>Afkeuren</button>
+                <i class="fa fa-flag text-danger"></i>{{moc.translateModerationOffer('reject')}}</button>
 
-<span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation"><i class="fa fa-flag"></i>Goedgekeurd</span>
-<span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>Afgekeurd</span>
+<span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation"><i class="fa fa-flag"></i>{{moc.translateModerationOffer('approved')}}</span>
+<span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>{{moc.translateModerationOffer('rejected')}}</span>
 
-<span ng-show="moc.continueValidation()"><a ui-sref="management.moderation.list" ui-sref-opts="{reload:true}" id="continue-validation" ng-if="(moc.isApproved() || moc.isRejected())">Verder valideren</a></span>
+<span ng-show="moc.continueValidation()"><a ui-sref="management.moderation.list" ui-sref-opts="{reload:true}" id="continue-validation" ng-if="(moc.isApproved() || moc.isRejected())">{{moc.translateModerationOffer('continue_validation')}}</a></span>
