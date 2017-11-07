@@ -12,7 +12,7 @@ angular
   .controller('EventFormController', EventFormController);
 
 /* @ngInject */
-function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q, appConfig) {
+function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q, appConfig, $translate) {
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
@@ -200,5 +200,9 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
+  }
+
+  $scope.translateEventForm = function (step, label) {
+    return $translate.instant('eventForm.' + step + '.' + label);
   }
 }

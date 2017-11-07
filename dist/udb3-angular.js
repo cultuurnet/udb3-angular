@@ -2859,6 +2859,17 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    eventForm: {
+      step1: {
+        'title': 'Wat wil je toevoegen?',
+        'label_event': 'Een evenement',
+        'show_everything': 'Toon alles',
+        'or': 'of',
+        'location_label': 'Een locatie',
+        'change': 'Wijzigen',
+        'refine': 'Verfijn'
+      }
+    },
     audience: {
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
@@ -11776,7 +11787,7 @@ angular
   .controller('EventFormController', EventFormController);
 
 /* @ngInject */
-function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q, appConfig) {
+function EventFormController($scope, offerId, EventFormData, udbApi, moment, jsonLDLangFilter, $q, appConfig, $translate) {
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
@@ -11965,8 +11976,12 @@ function EventFormController($scope, offerId, EventFormData, udbApi, moment, jso
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
+
+  $scope.translateEventForm = function (step, label) {
+    return $translate.instant('eventForm.' + step + '.' + label);
+  }
 }
-EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
+EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig", "$translate"];
 })();
 
 // Source: src/event_form/event-form.directive.js
@@ -25374,39 +25389,39 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section id=\"wat\">\n" +
     "    <section class=\"row\">\n" +
     "      <div class=\"col-md-12\">\n" +
-    "        <h2 class=\"title-border\"><span class=\"number\">1</span> Wat wil je toevoegen?</h2>\n" +
+    "        <h2 class=\"title-border\"><span class=\"number\">1</span> {{::translateEventForm('step1', 'title')}}</h2>\n" +
     "      </div>\n" +
     "    </section>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"!activeEventType\">\n" +
     "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'event'\">\n" +
-    "        <label class=\"event-type-choser-label event\"><span>Een evenement</span></label>\n" +
+    "        <label class=\"event-type-choser-label event\"><span>{{::translateEventForm('step1', 'label_event')}}</span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-events\">\n" +
     "          <li ng-repeat=\"eventType in ::eventTypeLabels | orderBy:'label'\" ng-show=\"eventType.primary === true || showAllEventTypes\">\n" +
     "            <button ng-bind=\"::eventType.label\" class=\"btn btn-default\"\n" +
     "                    ng-click=\"setEventType(eventType, true)\"></button>\n" +
     "          </li>\n" +
     "          <li ng-hide=\"showAllEventTypes\">\n" +
-    "            <a href=\"\" ng-click=\"toggleEventTypes()\">Toon alles</a>\n" +
+    "            <a href=\"\" ng-click=\"toggleEventTypes()\">{{::translateEventForm('step1', 'show_everything')}}</a>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-sm-2\" ng-show=\"splitTypes\">\n" +
-    "        <p class=\"text-center event-type-splitter\"><em>of</em></p>\n" +
+    "        <p class=\"text-center event-type-splitter\"><em>{{::translateEventForm('step1', 'or')}}</em></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'place'\">\n" +
-    "        <label class=\"event-type-choser-label place\"><span>Een locatie</span></label>\n" +
+    "        <label class=\"event-type-choser-label place\"><span>{{::translateEventForm('step1', 'location_label')}}</span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-places\">\n" +
     "          <li ng-repeat=\"placeType in ::placeLabels | orderBy:'label'\" ng-show=\"placeType.primary == true || showAllPlaces\">\n" +
     "            <button ng-bind=\"::placeType.label\" class=\"btn btn-default\"\n" +
     "                    ng-click=\"setEventType(placeType, false)\"></button>\n" +
     "          </li>\n" +
     "          <li ng-hide=\"showAllPlaces\">\n" +
-    "            <a href=\"\" ng-click=\"togglePlaces()\">Toon alles</a>\n" +
+    "            <a href=\"\" ng-click=\"togglePlaces()\">{{::translateEventForm('step1', 'show_everything')}}</a>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
@@ -25415,11 +25430,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "      <p class=\"col-xs-12 col-md-12\" ng-hide=\"activeEventType === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeEventTypeLabel\"></span>\n" +
-    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetEventType()\">Wijzigen</a>\n" +
+    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetEventType()\">{{::translateEventForm('step1', 'change')}}</a>\n" +
     "      </p>\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"canRefine\">\n" +
-    "        <label class=\"event-theme-label\" ng-show=\"eventThemeLabels.length\">Verfijn</label>\n" +
+    "        <label class=\"event-theme-label\" ng-show=\"eventThemeLabels.length\">{{::translateEventForm('step1', 'refine')}}</label>\n" +
     "        <ul class=\"list-inline\" id=\"step2-list\">\n" +
     "          <li ng-repeat=\"eventTheme in ::eventThemeLabels\">\n" +
     "            <button ng-bind=\"::eventTheme.label\" class=\"btn btn-default\"\n" +
@@ -25430,7 +25445,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      <p class=\"col-xs-12 col-md-12\"  ng-hide=\"activeTheme === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeThemeLabel\"></span>\n" +
-    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetTheme()\">Wijzigen</a>\n" +
+    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetTheme()\">{{::translateEventForm('step1', 'change')}}</a>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "\n" +

@@ -333,6 +333,17 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    eventForm: {
+      step1: {
+        'title': 'Wat wil je toevoegen?',
+        'label_event': 'Een evenement',
+        'show_everything': 'Toon alles',
+        'or': 'of',
+        'location_label': 'Een locatie',
+        'change': 'Wijzigen',
+        'refine': 'Verfijn'
+      }
+    },
     audience: {
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
