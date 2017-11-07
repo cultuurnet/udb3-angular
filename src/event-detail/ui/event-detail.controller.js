@@ -307,6 +307,10 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
+  $scope.translateEventDetail = function (label) {
+    return $translate.instant('preview.' + label);
+  };
+
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
   };
