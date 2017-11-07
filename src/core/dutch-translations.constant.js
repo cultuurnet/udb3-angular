@@ -355,6 +355,13 @@ angular.module('udb.core')
         'till': 'Tot',
         'alert': 'Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.'
       },
+      openingHours: {
+        'permanent_title': '24/24, 7/7',
+        'permanent_subtitle': 'Elke dag, ieder uur',
+        'add_hours': 'Uren toevoegen',
+        'opening_hours': 'Openingsuren',
+        'change': 'Wijzigen'
+      },
     },
     audience: {
       'everyone': 'Voor iedereen',

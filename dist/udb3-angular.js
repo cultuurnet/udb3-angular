@@ -2881,6 +2881,13 @@ angular.module('udb.core')
         'till': 'Tot',
         'alert': 'Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.'
       },
+      openingHours: {
+        'permanent_title': '24/24, 7/7',
+        'permanent_subtitle': 'Elke dag, ieder uur',
+        'add_hours': 'Uren toevoegen',
+        'opening_hours': 'Openingsuren',
+        'change': 'Wijzigen'
+      },
     },
     audience: {
       'everyone': 'Voor iedereen',
@@ -24478,20 +24485,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"empty\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "    <div class=\"well text-center add-opening-hours\">\n" +
     "        <p>\n" +
-    "          <span class=\"permanent-title\">24/24, 7/7</span> \n" +
-    "          <span class=\"permanent-subtitle\">Elke dag, ieder uur</span>\n" +
+    "          <span class=\"permanent-title\" translate=\"calendar.openingHours.permanent_title\"></span>\n" +
+    "          <span class=\"permanent-subtitle\" translate=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
     "        </p>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\">Uren toevoegen</button>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\" translate=\"calendar.openingHours.add_hours\"></button>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"time-table\">\n" +
     "    <table class=\"table table-condensed\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "      <thead>\n" +
-    "      <th>Openingsuren</th>\n" +
+    "      <th translate=\"calendar.openingHours.opening_hours\"></th>\n" +
     "      <th>\n" +
-    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\">\n" +
-    "          Wijzigen\n" +
-    "        </a>\n" +
+    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\" translate=\"calendar.openingHours.change\"></a>\n" +
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
