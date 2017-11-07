@@ -2886,7 +2886,13 @@ angular.module('udb.core')
         'permanent_subtitle': 'Elke dag, ieder uur',
         'add_hours': 'Uren toevoegen',
         'opening_hours': 'Openingsuren',
-        'change': 'Wijzigen'
+        'change': 'Wijzigen',
+        'days': 'Dagen',
+        'from': 'Van',
+        'till': 'Tot',
+        'more_hours': 'Meer openingstijden toevoegen',
+        'cancel': 'Annuleren',
+        'save': 'Opslaan'
       },
     },
     audience: {
@@ -24400,16 +24406,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/opening-hours-editor.modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\">Openingsuren</h4>\n" +
+    "    <h4 class=\"modal-title\" translate=\"calendar.openingHours.opening_hours\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <div class=\"well text-center add-opening-hours\"\n" +
     "         ng-show=\"ohemc.openingHoursCollection.openingHours.length === 0\">\n" +
-    "        <span>24/24 7/7</span>\n" +
+    "        <span translate=\"calendar.openingHours.permanent_title\"></span>\n" +
     "        <br>\n" +
-    "        <span>Elke dag, ieder uur</span>\n" +
+    "        <span translate=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
     "        <br>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\">Uren toevoegen</button>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\" translate=\"calendar.openingHours.add_hours\"></button>\n" +
     "    </div>\n" +
     "    <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!ohemc.errors.length\">\n" +
     "        <ul>\n" +
@@ -24419,15 +24425,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"opening-hours\" ng-show=\"ohemc.openingHoursCollection.openingHours.length > 0\">\n" +
     "        <div class=\"opening-hours-labels\">\n" +
-    "            <div class=\"weekdays\">\n" +
-    "                Dagen\n" +
-    "            </div>\n" +
-    "            <div class=\"opening-time\">\n" +
-    "                Van\n" +
-    "            </div>\n" +
-    "            <div class=\"closing-time\">\n" +
-    "                Tot\n" +
-    "            </div>\n" +
+    "            <div class=\"weekdays\" translate=\"calendar.openingHours.days\"></div>\n" +
+    "            <div class=\"opening-time\" translate=\"calendar.openingHours.from\"></div>\n" +
+    "            <div class=\"closing-time\" translate=\"calendar.openingHours.till\"></div>\n" +
     "        </div>\n" +
     "        <div class=\"opening-hours-collection\">\n" +
     "            <div class=\"opening-hours-set\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
@@ -24464,17 +24464,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <div class=\"add\">\n" +
-    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\">\n" +
-    "                Meer openingstijden toevoegen\n" +
+    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\" translate=\"calendar.openingHours.more_hours\">\n" +
     "            </a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\" translate=\"calendar.openingHours.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
-    "            ng-click=\"ohemc.saveOpeningHours()\">\n" +
-    "        Opslaan\n" +
+    "            ng-click=\"ohemc.saveOpeningHours()\" translate=\"calendar.openingHours.save\">\n" +
     "    </button>\n" +
     "</div>\n"
   );

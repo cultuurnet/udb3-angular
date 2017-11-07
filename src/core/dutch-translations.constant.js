@@ -360,7 +360,13 @@ angular.module('udb.core')
         'permanent_subtitle': 'Elke dag, ieder uur',
         'add_hours': 'Uren toevoegen',
         'opening_hours': 'Openingsuren',
-        'change': 'Wijzigen'
+        'change': 'Wijzigen',
+        'days': 'Dagen',
+        'from': 'Van',
+        'till': 'Tot',
+        'more_hours': 'Meer openingstijden toevoegen',
+        'cancel': 'Annuleren',
+        'save': 'Opslaan'
       },
     },
     audience: {
