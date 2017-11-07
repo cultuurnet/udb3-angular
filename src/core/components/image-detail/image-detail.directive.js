@@ -21,8 +21,12 @@ angular
   });
 
 /* @ngInject */
-function ImageDetailController($scope) {
+function ImageDetailController($scope, $translate) {
   angular.forEach($scope.images, function(image) {
     image.main = (image.contentUrl === $scope.main);
   });
+
+  $scope.translateImageDetail = function (label) {
+    return $translate.instant('imageDetail.' + label);
+  };
 }
