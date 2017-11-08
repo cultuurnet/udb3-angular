@@ -349,6 +349,15 @@ angular.module('udb.core')
       }
     },
     calendar: {
+      'one_more_days': 'Eén of meerdere dagen',
+      'or': 'of',
+      'default_days': 'Vaste dagen per week',
+      'start_label': 'Start',
+      'end_label': 'Einde',
+      'whole_day_label': 'Hele dag',
+      'start_hour_label': 'Beginuur',
+      'end_hour_label': 'Einduur',
+      'add_days': 'Dag(en) toevoegen',
       period: {
         'title': 'Start- en einddatum',
         'from': 'Van',

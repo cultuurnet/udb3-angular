@@ -2875,6 +2875,15 @@ angular.module('udb.core')
       }
     },
     calendar: {
+      'one_more_days': 'Eén of meerdere dagen',
+      'or': 'of',
+      'default_days': 'Vaste dagen per week',
+      'start_label': 'Start',
+      'end_label': 'Einde',
+      'whole_day_label': 'Hele dag',
+      'start_hour_label': 'Beginuur',
+      'end_hour_label': 'Einduur',
+      'add_days': 'Dag(en) toevoegen',
       period: {
         'title': 'Start- en einddatum',
         'from': 'Van',
@@ -24117,9 +24126,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
-    "            <p class=\"text-center\"><strong>Eén of meerdere dagen</strong></p></a><span class=\"or\">of</span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "            <p class=\"text-center\"><strong translate=\"calendar.one_more_days\"></strong></p></a><span class=\"or\" translate=\"calendar.or\"></span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
-    "            <p class=\"text-center\"><strong>Vaste dagen per week</strong></p>\n" +
+    "            <p class=\"text-center\"><strong translate=\"calendar.default_days\"></strong></p>\n" +
     "        </a>\n" +
     "\n" +
     "    </div>\n" +
@@ -24133,12 +24142,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
     "                    <div class=\"dates\">\n" +
     "                        <div class=\"date form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-start-date\">Start</label>\n" +
+    "                            <label for=\"time-span-{{$index}}-start-date\" translate=\"calendar.start_label\"></label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                        <div class=\"date form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-end-date\">Einde</label>\n" +
+    "                            <label for=\"time-span-{{$index}}-end-date\" translate=\"calendar.end_label\"></label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
@@ -24150,18 +24159,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
     "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                       class=\"all-day-check\"> <span>Hele dag</span>\n" +
+    "                                       class=\"all-day-check\"> <span translate=\"calendar.whole_day_label\"></span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label>Beginuur</label>\n" +
+    "                            <label translate=\"calendar.start_hour_label\"></label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label>Einduur</label>\n" +
+    "                            <label translate=\"calendar.end_hour_label\"></label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
@@ -24173,7 +24182,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +
-    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\">Dag(en) toevoegen</a>\n" +
+    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate=\"calendar.add_days\"></a>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
