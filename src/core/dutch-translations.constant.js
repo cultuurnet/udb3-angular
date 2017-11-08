@@ -346,6 +346,20 @@ angular.module('udb.core')
       step2: {
         'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
         'date_help_place': 'Wanneer is deze plaats of locatie open?',
+      },
+      step3: {
+        'title_event': 'Waar vindt dit evenement of deze activiteit plaats?',
+        'title_place': 'Waar is deze plaats of locatie?',
+        'choose_city': 'Kies een gemeente',
+        'problem_city': 'Er was een probleem tijdens het ophalen van de steden',
+        'change': 'Wijzigen',
+        'choose_location': 'Kies een locatie',
+        'location_not_found': 'Locatie niet gevonden?',
+        'add_location': 'Een locatie toevoegen',
+        'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
+        'street': 'Straat en nummer',
+        'straat_validate': 'Straat en nummer is een verplicht veld.',
+        'ok': 'OK',
       }
     },
     calendar: {
