@@ -359,7 +359,28 @@ angular.module('udb.core')
         'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
         'street': 'Straat en nummer',
         'straat_validate': 'Straat en nummer is een verplicht veld.',
-        'ok': 'OK',
+        'ok': 'OK'
+      },
+      step4: {
+        'basic_data': 'Basisgegevens',
+        'name_event': 'Naam van het evenement',
+        'name_place': 'Naam van de locatie',
+        'help_event': 'Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kapelletjes\", \"De Sage van de Eenhoorn\".',
+        'help_place': 'Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".',
+        'help_description': 'Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.',
+        'info_missing': 'Je vulde niet alle verplichte informatie in:',
+        'safe_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
+        'continue': 'Doorgaan',
+        'doubles_title': 'Vermijd dubbel werk',
+        'doubles_help': 'We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.',
+        'sure': 'Ben je zeker dat je \"{{name}}\" wil toevoegen?',
+        'return_dashboard': 'Nee, keer terug naar dashboard',
+        'yes_continue': 'Ja, doorgaan met invoeren',
+        suggestions: {
+          'from': 'Van',
+          'till': 'tot',
+          'permanent': 'Permanent'
+        }
       }
     },
     calendar: {
