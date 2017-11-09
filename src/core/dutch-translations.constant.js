@@ -381,6 +381,68 @@ angular.module('udb.core')
           'till': 'tot',
           'permanent': 'Permanent'
         }
+      },
+      step5: {
+        'expose_event': 'Laat je evenement extra opvallen',
+        'expose_place': 'Laat deze locatie extra opvallen',
+        'title': 'Titel',
+        'description': 'Beschrijving',
+        'add_text': 'Tekst toevoegen',
+        'required_200': 'De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.',
+        'required_still': 'Nog',
+        'required_signs': 'tekens.',
+        'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
+        'empty': 'Leegmaken',
+        'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
+        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordtgeorganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
+        'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
+        'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
+        'organizer': 'Organisatie',
+        'add_organizer': 'Organisatie toevoegen',
+        'choose_organizer': 'Kies een organisatie',
+        'organizer_not_found': 'Organisatie niet gevonden?',
+        'add_new_organizer': 'Nieuwe organisator toevoegen',
+        'organizer_error': 'Er ging iets fout bij het opslaan van de organisator.',
+        'contact': 'Contact & reservatie',
+        'add_contact': 'Contactinformatie toevoegen',
+        'website': 'Website',
+        'phone': 'Telefoonnummer',
+        'e-mail': 'E-mailadres',
+        'use_booking': 'Gebruik voor reservatie',
+        'booking_exposure': 'Hoe mag deze link verschijnen?',
+        'buy_tickets': 'Koop tickets',
+        'reserve_places': 'Reserveer plaatsen',
+        'check_availability': 'Controleer beschikbaarheid',
+        'subscribe': 'Schrijf je in',
+        'add_more_contact': 'Meer contactgegevens toevoegen',
+        'contact_error': 'Er ging iets fout bij het opslaan van de contact info.',
+        'facilities': 'Toegankelijkheid',
+        'add_facility': 'Voorzieningen toevoegen',
+        'facility_inapplicable': 'Niet van toepassing',
+        'change': 'Wijzigen',
+        'image_help': 'Voeg een afbeelding toe zodat je bezoekers je activiteit beter herkennen.',
+        'images': 'Afbeeldingen',
+        'copyright': 'Copyright',
+        'delete': 'Verwijderen',
+        'main_image': 'Maak hoofdafbeelding',
+        'add_image': 'Afbeelding toevoegen',
+        age: {
+          'age_label': 'Geschikt voor'
+        },
+        priceInfo: {
+          'price_label': 'Prijs',
+          'add_prices': 'Prijzen toevoegen',
+          'free': 'Gratis',
+          'prices': 'Prijzen',
+          'change': 'Wijzigen',
+          'currency': 'euro'
+        },
+        reservationPeriod: {
+          'add_reservation_period': 'Reservatieperiode toevoegen',
+          'reservation_period': 'Reservatie periode',
+          'from': 'Van',
+          'till': 'Tot'
+        }
       }
     },
     calendar: {
@@ -414,9 +476,12 @@ angular.module('udb.core')
       },
     },
     audience: {
+      'entrance': 'Toegang',
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
+      'members_help': 'Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.',
       'education': 'Specifiek voor scholen',
+      'education_help': 'Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren kan je nog specifieke informatie voor scholen toevoegen.'
     },
     workflowStatus: {
       'DRAFT': 'Niet gepubliceerd',
@@ -493,6 +558,17 @@ angular.module('udb.core')
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
       'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+    },
+    uitpas: {
+      uitpasInfo: {
+        'uitpas': 'UiTPAS',
+        'uitpas_alert': 'Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.',
+        'uitpas_info': 'Dit is een UiTPAS activiteit.'
+      },
+      cardSystems: {
+        'card_systems': 'Kaartsystemen',
+        'choose': '--Selecteer een verdeelsleutel--'
+      }
     }
   }
 );

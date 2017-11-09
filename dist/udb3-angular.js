@@ -2907,6 +2907,68 @@ angular.module('udb.core')
           'till': 'tot',
           'permanent': 'Permanent'
         }
+      },
+      step5: {
+        'expose_event': 'Laat je evenement extra opvallen',
+        'expose_place': 'Laat deze locatie extra opvallen',
+        'title': 'Titel',
+        'description': 'Beschrijving',
+        'add_text': 'Tekst toevoegen',
+        'required_200': 'De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.',
+        'required_still': 'Nog',
+        'required_signs': 'tekens.',
+        'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
+        'empty': 'Leegmaken',
+        'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
+        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordtgeorganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
+        'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
+        'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
+        'organizer': 'Organisatie',
+        'add_organizer': 'Organisatie toevoegen',
+        'choose_organizer': 'Kies een organisatie',
+        'organizer_not_found': 'Organisatie niet gevonden?',
+        'add_new_organizer': 'Nieuwe organisator toevoegen',
+        'organizer_error': 'Er ging iets fout bij het opslaan van de organisator.',
+        'contact': 'Contact & reservatie',
+        'add_contact': 'Contactinformatie toevoegen',
+        'website': 'Website',
+        'phone': 'Telefoonnummer',
+        'e-mail': 'E-mailadres',
+        'use_booking': 'Gebruik voor reservatie',
+        'booking_exposure': 'Hoe mag deze link verschijnen?',
+        'buy_tickets': 'Koop tickets',
+        'reserve_places': 'Reserveer plaatsen',
+        'check_availability': 'Controleer beschikbaarheid',
+        'subscribe': 'Schrijf je in',
+        'add_more_contact': 'Meer contactgegevens toevoegen',
+        'contact_error': 'Er ging iets fout bij het opslaan van de contact info.',
+        'facilities': 'Toegankelijkheid',
+        'add_facility': 'Voorzieningen toevoegen',
+        'facility_inapplicable': 'Niet van toepassing',
+        'change': 'Wijzigen',
+        'image_help': 'Voeg een afbeelding toe zodat je bezoekers je activiteit beter herkennen.',
+        'images': 'Afbeeldingen',
+        'copyright': 'Copyright',
+        'delete': 'Verwijderen',
+        'main_image': 'Maak hoofdafbeelding',
+        'add_image': 'Afbeelding toevoegen',
+        age: {
+          'age_label': 'Geschikt voor'
+        },
+        priceInfo: {
+          'price_label': 'Prijs',
+          'add_prices': 'Prijzen toevoegen',
+          'free': 'Gratis',
+          'prices': 'Prijzen',
+          'change': 'Wijzigen',
+          'currency': 'euro'
+        },
+        reservationPeriod: {
+          'add_reservation_period': 'Reservatieperiode toevoegen',
+          'reservation_period': 'Reservatie periode',
+          'from': 'Van',
+          'till': 'Tot'
+        }
       }
     },
     calendar: {
@@ -2940,9 +3002,12 @@ angular.module('udb.core')
       },
     },
     audience: {
+      'entrance': 'Toegang',
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
+      'members_help': 'Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.',
       'education': 'Specifiek voor scholen',
+      'education_help': 'Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren kan je nog specifieke informatie voor scholen toevoegen.'
     },
     workflowStatus: {
       'DRAFT': 'Niet gepubliceerd',
@@ -3019,6 +3084,17 @@ angular.module('udb.core')
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
       'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+    },
+    uitpas: {
+      uitpasInfo: {
+        'uitpas': 'UiTPAS',
+        'uitpas_alert': 'Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.',
+        'uitpas_info': 'Dit is een UiTPAS activiteit.'
+      },
+      cardSystems: {
+        'card_systems': 'Kaartsystemen',
+        'choose': '--Selecteer een verdeelsleutel--'
+      }
     }
   }
 );
@@ -8620,19 +8696,24 @@ angular
   .controller('FormAudienceController', FormAudienceController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, eventCrud, appConfig) {
+function FormAudienceController(EventFormData, eventCrud, appConfig, $translate) {
   var controller = this;
   var componentDisabled = _.get(appConfig, 'offerEditor.disableAudience');
 
   controller.enabled = !componentDisabled && EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
+  controller.translateAudience = translateAudience;
 
   function setAudienceType(audienceType) {
     eventCrud.setAudienceType(EventFormData, audienceType);
   }
+
+  function translateAudience (label) {
+    return $translate.instant('audience.' + label);
+  }
 }
-FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig"];
+FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig", "$translate"];
 })();
 
 // Source: src/event_form/components/audience/form-audience.directive.js
@@ -23988,7 +24069,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row extra-leeftijd\">\n" +
     "    <div class=\"extra-task\" ng-class=\"{'state-complete': !!fagec.activeAgeRange}\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\">Geschikt voor</em>\n" +
+    "            <em class=\"extra-task-label\" translate=\"eventForm.step5.age.age_label\"></em>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
@@ -24036,7 +24117,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row audience\" ng-if=\"::fac.enabled\">\n" +
     "    <div class=\"extra-task state-complete\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\">Toegang</em>\n" +
+    "            <em class=\"extra-task-label\">{{::fac.translateAudience('entrance')}}</em>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-8\">\n" +
     "            <div class=\"radio\">\n" +
@@ -24048,7 +24129,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           id=\"audience-everyone\"\n" +
     "                           value=\"everyone\"\n" +
     "                           checked>\n" +
-    "                    Voor iedereen\n" +
+    "                    {{::fac.translateAudience('everyone')}}\n" +
     "                </label>\n" +
     "            </div>\n" +
     "\n" +
@@ -24061,9 +24142,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           id=\"audience-members\"\n" +
     "                           value=\"members\"\n" +
     "                           aria-describedby=\"audience-members-help\">\n" +
-    "                    Enkel voor leden\n" +
+    "                    {{::fac.translateAudience('members')}}\n" +
     "                    <span id=\"audience-members-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'members'\">\n" +
-    "                        Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.\n" +
+    "                        {{::fac.translateAudience('members_help')}}\n" +
     "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -24078,10 +24159,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           id=\"audience-education\"\n" +
     "                           value=\"education\"\n" +
     "                           aria-describedby=\"audience-education-help\">\n" +
-    "                    Specifiek voor scholen\n" +
+    "                    {{::fac.translateAudience('education')}}\n" +
     "                    <span id=\"audience-education-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'education'\">\n" +
-    "                        Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren\n" +
-    "                        kan je nog specifieke informatie voor scholen toevoegen.\n" +
+    "                        {{::fac.translateAudience('education_help')}}\n" +
     "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -25076,7 +25156,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row extra-prijs\">\n" +
     "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
     "    <div class=\"col-sm-3\">\n" +
-    "      <em class=\"extra-task-label\">Prijs</em>\n" +
+    "      <em class=\"extra-task-label\" translate=\"eventForm.step5.priceInfo.price_label\"></em>\n" +
     "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"$ctrl.savingPrice\"></i>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-8\">\n" +
@@ -25084,20 +25164,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div ng-show=\"$ctrl.price.length == 0\">\n" +
     "        <section>\n" +
     "          <a class=\"btn btn-default to-filling\"\n" +
-    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()\">\n" +
-    "            Prijzen toevoegen\n" +
+    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()\"\n" +
+    "             translate=\"eventForm.step5.priceInfo.add_prices\">\n" +
     "          </a>\n" +
     "          <a class=\"btn btn-link\"\n" +
-    "             ng-click=\"$ctrl.setPriceFree()\">Gratis</a>\n" +
+    "             ng-click=\"$ctrl.setPriceFree()\"\n" +
+    "             translate=\"eventForm.step5.priceInfo.free\"></a>\n" +
     "        </section>\n" +
     "      </div>\n" +
     "      <div ng-show=\"$ctrl.price.length > 0\">\n" +
     "        <table class=\"table\">\n" +
     "          <thead>\n" +
-    "            <td>Prijzen</td>\n" +
+    "            <td translate=\"eventForm.step5.priceInfo.prices\"></td>\n" +
     "            <td>\n" +
-    "              <a class=\"btn btn-default pull-right\" ng-click=\"$ctrl.openModal()\">\n" +
-    "              Wijzigen\n" +
+    "              <a class=\"btn btn-default pull-right\"\n" +
+    "                 ng-click=\"$ctrl.openModal()\"\n" +
+    "                 translate=\"eventForm.step5.priceInfo.change\">\n" +
     "            </a>\n" +
     "            </td>\n" +
     "          </thead>\n" +
@@ -25105,11 +25187,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              ng-model=\"priceInfo\">\n" +
     "            <td>{{priceInfo.name}}</td>\n" +
     "            <td>\n" +
-    "              <span ng-if=\"priceInfo.price == 0\">\n" +
+    "              <span ng-if=\"priceInfo.price == 0\" translate=\"eventForm.step5.priceInfo.free\">\n" +
     "                Gratis\n" +
     "              </span>\n" +
     "              <span ng-if=\"priceInfo.price != 0\">\n" +
-    "                {{priceInfo.price | currency:'€' }} euro\n" +
+    "                {{priceInfo.price | currency:'€' }} <span translate=\"eventForm.step5.priceInfo.currency\"></span>\n" +
     "              </span>\n" +
     "            </td>\n" +
     "          </tr>\n" +
@@ -25165,15 +25247,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/reservation-period.html',
     "<div class=\"col-sm-12\" ng-hide=\"haveBookingPeriod\">\n" +
-    "    <a class=\"btn btn-primary reservatie-periode-toevoegen\" href=\"#\" ng-click=\"changeHaveBookingPeriod()\">\n" +
-    "        Reservatieperiode toevoegen\n" +
+    "    <a class=\"btn btn-primary reservatie-periode-toevoegen\"\n" +
+    "       href=\"#\"\n" +
+    "       ng-click=\"changeHaveBookingPeriod()\"\n" +
+    "       translate=\"eventForm.step5.reservationPeriod.add_reservation_period\">\n" +
     "    </a>\n" +
     "</div>\n" +
     "<div class=\"col-sm-12\" ng-show=\"haveBookingPeriod\">\n" +
     "    <div class=\"booking-period\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-lg-11\">\n" +
-    "                <p><strong>Reservatie periode</strong></p>\n" +
+    "                <p><strong translate=\"eventForm.step5.reservationPeriod.reservation_period\"></strong></p>\n" +
     "            </div>\n" +
     "            <div class=\"col-lg-1\">\n" +
     "                <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
@@ -25188,7 +25272,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"row\">\n" +
     "                <div class=\"col-lg-6\">\n" +
     "                    <div class=\"input-group\">\n" +
-    "                        <span class=\"input-group-addon\">Van</span>\n" +
+    "                        <span class=\"input-group-addon\"\n" +
+    "                              translate=\"eventForm.step5.reservationPeriod.from\"></span>\n" +
     "                        <input name=\"bookingStartDate\"\n" +
     "                               class=\"form-control\"\n" +
     "                               type=\"text\"\n" +
@@ -25208,7 +25293,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </div><!-- /.col-lg-6 -->\n" +
     "                <div class=\"col-lg-6\">\n" +
     "                    <div class=\"input-group\">\n" +
-    "                        <span class=\"input-group-addon\">Tot</span>\n" +
+    "                        <span class=\"input-group-addon\"\n" +
+    "                              translate=\"eventForm.step5.reservationPeriod.till\"></span>\n" +
     "                        <input name=\"bookingEndDate\"\n" +
     "                               type=\"text\"\n" +
     "                               class=\"form-control\"\n" +
@@ -25776,8 +25862,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <h2 class=\"title-border\">\n" +
     "      <span class=\"number\">5</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\">Laat je evenement extra opvallen</span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\">Laat deze locatie extra opvallen</span>\n" +
+    "      <span ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step5', 'expose_event')}}</span>\n" +
+    "      <span ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step5', 'expose_place')}}</span>\n" +
     "    </h2>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
@@ -25786,7 +25872,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-titnieel\">\n" +
     "          <div class=\"extra-task state-complete\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Titel</em>\n" +
+    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'title')}}</em>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
     "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name.nl\"></p>\n" +
@@ -25797,7 +25883,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-beschrijving\">\n" +
     "          <div class=\"extra-task\" ng-class=\"descriptionCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Beschrijving</em>\n" +
+    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'description')}}</em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingDescription\"></i>\n" +
     "            </div>\n" +
@@ -25806,7 +25892,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div class=\"row\">\n" +
     "                  <div class=\"col-sm-6\">\n" +
     "                    <a class=\"btn btn-default to-filling\" ng-click=\"alterDescription()\">\n" +
-    "                      Tekst toevoegen\n" +
+    "                      {{::translateEventForm('step5', 'add_text')}}\n" +
     "                    </a>\n" +
     "                  </div>\n" +
     "                </div>\n" +
@@ -25822,42 +25908,35 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
     "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
-    "                    De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.\n" +
-    "                    Nog <span ng-bind=\"(200 - countCharacters())\"></span> tekens.\n" +
+    "                    {{::translateEventForm('step5', 'required_200')}}\n" +
+    "                    {{::translateEventForm('step5', 'required_still')}} <span ng-bind=\"(200 - countCharacters())\"></span> {{::translateEventForm('step5', 'required_signs')}}\n" +
     "                    <span class=\"loader\">\n" +
     "                      <span class=\"empty\"></span>\n" +
     "                      <span class=\"bar\" ng-style=\"{width : (countCharacters()/2)+'%'}\" ></span>\n" +
     "                    </span>\n" +
     "                  </p>\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
-    "                    Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.\n" +
+    "                    {{::translateEventForm('step5', 'required_200_help')}}\n" +
     "                  </p>\n" +
     "                  <p>\n" +
     "                    <a ng-if=\"description\" class=\"to-filling\" ng-click=\"saveDescription(true)\">\n" +
-    "                        Leegmaken\n" +
+    "                      {{::translateEventForm('step5', 'empty')}}\n" +
     "                    </a>\n" +
     "                  </p>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
-    "                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>\n" +
-    "                       de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops,\n" +
-    "                       de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong>\n" +
-    "                       is (met gids, brochure of wegwijzers).\n" +
+    "                      {{::translateEventForm('step5', 'tip_route')}}\n" +
     "                    </p>\n" +
     "                    <p ng-switch-when=\"0.7.0.0.0\">\n" +
-    "                      Geef hier een wervende omschrijving van de rondleiding. Vermeld het\n" +
-    "                       <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordt\n" +
-    "                       georganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er\n" +
-    "                       <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).\n" +
+    "                      {{::translateEventForm('step5', 'tip_rondleiding')}}\n" +
     "                    </p>\n" +
     "                    <p ng-switch-when=\"0.14.0.0.0\">\n" +
-    "                      Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts\n" +
-    "                       beperkt opengesteld is (vb. enkel salons).\n" +
+    "                      {{::translateEventForm('step5', 'tip_monument')}}\n" +
     "                    </p>\n" +
     "                  </div>\n" +
     "                </div>\n" +
     "                <div ng-show=\"descriptionError\" class=\"alert alert-danger\">\n" +
-    "                  Er ging iets fout bij het opslaan van de beschrijving.\n" +
+    "                  {{::translateEventForm('step5', 'description_error')}}\n" +
     "                </div>\n" +
     "              </section>\n" +
     "            </div>\n" +
@@ -25869,14 +25948,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-organisator\">\n" +
     "          <div class=\"extra-task\" ng-class=\"organizerCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Organisatie</em>\n" +
+    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'organizer')}}</em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingOrganizer\"></i>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
     "              <section class=\"state incomplete\">\n" +
     "                <a class=\"btn btn-default to-filling\" ng-click=\"organizerCssClass = 'state-filling'\">\n" +
-    "                    Organisatie toevoegen\n" +
+    "                  {{::translateEventForm('step5', 'add_organizer')}}\n" +
     "                </a>\n" +
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
@@ -25890,7 +25969,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
     "                  <label>\n" +
-    "                    Kies een organisatie <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingOrganizers\"></i>\n" +
+    "                    {{::translateEventForm('step5', 'choose_organizer')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingOrganizers\"></i>\n" +
     "                  </label>\n" +
     "                  <div id=\"organisator-kiezer\">\n" +
     "                    <span class=\"twitter-typeahead\" style=\"position: relative; display: inline-block; direction: ltr;\">\n" +
@@ -25906,9 +25985,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
-    "                            <p>Organisatie niet gevonden?</p>\n" +
+    "                            <p>O{{::translateEventForm('step5', 'organizer_not_found')}}</p>\n" +
     "                            <button type='button' class='btn btn-primary' ng-click=\"openOrganizerModal()\">\n" +
-    "                              Nieuwe organisator toevoegen\n" +
+    "                              {{::translateEventForm('step5', 'add_new_organizer')}}\n" +
     "                            </button>\n" +
     "                          </div>\n" +
     "                        </div>\n" +
@@ -25918,7 +25997,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </div>\n" +
     "              </section>\n" +
     "              <div ng-show=\"organizerError\" class=\"alert alert-danger\">\n" +
-    "                Er ging iets fout bij het opslaan van de organisator.\n" +
+    "                {{::translateEventForm('step5', 'organizer_error')}}\n" +
     "              </div>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -25930,7 +26009,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-contact\">\n" +
     "          <div class=\"extra-task meer-info\" ng-class=\"contactInfoCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Contact &amp; reservatie</em>\n" +
+    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'contact')}}</em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingContactInfo\"></i>\n" +
     "            </div>\n" +
@@ -25938,7 +26017,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"col-sm-8\">\n" +
     "              <section class=\"state incomplete\">\n" +
     "                <a class=\"btn btn-default\" ng-click=\"addContactInfo()\">\n" +
-    "                  Contactinformatie toevoegen\n" +
+    "                  {{::translateEventForm('step5', 'add_contact')}}\n" +
     "                </a>\n" +
     "              </section>\n" +
     "\n" +
@@ -25953,9 +26032,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                      <td>\n" +
     "                        <select class=\"form-control\" ng-model=\"info.type\"\n" +
     "                                ng-change=\"clearInfo(); removeBookingInfo('{{info.type}}')\">\n" +
-    "                          <option value=\"url\">Website</option>\n" +
-    "                          <option value=\"phone\">Telefoonnummer</option>\n" +
-    "                          <option value=\"email\">E-mailadres</option>\n" +
+    "                          <option value=\"url\">{{::translateEventForm('step5', 'website')}}</option>\n" +
+    "                          <option value=\"phone\">{{::translateEventForm('step5', 'phone')}}</option>\n" +
+    "                          <option value=\"email\">{{::translateEventForm('step5', 'e-mail')}}</option>\n" +
     "                        </select>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
@@ -25983,19 +26062,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                   class=\"reservatie-{{info.type}}-check reservatie-check\"\n" +
     "                                   ng-model=\"info.booking\"\n" +
     "                                   ng-click=\"toggleBookingType(info)\">\n" +
-    "                            Gebruik voor reservatie\n" +
+    "                            {{::translateEventForm('step5', 'use_booking')}}\n" +
     "                          </label>\n" +
     "                          <div class=\"reservatie-website-info reservatie-info\"\n" +
     "                               ng-if=\"info.type === 'url' && info.booking\">\n" +
     "                            <div class=\"reservatie-info-stap2\">\n" +
     "                              <div class=\"weergave\">\n" +
-    "                                <p><strong>Hoe mag deze link verschijnen?</strong></p>\n" +
+    "                                <p><strong>{{::translateEventForm('step5', 'booking_exposure')}}</strong></p>\n" +
     "                                <select ng-model=\"bookingModel.urlLabel\"\n" +
     "                                        ng-change=\"saveWebsitePreview()\">\n" +
-    "                                  <option value=\"Koop tickets\">Koop tickets</option>\n" +
-    "                                  <option value=\"Reserveer plaatsen\">Reserveer plaatsen</option>\n" +
-    "                                  <option value=\"Controleer beschikbaarheid\">Controleer beschikbaarheid</option>\n" +
-    "                                  <option value=\"Schrijf je in\">Schrijf je in</option>\n" +
+    "                                  <option value=\"Koop tickets\">{{::translateEventForm('step5', 'buy_tickets')}}</option>\n" +
+    "                                  <option value=\"Reserveer plaatsen\">{{::translateEventForm('step5', 'reserve_places')}}</option>\n" +
+    "                                  <option value=\"Controleer beschikbaarheid\">{{::translateEventForm('step5', 'check_availability')}}</option>\n" +
+    "                                  <option value=\"Schrijf je in\">{{::translateEventForm('step5', 'subscribe')}}</option>\n" +
     "                                </select>\n" +
     "                              </div>\n" +
     "                            </div>\n" +
@@ -26013,7 +26092,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </tr>\n" +
     "                    <tr>\n" +
     "                      <td colspan=\"3\">\n" +
-    "                        <a ng-click=\"addContactInfo()\">Meer contactgegevens toevoegen</a>\n" +
+    "                        <a ng-click=\"addContactInfo()\">{{::translateEventForm('step5', 'add_more_contact')}}</a>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </table>\n" +
@@ -26028,7 +26107,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </div>\n" +
     "\n" +
     "              <div ng-show=\"contactInfoError\" class=\"alert alert-danger\">\n" +
-    "                Er ging iets fout bij het opslaan van de contact info.\n" +
+    "                {{::translateEventForm('step5', 'contact_error')}}\n" +
     "              </div>\n" +
     "\n" +
     "            </div>\n" +
@@ -26039,20 +26118,20 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-toegankelijkheid\" ng-if=\"eventFormData.isPlace\">\n" +
     "          <div class=\"extra-task\" ng-class=\"facilitiesCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">Toegankelijkheid</em>\n" +
+    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'facilities')}}</em>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
     "              <section class=\"state incomplete\">\n" +
-    "                <a class=\"btn btn-default\" href=\"#\" ng-click=\"openFacilitiesModal();\">Voorzieningen toevoegen</a>\n" +
-    "                <a class=\"btn btn-link btn-nvt\" ng-click=\"setFacilitiesInapplicable();\">Niet van toepassing</a>\n" +
+    "                <a class=\"btn btn-default\" href=\"#\" ng-click=\"openFacilitiesModal();\">{{::translateEventForm('step5', 'add_facility')}}</a>\n" +
+    "                <a class=\"btn btn-link btn-nvt\" ng-click=\"setFacilitiesInapplicable();\">{{::translateEventForm('step5', 'facility_inapplicable')}}</a>\n" +
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
     "                <ul ng-if=\"selectedFacilities.length > 0\">\n" +
     "                  <li ng-repeat=\"facility in selectedFacilities\" ng-bind=\"::facility.label\"></li>\n" +
     "                </ul>\n" +
     "                <span>\n" +
-    "                  <span ng-show=\"facilitiesInapplicable\">Niet van toepassing</span>\n" +
-    "                  <a class=\"btn btn-link\" ng-click=\"openFacilitiesModal();\">Wijzigen</a>\n" +
+    "                  <span ng-show=\"facilitiesInapplicable\">{{::translateEventForm('step5', 'facility_inapplicable')}}</span>\n" +
+    "                  <a class=\"btn btn-link\" ng-click=\"openFacilitiesModal();\">{{::translateEventForm('step5', 'change')}}</a>\n" +
     "                </span>\n" +
     "              </section>\n" +
     "            </div>\n" +
@@ -26067,11 +26146,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"image-upload\" ng-class=\"eventFormData.mediaObjects.length ? 'state-complete' : 'state-incomplete'\">\n" +
     "          <div class=\"image-upload-none state incomplete\">\n" +
     "            <span class=\"image-upload-icon\"></span>\n" +
-    "            <p class=\"muted\">Voeg een afbeelding toe zodat je bezoekers je activiteit beter herkennen.</p>\n" +
+    "            <p class=\"muted\">{{::translateEventForm('step5', 'image_help')}}</p>\n" +
     "          </div>\n" +
     "\n" +
     "          <div class=\"image-upload-list state complete\" ng-if=\"eventFormData.mediaObjects.length > 0\">\n" +
-    "            <h4>Afbeeldingen</h4>\n" +
+    "            <h4>{{::translateEventForm('step5', 'images')}}</h4>\n" +
     "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl\">\n" +
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
@@ -26081,13 +26160,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "                  <div class=\"media-body\">\n" +
     "                    <div ng-bind=\"image.description\"></div>\n" +
-    "                    <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\">Copyright</span></div>\n" +
+    "                    <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\">{{::translateEventForm('step5', 'copyright')}}</span></div>\n" +
     "                  </div>\n" +
     "\n" +
     "                  <div class=\"media-actions\">\n" +
-    "                      <a class=\"btn btn-xs btn-primary\" ng-click=\"editImage(image)\">Wijzigen</a>\n" +
-    "                      <a class=\"btn btn-xs btn-danger\" ng-click=\"removeImage(image)\">Verwijderen</a>\n" +
-    "                      <a class=\"btn btn-xs btn-default select-main-image\" ng-click=\"selectMainImage(image)\">Maak hoofdafbeelding</a>\n" +
+    "                      <a class=\"btn btn-xs btn-primary\" ng-click=\"editImage(image)\">{{::translateEventForm('step5', 'change')}}</a>\n" +
+    "                      <a class=\"btn btn-xs btn-danger\" ng-click=\"removeImage(image)\">{{::translateEventForm('step5', 'delete')}}</a>\n" +
+    "                      <a class=\"btn btn-xs btn-default select-main-image\" ng-click=\"selectMainImage(image)\">{{::translateEventForm('step5', 'main_image')}}</a>\n" +
     "                  </div>\n" +
     "\n" +
     "                </div>\n" +
@@ -26096,7 +26175,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "\n" +
     "          <div class=\"text-center\">\n" +
-    "            <a class=\"btn btn-default\" href=\"#\" ng-click=\"openUploadImageModal(-1)\">Afbeelding toevoegen</a>\n" +
+    "            <a class=\"btn btn-default\" href=\"#\" ng-click=\"openUploadImageModal(-1)\">{{::translateEventForm('step5', 'add_image')}}</a>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
@@ -28521,7 +28600,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/card-systems.html',
     "<div class=\"form-group\">\n" +
     "    <div class=\"card-system\">\n" +
-    "        <label>Kaartsystemen</label>\n" +
+    "        <label translate=\"uitpas.cardSystems.card_systems\"></label>\n" +
     "\n" +
     "        <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in cardSystemSelector.availableCardSystems\">\n" +
     "            <div class=\"col-sm-6\">\n" +
@@ -28541,7 +28620,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
     "                        ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
     "                        ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
-    "                    <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
+    "                    <option value=\"\" translate=\"uitpas.cardSystems.choose\"></option>\n" +
     "                </select>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -28554,18 +28633,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row extra-uitpas\" ng-if=\"showUitpasInfo\">\n" +
     "    <div class=\"extra-task\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\">UiTPAS</em>\n" +
+    "            <em class=\"extra-task-label\" translate=\"uitpas.uitpasInfo.uitpas\"></em>\n" +
     "            <span> </span>\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <div class=\"alert alert-info\" ng-show=\"!upic.showCardSystems\">\n" +
-    "                <p>Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.</p>\n" +
+    "                <p translate=\"uitpas.uitpasInfo.uitpas_alert\"></p>\n" +
     "            </div>\n" +
     "\n" +
     "            <div ng-if=\"upic.showCardSystems\">\n" +
-    "                <div class=\"alert alert-info\" role=\"alert\">\n" +
-    "                    Dit is een UiTPAS activiteit.\n" +
+    "                <div class=\"alert alert-info\"\n" +
+    "                     role=\"alert\" translate=\"uitpas.uitpasInfo.uitpas_info\">\n" +
     "                </div>\n" +
     "\n" +
     "                <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +
