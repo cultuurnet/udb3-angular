@@ -61,7 +61,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
 
   /**
    * @param {CardSystem[]} cardSystemCollection
-   * @param {CardSsytem} cardSystem
+   * @param {CardSystem} cardSystem
    *
    * @return {(DistributionKey|null)}
    */
