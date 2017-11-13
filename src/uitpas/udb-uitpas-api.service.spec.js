@@ -147,7 +147,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     var distributionKeyId = '7A135EF8-F47B-4EDC-BB1C-143C58541752';
 
     $httpBackend
-      .expectPUT('http://uit.pas/events/' + eventId + '/cardSystems/' + cardSystemId + '/' + distributionKeyId)
+      .expectPUT('http://uit.pas/events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId)
       .respond(JSON.stringify(response));
 
     service
