@@ -99,7 +99,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   this.addEventCardSystemDistributionKey = function(eventId, cardSystemId, distributionKeyId) {
     return $http
       .put(
-        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/' + distributionKeyId,
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId,
         defaultApiConfig
       )
       .then(returnUnwrappedData);
