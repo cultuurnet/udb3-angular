@@ -57,6 +57,26 @@
         </ul>
       </div>
 
+      <div class="col-xs-12" ng-if="canRefineByGroups">
+        <label class="event-theme-label" ng-show="eventGroupLabels.length">Verfijn</label>
+
+          <div ng-repeat="group in ::eventGroupLabels">
+            <div class="row">
+            <div class="col-xs-2">
+              <p class="text-muted">{{group.label}}</p>
+            </div>
+            <div class="col-xs-10">
+              <ul class="list-inline" style="line-height: 2.5">
+                <li ng-repeat="eventTheme in group.themes">
+                  <button ng-bind="::eventTheme.label" class="btn btn-default"
+                          ng-click="setTheme(eventTheme)"></button>
+                </li>
+              </ul>
+            </div>
+            </div>
+          </div>
+      </div>
+
       <p class="col-xs-12 col-md-12"  ng-hide="activeTheme === ''">
         <span class="btn-chosen" ng-bind="activeThemeLabel"></span>
         <a class="btn btn-link btn-default" href="" ng-click="resetTheme()">Wijzigen</a>

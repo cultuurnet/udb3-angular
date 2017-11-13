@@ -24,9 +24,11 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
   $scope.placeLabels = placeCategories;
 
   $scope.canRefine = false;
+  $scope.canRefineByGroups = false;
   $scope.showAllEventTypes = false;
   $scope.showAllPlaces = false;
   $scope.eventThemeLabels = [];
+  $scope.eventGroupLabels = [];
 
   $scope.activeEventType = '';
   $scope.activeEventTypeLabel = '';
@@ -51,8 +53,20 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       $scope.activeEventType = type.id;
       $scope.activeEventTypeLabel = type.label;
       $scope.eventThemeLabels = type.themes;
+      $scope.eventGroupLabels = type.groups;
 
-      theme = _.findWhere(type.themes, {id: eventThemeId});
+      if (type.themes) {
+        theme = _.findWhere(type.themes, {id: eventThemeId});
+      }
+
+      if (type.groups) {
+        var selectedGroup = _.find(type.groups, function(group) {
+          return _.where(group.themes, {id: eventThemeId}).length > 0;
+        });
+        if (selectedGroup) {
+          theme = _.findWhere(selectedGroup.themes, {id: eventThemeId});
+        }
+      }
     } else {
       $scope.activeEventType = '';
       $scope.activeEventTypeLabel = '';
@@ -67,6 +81,9 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     }
 
     $scope.canRefine = type && !_.isEmpty(type.themes) && !theme;
+
+    $scope.canRefineByGroups = type && !_.isEmpty(type.groups) && !theme;
+
   };
 
   /**

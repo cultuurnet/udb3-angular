@@ -129,61 +129,159 @@
 				}
 			]
 		},
-		{
-			"label": "Cursus of workshop",
-			"id": "0.3.1.0.0",
-			"primary": true,
-			"themes": [
-				{
-					"id": "1.21.0.0.0",
-					"label": "Computer en techniek"
-				},
-				{
-					"id": "1.42.0.0.0",
-					"label": "Creativiteit"
-				},
-				{
-					"id": "1.37.1.0.0",
-					"label": "Gezondheid en zorg"
-				},
-				{
-					"id": "1.43.0.0.0",
-					"label": "Interculturele vorming"
-				},
-				{
-					"id": "1.41.0.0.0",
-					"label": "Kunst en kunsteducatie"
-				},
-				{
-					"id": "1.64.0.0.0",
-					"label": "Milieu en natuur"
-				},
-				{
-					"id": "1.37.0.0.0",
-					"label": "Opvoeding"
-				},
-				{
-					"id": "1.61.0.0.0",
-					"label": "Persoon en relaties"
-				},
-				{
-					"id": "1.37.2.0.0",
-					"label": "Samenleving"
-				},
-				{
-					"id": "1.65.0.0.0",
-					"label": "Voeding"
-				},
-				{
-					"id": "1.25.0.0.0",
-					"label": "Wetenschap"
-				},
-				{
-					"id": "1.44.0.0.0",
-					"label": "Zingeving, filosofie en religie"
-				}
-			]
-		},
+    {
+      "label": "Cursus of workshop",
+      "id": "0.3.1.0.0",
+      "primary": true,
+      "groups": [{
+        "label": "Dans",
+        "themes": [{
+          "id": "1.9.1.0.0",
+          "label": "Ballet en klassieke dans"
+        }, {
+          "id": "1.9.2.0.0",
+          "label": "Moderne dans"
+        }, {
+          "id": "1.9.5.0.0",
+          "label": "Stijl en salondansen"
+        }, {
+          "id": "1.9.3.0.0",
+          "label": "Volksdans en werelddans"
+        }]
+      }, {
+        "label": "Kunst en erfgoed",
+        "themes": [{
+          "id": "1.1.0.0.0",
+          "label": "Audiovisuele kunst"
+        }, {
+          "id": "1.0.2.0.0",
+          "label": "Beeldhouwkunst"
+        }, {
+          "id": "0.52.0.0.0",
+          "label": "Circus"
+        }, {
+          "id": "1.42.0.0.0",
+          "label": "Creativiteit"
+        }, {
+          "id": "1.0.5.0.0",
+          "label": "Decoratieve kunst"
+        }, {
+          "id": "1.2.2.0.0",
+          "label": "Design"
+        }, {
+          "id": "1.40.0.0.0",
+          "label": "Erfgoed"
+        }, {
+          "id": "1.0.6.0.0",
+          "label": "Fotografie"
+        }, {
+          "id": "1.0.4.0.0",
+          "label": "Grafiek"
+        }, {
+          "id": "1.10.0.0.0",
+          "label": "Literatuur"
+        }, {
+          "id": "1.0.9.0.0",
+          "label": "Meerdere kunstvormen"
+        }, {
+          "id": "1.49.0.0.0",
+          "label": "Mode"
+        }, {
+          "id": "1.10.5.0.0",
+          "label": "Poëzie"
+        }, {
+          "id": "1.0.1.0.0",
+          "label": "Schilderkunst"
+        }, {
+          "id": "1.3.1.0.0",
+          "label": "Tekst- en muziektheater"
+        }]
+      }, {
+        "label": "Muziek",
+        "themes": [{
+          "id": "1.8.3.5.0",
+          "label": "Amusementsmuziek"
+        }, {
+          "id": "1.8.3.3.0",
+          "label": "Dance"
+        }, {
+          "id": "1.8.4.0.0",
+          "label": "Folk en wereldmuziek"
+        }, {
+          "id": "1.8.3.2.0",
+          "label": "Hiphop r&b rap"
+        }, {
+          "id": "1.8.2.0.0",
+          "label": "Jazz en blues"
+        }, {
+          "id": "1.8.1.0.0",
+          "label": "Klassieke muziek"
+        }, {
+          "id": "1.8.3.1.0",
+          "label": "Pop en rock"
+        }]
+      }, {
+        "label": "Sport",
+        "themes": [{
+          "id": "1.51.14.0.0",
+          "label": "Atletiek wandelen en fietsen"
+        }, {
+          "id": "1.51.13.0.0",
+          "label": "Bal en raketsport"
+        }, {
+          "id": "1.51.6.0.0",
+          "label": "Fitness gymnastiek dans en vechtssport"
+        }, {
+          "id": "1.58.8.0.0",
+          "label": "Lucht en motorsport"
+        }, {
+          "id": "1.51.12.0.0",
+          "label": "Omnisport en andere"
+        }, {
+          "id": "1.51.11.0.0",
+          "label": "Outdoor en adventure"
+        }, {
+          "id": "1.51.10.0.0",
+          "label": "Volkssporten"
+        }, {
+          "id": "1.51.3.0.0",
+          "label": "Zwemmen en watersport"
+        }]
+      }, {
+        "label": "Varia",
+        "themes": [{
+          "id": "1.21.0.0.0",
+          "label": "Computer en techniek"
+        }, {
+          "id": "1.37.1.0.0",
+          "label": "Gezondheid en welness"
+        }, {
+          "id": "1.43.0.0.0",
+          "label": "Interculturele vorming"
+        }, {
+          "id": "1.64.0.0.0",
+          "label": "Milieu en natuur"
+        }, {
+          "id": "1.37.0.0.0",
+          "label": "Opvoeding"
+        }, {
+          "id": "1.61.0.0.0",
+          "label": "Persoon en relaties"
+        }, {
+          "id": "1.37.2.0.0",
+          "label": "Samenleving"
+        }, {
+          "id": "1.65.0.0.0",
+          "label": "Voeding"
+        }, {
+          "id": "1.25.0.0.0",
+          "label": "Wetenschap"
+        }, {
+          "id": "1.44.0.0.0",
+          "label": "Zingeving filosofie en religie"
+        }]
+      }]
+      },
 		{
 			"label": "Dansvoorstelling",
 			"id": "0.54.0.0.0",
