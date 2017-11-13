@@ -22810,7 +22810,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
 
   /**
    * @param {CardSystem[]} cardSystemCollection
-   * @param {CardSsytem} cardSystem
+   * @param {CardSystem} cardSystem
    *
    * @return {(DistributionKey|null)}
    */
@@ -23141,7 +23141,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   this.addEventCardSystemDistributionKey = function(eventId, cardSystemId, distributionKeyId) {
     return $http
       .put(
-        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/' + distributionKeyId,
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId,
         defaultApiConfig
       )
       .then(returnUnwrappedData);
@@ -23160,7 +23160,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
    *  A promise returning function without arguments.
    *
    * @param {number} delay
-   *  The number of seconds to delay between consecutive requests.
+   *  The number of seconds to delay after a response before firing a consecutive request.
    *
    * @param {moment} limit
    *  The moment that marks the time limit.
