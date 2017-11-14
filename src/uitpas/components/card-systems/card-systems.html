@@ -9,7 +9,7 @@
                         <input type="checkbox"
                                disabled="disabled"
                                ng-model="cardSystem.active"
-                               ng-change="cardSystemSelector.activeCardSystemsChanged()">
+                               ng-change="cardSystemSelector.activeCardSystemsChanged(cardSystem)">
                             <span ng-bind="::cardSystem.name"></span>
                     </label>
                 </div>

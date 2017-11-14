@@ -2859,6 +2859,20 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    location: {
+      'title': 'Nieuwe locatie toevoegen',
+      'name': 'Naam locatie',
+      'name_validation': 'De naam van de locatie is een verplicht veld.',
+      'street': 'Straat en nummer',
+      'street_validation': 'Straat is een verplicht veld.',
+      'city': 'Gemeente',
+      'category': 'Categorie',
+      'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
+      'category_validation': 'Categorie is een verplicht veld.',
+      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'cancel': 'Annuleren',
+      'add': 'Toevoegen'
+    },
     eventForm: {
       step1: {
         'title': 'Wat wil je toevoegen?',
@@ -10302,7 +10316,16 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
+  function EventFormPlaceModalController(
+      $scope,
+      $uibModalInstance,
+      eventCrud,
+      UdbPlace,
+      location,
+      categories,
+      title,
+      $translate
+  ) {
 
     $scope.categories = categories;
     $scope.location = location;
@@ -10418,6 +10441,10 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         .then(passOnPlaceData, showError);
     }
 
+    $scope.translateLocation = function (label) {
+      return $translate.instant('location.' + label);
+    };
+
     /**
      * Select the place that should be used.
      *
@@ -10440,7 +10467,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
 
 })();
 })();
@@ -22928,6 +22955,15 @@ function searchDirective() {
 'use strict';
 
 /**
+ * @typedef {Object} Cardsystem
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ * @property {DistributionKey[]} distributionKeys
+ * @property {DistributionKey|undefined} [assignedDistributionKey]
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:CardSystemSelector
  * @description
@@ -22955,24 +22991,15 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   controller.$onInit = function() {
     $q
       .all([
-        udbUitpasApi
-          .getEventUitpasData(offerData.id)
-          .catch(function () {
-            return $q.resolve([]);
-          }),
+        udbUitpasApi.getEventCardSystems(offerData.id),
         udbUitpasApi.findOrganisationsCardSystems(organisation.id)
       ])
-      .then(function (uitpasInfo) {
-        var assignedDistributionKeys = uitpasInfo[0],
-          organisationCardSystems = uitpasInfo[1];
+      .then(function (cardSystemCollections) {
+        var eventCardSystems = cardSystemCollections[0],
+            organisationCardSystems = cardSystemCollections[1];
 
         var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
-          cardSystem.assignedDistributionKey = _.find(
-            cardSystem.distributionKeys,
-            function(distributionKey) {
-              return _.includes(assignedDistributionKeys, distributionKey.id);
-            }
-          );
+          cardSystem.assignedDistributionKey = findAssignedDistributionKey(eventCardSystems, cardSystem);
 
           var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
 
@@ -22981,34 +23008,64 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
           return cardSystem;
         });
 
-        var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
-        var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
-
-        _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
-          if (!_.find(availableCardSystems, {name: organisationUitpasLabel})) {
-            availableCardSystems.push({
-              name: organisationUitpasLabel,
-              active: true,
-              distributionKeys: []
-            });
-          }
-        });
-
+        includeUitpasOrganisationCardSystems(availableCardSystems, organisation);
         controller.availableCardSystems = availableCardSystems;
       });
   };
 
-  controller.distributionKeyAssigned = function() {
-    var assignedKeys = _(controller.availableCardSystems)
-      .pluck('assignedDistributionKey.id')
-      .reject(_.isEmpty)
-      .values();
+  /**
+   * @param {CardSystem[]} cardSystemCollection
+   * @param {CardSystem} cardSystem
+   *
+   * @return {(DistributionKey|null)}
+   */
+  function findAssignedDistributionKey(cardSystemCollection, cardSystem) {
+    var matchingCardSystem = _.find(cardSystemCollection, {id: cardSystem.id});
+    return matchingCardSystem ? _.first(matchingCardSystem.distributionKeys) : undefined;
+  }
 
+  /**
+   * @param {CardSystem[]} cardSystemCollection
+   *  The card system collection that will include the organisation uitpas card systems.
+   * @param {Organisation} organisation
+   */
+  function includeUitpasOrganisationCardSystems(cardSystemCollection, organisation) {
+    var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
+    var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
+
+    _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
+      if (!_.find(cardSystemCollection, {name: organisationUitpasLabel})) {
+        cardSystemCollection.push({
+          name: organisationUitpasLabel,
+          active: true,
+          distributionKeys: []
+        });
+      }
+    });
+  }
+
+  /**
+   * @param {CardSystem} cardSystem
+   */
+  controller.distributionKeyAssigned = function(cardSystem) {
     udbUitpasApi
-      .updateEventUitpasData(assignedKeys, offerData.id)
+      .addEventCardSystemDistributionKey(offerData.id, cardSystem.id, cardSystem.assignedDistributionKey.id)
       .then(function () {
         $rootScope.$emit('uitpasDataSaved');
       });
+  };
+
+  /**
+   * @param {CardSystem} cardSystem
+   */
+  controller.activeCardSystemsChanged = function(cardSystem) {
+    var activeCardSystemsUpdated = cardSystem.active ?
+      udbUitpasApi.addEventCardSystem(offerData.id, cardSystem.id) :
+      udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
+
+    activeCardSystemsUpdated.then(function () {
+      $rootScope.$emit('uitpasDataSaved');
+    });
   };
 }
 CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels", "$rootScope"];
@@ -23191,7 +23248,7 @@ function uitpasOrganisationSuggestion() {
 'use strict';
 
 /**
- * @typedef {Object} Cardsystem
+ * @typedef {Object} CardSystem
  * @property {string} id
  *  a number serialized as a string
  * @property {string} name
@@ -23210,8 +23267,9 @@ angular
   .module('udb.uitpas')
   .service('udbUitpasApi', UdbUitpasApi);
 
-function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
+function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
+  var uitpasMaxDelay = _.get(appConfig, 'uitpasMaxDelay', 8);
   var defaultApiConfig = {
     withCredentials: true,
     headers: {
@@ -23220,46 +23278,111 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
     },
     params: {}
   };
-  /**
-   * @param {string} eventId
-   *
-   * @return {Promise.<string[]>}
-   */
-  this.getEventUitpasData = function(eventId) {
-    return $http
-      .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', defaultApiConfig)
-      .then(returnUnwrappedData);
-  };
 
   /**
-   * Update UiTPAS info for an event.
-   * @param {string[]} distributionKeys
-   * @param {string} eventId
+   * Events are automatically registered by UiTPAS but there can be some delay.
+   * In the meantime the UiTPAS API will not known about the event.
+   * Make sure to poke UiTPAS a few times before giving up.
    *
-   * @return {Promise.<CommandInfo>}
+   * An empty collection is returned if UiTPAS repeatedly fails on an event.
+   *
+   * @param {string} eventId
+   * @return {Promise.<CardSystem[]>}
    */
-  this.updateEventUitpasData = function(distributionKeys, eventId) {
-    return $http
-      .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', distributionKeys, defaultApiConfig)
-      .then(returnUnwrappedData);
+  this.getEventCardSystems = function(eventId) {
+    function request () {
+      return $http.get(uitpasApiUrl + 'events/' + eventId + '/cardSystems/', defaultApiConfig);
+    }
+
+    var until = moment().add(uitpasMaxDelay, 's');
+
+    return retry(request, 2, until).then(returnUnwrappedData, returnEmptyCollection);
   };
 
   /**
    * @param {string} organizerId of the organizer
-   *
-   * @return {Promise.<Cardsystem[]>}
+   * @return {Promise.<CardSystem[]>}
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
       .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
+      .then(returnUnwrappedData, returnEmptyCollection);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @return {Promise.<Object>}
+   */
+  this.addEventCardSystem = function(eventId, cardSystemId) {
+    return $http
+      .put(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        defaultApiConfig
+      )
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @return {Promise.<Object>}
+   */
+  this.removeEventCardSystem = function(eventId, cardSystemId) {
+    return $http
+      .delete(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        defaultApiConfig
+      )
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @param {string} distributionKeyId
+   * @return {Promise.<Object>}
+   */
+  this.addEventCardSystemDistributionKey = function(eventId, cardSystemId, distributionKeyId) {
+    return $http
+      .put(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId,
+        defaultApiConfig
+      )
       .then(returnUnwrappedData);
   };
 
   function returnUnwrappedData(response) {
     return $q.resolve(response.data);
   }
+
+  function returnEmptyCollection() {
+    return $q.resolve([]);
+  }
+
+  /**
+   * @param {function} repeatable
+   *  A promise returning function without arguments.
+   *
+   * @param {number} delay
+   *  The number of seconds to delay after a response before firing a consecutive request.
+   *
+   * @param {moment} limit
+   *  The moment that marks the time limit.
+   */
+  function retry(repeatable, delay, limit) {
+    function retryLater(error) {
+      return moment().add(delay, 'seconds').isAfter(limit) ?
+        $q.reject(error) :
+        $timeout(function () {
+          return retry(repeatable, delay, limit);
+        }, delay);
+    }
+
+    return repeatable().catch(retryLater);
+  }
 }
-UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
+UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth", "$timeout", "moment"];
 })();
 
 // Source: src/uitpas/uitpas-labels.provider.js
@@ -24975,56 +25098,56 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-place-modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\">Nieuwe locatie toevoegen</h4>\n" +
+    "    <h4 class=\"modal-title\">{{translateLocation('title')}}</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <form name=\"placeForm\" class=\"css-form\">\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "            <label for=\"name\">Naam locatie</label>\n" +
+    "            <label for=\"name\">{{translateLocation('name')}}</label>\n" +
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        De naam van de locatie is een verplicht veld.\n" +
+    "        {{translateLocation('name_validation')}}\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
     "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "                    <label for=\"locatie-straat\">Straat en nummer</label>\n" +
+    "                    <label for=\"locatie-straat\">{{translateLocation('street')}}</label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
     "                    <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
-    "            Straat is een verplicht veld.\n" +
+    "            {{translateLocation('street_validation')}}\n" +
     "          </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label>Gemeente</label>\n" +
+    "                    <label>{{translateLocation('city')}}</label>\n" +
     "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "            <label for=\"locatie-toevoegen-types\">Categorie</label>\n" +
-    "            <p class=\"help-block\">Kies een categorie die deze locatie het best omschrijft.</p>\n" +
+    "            <label for=\"locatie-toevoegen-types\">{{translateLocation('category')}}</label>\n" +
+    "            <p class=\"help-block\">{{translateLocation('category_help')}}</p>\n" +
     "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "        Categorie is een verplicht veld.\n" +
+    "        {{translateLocation('category_validation')}}\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
     "                <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "                    Er ging iets fout tijdens het opslaan van je locatie.\n" +
+    "                    {{translateLocation('error')}}\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </form>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">{{translateLocation('cancel')}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
-    "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        {{translateLocation('add')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -28612,7 +28735,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <input type=\"checkbox\"\n" +
     "                               disabled=\"disabled\"\n" +
     "                               ng-model=\"cardSystem.active\"\n" +
-    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged()\">\n" +
+    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
     "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
     "                    </label>\n" +
     "                </div>\n" +
