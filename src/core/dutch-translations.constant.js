@@ -398,6 +398,36 @@ angular.module('udb.core')
       'main_image': 'Hoofdafbeelding',
       'no_images': 'Geen afbeeldingen'
     },
+    prices: {
+      'title': 'Prijzen toevoegen',
+      'base': 'Basistarief',
+      'target_group': 'Doelgroep',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'add_price': 'Prijs invoeren',
+      'add_tarriff': 'Tarief toevoegen',
+      'error': 'Er ging iets fout bij het opslaan van de prijs.',
+      'invalid': 'Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.',
+      'invalid_tip1': 'Noteer decimalen met een komma.',
+      'invalid_tip2': 'Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.',
+      'invalid_tip3': 'Geef maximum twee cijfers na de komma.',
+      'close': 'Sluiten',
+      'save': 'Bewaren'
+    },
+    location: {
+      'title': 'Nieuwe locatie toevoegen',
+      'name': 'Naam locatie',
+      'name_validation': 'De naam van de locatie is een verplicht veld.',
+      'street': 'Straat en nummer',
+      'street_validation': 'Straat is een verplicht veld.',
+      'city': 'Gemeente',
+      'category': 'Categorie',
+      'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
+      'category_validation': 'Categorie is een verplicht veld.',
+      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'cancel': 'Annuleren',
+      'add': 'Toevoegen'
+    },
     audience: {
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',

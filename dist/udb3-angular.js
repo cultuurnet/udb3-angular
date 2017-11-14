@@ -2936,6 +2936,36 @@ angular.module('udb.core')
       'main_image': 'Hoofdafbeelding',
       'no_images': 'Geen afbeeldingen'
     },
+    prices: {
+      'title': 'Prijzen toevoegen',
+      'base': 'Basistarief',
+      'target_group': 'Doelgroep',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'add_price': 'Prijs invoeren',
+      'add_tarriff': 'Tarief toevoegen',
+      'error': 'Er ging iets fout bij het opslaan van de prijs.',
+      'invalid': 'Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.',
+      'invalid_tip1': 'Noteer decimalen met een komma.',
+      'invalid_tip2': 'Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.',
+      'invalid_tip3': 'Geef maximum twee cijfers na de komma.',
+      'close': 'Sluiten',
+      'save': 'Bewaren'
+    },
+    location: {
+      'title': 'Nieuwe locatie toevoegen',
+      'name': 'Naam locatie',
+      'name_validation': 'De naam van de locatie is een verplicht veld.',
+      'street': 'Straat en nummer',
+      'street_validation': 'Straat is een verplicht veld.',
+      'city': 'Gemeente',
+      'category': 'Categorie',
+      'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
+      'category_validation': 'Categorie is een verplicht veld.',
+      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'cancel': 'Annuleren',
+      'add': 'Toevoegen'
+    },
     audience: {
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
@@ -10229,7 +10259,16 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
+  function EventFormPlaceModalController(
+      $scope,
+      $uibModalInstance,
+      eventCrud,
+      UdbPlace,
+      location,
+      categories,
+      title,
+      $translate
+  ) {
 
     $scope.categories = categories;
     $scope.location = location;
@@ -10345,6 +10384,10 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         .then(passOnPlaceData, showError);
     }
 
+    $scope.translateLocation = function (label) {
+      return $translate.instant('location.' + label);
+    };
+
     /**
      * Select the place that should be used.
      *
@@ -10367,7 +10410,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
 
 })();
 })();
@@ -10392,7 +10435,9 @@ function PriceFormModalController(
   $uibModalInstance,
   EventFormData,
   price,
-  $filter
+  $filter,
+  $scope,
+  $translate
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -10490,8 +10535,12 @@ function PriceFormModalController(
     $uibModalInstance.close();
   }
 
+  $scope.translatePrice = function (priceLabel) {
+    return $translate.instant('prices.' + priceLabel);
+  };
+
 }
-PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter"];
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter", "$scope", "$translate"];
 })();
 
 // Source: src/event_form/components/price-info/price-info.component.js
@@ -22851,6 +22900,15 @@ function searchDirective() {
 'use strict';
 
 /**
+ * @typedef {Object} Cardsystem
+ * @property {string} id
+ *  a number serialized as a string
+ * @property {string} name
+ * @property {DistributionKey[]} distributionKeys
+ * @property {DistributionKey|undefined} [assignedDistributionKey]
+ */
+
+/**
  * @ngdoc function
  * @name udbApp.controller:CardSystemSelector
  * @description
@@ -22878,24 +22936,15 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   controller.$onInit = function() {
     $q
       .all([
-        udbUitpasApi
-          .getEventUitpasData(offerData.id)
-          .catch(function () {
-            return $q.resolve([]);
-          }),
+        udbUitpasApi.getEventCardSystems(offerData.id),
         udbUitpasApi.findOrganisationsCardSystems(organisation.id)
       ])
-      .then(function (uitpasInfo) {
-        var assignedDistributionKeys = uitpasInfo[0],
-          organisationCardSystems = uitpasInfo[1];
+      .then(function (cardSystemCollections) {
+        var eventCardSystems = cardSystemCollections[0],
+            organisationCardSystems = cardSystemCollections[1];
 
         var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
-          cardSystem.assignedDistributionKey = _.find(
-            cardSystem.distributionKeys,
-            function(distributionKey) {
-              return _.includes(assignedDistributionKeys, distributionKey.id);
-            }
-          );
+          cardSystem.assignedDistributionKey = findAssignedDistributionKey(eventCardSystems, cardSystem);
 
           var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
 
@@ -22904,34 +22953,64 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
           return cardSystem;
         });
 
-        var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
-        var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
-
-        _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
-          if (!_.find(availableCardSystems, {name: organisationUitpasLabel})) {
-            availableCardSystems.push({
-              name: organisationUitpasLabel,
-              active: true,
-              distributionKeys: []
-            });
-          }
-        });
-
+        includeUitpasOrganisationCardSystems(availableCardSystems, organisation);
         controller.availableCardSystems = availableCardSystems;
       });
   };
 
-  controller.distributionKeyAssigned = function() {
-    var assignedKeys = _(controller.availableCardSystems)
-      .pluck('assignedDistributionKey.id')
-      .reject(_.isEmpty)
-      .values();
+  /**
+   * @param {CardSystem[]} cardSystemCollection
+   * @param {CardSystem} cardSystem
+   *
+   * @return {(DistributionKey|null)}
+   */
+  function findAssignedDistributionKey(cardSystemCollection, cardSystem) {
+    var matchingCardSystem = _.find(cardSystemCollection, {id: cardSystem.id});
+    return matchingCardSystem ? _.first(matchingCardSystem.distributionKeys) : undefined;
+  }
 
+  /**
+   * @param {CardSystem[]} cardSystemCollection
+   *  The card system collection that will include the organisation uitpas card systems.
+   * @param {Organisation} organisation
+   */
+  function includeUitpasOrganisationCardSystems(cardSystemCollection, organisation) {
+    var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
+    var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
+
+    _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
+      if (!_.find(cardSystemCollection, {name: organisationUitpasLabel})) {
+        cardSystemCollection.push({
+          name: organisationUitpasLabel,
+          active: true,
+          distributionKeys: []
+        });
+      }
+    });
+  }
+
+  /**
+   * @param {CardSystem} cardSystem
+   */
+  controller.distributionKeyAssigned = function(cardSystem) {
     udbUitpasApi
-      .updateEventUitpasData(assignedKeys, offerData.id)
+      .addEventCardSystemDistributionKey(offerData.id, cardSystem.id, cardSystem.assignedDistributionKey.id)
       .then(function () {
         $rootScope.$emit('uitpasDataSaved');
       });
+  };
+
+  /**
+   * @param {CardSystem} cardSystem
+   */
+  controller.activeCardSystemsChanged = function(cardSystem) {
+    var activeCardSystemsUpdated = cardSystem.active ?
+      udbUitpasApi.addEventCardSystem(offerData.id, cardSystem.id) :
+      udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
+
+    activeCardSystemsUpdated.then(function () {
+      $rootScope.$emit('uitpasDataSaved');
+    });
   };
 }
 CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels", "$rootScope"];
@@ -23114,7 +23193,7 @@ function uitpasOrganisationSuggestion() {
 'use strict';
 
 /**
- * @typedef {Object} Cardsystem
+ * @typedef {Object} CardSystem
  * @property {string} id
  *  a number serialized as a string
  * @property {string} name
@@ -23133,8 +23212,9 @@ angular
   .module('udb.uitpas')
   .service('udbUitpasApi', UdbUitpasApi);
 
-function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
+function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
+  var uitpasMaxDelay = _.get(appConfig, 'uitpasMaxDelay', 8);
   var defaultApiConfig = {
     withCredentials: true,
     headers: {
@@ -23143,46 +23223,111 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth) {
     },
     params: {}
   };
-  /**
-   * @param {string} eventId
-   *
-   * @return {Promise.<string[]>}
-   */
-  this.getEventUitpasData = function(eventId) {
-    return $http
-      .get(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', defaultApiConfig)
-      .then(returnUnwrappedData);
-  };
 
   /**
-   * Update UiTPAS info for an event.
-   * @param {string[]} distributionKeys
-   * @param {string} eventId
+   * Events are automatically registered by UiTPAS but there can be some delay.
+   * In the meantime the UiTPAS API will not known about the event.
+   * Make sure to poke UiTPAS a few times before giving up.
    *
-   * @return {Promise.<CommandInfo>}
+   * An empty collection is returned if UiTPAS repeatedly fails on an event.
+   *
+   * @param {string} eventId
+   * @return {Promise.<CardSystem[]>}
    */
-  this.updateEventUitpasData = function(distributionKeys, eventId) {
-    return $http
-      .put(uitpasApiUrl + 'events/' + eventId + '/distributionKeys/', distributionKeys, defaultApiConfig)
-      .then(returnUnwrappedData);
+  this.getEventCardSystems = function(eventId) {
+    function request () {
+      return $http.get(uitpasApiUrl + 'events/' + eventId + '/cardSystems/', defaultApiConfig);
+    }
+
+    var until = moment().add(uitpasMaxDelay, 's');
+
+    return retry(request, 2, until).then(returnUnwrappedData, returnEmptyCollection);
   };
 
   /**
    * @param {string} organizerId of the organizer
-   *
-   * @return {Promise.<Cardsystem[]>}
+   * @return {Promise.<CardSystem[]>}
    */
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
       .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
+      .then(returnUnwrappedData, returnEmptyCollection);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @return {Promise.<Object>}
+   */
+  this.addEventCardSystem = function(eventId, cardSystemId) {
+    return $http
+      .put(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        defaultApiConfig
+      )
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @return {Promise.<Object>}
+   */
+  this.removeEventCardSystem = function(eventId, cardSystemId) {
+    return $http
+      .delete(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        defaultApiConfig
+      )
+      .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {string} eventId
+   * @param {string} cardSystemId
+   * @param {string} distributionKeyId
+   * @return {Promise.<Object>}
+   */
+  this.addEventCardSystemDistributionKey = function(eventId, cardSystemId, distributionKeyId) {
+    return $http
+      .put(
+        uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId,
+        defaultApiConfig
+      )
       .then(returnUnwrappedData);
   };
 
   function returnUnwrappedData(response) {
     return $q.resolve(response.data);
   }
+
+  function returnEmptyCollection() {
+    return $q.resolve([]);
+  }
+
+  /**
+   * @param {function} repeatable
+   *  A promise returning function without arguments.
+   *
+   * @param {number} delay
+   *  The number of seconds to delay after a response before firing a consecutive request.
+   *
+   * @param {moment} limit
+   *  The moment that marks the time limit.
+   */
+  function retry(repeatable, delay, limit) {
+    function retryLater(error) {
+      return moment().add(delay, 'seconds').isAfter(limit) ?
+        $q.reject(error) :
+        $timeout(function () {
+          return retry(repeatable, delay, limit);
+        }, delay);
+    }
+
+    return repeatable().catch(retryLater);
+  }
 }
-UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth"];
+UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth", "$timeout", "moment"];
 })();
 
 // Source: src/uitpas/uitpas-labels.provider.js
@@ -24909,56 +25054,56 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-place-modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\">Nieuwe locatie toevoegen</h4>\n" +
+    "    <h4 class=\"modal-title\">{{translateLocation('title')}}</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <form name=\"placeForm\" class=\"css-form\">\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "            <label for=\"name\">Naam locatie</label>\n" +
+    "            <label for=\"name\">{{translateLocation('name')}}</label>\n" +
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        De naam van de locatie is een verplicht veld.\n" +
+    "        {{translateLocation('name_validation')}}\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
     "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "                    <label for=\"locatie-straat\">Straat en nummer</label>\n" +
+    "                    <label for=\"locatie-straat\">{{translateLocation('street')}}</label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
     "                    <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
-    "            Straat is een verplicht veld.\n" +
+    "            {{translateLocation('street_validation')}}\n" +
     "          </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label>Gemeente</label>\n" +
+    "                    <label>{{translateLocation('city')}}</label>\n" +
     "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "            <label for=\"locatie-toevoegen-types\">Categorie</label>\n" +
-    "            <p class=\"help-block\">Kies een categorie die deze locatie het best omschrijft.</p>\n" +
+    "            <label for=\"locatie-toevoegen-types\">{{translateLocation('category')}}</label>\n" +
+    "            <p class=\"help-block\">{{translateLocation('category_help')}}</p>\n" +
     "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "        Categorie is een verplicht veld.\n" +
+    "        {{translateLocation('category_validation')}}\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
     "                <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "                    Er ging iets fout tijdens het opslaan van je locatie.\n" +
+    "                    {{translateLocation('error')}}\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </form>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">{{translateLocation('cancel')}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
-    "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        {{translateLocation('add')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -24997,7 +25142,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-header\">\n" +
     "    <button type=\"button\" class=\"close\" ng-click=\"pfmc.cancelEditPrice()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
-    "    <h4 class=\"modal-title\">Prijzen toevoegen</h4>\n" +
+    "    <h4 class=\"modal-title\">{{translatePrice('title')}}</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
@@ -25010,13 +25155,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <td ng-switch on=\"priceInfo.category\"\n" +
     "                        class=\"col-xs-4\">\n" +
     "                        <p ng-switch-when=\"base\" class=\"form-text\">\n" +
-    "                            Basistarief\n" +
+    "                            {{translatePrice('base')}}\n" +
     "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
     "                                   class=\"form-control\"\n" +
     "                                   name=\"name\"\n" +
-    "                                   placeholder=\"Doelgroep\"\n" +
+    "                                   placeholder=\"{{translatePrice('target_group')}}\"\n" +
     "                                   ng-model=\"priceInfo.name\"\n" +
     "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
     "                                   required />\n" +
@@ -25024,7 +25169,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </td>\n" +
     "                    <td class=\"col-xs-4\">\n" +
     "                        <span ng-if=\"priceInfo.price === 0\">\n" +
-    "                            Gratis\n" +
+    "                            {{translatePrice('free')}}\n" +
     "                        </span>\n" +
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
@@ -25038,7 +25183,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\"> <span class=\"text-muted\">euro</span></div>\n" +
+    "                                <div class=\"form-group\"> <span class=\"text-muted\">{{translatePrice('currency')}}</span></div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -25046,10 +25191,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        class=\"col-xs-3\">\n" +
     "                        <a class=\"btn btn-link\"\n" +
     "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
-    "                           ng-switch-when=\"0\">Prijs invoeren</a>\n" +
+    "                           ng-switch-when=\"0\">{{translatePrice('add_price')}}</a>\n" +
     "                        <a class=\"btn btn-link\"\n" +
     "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
-    "                           ng-switch-default>Gratis</a>\n" +
+    "                           ng-switch-default>{{translatePrice('free')}}</a>\n" +
     "                    </td>\n" +
     "                    <td class=\"col-xs-1\">\n" +
     "                        <a aria-hidden=\"true\"\n" +
@@ -25059,31 +25204,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </tr>\n" +
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-default\" ng-click=\"pfmc.addPriceItem()\">Tarief toevoegen</a>\n" +
+    "                        <a class=\"btn btn-default\" ng-click=\"pfmc.addPriceItem()\">{{translatePrice('add_tarriff')}}</a>\n" +
     "                    </td>\n" +
     "                </tr>\n" +
     "            </div>\n" +
     "        </table>\n" +
     "    </form>\n" +
     "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
-    "        Er ging iets fout bij het opslaan van de prijs.\n" +
+    "        {{translatePrice('error')}}\n" +
     "    </div>\n" +
     "    <div ng-show=\"(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving\" class=\"alert alert-info\">\n" +
-    "        <p>Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.</p>\n" +
+    "        <p>{{translatePrice('invalid')}}</p>\n" +
     "        <ul class=\"small\">\n" +
-    "          <li>Noteer decimalen met een komma.</li>\n" +
-    "          <li>Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.</li>\n" +
-    "          <li>Geef maximum twee cijfers na de komma.</li>\n" +
+    "          <li>{{translatePrice('invalid_tip1')}}</li>\n" +
+    "          <li>{{translatePrice('invalid_tip2')}}</li>\n" +
+    "          <li>{{translatePrice('invalid_tip3')}}</li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">Sluiten</button>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">{{translatePrice('close')}}</button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "          ng-click=\"pfmc.validatePrice()\"\n" +
     "          ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
-    "      Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "      {{translatePrice('save')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -28549,7 +28694,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <input type=\"checkbox\"\n" +
     "                               disabled=\"disabled\"\n" +
     "                               ng-model=\"cardSystem.active\"\n" +
-    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged()\">\n" +
+    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
     "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
     "                    </label>\n" +
     "                </div>\n" +
@@ -28559,7 +28704,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
     "                <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
     "                        ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
-    "                        ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
+    "                        ng-change=\"cardSystemSelector.distributionKeyAssigned(cardSystem)\">\n" +
     "                    <option value=\"\">--Selecteer een verdeelsleutel--</option>\n" +
     "                </select>\n" +
     "            </div>\n" +

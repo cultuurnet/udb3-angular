@@ -13,7 +13,16 @@
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
+  function EventFormPlaceModalController(
+      $scope,
+      $uibModalInstance,
+      eventCrud,
+      UdbPlace,
+      location,
+      categories,
+      title,
+      $translate
+  ) {
 
     $scope.categories = categories;
     $scope.location = location;
@@ -128,6 +137,10 @@
         .createOffer(udbPlace)
         .then(passOnPlaceData, showError);
     }
+
+    $scope.translateLocation = function (label) {
+      return $translate.instant('location.' + label);
+    };
 
     /**
      * Select the place that should be used.
