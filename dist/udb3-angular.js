@@ -2877,13 +2877,16 @@ angular.module('udb.core')
         'title_event': 'Waar vindt dit evenement of deze activiteit plaats?',
         'title_place': 'Waar is deze plaats of locatie?',
         'choose_city': 'Kies een gemeente',
+        'placeholder_city': 'Gemeente of postcode',
         'problem_city': 'Er was een probleem tijdens het ophalen van de steden',
         'change': 'Wijzigen',
         'choose_location': 'Kies een locatie',
+        'placeholder_location': 'Naam of adres',
         'location_not_found': 'Locatie niet gevonden?',
         'add_location': 'Een locatie toevoegen',
         'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
         'street': 'Straat en nummer',
+        'placeholder_street': 'Kerkstraat 1',
         'straat_validate': 'Straat en nummer is een verplicht veld.',
         'ok': 'OK'
       },
@@ -25644,7 +25647,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <input type=\"text\"\n" +
     "                   id=\"gemeente-autocomplete\"\n" +
     "                   class=\"form-control uib-typeahead\"\n" +
-    "                   placeholder=\"Gemeente of postcode\"\n" +
+    "                   placeholder=\"{{::translateEventForm('step3', 'placeholder_city')}}\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
     "                   udb-auto-scroll\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
@@ -25673,7 +25676,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
-    "                     placeholder=\"Naam of adres\"\n" +
+    "                     placeholder=\"{{::translateEventForm('step3', 'placeholder_location')}}\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
@@ -25726,7 +25729,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
     "                     ng-model=\"newPlaceStreetAddress\"\n" +
-    "                     placeholder=\"Kerkstraat 1\"\n" +
+    "                     placeholder=\"{{::translateEventForm('step3', 'placeholder_street')}}\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
     "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.required\">\n" +

@@ -16,7 +16,7 @@
             <input type="text"
                    id="gemeente-autocomplete"
                    class="form-control uib-typeahead"
-                   placeholder="Gemeente of postcode"
+                   placeholder="{{::translateEventForm('step3', 'placeholder_city')}}"
                    ng-model="cityAutocompleteTextField"
                    udb-auto-scroll
                    uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
@@ -45,7 +45,7 @@
           <div id="locatie-kiezer" ng-hide="selectedLocation || loadingPlaces">
             <span style="position: relative; display: block; direction: ltr;" class="twitter-typeahead">
               <input type="text" ng-change="locationSearched()"
-                     placeholder="Naam of adres"
+                     placeholder="{{::translateEventForm('step3', 'placeholder_location')}}"
                      class="form-control typeahead"
                      ng-model="locationAutocompleteTextField"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50"
@@ -98,7 +98,7 @@
                      id="straat"
                      name="street"
                      ng-model="newPlaceStreetAddress"
-                     placeholder="Kerkstraat 1"
+                     placeholder="{{::translateEventForm('step3', 'placeholder_street')}}"
                      type="text"
                      required />
               <span class="help-block" ng-show="showValidation && step3Form.street.$error.required">
