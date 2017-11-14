@@ -333,6 +333,20 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    location: {
+      'title': 'Nieuwe locatie toevoegen',
+      'name': 'Naam locatie',
+      'name_validation': 'De naam van de locatie is een verplicht veld.',
+      'street': 'Straat en nummer',
+      'street_validation': 'Straat is een verplicht veld.',
+      'city': 'Gemeente',
+      'category': 'Categorie',
+      'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
+      'category_validation': 'Categorie is een verplicht veld.',
+      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'cancel': 'Annuleren',
+      'add': 'Toevoegen'
+    },
     audience: {
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
