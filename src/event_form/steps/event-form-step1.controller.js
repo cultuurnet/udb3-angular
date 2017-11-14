@@ -10,6 +10,7 @@
 angular
   .module('udb.event-form')
   .controller('EventFormStep1Controller', EventFormStep1Controller);
+// .filter('groupBy', GroupByFilter);
 
 /* @ngInject */
 function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCategories, placeCategories) {
