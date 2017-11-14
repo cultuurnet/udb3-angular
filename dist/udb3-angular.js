@@ -2875,6 +2875,20 @@ angular.module('udb.core')
       'close': 'Sluiten',
       'save': 'Bewaren'
     },
+    location: {
+      'title': 'Nieuwe locatie toevoegen',
+      'name': 'Naam locatie',
+      'name_validation': 'De naam van de locatie is een verplicht veld.',
+      'street': 'Straat en nummer',
+      'street_validation': 'Straat is een verplicht veld.',
+      'city': 'Gemeente',
+      'category': 'Categorie',
+      'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
+      'category_validation': 'Categorie is een verplicht veld.',
+      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'cancel': 'Annuleren',
+      'add': 'Toevoegen'
+    },
     audience: {
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
@@ -10154,7 +10168,16 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     .controller('EventFormPlaceModalController', EventFormPlaceModalController);
 
   /* @ngInject */
-  function EventFormPlaceModalController($scope, $uibModalInstance, eventCrud, UdbPlace, location, categories, title) {
+  function EventFormPlaceModalController(
+      $scope,
+      $uibModalInstance,
+      eventCrud,
+      UdbPlace,
+      location,
+      categories,
+      title,
+      $translate
+  ) {
 
     $scope.categories = categories;
     $scope.location = location;
@@ -10270,6 +10293,10 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         .then(passOnPlaceData, showError);
     }
 
+    $scope.translateLocation = function (label) {
+      return $translate.instant('location.' + label);
+    };
+
     /**
      * Select the place that should be used.
      *
@@ -10292,7 +10319,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
 
 })();
 })();
@@ -24926,56 +24953,56 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-place-modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\">Nieuwe locatie toevoegen</h4>\n" +
+    "    <h4 class=\"modal-title\">{{translateLocation('title')}}</h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <form name=\"placeForm\" class=\"css-form\">\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "            <label for=\"name\">Naam locatie</label>\n" +
+    "            <label for=\"name\">{{translateLocation('name')}}</label>\n" +
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        De naam van de locatie is een verplicht veld.\n" +
+    "        {{translateLocation('name_validation')}}\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
     "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "                    <label for=\"locatie-straat\">Straat en nummer</label>\n" +
+    "                    <label for=\"locatie-straat\">{{translateLocation('street')}}</label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
     "                    <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
-    "            Straat is een verplicht veld.\n" +
+    "            {{translateLocation('street_validation')}}\n" +
     "          </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label>Gemeente</label>\n" +
+    "                    <label>{{translateLocation('city')}}</label>\n" +
     "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "            <label for=\"locatie-toevoegen-types\">Categorie</label>\n" +
-    "            <p class=\"help-block\">Kies een categorie die deze locatie het best omschrijft.</p>\n" +
+    "            <label for=\"locatie-toevoegen-types\">{{translateLocation('category')}}</label>\n" +
+    "            <p class=\"help-block\">{{translateLocation('category_help')}}</p>\n" +
     "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
     "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "        Categorie is een verplicht veld.\n" +
+    "        {{translateLocation('category_validation')}}\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
     "                <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "                    Er ging iets fout tijdens het opslaan van je locatie.\n" +
+    "                    {{translateLocation('error')}}\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </form>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">{{translateLocation('cancel')}}</button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
-    "    Toevoegen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        {{translateLocation('add')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
