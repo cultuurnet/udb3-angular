@@ -105,7 +105,10 @@
               </tr>
               <tr>
                 <td><span class="row-label">Wanneer</span></td>
-                <td><span ng-bind-html="calendarSummary"></span></td>
+                <td>
+                    <span ng-if="::(!isEmpty(calendarSummary))" ng-bind-html="calendarSummary"></span>
+                    <span class="text-muted" ng-if="::(isEmpty(calendarSummary))">Probleem bij het ophalen van de kalenderinformatie</span>
+                </td>
               </tr>
               <tr ng-class="::{muted: (!event.organizer)}">
                 <td><span class="row-label">Organisatie</span></td>

@@ -8085,9 +8085,13 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    udbApi
-      .getCalendarSummary($scope.eventId, 'lg')
-      .then(showCalendarSummary);
+    if (cachedEvent.calendarType === 'permanent') {
+      showCalendarSummary('Altijd open');
+    } else {
+      udbApi
+        .getCalendarSummary($scope.eventId, 'lg')
+        .then(showCalendarSummary);
+    }
 
     $scope.event = jsonLDLangFilter(event, language);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -23820,7 +23824,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
-    "                <td><span ng-bind-html=\"calendarSummary\"></span></td>\n" +
+    "                <td>\n" +
+    "                    <span ng-if=\"::(!isEmpty(calendarSummary))\" ng-bind-html=\"calendarSummary\"></span>\n" +
+    "                    <span class=\"text-muted\" ng-if=\"::(isEmpty(calendarSummary))\">Probleem bij het ophalen van de kalenderinformatie</span>\n" +
+    "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
     "                <td><span class=\"row-label\">Organisatie</span></td>\n" +

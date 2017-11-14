@@ -117,9 +117,13 @@ function EventDetail(
   function showOffer(event) {
     cachedEvent = event;
 
-    udbApi
-      .getCalendarSummary($scope.eventId, 'lg')
-      .then(showCalendarSummary);
+    if (cachedEvent.calendarType === 'permanent') {
+      showCalendarSummary('Altijd open');
+    } else {
+      udbApi
+        .getCalendarSummary($scope.eventId, 'lg')
+        .then(showCalendarSummary);
+    }
 
     $scope.event = jsonLDLangFilter(event, language);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
