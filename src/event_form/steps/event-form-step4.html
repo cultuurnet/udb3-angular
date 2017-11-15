@@ -3,12 +3,12 @@
   <a name="titel"></a>
   <section id="titel" ng-show="eventFormData.showStep4">
 
-    <h2 class="title-border"><span class="number">4</span> <span>{{::translateEventForm('step4', 'basic_data')}}</span></h2>
+    <h2 class="title-border"><span class="number">4</span> <span translate-once="eventForm.step4.basic_data"></span></h2>
 
     <div class="row">
       <div class="col-md-8 col-lg-7">
-        <label ng-show="eventFormData.isEvent">{{::translateEventForm('step4', 'name_event')}}</label>
-        <label ng-show="eventFormData.isPlace">{{::translateEventForm('step4', 'name_place')}}</label>
+        <label ng-show="eventFormData.isEvent" translate-once="eventForm.step4.name_event"></label>
+        <label ng-show="eventFormData.isPlace" translate-once="eventForm.step4.name_place"></label>
 
         <div class="form-group-lg">
           <input type="text"
@@ -22,16 +22,16 @@
 
         <div class="help-block">
           <p>
-            <span ng-show="eventFormData.isEvent" translate="eventForm.step4.help_event"></span>
-            <span ng-show="eventFormData.isPlace" translate="eventForm.step4.help_place"></span>
-            <span translate="eventForm.step4.help_description"></span>
+            <span ng-show="eventFormData.isEvent" translate-once="eventForm.step4.help_event"></span>
+            <span ng-show="eventFormData.isPlace" translate-once="eventForm.step4.help_place"></span>
+            <span translate-once="eventForm.step4.help_description"></span>
           </p>
         </div>
       </div>
     </div>
 
     <div class="alert alert-warning" ng-show="infoMissing">
-      <strong>{{::translateEventForm('step4', 'info_missing')}}</strong>
+      <strong translate-once="eventForm.step4.info_missing"></strong>
       <ul>
         <li ng-repeat="error in missingInfo" ng-bind-html="error" translate>
           {{error}}
@@ -39,15 +39,16 @@
       </ul>
     </div>
 
-    <div class="alert alert-danger" ng-show="error">
-      {{::translateEventForm('step4', 'safe_error')}}
+    <div class="alert alert-danger"
+         translate-once="eventForm.step4.save_error"
+         ng-show="error">
     </div>
 
     <p ng-show="eventFormData.id === ''">
       <a class="btn btn-primary titel-doorgaan"
           ng-click="validateEvent(true);"
           ng-class="{'disabled': eventFormData.name.nl === ''}">
-        {{::translateEventForm('step4', 'continue')}} <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+        <span translate-once="eventForm.step4.continue"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
       </a>
     </p>
 
@@ -62,8 +63,8 @@
 
     <div class="panel panel-info" ng-show="resultViewer.totalItems > 0">
       <div class="panel-body bg-info text-info">
-        <p class="h2" style="margin-top: 0;">{{::translateEventForm('step4', 'doubles_title')}}</p>
-        <p>{{::translateEventForm('step4', 'doubles_help')}}</p>
+        <p class="h2" style="margin-top: 0;" translate-once="eventForm.step4.doubles_title"></p>
+        <p translate-once="eventForm.step4.doubles_help"></p>
 
         <div class="row clearfix" ng-if="eventFormData.getType() === 'event'">
           <div ng-repeat="event in resultViewer.events | filter:{'@type': 'Event'}">
@@ -80,15 +81,17 @@
     </div>
 
     <h3 ng-show="duplicatesSearched && resultViewer.totalItems > 0">
-      <span translate="step4.sure" translate-values="{ name: '{{eventFormData.name.nl}}' }"></span>
+      <span translate-once="eventForm.step4.sure" translate-once-value="{ name: '{{eventFormData.name.nl}}' }"></span>
     </h3>
     <ul class="list-inline" ng-show="duplicatesSearched && resultViewer.totalItems > 0">
       <li>
-        <a class="btn btn-default" href="dashboard">{{::translateEventForm('step4', 'return_dashboard')}}</a>
+        <a class="btn btn-default"
+           translate-once="eventForm.step4.return_dashboard"
+           href="dashboard"></a>
       </li>
       <li>
         <a class="btn btn-primary dubbeldetectie-doorgaan" ng-click="saveEvent()">
-          {{::translateEventForm('step4', 'yes_continue')}} <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+          <span translate-once="eventForm.step4.yes_continue"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
         </a>
       </li>
     </ul>

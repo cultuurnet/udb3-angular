@@ -2928,7 +2928,7 @@ angular.module('udb.core')
         'help_place': 'Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".',
         'help_description': 'Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.',
         'info_missing': 'Je vulde niet alle verplichte informatie in:',
-        'safe_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
         'continue': 'Doorgaan',
         'doubles_title': 'Vermijd dubbel werk',
         'doubles_help': 'We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.',
@@ -25601,12 +25601,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <ng-switch on=\"event.calendarType\">\n" +
     "      <span ng-switch-when=\"single\" ng-bind=\"::event.startDate | date: 'dd/MM'\"></span>\n" +
     "      <span ng-switch-when=\"multiple\">\n" +
-    "        <span translate=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
+    "        <span translate-once=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate-once=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
     "      </span>\n" +
     "      <span ng-switch-when=\"periodic\">\n" +
-    "        <span translate=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
+    "        <span translate-once=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate-once=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
     "      </span>\n" +
-    "      <span ng-switch-when=\"permanent\" translate=\"eventForm.step4.suggestions.permanent\"></span>\n" +
+    "      <span ng-switch-when=\"permanent\" translate-once=\"eventForm.step4.suggestions.permanent\"></span>\n" +
     "    </ng-switch>\n" +
     "    <br>\n" +
     "    <small class=\"preview-corner\"></small>\n" +
@@ -25673,7 +25673,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "     ng-click=\"previewSuggestedItem(event)\">\n" +
     "    <small class=\"label label-default\" ng-bind=\"::event.type.label\"></small><br>\n" +
     "    <strong class=\"title\" ng-bind=\"::event.name\"></strong><br>\n" +
-    "    <span translate=\"eventForm.step4.suggestions.permanent\"></span>\n" +
+    "    <span translate-once=\"eventForm.step4.suggestions.permanent\"></span>\n" +
     "    <br>\n" +
     "    <small class=\"preview-corner\"></small>\n" +
     "    <i class=\"fa fa-eye preview-icon\"></i>\n" +
@@ -25989,12 +25989,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <a name=\"titel\"></a>\n" +
     "  <section id=\"titel\" ng-show=\"eventFormData.showStep4\">\n" +
     "\n" +
-    "    <h2 class=\"title-border\"><span class=\"number\">4</span> <span>{{::translateEventForm('step4', 'basic_data')}}</span></h2>\n" +
+    "    <h2 class=\"title-border\"><span class=\"number\">4</span> <span translate-once=\"eventForm.step4.basic_data\"></span></h2>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-8 col-lg-7\">\n" +
-    "        <label ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step4', 'name_event')}}</label>\n" +
-    "        <label ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step4', 'name_place')}}</label>\n" +
+    "        <label ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step4.name_event\"></label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step4.name_place\"></label>\n" +
     "\n" +
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
@@ -26008,16 +26008,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"help-block\">\n" +
     "          <p>\n" +
-    "            <span ng-show=\"eventFormData.isEvent\" translate=\"eventForm.step4.help_event\"></span>\n" +
-    "            <span ng-show=\"eventFormData.isPlace\" translate=\"eventForm.step4.help_place\"></span>\n" +
-    "            <span translate=\"eventForm.step4.help_description\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step4.help_event\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step4.help_place\"></span>\n" +
+    "            <span translate-once=\"eventForm.step4.help_description\"></span>\n" +
     "          </p>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
-    "      <strong>{{::translateEventForm('step4', 'info_missing')}}</strong>\n" +
+    "      <strong translate-once=\"eventForm.step4.info_missing\"></strong>\n" +
     "      <ul>\n" +
     "        <li ng-repeat=\"error in missingInfo\" ng-bind-html=\"error\" translate>\n" +
     "          {{error}}\n" +
@@ -26025,15 +26025,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </ul>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "      {{::translateEventForm('step4', 'safe_error')}}\n" +
+    "    <div class=\"alert alert-danger\"\n" +
+    "         translate-once=\"eventForm.step4.save_error\"\n" +
+    "         ng-show=\"error\">\n" +
     "    </div>\n" +
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-click=\"validateEvent(true);\"\n" +
     "          ng-class=\"{'disabled': eventFormData.name.nl === ''}\">\n" +
-    "        {{::translateEventForm('step4', 'continue')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
     "\n" +
@@ -26048,8 +26049,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"panel panel-info\" ng-show=\"resultViewer.totalItems > 0\">\n" +
     "      <div class=\"panel-body bg-info text-info\">\n" +
-    "        <p class=\"h2\" style=\"margin-top: 0;\">{{::translateEventForm('step4', 'doubles_title')}}</p>\n" +
-    "        <p>{{::translateEventForm('step4', 'doubles_help')}}</p>\n" +
+    "        <p class=\"h2\" style=\"margin-top: 0;\" translate-once=\"eventForm.step4.doubles_title\"></p>\n" +
+    "        <p translate-once=\"eventForm.step4.doubles_help\"></p>\n" +
     "\n" +
     "        <div class=\"row clearfix\" ng-if=\"eventFormData.getType() === 'event'\">\n" +
     "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Event'}\">\n" +
@@ -26066,15 +26067,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <h3 ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
-    "      <span translate=\"step4.sure\" translate-values=\"{ name: '{{eventFormData.name.nl}}' }\"></span>\n" +
+    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name.nl}}' }\"></span>\n" +
     "    </h3>\n" +
     "    <ul class=\"list-inline\" ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
     "      <li>\n" +
-    "        <a class=\"btn btn-default\" href=\"dashboard\">{{::translateEventForm('step4', 'return_dashboard')}}</a>\n" +
+    "        <a class=\"btn btn-default\"\n" +
+    "           translate-once=\"eventForm.step4.return_dashboard\"\n" +
+    "           href=\"dashboard\"></a>\n" +
     "      </li>\n" +
     "      <li>\n" +
     "        <a class=\"btn btn-primary dubbeldetectie-doorgaan\" ng-click=\"saveEvent()\">\n" +
-    "          {{::translateEventForm('step4', 'yes_continue')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "          <span translate-once=\"eventForm.step4.yes_continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "        </a>\n" +
     "      </li>\n" +
     "    </ul>\n" +

@@ -402,7 +402,7 @@ angular.module('udb.core')
         'help_place': 'Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".',
         'help_description': 'Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.',
         'info_missing': 'Je vulde niet alle verplichte informatie in:',
-        'safe_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
         'continue': 'Doorgaan',
         'doubles_title': 'Vermijd dubbel werk',
         'doubles_help': 'We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.',
