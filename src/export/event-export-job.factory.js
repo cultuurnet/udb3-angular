@@ -20,13 +20,15 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
    * @param   {string}    commandId
    * @param   {number}    eventCount
    * @param   {string}    format
+   * @param   {Object}    details
    */
-  var EventExportJob = function (commandId, eventCount, format) {
+  var EventExportJob = function (commandId, eventCount, format, details) {
     BaseJob.call(this, commandId);
     this.exportUrl = '';
     this.eventCount = eventCount;
     this.format = format;
     this.extension = _.find(ExportFormats, {type: format}).extension;
+    this.details = details;
   };
 
   EventExportJob.prototype = Object.create(BaseJob.prototype);

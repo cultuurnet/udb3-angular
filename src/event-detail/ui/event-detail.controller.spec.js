@@ -254,7 +254,6 @@ describe('Controller: Event Detail', function() {
     );
 
     expect($scope.eventId).toEqual(eventId);
-
   });
 
   it('should loads the event description from the variation', function () {

@@ -6,11 +6,11 @@
                ng-true-value="'periodic'"
                ng-false-value="'permanent'"
                ng-change="$ctrl.formData.setCalendarType($ctrl.calendarType)">
-        <span>Start- en einddatum</span>
+        <span translate="calendar.period.title"></span>
     </label>
     <div class="periodic-info">
         <div class="start-date">
-            <label>Van</label>
+            <label translate="calendar.period.from"></label>
             <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
                                             ng-model="$ctrl.formData.startDate"
                                             ng-change="$ctrl.formData.periodicTimingChanged()">
@@ -18,7 +18,7 @@
         </div>
 
         <div class="end-date">
-            <label>Tot</label>
+            <label translate="calendar.period.till"></label>
             <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
                                             ng-model="$ctrl.formData.endDate"
                                             ng-change="$ctrl.formData.periodicTimingChanged()">
@@ -28,7 +28,7 @@
         <div class="requirements"
              ng-show="$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError">
             <div class="alert alert-danger">
-                <p>Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.</p>
+                <p translate="calendar.period.alert"></p>
             </div>
         </div>
     </div>
