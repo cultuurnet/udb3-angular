@@ -34,6 +34,7 @@
     $scope.showValidation = false;
     $scope.saving = false;
     $scope.error = false;
+    $scope.errorMessage = 'error.default';
 
     // Scope functions.
     $scope.addLocation = addLocation;
@@ -85,8 +86,13 @@
         return;
       }
 
-      savePlace();
+      if (!validateAddress($scope.newPlace.address.streetAddress)) {
+        $scope.error = true;
+        $scope.errorMessage = 'error.long'
+        return;
+      }
 
+      savePlace();
     }
 
     /**
@@ -163,6 +169,14 @@
       return sortedCategories[0].id;
     }
 
+    function getNumberFromStreetAddress(streetAddress) {
+      return streetAddress.split(' ').pop();
+    }
+
+    function validateAddress(streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
   }
 
 })();

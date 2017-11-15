@@ -359,7 +359,10 @@ angular.module('udb.core')
       'category': 'Categorie',
       'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
       'category_validation': 'Categorie is een verplicht veld.',
-      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'error': {
+        'default': 'Er ging iets fout tijdens het opslaan van je locatie.',
+        'long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
+      },
       'cancel': 'Annuleren',
       'add': 'Toevoegen'
     },
