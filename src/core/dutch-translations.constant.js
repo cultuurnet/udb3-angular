@@ -333,10 +333,188 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    prices: {
+      'title': 'Prijzen toevoegen',
+      'base': 'Basistarief',
+      'target_group': 'Doelgroep',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'add_price': 'Prijs invoeren',
+      'add_tarriff': 'Tarief toevoegen',
+      'error': 'Er ging iets fout bij het opslaan van de prijs.',
+      'invalid': 'Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.',
+      'invalid_tip1': 'Noteer decimalen met een komma.',
+      'invalid_tip2': 'Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.',
+      'invalid_tip3': 'Geef maximum twee cijfers na de komma.',
+      'close': 'Sluiten',
+      'save': 'Bewaren'
+    },
+    location: {
+      'title': 'Nieuwe locatie toevoegen',
+      'name': 'Naam locatie',
+      'name_validation': 'De naam van de locatie is een verplicht veld.',
+      'street': 'Straat en nummer',
+      'street_validation': 'Straat is een verplicht veld.',
+      'city': 'Gemeente',
+      'category': 'Categorie',
+      'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
+      'category_validation': 'Categorie is een verplicht veld.',
+      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'cancel': 'Annuleren',
+      'add': 'Toevoegen'
+    },
+    eventForm: {
+      step1: {
+        'title': 'Wat wil je toevoegen?',
+        'label_event': 'Een evenement',
+        'show_everything': 'Toon alles',
+        'or': 'of',
+        'location_label': 'Een locatie',
+        'change': 'Wijzigen',
+        'refine': 'Verfijn'
+      },
+      step2: {
+        'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
+        'date_help_place': 'Wanneer is deze plaats of locatie open?',
+      },
+      step3: {
+        'title_event': 'Waar vindt dit evenement of deze activiteit plaats?',
+        'title_place': 'Waar is deze plaats of locatie?',
+        'choose_city': 'Kies een gemeente',
+        'placeholder_city': 'Gemeente of postcode',
+        'problem_city': 'Er was een probleem tijdens het ophalen van de steden',
+        'change': 'Wijzigen',
+        'choose_location': 'Kies een locatie',
+        'placeholder_location': 'Naam of adres',
+        'location_not_found': 'Locatie niet gevonden?',
+        'add_location': 'Een locatie toevoegen',
+        'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
+        'street': 'Straat en nummer',
+        'placeholder_street': 'Kerkstraat 1',
+        'straat_validate': 'Straat en nummer is een verplicht veld.',
+        'ok': 'OK'
+      },
+      step4: {
+        'basic_data': 'Basisgegevens',
+        'name_event': 'Naam van het evenement',
+        'name_place': 'Naam van de locatie',
+        'help_event': 'Gebruik een <strong>sprekende titel</strong>, bv. \"Fietsen langs kapelletjes\", \"De Sage van de Eenhoorn\".',
+        'help_place': 'Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".',
+        'help_description': 'Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.',
+        'info_missing': 'Je vulde niet alle verplichte informatie in:',
+        'safe_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
+        'continue': 'Doorgaan',
+        'doubles_title': 'Vermijd dubbel werk',
+        'doubles_help': 'We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.',
+        'sure': 'Ben je zeker dat je \"{{name}}\" wil toevoegen?',
+        'return_dashboard': 'Nee, keer terug naar dashboard',
+        'yes_continue': 'Ja, doorgaan met invoeren',
+        suggestions: {
+          'from': 'Van',
+          'till': 'tot',
+          'permanent': 'Permanent'
+        }
+      },
+      step5: {
+        'expose_event': 'Laat je evenement extra opvallen',
+        'expose_place': 'Laat deze locatie extra opvallen',
+        'title': 'Titel',
+        'description': 'Beschrijving',
+        'add_text': 'Tekst toevoegen',
+        'required_200': 'De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.',
+        'required_still': 'Nog',
+        'required_signs': 'tekens.',
+        'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
+        'empty': 'Leegmaken',
+        'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
+        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordtgeorganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
+        'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
+        'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
+        'organizer': 'Organisatie',
+        'add_organizer': 'Organisatie toevoegen',
+        'choose_organizer': 'Kies een organisatie',
+        'organizer_not_found': 'Organisatie niet gevonden?',
+        'add_new_organizer': 'Nieuwe organisator toevoegen',
+        'organizer_error': 'Er ging iets fout bij het opslaan van de organisator.',
+        'contact': 'Contact & reservatie',
+        'add_contact': 'Contactinformatie toevoegen',
+        'website': 'Website',
+        'phone': 'Telefoonnummer',
+        'e-mail': 'E-mailadres',
+        'use_booking': 'Gebruik voor reservatie',
+        'booking_exposure': 'Hoe mag deze link verschijnen?',
+        'buy_tickets': 'Koop tickets',
+        'reserve_places': 'Reserveer plaatsen',
+        'check_availability': 'Controleer beschikbaarheid',
+        'subscribe': 'Schrijf je in',
+        'add_more_contact': 'Meer contactgegevens toevoegen',
+        'contact_error': 'Er ging iets fout bij het opslaan van de contact info.',
+        'facilities': 'Toegankelijkheid',
+        'add_facility': 'Voorzieningen toevoegen',
+        'facility_inapplicable': 'Niet van toepassing',
+        'change': 'Wijzigen',
+        'image_help': 'Voeg een afbeelding toe zodat je bezoekers je activiteit beter herkennen.',
+        'images': 'Afbeeldingen',
+        'copyright': 'Copyright',
+        'delete': 'Verwijderen',
+        'main_image': 'Maak hoofdafbeelding',
+        'add_image': 'Afbeelding toevoegen',
+        age: {
+          'age_label': 'Geschikt voor'
+        },
+        priceInfo: {
+          'price_label': 'Prijs',
+          'add_prices': 'Prijzen toevoegen',
+          'free': 'Gratis',
+          'prices': 'Prijzen',
+          'change': 'Wijzigen',
+          'currency': 'euro'
+        },
+        reservationPeriod: {
+          'add_reservation_period': 'Reservatieperiode toevoegen',
+          'reservation_period': 'Reservatie periode',
+          'from': 'Van',
+          'till': 'Tot'
+        }
+      }
+    },
+    calendar: {
+      'one_more_days': 'Eén of meerdere dagen',
+      'or': 'of',
+      'default_days': 'Vaste dagen per week',
+      'start_label': 'Start',
+      'end_label': 'Einde',
+      'whole_day_label': 'Hele dag',
+      'start_hour_label': 'Beginuur',
+      'end_hour_label': 'Einduur',
+      'add_days': 'Dag(en) toevoegen',
+      period: {
+        'title': 'Start- en einddatum',
+        'from': 'Van',
+        'till': 'Tot',
+        'alert': 'Geef zowel een begin- als einddatum in. De einddatum kan niet voor de begindatum vallen.'
+      },
+      openingHours: {
+        'permanent_title': '24/24, 7/7',
+        'permanent_subtitle': 'Elke dag, ieder uur',
+        'add_hours': 'Uren toevoegen',
+        'opening_hours': 'Openingsuren',
+        'change': 'Wijzigen',
+        'days': 'Dagen',
+        'from': 'Van',
+        'till': 'Tot',
+        'more_hours': 'Meer openingstijden toevoegen',
+        'cancel': 'Annuleren',
+        'save': 'Opslaan'
+      },
+    },
     audience: {
+      'entrance': 'Toegang',
       'everyone': 'Voor iedereen',
       'members': 'Enkel voor leden',
+      'members_help': 'Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.',
       'education': 'Specifiek voor scholen',
+      'education_help': 'Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren kan je nog specifieke informatie voor scholen toevoegen.'
     },
     workflowStatus: {
       'DRAFT': 'Niet gepubliceerd',
@@ -413,6 +591,17 @@ angular.module('udb.core')
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
       'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+    },
+    uitpas: {
+      uitpasInfo: {
+        'uitpas': 'UiTPAS',
+        'uitpas_alert': 'Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.',
+        'uitpas_info': 'Dit is een UiTPAS activiteit.'
+      },
+      cardSystems: {
+        'card_systems': 'Kaartsystemen',
+        'choose': '--Selecteer een verdeelsleutel--'
+      }
     }
   }
 );

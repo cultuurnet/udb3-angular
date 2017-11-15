@@ -1,13 +1,15 @@
 <div class="col-sm-12" ng-hide="haveBookingPeriod">
-    <a class="btn btn-primary reservatie-periode-toevoegen" href="#" ng-click="changeHaveBookingPeriod()">
-        Reservatieperiode toevoegen
+    <a class="btn btn-primary reservatie-periode-toevoegen"
+       href="#"
+       ng-click="changeHaveBookingPeriod()"
+       translate="eventForm.step5.reservationPeriod.add_reservation_period">
     </a>
 </div>
 <div class="col-sm-12" ng-show="haveBookingPeriod">
     <div class="booking-period">
         <div class="row">
             <div class="col-lg-11">
-                <p><strong>Reservatie periode</strong></p>
+                <p><strong translate="eventForm.step5.reservationPeriod.reservation_period"></strong></p>
             </div>
             <div class="col-lg-1">
                 <button ng-if="!info.booking" type="button" class="close" aria-label="Close" ng-click="deleteBookingPeriod()">
@@ -22,7 +24,8 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="input-group">
-                        <span class="input-group-addon">Van</span>
+                        <span class="input-group-addon"
+                              translate="eventForm.step5.reservationPeriod.from"></span>
                         <input name="bookingStartDate"
                                class="form-control"
                                type="text"
@@ -42,7 +45,8 @@
                 </div><!-- /.col-lg-6 -->
                 <div class="col-lg-6">
                     <div class="input-group">
-                        <span class="input-group-addon">Tot</span>
+                        <span class="input-group-addon"
+                              translate="eventForm.step5.reservationPeriod.till"></span>
                         <input name="bookingEndDate"
                                type="text"
                                class="form-control"

@@ -3,39 +3,39 @@
   <section id="wat">
     <section class="row">
       <div class="col-md-12">
-        <h2 class="title-border"><span class="number">1</span> Wat wil je toevoegen?</h2>
+        <h2 class="title-border"><span class="number">1</span> {{::translateEventForm('step1', 'title')}}</h2>
       </div>
     </section>
 
     <div class="row" ng-show="!activeEventType">
       <div ng-class="splitTypes ? 'col-sm-5': 'col-sm-12'"
            ng-show="splitTypes || eventFormData.getType() === 'event'">
-        <label class="event-type-choser-label event"><span>Een evenement</span></label>
+        <label class="event-type-choser-label event"><span>{{::translateEventForm('step1', 'label_event')}}</span></label>
         <ul class="list-inline" id="step1-events">
           <li ng-repeat="eventType in ::eventTypeLabels | orderBy:'label'" ng-show="eventType.primary === true || showAllEventTypes">
             <button ng-bind="::eventType.label" class="btn btn-default"
                     ng-click="setEventType(eventType, true)"></button>
           </li>
           <li ng-hide="showAllEventTypes">
-            <a href="" ng-click="toggleEventTypes()">Toon alles</a>
+            <a href="" ng-click="toggleEventTypes()">{{::translateEventForm('step1', 'show_everything')}}</a>
           </li>
         </ul>
       </div>
 
       <div class="col-sm-2" ng-show="splitTypes">
-        <p class="text-center event-type-splitter"><em>of</em></p>
+        <p class="text-center event-type-splitter"><em>{{::translateEventForm('step1', 'or')}}</em></p>
       </div>
 
       <div ng-class="splitTypes ? 'col-sm-5': 'col-sm-12'"
            ng-show="splitTypes || eventFormData.getType() === 'place'">
-        <label class="event-type-choser-label place"><span>Een locatie</span></label>
+        <label class="event-type-choser-label place"><span>{{::translateEventForm('step1', 'location_label')}}</span></label>
         <ul class="list-inline" id="step1-places">
           <li ng-repeat="placeType in ::placeLabels | orderBy:'label'" ng-show="placeType.primary == true || showAllPlaces">
             <button ng-bind="::placeType.label" class="btn btn-default"
                     ng-click="setEventType(placeType, false)"></button>
           </li>
           <li ng-hide="showAllPlaces">
-            <a href="" ng-click="togglePlaces()">Toon alles</a>
+            <a href="" ng-click="togglePlaces()">{{::translateEventForm('step1', 'show_everything')}}</a>
           </li>
         </ul>
       </div>
@@ -45,11 +45,11 @@
 
       <p class="col-xs-12 col-md-12" ng-hide="activeEventType === ''">
         <span class="btn-chosen" ng-bind="activeEventTypeLabel"></span>
-        <a class="btn btn-link btn-default" href="" ng-click="resetEventType()">Wijzigen</a>
+        <a class="btn btn-link btn-default" href="" ng-click="resetEventType()">{{::translateEventForm('step1', 'change')}}</a>
       </p>
 
       <div class="col-xs-12 theme-refinement" ng-hide="activeEventType === '' || activeTheme !== ''">
-        <label class="event-theme-label" ng-show="eventThemeLabels.length">Verfijn</label>
+        <label class="event-theme-label" ng-show="eventThemeLabels.length">{{::translateEventForm('step1', 'refine')}}</label>
         <div ng-repeat="(key, values) in eventThemeLabels | groupBy: 'group'">
           <div class="row">
             <div class="col-xs-2" ng-show="key !== 'undefined'" >
@@ -69,7 +69,7 @@
 
       <p class="col-xs-12 col-md-12"  ng-hide="activeTheme === ''">
         <span class="btn-chosen" ng-bind="activeThemeLabel"></span>
-        <a class="btn btn-link btn-default" href="" ng-click="resetTheme()">Wijzigen</a>
+        <a class="btn btn-link btn-default" href="" ng-click="resetTheme()">{{::translateEventForm('step1', 'change')}}</a>
       </p>
 
     </div>
