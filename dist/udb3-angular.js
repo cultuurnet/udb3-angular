@@ -2887,7 +2887,7 @@ angular.module('udb.core')
       'category_validation': 'Categorie is een verplicht veld.',
       'error': {
         'default': 'Er ging iets fout tijdens het opslaan van je locatie.',
-        'long': 'Gelieve een korter huisnummer in te geven.',
+        'long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       },
       'cancel': 'Annuleren',
       'add': 'Toevoegen'
@@ -10418,7 +10418,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
       if (!validateAddress($scope.newPlace.address.streetAddress)) {
         $scope.error = true;
-        $scope.errorMessage = 'error.long'
+        $scope.errorMessage = 'error.long';
         return;
       }
 
@@ -10504,7 +10504,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
     function validateAddress(streetAddress) {
-      const maximumNumberLength = 15;
+      var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
     }
   }

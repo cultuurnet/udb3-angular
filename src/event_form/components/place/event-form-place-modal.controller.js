@@ -88,7 +88,7 @@
 
       if (!validateAddress($scope.newPlace.address.streetAddress)) {
         $scope.error = true;
-        $scope.errorMessage = 'error.long'
+        $scope.errorMessage = 'error.long';
         return;
       }
 
