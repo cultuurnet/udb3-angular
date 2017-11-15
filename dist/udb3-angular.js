@@ -2876,7 +2876,7 @@ angular.module('udb.core')
       'save': 'Bewaren'
     },
     location: {
-      'title': 'Nieuwe locatie toevoegen111',
+      'title': 'Nieuwe locatie toevoegen',
       'name': 'Naam locatie',
       'name_validation': 'De naam van de locatie is een verplicht veld.',
       'street': 'Straat en nummer',
@@ -25161,45 +25161,45 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"modal-body\">\n" +
     "    <form name=\"placeForm\" class=\"css-form\">\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "            <label for=\"name\" translate=\"location.name\"></label>\n" +
+    "            <label for=\"name\" translate-once=\"location.name\"></label>\n" +
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "            <span class=\"help-block\"\n" +
-    "                  translate=\"location.name_validation\"\n" +
+    "                  translate-once=\"location.name_validation\"\n" +
     "                  ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
     "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "                    <label for=\"locatie-straat\" translate=\"location.street\"></label>\n" +
+    "                    <label for=\"locatie-straat\" translate-once=\"location.street\"></label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
     "                    <span class=\"help-block\"\n" +
-    "                          translate=\"location.street_validation\"\n" +
+    "                          translate-once=\"location.street_validation\"\n" +
     "                          ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
     "          </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label translate=\"location.city\"></label>\n" +
+    "                    <label translate-once=\"location.city\"></label>\n" +
     "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "            <label for=\"locatie-toevoegen-types\" translate=\"location.catergory\"></label>\n" +
-    "            <p class=\"help-block\" translate=\"location.category_help\"></p>\n" +
+    "            <label for=\"locatie-toevoegen-types\" translate-once=\"location.catergory\"></label>\n" +
+    "            <p class=\"help-block\" translate-once=\"location.category_help\"></p>\n" +
     "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
     "            <span class=\"help-block\"\n" +
-    "                  translate=\"location.category_validation\"\n" +
+    "                  translate-once=\"location.category_validation\"\n" +
     "                  ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
     "                <div class=\"alert alert-danger\"\n" +
-    "                     translate=\"location.error\"\n" +
+    "                     translate-once=\"location.error\"\n" +
     "                     ng-show=\"error\">\n" +
     "                </div>\n" +
     "            </div>\n" +
@@ -25211,7 +25211,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary\"\n" +
     "            ng-click=\"addLocation()\">\n" +
-    "        <span translate=\"location.add\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        <span translate-once=\"location.add\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -25250,7 +25250,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-header\">\n" +
     "    <button type=\"button\" class=\"close\" ng-click=\"pfmc.cancelEditPrice()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
-    "    <h4 class=\"modal-title\" translate=\"prices.title\"></h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"prices.title\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
@@ -25264,7 +25264,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        class=\"col-xs-4\">\n" +
     "                        <p ng-switch-when=\"base\"\n" +
     "                           class=\"form-text\"\n" +
-    "                           translate=\"prices.base\">\n" +
+    "                           translate-once=\"prices.base\">\n" +
     "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
@@ -25278,7 +25278,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </td>\n" +
     "                    <td class=\"col-xs-4\">\n" +
     "                        <span ng-if=\"priceInfo.price === 0\"\n" +
-    "                              translate=\"prices.free\">\n" +
+    "                              translate-once=\"prices.free\">\n" +
     "                        </span>\n" +
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
@@ -25292,7 +25292,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\"> <span class=\"text-muted\" translate=\"prices.currency\"></span></div>\n" +
+    "                                <div class=\"form-group\"> <span class=\"text-muted\" translate-once=\"prices.currency\"></span></div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -25301,10 +25301,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <a class=\"btn btn-link\"\n" +
     "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
     "                           ng-switch-when=\"0\"\n" +
-    "                           translate=\"prices.add_price\">\n" +
+    "                           translate-once=\"prices.add_price\">\n" +
     "                        </a>\n" +
     "                        <a class=\"btn btn-link\"\n" +
-    "                           translate=\"prices.free\"\n" +
+    "                           translate-once=\"prices.free\"\n" +
     "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
     "                           ng-switch-default>\n" +
     "                        </a>\n" +
@@ -25318,7 +25318,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
     "                        <a class=\"btn btn-default\"\n" +
-    "                           translate=\"prices.add_tarriff\"\n" +
+    "                           translate-once=\"prices.add_tarriff\"\n" +
     "                           ng-click=\"pfmc.addPriceItem()\">\n" +
     "                        </a>\n" +
     "                    </td>\n" +
@@ -25328,28 +25328,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </form>\n" +
     "    <div ng-show=\"pfmc.priceError\"\n" +
     "         class=\"alert alert-danger\"\n" +
-    "         translate=\"prices.error\">\n" +
+    "         translate-once=\"prices.error\">\n" +
     "    </div>\n" +
     "    <div ng-show=\"(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving\" class=\"alert alert-info\">\n" +
-    "        <p translate=\"prices.invalid\"></p>\n" +
+    "        <p translate-once=\"prices.invalid\"></p>\n" +
     "        <ul class=\"small\">\n" +
-    "          <li translate=\"prices.invalid_tip1\"></li>\n" +
-    "          <li translate=\"prices.invalid_tip2\"></li>\n" +
-    "          <li translate=\"prices.invalid_tip3\"></li>\n" +
+    "          <li translate-once=\"prices.invalid_tip1\"></li>\n" +
+    "          <li translate-once=\"prices.invalid_tip2\"></li>\n" +
+    "          <li translate-once=\"prices.invalid_tip3\"></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-default\"\n" +
-    "          translate=\"prices.close\"\n" +
+    "          translate-once=\"prices.close\"\n" +
     "          ng-click=\"pfmc.cancelEditPrice()\">\n" +
     "  </button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "          ng-click=\"pfmc.validatePrice()\"\n" +
     "          ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
-    "      <span translate=\"prices.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "      <span translate-once=\"prices.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );

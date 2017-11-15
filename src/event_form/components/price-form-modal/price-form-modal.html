@@ -1,7 +1,7 @@
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="pfmc.cancelEditPrice()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-    <h4 class="modal-title" translate="prices.title"></h4>
+    <h4 class="modal-title" translate-once="prices.title"></h4>
 </div>
 <div class="modal-body">
 
@@ -15,7 +15,7 @@
                         class="col-xs-4">
                         <p ng-switch-when="base"
                            class="form-text"
-                           translate="prices.base">
+                           translate-once="prices.base">
                         </p>
                         <span ng-switch-default>
                             <input type="text"
@@ -29,7 +29,7 @@
                     </td>
                     <td class="col-xs-4">
                         <span ng-if="priceInfo.price === 0"
-                              translate="prices.free">
+                              translate-once="prices.free">
                         </span>
                         <span ng-if="priceInfo.price !== 0">
                             <div class="form-inline">
@@ -43,7 +43,7 @@
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
                                            required />
                                 </div>
-                                <div class="form-group"> <span class="text-muted" translate="prices.currency"></span></div>
+                                <div class="form-group"> <span class="text-muted" translate-once="prices.currency"></span></div>
                             </div>
                         </span>
                     </td>
@@ -52,10 +52,10 @@
                         <a class="btn btn-link"
                            ng-click="pfmc.unsetPriceItemFree(key)"
                            ng-switch-when="0"
-                           translate="prices.add_price">
+                           translate-once="prices.add_price">
                         </a>
                         <a class="btn btn-link"
-                           translate="prices.free"
+                           translate-once="prices.free"
                            ng-click="pfmc.setPriceItemFree(key)"
                            ng-switch-default>
                         </a>
@@ -69,7 +69,7 @@
                 <tr>
                     <td colspan="4">
                         <a class="btn btn-default"
-                           translate="prices.add_tarriff"
+                           translate-once="prices.add_tarriff"
                            ng-click="pfmc.addPriceItem()">
                         </a>
                     </td>
@@ -79,27 +79,27 @@
     </form>
     <div ng-show="pfmc.priceError"
          class="alert alert-danger"
-         translate="prices.error">
+         translate-once="prices.error">
     </div>
     <div ng-show="(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving" class="alert alert-info">
-        <p translate="prices.invalid"></p>
+        <p translate-once="prices.invalid"></p>
         <ul class="small">
-          <li translate="prices.invalid_tip1"></li>
-          <li translate="prices.invalid_tip2"></li>
-          <li translate="prices.invalid_tip3"></li>
+          <li translate-once="prices.invalid_tip1"></li>
+          <li translate-once="prices.invalid_tip2"></li>
+          <li translate-once="prices.invalid_tip3"></li>
         </ul>
     </div>
 </div>
 <div class="modal-footer">
   <button type="button"
           class="btn btn-default"
-          translate="prices.close"
+          translate-once="prices.close"
           ng-click="pfmc.cancelEditPrice()">
   </button>
   <button type="button"
           class="btn btn-primary organisator-toevoegen-bewaren"
           ng-click="pfmc.validatePrice()"
           ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
-      <span translate="prices.save"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+      <span translate-once="prices.save"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>
 </div>
