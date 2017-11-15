@@ -36,6 +36,15 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
    */
   service.createImage = function(imageFile, description, copyrightHolder) {
     var deferredMediaObject = $q.defer();
+    var allowedFileExtensions = ['png', 'jpeg', 'jpg', 'gif'];
+
+    function getFileExtension(filename) {
+        return filename.split('/').pop();
+    }
+
+    function isAllowedFileExtension(fileExtension) {
+        return allowedFileExtensions.indexOf(fileExtension) >= 0;
+    }
 
     function logCreateImageJob(uploadResponse) {
       var jobData = uploadResponse.data;
@@ -53,9 +62,17 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
         .then(deferredMediaObject.resolve, deferredMediaObject.reject);
     }
 
-    udbApi
-      .uploadMedia(imageFile, description, copyrightHolder)
-      .then(logCreateImageJob, deferredMediaObject.reject);
+    if (!isAllowedFileExtension(getFileExtension(imageFile.type))) {
+        deferredMediaObject.reject({
+            data: {
+                title: 'The uploaded file is not an image.'
+            }
+        });
+    } else {
+        udbApi
+          .uploadMedia(imageFile, description, copyrightHolder)
+          .then(logCreateImageJob, deferredMediaObject.reject);
+    }
 
     return deferredMediaObject.promise;
   };
