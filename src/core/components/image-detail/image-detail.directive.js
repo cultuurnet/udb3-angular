@@ -26,7 +26,8 @@ function ImageDetailController($scope, $translate) {
     image.main = (image.contentUrl === $scope.main);
   });
 
-  $scope.translateImageDetail = function (label) {
-    return $translate.instant('imageDetail.' + label);
+  $scope.translateImageDetail = function (label, translationData) {
+    translationData = (translationData !== undefined) ? translationData : {};
+    return $translate.instant('imageDetail.' + label, translationData);
   };
 }

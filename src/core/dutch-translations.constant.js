@@ -395,6 +395,7 @@ angular.module('udb.core')
     },
     imageDetail: {
       'label': 'Afbeeldingen',
+      'alt_image': 'Afbeelding {{index}}',
       'main_image': 'Hoofdafbeelding',
       'no_images': 'Geen afbeeldingen'
     },

@@ -2382,8 +2382,9 @@ function ImageDetailController($scope, $translate) {
     image.main = (image.contentUrl === $scope.main);
   });
 
-  $scope.translateImageDetail = function (label) {
-    return $translate.instant('imageDetail.' + label);
+  $scope.translateImageDetail = function (label, translationData) {
+    translationData = (translationData !== undefined) ? translationData : {};
+    return $translate.instant('imageDetail.' + label, translationData);
   };
 }
 ImageDetailController.$inject = ["$scope", "$translate"];
@@ -2933,6 +2934,7 @@ angular.module('udb.core')
     },
     imageDetail: {
       'label': 'Afbeeldingen',
+      'alt_image': 'Afbeelding {{index}}',
       'main_image': 'Hoofdafbeelding',
       'no_images': 'Geen afbeeldingen'
     },
@@ -23420,7 +23422,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <li ng-repeat=\"image in images | orderBy: '-main' \" class=\"media\">\n" +
     "                <div class=\"media-left\">\n" +
     "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
-    "                        <img class=\"media-object\" src=\"{{image.contentUrl}}?height=100\" alt=\"{{'Afbeelding '+$index}}\">\n" +
+    "                        <img class=\"media-object\"\n" +
+    "                             src=\"{{image.contentUrl}}?height=100\"\n" +
+    "                             alt=\"{{translateImageDetail('alt_image', {index: $index}) }}\">\n" +
     "                    </a>\n" +
     "                </div>\n" +
     "                <div class=\"media-body\">\n" +

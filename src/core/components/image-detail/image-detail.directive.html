@@ -7,7 +7,9 @@
             <li ng-repeat="image in images | orderBy: '-main' " class="media">
                 <div class="media-left">
                     <a target="_blank" href="{{image.contentUrl}}">
-                        <img class="media-object" src="{{image.contentUrl}}?height=100" alt="{{'Afbeelding '+$index}}">
+                        <img class="media-object"
+                             src="{{image.contentUrl}}?height=100"
+                             alt="{{translateImageDetail('alt_image', {index: $index}) }}">
                     </a>
                 </div>
                 <div class="media-body">
