@@ -8314,6 +8314,10 @@ function EventDetail(
       eventLocation.push(event.location.type.label);
     }
 
+    if (event.location.address.streetAddress) {
+      eventLocation.push(event.location.address.streetAddress);
+    }
+
     if (event.location.address.addressLocality) {
       eventLocation.push(event.location.address.addressLocality);
     }
@@ -24156,10 +24160,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td><span class=\"row-label\">Waar</span></td>\n" +
     "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
-    "                  {{::event.location.name.nl}},\n" +
-    "                  {{::event.location.address.streetAddress}},\n" +
-    "                  {{::event.location.address.postalCode}}\n" +
-    "                  {{::event.location.address.addressLocality}}\n" +
+    "                  {{eventLocation(event)}}\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +

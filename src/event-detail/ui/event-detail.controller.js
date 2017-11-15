@@ -158,6 +158,10 @@ function EventDetail(
       eventLocation.push(event.location.type.label);
     }
 
+    if (event.location.address.streetAddress) {
+      eventLocation.push(event.location.address.streetAddress);
+    }
+
     if (event.location.address.addressLocality) {
       eventLocation.push(event.location.address.addressLocality);
     }
