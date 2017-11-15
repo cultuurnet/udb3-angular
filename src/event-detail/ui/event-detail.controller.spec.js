@@ -256,6 +256,25 @@ describe('Controller: Event Detail', function() {
     expect($scope.eventId).toEqual(eventId);
   });
 
+  it('should notify the user when a calendar summary is unavailable', function () {
+    expect($scope.calendarSummary).toEqual(undefined);
+
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    $scope.$digest();
+
+    expect($scope.calendarSummary).toEqual(false);
+  });
+
+  it('should show the calendar summary when available', function () {
+    expect($scope.calendarSummary).toEqual(undefined);
+    udbApi.getCalendarSummary.and.returnValue($q.resolve('Morregen, zeker voor de noen!'));
+
+    deferredEvent.resolve(new UdbEvent(exampleEventJson));
+    $scope.$digest();
+
+    expect($scope.calendarSummary).toEqual('Morregen, zeker voor de noen!');
+  });
+
   it('should loads the event description from the variation', function () {
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
     var variation = new UdbEvent(exampleEventJson);

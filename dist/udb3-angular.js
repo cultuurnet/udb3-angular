@@ -24193,9 +24193,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
     "                <td>\n" +
-    "                    <span ng-if=\"::calendarSummary\" ng-bind-html=\"::calendarSummary\"></span>\n" +
-    "                    <span class=\"text-muted\"\n" +
-    "                          ng-if=\"::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)\">\n" +
+    "                  <span ng-if=\"::calendarSummary\" ng-bind-html=\"::calendarSummary\"></span>\n" +
+    "                  <span class=\"text-muted\"\n" +
+    "                        ng-if=\"::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)\">\n" +
     "                      Probleem bij het ophalen van de kalenderinformatie\n" +
     "                    </span>\n" +
     "                </td>\n" +

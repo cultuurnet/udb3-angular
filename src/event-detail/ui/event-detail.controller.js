@@ -82,7 +82,7 @@ function EventDetail(
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = undefined;
-  $scope.calendarSummary = '';
+  $scope.calendarSummary = undefined;
 
   $scope.tabs = [
     {
@@ -114,6 +114,10 @@ function EventDetail(
     $scope.calendarSummary = calendarSummary;
   }
 
+  function notifyCalendarSummaryIsUnavailable() {
+    $scope.calendarSummary = false;
+  }
+
   function showOffer(event) {
     cachedEvent = event;
 
@@ -122,7 +126,7 @@ function EventDetail(
     } else {
       udbApi
         .getCalendarSummary($scope.eventId, 'lg')
-        .then(showCalendarSummary);
+        .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
 
     $scope.event = jsonLDLangFilter(event, language);
