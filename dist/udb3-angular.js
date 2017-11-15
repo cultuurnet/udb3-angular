@@ -2876,7 +2876,7 @@ angular.module('udb.core')
       'save': 'Bewaren'
     },
     location: {
-      'title': 'Nieuwe locatie toevoegen',
+      'title': 'Nieuwe locatie toevoegen111',
       'name': 'Naam locatie',
       'name_validation': 'De naam van de locatie is een verplicht veld.',
       'street': 'Straat en nummer',
@@ -25156,47 +25156,51 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-place-modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\">{{translateLocation('title')}}</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"location.title\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <form name=\"placeForm\" class=\"css-form\">\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "            <label for=\"name\">{{translateLocation('name')}}</label>\n" +
+    "            <label for=\"name\" translate=\"location.name\"></label>\n" +
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
-    "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        {{translateLocation('name_validation')}}\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  translate=\"location.name_validation\"\n" +
+    "                  ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
     "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "                    <label for=\"locatie-straat\">{{translateLocation('street')}}</label>\n" +
+    "                    <label for=\"locatie-straat\" translate=\"location.street\"></label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
-    "                    <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
-    "            {{translateLocation('street_validation')}}\n" +
+    "                    <span class=\"help-block\"\n" +
+    "                          translate=\"location.street_validation\"\n" +
+    "                          ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
     "          </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label>{{translateLocation('city')}}</label>\n" +
+    "                    <label translate=\"location.city\"></label>\n" +
     "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "            <label for=\"locatie-toevoegen-types\">{{translateLocation('category')}}</label>\n" +
-    "            <p class=\"help-block\">{{translateLocation('category_help')}}</p>\n" +
+    "            <label for=\"locatie-toevoegen-types\" translate=\"location.catergory\"></label>\n" +
+    "            <p class=\"help-block\" translate=\"location.category_help\"></p>\n" +
     "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
-    "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "        {{translateLocation('category_validation')}}\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  translate=\"location.category_validation\"\n" +
+    "                  ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
-    "                <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "                    {{translateLocation('error')}}\n" +
+    "                <div class=\"alert alert-danger\"\n" +
+    "                     translate=\"location.error\"\n" +
+    "                     ng-show=\"error\">\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -25204,8 +25208,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">{{translateLocation('cancel')}}</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
-    "        {{translateLocation('add')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-primary\"\n" +
+    "            ng-click=\"addLocation()\">\n" +
+    "        <span translate=\"location.add\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
