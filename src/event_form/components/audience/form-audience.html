@@ -1,7 +1,7 @@
 <div class="row audience" ng-if="::fac.enabled">
     <div class="extra-task state-complete">
         <div class="col-sm-3">
-            <em class="extra-task-label">Toegang</em>
+            <em class="extra-task-label">{{::fac.translateAudience('entrance')}}</em>
         </div>
         <div class="col-sm-8">
             <div class="radio">
@@ -13,7 +13,7 @@
                            id="audience-everyone"
                            value="everyone"
                            checked>
-                    Voor iedereen
+                    {{::fac.translateAudience('everyone')}}
                 </label>
             </div>
 
@@ -26,9 +26,9 @@
                            id="audience-members"
                            value="members"
                            aria-describedby="audience-members-help">
-                    Enkel voor leden
+                    {{::fac.translateAudience('members')}}
                     <span id="audience-members-help" class="help-block" ng-show="fac.audienceType === 'members'">
-                        Je item wordt enkel gepubliceerd op kanalen voor verenigingen en hun leden.
+                        {{::fac.translateAudience('members_help')}}
                     </span>
                 </label>
             </div>
@@ -43,10 +43,9 @@
                            id="audience-education"
                            value="education"
                            aria-describedby="audience-education-help">
-                    Specifiek voor scholen
+                    {{::fac.translateAudience('education')}}
                     <span id="audience-education-help" class="help-block" ng-show="fac.audienceType === 'education'">
-                        Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren
-                        kan je nog specifieke informatie voor scholen toevoegen.
+                        {{::fac.translateAudience('education_help')}}
                     </span>
                 </label>
             </div>
