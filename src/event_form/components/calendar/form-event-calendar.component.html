@@ -3,9 +3,9 @@
 
         <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': !calendar.weeklyRecurring}">
             <img src="../images/form-calendar/days.svg" class="calendar-type-icon">
-            <p class="text-center"><strong>Eén of meerdere dagen</strong></p></a><span class="or">of</span><a href="#" ng-click="calendar.setType('periodic')" ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
+            <p class="text-center"><strong translate="calendar.one_more_days"></strong></p></a><span class="or" translate="calendar.or"></span><a href="#" ng-click="calendar.setType('periodic')" ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
             <img src="../images/form-calendar/period.svg" class="calendar-type-icon">
-            <p class="text-center"><strong>Vaste dagen per week</strong></p>
+            <p class="text-center"><strong translate="calendar.default_days"></strong></p>
         </a>
 
     </div>
@@ -34,12 +34,14 @@
                             <label for="time-span-{{$index}}-start-date">Wanneer start je evenement?</label>
                        </div>
                         <div class="date form-group">
-                            <label ng-if="calendar.showEndDate" for="time-span-{{$index}}-start-date">Start</label>
+                            <label ng-if="calendar.showEndDate"
+                                   for="time-span-{{$index}}-start-date"
+                                   translate="calendar.start_label"></label>
                             <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()">
                             </udb-form-calendar-datepicker>
                         </div>
                         <div ng-if="calendar.showEndDate" class="date form-group">
-                            <label for="time-span-{{$index}}-end-date">Einde</label>
+                            <label for="time-span-{{$index}}-end-date" translate="calendar.end_label"></label>
                             <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()">
                             </udb-form-calendar-datepicker>
                         </div>
@@ -51,18 +53,18 @@
                                        id="time-span-{{$index}}-has-timing-info"
                                        ng-model="timeSpan.allDay"
                                        ng-change="calendar.instantTimeSpanChanged()"
-                                       class="all-day-check"> <span>Hele dag</span>
+                                       class="all-day-check"> <span translate="calendar.whole_day_label"></span>
                             </label>
                         </div>
                     </div>
                     <div class="timing" ng-if="!timeSpan.allDay">
                         <div class="time form-group">
-                            <label>Beginuur</label>
+                            <label translate="calendar.start_hour_label"></label>
                             <udb-form-calendar-timepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
                         </div>
 
                         <div class="time form-group">
-                            <label>Einduur</label>
+                            <label translate="calendar.end_hour_label"></label>
                             <udb-form-calendar-timepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
                         </div>
                     </div>
@@ -74,7 +76,11 @@
                     </div>
                 </div>
 
-                <a ng-if="calendar.showEndDate" href="#" ng-click="calendar.createTimeSpan()" class="add-day-link">Dag(en) toevoegen</a>
+                <a ng-if="calendar.showEndDate"
+                   href="#"
+                   ng-click="calendar.createTimeSpan()"
+                   class="add-day-link"
+                   translate="calendar.add_days">Dag(en) toevoegen</a>
             </div>
 
             <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">

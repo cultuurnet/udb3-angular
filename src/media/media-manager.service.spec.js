@@ -64,7 +64,7 @@ describe('Service: Media Manager', function () {
   });
 
   it('should log the creation of an image', function (done) {
-    var file = {},
+    var file = {type: 'image/png'},
         description = 'description',
         copyrightHolder = 'Foo Bar';
 
@@ -80,5 +80,23 @@ describe('Service: Media Manager', function () {
 
     $rootScope.$digest();
     assertJobLogged();
+  });
+
+  it('should not try to create a file with an invalid file extension', function (done) {
+    var file = {type: 'image/bmp'},
+        description = 'description',
+        copyrightHolder = 'Foo Bar';
+
+    function assertMediaObject(mediaObject) {
+      var expextedMediaObject = {data: {title: 'The uploaded file is not an image.'}};
+      expect(mediaObject).toEqual(expextedMediaObject);
+      done();
+    }
+
+    mediaManager
+      .createImage(file, description, copyrightHolder)
+      .then(function(){return true}, assertMediaObject);
+
+    $rootScope.$digest();
   });
 });

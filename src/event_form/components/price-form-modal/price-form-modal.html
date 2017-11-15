@@ -1,7 +1,7 @@
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="pfmc.cancelEditPrice()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-    <h4 class="modal-title">Prijzen toevoegen</h4>
+    <h4 class="modal-title">{{translatePrice('title')}}</h4>
 </div>
 <div class="modal-body">
 
@@ -14,13 +14,13 @@
                     <td ng-switch on="priceInfo.category"
                         class="col-xs-4">
                         <p ng-switch-when="base" class="form-text">
-                            Basistarief
+                            {{translatePrice('base')}}
                         </p>
                         <span ng-switch-default>
                             <input type="text"
                                    class="form-control"
                                    name="name"
-                                   placeholder="Doelgroep"
+                                   placeholder="{{translatePrice('target_group')}}"
                                    ng-model="priceInfo.name"
                                    ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }"
                                    required />
@@ -28,7 +28,7 @@
                     </td>
                     <td class="col-xs-4">
                         <span ng-if="priceInfo.price === 0">
-                            Gratis
+                            {{translatePrice('free')}}
                         </span>
                         <span ng-if="priceInfo.price !== 0">
                             <div class="form-inline">
@@ -42,7 +42,7 @@
                                            ng-class="{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }"
                                            required />
                                 </div>
-                                <div class="form-group"> <span class="text-muted">euro</span></div>
+                                <div class="form-group"> <span class="text-muted">{{translatePrice('currency')}}</span></div>
                             </div>
                         </span>
                     </td>
@@ -50,10 +50,10 @@
                         class="col-xs-3">
                         <a class="btn btn-link"
                            ng-click="pfmc.unsetPriceItemFree(key)"
-                           ng-switch-when="0">Prijs invoeren</a>
+                           ng-switch-when="0">{{translatePrice('add_price')}}</a>
                         <a class="btn btn-link"
                            ng-click="pfmc.setPriceItemFree(key)"
-                           ng-switch-default>Gratis</a>
+                           ng-switch-default>{{translatePrice('free')}}</a>
                     </td>
                     <td class="col-xs-1">
                         <a aria-hidden="true"
@@ -63,30 +63,30 @@
                 </tr>
                 <tr>
                     <td colspan="4">
-                        <a class="btn btn-default" ng-click="pfmc.addPriceItem()">Tarief toevoegen</a>
+                        <a class="btn btn-default" ng-click="pfmc.addPriceItem()">{{translatePrice('add_tarriff')}}</a>
                     </td>
                 </tr>
             </div>
         </table>
     </form>
     <div ng-show="pfmc.priceError" class="alert alert-danger">
-        Er ging iets fout bij het opslaan van de prijs.
+        {{translatePrice('error')}}
     </div>
     <div ng-show="(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving" class="alert alert-info">
-        <p>Deze prijsinformatie lijkt ongeldig en kan je daarom niet bewaren.</p>
+        <p>{{translatePrice('invalid')}}</p>
         <ul class="small">
-          <li>Noteer decimalen met een komma.</li>
-          <li>Laat geen enkel rij leeg, vul steeds een doelgroep en een bedrag in.</li>
-          <li>Geef maximum twee cijfers na de komma.</li>
+          <li>{{translatePrice('invalid_tip1')}}</li>
+          <li>{{translatePrice('invalid_tip2')}}</li>
+          <li>{{translatePrice('invalid_tip3')}}</li>
         </ul>
     </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" ng-click="pfmc.cancelEditPrice()">Sluiten</button>
+  <button type="button" class="btn btn-default" ng-click="pfmc.cancelEditPrice()">{{translatePrice('close')}}</button>
   <button type="button"
           class="btn btn-primary organisator-toevoegen-bewaren"
           ng-click="pfmc.validatePrice()"
           ng-disabled="pfmc.priceForm.$invalid || pfmc.priceForm.$pristine">
-      Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+      {{translatePrice('save')}} <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>
 </div>

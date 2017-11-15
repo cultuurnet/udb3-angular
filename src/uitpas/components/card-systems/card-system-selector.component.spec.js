@@ -70,8 +70,10 @@ describe('Component: Uitpas Info', function () {
     udbUitpasApi = jasmine.createSpyObj(
       'udbUitpasApi',
       [
-        'getEventUitpasData',
-        'updateEventUitpasData',
+        'getEventCardSystems',
+        'addEventCardSystem',
+        'removeEventCardSystem',
+        'addEventCardSystemDistributionKey',
         'findOrganisationsCardSystems'
       ]
     );
@@ -98,7 +100,7 @@ describe('Component: Uitpas Info', function () {
   }
 
   it('should show card systems for an event not known by UiTPAS', function () {
-    udbUitpasApi.getEventUitpasData.and.returnValue($q.reject());
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.resolve([]));
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
     var controller = getComponentController();
 
@@ -144,7 +146,7 @@ describe('Component: Uitpas Info', function () {
   });
 
   it('should show the assigned distribution keys retrieved from UiTPAS for each card systems ', function () {
-    udbUitpasApi.getEventUitpasData.and.returnValue($q.resolve(['182']));
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.resolve([organizerCardSystems[0]]));
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
     var controller = getComponentController();
 
@@ -190,5 +192,56 @@ describe('Component: Uitpas Info', function () {
 
     $scope.$digest();
     expect(controller.availableCardSystems).toEqual(expectedCardSystems);
+  });
+
+  it('should add a card system to an uitpas event when actived', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.resolve([organizerCardSystems[0]]));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.addEventCardSystem.and.returnValue($q.resolve('OK'));
+    EventFormData.id = 'A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444';
+
+    var controller = getComponentController();
+    $scope.$digest();
+
+    var cardSystem = controller.availableCardSystems[1];
+    cardSystem.active = true;
+
+    controller.activeCardSystemsChanged(cardSystem);
+    expect(udbUitpasApi.addEventCardSystem).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', '2');
+  });
+
+  it('should remove a card system from an uitpas event when deactived', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.resolve([organizerCardSystems[0]]));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.removeEventCardSystem.and.returnValue($q.resolve('OK'));
+    EventFormData.id = 'A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444';
+
+    var controller = getComponentController();
+    $scope.$digest();
+
+    var cardSystem = controller.availableCardSystems[1];
+    cardSystem.active = false;
+
+    controller.activeCardSystemsChanged(cardSystem);
+    expect(udbUitpasApi.removeEventCardSystem).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', '2');
+  });
+
+  it('should add a card system to an uitpas event by distribution key when selected', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.resolve([organizerCardSystems[0]]));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.addEventCardSystemDistributionKey.and.returnValue($q.resolve('OK'));
+    EventFormData.id = 'A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444';
+
+    var controller = getComponentController();
+    $scope.$digest();
+
+    var cardSystem = controller.availableCardSystems[1];
+    cardSystem.assignedDistributionKey = {
+      id: '194',
+      name: 'CC qwerty - 3 EUR / dag'
+    };
+
+    controller.distributionKeyAssigned(cardSystem);
+    expect(udbUitpasApi.addEventCardSystemDistributionKey).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', '2', '194');
   });
 });
