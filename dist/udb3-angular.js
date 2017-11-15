@@ -5002,6 +5002,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
+      this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
     }
   };
 
@@ -7452,7 +7453,7 @@ angular
   .factory('BaseJob', BaseJobFactory);
 
 /* @ngInject */
-function BaseJobFactory(JobStates) {
+function BaseJobFactory(JobStates, $q) {
 
   /**
    * @class BaseJob
@@ -7622,7 +7623,7 @@ function BaseJobFactory(JobStates) {
 
   return (BaseJob);
 }
-BaseJobFactory.$inject = ["JobStates"];
+BaseJobFactory.$inject = ["JobStates", "$q"];
 })();
 
 // Source: src/entry/logging/job-log.component.js
@@ -15796,6 +15797,58 @@ angular
   );
 })();
 
+// Source: src/management/organizers/delete/organization-delete-job.factory.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc service
+ * @name udbApp.management.organizers.CreateDeleteOrganizerJob
+ * @description
+ * # Oragnizer deletion job
+ * This factory creates a job that tracks organizer deletion.
+ */
+angular
+  .module('udb.management.organizers')
+  .factory('CreateDeleteOrganizerJob', CreateDeleteOrganizerFactory);
+
+/* @ngInject */
+function CreateDeleteOrganizerFactory(BaseJob, JobStates, $q) {
+
+  /**
+   * @class CreateDeleteOrganizerJob
+   * @constructor
+   * @param {string} commandId
+   */
+  var CreateDeleteOrganizerJob = function (commandId) {
+    BaseJob.call(this, commandId);
+    this.task = $q.defer();
+  };
+
+  CreateDeleteOrganizerJob.prototype = Object.create(BaseJob.prototype);
+  CreateDeleteOrganizerJob.prototype.constructor = CreateDeleteOrganizerJob;
+
+  CreateDeleteOrganizerJob.prototype.finish = function () {
+    if (this.state !== JobStates.FAILED) {
+      this.state = JobStates.FINISHED;
+      this.finished = new Date();
+      this.task.resolve();
+    }
+    this.progress = 100;
+  };
+
+  CreateDeleteOrganizerJob.prototype.fail = function () {
+    this.finished = new Date();
+    this.state = JobStates.FAILED;
+    this.progress = 100;
+    this.task.reject('Failed to delete the organization');
+  };
+
+  return (CreateDeleteOrganizerJob);
+}
+CreateDeleteOrganizerFactory.$inject = ["BaseJob", "JobStates", "$q"];
+})();
+
 // Source: src/management/organizers/delete/organization-delete.modal.controller.js
 (function () {
 'use strict';
@@ -16093,7 +16146,7 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location) {
   var controller = this;
   var organizerId = $stateParams.id;
 
@@ -16103,6 +16156,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   controller.deleteLabel = deleteLabel;
   controller.labelResponse = '';
   controller.labelsError = '';
+  controller.deleteOrganization = deleteOrganization;
 
   loadOrganizer(organizerId);
 
@@ -16154,6 +16208,34 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
     controller.labelsError = '';
   }
 
+  function goToOrganizerOverview() {
+    $location.path('/manage/organizations');
+  }
+
+  function goToOrganizerOverviewOnJobCompletion(job) {
+    job.task.promise.then(goToOrganizerOverview);
+  }
+
+  function deleteOrganization() {
+    openOrganizationDeleteConfirmModal(controller.organizer);
+  }
+
+  function openOrganizationDeleteConfirmModal(organizer) {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/organization-delete.modal.html',
+      controller: 'OrganizationDeleteModalController',
+      controllerAs: 'odc',
+      resolve: {
+        organization: function () {
+          return organizer;
+        }
+      }
+    });
+
+    modalInstance.result
+      .then(goToOrganizerOverviewOnJobCompletion);
+  }
+
   /**
    * @param {ApiProblem} problem
    */
@@ -16183,7 +16265,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
     );
   }
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams"];
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location"];
 })();
 
 // Source: src/management/organizers/organizer-manager.service.js
@@ -16202,7 +16284,7 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
+function OrganizerManager(udbApi, jobLogger, CreateDeleteOrganizerJob, $q, $rootScope) {
   var service = this;
 
   /**
@@ -16224,9 +16306,8 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
      * @return {Promise.<BaseJob>}
      */
     return function (commandInfo) {
-      var job = new BaseJob(commandInfo.commandId);
+      var job = new CreateDeleteOrganizerJob(commandInfo.commandId);
       jobLogger.addJob(job);
-
       $rootScope.$emit('organizationDeleted', organization);
       return $q.resolve(job);
     };
@@ -16348,7 +16429,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
     return $q.resolve(job);
   }
 }
-OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope"];
+OrganizerManager.$inject = ["udbApi", "jobLogger", "CreateDeleteOrganizerJob", "$q", "$rootScope"];
 })();
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
@@ -26995,87 +27076,106 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/organizer-detail.html',
-    "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
-    "\n" +
     "<div ng-show=\"!odc.organizer && !odc.loadingError\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-if=\"odc.organizer\">\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>Naam</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <span ng-bind=\"odc.organizer.name\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>Straat + nr</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <span ng-bind=\"odc.organizer.address.streetAddress\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>Postcode</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <span ng-bind=\"odc.organizer.address.postalCode\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>Gemeente</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>Website</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <span ng-bind=\"odc.organizer.url\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>Telefoonnummer</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <span ng-bind=\"odc.organizer.phone\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>E-mailadres</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <span ng-bind=\"odc.organizer.email\"></span>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "            <span><strong>Labels</strong></span>\n" +
-    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "            <udb-label-select labels=\"odc.organizer.labels\"\n" +
-    "                              label-added=\"odc.addLabel(label)\"\n" +
-    "                              label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
-    "            <div ng-if=\"odc.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "                <span ng-bind=\"odc.labelsError\"></span>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>\n" +
+    "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
     "\n" +
-    "<div ng-show=\"odc.loadingError\">\n" +
-    "    <span ng-bind=\"odc.loadingError\"></span>\n" +
+    "<div class=\"row\" ng-if=\"odc.organizer\">\n" +
+    "  <div class=\"col-sm-3 col-sm-push-9\">\n" +
+    "    <div class=\"list-group\" ng-if=\"!odc.organizer.deleted\">\n" +
+    "      <button class=\"list-group-item\"\n" +
+    "         type=\"button\"\n" +
+    "         ui-sref=\"management.organizers.edit({id: odc.organizer.id})\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Bewerken</button>\n" +
+    "      <button class=\"list-group-item\"\n" +
+    "              ng-click=\"odc.deleteOrganization()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i> Verwijderen</button>\n" +
+    "      <button class=\"list-group-item\"\n" +
+    "         ui-sref=\"management.organizers.search({id: odc.organizer.id})\"><i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i> Terug naar overzicht</button>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "  <div class=\"col-sm-9 col-sm-pull-3\">\n" +
+    "    <div ng-if=\"odc.organizer && !odc.organizer.deleted\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>Naam</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <span ng-bind=\"odc.organizer.name\"></span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>Straat + nr</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <span ng-bind=\"odc.organizer.address.streetAddress\"></span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>Postcode</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <span ng-bind=\"odc.organizer.address.postalCode\"></span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>Gemeente</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>Website</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <span ng-bind=\"odc.organizer.url\"></span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>Telefoonnummer</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <span ng-bind=\"odc.organizer.phone\"></span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>E-mailadres</strong></span>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <span ng-bind=\"odc.organizer.email\"></span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\">\n" +
+    "          <span><strong>Labels</strong></span>\n" +
+    "          <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-10\">\n" +
+    "          <udb-label-select labels=\"odc.organizer.labels\"\n" +
+    "                            label-added=\"odc.addLabel(label)\"\n" +
+    "                            label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
+    "          <div ng-if=\"odc.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "              <span ng-bind=\"odc.labelsError\"></span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"alert alert-danger\" ng-if=\"odc.organizer && odc.organizer.deleted\">\n" +
+    "      Deze organisatie is verwijderd.\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div ng-show=\"odc.loadingError\">\n" +
+    "        <span ng-bind=\"odc.loadingError\"></span>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
     "</div>\n"
   );
 

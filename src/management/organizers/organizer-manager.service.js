@@ -12,7 +12,7 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
+function OrganizerManager(udbApi, jobLogger, CreateDeleteOrganizerJob, $q, $rootScope) {
   var service = this;
 
   /**
@@ -34,9 +34,8 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope) {
      * @return {Promise.<BaseJob>}
      */
     return function (commandInfo) {
-      var job = new BaseJob(commandInfo.commandId);
+      var job = new CreateDeleteOrganizerJob(commandInfo.commandId);
       jobLogger.addJob(job);
-
       $rootScope.$emit('organizationDeleted', organization);
       return $q.resolve(job);
     };
