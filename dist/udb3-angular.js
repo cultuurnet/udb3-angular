@@ -7682,6 +7682,7 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
       queuedJobs = [],
       failedJobs = [],
       finishedExportJobs = [],
+      startedExportJobs = [],
       hiddenJobs = [];
 
   /**
@@ -7756,6 +7757,9 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
         activeJobs = _.filter(visibleJobs, {state: JobStates.STARTED});
 
     failedJobs = _.filter(visibleJobs, {state: JobStates.FAILED});
+    startedExportJobs = _.filter(visibleJobs, function (job) {
+      return job instanceof EventExportJob && job.state === JobStates.STARTED;
+    });
     finishedExportJobs = _.filter(visibleJobs, function (job) {
       return job instanceof EventExportJob && job.state === JobStates.FINISHED;
     });
@@ -7800,6 +7804,10 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
 
   this.getFinishedExportJobs = function () {
     return finishedExportJobs;
+  };
+
+  this.getStartedExportJobs = function () {
+    return startedExportJobs;
   };
 
   this.hideJob = hideJob;
@@ -14051,13 +14059,15 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
    * @param   {string}    commandId
    * @param   {number}    eventCount
    * @param   {string}    format
+   * @param   {Object}    details
    */
-  var EventExportJob = function (commandId, eventCount, format) {
+  var EventExportJob = function (commandId, eventCount, format, details) {
     BaseJob.call(this, commandId);
     this.exportUrl = '';
     this.eventCount = eventCount;
     this.format = format;
     this.extension = _.find(ExportFormats, {type: format}).extension;
+    this.details = details;
   };
 
   EventExportJob.prototype = Object.create(BaseJob.prototype);
@@ -14326,7 +14336,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, udbApi, EventExportJob) {
+function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
 
   var ex = this; // jshint ignore:line
 
@@ -14350,12 +14360,21 @@ function eventExporter(jobLogger, udbApi, EventExportJob) {
   ex.export = function (format, email, properties, perDay, customizations) {
     var queryString = ex.activeExport.query.queryString,
         selection = ex.activeExport.selection || [],
-        eventCount = ex.activeExport.eventCount;
+        eventCount = ex.activeExport.eventCount,
+        brand = customizations.brand || '',
+        details = null,
+        user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(queryString, email, format, properties, perDay, selection, customizations);
+    details = {
+        format : format,
+        user : user.id,
+        brand : brand,
+        queryString : queryString
+      };
 
     jobPromise.success(function (jobData) {
-      var job = new EventExportJob(jobData.commandId, eventCount, format);
+      var job = new EventExportJob(jobData.commandId, eventCount, format, details);
       jobLogger.addJob(job);
       job.start();
     });
@@ -14363,7 +14382,7 @@ function eventExporter(jobLogger, udbApi, EventExportJob) {
     return jobPromise;
   };
 }
-eventExporter.$inject = ["jobLogger", "udbApi", "EventExportJob"];
+eventExporter.$inject = ["jobLogger", "udbApi", "EventExportJob", "$cookies"];
 })();
 
 // Source: src/export/export-formats.constant.js
