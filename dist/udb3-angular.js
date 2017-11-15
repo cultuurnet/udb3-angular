@@ -25745,39 +25745,42 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section id=\"wat\">\n" +
     "    <section class=\"row\">\n" +
     "      <div class=\"col-md-12\">\n" +
-    "        <h2 class=\"title-border\"><span class=\"number\">1</span> {{::translateEventForm('step1', 'title')}}</h2>\n" +
+    "        <h2 class=\"title-border\">\n" +
+    "          <span class=\"number\">1</span>\n" +
+    "          <span translate-once=\"eventForm.step1.title\"></span>\n" +
+    "        </h2>\n" +
     "      </div>\n" +
     "    </section>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"!activeEventType\">\n" +
     "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'event'\">\n" +
-    "        <label class=\"event-type-choser-label event\"><span>{{::translateEventForm('step1', 'label_event')}}</span></label>\n" +
+    "        <label class=\"event-type-choser-label event\"><span translate-once=\"eventForm.step1.label_event\"></span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-events\">\n" +
     "          <li ng-repeat=\"eventType in ::eventTypeLabels | orderBy:'label'\" ng-show=\"eventType.primary === true || showAllEventTypes\">\n" +
     "            <button ng-bind=\"::eventType.label\" class=\"btn btn-default\"\n" +
     "                    ng-click=\"setEventType(eventType, true)\"></button>\n" +
     "          </li>\n" +
     "          <li ng-hide=\"showAllEventTypes\">\n" +
-    "            <a href=\"\" ng-click=\"toggleEventTypes()\">{{::translateEventForm('step1', 'show_everything')}}</a>\n" +
+    "            <a href=\"\" ng-click=\"toggleEventTypes()\" translate-once=\"eventForm.step1.show_everything\"></a>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-sm-2\" ng-show=\"splitTypes\">\n" +
-    "        <p class=\"text-center event-type-splitter\"><em>{{::translateEventForm('step1', 'or')}}</em></p>\n" +
+    "        <p class=\"text-center event-type-splitter\"><em translate-once=\"eventForm.step1.or\"></em></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'place'\">\n" +
-    "        <label class=\"event-type-choser-label place\"><span>{{::translateEventForm('step1', 'location_label')}}</span></label>\n" +
+    "        <label class=\"event-type-choser-label place\"><span translate-once=\"eventForm.step1.location_label\"></span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-places\">\n" +
     "          <li ng-repeat=\"placeType in ::placeLabels | orderBy:'label'\" ng-show=\"placeType.primary == true || showAllPlaces\">\n" +
     "            <button ng-bind=\"::placeType.label\" class=\"btn btn-default\"\n" +
     "                    ng-click=\"setEventType(placeType, false)\"></button>\n" +
     "          </li>\n" +
     "          <li ng-hide=\"showAllPlaces\">\n" +
-    "            <a href=\"\" ng-click=\"togglePlaces()\">{{::translateEventForm('step1', 'show_everything')}}</a>\n" +
+    "            <a href=\"\" ng-click=\"togglePlaces()\" translate-once=\"eventForm.step1.show_everythibng\"></a>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
@@ -25786,11 +25789,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "      <p class=\"col-xs-12 col-md-12\" ng-hide=\"activeEventType === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeEventTypeLabel\"></span>\n" +
-    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetEventType()\">{{::translateEventForm('step1', 'change')}}</a>\n" +
+    "        <a class=\"btn btn-link btn-default\"\n" +
+    "           href=\"\" ng-click=\"resetEventType()\"\n" +
+    "           translate-once=\"eventForm.step1.change\"></a>\n" +
     "      </p>\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"canRefine\">\n" +
-    "        <label class=\"event-theme-label\" ng-show=\"eventThemeLabels.length\">{{::translateEventForm('step1', 'refine')}}</label>\n" +
+    "        <label class=\"event-theme-label\"\n" +
+    "               translate-once=\"eventForm.step1.refine\"\n" +
+    "               ng-show=\"eventThemeLabels.length\"></label>\n" +
     "        <ul class=\"list-inline\" id=\"step2-list\">\n" +
     "          <li ng-repeat=\"eventTheme in ::eventThemeLabels\">\n" +
     "            <button ng-bind=\"::eventTheme.label\" class=\"btn btn-default\"\n" +
@@ -25801,7 +25808,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      <p class=\"col-xs-12 col-md-12\"  ng-hide=\"activeTheme === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeThemeLabel\"></span>\n" +
-    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetTheme()\">{{::translateEventForm('step1', 'change')}}</a>\n" +
+    "        <a class=\"btn btn-link btn-default\"\n" +
+    "           href=\"\" ng-click=\"resetTheme()\"\n" +
+    "           translate-once=\"eventForm.step1.change\"></a>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "\n" +
