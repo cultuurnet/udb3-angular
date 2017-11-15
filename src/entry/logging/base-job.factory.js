@@ -12,7 +12,7 @@ angular
   .factory('BaseJob', BaseJobFactory);
 
 /* @ngInject */
-function BaseJobFactory(JobStates, $q) {
+function BaseJobFactory(JobStates) {
 
   /**
    * @class BaseJob
