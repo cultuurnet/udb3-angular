@@ -25244,7 +25244,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-header\">\n" +
     "    <button type=\"button\" class=\"close\" ng-click=\"pfmc.cancelEditPrice()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
-    "    <h4 class=\"modal-title\" ng-bind=\"::translatePrice('title')\"></h4>\n" +
+    "    <h4 class=\"modal-title\" translate=\"prices.title\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
@@ -25258,13 +25258,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        class=\"col-xs-4\">\n" +
     "                        <p ng-switch-when=\"base\"\n" +
     "                           class=\"form-text\"\n" +
-    "                           ng-bind=\"::translatePrice('base')\">\n" +
+    "                           translate=\"prices.base\">\n" +
     "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
     "                                   class=\"form-control\"\n" +
     "                                   name=\"name\"\n" +
-    "                                   placeholder=\"{{::translatePrice('target_group')}}\"\n" +
+    "                                   placeholder=\"{{::'prices.target_group' | translate }}\"\n" +
     "                                   ng-model=\"priceInfo.name\"\n" +
     "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
     "                                   required />\n" +
@@ -25272,7 +25272,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </td>\n" +
     "                    <td class=\"col-xs-4\">\n" +
     "                        <span ng-if=\"priceInfo.price === 0\"\n" +
-    "                              ng-bind=\"::translatePrice('free')\">\n" +
+    "                              translate=\"prices.free\">\n" +
     "                        </span>\n" +
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
@@ -25286,7 +25286,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\"> <span class=\"text-muted\">{{translatePrice('currency')}}</span></div>\n" +
+    "                                <div class=\"form-group\"> <span class=\"text-muted\" translate=\"prices.currency\"></span></div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -25295,10 +25295,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <a class=\"btn btn-link\"\n" +
     "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
     "                           ng-switch-when=\"0\"\n" +
-    "                           ng-bind=\"::translatePrice('add_price')\">\n" +
+    "                           translate=\"prices.add_price\">\n" +
     "                        </a>\n" +
     "                        <a class=\"btn btn-link\"\n" +
-    "                           ng-bind=\"::translatePrice('free')\"\n" +
+    "                           translate=\"prices.free\"\n" +
     "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
     "                           ng-switch-default>\n" +
     "                        </a>\n" +
@@ -25312,7 +25312,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
     "                        <a class=\"btn btn-default\"\n" +
-    "                           ng-bind=\"::translatePrice('add_tarriff')\"\n" +
+    "                           translate=\"prices.add_tarriff\"\n" +
     "                           ng-click=\"pfmc.addPriceItem()\">\n" +
     "                        </a>\n" +
     "                    </td>\n" +
@@ -25322,28 +25322,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </form>\n" +
     "    <div ng-show=\"pfmc.priceError\"\n" +
     "         class=\"alert alert-danger\"\n" +
-    "         ng-bind=\"::translatePrice('error')\">\n" +
+    "         translate=\"prices.error\">\n" +
     "    </div>\n" +
     "    <div ng-show=\"(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving\" class=\"alert alert-info\">\n" +
-    "        <p ng-bind=\"::translatePrice('invalid')\"></p>\n" +
+    "        <p translate=\"prices.invalid\"></p>\n" +
     "        <ul class=\"small\">\n" +
-    "          <li ng-bind=\"::translatePrice('invalid_tip1')\"></li>\n" +
-    "          <li ng-bind=\"::translatePrice('invalid_tip2')\"></li>\n" +
-    "          <li ng-bind=\"::translatePrice('invalid_tip3')\"></li>\n" +
+    "          <li translate=\"prices.invalid_tip1\"></li>\n" +
+    "          <li translate=\"prices.invalid_tip2\"></li>\n" +
+    "          <li translate=\"prices.invalid_tip3\"></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-default\"\n" +
-    "          ng-bind=\"::translatePrice('close')\"\n" +
+    "          translate=\"prices.close\"\n" +
     "          ng-click=\"pfmc.cancelEditPrice()\">\n" +
     "  </button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "          ng-click=\"pfmc.validatePrice()\"\n" +
     "          ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
-    "      {{::translatePrice('save')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "      <span translate=\"prices.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
