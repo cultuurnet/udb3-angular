@@ -24388,11 +24388,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               ng-true-value=\"'periodic'\"\n" +
     "               ng-false-value=\"'permanent'\"\n" +
     "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
-    "        <span translate=\"calendar.period.title\"></span>\n" +
+    "        <span translate-once=\"calendar.period.title\"></span>\n" +
     "    </label>\n" +
     "    <div class=\"periodic-info\">\n" +
     "        <div class=\"start-date\">\n" +
-    "            <label translate=\"calendar.period.from\"></label>\n" +
+    "            <label translate-once=\"calendar.period.from\"></label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
     "                                            ng-model=\"$ctrl.formData.startDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
@@ -24400,7 +24400,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <div class=\"end-date\">\n" +
-    "            <label translate=\"calendar.period.till\"></label>\n" +
+    "            <label translate-once=\"calendar.period.till\"></label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
     "                                            ng-model=\"$ctrl.formData.endDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
@@ -24410,7 +24410,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"requirements\"\n" +
     "             ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
     "            <div class=\"alert alert-danger\">\n" +
-    "                <p translate=\"calendar.period.alert\"></p>\n" +
+    "                <p translate-once=\"calendar.period.alert\"></p>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -24435,9 +24435,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
-    "            <p class=\"text-center\"><strong translate=\"calendar.one_more_days\"></strong></p></a><span class=\"or\" translate=\"calendar.or\"></span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "            <p class=\"text-center\"><strong translate-once=\"calendar.one_more_days\"></strong></p></a><span class=\"or\" translate-once=\"calendar.or\"></span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
-    "            <p class=\"text-center\"><strong translate=\"calendar.default_days\"></strong></p>\n" +
+    "            <p class=\"text-center\"><strong translate-once=\"calendar.default_days\"></strong></p>\n" +
     "        </a>\n" +
     "\n" +
     "    </div>\n" +
@@ -24451,12 +24451,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
     "                    <div class=\"dates\">\n" +
     "                        <div class=\"date form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-start-date\" translate=\"calendar.start_label\"></label>\n" +
+    "                            <label for=\"time-span-{{$index}}-start-date\" translate-once=\"calendar.start_label\"></label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                        <div class=\"date form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-end-date\" translate=\"calendar.end_label\"></label>\n" +
+    "                            <label for=\"time-span-{{$index}}-end-date\" translate-once=\"calendar.end_label\"></label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
@@ -24468,18 +24468,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
     "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                       class=\"all-day-check\"> <span translate=\"calendar.whole_day_label\"></span>\n" +
+    "                                       class=\"all-day-check\"> <span translate-once=\"calendar.whole_day_label\"></span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label translate=\"calendar.start_hour_label\"></label>\n" +
+    "                            <label translate-once=\"calendar.start_hour_label\"></label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label translate=\"calendar.end_hour_label\"></label>\n" +
+    "                            <label translate-once=\"calendar.end_hour_label\"></label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
@@ -24491,7 +24491,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +
-    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate=\"calendar.add_days\"></a>\n" +
+    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate-once=\"calendar.add_days\"></a>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
@@ -24724,16 +24724,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/opening-hours-editor.modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\" translate=\"calendar.openingHours.opening_hours\"></h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"calendar.openingHours.opening_hours\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <div class=\"well text-center add-opening-hours\"\n" +
     "         ng-show=\"ohemc.openingHoursCollection.openingHours.length === 0\">\n" +
-    "        <span translate=\"calendar.openingHours.permanent_title\"></span>\n" +
+    "        <span translate-once=\"calendar.openingHours.permanent_title\"></span>\n" +
     "        <br>\n" +
-    "        <span translate=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
+    "        <span translate-once=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
     "        <br>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\" translate=\"calendar.openingHours.add_hours\"></button>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\" translate-once=\"calendar.openingHours.add_hours\"></button>\n" +
     "    </div>\n" +
     "    <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!ohemc.errors.length\">\n" +
     "        <ul>\n" +
@@ -24743,9 +24743,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"opening-hours\" ng-show=\"ohemc.openingHoursCollection.openingHours.length > 0\">\n" +
     "        <div class=\"opening-hours-labels\">\n" +
-    "            <div class=\"weekdays\" translate=\"calendar.openingHours.days\"></div>\n" +
-    "            <div class=\"opening-time\" translate=\"calendar.openingHours.from\"></div>\n" +
-    "            <div class=\"closing-time\" translate=\"calendar.openingHours.till\"></div>\n" +
+    "            <div class=\"weekdays\" translate-once=\"calendar.openingHours.days\"></div>\n" +
+    "            <div class=\"opening-time\" translate-once=\"calendar.openingHours.from\"></div>\n" +
+    "            <div class=\"closing-time\" translate-once=\"calendar.openingHours.till\"></div>\n" +
     "        </div>\n" +
     "        <div class=\"opening-hours-collection\">\n" +
     "            <div class=\"opening-hours-set\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
@@ -24782,15 +24782,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <div class=\"add\">\n" +
-    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\" translate=\"calendar.openingHours.more_hours\">\n" +
+    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\" translate-once=\"calendar.openingHours.more_hours\">\n" +
     "            </a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\" translate=\"calendar.openingHours.cancel\"></button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\" translate-once=\"calendar.openingHours.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
-    "            ng-click=\"ohemc.saveOpeningHours()\" translate=\"calendar.openingHours.save\">\n" +
+    "            ng-click=\"ohemc.saveOpeningHours()\" translate-once=\"calendar.openingHours.save\">\n" +
     "    </button>\n" +
     "</div>\n"
   );
@@ -24801,18 +24801,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"empty\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "    <div class=\"well text-center add-opening-hours\">\n" +
     "        <p>\n" +
-    "          <span class=\"permanent-title\" translate=\"calendar.openingHours.permanent_title\"></span>\n" +
-    "          <span class=\"permanent-subtitle\" translate=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
+    "          <span class=\"permanent-title\" translate-once=\"calendar.openingHours.permanent_title\"></span>\n" +
+    "          <span class=\"permanent-subtitle\" translate-once=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
     "        </p>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\" translate=\"calendar.openingHours.add_hours\"></button>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\" translate-once=\"calendar.openingHours.add_hours\"></button>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"time-table\">\n" +
     "    <table class=\"table table-condensed\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "      <thead>\n" +
-    "      <th translate=\"calendar.openingHours.opening_hours\"></th>\n" +
+    "      <th translate-once=\"calendar.openingHours.opening_hours\"></th>\n" +
     "      <th>\n" +
-    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\" translate=\"calendar.openingHours.change\"></a>\n" +
+    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\" translate-once=\"calendar.openingHours.change\"></a>\n" +
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
