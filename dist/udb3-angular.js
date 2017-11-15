@@ -25826,8 +25826,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section id=\"wanneer\" ng-show=\"eventFormData.showStep2\">\n" +
     "    <h2 class=\"title-border\">\n" +
     "      <span class=\"number\">2</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step2', 'date_help_event')}}</span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step2', 'date_help_place')}}</span>\n" +
+    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step2.date_help_event\"></span>\n" +
+    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step2.date_help_place\"></span>\n" +
     "    </h2>\n" +
     "\n" +
     "    <udb-form-place-calendar ng-if=\"eventFormData.isPlace\"></udb-form-place-calendar>\n" +
