@@ -16284,7 +16284,7 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, CreateDeleteOrganizerJob, $q, $rootScope) {
+function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDeleteOrganizerJob) {
   var service = this;
 
   /**
@@ -16303,7 +16303,7 @@ function OrganizerManager(udbApi, jobLogger, CreateDeleteOrganizerJob, $q, $root
   function logOrganizationDeleted(organization) {
     /**
      * @param {Object} commandInfo
-     * @return {Promise.<BaseJob>}
+     * @return {Promise.<CreateDeleteOrganizerJob>}
      */
     return function (commandInfo) {
       var job = new CreateDeleteOrganizerJob(commandInfo.commandId);
@@ -16429,7 +16429,7 @@ function OrganizerManager(udbApi, jobLogger, CreateDeleteOrganizerJob, $q, $root
     return $q.resolve(job);
   }
 }
-OrganizerManager.$inject = ["udbApi", "jobLogger", "CreateDeleteOrganizerJob", "$q", "$rootScope"];
+OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope", "CreateDeleteOrganizerJob"];
 })();
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
