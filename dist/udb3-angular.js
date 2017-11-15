@@ -25844,19 +25844,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <form name=\"step3Form\" class=\"css-form\">\n" +
     "    <h2 class=\"title-border\">\n" +
     "      <span class=\"number\">3</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step3', 'title_event')}}</span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step3', 'title_place')}}</span>\n" +
+    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step3.title_event\"></span>\n" +
+    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step3.title_place\"></span>\n" +
     "    </h2>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-12\">\n" +
-    "        <label for=\"gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity\">{{::translateEventForm('step3', 'choose_city')}}</label>\n" +
+    "        <label for=\"gemeente-autocomplete\"\n" +
+    "               id=\"gemeente-label\"\n" +
+    "               translate-once=\"eventForm.step3.choose_city\"\n" +
+    "               ng-hide=\"selectedCity\"></label>\n" +
     "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity\">\n" +
     "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "            <input type=\"text\"\n" +
     "                   id=\"gemeente-autocomplete\"\n" +
     "                   class=\"form-control uib-typeahead\"\n" +
-    "                   placeholder=\"{{::translateEventForm('step3', 'placeholder_city')}}\"\n" +
+    "                   translate-once-placeholder=\"eventForm.step3.placeholder_city\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
     "                   udb-auto-scroll\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
@@ -25865,13 +25868,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                   autocomplete=\"off\" />\n" +
     "          </span>\n" +
-    "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
-    "            {{::translateEventForm('step3', 'problem_city')}}\n" +
+    "          <div class=\"alert alert-danger\"\n" +
+    "               ole=\"alert\"\n" +
+    "               translate-once=\"eventForm.step3.problem_city\"\n" +
+    "               ng-show=\"cityAutoCompleteError\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity\">\n" +
     "          <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"selectedCity\"></span>\n" +
-    "          <a href=\"\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">{{::translateEventForm('step3', 'change')}}</a>\n" +
+    "          <a href=\"\"\n" +
+    "             class=\"btn btn-default btn-link\"\n" +
+    "             translate-once=\"eventForm.step3.change\"\n" +
+    "             ng-click=\"changeCitySelection()\"></a>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -25880,12 +25888,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"row\">\n" +
     "        <div class=\"col-xs-12\">\n" +
     "          <label id=\"locatie-label\" ng-show=\"!selectedLocation\">\n" +
-    "            {{::translateEventForm('step3', 'choose_location')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingPlaces\"></i>\n" +
+    "            <span translate-once=\"eventForm.step3.choose_location\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingPlaces\"></i>\n" +
     "          </label>\n" +
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
-    "                     placeholder=\"{{::translateEventForm('step3', 'placeholder_location')}}\"\n" +
+    "                     translate-once-placeholder=\"eventForm.step3.placeholder_location\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
@@ -25899,17 +25907,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
     "                  <div class=\"panel-body\">\n" +
-    "                    <p>{{::translateEventForm('step3', 'location_not_found')}}</p>\n" +
-    "                    <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
-    "                            data-target=\"#waar-locatie-toevoegen\" ng-click=\"openPlaceModal()\">\n" +
-    "                      {{::translateEventForm('step3', 'add_location')}}\n" +
+    "                    <p translate-once=\"eventForm.step3.location_not_found\"></p>\n" +
+    "                    <button type=\"button\" class=\"btn btn-primary\"\n" +
+    "                            data-toggle=\"modal\"\n" +
+    "                            data-target=\"#waar-locatie-toevoegen\"\n" +
+    "                            translate-once=\"eventForm.step3.add_location\"\n" +
+    "                            ng-click=\"openPlaceModal()\">\n" +
     "                    </button>\n" +
     "                  </div>\n" +
     "                </div>\n" +
     "              </div>\n" +
     "            </span>\n" +
-    "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"locationAutoCompleteError\">\n" +
-    "              {{::translateEventForm('step3', 'location_error')}}\n" +
+    "            <div class=\"alert alert-danger\"\n" +
+    "                 role=\"alert\"\n" +
+    "                 translate-once=\"eventForm.step3.location_error\"\n" +
+    "                 ng-show=\"locationAutoCompleteError\">\n" +
     "            </div>\n" +
     "          </div>\n" +
     "\n" +
@@ -25919,7 +25931,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    class=\"btn btn-default btn-link\"\n" +
     "                    data-toggle=\"modal\"\n" +
     "                    data-target=\"#waar-locatie-toevoegen\"\n" +
-    "                    ng-click=\"changeLocationSelection()\">{{::translateEventForm('step3', 'change')}}</button>\n" +
+    "                    translate-once=\"eventForm.step3.change\"\n" +
+    "                    ng-click=\"changeLocationSelection()\"></button>\n" +
     "            <br>\n" +
     "            <span ng-bind=\"selectedLocation.address.streetAddress\"></span>\n" +
     "          </div>\n" +
@@ -25933,27 +25946,32 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
-    "              <label>{{::translateEventForm('step3', 'street')}}</label>\n" +
+    "              <label translate-once=\"eventForm.step3.street\"></label>\n" +
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
     "                     ng-model=\"newPlaceStreetAddress\"\n" +
-    "                     placeholder=\"{{::translateEventForm('step3', 'placeholder_street')}}\"\n" +
+    "                     translate-once-placeholder=\"eventForm.step3.placeholder_street\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
-    "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
-    "                {{::translateEventForm('step3', 'street_validate')}}\n" +
+    "              <span class=\"help-block\"\n" +
+    "                    translate-once=\"eventForm.step3.street_validate\"\n" +
+    "                    ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
     "              </span>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setPlaceStreetAddress(newPlaceStreetAddress)\">{{::translateEventForm('step3', 'ok')}}</a>\n" +
+    "        <a class=\"btn btn-primary plaats-ok\"\n" +
+    "           translate-once=\"eventForm.step3.ok\"\n" +
+    "           ng-click=\"setPlaceStreetAddress(newPlaceStreetAddress)\"></a>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"plaats-adres-resultaat\" ng-show=\"placeStreetAddress\">\n" +
     "        <span>\n" +
     "          <span class=\"btn-chosen\" ng-bind=\"eventFormData.address.streetAddress\"></span>\n" +
-    "          <a class=\"btn btn-link plaats-adres-wijzigen\" ng-click=\"changePlaceStreetAddress()\">{{::translateEventForm('step3', 'change')}}</a>\n" +
+    "          <a class=\"btn btn-link plaats-adres-wijzigen\"\n" +
+    "             translate-once=\"eventForm.step3.change\"\n" +
+    "             ng-click=\"changePlaceStreetAddress()\"></a>\n" +
     "        </span>\n" +
     "      </div>\n" +
     "    </div>\n" +
