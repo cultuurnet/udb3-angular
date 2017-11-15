@@ -41,20 +41,22 @@
       </div>
     </div>
 
-    <p class="col-xs-12 col-md-12" ng-hide="activeEventType === ''">
-      <span class="btn-chosen" ng-bind="activeEventTypeLabel"></span>
-      <a class="btn btn-link btn-default" href="" ng-click="resetEventType()">Wijzigen</a>
-    </p>
+    <div class="row">
 
-    <div class="col-xs-12" ng-hide="activeEventType === '' || activeTheme !== ''">
-      <label class="event-theme-label" ng-show="eventThemeLabels.length">Verfijn</label>
+      <p class="col-xs-12 col-md-12" ng-hide="activeEventType === ''">
+        <span class="btn-chosen" ng-bind="activeEventTypeLabel"></span>
+        <a class="btn btn-link btn-default" href="" ng-click="resetEventType()">Wijzigen</a>
+      </p>
+
+      <div class="col-xs-12 theme-refinement" ng-hide="activeEventType === '' || activeTheme !== ''">
+        <label class="event-theme-label" ng-show="eventThemeLabels.length">Verfijn</label>
         <div ng-repeat="(key, values) in eventThemeLabels | groupBy: 'group'">
           <div class="row">
             <div class="col-xs-2" ng-show="key !== 'undefined'" >
               <p class="text-muted">{{key}}</p>
             </div>
             <div ng-class="key === 'undefined' ? 'col-xs-12' : 'col-xs-10'">
-              <ul class="list-inline" style="line-height: 2.5">
+              <ul class="list-inline list-themes">
                 <li ng-repeat="eventTheme in values">
                   <button ng-bind="::eventTheme.label" class="btn btn-default"
                           ng-click="setTheme(eventTheme)"></button>
@@ -69,6 +71,7 @@
         <span class="btn-chosen" ng-bind="activeThemeLabel"></span>
         <a class="btn btn-link btn-default" href="" ng-click="resetTheme()">Wijzigen</a>
       </p>
+
     </div>
 
   </section>
