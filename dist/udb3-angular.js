@@ -27082,7 +27082,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/organization-search-item.html',
     "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\" ng-if=\"::osic.organization\">\n" +
-    "    <td ng-bind=\"::osic.organization.name\"></td>\n" +
+    "    <td><a ng-bind=\"::osic.organization.name\" ui-sref=\"management.organizers.detail({id: osic.organization.id})\"></a></td>\n" +
     "    <td>\n" +
     "        <span ng-bind=\"::osic.organization.address.streetAddress\"></span>\n" +
     "        <br>\n" +
@@ -27108,7 +27108,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </ul>\n" +
     "        </div>\n" +
     "    </td>\n" +
-    "</tr>"
+    "</tr>\n"
   );
 
 
