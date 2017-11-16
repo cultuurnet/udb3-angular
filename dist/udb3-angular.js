@@ -3676,7 +3676,6 @@ function UdbApi(
    */
   this.translateProperty = function (offerLocation, propertyName, language, translation) {
     var translationData = {};
-
     translationData[propertyName] = translation;
 
     if (propertyName === 'name') {
@@ -28821,7 +28820,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div class=\"checkbox\">\n" +
     "                    <label>\n" +
     "                        <input type=\"checkbox\"\n" +
-    "                               disabled=\"disabled\"\n" +
     "                               ng-model=\"cardSystem.active\"\n" +
     "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
     "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
