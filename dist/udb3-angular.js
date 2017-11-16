@@ -2953,7 +2953,7 @@ angular.module('udb.core')
         'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
         'empty': 'Leegmaken',
         'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
-        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordtgeorganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
+        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordt georganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
         'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
         'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
         'organizer': 'Organisatie',
@@ -10373,8 +10373,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       UdbPlace,
       location,
       categories,
-      title,
-      $translate
+      title
   ) {
 
     $scope.categories = categories;
@@ -10491,10 +10490,6 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         .then(passOnPlaceData, showError);
     }
 
-    $scope.translateLocation = function (label) {
-      return $translate.instant('location.' + label);
-    };
-
     /**
      * Select the place that should be used.
      *
@@ -10517,7 +10512,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
 })();
 })();
@@ -10543,8 +10538,7 @@ function PriceFormModalController(
   EventFormData,
   price,
   $filter,
-  $scope,
-  $translate
+  $scope
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -10642,12 +10636,8 @@ function PriceFormModalController(
     $uibModalInstance.close();
   }
 
-  $scope.translatePrice = function (priceLabel) {
-    return $translate.instant('prices.' + priceLabel);
-  };
-
 }
-PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter", "$scope", "$translate"];
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter", "$scope"];
 })();
 
 // Source: src/event_form/components/price-info/price-info.component.js
@@ -23577,7 +23567,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
-    "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{::cm.status | translate }}</span>\n" +
     "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "</tr>\n" +
@@ -25233,7 +25223,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </form>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">{{translateLocation('cancel')}}</button>\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-default\"\n" +
+    "            data-dismiss=\"modal\"\n" +
+    "            translate-once=\"location.cancel\"\n" +
+    "            ng-click=\"resetAddLocation()\"></button>\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-primary\"\n" +
     "            ng-click=\"addLocation()\">\n" +
