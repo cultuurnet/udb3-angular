@@ -1,18 +1,18 @@
 <div class="row extra-uitpas" ng-if="showUitpasInfo">
     <div class="extra-task">
         <div class="col-sm-3">
-            <em class="extra-task-label" translate="uitpas.uitpasInfo.uitpas"></em>
+            <em class="extra-task-label" translate-once="uitpas.uitpasInfo.uitpas"></em>
             <span> </span>
             <i class="fa fa-circle-o-notch fa-spin" ng-show="savingUitpas"></i>
         </div>
         <div class="col-sm-9">
             <div class="alert alert-info" ng-show="!upic.showCardSystems">
-                <p translate="uitpas.uitpasInfo.uitpas_alert"></p>
+                <p translate-once="uitpas.uitpasInfo.uitpas_alert"></p>
             </div>
 
             <div ng-if="upic.showCardSystems">
                 <div class="alert alert-info"
-                     role="alert" translate="uitpas.uitpasInfo.uitpas_info">
+                     role="alert" translate-once="uitpas.uitpasInfo.uitpas_info">
                 </div>
 
                 <card-system-selector organisation="upic.organizer" offer-data="upic.eventFormData">
