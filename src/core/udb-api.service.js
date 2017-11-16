@@ -513,6 +513,10 @@ function UdbApi(
     var translationData = {};
     translationData[propertyName] = translation;
 
+    if (propertyName === 'name') {
+      propertyName = 'title';
+    }
+
     return $http.post(
       offerLocation + '/' + language + '/' + propertyName,
       translationData,
