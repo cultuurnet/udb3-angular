@@ -82,6 +82,8 @@ function EventDetail(
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = undefined;
+  $scope.calendarSummary = undefined;
+
   $scope.tabs = [
     {
       id: 'data',
@@ -108,8 +110,24 @@ function EventDetail(
     $scope.eventHistory = eventHistory;
   }
 
+  function showCalendarSummary(calendarSummary) {
+    $scope.calendarSummary = calendarSummary;
+  }
+
+  function notifyCalendarSummaryIsUnavailable() {
+    $scope.calendarSummary = false;
+  }
+
   function showOffer(event) {
     cachedEvent = event;
+
+    if (cachedEvent.calendarType === 'permanent') {
+      showCalendarSummary('Altijd open');
+    } else {
+      udbApi
+        .getCalendarSummary($scope.eventId, 'lg')
+        .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
+    }
 
     $scope.event = jsonLDLangFilter(event, language);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));

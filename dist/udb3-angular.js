@@ -4476,6 +4476,15 @@ function UdbApi(
       .then(returnUnwrappedData, returnApiProblem);
   };
 
+  this.getCalendarSummary = function(offerUrl, format) {
+    var plainConfig = _.cloneDeep(defaultApiConfig);
+    plainConfig.headers.Accept = 'text/html';
+
+    return $http
+      .get(offerUrl + '/calendar-summary?format=' + format, plainConfig)
+      .then(returnUnwrappedData);
+  };
+
   /**
    * @param {URL} eventUrl
    * @param {Object} newCalendarData
@@ -8238,6 +8247,8 @@ function EventDetail(
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = undefined;
+  $scope.calendarSummary = undefined;
+
   $scope.tabs = [
     {
       id: 'data',
@@ -8264,8 +8275,24 @@ function EventDetail(
     $scope.eventHistory = eventHistory;
   }
 
+  function showCalendarSummary(calendarSummary) {
+    $scope.calendarSummary = calendarSummary;
+  }
+
+  function notifyCalendarSummaryIsUnavailable() {
+    $scope.calendarSummary = false;
+  }
+
   function showOffer(event) {
     cachedEvent = event;
+
+    if (cachedEvent.calendarType === 'permanent') {
+      showCalendarSummary('Altijd open');
+    } else {
+      udbApi
+        .getCalendarSummary($scope.eventId, 'lg')
+        .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
+    }
 
     $scope.event = jsonLDLangFilter(event, language);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -24166,7 +24193,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
     "                <td>\n" +
-    "                  <udb-calendar-summary offer=\"::event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
+    "                  <span ng-if=\"::calendarSummary\" ng-bind-html=\"::calendarSummary\"></span>\n" +
+    "                  <span class=\"text-muted\"\n" +
+    "                        ng-if=\"::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)\">\n" +
+    "                      Probleem bij het ophalen van de kalenderinformatie\n" +
+    "                    </span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +

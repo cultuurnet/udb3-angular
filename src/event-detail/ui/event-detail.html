@@ -103,7 +103,11 @@
               <tr>
                 <td><span class="row-label">Wanneer</span></td>
                 <td>
-                  <udb-calendar-summary offer="::event" show-opening-hours="true"></udb-calendar-summary>
+                  <span ng-if="::calendarSummary" ng-bind-html="::calendarSummary"></span>
+                  <span class="text-muted"
+                        ng-if="::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)">
+                      Probleem bij het ophalen van de kalenderinformatie
+                    </span>
                 </td>
               </tr>
               <tr ng-class="::{muted: (!event.organizer)}">
