@@ -1311,6 +1311,15 @@ function UdbApi(
       .then(returnUnwrappedData, returnApiProblem);
   };
 
+  this.getCalendarSummary = function(offerUrl, format) {
+    var plainConfig = _.cloneDeep(defaultApiConfig);
+    plainConfig.headers.Accept = 'text/html';
+
+    return $http
+      .get(offerUrl + '/calendar-summary?format=' + format, plainConfig)
+      .then(returnUnwrappedData);
+  };
+
   /**
    * @param {URL} eventUrl
    * @param {Object} newCalendarData
