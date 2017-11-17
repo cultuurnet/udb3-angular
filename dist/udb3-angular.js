@@ -28814,26 +28814,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"form-group\">\n" +
     "    <div class=\"card-system\">\n" +
     "        <label translate=\"uitpas.cardSystems.card_systems\"></label>\n" +
+    "        <span ng-hide=\"::(cardSystemSelector.availableCardSystems === undefined ? undefined : true)\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Loading...\n" +
+    "        </span>\n" +
     "\n" +
-    "        <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in cardSystemSelector.availableCardSystems\">\n" +
-    "            <div class=\"col-sm-6\">\n" +
-    "                <div class=\"checkbox\">\n" +
-    "                    <label>\n" +
-    "                        <input type=\"checkbox\"\n" +
-    "                               ng-model=\"cardSystem.active\"\n" +
-    "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
-    "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
-    "                    </label>\n" +
+    "        <div class=\"card-systems\" ng-if=\"::cardSystemSelector.availableCardSystems\">\n" +
+    "            <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in cardSystemSelector.availableCardSystems\">\n" +
+    "                <div class=\"col-sm-6\">\n" +
+    "                    <div class=\"checkbox\">\n" +
+    "                        <label>\n" +
+    "                            <input type=\"checkbox\"\n" +
+    "                                   ng-model=\"cardSystem.active\"\n" +
+    "                                   ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
+    "                                <span ng-bind=\"::cardSystem.name\"></span>\n" +
+    "                        </label>\n" +
+    "                    </div>\n" +
     "                </div>\n" +
-    "            </div>\n" +
     "\n" +
     "\n" +
-    "            <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
-    "                <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
-    "                        ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
-    "                        ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
-    "                    <option value=\"\" translate=\"uitpas.cardSystems.choose\"></option>\n" +
-    "                </select>\n" +
+    "                <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
+    "                    <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
+    "                            ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
+    "                            ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
+    "                        <option value=\"\" translate=\"uitpas.cardSystems.choose\"></option>\n" +
+    "                    </select>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
