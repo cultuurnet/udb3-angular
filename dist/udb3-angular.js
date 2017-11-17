@@ -26217,7 +26217,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\"></price-info>\n" +
-    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"price\"></uitpas-info>\n" +
+    "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"eventFormData.priceInfo\"></uitpas-info>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
     "          <div class=\"extra-task meer-info\" ng-class=\"contactInfoCssClass\">\n" +

@@ -184,6 +184,29 @@ describe('Component: Uitpas Info', function () {
     $rootScope.$apply();
   });
 
+  it('should show card systems when an uitpas organization is selected for an event with pricing', function (done) {
+    var controller = getController({
+      organizer: undefined,
+      price: [{
+        "category": "base",
+        "name": "Senioren",
+        "price": 3
+      }]
+    });
+
+    function assertCardSystemsShown () {
+      expect(controller.showCardSystems).toEqual(true);
+      done();
+    }
+
+    assertPostHandling(controller, 'reset', assertCardSystemsShown);
+
+    controller.$onInit();
+
+    $rootScope.$emit('eventOrganizerSelected', getOrganizerObject());
+    $rootScope.$apply();
+  });
+
   /**
    *
    * @param {Object} controller
