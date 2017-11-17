@@ -54,6 +54,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   }
 
   function refresh() {
+    controller.availableCardSystems = undefined;
     hideUitpasUnavailableNotice();
     init();
   }
@@ -119,12 +120,26 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
    * @param {CardSystem} cardSystem
    */
   controller.activeCardSystemsChanged = function(cardSystem) {
+    controller.persistingCardSystems = true;
     var activeCardSystemsUpdated = cardSystem.active ?
       udbUitpasApi.addEventCardSystem(offerData.id, cardSystem.id) :
       udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
 
-    activeCardSystemsUpdated.then(function () {
+    function revertCardSystemStatus() {
+      cardSystem.active = !cardSystem.active;
+      showUitpasUnavailableNotice();
+    }
+
+    function uitpasResponded() {
+      controller.persistingCardSystems = false;
+    }
+
+    function notifyUitpasDataSaved () {
       $rootScope.$emit('uitpasDataSaved');
-    });
+    }
+
+    activeCardSystemsUpdated
+      .then(notifyUitpasDataSaved, revertCardSystemStatus)
+      .finally(uitpasResponded);
   };
 }

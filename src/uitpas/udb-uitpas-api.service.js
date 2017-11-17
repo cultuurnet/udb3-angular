@@ -71,6 +71,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return $http
       .put(
         uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        null,
         defaultApiConfig
       )
       .then(returnUnwrappedData);
@@ -100,6 +101,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return $http
       .put(
         uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId,
+        null,
         defaultApiConfig
       )
       .then(returnUnwrappedData);

@@ -23096,6 +23096,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   }
 
   function refresh() {
+    controller.availableCardSystems = undefined;
     hideUitpasUnavailableNotice();
     init();
   }
@@ -23161,13 +23162,27 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
    * @param {CardSystem} cardSystem
    */
   controller.activeCardSystemsChanged = function(cardSystem) {
+    controller.persistingCardSystems = true;
     var activeCardSystemsUpdated = cardSystem.active ?
       udbUitpasApi.addEventCardSystem(offerData.id, cardSystem.id) :
       udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
 
-    activeCardSystemsUpdated.then(function () {
+    function revertCardSystemStatus() {
+      cardSystem.active = !cardSystem.active;
+      showUitpasUnavailableNotice();
+    }
+
+    function uitpasResponded() {
+      controller.persistingCardSystems = false;
+    }
+
+    function notifyUitpasDataSaved () {
       $rootScope.$emit('uitpasDataSaved');
-    });
+    }
+
+    activeCardSystemsUpdated
+      .then(notifyUitpasDataSaved, revertCardSystemStatus)
+      .finally(uitpasResponded);
   };
 }
 CardSystemsController.$inject = ["$q", "udbUitpasApi", "UitpasLabels", "$rootScope"];
@@ -23426,6 +23441,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return $http
       .put(
         uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        null,
         defaultApiConfig
       )
       .then(returnUnwrappedData);
@@ -23455,6 +23471,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return $http
       .put(
         uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId,
+        null,
         defaultApiConfig
       )
       .then(returnUnwrappedData);
@@ -28846,16 +28863,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <div class=\"checkbox\">\n" +
     "                        <label>\n" +
     "                            <input type=\"checkbox\"\n" +
+    "                                   ng-disabled=\"cardSystemSelector.persistingCardSystems\"\n" +
     "                                   ng-model=\"cardSystem.active\"\n" +
     "                                   ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
     "                                <span ng-bind=\"::cardSystem.name\"></span>\n" +
     "                        </label>\n" +
+    "                        <span ng-show=\"cardSystemSelector.persistingCardSystems\">\n" +
+    "                            <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                        </span>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +
     "\n" +
     "                <div class=\"col-sm-6\" ng-if=\"cardSystem.distributionKeys.length\">\n" +
     "                    <select ng-model=\"cardSystem.assignedDistributionKey\"\n" +
+    "                            ng-disabled=\"cardSystemSelector.persistingCardSystems\"\n" +
     "                            ng-options=\"key as key.name for key in cardSystem.distributionKeys track by key.id\"\n" +
     "                            ng-change=\"cardSystemSelector.distributionKeyAssigned()\">\n" +
     "                        <option value=\"\" translate=\"uitpas.cardSystems.choose\"></option>\n" +
