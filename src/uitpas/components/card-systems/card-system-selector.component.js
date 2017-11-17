@@ -33,31 +33,45 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   var controller = this;
   var organisation = controller.organisation;
   var offerData = controller.offerData;
+  controller.$onInit = init;
+  controller.refresh = refresh;
 
-  controller.$onInit = function() {
+  function init() {
     $q
       .all([
         udbUitpasApi.getEventCardSystems(offerData.id),
         udbUitpasApi.findOrganisationsCardSystems(organisation.id)
       ])
-      .then(function (cardSystemCollections) {
-        var eventCardSystems = cardSystemCollections[0],
-            organisationCardSystems = cardSystemCollections[1];
+      .then(showCardSystems, showUitpasUnavailableNotice);
+  }
 
-        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
-          cardSystem.assignedDistributionKey = findAssignedDistributionKey(eventCardSystems, cardSystem);
+  function showUitpasUnavailableNotice() {
+    controller.uitpasUnavailable = true;
+  }
 
-          var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+  function hideUitpasUnavailableNotice() {
+    controller.uitpasUnavailable = undefined;
+  }
 
-          cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+  function refresh() {
+    hideUitpasUnavailableNotice();
+    init();
+  }
 
-          return cardSystem;
-        });
+  function showCardSystems(cardSystemCollections) {
+    var eventCardSystems = cardSystemCollections[0],
+        organisationCardSystems = cardSystemCollections[1];
 
-        includeUitpasOrganisationCardSystems(availableCardSystems, organisation);
-        controller.availableCardSystems = availableCardSystems;
-      });
-  };
+    controller.availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
+      cardSystem.assignedDistributionKey = findAssignedDistributionKey(eventCardSystems, cardSystem);
+
+      var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+
+      cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+
+      return cardSystem;
+    });
+  }
 
   /**
    * @param {CardSystem[]} cardSystemCollection

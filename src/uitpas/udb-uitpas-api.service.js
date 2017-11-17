@@ -49,7 +49,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
     var until = moment().add(uitpasMaxDelay, 's');
 
-    return retry(request, 2, until).then(returnUnwrappedData, returnEmptyCollection);
+    return retry(request, 2, until).then(returnUnwrappedData);
   };
 
   /**

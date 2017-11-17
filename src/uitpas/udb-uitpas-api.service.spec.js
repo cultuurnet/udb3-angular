@@ -94,7 +94,7 @@ describe('Service: UDB3 Uitpas Api', function () {
     $httpBackend.flush();
   });
 
-  it('should return an empty collection when UiTPAS repeatedly fails to return the card systems for an event', function (done) {
+  it('should fail when UiTPAS repeatedly fails to return the card systems for an event', function (done) {
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
     var firstRequested = moment();
     jasmine.clock().mockDate(firstRequested.toDate());
@@ -103,11 +103,6 @@ describe('Service: UDB3 Uitpas Api', function () {
       $httpBackend
         .expectGET('http://uit.pas/events/' + cdbid + '/cardSystems/')
         .respond(404, 'unknown event');
-    }
-
-    function assertEmptyCollection(cardSystems) {
-      expect(cardSystems).toEqual([]);
-      done();
     }
 
     _.times(3, expectCardSystemsRequest);
@@ -119,7 +114,7 @@ describe('Service: UDB3 Uitpas Api', function () {
         return [404];
       });
 
-    service.getEventCardSystems(cdbid).then(assertEmptyCollection);
+    service.getEventCardSystems(cdbid).catch(done);
 
     $httpBackend.flush(4);
   });

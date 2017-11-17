@@ -3126,7 +3126,9 @@ angular.module('udb.core')
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',
-        'choose': '--Selecteer een verdeelsleutel--'
+        'choose': '--Selecteer een verdeelsleutel--',
+        'retry': 'Opnieuw registreren',
+        'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
     }
   }
@@ -23073,31 +23075,45 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   var controller = this;
   var organisation = controller.organisation;
   var offerData = controller.offerData;
+  controller.$onInit = init;
+  controller.refresh = refresh;
 
-  controller.$onInit = function() {
+  function init() {
     $q
       .all([
         udbUitpasApi.getEventCardSystems(offerData.id),
         udbUitpasApi.findOrganisationsCardSystems(organisation.id)
       ])
-      .then(function (cardSystemCollections) {
-        var eventCardSystems = cardSystemCollections[0],
-            organisationCardSystems = cardSystemCollections[1];
+      .then(showCardSystems, showUitpasUnavailableNotice);
+  }
 
-        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
-          cardSystem.assignedDistributionKey = findAssignedDistributionKey(eventCardSystems, cardSystem);
+  function showUitpasUnavailableNotice() {
+    controller.uitpasUnavailable = true;
+  }
 
-          var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+  function hideUitpasUnavailableNotice() {
+    controller.uitpasUnavailable = undefined;
+  }
 
-          cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+  function refresh() {
+    hideUitpasUnavailableNotice();
+    init();
+  }
 
-          return cardSystem;
-        });
+  function showCardSystems(cardSystemCollections) {
+    var eventCardSystems = cardSystemCollections[0],
+        organisationCardSystems = cardSystemCollections[1];
 
-        includeUitpasOrganisationCardSystems(availableCardSystems, organisation);
-        controller.availableCardSystems = availableCardSystems;
-      });
-  };
+    controller.availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
+      cardSystem.assignedDistributionKey = findAssignedDistributionKey(eventCardSystems, cardSystem);
+
+      var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+
+      cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+
+      return cardSystem;
+    });
+  }
 
   /**
    * @param {CardSystem[]} cardSystemCollection
@@ -23388,7 +23404,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
     var until = moment().add(uitpasMaxDelay, 's');
 
-    return retry(request, 2, until).then(returnUnwrappedData, returnEmptyCollection);
+    return retry(request, 2, until).then(returnUnwrappedData);
   };
 
   /**
@@ -28820,7 +28836,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"form-group\">\n" +
     "    <div class=\"card-system\">\n" +
     "        <label translate=\"uitpas.cardSystems.card_systems\"></label>\n" +
-    "        <span ng-hide=\"::(cardSystemSelector.availableCardSystems === undefined ? undefined : true)\">\n" +
+    "        <span ng-hide=\"cardSystemSelector.uitpasUnavailable || (cardSystemSelector.availableCardSystems !== undefined)\">\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Loading...\n" +
     "        </span>\n" +
     "\n" +
@@ -28846,6 +28862,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </select>\n" +
     "                </div>\n" +
     "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cardSystemSelector.uitpasUnavailable\">\n" +
+    "            <p translate=\"uitpas.cardSystems.unavailable\"></p>\n" +
+    "            <button class=\"btn btn-default\" ng-click=\"cardSystemSelector.refresh()\" translate=\"uitpas.cardSystems.retry\"></button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>"

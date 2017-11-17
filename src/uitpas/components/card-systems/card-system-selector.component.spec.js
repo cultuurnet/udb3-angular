@@ -128,16 +128,6 @@ describe('Component: Uitpas Info', function () {
         ],
         assignedDistributionKey: undefined,
         active: false
-      },
-      {
-        name: 'Paspartoe',
-        active: true,
-        distributionKeys: []
-      },
-      {
-        name: 'UiTPAS',
-        active: true,
-        distributionKeys: []
       }
     ];
 
@@ -177,16 +167,6 @@ describe('Component: Uitpas Info', function () {
         ],
         assignedDistributionKey: undefined,
         active: false
-      },
-      {
-        name: 'Paspartoe',
-        active: true,
-        distributionKeys: []
-      },
-      {
-        name: 'UiTPAS',
-        active: true,
-        distributionKeys: []
       }
     ];
 
@@ -243,5 +223,28 @@ describe('Component: Uitpas Info', function () {
 
     controller.distributionKeyAssigned(cardSystem);
     expect(udbUitpasApi.addEventCardSystemDistributionKey).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', '2', '194');
+  });
+
+  it('should notify the user that uitpas is unavailable when an event is not known by uitpas', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve([]));
+
+    var controller = getComponentController();
+    $scope.$digest();
+
+    expect(controller.uitpasUnavailable).toEqual(true);
+  });
+
+
+  it('should hide the uitpas unavailable notice while refreshing card systems', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve([]));
+
+    var controller = getComponentController();
+    $scope.$digest();
+    expect(controller.uitpasUnavailable).toEqual(true);
+
+    controller.refresh();
+    expect(controller.uitpasUnavailable).toEqual(undefined);
   });
 });
