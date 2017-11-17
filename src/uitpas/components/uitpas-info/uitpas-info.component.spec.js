@@ -199,7 +199,7 @@ describe('Component: Uitpas Info', function () {
       done();
     }
 
-    assertPostHandling(controller, 'reset', assertCardSystemsShown);
+    assertPostHandling(controller, 'updateOrganizer', assertCardSystemsShown);
 
     controller.$onInit();
 

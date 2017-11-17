@@ -23190,7 +23190,6 @@ function UitpasInfoComponent(
 
   $scope.showUitpasInfo = false;
   $scope.uitpasCssClass = 'state-incomplete';
-  $scope.checkedCardSystems = [];
   controller.listeners = [];
   controller.showCardSystems = false;
 
@@ -23210,15 +23209,29 @@ function UitpasInfoComponent(
     $scope.uitpasCssClass = 'state-complete';
   };
 
+  controller.updateOrganizer = function (angularEvent, organization) {
+    controller.organizer = organization;
+    showOrganizer(organization);
+  };
+
+  function showOrganizer(organization) {
+    if (organization) {
+      $scope.showUitpasInfo = _.get(controller, 'organizer.isUitpas', false) && EventFormData.isEvent;
+      controller.showCardSystems = controller.price && !!controller.price.length;
+    } else {
+      controller.showCardSystems = false;
+      $scope.showUitpasInfo = false;
+    }
+  }
+
   function init() {
     controller.eventFormData = EventFormData;
-    $scope.showUitpasInfo = _.get(controller, 'organizer.isUitpas', false) && EventFormData.isEvent;
-    controller.showCardSystems = controller.price && !!controller.price.length;
+    showOrganizer(controller.organizer);
 
     controller.listeners = [
       $rootScope.$on('eventFormSaved', controller.showCardSystemsIfPriceIsSelected),
-      $rootScope.$on('eventOrganizerSelected', controller.reset),
-      $rootScope.$on('eventOrganizerDeleted', controller.reset),
+      $rootScope.$on('eventOrganizerSelected', controller.updateOrganizer),
+      $rootScope.$on('eventOrganizerDeleted', controller.updateOrganizer),
       $rootScope.$on('uitpasDataSaved', controller.markUitpasDataAsCompleted)
     ];
   }
@@ -23226,13 +23239,6 @@ function UitpasInfoComponent(
   function destroy() {
     _.invoke(controller.listeners, 'call');
   }
-
-  controller.reset = function (angularEvent, organizer) {
-    controller.organizer = organizer;
-    $scope.checkedCardSystems = [];
-    destroy();
-    init();
-  };
 }
 UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
 })();
