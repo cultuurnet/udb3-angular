@@ -86,26 +86,6 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
   }
 
   /**
-   * @param {CardSystem[]} cardSystemCollection
-   *  The card system collection that will include the organisation uitpas card systems.
-   * @param {Organisation} organisation
-   */
-  function includeUitpasOrganisationCardSystems(cardSystemCollection, organisation) {
-    var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
-    var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
-
-    _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
-      if (!_.find(cardSystemCollection, {name: organisationUitpasLabel})) {
-        cardSystemCollection.push({
-          name: organisationUitpasLabel,
-          active: true,
-          distributionKeys: []
-        });
-      }
-    });
-  }
-
-  /**
    * @param {CardSystem} cardSystem
    */
   controller.distributionKeyAssigned = function(cardSystem) {
