@@ -3680,6 +3680,10 @@ function UdbApi(
     var translationData = {};
     translationData[propertyName] = translation;
 
+    if (propertyName === 'name') {
+      propertyName = 'title';
+    }
+
     return $http.post(
       offerLocation + '/' + language + '/' + propertyName,
       translationData,
@@ -4476,6 +4480,15 @@ function UdbApi(
     return $http
       .patch(offerUrl.toString(), data, requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  this.getCalendarSummary = function(offerUrl, format) {
+    var plainConfig = _.cloneDeep(defaultApiConfig);
+    plainConfig.headers.Accept = 'text/html';
+
+    return $http
+      .get(offerUrl + '/calendar-summary?format=' + format, plainConfig)
+      .then(returnUnwrappedData);
   };
 
   /**
@@ -8240,6 +8253,8 @@ function EventDetail(
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = undefined;
+  $scope.calendarSummary = undefined;
+
   $scope.tabs = [
     {
       id: 'data',
@@ -8266,8 +8281,24 @@ function EventDetail(
     $scope.eventHistory = eventHistory;
   }
 
+  function showCalendarSummary(calendarSummary) {
+    $scope.calendarSummary = calendarSummary;
+  }
+
+  function notifyCalendarSummaryIsUnavailable() {
+    $scope.calendarSummary = false;
+  }
+
   function showOffer(event) {
     cachedEvent = event;
+
+    if (cachedEvent.calendarType === 'permanent') {
+      showCalendarSummary('Altijd open');
+    } else {
+      udbApi
+        .getCalendarSummary($scope.eventId, 'lg')
+        .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
+    }
 
     $scope.event = jsonLDLangFilter(event, language);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -22575,15 +22606,8 @@ function OfferController(
   };
 
   controller.applyPropertyChanges = function (propertyName) {
-    var translation = controller.translation[propertyName],
-        apiProperty;
-
-    // TODO: this is hacky, should decide on consistent name for this property
-    if (propertyName === 'name') {
-      apiProperty = 'title';
-    }
-
-    translateEventProperty(propertyName, translation, apiProperty);
+    var translation = controller.translation[propertyName];
+    translateEventProperty(propertyName, translation, propertyName);
   };
 
   controller.stopTranslating = function () {
@@ -24186,7 +24210,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr>\n" +
     "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
     "                <td>\n" +
-    "                  <udb-calendar-summary offer=\"::event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
+    "                  <span ng-if=\"::calendarSummary\" ng-bind-html=\"::calendarSummary\"></span>\n" +
+    "                  <span class=\"text-muted\"\n" +
+    "                        ng-if=\"::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)\">\n" +
+    "                      Probleem bij het ophalen van de kalenderinformatie\n" +
+    "                    </span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
@@ -28823,7 +28851,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div class=\"checkbox\">\n" +
     "                    <label>\n" +
     "                        <input type=\"checkbox\"\n" +
-    "                               disabled=\"disabled\"\n" +
     "                               ng-model=\"cardSystem.active\"\n" +
     "                               ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
     "                            <span ng-bind=\"::cardSystem.name\"></span>\n" +
