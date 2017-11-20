@@ -247,4 +247,57 @@ describe('Component: Uitpas Info', function () {
     controller.refresh();
     expect(controller.uitpasUnavailable).toEqual(undefined);
   });
+
+  it('should indicate when a card system is activated and send to uitpas', function () {
+    var activatedCardSystem = (_.cloneDeep(organizerCardSystems[1]));
+    activatedCardSystem.active = true;
+    var uitpasResponse = $q.defer();
+
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.addEventCardSystem.and.returnValue(uitpasResponse.promise);
+
+    var controller = getComponentController();
+    $scope.$digest();
+    controller.activeCardSystemsChanged(activatedCardSystem);
+    expect(controller.persistingCardSystems).toEqual(true);
+
+    uitpasResponse.resolve();
+    $scope.$digest();
+    expect(controller.persistingCardSystems).toEqual(false);
+  });
+
+  it('should indicate when a card system is deactivated and send to uitpas', function () {
+    var activatedCardSystem = organizerCardSystems[1];
+    var uitpasResponse = $q.defer();
+
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.removeEventCardSystem.and.returnValue(uitpasResponse.promise);
+
+    var controller = getComponentController();
+    $scope.$digest();
+    controller.activeCardSystemsChanged(activatedCardSystem);
+    expect(controller.persistingCardSystems).toEqual(true);
+
+    uitpasResponse.resolve();
+    $scope.$digest();
+    expect(controller.persistingCardSystems).toEqual(false);
+  });
+
+  it('should revert the card system status and notify ther user when uitpas is unavailable on change', function () {
+    var activatedCardSystem = organizerCardSystems[1];
+    activatedCardSystem.active = true;
+
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.addEventCardSystem.and.returnValue($q.reject());
+
+    var controller = getComponentController();
+    controller.activeCardSystemsChanged(activatedCardSystem);
+    $scope.$digest();
+
+    expect(activatedCardSystem.active).toEqual(false);
+    expect(controller.uitpasUnavailable).toEqual(true);
+  });
 });
