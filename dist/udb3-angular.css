@@ -2521,6 +2521,12 @@ input + .alert {
   font-weight: bold;
   color: #333333;
 }
+.offer-form .theme-refinement {
+  margin-bottom: 1em;
+}
+.offer-form .list-themes {
+  line-height: 2.5;
+}
 .offer-form .btn {
   padding: 6px 10px;
 }
