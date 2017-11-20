@@ -63,7 +63,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   };
 
   function returnCardSystemCollection(response) {
-    return $q.resolve(_.map(response.data, _.values));
+    return $q.resolve(_.values(response.data));
   }
 
   /**
