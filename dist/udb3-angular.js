@@ -23399,7 +23399,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
     var until = moment().add(uitpasMaxDelay, 's');
 
-    return retry(request, 2, until).then(returnUnwrappedData);
+    return retry(request, 2, until).then(returnCardSystemCollection);
   };
 
   /**
@@ -23409,8 +23409,12 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
       .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
-      .then(returnUnwrappedData, returnEmptyCollection);
+      .then(returnCardSystemCollection, returnEmptyCollection);
   };
+
+  function returnCardSystemCollection(response) {
+    return $q.resolve(_.map(response.data, _.values));
+  }
 
   /**
    * @param {string} eventId

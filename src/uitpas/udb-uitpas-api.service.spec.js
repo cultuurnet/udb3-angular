@@ -36,16 +36,18 @@ describe('Service: UDB3 Uitpas Api', function () {
   }));
 
   it('should return the active card systems of an event', function (done) {
-    var response = [{
-      id: 'D0AB7BED-4073-4566-B984-BD48D7B016FE',
-      name: 'test system',
-      distributionKeys: [
-        {
-          id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
-          name: 'test key'
-        }
-      ]
-    }];
+    var response = {
+      'D0AB7BED-4073-4566-B984-BD48D7B016FE': {
+        id: 'D0AB7BED-4073-4566-B984-BD48D7B016FE',
+        name: 'test system',
+        distributionKeys: [
+          {
+            id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
+            name: 'test key'
+          }
+        ]
+      }
+    };
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
@@ -60,16 +62,18 @@ describe('Service: UDB3 Uitpas Api', function () {
   });
 
   it('should poke UiTPAS a few times until the card systems of an event return', function (done) {
-    var response = [{
-      id: 'D0AB7BED-4073-4566-B984-BD48D7B016FE',
-      name: 'test system',
-      distributionKeys: [
-        {
-          id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
-          name: 'test key'
-        }
-      ]
-    }];
+    var response = {
+      'D0AB7BED-4073-4566-B984-BD48D7B016FE': {
+        id: 'D0AB7BED-4073-4566-B984-BD48D7B016FE',
+        name: 'test system',
+        distributionKeys: [
+          {
+            id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
+            name: 'test key'
+          }
+        ]
+      }
+    };
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
     $httpBackend
