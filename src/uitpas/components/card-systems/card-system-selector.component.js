@@ -68,7 +68,7 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
 
       var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
 
-      cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+      cardSystem.active = !!_.find(eventCardSystems, {id: cardSystem.id});
 
       return cardSystem;
     });

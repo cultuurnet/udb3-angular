@@ -300,4 +300,53 @@ describe('Component: Uitpas Info', function () {
     expect(activatedCardSystem.active).toEqual(false);
     expect(controller.uitpasUnavailable).toEqual(true);
   });
+
+  it('should show event card systems as active', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.resolve([
+      {
+        id: '1',
+        name: 'ACME INC.',
+        distributionKeys: [
+          {
+            id: '182',
+            name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+          }
+        ]
+      }
+    ]));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+
+    var controller = getComponentController();
+    $scope.$digest();
+
+    expect(controller.availableCardSystems).toEqual([
+      {
+        id: '1',
+        name: 'ACME INC.',
+        distributionKeys: [
+          {
+            id: '182',
+            name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+          }
+        ],
+        assignedDistributionKey: {
+          id: '182',
+          name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+        },
+        active: true
+      },
+      {
+        id: '2',
+        name: 'foo bar balie',
+        distributionKeys: [
+          {
+            id: '194',
+            name: 'CC qwerty - 3 EUR / dag'
+          }
+        ],
+        assignedDistributionKey: undefined,
+        active: false
+      }
+    ]);
+  })
 });
