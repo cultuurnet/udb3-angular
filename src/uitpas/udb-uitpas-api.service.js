@@ -62,8 +62,26 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
       .then(returnCardSystemCollection, returnEmptyCollection);
   };
 
+  /**
+   * @param {CardSystem} cardSystem
+   * @returns {CardSystem}
+   */
+  function convertDistributionKeysToList(cardSystem) {
+    if ('object' === typeof cardSystem.distributionKeys) {
+      cardSystem.distributionKeys = _.values(cardSystem.distributionKeys);
+    }
+
+    return cardSystem;
+  }
+
+  /**
+   * @param {object} response
+   *  Angular HTTP response
+   * @return {CardSystem[]}
+   */
   function returnCardSystemCollection(response) {
-    return $q.resolve(_.values(response.data));
+    var cardSystemCollection = _.values(response.data);
+    return $q.resolve(_.map(cardSystemCollection, convertDistributionKeysToList));
   }
 
   /**

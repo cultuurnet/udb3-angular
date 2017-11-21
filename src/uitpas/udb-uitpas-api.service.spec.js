@@ -40,12 +40,12 @@ describe('Service: UDB3 Uitpas Api', function () {
       'D0AB7BED-4073-4566-B984-BD48D7B016FE': {
         id: 'D0AB7BED-4073-4566-B984-BD48D7B016FE',
         name: 'test system',
-        distributionKeys: [
-          {
-            id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
+        distributionKeys: {
+          182: {
+            id: 182,
             name: 'test key'
           }
-        ]
+        }
       }
     };
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
@@ -55,7 +55,7 @@ describe('Service: UDB3 Uitpas Api', function () {
         name: 'test system',
         distributionKeys: [
           {
-            id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
+            id: 182,
             name: 'test key'
           }
         ]
@@ -83,12 +83,12 @@ describe('Service: UDB3 Uitpas Api', function () {
       'D0AB7BED-4073-4566-B984-BD48D7B016FE': {
         id: 'D0AB7BED-4073-4566-B984-BD48D7B016FE',
         name: 'test system',
-        distributionKeys: [
-          {
-            id: 'E9249FA2-F9CC-4140-976A-BE49D869291F',
+        distributionKeys: {
+          15: {
+            id: 15,
             name: 'test key'
           }
-        ]
+        }
       }
     };
     var cdbid = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
