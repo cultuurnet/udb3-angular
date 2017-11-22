@@ -25,10 +25,9 @@
 
                 <div class="col-sm-6" ng-if="cardSystem.distributionKeys.length">
                     <select ng-model="cardSystem.assignedDistributionKey"
-                            ng-disabled="cardSystemSelector.persistingCardSystems"
+                            ng-disabled="cardSystemSelector.persistingCardSystems || !cardSystem.active"
                             ng-options="key as key.name for key in cardSystem.distributionKeys track by key.id"
-                            ng-change="cardSystemSelector.distributionKeyAssigned()">
-                        <option value="" translate="uitpas.cardSystems.choose"></option>
+                            ng-change="cardSystemSelector.distributionKeyAssigned(cardSystem)">
                     </select>
                 </div>
             </div>

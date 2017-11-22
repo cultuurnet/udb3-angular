@@ -8,7 +8,7 @@ describe('Component: Uitpas Info', function () {
   var UdbOrganizer, $q, udbUitpasApi, UitpasLabels, EventFormData, $componentController, $rootScope, $scope;
 
   var organizerJson = {
-    '@id': 'http/du.de/organisation/357D5297-9E37-1DE9-62398987EA110D38',
+    '@id': 'https://udb-silex-acc.uitdatabank.be/event/b3137053-c05e-4234-b12c-554e6fbbc298',
     'name': 'Club Silo',
     'addresses': [
       {
@@ -37,26 +37,35 @@ describe('Component: Uitpas Info', function () {
 
   var organizerCardSystems = [
     {
-      id: '1',
+      id: 1,
       name: 'ACME INC.',
       distributionKeys: [
         {
-          id: '182',
-          name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+          id: 23,
+          name: '€1,5 dag (regio)'
+        },
+        {
+          id: 24,
+          name: '€3 hele dag (regio)'
+        },
+        {
+          id: 25,
+          name: '25% meerdaags (regio)'
         }
       ]
     },
     {
-      id: '2',
+      id: 2,
       name: 'foo bar balie',
-      distributionKeys: [
-        {
-          id: '194',
-          name: 'CC qwerty - 3 EUR / dag'
-        }
-      ]
+      distributionKeys: []
     }
   ];
+
+  var evenCardSystemWithoutDistributionKey = {
+    id: 2,
+    name: 'foo bar balie',
+    distributionKeys: []
+  };
 
   beforeEach(inject(function ($injector) {
     $rootScope = $injector.get('$rootScope');
@@ -96,6 +105,8 @@ describe('Component: Uitpas Info', function () {
       controller.$onInit();
     }
 
+    $scope.$digest();
+
     return controller;
   }
 
@@ -106,32 +117,37 @@ describe('Component: Uitpas Info', function () {
 
     var expectedCardSystems = [
       {
-        id: '1',
+        id: 1,
         name: 'ACME INC.',
         distributionKeys: [
           {
-            id: '182',
-            name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+            id: 23,
+            name: '€1,5 dag (regio)'
+          },
+          {
+            id: 24,
+            name: '€3 hele dag (regio)'
+          },
+          {
+            id: 25,
+            name: '25% meerdaags (regio)'
           }
         ],
-        assignedDistributionKey: undefined,
+        assignedDistributionKey: {
+          id: 23,
+          name: '€1,5 dag (regio)'
+        },
         active: false
       },
       {
-        id: '2',
+        id: 2,
         name: 'foo bar balie',
-        distributionKeys: [
-          {
-            id: '194',
-            name: 'CC qwerty - 3 EUR / dag'
-          }
-        ],
+        distributionKeys: [],
         assignedDistributionKey: undefined,
         active: false
       }
     ];
 
-    $scope.$digest();
     expect(controller.availableCardSystems).toEqual(expectedCardSystems);
   });
 
@@ -142,35 +158,37 @@ describe('Component: Uitpas Info', function () {
 
     var expectedCardSystems = [
       {
-        id: '1',
+        id: 1,
         name: 'ACME INC.',
         distributionKeys: [
           {
-            id: '182',
-            name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+            id: 23,
+            name: '€1,5 dag (regio)'
+          },
+          {
+            id: 24,
+            name: '€3 hele dag (regio)'
+          },
+          {
+            id: 25,
+            name: '25% meerdaags (regio)'
           }
         ],
         assignedDistributionKey: {
-          id: '182',
-          name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+          id: 23,
+          name: '€1,5 dag (regio)'
         },
         active: true
       },
       {
-        id: '2',
+        id: 2,
         name: 'foo bar balie',
-        distributionKeys: [
-          {
-            id: '194',
-            name: 'CC qwerty - 3 EUR / dag'
-          }
-        ],
+        distributionKeys: [],
         assignedDistributionKey: undefined,
         active: false
       }
     ];
 
-    $scope.$digest();
     expect(controller.availableCardSystems).toEqual(expectedCardSystems);
   });
 
@@ -181,13 +199,11 @@ describe('Component: Uitpas Info', function () {
     EventFormData.id = 'A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444';
 
     var controller = getComponentController();
-    $scope.$digest();
-
     var cardSystem = controller.availableCardSystems[1];
     cardSystem.active = true;
 
     controller.activeCardSystemsChanged(cardSystem);
-    expect(udbUitpasApi.addEventCardSystem).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', '2');
+    expect(udbUitpasApi.addEventCardSystem).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', 2);
   });
 
   it('should remove a card system from an uitpas event when deactived', function () {
@@ -197,13 +213,11 @@ describe('Component: Uitpas Info', function () {
     EventFormData.id = 'A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444';
 
     var controller = getComponentController();
-    $scope.$digest();
-
     var cardSystem = controller.availableCardSystems[1];
     cardSystem.active = false;
 
     controller.activeCardSystemsChanged(cardSystem);
-    expect(udbUitpasApi.removeEventCardSystem).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', '2');
+    expect(udbUitpasApi.removeEventCardSystem).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', 2);
   });
 
   it('should add a card system to an uitpas event by distribution key when selected', function () {
@@ -213,16 +227,14 @@ describe('Component: Uitpas Info', function () {
     EventFormData.id = 'A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444';
 
     var controller = getComponentController();
-    $scope.$digest();
-
     var cardSystem = controller.availableCardSystems[1];
     cardSystem.assignedDistributionKey = {
-      id: '194',
+      id: 194,
       name: 'CC qwerty - 3 EUR / dag'
     };
 
     controller.distributionKeyAssigned(cardSystem);
-    expect(udbUitpasApi.addEventCardSystemDistributionKey).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', '2', '194');
+    expect(udbUitpasApi.addEventCardSystemDistributionKey).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', 2, 194);
   });
 
   it('should notify the user that uitpas is unavailable when an event is not known by uitpas', function () {
@@ -230,7 +242,6 @@ describe('Component: Uitpas Info', function () {
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve([]));
 
     var controller = getComponentController();
-    $scope.$digest();
 
     expect(controller.uitpasUnavailable).toEqual(true);
   });
@@ -241,7 +252,6 @@ describe('Component: Uitpas Info', function () {
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve([]));
 
     var controller = getComponentController();
-    $scope.$digest();
     expect(controller.uitpasUnavailable).toEqual(true);
 
     controller.refresh();
@@ -249,7 +259,7 @@ describe('Component: Uitpas Info', function () {
   });
 
   it('should indicate when a card system is activated and send to uitpas', function () {
-    var activatedCardSystem = (_.cloneDeep(organizerCardSystems[1]));
+    var activatedCardSystem = _.cloneDeep(evenCardSystemWithoutDistributionKey);
     activatedCardSystem.active = true;
     var uitpasResponse = $q.defer();
 
@@ -258,7 +268,6 @@ describe('Component: Uitpas Info', function () {
     udbUitpasApi.addEventCardSystem.and.returnValue(uitpasResponse.promise);
 
     var controller = getComponentController();
-    $scope.$digest();
     controller.activeCardSystemsChanged(activatedCardSystem);
     expect(controller.persistingCardSystems).toEqual(true);
 
@@ -268,16 +277,16 @@ describe('Component: Uitpas Info', function () {
   });
 
   it('should indicate when a card system is deactivated and send to uitpas', function () {
-    var activatedCardSystem = organizerCardSystems[1];
     var uitpasResponse = $q.defer();
+    var organisationCardSystemPromise = $q.resolve(_.cloneDeep(organizerCardSystems));
+    var eventCardSystemPromise = $q.resolve(_.cloneDeep(organizerCardSystems[0]));
 
-    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
-    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue(organisationCardSystemPromise);
+    udbUitpasApi.getEventCardSystems.and.returnValue(eventCardSystemPromise);
     udbUitpasApi.removeEventCardSystem.and.returnValue(uitpasResponse.promise);
 
     var controller = getComponentController();
-    $scope.$digest();
-    controller.activeCardSystemsChanged(activatedCardSystem);
+    controller.activeCardSystemsChanged(controller.availableCardSystems[1]);
     expect(controller.persistingCardSystems).toEqual(true);
 
     uitpasResponse.resolve();
@@ -286,11 +295,12 @@ describe('Component: Uitpas Info', function () {
   });
 
   it('should revert the card system status and notify ther user when uitpas is unavailable on change', function () {
-    var activatedCardSystem = organizerCardSystems[1];
+    var organizerCardSystemPromise = $q.resolve(_.cloneDeep(organizerCardSystems));
+    var activatedCardSystem = _.cloneDeep(evenCardSystemWithoutDistributionKey);
     activatedCardSystem.active = true;
 
     udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
-    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue(organizerCardSystemPromise);
     udbUitpasApi.addEventCardSystem.and.returnValue($q.reject());
 
     var controller = getComponentController();
@@ -304,12 +314,12 @@ describe('Component: Uitpas Info', function () {
   it('should show event card systems as active', function () {
     udbUitpasApi.getEventCardSystems.and.returnValue($q.resolve([
       {
-        id: '1',
+        id: 1,
         name: 'ACME INC.',
         distributionKeys: [
           {
-            id: '182',
-            name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+            id: 25,
+            name: '25% meerdaags (regio)'
           }
         ]
       }
@@ -317,36 +327,56 @@ describe('Component: Uitpas Info', function () {
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
 
     var controller = getComponentController();
-    $scope.$digest();
 
     expect(controller.availableCardSystems).toEqual([
       {
-        id: '1',
+        id: 1,
         name: 'ACME INC.',
         distributionKeys: [
           {
-            id: '182',
-            name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+            id: 23,
+            name: '€1,5 dag (regio)'
+          },
+          {
+            id: 24,
+            name: '€3 hele dag (regio)'
+          },
+          {
+            id: 25,
+            name: '25% meerdaags (regio)'
           }
         ],
-        assignedDistributionKey: {
-          id: '182',
-          name: 'CC Cultureel Centrum - 1,5 EUR / dag'
+        assignedDistributionKey:{
+          id: 25,
+          name: '25% meerdaags (regio)'
         },
         active: true
       },
       {
-        id: '2',
+        id: 2,
         name: 'foo bar balie',
-        distributionKeys: [
-          {
-            id: '194',
-            name: 'CC qwerty - 3 EUR / dag'
-          }
-        ],
+        distributionKeys: [],
         assignedDistributionKey: undefined,
         active: false
       }
     ]);
-  })
+  });
+
+  it('should always save both card-system and distribution-key at the same time when available', function () {
+    EventFormData.id = 'b3137053-c05e-4234-b12c-554e6fbbc298';
+    var activeCardSystem = _.cloneDeep(evenCardSystemWithoutDistributionKey);
+    var organizarCardSystemsPromise = $q.resolve(_.cloneDeep(organizerCardSystems));
+
+    udbUitpasApi.getEventCardSystems.and.returnValue(activeCardSystem);
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue(organizarCardSystemsPromise);
+    udbUitpasApi.addEventCardSystemDistributionKey.and.returnValue($q.resolve());
+
+    var controller = getComponentController();
+
+    controller.availableCardSystems[0].active = true;
+    controller.activeCardSystemsChanged(controller.availableCardSystems[0]);
+
+    expect(udbUitpasApi.addEventCardSystemDistributionKey)
+      .toHaveBeenCalledWith('b3137053-c05e-4234-b12c-554e6fbbc298', 1, 23);
+  });
 });
