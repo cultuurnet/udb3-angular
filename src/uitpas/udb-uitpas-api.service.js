@@ -80,7 +80,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
    * @return {CardSystem[]}
    */
   function returnCardSystemCollection(response) {
-    var cardSystemCollection = _.values(response.data);
+    var cardSystemCollection = 'object' === typeof response.data ? _.values(response.data) : response.data;
     return $q.resolve(_.map(cardSystemCollection, convertDistributionKeysToList));
   }
 

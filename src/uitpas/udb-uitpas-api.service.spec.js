@@ -203,4 +203,47 @@ describe('Service: UDB3 Uitpas Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should normalize a hash map of card-systems or keys to a list', function (done) {
+    var response = {
+      12: {
+        id: 12,
+        name: 'test system',
+        distributionKeys: {
+          182: {
+            id: 182,
+            name: 'test key'
+          }
+        }
+      }
+    };
+
+    var expectedCardSystems = [
+      {
+        id: 12,
+        name: 'test system',
+        distributionKeys: [
+          {
+            id: 182,
+            name: 'test key'
+          }
+        ]
+      }
+    ];
+
+    $httpBackend
+      .expectGET('http://uit.pas/organizers/0823f57e-a6bd-450a-b4f5-8459b4b11043/cardSystems/')
+      .respond(JSON.stringify(response));
+
+    function assertCollection(cardSystemCollection) {
+      expect(cardSystemCollection).toEqual(expectedCardSystems);
+      done();
+    }
+
+    service
+      .findOrganisationsCardSystems('0823f57e-a6bd-450a-b4f5-8459b4b11043')
+      .then(assertCollection);
+
+    $httpBackend.flush();
+  });
 });
