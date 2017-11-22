@@ -362,7 +362,7 @@ describe('Component: Uitpas Info', function () {
     ]);
   });
 
-  it('should always save both card-system and distribution-key at the same time when available', function () {
+  it('should always save both card-system and distribution-key at the same time when activating a system with both', function () {
     EventFormData.id = 'b3137053-c05e-4234-b12c-554e6fbbc298';
     var activeCardSystem = _.cloneDeep(evenCardSystemWithoutDistributionKey);
     var organizarCardSystemsPromise = $q.resolve(_.cloneDeep(organizerCardSystems));
@@ -379,4 +379,35 @@ describe('Component: Uitpas Info', function () {
     expect(udbUitpasApi.addEventCardSystemDistributionKey)
       .toHaveBeenCalledWith('b3137053-c05e-4234-b12c-554e6fbbc298', 1, 23);
   });
+
+  it('should save both card-system and distribution-key at the same time when selecting another distribution-key', function () {
+    EventFormData.id = 'b3137053-c05e-4234-b12c-554e6fbbc298';
+    var activeCardSystem = {
+      id: 1,
+      name: 'ACME INC.',
+      distributionKeys: [
+        {
+          id: 25,
+          name: '25% meerdaags (regio)'
+        }
+      ]
+    };
+    var organizarCardSystemsPromise = $q.resolve(_.cloneDeep(organizerCardSystems));
+
+    udbUitpasApi.getEventCardSystems.and.returnValue(activeCardSystem);
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue(organizarCardSystemsPromise);
+    udbUitpasApi.addEventCardSystemDistributionKey.and.returnValue($q.resolve());
+
+    var controller = getComponentController();
+
+    controller.availableCardSystems[0].active = true;
+    controller.availableCardSystems[0].assignedDistributionKey = {
+      id: 24,
+      name: '€3 hele dag (regio)'
+    };
+    controller.activeCardSystemsChanged(controller.availableCardSystems[0]);
+
+    expect(udbUitpasApi.addEventCardSystemDistributionKey)
+      .toHaveBeenCalledWith('b3137053-c05e-4234-b12c-554e6fbbc298', 1, 24);
+  })
 });
