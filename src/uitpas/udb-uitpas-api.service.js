@@ -59,7 +59,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
       .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
-      .then(returnCardSystemCollection, returnEmptyCollection);
+      .then(returnCardSystemCollection);
   };
 
   /**
