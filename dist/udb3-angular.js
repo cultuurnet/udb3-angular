@@ -28879,6 +28879,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span ng-hide=\"cardSystemSelector.uitpasUnavailable || (cardSystemSelector.availableCardSystems !== undefined)\">\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Loading...\n" +
     "        </span>\n" +
+    "        <span ng-show=\"cardSystemSelector.persistingCardSystems\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Saving...\n" +
+    "        </span>\n" +
     "\n" +
     "        <div class=\"card-systems\" ng-if=\"::cardSystemSelector.availableCardSystems\">\n" +
     "            <div class=\"uitpas-card-system row\" ng-repeat=\"cardSystem in cardSystemSelector.availableCardSystems\">\n" +
@@ -28891,9 +28894,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                   ng-change=\"cardSystemSelector.activeCardSystemsChanged(cardSystem)\">\n" +
     "                                <span ng-bind=\"::cardSystem.name\"></span>\n" +
     "                        </label>\n" +
-    "                        <span ng-show=\"cardSystemSelector.persistingCardSystems\">\n" +
-    "                            <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
-    "                        </span>\n" +
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +

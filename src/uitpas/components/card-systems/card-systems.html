@@ -4,6 +4,9 @@
         <span ng-hide="cardSystemSelector.uitpasUnavailable || (cardSystemSelector.availableCardSystems !== undefined)">
             <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
         </span>
+        <span ng-show="cardSystemSelector.persistingCardSystems">
+            <i class="fa fa-circle-o-notch fa-spin"></i> Saving...
+        </span>
 
         <div class="card-systems" ng-if="::cardSystemSelector.availableCardSystems">
             <div class="uitpas-card-system row" ng-repeat="cardSystem in cardSystemSelector.availableCardSystems">
@@ -16,9 +19,6 @@
                                    ng-change="cardSystemSelector.activeCardSystemsChanged(cardSystem)">
                                 <span ng-bind="::cardSystem.name"></span>
                         </label>
-                        <span ng-show="cardSystemSelector.persistingCardSystems">
-                            <i class="fa fa-circle-o-notch fa-spin"></i>
-                        </span>
                     </div>
                 </div>
 
