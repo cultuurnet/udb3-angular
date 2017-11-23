@@ -29,7 +29,7 @@ angular
   });
 
 /* @ngInject */
-function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
+function CardSystemsController($q, udbUitpasApi, $rootScope) {
   var controller = this;
   var organisation = controller.organisation;
   var offerData = controller.offerData;
