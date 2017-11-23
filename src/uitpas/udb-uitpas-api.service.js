@@ -133,10 +133,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return $q.resolve(response.data);
   }
 
-  function returnEmptyCollection() {
-    return $q.resolve([]);
-  }
-
   /**
    * @param {function} repeatable
    *  A promise returning function without arguments.
