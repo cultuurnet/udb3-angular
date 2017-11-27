@@ -27355,7 +27355,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"query-search-result organization-search-results\"\n" +
     "             ng-class=\"{'loading-search-result': $ctrl.loading}\"\n" +
     "             ng-show=\"$ctrl.searchResult.totalItems > 0\">\n" +
-    "            <table class=\"table table-hover table-striped\">\n" +
+    "          <div class=\"panel panel-default\">\n" +
+    "            <table class=\"table\">\n" +
     "                <thead>\n" +
     "                <tr>\n" +
     "                    <th>Naam</th>\n" +
@@ -27376,6 +27377,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        ng-change=\"$ctrl.pageChanged($ctrl.page)\">\n" +
     "                </uib-pagination>\n" +
     "            </div>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
