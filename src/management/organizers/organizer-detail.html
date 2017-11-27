@@ -17,78 +17,67 @@
     </div>
   </div>
   <div class="col-sm-9 col-sm-pull-3">
-    <div ng-if="odc.organizer && !odc.organizer.deleted">
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>Naam</strong></span>
-        </div>
-        <div class="col-md-10">
+    <table ng-if="odc.organizer && !odc.organizer.deleted" class="table udb3-data-table">
+      <colgroup>
+        <col style="width:20%"/>
+        <col style="width:80%"/>
+      </colgroup>
+      <tr>
+        <td>
+          <span class="row-label">Naam</span>
+        </td>
+        <td>
           <span ng-bind="odc.organizer.name"></span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="row-label">Adres</span>
+        </td>
+        <td>
+          <span ng-bind="odc.organizer.address.streetAddress"></span><br/>
+          <span ng-bind="odc.organizer.address.postalCode"></span> <span ng-bind="odc.organizer.address.addressLocality"></span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="row-label">Website</span>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>Straat + nr</strong></span>
-        </div>
-        <div class="col-md-10">
-          <span ng-bind="odc.organizer.address.streetAddress"></span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>Postcode</strong></span>
-        </div>
-        <div class="col-md-10">
-          <span ng-bind="odc.organizer.address.postalCode"></span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>Gemeente</strong></span>
-        </div>
-        <div class="col-md-10">
-          <span ng-bind="odc.organizer.address.addressLocality"></span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>Website</strong></span>
-        </div>
-        <div class="col-md-10">
+        <td>
           <span ng-bind="odc.organizer.url"></span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="row-label">Telefoonnummer</span>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>Telefoonnummer</strong></span>
-        </div>
-        <div class="col-md-10">
+        <td>
           <span ng-bind="odc.organizer.phone"></span>
-        </div>
+        </td>
       </div>
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>E-mailadres</strong></span>
-        </div>
-        <div class="col-md-10">
+      <tr>
+        <td>
+          <span class="row-label">E-mailadres</span>
+        </td>
+        <td>
           <span ng-bind="odc.organizer.email"></span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-2">
-          <span><strong>Labels</strong></span>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <span class="row-label">Labels</span>
           <i class="fa fa-circle-o-notch fa-spin" ng-show="labelSaving"></i>
-        </div>
-        <div class="col-md-10">
+        </td>
+        <td>
           <udb-label-select labels="odc.organizer.labels"
                             label-added="odc.addLabel(label)"
                             label-removed="odc.deleteLabel(label)"></udb-label-select>
           <div ng-if="odc.labelResponse === 'unlabelError'" class="alert alert-danger">
               <span ng-bind="odc.labelsError"></span>
           </div>
-        </div>
-      </div>
-    </div>
+        </td>
+      </tr>
+    </table>
 
     <div class="alert alert-danger" ng-if="odc.organizer && odc.organizer.deleted">
       Deze organisatie is verwijderd.

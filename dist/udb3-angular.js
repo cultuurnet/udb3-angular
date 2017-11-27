@@ -27213,78 +27213,67 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"col-sm-9 col-sm-pull-3\">\n" +
-    "    <div ng-if=\"odc.organizer && !odc.organizer.deleted\">\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>Naam</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
+    "    <table ng-if=\"odc.organizer && !odc.organizer.deleted\" class=\"table udb3-data-table\">\n" +
+    "      <colgroup>\n" +
+    "        <col style=\"width:20%\"/>\n" +
+    "        <col style=\"width:80%\"/>\n" +
+    "      </colgroup>\n" +
+    "      <tr>\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\">Naam</span>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.name\"></span>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "      <tr>\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\">Adres</span>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <span ng-bind=\"odc.organizer.address.streetAddress\"></span><br/>\n" +
+    "          <span ng-bind=\"odc.organizer.address.postalCode\"></span> <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "      <tr>\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\">Website</span>\n" +
     "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>Straat + nr</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "          <span ng-bind=\"odc.organizer.address.streetAddress\"></span>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>Postcode</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "          <span ng-bind=\"odc.organizer.address.postalCode\"></span>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>Gemeente</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
-    "          <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>Website</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
+    "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.url\"></span>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "      <tr>\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\">Telefoonnummer</span>\n" +
     "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>Telefoonnummer</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
+    "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.phone\"></span>\n" +
-    "        </div>\n" +
+    "        </td>\n" +
     "      </div>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>E-mailadres</strong></span>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
+    "      <tr>\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\">E-mailadres</span>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.email\"></span>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-md-2\">\n" +
-    "          <span><strong>Labels</strong></span>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "      <tr>\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\">Labels</span>\n" +
     "          <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-10\">\n" +
+    "        </td>\n" +
+    "        <td>\n" +
     "          <udb-label-select labels=\"odc.organizer.labels\"\n" +
     "                            label-added=\"odc.addLabel(label)\"\n" +
     "                            label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
     "          <div ng-if=\"odc.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "              <span ng-bind=\"odc.labelsError\"></span>\n" +
     "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "    </table>\n" +
     "\n" +
     "    <div class=\"alert alert-danger\" ng-if=\"odc.organizer && odc.organizer.deleted\">\n" +
     "      Deze organisatie is verwijderd.\n" +
@@ -27300,7 +27289,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/organization-search-item.html',
     "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\" ng-if=\"::osic.organization\">\n" +
-    "    <td><a ng-bind=\"::osic.organization.name\" ui-sref=\"management.organizers.detail({id: osic.organization.id})\"></a></td>\n" +
+    "    <td><strong><a ng-bind=\"::osic.organization.name\" ui-sref=\"management.organizers.detail({id: osic.organization.id})\"></a></strong></td>\n" +
     "    <td>\n" +
     "        <span ng-bind=\"::osic.organization.address.streetAddress\"></span>\n" +
     "        <br>\n" +
