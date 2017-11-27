@@ -600,7 +600,9 @@ angular.module('udb.core')
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',
-        'choose': '--Selecteer een verdeelsleutel--'
+        'choose': '--Selecteer een verdeelsleutel--',
+        'retry': 'Opnieuw registreren',
+        'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
     }
   }

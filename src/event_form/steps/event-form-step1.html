@@ -42,25 +42,36 @@
     </div>
 
     <div class="row">
+
       <p class="col-xs-12 col-md-12" ng-hide="activeEventType === ''">
         <span class="btn-chosen" ng-bind="activeEventTypeLabel"></span>
         <a class="btn btn-link btn-default" href="" ng-click="resetEventType()">{{::translateEventForm('step1', 'change')}}</a>
       </p>
 
-      <div class="col-xs-12" ng-if="canRefine">
+      <div class="col-xs-12 theme-refinement" ng-hide="activeEventType === '' || activeTheme !== ''">
         <label class="event-theme-label" ng-show="eventThemeLabels.length">{{::translateEventForm('step1', 'refine')}}</label>
-        <ul class="list-inline" id="step2-list">
-          <li ng-repeat="eventTheme in ::eventThemeLabels">
-            <button ng-bind="::eventTheme.label" class="btn btn-default"
-                    ng-click="setTheme(eventTheme)"></button>
-          </li>
-        </ul>
+        <div ng-repeat="(key, values) in eventThemeLabels | groupBy: 'group'">
+          <div class="row">
+            <div class="col-xs-2" ng-show="key !== 'undefined'" >
+              <p class="text-muted">{{key}}</p>
+            </div>
+            <div ng-class="key === 'undefined' ? 'col-xs-12' : 'col-xs-10'">
+              <ul class="list-inline list-themes">
+                <li ng-repeat="eventTheme in values">
+                  <button ng-bind="::eventTheme.label" class="btn btn-default"
+                          ng-click="setTheme(eventTheme)"></button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
       <p class="col-xs-12 col-md-12"  ng-hide="activeTheme === ''">
         <span class="btn-chosen" ng-bind="activeThemeLabel"></span>
         <a class="btn btn-link btn-default" href="" ng-click="resetTheme()">{{::translateEventForm('step1', 'change')}}</a>
       </p>
+
     </div>
 
   </section>

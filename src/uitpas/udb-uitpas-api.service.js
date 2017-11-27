@@ -49,7 +49,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
     var until = moment().add(uitpasMaxDelay, 's');
 
-    return retry(request, 2, until).then(returnUnwrappedData, returnEmptyCollection);
+    return retry(request, 2, until).then(returnCardSystemCollection);
   };
 
   /**
@@ -59,8 +59,30 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   this.findOrganisationsCardSystems = function(organizerId) {
     return $http
       .get(uitpasApiUrl + 'organizers/' + organizerId + '/cardSystems/', defaultApiConfig)
-      .then(returnUnwrappedData, returnEmptyCollection);
+      .then(returnCardSystemCollection);
   };
+
+  /**
+   * @param {CardSystem} cardSystem
+   * @returns {CardSystem}
+   */
+  function convertDistributionKeysToList(cardSystem) {
+    if ('object' === typeof cardSystem.distributionKeys) {
+      cardSystem.distributionKeys = _.values(cardSystem.distributionKeys);
+    }
+
+    return cardSystem;
+  }
+
+  /**
+   * @param {object} response
+   *  Angular HTTP response
+   * @return {CardSystem[]}
+   */
+  function returnCardSystemCollection(response) {
+    var cardSystemCollection = 'object' === typeof response.data ? _.values(response.data) : response.data;
+    return $q.resolve(_.map(cardSystemCollection, convertDistributionKeysToList));
+  }
 
   /**
    * @param {string} eventId
@@ -71,6 +93,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return $http
       .put(
         uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId,
+        null,
         defaultApiConfig
       )
       .then(returnUnwrappedData);
@@ -100,6 +123,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return $http
       .put(
         uitpasApiUrl + 'events/' + eventId + '/cardSystems/' + cardSystemId + '/distributionKey/' + distributionKeyId,
+        null,
         defaultApiConfig
       )
       .then(returnUnwrappedData);
@@ -107,10 +131,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
   function returnUnwrappedData(response) {
     return $q.resolve(response.data);
-  }
-
-  function returnEmptyCollection() {
-    return $q.resolve([]);
   }
 
   /**
