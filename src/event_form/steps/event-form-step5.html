@@ -4,8 +4,8 @@
 
     <h2 class="title-border">
       <span class="number">5</span>
-      <span ng-show="eventFormData.isEvent">Laat je evenement extra opvallen</span>
-      <span ng-show="eventFormData.isPlace">Laat deze locatie extra opvallen</span>
+      <span ng-show="eventFormData.isEvent">{{::translateEventForm('step5', 'expose_event')}}</span>
+      <span ng-show="eventFormData.isPlace">{{::translateEventForm('step5', 'expose_place')}}</span>
     </h2>
 
     <div class="row">
@@ -14,7 +14,7 @@
         <div class="row extra-titnieel">
           <div class="extra-task state-complete">
             <div class="col-sm-3">
-              <em class="extra-task-label">Titel</em>
+              <em class="extra-task-label">{{::translateEventForm('step5', 'title')}}</em>
             </div>
             <div class="col-sm-8">
               <p id="extra-titel-motivator" ng-bind="eventFormData.name.nl"></p>
@@ -25,7 +25,7 @@
         <div class="row extra-beschrijving">
           <div class="extra-task" ng-class="descriptionCssClass">
             <div class="col-sm-3">
-              <em class="extra-task-label">Beschrijving</em>
+              <em class="extra-task-label">{{::translateEventForm('step5', 'description')}}</em>
               <span> </span>
               <i class="fa fa-circle-o-notch fa-spin" ng-show="savingDescription"></i>
             </div>
@@ -34,7 +34,7 @@
                 <div class="row">
                   <div class="col-sm-6">
                     <a class="btn btn-default to-filling" ng-click="alterDescription()">
-                      Tekst toevoegen
+                      {{::translateEventForm('step5', 'add_text')}}
                     </a>
                   </div>
                 </div>
@@ -50,42 +50,35 @@
                             focus-if="descriptionCssClass == 'state-filling'"></textarea>
 
                   <p class="tip description-info" ng-if="descriptionInfoVisible && countCharacters() < 200">
-                    De eerste 200 tekens zijn het belangrijkst om een nieuw publiek aan te spreken.
-                    Nog <span ng-bind="(200 - countCharacters())"></span> tekens.
+                    {{::translateEventForm('step5', 'required_200')}}
+                    {{::translateEventForm('step5', 'required_still')}} <span ng-bind="(200 - countCharacters())"></span> {{::translateEventForm('step5', 'required_signs')}}
                     <span class="loader">
                       <span class="empty"></span>
                       <span class="bar" ng-style="{width : (countCharacters()/2)+'%'}" ></span>
                     </span>
                   </p>
                   <p class="tip description-info" ng-if="descriptionInfoVisible && countCharacters() >= 200">
-                    Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.
+                    {{::translateEventForm('step5', 'required_200_help')}}
                   </p>
                   <p>
                     <a ng-if="description" class="to-filling" ng-click="saveDescription(true)">
-                        Leegmaken
+                      {{::translateEventForm('step5', 'empty')}}
                     </a>
                   </p>
                   <div class="tip" ng-switch="eventFormData.type.id">
                     <p ng-switch-when="0.17.0.0.0">
-                      Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong>
-                       de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops,
-                       de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong>
-                       is (met gids, brochure of wegwijzers).
+                      {{::translateEventForm('step5', 'tip_route')}}
                     </p>
                     <p ng-switch-when="0.7.0.0.0">
-                      Geef hier een wervende omschrijving van de rondleiding. Vermeld het
-                       <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordt
-                       georganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er
-                       <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).
+                      {{::translateEventForm('step5', 'tip_rondleiding')}}
                     </p>
                     <p ng-switch-when="0.14.0.0.0">
-                      Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts
-                       beperkt opengesteld is (vb. enkel salons).
+                      {{::translateEventForm('step5', 'tip_monument')}}
                     </p>
                   </div>
                 </div>
                 <div ng-show="descriptionError" class="alert alert-danger">
-                  Er ging iets fout bij het opslaan van de beschrijving.
+                  {{::translateEventForm('step5', 'description_error')}}
                 </div>
               </section>
             </div>
@@ -97,14 +90,14 @@
         <div class="row extra-organisator">
           <div class="extra-task" ng-class="organizerCssClass">
             <div class="col-sm-3">
-              <em class="extra-task-label">Organisatie</em>
+              <em class="extra-task-label">{{::translateEventForm('step5', 'organizer')}}</em>
               <span> </span>
               <i class="fa fa-circle-o-notch fa-spin" ng-show="savingOrganizer"></i>
             </div>
             <div class="col-sm-8">
               <section class="state incomplete">
                 <a class="btn btn-default to-filling" ng-click="organizerCssClass = 'state-filling'">
-                    Organisatie toevoegen
+                  {{::translateEventForm('step5', 'add_organizer')}}
                 </a>
               </section>
               <section class="state complete">
@@ -118,7 +111,7 @@
               <section class="state filling">
                 <div class="form-group">
                   <label>
-                    Kies een organisatie <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingOrganizers"></i>
+                    {{::translateEventForm('step5', 'choose_organizer')}} <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingOrganizers"></i>
                   </label>
                   <div id="organisator-kiezer">
                     <span class="twitter-typeahead" style="position: relative; display: inline-block; direction: ltr;">
@@ -134,9 +127,9 @@
                       <div class="dropdown-menu-no-results text-center" ng-show="emptyOrganizerAutocomplete">
                         <div class="panel panel-default text-center">
                           <div class="panel-body">
-                            <p>Organisatie niet gevonden?</p>
+                            <p>O{{::translateEventForm('step5', 'organizer_not_found')}}</p>
                             <button type='button' class='btn btn-primary' ng-click="openOrganizerModal()">
-                              Nieuwe organisator toevoegen
+                              {{::translateEventForm('step5', 'add_new_organizer')}}
                             </button>
                           </div>
                         </div>
@@ -146,19 +139,19 @@
                 </div>
               </section>
               <div ng-show="organizerError" class="alert alert-danger">
-                Er ging iets fout bij het opslaan van de organisator.
+                {{::translateEventForm('step5', 'organizer_error')}}
               </div>
             </div>
           </div>
         </div>
 
         <price-info price="price" ng-if="!hidePriceInfo"></price-info>
-        <uitpas-info organizer="eventFormData.organizer" price="price"></uitpas-info>
+        <uitpas-info organizer="eventFormData.organizer" price="eventFormData.priceInfo"></uitpas-info>
 
         <div class="row extra-contact">
           <div class="extra-task meer-info" ng-class="contactInfoCssClass">
             <div class="col-sm-3">
-              <em class="extra-task-label">Contact &amp; reservatie</em>
+              <em class="extra-task-label">{{::translateEventForm('step5', 'contact')}}</em>
               <span> </span>
               <i class="fa fa-circle-o-notch fa-spin" ng-show="savingContactInfo"></i>
             </div>
@@ -166,7 +159,7 @@
             <div class="col-sm-8">
               <section class="state incomplete">
                 <a class="btn btn-default" ng-click="addContactInfo()">
-                  Contactinformatie toevoegen
+                  {{::translateEventForm('step5', 'add_contact')}}
                 </a>
               </section>
 
@@ -181,9 +174,9 @@
                       <td>
                         <select class="form-control" ng-model="info.type"
                                 ng-change="clearInfo(); removeBookingInfo('{{info.type}}')">
-                          <option value="url">Website</option>
-                          <option value="phone">Telefoonnummer</option>
-                          <option value="email">E-mailadres</option>
+                          <option value="url">{{::translateEventForm('step5', 'website')}}</option>
+                          <option value="phone">{{::translateEventForm('step5', 'phone')}}</option>
+                          <option value="email">{{::translateEventForm('step5', 'e-mail')}}</option>
                         </select>
                       </td>
                       <td>
@@ -211,19 +204,19 @@
                                    class="reservatie-{{info.type}}-check reservatie-check"
                                    ng-model="info.booking"
                                    ng-click="toggleBookingType(info)">
-                            Gebruik voor reservatie
+                            {{::translateEventForm('step5', 'use_booking')}}
                           </label>
                           <div class="reservatie-website-info reservatie-info"
                                ng-if="info.type === 'url' && info.booking">
                             <div class="reservatie-info-stap2">
                               <div class="weergave">
-                                <p><strong>Hoe mag deze link verschijnen?</strong></p>
+                                <p><strong>{{::translateEventForm('step5', 'booking_exposure')}}</strong></p>
                                 <select ng-model="bookingModel.urlLabel"
                                         ng-change="saveWebsitePreview()">
-                                  <option value="Koop tickets">Koop tickets</option>
-                                  <option value="Reserveer plaatsen">Reserveer plaatsen</option>
-                                  <option value="Controleer beschikbaarheid">Controleer beschikbaarheid</option>
-                                  <option value="Schrijf je in">Schrijf je in</option>
+                                  <option value="Koop tickets">{{::translateEventForm('step5', 'buy_tickets')}}</option>
+                                  <option value="Reserveer plaatsen">{{::translateEventForm('step5', 'reserve_places')}}</option>
+                                  <option value="Controleer beschikbaarheid">{{::translateEventForm('step5', 'check_availability')}}</option>
+                                  <option value="Schrijf je in">{{::translateEventForm('step5', 'subscribe')}}</option>
                                 </select>
                               </div>
                             </div>
@@ -241,7 +234,7 @@
                     </tr>
                     <tr>
                       <td colspan="3">
-                        <a ng-click="addContactInfo()">Meer contactgegevens toevoegen</a>
+                        <a ng-click="addContactInfo()">{{::translateEventForm('step5', 'add_more_contact')}}</a>
                       </td>
                     </tr>
                   </table>
@@ -256,7 +249,7 @@
               </div>
 
               <div ng-show="contactInfoError" class="alert alert-danger">
-                Er ging iets fout bij het opslaan van de contact info.
+                {{::translateEventForm('step5', 'contact_error')}}
               </div>
 
             </div>
@@ -267,20 +260,20 @@
         <div class="row extra-toegankelijkheid" ng-if="eventFormData.isPlace">
           <div class="extra-task" ng-class="facilitiesCssClass">
             <div class="col-sm-3">
-              <em class="extra-task-label">Toegankelijkheid</em>
+              <em class="extra-task-label">{{::translateEventForm('step5', 'facilities')}}</em>
             </div>
             <div class="col-sm-8">
               <section class="state incomplete">
-                <a class="btn btn-default" href="#" ng-click="openFacilitiesModal();">Voorzieningen toevoegen</a>
-                <a class="btn btn-link btn-nvt" ng-click="setFacilitiesInapplicable();">Niet van toepassing</a>
+                <a class="btn btn-default" href="#" ng-click="openFacilitiesModal();">{{::translateEventForm('step5', 'add_facility')}}</a>
+                <a class="btn btn-link btn-nvt" ng-click="setFacilitiesInapplicable();">{{::translateEventForm('step5', 'facility_inapplicable')}}</a>
               </section>
               <section class="state complete">
                 <ul ng-if="selectedFacilities.length > 0">
                   <li ng-repeat="facility in selectedFacilities" ng-bind="::facility.label"></li>
                 </ul>
                 <span>
-                  <span ng-show="facilitiesInapplicable">Niet van toepassing</span>
-                  <a class="btn btn-link" ng-click="openFacilitiesModal();">Wijzigen</a>
+                  <span ng-show="facilitiesInapplicable">{{::translateEventForm('step5', 'facility_inapplicable')}}</span>
+                  <a class="btn btn-link" ng-click="openFacilitiesModal();">{{::translateEventForm('step5', 'change')}}</a>
                 </span>
               </section>
             </div>
@@ -295,11 +288,11 @@
         <div class="image-upload" ng-class="eventFormData.mediaObjects.length ? 'state-complete' : 'state-incomplete'">
           <div class="image-upload-none state incomplete">
             <span class="image-upload-icon"></span>
-            <p class="muted">Voeg een afbeelding toe zodat je bezoekers je activiteit beter herkennen.</p>
+            <p class="muted">{{::translateEventForm('step5', 'image_help')}}</p>
           </div>
 
           <div class="image-upload-list state complete" ng-if="eventFormData.mediaObjects.length > 0">
-            <h4>Afbeeldingen</h4>
+            <h4>{{::translateEventForm('step5', 'images')}}</h4>
             <div ng-repeat="image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl">
               <div class="uploaded-image">
                 <div class="media" ng-class="{'main-image': ($index === 0)}">
@@ -309,13 +302,13 @@
 
                   <div class="media-body">
                     <div ng-bind="image.description"></div>
-                    <div class="text-muted">&copy; <span ng-bind="image.copyrightHolder">Copyright</span></div>
+                    <div class="text-muted">&copy; <span ng-bind="image.copyrightHolder">{{::translateEventForm('step5', 'copyright')}}</span></div>
                   </div>
 
                   <div class="media-actions">
-                      <a class="btn btn-xs btn-primary" ng-click="editImage(image)">Wijzigen</a>
-                      <a class="btn btn-xs btn-danger" ng-click="removeImage(image)">Verwijderen</a>
-                      <a class="btn btn-xs btn-default select-main-image" ng-click="selectMainImage(image)">Maak hoofdafbeelding</a>
+                      <a class="btn btn-xs btn-primary" ng-click="editImage(image)">{{::translateEventForm('step5', 'change')}}</a>
+                      <a class="btn btn-xs btn-danger" ng-click="removeImage(image)">{{::translateEventForm('step5', 'delete')}}</a>
+                      <a class="btn btn-xs btn-default select-main-image" ng-click="selectMainImage(image)">{{::translateEventForm('step5', 'main_image')}}</a>
                   </div>
 
                 </div>
@@ -324,7 +317,7 @@
           </div>
 
           <div class="text-center">
-            <a class="btn btn-default" href="#" ng-click="openUploadImageModal(-1)">Afbeelding toevoegen</a>
+            <a class="btn btn-default" href="#" ng-click="openUploadImageModal(-1)">{{::translateEventForm('step5', 'add_image')}}</a>
           </div>
         </div>
 

@@ -4,19 +4,19 @@
   <form name="step3Form" class="css-form">
     <h2 class="title-border">
       <span class="number">3</span>
-      <span ng-show="eventFormData.isEvent">Waar vindt dit evenement of deze activiteit plaats?</span>
-      <span ng-show="eventFormData.isPlace">Waar is deze plaats of locatie?</span>
+      <span ng-show="eventFormData.isEvent">{{::translateEventForm('step3', 'title_event')}}</span>
+      <span ng-show="eventFormData.isPlace">{{::translateEventForm('step3', 'title_place')}}</span>
     </h2>
 
     <div class="row">
       <div class="col-xs-12">
-        <label for="gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity">Kies een gemeente</label>
+        <label for="gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity">{{::translateEventForm('step3', 'choose_city')}}</label>
         <div id="gemeente-kiezer" ng-hide="selectedCity">
           <span style="position: relative; display: inline-block; direction: ltr;" class="twitter-typeahead">
             <input type="text"
                    id="gemeente-autocomplete"
                    class="form-control uib-typeahead"
-                   placeholder="Gemeente of postcode"
+                   placeholder="{{::translateEventForm('step3', 'placeholder_city')}}"
                    ng-model="cityAutocompleteTextField"
                    udb-auto-scroll
                    uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
@@ -26,12 +26,12 @@
                    autocomplete="off" />
           </span>
           <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
-            Er was een probleem tijdens het ophalen van de steden
+            {{::translateEventForm('step3', 'problem_city')}}
           </div>
         </div>
         <div id="gemeente-gekozen" ng-show="selectedCity">
           <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="selectedCity"></span>
-          <a href="" class="btn btn-default btn-link" ng-click="changeCitySelection()">Wijzigen</a>
+          <a href="" class="btn btn-default btn-link" ng-click="changeCitySelection()">{{::translateEventForm('step3', 'change')}}</a>
         </div>
       </div>
     </div>
@@ -40,12 +40,12 @@
       <div class="row">
         <div class="col-xs-12">
           <label id="locatie-label" ng-show="!selectedLocation">
-            Kies een locatie <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingPlaces"></i>
+            {{::translateEventForm('step3', 'choose_location')}} <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingPlaces"></i>
           </label>
           <div id="locatie-kiezer" ng-hide="selectedLocation || loadingPlaces">
             <span style="position: relative; display: block; direction: ltr;" class="twitter-typeahead">
               <input type="text" ng-change="locationSearched()"
-                     placeholder="Naam of adres"
+                     placeholder="{{::translateEventForm('step3', 'placeholder_location')}}"
                      class="form-control typeahead"
                      ng-model="locationAutocompleteTextField"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50"
@@ -59,17 +59,17 @@
                    ng-show="(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched">
                 <div class="panel panel-default text-center">
                   <div class="panel-body">
-                    <p>Locatie niet gevonden?</p>
+                    <p>{{::translateEventForm('step3', 'location_not_found')}}</p>
                     <button type="button" class="btn btn-primary" data-toggle="modal"
                             data-target="#waar-locatie-toevoegen" ng-click="openPlaceModal()">
-                      Een locatie toevoegen
+                      {{::translateEventForm('step3', 'add_location')}}
                     </button>
                   </div>
                 </div>
               </div>
             </span>
             <div class="alert alert-danger" role="alert" ng-show="locationAutoCompleteError">
-              Er was een probleem tijdens het ophalen van de locaties
+              {{::translateEventForm('step3', 'location_error')}}
             </div>
           </div>
 
@@ -79,7 +79,7 @@
                     class="btn btn-default btn-link"
                     data-toggle="modal"
                     data-target="#waar-locatie-toevoegen"
-                    ng-click="changeLocationSelection()">Wijzigen</button>
+                    ng-click="changeLocationSelection()">{{::translateEventForm('step3', 'change')}}</button>
             <br>
             <span ng-bind="selectedLocation.address.streetAddress"></span>
           </div>
@@ -93,27 +93,27 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="form-group" ng-class="{'has-error' : showValidation && step3Form.street.$error.required }">
-              <label>Straat en nummer</label>
+              <label>{{::translateEventForm('step3', 'street')}}</label>
               <input class="form-control"
                      id="straat"
                      name="street"
                      ng-model="newPlaceStreetAddress"
-                     placeholder="Kerkstraat 1"
+                     placeholder="{{::translateEventForm('step3', 'placeholder_street')}}"
                      type="text"
                      required />
               <span class="help-block" ng-show="showValidation && step3Form.street.$error.required">
-                Straat en nummer is een verplicht veld.
+                {{::translateEventForm('step3', 'street_validate')}}
               </span>
             </div>
           </div>
         </div>
-        <a class="btn btn-primary plaats-ok" ng-click="setPlaceStreetAddress(newPlaceStreetAddress)">OK</a>
+        <a class="btn btn-primary plaats-ok" ng-click="setPlaceStreetAddress(newPlaceStreetAddress)">{{::translateEventForm('step3', 'ok')}}</a>
       </div>
 
       <div class="plaats-adres-resultaat" ng-show="placeStreetAddress">
         <span>
           <span class="btn-chosen" ng-bind="eventFormData.address.streetAddress"></span>
-          <a class="btn btn-link plaats-adres-wijzigen" ng-click="changePlaceStreetAddress()">Wijzigen</a>
+          <a class="btn btn-link plaats-adres-wijzigen" ng-click="changePlaceStreetAddress()">{{::translateEventForm('step3', 'change')}}</a>
         </span>
       </div>
     </div>

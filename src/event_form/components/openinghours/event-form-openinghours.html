@@ -2,20 +2,18 @@
   <div class="empty" ng-hide="!!cm.openingHoursCollection.openingHours.length">
     <div class="well text-center add-opening-hours">
         <p>
-          <span class="permanent-title">24/24, 7/7</span> 
-          <span class="permanent-subtitle">Elke dag, ieder uur</span>
+          <span class="permanent-title" translate="calendar.openingHours.permanent_title"></span>
+          <span class="permanent-subtitle" translate="calendar.openingHours.permanent_subtitle"></span>
         </p>
-        <button type="button" class="btn btn-primary" ng-click="cm.edit()">Uren toevoegen</button>
+        <button type="button" class="btn btn-primary" ng-click="cm.edit()" translate="calendar.openingHours.add_hours"></button>
     </div>
   </div>
   <div class="time-table">
     <table class="table table-condensed" ng-if="!!cm.openingHoursCollection.openingHours.length">
       <thead>
-      <th>Openingsuren</th>
+      <th translate="calendar.openingHours.opening_hours"></th>
       <th>
-        <a href="#" ng-click="cm.edit()" class="btn btn-default">
-          Wijzigen
-        </a>
+        <a href="#" ng-click="cm.edit()" class="btn btn-default" translate="calendar.openingHours.change"></a>
       </th>
       </thead>
       <tbody>

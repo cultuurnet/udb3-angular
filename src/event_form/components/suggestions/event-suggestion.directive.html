@@ -7,14 +7,12 @@
     <ng-switch on="event.calendarType">
       <span ng-switch-when="single" ng-bind="::event.startDate | date: 'dd/MM'"></span>
       <span ng-switch-when="multiple">
-        Van <span ng-bind="::event.startDate | date: 'dd/MM'"></span> tot <span ng-bind="::event.endDate | date: 'dd/MM'"></span>
+        <span translate="eventForm.step4.suggestions.from"></span> <span ng-bind="::event.startDate | date: 'dd/MM'"></span> <span translate="eventForm.step4.suggestions.till"></span> <span ng-bind="::event.endDate | date: 'dd/MM'"></span>
       </span>
       <span ng-switch-when="periodic">
-        Van <span ng-bind="::event.startDate | date: 'dd/MM'"></span> tot <span ng-bind="::event.endDate | date: 'dd/MM'"></span>
+        <span translate="eventForm.step4.suggestions.from"></span> <span ng-bind="::event.startDate | date: 'dd/MM'"></span> <span translate="eventForm.step4.suggestions.till"></span> <span ng-bind="::event.endDate | date: 'dd/MM'"></span>
       </span>
-      <span ng-switch-when="permanent">
-        Permanent
-      </span>
+      <span ng-switch-when="permanent" translate="eventForm.step4.suggestions.permanent"></span>
     </ng-switch>
     <br>
     <small class="preview-corner"></small>
