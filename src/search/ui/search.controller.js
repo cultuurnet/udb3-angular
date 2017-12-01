@@ -195,17 +195,28 @@ function SearchController(
     eventExporter.activeExport.eventCount = eventCount;
     eventExporter.activeExport.selection = selectedIds;
 
-    if (query && query.queryString.length && queryBuilder.isValid(query)) {
-      var modal = $uibModal.open({
-        templateUrl: 'templates/event-export-modal.html',
-        controller: 'EventExportController',
-        controllerAs: 'exporter',
-        size: 'lg'
-      });
-    } else {
-      $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function(message) {
+    var exportLimit = 5000;
+
+    var tooManyItems = selectedIds.length >= exportLimit;
+
+    if (tooManyItems) {
+      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function(message) {
         $window.alert(message);
       });
+    }
+    else {
+      if (query && query.queryString.length && queryBuilder.isValid(query)) {
+        var modal = $uibModal.open({
+          templateUrl: 'templates/event-export-modal.html',
+          controller: 'EventExportController',
+          controllerAs: 'exporter',
+          size: 'lg'
+        });
+      } else {
+        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function(message) {
+          $window.alert(message);
+        });
+      }
     }
   }
 
