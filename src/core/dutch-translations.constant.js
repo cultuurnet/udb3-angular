@@ -634,7 +634,8 @@ angular.module('udb.core')
       'category_publicscope_name': 'publieksbereik'
     },
     'EVENT-EXPORT': {
-      'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
+      'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd',
+      'TOO-MANY-ITEMS': 'Een manuele export met meer dan {{limit}} items is niet mogelijk. Contacteer vragen@uitdatabank.be voor een oplossing op maat.'
     },
     'AANBOD_INVOEREN': 'Aanbod invoeren',
     'AANBOD_BEWERKEN': 'Aanbod bewerken',
@@ -668,7 +669,9 @@ angular.module('udb.core')
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',
-        'choose': '--Selecteer een verdeelsleutel--'
+        'choose': '--Selecteer een verdeelsleutel--',
+        'retry': 'Opnieuw registreren',
+        'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
     }
   }

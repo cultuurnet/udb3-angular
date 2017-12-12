@@ -138,15 +138,8 @@ function OfferController(
   };
 
   controller.applyPropertyChanges = function (propertyName) {
-    var translation = controller.translation[propertyName],
-        apiProperty;
-
-    // TODO: this is hacky, should decide on consistent name for this property
-    if (propertyName === 'name') {
-      apiProperty = 'title';
-    }
-
-    translateEventProperty(propertyName, translation, apiProperty);
+    var translation = controller.translation[propertyName];
+    translateEventProperty(propertyName, translation, propertyName);
   };
 
   controller.stopTranslating = function () {
