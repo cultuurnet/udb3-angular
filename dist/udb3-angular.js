@@ -2922,7 +2922,8 @@ angular.module('udb.core')
         'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
         'street': 'Straat en nummer',
         'placeholder_street': 'Kerkstraat 1',
-        'straat_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
         'ok': 'OK'
       },
       step4: {
@@ -13126,6 +13127,15 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
+  function getNumberFromStreetAddress(streetAddress) {
+    return streetAddress.split(' ').pop() || '';
+  }
+
+  function validateAddress(streetAddress) {
+    var maximumNumberLength = 15;
+    return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+  }
+
   /**
    * Set the street address for a Place.
    *
@@ -13134,7 +13144,13 @@ function EventFormStep3Controller(
   function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
+    $scope.step3Form.street.$setValidity('invalid', true);
     if (!$scope.step3Form.$valid) {
+      return;
+    }
+
+    if (!validateAddress(streetAddress)) {
+      $scope.step3Form.street.$setValidity('invalid', false);
       return;
     }
 
@@ -26051,7 +26067,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && (step3Form.street.$error.required || step3Form.street.$error.invalid) }\">\n" +
     "              <label>{{::translateEventForm('step3', 'street')}}</label>\n" +
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
@@ -26062,6 +26078,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                     required />\n" +
     "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
     "                {{::translateEventForm('step3', 'street_validate')}}\n" +
+    "              </span>\n" +
+    "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.invalid\">\n" +
+    "                {{::translateEventForm('step3', 'street_validate_long')}}\n" +
     "              </span>\n" +
     "            </div>\n" +
     "          </div>\n" +
