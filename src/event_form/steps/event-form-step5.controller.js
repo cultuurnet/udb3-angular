@@ -19,7 +19,7 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig) {
+function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig, udbUitpasApi, $q) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -235,18 +235,26 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Delete the selected organiser.
    */
   function deleteOrganizer() {
-    function resetOrganizer() {
-      controller.eventFormSaved();
-      EventFormData.resetOrganizer();
-      $rootScope.$emit('eventOrganizerDeleted', {});
-      $scope.organizerCssClass = 'state-incomplete';
-      $scope.savingOrganizer = false;
-    }
+    udbUitpasApi.getTicketSales($scope.eventFormData.id, $scope.eventFormData.organizer).then(function(hasTicketSales) {
+      if (hasTicketSales) {
+        $scope.hasTicketSales = hasTicketSales;
 
-    $scope.organizerError = false;
-    eventCrud
-      .deleteOfferOrganizer(EventFormData)
-      .then(resetOrganizer, controller.showAsyncOrganizerError);
+        return;
+      }
+
+      function resetOrganizer() {
+        controller.eventFormSaved();
+        EventFormData.resetOrganizer();
+        $rootScope.$emit('eventOrganizerDeleted', {});
+        $scope.organizerCssClass = 'state-incomplete';
+        $scope.savingOrganizer = false;
+      }
+
+      $scope.organizerError = false;
+      eventCrud
+        .deleteOfferOrganizer(EventFormData)
+        .then(resetOrganizer, controller.showAsyncOrganizerError);
+    });
   }
 
   /**

@@ -13,18 +13,21 @@ angular
     templateUrl: 'templates/priceInfo.html',
     controller: PriceInfoComponent,
     bindings: {
-      price: '<'
+      price: '<',
+      eventId: '<',
+      organizer: '<'
     }
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
 
   var controller = this;
 
   controller.setPriceFree = setPriceFree;
   controller.openModal = openModal;
   controller.$onInit = init;
+  controller.hasTicketSales = false;
 
   function setPriceFree() {
 
@@ -51,19 +54,27 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
   }
 
   function openModal() {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/price-form-modal.html',
-      controller: 'PriceFormModalController',
-      controllerAs: 'pfmc',
-      size: 'lg',
-      resolve: {
-        price: function () {
-          return controller.price;
-        }
-      }
-    });
+    udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
+      if (hasTicketSales) {
+        controller.hasTicketSales = hasTicketSales;
 
-    modalInstance.result.then(savePrice, cancelPrice);
+        return;
+      }
+
+      var modalInstance = $uibModal.open({
+        templateUrl: 'templates/price-form-modal.html',
+        controller: 'PriceFormModalController',
+        controllerAs: 'pfmc',
+        size: 'lg',
+        resolve: {
+          price: function () {
+            return controller.price;
+          }
+        }
+      });
+
+      modalInstance.result.then(savePrice, cancelPrice);
+    });
   }
 
   function init() {

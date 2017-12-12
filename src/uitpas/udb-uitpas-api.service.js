@@ -52,6 +52,34 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return retry(request, 2, until).then(returnCardSystemCollection);
   };
 
+
+  /**
+   * getTicketSales
+   * @param  {string} eventId
+   * @return {Promise.<hasTicketSales>}
+   */
+  this.getTicketSales = function(eventId, organizer) {
+    var deferred = $q.defer();
+    var until = moment().add(uitpasMaxDelay, 's');
+
+    function request () {
+      return $http.get(uitpasApiUrl + 'events/' + eventId, defaultApiConfig);
+    }
+
+    if (organizer.isUitpas) {
+      deferred.resolve(retry(request, 2, until).then(returnTicketSales));
+    } else {
+      deferred.resolve(false);
+    }
+
+    return deferred.promise;
+  };
+
+
+  function returnTicketSales(response) {
+    return response.data.hasTicketSales;
+  }
+
   /**
    * @param {string} organizerId of the organizer
    * @return {Promise.<CardSystem[]>}

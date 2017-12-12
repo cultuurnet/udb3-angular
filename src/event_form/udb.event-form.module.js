@@ -14,6 +14,7 @@ angular
     'udb.config',
     'udb.entry',
     'udb.search',
+    'udb.uitpas',
     'ngFileUpload',
     'duScroll',
     'focus-if',

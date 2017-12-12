@@ -100,6 +100,7 @@ angular
     'udb.config',
     'udb.entry',
     'udb.search',
+    'udb.uitpas',
     'ngFileUpload',
     'duScroll',
     'focus-if',
@@ -3206,7 +3207,9 @@ angular.module('udb.core')
       uitpasInfo: {
         'uitpas': 'UiTPAS',
         'uitpas_alert': 'Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.',
-        'uitpas_info': 'Dit is een UiTPAS activiteit.'
+        'uitpas_info': 'Dit is een UiTPAS activiteit.',
+        'cantChangePrice': 'Voor dit evenement zijn al tickets verkocht met de bestaande prijsinformatie. Je kan de prijsinformatie niet meer wijzigen.',
+        'cantChangeOrganiser': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.'
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',
@@ -10774,18 +10777,21 @@ angular
     templateUrl: 'templates/priceInfo.html',
     controller: PriceInfoComponent,
     bindings: {
-      price: '<'
+      price: '<',
+      eventId: '<',
+      organizer: '<'
     }
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
 
   var controller = this;
 
   controller.setPriceFree = setPriceFree;
   controller.openModal = openModal;
   controller.$onInit = init;
+  controller.hasTicketSales = false;
 
   function setPriceFree() {
 
@@ -10812,19 +10818,27 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
   }
 
   function openModal() {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/price-form-modal.html',
-      controller: 'PriceFormModalController',
-      controllerAs: 'pfmc',
-      size: 'lg',
-      resolve: {
-        price: function () {
-          return controller.price;
-        }
-      }
-    });
+    udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
+      if (hasTicketSales) {
+        controller.hasTicketSales = hasTicketSales;
 
-    modalInstance.result.then(savePrice, cancelPrice);
+        return;
+      }
+
+      var modalInstance = $uibModal.open({
+        templateUrl: 'templates/price-form-modal.html',
+        controller: 'PriceFormModalController',
+        controllerAs: 'pfmc',
+        size: 'lg',
+        resolve: {
+          price: function () {
+            return controller.price;
+          }
+        }
+      });
+
+      modalInstance.result.then(savePrice, cancelPrice);
+    });
   }
 
   function init() {
@@ -10863,7 +10877,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
     controller.price = EventFormData.priceInfo;
   }
 }
-PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
+PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope", "udbUitpasApi"];
 })();
 
 // Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
@@ -13536,7 +13550,7 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig) {
+function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig, udbUitpasApi, $q) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -13752,18 +13766,26 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    * Delete the selected organiser.
    */
   function deleteOrganizer() {
-    function resetOrganizer() {
-      controller.eventFormSaved();
-      EventFormData.resetOrganizer();
-      $rootScope.$emit('eventOrganizerDeleted', {});
-      $scope.organizerCssClass = 'state-incomplete';
-      $scope.savingOrganizer = false;
-    }
+    udbUitpasApi.getTicketSales($scope.eventFormData.id, $scope.eventFormData.organizer).then(function(hasTicketSales) {
+      if (!hasTicketSales) {
+        $scope.hasTicketSales = true;
 
-    $scope.organizerError = false;
-    eventCrud
-      .deleteOfferOrganizer(EventFormData)
-      .then(resetOrganizer, controller.showAsyncOrganizerError);
+        return;
+      }
+
+      function resetOrganizer() {
+        controller.eventFormSaved();
+        EventFormData.resetOrganizer();
+        $rootScope.$emit('eventOrganizerDeleted', {});
+        $scope.organizerCssClass = 'state-incomplete';
+        $scope.savingOrganizer = false;
+      }
+
+      $scope.organizerError = false;
+      eventCrud
+        .deleteOfferOrganizer(EventFormData)
+        .then(resetOrganizer, controller.showAsyncOrganizerError);
+    });
   }
 
   /**
@@ -14183,7 +14205,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
 }
-EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig"];
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi", "$q"];
 })();
 
 // Source: src/export/event-export-job.factory.js
@@ -23558,6 +23580,34 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return retry(request, 2, until).then(returnCardSystemCollection);
   };
 
+
+  /**
+   * getTicketSales
+   * @param  {string} eventId
+   * @return {Promise.<hasTicketSales>}
+   */
+  this.getTicketSales = function(eventId, organizer) {
+    var deferred = $q.defer();
+    var until = moment().add(uitpasMaxDelay, 's');
+
+    function request () {
+      return $http.get(uitpasApiUrl + 'events/' + eventId, defaultApiConfig);
+    }
+
+    if (organizer.isUitpas) {
+      deferred.resolve(retry(request, 2, until).then(returnTicketSales));
+    } else {
+      deferred.resolve(false);
+    }
+
+    return deferred.promise;
+  };
+
+
+  function returnTicketSales(response) {
+    return response.data.hasTicketSales;
+  }
+
   /**
    * @param {string} organizerId of the organizer
    * @return {Promise.<CardSystem[]>}
@@ -25604,6 +25654,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
+    "        <div ng-if=\"$ctrl.hasTicketSales\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.cantChangePrice\"></div>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
@@ -26384,6 +26435,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <span aria-hidden=\"true\"> &times;</span>\n" +
     "                  </a>\n" +
     "                </span>\n" +
+    "                <div ng-if=\"hasTicketSales\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.cantChangeOrganiser\"></div>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
@@ -26422,7 +26474,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\"></price-info>\n" +
+    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\" event-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"eventFormData.priceInfo\"></uitpas-info>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
