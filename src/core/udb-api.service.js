@@ -513,6 +513,10 @@ function UdbApi(
     var translationData = {};
     translationData[propertyName] = translation;
 
+    if (propertyName === 'name') {
+      propertyName = 'title';
+    }
+
     return $http.post(
       offerLocation + '/' + language + '/' + propertyName,
       translationData,
@@ -1309,6 +1313,15 @@ function UdbApi(
     return $http
       .patch(offerUrl.toString(), data, requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  this.getCalendarSummary = function(offerUrl, format) {
+    var plainConfig = _.cloneDeep(defaultApiConfig);
+    plainConfig.headers.Accept = 'text/html';
+
+    return $http
+      .get(offerUrl + '/calendar-summary?format=' + format, plainConfig)
+      .then(returnUnwrappedData);
   };
 
   /**

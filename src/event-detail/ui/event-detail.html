@@ -97,16 +97,17 @@
                 <td><span class="row-label">Waar</span></td>
                 <td ng-show="::event.location.url"><a ui-sref="split.footer.place-preview({id: event.location.id})">{{eventLocation(event)}}</a></td>
                 <td ng-hide="::event.location.url">
-                  {{::event.location.name.nl}},
-                  {{::event.location.address.streetAddress}},
-                  {{::event.location.address.postalCode}}
-                  {{::event.location.address.addressLocality}}
+                  {{eventLocation(event)}}
                 </td>
               </tr>
               <tr>
                 <td><span class="row-label">Wanneer</span></td>
                 <td>
-                  <udb-calendar-summary offer="::event" show-opening-hours="true"></udb-calendar-summary>
+                  <span ng-if="::calendarSummary" ng-bind-html="::calendarSummary"></span>
+                  <span class="text-muted"
+                        ng-if="::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)">
+                      Probleem bij het ophalen van de kalenderinformatie
+                    </span>
                 </td>
               </tr>
               <tr ng-class="::{muted: (!event.organizer)}">

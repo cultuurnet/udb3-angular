@@ -29,35 +29,48 @@ angular
   });
 
 /* @ngInject */
-function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
+function CardSystemsController($q, udbUitpasApi, $rootScope) {
   var controller = this;
   var organisation = controller.organisation;
   var offerData = controller.offerData;
+  controller.$onInit = init;
+  controller.refresh = refresh;
 
-  controller.$onInit = function() {
+  function init() {
     $q
       .all([
         udbUitpasApi.getEventCardSystems(offerData.id),
         udbUitpasApi.findOrganisationsCardSystems(organisation.id)
       ])
-      .then(function (cardSystemCollections) {
-        var eventCardSystems = cardSystemCollections[0],
-            organisationCardSystems = cardSystemCollections[1];
+      .then(showCardSystems, showUitpasUnavailableNotice);
+  }
 
-        var availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
-          cardSystem.assignedDistributionKey = findAssignedDistributionKey(eventCardSystems, cardSystem);
+  function showUitpasUnavailableNotice() {
+    controller.uitpasUnavailable = true;
+  }
 
-          var allOfferLabels = offerData.labels.concat(offerData.hiddenLabels);
+  function hideUitpasUnavailableNotice() {
+    controller.uitpasUnavailable = undefined;
+  }
 
-          cardSystem.active = _.includes(allOfferLabels, cardSystem.name) || !!cardSystem.assignedDistributionKey;
+  function refresh() {
+    controller.availableCardSystems = undefined;
+    hideUitpasUnavailableNotice();
+    unlockCardSystems();
+    init();
+  }
 
-          return cardSystem;
-        });
+  function showCardSystems(cardSystemCollections) {
+    var eventCardSystems = cardSystemCollections[0],
+        organisationCardSystems = cardSystemCollections[1];
 
-        includeUitpasOrganisationCardSystems(availableCardSystems, organisation);
-        controller.availableCardSystems = availableCardSystems;
+    controller.availableCardSystems = _.map(organisationCardSystems, function (cardSystem) {
+      return _.assign(cardSystem, {
+        assignedDistributionKey: findAssignedDistributionKey(eventCardSystems, cardSystem),
+        active: !!_.find(eventCardSystems, {id: cardSystem.id})
       });
-  };
+    });
+  }
 
   /**
    * @param {CardSystem[]} cardSystemCollection
@@ -67,50 +80,67 @@ function CardSystemsController($q, udbUitpasApi, UitpasLabels, $rootScope) {
    */
   function findAssignedDistributionKey(cardSystemCollection, cardSystem) {
     var matchingCardSystem = _.find(cardSystemCollection, {id: cardSystem.id});
-    return matchingCardSystem ? _.first(matchingCardSystem.distributionKeys) : undefined;
-  }
 
-  /**
-   * @param {CardSystem[]} cardSystemCollection
-   *  The card system collection that will include the organisation uitpas card systems.
-   * @param {Organisation} organisation
-   */
-  function includeUitpasOrganisationCardSystems(cardSystemCollection, organisation) {
-    var allOrganisationLabels = organisation.labels.concat(organisation.hiddenLabels);
-    var organisationUitpasLabels = _.intersection(_.values(UitpasLabels), allOrganisationLabels);
-
-    _.forEach(organisationUitpasLabels, function(organisationUitpasLabel) {
-      if (!_.find(cardSystemCollection, {name: organisationUitpasLabel})) {
-        cardSystemCollection.push({
-          name: organisationUitpasLabel,
-          active: true,
-          distributionKeys: []
-        });
-      }
-    });
+    return _.first(
+      (!matchingCardSystem || _.isEmpty(matchingCardSystem.distributionKeys)) ?
+        cardSystem.distributionKeys :
+        matchingCardSystem.distributionKeys
+    );
   }
 
   /**
    * @param {CardSystem} cardSystem
    */
   controller.distributionKeyAssigned = function(cardSystem) {
-    udbUitpasApi
+    if (!cardSystem.assignedDistributionKey) {
+      throw 'card system distribution key is missing';
+    }
+
+    controller.persistingCardSystems = true;
+
+    return udbUitpasApi
       .addEventCardSystemDistributionKey(offerData.id, cardSystem.id, cardSystem.assignedDistributionKey.id)
       .then(function () {
         $rootScope.$emit('uitpasDataSaved');
+        unlockCardSystems();
+        return $q.resolve();
       });
   };
+
+  function unlockCardSystems() {
+    controller.persistingCardSystems = false;
+  }
+
+  /**
+   * @param {CardSystem} cardSystem
+   * @return {Promise}
+   */
+  function assignKeyAndOrCardSystem(cardSystem) {
+    return cardSystem.assignedDistributionKey ?
+      controller.distributionKeyAssigned(cardSystem) :
+      udbUitpasApi.addEventCardSystem(offerData.id, cardSystem.id);
+  }
 
   /**
    * @param {CardSystem} cardSystem
    */
   controller.activeCardSystemsChanged = function(cardSystem) {
+    controller.persistingCardSystems = true;
     var activeCardSystemsUpdated = cardSystem.active ?
-      udbUitpasApi.addEventCardSystem(offerData.id, cardSystem.id) :
+      assignKeyAndOrCardSystem(cardSystem) :
       udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
 
-    activeCardSystemsUpdated.then(function () {
+    function revertCardSystemStatus() {
+      cardSystem.active = !cardSystem.active;
+      showUitpasUnavailableNotice();
+    }
+
+    function notifyUitpasDataSaved () {
       $rootScope.$emit('uitpasDataSaved');
-    });
+    }
+
+    activeCardSystemsUpdated
+      .then(notifyUitpasDataSaved, revertCardSystemStatus)
+      .finally(unlockCardSystems);
   };
 }
