@@ -1,6 +1,6 @@
 'use strict';
 
-fdescribe('Controller: event form step 5', function () {
+describe('Controller: event form step 5', function () {
 var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance, udbUitpasApi;
   var AgeRange = {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
