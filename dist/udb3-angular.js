@@ -3209,7 +3209,8 @@ angular.module('udb.core')
         'uitpas_alert': 'Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.',
         'uitpas_info': 'Dit is een UiTPAS activiteit.',
         'cantChangePrice': 'Voor dit evenement zijn al tickets verkocht met de bestaande prijsinformatie. Je kan de prijsinformatie niet meer wijzigen.',
-        'cantChangeOrganiser': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.'
+        'cantChangeOrganiser': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.',
+        'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',
@@ -10792,6 +10793,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   controller.openModal = openModal;
   controller.$onInit = init;
   controller.hasTicketSales = false;
+  controller.hasUitpasError = false;
 
   function setPriceFree() {
 
@@ -10838,6 +10840,8 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
       });
 
       modalInstance.result.then(savePrice, cancelPrice);
+    }, function() {
+      controller.hasUitpasError = true;
     });
   }
 
@@ -13658,6 +13662,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
 
+  // Uitpas info
+  $scope.hasTicketSales = false;
+  $scope.hasUitpasError = false;
+
   // Init the controller for editing.
   initEditForm();
 
@@ -13767,8 +13775,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
    */
   function deleteOrganizer() {
     udbUitpasApi.getTicketSales($scope.eventFormData.id, $scope.eventFormData.organizer).then(function(hasTicketSales) {
-      if (!hasTicketSales) {
-        $scope.hasTicketSales = true;
+      if (hasTicketSales) {
+        $scope.hasTicketSales = hasTicketSales;
 
         return;
       }
@@ -13785,6 +13793,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       eventCrud
         .deleteOfferOrganizer(EventFormData)
         .then(resetOrganizer, controller.showAsyncOrganizerError);
+    }, function() {
+      $scope.hasUitpasError = true;
     });
   }
 
@@ -25655,6 +25665,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </tr>\n" +
     "        </table>\n" +
     "        <div ng-if=\"$ctrl.hasTicketSales\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.cantChangePrice\"></div>\n" +
+    "        <div ng-if=\"$ctrl.hasUitpasError\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.unavailable\"></div>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
@@ -26436,6 +26447,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </a>\n" +
     "                </span>\n" +
     "                <div ng-if=\"hasTicketSales\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.cantChangeOrganiser\"></div>\n" +
+    "                <div ng-if=\"hasUitpasError\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.unavailable\"></div>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +

@@ -127,6 +127,10 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
 
+  // Uitpas info
+  $scope.hasTicketSales = false;
+  $scope.hasUitpasError = false;
+
   // Init the controller for editing.
   initEditForm();
 
@@ -254,6 +258,8 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       eventCrud
         .deleteOfferOrganizer(EventFormData)
         .then(resetOrganizer, controller.showAsyncOrganizerError);
+    }, function() {
+      $scope.hasUitpasError = true;
     });
   }
 

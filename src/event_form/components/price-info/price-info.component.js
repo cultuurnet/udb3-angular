@@ -28,6 +28,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   controller.openModal = openModal;
   controller.$onInit = init;
   controller.hasTicketSales = false;
+  controller.hasUitpasError = false;
 
   function setPriceFree() {
 
@@ -74,6 +75,8 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
       });
 
       modalInstance.result.then(savePrice, cancelPrice);
+    }, function() {
+      controller.hasUitpasError = true;
     });
   }
 
