@@ -2315,7 +2315,7 @@ angular
   .module('udb.core')
   .controller('CalendarSummaryController', calendarSummaryController);
 
-function calendarSummaryController($scope) {
+function calendarSummaryController($scope, $translate) {
   $scope.getOpeningHoursCount = function(offer) {
     if (offer.calendarType === 'single' && offer.startDate !== offer.endDate) {
       offer.openingHours = [{
@@ -2325,8 +2325,12 @@ function calendarSummaryController($scope) {
     }
     return offer.openingHours.length;
   };
+
+  $scope.translateCalendarSummary = function (label) {
+    return $translate.instant('calendarSummary.' + label);
+  };
 }
-calendarSummaryController.$inject = ["$scope"];
+calendarSummaryController.$inject = ["$scope", "$translate"];
 })();
 
 // Source: src/core/components/calendar-summary/calendar-summary.directive.js
@@ -2375,12 +2379,17 @@ angular
   });
 
 /* @ngInject */
-function ImageDetailController($scope) {
+function ImageDetailController($scope, $translate) {
   angular.forEach($scope.images, function(image) {
     image.main = (image.contentUrl === $scope.main);
   });
+
+  $scope.translateImageDetail = function (label, translationData) {
+    translationData = (translationData !== undefined) ? translationData : {};
+    return $translate.instant('imageDetail.' + label, translationData);
+  };
 }
-ImageDetailController.$inject = ["$scope"];
+ImageDetailController.$inject = ["$scope", "$translate"];
 })();
 
 // Source: src/core/components/multiselect/multiselect.directive.js
@@ -2520,6 +2529,10 @@ function WorkflowStatusDirectiveController($scope, $translate) {
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
   }
+
+  $scope.translateWorkFlow = function (label) {
+    return $translate.instant('workflowStatus.' + label);
+  };
 }
 WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
 })();
@@ -2861,6 +2874,72 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    preview: {
+      'not_found': 'Pagina niet gevonden',
+      'not_found_help': 'Deze pagina kon niet gevonden worden.',
+      'loading': 'Aan het laden...',
+      'edit': 'Bewerken',
+      'duplicate': 'Kopiëren en aanpassen',
+      'delete': 'Verwijderen',
+      'title': 'Titel',
+      'type': 'Type',
+      'entrance': 'Toegang',
+      'description': 'Beschrijving',
+      'no_description': 'Geen beschrijving',
+      'where': 'Waar',
+      'when': 'Wanneer',
+      'labels': 'Labels',
+      'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
+      'labels_success': 'Het label \'{{addedLabel}}\' werd succesvol toegevoegd.',
+      'organizer': 'Organisatie',
+      'no_organizer': 'Geen organisatie-informatie',
+      'price': 'Prijs',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'no_price': 'Geen prijsinformatie',
+      'age_label': 'Geschikt voor',
+      'all_ages': 'Alle leeftijden',
+      'no_age': 'Geen leeftijdsinformatie'
+    },
+    calendarSummary: {
+      'openinghours': 'meerdere tijdstippen',
+      'from': 'Van',
+      'till': 'tot',
+      'permanent': 'Permanent'
+    },
+    moderate: {
+      'validate': 'Valideren',
+      'approve': 'Goedkeuren',
+      'approved': 'Goedgekeurd',
+      'reject': 'Afkeuren',
+      'rejected': 'Afgekeurd',
+      'continue_validation': 'Verder valideren'
+    },
+    cultuurkuur: {
+      'info': 'Dit evenement bevat <a target=\"_blank\" href=\"{{previewLink}}\">extra informatie</a> voor scholen en leerkrachten.',
+      'subject': 'Onderwerp',
+      'target_group': 'Doelgroep',
+      'levels': 'Geschikt voor',
+      'grades': 'onderwijsgraden',
+      'edit_link': 'Wijzig op cultuurkuur.be',
+      'incomplete_help': 'Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.',
+      'continue': 'Doorgaan'
+    },
+    booking: {
+      'label': 'Reservatie',
+      'no_booking': 'Geen reservatie-informatie'
+    },
+    contact: {
+      'label': 'Contact',
+      'or': 'of',
+      'no_contact': 'Geen contactinformatie'
+    },
+    imageDetail: {
+      'label': 'Afbeeldingen',
+      'alt_image': 'Afbeelding {{index}}',
+      'main_image': 'Hoofdafbeelding',
+      'no_images': 'Geen afbeeldingen'
+    },
     prices: {
       'title': 'Prijzen toevoegen',
       'base': 'Basistarief',
@@ -3045,6 +3124,8 @@ angular.module('udb.core')
       'education_help': 'Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren kan je nog specifieke informatie voor scholen toevoegen.'
     },
     workflowStatus: {
+      'label': 'Publicatiestatus',
+      'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',
@@ -8129,13 +8210,17 @@ angular
   });
 
 /* @ngInject */
-function BookingInfoDetailController($scope) {
+function BookingInfoDetailController($scope, $translate) {
   $scope.isEmpty = _.isEmpty;
   $scope.hasAtLeastOneContactPoint = function() {
     return $scope.bookingInfo.phone || $scope.bookingInfo.url || $scope.bookingInfo.email;
   };
+
+  $scope.translateBookingInfo = function (label) {
+    return $translate.instant('booking.' + label);
+  };
 }
-BookingInfoDetailController.$inject = ["$scope"];
+BookingInfoDetailController.$inject = ["$scope", "$translate"];
 })();
 
 // Source: src/event-detail/ui/contact-point-detail.directive.js
@@ -8162,12 +8247,16 @@ angular
   });
 
 /* @ngInject */
-function ContactPointDetailController($scope) {
+function ContactPointDetailController($scope, $translate) {
   $scope.isEmpty = function (contactPoint) {
     return _(contactPoint).values().flatten().isEmpty();
   };
+
+  $scope.translateContactPoint = function (label) {
+    return $translate.instant('contact.' + label);
+  };
 }
-ContactPointDetailController.$inject = ["$scope"];
+ContactPointDetailController.$inject = ["$scope", "$translate"];
 })();
 
 // Source: src/event-detail/ui/event-detail.controller.js
@@ -8502,6 +8591,10 @@ function EventDetail(
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
+
+  $scope.translateEventDetail = function (label) {
+    return $translate.instant('preview.' + label);
+  };
 
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
@@ -15306,7 +15399,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal, $translate) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -15321,6 +15414,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
   moc.continueValidation = continueValidation;
+  moc.translateModerationOffer = translateModerationOffer;
 
   // fetch offer
   ModerationService
@@ -15438,6 +15532,10 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
       });
   }
 
+  function translateModerationOffer(label) {
+    return $translate.instant('moderate.' + label);
+  }
+
   /**
    * @param {ApiProblem} problem
    */
@@ -15445,7 +15543,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 }
-ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
+ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal", "$translate"];
 })();
 
 // Source: src/management/moderation/components/moderation-summary/moderation-summary.component.js
@@ -18372,7 +18470,8 @@ function PlaceDetail(
   $q,
   $window,
   offerLabeller,
-  appConfig
+  appConfig,
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -18422,6 +18521,10 @@ function PlaceDetail(
   ];
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
+  };
+
+  $scope.translatePlaceDetail = function (label) {
+    return $translate.instant('preview.' + label);
   };
 
   var language = 'nl';
@@ -18585,7 +18688,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
 })();
 
 // Source: src/router/offer-locator.service.js
@@ -23614,27 +23717,27 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <span ng-if=\"showOpeningHours\">\n" +
     "      <span ng-if=\"getOpeningHoursCount(offer) == 1\">\n" +
-    "        van <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
-    "        tot <span ng-bind=\"::offer.openingHours[0].endDate | date: 'HH:mm'\"></span>\n" +
+    "        {{::translateCalendarSummary('from') | lowercase}} <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
+    "        {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.openingHours[0].endDate | date: 'HH:mm'\"></span>\n" +
     "      </span>\n" +
     "      <span ng-if=\"getOpeningHoursCount(offer) > 1\">\n" +
-    "        meerdere tijdstippen\n" +
+    "        {{::translateCalendarSummary('openinghours')}}\n" +
     "      </span>\n" +
     "    </span>\n" +
     "  </span>\n" +
     "\n" +
     "  <span ng-switch-when=\"multiple\">\n" +
-    "     Van <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "     tot <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     {{::translateCalendarSummary('from')}} <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "  </span>\n" +
     "\n" +
     "  <span ng-switch-when=\"periodic\">\n" +
-    "     Van <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "     tot <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     {{::translateCalendarSummary('from')}} <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "  </span>\n" +
     "\n" +
     "  <span ng-switch-when=\"permanent\">\n" +
-    "     Permanent\n" +
+    "     {{::translateCalendarSummary('permanent')}}\n" +
     "  </span>\n" +
     "\n" +
     "</span>"
@@ -23644,18 +23747,20 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/image-detail.directive.html',
     "<tr ng-class=\"::{muted: !images.length}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">Afbeeldingen</span>\n" +
+    "        <span class=\"row-label\">{{translateImageDetail('label')}}</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::images.length\">\n" +
     "        <ul class=\"list-unstyled media-list\">\n" +
     "            <li ng-repeat=\"image in images | orderBy: '-main' \" class=\"media\">\n" +
     "                <div class=\"media-left\">\n" +
     "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
-    "                        <img class=\"media-object\" src=\"{{image.contentUrl}}?height=100\" alt=\"{{'Afbeelding '+$index}}\">\n" +
+    "                        <img class=\"media-object\"\n" +
+    "                             src=\"{{image.contentUrl}}?height=100\"\n" +
+    "                             alt=\"{{translateImageDetail('alt_image', {index: $index}) }}\">\n" +
     "                    </a>\n" +
     "                </div>\n" +
     "                <div class=\"media-body\">\n" +
-    "                   <span ng-if=\"$first\" class=\"label label-default\">Hoofdafbeelding</span>\n" +
+    "                   <span ng-if=\"$first\" class=\"label label-default\">{{translateImageDetail('main_image')}}</span>\n" +
     "                    <p>{{image.description}}</p>\n" +
     "                    <p class=\"text-muted\">&copy; {{image.copyrightHolder}}</p>\n" +
     "                </div>\n" +
@@ -23663,14 +23768,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::!images.length\">Geen afbeeldingen</td>\n" +
+    "    <td ng-if=\"::!images.length\">{{translateImageDetail('no_images')}}</td>\n" +
     "</tr>\n"
   );
 
 
   $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
-    "    <td><span class=\"row-label\">Publicatiestatus</span></td>\n" +
+    "    <td><span class=\"row-label\">{{translateWorkFlow('label')}}</span></td>\n" +
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
@@ -23679,7 +23784,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
-    "    <td><span class=\"row-label\">ID</span></td>\n" +
+    "    <td><span class=\"row-label\">{{translateWorkFlow('id')}}</span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
     "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
@@ -23705,10 +23810,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leerkrachten.</p>\n" +
+    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
     "    <div ng-if=\"::$ctrl.permission\">\n" +
     "        <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
-    "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> Dit evenement bevat <a target=\"_blank\" ng-href=\"{{::$ctrl.previewLink}}\">extra informatie</a> voor scholen en leerkrachten.</p>\n" +
+    "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div class=\"row\">\n" +
@@ -24121,7 +24226,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/booking-info-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null)}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">Reservatie</span>\n" +
+    "        <span class=\"row-label\">{{translateBookingInfo('label')}}</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"hasAtLeastOneContactPoint()\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
@@ -24137,7 +24242,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"!hasAtLeastOneContactPoint()\">Geen reservatie-informatie</td>\n" +
+    "    <td ng-if=\"!hasAtLeastOneContactPoint()\">{{translateBookingInfo('no_booking')}}</td>\n" +
     "</tr>\n"
   );
 
@@ -24145,31 +24250,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/contact-point-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(contactPoint)}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">Contact</span>\n" +
+    "        <span class=\"row-label\">{{translateContactPoint('label')}}</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::!isEmpty(contactPoint)\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"website in ::contactPoint.url\">\n" +
     "                      <a ng-href=\"{{::website}}\" target=\"_blank\" ng-bind=\"::website\"></a>\n" +
-    "                      <span ng-if=\"::!$last\">of </span>\n" +
+    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"phone in ::contactPoint.phone\">\n" +
     "                      <span ng-bind=\"::phone\"></span>\n" +
-    "                      <span ng-if=\"::!$last\">of </span>\n" +
+    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"email in ::contactPoint.email\">\n" +
     "                      <span ng-bind=\"::email\"></span>\n" +
-    "                      <span ng-if=\"::!$last\">of </span>\n" +
+    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(contactPoint)\">Geen contactinformatie</td>\n" +
+    "    <td ng-if=\"::isEmpty(contactPoint)\">{{translateContactPoint('no_contact')}}</td>\n" +
     "</tr>\n"
   );
 
@@ -24177,19 +24282,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/event-detail.html',
     "<div ng-if=\"eventIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
-    "    <h1>Pagina niet gevonden</h1>\n" +
+    "    <h1>{{::translateEventDetail('not_found')}}</h1>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "      <p>Deze pagina kon niet gevonden worden.</p>\n" +
+    "      <p>{{::translateEventDetail('not_found_help')}}</p>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"!finishedLoading()\">\n" +
     "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
-    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{::translateEventDetail('loading')}}</span></p>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"finishedLoading()\" class=\"event-detail\">\n" +
@@ -24200,15 +24305,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  {{::translateEventDetail('edit')}}</button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  Kopiëren en aanpassen</button>\n" +
+    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  {{::translateEventDetail('duplicate')}}</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
+    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  {{::translateEventDetail('delete')}}</button>\n" +
     "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -24227,11 +24332,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </colgroup>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">Titel</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('title')}}</span></td>\n" +
     "                <td>{{::event.name}}</td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">Type</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('type')}}</span></td>\n" +
     "                <td>{{::event.type.label}}</td>\n" +
     "              </tr>\n" +
     "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
@@ -24241,7 +24346,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td>\n" +
-    "                  <span class=\"row-label\">Labels</span>\n" +
+    "                  <span class=\"row-label\">{{::translateEventDetail('labels')}}</span>\n" +
     "                </td>\n" +
     "                <td>\n" +
     "                  <p>\n" +
@@ -24251,10 +24356,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </udb-label-select>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                    Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                    <span translate=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                    Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
+    "                    <span translate=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                    <span ng-bind=\"labelsError\"></span>\n" +
@@ -24262,23 +24367,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: isEmpty(event.description)}\">\n" +
-    "                <td><span class=\"row-label\">Beschrijving</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('description')}}</span></td>\n" +
     "                <td ng-if=\"::(!isEmpty(event.description))\">\n" +
     "                  <div ng-bind-html=\"::event.description\" class=\"event-detail-description\"></div>\n" +
     "                </td>\n" +
     "                <td ng-if=\"::(isEmpty(event.description))\">\n" +
-    "                  Geen beschrijving\n" +
+    "                  {{::translateEventDetail('no_description')}}\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">Waar</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('where')}}</span></td>\n" +
     "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
     "                  {{eventLocation(event)}}\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">Wanneer</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('when')}}</span></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"::calendarSummary\" ng-bind-html=\"::calendarSummary\"></span>\n" +
     "                  <span class=\"text-muted\"\n" +
@@ -24288,31 +24393,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
-    "                <td><span class=\"row-label\">Organisatie</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('organizer')}}</span></td>\n" +
     "                <td ng-if=\"::event.organizer\">{{::event.organizer.name}}</td>\n" +
     "                <td ng-if=\"::(!event.organizer)\">\n" +
-    "                  Geen organisatie-informatie\n" +
+    "                  {{::translateEventDetail('no_organizer')}}\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
-    "                <td><span class=\"row-label\">Prijs</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('price')}}</span></td>\n" +
     "                <td ng-if=\"::event.priceInfo.length\">\n" +
     "                  <table class=\"table table-bordered event-detail-price-table\">\n" +
     "                    <tr ng-repeat=\"priceInfo in ::event.priceInfo\">\n" +
     "                      <td>{{priceInfo.name}}</td>\n" +
     "                      <td>\n" +
     "                        <span ng-if=\"priceInfo.price == 0\">\n" +
-    "                          Gratis\n" +
+    "                          {{::translateEventDetail('free')}}\n" +
     "                        </span>\n" +
     "                        <span ng-if=\"::priceInfo.price != 0\">\n" +
-    "                          {{priceInfo.price | currency}} euro\n" +
+    "                          {{priceInfo.price | currency}} {{::translateEventDetail('currency')}}\n" +
     "                        </span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </table>\n" +
     "                </td>\n" +
     "                <td ng-if=\"::(event.priceInfo.length == 0)\">\n" +
-    "                  Geen prijsinformatie\n" +
+    "                  {{::translateEventDetail('no_price')}}\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
@@ -24320,11 +24425,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
     "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
-    "                <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
+    "                <td><span class=\"row-label\">{{::translateEventDetail('age_label')}}</span></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"::allAges && !noAgeInfo\">Alle leeftijden</span>\n" +
-    "                  <span ng-if=\"noAgeInfo\">Geen leeftijdsinformatie</span>\n" +
+    "                  <span ng-if=\"::allAges && !noAgeInfo\">{{::translateEventDetail('all_ages')}}</span>\n" +
+    "                  <span ng-if=\"noAgeInfo\">{{::translateEventDetail('no_age')}}</span>\n" +
     "                </td>\n" +
     "\n" +
     "              </tr>\n" +
@@ -24336,7 +24441,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
     "          <p ng-show=\"!eventHistory\" class=\"text-center\">\n" +
-    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{::translateEventDetail('loading')}}</span>\n" +
     "          </p>\n" +
     "          <div ng-if=\"::eventHistory\">\n" +
     "            <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
@@ -26868,17 +26973,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\">Valideren</p>\n" +
+    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\">{{moc.translateModerationOffer('validate')}}</p>\n" +
     "\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
-    "                <i class=\"fa fa-flag text-success\"></i>Goedkeuren</button>\n" +
+    "                <i class=\"fa fa-flag text-success\"></i>{{moc.translateModerationOffer('approve')}}</button>\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
-    "                <i class=\"fa fa-flag text-danger\"></i>Afkeuren</button>\n" +
+    "                <i class=\"fa fa-flag text-danger\"></i>{{moc.translateModerationOffer('reject')}}</button>\n" +
     "\n" +
-    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>Goedgekeurd</span>\n" +
-    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>Afgekeurd</span>\n" +
+    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>{{moc.translateModerationOffer('approved')}}</span>\n" +
+    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>{{moc.translateModerationOffer('rejected')}}</span>\n" +
     "\n" +
-    "<span ng-show=\"moc.continueValidation()\"><a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">Verder valideren</a></span>\n"
+    "<span ng-show=\"moc.continueValidation()\"><a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">{{moc.translateModerationOffer('continue_validation')}}</a></span>\n"
   );
 
 
@@ -27800,19 +27905,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/place-detail.html',
     "<div ng-if=\"placeIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
-    "    <h1>Pagina niet gevonden</h1>\n" +
+    "    <h1>{{translatePlaceDetail('not_found')}}</h1>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "      <p>Deze pagina kon niet gevonden worden.</p>\n" +
+    "      <p>{{translatePlaceDetail('not_found_help')}}</p>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"!finishedLoading\">\n" +
     "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
-    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">Aan het laden...</span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{translatePlaceDetail('loading')}}</span></p>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
@@ -27824,11 +27929,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  Bewerken</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  {{translatePlaceDetail('edit')}}</button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  Verwijderen</button>\n" +
+    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  {{translatePlaceDetail('delete')}}</button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -27847,25 +27952,25 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </colgroup>\n" +
     "          <tbody>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">Titel</span></td>\n" +
+    "              <td><span class=\"row-label\">{{translatePlaceDetail('title')}}</span></td>\n" +
     "              <td>{{::place.name}}</td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">Type</span></td>\n" +
+    "              <td><span class=\"row-label\">{{translatePlaceDetail('type')}}</span></td>\n" +
     "              <td>{{::place.type.label}}</td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr ng-class=\"::{muted: place.description==undefined}\">\n" +
-    "              <td><span class=\"row-label\">Beschrijving</span></td>\n" +
+    "              <td><span class=\"row-label\">{{translatePlaceDetail('description')}}</span></td>\n" +
     "              <td ng-if=\"::(place.description!==undefined)\">\n" +
     "                <div ng-bind-html=\"::place.description\" class=\"event-detail-description\"></div>\n" +
     "              </td>\n" +
     "              <td ng-if=\"::(place.description==undefined)\">\n" +
-    "                Geen beschrijving\n" +
+    "                {{translatePlaceDetail('no_description')}}\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">Waar</span></td>\n" +
+    "              <td><span class=\"row-label\">{{translatePlaceDetail('where')}}</span></td>\n" +
     "              <td>{{::place.address.streetAddress}}<br />\n" +
     "                {{::place.address.postalCode}} {{::place.address.addressLocality}}<br />\n" +
     "                {{::place.address.addressCountry}}</td>\n" +
@@ -27876,7 +27981,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <tbody>\n" +
     "            <tr>\n" +
     "              <td>\n" +
-    "                <span class=\"row-label\">Labels</span>\n" +
+    "                <span class=\"row-label\">{{translatePlaceDetail('labels')}}</span>\n" +
     "              </td>\n" +
     "              <td>\n" +
     "                <p><udb-label-select labels=\"::place.labels\"\n" +
@@ -27884,10 +27989,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                  label-removed=\"labelRemoved(label)\">\n" +
     "                </udb-label-select></p>\n" +
     "                <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                  Het toevoegen van het label '{{labelsError.name}}' is niet gelukt.\n" +
+    "                  <span translate=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
     "                </p>\n" +
     "                <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                  Het label '{{addedLabel}}' werd succesvol toegevoegd.\n" +
+    "                  <span translate=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                </p>\n" +
     "                <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                  <span ng-bind=\"labelsError\"></span>\n" +
@@ -27895,10 +28000,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">Geschikt voor</span></td>\n" +
+    "              <td><span class=\"row-label\">{{translatePlaceDetail('age_label')}}</span></td>\n" +
     "              <td>\n" +
     "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
-    "                <span ng-if=\"::(!place.typicalAgeRange)\">Alle leeftijden</span>\n" +
+    "                <span ng-if=\"::(!place.typicalAgeRange)\">{{translatePlaceDetail('all_ages')}}</span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "          </tbody>\n" +

@@ -333,6 +333,72 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    preview: {
+      'not_found': 'Pagina niet gevonden',
+      'not_found_help': 'Deze pagina kon niet gevonden worden.',
+      'loading': 'Aan het laden...',
+      'edit': 'Bewerken',
+      'duplicate': 'Kopiëren en aanpassen',
+      'delete': 'Verwijderen',
+      'title': 'Titel',
+      'type': 'Type',
+      'entrance': 'Toegang',
+      'description': 'Beschrijving',
+      'no_description': 'Geen beschrijving',
+      'where': 'Waar',
+      'when': 'Wanneer',
+      'labels': 'Labels',
+      'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
+      'labels_success': 'Het label \'{{addedLabel}}\' werd succesvol toegevoegd.',
+      'organizer': 'Organisatie',
+      'no_organizer': 'Geen organisatie-informatie',
+      'price': 'Prijs',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'no_price': 'Geen prijsinformatie',
+      'age_label': 'Geschikt voor',
+      'all_ages': 'Alle leeftijden',
+      'no_age': 'Geen leeftijdsinformatie'
+    },
+    calendarSummary: {
+      'openinghours': 'meerdere tijdstippen',
+      'from': 'Van',
+      'till': 'tot',
+      'permanent': 'Permanent'
+    },
+    moderate: {
+      'validate': 'Valideren',
+      'approve': 'Goedkeuren',
+      'approved': 'Goedgekeurd',
+      'reject': 'Afkeuren',
+      'rejected': 'Afgekeurd',
+      'continue_validation': 'Verder valideren'
+    },
+    cultuurkuur: {
+      'info': 'Dit evenement bevat <a target=\"_blank\" href=\"{{previewLink}}\">extra informatie</a> voor scholen en leerkrachten.',
+      'subject': 'Onderwerp',
+      'target_group': 'Doelgroep',
+      'levels': 'Geschikt voor',
+      'grades': 'onderwijsgraden',
+      'edit_link': 'Wijzig op cultuurkuur.be',
+      'incomplete_help': 'Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.',
+      'continue': 'Doorgaan'
+    },
+    booking: {
+      'label': 'Reservatie',
+      'no_booking': 'Geen reservatie-informatie'
+    },
+    contact: {
+      'label': 'Contact',
+      'or': 'of',
+      'no_contact': 'Geen contactinformatie'
+    },
+    imageDetail: {
+      'label': 'Afbeeldingen',
+      'alt_image': 'Afbeelding {{index}}',
+      'main_image': 'Hoofdafbeelding',
+      'no_images': 'Geen afbeeldingen'
+    },
     prices: {
       'title': 'Prijzen toevoegen',
       'base': 'Basistarief',
@@ -517,6 +583,8 @@ angular.module('udb.core')
       'education_help': 'Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren kan je nog specifieke informatie voor scholen toevoegen.'
     },
     workflowStatus: {
+      'label': 'Publicatiestatus',
+      'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',

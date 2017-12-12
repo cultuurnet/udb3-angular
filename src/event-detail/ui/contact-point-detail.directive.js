@@ -20,8 +20,12 @@ angular
   });
 
 /* @ngInject */
-function ContactPointDetailController($scope) {
+function ContactPointDetailController($scope, $translate) {
   $scope.isEmpty = function (contactPoint) {
     return _(contactPoint).values().flatten().isEmpty();
+  };
+
+  $scope.translateContactPoint = function (label) {
+    return $translate.instant('contact.' + label);
   };
 }

@@ -20,9 +20,13 @@ angular
   });
 
 /* @ngInject */
-function BookingInfoDetailController($scope) {
+function BookingInfoDetailController($scope, $translate) {
   $scope.isEmpty = _.isEmpty;
   $scope.hasAtLeastOneContactPoint = function() {
     return $scope.bookingInfo.phone || $scope.bookingInfo.url || $scope.bookingInfo.email;
+  };
+
+  $scope.translateBookingInfo = function (label) {
+    return $translate.instant('booking.' + label);
   };
 }
