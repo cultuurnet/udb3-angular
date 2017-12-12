@@ -3185,6 +3185,7 @@ angular.module('udb.core')
     'ORGANISATIES_BEHEREN': 'Organisaties beheren',
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
     'LABELS_BEHEREN': 'Labels beheren',
+    'VOORZIENINGEN_BEWERKEN': 'Voorzieningen bewerken',
     'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
     'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',
@@ -16807,7 +16808,8 @@ angular
       'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',
       'ORGANISATIES_BEHEREN': 'ORGANISATIES_BEHEREN',
       'GEBRUIKERS_BEHEREN': 'GEBRUIKERS_BEHEREN',
-      'LABELS_BEHEREN': 'LABELS_BEHEREN'
+      'LABELS_BEHEREN': 'LABELS_BEHEREN',
+      'VOORZIENINGEN_BEWERKEN': 'VOORZIENINGEN_BEWERKEN'
     }
   );
 })();
@@ -16913,6 +16915,9 @@ function RoleFormController(
 
         editor.role.users = [];
         editor.role.labels = [];
+        editor.role.permissions = _.filter(editor.availablePermissions, function (permission) {
+          return _.contains(role.permissions, permission.key);
+        })
       }, function(problem) {
         problem.detail = problem.title;
         problem.title = 'De rol kon niet gevonden worden.';
@@ -17016,29 +17021,23 @@ function RoleFormController(
    * @param {RolePermission} permission
    */
   function updatePermission(permission) {
-    var hasPermission = editor.role.permissions.indexOf(permission) > -1;
+    editor.loadedRolePermissions = false;
+    var permissionUpdate = $q.reject();
 
-    // permission added
-    if (!hasPermission) {
-      editor.loadedRolePermissions = false;
-      RoleManager
-        .addPermissionToRole(permission, roleId)
-        .catch(showProblem)
-        .finally(function() {
-          editor.loadedRolePermissions = true;
-        });
+    if (_.find(editor.role.permissions, {key: permission.key})) {
+      editor.role.permissions = _.reject(editor.role.permissions, {key: permission.key});
+      permissionUpdate = RoleManager.removePermissionFromRole(permission.key, roleId);
+    } else {
+      editor.role.permissions.push(permission);
+      permissionUpdate = RoleManager.addPermissionToRole(permission.key, roleId);
     }
 
-    // permission removed
-    if (hasPermission) {
-      editor.loadedRolePermissions = false;
-      RoleManager
-        .removePermissionFromRole(permission, roleId)
-        .catch(showProblem)
-        .finally(function() {
-          editor.loadedRolePermissions = true;
-        });
-    }
+    permissionUpdate
+      .catch(showProblem)
+      .finally(function() {
+        editor.loadedRolePermissions = true;
+      })
+    ;
   }
 
   function addLabel(label) {
@@ -27529,8 +27528,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <input  type=\"checkbox\"\n" +
     "                                name=\"editor.role.permissions[]\"\n" +
     "                                value=\"{{permission.key}}\"\n" +
-    "                                ng-checked=\"editor.role.permissions.indexOf(permission.key) > -1\"\n" +
-    "                                ng-click=\"editor.updatePermission(permission.key)\"\n" +
+    "                                ng-checked=\"!!(editor.role.permissions | filter: {key: permission.key}).length\"\n" +
+    "                                ng-click=\"editor.updatePermission(permission)\"\n" +
     "                        > <strong ng-bind=\"permission.name\"></strong>\n" +
     "                  </label>\n" +
     "                </div>\n" +
