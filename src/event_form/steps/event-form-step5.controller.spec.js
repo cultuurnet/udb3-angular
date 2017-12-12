@@ -1,16 +1,28 @@
 'use strict';
 
-describe('Controller: event form step 5', function () {
-
-  beforeEach(module('udb.event-form'));
-
-  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance;
+fdescribe('Controller: event form step 5', function () {
+var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance, udbUitpasApi;
   var AgeRange = {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
     'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
     'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
     'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
   };
+  var appConfig = {
+    uitpasUrl: 'http://foo.bar/',
+  };
+
+  beforeEach(module('udb.event-form', function($provide) {
+    $provide.constant('appConfig', appConfig);
+
+    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', ['getTicketSales']);
+
+    $provide.provider('udbUitpasApi', {
+      $get: function () {
+        return udbUitpasApi;
+      }
+    });
+  }));
 
   beforeEach(inject(function ($rootScope, $injector) {
     $controller = $injector.get('$controller');
@@ -200,7 +212,18 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingOrganizer).toEqual(false);
   });
 
+  it('should not delete the organizer when the event has sold tickets', function() {
+      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true))
+      EventFormData.organizer.isUitpas = true;
+      scope.deleteOrganizer();
+      scope.$apply();
+
+      expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+      expect(eventCrud.deleteOfferOrganizer).not.toHaveBeenCalled();
+  });
+
   it('should persist and reset the event organizer when removing it', function () {
+    udbUitpasApi.getTicketSales.and.returnValue($q.resolve(false))
     eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
     spyOn(EventFormData, 'resetOrganizer');
 
@@ -212,6 +235,7 @@ describe('Controller: event form step 5', function () {
   });
 
   it('should show an async error when failing to remove the organizer', function () {
+    udbUitpasApi.getTicketSales.and.returnValue($q.resolve(false))
     eventCrud.deleteOfferOrganizer.and.returnValue($q.reject('BOOOM!'));
     spyOn(stepController, 'showAsyncOrganizerError');
 
