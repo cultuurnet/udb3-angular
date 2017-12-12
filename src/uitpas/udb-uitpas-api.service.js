@@ -52,7 +52,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return retry(request, 2, until).then(returnCardSystemCollection);
   };
 
-
   /**
    * getTicketSales
    * @param  {string} eventId
@@ -66,6 +65,10 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
       return $http.get(uitpasApiUrl + 'events/' + eventId, defaultApiConfig);
     }
 
+    function returnTicketSales(response) {
+      return response.data.hasTicketSales;
+    }
+
     if (organizer.isUitpas) {
       deferred.resolve(retry(request, 2, until).then(returnTicketSales));
     } else {
@@ -74,11 +77,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
     return deferred.promise;
   };
-
-
-  function returnTicketSales(response) {
-    return response.data.hasTicketSales;
-  }
 
   /**
    * @param {string} organizerId of the organizer
