@@ -6880,6 +6880,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         });
       }
       this.mainLanguage = jsonEvent.mainLanguage || 'nl';
+      this.languages = jsonEvent.languages || [];
     },
 
     /**
@@ -7406,6 +7407,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       }
 
       this.mainLanguage = jsonPlace.mainLanguage || 'nl';
+      this.languages = jsonPlace.languages || [];
     },
 
     /**
@@ -10432,6 +10434,7 @@ function EventDetail(
 
   function showOffer(event) {
     cachedEvent = event;
+    cachedEvent.updateTranslationState();
 
     if (cachedEvent.calendarType === 'permanent') {
       showCalendarSummary('Altijd open');
@@ -10639,6 +10642,10 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
+  }
+
+  $scope.shouldShowLanguageStatus = function() {
+    return $scope.event && $scope.event.languages.length > 1;
   }
 
   $scope.translateEventDetail = function (label) {
@@ -20736,6 +20743,10 @@ function PlaceDetail(
       .unlabel(cachedPlace, label.name)
       .catch(showUnlabelProblem);
   }
+
+  $scope.shouldShowLanguageStatus = function() {
+    return $scope.place && $scope.place.languages.length > 1;
+  }
 }
 PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
 })();
@@ -22110,6 +22121,38 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService,
   };
 }
 udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService", "searchApiSwitcher"];
+})();
+
+// Source: src/search/components/translation-status.component.js
+(function () {
+'use strict';
+
+angular
+  .module('udb.search')
+  .component('udbTranslationStatus', {
+    templateUrl: 'templates/translation-status.component.html',
+    controller: TranslationStatusComponent,
+    controllerAs: 'tsc',
+    bindings: {
+      offer: '<',
+    }
+  });
+
+/** @ngInject */
+function TranslationStatusComponent(EventTranslationState) {
+  var controller = this;
+  controller.availableLanguages = ['nl','fr','en','de'];
+  controller.getLanguageTranslationIcon = function(language) {
+    var icon = EventTranslationState.NONE.icon;
+
+    if (controller.offer && language) {
+      icon = controller.offer.translationState[language].icon;
+    }
+
+    return icon;
+  }
+}
+TranslationStatusComponent.$inject = ["EventTranslationState"];
 })();
 
 // Source: src/search/event-types.value.js
@@ -26495,6 +26538,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody udb-image-detail=\"::event.mediaObject\" image=\"::event.image\"></tbody>\n" +
+    "            <tbody ng-show=\"shouldShowLanguageStatus()\">\n" +
+    "              <tr>\n" +
+    "                <td>\n" +
+    "                  <span class=\"row-label\">Translation status</span>\n" +
+    "                </td>\n" +
+    "                <td>\n" +
+    "                  <udb-translation-status offer=\"::event\"></udb-translation-status>\n" +
+    "                </td>\n" +
+    "              </tr>\n" +
+    "            </tbody>\n" +
     "          </table>\n" +
     "      </div>\n" +
     "\n" +
@@ -30068,6 +30121,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </tr>\n" +
     "          </tbody>\n" +
     "          <tbody udb-image-detail=\"::place.mediaObject\" image=\"::place.image\"></tbody>\n" +
+    "          <tbody ng-show=\"shouldShowLanguageStatus()\">\n" +
+    "            <tr>\n" +
+    "              <td>\n" +
+    "                <span class=\"row-label\">Translation status</span>\n" +
+    "              </td>\n" +
+    "              <td>\n" +
+    "                <udb-translation-status offer=\"::place\"></udb-translation-status>\n" +
+    "              </td>\n" +
+    "            </tr>\n" +
+    "          </tbody>\n" +
     "        </table>\n" +
     "      </div>\n" +
     "\n" +
@@ -30601,6 +30664,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<ul class=\"nav navbar-nav\">\n" +
     "  <li>\n" +
     "    <a href=\"#\" ng-click=\"sb.editQuery()\" class=\"advanced-search\" ng-class=\"{'is-editing': sb.isEditing}\">Geavanceerd</a>\n" +
+    "  </li>\n" +
+    "</ul>\n"
+  );
+
+
+  $templateCache.put('templates/translation-status.component.html',
+    "<ul class=\"list-unstyled\">\n" +
+    "  <li ng-repeat=\"language in tsc.availableLanguages\">\n" +
+    "    <span class=\"fa {{tsc.getLanguageTranslationIcon(language)}}\"></span>\n" +
+    "    {{language}}\n" +
     "  </li>\n" +
     "</ul>\n"
   );

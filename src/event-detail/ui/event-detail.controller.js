@@ -120,6 +120,7 @@ function EventDetail(
 
   function showOffer(event) {
     cachedEvent = event;
+    cachedEvent.updateTranslationState();
 
     if (cachedEvent.calendarType === 'permanent') {
       showCalendarSummary('Altijd open');
@@ -327,6 +328,10 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
+  }
+
+  $scope.shouldShowLanguageStatus = function() {
+    return $scope.event && $scope.event.languages.length > 1;
   }
 
   $scope.translateEventDetail = function (label) {

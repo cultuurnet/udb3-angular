@@ -242,4 +242,8 @@ function PlaceDetail(
       .unlabel(cachedPlace, label.name)
       .catch(showUnlabelProblem);
   }
+
+  $scope.shouldShowLanguageStatus = function() {
+    return $scope.place && $scope.place.languages.length > 1;
+  }
 }

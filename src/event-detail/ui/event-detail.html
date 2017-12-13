@@ -153,6 +153,16 @@
               </tr>
             </tbody>
             <tbody udb-image-detail="::event.mediaObject" image="::event.image"></tbody>
+            <tbody ng-show="shouldShowLanguageStatus()">
+              <tr>
+                <td>
+                  <span class="row-label">Translation status</span>
+                </td>
+                <td>
+                  <udb-translation-status offer="::event"></udb-translation-status>
+                </td>
+              </tr>
+            </tbody>
           </table>
       </div>
 

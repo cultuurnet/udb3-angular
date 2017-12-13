@@ -197,6 +197,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         });
       }
       this.mainLanguage = jsonEvent.mainLanguage || 'nl';
+      this.languages = jsonEvent.languages || [];
     },
 
     /**

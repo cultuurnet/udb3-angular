@@ -191,6 +191,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       }
 
       this.mainLanguage = jsonPlace.mainLanguage || 'nl';
+      this.languages = jsonPlace.languages || [];
     },
 
     /**

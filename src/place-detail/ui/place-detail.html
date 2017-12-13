@@ -103,6 +103,16 @@
             </tr>
           </tbody>
           <tbody udb-image-detail="::place.mediaObject" image="::place.image"></tbody>
+          <tbody ng-show="shouldShowLanguageStatus()">
+            <tr>
+              <td>
+                <span class="row-label">Translation status</span>
+              </td>
+              <td>
+                <udb-translation-status offer="::place"></udb-translation-status>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
