@@ -189,6 +189,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.availableFrom) {
         this.availableFrom = jsonPlace.availableFrom;
       }
+
+      this.mainLanguage = jsonPlace.mainLanguage || 'nl';
     },
 
     /**

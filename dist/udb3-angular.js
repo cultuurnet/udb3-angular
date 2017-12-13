@@ -6879,6 +6879,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
           return (term.domain === 'targetaudience' && (term.id === leerlingenId || term.id === leerkrachtenId));
         });
       }
+      this.mainLanguage = jsonEvent.mainLanguage || 'nl';
     },
 
     /**
@@ -7012,7 +7013,6 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       });
     },
     updateTranslationState: function () {
-      console.log(this);
       updateTranslationState(this);
     },
     isExpired: function () {
@@ -7404,6 +7404,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.availableFrom) {
         this.availableFrom = jsonPlace.availableFrom;
       }
+
+      this.mainLanguage = jsonPlace.mainLanguage || 'nl';
     },
 
     /**
@@ -24651,15 +24653,7 @@ function OfferController(
   var cachedOffer;
 
   controller.translation = false;
-  controller.activeLanguage = $translate.use();
-  controller.languageSelector = _.filter([
-    {'lang': 'nl'},
-    {'lang': 'fr'},
-    {'lang': 'en'},
-    {'lang': 'de'}
-  ], function(language) {
-    return language.lang !== controller.activeLanguage;
-  });
+  controller.defaultLanguage = $translate.use();
   controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
@@ -24672,12 +24666,13 @@ function OfferController(
           cachedOffer = offerObject;
           cachedOffer.updateTranslationState();
 
-          $scope.event = jsonLDLangFilter(cachedOffer, controller.activeLanguage);
+          $scope.event = jsonLDLangFilter(cachedOffer, controller.defaultLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
           watchLabels();
+          setLanguageSelector();
           return cachedOffer;
         });
     } else {
@@ -24695,6 +24690,17 @@ function OfferController(
     .finally(function () {
       controller.editable = true;
     });
+
+  function setLanguageSelector() {
+    controller.languageSelector = _.filter([
+      {'lang': 'nl'},
+      {'lang': 'fr'},
+      {'lang': 'en'},
+      {'lang': 'de'}
+    ], function(language) {
+      return language.lang !== cachedOffer.mainLanguage;
+    });
+  }
 
   function ifOfferIsEvent(offer) {
     if (offer && $scope.event.url.split('/').shift() === 'event') {
@@ -24740,6 +24746,7 @@ function OfferController(
   controller.toggleLanguage = function (lang) {
     if (lang === controller.activeLanguage) {
       controller.stopTranslating();
+      controller.activeLanguage = undefined;
     } else {
       controller.activeLanguage = lang;
       controller.translation = jsonLDLangFilter(cachedOffer, controller.activeLanguage);
