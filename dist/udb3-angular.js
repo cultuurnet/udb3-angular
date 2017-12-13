@@ -5369,7 +5369,8 @@ function UdbApi(
   UdbEvent,
   UdbPlace,
   UdbOrganizer,
-  Upload
+  Upload,
+  $translate
 ) {
   var apiUrl = appConfig.baseApiUrl;
   var defaultApiConfig = {
@@ -5394,7 +5395,7 @@ function UdbApi(
     return config;
   }
 
-  this.mainLanguage = 'nl';
+  this.mainLanguage = $translate.use();
 
   /**
    * Removes an item from the offerCache.
@@ -6676,7 +6677,7 @@ function UdbApi(
     }
   }
 }
-UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
+UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload", "$translate"];
 })();
 
 // Source: src/core/udb-event.factory.js
@@ -8680,7 +8681,7 @@ function EventCrud(
    */
   service.updateDescription = function(item) {
     return udbApi
-      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description.nl)
+      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description[udbApi.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
@@ -14324,7 +14325,7 @@ function EventFormController(
         EventFormData.selectMainImage(mainImage);
       }
     }
-
+    
     EventFormData.name = item.name;
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
@@ -15592,7 +15593,7 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig) {
+function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig, $translate) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -15611,7 +15612,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   $scope.eventFormData = EventFormData; // main storage for event form.
 
   // Description vars.
-  $scope.description = EventFormData.getDescription('nl');
+  $scope.description = EventFormData.getDescription($translate.use());
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -15733,7 +15734,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, 'nl');
+      EventFormData.setDescription($scope.description, $translate.use());
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {
@@ -16239,7 +16240,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
 }
-EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig"];
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "$translate"];
 })();
 
 // Source: src/export/event-export-job.factory.js
@@ -22145,7 +22146,7 @@ function TranslationStatusComponent(EventTranslationState) {
   controller.getLanguageTranslationIcon = function(language) {
     var icon = EventTranslationState.NONE.icon;
 
-    if (controller.offer && language) {
+    if (controller.offer && controller.offer.translationState && language) {
       icon = controller.offer.translationState[language].icon;
     }
 
@@ -25983,6 +25984,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <span ng-if=\"event.calendarType && (offerType === 'event' || (event.calendarType !== 'permanent' && offerType === 'place'))\">\n" +
     "      <span> - </span>\n" +
     "      <udb-calendar-summary offer=\"event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
+    "    </span>\n" +
+    "    <span ng-show=\"event.languages.length > 1\" >\n" +
+    "      <span> - </span>\n" +
+    "      <udb-translation-status offer=\"event\" class=\"dashboard-item-type visible-lg-inline\"></udb-translation-status>\n" +
     "    </span>\n" +
     "  </small>\n" +
     "</td>\n" +
@@ -30670,7 +30675,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/translation-status.component.html',
-    "<ul class=\"list-unstyled\">\n" +
+    "<ul class=\"list-unstyled list-inline visible-lg-inline\">\n" +
     "  <li ng-repeat=\"language in tsc.availableLanguages\">\n" +
     "    <span class=\"fa {{tsc.getLanguageTranslationIcon(language)}}\"></span>\n" +
     "    {{language}}\n" +

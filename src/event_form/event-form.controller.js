@@ -150,7 +150,7 @@ function EventFormController(
         EventFormData.selectMainImage(mainImage);
       }
     }
-
+    
     EventFormData.name = item.name;
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;

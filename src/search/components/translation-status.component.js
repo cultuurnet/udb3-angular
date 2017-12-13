@@ -18,7 +18,7 @@ function TranslationStatusComponent(EventTranslationState) {
   controller.getLanguageTranslationIcon = function(language) {
     var icon = EventTranslationState.NONE.icon;
 
-    if (controller.offer && language) {
+    if (controller.offer && controller.offer.translationState && language) {
       icon = controller.offer.translationState[language].icon;
     }
 

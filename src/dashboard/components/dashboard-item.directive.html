@@ -11,6 +11,10 @@
       <span> - </span>
       <udb-calendar-summary offer="event" show-opening-hours="true"></udb-calendar-summary>
     </span>
+    <span ng-show="event.languages.length > 1" >
+      <span> - </span>
+      <udb-translation-status offer="event" class="dashboard-item-type visible-lg-inline"></udb-translation-status>
+    </span>
   </small>
 </td>
 
