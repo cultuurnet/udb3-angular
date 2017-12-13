@@ -49,7 +49,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
   }
 
   function updateTranslationState(event) {
-    var languages = {'en': false, 'fr': false, 'de': false},
+    var languages = {'en': false, 'fr': false, 'de': false, nl: false},
         properties = ['name', 'description'];
 
     _.forEach(languages, function (language, languageKey) {

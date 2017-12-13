@@ -431,7 +431,7 @@ angular.module('udb.core')
     },
     eventForm: {
       step1: {
-        'title': 'Wat wil je toevoegen?',
+        'title': 'FR Wat wil je toevoegen?',
         'label_event': 'Een evenement',
         'show_everything': 'Toon alles',
         'or': 'of',

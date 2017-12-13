@@ -53,8 +53,7 @@ function OfferTranslationJobFactory(BaseJob, JobStates) {
         default:
           propertyName = job.property;
       }
-
-      description = 'Vertaal ' + propertyName + ' van "' + job.event.name.nl + '"';
+      description = 'Vertaal ' + propertyName + ' van "' + job.offer.name.nl + '"';
     }
 
     return description;

@@ -18,7 +18,8 @@ function JsonLDLangFilter() {
         containedProperties = ['name', 'description'],
         languages = ['nl', 'en', 'fr', 'de'],
         // set a default language if none is specified
-        language = preferredLanguage || 'nl';
+        language = preferredLanguage || 'nl',
+        shouldFallbackToDefault = shouldFallback || true;
 
     _.each(containedProperties, function (property) {
       // make sure the property is set on the object
@@ -28,7 +29,7 @@ function JsonLDLangFilter() {
 
         // if there is no translation available for the provided language or default language
         // check for a default language
-        if (shouldFallback) {
+        if (shouldFallbackToDefault) {
           while (!translatedProperty && langIndex < languages.length) {
             var fallbackLanguage = languages[langIndex];
             translatedProperty = translatedObject[property][fallbackLanguage];

@@ -31,6 +31,7 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       }
 
       offer[property][language] = translation;
+
       var job = new OfferTranslationJob(jobData.commandId, offer, property, language, translation);
       jobLogger.addJob(job);
     }

@@ -22,19 +22,22 @@ function OfferController(
   offerEditor,
   variationRepository,
   $q,
-  appConfig
+  appConfig,
+  $translate
 ) {
   var controller = this;
   var cachedOffer;
-  var defaultLanguage = 'nl';
 
   controller.translation = false;
-  controller.activeLanguage = defaultLanguage;
-  controller.languageSelector = [
+  controller.activeLanguage = $translate.use();
+  controller.languageSelector = _.filter([
+    {'lang': 'nl'},
     {'lang': 'fr'},
     {'lang': 'en'},
     {'lang': 'de'}
-  ];
+  ], function(language) {
+    return language.lang !== controller.activeLanguage;
+  });
   controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
@@ -47,7 +50,7 @@ function OfferController(
           cachedOffer = offerObject;
           cachedOffer.updateTranslationState();
 
-          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
+          $scope.event = jsonLDLangFilter(cachedOffer, controller.activeLanguage);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
@@ -144,7 +147,7 @@ function OfferController(
 
   controller.stopTranslating = function () {
     controller.translation = undefined;
-    controller.activeLanguage = defaultLanguage;
+    controller.activeLanguage = controller.activeLanguage;
   };
 
   function translateEventProperty(property, translation, apiProperty) {
@@ -154,7 +157,9 @@ function OfferController(
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator
         .translateProperty(cachedOffer, udbProperty, language, translation)
-        .then(cachedOffer.updateTranslationState);
+        .then(function() {
+          cachedOffer.updateTranslationState();
+        });
     }
   }
 
@@ -222,7 +227,7 @@ function OfferController(
       return variationRepository
         .getPersonalVariation(offer)
         .then(function (personalVariation) {
-          $scope.event.description = personalVariation.description[defaultLanguage];
+          $scope.event.description = personalVariation.description[controller.activeLanguage];
           return personalVariation;
         }, function () {
           return $q.reject();
@@ -238,7 +243,7 @@ function OfferController(
    */
   function translateLocation(event) {
     if ($scope.event.location) {
-      $scope.event.location = jsonLDLangFilter($scope.event.location, defaultLanguage);
+      $scope.event.location = jsonLDLangFilter($scope.event.location, controller.activeLanguage);
     }
     return $q.resolve(event);
   }
@@ -250,7 +255,7 @@ function OfferController(
 
       updatePromise.finally(function () {
         if (!description) {
-          $scope.event.description = cachedOffer.description[defaultLanguage];
+          $scope.event.description = cachedOffer.description[controller.activeLanguage];
         }
       });
 
