@@ -27,6 +27,7 @@ function SearchResultViewerFactory() {
    * @class SearchResultViewer
    * @constructor
    * @param    {number}     pageSize        The number of items shown per page
+   * @param    {number}     activePage
    *
    * @property {object[]}   events          A list of json-LD event objects
    * @property {number}     pageSize        The current page size
@@ -53,8 +54,7 @@ function SearchResultViewerFactory() {
     this.eventSpecifics = [
       {id: 'input', name: 'Invoer-informatie'},
       {id: 'price', name: 'Prijs-informatie'},
-      {id: 'translation', name: 'Vertaalstatus'},
-      {id: 'accessibility', name: 'Toegankelijkheidsinformatie'}
+      {id: 'translation', name: 'Vertaalstatus'}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];
@@ -63,6 +63,9 @@ function SearchResultViewerFactory() {
   };
 
   SearchResultViewer.prototype = {
+    enableSpecifics: function (specifics) {
+      this.eventSpecifics = _.uniq(_.union(this.eventSpecifics, specifics), 'id');
+    },
     toggleSelection: function () {
       var state = this.selectionState;
 

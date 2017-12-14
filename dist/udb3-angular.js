@@ -2173,7 +2173,8 @@ angular
     'removeOffer': 'AANBOD_VERWIJDEREN',
     'manageOrganisations': 'ORGANISATIES_BEHEREN',
     'manageUsers': 'GEBRUIKERS_BEHEREN',
-    'manageLabels': 'LABELS_BEHEREN'
+    'manageLabels': 'LABELS_BEHEREN',
+    'editFacilities': 'VOORZIENINGEN_BEWERKEN'
   })
   .service('authorizationService', AuthorizationService);
 
@@ -2245,8 +2246,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
    * @return RolePermission[]
    */
   this.getPermissions = function () {
-    return udbApi
-      .getMyPermissions();
+    return udbApi.getMyPermissions();
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope"];
@@ -22236,6 +22236,7 @@ function SearchResultViewerFactory() {
    * @class SearchResultViewer
    * @constructor
    * @param    {number}     pageSize        The number of items shown per page
+   * @param    {number}     activePage
    *
    * @property {object[]}   events          A list of json-LD event objects
    * @property {number}     pageSize        The current page size
@@ -22262,8 +22263,7 @@ function SearchResultViewerFactory() {
     this.eventSpecifics = [
       {id: 'input', name: 'Invoer-informatie'},
       {id: 'price', name: 'Prijs-informatie'},
-      {id: 'translation', name: 'Vertaalstatus'},
-      {id: 'accessibility', name: 'Toegankelijkheidsinformatie'}
+      {id: 'translation', name: 'Vertaalstatus'}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];
@@ -22272,6 +22272,9 @@ function SearchResultViewerFactory() {
   };
 
   SearchResultViewer.prototype = {
+    enableSpecifics: function (specifics) {
+      this.eventSpecifics = _.uniq(_.union(this.eventSpecifics, specifics), 'id');
+    },
     toggleSelection: function () {
       var state = this.selectionState;
 
@@ -22942,7 +22945,6 @@ function SearchFacilitiesModalController($scope, $uibModalInstance, offer, event
       $scope.saving = false;
     });
   }
-
 }
 SearchFacilitiesModalController.$inject = ["$scope", "$uibModalInstance", "offer", "eventCrud", "facilities"];
 })();
@@ -22976,7 +22978,9 @@ function SearchController(
   $rootScope,
   eventExporter,
   $translate,
-  searchApiSwitcher
+  searchApiSwitcher,
+  authorization,
+  authorizationService
 ) {
   var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
@@ -23000,6 +23004,23 @@ function SearchController(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
   $scope.currentPage = getCurrentPage();
+
+  var additionalSpecifics = [
+    {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
+  ];
+  authorizationService
+    .getPermissions()
+    .then(function (userPermissions) {
+      var specifics = _.filter(
+        additionalSpecifics,
+        function (specific) {
+          return !_.has(specific, 'permission') || _.contains(userPermissions, specific.permission);
+        }
+      );
+
+      $scope.resultViewer.enableSpecifics(specifics);
+    })
+  ;
 
   /**
    * Fires off a search for offers using a plain query string or a query object.
@@ -23231,7 +23252,7 @@ function SearchController(
 
   initListeners();
 }
-SearchController.$inject = ["$scope", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "searchApiSwitcher"];
+SearchController.$inject = ["$scope", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "searchApiSwitcher", "authorization", "authorizationService"];
 })();
 
 // Source: src/search/ui/search.directive.js
