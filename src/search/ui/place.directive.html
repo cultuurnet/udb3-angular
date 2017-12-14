@@ -67,11 +67,15 @@
           <li ng-repeat="facility in event.facilities" ng-bind="::facility.label"></li>
         </ul>
 
-        <button type="button" class="btn btn-link">Wijzigen</button>
+        <button type="button" class="btn btn-link" ng-click="placeCtrl.changeFacilities()">
+          Wijzigen
+        </button>
       </div>
 
       <div ng-show="event.facilities.length === 0">
-        <button type="button" class="btn btn-primary">Voorziening toevoegen</button>
+        <button type="button" class="btn btn-primary" ng-click="placeCtrl.changeFacilities()">
+          Voorziening toevoegen
+        </button>
       </div>
     </div>
   </div>

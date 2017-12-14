@@ -22600,7 +22600,8 @@ function OfferController(
   offerEditor,
   variationRepository,
   $q,
-  appConfig
+  appConfig,
+  $uibModal
 ) {
   var controller = this;
   var cachedOffer;
@@ -22697,6 +22698,18 @@ function OfferController(
       controller.activeLanguage = lang;
       controller.translation = jsonLDLangFilter(cachedOffer, controller.activeLanguage);
     }
+  };
+
+  controller.changeFacilities = function () {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-facilities-modal.html',
+      controller: 'SearchFacilitiesModalController',
+      resolve: {
+        offer: function () {
+          return $scope.event;
+        }
+      }
+    });
   };
 
   controller.hasPropertyChanged = function (propertyName) {
@@ -22836,7 +22849,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -22864,6 +22877,74 @@ function udbPlace() {
 
   return placeDirective;
 }
+})();
+
+// Source: src/search/ui/search-facilities-modal.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:SearchFacilitiesModalController
+ * @description
+ * # SearchFacilitiesModalController
+ * Modal for selecting facilities.
+ */
+angular
+  .module('udb.event-form')
+  .controller('SearchFacilitiesModalController', SearchFacilitiesModalController);
+
+/* @ngInject */
+function SearchFacilitiesModalController($scope, $uibModalInstance, offer, eventCrud, facilities) {
+
+  // Scope vars.
+  $scope.saving = false;
+  $scope.error = false;
+
+  $scope.facilities = _.mapValues(facilities, function (facilityType) {
+    return _.map(facilityType, function (facility) {
+      return _.assign(facility, {
+        selected: !!_.find(offer.facilities, {id: facility.id})
+      });
+    });
+  });
+
+  // Scope functions.
+  $scope.cancel = cancel;
+  $scope.saveFacilities = saveFacilities;
+
+  /**
+   * Cancel the modal.
+   */
+  function cancel() {
+    $uibModalInstance.dismiss('cancel');
+  }
+
+  /**
+   * Save the selected facilities in db.
+   */
+  function saveFacilities() {
+    offer.facilities = _.where(
+      _.flatten(_.map($scope.facilities)),
+      {selected: true}
+    );
+
+    $scope.saving = true;
+    $scope.error = false;
+
+    var promise = eventCrud.updateFacilities(offer);
+    promise.then(function() {
+      $scope.saving = false;
+      $uibModalInstance.close();
+
+    }, function() {
+      $scope.error = true;
+      $scope.saving = false;
+    });
+  }
+
+}
+SearchFacilitiesModalController.$inject = ["$scope", "$uibModalInstance", "offer", "eventCrud", "facilities"];
 })();
 
 // Source: src/search/ui/search.controller.js
@@ -28798,11 +28879,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <li ng-repeat=\"facility in event.facilities\" ng-bind=\"::facility.label\"></li>\n" +
     "        </ul>\n" +
     "\n" +
-    "        <button type=\"button\" class=\"btn btn-link\">Wijzigen</button>\n" +
+    "        <button type=\"button\" class=\"btn btn-link\" ng-click=\"placeCtrl.changeFacilities()\">\n" +
+    "          Wijzigen\n" +
+    "        </button>\n" +
     "      </div>\n" +
     "\n" +
     "      <div ng-show=\"event.facilities.length === 0\">\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\">Voorziening toevoegen</button>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"placeCtrl.changeFacilities()\">\n" +
+    "          Voorziening toevoegen\n" +
+    "        </button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
