@@ -53,7 +53,8 @@ function SearchResultViewerFactory() {
     this.eventSpecifics = [
       {id: 'input', name: 'Invoer-informatie'},
       {id: 'price', name: 'Prijs-informatie'},
-      {id: 'translation', name: 'Vertaalstatus'}
+      {id: 'translation', name: 'Vertaalstatus'},
+      {id: 'accessibility', name: 'Toegankelijkheidsinformatie'}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];

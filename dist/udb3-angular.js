@@ -4834,6 +4834,8 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
           return (term.domain === 'targetaudience' && (term.id === leerlingenId || term.id === leerkrachtenId));
         });
       }
+
+      this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
     },
 
     /**
@@ -5358,6 +5360,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.availableFrom) {
         this.availableFrom = jsonPlace.availableFrom;
       }
+
+      this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
     },
 
     /**
@@ -22258,7 +22262,8 @@ function SearchResultViewerFactory() {
     this.eventSpecifics = [
       {id: 'input', name: 'Invoer-informatie'},
       {id: 'price', name: 'Prijs-informatie'},
-      {id: 'translation', name: 'Vertaalstatus'}
+      {id: 'translation', name: 'Vertaalstatus'},
+      {id: 'accessibility', name: 'Toegankelijkheidsinformatie'}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];
@@ -28785,6 +28790,20 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span class=\"fa {{placeCtrl.getLanguageTranslationIcon(language.lang)}}\"></span>\n" +
     "        {{language.lang}}\n" +
     "      </button>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"rv-event-info-accessibility\" ng-show=\"resultViewer.activeSpecific.id === 'accessibility'\">\n" +
+    "      <div ng-if=\"event.facilities.length > 0\">\n" +
+    "        <ul>\n" +
+    "          <li ng-repeat=\"facility in event.facilities\" ng-bind=\"::facility.label\"></li>\n" +
+    "        </ul>\n" +
+    "\n" +
+    "        <button type=\"button\" class=\"btn btn-link\">Wijzigen</button>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div ng-show=\"event.facilities.length === 0\">\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\">Voorziening toevoegen</button>\n" +
+    "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +

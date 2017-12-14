@@ -60,6 +60,20 @@
         {{language.lang}}
       </button>
     </div>
+
+    <div class="rv-event-info-accessibility" ng-show="resultViewer.activeSpecific.id === 'accessibility'">
+      <div ng-if="event.facilities.length > 0">
+        <ul>
+          <li ng-repeat="facility in event.facilities" ng-bind="::facility.label"></li>
+        </ul>
+
+        <button type="button" class="btn btn-link">Wijzigen</button>
+      </div>
+
+      <div ng-show="event.facilities.length === 0">
+        <button type="button" class="btn btn-primary">Voorziening toevoegen</button>
+      </div>
+    </div>
   </div>
 
   <div class="col-sm-12" ng-show="placeCtrl.translation">
