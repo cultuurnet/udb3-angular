@@ -16917,7 +16917,7 @@ function RoleFormController(
         editor.role.labels = [];
         editor.role.permissions = _.filter(editor.availablePermissions, function (permission) {
           return _.contains(role.permissions, permission.key);
-        })
+        });
       }, function(problem) {
         problem.detail = problem.title;
         problem.title = 'De rol kon niet gevonden worden.';
