@@ -23,7 +23,8 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
-  $uibModal
+  $uibModal,
+  facilities
 ) {
   var controller = this;
   var cachedOffer;
@@ -129,6 +130,9 @@ function OfferController(
       resolve: {
         offer: function () {
           return $scope.event;
+        },
+        facilities: function () {
+          return $scope.offerType === 'place' ? _.pick(facilities, 'place') : _.omit(facilities, 'place');
         }
       }
     });

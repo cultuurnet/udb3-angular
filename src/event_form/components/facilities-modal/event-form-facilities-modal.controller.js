@@ -18,7 +18,7 @@ function EventFormFacilitiesModalController($scope, $uibModalInstance, EventForm
   $scope.saving = false;
   $scope.error = false;
 
-  $scope.facilities = facilities;
+  $scope.facilities = _.omit(facilities, 'place');
 
   // Scope functions.
   $scope.cancel = cancel;

@@ -572,7 +572,13 @@ angular.module('udb.core')
         'more_hours': 'Meer openingstijden toevoegen',
         'cancel': 'Annuleren',
         'save': 'Opslaan'
-      },
+      }
+    },
+    'facilityLabel': {
+      'motor': 'Voorzieningen voor personen met een motorische beperking',
+      'visual': 'Voorzieningen voor personen met een visuele beperking',
+      'hearing': 'Voorzieningen voor personen met een auditieve beperking',
+      'place': 'Voorzieningen van de plaats'
     },
     audience: {
       'entrance': 'Toegang',

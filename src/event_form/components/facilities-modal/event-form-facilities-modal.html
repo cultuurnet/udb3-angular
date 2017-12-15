@@ -3,30 +3,14 @@
 </div>
 <div class="modal-body">
 
-  <label>Voorzieningen voor personen met een motorische beperking</label>
-  <div class="checkbox" ng-repeat="facility in ::facilities.motor">
-    <label>
-      <input type="checkbox" ng-model="facility.selected">
-      <span ng-bind="::facility.label"></span>
-    </label>
-  </div>
-
-  <label>Voorzieningen voor personen met een visuele beperking</label>
-
-  <div class="checkbox" ng-repeat="facility in ::facilities.visual">
-    <label>
-      <input type="checkbox" ng-model="facility.selected">
-      <span ng-bind="::facility.label"></span>
-    </label>
-  </div>
-
-  <label>Voorzieningen voor personen met een auditieve beperking</label>
-
-  <div class="checkbox" ng-repeat="facility in ::facilities.hearing">
-    <label>
-      <input type="checkbox" ng-model="facility.selected">
-      <span ng-bind="::facility.label"></span>
-    </label>
+  <div ng-repeat="(type, facilitiesForType) in facilities">
+    <label ng-bind="::('facilityLabel' + type) | translate"></label>
+    <div class="checkbox" ng-repeat="facility in ::facilitiesForType">
+      <label>
+        <input type="checkbox" ng-model="facility.selected">
+        <span ng-bind="::facility.label"></span>
+      </label>
+    </div>
   </div>
 
   <div class="alert alert-danger" ng-show="error">

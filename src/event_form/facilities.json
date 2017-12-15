@@ -48,5 +48,23 @@
             "label": "Ondertiteling",
             "id": "3.17.3.0.0"
         }
+  ],
+  "place": [
+    {
+      "label": "Voorzieningen voor assistentiehonden",
+      "id": "3.13.1.0.0"
+    },
+    {
+      "label": "Rolstoel ter beschikking",
+      "id": "3.23.3.0.0"
+    },
+    {
+      "label": "Contactpunt voor personen met handicap",
+      "id": "3.25.0.0.0"
+    },
+    {
+      "label": "Parkeerplaats",
+      "id": "3.26.0.0.0"
+    }
   ]
 }
