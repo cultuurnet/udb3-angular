@@ -17,7 +17,7 @@ function AccessibilityInfoController(facilities, $uibModal) {
 
   controller.changeFacilities = function () {
     var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-facilities-modal.html',
+      templateUrl: 'templates/search-facilities-modal.html',
       controller: 'SearchFacilitiesModalController',
       resolve: {
         offer: function () {

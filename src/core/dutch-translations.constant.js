@@ -578,6 +578,7 @@ angular.module('udb.core')
       'motor': 'Voorzieningen voor personen met een motorische beperking',
       'visual': 'Voorzieningen voor personen met een visuele beperking',
       'hearing': 'Voorzieningen voor personen met een auditieve beperking',
+      'other': 'Andere voorzieningen',
       'place': 'Voorzieningen van de plaats'
     },
     audience: {

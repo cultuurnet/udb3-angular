@@ -4,7 +4,7 @@
 <div class="modal-body">
 
   <div ng-repeat="(type, facilitiesForType) in facilities">
-    <label ng-bind="::('facilityLabel' + type) | translate"></label>
+    <label ng-bind="::('facilityLabel.' + type) | translate"></label>
     <div class="checkbox" ng-repeat="facility in ::facilitiesForType">
       <label>
         <input type="checkbox" ng-model="facility.selected">
