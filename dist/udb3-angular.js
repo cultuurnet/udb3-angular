@@ -22953,12 +22953,19 @@ function SearchFacilitiesModalController($scope, $uibModalInstance, offer, event
   function saveFacilities() {
     showSaving();
 
-    offer.facilities = _.where(
+    var newFacilites = _.where(
       _.flatten(_.map($scope.facilities)),
       {selected: true}
     );
 
-    eventCrud.updateFacilities(offer).then(closeModal, showError);
+    function persistAndClose() {
+      offer.facilities = newFacilites;
+      closeModal();
+    }
+
+    eventCrud
+      .updateFacilities(_.assign(offer, {facilities: newFacilites}))
+      .then(persistAndClose, showError);
   }
 
   function closeModal() {
