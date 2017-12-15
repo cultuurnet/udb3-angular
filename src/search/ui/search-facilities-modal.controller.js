@@ -47,7 +47,7 @@ function SearchFacilitiesModalController($scope, $uibModalInstance, offer, event
     }
 
     eventCrud
-      .updateFacilities(_.assign(offer, {facilities: newFacilites}))
+      .updateFacilities(offer, newFacilites)
       .then(persistAndClose, showError);
   }
 
