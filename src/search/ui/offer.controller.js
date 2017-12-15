@@ -23,8 +23,7 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
-  $uibModal,
-  facilities
+  $uibModal
 ) {
   var controller = this;
   var cachedOffer;
@@ -121,21 +120,6 @@ function OfferController(
       controller.activeLanguage = lang;
       controller.translation = jsonLDLangFilter(cachedOffer, controller.activeLanguage);
     }
-  };
-
-  controller.changeFacilities = function () {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-facilities-modal.html',
-      controller: 'SearchFacilitiesModalController',
-      resolve: {
-        offer: function () {
-          return $scope.event;
-        },
-        facilities: function () {
-          return $scope.offerType === 'place' ? _.pick(facilities, 'place') : _.omit(facilities, 'place');
-        }
-      }
-    });
   };
 
   controller.hasPropertyChanged = function (propertyName) {

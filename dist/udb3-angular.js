@@ -19187,6 +19187,43 @@ function LabelSelectComponent(offerLabeller, $q) {
 LabelSelectComponent.$inject = ["offerLabeller", "$q"];
 })();
 
+// Source: src/search/components/offer-accessibility-info.component.js
+(function () {
+'use strict';
+
+angular
+  .module('udb.search')
+  .component('udbOfferAccessibilityInfo', {
+    templateUrl: 'templates/offer-accessibility-info.component.html',
+    controller: AccessibilityInfoController,
+    bindings: {
+      'offerType': '<',
+      'offer': '='
+    }
+  });
+
+/* @ngInject */
+function AccessibilityInfoController(facilities, $uibModal) {
+  var controller = this;
+
+  controller.changeFacilities = function () {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-facilities-modal.html',
+      controller: 'SearchFacilitiesModalController',
+      resolve: {
+        offer: function () {
+          return controller.offer;
+        },
+        facilities: function () {
+          return 'place' === controller.offerType ? _.pick(facilities, 'place') : _.omit(facilities, 'place');
+        }
+      }
+    });
+  };
+}
+AccessibilityInfoController.$inject = ["facilities", "$uibModal"];
+})();
+
 // Source: src/search/components/query-editor-daterangepicker.directive.js
 (function () {
 'use strict';
@@ -22610,8 +22647,7 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
-  $uibModal,
-  facilities
+  $uibModal
 ) {
   var controller = this;
   var cachedOffer;
@@ -22708,21 +22744,6 @@ function OfferController(
       controller.activeLanguage = lang;
       controller.translation = jsonLDLangFilter(cachedOffer, controller.activeLanguage);
     }
-  };
-
-  controller.changeFacilities = function () {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-facilities-modal.html',
-      controller: 'SearchFacilitiesModalController',
-      resolve: {
-        offer: function () {
-          return $scope.event;
-        },
-        facilities: function () {
-          return $scope.offerType === 'place' ? _.pick(facilities, 'place') : _.omit(facilities, 'place');
-        }
-      }
-    });
   };
 
   controller.hasPropertyChanged = function (propertyName) {
@@ -22862,7 +22883,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "facilities"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -28252,6 +28273,25 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/offer-accessibility-info.component.html',
+    "<div ng-if=\"$ctrl.offer.facilities.length > 0\">\n" +
+    "    <ul>\n" +
+    "        <li ng-repeat=\"facility in $ctrl.offer.facilities\" ng-bind=\"::facility.label\"></li>\n" +
+    "    </ul>\n" +
+    "\n" +
+    "    <button type=\"button\" class=\"btn btn-link\" ng-click=\"$ctrl.changeFacilities()\">\n" +
+    "        Wijzigen\n" +
+    "    </button>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div ng-show=\"$ctrl.offer.facilities.length === 0\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"$ctrl.changeFacilities()\">\n" +
+    "        Voorziening toevoegen\n" +
+    "    </button>\n" +
+    "</div>"
+  );
+
+
   $templateCache.put('templates/query-editor-daterangepicker.directive.html',
     "<div>\n" +
     "  <p class=\"input-group\" ng-hide=\"field.transformer === '<'\">\n" +
@@ -28722,6 +28762,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        {{language.lang}}\n" +
     "      </button>\n" +
     "    </div>\n" +
+    "\n" +
+    "    <div ng-if=\"resultViewer.activeSpecific.id === 'accessibility'\" class=\"rv-event-info-accessibility\">\n" +
+    "      <udb-offer-accessibility-info offer=\"event\" offer-type=\"offerType\"></udb-offer-accessibility-info>\n" +
+    "    </div>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-sm-12\" ng-show=\"eventCtrl.translation\">\n" +
@@ -28887,22 +28931,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </button>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"rv-event-info-accessibility\" ng-show=\"resultViewer.activeSpecific.id === 'accessibility'\">\n" +
-    "      <div ng-if=\"event.facilities.length > 0\">\n" +
-    "        <ul>\n" +
-    "          <li ng-repeat=\"facility in event.facilities\" ng-bind=\"::facility.label\"></li>\n" +
-    "        </ul>\n" +
-    "\n" +
-    "        <button type=\"button\" class=\"btn btn-link\" ng-click=\"placeCtrl.changeFacilities()\">\n" +
-    "          Wijzigen\n" +
-    "        </button>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div ng-show=\"event.facilities.length === 0\">\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"placeCtrl.changeFacilities()\">\n" +
-    "          Voorziening toevoegen\n" +
-    "        </button>\n" +
-    "      </div>\n" +
+    "    <div ng-if=\"resultViewer.activeSpecific.id === 'accessibility'\" class=\"rv-event-info-accessibility\">\n" +
+    "      <udb-offer-accessibility-info offer=\"event\" offer-type=\"offerType\"></udb-offer-accessibility-info>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "\n" +

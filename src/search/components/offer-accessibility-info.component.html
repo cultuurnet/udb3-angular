@@ -1,0 +1,15 @@
+<div ng-if="$ctrl.offer.facilities.length > 0">
+    <ul>
+        <li ng-repeat="facility in $ctrl.offer.facilities" ng-bind="::facility.label"></li>
+    </ul>
+
+    <button type="button" class="btn btn-link" ng-click="$ctrl.changeFacilities()">
+        Wijzigen
+    </button>
+</div>
+
+<div ng-show="$ctrl.offer.facilities.length === 0">
+    <button type="button" class="btn btn-primary" ng-click="$ctrl.changeFacilities()">
+        Voorziening toevoegen
+    </button>
+</div>
