@@ -1,15 +1,19 @@
 <div ng-if="$ctrl.offer.facilities.length > 0">
-    <ul>
-        <li ng-repeat="facility in $ctrl.offer.facilities" ng-bind="::facility.label"></li>
-    </ul>
+    <div>
+        <span ng-click="showFacilities = !showFacilities" style="cursor:pointer;">
+            <i class="fa fa-{{ showFacilities ? 'chevron-down' : 'chevron-right' }}"></i>
+            <strong ng-bind="$ctrl.offer.facilities.length"></strong> voorziening(en)
+        </span>
+        <ul ng-show="showFacilities">
+            <li ng-repeat="facility in $ctrl.offer.facilities" ng-bind="::facility.label"></li>
+        </ul>
+    </div>
 
-    <button type="button" class="btn btn-link" ng-click="$ctrl.changeFacilities()">
-        Wijzigen
-    </button>
+    <button type="button" class="btn btn-link" ng-click="$ctrl.changeFacilities()">Wijzigen</button>
 </div>
 
 <div ng-show="$ctrl.offer.facilities.length === 0">
     <button type="button" class="btn btn-primary" ng-click="$ctrl.changeFacilities()">
-        Voorziening toevoegen
+        Voorzieningen toevoegen
     </button>
 </div>

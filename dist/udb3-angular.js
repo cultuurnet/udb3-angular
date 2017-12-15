@@ -28275,18 +28275,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/offer-accessibility-info.component.html',
     "<div ng-if=\"$ctrl.offer.facilities.length > 0\">\n" +
-    "    <ul>\n" +
-    "        <li ng-repeat=\"facility in $ctrl.offer.facilities\" ng-bind=\"::facility.label\"></li>\n" +
-    "    </ul>\n" +
+    "    <div>\n" +
+    "        <span ng-click=\"showFacilities = !showFacilities\" style=\"cursor:pointer;\">\n" +
+    "            <i class=\"fa fa-{{ showFacilities ? 'chevron-down' : 'chevron-right' }}\"></i>\n" +
+    "            <strong ng-bind=\"$ctrl.offer.facilities.length\"></strong> voorziening(en)\n" +
+    "        </span>\n" +
+    "        <ul ng-show=\"showFacilities\">\n" +
+    "            <li ng-repeat=\"facility in $ctrl.offer.facilities\" ng-bind=\"::facility.label\"></li>\n" +
+    "        </ul>\n" +
+    "    </div>\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-link\" ng-click=\"$ctrl.changeFacilities()\">\n" +
-    "        Wijzigen\n" +
-    "    </button>\n" +
+    "    <button type=\"button\" class=\"btn btn-link\" ng-click=\"$ctrl.changeFacilities()\">Wijzigen</button>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-show=\"$ctrl.offer.facilities.length === 0\">\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"$ctrl.changeFacilities()\">\n" +
-    "        Voorziening toevoegen\n" +
+    "        Voorzieningen toevoegen\n" +
     "    </button>\n" +
     "</div>"
   );
