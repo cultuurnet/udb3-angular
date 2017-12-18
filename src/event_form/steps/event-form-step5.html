@@ -257,29 +257,6 @@
           </div>
         </div>
 
-        <div class="row extra-toegankelijkheid" ng-if="eventFormData.isPlace">
-          <div class="extra-task" ng-class="facilitiesCssClass">
-            <div class="col-sm-3">
-              <em class="extra-task-label">{{::translateEventForm('step5', 'facilities')}}</em>
-            </div>
-            <div class="col-sm-8">
-              <section class="state incomplete">
-                <a class="btn btn-default" href="#" ng-click="openFacilitiesModal();">{{::translateEventForm('step5', 'add_facility')}}</a>
-                <a class="btn btn-link btn-nvt" ng-click="setFacilitiesInapplicable();">{{::translateEventForm('step5', 'facility_inapplicable')}}</a>
-              </section>
-              <section class="state complete">
-                <ul ng-if="selectedFacilities.length > 0">
-                  <li ng-repeat="facility in selectedFacilities" ng-bind="::facility.label"></li>
-                </ul>
-                <span>
-                  <span ng-show="facilitiesInapplicable">{{::translateEventForm('step5', 'facility_inapplicable')}}</span>
-                  <a class="btn btn-link" ng-click="openFacilitiesModal();">{{::translateEventForm('step5', 'change')}}</a>
-                </span>
-              </section>
-            </div>
-          </div>
-        </div>
-
         <udb-form-audience></udb-form-audience>
       </div>
 

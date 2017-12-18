@@ -248,16 +248,6 @@ function EventCrud(
   };
 
   /**
-   * Update the facilities and add it to the job logger.
-   *
-   * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
-   */
-  service.updateFacilities = function(item) {
-    return updateOfferProperty(item, 'facilities', 'updateFacilities');
-  };
-
-  /**
    * Update the booking info and add it to the job logger.
    *
    * @param {EventFormData} item
@@ -309,6 +299,18 @@ function EventCrud(
         return $q.resolve(job);
       });
   }
+
+  /**
+   * @param {udbEvent|udbPlace} item
+   * @param {Object[]} facilities
+   *
+   * @return {Promise.<EventCrudJob>}
+   */
+  service.updateFacilities = function(item, facilities) {
+    return udbApi
+      .updateOfferFacilities(item.apiUrl, _.map(facilities, 'id'))
+      .then(jobCreatorFactory(item, 'updateFacilities'));
+  };
 
   /**
    * Add a new image to the item.

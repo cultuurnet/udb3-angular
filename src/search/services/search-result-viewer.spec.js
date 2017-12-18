@@ -148,4 +148,26 @@ describe('Service: SearchResultViewer', function () {
     expect(viewer.isOfferSelected({'@id':'http://culudb-silex.dev:8080/place/3aad5023-84e2-4ba9-b1ce-201cee64504c'})).toBe(false);
   });
 
+  it('should be able to enable additional specifics after initialisation', function () {
+    var viewer = new SearchResultViewer(10);
+    var defaultSpecifics = [
+      {id: 'input', name: 'Invoer-informatie'},
+      {id: 'price', name: 'Prijs-informatie'},
+      {id: 'translation', name: 'Vertaalstatus'}
+    ];
+    var expectedSpecifics = [
+      {id: 'input', name: 'Invoer-informatie'},
+      {id: 'price', name: 'Prijs-informatie'},
+      {id: 'translation', name: 'Vertaalstatus'},
+      {id: 'accessibility', name: 'Toegankelijkheidsinfo'}
+    ];
+
+    expect(viewer.eventSpecifics).toEqual(defaultSpecifics);
+
+    viewer.enableSpecifics([
+      {id: 'accessibility', name: 'Toegankelijkheidsinfo'}
+    ]);
+
+    expect(viewer.eventSpecifics).toEqual(expectedSpecifics);
+  });
 });

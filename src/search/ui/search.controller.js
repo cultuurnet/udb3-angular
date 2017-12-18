@@ -25,7 +25,9 @@ function SearchController(
   $rootScope,
   eventExporter,
   $translate,
-  searchApiSwitcher
+  searchApiSwitcher,
+  authorization,
+  authorizationService
 ) {
   var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
@@ -49,6 +51,23 @@ function SearchController(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
   $scope.currentPage = getCurrentPage();
+
+  var additionalSpecifics = [
+    {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
+  ];
+  authorizationService
+    .getPermissions()
+    .then(function (userPermissions) {
+      var specifics = _.filter(
+        additionalSpecifics,
+        function (specific) {
+          return !_.has(specific, 'permission') || _.contains(userPermissions, specific.permission);
+        }
+      );
+
+      $scope.resultViewer.enableSpecifics(specifics);
+    })
+  ;
 
   /**
    * Fires off a search for offers using a plain query string or a query object.
