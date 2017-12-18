@@ -23051,7 +23051,7 @@ function SearchController(
 
     var exportLimit = 5000;
 
-    var tooManyItems = selectedIds.length >= exportLimit;
+    var tooManyItems = eventCount >= exportLimit;
 
     if (tooManyItems) {
       $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function(message) {
