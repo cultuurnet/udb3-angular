@@ -148,9 +148,7 @@ function OrganizerEditController(
    * Validate the new organizer.
    */
   function validateOrganizer() {
-
     controller.showValidation = true;
-
     if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||
         controller.addressError || controller.contactError) {
