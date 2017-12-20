@@ -39,4 +39,8 @@ function WorkflowStatusDirectiveController($scope, $translate) {
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
   }
+
+  $scope.translateWorkFlow = function (label) {
+    return $translate.instant('workflowStatus.' + label);
+  };
 }

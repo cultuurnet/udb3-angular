@@ -22,7 +22,8 @@ function OfferController(
   offerEditor,
   variationRepository,
   $q,
-  appConfig
+  appConfig,
+  $uibModal
 ) {
   var controller = this;
   var cachedOffer;
