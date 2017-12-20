@@ -15,7 +15,8 @@ angular
     'removeOffer': 'AANBOD_VERWIJDEREN',
     'manageOrganisations': 'ORGANISATIES_BEHEREN',
     'manageUsers': 'GEBRUIKERS_BEHEREN',
-    'manageLabels': 'LABELS_BEHEREN'
+    'manageLabels': 'LABELS_BEHEREN',
+    'editFacilities': 'VOORZIENINGEN_BEWERKEN'
   })
   .service('authorizationService', AuthorizationService);
 
@@ -87,7 +88,6 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
    * @return RolePermission[]
    */
   this.getPermissions = function () {
-    return udbApi
-      .getMyPermissions();
+    return udbApi.getMyPermissions();
   };
 }

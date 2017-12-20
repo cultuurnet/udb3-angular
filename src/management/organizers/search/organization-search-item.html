@@ -1,5 +1,5 @@
 <tr class="organization-search-item" ng-class="{'deleted': osic.organizationDeleted}" ng-if="::osic.organization">
-    <td ng-bind="::osic.organization.name"></td>
+    <td><strong><a ng-bind="::osic.organization.name" ui-sref="management.organizers.detail({id: osic.organization.id})"></a></strong></td>
     <td>
         <span ng-bind="::osic.organization.address.streetAddress"></span>
         <br>

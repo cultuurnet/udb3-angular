@@ -333,6 +333,72 @@ angular.module('udb.core')
       'language': 'Taal',
       'audience': 'Toegang'
     },
+    preview: {
+      'not_found': 'Pagina niet gevonden',
+      'not_found_help': 'Deze pagina kon niet gevonden worden.',
+      'loading': 'Aan het laden...',
+      'edit': 'Bewerken',
+      'duplicate': 'Kopiëren en aanpassen',
+      'delete': 'Verwijderen',
+      'title': 'Titel',
+      'type': 'Type',
+      'entrance': 'Toegang',
+      'description': 'Beschrijving',
+      'no_description': 'Geen beschrijving',
+      'where': 'Waar',
+      'when': 'Wanneer',
+      'labels': 'Labels',
+      'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
+      'labels_success': 'Het label \'{{addedLabel}}\' werd succesvol toegevoegd.',
+      'organizer': 'Organisatie',
+      'no_organizer': 'Geen organisatie-informatie',
+      'price': 'Prijs',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'no_price': 'Geen prijsinformatie',
+      'age_label': 'Geschikt voor',
+      'all_ages': 'Alle leeftijden',
+      'no_age': 'Geen leeftijdsinformatie'
+    },
+    calendarSummary: {
+      'openinghours': 'meerdere tijdstippen',
+      'from': 'Van',
+      'till': 'tot',
+      'permanent': 'Permanent'
+    },
+    moderate: {
+      'validate': 'Valideren',
+      'approve': 'Goedkeuren',
+      'approved': 'Goedgekeurd',
+      'reject': 'Afkeuren',
+      'rejected': 'Afgekeurd',
+      'continue_validation': 'Verder valideren'
+    },
+    cultuurkuur: {
+      'info': 'Dit evenement bevat <a target=\"_blank\" href=\"{{previewLink}}\">extra informatie</a> voor scholen en leerkrachten.',
+      'subject': 'Onderwerp',
+      'target_group': 'Doelgroep',
+      'levels': 'Geschikt voor',
+      'grades': 'onderwijsgraden',
+      'edit_link': 'Wijzig op cultuurkuur.be',
+      'incomplete_help': 'Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.',
+      'continue': 'Doorgaan'
+    },
+    booking: {
+      'label': 'Reservatie',
+      'no_booking': 'Geen reservatie-informatie'
+    },
+    contact: {
+      'label': 'Contact',
+      'or': 'of',
+      'no_contact': 'Geen contactinformatie'
+    },
+    imageDetail: {
+      'label': 'Afbeeldingen',
+      'alt_image': 'Afbeelding {{index}}',
+      'main_image': 'Hoofdafbeelding',
+      'no_images': 'Geen afbeeldingen'
+    },
     prices: {
       'title': 'Prijzen toevoegen',
       'base': 'Basistarief',
@@ -506,7 +572,14 @@ angular.module('udb.core')
         'more_hours': 'Meer openingstijden toevoegen',
         'cancel': 'Annuleren',
         'save': 'Opslaan'
-      },
+      }
+    },
+    'facilityLabel': {
+      'motor': 'Voorzieningen voor personen met een motorische beperking',
+      'visual': 'Voorzieningen voor personen met een visuele beperking',
+      'hearing': 'Voorzieningen voor personen met een auditieve beperking',
+      'other': 'Andere voorzieningen',
+      'place': 'Voorzieningen van de plaats'
     },
     audience: {
       'entrance': 'Toegang',
@@ -517,6 +590,8 @@ angular.module('udb.core')
       'education_help': 'Je item wordt enkel gepubliceerd op cultuureducatieve kanalen zoals cultuurkuur.be. Na het publiceren kan je nog specifieke informatie voor scholen toevoegen.'
     },
     workflowStatus: {
+      'label': 'Publicatiestatus',
+      'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',
@@ -566,7 +641,8 @@ angular.module('udb.core')
       'category_publicscope_name': 'publieksbereik'
     },
     'EVENT-EXPORT': {
-      'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd'
+      'QUERY-IS-MISSING': 'Een export is pas mogelijk nadat je een zoekopdracht hebt uitgevoerd',
+      'TOO-MANY-ITEMS': 'Een manuele export met meer dan {{limit}} items is niet mogelijk. Contacteer vragen@uitdatabank.be voor een oplossing op maat.'
     },
     'AANBOD_INVOEREN': 'Aanbod invoeren',
     'AANBOD_BEWERKEN': 'Aanbod bewerken',
@@ -575,6 +651,7 @@ angular.module('udb.core')
     'ORGANISATIES_BEHEREN': 'Organisaties beheren',
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
     'LABELS_BEHEREN': 'Labels beheren',
+    'VOORZIENINGEN_BEWERKEN': 'Voorzieningen bewerken',
     'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
     'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',

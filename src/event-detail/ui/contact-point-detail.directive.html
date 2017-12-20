@@ -1,28 +1,28 @@
 <tr ng-class="::{muted: isEmpty(contactPoint)}">
     <td>
-        <span class="row-label">Contact</span>
+        <span class="row-label">{{translateContactPoint('label')}}</span>
     </td>
     <td ng-if="::!isEmpty(contactPoint)">
         <ul class="list-unstyled">
             <li>
                     <span ng-repeat="website in ::contactPoint.url">
                       <a ng-href="{{::website}}" target="_blank" ng-bind="::website"></a>
-                      <span ng-if="::!$last">of </span>
+                      <span ng-if="::!$last">{{translateContactPoint('or')}} </span>
                     </span>
             </li>
             <li>
                     <span ng-repeat="phone in ::contactPoint.phone">
                       <span ng-bind="::phone"></span>
-                      <span ng-if="::!$last">of </span>
+                      <span ng-if="::!$last">{{translateContactPoint('or')}} </span>
                     </span>
             </li>
             <li>
                     <span ng-repeat="email in ::contactPoint.email">
                       <span ng-bind="::email"></span>
-                      <span ng-if="::!$last">of </span>
+                      <span ng-if="::!$last">{{translateContactPoint('or')}} </span>
                     </span>
             </li>
         </ul>
     </td>
-    <td ng-if="::isEmpty(contactPoint)">Geen contactinformatie</td>
+    <td ng-if="::isEmpty(contactPoint)">{{translateContactPoint('no_contact')}}</td>
 </tr>
