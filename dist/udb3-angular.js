@@ -2315,7 +2315,7 @@ angular
   .module('udb.core')
   .controller('CalendarSummaryController', calendarSummaryController);
 
-function calendarSummaryController($scope, $translate) {
+function calendarSummaryController($scope) {
   $scope.getOpeningHoursCount = function(offer) {
     if (offer.calendarType === 'single' && offer.startDate !== offer.endDate) {
       offer.openingHours = [{
@@ -2325,12 +2325,8 @@ function calendarSummaryController($scope, $translate) {
     }
     return offer.openingHours.length;
   };
-
-  $scope.translateCalendarSummary = function (label) {
-    return $translate.instant('calendarSummary.' + label);
-  };
 }
-calendarSummaryController.$inject = ["$scope", "$translate"];
+calendarSummaryController.$inject = ["$scope"];
 })();
 
 // Source: src/core/components/calendar-summary/calendar-summary.directive.js
@@ -23806,7 +23802,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <span ng-if=\"showOpeningHours\">\n" +
     "      <span ng-if=\"getOpeningHoursCount(offer) == 1\">\n" +
-    "        <span translate-once=\"calendarSummary.from|uppercase\"></span> <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
+    "        <span translate-once=\"calendarSummary.from | uppercase\"></span> <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
     "        <span translate-once=\"calendarSummary.till\"></span> <span ng-bind=\"::offer.openingHours[0].endDate | date: 'HH:mm'\"></span>\n" +
     "      </span>\n" +
     "      <span ng-if=\"getOpeningHoursCount(offer) > 1\" translate-once=\"calendarSummary.openinghours\"></span>\n" +

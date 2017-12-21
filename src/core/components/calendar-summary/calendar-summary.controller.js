@@ -4,7 +4,7 @@ angular
   .module('udb.core')
   .controller('CalendarSummaryController', calendarSummaryController);
 
-function calendarSummaryController($scope, $translate) {
+function calendarSummaryController($scope) {
   $scope.getOpeningHoursCount = function(offer) {
     if (offer.calendarType === 'single' && offer.startDate !== offer.endDate) {
       offer.openingHours = [{
@@ -13,9 +13,5 @@ function calendarSummaryController($scope, $translate) {
       }];
     }
     return offer.openingHours.length;
-  };
-
-  $scope.translateCalendarSummary = function (label) {
-    return $translate.instant('calendarSummary.' + label);
   };
 }
