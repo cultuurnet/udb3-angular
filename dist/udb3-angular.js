@@ -8231,17 +8231,13 @@ angular
   });
 
 /* @ngInject */
-function BookingInfoDetailController($scope, $translate) {
+function BookingInfoDetailController($scope) {
   $scope.isEmpty = _.isEmpty;
   $scope.hasAtLeastOneContactPoint = function() {
     return $scope.bookingInfo.phone || $scope.bookingInfo.url || $scope.bookingInfo.email;
   };
-
-  $scope.translateBookingInfo = function (label) {
-    return $translate.instant('booking.' + label);
-  };
 }
-BookingInfoDetailController.$inject = ["$scope", "$translate"];
+BookingInfoDetailController.$inject = ["$scope"];
 })();
 
 // Source: src/event-detail/ui/contact-point-detail.directive.js
@@ -23887,10 +23883,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
+    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate-once=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
     "    <div ng-if=\"::$ctrl.permission\">\n" +
     "        <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
-    "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
+    "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate-once=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div class=\"row\">\n" +
@@ -24303,7 +24299,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/booking-info-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null)}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">{{translateBookingInfo('label')}}</span>\n" +
+    "        <span class=\"row-label\" translate-once=\"booking.label\"></span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"hasAtLeastOneContactPoint()\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
@@ -24319,7 +24315,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"!hasAtLeastOneContactPoint()\">{{translateBookingInfo('no_booking')}}</td>\n" +
+    "    <td ng-if=\"!hasAtLeastOneContactPoint()\" translate-once=\"booking.no_booking\"></td>\n" +
     "</tr>\n"
   );
 
