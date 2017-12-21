@@ -18405,8 +18405,7 @@ function PlaceDetail(
   $q,
   $window,
   offerLabeller,
-  appConfig,
-  $translate
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -18456,10 +18455,6 @@ function PlaceDetail(
   ];
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
-  };
-
-  $scope.translatePlaceDetail = function (label) {
-    return $translate.instant('preview.' + label);
   };
 
   var language = 'nl';
@@ -18623,7 +18618,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
 })();
 
 // Source: src/router/offer-locator.service.js
@@ -27940,19 +27935,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/place-detail.html',
     "<div ng-if=\"placeIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
-    "    <h1>{{translatePlaceDetail('not_found')}}</h1>\n" +
+    "    <h1 translate-once=\"preview.not_found\"></h1>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "      <p>{{translatePlaceDetail('not_found_help')}}</p>\n" +
+    "      <p translate-once=\"preview.not_found_help\"></p>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"!finishedLoading\">\n" +
     "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
-    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{translatePlaceDetail('loading')}}</span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span></p>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
@@ -27964,11 +27959,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  {{translatePlaceDetail('edit')}}</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  {{translatePlaceDetail('delete')}}</button>\n" +
+    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -27987,25 +27982,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </colgroup>\n" +
     "          <tbody>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('title')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.title\"></span></td>\n" +
     "              <td>{{::place.name}}</td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('type')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
     "              <td>{{::place.type.label}}</td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr ng-class=\"::{muted: place.description==undefined}\">\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('description')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.description\"></span></td>\n" +
     "              <td ng-if=\"::(place.description!==undefined)\">\n" +
     "                <div ng-bind-html=\"::place.description\" class=\"event-detail-description\"></div>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"::(place.description==undefined)\">\n" +
-    "                {{translatePlaceDetail('no_description')}}\n" +
-    "              </td>\n" +
+    "              <td ng-if=\"::(place.description==undefined)\" translate-once=\"preview.no_description\"></td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('where')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "              <td>{{::place.address.streetAddress}}<br />\n" +
     "                {{::place.address.postalCode}} {{::place.address.addressLocality}}<br />\n" +
     "                {{::place.address.addressCountry}}</td>\n" +
@@ -28016,7 +28009,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <tbody>\n" +
     "            <tr>\n" +
     "              <td>\n" +
-    "                <span class=\"row-label\">{{translatePlaceDetail('labels')}}</span>\n" +
+    "                <span class=\"row-label\" translate-once=\"preview.labels\"></span>\n" +
     "              </td>\n" +
     "              <td>\n" +
     "                <p><udb-label-select labels=\"::place.labels\"\n" +
@@ -28024,10 +28017,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                  label-removed=\"labelRemoved(label)\">\n" +
     "                </udb-label-select></p>\n" +
     "                <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                  <span translate=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
+    "                  <span translate-once=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
     "                </p>\n" +
     "                <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                  <span translate=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
+    "                  <span translate-once=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                </p>\n" +
     "                <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                  <span ng-bind=\"labelsError\"></span>\n" +
@@ -28035,10 +28028,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('age_label')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "              <td>\n" +
     "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
-    "                <span ng-if=\"::(!place.typicalAgeRange)\">{{translatePlaceDetail('all_ages')}}</span>\n" +
+    "                <span ng-if=\"::(!place.typicalAgeRange)\" translate-once=\"preview.all_agges\"></span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "          </tbody>\n" +
