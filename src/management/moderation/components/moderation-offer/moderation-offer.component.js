@@ -20,7 +20,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal, $translate) {
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -151,10 +151,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
       .finally(function() {
         moc.sendingJob = false;
       });
-  }
-
-  function translateModerationOffer(label) {
-    return $translate.instant('moderate.' + label);
   }
 
   /**

@@ -15262,7 +15262,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal, $translate) {
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -15395,10 +15395,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
       });
   }
 
-  function translateModerationOffer(label) {
-    return $translate.instant('moderate.' + label);
-  }
-
   /**
    * @param {ApiProblem} problem
    */
@@ -15406,7 +15402,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 }
-ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal", "$translate"];
+ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
 })();
 
 // Source: src/management/moderation/components/moderation-summary/moderation-summary.component.js
@@ -26997,17 +26993,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\">{{moc.translateModerationOffer('validate')}}</p>\n" +
+    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\" translate-once=\"moderate.validate\"></p>\n" +
     "\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
-    "                <i class=\"fa fa-flag text-success\"></i>{{moc.translateModerationOffer('approve')}}</button>\n" +
+    "    <i class=\"fa fa-flag text-success\"></i><span translate-once=\"moderate.approve\"></span></button>\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
-    "                <i class=\"fa fa-flag text-danger\"></i>{{moc.translateModerationOffer('reject')}}</button>\n" +
+    "    <i class=\"fa fa-flag text-danger\"></i><span translate-once=\"moderate.reject\"></span></button>\n" +
     "\n" +
-    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>{{moc.translateModerationOffer('approved')}}</span>\n" +
-    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>{{moc.translateModerationOffer('rejected')}}</span>\n" +
+    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\">\n" +
+    "    <i class=\"fa fa-flag\"></i><span translate-once=\"moderate.approved\"></span>\n" +
+    "</span>\n" +
+    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\">\n" +
+    "    <i class=\"fa fa-flag\"></i><span translate-once=\"moderate.rejected\"></span>\n" +
+    "</span>\n" +
     "\n" +
-    "<span ng-show=\"moc.continueValidation()\"><a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">{{moc.translateModerationOffer('continue_validation')}}</a></span>\n"
+    "<span ng-show=\"moc.continueValidation()\">\n" +
+    "    <a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\" translate-once=\"moderate.continue_validation\"></a></span>\n"
   );
 
 
