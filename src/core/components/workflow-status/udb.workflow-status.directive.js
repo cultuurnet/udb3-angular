@@ -21,7 +21,7 @@ angular
   });
 
 /* @ngInject */
-function WorkflowStatusDirectiveController($scope, $translate) {
+function WorkflowStatusDirectiveController($scope) {
   var cm = this;
   cm.event = $scope.event;
   cm.status = translateStatus(cm.event.workflowStatus);
@@ -39,8 +39,4 @@ function WorkflowStatusDirectiveController($scope, $translate) {
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
   }
-
-  $scope.translateWorkFlow = function (label) {
-    return $translate.instant('workflowStatus.' + label);
-  };
 }

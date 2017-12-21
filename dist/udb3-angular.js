@@ -2507,7 +2507,7 @@ angular
   });
 
 /* @ngInject */
-function WorkflowStatusDirectiveController($scope, $translate) {
+function WorkflowStatusDirectiveController($scope) {
   var cm = this;
   cm.event = $scope.event;
   cm.status = translateStatus(cm.event.workflowStatus);
@@ -2525,12 +2525,8 @@ function WorkflowStatusDirectiveController($scope, $translate) {
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
   }
-
-  $scope.translateWorkFlow = function (label) {
-    return $translate.instant('workflowStatus.' + label);
-  };
 }
-WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
+WorkflowStatusDirectiveController.$inject = ["$scope"];
 })();
 
 // Source: src/core/dutch-translations.constant.js
@@ -23856,7 +23852,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
-    "    <td><span class=\"row-label\">{{translateWorkFlow('label')}}</span></td>\n" +
+    "    <td><span class=\"row-label\" translate-once=\"workflowStatus.label\"></span></td>\n" +
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
@@ -23865,7 +23861,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
-    "    <td><span class=\"row-label\">{{translateWorkFlow('id')}}</span></td>\n" +
+    "    <td><span class=\"row-label\" translate-once=\"workflowStatus.id\"></span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
     "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
