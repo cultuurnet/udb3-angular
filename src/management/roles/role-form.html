@@ -89,8 +89,8 @@
                         <input  type="checkbox"
                                 name="editor.role.permissions[]"
                                 value="{{permission.key}}"
-                                ng-checked="editor.role.permissions.indexOf(permission.key) > -1"
-                                ng-click="editor.updatePermission(permission.key)"
+                                ng-checked="!!(editor.role.permissions | filter: {key: permission.key}).length"
+                                ng-click="editor.updatePermission(permission)"
                         > <strong ng-bind="permission.name"></strong>
                   </label>
                 </div>

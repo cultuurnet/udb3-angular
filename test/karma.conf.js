@@ -69,6 +69,7 @@ module.exports = function(config) {
       'bower_components/ng-focus-if/focusIf.js',
       'bower_components/ng-tags-input/ng-tags-input.js',
       'bower_components/angular-scroll/angular-scroll.js',
+      'bower_components/angular-filter/dist/angular-filter.js',
       'src/**/*.module.js',
       'src/**/*.js',
       'src/**/*.html'

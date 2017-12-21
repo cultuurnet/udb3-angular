@@ -123,8 +123,8 @@ describe('Component: Organizer Contact', function() {
       sendUpdateMock();
     };
     component.organizerContactWrapper = organizerContactWrapper;
-    component.addOrganizerContactInfo('phone');
-
+    component.addOrganizerContactEntry('phone');
+    component.addOrganizerContactInfo();
     expect(component.contact).toEqual(expectedContact);
   });
 

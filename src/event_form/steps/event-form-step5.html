@@ -147,7 +147,7 @@
         </div>
 
         <price-info price="price" ng-if="!hidePriceInfo"></price-info>
-        <uitpas-info organizer="eventFormData.organizer" price="price"></uitpas-info>
+        <uitpas-info organizer="eventFormData.organizer" price="eventFormData.priceInfo"></uitpas-info>
 
         <div class="row extra-contact">
           <div class="extra-task meer-info" ng-class="contactInfoCssClass">
@@ -253,29 +253,6 @@
 
             </div>
 
-          </div>
-        </div>
-
-        <div class="row extra-toegankelijkheid" ng-if="eventFormData.isPlace">
-          <div class="extra-task" ng-class="facilitiesCssClass">
-            <div class="col-sm-3">
-              <em class="extra-task-label" translate-once="eventForm.step5.facilities"></em>
-            </div>
-            <div class="col-sm-8">
-              <section class="state incomplete">
-                <a class="btn btn-default" href="#" ng-click="openFacilitiesModal();" translate-once="eventForm.step5.add_facility"></a>
-                <a class="btn btn-link btn-nvt" ng-click="setFacilitiesInapplicable();" translate-once="eventForm.step5.facility_inapplicable"></a>
-              </section>
-              <section class="state complete">
-                <ul ng-if="selectedFacilities.length > 0">
-                  <li ng-repeat="facility in selectedFacilities" ng-bind="::facility.label"></li>
-                </ul>
-                <span>
-                  <span ng-show="facilitiesInapplicable" translate-once="eventForm.step5.facility_inapplicable"></span>
-                  <a class="btn btn-link" ng-click="openFacilitiesModal();" translate-once="eventForm.step5.change"></a>
-                </span>
-              </section>
-            </div>
           </div>
         </div>
 

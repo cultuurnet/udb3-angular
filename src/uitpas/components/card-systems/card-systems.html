@@ -1,28 +1,41 @@
 <div class="form-group">
     <div class="card-system">
-        <label translate-once="uitpas.cardSystems.card_systems"></label>
+        <label translate="uitpas.cardSystems.card_systems"></label>
+        <span ng-hide="cardSystemSelector.uitpasUnavailable || (cardSystemSelector.availableCardSystems !== undefined)">
+            <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
+        </span>
+        <span ng-show="cardSystemSelector.persistingCardSystems">
+            <i class="fa fa-circle-o-notch fa-spin"></i> Saving...
+        </span>
 
-        <div class="uitpas-card-system row" ng-repeat="cardSystem in cardSystemSelector.availableCardSystems">
-            <div class="col-sm-6">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox"
-                               disabled="disabled"
-                               ng-model="cardSystem.active"
-                               ng-change="cardSystemSelector.activeCardSystemsChanged(cardSystem)">
-                            <span ng-bind="::cardSystem.name"></span>
-                    </label>
+        <div class="card-systems" ng-if="::cardSystemSelector.availableCardSystems">
+            <div class="uitpas-card-system row" ng-repeat="cardSystem in cardSystemSelector.availableCardSystems">
+                <div class="col-sm-6">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"
+                                   ng-disabled="cardSystemSelector.persistingCardSystems"
+                                   ng-model="cardSystem.active"
+                                   ng-change="cardSystemSelector.activeCardSystemsChanged(cardSystem)">
+                                <span ng-bind="::cardSystem.name"></span>
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6" ng-if="cardSystem.distributionKeys.length">
+                    <select ng-model="cardSystem.assignedDistributionKey"
+                            ng-disabled="cardSystemSelector.persistingCardSystems || !cardSystem.active"
+                            ng-options="key as key.name for key in cardSystem.distributionKeys track by key.id"
+                            ng-change="cardSystemSelector.distributionKeyAssigned(cardSystem)">
+                    </select>
                 </div>
             </div>
+        </div>
 
-
-            <div class="col-sm-6" ng-if="cardSystem.distributionKeys.length">
-                <select ng-model="cardSystem.assignedDistributionKey"
-                        ng-options="key as key.name for key in cardSystem.distributionKeys track by key.id"
-                        ng-change="cardSystemSelector.distributionKeyAssigned()">
-                    <option value="" translate-once="uitpas.cardSystems.choose"></option>
-                </select>
-            </div>
+        <div class="alert alert-danger" role="alert" ng-show="cardSystemSelector.uitpasUnavailable">
+            <p translate="uitpas.cardSystems.unavailable"></p>
+            <button class="btn btn-default" ng-click="cardSystemSelector.refresh()" translate="uitpas.cardSystems.retry"></button>
         </div>
     </div>
 </div>

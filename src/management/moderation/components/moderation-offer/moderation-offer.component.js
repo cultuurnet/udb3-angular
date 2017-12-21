@@ -20,7 +20,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal, $translate) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -35,6 +35,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
   moc.continueValidation = continueValidation;
+  moc.translateModerationOffer = translateModerationOffer;
 
   // fetch offer
   ModerationService
@@ -150,6 +151,10 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
       .finally(function() {
         moc.sendingJob = false;
       });
+  }
+
+  function translateModerationOffer(label) {
+    return $translate.instant('moderate.' + label);
   }
 
   /**

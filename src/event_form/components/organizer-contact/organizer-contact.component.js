@@ -23,7 +23,13 @@ angular
 function OrganizerContactComponent($scope) {
   var controller = this;
 
+  controller.newContact = {};
+
+  controller.addingContactEntry = false;
+  controller.isPristine = true;
   controller.validateContact = validateContact;
+  controller.addOrganizerContactEntry = addOrganizerContactEntry;
+  controller.cancelOrganizerContactEntry = cancelOrganizerContactEntry;
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
@@ -44,15 +50,44 @@ function OrganizerContactComponent($scope) {
     sendUpdate();
   }
 
+  function resetOrganizerContactEntry() {
+    controller.newContact = {
+      type : '',
+      value : ''
+    };
+  }
+
   /**
    * Add a contact info entry for an organizer.
    */
-  function addOrganizerContactInfo(type) {
-    controller.contact.push({
+  function addOrganizerContactEntry(type) {
+    controller.newContact = {
       type : type,
       value : ''
-    });
+    };
+    controller.isPristine = true;
+    controller.addingContactEntry = true;
+  }
+
+  /**
+   * Add a contact info entry for an organizer.
+   */
+  function cancelOrganizerContactEntry() {
+    resetOrganizerContactEntry();
+    controller.addingContactEntry = false;
+    controller.isPristine = true;
+  }
+
+  /* */
+  function addOrganizerContactInfo() {
     validateContact();
+    if (!controller.contactHasErrors) {
+      controller.contact.push(controller.newContact);
+      resetOrganizerContactEntry();
+      controller.addingContactEntry = false;
+      controller.isPristine = true;
+      sendUpdate();
+    }
   }
 
   /**
@@ -67,4 +102,11 @@ function OrganizerContactComponent($scope) {
     controller.onUpdate({error: controller.contactHasErrors});
   }
 
+  $scope.$watch(function() {
+    return controller.newContact;
+  }, function(value) {
+    if (value && value.value && value.value !== '') {
+      controller.isPristine = false;
+    }
+  }, true);
 }

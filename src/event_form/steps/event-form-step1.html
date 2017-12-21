@@ -52,17 +52,23 @@
            translate-once="eventForm.step1.change"></a>
       </p>
 
-      <div class="col-xs-12" ng-if="canRefine">
-        <label class="event-theme-label"
-               translate-once="eventForm.step1.refine"
-               ng-show="eventThemeLabels.length"></label>
-        <ul class="list-inline" id="step2-list">
-          <li ng-repeat="eventTheme in ::eventThemeLabels">
-            <button ng-bind="::eventTheme.label" class="btn btn-default"
-                    ng-click="setTheme(eventTheme)"></button>
-          </li>
-        </ul>
-      </div>
+      <div class="col-xs-12 theme-refinement" ng-hide="activeEventType === '' || activeTheme !== ''">
+        <label class="event-theme-label" ng-show="eventThemeLabels.length" translate-once="eventForm.step1.refine"></label>
+        <div ng-repeat="(key, values) in eventThemeLabels | groupBy: 'group'">
+          <div class="row">
+            <div class="col-xs-2" ng-show="key !== 'undefined'" >
+              <p class="text-muted">{{key}}</p>
+            </div>
+            <div ng-class="key === 'undefined' ? 'col-xs-12' : 'col-xs-10'">
+              <ul class="list-inline list-themes">
+                <li ng-repeat="eventTheme in values">
+                  <button ng-bind="::eventTheme.label" class="btn btn-default"
+                          ng-click="setTheme(eventTheme)"></button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
       <p class="col-xs-12 col-md-12"  ng-hide="activeTheme === ''">
         <span class="btn-chosen" ng-bind="activeThemeLabel"></span>

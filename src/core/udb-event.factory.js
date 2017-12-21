@@ -196,6 +196,8 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
           return (term.domain === 'targetaudience' && (term.id === leerlingenId || term.id === leerkrachtenId));
         });
       }
+
+      this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
     },
 
     /**
