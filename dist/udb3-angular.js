@@ -23806,28 +23806,24 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <span ng-if=\"showOpeningHours\">\n" +
     "      <span ng-if=\"getOpeningHoursCount(offer) == 1\">\n" +
-    "        {{::translateCalendarSummary('from') | lowercase}} <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
-    "        {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.openingHours[0].endDate | date: 'HH:mm'\"></span>\n" +
+    "        <span translate-once=\"calendarSummary.from|uppercase\"></span> <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
+    "        <span translate-once=\"calendarSummary.till\"></span> <span ng-bind=\"::offer.openingHours[0].endDate | date: 'HH:mm'\"></span>\n" +
     "      </span>\n" +
-    "      <span ng-if=\"getOpeningHoursCount(offer) > 1\">\n" +
-    "        {{::translateCalendarSummary('openinghours')}}\n" +
-    "      </span>\n" +
+    "      <span ng-if=\"getOpeningHoursCount(offer) > 1\" translate-once=\"calendarSummary.openinghours\"></span>\n" +
     "    </span>\n" +
     "  </span>\n" +
     "\n" +
     "  <span ng-switch-when=\"multiple\">\n" +
-    "     {{::translateCalendarSummary('from')}} <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "     {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "      <span translate-once=\"calendarSummary.from\"></span> <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "      <span translate-once=\"calendarSummary.till\"></span> <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "  </span>\n" +
     "\n" +
     "  <span ng-switch-when=\"periodic\">\n" +
-    "     {{::translateCalendarSummary('from')}} <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "     {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     <span translate-once=\"calendarSummary.from\"></span> <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     <span translate-once=\"calendarSummary.till\"></span> <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "  </span>\n" +
     "\n" +
-    "  <span ng-switch-when=\"permanent\">\n" +
-    "     {{::translateCalendarSummary('permanent')}}\n" +
-    "  </span>\n" +
+    "  <span ng-switch-when=\"permanent\" translate-once=\"calendarSummary.permanent\"></span>\n" +
     "\n" +
     "</span>"
   );
