@@ -8605,10 +8605,6 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
-  $scope.translateEventDetail = function (label) {
-    return $translate.instant('preview.' + label);
-  };
-
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
   };
@@ -24342,19 +24338,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/event-detail.html',
     "<div ng-if=\"eventIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
-    "    <h1>{{::translateEventDetail('not_found')}}</h1>\n" +
+    "    <h1 translate-once=\"preview.not_found\"></h1>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "      <p>{{::translateEventDetail('not_found_help')}}</p>\n" +
+    "      <p translate-once=\"preview.not_found_help\"></p>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"!finishedLoading()\">\n" +
     "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
-    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{::translateEventDetail('loading')}}</span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span></p>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"finishedLoading()\" class=\"event-detail\">\n" +
@@ -24365,15 +24361,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  {{::translateEventDetail('edit')}}</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  {{::translateEventDetail('duplicate')}}</button>\n" +
+    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  {{::translateEventDetail('delete')}}</button>\n" +
+    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
     "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -24392,21 +24388,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </colgroup>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('title')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.title\"></span></td>\n" +
     "                <td>{{::event.name}}</td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('type')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
     "                <td>{{::event.type.label}}</td>\n" +
     "              </tr>\n" +
     "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
-    "                <td>{{::translateAudience(event.audience.audienceType)}}\n" +
+    "                <td ng-bind=\"::translateAudience(event.audience.audienceType)\">\n" +
     "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td>\n" +
-    "                  <span class=\"row-label\">{{::translateEventDetail('labels')}}</span>\n" +
+    "                  <span class=\"row-label\" translate-once=\"preview.labels\"></span>\n" +
     "                </td>\n" +
     "                <td>\n" +
     "                  <p>\n" +
@@ -24416,10 +24412,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </udb-label-select>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                    <span translate=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
+    "                    <span translate-once=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                    <span translate=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
+    "                    <span translate-once=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                    <span ng-bind=\"labelsError\"></span>\n" +
@@ -24427,23 +24423,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: isEmpty(event.description)}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('description')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.description\"></span></td>\n" +
     "                <td ng-if=\"::(!isEmpty(event.description))\">\n" +
     "                  <div ng-bind-html=\"::event.description\" class=\"event-detail-description\"></div>\n" +
     "                </td>\n" +
-    "                <td ng-if=\"::(isEmpty(event.description))\">\n" +
-    "                  {{::translateEventDetail('no_description')}}\n" +
-    "                </td>\n" +
+    "                <td ng-if=\"::(isEmpty(event.description))\" translate-once=\"preview.no_description\"></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('where')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
     "                  {{eventLocation(event)}}\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('when')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.when\"></span></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"::calendarSummary\" ng-bind-html=\"::calendarSummary\"></span>\n" +
     "                  <span class=\"text-muted\"\n" +
@@ -24453,43 +24447,37 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('organizer')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.organizer\"></span></td>\n" +
     "                <td ng-if=\"::event.organizer\">{{::event.organizer.name}}</td>\n" +
-    "                <td ng-if=\"::(!event.organizer)\">\n" +
-    "                  {{::translateEventDetail('no_organizer')}}\n" +
-    "                </td>\n" +
+    "                <td ng-if=\"::(!event.organizer)\" translate-once=\"preview.no_organizer\"></td>\n" +
     "              </tr>\n" +
     "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('price')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.price\"></span></td>\n" +
     "                <td ng-if=\"::event.priceInfo.length\">\n" +
     "                  <table class=\"table table-bordered event-detail-price-table\">\n" +
     "                    <tr ng-repeat=\"priceInfo in ::event.priceInfo\">\n" +
     "                      <td>{{priceInfo.name}}</td>\n" +
     "                      <td>\n" +
-    "                        <span ng-if=\"priceInfo.price == 0\">\n" +
-    "                          {{::translateEventDetail('free')}}\n" +
-    "                        </span>\n" +
+    "                        <span ng-if=\"priceInfo.price == 0\" translate-once=\"preview.free\"></span>\n" +
     "                        <span ng-if=\"::priceInfo.price != 0\">\n" +
-    "                          {{priceInfo.price | currency}} {{::translateEventDetail('currency')}}\n" +
+    "                          {{priceInfo.price | currency}} <span translate-once=\"preview.currency\"></span>\n" +
     "                        </span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </table>\n" +
     "                </td>\n" +
-    "                <td ng-if=\"::(event.priceInfo.length == 0)\">\n" +
-    "                  {{::translateEventDetail('no_price')}}\n" +
-    "                </td>\n" +
+    "                <td ng-if=\"::(event.priceInfo.length == 0)\" translate-once=\"preview.no_price\"></td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
     "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('age_label')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"::allAges && !noAgeInfo\">{{::translateEventDetail('all_ages')}}</span>\n" +
-    "                  <span ng-if=\"noAgeInfo\">{{::translateEventDetail('no_age')}}</span>\n" +
+    "                  <span ng-if=\"::allAges && !noAgeInfo\" translate-once=\"preview.all_ages\"></span>\n" +
+    "                  <span ng-if=\"noAgeInfo\" translate-once=\"preview.no_age\"></span>\n" +
     "                </td>\n" +
     "\n" +
     "              </tr>\n" +
@@ -24501,7 +24489,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
     "          <p ng-show=\"!eventHistory\" class=\"text-center\">\n" +
-    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{::translateEventDetail('loading')}}</span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span>\n" +
     "          </p>\n" +
     "          <div ng-if=\"::eventHistory\">\n" +
     "            <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
