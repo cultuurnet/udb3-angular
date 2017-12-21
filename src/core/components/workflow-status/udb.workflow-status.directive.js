@@ -24,16 +24,11 @@ angular
 function WorkflowStatusDirectiveController($scope) {
   var cm = this;
   cm.event = $scope.event;
-  cm.status = translateStatus(cm.event.workflowStatus);
   cm.eventIds = eventIds;
   cm.isUrl = isUrl;
 
   function eventIds (event) {
     return _.union([event.id], event.sameAs);
-  }
-
-  function translateStatus (status) {
-    return $translate.instant('workflowStatus.' + status);
   }
 
   function isUrl (potentialUrl) {
