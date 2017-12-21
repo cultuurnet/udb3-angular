@@ -35,7 +35,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
   moc.continueValidation = continueValidation;
-  moc.translateModerationOffer = translateModerationOffer;
 
   // fetch offer
   ModerationService
