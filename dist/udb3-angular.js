@@ -8264,16 +8264,12 @@ angular
   });
 
 /* @ngInject */
-function ContactPointDetailController($scope, $translate) {
+function ContactPointDetailController($scope) {
   $scope.isEmpty = function (contactPoint) {
     return _(contactPoint).values().flatten().isEmpty();
   };
-
-  $scope.translateContactPoint = function (label) {
-    return $translate.instant('contact.' + label);
-  };
 }
-ContactPointDetailController.$inject = ["$scope", "$translate"];
+ContactPointDetailController.$inject = ["$scope"];
 })();
 
 // Source: src/event-detail/ui/event-detail.controller.js
@@ -24323,31 +24319,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/contact-point-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(contactPoint)}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">{{translateContactPoint('label')}}</span>\n" +
+    "        <span class=\"row-label\" translate-once=\"contact.label\"></span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::!isEmpty(contactPoint)\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"website in ::contactPoint.url\">\n" +
     "                      <a ng-href=\"{{::website}}\" target=\"_blank\" ng-bind=\"::website\"></a>\n" +
-    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
+    "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"phone in ::contactPoint.phone\">\n" +
     "                      <span ng-bind=\"::phone\"></span>\n" +
-    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
+    "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"email in ::contactPoint.email\">\n" +
     "                      <span ng-bind=\"::email\"></span>\n" +
-    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
+    "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(contactPoint)\">{{translateContactPoint('no_contact')}}</td>\n" +
+    "    <td ng-if=\"::isEmpty(contactPoint)\" translate-once=\"contact.no_contact\"></td>\n" +
     "</tr>\n"
   );
 
