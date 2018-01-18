@@ -579,7 +579,7 @@ angular.module('udb.core')
       'visual': 'Voorzieningen voor personen met een visuele beperking',
       'hearing': 'Voorzieningen voor personen met een auditieve beperking',
       'other': 'Andere voorzieningen',
-      'place': 'Voorzieningen van de plaats'
+      'place': 'Voorzieningen op deze locatie'
     },
     audience: {
       'entrance': 'Toegang',
