@@ -19,28 +19,12 @@
     {
       "label": "Toegankelijk sanitair",
       "id": "3.31.0.0.0"
-    },
-    {
-      "label": "Voorzieningen voor rolstoelgebruikers",
-      "id": "3.23.1.0.0"
     }
   ],
   "visual": [
     {
       "label": "Audiodescriptie",
       "id": "3.13.2.0.0"
-    },
-    {
-      "label": "Brochure in braille",
-      "id": "3.13.3.0.0"
-    },
-    {
-      "label": "Brochure in grootletterschrift",
-      "id": "3.13.4.0.0"
-    },
-    {
-      "label": "Brochure in gesproken vorm",
-      "id": "3.13.5.0.0"
     },
     {
       "label": "Voorzieningen voor assistentiehonden",
@@ -75,24 +59,12 @@
       "id": "3.28.0.0.0"
     },
     {
-      "label": "Audiogids",
-      "id": "3.15.0.0.0"
-    },
-    {
       "label": "Begeleiderspas",
       "id": "3.39.0.0.0"
     },
     {
-      "label": "Educatieve dienstverlening",
-      "id": "3.14.0.0.0"
-    },
-    {
       "label": "Gegarandeerd zicht",
       "id": "3.29.0.0.0"
-    },
-    {
-      "label": "Gids",
-      "id": "3.16.0.0.0"
     },
     {
       "label": "Inter-assistentie",
