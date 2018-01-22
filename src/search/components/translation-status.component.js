@@ -14,7 +14,7 @@ angular
 /** @ngInject */
 function TranslationStatusComponent(EventTranslationState) {
   var controller = this;
-  controller.availableLanguages = ['nl','fr','en','de'];
+  controller.availableLanguages = ['nl', 'fr', 'en', 'de'];
   controller.getLanguageTranslationIcon = function(language) {
     var icon = EventTranslationState.NONE.icon;
 
@@ -23,5 +23,5 @@ function TranslationStatusComponent(EventTranslationState) {
     }
 
     return icon;
-  }
+  };
 }

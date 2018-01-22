@@ -150,9 +150,8 @@ function EventFormController(
         EventFormData.selectMainImage(mainImage);
       }
     }
-    
-    EventFormData.name = item.name;
 
+    EventFormData.name = item.name;
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
     // Set correct date object for start and end.

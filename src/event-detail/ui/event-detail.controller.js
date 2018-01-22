@@ -332,7 +332,7 @@ function EventDetail(
 
   $scope.shouldShowLanguageStatus = function() {
     return $scope.event && $scope.event.languages.length > 1;
-  }
+  };
 
   $scope.translateEventDetail = function (label) {
     return $translate.instant('preview.' + label);

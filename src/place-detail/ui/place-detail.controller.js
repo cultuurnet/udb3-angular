@@ -245,5 +245,5 @@ function PlaceDetail(
 
   $scope.shouldShowLanguageStatus = function() {
     return $scope.place && $scope.place.languages.length > 1;
-  }
+  };
 }

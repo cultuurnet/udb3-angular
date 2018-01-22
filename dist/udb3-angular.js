@@ -10647,7 +10647,7 @@ function EventDetail(
 
   $scope.shouldShowLanguageStatus = function() {
     return $scope.event && $scope.event.languages.length > 1;
-  }
+  };
 
   $scope.translateEventDetail = function (label) {
     return $translate.instant('preview.' + label);
@@ -14325,9 +14325,8 @@ function EventFormController(
         EventFormData.selectMainImage(mainImage);
       }
     }
-    
-    EventFormData.name = item.name;
 
+    EventFormData.name = item.name;
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
     // Set correct date object for start and end.
@@ -15593,7 +15592,16 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig, $translate) {
+function EventFormStep5Controller(
+  $scope,
+  EventFormData,
+  eventCrud,
+  udbOrganizers,
+  $uibModal,
+  $rootScope,
+  appConfig,
+  $translate
+) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -20747,7 +20755,7 @@ function PlaceDetail(
 
   $scope.shouldShowLanguageStatus = function() {
     return $scope.place && $scope.place.languages.length > 1;
-  }
+  };
 }
 PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$location", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
 })();
@@ -22142,7 +22150,7 @@ angular
 /** @ngInject */
 function TranslationStatusComponent(EventTranslationState) {
   var controller = this;
-  controller.availableLanguages = ['nl','fr','en','de'];
+  controller.availableLanguages = ['nl', 'fr', 'en', 'de'];
   controller.getLanguageTranslationIcon = function(language) {
     var icon = EventTranslationState.NONE.icon;
 
@@ -22151,7 +22159,7 @@ function TranslationStatusComponent(EventTranslationState) {
     }
 
     return icon;
-  }
+  };
 }
 TranslationStatusComponent.$inject = ["EventTranslationState"];
 })();
