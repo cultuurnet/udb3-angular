@@ -86,16 +86,13 @@ function EventDetail(
 
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'history',
-      header: 'Historiek'
+      id: 'history'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deleteEvent = function () {

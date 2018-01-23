@@ -35,7 +35,7 @@
     <div class="col-xs-9 col-sm-pull-3">
       <ul class="nav nav-tabs">
         <li ng-repeat="tab in tabs" ng-class="{active: isTabActive(tab.id)}" role="tab">
-          <a ng-click="makeTabActive(tab.id)" role="tab" ng-bind="tab.header" href="#"></a>
+          <a ng-click="makeTabActive(tab.id)" role="tab" translate-once="preview.tabs.{{tab.id}}" href="#"></a>
         </li>
       </ul>
 

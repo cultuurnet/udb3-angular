@@ -65,12 +65,10 @@ function PlaceDetail(
   $scope.placeHistory = [];
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deletePlace = function () {

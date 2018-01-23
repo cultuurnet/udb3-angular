@@ -334,6 +334,11 @@ angular.module('udb.core')
       'audience': 'Toegang'
     },
     preview: {
+      tabs: {
+        'data': 'Gegevens',
+        'history': 'Historiek',
+        'publication': 'Publicatie'
+      },
       'not_found': 'Pagina niet gevonden',
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',

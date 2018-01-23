@@ -2862,6 +2862,11 @@ angular.module('udb.core')
       'audience': 'Toegang'
     },
     preview: {
+      tabs: {
+        'data': 'Gegevens',
+        'history': 'Historiek',
+        'publication': 'Publicatie'
+      },
       'not_found': 'Pagina niet gevonden',
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
@@ -8357,16 +8362,13 @@ function EventDetail(
 
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'history',
-      header: 'Historiek'
+      id: 'history'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deleteEvent = function () {
@@ -18435,12 +18437,10 @@ function PlaceDetail(
   $scope.placeHistory = [];
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deletePlace = function () {
@@ -24370,7 +24370,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" translate-once=\"preview.tabs.{{tab.id}}\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "\n" +
@@ -27952,7 +27952,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"col-xs-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" translate-once=\"preview.tabs.{{tab.id}}\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "\n" +
