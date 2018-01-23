@@ -79,7 +79,8 @@ function UdbApi(
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + uitidAuth.getToken()
+      'Authorization': 'Bearer ' + uitidAuth.getToken(),
+      'X-Api-Key': _.get(appConfig, 'apiKey')
     },
     params: {}
   };
@@ -152,7 +153,7 @@ function UdbApi(
     }
 
     return $http
-      .get(appConfig.baseSearchUrl + 'offers/', withoutAuthorization(requestOptions))
+      .get(appConfig.baseUrl + 'offers/', withoutAuthorization(requestOptions))
       .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -267,7 +268,7 @@ function UdbApi(
     var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
 
     return $http
-      .get(appConfig.baseSearchUrl + 'organizers/', configWithQueryParams)
+      .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
   };
 
@@ -512,6 +513,10 @@ function UdbApi(
     var translationData = {};
     translationData[propertyName] = translation;
 
+    if (propertyName === 'name') {
+      propertyName = 'title';
+    }
+
     return $http.post(
       offerLocation + '/' + language + '/' + propertyName,
       translationData,
@@ -556,6 +561,20 @@ function UdbApi(
 
   /**
    * @param {URL} offerLocation
+   *   The location of the offer to update
+   * @param {string[]} facilities
+   *   A list of facility ids
+   */
+  this.updateOfferFacilities = function (offerLocation, facilities) {
+    return $http.put(
+      offerLocation + '/facilities/',
+      {facilities: facilities},
+      defaultApiConfig
+    );
+  };
+
+  /**
+   * @param {URL} offerLocation
    * @param {string} label
    *
    * @return {Promise}
@@ -575,8 +594,9 @@ function UdbApi(
    * @return {Promise}
    */
   this.unlabelOffer = function (offerLocation, label) {
+    // @see https://stackoverflow.com/questions/332872/encode-url-in-javascript
     return $http
-      .delete(offerLocation + '/labels/' + label, defaultApiConfig)
+      .delete(offerLocation + '/labels/' + encodeURIComponent(label), defaultApiConfig)
       .catch(returnApiProblem);
   };
 
@@ -890,10 +910,11 @@ function UdbApi(
 
   this.uploadMedia = function (imageFile, description, copyrightHolder) {
     var uploadOptions = {
-      url: appConfig.baseUrl + 'images',
+      url: appConfig.baseUrl + 'images/',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };
@@ -1306,6 +1327,15 @@ function UdbApi(
     return $http
       .patch(offerUrl.toString(), data, requestOptions)
       .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  this.getCalendarSummary = function(offerUrl, format) {
+    var plainConfig = _.cloneDeep(defaultApiConfig);
+    plainConfig.headers.Accept = 'text/html';
+
+    return $http
+      .get(offerUrl + '/calendar-summary?format=' + format, plainConfig)
+      .then(returnUnwrappedData);
   };
 
   /**

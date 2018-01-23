@@ -22,7 +22,8 @@ function OfferController(
   offerEditor,
   variationRepository,
   $q,
-  appConfig
+  appConfig,
+  $uibModal
 ) {
   var controller = this;
   var cachedOffer;
@@ -44,6 +45,12 @@ function OfferController(
       return udbApi
         .getOffer($scope.event['@id'])
         .then(function (offerObject) {
+          var sortedFacilities = offerObject.facilities.sort(
+            function(a, b) {
+              return a.label.localeCompare(b.label);
+            });
+          offerObject.facilities = sortedFacilities;
+
           cachedOffer = offerObject;
           cachedOffer.updateTranslationState();
 
@@ -138,15 +145,8 @@ function OfferController(
   };
 
   controller.applyPropertyChanges = function (propertyName) {
-    var translation = controller.translation[propertyName],
-        apiProperty;
-
-    // TODO: this is hacky, should decide on consistent name for this property
-    if (propertyName === 'name') {
-      apiProperty = 'title';
-    }
-
-    translateEventProperty(propertyName, translation, apiProperty);
+    var translation = controller.translation[propertyName];
+    translateEventProperty(propertyName, translation, propertyName);
   };
 
   controller.stopTranslating = function () {

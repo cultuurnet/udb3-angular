@@ -60,6 +60,10 @@
         {{language.lang}}
       </button>
     </div>
+
+    <div ng-if="resultViewer.activeSpecific.id === 'accessibility'" class="rv-event-info-accessibility">
+      <udb-offer-accessibility-info offer="event" offer-type="offerType"></udb-offer-accessibility-info>
+    </div>
   </div>
 
   <div class="col-sm-12" ng-show="placeCtrl.translation">

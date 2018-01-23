@@ -64,7 +64,6 @@
                            on-update="validateAddress(error)"></udb-organizer-address>
     <udb-organizer-contact contact="newOrganizer.contact"
                            on-update="validateContact(error)"></udb-organizer-contact>
-
   </section>
 
   <section ng-show="organizersFound">
@@ -118,7 +117,7 @@
   <button type="button" class="btn btn-default" ng-click="cancel()">Sluiten</button>
   <button type="button"
           class="btn btn-primary organisator-toevoegen-bewaren"
-          ng-disabled="disableSubmit"
+          ng-disabled="disableSubmit || contactError"
           ng-click="validateNewOrganizer()">
     Bewaren <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>

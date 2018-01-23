@@ -25,7 +25,9 @@ function SearchController(
   $rootScope,
   eventExporter,
   $translate,
-  searchApiSwitcher
+  searchApiSwitcher,
+  authorization,
+  authorizationService
 ) {
   var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
@@ -49,6 +51,23 @@ function SearchController(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
   $scope.currentPage = getCurrentPage();
+
+  var additionalSpecifics = [
+    {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
+  ];
+  authorizationService
+    .getPermissions()
+    .then(function (userPermissions) {
+      var specifics = _.filter(
+        additionalSpecifics,
+        function (specific) {
+          return !_.has(specific, 'permission') || _.contains(userPermissions, specific.permission);
+        }
+      );
+
+      $scope.resultViewer.enableSpecifics(specifics);
+    })
+  ;
 
   /**
    * Fires off a search for offers using a plain query string or a query object.
@@ -195,17 +214,28 @@ function SearchController(
     eventExporter.activeExport.eventCount = eventCount;
     eventExporter.activeExport.selection = selectedIds;
 
-    if (query && query.queryString.length && queryBuilder.isValid(query)) {
-      var modal = $uibModal.open({
-        templateUrl: 'templates/event-export-modal.html',
-        controller: 'EventExportController',
-        controllerAs: 'exporter',
-        size: 'lg'
-      });
-    } else {
-      $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function(message) {
+    var exportLimit = 5000;
+
+    var tooManyItems = eventCount >= exportLimit;
+
+    if (tooManyItems) {
+      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function(message) {
         $window.alert(message);
       });
+    }
+    else {
+      if (query && query.queryString.length && queryBuilder.isValid(query)) {
+        var modal = $uibModal.open({
+          templateUrl: 'templates/event-export-modal.html',
+          controller: 'EventExportController',
+          controllerAs: 'exporter',
+          size: 'lg'
+        });
+      } else {
+        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function(message) {
+          $window.alert(message);
+        });
+      }
     }
   }
 

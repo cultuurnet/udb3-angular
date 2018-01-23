@@ -8,6 +8,7 @@ describe('Service: UDB3 Api', function () {
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
       baseUrl: baseUrl,
+      apiKey: 'secret api key',
       baseApiUrl: baseUrl,
       baseSearchUrl: baseUrl
     };
@@ -43,7 +44,8 @@ describe('Service: UDB3 Api', function () {
     var headers = {
       'Content-Type': 'application/ld+json;domain-model=RenameRole',
       'Authorization': 'Bearer ' + jwt,
-      'Accept': 'application/json, text/plain, */*'
+      'Accept': 'application/json, text/plain, */*',
+      'X-Api-Key': 'secret api key'
     };
 
     // in order for the headers to match we also need the getMe()
@@ -270,11 +272,20 @@ describe('Service: UDB3 Api', function () {
       'publisher': 'Invoerders Algemeen',
       'calendarType': 'single'
     };
+    var offerSummary = 'http://foobar/event/0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var responseSummary = 'test';
     $httpBackend
       .expectGET(offerLocation)
       .respond(JSON.stringify(response));
     service
       .getOffer(offerLocation)
+      .then(done);
+
+    $httpBackend
+      .expectGET(offerSummary + '/calendar-summary?format=lg')
+      .respond(JSON.stringify(responseSummary));
+    service
+      .getCalendarSummary(offerSummary, 'lg')
       .then(done);
     $httpBackend.flush();
   });
@@ -614,6 +625,7 @@ describe('Service: UDB3 Api', function () {
     var expectedHeaders = {
       'Content-Type': 'application/ld+json;domain-model=SetConstraint',
       'Authorization': 'Bearer bob',
+      'X-Api-Key': 'secret api key',
       'Accept': 'application/json, text/plain, */*'
     };
 
@@ -945,6 +957,22 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend
       .expectDELETE(offerLocation + '/labels/' + label)
+      .respond();
+    service
+      .unlabelOffer(offerLocation, label)
+      .then(done);
+
+    $httpBackend.flush();
+  });
+
+  // unlabelOffer
+  it('should unlabel an offer and encode url', function(done){
+    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
+    var label = '#hash';
+    var url = offerLocation + '/labels/' + encodeURIComponent(label);
+
+    $httpBackend
+      .expectDELETE(url)
       .respond();
     service
       .unlabelOffer(offerLocation, label)
@@ -1439,13 +1467,15 @@ describe('Service: UDB3 Api', function () {
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer undefined'
+        'Authorization': 'Bearer undefined',
+        'X-Api-Key': 'secret api key'
       },
       params: {},
-      url: baseUrl + 'images',
+      url: baseUrl + 'images/',
       fields: {
         description: description,
-        copyrightHolder: copyrightHolder
+        copyrightHolder: copyrightHolder,
+        language: 'nl'
       },
       file: imageFile
     };
@@ -2259,6 +2289,7 @@ describe('Service: UDB3 Api', function () {
     var headers = {
       'Content-Type': 'application/ld+json;domain-model=Approve',
       "Authorization":"Bearer undefined",
+      "X-Api-Key":"secret api key",
       "Accept":"application/json, text/plain, */*"
     };
 
@@ -2286,6 +2317,7 @@ describe('Service: UDB3 Api', function () {
     var headers = {
       'Content-Type': 'application/ld+json;domain-model=Reject',
       "Authorization":"Bearer undefined",
+      "X-Api-Key":"secret api key",
       "Accept":"application/json, text/plain, */*"
     };
 

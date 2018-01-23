@@ -82,6 +82,8 @@ function EventDetail(
   $scope.labelAdded = labelAdded;
   $scope.labelRemoved = labelRemoved;
   $scope.eventHistory = undefined;
+  $scope.calendarSummary = undefined;
+
   $scope.tabs = [
     {
       id: 'data',
@@ -108,8 +110,24 @@ function EventDetail(
     $scope.eventHistory = eventHistory;
   }
 
+  function showCalendarSummary(calendarSummary) {
+    $scope.calendarSummary = calendarSummary;
+  }
+
+  function notifyCalendarSummaryIsUnavailable() {
+    $scope.calendarSummary = false;
+  }
+
   function showOffer(event) {
     cachedEvent = event;
+
+    if (cachedEvent.calendarType === 'permanent') {
+      showCalendarSummary('Altijd open');
+    } else {
+      udbApi
+        .getCalendarSummary($scope.eventId, 'lg')
+        .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
+    }
 
     $scope.event = jsonLDLangFilter(event, language);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -156,6 +174,10 @@ function EventDetail(
 
     if (event.location.type) {
       eventLocation.push(event.location.type.label);
+    }
+
+    if (event.location.address.streetAddress) {
+      eventLocation.push(event.location.address.streetAddress);
     }
 
     if (event.location.address.addressLocality) {
@@ -300,6 +322,10 @@ function EventDetail(
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
+
+  $scope.translateEventDetail = function (label) {
+    return $translate.instant('preview.' + label);
+  };
 
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);

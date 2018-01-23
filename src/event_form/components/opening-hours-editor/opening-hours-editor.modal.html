@@ -1,14 +1,14 @@
 <div class="modal-header">
-    <h4 class="modal-title">Openingsuren</h4>
+    <h4 class="modal-title" translate="calendar.openingHours.opening_hours"></h4>
 </div>
 <div class="modal-body">
     <div class="well text-center add-opening-hours"
          ng-show="ohemc.openingHoursCollection.openingHours.length === 0">
-        <span>24/24 7/7</span>
+        <span translate="calendar.openingHours.permanent_title"></span>
         <br>
-        <span>Elke dag, ieder uur</span>
+        <span translate="calendar.openingHours.permanent_subtitle"></span>
         <br>
-        <button type="button" class="btn btn-primary" ng-click="ohemc.createNewOpeningHours()">Uren toevoegen</button>
+        <button type="button" class="btn btn-primary" ng-click="ohemc.createNewOpeningHours()" translate="calendar.openingHours.add_hours"></button>
     </div>
     <div class="alert alert-danger" role="alert" ng-if="!!ohemc.errors.length">
         <ul>
@@ -18,15 +18,9 @@
     </div>
     <div class="opening-hours" ng-show="ohemc.openingHoursCollection.openingHours.length > 0">
         <div class="opening-hours-labels">
-            <div class="weekdays">
-                Dagen
-            </div>
-            <div class="opening-time">
-                Van
-            </div>
-            <div class="closing-time">
-                Tot
-            </div>
+            <div class="weekdays" translate="calendar.openingHours.days"></div>
+            <div class="opening-time" translate="calendar.openingHours.from"></div>
+            <div class="closing-time" translate="calendar.openingHours.till"></div>
         </div>
         <div class="opening-hours-collection">
             <div class="opening-hours-set" ng-form="openingHoursInfo" ng-repeat="openingHours in ohemc.openingHoursCollection.openingHours">
@@ -63,16 +57,14 @@
         </div>
 
         <div class="add">
-            <a class="btn btn-link btn-plus" ng-click="ohemc.createNewOpeningHours()">
-                Meer openingstijden toevoegen
+            <a class="btn btn-link btn-plus" ng-click="ohemc.createNewOpeningHours()" translate="calendar.openingHours.more_hours">
             </a>
         </div>
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="$dismiss()">Annuleren</button>
+    <button type="button" class="btn btn-default" ng-click="$dismiss()" translate="calendar.openingHours.cancel"></button>
     <button type="button" class="btn btn-primary openingsuren-toevoegen"
-            ng-click="ohemc.saveOpeningHours()">
-        Opslaan
+            ng-click="ohemc.saveOpeningHours()" translate="calendar.openingHours.save">
     </button>
 </div>

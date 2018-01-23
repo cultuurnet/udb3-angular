@@ -11,7 +11,7 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location) {
   var controller = this;
   var organizerId = $stateParams.id;
 
@@ -21,6 +21,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   controller.deleteLabel = deleteLabel;
   controller.labelResponse = '';
   controller.labelsError = '';
+  controller.deleteOrganization = deleteOrganization;
 
   loadOrganizer(organizerId);
 
@@ -70,6 +71,34 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams) {
   function clearLabelsError() {
     controller.labelResponse = '';
     controller.labelsError = '';
+  }
+
+  function goToOrganizerOverview() {
+    $location.path('/manage/organizations');
+  }
+
+  function goToOrganizerOverviewOnJobCompletion(job) {
+    job.task.promise.then(goToOrganizerOverview);
+  }
+
+  function deleteOrganization() {
+    openOrganizationDeleteConfirmModal(controller.organizer);
+  }
+
+  function openOrganizationDeleteConfirmModal(organizer) {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/organization-delete.modal.html',
+      controller: 'OrganizationDeleteModalController',
+      controllerAs: 'odc',
+      resolve: {
+        organization: function () {
+          return organizer;
+        }
+      }
+    });
+
+    modalInstance.result
+      .then(goToOrganizerOverviewOnJobCompletion);
   }
 
   /**

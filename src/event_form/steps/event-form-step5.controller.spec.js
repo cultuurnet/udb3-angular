@@ -29,7 +29,6 @@ describe('Controller: event form step 5', function () {
       'deleteOfferOrganizer',
       'selectMainImage',
       'updateContactPoint',
-      'updateFacilities',
       'updateBookingInfo'
     ]);
     stepController = getController();
@@ -73,6 +72,22 @@ describe('Controller: event form step 5', function () {
     scope.$apply();
 
     expect(scope.savingDescription).toBeFalsy();
+  });
+
+  it('should save an empty description when allowEmpty is true', function () {
+    scope.description = '';
+    spyOn(EventFormData, 'setDescription');
+    spyOn(stepController, 'eventFormSaved');
+
+    eventCrud.updateDescription.and.returnValue($q.resolve());
+
+    scope.saveDescription(true);
+    scope.$apply();
+
+    expect(EventFormData.setDescription).toHaveBeenCalled();
+    expect(scope.savingDescription).toBeFalsy();
+    expect(stepController.eventFormSaved).toHaveBeenCalled();
+    expect(scope.descriptionCssClass).toEqual('state-incomplete');
   });
 
   it('should save an altered description', function () {
@@ -344,84 +359,6 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingContactInfo).toBeFalsy();
   });
 
-  it('should open the facilities modal', function () {
-    EventFormData.facilities = [];
-    spyOn(uibModal, 'open').and.returnValue({
-      result: $q.resolve()
-    });
-
-    scope.openFacilitiesModal();
-    scope.$apply();
-
-    expect(uibModal.open).toHaveBeenCalled();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-    expect(scope.selectedFacilities).toEqual(EventFormData.facilities);
-    expect(scope.facilitiesInapplicable).toBeTruthy();
-  });
-
-  it('should fail in opening the facilities modal and set the state to incomplete', function () {
-    EventFormData.facilities = [];
-    spyOn(uibModal, 'open').and.returnValue({
-      result: $q.reject()
-    });
-
-    scope.openFacilitiesModal();
-    scope.$apply();
-
-    expect(uibModal.open).toHaveBeenCalled();
-    expect(scope.facilitiesCssClass).toEqual('state-incomplete');
-  });
-
-  it('should fail in opening the facilities modal and set the state to complete', function () {
-    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
-    spyOn(uibModal, 'open').and.returnValue({
-      result: $q.reject()
-    });
-
-    scope.openFacilitiesModal();
-    scope.$apply();
-
-    expect(uibModal.open).toHaveBeenCalled();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-  });
-
-  it('should set the facilities on inapplicable', function () {
-    scope.setFacilitiesInapplicable();
-
-    expect(scope.facilitiesInapplicable).toBeTruthy();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-  });
-
-  it('should remove all facilities and set it to inapplicable', function () {
-    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
-
-    eventCrud.updateFacilities.and.returnValue($q.resolve());
-
-    scope.setFacilitiesInapplicable();
-    scope.$apply();
-
-    expect(scope.facilitiesError).toBeFalsy();
-    expect(EventFormData.facilities).toEqual([]);
-
-    expect(scope.savingFacilities).toBeFalsy();
-    expect(scope.facilitiesInapplicable).toBeTruthy();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-  });
-
-  it('should remove all facilities and handle the error', function () {
-    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
-
-    eventCrud.updateFacilities.and.returnValue($q.reject('pakot'));
-
-    scope.setFacilitiesInapplicable();
-    scope.$apply();
-
-    expect(EventFormData.facilities).toEqual([]);
-
-    expect(scope.savingFacilities).toBeFalsy();
-    expect(scope.facilitiesError).toBeTruthy();
-  });
-
   it('should show the booking info toggles based on contact info type', function () {
     var contactInfo = [
       {type: 'phone', value: '1234567890', booking: false},
@@ -429,7 +366,7 @@ describe('Controller: event form step 5', function () {
       {type: 'url', value: 'http://cultuurnet.be', booking: false},
       {type: 'email', value: 'info@mail.com', booking: false},
       {type: 'url', value: 'http://google.be', booking: true},
-      {type: 'email', value: 'dude@sweet.com', booking: false},
+      {type: 'email', value: 'dude@sweet.com', booking: false}
     ];
     scope.contactInfo = contactInfo;
 

@@ -125,7 +125,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.apiUrl = new URL(jsonPlace['@id']);
       }
       this.name = jsonPlace.name || {};
-      this.address = jsonPlace.address.nl || jsonPlace.address || this.address;
+      this.address = (jsonPlace.address && jsonPlace.address.nl) || jsonPlace.address || this.address;
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
       this.calendarType = jsonPlace.calendarType || '';
@@ -189,6 +189,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.availableFrom) {
         this.availableFrom = jsonPlace.availableFrom;
       }
+
+      this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
     },
 
     /**

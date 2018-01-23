@@ -1,6 +1,12 @@
 'use strict';
 
 /**
+ * @typedef {Object} OfferType
+ * @property {string} id
+ * @property {string} label
+ */
+
+/**
  * @ngdoc directive
  * @name udb.search.controller:QueryEditorController
  * @description
@@ -18,7 +24,9 @@ function QueryEditorController(
   fieldTypeTransformers,
   searchHelper,
   $translate,
-  $rootScope
+  $rootScope,
+  eventTypes,
+  placeTypes
 ) {
   var qe = this,
       queryBuilder = LuceneQueryBuilder;
@@ -71,7 +79,8 @@ function QueryEditorController(
   qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
     return 'category_' + term.domain + '_name';
   });
-  qe.termOptions.locationtype = _.filter(taxonomyTerms, {parentid: '8.15.0.0.0'});
+  qe.termOptions.locationtype = placeTypes;
+  qe.termOptions['category_eventtype_name'] = eventTypes; // jshint ignore:line
   _.forEach(queryFields, function (field) {
     if (field.type === 'choice') {
       qe.termOptions[field.name] = field.options;

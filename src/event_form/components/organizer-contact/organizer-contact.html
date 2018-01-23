@@ -1,122 +1,92 @@
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <p><strong>Contact</strong></p>
     </div>
-    <form name="occ.organizerContactWrapper">
-        <div class="col-sm-12">
-            <div ng-show="occ.contact.length === 0">
-                <ul class="list-unstyled">
-                    <li><a ng-click="occ.addOrganizerContactInfo('phone')" href="#">Telefoonnummer toevoegen</a></li>
-                    <li><a ng-click="occ.addOrganizerContactInfo('email')" href="#">E-mailadres toevoegen</a></li>
-                    <li><a ng-click="occ.addOrganizerContactInfo('url')" href="#">Andere website toevoegen</a></li>
-                </ul>
-            </div>
+</div>
+
+
+<div class="row" ng-show="occ.contact.length">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <ul>
+      <li ng-repeat="contact in occ.contact track by $index">
+        {{contact.value}}
+        <button type="button" class="close" aria-label="Close" ng-click="occ.deleteOrganizerContactInfo($index)">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div ng-show="occ.addingContactEntry">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form name="occ.organizerContactWrapper">
+        <div ng-switch="occ.newContact.type">
+          <label ng-switch-when="url">Geef een URL in</label>
+          <label ng-switch-when="email">Geef een e-mailadres in</label>
+          <label ng-switch-when="phone">Geef een telefoonnummer in</label>
+        </div>
+        <div ng-switch="occ.newContact.type">
+          <div ng-switch-when="url" class="form-group" ng-class="{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }">
+              <ng-form name="urlContactForm">
+                  <input type="text" name="url" udb-http-prefix class="form-control" ng-model="occ.newContact.value" ng-pattern="/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$/" ng-model-options="{allowInvalid:true}" required>
+                  <div class="help-block" ng-messages="urlContactForm.url.$error" ng-show="!occ.isPristine && urlContactForm.url.$error">
+                      <p ng-message="required">
+                          Gelieve dit veld niet leeg te laten.
+                      </p>
+                      <p ng-message="pattern">
+                          Gelieve een geldige url in te vullen.
+                      </p>
+                  </div>
+              </ng-form>
+          </div>
+          <div ng-switch-when="email" class="form-group" ng-class="{ 'has-error': mailContactForm.email.$touched && mailContactForm.email.$invalid }">
+              <ng-form name="mailContactForm">
+                  <input type="text" name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/" class="form-control" ng-model="occ.newContact.value" ng-model-options="{allowInvalid:true}" required>
+                  <div class="help-block" ng-messages="mailContactForm.email.$error" ng-show="!occ.isPristine && mailContactForm.email.$error">
+                      <p ng-message="required">
+                          Gelieve dit veld niet leeg te laten.
+                      </p>
+                      <p ng-message="pattern">
+                          Gelieve een geldig e-mailadres in te vullen.
+                      </p>
+                  </div>
+              </ng-form>
+          </div>
+          <div ng-switch-default class="form-group" ng-class="{ 'has-error': phoneContactForm.phone.$touched && phoneContactForm.phone.$invalid }">
+              <ng-form name="phoneContactForm">
+                  <input type="tel" name="phone" class="form-control" ng-model="occ.newContact.value" ng-pattern="/^[^a-zA-Z]*$/" ng-model-options="{allowInvalid:true}" required>
+                  <div class="help-block" ng-messages="phoneContactForm.phone.$error" ng-show="!occ.isPristine && phoneContactForm.phone.$error">
+                      <p ng-message="required">
+                          Gelieve dit veld niet leeg te laten.
+                      </p>
+                      <p ng-message="pattern">
+                          Gelieve een geldig telefoonnummer in te vullen.</p>
+                  </div>
+              </ng-form>
+          </div>
         </div>
 
-        <div class="col-sm-12"
-             ng-show="occ.contact.length">
-            <div class="row contact-row"
-                 ng-repeat="contact in occ.contact track by $index">
+        <button type="button" ng-click="occ.cancelOrganizerContactEntry()" class="btn btn-link">
+            Annuleren
+        </button>
 
-                <div class="col-sm-5">
-                    <select class="form-control"
-                            ng-model="contact.type"
-                            ng-change="occ.validateContact()">
-                        <option value="url">Website</option>
-                        <option value="phone">Telefoonnummer</option>
-                        <option value="email">E-mailadres</option>
-                    </select>
-                </div>
-                <div class="col-sm-6">
-                    <ng-form name="organizerContact"
-                             ng-switch="contact.type"
-                             ng-class="{'has-error' : (organizerContact.contact.$touched && organizerContact.contact.$invalid) ||
-                             (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted)}"
-                             >
-                        <input type="text"
-                               ng-switch-when="url"
-                               udb-http-prefix
-                               class="form-control"
-                               ng-model="contact.value"
-                               ng-model-options="{ updateOn: 'blur',allowInvalid: true}"
-                               ng-pattern="/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-]*$/"
-                               ng-change="occ.validateContact()"
-                               name="contact"
-                               required/>
-                        <input type="text"
-                               ng-switch-when="email"
-                               ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/"
-                               class="form-control"
-                               ng-model="contact.value"
-                               ng-model-options="{ updateOn: 'blur',allowInvalid: true}"
-                               ng-change="occ.validateContact()"
-                               name="contact"
-                               required/>
-                        <input type="text"
-                               ng-switch-default
-                               class="form-control"
-                               ng-model="contact.value"
-                               ng-pattern="/^[^a-zA-Z]*$/"
-                               ng-model-options="{ updateOn: 'blur',allowInvalid: true}"
-                               ng-change="occ.validateContact()"
-                               name="contact"
-                               required/>
-                    </ng-form>
-                    <ng-messages for="organizerContact.contact.$error"
-                                 ng-if="contact.type==='url'"
-                                 class="has-error"
-                                 ng-show="(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||
-                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)">
-                        <ng-message when="pattern"
-                                    class="help-block">
-                            Gelieve een geldige url in te vullen.
-                        </ng-message>
-                    </ng-messages>
-                    <ng-messages for="organizerContact.contact.$error"
-                                 ng-if="contact.type==='email'"
-                                 class="has-error"
-                                 ng-show="(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||
-                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)">
-                        <ng-message when="pattern"
-                                    class="help-block">
-                            Gelieve een geldig e-mailadres in te vullen.
-                        </ng-message>
-                    </ng-messages>
-                    <ng-messages for="organizerContact.contact.$error"
-                                 ng-if="contact.type==='phone'"
-                                 class="has-error"
-                                 ng-show="(organizerContact.contact.$dirty && organizerContact.contact.$invalid && contact.value) ||
-                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && contact.value)">
-                        <ng-message when="pattern"
-                                    class="help-block">
-                            Gelieve een geldig telefoonnummer in te vullen.
-                        </ng-message>
-                    </ng-messages>
-                    <ng-messages for="organizerContact.contact.$error"
-                                 class="has-error"
-                                 ng-show="(organizerContact.contact.$dirty && organizerContact.contact.$invalid && !contact.value) ||
-                                 (organizerContact.contact.$invalid && occ.organizerContactWrapper.$submitted && !contact.value)">
-                        <ng-message when="required"
-                                    class="help-block">
-                            Gelieve dit veld niet leeg te laten.
-                        </ng-message>
-                    </ng-messages>
-                </div>
-                <div class="col-sm-1">
-                    <button type="button"
-                            class="close"
-                            aria-label="Close"
-                            ng-click="occ.deleteOrganizerContactInfo($index)">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12"
-             ng-show="occ.contact.length">
-            <p>
-                <a ng-click="occ.addOrganizerContactInfo('url')" href="#">Meer contactgegevens toevoegen</a>
-            </p>
-        </div>
-    </form>
+        <button type="button" ng-click="occ.addOrganizerContactInfo()" class="btn btn-default" ng-disabled="occ.isPristine">
+            Toevoegen
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row" ng-hide="occ.addingContactEntry">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-unstyled">
+            <li><a ng-click="occ.addOrganizerContactEntry('phone')" href="#">Telefoonnummer toevoegen</a></li>
+            <li><a ng-click="occ.addOrganizerContactEntry('email')" href="#">E-mailadres toevoegen</a></li>
+            <li><a ng-click="occ.addOrganizerContactEntry('url')" href="#">Andere website toevoegen</a></li>
+        </ul>
+    </div>
 </div>

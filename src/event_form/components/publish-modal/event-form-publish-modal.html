@@ -4,29 +4,23 @@
 <div id="event-form-publish-modal" class="modal-body">
   <p>Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>
     <div ng-if="!efpmc.eventFormData.availableFrom" class="form-inline">
-      <div class="form-group">
-        <div class="radio">
-          <label>
-            Op
-          </label>
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <input  type="text"
-                    class="form-control"
-                    uib-datepicker-popup="{{efpmc.drp.dateFormat}}"
-                    ng-model="efpmc.publicationDate"
-                    is-open="efpmc.drp.startOpened"
-                    ng-required="true"
-                    ng-focus="efpmc.onFocus()"
-                    datepicker-options="efpmc.drp.options"/>
-            <span class="input-group-btn">
-            <button type="button" class="btn btn-default" ng-click="efpmc.drp.startOpened = !efpmc.drp.startOpened">
-            <i class="fa fa-calendar"></i>
-            </button>
-            </span>
-          </div>
-        </div>
+      <div class="input-group">
+      <input
+             class="form-control"
+             type="text"
+             uib-datepicker-popup="dd/MM/yyyy"
+             datepicker-options="efpmc.drp.options"
+             ng-model="efpmc.publicationDate"
+             show-button-bar="false"
+             on-open-focus="true"
+             is-open="efpmc.opened"
+             ng-required="true"
+             ng-click="efpmc.toggleDatePicker()" />
+      <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="efpmc.toggleDatePicker()">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+          </button>
+      </span>
       </div>
     </div>
     <br>
