@@ -19,7 +19,7 @@ function EventDetail(
   jsonLDLangFilter,
   variationRepository,
   offerEditor,
-  $location,
+  $state,
   $uibModal,
   $q,
   $window,
@@ -219,20 +219,14 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-    var eventId;
-    // When an event is published $scope.eventId is empty,
-    // so get the eventId straight from the current url.
-    if (_.isEmpty($scope.eventId)) {
-      eventId = $location.url().split('/')[2];
-    }
-    else {
-      eventId = $scope.eventId.split('/').pop();
-    }
-    $location.path('/event/' + eventId + '/edit');
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+
+    $state.go('split.eventEdit', {id: id});
   };
 
   function goToDashboard() {
-    $location.path('/dashboard');
+    $state.go('split.footer.dashboard');
   }
 
   /**
