@@ -10143,7 +10143,7 @@ function OrganizerContactComponent($scope) {
   function validateContact() {
     if (_.find(controller.contact, {'value': ''}) ||
         _.find(controller.contact, {'value': undefined}) ||
-        controller.organizerContactWrapper.$invalid) {
+        (controller.organizerContactWrapper.$invalid &&  controller.organizerContactWrapper.$dirty)) {
       controller.contactHasErrors = true;
     }
     else {
@@ -25204,7 +25204,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <label ng-switch-when=\"url\">Geef een URL in</label>\n" +
     "          <label ng-switch-when=\"email\">Geef een e-mailadres in</label>\n" +
-    "          <label ng-switch-when=\"phone\">Geef een telefoonnummer in</label>\n" +
+    "          <label ng-switch-when=\"phone\">Geef een telefoonnummer in<small class=\"text-muted\">, bv. 011 32 43 54</small></label>\n" +
     "        </div>\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
