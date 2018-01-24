@@ -9,7 +9,7 @@
       <div ng-show="$ctrl.price.length == 0">
         <section>
           <a class="btn btn-default to-filling"
-             ng-click="$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()"
+             ng-click="$ctrl.priceCssClass = 'state-filling'; $ctrl.changePrice()"
              translate="eventForm.step5.priceInfo.add_prices">
           </a>
           <a class="btn btn-link"
@@ -23,7 +23,7 @@
             <td translate="eventForm.step5.priceInfo.prices"></td>
             <td>
               <a class="btn btn-default pull-right"
-                 ng-click="$ctrl.openModal()"
+                 ng-click="$ctrl.changePrice()"
                  translate="eventForm.step5.priceInfo.change">
             </a>
             </td>

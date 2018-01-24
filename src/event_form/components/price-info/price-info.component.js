@@ -23,6 +23,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
   var controller = this;
 
   controller.setPriceFree = setPriceFree;
+  controller.changePrice = changePrice;
   controller.openModal = openModal;
   controller.$onInit = init;
 
@@ -48,6 +49,42 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
         controller.priceCssClass = 'state-complete';
       }
     });
+  }
+
+
+  function openModal() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/price-form-modal.html',
+      controller: 'PriceFormModalController',
+      controllerAs: 'pfmc',
+      size: 'lg',
+      resolve: {
+        price: function () {
+          return controller.price;
+        }
+      }
+    });
+  }
+
+
+  function changePrice() {
+    if (controller.organizer && controller.price.length > 0) {
+      // check ticketsales
+      udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
+        if (hasTicketSales) {
+          controller.hasTicketSales = hasTicketSales;
+          return;
+        } else {
+          openModal();
+        }
+      }, function() {
+        controller.hasUitpasError = true;
+      });
+    }
+    else {
+      console.log('openmodal called');
+      openModal();
+    }
   }
 
   function openModal() {

@@ -199,11 +199,21 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingOrganizer).toEqual(false);
   });
 
+  it('should not delete the organizer when the event has sold tickets', function() {
+      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true))
+      EventFormData.organizer.isUitpas = true;
+      scope.deleteOrganizerHandler();
+      scope.$apply();
+
+      expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+      expect(eventCrud.deleteOfferOrganizer).not.toHaveBeenCalled();
+  });
+
   it('should persist and reset the event organizer when removing it', function () {
     eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
     spyOn(EventFormData, 'resetOrganizer');
 
-    scope.deleteOrganizer();
+    scope.deleteOrganizerHandler();
     scope.$apply();
 
     expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
@@ -214,7 +224,7 @@ describe('Controller: event form step 5', function () {
     eventCrud.deleteOfferOrganizer.and.returnValue($q.reject('BOOOM!'));
     spyOn(stepController, 'showAsyncOrganizerError');
 
-    scope.deleteOrganizer();
+    scope.deleteOrganizerHandler();
     scope.$apply();
 
     expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
