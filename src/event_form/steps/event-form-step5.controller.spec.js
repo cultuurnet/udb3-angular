@@ -4,7 +4,7 @@ describe('Controller: event form step 5', function () {
 
   beforeEach(module('udb.event-form'));
 
-  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance;
+  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, udbUitpasApi;
   var AgeRange = {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
     'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
@@ -30,6 +30,9 @@ describe('Controller: event form step 5', function () {
       'selectMainImage',
       'updateContactPoint',
       'updateBookingInfo'
+    ]);
+    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', [
+        'getTicketSales'
     ]);
     stepController = getController();
   }));
@@ -199,14 +202,31 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingOrganizer).toEqual(false);
   });
 
-  it('should not delete the organizer when the event has sold tickets', function() {
-      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true))
-      EventFormData.organizer.isUitpas = true;
+  it('should delete an organizer when there is no priceInfo', function() {
+      eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
+
+      scope.deleteOrganizerHandler();
+      scope.$apply();
+
+      expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
+  });
+
+  fit('should not delete the organizer when the event has sold tickets', function() {
+      EventFormData.priceInfo = [
+          {
+            category: 'base',
+            name: 'Basistarief',
+            priceCurrency: 'EUR',
+            price: 4.00
+          }
+      ];
+      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true));
+
       scope.deleteOrganizerHandler();
       scope.$apply();
 
       expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
-      expect(eventCrud.deleteOfferOrganizer).not.toHaveBeenCalled();
+      expect(scope.hasTicketSales).toBeTruthy();
   });
 
   it('should persist and reset the event organizer when removing it', function () {

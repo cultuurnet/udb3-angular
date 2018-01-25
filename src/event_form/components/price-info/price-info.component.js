@@ -18,7 +18,7 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
 
   var controller = this;
 
@@ -82,7 +82,6 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
       });
     }
     else {
-      console.log('openmodal called');
       openModal();
     }
   }

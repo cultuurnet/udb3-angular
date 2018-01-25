@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Component: price info', function () {
-  var $componentController, $rootScope, $scope, eventCrud, udbUitpasApi, $q, UdbOrganizer, uibModal, eventCrud;
+  var $componentController, $rootScope, $scope, eventCrud, udbUitpasApi, $q, UdbOrganizer, uibModal;
   var appConfig = {
     uitpasUrl: 'http://foo.bar/',
   };
@@ -53,8 +53,6 @@ describe('Component: price info', function () {
   beforeEach(module('udb.event-form', function($provide) {
     $provide.constant('appConfig', appConfig);
 
-    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', ['getTicketSales']);
-
     $provide.provider('udbUitpasApi', {
       $get: function () {
         return udbUitpasApi;
@@ -76,14 +74,18 @@ describe('Component: price info', function () {
     $q = $injector.get('$q');
     uibModal = $injector.get('$uibModal');
     eventCrud = jasmine.createSpyObj('eventCrud', [
-      'updatePriceInfo',
+      'updatePriceInfo'
     ]);
+    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', ['getTicketSales']);
   }));
 
    it('should open the price modal when there is no price-info yet and therefore no ticketsales', function() {
        var controller = getController();
 
-       spyOn(uibModal, 'open');
+       spyOn(uibModal, 'open').and.returnValue({
+         result: $q.resolve()
+       });
+       eventCrud.updatePriceInfo.and.returnValue($q.resolve());
 
        controller.changePrice();
        $scope.$apply();
@@ -93,33 +95,65 @@ describe('Component: price info', function () {
 
   it('should not open the price edit modal when tickets have been sold', function() {
       var controller = getController();
+      controller.price = [
+        {
+          category: 'base',
+          name: 'Basistarief',
+          priceCurrency: 'EUR',
+          price: 4.00
+        }
+      ];
 
-      spyOn(uibModal, 'open');
-      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true))
-      eventCrud.updatePriceInfo.and.returnValue($q.resolve())
+      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true));
 
-      controller.openModal();
+      controller.changePrice();
       $scope.$apply();
 
       expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
-      expect(uibModal.open).not.toHaveBeenCalled();
-      expect(eventCrud.updatePriceInfo).not.toHaveBeenCalled();
+      expect(controller.hasTicketSales).toBeTruthy();
   });
 
   it('should open the price edit modal when no tickets have been sold', function() {
       var controller = getController();
+      controller.price = [
+        {
+          category: 'base',
+          name: 'Basistarief',
+          priceCurrency: 'EUR',
+          price: 4.00
+        }
+      ];
 
       spyOn(uibModal, 'open').and.returnValue({
         result: $q.resolve()
       });
-      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(false))
-      eventCrud.updatePriceInfo.and.returnValue($q.resolve())
+      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(false));
+      eventCrud.updatePriceInfo.and.returnValue($q.resolve());
 
-      controller.openModal();
+      controller.changePrice();
       $scope.$apply();
 
       expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
       expect(uibModal.open).toHaveBeenCalled();
       expect(eventCrud.updatePriceInfo).toHaveBeenCalled();
+  });
+
+  it('should throw an error when UiTPAS service rejects the request', function() {
+      var controller = getController();
+      controller.price = [
+        {
+          category: 'base',
+          name: 'Basistarief',
+          priceCurrency: 'EUR',
+          price: 4.00
+        }
+      ];
+
+      udbUitpasApi.getTicketSales.and.returnValue($q.reject());
+
+      controller.changePrice();
+      $scope.$apply();
+
+      expect(controller.hasUitpasError).toBeTruthy();
   });
 });
