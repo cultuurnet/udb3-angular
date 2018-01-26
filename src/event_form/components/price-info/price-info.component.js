@@ -51,22 +51,6 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
     });
   }
 
-
-  function openModal() {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/price-form-modal.html',
-      controller: 'PriceFormModalController',
-      controllerAs: 'pfmc',
-      size: 'lg',
-      resolve: {
-        price: function () {
-          return controller.price;
-        }
-      }
-    });
-  }
-
-
   function changePrice() {
     if (controller.organizer && controller.price.length > 0) {
       // check ticketsales
