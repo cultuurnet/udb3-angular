@@ -4,7 +4,10 @@ describe('Controller: event form step 5', function () {
 
   beforeEach(module('udb.event-form'));
 
-  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance;
+  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, udbUitpasApi;
+  var appConfig = {
+    uitpasUrl: 'http://foo.bar/',
+  };
   var AgeRange = {
     'ALL': {'value': 0, 'label': 'Alle leeftijden'},
     'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
@@ -20,6 +23,7 @@ describe('Controller: event form step 5', function () {
     UdbOrganizer = $injector.get('UdbOrganizer');
     $q = $injector.get('$q');
     uibModal = $injector.get('$uibModal');
+
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['suggestOrganizers']);
     eventCrud = jasmine.createSpyObj('eventCrud', [
       'updateDescription',
@@ -31,6 +35,7 @@ describe('Controller: event form step 5', function () {
       'updateContactPoint',
       'updateBookingInfo'
     ]);
+    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', ['getTicketSales']);
     stepController = getController();
   }));
 
@@ -41,7 +46,9 @@ describe('Controller: event form step 5', function () {
       eventCrud: eventCrud,
       udbOrganizers: udbOrganizers,
       $uibModal: uibModal,
-      $rootScope: rootScope
+      $rootScope: rootScope,
+      appConfig: appConfig,
+      udbUitpasApi: udbUitpasApi
     });
   }
 
@@ -199,11 +206,75 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingOrganizer).toEqual(false);
   });
 
+  it('should delete an organizer when there is no priceInfo', function() {
+      eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
+
+      scope.deleteOrganizerHandler();
+      scope.$apply();
+
+      expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
+  });
+
+  it('should not delete the organizer when the event has sold tickets', function() {
+      EventFormData.priceInfo = [
+          {
+            category: 'base',
+            name: 'Basistarief',
+            priceCurrency: 'EUR',
+            price: 4.00
+          }
+      ];
+      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true));
+
+      scope.deleteOrganizerHandler();
+      scope.$apply();
+
+      expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+      expect(scope.hasTicketSales).toBeTruthy();
+  });
+
+  it('should delete the organizer when the event has no sold tickets', function() {
+    EventFormData.priceInfo = [
+      {
+        category: 'base',
+        name: 'Basistarief',
+        priceCurrency: 'EUR',
+        price: 4.00
+      }
+    ];
+    udbUitpasApi.getTicketSales.and.returnValue($q.resolve(false));
+    eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
+
+    scope.deleteOrganizerHandler();
+    scope.$apply();
+
+    expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+    expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
+  });
+
+  it('should throw an error when the call to UiTPAS fails', function() {
+    EventFormData.priceInfo = [
+      {
+        category: 'base',
+        name: 'Basistarief',
+        priceCurrency: 'EUR',
+        price: 4.00
+      }
+    ];
+    udbUitpasApi.getTicketSales.and.returnValue($q.reject());
+
+    scope.deleteOrganizerHandler();
+    scope.$apply();
+
+    expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+    expect(scope.hasUitpasError).toBeTruthy();
+  });
+
   it('should persist and reset the event organizer when removing it', function () {
     eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
     spyOn(EventFormData, 'resetOrganizer');
 
-    scope.deleteOrganizer();
+    scope.deleteOrganizerHandler();
     scope.$apply();
 
     expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
@@ -214,7 +285,7 @@ describe('Controller: event form step 5', function () {
     eventCrud.deleteOfferOrganizer.and.returnValue($q.reject('BOOOM!'));
     spyOn(stepController, 'showAsyncOrganizerError');
 
-    scope.deleteOrganizer();
+    scope.deleteOrganizerHandler();
     scope.$apply();
 
     expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
