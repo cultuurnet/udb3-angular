@@ -13,9 +13,7 @@ angular
     templateUrl: 'templates/priceInfo.html',
     controller: PriceInfoComponent,
     bindings: {
-      price: '<',
-      eventId: '<',
-      organizer: '<'
+      price: '<'
     }
   });
 
@@ -25,10 +23,9 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   var controller = this;
 
   controller.setPriceFree = setPriceFree;
+  controller.changePrice = changePrice;
   controller.openModal = openModal;
   controller.$onInit = init;
-  controller.hasTicketSales = false;
-  controller.hasUitpasError = false;
 
   function setPriceFree() {
 
@@ -54,30 +51,39 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
     });
   }
 
-  function openModal() {
-    udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
-      if (hasTicketSales) {
-        controller.hasTicketSales = hasTicketSales;
-
-        return;
-      }
-
-      var modalInstance = $uibModal.open({
-        templateUrl: 'templates/price-form-modal.html',
-        controller: 'PriceFormModalController',
-        controllerAs: 'pfmc',
-        size: 'lg',
-        resolve: {
-          price: function () {
-            return controller.price;
-          }
+  function changePrice() {
+    if (controller.organizer && controller.price.length > 0) {
+      // check ticketsales
+      udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
+        if (hasTicketSales) {
+          controller.hasTicketSales = hasTicketSales;
+          return;
+        } else {
+          openModal();
         }
+      }, function() {
+        controller.hasUitpasError = true;
       });
+    }
+    else {
+      openModal();
+    }
+  }
 
-      modalInstance.result.then(savePrice, cancelPrice);
-    }, function() {
-      controller.hasUitpasError = true;
+  function openModal() {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/price-form-modal.html',
+      controller: 'PriceFormModalController',
+      controllerAs: 'pfmc',
+      size: 'lg',
+      resolve: {
+        price: function () {
+          return controller.price;
+        }
+      }
     });
+
+    modalInstance.result.then(savePrice, cancelPrice);
   }
 
   function init() {

@@ -59,6 +59,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
+      this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
     }
   };
 

@@ -16,7 +16,7 @@ function PlaceDetail(
   $scope,
   placeId,
   udbApi,
-  $location,
+  $state,
   jsonLDLangFilter,
   variationRepository,
   offerEditor,
@@ -126,16 +126,10 @@ function PlaceDetail(
   };
 
   $scope.openEditPage = function() {
-    var placeId;
-    // When a place is published $scope.placeId is empty,
-    // so get the placeId straight from the current url.
-    if (_.isEmpty($scope.placeId)) {
-      placeId = $location.url().split('/')[2];
-    }
-    else {
-      placeId = $scope.placeId.split('/').pop();
-    }
-    $location.path('/place/' + placeId + '/edit');
+    var placeLocation = $scope.placeId.toString();
+    var id = placeLocation.split('/').pop();
+
+    $state.go('split.placeEdit', {id: id});
   };
 
   $scope.updateDescription = function(description) {
@@ -153,7 +147,7 @@ function PlaceDetail(
   };
 
   function goToDashboard() {
-    $location.path('/dashboard');
+    $state.go('split.footer.dashboard');
   }
 
   /**
