@@ -10748,7 +10748,9 @@ angular
     templateUrl: 'templates/priceInfo.html',
     controller: PriceInfoComponent,
     bindings: {
-      price: '<'
+      price: '<',
+      eventId: '<',
+      organizer: '<'
     }
   });
 
