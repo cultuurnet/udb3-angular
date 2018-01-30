@@ -100,6 +100,7 @@ angular
     'udb.config',
     'udb.entry',
     'udb.search',
+    'udb.uitpas',
     'ngFileUpload',
     'duScroll',
     'focus-if',
@@ -3214,7 +3215,10 @@ angular.module('udb.core')
       uitpasInfo: {
         'uitpas': 'UiTPAS',
         'uitpas_alert': 'Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.',
-        'uitpas_info': 'Dit is een UiTPAS activiteit.'
+        'uitpas_info': 'Dit is een UiTPAS activiteit.',
+        'cantChangePrice': 'Voor dit evenement zijn al UiTPAS-tickets verkocht met de bestaande prijsinformatie. Je kan de prijsinformatie niet meer wijzigen.',
+        'cantChangeOrganiser': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.',
+        'unavailable': 'UiTPAS kan momenteel niet bereikt worden, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be).'
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',
@@ -10744,16 +10748,19 @@ angular
     templateUrl: 'templates/priceInfo.html',
     controller: PriceInfoComponent,
     bindings: {
-      price: '<'
+      price: '<',
+      eventId: '<',
+      organizer: '<'
     }
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
 
   var controller = this;
 
   controller.setPriceFree = setPriceFree;
+  controller.changePrice = changePrice;
   controller.openModal = openModal;
   controller.$onInit = init;
 
@@ -10779,6 +10786,24 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
         controller.priceCssClass = 'state-complete';
       }
     });
+  }
+
+  function changePrice() {
+    if (controller.organizer && controller.price.length > 0) {
+      // check ticketsales
+      udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
+        if (hasTicketSales) {
+          controller.hasTicketSales = hasTicketSales;
+        } else {
+          openModal();
+        }
+      }, function() {
+        controller.hasUitpasError = true;
+      });
+    }
+    else {
+      openModal();
+    }
   }
 
   function openModal() {
@@ -10833,7 +10858,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
     controller.price = EventFormData.priceInfo;
   }
 }
-PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope"];
+PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope", "udbUitpasApi"];
 })();
 
 // Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
@@ -13506,7 +13531,16 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig) {
+function EventFormStep5Controller(
+    $scope,
+    EventFormData,
+    eventCrud,
+    udbOrganizers,
+    $uibModal,
+    $rootScope,
+    appConfig,
+    udbUitpasApi
+  ) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -13591,13 +13625,17 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
   $scope.selectOrganizer = selectOrganizer;
-  $scope.deleteOrganizer = deleteOrganizer;
+  $scope.deleteOrganizerHandler = deleteOrganizerHandler;
   $scope.openOrganizerModal = openOrganizerModal;
 
   // Contact info functions.
   $scope.deleteContactInfo = deleteContactInfo;
   $scope.saveContactInfo = saveContactInfo;
   $scope.addContactInfo = addContactInfo;
+
+  // Uitpas info
+  $scope.hasTicketSales = false;
+  $scope.hasUitpasError = false;
 
   // Image upload functions.
   $scope.openUploadImageModal = openUploadImageModal;
@@ -13708,6 +13746,26 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.organizerError = true;
     $scope.savingOrganizer = false;
   };
+
+  function deleteOrganizerHandler() {
+    if (EventFormData.priceInfo.length > 0) {
+      udbUitpasApi.getTicketSales($scope.eventFormData.id, $scope.eventFormData.organizer)
+        .then(
+          function(hasTicketSales) {
+            if (hasTicketSales) {
+              $scope.hasTicketSales = hasTicketSales;
+            }
+            else {
+              deleteOrganizer();
+            }
+          }, function() {
+            $scope.hasUitpasError = true;
+          });
+    }
+    else {
+      deleteOrganizer();
+    }
+  }
 
   /**
    * Delete the selected organiser.
@@ -14076,7 +14134,7 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   }
 
 }
-EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig"];
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi"];
 })();
 
 // Source: src/export/event-export-job.factory.js
@@ -23662,6 +23720,33 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   };
 
   /**
+   * getTicketSales
+   * @param {string} eventId
+   * @param {Organizer} organizer
+   * @return {Promise.<hasTicketSales>}
+   */
+  this.getTicketSales = function(eventId, organizer) {
+    var deferred = $q.defer();
+    var until = moment().add(uitpasMaxDelay, 's');
+
+    function request () {
+      return $http.get(uitpasApiUrl + 'events/' + eventId, defaultApiConfig);
+    }
+
+    function returnTicketSales(response) {
+      return response.data.hasTicketSales;
+    }
+
+    if (organizer.isUitpas) {
+      deferred.resolve(retry(request, 2, until).then(returnTicketSales));
+    } else {
+      deferred.resolve(false);
+    }
+
+    return deferred.promise;
+  };
+
+  /**
    * @param {string} organizerId of the organizer
    * @return {Promise.<CardSystem[]>}
    */
@@ -25599,7 +25684,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div ng-show=\"$ctrl.price.length == 0\">\n" +
     "        <section>\n" +
     "          <a class=\"btn btn-default to-filling\"\n" +
-    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.openModal()\"\n" +
+    "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.changePrice()\"\n" +
     "             translate=\"eventForm.step5.priceInfo.add_prices\">\n" +
     "          </a>\n" +
     "          <a class=\"btn btn-link\"\n" +
@@ -25613,7 +25698,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <td translate=\"eventForm.step5.priceInfo.prices\"></td>\n" +
     "            <td>\n" +
     "              <a class=\"btn btn-default pull-right\"\n" +
-    "                 ng-click=\"$ctrl.openModal()\"\n" +
+    "                 ng-click=\"$ctrl.changePrice()\"\n" +
     "                 translate=\"eventForm.step5.priceInfo.change\">\n" +
     "            </a>\n" +
     "            </td>\n" +
@@ -25631,6 +25716,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
+    "        <div ng-if=\"$ctrl.hasTicketSales\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.cantChangePrice\"></div>\n" +
+    "        <div ng-if=\"$ctrl.hasUitpasError\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.unavailable\"></div>\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
@@ -26407,10 +26494,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <section class=\"state complete\">\n" +
     "                <span>\n" +
     "                  <span ng-bind=\"eventFormData.organizer.name\"></span>\n" +
-    "                  <a class=\"close\" ng-click=\"deleteOrganizer()\">\n" +
+    "                  <a class=\"close\" ng-click=\"deleteOrganizerHandler()\">\n" +
     "                    <span aria-hidden=\"true\"> &times;</span>\n" +
     "                  </a>\n" +
     "                </span>\n" +
+    "                <div ng-if=\"hasTicketSales\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.cantChangeOrganiser\"></div>\n" +
+    "                <div ng-if=\"hasUitpasError\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.unavailable\"></div>\n" +
     "              </section>\n" +
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
@@ -26449,7 +26538,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\"></price-info>\n" +
+    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\" event-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"eventFormData.priceInfo\"></uitpas-info>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
