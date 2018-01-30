@@ -3,7 +3,7 @@
 describe('Component: price info', function () {
   var $componentController, $rootScope, $scope, eventCrud, udbUitpasApi, $q, UdbOrganizer, uibModal;
   var appConfig = {
-    uitpasUrl: 'http://foo.bar/',
+    uitpasUrl: 'http://foo.bar/'
   };
 
   function getOrganizerObject(isUitPas) {
@@ -38,7 +38,7 @@ describe('Component: price info', function () {
     {
       $scope: $scope,
       $rootScope: $rootScope,
-      $uibModal: uibModal,
+      $uibModal: uibModal
     },
     {
       organizer: getOrganizerObject(isUitPas),

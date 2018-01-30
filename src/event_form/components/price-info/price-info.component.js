@@ -59,7 +59,6 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
       udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
         if (hasTicketSales) {
           controller.hasTicketSales = hasTicketSales;
-          return;
         } else {
           openModal();
         }

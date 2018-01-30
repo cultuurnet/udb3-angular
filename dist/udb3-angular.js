@@ -10794,7 +10794,6 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
       udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
         if (hasTicketSales) {
           controller.hasTicketSales = hasTicketSales;
-          return;
         } else {
           openModal();
         }
@@ -13755,7 +13754,6 @@ function EventFormStep5Controller(
           function(hasTicketSales) {
             if (hasTicketSales) {
               $scope.hasTicketSales = hasTicketSales;
-              return;
             }
             else {
               deleteOrganizer();
@@ -23723,7 +23721,8 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
   /**
    * getTicketSales
-   * @param  {string} eventId
+   * @param {string} eventId
+   * @param {Organizer} organizer
    * @return {Promise.<hasTicketSales>}
    */
   this.getTicketSales = function(eventId, organizer) {

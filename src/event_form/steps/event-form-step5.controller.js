@@ -242,7 +242,6 @@ function EventFormStep5Controller(
           function(hasTicketSales) {
             if (hasTicketSales) {
               $scope.hasTicketSales = hasTicketSales;
-              return;
             }
             else {
               deleteOrganizer();

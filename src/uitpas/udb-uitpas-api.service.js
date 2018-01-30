@@ -54,7 +54,8 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
 
   /**
    * getTicketSales
-   * @param  {string} eventId
+   * @param {string} eventId
+   * @param {Organizer} organizer
    * @return {Promise.<hasTicketSales>}
    */
   this.getTicketSales = function(eventId, organizer) {

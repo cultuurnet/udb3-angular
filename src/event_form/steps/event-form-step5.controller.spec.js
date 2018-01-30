@@ -6,13 +6,7 @@ describe('Controller: event form step 5', function () {
 
   var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, udbUitpasApi;
   var appConfig = {
-    uitpasUrl: 'http://foo.bar/',
-  };
-  var AgeRange = {
-    'ALL': {'value': 0, 'label': 'Alle leeftijden'},
-    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
-    'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
-    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
+    uitpasUrl: 'http://foo.bar/'
   };
 
   beforeEach(inject(function ($rootScope, $injector) {
@@ -570,8 +564,6 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'info@mail.com', booking: false},
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
-
-    var deleteItem = {type: 'phone', value: '0987654321', booking: true};
 
     EventFormData.bookingInfo = {
       url : '',
