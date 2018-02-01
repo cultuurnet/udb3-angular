@@ -58,7 +58,7 @@ angular.module('udb.config', [])
 
 .constant('facilities', {motor:[{label:'Assistentie',id:'3.23.2.0.0'},{label:'Oplaadzone rolstoelen',id:'3.37.0.0.0'},{label:'Rolstoelpodium',id:'3.30.0.0.0'},{label:'Rolstoeltoegankelijk',id:'3.27.0.0.0'},{label:'Toegankelijk sanitair',id:'3.31.0.0.0'}],visual:[{label:'Audiodescriptie',id:'3.13.2.0.0'},{label:'Voorzieningen voor assistentiehonden',id:'3.13.1.0.0'}],hearing:[{label:'Boven- of ondertiteling',id:'3.17.3.0.0'},{label:'Ringleiding',id:'3.17.1.0.0'},{label:'Tolken Vlaamse Gebarentaal',id:'3.33.0.0.0'},{label:'Voelstoelen',id:'3.17.2.0.0'}],other:[{label:'1 begeleider gratis',id:'3.35.0.0.0'},{label:'Alternatieve ingang',id:'3.28.0.0.0'},{label:'Begeleiderspas',id:'3.39.0.0.0'},{label:'Gegarandeerd zicht',id:'3.29.0.0.0'},{label:'Inter-assistentie',id:'3.38.0.0.0'},{label:'Inter-events',id:'3.40.0.0.0'},{label:'Parkeerplaats',id:'3.26.0.0.0'},{label:'Vereenvoudigde informatie',id:'3.34.0.0.0'},{label:'Verzorgingsruimte',id:'3.36.0.0.0'},{label:'Voorbehouden camping',id:'3.32.0.0.0'}],place:[{label:'Contactpunt voor personen met handicap',id:'3.25.0.0.0'},{label:'Rolstoel ter beschikking',id:'3.23.3.0.0'},{label:'Parkeerplaats',id:'3.26.0.0.0'},{label:'Voorzieningen voor assistentiehonden',id:'3.13.1.0.0'}]})
 
-.constant('cities', [{name:'Vodelée',zip:'5680'},{name:'Vaucelles',zip:'5680'},{name:'Soulme',zip:'5680'},{name:'Romerée',zip:'5680'},{name:'Niverlée',zip:'5680'},{name:'Matagne-la-Petite',zip:'5680'},{name:'Matagne-la-Grande',zip:'5680'},{name:'Gochenée',zip:'5680'},{name:'Gimnée',zip:'5680'},{name:'Doische',zip:'5680'},{name:'Viroinval',zip:'5670'},{name:'Vierves-sur-Viroin',zip:'5670'},{name:'Treignes',zip:'5670'},{name:'Olloy-sur-Viroin',zip:'5670'},{name:'Oignies-en-Thiérache',zip:'5670'},{name:'Nismes',zip:'5670'},{name:'Mazée',zip:'5670'},{name:'Le Mesnil',zip:'5670'},{name:'Dourbes',zip:'5670'},{name:'Presgaux',zip:'5660'},{name:'Petite-Chapelle',zip:'5660'},{name:'Petigny',zip:'5660'},{name:'Pesche',zip:'5660'},{name:'Mariembourg',zip:'5660'},{name:'Gonrieux',zip:'5660'},{name:'Frasnes Namur',zip:'5660'},{name:'Dailly',zip:'5660'},{name:'Cul-des-Sarts',zip:'5660'},{name:'Couvin',zip:'5660'},{name:'Brûly-de-Pesche',zip:'5660'},{name:'Brûly',zip:'5660'},{name:'Boussu-en-Fagne',zip:'5660'},{name:'Aublain',zip:'5660'},{name:'Thy-le-Château',zip:'5651'},{name:'Tarcienne',zip:'5651'},{name:'Somzée',zip:'5651'},{name:'Rognée',zip:'5651'},{name:'Laneffe',zip:'5651'},{name:'Gourdinne',zip:'5651'},{name:'Berzée',zip:'5651'},{name:'Yves-Gomezée',zip:'5650'},{name:'Walcourt',zip:'5650'},{name:'Vogenée',zip:'5650'},{name:'Pry',zip:'5650'},{name:'Fraire',zip:'5650'},{name:'Fontenelle',zip:'5650'},{name:'Clermont Namur',zip:'5650'},{name:'Chastrès',zip:'5650'},{name:'Castillon',zip:'5650'},{name:'Stave',zip:'5646'},{name:'Ermeton-sur-Biert',zip:'5644'},{name:'Furnaux',zip:'5641'},{name:'Saint-Gérard',zip:'5640'},{name:'Oret',zip:'5640'},{name:'Mettet',zip:'5640'},{name:'Graux',zip:'5640'},{name:'Biesmerée',zip:'5640'},{name:'Biesme',zip:'5640'},{name:'Villers-Deux-Eglises',zip:'5630'},{name:'Soumoy',zip:'5630'},{name:'Silenrieux',zip:'5630'},{name:'Senzeille',zip:'5630'},{name:'Daussois',zip:'5630'},{name:'Cerfontaine',zip:'5630'},{name:'Thy-le-Bauduin',zip:'5621'},{name:'Morialmé',zip:'5621'},{name:'Hanzinne',zip:'5621'},{name:'Hanzinelle',zip:'5621'},{name:'Saint-Aubin',zip:'5620'},{name:'Rosée',zip:'5620'},{name:'Morville',zip:'5620'},{name:'Hemptinne-lez-Florennes',zip:'5620'},{name:'Florennes',zip:'5620'},{name:'Flavion',zip:'5620'},{name:'Corenne',zip:'5620'},{name:'Vodecée',zip:'5600'},{name:'Villers-le-Gambon',zip:'5600'},{name:'Villers-en-Fagne',zip:'5600'},{name:'Surice',zip:'5600'},{name:'Sautour',zip:'5600'},{name:'Sart-en-Fagne',zip:'5600'},{name:'Samart',zip:'5600'},{name:'Romedenne',zip:'5600'},{name:'Roly',zip:'5600'},{name:'Philippeville',zip:'5600'},{name:'Omezée',zip:'5600'},{name:'Neuville Philippeville',zip:'5600'},{name:'Merlemont',zip:'5600'},{name:'Jamiolle',zip:'5600'},{name:'Jamagne',zip:'5600'},{name:'Franchimont',zip:'5600'},{name:'Fagnolle',zip:'5600'},{name:'Sovet',zip:'5590'},{name:'Serinchamps',zip:'5590'},{name:'Pessoux',zip:'5590'},{name:'Leignon',zip:'5590'},{name:'Haversin',zip:'5590'},{name:'Conneux',zip:'5590'},{name:'Ciney',zip:'5590'},{name:'Chevetogne',zip:'5590'},{name:'Braibant',zip:'5590'},{name:'Achêne',zip:'5590'},{name:'Wavreille',zip:'5580'},{name:'Villers-sur-Lesse',zip:'5580'},{name:'Rochefort',zip:'5580'},{name:'Mont-Gauthier',zip:'5580'},{name:'Lessive',zip:'5580'},{name:'Lavaux-Sainte-Anne',zip:'5580'},{name:'Jemelle',zip:'5580'},{name:'Han-sur-Lesse',zip:'5580'},{name:'Eprave',zip:'5580'},{name:'Buissonville',zip:'5580'},{name:'Ave-et-Auffe',zip:'5580'},{name:'Willerzie',zip:'5575'},{name:'Vencimont',zip:'5575'},{name:'Sart-Custinne',zip:'5575'},{name:'Rienne',zip:'5575'},{name:'Patignies',zip:'5575'},{name:'Malvoisin',zip:'5575'},{name:'Louette-Saint-Pierre',zip:'5575'},{name:'Louette-Saint-Denis',zip:'5575'},{name:'Houdremont',zip:'5575'},{name:'Gedinne',zip:'5575'},{name:'Bourseigne-Vieille',zip:'5575'},{name:'Bourseigne-Neuve',zip:'5575'},{name:'Froidfontaine',zip:'5576'},{name:'Pondrôme',zip:'5574'},{name:'Martouzin-Neuville',zip:'5573'},{name:'Focant',zip:'5572'},{name:'Wiesme',zip:'5571'},{name:'Winenne',zip:'5570'},{name:'Wancennes',zip:'5570'},{name:'Vonêche',zip:'5570'},{name:'Javingue',zip:'5570'},{name:'Honnay',zip:'5570'},{name:'Feschaux',zip:'5570'},{name:'Felenne',zip:'5570'},{name:'Dion',zip:'5570'},{name:'Beauraing',zip:'5570'},{name:'Baronville',zip:'5570'},{name:'Wanlin',zip:'5564'},{name:'Hour',zip:'5563'},{name:'Custinne',zip:'5562'},{name:'Celles Namur',zip:'5561'},{name:'Mesnil-Saint-Blaise',zip:'5560'},{name:'Mesnil-Eglise',zip:'5560'},{name:'Hulsonniaux',zip:'5560'},{name:'Houyet',zip:'5560'},{name:'Finnevaux',zip:'5560'},{name:'Ciergnon',zip:'5560'},{name:'Petit-Fays',zip:'5555'},{name:'Oizy',zip:'5555'},{name:'Naomé',zip:'5555'},{name:'Monceau-en-Ardenne',zip:'5555'},{name:'Gros-Fays',zip:'5555'},{name:'Graide',zip:'5555'},{name:'Cornimont',zip:'5555'},{name:'Bièvre',zip:'5555'},{name:'Bellefontaine Namur',zip:'5555'},{name:'Baillamont',zip:'5555'},{name:'Vresse-sur-Semois',zip:'5550'},{name:'Sugny',zip:'5550'},{name:'Pussemange',zip:'5550'},{name:'Orchimont',zip:'5550'},{name:'Nafraiture',zip:'5550'},{name:'Mouzaive',zip:'5550'},{name:'Membre',zip:'5550'},{name:'Laforêt',zip:'5550'},{name:'Chairière',zip:'5550'},{name:'Bohan',zip:'5550'},{name:'Bagimont',zip:'5550'},{name:'Alle',zip:'5550'},{name:'Agimont',zip:'5544'},{name:'Heer',zip:'5543'},{name:'Blaimont',zip:'5542'},{name:'Hastière-par-Delà',zip:'5541'},{name:'Waulsort',zip:'5540'},{name:'Hermeton-sur-Meuse',zip:'5540'},{name:'Hastière-Lavaux',zip:'5540'},{name:'Hastière',zip:'5540'},{name:'Warnant',zip:'5537'},{name:'Sosoye',zip:'5537'},{name:'Haut-le-Wastia',zip:'5537'},{name:'Denée',zip:'5537'},{name:'Bioul',zip:'5537'},{name:'Annevoie-Rouillon',zip:'5537'},{name:'Anhée',zip:'5537'},{name:'Yvoir',zip:'5530'},{name:'Spontin',zip:'5530'},{name:'Purnode',zip:'5530'},{name:'Mont Namur',zip:'5530'},{name:'Houx',zip:'5530'},{name:'Godinne',zip:'5530'},{name:'Evrehailles',zip:'5530'},{name:'Durnal',zip:'5530'},{name:'Dorinne',zip:'5530'},{name:'Gerin',zip:'5524'},{name:'Weillen',zip:'5523'},{name:'Sommière',zip:'5523'},{name:'Falaën',zip:'5522'},{name:'Serville',zip:'5521'},{name:'Onhaye',zip:'5520'},{name:'Anthée',zip:'5520'},{name:'Foy-Notre-Dame',zip:'5504'},{name:'Sorinnes',zip:'5503'},{name:'Thynes',zip:'5502'},{name:'Lisogne',zip:'5501'},{name:'Furfooz',zip:'5500'},{name:'Falmignoul',zip:'5500'},{name:'Falmagne',zip:'5500'},{name:'Dréhance',zip:'5500'},{name:'Dinant',zip:'5500'},{name:'Bouvignes-sur-Meuse',zip:'5500'},{name:'Anseremme',zip:'5500'},{name:'Tillier',zip:'5380'},{name:'Pontillas',zip:'5380'},{name:'Noville-les-Bois',zip:'5380'},{name:'Marchovelette',zip:'5380'},{name:'Hingeon',zip:'5380'},{name:'Hemptinne Fernelmont',zip:'5380'},{name:'Franc-Waret',zip:'5380'},{name:'Forville',zip:'5380'},{name:'Fernelmont',zip:'5380'},{name:'Cortil-Wodon',zip:'5380'},{name:'Bierwart',zip:'5380'},{name:'Waillet',zip:'5377'},{name:'Somme-Leuze',zip:'5377'},{name:'Sinsin',zip:'5377'},{name:'Noiseux',zip:'5377'},{name:'Nettinne',zip:'5377'},{name:'Hogne',zip:'5377'},{name:'Heure Namur',zip:'5377'},{name:'Bonsin',zip:'5377'},{name:'Baillonville',zip:'5377'},{name:'Miécret',zip:'5376'},{name:'Maffe',zip:'5374'},{name:'Méan',zip:'5372'},{name:'Verlée',zip:'5370'},{name:'Porcheresse Namur',zip:'5370'},{name:'Jeneffe  Namur',zip:'5370'},{name:'Havelange',zip:'5370'},{name:'Flostoy',zip:'5370'},{name:'Barvaux-Condroz',zip:'5370'},{name:'Schaltin',zip:'5364'},{name:'Emptinne',zip:'5363'},{name:'Achet',zip:'5362'},{name:'Scy',zip:'5361'},{name:'Mohiville',zip:'5361'},{name:'Natoye',zip:'5360'},{name:'Hamois',zip:'5360'},{name:'Jallet',zip:'5354'},{name:'Goesnes',zip:'5353'},{name:'Perwez-Haillot',zip:'5352'},{name:'Haillot',zip:'5351'},{name:'Ohey',zip:'5350'},{name:'Evelette',zip:'5350'},{name:'Sorée',zip:'5340'},{name:'Mozet',zip:'5340'},{name:'Haltinne',zip:'5340'},{name:'Gesves',zip:'5340'},{name:'Faulx-les-Tombes',zip:'5340'},{name:'Courrière',zip:'5336'},{name:'Florée',zip:'5334'},{name:'Sorinne-la-Longue',zip:'5333'},{name:'Crupet',zip:'5332'},{name:'Sart-Bernard',zip:'5330'},{name:'Maillen',zip:'5330'},{name:'Assesse',zip:'5330'},{name:'Waret-la-Chaussée',zip:'5310'},{name:'Upigny',zip:'5310'},{name:'Taviers Namur',zip:'5310'},{name:'Saint-Germain',zip:'5310'},{name:'Noville-sur-Méhaigne',zip:'5310'},{name:'Mehaigne',zip:'5310'},{name:'Longchamps',zip:'5310'},{name:'Liernu',zip:'5310'},{name:'Leuze Namur',zip:'5310'},{name:'Hanret',zip:'5310'},{name:'Eghezée',zip:'5310'},{name:'Dhuy',zip:'5310'},{name:'Branchon',zip:'5310'},{name:'Boneffe',zip:'5310'},{name:'Bolinne',zip:'5310'},{name:'Aische-en-Refail',zip:'5310'},{name:'Vezin',zip:'5300'},{name:'Thon',zip:'5300'},{name:'Seilles',zip:'5300'},{name:'Sclayn',zip:'5300'},{name:'Namêche',zip:'5300'},{name:'Maizeret',zip:'5300'},{name:'Landenne',zip:'5300'},{name:'Coutisse',zip:'5300'},{name:'Bonneville',zip:'5300'},{name:'Andenne',zip:'5300'},{name:'Spy',zip:'5190'},{name:'Saint-Martin',zip:'5190'},{name:'Onoz',zip:'5190'},{name:'Moustier-sur-Sambre',zip:'5190'},{name:'Mornimont',zip:'5190'},{name:'Jemeppe-sur-Sambre',zip:'5190'},{name:'Ham-sur-Sambre',zip:'5190'},{name:'Balâtre',zip:'5190'},{name:'Rivière',zip:'5170'},{name:'Profondeville',zip:'5170'},{name:'Lustin',zip:'5170'},{name:'Lesve',zip:'5170'},{name:'Bois-de-Villers',zip:'5170'},{name:'Arbre Namur',zip:'5170'},{name:'Soye Namur',zip:'5150'},{name:'Franière',zip:'5150'},{name:'Floriffoux',zip:'5150'},{name:'Floreffe',zip:'5150'},{name:'Tongrinne',zip:'5140'},{name:'Sombreffe',zip:'5140'},{name:'Ligny',zip:'5140'},{name:'Boignée',zip:'5140'},{name:'Saint-Denis-Bovesse',zip:'5081'},{name:'Meux',zip:'5081'},{name:'Bovesse',zip:'5081'},{name:'Warisoulx',zip:'5080'},{name:'Villers-lez-Heest',zip:'5080'},{name:'Rhisnes',zip:'5080'},{name:'La Bruyère',zip:'5080'},{name:'Emines',zip:'5080'},{name:'Vitrival',zip:'5070'},{name:'Sart-Saint-Laurent',zip:'5070'},{name:'Sart-Eustache',zip:'5070'},{name:'Le Roux',zip:'5070'},{name:'Fosses-la-Ville',zip:'5070'},{name:'Aisemont',zip:'5070'},{name:'Velaine-sur-Sambre',zip:'5060'},{name:'Tamines',zip:'5060'},{name:'Sambreville',zip:'5060'},{name:'Moignelée',zip:'5060'},{name:'Keumiée',zip:'5060'},{name:'Falisolle',zip:'5060'},{name:'Auvelais',zip:'5060'},{name:'Arsimont',zip:'5060'},{name:'Mazy',zip:'5032'},{name:'Isnes',zip:'5032'},{name:'Corroy-le-Château',zip:'5032'},{name:'Bothey',zip:'5032'},{name:'Bossière',zip:'5032'},{name:'Grand-Leez',zip:'5031'},{name:'Sauvenière',zip:'5030'},{name:'Lonzée',zip:'5030'},{name:'Grand-Manil',zip:'5030'},{name:'Gembloux',zip:'5030'},{name:'Ernage',zip:'5030'},{name:'Beuzet',zip:'5030'},{name:'Loyers',zip:'5101'},{name:'Lives-sur-Meuse',zip:'5101'},{name:'Erpent',zip:'5101'},{name:'Wierde',zip:'5100'},{name:'Wépion',zip:'5100'},{name:'Naninne',zip:'5100'},{name:'Jambes',zip:'5100'},{name:'Dave',zip:'5100'},{name:'Marche-les-Dames',zip:'5024'},{name:'Gelbressée',zip:'5024'},{name:'Cognelée',zip:'5022'},{name:'Boninne',zip:'5021'},{name:'Vedrin',zip:'5020'},{name:'Temploux',zip:'5020'},{name:'Suarlée',zip:'5020'},{name:'Malonne',zip:'5020'},{name:'Flawinne',zip:'5020'},{name:'Daussoulx',zip:'5020'},{name:'Champion',zip:'5020'},{name:'Bouge',zip:'5004'},{name:'Saint-Marc',zip:'5003'},{name:'Saint-Servais',zip:'5002'},{name:'Belgrade',zip:'5001'},{name:'Namur',zip:'5000'},{name:'Beez',zip:'5000'},{name:'Soy',zip:'6997'},{name:'Mormont',zip:'6997'},{name:'Erezée',zip:'6997'},{name:'Amonines',zip:'6997'},{name:'Marenne',zip:'6990'},{name:'Hotton',zip:'6990'},{name:'Hampteau',zip:'6990'},{name:'Fronville',zip:'6990'},{name:'Rendeux',zip:'6987'},{name:'Marcourt',zip:'6987'},{name:'Hodister',zip:'6987'},{name:'Beffe',zip:'6987'},{name:'Halleux',zip:'6986'},{name:'Hives',zip:'6984'},{name:'Ortho',zip:'6983'},{name:'Samrée',zip:'6982'},{name:'La-Roche-en-Ardenne',zip:'6980'},{name:'Beausaint',zip:'6980'},{name:'Erneuville',zip:'6972'},{name:'Champlon',zip:'6971'},{name:'Tenneville',zip:'6970'},{name:'Vaux-Chavanne',zip:'6960'},{name:'Odeigne',zip:'6960'},{name:'Manhay',zip:'6960'},{name:'Malempré',zip:'6960'},{name:'Harre',zip:'6960'},{name:'Grandmenil',zip:'6960'},{name:'Dochamps',zip:'6960'},{name:'Masbourg',zip:'6953'},{name:'Lesterny',zip:'6953'},{name:'Forrières',zip:'6953'},{name:'Ambly',zip:'6953'},{name:'Grune',zip:'6952'},{name:'Bande',zip:'6951'},{name:'Nassogne',zip:'6950'},{name:'Harsin',zip:'6950'},{name:'Villers-Sainte-Gertrude',zip:'6941'},{name:'Tohogne',zip:'6941'},{name:'Izier',zip:'6941'},{name:'Heyd',zip:'6941'},{name:'Borlon',zip:'6941'},{name:'Bomal-sur-Ourthe',zip:'6941'},{name:'Bende',zip:'6941'},{name:'Wéris',zip:'6940'},{name:'Septon',zip:'6940'},{name:'Grandhan',zip:'6940'},{name:'Durbuy',zip:'6940'},{name:'Barvaux-sur-Ourthe',zip:'6940'},{name:'Porcheresse Luxembourg',zip:'6929'},{name:'Haut-Fays',zip:'6929'},{name:'Gembes',zip:'6929'},{name:'Daverdisse',zip:'6929'},{name:'Tellin',zip:'6927'},{name:'Resteigne',zip:'6927'},{name:'Grupont',zip:'6927'},{name:'Bure',zip:'6927'},{name:'Lomprez',zip:'6924'},{name:'Halma',zip:'6922'},{name:'Chanly',zip:'6921'},{name:'Wellin',zip:'6920'},{name:'Sohier',zip:'6920'},{name:'Waha',zip:'6900'},{name:'Roy',zip:'6900'},{name:'On',zip:'6900'},{name:'Marche-en-Famenne',zip:'6900'},{name:'Humain',zip:'6900'},{name:'Hargimont',zip:'6900'},{name:'Aye',zip:'6900'},{name:'Villance',zip:'6890'},{name:'Transinne',zip:'6890'},{name:'Smuid',zip:'6890'},{name:'Redu',zip:'6890'},{name:'Ochamps',zip:'6890'},{name:'Libin',zip:'6890'},{name:'Anloy',zip:'6890'},{name:'Straimont',zip:'6887'},{name:'Saint-Médard',zip:'6887'},{name:'Herbeumont',zip:'6887'},{name:'Orgeo',zip:'6880'},{name:'Jehonville',zip:'6880'},{name:'Cugnon',zip:'6880'},{name:'Bertrix',zip:'6880'},{name:'Auby-sur-Semois',zip:'6880'},{name:'Vesqueville',zip:'6870'},{name:'Saint-Hubert',zip:'6870'},{name:'Mirwart',zip:'6870'},{name:'Hatrival',zip:'6870'},{name:'Awenne',zip:'6870'},{name:'Arville',zip:'6870'},{name:'Witry',zip:'6860'},{name:'Mellier',zip:'6860'},{name:'Léglise',zip:'6860'},{name:'Ebly',zip:'6860'},{name:'Assenois',zip:'6860'},{name:'Fays-les-Veneurs',zip:'6856'},{name:'Framont',zip:'6853'},{name:'Opont',zip:'6852'},{name:'Maissin',zip:'6852'},{name:'Nollevaux',zip:'6851'},{name:'Paliseul',zip:'6850'},{name:'Offagne',zip:'6850'},{name:'Carlsbourg',zip:'6850'},{name:'Tournay',zip:'6840'},{name:'Neufchâteau',zip:'6840'},{name:'Longlier',zip:'6840'},{name:'Hamipré',zip:'6840'},{name:'Grapfontaine',zip:'6840'},{name:'Grandvoir',zip:'6840'},{name:'Corbion',zip:'6838'},{name:'Dohan',zip:'6836'},{name:'Bellevaux',zip:'6834'},{name:'Vivy',zip:'6833'},{name:'Ucimont',zip:'6833'},{name:'Sensenruth',zip:'6832'},{name:'Noirefontaine',zip:'6831'},{name:'Rochehaut',zip:'6830'},{name:'Poupehan',zip:'6830'},{name:'Les Hayons',zip:'6830'},{name:'Bouillon',zip:'6830'},{name:'Chassepierre',zip:'6824'},{name:'Villers-devant-Orval',zip:'6823'},{name:'Lacuisine',zip:'6821'},{name:'Sainte-Cécile',zip:'6820'},{name:'Muno',zip:'6820'},{name:'Fontenoille',zip:'6820'},{name:'Florenville',zip:'6820'},{name:'Termes',zip:'6813'},{name:'Suxy',zip:'6812'},{name:'Les Bulles',zip:'6811'},{name:'Jamoigne',zip:'6810'},{name:'Izel',zip:'6810'},{name:'Chiny',zip:'6810'},{name:'Saint-Pierre',zip:'6800'},{name:'Sainte-Marie-Chevigny',zip:'6800'},{name:'Remagne',zip:'6800'},{name:'Recogne',zip:'6800'},{name:'Moircy',zip:'6800'},{name:'Libramont-Chevigny',zip:'6800'},{name:'Libramont',zip:'6800'},{name:'Freux',zip:'6800'},{name:'Bras',zip:'6800'},{name:'Rachecourt',zip:'6792'},{name:'Halanzy',zip:'6792'},{name:'Athus',zip:'6791'},{name:'Aubange',zip:'6790'},{name:'Habergy',zip:'6782'},{name:'Sélange',zip:'6781'},{name:'Wolkrange',zip:'6780'},{name:'Messancy',zip:'6780'},{name:'Hondelange',zip:'6780'},{name:'Villers-la-Loue',zip:'6769'},{name:'Sommethonne',zip:'6769'},{name:'Robelmont',zip:'6769'},{name:'Meix-devant-Virton',zip:'6769'},{name:'Gérouville',zip:'6769'},{name:'Torgny',zip:'6767'},{name:'Rouvroy',zip:'6767'},{name:'Lamorteau',zip:'6767'},{name:'Harnoncourt',zip:'6767'},{name:'Dampicourt',zip:'6767'},{name:'Saint-Mard',zip:'6762'},{name:'Latour',zip:'6761'},{name:'Virton',zip:'6760'},{name:'Ruette',zip:'6760'},{name:'Ethe',zip:'6760'},{name:'Bleid',zip:'6760'},{name:'Signeulx',zip:'6750'},{name:'Mussy-la-Ville',zip:'6750'},{name:'Musson',zip:'6750'},{name:'Saint-Léger Luxembourg',zip:'6747'},{name:'Meix-le-Tige',zip:'6747'},{name:'Châtillon',zip:'6747'},{name:'Buzenol',zip:'6743'},{name:'Chantemelle',zip:'6742'},{name:'Vance',zip:'6741'},{name:'Villers-sur-Semois',zip:'6740'},{name:'Sainte-Marie-sur-Semois',zip:'6740'},{name:'Etalle',zip:'6740'},{name:'Tintigny',zip:'6730'},{name:'Saint-Vincent',zip:'6730'},{name:'Rossignol',zip:'6730'},{name:'Bellefontaine Luxembourg',zip:'6730'},{name:'Rulles',zip:'6724'},{name:'Marbehan Luxembourg',zip:'6724'},{name:'Houdemont',zip:'6724'},{name:'Habay-la-Vieille',zip:'6723'},{name:'Anlier',zip:'6721'},{name:'Hachy',zip:'6720'},{name:'Habay-la-Neuve',zip:'6720'},{name:'Habay',zip:'6720'},{name:'Tontelange',zip:'6717'},{name:'Thiaumont',zip:'6717'},{name:'Nothomb',zip:'6717'},{name:'Nobressart',zip:'6717'},{name:'Attert',zip:'6717'},{name:'Autelbas',zip:'6706'},{name:'Guirsch',zip:'6704'},{name:'Toernich',zip:'6700'},{name:'Heinsch',zip:'6700'},{name:'Bonnert',zip:'6700'},{name:'Arlon',zip:'6700'},{name:'Grand-Halleux',zip:'6698'},{name:'Petit-Thier',zip:'6692'},{name:'Vielsalm',zip:'6690'},{name:'Bihain',zip:'6690'},{name:'Longchamps Luxembourg',zip:'6688'},{name:'Bertogne',zip:'6687'},{name:'Flamierge',zip:'6686'},{name:'Lavacherie',zip:'6681'},{name:'Tillet',zip:'6680'},{name:'Sainte-Ode',zip:'6680'},{name:'Amberloup',zip:'6680'},{name:'Montleban',zip:'6674'},{name:'Cherain',zip:'6673'},{name:'Beho',zip:'6672'},{name:'Bovigny',zip:'6671'},{name:'Limerlé',zip:'6670'},{name:'Gouvy',zip:'6670'},{name:'Wibrin',zip:'6666'},{name:'Mabompré',zip:'6663'},{name:'Tavigny',zip:'6662'},{name:'Tailles',zip:'6661'},{name:'Mont Luxembourg',zip:'6661'},{name:'Nadrin',zip:'6660'},{name:'Houffalize',zip:'6660'},{name:'Juseret',zip:'6642'},{name:'Vaux-sur-Sûre',zip:'6640'},{name:'Vaux-lez-Rosières',zip:'6640'},{name:'Sibret',zip:'6640'},{name:'Nives',zip:'6640'},{name:'Morhet',zip:'6640'},{name:'Hompré',zip:'6640'},{name:'Tintange',zip:'6637'},{name:'Hollange',zip:'6637'},{name:'Fauvillers',zip:'6637'},{name:'Martelange',zip:'6630'},{name:'Wardin',zip:'6600'},{name:'Villers-la-Bonne-Eau',zip:'6600'},{name:'Noville Luxembourg',zip:'6600'},{name:'Longvilly',zip:'6600'},{name:'Bastogne',zip:'6600'},{name:'Villers-la-Ville',zip:'1495'},{name:'Tilly',zip:'1495'},{name:'Sart-Dames-Avelines',zip:'1495'},{name:'Mellery',zip:'1495'},{name:'Marbais Br.W.',zip:'1495'},{name:'Court-Saint-Etienne',zip:'1490'},{name:'Tubize',zip:'1480'},{name:'Saintes',zip:'1480'},{name:'Oisquercq',zip:'1480'},{name:'Clabecq',zip:'1480'},{name:'Houtain-le-Val',zip:'1476'},{name:'Ways',zip:'1474'},{name:'Glabais',zip:'1473'},{name:'Vieux-Genappe',zip:'1472'},{name:'Loupoigne',zip:'1471'},{name:'Genappe',zip:'1470'},{name:'Bousval',zip:'1470'},{name:'Baisy-Thy',zip:'1470'},{name:'Haut-Ittre',zip:'1461'},{name:'Virginal-Samme',zip:'1460'},{name:'Ittre',zip:'1460'},{name:'Walhain-Saint-Paul',zip:'1457'},{name:'Walhain',zip:'1457'},{name:'Tourinnes-Saint-Lambert',zip:'1457'},{name:'Nil-Saint-Vincent-Saint-Martin',zip:'1457'},{name:'Saint-Géry',zip:'1450'},{name:'Gentinnes',zip:'1450'},{name:'Cortil-Noirmont',zip:'1450'},{name:'Chastre-Villeroux-Blanmont',zip:'1450'},{name:'Chastre',zip:'1450'},{name:'Wauthier-Braine',zip:'1440'},{name:'Braine-le-Château',zip:'1440'},{name:'Mont-Saint-Guibert',zip:'1435'},{name:'Hévillers',zip:'1435'},{name:'Corbais',zip:'1435'},{name:'Rebecq-Rognon',zip:'1430'},{name:'Rebecq',zip:'1430'},{name:'Quenast',zip:'1430'},{name:'Bierghes',zip:'1430'},{name:'Lillois-Witterzée',zip:'1428'},{name:'Ophain-Bois-Seigneur-Isaac',zip:'1421'},{name:'Waterloo',zip:'1410'},{name:'Bornival',zip:'1404'},{name:'Thines',zip:'1402'},{name:'Baulers',zip:'1401'},{name:'Nivelles',zip:'1400'},{name:'Monstreux',zip:'1400'},{name:'Nethen',zip:'1390'},{name:'Grez-Doiceau',zip:'1390'},{name:'Bossut-Gottechain',zip:'1390'},{name:'Biez',zip:'1390'},{name:'Archennes',zip:'1390'},{name:'Plancenoit',zip:'1380'},{name:'Ohain',zip:'1380'},{name:'Maransart',zip:'1380'},{name:'Lasne-Chapelle-Saint-Lambert',zip:'1380'},{name:'Lasne',zip:'1380'},{name:'Couture-Saint-Germain',zip:'1380'},{name:'Zétrud-Lumay',zip:'1370'},{name:'Saint-Remy-Geest',zip:'1370'},{name:'Saint-Jean-Geest',zip:'1370'},{name:'Piétrain',zip:'1370'},{name:'Mélin',zip:'1370'},{name:'Lathuy',zip:'1370'},{name:'Jodoigne-Souveraine',zip:'1370'},{name:'Jodoigne',zip:'1370'},{name:'Jauchelette',zip:'1370'},{name:'Dongelberg',zip:'1370'},{name:'Ramillies-Offus',zip:'1367'},{name:'Mont-Saint-André',zip:'1367'},{name:'Huppaye',zip:'1367'},{name:'Grand-Rosière-Hottomont',zip:'1367'},{name:'Gérompont',zip:'1367'},{name:'Geest-Gérompont-Petit-Rosière',zip:'1367'},{name:'Bomal Br.W.',zip:'1367'},{name:'Autre-Eglise',zip:'1367'},{name:'Thorembais-Saint-Trond',zip:'1360'},{name:'Thorembais-les-Béguines',zip:'1360'},{name:'Perwez',zip:'1360'},{name:'Orbais',zip:'1360'},{name:'Malèves-Sainte-Marie-Wastines',zip:'1360'},{name:'Opheylissem',zip:'1357'},{name:'Neerheylissem',zip:'1357'},{name:'Linsmeau',zip:'1357'},{name:'Hélécine',zip:'1357'},{name:'Orp-le-Grand',zip:'1350'},{name:'Orp-Jauche',zip:'1350'},{name:'Noduwez',zip:'1350'},{name:'Marilles',zip:'1350'},{name:'Jauche',zip:'1350'},{name:'Jandrain-Jandrenouille',zip:'1350'},{name:'Folx-les-Caves',zip:'1350'},{name:'Enines',zip:'1350'},{name:'Louvain-la-Neuve',zip:'1348'},{name:'Limelette',zip:'1342'},{name:'Céroux-Mousty',zip:'1341'},{name:'Ottignies-Louvain-la-Neuve',zip:'1340'},{name:'Ottignies',zip:'1340'},{name:'Genval',zip:'1332'},{name:'Rosières',zip:'1331'},{name:'Rixensart',zip:'1330'},{name:'Longueville',zip:'1325'},{name:'Dion-Valmont',zip:'1325'},{name:'Corroy-le-Grand',zip:'1325'},{name:'Chaumont-Gistoux',zip:'1325'},{name:'Bonlez',zip:'1325'},{name:'Tourinnes-la-Grosse',zip:'1320'},{name:'Nodebais',zip:'1320'},{name:'Hamme-Mille',zip:'1320'},{name:'Beauvechain',zip:'1320'},{name:'Roux-Miroir',zip:'1315'},{name:'Piétrebais',zip:'1315'},{name:'Opprebais',zip:'1315'},{name:'Incourt',zip:'1315'},{name:'Glimes',zip:'1315'},{name:'La Hulpe',zip:'1310'},{name:'Bierges',zip:'1301'},{name:'Wavre',zip:'1300'},{name:'Limal',zip:'1300'},{name:'Lierneux',zip:'4990'},{name:'Bra',zip:'4990'},{name:'Arbrefontaine',zip:'4990'},{name:'Stoumont',zip:'4987'},{name:'Rahier',zip:'4987'},{name:'Lorcé',zip:'4987'},{name:'La Gleize',zip:'4987'},{name:'Chevron',zip:'4987'},{name:'Basse-Bodeux',zip:'4983'},{name:'Wanne',zip:'4980'},{name:'Trois-Ponts',zip:'4980'},{name:'Fosse Liège',zip:'4980'},{name:'Stavelot',zip:'4970'},{name:'Francorchamps',zip:'4970'},{name:'Malmedy',zip:'4960'},{name:'Bevercé',zip:'4960'},{name:'Bellevaux-Ligneuville',zip:'4960'},{name:'Waimes/Weismes',zip:'4950'},{name:'Sourbrodt',zip:'4950'},{name:'Robertville',zip:'4950'},{name:'Faymonville',zip:'4950'},{name:'Sougné-Remouchamps',zip:'4920'},{name:'Harzé',zip:'4920'},{name:'Ernonheid',zip:'4920'},{name:'Aywaille',zip:'4920'},{name:'Theux',zip:'4910'},{name:'Polleur',zip:'4910'},{name:'La Reid',zip:'4910'},{name:'Spa',zip:'4900'},{name:'Thimister-Clermont',zip:'4890'},{name:'Thimister',zip:'4890'},{name:'Clermont Liège',zip:'4890'},{name:'Aubel',zip:'4880'},{name:'Olne',zip:'4877'},{name:'Trooz',zip:'4870'},{name:'Nessonvaux',zip:'4870'},{name:'Fraipont',zip:'4870'},{name:'Forêt',zip:'4870'},{name:'Soiron',zip:'4861'},{name:'Wegnez',zip:'4860'},{name:'Pepinster',zip:'4860'},{name:'Cornesse',zip:'4860'},{name:'Hombourg',zip:'4852'},{name:'Sippenaeken',zip:'4851'},{name:'Gemmenich',zip:'4851'},{name:'Plombières',zip:'4850'},{name:'Moresnet',zip:'4850'},{name:'Montzen',zip:'4850'},{name:'Sart-lez-Spa',zip:'4845'},{name:'Jalhay',zip:'4845'},{name:'Henri-Chapelle',zip:'4841'},{name:'Welkenraedt',zip:'4840'},{name:'Membach',zip:'4837'},{name:'Baelen Liège',zip:'4837'},{name:'Goé',zip:'4834'},{name:'Bilstain',zip:'4831'},{name:'Limbourg',zip:'4830'},{name:'Andrimont',zip:'4821'},{name:'Dison',zip:'4820'},{name:'Heusy',zip:'4802'},{name:'Stembert',zip:'4801'},{name:'Verviers',zip:'4800'},{name:'Petit-Rechain',zip:'4800'},{name:'Lambermont',zip:'4800'},{name:'Ensival',zip:'4800'},{name:'Thommen',zip:'4791'},{name:'Reuland',zip:'4790'},{name:'Burg-Reuland',zip:'4790'},{name:'Crombach',zip:'4784'},{name:'Lommersweiler',zip:'4783'},{name:'Schönberg/Schoenberg',zip:'4782'},{name:'Sankt Vith/Saint-Vith',zip:'4780'},{name:'Recht',zip:'4780'},{name:'Heppenbach',zip:'4771'},{name:'Meyerode',zip:'4770'},{name:'Amel/Amblève',zip:'4770'},{name:'Rocherath',zip:'4761'},{name:'Manderfeld',zip:'4760'},{name:'Büllingen/Bullange',zip:'4760'},{name:'Elsenborn',zip:'4750'},{name:'Bütgenbach/Butgenbach',zip:'4750'},{name:'Eynatten',zip:'4731'},{name:'Raeren',zip:'4730'},{name:'Hauset',zip:'4730'},{name:'Hergenrath',zip:'4728'},{name:'Neu-Moresnet',zip:'4721'},{name:'Kelmis/La Calamine',zip:'4720'},{name:'Walhorn',zip:'4711'},{name:'Lontzen',zip:'4710'},{name:'Kettenis',zip:'4701'},{name:'Eupen',zip:'4700'},{name:'Wonck',zip:'4690'},{name:'Roclenge-sur-Geer',zip:'4690'},{name:'Glons',zip:'4690'},{name:'Eben-Emael',zip:'4690'},{name:'Boirs',zip:'4690'},{name:'Bassenge',zip:'4690'},{name:'Haccourt',zip:'4684'},{name:'Vivegnis',zip:'4683'},{name:'Houtain-Saint-Siméon',zip:'4682'},{name:'Heure-le-Romain',zip:'4682'},{name:'Hermalle-sous-Argenteau',zip:'4681'},{name:'Oupeye',zip:'4680'},{name:'Hermée',zip:'4680'},{name:'Saint-Remy Liège',zip:'4672'},{name:'Saive',zip:'4671'},{name:'Housse',zip:'4671'},{name:'Barchon',zip:'4671'},{name:'Trembleur',zip:'4670'},{name:'Mortier',zip:'4670'},{name:'Blégny',zip:'4670'},{name:'Charneux',zip:'4654'},{name:'Bolland',zip:'4653'},{name:'Xhendelesse',zip:'4652'},{name:'Battice',zip:'4651'},{name:'Julémont',zip:'4650'},{name:'Herve',zip:'4650'},{name:'Grand-Rechain',zip:'4650'},{name:'Chaineux',zip:'4650'},{name:'Melen',zip:'4633'},{name:'Cérexhe-Heuseux',zip:'4632'},{name:'Evegnée',zip:'4631'},{name:'Tignée',zip:'4630'},{name:'Soumagne',zip:'4630'},{name:'Micheroux',zip:'4630'},{name:'Ayeneux',zip:'4630'},{name:'Romsée',zip:'4624'},{name:'Magnée',zip:'4623'},{name:'Retinne',zip:'4621'},{name:'Fléron',zip:'4620'},{name:'Queue-du-Bois',zip:'4610'},{name:'Beyne-Heusay',zip:'4610'},{name:'Bellaire',zip:'4610'},{name:'Warsage',zip:'4608'},{name:'Neufchâteau Liège',zip:'4608'},{name:'Mortroux',zip:'4607'},{name:'Feneur',zip:'4607'},{name:'Dalhem',zip:'4607'},{name:'Bombaye',zip:'4607'},{name:'Berneau',zip:'4607'},{name:'Saint-André',zip:'4606'},{name:'Cheratte',zip:'4602'},{name:'Argenteau',zip:'4601'},{name:'Visé',zip:'4600'},{name:'Richelle',zip:'4600'},{name:'Lixhe',zip:'4600'},{name:'Lanaye',zip:'4600'},{name:'Warzée',zip:'4590'},{name:'Ouffet',zip:'4590'},{name:'Ellemelle',zip:'4590'},{name:'Vierset-Barse',zip:'4577'},{name:'Strée-lez-Huy',zip:'4577'},{name:'Outrelouxhe',zip:'4577'},{name:'Modave',zip:'4577'},{name:'Vyle-et-Tharoul',zip:'4570'},{name:'Marchin',zip:'4570'},{name:'Terwagne',zip:'4560'},{name:'Pailhe',zip:'4560'},{name:'Ocquier',zip:'4560'},{name:'Les Avins',zip:'4560'},{name:'Clavier',zip:'4560'},{name:'Bois-et-Borsu',zip:'4560'},{name:'Tinlot',zip:'4557'},{name:'Soheit-Tinlot',zip:'4557'},{name:'Seny',zip:'4557'},{name:'Ramelot',zip:'4557'},{name:'Fraiture',zip:'4557'},{name:'Abée',zip:'4557'},{name:'Yernée-Fraineux',zip:'4550'},{name:'Villers-le-Temple',zip:'4550'},{name:'Saint-Séverin',zip:'4550'},{name:'Nandrin',zip:'4550'},{name:'Ombret',zip:'4540'},{name:'Jehay',zip:'4540'},{name:'Flône',zip:'4540'},{name:'Ampsin',zip:'4540'},{name:'Amay',zip:'4540'},{name:'Verlaine',zip:'4537'},{name:'Seraing-le-Château',zip:'4537'},{name:'Chapon-Seraing',zip:'4537'},{name:'Warnant-Dreye',zip:'4530'},{name:'Villers-le-Bouillet',zip:'4530'},{name:'Vieux-Waleffe',zip:'4530'},{name:'Vaux-et-Borset',zip:'4530'},{name:'Fize-Fontaine',zip:'4530'},{name:'Wanze',zip:'4520'},{name:'Vinalmont',zip:'4520'},{name:'Moha',zip:'4520'},{name:'Huccorgne',zip:'4520'},{name:'Bas-Oha',zip:'4520'},{name:'Antheit',zip:'4520'},{name:'Tihange',zip:'4500'},{name:'Huy',zip:'4500'},{name:'Ben-Ahin',zip:'4500'},{name:'Hermalle-sous-Huy',zip:'4480'},{name:'Engis',zip:'4480'},{name:'Clermont-sous-Huy',zip:'4480'},{name:'Saint-Georges-sur-Meuse',zip:'4470'},{name:'Velroux',zip:'4460'},{name:'Horion-Hozémont',zip:'4460'},{name:'Hollogne-aux-Pierres',zip:'4460'},{name:'Grâce-Hollogne',zip:'4460'},{name:'Grâce-Berleur',zip:'4460'},{name:'Bierset',zip:'4460'},{name:'Fexhe-Slins',zip:'4458'},{name:'Villers-Saint-Siméon',zip:'4453'},{name:'Wihogne',zip:'4452'},{name:'Paifve',zip:'4452'},{name:'Voroux-lez-Liers',zip:'4451'},{name:'Slins',zip:'4450'},{name:'Lantin',zip:'4450'},{name:'Juprelle',zip:'4450'},{name:'Xhendremael',zip:'4432'},{name:'Alleur',zip:'4432'},{name:'Loncin',zip:'4431'},{name:'Ans',zip:'4430'},{name:'Tilleur',zip:'4420'},{name:'Saint-Nicolas Liège',zip:'4420'},{name:'Montegnée',zip:'4420'},{name:'Mons-lez-Liège',zip:'4400'},{name:'Ivoz-Ramet',zip:'4400'},{name:'Gleixhe',zip:'4400'},{name:'Flémalle-Haute',zip:'4400'},{name:'Flémalle-Grande',zip:'4400'},{name:'Flémalle',zip:'4400'},{name:'Chokier',zip:'4400'},{name:'Awirs',zip:'4400'},{name:'Thys',zip:'4367'},{name:'Odeur',zip:'4367'},{name:'Kemexhe',zip:'4367'},{name:'Fize-le-Marsal',zip:'4367'},{name:'Crisnée',zip:'4367'},{name:'Otrange',zip:'4360'},{name:'Oreye',zip:'4360'},{name:'Lens-sur-Geer',zip:'4360'},{name:'Grandville',zip:'4360'},{name:'Bergilers',zip:'4360'},{name:'Limont',zip:'4357'},{name:'Jeneffe Liège',zip:'4357'},{name:'Haneffe',zip:'4357'},{name:'Donceel',zip:'4357'},{name:'Hodeige',zip:'4351'},{name:'Remicourt',zip:'4350'},{name:'Pousset',zip:'4350'},{name:'Momalle',zip:'4350'},{name:'Lamine',zip:'4350'},{name:'Voroux-Goreux',zip:'4347'},{name:'Roloux',zip:'4347'},{name:'Noville Liège',zip:'4347'},{name:'Freloux',zip:'4347'},{name:'Fexhe-le-Haut-Clocher',zip:'4347'},{name:'Hognoul',zip:'4342'},{name:'Othée',zip:'4340'},{name:'Fooz',zip:'4340'},{name:'Awans',zip:'4340'},{name:'Viemme',zip:'4317'},{name:'Les Waleffes',zip:'4317'},{name:'Faimes',zip:'4317'},{name:'Celles Liège',zip:'4317'},{name:'Borlez',zip:'4317'},{name:'Aineffe',zip:'4317'},{name:'Waremme',zip:'4300'},{name:'Oleye',zip:'4300'},{name:'Lantremange',zip:'4300'},{name:'Grand-Axhe',zip:'4300'},{name:'Bovenistier',zip:'4300'},{name:'Bleret',zip:'4300'},{name:'Bettincourt',zip:'4300'},{name:'Racour',zip:'4287'},{name:'Pellaines',zip:'4287'},{name:'Lincent',zip:'4287'},{name:'Wansin',zip:'4280'},{name:'Villers-le-Peuplier',zip:'4280'},{name:'Trognée',zip:'4280'},{name:'Thisnes',zip:'4280'},{name:'Poucet',zip:'4280'},{name:'Petit-Hallet',zip:'4280'},{name:'Moxhe',zip:'4280'},{name:'Merdorp',zip:'4280'},{name:'Lens-Saint-Remy',zip:'4280'},{name:'Hannut',zip:'4280'},{name:'Grand-Hallet',zip:'4280'},{name:'Crehen',zip:'4280'},{name:'Cras-Avernas',zip:'4280'},{name:'Blehen',zip:'4280'},{name:'Bertrée',zip:'4280'},{name:'Avin',zip:'4280'},{name:'Avernas-le-Bauduin',zip:'4280'},{name:'Abolens',zip:'4280'},{name:'Tourinne Liège',zip:'4263'},{name:'Latinne',zip:'4261'},{name:'Ville-en-Hesbaye',zip:'4260'},{name:'Fumal',zip:'4260'},{name:'Fallais',zip:'4260'},{name:'Ciplet',zip:'4260'},{name:'Braives',zip:'4260'},{name:'Avennes',zip:'4260'},{name:'Rosoux-Crenwick',zip:'4257'},{name:'Corswarem',zip:'4257'},{name:'Berloz',zip:'4257'},{name:'Ligney',zip:'4254'},{name:'Darion',zip:'4253'},{name:'Omal',zip:'4252'},{name:'Lens-Saint-Servais',zip:'4250'},{name:'Hollogne-sur-Geer',zip:'4250'},{name:'Geer',zip:'4250'},{name:'Boëlhe',zip:'4250'},{name:'Wasseiges',zip:'4219'},{name:'Meeffe',zip:'4219'},{name:'Ambresin',zip:'4219'},{name:'Acosse',zip:'4219'},{name:'Couthuin',zip:'4218'},{name:'Lavoir',zip:'4217'},{name:'Héron',zip:'4217'},{name:'Oteppe',zip:'4210'},{name:'Marneffe',zip:'4210'},{name:'Lamontzée',zip:'4210'},{name:'Hannêche',zip:'4210'},{name:'Burdinne',zip:'4210'},{name:'Xhoris',zip:'4190'},{name:'Werbomont',zip:'4190'},{name:'Vieuxville',zip:'4190'},{name:'My',zip:'4190'},{name:'Ferrières',zip:'4190'},{name:'Filot',zip:'4181'},{name:'Hamoir',zip:'4180'},{name:'Comblain-la-Tour',zip:'4180'},{name:'Comblain-Fairon',zip:'4180'},{name:'Poulseur',zip:'4171'},{name:'Comblain-au-Pont',zip:'4170'},{name:'Tavier',zip:'4163'},{name:'Hody',zip:'4162'},{name:'Villers-aux-Tours',zip:'4161'},{name:'Anthisnes',zip:'4160'},{name:'Louveigné',zip:'4141'},{name:'Sprimont',zip:'4140'},{name:'Rouvreux',zip:'4140'},{name:'Gomzé-Andoumont',zip:'4140'},{name:'Dolembreux',zip:'4140'},{name:'Tilff',zip:'4130'},{name:'Esneux',zip:'4130'},{name:'Plainevaux',zip:'4122'},{name:'Neuville-en-Condroz',zip:'4121'},{name:'Rotheux-Rimière',zip:'4120'},{name:'Neupré',zip:'4120'},{name:'Ehein',zip:'4120'},{name:'Ougrée',zip:'4102'},{name:'Jemeppe-sur-Meuse',zip:'4101'},{name:'Seraing',zip:'4100'},{name:'Boncelles',zip:'4100'},{name:'Embourg',zip:'4053'},{name:'Beaufays',zip:'4052'},{name:'Vaux-sous-Chèvremont',zip:'4051'},{name:'Chaudfontaine',zip:'4050'},{name:'Liers',zip:'4042'},{name:'Vottem',zip:'4041'},{name:'Milmort',zip:'4041'},{name:'Herstal',zip:'4040'},{name:'Chênée',zip:'4032'},{name:'Angleur',zip:'4031'},{name:'Grivegnée',zip:'4030'},{name:'Wandre',zip:'4020'},{name:'Liège',zip:'4020'},{name:'Jupille-sur-Meuse',zip:'4020'},{name:'Bressoux',zip:'4020'},{name:'Rocourt',zip:'4000'},{name:'Liège',zip:'4000'},{name:'Glain',zip:'4000'},{name:'Stambruges',zip:'7973'},{name:'Grandglise',zip:'7973'},{name:'Quevaucamps',zip:'7972'},{name:'Ellignies-Sainte-Anne',zip:'7972'},{name:'Aubechies',zip:'7972'},{name:'Wadelincourt',zip:'7971'},{name:'Thumaide',zip:'7971'},{name:'Ramegnies',zip:'7971'},{name:'Basècles',zip:'7971'},{name:'Beloeil',zip:'7970'},{name:'Tongre-Notre-Dame',zip:'7951'},{name:'Tongre-Saint-Martin',zip:'7950'},{name:'Ladeuze',zip:'7950'},{name:'Huissignies',zip:'7950'},{name:'Grosage',zip:'7950'},{name:'Chièvres',zip:'7950'},{name:'Gages',zip:'7943'},{name:'Mévergnies-lez-Lens',zip:'7942'},{name:'Attre',zip:'7941'},{name:'Cambron-Casteau',zip:'7940'},{name:'Brugelette',zip:'7940'},{name:'Saint-Sauveur',zip:'7912'},{name:'Dergneau',zip:'7912'},{name:'Oeudeghien',zip:'7911'},{name:'Moustier Ht.',zip:'7911'},{name:'Montroeul-au-Bois',zip:'7911'},{name:'Herquegies',zip:'7911'},{name:'Hacquegnies',zip:'7911'},{name:'Frasnes-lez-Buissenal',zip:'7911'},{name:'Buissenal',zip:'7911'},{name:'Wattripont',zip:'7910'},{name:'Frasnes-lez-Anvaing',zip:'7910'},{name:'Forest Ht.',zip:'7910'},{name:'Ellignies-lez-Frasnes',zip:'7910'},{name:'Cordes',zip:'7910'},{name:'Arc-Wattripont',zip:'7910'},{name:'Arc-Ainières',zip:'7910'},{name:'Anvaing',zip:'7910'},{name:'Gallaix',zip:'7906'},{name:'Willaupuis',zip:'7904'},{name:'Tourpes',zip:'7904'},{name:'Pipaix',zip:'7904'},{name:'Chapelle-à-Wattines',zip:'7903'},{name:'Chapelle-à-Oie',zip:'7903'},{name:'Blicquy',zip:'7903'},{name:'Thieulain',zip:'7901'},{name:'Leuze-en-Hainaut',zip:'7900'},{name:'Grandmetz',zip:'7900'},{name:'Wodecq',zip:'7890'},{name:'Lahamaide',zip:'7890'},{name:'Ellezelles',zip:'7890'},{name:'Flobecq/Vloesberg',zip:'7880'},{name:'Montignies-lez-Lens',zip:'7870'},{name:'Lombise',zip:'7870'},{name:'Lens',zip:'7870'},{name:'Cambron-Saint-Vincent',zip:'7870'},{name:'Bauffe',zip:'7870'},{name:'Ollignies',zip:'7866'},{name:'Bois-de-Lessines',zip:'7866'},{name:'Deux-Acren',zip:'7864'},{name:'Ghoy',zip:'7863'},{name:'Ogy',zip:'7862'},{name:'Wannebecq',zip:'7861'},{name:'Papignies',zip:'7861'},{name:'Lessines',zip:'7860'},{name:'Petit-Enghien/Lettelingen',zip:'7850'},{name:'Marcq/Mark',zip:'7850'},{name:'Enghien/Edingen',zip:'7850'},{name:'Thoricourt',zip:'7830'},{name:'Silly',zip:'7830'},{name:'Hoves Ht.',zip:'7830'},{name:'Hellebecq',zip:'7830'},{name:'Graty',zip:'7830'},{name:'Gondregnies',zip:'7830'},{name:'Fouleng',zip:'7830'},{name:'Bassilly',zip:'7830'},{name:'Gibecq',zip:'7823'},{name:'Isières',zip:'7822'},{name:'Ghislenghien',zip:'7822'},{name:'Villers-Saint-Amand',zip:'7812'},{name:'Villers-Notre-Dame',zip:'7812'},{name:'Moulbaix',zip:'7812'},{name:'Mainvault',zip:'7812'},{name:'Ligne',zip:'7812'},{name:'Houtaing',zip:'7812'},{name:'Arbre Ht.',zip:'7811'},{name:'Maffle',zip:'7810'},{name:'Rebaix',zip:'7804'},{name:'Ostiches',zip:'7804'},{name:'Bouvignies',zip:'7803'},{name:'Ormeignies',zip:'7802'},{name:'Irchonwelz',zip:'7801'},{name:'Lanquesaint',zip:'7800'},{name:'Ath',zip:'7800'},{name:'Warneton/Waasten',zip:'7784'},{name:'Bas-Warneton/Neerwaasten',zip:'7784'},{name:'Bizet',zip:'7783'},{name:'Ploegsteert',zip:'7782'},{name:'Houthem Comines/Komen',zip:'7781'},{name:'Comines-Warneton/Komen-Waasten',zip:'7780'},{name:'Comines/Komen',zip:'7780'},{name:'Velaines',zip:'7760'},{name:'Pottes',zip:'7760'},{name:'Popuelles',zip:'7760'},{name:'Molenbaix',zip:'7760'},{name:'Escanaffles',zip:'7760'},{name:'Celles Ht.',zip:'7760'},{name:'Russeignies',zip:'7750'},{name:'Orroir',zip:'7750'},{name:'Anseroeul',zip:'7750'},{name:'Amougies',zip:'7750'},{name:'Obigies',zip:'7743'},{name:'Esquelmes',zip:'7743'},{name:'Hérinnes-lez-Pecq',zip:'7742'},{name:'Warcoing',zip:'7740'},{name:'Pecq',zip:'7740'},{name:'Saint-Léger Ht.',zip:'7730'},{name:'Néchin',zip:'7730'},{name:'Leers-Nord',zip:'7730'},{name:'Evregnies',zip:'7730'},{name:'Estaimpuis',zip:'7730'},{name:'Estaimbourg',zip:'7730'},{name:'Bailleul',zip:'7730'},{name:'Herseaux',zip:'7712'},{name:'Dottignies/Dottenijs',zip:'7711'},{name:'Mouscron/Moeskroen',zip:'7700'},{name:'Luingne',zip:'7700'},{name:'Fontenoy',zip:'7643'},{name:'Calonne',zip:'7642'},{name:'Bruyelle',zip:'7641'},{name:'Péronnes-lez-Antoing',zip:'7640'},{name:'Maubray',zip:'7640'},{name:'Antoing',zip:'7640'},{name:'Howardries',zip:'7624'},{name:'Rongy',zip:'7623'},{name:'Laplaigne',zip:'7622'},{name:'Lesdain',zip:'7621'},{name:'Wez-Velvain',zip:'7620'},{name:'Jollain-Merlin',zip:'7620'},{name:'Hollain',zip:'7620'},{name:'Guignies',zip:'7620'},{name:'Brunehaut',zip:'7620'},{name:'Bléharies',zip:'7620'},{name:'Taintignies',zip:'7618'},{name:'La Glanerie',zip:'7611'},{name:'Rumes',zip:'7610'},{name:'Wiers',zip:'7608'},{name:'Wasmes-Audemez-Briffoeil',zip:'7604'},{name:'Callenelle',zip:'7604'},{name:'Brasmenil',zip:'7604'},{name:'Braffe',zip:'7604'},{name:'Baugnies',zip:'7604'},{name:'Bon-Secours',zip:'7603'},{name:'Bury',zip:'7602'},{name:'Roucourt',zip:'7601'},{name:'Péruwelz',zip:'7600'},{name:'Warchin',zip:'7548'},{name:'Mourcourt',zip:'7543'},{name:'Mont-Saint-Aubert',zip:'7542'},{name:'Rumillies',zip:'7540'},{name:'Quartes',zip:'7540'},{name:'Melles',zip:'7540'},{name:'Kain',zip:'7540'},{name:'Vezon',zip:'7538'},{name:'Vaulx',zip:'7536'},{name:'Maulde',zip:'7534'},{name:'Barry',zip:'7534'},{name:'Thimougies',zip:'7533'},{name:'Beclers',zip:'7532'},{name:'Havinnes',zip:'7531'},{name:'Gaurain-Ramecroix',zip:'7530'},{name:'Marquain',zip:'7522'},{name:'Lamain',zip:'7522'},{name:'Hertain',zip:'7522'},{name:'Blandain',zip:'7522'},{name:'Chercq',zip:'7521'},{name:'Templeuve',zip:'7520'},{name:'Ramegnies-Chin',zip:'7520'},{name:'Willemeau',zip:'7506'},{name:'Froidmont',zip:'7504'},{name:'Froyennes',zip:'7503'},{name:'Esplechin',zip:'7502'},{name:'Orcq',zip:'7501'},{name:'Tournai',zip:'7500'},{name:'Saint-Maur',zip:'7500'},{name:'Ere',zip:'7500'},{name:'Wasmuel',zip:'7390'},{name:'Quaregnon',zip:'7390'},{name:'Roisin',zip:'7387'},{name:'Onnezies',zip:'7387'},{name:'Montignies-sur-Roc',zip:'7387'},{name:'Marchipont',zip:'7387'},{name:'Honnelles',zip:'7387'},{name:'Fayt-le-Franc',zip:'7387'},{name:'Erquennes',zip:'7387'},{name:'Autreppe',zip:'7387'},{name:'Athis',zip:'7387'},{name:'Angreau',zip:'7387'},{name:'Angre',zip:'7387'},{name:'Audregnies',zip:'7382'},{name:'Quiévrain',zip:'7380'},{name:'Baisieux',zip:'7380'},{name:'Wihéries',zip:'7370'},{name:'Elouges',zip:'7370'},{name:'Dour',zip:'7370'},{name:'Blaugies',zip:'7370'},{name:'Thulin',zip:'7350'},{name:'Montroeul-sur-Haine',zip:'7350'},{name:'Hensies',zip:'7350'},{name:'Hainin',zip:'7350'},{name:'Wasmes',zip:'7340'},{name:'Warquignies',zip:'7340'},{name:'Paturages',zip:'7340'},{name:'Colfontaine',zip:'7340'},{name:'Villerot',zip:'7334'},{name:'Hautrage',zip:'7334'},{name:'Tertre',zip:'7333'},{name:'Sirault',zip:'7332'},{name:'Neufmaison',zip:'7332'},{name:'Baudour',zip:'7331'},{name:'Saint-Ghislain',zip:'7330'},{name:'Ville-Pommeroeul',zip:'7322'},{name:'Pommeroeul',zip:'7322'},{name:'Harchies',zip:'7321'},{name:'Blaton',zip:'7321'},{name:'Bernissart',zip:'7320'},{name:'Hornu',zip:'7301'},{name:'Boussu',zip:'7300'},{name:'Ecaussinnes-Lalaing',zip:'7191'},{name:'Marche-lez-Ecaussinnes',zip:'7190'},{name:'Ecaussinnes',zip:'7190'},{name:'Petit-Roeulx-lez-Nivelles',zip:'7181'},{name:'Feluy',zip:'7181'},{name:'Familleureux',zip:'7181'},{name:'Arquennes',zip:'7181'},{name:'Seneffe',zip:'7180'},{name:'Manage',zip:'7170'},{name:'La Hestre',zip:'7170'},{name:'Fayt-lez-Manage',zip:'7170'},{name:'Bellecourt',zip:'7170'},{name:'Piéton',zip:'7160'},{name:'Godarville',zip:'7160'},{name:'Chapelle-lez-Herlaimont',zip:'7160'},{name:'Mont-Sainte-Aldegonde',zip:'7141'},{name:'Carnières',zip:'7141'},{name:'Morlanwelz-Mariemont',zip:'7140'},{name:'Morlanwelz',zip:'7140'},{name:'Ressaix',zip:'7134'},{name:'Péronnes-lez-Binche',zip:'7134'},{name:'Leval-Trahegnies',zip:'7134'},{name:'Epinois',zip:'7134'},{name:'Buvrinnes',zip:'7133'},{name:'Waudrez',zip:'7131'},{name:'Bray',zip:'7130'},{name:'Binche',zip:'7130'},{name:'Battignies',zip:'7130'},{name:'Vellereille-le-Sec',zip:'7120'},{name:'Vellereille-les-Brayeux',zip:'7120'},{name:'Rouveroy Ht.',zip:'7120'},{name:'Peissant',zip:'7120'},{name:'Haulchin',zip:'7120'},{name:'Fauroeulx',zip:'7120'},{name:'Estinnes-au-Val',zip:'7120'},{name:'Estinnes-au-Mont',zip:'7120'},{name:'Estinnes',zip:'7120'},{name:'Croix-lez-Rouveroy',zip:'7120'},{name:'Strépy-Bracquegnies',zip:'7110'},{name:'Maurage',zip:'7110'},{name:'Houdeng-Goegnies',zip:'7110'},{name:'Houdeng-Aimeries',zip:'7110'},{name:'Boussoit',zip:'7110'},{name:'Trivières',zip:'7100'},{name:'Saint-Vaast',zip:'7100'},{name:'La Louvière',zip:'7100'},{name:'Haine-Saint-Pierre',zip:'7100'},{name:'Haine-Saint-Paul',zip:'7100'},{name:'Steenkerque Ht.',zip:'7090'},{name:'Ronquières',zip:'7090'},{name:'Petit-Roeulx-lez-Braine',zip:'7090'},{name:'Henripont',zip:'7090'},{name:'Hennuyères',zip:'7090'},{name:'Braine-le-Comte',zip:'7090'},{name:'Sars-la-Bruyère',zip:'7080'},{name:'Noirchain',zip:'7080'},{name:'La Bouverie',zip:'7080'},{name:'Frameries',zip:'7080'},{name:'Eugies Frameries',zip:'7080'},{name:'Ville-sur-Haine Le Roeulx',zip:'7070'},{name:'Thieu',zip:'7070'},{name:'Mignault',zip:'7070'},{name:'Le Roeulx',zip:'7070'},{name:'Gottignies',zip:'7070'},{name:'Neufvilles',zip:'7063'},{name:'Chaussée-Notre-Dame-Louvignies',zip:'7063'},{name:'Naast',zip:'7062'},{name:'Thieusies',zip:'7061'},{name:'Casteau Soignies',zip:'7061'},{name:'Soignies',zip:'7060'},{name:'Horrues',zip:'7060'},{name:'Masnuy-Saint-Pierre',zip:'7050'},{name:'Masnuy-Saint-Jean Jurbise',zip:'7050'},{name:'Jurbise',zip:'7050'},{name:'Herchies',zip:'7050'},{name:'Erbisoeul',zip:'7050'},{name:'Erbaut',zip:'7050'},{name:'Havay',zip:'7041'},{name:'Givry',zip:'7041'},{name:'Quévy-le-Petit',zip:'7040'},{name:'Quévy-le-Grand',zip:'7040'},{name:'Quévy',zip:'7040'},{name:'Goegnies-Chaussée',zip:'7040'},{name:'Genly',zip:'7040'},{name:'Bougnies',zip:'7040'},{name:'Blaregnies',zip:'7040'},{name:'Aulnois',zip:'7040'},{name:'Asquillies',zip:'7040'},{name:'Saint-Denis Ht.',zip:'7034'},{name:'Obourg',zip:'7034'},{name:'Cuesmes',zip:'7033'},{name:'Spiennes',zip:'7032'},{name:'Villers-Saint-Ghislain',zip:'7031'},{name:'Saint-Symphorien',zip:'7030'},{name:'Ciply',zip:'7024'},{name:'Nouvelles',zip:'7022'},{name:'Mesvin',zip:'7022'},{name:'Hyon',zip:'7022'},{name:'Harveng',zip:'7022'},{name:'Harmignies',zip:'7022'},{name:'Havré',zip:'7021'},{name:'Nimy',zip:'7020'},{name:'Maisières',zip:'7020'},{name:'Jemappes',zip:'7012'},{name:'Flénu',zip:'7012'},{name:'Ghlin',zip:'7011'},{name:'Mons',zip:'7000'},{name:'Seloignes',zip:'6596'},{name:'Forges-Philippe',zip:'6596'},{name:'Beauwelz',zip:'6594'},{name:'Macquenoise',zip:'6593'},{name:'Monceau-Imbrechies',zip:'6592'},{name:'Macon',zip:'6591'},{name:'Momignies',zip:'6590'},{name:'Merbes-Sainte-Marie',zip:'6567'},{name:'Merbes-le-Château',zip:'6567'},{name:'Labuissière',zip:'6567'},{name:'Fontaine-Valmont',zip:'6567'},{name:'Solre-sur-Sambre',zip:'6560'},{name:'Montignies-Saint-Christophe',zip:'6560'},{name:'Hantes-Wihéries',zip:'6560'},{name:'Grand-Reng',zip:'6560'},{name:'Erquelinnes',zip:'6560'},{name:'Bienne-lez-Happart',zip:'6543'},{name:'Sars-la-Buissière',zip:'6542'},{name:'Mont-Sainte-Geneviève',zip:'6540'},{name:'Lobbes',zip:'6540'},{name:'Thuillies',zip:'6536'},{name:'Donstiennes',zip:'6536'},{name:'Gozée',zip:'6534'},{name:'Biercée',zip:'6533'},{name:'Ragnies',zip:'6532'},{name:'Biesme-sous-Thuin',zip:'6531'},{name:'Thuin',zip:'6530'},{name:'Leers-et-Fosteau',zip:'6530'},{name:'Strée Ht.',zip:'6511'},{name:'Thirimont',zip:'6500'},{name:'Solre-Saint-Géry',zip:'6500'},{name:'Renlies',zip:'6500'},{name:'Leval-Chaudeville',zip:'6500'},{name:'Leugnies',zip:'6500'},{name:'Beaumont',zip:'6500'},{name:'Barbençon',zip:'6500'},{name:'Sivry-Rance',zip:'6470'},{name:'Sivry',zip:'6470'},{name:'Sautin',zip:'6470'},{name:'Rance',zip:'6470'},{name:'Montbliart',zip:'6470'},{name:'Grandrieu',zip:'6470'},{name:'Rièzes',zip:'6464'},{name:'Forges',zip:'6464'},{name:'Bourlers',zip:'6464'},{name:'Baileux',zip:'6464'},{name:'Lompret',zip:'6463'},{name:'Vaulx-lez-Chimay',zip:'6462'},{name:'Virelles',zip:'6461'},{name:'Villers-la-Tour',zip:'6460'},{name:'Salles',zip:'6460'},{name:'Saint-Remy Ht.',zip:'6460'},{name:'Robechies',zip:'6460'},{name:'Chimay',zip:'6460'},{name:'Bailièvre',zip:'6460'},{name:'Erpion',zip:'6441'},{name:'Vergnies',zip:'6440'},{name:'Froidchapelle',zip:'6440'},{name:'Fourbechies',zip:'6440'},{name:'Boussu-lez-Walcourt',zip:'6440'},{name:'Villers-Poterie',zip:'6280'},{name:'Loverval',zip:'6280'},{name:'Joncret',zip:'6280'},{name:'Gougnies',zip:'6280'},{name:'Gerpinnes',zip:'6280'},{name:'Acoz',zip:'6280'},{name:'Roselies',zip:'6250'},{name:'Presles',zip:'6250'},{name:'Pont-de-Loup',zip:'6250'},{name:'Aiseau-Presles',zip:'6250'},{name:'Aiseau',zip:'6250'},{name:'Pironchamps',zip:'6240'},{name:'Farciennes',zip:'6240'},{name:'Luttre',zip:'6238'},{name:'Liberchies',zip:'6238'},{name:'Viesville',zip:'6230'},{name:'Thiméon',zip:'6230'},{name:'Pont-à-Celles',zip:'6230'},{name:'Obaix',zip:'6230'},{name:'Buzet',zip:'6230'},{name:'Wanfercée-Baulet',zip:'6224'},{name:'Wagnelée',zip:'6223'},{name:'Brye',zip:'6222'},{name:'Saint-Amand',zip:'6221'},{name:'Wangenies',zip:'6220'},{name:'Lambusart',zip:'6220'},{name:'Heppignies',zip:'6220'},{name:'Fleurus',zip:'6220'},{name:'Mellet',zip:'6211'},{name:'Wayaux',zip:'6210'},{name:'Villers-Perwin',zip:'6210'},{name:'Rèves',zip:'6210'},{name:'Les Bons Villers',zip:'6210'},{name:'Frasnes-lez-Gosselies',zip:'6210'},{name:'Châtelineau',zip:'6200'},{name:'Châtelet',zip:'6200'},{name:'Bouffioulx',zip:'6200'},{name:'Trazegnies',zip:'6183'},{name:'Souvret',zip:'6182'},{name:'Gouy-lez-Piéton',zip:'6181'},{name:'Courcelles',zip:'6180'},{name:'Anderlues',zip:'6150'},{name:'Leernes',zip:'6142'},{name:'Forchies-la-Marche',zip:'6141'},{name:'Nalinnes',zip:'6120'},{name:'Marbaix Ht.',zip:'6120'},{name:'Jamioulx',zip:'6120'},{name:'Ham-sur-Heure-Nalinnes',zip:'6120'},{name:'Ham-sur-Heure',zip:'6120'},{name:'Cour-sur-Heure',zip:'6120'},{name:'Landelies',zip:'6111'},{name:'Montigny-le-Tilleul',zip:'6110'},{name:'Montignies-sur-Sambre',zip:'6061'},{name:'Gilly',zip:'6060'},{name:'Roux',zip:'6044'},{name:'Ransart',zip:'6043'},{name:'Lodelinsart',zip:'6042'},{name:'Gosselies',zip:'6041'},{name:'Jumet',zip:'6040'},{name:'Mont-sur-Marchienne',zip:'6032'},{name:'Monceau-sur-Sambre',zip:'6031'},{name:'Marchienne-au-Pont',zip:'6030'},{name:'Goutroux',zip:'6030'},{name:'Dampremy',zip:'6020'},{name:'Couillet',zip:'6010'},{name:'Marcinelle',zip:'6001'},{name:'Charleroi',zip:'6000'},{name:'Zonnebeke',zip:'8980'},{name:'Passendale (Zonnebeke)',zip:'8980'},{name:'Geluveld (Zonnebeke)',zip:'8980'},{name:'Beselare (Zonnebeke)',zip:'8980'},{name:'Watou (Poperinge)',zip:'8978'},{name:'Roesbrugge-Haringe (Poperinge)',zip:'8972'},{name:'Proven (Poperinge)',zip:'8972'},{name:'Krombeke (Poperinge)',zip:'8972'},{name:'Reningelst (Poperinge)',zip:'8970'},{name:'Poperinge',zip:'8970'},{name:'Loker (Heuvelland)',zip:'8958'},{name:'Kemmel (Heuvelland)',zip:'8956'},{name:'Westouter (Heuvelland)',zip:'8954'},{name:'Wijtschate (Heuvelland)',zip:'8953'},{name:'Wulvergem (Heuvelland)',zip:'8952'},{name:'Dranouter (Heuvelland)',zip:'8951'},{name:'Nieuwkerke (Heuvelland)',zip:'8950'},{name:'Heuvelland',zip:'8950'},{name:'Wervik',zip:'8940'},{name:'Geluwe (Wervik)',zip:'8940'},{name:'Rekkem (Menen)',zip:'8930'},{name:'Menen',zip:'8930'},{name:'Lauwe (Menen)',zip:'8930'},{name:'Poelkapelle (Langemark-Poelkapelle)',zip:'8920'},{name:'Langemark-Poelkapelle',zip:'8920'},{name:'Langemark (Langemark-Poelkapelle)',zip:'8920'},{name:'Bikschote (Langemark-Poelkapelle)',zip:'8920'},{name:'Vlamertinge (Ieper)',zip:'8908'},{name:'Elverdinge (Ieper)',zip:'8906'},{name:'Zuidschote (Ieper)',zip:'8904'},{name:'Boezinge (Ieper)',zip:'8904'},{name:'Zillebeke (Ieper)',zip:'8902'},{name:'Voormezele (Ieper)',zip:'8902'},{name:'Hollebeke (Ieper)',zip:'8902'},{name:'Sint-Jan (Ieper)',zip:'8900'},{name:'Ieper',zip:'8900'},{name:'Dikkebus (Ieper)',zip:'8900'},{name:'Brielen (Ieper)',zip:'8900'},{name:'Moorslede',zip:'8890'},{name:'Dadizele (Moorslede)',zip:'8890'},{name:'Sint-Eloois-Winkel (Ledegem)',zip:'8880'},{name:'Rollegem-Kapelle (Ledegem)',zip:'8880'},{name:'Ledegem',zip:'8880'},{name:'Kachtem (Izegem)',zip:'8870'},{name:'Izegem',zip:'8870'},{name:'Emelgem (Izegem)',zip:'8870'},{name:'Lendelede',zip:'8860'},{name:'Koolskamp (Ardooie)',zip:'8851'},{name:'Ardooie',zip:'8850'},{name:'Westrozebeke (Staden)',zip:'8840'},{name:'Staden',zip:'8840'},{name:'Oostnieuwkerke (Staden)',zip:'8840'},{name:'Hooglede',zip:'8830'},{name:'Gits (Hooglede)',zip:'8830'},{name:'Torhout',zip:'8820'},{name:'Lichtervelde',zip:'8810'},{name:'Rumbeke (Roeselare)',zip:'8800'},{name:'Roeselare',zip:'8800'},{name:'Oekene (Roeselare)',zip:'8800'},{name:'Sint-Eloois-Vijve (Waregem)',zip:'8793'},{name:'Desselgem (Waregem)',zip:'8792'},{name:'Waregem',zip:'8790'},{name:'Oostrozebeke',zip:'8780'},{name:'Ingelmunster',zip:'8770'},{name:'Meulebeke',zip:'8760'},{name:'Ruiselede',zip:'8755'},{name:'Zwevezele (Wingene)',zip:'8750'},{name:'Wingene',zip:'8750'},{name:'Pittem',zip:'8740'},{name:'Egem (Pittem)',zip:'8740'},{name:'Oedelem (Beernem)',zip:'8730'},{name:'Beernem',zip:'8730'},{name:'Wakken (Dentergem)',zip:'8720'},{name:'Oeselgem (Dentergem)',zip:'8720'},{name:'Markegem (Dentergem)',zip:'8720'},{name:'Dentergem',zip:'8720'},{name:'Wielsbeke',zip:'8710'},{name:'Sint-Baafs-Vijve (Wielsbeke)',zip:'8710'},{name:'Ooigem (Wielsbeke)',zip:'8710'},{name:'Tielt',zip:'8700'},{name:'Schuiferskapelle (Tielt)',zip:'8700'},{name:'Kanegem (Tielt)',zip:'8700'},{name:'Aarsele (Tielt)',zip:'8700'},{name:'Stavele (Alveringem)',zip:'8691'},{name:'Leisele (Alveringem)',zip:'8691'},{name:'Izenberge (Alveringem)',zip:'8691'},{name:'Gijverinkhove (Alveringem)',zip:'8691'},{name:'Beveren-Aan-Den-Ijzer (Alveringem)',zip:'8691'},{name:'Sint-Rijkers (Alveringem)',zip:'8690'},{name:'Oeren (Alveringem)',zip:'8690'},{name:'Hoogstade (Alveringem)',zip:'8690'},{name:'Alveringem',zip:'8690'},{name:'Zande (Koekelare)',zip:'8680'},{name:'Koekelare',zip:'8680'},{name:'Bovekerke (Koekelare)',zip:'8680'},{name:'Wulpen (Koksijde)',zip:'8670'},{name:'Oostduinkerke (Koksijde)',zip:'8670'},{name:'Koksijde',zip:'8670'},{name:'Adinkerke (De Panne)',zip:'8660'},{name:'Merkem (Houthulst)',zip:'8650'},{name:'Klerken (Houthulst)',zip:'8650'},{name:'Houthulst',zip:'8650'},{name:'Reninge (Lo-Reninge)',zip:'8647'},{name:'Pollinkhove (Lo-Reninge)',zip:'8647'},{name:'Noordschote (Lo-Reninge)',zip:'8647'},{name:'Lo-Reninge',zip:'8647'},{name:'Lo (Lo-Reninge)',zip:'8647'},{name:'Woesten (Vleteren)',zip:'8640'},{name:'Westvleteren (Vleteren)',zip:'8640'},{name:'Vleteren',zip:'8640'},{name:'Oostvleteren (Vleteren)',zip:'8640'},{name:'Zoutenaaie (Veurne)',zip:'8630'},{name:'Wulveringem (Veurne)',zip:'8630'},{name:'Vinkem (Veurne)',zip:'8630'},{name:'Veurne',zip:'8630'},{name:'Eggewaartskapelle (Veurne)',zip:'8630'},{name:'Bulskamp (Veurne)',zip:'8630'},{name:'Booitshoeke (Veurne)',zip:'8630'},{name:'Beauvoorde',zip:'8630'},{name:'Avekapelle (Veurne)',zip:'8630'},{name:'Nieuwpoort',zip:'8620'},{name:'Zarren (Kortemark)',zip:'8610'},{name:'Werken (Kortemark)',zip:'8610'},{name:'Kortemark',zip:'8610'},{name:'Handzame (Kortemark)',zip:'8610'},{name:'Woumen (Diksmuide)',zip:'8600'},{name:'Vladslo (Diksmuide)',zip:'8600'},{name:'Stuivekenskerke (Diksmuide)',zip:'8600'},{name:'Sint-Jacobs-Kapelle (Diksmuide)',zip:'8600'},{name:'Pervijze (Diksmuide)',zip:'8600'},{name:'Oudekapelle (Diksmuide)',zip:'8600'},{name:'Nieuwkapelle (Diksmuide)',zip:'8600'},{name:'Leke (Diksmuide)',zip:'8600'},{name:'Lampernisse (Diksmuide)',zip:'8600'},{name:'Keiem (Diksmuide)',zip:'8600'},{name:'Kaaskerke (Diksmuide)',zip:'8600'},{name:'Esen (Diksmuide)',zip:'8600'},{name:'Driekapellen (Diksmuide)',zip:'8600'},{name:'Diksmuide',zip:'8600'},{name:'Beerst (Diksmuide)',zip:'8600'},{name:'Bossuit (Avelgem)',zip:'8583'},{name:'Outrijve (Avelgem)',zip:'8582'},{name:'Waarmaarde (Avelgem)',zip:'8581'},{name:'Kerkhove (Avelgem)',zip:'8581'},{name:'Avelgem',zip:'8580'},{name:'Tiegem (Anzegem)',zip:'8573'},{name:'Kaster (Anzegem)',zip:'8572'},{name:'Vichte (Anzegem)',zip:'8570'},{name:'Ingooigem (Anzegem)',zip:'8570'},{name:'Gijzelbrechtegem (Anzegem)',zip:'8570'},{name:'Anzegem',zip:'8570'},{name:'Wevelgem',zip:'8560'},{name:'Moorsele (Wevelgem)',zip:'8560'},{name:'Gullegem (Wevelgem)',zip:'8560'},{name:'Sint-Denijs (Zwevegem)',zip:'8554'},{name:'Otegem (Zwevegem)',zip:'8553'},{name:'Moen (Zwevegem)',zip:'8552'},{name:'Heestert (Zwevegem)',zip:'8551'},{name:'Zwevegem',zip:'8550'},{name:'Deerlijk',zip:'8540'},{name:'Hulste (Harelbeke)',zip:'8531'},{name:'Bavikhove (Harelbeke)',zip:'8531'},{name:'Harelbeke',zip:'8530'},{name:'Kuurne',zip:'8520'},{name:'Aalbeke (Kortrijk)',zip:'8511'},{name:'Rollegem (Kortrijk)',zip:'8510'},{name:'Marke (Kortrijk)',zip:'8510'},{name:'Kooigem (Kortrijk)',zip:'8510'},{name:'Bellegem (Kortrijk)',zip:'8510'},{name:'Heule (Kortrijk)',zip:'8501'},{name:'Bissegem (Kortrijk)',zip:'8501'},{name:'Kortrijk',zip:'8500'},{name:'Zerkegem (Jabbeke)',zip:'8490'},{name:'Varsenare (Jabbeke)',zip:'8490'},{name:'Stalhille (Jabbeke)',zip:'8490'},{name:'Snellegem (Jabbeke)',zip:'8490'},{name:'Jabbeke',zip:'8490'},{name:'Ichtegem',zip:'8480'},{name:'Eernegem (Ichtegem)',zip:'8480'},{name:'Bekegem (Ichtegem)',zip:'8480'},{name:'Zevekote (Gistel)',zip:'8470'},{name:'Snaaskerke (Gistel)',zip:'8470'},{name:'Moere (Gistel)',zip:'8470'},{name:'Gistel',zip:'8470'},{name:'Westkerke (Oudenburg)',zip:'8460'},{name:'Roksem (Oudenburg)',zip:'8460'},{name:'Oudenburg',zip:'8460'},{name:'Ettelgem (Oudenburg)',zip:'8460'},{name:'Bredene',zip:'8450'},{name:'Westende (Middelkerke)',zip:'8434'},{name:'Lombardsijde (Middelkerke)',zip:'8434'},{name:'Spermalie',zip:'8433'},{name:'Slijpe (Middelkerke)',zip:'8433'},{name:'Sint-Pieters-Kapelle West-Vlaanderen',zip:'8433'},{name:'Schore (Middelkerke)',zip:'8433'},{name:'Mannekensvere (Middelkerke)',zip:'8433'},{name:'Leffinge (Middelkerke)',zip:'8432'},{name:'Wilskerke (Middelkerke)',zip:'8431'},{name:'Middelkerke',zip:'8430'},{name:'Vlissegem (De Haan)',zip:'8421'},{name:'Wenduine (De Haan)',zip:'8420'},{name:'Klemskerke (De Haan)',zip:'8420'},{name:'Stene (Oostende)',zip:'8400'},{name:'Oostende',zip:'8400'},{name:'Zuienkerke',zip:'8377'},{name:'Nieuwmunster (Zuienkerke)',zip:'8377'},{name:'Meetkerke (Zuienkerke)',zip:'8377'},{name:'Houtave (Zuienkerke)',zip:'8377'},{name:'Uitkerke (Blankenberge)',zip:'8370'},{name:'Blankenberge',zip:'8370'},{name:'Sijsele (Damme)',zip:'8340'},{name:'Moerkerke (Damme)',zip:'8340'},{name:'Lapscheure (Damme)',zip:'8340'},{name:'Hoeke (Damme)',zip:'8340'},{name:'Damme',zip:'8340'},{name:'Heist-Aan-Zee (Knokke-Heist)',zip:'8301'},{name:'Westkapelle (Knokke-Heist)',zip:'8300'},{name:'Knokke-Heist',zip:'8300'},{name:'Knokke (Knokke-Heist)',zip:'8300'},{name:'Aartrijke (Zedelgem)',zip:'8211'},{name:'Zedelgem',zip:'8210'},{name:'Veldegem (Zedelgem)',zip:'8210'},{name:'Loppem (Zedelgem)',zip:'8210'},{name:'Waardamme (Oostkamp)',zip:'8020'},{name:'Ruddervoorde (Oostkamp)',zip:'8020'},{name:'Oostkamp',zip:'8020'},{name:'Hertsberge (Oostkamp)',zip:'8020'},{name:'Zeebrugge (Brugge)',zip:'8380'},{name:'Lissewege (Brugge)',zip:'8380'},{name:'Dudzele (Brugge)',zip:'8380'},{name:'Sint-Kruis (Brugge)',zip:'8310'},{name:'Assebroek (Brugge)',zip:'8310'},{name:'Sint-Michiels (Brugge)',zip:'8200'},{name:'Sint-Andries (Brugge)',zip:'8200'},{name:'Koolkerke (Brugge)',zip:'8000'},{name:'Brugge',zip:'8000'},{name:'Waanrode (Kortenaken)',zip:'3473'},{name:'Kersbeek-Miskom (Kortenaken)',zip:'3472'},{name:'Hoeleden (Kortenaken)',zip:'3471'},{name:'Ransberg (Kortenaken)',zip:'3470'},{name:'Kortenaken',zip:'3470'},{name:'Molenbeek-Wersbeek (Bekkevoort)',zip:'3461'},{name:'Bekkevoort',zip:'3460'},{name:'Assent (Bekkevoort)',zip:'3460'},{name:'Rummen (Geetbets)',zip:'3454'},{name:'Grazen (Geetbets)',zip:'3450'},{name:'Geetbets',zip:'3450'},{name:'Zoutleeuw',zip:'3440'},{name:'Helen-Bos (Zoutleeuw)',zip:'3440'},{name:'Halle-Booienhoven (Zoutleeuw)',zip:'3440'},{name:'Dormaal (Zoutleeuw)',zip:'3440'},{name:'Budingen (Zoutleeuw)',zip:'3440'},{name:'Neerlanden (Landen)',zip:'3404'},{name:'Attenhoven (Landen)',zip:'3404'},{name:'Wezeren (Landen)',zip:'3401'},{name:'Walshoutem (Landen)',zip:'3401'},{name:'Walsbets (Landen)',zip:'3401'},{name:'Waasmont (Landen)',zip:'3401'},{name:'Wange (Landen)',zip:'3400'},{name:'Rumsdorp (Landen)',zip:'3400'},{name:'Overwinden (Landen)',zip:'3400'},{name:'Neerwinden (Landen)',zip:'3400'},{name:'Landen',zip:'3400'},{name:'Laar (Landen)',zip:'3400'},{name:'Ezemaal (Landen)',zip:'3400'},{name:'Eliksem (Landen)',zip:'3400'},{name:'Meensel-Kiezegem (Tielt-Winge)',zip:'3391'},{name:'Tielt-Winge',zip:'3390'},{name:'Sint-Joris-Winge (Tielt-Winge)',zip:'3390'},{name:'Houwaart (Tielt-Winge)',zip:'3390'},{name:'Attenrode (Glabbeek)',zip:'3384'},{name:'Bunsbeek (Glabbeek)',zip:'3380'},{name:'Willebringen (Boutersem)',zip:'3370'},{name:'Vertrijk (Boutersem)',zip:'3370'},{name:'Roosbeek (Boutersem)',zip:'3370'},{name:'Neervelp (Boutersem)',zip:'3370'},{name:'Kerkom (Boutersem)',zip:'3370'},{name:'Boutersem',zip:'3370'},{name:'Opvelp (Bierbeek)',zip:'3360'},{name:'Lovenjoel (Bierbeek)',zip:'3360'},{name:'Korbeek-Lo (Bierbeek)',zip:'3360'},{name:'Bierbeek',zip:'3360'},{name:'Wommersom (Linter)',zip:'3350'},{name:'Overhespen (Linter)',zip:'3350'},{name:'Orsmaal-Gussenhoven (Linter)',zip:'3350'},{name:'Neerlinter (Linter)',zip:'3350'},{name:'Neerhespen (Linter)',zip:'3350'},{name:'Melkwezer (Linter)',zip:'3350'},{name:'Linter',zip:'3350'},{name:'Drieslinter (Linter)',zip:'3350'},{name:'Outgaarden (Hoegaarden)',zip:'3321'},{name:'Hoegaarden',zip:'3320'},{name:'Vissenaken (Tienen)',zip:'3300'},{name:'Tienen',zip:'3300'},{name:'Sint-Margriete-Houtem Tienen',zip:'3300'},{name:'Oplinter (Tienen)',zip:'3300'},{name:'Oorbeek (Tienen)',zip:'3300'},{name:'Kumtich (Tienen)',zip:'3300'},{name:'Hakendover (Tienen)',zip:'3300'},{name:'Goetsenhoven (Tienen)',zip:'3300'},{name:'Bost (Tienen)',zip:'3300'},{name:'Molenstede (Diest)',zip:'3294'},{name:'Kaggevinne (Diest)',zip:'3293'},{name:'Webbekom (Diest)',zip:'3290'},{name:'Schaffen (Diest)',zip:'3290'},{name:'Diest',zip:'3290'},{name:'Testelt (Scherpenheuvel-Zichem)',zip:'3272'},{name:'Messelbroek (Scherpenheuvel-Zichem)',zip:'3272'},{name:'Zichem (Scherpenheuvel-Zichem)',zip:'3271'},{name:'Averbode (Scherpenheuvel-Zichem)',zip:'3271'},{name:'Scherpenheuvel (Scherpenheuvel-Zichem)',zip:'3270'},{name:'Nieuwrode (Holsbeek)',zip:'3221'},{name:'Sint-Pieters-Rode (Holsbeek)',zip:'3220'},{name:'Holsbeek',zip:'3220'},{name:'Pellenberg (Lubbeek)',zip:'3212'},{name:'Binkom (Lubbeek)',zip:'3211'},{name:'Lubbeek',zip:'3210'},{name:'Linden (Lubbeek)',zip:'3210'},{name:'Rillaar (Aarschot)',zip:'3202'},{name:'Langdorp (Aarschot)',zip:'3201'},{name:'Gelrode (Aarschot)',zip:'3200'},{name:'Aarschot',zip:'3200'},{name:'Hever (Boortmeerbeek)',zip:'3191'},{name:'Boortmeerbeek',zip:'3190'},{name:'Wespelaar (Haacht)',zip:'3150'},{name:'Tildonk (Haacht)',zip:'3150'},{name:'Haacht',zip:'3150'},{name:'Keerbergen',zip:'3140'},{name:'Betekom (Begijnendijk)',zip:'3130'},{name:'Begijnendijk',zip:'3130'},{name:'Baal (Tremelo)',zip:'3128'},{name:'Tremelo',zip:'3120'},{name:'Werchter (Rotselaar)',zip:'3118'},{name:'Wezemaal (Rotselaar)',zip:'3111'},{name:'Rotselaar',zip:'3110'},{name:'Overijse',zip:'3090'},{name:'Vossem (Tervuren)',zip:'3080'},{name:'Tervuren',zip:'3080'},{name:'Duisburg (Tervuren)',zip:'3080'},{name:'Meerbeek (Kortenberg)',zip:'3078'},{name:'Everberg (Kortenberg)',zip:'3078'},{name:'Erps-Kwerps (Kortenberg)',zip:'3071'},{name:'Kortenberg',zip:'3070'},{name:'Leefdaal (Bertem)',zip:'3061'},{name:'Korbeek-Dijle (Bertem)',zip:'3060'},{name:'Bertem',zip:'3060'},{name:'Vaalbeek (Oud-Heverlee)',zip:'3054'},{name:'Haasrode (Oud-Heverlee)',zip:'3053'},{name:'Blanden (Oud-Heverlee)',zip:'3052'},{name:'Sint-Joris-Weert (Oud-Heverlee)',zip:'3051'},{name:'Oud-Heverlee',zip:'3050'},{name:'Sint-Agatha-Rode (Huldenberg)',zip:'3040'},{name:'Ottenburg (Huldenberg)',zip:'3040'},{name:'Neerijse (Huldenberg)',zip:'3040'},{name:'Loonbeek (Huldenberg)',zip:'3040'},{name:'Huldenberg',zip:'3040'},{name:'Winksele (Herent)',zip:'3020'},{name:'Veltem-Beisem (Herent)',zip:'3020'},{name:'Herent',zip:'3020'},{name:'Wilsele (Leuven)',zip:'3012'},{name:'Kessel-Lo (Leuven)',zip:'3010'},{name:'Heverlee (Leuven)',zip:'3001'},{name:'Leuven',zip:'3000'},{name:'Weerde (Zemst)',zip:'1982'},{name:'Elewijt (Zemst)',zip:'1982'},{name:'Zemst',zip:'1980'},{name:'Eppegem (Zemst)',zip:'1980'},{name:'Wezembeek-Oppem',zip:'1970'},{name:'Kraainem',zip:'1950'},{name:'Sterrebeek (Zaventem)',zip:'1933'},{name:'Sint-Stevens-Woluwe (Zaventem)',zip:'1932'},{name:'Zaventem',zip:'1930'},{name:'Nossegem (Zaventem)',zip:'1930'},{name:'Nederokkerzeel (Kampenhout)',zip:'1910'},{name:'Kampenhout',zip:'1910'},{name:'Buken (Kampenhout)',zip:'1910'},{name:'Ramsdonk (Kapelle-Op-Den-Bos)',zip:'1880'},{name:'Nieuwenrode (Kapelle-Op-Den-Bos)',zip:'1880'},{name:'Kapelle-op-den-Bos',zip:'1880'},{name:'Wolvertem (Meise)',zip:'1861'},{name:'Meise',zip:'1860'},{name:'Strombeek-Bever (Grimbergen)',zip:'1853'},{name:'Beigem (Grimbergen)',zip:'1852'},{name:'Humbeek (Grimbergen)',zip:'1851'},{name:'Grimbergen',zip:'1850'},{name:'Steenhuffel (Londerzeel)',zip:'1840'},{name:'Malderen (Londerzeel)',zip:'1840'},{name:'Londerzeel',zip:'1840'},{name:'Diegem (Machelen)',zip:'1831'},{name:'Steenokkerzeel',zip:'1820'},{name:'Perk (Steenokkerzeel)',zip:'1820'},{name:'Melsbroek (Steenokkerzeel)',zip:'1820'},{name:'Vilvoorde',zip:'1800'},{name:'Peutie (Vilvoorde)',zip:'1800'},{name:'Teralfene (Affligem)',zip:'1790'},{name:'Hekelgem (Affligem)',zip:'1790'},{name:'Essene (Affligem)',zip:'1790'},{name:'Affligem',zip:'1790'},{name:'Merchtem',zip:'1785'},{name:'Brussegem (Merchtem)',zip:'1785'},{name:'Wemmel',zip:'1780'},{name:'Liedekerke',zip:'1770'},{name:'Borchtlombeek (Roosdaal)',zip:'1761'},{name:'Strijtem (Roosdaal)',zip:'1760'},{name:'Roosdaal',zip:'1760'},{name:'Pamel (Roosdaal)',zip:'1760'},{name:'Onze-Lieve-Vrouw-Lombeek (Roosdaal)',zip:'1760'},{name:'Oetingen (Gooik)',zip:'1755'},{name:'Leerbeek (Gooik)',zip:'1755'},{name:'Kester (Gooik)',zip:'1755'},{name:'Gooik',zip:'1755'},{name:'Sint-Martens-Lennik (Lennik)',zip:'1750'},{name:'Sint-Kwintens-Lennik (Lennik)',zip:'1750'},{name:'Lennik',zip:'1750'},{name:'Gaasbeek (Lennik)',zip:'1750'},{name:'Opwijk',zip:'1745'},{name:'Mazenzele (Opwijk)',zip:'1745'},{name:'Sint-Katherina-Lombeek (Ternat)',zip:'1742'},{name:'Wambeek (Ternat)',zip:'1741'},{name:'Ternat',zip:'1740'},{name:'Zellik (Asse)',zip:'1731'},{name:'Relegem (Asse)',zip:'1731'},{name:'Mollem (Asse)',zip:'1730'},{name:'Kobbegem (Asse)',zip:'1730'},{name:'Bekkerzeel (Asse)',zip:'1730'},{name:'Asse',zip:'1730'},{name:'Schepdaal (Dilbeek)',zip:'1703'},{name:'Groot-Bijgaarden (Dilbeek)',zip:'1702'},{name:'Itterbeek (Dilbeek)',zip:'1701'},{name:'Sint-Ulriks-Kapelle (Dilbeek)',zip:'1700'},{name:'Sint-Martens-Bodegem (Dilbeek)',zip:'1700'},{name:'Dilbeek',zip:'1700'},{name:'Bellingen (Pepingen)',zip:'1674'},{name:'Beert (Pepingen)',zip:'1673'},{name:'Elingen (Pepingen)',zip:'1671'},{name:'Pepingen',zip:'1670'},{name:'Heikruis (Pepingen)',zip:'1670'},{name:'Bogaarden (Pepingen)',zip:'1670'},{name:'Huizingen (Beersel)',zip:'1654'},{name:'Dworp (Beersel)',zip:'1653'},{name:'Alsemberg (Beersel)',zip:'1652'},{name:'Lot (Beersel)',zip:'1651'},{name:'Beersel',zip:'1650'},{name:'Linkebeek',zip:'1630'},{name:'Drogenbos',zip:'1620'},{name:'Vlezenbeek (Sint-Pieters-Leeuw)',zip:'1602'},{name:'Sint-Pieters-Leeuw',zip:'1600'},{name:'Sint-Laureins-Berchem (Sint-Pieters-Leeuw)',zip:'1600'},{name:'Oudenaken (Sint-Pieters-Leeuw)',zip:'1600'},{name:'Vollezele (Galmaarden)',zip:'1570'},{name:'Tollembeek (Galmaarden)',zip:'1570'},{name:'Galmaarden',zip:'1570'},{name:'Hoeilaart',zip:'1560'},{name:'Herne',zip:'1540'},{name:'Herfelingen (Herne)',zip:'1540'},{name:'Lembeek (Halle)',zip:'1502'},{name:'Buizingen (Halle)',zip:'1501'},{name:'Halle',zip:'1500'},{name:'Middelburg (Maldegem)',zip:'9992'},{name:'Adegem (Maldegem)',zip:'9991'},{name:'Maldegem',zip:'9990'},{name:'Watervliet (Sint-Laureins)',zip:'9988'},{name:'Waterland-Oudeman (Sint-Laureins)',zip:'9988'},{name:'Sint-Jan-In-Eremo (Sint-Laureins)',zip:'9982'},{name:'Sint-Margriete (Sint-Laureins)',zip:'9981'},{name:'Sint-Laureins',zip:'9980'},{name:'Lembeke (Kaprijke)',zip:'9971'},{name:'Kaprijke',zip:'9970'},{name:'Oosteeklo (Assenede)',zip:'9968'},{name:'Bassevelde (Assenede)',zip:'9968'},{name:'Boekhoute (Assenede)',zip:'9961'},{name:'Assenede',zip:'9960'},{name:'Waarschoot',zip:'9950'},{name:'Sleidinge (Evergem)',zip:'9940'},{name:'Kluizen (Evergem)',zip:'9940'},{name:'Evergem',zip:'9940'},{name:'Ertvelde (Evergem)',zip:'9940'},{name:'Ronsele (Zomergem)',zip:'9932'},{name:'Oostwinkel (Zomergem)',zip:'9931'},{name:'Zomergem',zip:'9930'},{name:'Vinderhoute (Lovendegem)',zip:'9921'},{name:'Lovendegem',zip:'9920'},{name:'Ursel (Knesselare)',zip:'9910'},{name:'Knesselare',zip:'9910'},{name:'Eeklo',zip:'9900'},{name:'Vurste (Gavere)',zip:'9890'},{name:'Semmerzake (Gavere)',zip:'9890'},{name:'Gavere',zip:'9890'},{name:'Dikkelvenne (Gavere)',zip:'9890'},{name:'Baaigem (Gavere)',zip:'9890'},{name:'Asper (Gavere)',zip:'9890'},{name:'Bellem (Aalter)',zip:'9881'},{name:'Poeke (Aalter)',zip:'9880'},{name:'Lotenhulle (Aalter)',zip:'9880'},{name:'Aalter',zip:'9880'},{name:'Zulte',zip:'9870'},{name:'Olsene (Zulte)',zip:'9870'},{name:'Scheldewindeke (Oosterzele)',zip:'9860'},{name:'Oosterzele',zip:'9860'},{name:'Moortsele (Oosterzele)',zip:'9860'},{name:'Landskouter (Oosterzele)',zip:'9860'},{name:'Gijzenzele (Oosterzele)',zip:'9860'},{name:'Balegem (Oosterzele)',zip:'9860'},{name:'Vosselare (Nevele)',zip:'9850'},{name:'Poesele (Nevele)',zip:'9850'},{name:'Nevele',zip:'9850'},{name:'Merendree (Nevele)',zip:'9850'},{name:'Landegem (Nevele)',zip:'9850'},{name:'Hansbeke (Nevele)',zip:'9850'},{name:'Zevergem (De Pinte)',zip:'9840'},{name:'Deurle (Sint-Martens-Latem)',zip:'9831'},{name:'Sint-Martens-Latem',zip:'9830'},{name:'Schelderode (Merelbeke)',zip:'9820'},{name:'Munte (Merelbeke)',zip:'9820'},{name:'Merelbeke',zip:'9820'},{name:'Melsen (Merelbeke)',zip:'9820'},{name:'Lemberge (Merelbeke)',zip:'9820'},{name:'Bottelare (Merelbeke)',zip:'9820'},{name:'Nazareth',zip:'9810'},{name:'Eke (Nazareth)',zip:'9810'},{name:'Zeveren (Deinze)',zip:'9800'},{name:'Wontergem (Deinze)',zip:'9800'},{name:'Vinkt (Deinze)',zip:'9800'},{name:'Sint-Martens-Leerne (Deinze)',zip:'9800'},{name:'Petegem-Aan-De-Leie (Deinze)',zip:'9800'},{name:'Meigem (Deinze)',zip:'9800'},{name:'Grammene (Deinze)',zip:'9800'},{name:'Gottem (Deinze)',zip:'9800'},{name:'Deinze',zip:'9800'},{name:'Bachte-Maria-Leerne (Deinze)',zip:'9800'},{name:'Astene (Deinze)',zip:'9800'},{name:'Wortegem-Petegem',zip:'9790'},{name:'Wortegem (Wortegem-Petegem)',zip:'9790'},{name:'Petegem-Aan-De-Schelde (Wortegem-Petegem)',zip:'9790'},{name:'Moregem (Wortegem-Petegem)',zip:'9790'},{name:'Elsegem (Wortegem-Petegem)',zip:'9790'},{name:'Wannegem-Lede (Kruishoutem)',zip:'9772'},{name:'Nokere (Kruishoutem)',zip:'9771'},{name:'Kruishoutem',zip:'9770'},{name:'Zingem',zip:'9750'},{name:'Ouwegem (Zingem)',zip:'9750'},{name:'Huise (Zingem)',zip:'9750'},{name:'Welden (Oudenaarde)',zip:'9700'},{name:'Volkegem (Oudenaarde)',zip:'9700'},{name:'Oudenaarde',zip:'9700'},{name:'Nederename (Oudenaarde)',zip:'9700'},{name:'Mullem (Oudenaarde)',zip:'9700'},{name:'Melden (Oudenaarde)',zip:'9700'},{name:'Mater (Oudenaarde)',zip:'9700'},{name:'Leupegem (Oudenaarde)',zip:'9700'},{name:'Heurne (Oudenaarde)',zip:'9700'},{name:'Ename (Oudenaarde)',zip:'9700'},{name:'Eine (Oudenaarde)',zip:'9700'},{name:'Edelare (Oudenaarde)',zip:'9700'},{name:'Bevere (Oudenaarde)',zip:'9700'},{name:'Zulzeke (Kluisbergen)',zip:'9690'},{name:'Ruien (Kluisbergen)',zip:'9690'},{name:'Kluisbergen',zip:'9690'},{name:'Schorisse (Maarkedal)',zip:'9688'},{name:'Nukerke (Maarkedal)',zip:'9681'},{name:'Maarke-Kerkem (Maarkedal)',zip:'9680'},{name:'Maarkedal',zip:'9680'},{name:'Etikhove (Maarkedal)',zip:'9680'},{name:'Sint-Maria-Horebeke (Horebeke)',zip:'9667'},{name:'Sint-Kornelis-Horebeke (Horebeke)',zip:'9667'},{name:'Horebeke',zip:'9667'},{name:'Parike (Brakel)',zip:'9661'},{name:'Zegelsem (Brakel)',zip:'9660'},{name:'Sint-Maria-Oudenhove Brakel',zip:'9660'},{name:'Opbrakel (Brakel)',zip:'9660'},{name:'Nederbrakel (Brakel)',zip:'9660'},{name:'Michelbeke (Brakel)',zip:'9660'},{name:'Everbeek (Brakel)',zip:'9660'},{name:'Elst (Brakel)',zip:'9660'},{name:'Brakel',zip:'9660'},{name:'Nederzwalm-Hermelgem (Zwalm)',zip:'9636'},{name:'Zwalm',zip:'9630'},{name:'Sint-Maria-Latem (Zwalm)',zip:'9630'},{name:'Sint-Denijs-Boekel (Zwalm)',zip:'9630'},{name:'Sint-Blasius-Boekel (Zwalm)',zip:'9630'},{name:'Rozebeke (Zwalm)',zip:'9630'},{name:'Roborst (Zwalm)',zip:'9630'},{name:'Paulatem (Zwalm)',zip:'9630'},{name:'Munkzwalm (Zwalm)',zip:'9630'},{name:'Meilegem (Zwalm)',zip:'9630'},{name:'Hundelgem (Zwalm)',zip:'9630'},{name:'Dikkele (Zwalm)',zip:'9630'},{name:'Beerlegem (Zwalm)',zip:'9630'},{name:'Zottegem',zip:'9620'},{name:'Velzeke-Ruddershove (Zottegem)',zip:'9620'},{name:'Strijpen (Zottegem)',zip:'9620'},{name:'Sint-Maria-Oudenhove Zottegem',zip:'9620'},{name:'Sint-Goriks-Oudenhove (Zottegem)',zip:'9620'},{name:'Leeuwergem (Zottegem)',zip:'9620'},{name:'Grotenberge (Zottegem)',zip:'9620'},{name:'Godveerdegem (Zottegem)',zip:'9620'},{name:'Erwetegem (Zottegem)',zip:'9620'},{name:'Elene (Zottegem)',zip:'9620'},{name:'Kwaremont (Kluisbergen)',zip:'9690'},{name:'Sint-Martens-Lierde (Lierde)',zip:'9572'},{name:'Hemelveerdegem (Lierde)',zip:'9571'},{name:'Sint-Maria-Lierde (Lierde)',zip:'9570'},{name:'Lierde',zip:'9570'},{name:'Deftinge (Lierde)',zip:'9570'},{name:'Borsbeke (Herzele)',zip:'9552'},{name:'Ressegem (Herzele)',zip:'9551'},{name:'Woubrechtegem (Herzele)',zip:'9550'},{name:'Steenhuize-Wijnhuize (Herzele)',zip:'9550'},{name:'Sint-Lievens-Esse (Herzele)',zip:'9550'},{name:'Sint-Antelinks (Herzele)',zip:'9550'},{name:'Hillegem (Herzele)',zip:'9550'},{name:'Herzele',zip:'9550'},{name:'Letterhoutem (Sint-Lievens-Houtem)',zip:'9521'},{name:'Zonnegem (Sint-Lievens-Houtem)',zip:'9520'},{name:'Vlierzele (Sint-Lievens-Houtem)',zip:'9520'},{name:'Sint-Lievens-Houtem',zip:'9520'},{name:'Bavegem (Sint-Lievens-Houtem)',zip:'9520'},{name:'Zandbergen (Geraardsbergen)',zip:'9506'},{name:'Waarbeke (Geraardsbergen)',zip:'9506'},{name:'Smeerebbe-Vloerzegem (Geraardsbergen)',zip:'9506'},{name:'Schendelbeke (Geraardsbergen)',zip:'9506'},{name:'Nieuwenhove (Geraardsbergen)',zip:'9506'},{name:'Idegem (Geraardsbergen)',zip:'9506'},{name:'Grimminge (Geraardsbergen)',zip:'9506'},{name:'Zarlardinge (Geraardsbergen)',zip:'9500'},{name:'Viane (Geraardsbergen)',zip:'9500'},{name:'Overboelare (Geraardsbergen)',zip:'9500'},{name:'Ophasselt (Geraardsbergen)',zip:'9500'},{name:'Onkerzele (Geraardsbergen)',zip:'9500'},{name:'Nederboelare (Geraardsbergen)',zip:'9500'},{name:'Moerbeke (Geraardsbergen)',zip:'9500'},{name:'Goeferdinge (Geraardsbergen)',zip:'9500'},{name:'Geraardsbergen',zip:'9500'},{name:'Welle (Denderleeuw)',zip:'9473'},{name:'Iddergem (Denderleeuw)',zip:'9472'},{name:'Denderleeuw',zip:'9470'},{name:'Kerksken (Haaltert)',zip:'9451'},{name:'Heldergem (Haaltert)',zip:'9450'},{name:'Haaltert',zip:'9450'},{name:'Denderhoutem (Haaltert)',zip:'9450'},{name:'Vlekkem (Erpe-Mere)',zip:'9420'},{name:'Ottergem (Erpe-Mere)',zip:'9420'},{name:'Mere (Erpe-Mere)',zip:'9420'},{name:'Erpe-Mere',zip:'9420'},{name:'Erpe (Erpe-Mere)',zip:'9420'},{name:'Erondegem (Erpe-Mere)',zip:'9420'},{name:'Burst (Erpe-Mere)',zip:'9420'},{name:'Bambrugge (Erpe-Mere)',zip:'9420'},{name:'Aaigem (Erpe-Mere)',zip:'9420'},{name:'Outer (Ninove)',zip:'9406'},{name:'Aspelare (Ninove)',zip:'9404'},{name:'Neigem (Ninove)',zip:'9403'},{name:'Meerbeke (Ninove)',zip:'9402'},{name:'Pollare (Ninove)',zip:'9401'},{name:'Voorde (Ninove)',zip:'9400'},{name:'Okegem (Ninove)',zip:'9400'},{name:'Ninove',zip:'9400'},{name:'Nederhasselt (Ninove)',zip:'9400'},{name:'Lieferinge (Ninove)',zip:'9400'},{name:'Denderwindeke (Ninove)',zip:'9400'},{name:'Appelterre-Eichem (Ninove)',zip:'9400'},{name:'Wanzele (Lede)',zip:'9340'},{name:'Smetlede (Lede)',zip:'9340'},{name:'Oordegem (Lede)',zip:'9340'},{name:'Lede',zip:'9340'},{name:'Impe (Lede)',zip:'9340'},{name:'Nieuwerkerken (Aalst)',zip:'9320'},{name:'Erembodegem (Aalst)',zip:'9320'},{name:'Moorsel (Aalst)',zip:'9310'},{name:'Herdersem (Aalst)',zip:'9310'},{name:'Baardegem (Aalst)',zip:'9310'},{name:'Gijzegem (Aalst)',zip:'9308'},{name:'Aalst',zip:'9300'},{name:'Uitbergen (Berlare)',zip:'9290'},{name:'Overmere (Berlare)',zip:'9290'},{name:'Berlare',zip:'9290'},{name:'Wieze (Lebbeke)',zip:'9280'},{name:'Lebbeke',zip:'9280'},{name:'Denderbelle (Lebbeke)',zip:'9280'},{name:'Laarne',zip:'9270'},{name:'Kalken (Laarne)',zip:'9270'},{name:'Wichelen',zip:'9260'},{name:'Serskamp (Wichelen)',zip:'9260'},{name:'Schellebelle (Wichelen)',zip:'9260'},{name:'Opdorp (Buggenhout)',zip:'9255'},{name:'Buggenhout',zip:'9255'},{name:'Waasmunster',zip:'9250'},{name:'Zele',zip:'9240'},{name:'Wetteren',zip:'9230'},{name:'Westrem (Wetteren)',zip:'9230'},{name:'Massemen (Wetteren)',zip:'9230'},{name:'Moerzeke (Hamme)',zip:'9220'},{name:'Schoonaarde (Dendermonde)',zip:'9200'},{name:'Oudegem (Dendermonde)',zip:'9200'},{name:'Mespelare (Dendermonde)',zip:'9200'},{name:'Grembergen (Dendermonde)',zip:'9200'},{name:'Dendermonde',zip:'9200'},{name:'Baasrode (Dendermonde)',zip:'9200'},{name:'Appels (Dendermonde)',zip:'9200'},{name:'Stekene',zip:'9190'},{name:'Kemzeke (Stekene)',zip:'9190'},{name:'Wachtebeke',zip:'9185'},{name:'Moerbeke-Waas',zip:'9180'},{name:'Sint-Pauwels (Sint-Gillis-Waas)',zip:'9170'},{name:'Sint-Gillis-Waas',zip:'9170'},{name:'Meerdonk (Sint-Gillis-Waas)',zip:'9170'},{name:'Lokeren',zip:'9160'},{name:'Eksaarde (Lokeren)',zip:'9160'},{name:'Daknam (Lokeren)',zip:'9160'},{name:'Rupelmonde (Kruibeke)',zip:'9150'},{name:'Kruibeke',zip:'9150'},{name:'Bazel (Kruibeke)',zip:'9150'},{name:'Tielrode (Temse)',zip:'9140'},{name:'Temse',zip:'9140'},{name:'Steendorp (Temse)',zip:'9140'},{name:'Elversele (Temse)',zip:'9140'},{name:'Verrebroek (Beveren)',zip:'9130'},{name:'Kieldrecht (Beveren)',zip:'9130'},{name:'Doel (Beveren)',zip:'9130'},{name:'Vrasene (Beveren)',zip:'9120'},{name:'Melsele (Beveren)',zip:'9120'},{name:'Haasdonk (Beveren)',zip:'9120'},{name:'Sinaai-Waas (Sint-Niklaas)',zip:'9112'},{name:'Belsele (Sint-Niklaas)',zip:'9111'},{name:'Sint-Niklaas',zip:'9100'},{name:'Nieuwkerken-Waas (Sint-Niklaas)',zip:'9100'},{name:'Melle',zip:'9090'},{name:'Gontrode (Melle)',zip:'9090'},{name:'Zeveneken (Lochristi)',zip:'9080'},{name:'Zaffelare (Lochristi)',zip:'9080'},{name:'Lochristi',zip:'9080'},{name:'Beervelde (Lochristi)',zip:'9080'},{name:'Destelbergen',zip:'9070'},{name:'Zelzate',zip:'9060'},{name:'Zwijnaarde (Gent)',zip:'9052'},{name:'Sint-Denijs-Westrem (Gent)',zip:'9051'},{name:'Afsnee (Gent)',zip:'9051'},{name:'Ledeberg (Gent)',zip:'9050'},{name:'Gentbrugge (Gent)',zip:'9050'},{name:'Sint-Kruis-Winkel (Gent)',zip:'9042'},{name:'Mendonk (Gent)',zip:'9042'},{name:'Desteldonk',zip:'9042'},{name:'Oostakker (Gent)',zip:'9041'},{name:'Sint-Amandsberg (Gent)',zip:'9040'},{name:'Wondelgem (Gent)',zip:'9032'},{name:'Drongen (Gent)',zip:'9031'},{name:'Mariakerke (Gent)',zip:'9030'},{name:'Gent',zip:'9000'},{name:'Wijchmaal (Peer)',zip:'3990'},{name:'Peer',zip:'3990'},{name:'Kleine-Brogel (Peer)',zip:'3990'},{name:'Grote-Brogel (Peer)',zip:'3990'},{name:'Tessenderlo',zip:'3980'},{name:'Heppen (Leopoldsburg)',zip:'3971'},{name:'Leopoldsburg',zip:'3970'},{name:'Opitter (Bree)',zip:'3960'},{name:'Gerdingen (Bree)',zip:'3960'},{name:'Bree',zip:'3960'},{name:'Beek (Bree)',zip:'3960'},{name:'Reppel (Bocholt)',zip:'3950'},{name:'Kaulille (Bocholt)',zip:'3950'},{name:'Bocholt',zip:'3950'},{name:'Oostham (Ham)',zip:'3945'},{name:'Kwaadmechelen (Ham)',zip:'3945'},{name:'Ham',zip:'3945'},{name:'Eksel (Hechtel-Eksel)',zip:'3941'},{name:'Hechtel-Eksel',zip:'3940'},{name:'Hechtel',zip:'3940'},{name:'Hamont-Achel',zip:'3930'},{name:'Hamont (Hamont-Achel)',zip:'3930'},{name:'Achel (Hamont-Achel)',zip:'3930'},{name:'Lommel',zip:'3920'},{name:'Sint-Huibrechts-Lille (Neerpelt)',zip:'3910'},{name:'Neerpelt',zip:'3910'},{name:'Overpelt',zip:'3900'},{name:'Mielen-Boven-Aalst (Gingelom)',zip:'3891'},{name:'Buvingen (Gingelom)',zip:'3891'},{name:'Borlo (Gingelom)',zip:'3891'},{name:'Vorsen (Gingelom)',zip:'3890'},{name:'Niel-Bij-Sint-Truiden (Gingelom)',zip:'3890'},{name:'Montenaken (Gingelom)',zip:'3890'},{name:'Kortijs (Gingelom)',zip:'3890'},{name:'Jeuk (Gingelom)',zip:'3890'},{name:'Gingelom',zip:'3890'},{name:'Boekhout (Gingelom)',zip:'3890'},{name:'Veulen (Heers)',zip:'3870'},{name:'Vechmaal (Heers)',zip:'3870'},{name:'Rukkelingen-Loon (Heers)',zip:'3870'},{name:'Opheers (Heers)',zip:'3870'},{name:'Mettekoven (Heers)',zip:'3870'},{name:'Mechelen-Bovelingen (Heers)',zip:'3870'},{name:'Klein-Gelmen (Heers)',zip:'3870'},{name:'Horpmaal (Heers)',zip:'3870'},{name:'Heks (Heers)',zip:'3870'},{name:'Heers',zip:'3870'},{name:'Gutschoven (Heers)',zip:'3870'},{name:'Bovelingen (Heers)',zip:'3870'},{name:'Batsheers (Heers)',zip:'3870'},{name:'Wijer (Nieuwerkerken)',zip:'3850'},{name:'Kozen (Nieuwerkerken)',zip:'3850'},{name:'Binderveld (Nieuwerkerken)',zip:'3850'},{name:'Voort (Borgloon)',zip:'3840'},{name:'Rijkel (Borgloon)',zip:'3840'},{name:'Kuttekoven (Borgloon)',zip:'3840'},{name:'Kerniel (Borgloon)',zip:'3840'},{name:'Hoepertingen (Borgloon)',zip:'3840'},{name:'Hendrieken (Borgloon)',zip:'3840'},{name:'Groot-Loon (Borgloon)',zip:'3840'},{name:'Gotem (Borgloon)',zip:'3840'},{name:'Gors-Opleeuw (Borgloon)',zip:'3840'},{name:'Broekom (Borgloon)',zip:'3840'},{name:'Borgloon',zip:'3840'},{name:'Ulbeek (Wellen)',zip:'3832'},{name:'Herten (Wellen)',zip:'3831'},{name:'Wellen',zip:'3830'},{name:'Berlingen (Wellen)',zip:'3830'},{name:'Velm (Sint-Truiden)',zip:'3806'},{name:'Wilderen (Sint-Truiden)',zip:'3803'},{name:'Runkelen (Sint-Truiden)',zip:'3803'},{name:'Gorsem (Sint-Truiden)',zip:'3803'},{name:'Duras (Sint-Truiden)',zip:'3803'},{name:'Zepperen (Sint-Truiden)',zip:'3800'},{name:'Sint-Truiden',zip:'3800'},{name:'Ordingen (Sint-Truiden)',zip:'3800'},{name:'Kerkom-Bij-Sint-Truiden (Sint-Truiden)',zip:'3800'},{name:'Halmaal (Sint-Truiden)',zip:'3800'},{name:'Groot-Gelmen (Sint-Truiden)',zip:'3800'},{name:'Gelinden (Sint-Truiden)',zip:'3800'},{name:'Engelmanshoven (Sint-Truiden)',zip:'3800'},{name:'Brustem (Sint-Truiden)',zip:'3800'},{name:'Teuven (Voeren)',zip:'3793'},{name:'Remersdaal (Voeren)',zip:'3791'},{name:'Zichen-Zussen-Bolder (Riemst)',zip:'3770'},{name:'Vroenhoven (Riemst)',zip:'3770'},{name:'Vlijtingen (Riemst)',zip:'3770'},{name:'Val-Meer (Riemst)',zip:'3770'},{name:'Riemst',zip:'3770'},{name:'Millen (Riemst)',zip:'3770'},{name:'Membruggen (Riemst)',zip:'3770'},{name:'Kanne (Riemst)',zip:'3770'},{name:'Herderen (Riemst)',zip:'3770'},{name:'Genoelselderen (Riemst)',zip:'3770'},{name:'Hoelbeek (Bilzen)',zip:'3746'},{name:'Martenslinde (Bilzen)',zip:'3742'},{name:'Waltwilder (Bilzen)',zip:'3740'},{name:'Spouwen',zip:'3740'},{name:'Rosmeer (Bilzen)',zip:'3740'},{name:'Rijkhoven (Bilzen)',zip:'3740'},{name:'Munsterbilzen (Bilzen)',zip:'3740'},{name:'Mopertingen (Bilzen)',zip:'3740'},{name:'Kleine-Spouwen (Bilzen)',zip:'3740'},{name:'Hees (Bilzen)',zip:'3740'},{name:'Grote-Spouwen (Bilzen)',zip:'3740'},{name:'Eigenbilzen (Bilzen)',zip:'3740'},{name:'Bilzen',zip:'3740'},{name:'Beverst (Bilzen)',zip:'3740'},{name:'Schalkhoven (Hoeselt)',zip:'3732'},{name:'Werm (Hoeselt)',zip:'3730'},{name:'Sint-Huibrechts-Hern (Hoeselt)',zip:'3730'},{name:'Romershoven (Hoeselt)',zip:'3730'},{name:'Hoeselt',zip:'3730'},{name:'Vliermaal (Kortessem)',zip:'3724'},{name:'Guigoven (Kortessem)',zip:'3723'},{name:'Wintershoven (Kortessem)',zip:'3722'},{name:'Vliermaalroot (Kortessem)',zip:'3721'},{name:'Kortessem',zip:'3720'},{name:'Herstappe',zip:'3717'},{name:'Vreren (Tongeren)',zip:'3700'},{name:'Tongeren',zip:'3700'},{name:'Sluizen (Tongeren)',zip:'3700'},{name:'Rutten (Tongeren)',zip:'3700'},{name:'Riksingen (Tongeren)',zip:'3700'},{name:'Nerem (Tongeren)',zip:'3700'},{name:'Neerrepen (Tongeren)',zip:'3700'},{name:'Mal (Tongeren)',zip:'3700'},{name:'Lauw (Tongeren)',zip:'3700'},{name:'Koninksem (Tongeren)',zip:'3700'},{name:'Henis (Tongeren)',zip:'3700'},{name:'Diets-Heur (Tongeren)',zip:'3700'},{name:'Zutendaal',zip:'3690'},{name:'Opoeteren (Maaseik)',zip:'3680'},{name:'Neeroeteren (Maaseik)',zip:'3680'},{name:'Maaseik',zip:'3680'},{name:'Wijshagen (Meeuwen-Gruitrode)',zip:'3670'},{name:'Neerglabbeek (Meeuwen-Gruitrode)',zip:'3670'},{name:'Meeuwen-Gruitrode',zip:'3670'},{name:'Meeuwen (Meeuwen-Gruitrode)',zip:'3670'},{name:'Gruitrode (Meeuwen-Gruitrode)',zip:'3670'},{name:'Ellikom (Meeuwen-Gruitrode)',zip:'3670'},{name:'Niel-Bij-As (As)',zip:'3668'},{name:'As',zip:'3665'},{name:'Opglabbeek',zip:'3660'},{name:'Rotem (Dilsen-Stokkem)',zip:'3650'},{name:'Lanklaar (Dilsen-Stokkem)',zip:'3650'},{name:'Elen (Dilsen-Stokkem)',zip:'3650'},{name:'Dilsen-Stokkem',zip:'3650'},{name:'Ophoven (Kinrooi)',zip:'3640'},{name:'Molenbeersel (Kinrooi)',zip:'3640'},{name:'Kinrooi',zip:'3640'},{name:'Kessenich (Kinrooi)',zip:'3640'},{name:'Uikhoven (Maasmechelen)',zip:'3631'},{name:'Boorsem (Maasmechelen)',zip:'3631'},{name:'Vucht (Maasmechelen)',zip:'3630'},{name:'Opgrimbie (Maasmechelen)',zip:'3630'},{name:'Meeswijk (Maasmechelen)',zip:'3630'},{name:'Mechelen-Aan-De-Maas (Maasmechelen)',zip:'3630'},{name:'Maasmechelen',zip:'3630'},{name:'Leut (Maasmechelen)',zip:'3630'},{name:'Eisden (Maasmechelen)',zip:'3630'},{name:'Rekem (Lanaken)',zip:'3621'},{name:'Veldwezelt (Lanaken)',zip:'3620'},{name:'Neerharen (Lanaken)',zip:'3620'},{name:'Lanaken',zip:'3620'},{name:'Gellik (Lanaken)',zip:'3620'},{name:'Genk',zip:'3600'},{name:'Diepenbeek',zip:'3590'},{name:'Paal (Beringen)',zip:'3583'},{name:'Koersel (Beringen)',zip:'3582'},{name:'Beverlo (Beringen)',zip:'3581'},{name:'Beringen',zip:'3580'},{name:'Alken',zip:'3570'},{name:'Lummen',zip:'3560'},{name:'Linkhout (Lummen)',zip:'3560'},{name:'Zolder (Heusden-Zolder)',zip:'3550'},{name:'Heusden-Zolder',zip:'3550'},{name:'Zelem (Halen)',zip:'3545'},{name:'Loksbergen (Halen)',zip:'3545'},{name:'Halen',zip:'3545'},{name:'Schulen (Herk-De-Stad)',zip:'3540'},{name:'Herk-de-Stad',zip:'3540'},{name:'Donk (Herk-De-Stad)',zip:'3540'},{name:'Berbroek (Herk-De-Stad)',zip:'3540'},{name:'Houthalen-Helchteren',zip:'3530'},{name:'Houthalen (Houthalen-Helchteren)',zip:'3530'},{name:'Helchteren (Houthalen-Helchteren)',zip:'3530'},{name:'Zonhoven',zip:'3520'},{name:'Stevoort (Hasselt)',zip:'3512'},{name:'Stokrooie (Hasselt)',zip:'3511'},{name:'Kuringen (Hasselt)',zip:'3511'},{name:'Spalbeek (Hasselt)',zip:'3510'},{name:'Kermt (Hasselt)',zip:'3510'},{name:'Wimmertingen (Hasselt)',zip:'3501'},{name:'Sint-Lambrechts-Herk (Hasselt)',zip:'3500'},{name:'Hasselt',zip:'3500'},{name:'Wuustwezel',zip:'2990'},{name:'Loenhout (Wuustwezel)',zip:'2990'},{name:'Zoersel',zip:'2980'},{name:'Schilde',zip:'2970'},{name:'Brecht',zip:'2960'},{name:'Stabroek',zip:'2940'},{name:'Hoevenen (Stabroek)',zip:'2940'},{name:'Brasschaat',zip:'2930'},{name:'Kalmthout',zip:'2920'},{name:'Essen',zip:'2910'},{name:'Schoten',zip:'2900'},{name:'Sint-Amands',zip:'2890'},{name:'Oppuurs (Sint-Amands)',zip:'2890'},{name:'Lippelo (Sint-Amands)',zip:'2890'},{name:'Weert (Bornem)',zip:'2880'},{name:'Hingene (Bornem)',zip:'2880'},{name:'Bornem',zip:'2880'},{name:'Puurs',zip:'2870'},{name:'Liezele (Puurs)',zip:'2870'},{name:'Breendonk (Puurs)',zip:'2870'},{name:'Onze-Lieve-Vrouw-Waver (Sint-Katelijne-Waver)',zip:'2861'},{name:'Sint-Katelijne-Waver',zip:'2860'},{name:'Boom',zip:'2850'},{name:'Niel',zip:'2845'},{name:'Terhagen (Rumst)',zip:'2840'},{name:'Rumst',zip:'2840'},{name:'Reet (Rumst)',zip:'2840'},{name:'Willebroek',zip:'2830'},{name:'Tisselt (Willebroek)',zip:'2830'},{name:'Heindonk (Willebroek)',zip:'2830'},{name:'Blaasveld (Willebroek)',zip:'2830'},{name:'Rijmenam (Bonheiden)',zip:'2820'},{name:'Bonheiden',zip:'2820'},{name:'Leest (Mechelen)',zip:'2811'},{name:'Hombeek (Mechelen)',zip:'2811'},{name:'Heffen (Mechelen)',zip:'2801'},{name:'Walem (Mechelen)',zip:'2800'},{name:'Mechelen',zip:'2800'},{name:'Edegem',zip:'2650'},{name:'Mortsel',zip:'2640'},{name:'Aartselaar',zip:'2630'},{name:'Schelle',zip:'2627'},{name:'Hemiksem',zip:'2620'},{name:'Gestel (Berlaar)',zip:'2590'},{name:'Berlaar',zip:'2590'},{name:'Putte',zip:'2580'},{name:'Beerzel (Putte)',zip:'2580'},{name:'Duffel',zip:'2570'},{name:'Nijlen',zip:'2560'},{name:'Kessel (Nijlen)',zip:'2560'},{name:'Bevel (Nijlen)',zip:'2560'},{name:'Waarloos (Kontich)',zip:'2550'},{name:'Kontich',zip:'2550'},{name:'Lint',zip:'2547'},{name:'Hove',zip:'2540'},{name:'Vremde (Boechout)',zip:'2531'},{name:'Boechout',zip:'2530'},{name:'Ranst',zip:'2520'},{name:'Oelegem (Ranst)',zip:'2520'},{name:'Emblem (Ranst)',zip:'2520'},{name:'Broechem (Ranst)',zip:'2520'},{name:'Lier',zip:'2500'},{name:'Koningshooikt (Lier)',zip:'2500'},{name:'Olmen (Balen)',zip:'2491'},{name:'Balen',zip:'2490'},{name:'Dessel',zip:'2480'},{name:'Retie',zip:'2470'},{name:'Tielen (Kasterlee)',zip:'2460'},{name:'Lichtaart (Kasterlee)',zip:'2460'},{name:'Kasterlee',zip:'2460'},{name:'Meerhout',zip:'2450'},{name:'Geel',zip:'2440'},{name:'Veerle (Laakdal)',zip:'2431'},{name:'Varendonk (Laakdal)',zip:'2431'},{name:'Laakdal',zip:'2430'},{name:'Eindhout (Laakdal)',zip:'2430'},{name:'Mol',zip:'2400'},{name:'Westmalle (Malle)',zip:'2390'},{name:'Oostmalle (Malle)',zip:'2390'},{name:'Malle',zip:'2390'},{name:'Baarle-Hertog',zip:'2387'},{name:'Poppel (Ravels)',zip:'2382'},{name:'Weelde (Ravels)',zip:'2381'},{name:'Ravels',zip:'2380'},{name:'Arendonk',zip:'2370'},{name:'Oud-Turnhout',zip:'2360'},{name:'Vosselaar',zip:'2350'},{name:'Vlimmeren (Beerse)',zip:'2340'},{name:'Beerse',zip:'2340'},{name:'Merksplas',zip:'2330'},{name:'Meerle (Hoogstraten)',zip:'2328'},{name:'Wortel (Hoogstraten)',zip:'2323'},{name:'Minderhout (Hoogstraten)',zip:'2322'},{name:'Meer (Hoogstraten)',zip:'2321'},{name:'Hoogstraten',zip:'2320'},{name:'Rijkevorsel',zip:'2310'},{name:'Turnhout',zip:'2300'},{name:'Vorselaar',zip:'2290'},{name:'Bouwel (Grobbendonk)',zip:'2288'},{name:'Grobbendonk',zip:'2280'},{name:'Wechelderzande (Lille)',zip:'2275'},{name:'Poederlee (Lille)',zip:'2275'},{name:'Lille',zip:'2275'},{name:'Gierle (Lille)',zip:'2275'},{name:'Herenthout',zip:'2270'},{name:'Zoerle-Parwijs (Westerlo)',zip:'2260'},{name:'Westerlo',zip:'2260'},{name:'Oevel (Westerlo)',zip:'2260'},{name:'Olen',zip:'2250'},{name:'Pulle (Zandhoven)',zip:'2243'},{name:'Pulderbos (Zandhoven)',zip:'2242'},{name:'Zandhoven',zip:'2240'},{name:'Viersel (Zandhoven)',zip:'2240'},{name:'Massenhoven (Zandhoven)',zip:'2240'},{name:'Westmeerbeek (Hulshout)',zip:'2235'},{name:'Hulshout',zip:'2235'},{name:'Houtvenne (Hulshout)',zip:'2235'},{name:'Ramsel (Herselt)',zip:'2230'},{name:'Herselt',zip:'2230'},{name:'Schriek (Heist-Op-Den-Berg)',zip:'2223'},{name:'Wiekevorst (Heist-Op-Den-Berg)',zip:'2222'},{name:'Itegem (Heist-Op-Den-Berg)',zip:'2222'},{name:'Booischot (Heist-Op-Den-Berg)',zip:'2221'},{name:'Heist-op-den-Berg',zip:'2220'},{name:'Hallaar (Heist-Op-Den-Berg)',zip:'2220'},{name:'Noorderwijk (Herentals)',zip:'2200'},{name:'Morkhoven (Herentals)',zip:'2200'},{name:'Herentals',zip:'2200'},{name:'Wommelgem',zip:'2160'},{name:'Wijnegem',zip:'2110'},{name:'Zwijndrecht',zip:'2070'},{name:'Burcht (Zwijndrecht)',zip:'2070'},{name:'Hoboken (Antwerpen)',zip:'2660'},{name:'Wilrijk (Antwerpen)',zip:'2610'},{name:'Berchem (Antwerpen)',zip:'2600'},{name:'Ekeren (Antwerpen)',zip:'2180'},{name:'Merksem (Antwerpen)',zip:'2170'},{name:'Borgerhout (Antwerpen)',zip:'2140'},{name:'Deurne (Antwerpen)',zip:'2100'},{name:'Zandvliet (Antwerpen)',zip:'2040'},{name:'Lillo (Antwerpen)',zip:'2040'},{name:'Berendrecht (Antwerpen)',zip:'2040'},{name:'Antwerpen',zip:'2000'},{name:'Brussel',zip:'1000'},{name:'Schaarbeek (Brussel)',zip:'1030'},{name:'Etterbeek (Brussel)',zip:'1040'},{name:'Elsene (Brussel)',zip:'1050'},{name:'Sint-Gillis (Brussel)',zip:'1060'},{name:'Anderlecht (Brussel)',zip:'1070'},{name:'Sint-Jans-Molenbeek (Brussel)',zip:'1080'},{name:'Koekelberg (Brussel)',zip:'1081'},{name:'Sint-Agatha-Berchem (Brussel)',zip:'1082'},{name:'Ganshoren (Brussel)',zip:'1083'},{name:'Jette (Brussel)',zip:'1090'},{name:'Evere (Brussel)',zip:'1140'},{name:'Sint-Pieters-Woluwe (Brussel)',zip:'1150'},{name:'Oudergem (Brussel)',zip:'1160'},{name:'Watermaal-Bosvoorde (Brussel)',zip:'1170'},{name:'Ukkel (Brussel)',zip:'1180'},{name:'Vorst (Brussel)',zip:'1190'},{name:'Sint-Lambrechts-Woluwe (Brussel)',zip:'1200'},{name:'Sint-Joost-Ten-Node (Brussel)',zip:'1210'},{name:'\'s Gravenwezel (Schilde)',zip:'2970'},{name:'\'s Herenelderen (Tongeren)',zip:'3700'},{name:'Brugge 2 (Brugge)',zip:'8200'},{name:'Haren (Brussel)',zip:'1130'},{name:'Laken (Brussel)',zip:'1020'},{name:'Neder-Over-Heembeek (Brussel)',zip:'1120'},{name:'Ooike (Oudenaarde)',zip:'9700'},{name:'Sint-Job-In-\'t-Goor (Brecht)',zip:'2960'},{name:'Sint-Margriete-Houtem (Tienen)',zip:'3300'},{name:'Sint-Maria-Oudenhove (Brakel)',zip:'9660'},{name:'Sint-Margriete (Kortenaken)',zip:'3470'},{name:'Sint-Maria-Oudenhove (Zottegem)',zip:'9620'},{name:'Sint-Pieters-Kapelle (Middelkerke)',zip:'8433'},{name:'Voortkapel (Westerlo)',zip:'2260'},{name:'Sint-Pieters-Kapelle (Herne)',zip:'1541'},{name:'Bever',zip:'1547'},{name:'Ruisbroek (Sint-Pieters-Leeuw)',zip:'1601'},{name:'Sint-Genesius-Rode',zip:'1640'},{name:'Hamme (Merchtem)',zip:'1785'},{name:'Machelen',zip:'1830'},{name:'Berg (Kampenhout)',zip:'1910'},{name:'Hofstade (Zemst)',zip:'1981'},{name:'Antwerpen 18 (Antwerpen)',zip:'2018'},{name:'Antwerpen 2 (Antwerpen)',zip:'2020'},{name:'Antwerpen 3 (Antwerpen)',zip:'2030'},{name:'Antwerpen 5 (Antwerpen)',zip:'2050'},{name:'Antwerpen 6 (Antwerpen)',zip:'2060'},{name:'Borsbeek',zip:'2150'},{name:'Tongerlo (Westerlo)',zip:'2260'},{name:'Vorst (Laakdal)',zip:'2430'},{name:'Muizen (Mechelen)',zip:'2812'},{name:'Ruisbroek (Puurs)',zip:'2870'},{name:'Mariekerke (Bornem)',zip:'2880'},{name:'Kapellen',zip:'2950'},{name:'Sint-Lenaarts (Brecht)',zip:'2960'},{name:'Halle (Zoersel)',zip:'2980'},{name:'Wijgmaal (Leuven)',zip:'3018'},{name:'Kortrijk-Dutsel (Holsbeek)',zip:'3220'},{name:'Deurne (Diest)',zip:'3290'},{name:'Meldert (Hoegaarden)',zip:'3320'},{name:'Glabbeek',zip:'3380'},{name:'Kapellen (Glabbeek)',zip:'3381'},{name:'Tielt (Tielt-Winge)',zip:'3390'},{name:'Heusden (Heusden-Zolder)',zip:'3550'},{name:'Meldert (Lummen)',zip:'3560'},{name:'Berg (Tongeren)',zip:'3700'},{name:'Haren (Tongeren)',zip:'3700'},{name:'Kolmont (Tongeren)',zip:'3700'},{name:'Overrepen (Tongeren)',zip:'3700'},{name:'Piringen (Tongeren)',zip:'3700'},{name:'Widooie (Tongeren)',zip:'3700'},{name:'Moelingen (Voeren)',zip:'3790'},{name:'Sint-Martens-Voeren (Voeren)',zip:'3790'},{name:'Voeren',zip:'3790'},{name:'Sint-Pieters-Voeren (Voeren)',zip:'3792'},{name:'\'s Gravenvoeren (Voeren)',zip:'3798'},{name:'Aalst (Sint-Truiden)',zip:'3800'},{name:'Bommershoven (Borgloon)',zip:'3840'},{name:'Haren (Borgloon)',zip:'3840'},{name:'Jesseren (Borgloon)',zip:'3840'},{name:'Kolmont (Borgloon)',zip:'3840'},{name:'Nieuwerkerken',zip:'3850'},{name:'Muizen (Gingelom)',zip:'3891'},{name:'Tongerlo (Bree)',zip:'3960'},{name:'Ramskapelle (Knokke-Heist)',zip:'8301'},{name:'Oostkerke (Damme)',zip:'8340'},{name:'Zandvoorde (Oostende)',zip:'8400'},{name:'De Haan',zip:'8420'},{name:'Helkijn (Spiere-Helkijn)',zip:'8587'},{name:'Spiere (Spiere-Helkijn)',zip:'8587'},{name:'Spiere-Helkijn',zip:'8587'},{name:'Oostkerke (Diksmuide)',zip:'8600'},{name:'Ramskapelle (Nieuwpoort)',zip:'8620'},{name:'Sint-Joris (Nieuwpoort)',zip:'8620'},{name:'De Moeren (Veurne)',zip:'8630'},{name:'Houtem (Veurne)',zip:'8630'},{name:'Steenkerke (Veurne)',zip:'8630'},{name:'De Panne',zip:'8660'},{name:'Sint-Joris (Beernem)',zip:'8730'},{name:'Beveren-Leie (Waregem)',zip:'8791'},{name:'Beveren (Roeselare)',zip:'8800'},{name:'Mesen',zip:'8957'},{name:'Zandvoorde (Zonnebeke)',zip:'8980'},{name:'Heusden (Destelbergen)',zip:'9070'},{name:'Beveren-Waas',zip:'9120'},{name:'Kallo (Beveren-Waas)',zip:'9120'},{name:'Kallo (Kieldrecht - Beveren-Waas)',zip:'9130'},{name:'De Klinge (Sint-Gillis-Waas)',zip:'9170'},{name:'Sint-Gillis-Bij-Dendermonde (Dendermonde)',zip:'9200'},{name:'Hamme',zip:'9220'},{name:'Hofstade (Aalst)',zip:'9308'},{name:'Meldert (Aalst)',zip:'9310'},{name:'Ronse',zip:'9600'},{name:'Oombergen (Zottegem)',zip:'9620'},{name:'Berchem (Kluisbergen)',zip:'9690'},{name:'Ooike (Wortegem-Petegem)',zip:'9790'},{name:'De Pinte',zip:'9840'},{name:'Machelen (Zulte)',zip:'9870'},{name:'l\'Ecluse',zip:'1320'},{name:'Braine l\'Alleud',zip:'1420'},{name:'Waret-l\'Evêque',zip:'4217'},{name:'Villers-l\'Evêque',zip:'4340'},{name:'Fontaine-l\'Evêque',zip:'6140'},{name:'l\'Escaillère',zip:'6464'},{name:'Bersillies-l\'Abbaye',zip:'6560'},{name:'Bois-d\'Haine',zip:'7170'},{name:'Ecaussinnes-d\'Enghien',zip:'7190'},{name:'Mont-de-l\'Enclus',zip:'7750'},{name:'Meslin-l\'Evêque',zip:'7822'},{name:'Heultje (Westerlo)',zip:'2260'},{name:'Oosterwijk (Westerlo)',zip:'2260'},{name:'Dilsen',zip:'3650'},{name:'Stokkem',zip:'3650'},{name:'Oombergen (Sint-Lievens-Houtem)',zip:'9520'},{name:'Scherpenheuvel-Zichem',zip:'3270'}])
+.constant('cities', [{name:'Vodelée',zip:'5680'},{name:'Vaucelles',zip:'5680'},{name:'Soulme',zip:'5680'},{name:'Romerée',zip:'5680'},{name:'Niverlée',zip:'5680'},{name:'Matagne-la-Petite',zip:'5680'},{name:'Matagne-la-Grande',zip:'5680'},{name:'Gochenée',zip:'5680'},{name:'Gimnée',zip:'5680'},{name:'Doische',zip:'5680'},{name:'Viroinval',zip:'5670'},{name:'Vierves-sur-Viroin',zip:'5670'},{name:'Treignes',zip:'5670'},{name:'Olloy-sur-Viroin',zip:'5670'},{name:'Oignies-en-Thiérache',zip:'5670'},{name:'Nismes',zip:'5670'},{name:'Mazée',zip:'5670'},{name:'Le Mesnil',zip:'5670'},{name:'Dourbes',zip:'5670'},{name:'Presgaux',zip:'5660'},{name:'Petite-Chapelle',zip:'5660'},{name:'Petigny',zip:'5660'},{name:'Pesche',zip:'5660'},{name:'Mariembourg',zip:'5660'},{name:'Gonrieux',zip:'5660'},{name:'Frasnes Namur',zip:'5660'},{name:'Dailly',zip:'5660'},{name:'Cul-des-Sarts',zip:'5660'},{name:'Couvin',zip:'5660'},{name:'Brûly-de-Pesche',zip:'5660'},{name:'Brûly',zip:'5660'},{name:'Boussu-en-Fagne',zip:'5660'},{name:'Aublain',zip:'5660'},{name:'Thy-le-Château',zip:'5651'},{name:'Tarcienne',zip:'5651'},{name:'Somzée',zip:'5651'},{name:'Rognée',zip:'5651'},{name:'Laneffe',zip:'5651'},{name:'Gourdinne',zip:'5651'},{name:'Berzée',zip:'5651'},{name:'Yves-Gomezée',zip:'5650'},{name:'Walcourt',zip:'5650'},{name:'Vogenée',zip:'5650'},{name:'Pry',zip:'5650'},{name:'Fraire',zip:'5650'},{name:'Fontenelle',zip:'5650'},{name:'Clermont Namur',zip:'5650'},{name:'Chastrès',zip:'5650'},{name:'Castillon',zip:'5650'},{name:'Stave',zip:'5646'},{name:'Ermeton-sur-Biert',zip:'5644'},{name:'Furnaux',zip:'5641'},{name:'Saint-Gérard',zip:'5640'},{name:'Oret',zip:'5640'},{name:'Mettet',zip:'5640'},{name:'Graux',zip:'5640'},{name:'Biesmerée',zip:'5640'},{name:'Biesme',zip:'5640'},{name:'Villers-Deux-Eglises',zip:'5630'},{name:'Soumoy',zip:'5630'},{name:'Silenrieux',zip:'5630'},{name:'Senzeille',zip:'5630'},{name:'Daussois',zip:'5630'},{name:'Cerfontaine',zip:'5630'},{name:'Thy-le-Bauduin',zip:'5621'},{name:'Morialmé',zip:'5621'},{name:'Hanzinne',zip:'5621'},{name:'Hanzinelle',zip:'5621'},{name:'Saint-Aubin',zip:'5620'},{name:'Rosée',zip:'5620'},{name:'Morville',zip:'5620'},{name:'Hemptinne-lez-Florennes',zip:'5620'},{name:'Florennes',zip:'5620'},{name:'Flavion',zip:'5620'},{name:'Corenne',zip:'5620'},{name:'Vodecée',zip:'5600'},{name:'Villers-le-Gambon',zip:'5600'},{name:'Villers-en-Fagne',zip:'5600'},{name:'Surice',zip:'5600'},{name:'Sautour',zip:'5600'},{name:'Sart-en-Fagne',zip:'5600'},{name:'Samart',zip:'5600'},{name:'Romedenne',zip:'5600'},{name:'Roly',zip:'5600'},{name:'Philippeville',zip:'5600'},{name:'Omezée',zip:'5600'},{name:'Neuville Philippeville',zip:'5600'},{name:'Merlemont',zip:'5600'},{name:'Jamiolle',zip:'5600'},{name:'Jamagne',zip:'5600'},{name:'Franchimont',zip:'5600'},{name:'Fagnolle',zip:'5600'},{name:'Sovet',zip:'5590'},{name:'Serinchamps',zip:'5590'},{name:'Pessoux',zip:'5590'},{name:'Leignon',zip:'5590'},{name:'Haversin',zip:'5590'},{name:'Conneux',zip:'5590'},{name:'Ciney',zip:'5590'},{name:'Chevetogne',zip:'5590'},{name:'Braibant',zip:'5590'},{name:'Achêne',zip:'5590'},{name:'Wavreille',zip:'5580'},{name:'Villers-sur-Lesse',zip:'5580'},{name:'Rochefort',zip:'5580'},{name:'Mont-Gauthier',zip:'5580'},{name:'Lessive',zip:'5580'},{name:'Lavaux-Sainte-Anne',zip:'5580'},{name:'Jemelle',zip:'5580'},{name:'Han-sur-Lesse',zip:'5580'},{name:'Eprave',zip:'5580'},{name:'Buissonville',zip:'5580'},{name:'Ave-et-Auffe',zip:'5580'},{name:'Willerzie',zip:'5575'},{name:'Vencimont',zip:'5575'},{name:'Sart-Custinne',zip:'5575'},{name:'Rienne',zip:'5575'},{name:'Patignies',zip:'5575'},{name:'Malvoisin',zip:'5575'},{name:'Louette-Saint-Pierre',zip:'5575'},{name:'Louette-Saint-Denis',zip:'5575'},{name:'Houdremont',zip:'5575'},{name:'Gedinne',zip:'5575'},{name:'Bourseigne-Vieille',zip:'5575'},{name:'Bourseigne-Neuve',zip:'5575'},{name:'Froidfontaine',zip:'5576'},{name:'Pondrôme',zip:'5574'},{name:'Martouzin-Neuville',zip:'5573'},{name:'Focant',zip:'5572'},{name:'Wiesme',zip:'5571'},{name:'Winenne',zip:'5570'},{name:'Wancennes',zip:'5570'},{name:'Vonêche',zip:'5570'},{name:'Javingue',zip:'5570'},{name:'Honnay',zip:'5570'},{name:'Feschaux',zip:'5570'},{name:'Felenne',zip:'5570'},{name:'Dion',zip:'5570'},{name:'Beauraing',zip:'5570'},{name:'Baronville',zip:'5570'},{name:'Wanlin',zip:'5564'},{name:'Hour',zip:'5563'},{name:'Custinne',zip:'5562'},{name:'Celles Namur',zip:'5561'},{name:'Mesnil-Saint-Blaise',zip:'5560'},{name:'Mesnil-Eglise',zip:'5560'},{name:'Hulsonniaux',zip:'5560'},{name:'Houyet',zip:'5560'},{name:'Finnevaux',zip:'5560'},{name:'Ciergnon',zip:'5560'},{name:'Petit-Fays',zip:'5555'},{name:'Oizy',zip:'5555'},{name:'Naomé',zip:'5555'},{name:'Monceau-en-Ardenne',zip:'5555'},{name:'Gros-Fays',zip:'5555'},{name:'Graide',zip:'5555'},{name:'Cornimont',zip:'5555'},{name:'Bièvre',zip:'5555'},{name:'Bellefontaine Namur',zip:'5555'},{name:'Baillamont',zip:'5555'},{name:'Vresse-sur-Semois',zip:'5550'},{name:'Sugny',zip:'5550'},{name:'Pussemange',zip:'5550'},{name:'Orchimont',zip:'5550'},{name:'Nafraiture',zip:'5550'},{name:'Mouzaive',zip:'5550'},{name:'Membre',zip:'5550'},{name:'Laforêt',zip:'5550'},{name:'Chairière',zip:'5550'},{name:'Bohan',zip:'5550'},{name:'Bagimont',zip:'5550'},{name:'Alle',zip:'5550'},{name:'Agimont',zip:'5544'},{name:'Heer',zip:'5543'},{name:'Blaimont',zip:'5542'},{name:'Hastière-par-Delà',zip:'5541'},{name:'Waulsort',zip:'5540'},{name:'Hermeton-sur-Meuse',zip:'5540'},{name:'Hastière-Lavaux',zip:'5540'},{name:'Hastière',zip:'5540'},{name:'Warnant',zip:'5537'},{name:'Sosoye',zip:'5537'},{name:'Haut-le-Wastia',zip:'5537'},{name:'Denée',zip:'5537'},{name:'Bioul',zip:'5537'},{name:'Annevoie-Rouillon',zip:'5537'},{name:'Anhée',zip:'5537'},{name:'Yvoir',zip:'5530'},{name:'Spontin',zip:'5530'},{name:'Purnode',zip:'5530'},{name:'Mont Namur',zip:'5530'},{name:'Houx',zip:'5530'},{name:'Godinne',zip:'5530'},{name:'Evrehailles',zip:'5530'},{name:'Durnal',zip:'5530'},{name:'Dorinne',zip:'5530'},{name:'Gerin',zip:'5524'},{name:'Weillen',zip:'5523'},{name:'Sommière',zip:'5523'},{name:'Falaën',zip:'5522'},{name:'Serville',zip:'5521'},{name:'Onhaye',zip:'5520'},{name:'Anthée',zip:'5520'},{name:'Foy-Notre-Dame',zip:'5504'},{name:'Sorinnes',zip:'5503'},{name:'Thynes',zip:'5502'},{name:'Lisogne',zip:'5501'},{name:'Furfooz',zip:'5500'},{name:'Falmignoul',zip:'5500'},{name:'Falmagne',zip:'5500'},{name:'Dréhance',zip:'5500'},{name:'Dinant',zip:'5500'},{name:'Bouvignes-sur-Meuse',zip:'5500'},{name:'Anseremme',zip:'5500'},{name:'Tillier',zip:'5380'},{name:'Pontillas',zip:'5380'},{name:'Noville-les-Bois',zip:'5380'},{name:'Marchovelette',zip:'5380'},{name:'Hingeon',zip:'5380'},{name:'Hemptinne Fernelmont',zip:'5380'},{name:'Franc-Waret',zip:'5380'},{name:'Forville',zip:'5380'},{name:'Fernelmont',zip:'5380'},{name:'Cortil-Wodon',zip:'5380'},{name:'Bierwart',zip:'5380'},{name:'Waillet',zip:'5377'},{name:'Somme-Leuze',zip:'5377'},{name:'Sinsin',zip:'5377'},{name:'Noiseux',zip:'5377'},{name:'Nettinne',zip:'5377'},{name:'Hogne',zip:'5377'},{name:'Heure Namur',zip:'5377'},{name:'Bonsin',zip:'5377'},{name:'Baillonville',zip:'5377'},{name:'Miécret',zip:'5376'},{name:'Maffe',zip:'5374'},{name:'Méan',zip:'5372'},{name:'Verlée',zip:'5370'},{name:'Porcheresse Namur',zip:'5370'},{name:'Jeneffe  Namur',zip:'5370'},{name:'Havelange',zip:'5370'},{name:'Flostoy',zip:'5370'},{name:'Barvaux-Condroz',zip:'5370'},{name:'Schaltin',zip:'5364'},{name:'Emptinne',zip:'5363'},{name:'Achet',zip:'5362'},{name:'Scy',zip:'5361'},{name:'Mohiville',zip:'5361'},{name:'Natoye',zip:'5360'},{name:'Hamois',zip:'5360'},{name:'Jallet',zip:'5354'},{name:'Goesnes',zip:'5353'},{name:'Perwez-Haillot',zip:'5352'},{name:'Haillot',zip:'5351'},{name:'Ohey',zip:'5350'},{name:'Evelette',zip:'5350'},{name:'Sorée',zip:'5340'},{name:'Mozet',zip:'5340'},{name:'Haltinne',zip:'5340'},{name:'Gesves',zip:'5340'},{name:'Faulx-les-Tombes',zip:'5340'},{name:'Courrière',zip:'5336'},{name:'Florée',zip:'5334'},{name:'Sorinne-la-Longue',zip:'5333'},{name:'Crupet',zip:'5332'},{name:'Sart-Bernard',zip:'5330'},{name:'Maillen',zip:'5330'},{name:'Assesse',zip:'5330'},{name:'Waret-la-Chaussée',zip:'5310'},{name:'Upigny',zip:'5310'},{name:'Taviers Namur',zip:'5310'},{name:'Saint-Germain',zip:'5310'},{name:'Noville-sur-Méhaigne',zip:'5310'},{name:'Mehaigne',zip:'5310'},{name:'Longchamps',zip:'5310'},{name:'Liernu',zip:'5310'},{name:'Leuze Namur',zip:'5310'},{name:'Hanret',zip:'5310'},{name:'Eghezée',zip:'5310'},{name:'Dhuy',zip:'5310'},{name:'Branchon',zip:'5310'},{name:'Boneffe',zip:'5310'},{name:'Bolinne',zip:'5310'},{name:'Aische-en-Refail',zip:'5310'},{name:'Vezin',zip:'5300'},{name:'Thon',zip:'5300'},{name:'Seilles',zip:'5300'},{name:'Sclayn',zip:'5300'},{name:'Namêche',zip:'5300'},{name:'Maizeret',zip:'5300'},{name:'Landenne',zip:'5300'},{name:'Coutisse',zip:'5300'},{name:'Bonneville',zip:'5300'},{name:'Andenne',zip:'5300'},{name:'Spy',zip:'5190'},{name:'Saint-Martin',zip:'5190'},{name:'Onoz',zip:'5190'},{name:'Moustier-sur-Sambre',zip:'5190'},{name:'Mornimont',zip:'5190'},{name:'Jemeppe-sur-Sambre',zip:'5190'},{name:'Ham-sur-Sambre',zip:'5190'},{name:'Balâtre',zip:'5190'},{name:'Rivière',zip:'5170'},{name:'Profondeville',zip:'5170'},{name:'Lustin',zip:'5170'},{name:'Lesve',zip:'5170'},{name:'Bois-de-Villers',zip:'5170'},{name:'Arbre Namur',zip:'5170'},{name:'Soye Namur',zip:'5150'},{name:'Franière',zip:'5150'},{name:'Floriffoux',zip:'5150'},{name:'Floreffe',zip:'5150'},{name:'Tongrinne',zip:'5140'},{name:'Sombreffe',zip:'5140'},{name:'Ligny',zip:'5140'},{name:'Boignée',zip:'5140'},{name:'Saint-Denis-Bovesse',zip:'5081'},{name:'Meux',zip:'5081'},{name:'Bovesse',zip:'5081'},{name:'Warisoulx',zip:'5080'},{name:'Villers-lez-Heest',zip:'5080'},{name:'Rhisnes',zip:'5080'},{name:'La Bruyère',zip:'5080'},{name:'Emines',zip:'5080'},{name:'Vitrival',zip:'5070'},{name:'Sart-Saint-Laurent',zip:'5070'},{name:'Sart-Eustache',zip:'5070'},{name:'Le Roux',zip:'5070'},{name:'Fosses-la-Ville',zip:'5070'},{name:'Aisemont',zip:'5070'},{name:'Velaine-sur-Sambre',zip:'5060'},{name:'Tamines',zip:'5060'},{name:'Sambreville',zip:'5060'},{name:'Moignelée',zip:'5060'},{name:'Keumiée',zip:'5060'},{name:'Falisolle',zip:'5060'},{name:'Auvelais',zip:'5060'},{name:'Arsimont',zip:'5060'},{name:'Mazy',zip:'5032'},{name:'Isnes',zip:'5032'},{name:'Corroy-le-Château',zip:'5032'},{name:'Bothey',zip:'5032'},{name:'Bossière',zip:'5032'},{name:'Grand-Leez',zip:'5031'},{name:'Sauvenière',zip:'5030'},{name:'Lonzée',zip:'5030'},{name:'Grand-Manil',zip:'5030'},{name:'Gembloux',zip:'5030'},{name:'Ernage',zip:'5030'},{name:'Beuzet',zip:'5030'},{name:'Loyers',zip:'5101'},{name:'Lives-sur-Meuse',zip:'5101'},{name:'Erpent',zip:'5101'},{name:'Wierde',zip:'5100'},{name:'Wépion',zip:'5100'},{name:'Naninne',zip:'5100'},{name:'Jambes',zip:'5100'},{name:'Dave',zip:'5100'},{name:'Marche-les-Dames',zip:'5024'},{name:'Gelbressée',zip:'5024'},{name:'Cognelée',zip:'5022'},{name:'Boninne',zip:'5021'},{name:'Vedrin',zip:'5020'},{name:'Temploux',zip:'5020'},{name:'Suarlée',zip:'5020'},{name:'Malonne',zip:'5020'},{name:'Flawinne',zip:'5020'},{name:'Daussoulx',zip:'5020'},{name:'Champion',zip:'5020'},{name:'Bouge',zip:'5004'},{name:'Saint-Marc',zip:'5003'},{name:'Saint-Servais',zip:'5002'},{name:'Belgrade',zip:'5001'},{name:'Namur',zip:'5000'},{name:'Beez',zip:'5000'},{name:'Soy',zip:'6997'},{name:'Mormont',zip:'6997'},{name:'Erezée',zip:'6997'},{name:'Amonines',zip:'6997'},{name:'Marenne',zip:'6990'},{name:'Hotton',zip:'6990'},{name:'Hampteau',zip:'6990'},{name:'Fronville',zip:'6990'},{name:'Rendeux',zip:'6987'},{name:'Marcourt',zip:'6987'},{name:'Hodister',zip:'6987'},{name:'Beffe',zip:'6987'},{name:'Halleux',zip:'6986'},{name:'Hives',zip:'6984'},{name:'Ortho',zip:'6983'},{name:'Samrée',zip:'6982'},{name:'La-Roche-en-Ardenne',zip:'6980'},{name:'Beausaint',zip:'6980'},{name:'Erneuville',zip:'6972'},{name:'Champlon',zip:'6971'},{name:'Tenneville',zip:'6970'},{name:'Vaux-Chavanne',zip:'6960'},{name:'Odeigne',zip:'6960'},{name:'Manhay',zip:'6960'},{name:'Malempré',zip:'6960'},{name:'Harre',zip:'6960'},{name:'Grandmenil',zip:'6960'},{name:'Dochamps',zip:'6960'},{name:'Masbourg',zip:'6953'},{name:'Lesterny',zip:'6953'},{name:'Forrières',zip:'6953'},{name:'Ambly',zip:'6953'},{name:'Grune',zip:'6952'},{name:'Bande',zip:'6951'},{name:'Nassogne',zip:'6950'},{name:'Harsin',zip:'6950'},{name:'Villers-Sainte-Gertrude',zip:'6941'},{name:'Tohogne',zip:'6941'},{name:'Izier',zip:'6941'},{name:'Heyd',zip:'6941'},{name:'Borlon',zip:'6941'},{name:'Bomal-sur-Ourthe',zip:'6941'},{name:'Bende',zip:'6941'},{name:'Wéris',zip:'6940'},{name:'Septon',zip:'6940'},{name:'Grandhan',zip:'6940'},{name:'Durbuy',zip:'6940'},{name:'Barvaux-sur-Ourthe',zip:'6940'},{name:'Porcheresse Luxembourg',zip:'6929'},{name:'Haut-Fays',zip:'6929'},{name:'Gembes',zip:'6929'},{name:'Daverdisse',zip:'6929'},{name:'Tellin',zip:'6927'},{name:'Resteigne',zip:'6927'},{name:'Grupont',zip:'6927'},{name:'Bure',zip:'6927'},{name:'Lomprez',zip:'6924'},{name:'Halma',zip:'6922'},{name:'Chanly',zip:'6921'},{name:'Wellin',zip:'6920'},{name:'Sohier',zip:'6920'},{name:'Waha',zip:'6900'},{name:'Roy',zip:'6900'},{name:'On',zip:'6900'},{name:'Marche-en-Famenne',zip:'6900'},{name:'Humain',zip:'6900'},{name:'Hargimont',zip:'6900'},{name:'Aye',zip:'6900'},{name:'Villance',zip:'6890'},{name:'Transinne',zip:'6890'},{name:'Smuid',zip:'6890'},{name:'Redu',zip:'6890'},{name:'Ochamps',zip:'6890'},{name:'Libin',zip:'6890'},{name:'Anloy',zip:'6890'},{name:'Straimont',zip:'6887'},{name:'Saint-Médard',zip:'6887'},{name:'Herbeumont',zip:'6887'},{name:'Orgeo',zip:'6880'},{name:'Jehonville',zip:'6880'},{name:'Cugnon',zip:'6880'},{name:'Bertrix',zip:'6880'},{name:'Auby-sur-Semois',zip:'6880'},{name:'Vesqueville',zip:'6870'},{name:'Saint-Hubert',zip:'6870'},{name:'Mirwart',zip:'6870'},{name:'Hatrival',zip:'6870'},{name:'Awenne',zip:'6870'},{name:'Arville',zip:'6870'},{name:'Witry',zip:'6860'},{name:'Mellier',zip:'6860'},{name:'Léglise',zip:'6860'},{name:'Ebly',zip:'6860'},{name:'Assenois',zip:'6860'},{name:'Fays-les-Veneurs',zip:'6856'},{name:'Framont',zip:'6853'},{name:'Opont',zip:'6852'},{name:'Maissin',zip:'6852'},{name:'Nollevaux',zip:'6851'},{name:'Paliseul',zip:'6850'},{name:'Offagne',zip:'6850'},{name:'Carlsbourg',zip:'6850'},{name:'Tournay',zip:'6840'},{name:'Neufchâteau',zip:'6840'},{name:'Longlier',zip:'6840'},{name:'Hamipré',zip:'6840'},{name:'Grapfontaine',zip:'6840'},{name:'Grandvoir',zip:'6840'},{name:'Corbion',zip:'6838'},{name:'Dohan',zip:'6836'},{name:'Bellevaux',zip:'6834'},{name:'Vivy',zip:'6833'},{name:'Ucimont',zip:'6833'},{name:'Sensenruth',zip:'6832'},{name:'Noirefontaine',zip:'6831'},{name:'Rochehaut',zip:'6830'},{name:'Poupehan',zip:'6830'},{name:'Les Hayons',zip:'6830'},{name:'Bouillon',zip:'6830'},{name:'Chassepierre',zip:'6824'},{name:'Villers-devant-Orval',zip:'6823'},{name:'Lacuisine',zip:'6821'},{name:'Sainte-Cécile',zip:'6820'},{name:'Muno',zip:'6820'},{name:'Fontenoille',zip:'6820'},{name:'Florenville',zip:'6820'},{name:'Termes',zip:'6813'},{name:'Suxy',zip:'6812'},{name:'Les Bulles',zip:'6811'},{name:'Jamoigne',zip:'6810'},{name:'Izel',zip:'6810'},{name:'Chiny',zip:'6810'},{name:'Saint-Pierre',zip:'6800'},{name:'Sainte-Marie-Chevigny',zip:'6800'},{name:'Remagne',zip:'6800'},{name:'Recogne',zip:'6800'},{name:'Moircy',zip:'6800'},{name:'Libramont-Chevigny',zip:'6800'},{name:'Libramont',zip:'6800'},{name:'Freux',zip:'6800'},{name:'Bras',zip:'6800'},{name:'Rachecourt',zip:'6792'},{name:'Halanzy',zip:'6792'},{name:'Athus',zip:'6791'},{name:'Aubange',zip:'6790'},{name:'Habergy',zip:'6782'},{name:'Sélange',zip:'6781'},{name:'Wolkrange',zip:'6780'},{name:'Messancy',zip:'6780'},{name:'Hondelange',zip:'6780'},{name:'Villers-la-Loue',zip:'6769'},{name:'Sommethonne',zip:'6769'},{name:'Robelmont',zip:'6769'},{name:'Meix-devant-Virton',zip:'6769'},{name:'Gérouville',zip:'6769'},{name:'Torgny',zip:'6767'},{name:'Rouvroy',zip:'6767'},{name:'Lamorteau',zip:'6767'},{name:'Harnoncourt',zip:'6767'},{name:'Dampicourt',zip:'6767'},{name:'Saint-Mard',zip:'6762'},{name:'Latour',zip:'6761'},{name:'Virton',zip:'6760'},{name:'Ruette',zip:'6760'},{name:'Ethe',zip:'6760'},{name:'Bleid',zip:'6760'},{name:'Signeulx',zip:'6750'},{name:'Mussy-la-Ville',zip:'6750'},{name:'Musson',zip:'6750'},{name:'Saint-Léger Luxembourg',zip:'6747'},{name:'Meix-le-Tige',zip:'6747'},{name:'Châtillon',zip:'6747'},{name:'Buzenol',zip:'6743'},{name:'Chantemelle',zip:'6742'},{name:'Vance',zip:'6741'},{name:'Villers-sur-Semois',zip:'6740'},{name:'Sainte-Marie-sur-Semois',zip:'6740'},{name:'Etalle',zip:'6740'},{name:'Tintigny',zip:'6730'},{name:'Saint-Vincent',zip:'6730'},{name:'Rossignol',zip:'6730'},{name:'Bellefontaine Luxembourg',zip:'6730'},{name:'Rulles',zip:'6724'},{name:'Marbehan Luxembourg',zip:'6724'},{name:'Houdemont',zip:'6724'},{name:'Habay-la-Vieille',zip:'6723'},{name:'Anlier',zip:'6721'},{name:'Hachy',zip:'6720'},{name:'Habay-la-Neuve',zip:'6720'},{name:'Habay',zip:'6720'},{name:'Tontelange',zip:'6717'},{name:'Thiaumont',zip:'6717'},{name:'Nothomb',zip:'6717'},{name:'Nobressart',zip:'6717'},{name:'Attert',zip:'6717'},{name:'Autelbas',zip:'6706'},{name:'Guirsch',zip:'6704'},{name:'Toernich',zip:'6700'},{name:'Heinsch',zip:'6700'},{name:'Bonnert',zip:'6700'},{name:'Arlon',zip:'6700'},{name:'Grand-Halleux',zip:'6698'},{name:'Petit-Thier',zip:'6692'},{name:'Vielsalm',zip:'6690'},{name:'Bihain',zip:'6690'},{name:'Longchamps Luxembourg',zip:'6688'},{name:'Bertogne',zip:'6687'},{name:'Flamierge',zip:'6686'},{name:'Lavacherie',zip:'6681'},{name:'Tillet',zip:'6680'},{name:'Sainte-Ode',zip:'6680'},{name:'Amberloup',zip:'6680'},{name:'Montleban',zip:'6674'},{name:'Cherain',zip:'6673'},{name:'Beho',zip:'6672'},{name:'Bovigny',zip:'6671'},{name:'Limerlé',zip:'6670'},{name:'Gouvy',zip:'6670'},{name:'Wibrin',zip:'6666'},{name:'Mabompré',zip:'6663'},{name:'Tavigny',zip:'6662'},{name:'Tailles',zip:'6661'},{name:'Mont Luxembourg',zip:'6661'},{name:'Nadrin',zip:'6660'},{name:'Houffalize',zip:'6660'},{name:'Juseret',zip:'6642'},{name:'Vaux-sur-Sûre',zip:'6640'},{name:'Vaux-lez-Rosières',zip:'6640'},{name:'Sibret',zip:'6640'},{name:'Nives',zip:'6640'},{name:'Morhet',zip:'6640'},{name:'Hompré',zip:'6640'},{name:'Tintange',zip:'6637'},{name:'Hollange',zip:'6637'},{name:'Fauvillers',zip:'6637'},{name:'Martelange',zip:'6630'},{name:'Wardin',zip:'6600'},{name:'Villers-la-Bonne-Eau',zip:'6600'},{name:'Noville Luxembourg',zip:'6600'},{name:'Longvilly',zip:'6600'},{name:'Bastogne',zip:'6600'},{name:'Villers-la-Ville',zip:'1495'},{name:'Tilly',zip:'1495'},{name:'Sart-Dames-Avelines',zip:'1495'},{name:'Mellery',zip:'1495'},{name:'Marbais Br.W.',zip:'1495'},{name:'Court-Saint-Etienne',zip:'1490'},{name:'Tubize',zip:'1480'},{name:'Saintes',zip:'1480'},{name:'Oisquercq',zip:'1480'},{name:'Clabecq',zip:'1480'},{name:'Houtain-le-Val',zip:'1476'},{name:'Ways',zip:'1474'},{name:'Glabais',zip:'1473'},{name:'Vieux-Genappe',zip:'1472'},{name:'Loupoigne',zip:'1471'},{name:'Genappe',zip:'1470'},{name:'Bousval',zip:'1470'},{name:'Baisy-Thy',zip:'1470'},{name:'Haut-Ittre',zip:'1461'},{name:'Virginal-Samme',zip:'1460'},{name:'Ittre',zip:'1460'},{name:'Walhain-Saint-Paul',zip:'1457'},{name:'Walhain',zip:'1457'},{name:'Tourinnes-Saint-Lambert',zip:'1457'},{name:'Nil-Saint-Vincent-Saint-Martin',zip:'1457'},{name:'Saint-Géry',zip:'1450'},{name:'Gentinnes',zip:'1450'},{name:'Cortil-Noirmont',zip:'1450'},{name:'Chastre-Villeroux-Blanmont',zip:'1450'},{name:'Chastre',zip:'1450'},{name:'Wauthier-Braine',zip:'1440'},{name:'Braine-le-Château',zip:'1440'},{name:'Mont-Saint-Guibert',zip:'1435'},{name:'Hévillers',zip:'1435'},{name:'Corbais',zip:'1435'},{name:'Rebecq-Rognon',zip:'1430'},{name:'Rebecq',zip:'1430'},{name:'Quenast',zip:'1430'},{name:'Bierghes',zip:'1430'},{name:'Lillois-Witterzée',zip:'1428'},{name:'Ophain-Bois-Seigneur-Isaac',zip:'1421'},{name:'Waterloo',zip:'1410'},{name:'Bornival',zip:'1404'},{name:'Thines',zip:'1402'},{name:'Baulers',zip:'1401'},{name:'Nivelles',zip:'1400'},{name:'Monstreux',zip:'1400'},{name:'Nethen',zip:'1390'},{name:'Grez-Doiceau',zip:'1390'},{name:'Bossut-Gottechain',zip:'1390'},{name:'Biez',zip:'1390'},{name:'Archennes',zip:'1390'},{name:'Plancenoit',zip:'1380'},{name:'Ohain',zip:'1380'},{name:'Maransart',zip:'1380'},{name:'Lasne-Chapelle-Saint-Lambert',zip:'1380'},{name:'Lasne',zip:'1380'},{name:'Couture-Saint-Germain',zip:'1380'},{name:'Zétrud-Lumay',zip:'1370'},{name:'Saint-Remy-Geest',zip:'1370'},{name:'Saint-Jean-Geest',zip:'1370'},{name:'Piétrain',zip:'1370'},{name:'Mélin',zip:'1370'},{name:'Lathuy',zip:'1370'},{name:'Jodoigne-Souveraine',zip:'1370'},{name:'Jodoigne',zip:'1370'},{name:'Jauchelette',zip:'1370'},{name:'Dongelberg',zip:'1370'},{name:'Ramillies-Offus',zip:'1367'},{name:'Mont-Saint-André',zip:'1367'},{name:'Huppaye',zip:'1367'},{name:'Grand-Rosière-Hottomont',zip:'1367'},{name:'Gérompont',zip:'1367'},{name:'Geest-Gérompont-Petit-Rosière',zip:'1367'},{name:'Bomal Br.W.',zip:'1367'},{name:'Autre-Eglise',zip:'1367'},{name:'Thorembais-Saint-Trond',zip:'1360'},{name:'Thorembais-les-Béguines',zip:'1360'},{name:'Perwez',zip:'1360'},{name:'Orbais',zip:'1360'},{name:'Malèves-Sainte-Marie-Wastines',zip:'1360'},{name:'Opheylissem',zip:'1357'},{name:'Neerheylissem',zip:'1357'},{name:'Linsmeau',zip:'1357'},{name:'Hélécine',zip:'1357'},{name:'Orp-le-Grand',zip:'1350'},{name:'Orp-Jauche',zip:'1350'},{name:'Noduwez',zip:'1350'},{name:'Marilles',zip:'1350'},{name:'Jauche',zip:'1350'},{name:'Jandrain-Jandrenouille',zip:'1350'},{name:'Folx-les-Caves',zip:'1350'},{name:'Enines',zip:'1350'},{name:'Louvain-la-Neuve',zip:'1348'},{name:'Limelette',zip:'1342'},{name:'Céroux-Mousty',zip:'1341'},{name:'Ottignies-Louvain-la-Neuve',zip:'1340'},{name:'Ottignies',zip:'1340'},{name:'Genval',zip:'1332'},{name:'Rosières',zip:'1331'},{name:'Rixensart',zip:'1330'},{name:'Longueville',zip:'1325'},{name:'Dion-Valmont',zip:'1325'},{name:'Corroy-le-Grand',zip:'1325'},{name:'Chaumont-Gistoux',zip:'1325'},{name:'Bonlez',zip:'1325'},{name:'Tourinnes-la-Grosse',zip:'1320'},{name:'Nodebais',zip:'1320'},{name:'Hamme-Mille',zip:'1320'},{name:'Beauvechain',zip:'1320'},{name:'Roux-Miroir',zip:'1315'},{name:'Piétrebais',zip:'1315'},{name:'Opprebais',zip:'1315'},{name:'Incourt',zip:'1315'},{name:'Glimes',zip:'1315'},{name:'La Hulpe',zip:'1310'},{name:'Bierges',zip:'1301'},{name:'Wavre',zip:'1300'},{name:'Limal',zip:'1300'},{name:'Lierneux',zip:'4990'},{name:'Bra',zip:'4990'},{name:'Arbrefontaine',zip:'4990'},{name:'Stoumont',zip:'4987'},{name:'Rahier',zip:'4987'},{name:'Lorcé',zip:'4987'},{name:'La Gleize',zip:'4987'},{name:'Chevron',zip:'4987'},{name:'Basse-Bodeux',zip:'4983'},{name:'Wanne',zip:'4980'},{name:'Trois-Ponts',zip:'4980'},{name:'Fosse Liège',zip:'4980'},{name:'Stavelot',zip:'4970'},{name:'Francorchamps',zip:'4970'},{name:'Malmedy',zip:'4960'},{name:'Bevercé',zip:'4960'},{name:'Bellevaux-Ligneuville',zip:'4960'},{name:'Waimes/Weismes',zip:'4950'},{name:'Sourbrodt',zip:'4950'},{name:'Robertville',zip:'4950'},{name:'Faymonville',zip:'4950'},{name:'Sougné-Remouchamps',zip:'4920'},{name:'Harzé',zip:'4920'},{name:'Ernonheid',zip:'4920'},{name:'Aywaille',zip:'4920'},{name:'Theux',zip:'4910'},{name:'Polleur',zip:'4910'},{name:'La Reid',zip:'4910'},{name:'Spa',zip:'4900'},{name:'Thimister-Clermont',zip:'4890'},{name:'Thimister',zip:'4890'},{name:'Clermont Liège',zip:'4890'},{name:'Aubel',zip:'4880'},{name:'Olne',zip:'4877'},{name:'Trooz',zip:'4870'},{name:'Nessonvaux',zip:'4870'},{name:'Fraipont',zip:'4870'},{name:'Forêt',zip:'4870'},{name:'Soiron',zip:'4861'},{name:'Wegnez',zip:'4860'},{name:'Pepinster',zip:'4860'},{name:'Cornesse',zip:'4860'},{name:'Hombourg',zip:'4852'},{name:'Sippenaeken',zip:'4851'},{name:'Gemmenich',zip:'4851'},{name:'Plombières',zip:'4850'},{name:'Moresnet',zip:'4850'},{name:'Montzen',zip:'4850'},{name:'Sart-lez-Spa',zip:'4845'},{name:'Jalhay',zip:'4845'},{name:'Henri-Chapelle',zip:'4841'},{name:'Welkenraedt',zip:'4840'},{name:'Membach',zip:'4837'},{name:'Baelen Liège',zip:'4837'},{name:'Goé',zip:'4834'},{name:'Bilstain',zip:'4831'},{name:'Limbourg',zip:'4830'},{name:'Andrimont',zip:'4821'},{name:'Dison',zip:'4820'},{name:'Heusy',zip:'4802'},{name:'Stembert',zip:'4801'},{name:'Verviers',zip:'4800'},{name:'Petit-Rechain',zip:'4800'},{name:'Lambermont',zip:'4800'},{name:'Ensival',zip:'4800'},{name:'Thommen',zip:'4791'},{name:'Reuland',zip:'4790'},{name:'Burg-Reuland',zip:'4790'},{name:'Crombach',zip:'4784'},{name:'Lommersweiler',zip:'4783'},{name:'Schönberg/Schoenberg',zip:'4782'},{name:'Sankt Vith/Saint-Vith',zip:'4780'},{name:'Recht',zip:'4780'},{name:'Heppenbach',zip:'4771'},{name:'Meyerode',zip:'4770'},{name:'Amel/Amblève',zip:'4770'},{name:'Rocherath',zip:'4761'},{name:'Manderfeld',zip:'4760'},{name:'Büllingen/Bullange',zip:'4760'},{name:'Elsenborn',zip:'4750'},{name:'Bütgenbach/Butgenbach',zip:'4750'},{name:'Eynatten',zip:'4731'},{name:'Raeren',zip:'4730'},{name:'Hauset',zip:'4730'},{name:'Hergenrath',zip:'4728'},{name:'Neu-Moresnet',zip:'4721'},{name:'Kelmis/La Calamine',zip:'4720'},{name:'Walhorn',zip:'4711'},{name:'Lontzen',zip:'4710'},{name:'Kettenis',zip:'4701'},{name:'Eupen',zip:'4700'},{name:'Wonck',zip:'4690'},{name:'Roclenge-sur-Geer',zip:'4690'},{name:'Glons',zip:'4690'},{name:'Eben-Emael',zip:'4690'},{name:'Boirs',zip:'4690'},{name:'Bassenge',zip:'4690'},{name:'Haccourt',zip:'4684'},{name:'Vivegnis',zip:'4683'},{name:'Houtain-Saint-Siméon',zip:'4682'},{name:'Heure-le-Romain',zip:'4682'},{name:'Hermalle-sous-Argenteau',zip:'4681'},{name:'Oupeye',zip:'4680'},{name:'Hermée',zip:'4680'},{name:'Saint-Remy Liège',zip:'4672'},{name:'Saive',zip:'4671'},{name:'Housse',zip:'4671'},{name:'Barchon',zip:'4671'},{name:'Trembleur',zip:'4670'},{name:'Mortier',zip:'4670'},{name:'Blégny',zip:'4670'},{name:'Charneux',zip:'4654'},{name:'Bolland',zip:'4653'},{name:'Xhendelesse',zip:'4652'},{name:'Battice',zip:'4651'},{name:'Julémont',zip:'4650'},{name:'Herve',zip:'4650'},{name:'Grand-Rechain',zip:'4650'},{name:'Chaineux',zip:'4650'},{name:'Melen',zip:'4633'},{name:'Cérexhe-Heuseux',zip:'4632'},{name:'Evegnée',zip:'4631'},{name:'Tignée',zip:'4630'},{name:'Soumagne',zip:'4630'},{name:'Micheroux',zip:'4630'},{name:'Ayeneux',zip:'4630'},{name:'Romsée',zip:'4624'},{name:'Magnée',zip:'4623'},{name:'Retinne',zip:'4621'},{name:'Fléron',zip:'4620'},{name:'Queue-du-Bois',zip:'4610'},{name:'Beyne-Heusay',zip:'4610'},{name:'Bellaire',zip:'4610'},{name:'Warsage',zip:'4608'},{name:'Neufchâteau Liège',zip:'4608'},{name:'Mortroux',zip:'4607'},{name:'Feneur',zip:'4607'},{name:'Dalhem',zip:'4607'},{name:'Bombaye',zip:'4607'},{name:'Berneau',zip:'4607'},{name:'Saint-André',zip:'4606'},{name:'Cheratte',zip:'4602'},{name:'Argenteau',zip:'4601'},{name:'Visé',zip:'4600'},{name:'Richelle',zip:'4600'},{name:'Lixhe',zip:'4600'},{name:'Lanaye',zip:'4600'},{name:'Warzée',zip:'4590'},{name:'Ouffet',zip:'4590'},{name:'Ellemelle',zip:'4590'},{name:'Vierset-Barse',zip:'4577'},{name:'Strée-lez-Huy',zip:'4577'},{name:'Outrelouxhe',zip:'4577'},{name:'Modave',zip:'4577'},{name:'Vyle-et-Tharoul',zip:'4570'},{name:'Marchin',zip:'4570'},{name:'Terwagne',zip:'4560'},{name:'Pailhe',zip:'4560'},{name:'Ocquier',zip:'4560'},{name:'Les Avins',zip:'4560'},{name:'Clavier',zip:'4560'},{name:'Bois-et-Borsu',zip:'4560'},{name:'Tinlot',zip:'4557'},{name:'Soheit-Tinlot',zip:'4557'},{name:'Seny',zip:'4557'},{name:'Ramelot',zip:'4557'},{name:'Fraiture',zip:'4557'},{name:'Abée',zip:'4557'},{name:'Yernée-Fraineux',zip:'4550'},{name:'Villers-le-Temple',zip:'4550'},{name:'Saint-Séverin',zip:'4550'},{name:'Nandrin',zip:'4550'},{name:'Ombret',zip:'4540'},{name:'Jehay',zip:'4540'},{name:'Flône',zip:'4540'},{name:'Ampsin',zip:'4540'},{name:'Amay',zip:'4540'},{name:'Verlaine',zip:'4537'},{name:'Seraing-le-Château',zip:'4537'},{name:'Chapon-Seraing',zip:'4537'},{name:'Warnant-Dreye',zip:'4530'},{name:'Villers-le-Bouillet',zip:'4530'},{name:'Vieux-Waleffe',zip:'4530'},{name:'Vaux-et-Borset',zip:'4530'},{name:'Fize-Fontaine',zip:'4530'},{name:'Wanze',zip:'4520'},{name:'Vinalmont',zip:'4520'},{name:'Moha',zip:'4520'},{name:'Huccorgne',zip:'4520'},{name:'Bas-Oha',zip:'4520'},{name:'Antheit',zip:'4520'},{name:'Tihange',zip:'4500'},{name:'Huy',zip:'4500'},{name:'Ben-Ahin',zip:'4500'},{name:'Hermalle-sous-Huy',zip:'4480'},{name:'Engis',zip:'4480'},{name:'Clermont-sous-Huy',zip:'4480'},{name:'Saint-Georges-sur-Meuse',zip:'4470'},{name:'Velroux',zip:'4460'},{name:'Horion-Hozémont',zip:'4460'},{name:'Hollogne-aux-Pierres',zip:'4460'},{name:'Grâce-Hollogne',zip:'4460'},{name:'Grâce-Berleur',zip:'4460'},{name:'Bierset',zip:'4460'},{name:'Fexhe-Slins',zip:'4458'},{name:'Villers-Saint-Siméon',zip:'4453'},{name:'Wihogne',zip:'4452'},{name:'Paifve',zip:'4452'},{name:'Voroux-lez-Liers',zip:'4451'},{name:'Slins',zip:'4450'},{name:'Lantin',zip:'4450'},{name:'Juprelle',zip:'4450'},{name:'Xhendremael',zip:'4432'},{name:'Alleur',zip:'4432'},{name:'Loncin',zip:'4431'},{name:'Ans',zip:'4430'},{name:'Tilleur',zip:'4420'},{name:'Saint-Nicolas Liège',zip:'4420'},{name:'Montegnée',zip:'4420'},{name:'Mons-lez-Liège',zip:'4400'},{name:'Ivoz-Ramet',zip:'4400'},{name:'Gleixhe',zip:'4400'},{name:'Flémalle-Haute',zip:'4400'},{name:'Flémalle-Grande',zip:'4400'},{name:'Flémalle',zip:'4400'},{name:'Chokier',zip:'4400'},{name:'Awirs',zip:'4400'},{name:'Thys',zip:'4367'},{name:'Odeur',zip:'4367'},{name:'Kemexhe',zip:'4367'},{name:'Fize-le-Marsal',zip:'4367'},{name:'Crisnée',zip:'4367'},{name:'Otrange',zip:'4360'},{name:'Oreye',zip:'4360'},{name:'Lens-sur-Geer',zip:'4360'},{name:'Grandville',zip:'4360'},{name:'Bergilers',zip:'4360'},{name:'Limont',zip:'4357'},{name:'Jeneffe Liège',zip:'4357'},{name:'Haneffe',zip:'4357'},{name:'Donceel',zip:'4357'},{name:'Hodeige',zip:'4351'},{name:'Remicourt',zip:'4350'},{name:'Pousset',zip:'4350'},{name:'Momalle',zip:'4350'},{name:'Lamine',zip:'4350'},{name:'Voroux-Goreux',zip:'4347'},{name:'Roloux',zip:'4347'},{name:'Noville Liège',zip:'4347'},{name:'Freloux',zip:'4347'},{name:'Fexhe-le-Haut-Clocher',zip:'4347'},{name:'Hognoul',zip:'4342'},{name:'Othée',zip:'4340'},{name:'Fooz',zip:'4340'},{name:'Awans',zip:'4340'},{name:'Viemme',zip:'4317'},{name:'Les Waleffes',zip:'4317'},{name:'Faimes',zip:'4317'},{name:'Celles Liège',zip:'4317'},{name:'Borlez',zip:'4317'},{name:'Aineffe',zip:'4317'},{name:'Waremme',zip:'4300'},{name:'Oleye',zip:'4300'},{name:'Lantremange',zip:'4300'},{name:'Grand-Axhe',zip:'4300'},{name:'Bovenistier',zip:'4300'},{name:'Bleret',zip:'4300'},{name:'Bettincourt',zip:'4300'},{name:'Racour',zip:'4287'},{name:'Pellaines',zip:'4287'},{name:'Lincent',zip:'4287'},{name:'Wansin',zip:'4280'},{name:'Villers-le-Peuplier',zip:'4280'},{name:'Trognée',zip:'4280'},{name:'Thisnes',zip:'4280'},{name:'Poucet',zip:'4280'},{name:'Petit-Hallet',zip:'4280'},{name:'Moxhe',zip:'4280'},{name:'Merdorp',zip:'4280'},{name:'Lens-Saint-Remy',zip:'4280'},{name:'Hannut',zip:'4280'},{name:'Grand-Hallet',zip:'4280'},{name:'Crehen',zip:'4280'},{name:'Cras-Avernas',zip:'4280'},{name:'Blehen',zip:'4280'},{name:'Bertrée',zip:'4280'},{name:'Avin',zip:'4280'},{name:'Avernas-le-Bauduin',zip:'4280'},{name:'Abolens',zip:'4280'},{name:'Tourinne Liège',zip:'4263'},{name:'Latinne',zip:'4261'},{name:'Ville-en-Hesbaye',zip:'4260'},{name:'Fumal',zip:'4260'},{name:'Fallais',zip:'4260'},{name:'Ciplet',zip:'4260'},{name:'Braives',zip:'4260'},{name:'Avennes',zip:'4260'},{name:'Rosoux-Crenwick',zip:'4257'},{name:'Corswarem',zip:'4257'},{name:'Berloz',zip:'4257'},{name:'Ligney',zip:'4254'},{name:'Darion',zip:'4253'},{name:'Omal',zip:'4252'},{name:'Lens-Saint-Servais',zip:'4250'},{name:'Hollogne-sur-Geer',zip:'4250'},{name:'Geer',zip:'4250'},{name:'Boëlhe',zip:'4250'},{name:'Wasseiges',zip:'4219'},{name:'Meeffe',zip:'4219'},{name:'Ambresin',zip:'4219'},{name:'Acosse',zip:'4219'},{name:'Couthuin',zip:'4218'},{name:'Lavoir',zip:'4217'},{name:'Héron',zip:'4217'},{name:'Oteppe',zip:'4210'},{name:'Marneffe',zip:'4210'},{name:'Lamontzée',zip:'4210'},{name:'Hannêche',zip:'4210'},{name:'Burdinne',zip:'4210'},{name:'Xhoris',zip:'4190'},{name:'Werbomont',zip:'4190'},{name:'Vieuxville',zip:'4190'},{name:'My',zip:'4190'},{name:'Ferrières',zip:'4190'},{name:'Filot',zip:'4181'},{name:'Hamoir',zip:'4180'},{name:'Comblain-la-Tour',zip:'4180'},{name:'Comblain-Fairon',zip:'4180'},{name:'Poulseur',zip:'4171'},{name:'Comblain-au-Pont',zip:'4170'},{name:'Tavier',zip:'4163'},{name:'Hody',zip:'4162'},{name:'Villers-aux-Tours',zip:'4161'},{name:'Anthisnes',zip:'4160'},{name:'Louveigné',zip:'4141'},{name:'Sprimont',zip:'4140'},{name:'Rouvreux',zip:'4140'},{name:'Gomzé-Andoumont',zip:'4140'},{name:'Dolembreux',zip:'4140'},{name:'Tilff',zip:'4130'},{name:'Esneux',zip:'4130'},{name:'Plainevaux',zip:'4122'},{name:'Neuville-en-Condroz',zip:'4121'},{name:'Rotheux-Rimière',zip:'4120'},{name:'Neupré',zip:'4120'},{name:'Ehein',zip:'4120'},{name:'Ougrée',zip:'4102'},{name:'Jemeppe-sur-Meuse',zip:'4101'},{name:'Seraing',zip:'4100'},{name:'Boncelles',zip:'4100'},{name:'Embourg',zip:'4053'},{name:'Beaufays',zip:'4052'},{name:'Vaux-sous-Chèvremont',zip:'4051'},{name:'Chaudfontaine',zip:'4050'},{name:'Liers',zip:'4042'},{name:'Vottem',zip:'4041'},{name:'Milmort',zip:'4041'},{name:'Herstal',zip:'4040'},{name:'Chênée',zip:'4032'},{name:'Angleur',zip:'4031'},{name:'Grivegnée',zip:'4030'},{name:'Wandre',zip:'4020'},{name:'Liège',zip:'4020'},{name:'Jupille-sur-Meuse',zip:'4020'},{name:'Bressoux',zip:'4020'},{name:'Rocourt',zip:'4000'},{name:'Liège',zip:'4000'},{name:'Glain',zip:'4000'},{name:'Stambruges',zip:'7973'},{name:'Grandglise',zip:'7973'},{name:'Quevaucamps',zip:'7972'},{name:'Ellignies-Sainte-Anne',zip:'7972'},{name:'Aubechies',zip:'7972'},{name:'Wadelincourt',zip:'7971'},{name:'Thumaide',zip:'7971'},{name:'Ramegnies',zip:'7971'},{name:'Basècles',zip:'7971'},{name:'Beloeil',zip:'7970'},{name:'Tongre-Notre-Dame',zip:'7951'},{name:'Tongre-Saint-Martin',zip:'7950'},{name:'Ladeuze',zip:'7950'},{name:'Huissignies',zip:'7950'},{name:'Grosage',zip:'7950'},{name:'Chièvres',zip:'7950'},{name:'Gages',zip:'7943'},{name:'Mévergnies-lez-Lens',zip:'7942'},{name:'Attre',zip:'7941'},{name:'Cambron-Casteau',zip:'7940'},{name:'Brugelette',zip:'7940'},{name:'Saint-Sauveur',zip:'7912'},{name:'Dergneau',zip:'7912'},{name:'Oeudeghien',zip:'7911'},{name:'Moustier Ht.',zip:'7911'},{name:'Montroeul-au-Bois',zip:'7911'},{name:'Herquegies',zip:'7911'},{name:'Hacquegnies',zip:'7911'},{name:'Frasnes-lez-Buissenal',zip:'7911'},{name:'Buissenal',zip:'7911'},{name:'Wattripont',zip:'7910'},{name:'Frasnes-lez-Anvaing',zip:'7910'},{name:'Forest Ht.',zip:'7910'},{name:'Ellignies-lez-Frasnes',zip:'7910'},{name:'Cordes',zip:'7910'},{name:'Arc-Wattripont',zip:'7910'},{name:'Arc-Ainières',zip:'7910'},{name:'Anvaing',zip:'7910'},{name:'Gallaix',zip:'7906'},{name:'Willaupuis',zip:'7904'},{name:'Tourpes',zip:'7904'},{name:'Pipaix',zip:'7904'},{name:'Chapelle-à-Wattines',zip:'7903'},{name:'Chapelle-à-Oie',zip:'7903'},{name:'Blicquy',zip:'7903'},{name:'Thieulain',zip:'7901'},{name:'Leuze-en-Hainaut',zip:'7900'},{name:'Grandmetz',zip:'7900'},{name:'Wodecq',zip:'7890'},{name:'Lahamaide',zip:'7890'},{name:'Ellezelles',zip:'7890'},{name:'Flobecq/Vloesberg',zip:'7880'},{name:'Montignies-lez-Lens',zip:'7870'},{name:'Lombise',zip:'7870'},{name:'Lens',zip:'7870'},{name:'Cambron-Saint-Vincent',zip:'7870'},{name:'Bauffe',zip:'7870'},{name:'Ollignies',zip:'7866'},{name:'Bois-de-Lessines',zip:'7866'},{name:'Deux-Acren',zip:'7864'},{name:'Ghoy',zip:'7863'},{name:'Ogy',zip:'7862'},{name:'Wannebecq',zip:'7861'},{name:'Papignies',zip:'7861'},{name:'Lessines',zip:'7860'},{name:'Petit-Enghien/Lettelingen',zip:'7850'},{name:'Marcq/Mark',zip:'7850'},{name:'Enghien/Edingen',zip:'7850'},{name:'Thoricourt',zip:'7830'},{name:'Silly',zip:'7830'},{name:'Hoves Ht.',zip:'7830'},{name:'Hellebecq',zip:'7830'},{name:'Graty',zip:'7830'},{name:'Gondregnies',zip:'7830'},{name:'Fouleng',zip:'7830'},{name:'Bassilly',zip:'7830'},{name:'Gibecq',zip:'7823'},{name:'Isières',zip:'7822'},{name:'Ghislenghien',zip:'7822'},{name:'Villers-Saint-Amand',zip:'7812'},{name:'Villers-Notre-Dame',zip:'7812'},{name:'Moulbaix',zip:'7812'},{name:'Mainvault',zip:'7812'},{name:'Ligne',zip:'7812'},{name:'Houtaing',zip:'7812'},{name:'Arbre Ht.',zip:'7811'},{name:'Maffle',zip:'7810'},{name:'Rebaix',zip:'7804'},{name:'Ostiches',zip:'7804'},{name:'Bouvignies',zip:'7803'},{name:'Ormeignies',zip:'7802'},{name:'Irchonwelz',zip:'7801'},{name:'Lanquesaint',zip:'7800'},{name:'Ath',zip:'7800'},{name:'Warneton/Waasten',zip:'7784'},{name:'Bas-Warneton/Neerwaasten',zip:'7784'},{name:'Bizet',zip:'7783'},{name:'Ploegsteert',zip:'7782'},{name:'Houthem Comines/Komen',zip:'7781'},{name:'Comines-Warneton/Komen-Waasten',zip:'7780'},{name:'Comines/Komen',zip:'7780'},{name:'Velaines',zip:'7760'},{name:'Pottes',zip:'7760'},{name:'Popuelles',zip:'7760'},{name:'Molenbaix',zip:'7760'},{name:'Escanaffles',zip:'7760'},{name:'Celles Ht.',zip:'7760'},{name:'Russeignies',zip:'7750'},{name:'Orroir',zip:'7750'},{name:'Anseroeul',zip:'7750'},{name:'Amougies',zip:'7750'},{name:'Obigies',zip:'7743'},{name:'Esquelmes',zip:'7743'},{name:'Hérinnes-lez-Pecq',zip:'7742'},{name:'Warcoing',zip:'7740'},{name:'Pecq',zip:'7740'},{name:'Saint-Léger Ht.',zip:'7730'},{name:'Néchin',zip:'7730'},{name:'Leers-Nord',zip:'7730'},{name:'Evregnies',zip:'7730'},{name:'Estaimpuis',zip:'7730'},{name:'Estaimbourg',zip:'7730'},{name:'Bailleul',zip:'7730'},{name:'Herseaux',zip:'7712'},{name:'Dottignies/Dottenijs',zip:'7711'},{name:'Mouscron/Moeskroen',zip:'7700'},{name:'Luingne',zip:'7700'},{name:'Fontenoy',zip:'7643'},{name:'Calonne',zip:'7642'},{name:'Bruyelle',zip:'7641'},{name:'Péronnes-lez-Antoing',zip:'7640'},{name:'Maubray',zip:'7640'},{name:'Antoing',zip:'7640'},{name:'Howardries',zip:'7624'},{name:'Rongy',zip:'7623'},{name:'Laplaigne',zip:'7622'},{name:'Lesdain',zip:'7621'},{name:'Wez-Velvain',zip:'7620'},{name:'Jollain-Merlin',zip:'7620'},{name:'Hollain',zip:'7620'},{name:'Guignies',zip:'7620'},{name:'Brunehaut',zip:'7620'},{name:'Bléharies',zip:'7620'},{name:'Taintignies',zip:'7618'},{name:'La Glanerie',zip:'7611'},{name:'Rumes',zip:'7610'},{name:'Wiers',zip:'7608'},{name:'Wasmes-Audemez-Briffoeil',zip:'7604'},{name:'Callenelle',zip:'7604'},{name:'Brasmenil',zip:'7604'},{name:'Braffe',zip:'7604'},{name:'Baugnies',zip:'7604'},{name:'Bon-Secours',zip:'7603'},{name:'Bury',zip:'7602'},{name:'Roucourt',zip:'7601'},{name:'Péruwelz',zip:'7600'},{name:'Warchin',zip:'7548'},{name:'Mourcourt',zip:'7543'},{name:'Mont-Saint-Aubert',zip:'7542'},{name:'Rumillies',zip:'7540'},{name:'Quartes',zip:'7540'},{name:'Melles',zip:'7540'},{name:'Kain',zip:'7540'},{name:'Vezon',zip:'7538'},{name:'Vaulx',zip:'7536'},{name:'Maulde',zip:'7534'},{name:'Barry',zip:'7534'},{name:'Thimougies',zip:'7533'},{name:'Beclers',zip:'7532'},{name:'Havinnes',zip:'7531'},{name:'Gaurain-Ramecroix',zip:'7530'},{name:'Marquain',zip:'7522'},{name:'Lamain',zip:'7522'},{name:'Hertain',zip:'7522'},{name:'Blandain',zip:'7522'},{name:'Chercq',zip:'7521'},{name:'Templeuve',zip:'7520'},{name:'Ramegnies-Chin',zip:'7520'},{name:'Willemeau',zip:'7506'},{name:'Froidmont',zip:'7504'},{name:'Froyennes',zip:'7503'},{name:'Esplechin',zip:'7502'},{name:'Orcq',zip:'7501'},{name:'Tournai',zip:'7500'},{name:'Saint-Maur',zip:'7500'},{name:'Ere',zip:'7500'},{name:'Wasmuel',zip:'7390'},{name:'Quaregnon',zip:'7390'},{name:'Roisin',zip:'7387'},{name:'Onnezies',zip:'7387'},{name:'Montignies-sur-Roc',zip:'7387'},{name:'Marchipont',zip:'7387'},{name:'Honnelles',zip:'7387'},{name:'Fayt-le-Franc',zip:'7387'},{name:'Erquennes',zip:'7387'},{name:'Autreppe',zip:'7387'},{name:'Athis',zip:'7387'},{name:'Angreau',zip:'7387'},{name:'Angre',zip:'7387'},{name:'Audregnies',zip:'7382'},{name:'Quiévrain',zip:'7380'},{name:'Baisieux',zip:'7380'},{name:'Wihéries',zip:'7370'},{name:'Elouges',zip:'7370'},{name:'Dour',zip:'7370'},{name:'Blaugies',zip:'7370'},{name:'Thulin',zip:'7350'},{name:'Montroeul-sur-Haine',zip:'7350'},{name:'Hensies',zip:'7350'},{name:'Hainin',zip:'7350'},{name:'Wasmes',zip:'7340'},{name:'Warquignies',zip:'7340'},{name:'Paturages',zip:'7340'},{name:'Colfontaine',zip:'7340'},{name:'Villerot',zip:'7334'},{name:'Hautrage',zip:'7334'},{name:'Tertre',zip:'7333'},{name:'Sirault',zip:'7332'},{name:'Neufmaison',zip:'7332'},{name:'Baudour',zip:'7331'},{name:'Saint-Ghislain',zip:'7330'},{name:'Ville-Pommeroeul',zip:'7322'},{name:'Pommeroeul',zip:'7322'},{name:'Harchies',zip:'7321'},{name:'Blaton',zip:'7321'},{name:'Bernissart',zip:'7320'},{name:'Hornu',zip:'7301'},{name:'Boussu',zip:'7300'},{name:'Ecaussinnes-Lalaing',zip:'7191'},{name:'Marche-lez-Ecaussinnes',zip:'7190'},{name:'Ecaussinnes',zip:'7190'},{name:'Petit-Roeulx-lez-Nivelles',zip:'7181'},{name:'Feluy',zip:'7181'},{name:'Familleureux',zip:'7181'},{name:'Arquennes',zip:'7181'},{name:'Seneffe',zip:'7180'},{name:'Manage',zip:'7170'},{name:'La Hestre',zip:'7170'},{name:'Fayt-lez-Manage',zip:'7170'},{name:'Bellecourt',zip:'7170'},{name:'Piéton',zip:'7160'},{name:'Godarville',zip:'7160'},{name:'Chapelle-lez-Herlaimont',zip:'7160'},{name:'Mont-Sainte-Aldegonde',zip:'7141'},{name:'Carnières',zip:'7141'},{name:'Morlanwelz-Mariemont',zip:'7140'},{name:'Morlanwelz',zip:'7140'},{name:'Ressaix',zip:'7134'},{name:'Péronnes-lez-Binche',zip:'7134'},{name:'Leval-Trahegnies',zip:'7134'},{name:'Epinois',zip:'7134'},{name:'Buvrinnes',zip:'7133'},{name:'Waudrez',zip:'7131'},{name:'Bray',zip:'7130'},{name:'Binche',zip:'7130'},{name:'Battignies',zip:'7130'},{name:'Vellereille-le-Sec',zip:'7120'},{name:'Vellereille-les-Brayeux',zip:'7120'},{name:'Rouveroy Ht.',zip:'7120'},{name:'Peissant',zip:'7120'},{name:'Haulchin',zip:'7120'},{name:'Fauroeulx',zip:'7120'},{name:'Estinnes-au-Val',zip:'7120'},{name:'Estinnes-au-Mont',zip:'7120'},{name:'Estinnes',zip:'7120'},{name:'Croix-lez-Rouveroy',zip:'7120'},{name:'Strépy-Bracquegnies',zip:'7110'},{name:'Maurage',zip:'7110'},{name:'Houdeng-Goegnies',zip:'7110'},{name:'Houdeng-Aimeries',zip:'7110'},{name:'Boussoit',zip:'7110'},{name:'Trivières',zip:'7100'},{name:'Saint-Vaast',zip:'7100'},{name:'La Louvière',zip:'7100'},{name:'Haine-Saint-Pierre',zip:'7100'},{name:'Haine-Saint-Paul',zip:'7100'},{name:'Steenkerque Ht.',zip:'7090'},{name:'Ronquières',zip:'7090'},{name:'Petit-Roeulx-lez-Braine',zip:'7090'},{name:'Henripont',zip:'7090'},{name:'Hennuyères',zip:'7090'},{name:'Braine-le-Comte',zip:'7090'},{name:'Sars-la-Bruyère',zip:'7080'},{name:'Noirchain',zip:'7080'},{name:'La Bouverie',zip:'7080'},{name:'Frameries',zip:'7080'},{name:'Eugies Frameries',zip:'7080'},{name:'Ville-sur-Haine Le Roeulx',zip:'7070'},{name:'Thieu',zip:'7070'},{name:'Mignault',zip:'7070'},{name:'Le Roeulx',zip:'7070'},{name:'Gottignies',zip:'7070'},{name:'Neufvilles',zip:'7063'},{name:'Chaussée-Notre-Dame-Louvignies',zip:'7063'},{name:'Naast',zip:'7062'},{name:'Thieusies',zip:'7061'},{name:'Casteau Soignies',zip:'7061'},{name:'Soignies',zip:'7060'},{name:'Horrues',zip:'7060'},{name:'Masnuy-Saint-Pierre',zip:'7050'},{name:'Masnuy-Saint-Jean Jurbise',zip:'7050'},{name:'Jurbise',zip:'7050'},{name:'Herchies',zip:'7050'},{name:'Erbisoeul',zip:'7050'},{name:'Erbaut',zip:'7050'},{name:'Havay',zip:'7041'},{name:'Givry',zip:'7041'},{name:'Quévy-le-Petit',zip:'7040'},{name:'Quévy-le-Grand',zip:'7040'},{name:'Quévy',zip:'7040'},{name:'Goegnies-Chaussée',zip:'7040'},{name:'Genly',zip:'7040'},{name:'Bougnies',zip:'7040'},{name:'Blaregnies',zip:'7040'},{name:'Aulnois',zip:'7040'},{name:'Asquillies',zip:'7040'},{name:'Saint-Denis Ht.',zip:'7034'},{name:'Obourg',zip:'7034'},{name:'Cuesmes',zip:'7033'},{name:'Spiennes',zip:'7032'},{name:'Villers-Saint-Ghislain',zip:'7031'},{name:'Saint-Symphorien',zip:'7030'},{name:'Ciply',zip:'7024'},{name:'Nouvelles',zip:'7022'},{name:'Mesvin',zip:'7022'},{name:'Hyon',zip:'7022'},{name:'Harveng',zip:'7022'},{name:'Harmignies',zip:'7022'},{name:'Havré',zip:'7021'},{name:'Nimy',zip:'7020'},{name:'Maisières',zip:'7020'},{name:'Jemappes',zip:'7012'},{name:'Flénu',zip:'7012'},{name:'Ghlin',zip:'7011'},{name:'Mons',zip:'7000'},{name:'Seloignes',zip:'6596'},{name:'Forges-Philippe',zip:'6596'},{name:'Beauwelz',zip:'6594'},{name:'Macquenoise',zip:'6593'},{name:'Monceau-Imbrechies',zip:'6592'},{name:'Macon',zip:'6591'},{name:'Momignies',zip:'6590'},{name:'Merbes-Sainte-Marie',zip:'6567'},{name:'Merbes-le-Château',zip:'6567'},{name:'Labuissière',zip:'6567'},{name:'Fontaine-Valmont',zip:'6567'},{name:'Solre-sur-Sambre',zip:'6560'},{name:'Montignies-Saint-Christophe',zip:'6560'},{name:'Hantes-Wihéries',zip:'6560'},{name:'Grand-Reng',zip:'6560'},{name:'Erquelinnes',zip:'6560'},{name:'Bienne-lez-Happart',zip:'6543'},{name:'Sars-la-Buissière',zip:'6542'},{name:'Mont-Sainte-Geneviève',zip:'6540'},{name:'Lobbes',zip:'6540'},{name:'Thuillies',zip:'6536'},{name:'Donstiennes',zip:'6536'},{name:'Gozée',zip:'6534'},{name:'Biercée',zip:'6533'},{name:'Ragnies',zip:'6532'},{name:'Biesme-sous-Thuin',zip:'6531'},{name:'Thuin',zip:'6530'},{name:'Leers-et-Fosteau',zip:'6530'},{name:'Strée Ht.',zip:'6511'},{name:'Thirimont',zip:'6500'},{name:'Solre-Saint-Géry',zip:'6500'},{name:'Renlies',zip:'6500'},{name:'Leval-Chaudeville',zip:'6500'},{name:'Leugnies',zip:'6500'},{name:'Beaumont',zip:'6500'},{name:'Barbençon',zip:'6500'},{name:'Sivry-Rance',zip:'6470'},{name:'Sivry',zip:'6470'},{name:'Sautin',zip:'6470'},{name:'Rance',zip:'6470'},{name:'Montbliart',zip:'6470'},{name:'Grandrieu',zip:'6470'},{name:'Rièzes',zip:'6464'},{name:'Forges',zip:'6464'},{name:'Bourlers',zip:'6464'},{name:'Baileux',zip:'6464'},{name:'Lompret',zip:'6463'},{name:'Vaulx-lez-Chimay',zip:'6462'},{name:'Virelles',zip:'6461'},{name:'Villers-la-Tour',zip:'6460'},{name:'Salles',zip:'6460'},{name:'Saint-Remy Ht.',zip:'6460'},{name:'Robechies',zip:'6460'},{name:'Chimay',zip:'6460'},{name:'Bailièvre',zip:'6460'},{name:'Erpion',zip:'6441'},{name:'Vergnies',zip:'6440'},{name:'Froidchapelle',zip:'6440'},{name:'Fourbechies',zip:'6440'},{name:'Boussu-lez-Walcourt',zip:'6440'},{name:'Villers-Poterie',zip:'6280'},{name:'Loverval',zip:'6280'},{name:'Joncret',zip:'6280'},{name:'Gougnies',zip:'6280'},{name:'Gerpinnes',zip:'6280'},{name:'Acoz',zip:'6280'},{name:'Roselies',zip:'6250'},{name:'Presles',zip:'6250'},{name:'Pont-de-Loup',zip:'6250'},{name:'Aiseau-Presles',zip:'6250'},{name:'Aiseau',zip:'6250'},{name:'Pironchamps',zip:'6240'},{name:'Farciennes',zip:'6240'},{name:'Luttre',zip:'6238'},{name:'Liberchies',zip:'6238'},{name:'Viesville',zip:'6230'},{name:'Thiméon',zip:'6230'},{name:'Pont-à-Celles',zip:'6230'},{name:'Obaix',zip:'6230'},{name:'Buzet',zip:'6230'},{name:'Wanfercée-Baulet',zip:'6224'},{name:'Wagnelée',zip:'6223'},{name:'Brye',zip:'6222'},{name:'Saint-Amand',zip:'6221'},{name:'Wangenies',zip:'6220'},{name:'Lambusart',zip:'6220'},{name:'Heppignies',zip:'6220'},{name:'Fleurus',zip:'6220'},{name:'Mellet',zip:'6211'},{name:'Wayaux',zip:'6210'},{name:'Villers-Perwin',zip:'6210'},{name:'Rèves',zip:'6210'},{name:'Les Bons Villers',zip:'6210'},{name:'Frasnes-lez-Gosselies',zip:'6210'},{name:'Châtelineau',zip:'6200'},{name:'Châtelet',zip:'6200'},{name:'Bouffioulx',zip:'6200'},{name:'Trazegnies',zip:'6183'},{name:'Souvret',zip:'6182'},{name:'Gouy-lez-Piéton',zip:'6181'},{name:'Courcelles',zip:'6180'},{name:'Anderlues',zip:'6150'},{name:'Leernes',zip:'6142'},{name:'Forchies-la-Marche',zip:'6141'},{name:'Nalinnes',zip:'6120'},{name:'Marbaix Ht.',zip:'6120'},{name:'Jamioulx',zip:'6120'},{name:'Ham-sur-Heure-Nalinnes',zip:'6120'},{name:'Ham-sur-Heure',zip:'6120'},{name:'Cour-sur-Heure',zip:'6120'},{name:'Landelies',zip:'6111'},{name:'Montigny-le-Tilleul',zip:'6110'},{name:'Montignies-sur-Sambre',zip:'6061'},{name:'Gilly',zip:'6060'},{name:'Roux',zip:'6044'},{name:'Ransart',zip:'6043'},{name:'Lodelinsart',zip:'6042'},{name:'Gosselies',zip:'6041'},{name:'Jumet',zip:'6040'},{name:'Mont-sur-Marchienne',zip:'6032'},{name:'Monceau-sur-Sambre',zip:'6031'},{name:'Marchienne-au-Pont',zip:'6030'},{name:'Goutroux',zip:'6030'},{name:'Dampremy',zip:'6020'},{name:'Couillet',zip:'6010'},{name:'Marcinelle',zip:'6001'},{name:'Charleroi',zip:'6000'},{name:'Zonnebeke',zip:'8980'},{name:'Passendale (Zonnebeke)',zip:'8980'},{name:'Geluveld (Zonnebeke)',zip:'8980'},{name:'Beselare (Zonnebeke)',zip:'8980'},{name:'Watou (Poperinge)',zip:'8978'},{name:'Roesbrugge-Haringe (Poperinge)',zip:'8972'},{name:'Proven (Poperinge)',zip:'8972'},{name:'Krombeke (Poperinge)',zip:'8972'},{name:'Reningelst (Poperinge)',zip:'8970'},{name:'Poperinge',zip:'8970'},{name:'Loker (Heuvelland)',zip:'8958'},{name:'Kemmel (Heuvelland)',zip:'8956'},{name:'Westouter (Heuvelland)',zip:'8954'},{name:'Wijtschate (Heuvelland)',zip:'8953'},{name:'Wulvergem (Heuvelland)',zip:'8952'},{name:'Dranouter (Heuvelland)',zip:'8951'},{name:'Nieuwkerke (Heuvelland)',zip:'8950'},{name:'Heuvelland',zip:'8950'},{name:'Wervik',zip:'8940'},{name:'Geluwe (Wervik)',zip:'8940'},{name:'Rekkem (Menen)',zip:'8930'},{name:'Menen',zip:'8930'},{name:'Lauwe (Menen)',zip:'8930'},{name:'Poelkapelle (Langemark-Poelkapelle)',zip:'8920'},{name:'Langemark-Poelkapelle',zip:'8920'},{name:'Langemark (Langemark-Poelkapelle)',zip:'8920'},{name:'Bikschote (Langemark-Poelkapelle)',zip:'8920'},{name:'Vlamertinge (Ieper)',zip:'8908'},{name:'Elverdinge (Ieper)',zip:'8906'},{name:'Zuidschote (Ieper)',zip:'8904'},{name:'Boezinge (Ieper)',zip:'8904'},{name:'Zillebeke (Ieper)',zip:'8902'},{name:'Voormezele (Ieper)',zip:'8902'},{name:'Hollebeke (Ieper)',zip:'8902'},{name:'Sint-Jan (Ieper)',zip:'8900'},{name:'Ieper',zip:'8900'},{name:'Dikkebus (Ieper)',zip:'8900'},{name:'Brielen (Ieper)',zip:'8900'},{name:'Moorslede',zip:'8890'},{name:'Dadizele (Moorslede)',zip:'8890'},{name:'Sint-Eloois-Winkel (Ledegem)',zip:'8880'},{name:'Rollegem-Kapelle (Ledegem)',zip:'8880'},{name:'Ledegem',zip:'8880'},{name:'Kachtem (Izegem)',zip:'8870'},{name:'Izegem',zip:'8870'},{name:'Emelgem (Izegem)',zip:'8870'},{name:'Lendelede',zip:'8860'},{name:'Koolskamp (Ardooie)',zip:'8851'},{name:'Ardooie',zip:'8850'},{name:'Westrozebeke (Staden)',zip:'8840'},{name:'Staden',zip:'8840'},{name:'Oostnieuwkerke (Staden)',zip:'8840'},{name:'Hooglede',zip:'8830'},{name:'Gits (Hooglede)',zip:'8830'},{name:'Torhout',zip:'8820'},{name:'Lichtervelde',zip:'8810'},{name:'Rumbeke (Roeselare)',zip:'8800'},{name:'Roeselare',zip:'8800'},{name:'Oekene (Roeselare)',zip:'8800'},{name:'Sint-Eloois-Vijve (Waregem)',zip:'8793'},{name:'Desselgem (Waregem)',zip:'8792'},{name:'Waregem',zip:'8790'},{name:'Oostrozebeke',zip:'8780'},{name:'Ingelmunster',zip:'8770'},{name:'Meulebeke',zip:'8760'},{name:'Ruiselede',zip:'8755'},{name:'Zwevezele (Wingene)',zip:'8750'},{name:'Wingene',zip:'8750'},{name:'Pittem',zip:'8740'},{name:'Egem (Pittem)',zip:'8740'},{name:'Oedelem (Beernem)',zip:'8730'},{name:'Beernem',zip:'8730'},{name:'Wakken (Dentergem)',zip:'8720'},{name:'Oeselgem (Dentergem)',zip:'8720'},{name:'Markegem (Dentergem)',zip:'8720'},{name:'Dentergem',zip:'8720'},{name:'Wielsbeke',zip:'8710'},{name:'Sint-Baafs-Vijve (Wielsbeke)',zip:'8710'},{name:'Ooigem (Wielsbeke)',zip:'8710'},{name:'Tielt',zip:'8700'},{name:'Schuiferskapelle (Tielt)',zip:'8700'},{name:'Kanegem (Tielt)',zip:'8700'},{name:'Aarsele (Tielt)',zip:'8700'},{name:'Stavele (Alveringem)',zip:'8691'},{name:'Leisele (Alveringem)',zip:'8691'},{name:'Izenberge (Alveringem)',zip:'8691'},{name:'Gijverinkhove (Alveringem)',zip:'8691'},{name:'Beveren-Aan-Den-Ijzer (Alveringem)',zip:'8691'},{name:'Sint-Rijkers (Alveringem)',zip:'8690'},{name:'Oeren (Alveringem)',zip:'8690'},{name:'Hoogstade (Alveringem)',zip:'8690'},{name:'Alveringem',zip:'8690'},{name:'Zande (Koekelare)',zip:'8680'},{name:'Koekelare',zip:'8680'},{name:'Bovekerke (Koekelare)',zip:'8680'},{name:'Wulpen (Koksijde)',zip:'8670'},{name:'Oostduinkerke (Koksijde)',zip:'8670'},{name:'Koksijde',zip:'8670'},{name:'Adinkerke (De Panne)',zip:'8660'},{name:'Merkem (Houthulst)',zip:'8650'},{name:'Klerken (Houthulst)',zip:'8650'},{name:'Houthulst',zip:'8650'},{name:'Reninge (Lo-Reninge)',zip:'8647'},{name:'Pollinkhove (Lo-Reninge)',zip:'8647'},{name:'Noordschote (Lo-Reninge)',zip:'8647'},{name:'Lo-Reninge',zip:'8647'},{name:'Lo (Lo-Reninge)',zip:'8647'},{name:'Woesten (Vleteren)',zip:'8640'},{name:'Westvleteren (Vleteren)',zip:'8640'},{name:'Vleteren',zip:'8640'},{name:'Oostvleteren (Vleteren)',zip:'8640'},{name:'Zoutenaaie (Veurne)',zip:'8630'},{name:'Wulveringem (Veurne)',zip:'8630'},{name:'Vinkem (Veurne)',zip:'8630'},{name:'Veurne',zip:'8630'},{name:'Eggewaartskapelle (Veurne)',zip:'8630'},{name:'Bulskamp (Veurne)',zip:'8630'},{name:'Booitshoeke (Veurne)',zip:'8630'},{name:'Beauvoorde',zip:'8630'},{name:'Avekapelle (Veurne)',zip:'8630'},{name:'Nieuwpoort',zip:'8620'},{name:'Zarren (Kortemark)',zip:'8610'},{name:'Werken (Kortemark)',zip:'8610'},{name:'Kortemark',zip:'8610'},{name:'Handzame (Kortemark)',zip:'8610'},{name:'Woumen (Diksmuide)',zip:'8600'},{name:'Vladslo (Diksmuide)',zip:'8600'},{name:'Stuivekenskerke (Diksmuide)',zip:'8600'},{name:'Sint-Jacobs-Kapelle (Diksmuide)',zip:'8600'},{name:'Pervijze (Diksmuide)',zip:'8600'},{name:'Oudekapelle (Diksmuide)',zip:'8600'},{name:'Nieuwkapelle (Diksmuide)',zip:'8600'},{name:'Leke (Diksmuide)',zip:'8600'},{name:'Lampernisse (Diksmuide)',zip:'8600'},{name:'Keiem (Diksmuide)',zip:'8600'},{name:'Kaaskerke (Diksmuide)',zip:'8600'},{name:'Esen (Diksmuide)',zip:'8600'},{name:'Driekapellen (Diksmuide)',zip:'8600'},{name:'Diksmuide',zip:'8600'},{name:'Beerst (Diksmuide)',zip:'8600'},{name:'Bossuit (Avelgem)',zip:'8583'},{name:'Outrijve (Avelgem)',zip:'8582'},{name:'Waarmaarde (Avelgem)',zip:'8581'},{name:'Kerkhove (Avelgem)',zip:'8581'},{name:'Avelgem',zip:'8580'},{name:'Tiegem (Anzegem)',zip:'8573'},{name:'Kaster (Anzegem)',zip:'8572'},{name:'Vichte (Anzegem)',zip:'8570'},{name:'Ingooigem (Anzegem)',zip:'8570'},{name:'Gijzelbrechtegem (Anzegem)',zip:'8570'},{name:'Anzegem',zip:'8570'},{name:'Wevelgem',zip:'8560'},{name:'Moorsele (Wevelgem)',zip:'8560'},{name:'Gullegem (Wevelgem)',zip:'8560'},{name:'Sint-Denijs (Zwevegem)',zip:'8554'},{name:'Otegem (Zwevegem)',zip:'8553'},{name:'Moen (Zwevegem)',zip:'8552'},{name:'Heestert (Zwevegem)',zip:'8551'},{name:'Zwevegem',zip:'8550'},{name:'Deerlijk',zip:'8540'},{name:'Hulste (Harelbeke)',zip:'8531'},{name:'Bavikhove (Harelbeke)',zip:'8531'},{name:'Harelbeke',zip:'8530'},{name:'Kuurne',zip:'8520'},{name:'Aalbeke (Kortrijk)',zip:'8511'},{name:'Rollegem (Kortrijk)',zip:'8510'},{name:'Marke (Kortrijk)',zip:'8510'},{name:'Kooigem (Kortrijk)',zip:'8510'},{name:'Bellegem (Kortrijk)',zip:'8510'},{name:'Heule (Kortrijk)',zip:'8501'},{name:'Bissegem (Kortrijk)',zip:'8501'},{name:'Kortrijk',zip:'8500'},{name:'Zerkegem (Jabbeke)',zip:'8490'},{name:'Varsenare (Jabbeke)',zip:'8490'},{name:'Stalhille (Jabbeke)',zip:'8490'},{name:'Snellegem (Jabbeke)',zip:'8490'},{name:'Jabbeke',zip:'8490'},{name:'Ichtegem',zip:'8480'},{name:'Eernegem (Ichtegem)',zip:'8480'},{name:'Bekegem (Ichtegem)',zip:'8480'},{name:'Zevekote (Gistel)',zip:'8470'},{name:'Snaaskerke (Gistel)',zip:'8470'},{name:'Moere (Gistel)',zip:'8470'},{name:'Gistel',zip:'8470'},{name:'Westkerke (Oudenburg)',zip:'8460'},{name:'Roksem (Oudenburg)',zip:'8460'},{name:'Oudenburg',zip:'8460'},{name:'Ettelgem (Oudenburg)',zip:'8460'},{name:'Bredene',zip:'8450'},{name:'Westende (Middelkerke)',zip:'8434'},{name:'Lombardsijde (Middelkerke)',zip:'8434'},{name:'Spermalie',zip:'8433'},{name:'Slijpe (Middelkerke)',zip:'8433'},{name:'Schore (Middelkerke)',zip:'8433'},{name:'Mannekensvere (Middelkerke)',zip:'8433'},{name:'Leffinge (Middelkerke)',zip:'8432'},{name:'Wilskerke (Middelkerke)',zip:'8431'},{name:'Middelkerke',zip:'8430'},{name:'Vlissegem (De Haan)',zip:'8421'},{name:'Wenduine (De Haan)',zip:'8420'},{name:'Klemskerke (De Haan)',zip:'8420'},{name:'Stene (Oostende)',zip:'8400'},{name:'Oostende',zip:'8400'},{name:'Zuienkerke',zip:'8377'},{name:'Nieuwmunster (Zuienkerke)',zip:'8377'},{name:'Meetkerke (Zuienkerke)',zip:'8377'},{name:'Houtave (Zuienkerke)',zip:'8377'},{name:'Uitkerke (Blankenberge)',zip:'8370'},{name:'Blankenberge',zip:'8370'},{name:'Sijsele (Damme)',zip:'8340'},{name:'Moerkerke (Damme)',zip:'8340'},{name:'Lapscheure (Damme)',zip:'8340'},{name:'Hoeke (Damme)',zip:'8340'},{name:'Damme',zip:'8340'},{name:'Heist-Aan-Zee (Knokke-Heist)',zip:'8301'},{name:'Westkapelle (Knokke-Heist)',zip:'8300'},{name:'Knokke-Heist',zip:'8300'},{name:'Knokke (Knokke-Heist)',zip:'8300'},{name:'Aartrijke (Zedelgem)',zip:'8211'},{name:'Zedelgem',zip:'8210'},{name:'Veldegem (Zedelgem)',zip:'8210'},{name:'Loppem (Zedelgem)',zip:'8210'},{name:'Waardamme (Oostkamp)',zip:'8020'},{name:'Ruddervoorde (Oostkamp)',zip:'8020'},{name:'Oostkamp',zip:'8020'},{name:'Hertsberge (Oostkamp)',zip:'8020'},{name:'Zeebrugge (Brugge)',zip:'8380'},{name:'Lissewege (Brugge)',zip:'8380'},{name:'Dudzele (Brugge)',zip:'8380'},{name:'Sint-Kruis (Brugge)',zip:'8310'},{name:'Assebroek (Brugge)',zip:'8310'},{name:'Sint-Michiels (Brugge)',zip:'8200'},{name:'Sint-Andries (Brugge)',zip:'8200'},{name:'Koolkerke (Brugge)',zip:'8000'},{name:'Brugge',zip:'8000'},{name:'Waanrode (Kortenaken)',zip:'3473'},{name:'Kersbeek-Miskom (Kortenaken)',zip:'3472'},{name:'Hoeleden (Kortenaken)',zip:'3471'},{name:'Ransberg (Kortenaken)',zip:'3470'},{name:'Kortenaken',zip:'3470'},{name:'Molenbeek-Wersbeek (Bekkevoort)',zip:'3461'},{name:'Bekkevoort',zip:'3460'},{name:'Assent (Bekkevoort)',zip:'3460'},{name:'Rummen (Geetbets)',zip:'3454'},{name:'Grazen (Geetbets)',zip:'3450'},{name:'Geetbets',zip:'3450'},{name:'Zoutleeuw',zip:'3440'},{name:'Helen-Bos (Zoutleeuw)',zip:'3440'},{name:'Halle-Booienhoven (Zoutleeuw)',zip:'3440'},{name:'Dormaal (Zoutleeuw)',zip:'3440'},{name:'Budingen (Zoutleeuw)',zip:'3440'},{name:'Neerlanden (Landen)',zip:'3404'},{name:'Attenhoven (Landen)',zip:'3404'},{name:'Wezeren (Landen)',zip:'3401'},{name:'Walshoutem (Landen)',zip:'3401'},{name:'Walsbets (Landen)',zip:'3401'},{name:'Waasmont (Landen)',zip:'3401'},{name:'Wange (Landen)',zip:'3400'},{name:'Rumsdorp (Landen)',zip:'3400'},{name:'Overwinden (Landen)',zip:'3400'},{name:'Neerwinden (Landen)',zip:'3400'},{name:'Landen',zip:'3400'},{name:'Laar (Landen)',zip:'3400'},{name:'Ezemaal (Landen)',zip:'3400'},{name:'Eliksem (Landen)',zip:'3400'},{name:'Meensel-Kiezegem (Tielt-Winge)',zip:'3391'},{name:'Tielt-Winge',zip:'3390'},{name:'Sint-Joris-Winge (Tielt-Winge)',zip:'3390'},{name:'Houwaart (Tielt-Winge)',zip:'3390'},{name:'Attenrode (Glabbeek)',zip:'3384'},{name:'Bunsbeek (Glabbeek)',zip:'3380'},{name:'Willebringen (Boutersem)',zip:'3370'},{name:'Vertrijk (Boutersem)',zip:'3370'},{name:'Roosbeek (Boutersem)',zip:'3370'},{name:'Neervelp (Boutersem)',zip:'3370'},{name:'Kerkom (Boutersem)',zip:'3370'},{name:'Boutersem',zip:'3370'},{name:'Opvelp (Bierbeek)',zip:'3360'},{name:'Lovenjoel (Bierbeek)',zip:'3360'},{name:'Korbeek-Lo (Bierbeek)',zip:'3360'},{name:'Bierbeek',zip:'3360'},{name:'Wommersom (Linter)',zip:'3350'},{name:'Overhespen (Linter)',zip:'3350'},{name:'Orsmaal-Gussenhoven (Linter)',zip:'3350'},{name:'Neerlinter (Linter)',zip:'3350'},{name:'Neerhespen (Linter)',zip:'3350'},{name:'Melkwezer (Linter)',zip:'3350'},{name:'Linter',zip:'3350'},{name:'Drieslinter (Linter)',zip:'3350'},{name:'Outgaarden (Hoegaarden)',zip:'3321'},{name:'Hoegaarden',zip:'3320'},{name:'Vissenaken (Tienen)',zip:'3300'},{name:'Tienen',zip:'3300'},{name:'Sint-Margriete-Houtem Tienen',zip:'3300'},{name:'Oplinter (Tienen)',zip:'3300'},{name:'Oorbeek (Tienen)',zip:'3300'},{name:'Kumtich (Tienen)',zip:'3300'},{name:'Hakendover (Tienen)',zip:'3300'},{name:'Goetsenhoven (Tienen)',zip:'3300'},{name:'Bost (Tienen)',zip:'3300'},{name:'Molenstede (Diest)',zip:'3294'},{name:'Kaggevinne (Diest)',zip:'3293'},{name:'Webbekom (Diest)',zip:'3290'},{name:'Schaffen (Diest)',zip:'3290'},{name:'Diest',zip:'3290'},{name:'Testelt (Scherpenheuvel-Zichem)',zip:'3272'},{name:'Messelbroek (Scherpenheuvel-Zichem)',zip:'3272'},{name:'Zichem (Scherpenheuvel-Zichem)',zip:'3271'},{name:'Averbode (Scherpenheuvel-Zichem)',zip:'3271'},{name:'Scherpenheuvel (Scherpenheuvel-Zichem)',zip:'3270'},{name:'Nieuwrode (Holsbeek)',zip:'3221'},{name:'Sint-Pieters-Rode (Holsbeek)',zip:'3220'},{name:'Holsbeek',zip:'3220'},{name:'Pellenberg (Lubbeek)',zip:'3212'},{name:'Binkom (Lubbeek)',zip:'3211'},{name:'Lubbeek',zip:'3210'},{name:'Linden (Lubbeek)',zip:'3210'},{name:'Rillaar (Aarschot)',zip:'3202'},{name:'Langdorp (Aarschot)',zip:'3201'},{name:'Gelrode (Aarschot)',zip:'3200'},{name:'Aarschot',zip:'3200'},{name:'Hever (Boortmeerbeek)',zip:'3191'},{name:'Boortmeerbeek',zip:'3190'},{name:'Wespelaar (Haacht)',zip:'3150'},{name:'Tildonk (Haacht)',zip:'3150'},{name:'Haacht',zip:'3150'},{name:'Keerbergen',zip:'3140'},{name:'Betekom (Begijnendijk)',zip:'3130'},{name:'Begijnendijk',zip:'3130'},{name:'Baal (Tremelo)',zip:'3128'},{name:'Tremelo',zip:'3120'},{name:'Werchter (Rotselaar)',zip:'3118'},{name:'Wezemaal (Rotselaar)',zip:'3111'},{name:'Rotselaar',zip:'3110'},{name:'Overijse',zip:'3090'},{name:'Vossem (Tervuren)',zip:'3080'},{name:'Tervuren',zip:'3080'},{name:'Duisburg (Tervuren)',zip:'3080'},{name:'Meerbeek (Kortenberg)',zip:'3078'},{name:'Everberg (Kortenberg)',zip:'3078'},{name:'Erps-Kwerps (Kortenberg)',zip:'3071'},{name:'Kortenberg',zip:'3070'},{name:'Leefdaal (Bertem)',zip:'3061'},{name:'Korbeek-Dijle (Bertem)',zip:'3060'},{name:'Bertem',zip:'3060'},{name:'Vaalbeek (Oud-Heverlee)',zip:'3054'},{name:'Haasrode (Oud-Heverlee)',zip:'3053'},{name:'Blanden (Oud-Heverlee)',zip:'3052'},{name:'Sint-Joris-Weert (Oud-Heverlee)',zip:'3051'},{name:'Oud-Heverlee',zip:'3050'},{name:'Sint-Agatha-Rode (Huldenberg)',zip:'3040'},{name:'Ottenburg (Huldenberg)',zip:'3040'},{name:'Neerijse (Huldenberg)',zip:'3040'},{name:'Loonbeek (Huldenberg)',zip:'3040'},{name:'Huldenberg',zip:'3040'},{name:'Winksele (Herent)',zip:'3020'},{name:'Veltem-Beisem (Herent)',zip:'3020'},{name:'Herent',zip:'3020'},{name:'Wilsele (Leuven)',zip:'3012'},{name:'Kessel-Lo (Leuven)',zip:'3010'},{name:'Heverlee (Leuven)',zip:'3001'},{name:'Leuven',zip:'3000'},{name:'Weerde (Zemst)',zip:'1982'},{name:'Elewijt (Zemst)',zip:'1982'},{name:'Zemst',zip:'1980'},{name:'Eppegem (Zemst)',zip:'1980'},{name:'Wezembeek-Oppem',zip:'1970'},{name:'Kraainem',zip:'1950'},{name:'Sterrebeek (Zaventem)',zip:'1933'},{name:'Sint-Stevens-Woluwe (Zaventem)',zip:'1932'},{name:'Zaventem',zip:'1930'},{name:'Nossegem (Zaventem)',zip:'1930'},{name:'Nederokkerzeel (Kampenhout)',zip:'1910'},{name:'Kampenhout',zip:'1910'},{name:'Buken (Kampenhout)',zip:'1910'},{name:'Ramsdonk (Kapelle-Op-Den-Bos)',zip:'1880'},{name:'Nieuwenrode (Kapelle-Op-Den-Bos)',zip:'1880'},{name:'Kapelle-op-den-Bos',zip:'1880'},{name:'Wolvertem (Meise)',zip:'1861'},{name:'Meise',zip:'1860'},{name:'Strombeek-Bever (Grimbergen)',zip:'1853'},{name:'Beigem (Grimbergen)',zip:'1852'},{name:'Humbeek (Grimbergen)',zip:'1851'},{name:'Grimbergen',zip:'1850'},{name:'Steenhuffel (Londerzeel)',zip:'1840'},{name:'Malderen (Londerzeel)',zip:'1840'},{name:'Londerzeel',zip:'1840'},{name:'Diegem (Machelen)',zip:'1831'},{name:'Steenokkerzeel',zip:'1820'},{name:'Perk (Steenokkerzeel)',zip:'1820'},{name:'Melsbroek (Steenokkerzeel)',zip:'1820'},{name:'Vilvoorde',zip:'1800'},{name:'Peutie (Vilvoorde)',zip:'1800'},{name:'Teralfene (Affligem)',zip:'1790'},{name:'Hekelgem (Affligem)',zip:'1790'},{name:'Essene (Affligem)',zip:'1790'},{name:'Affligem',zip:'1790'},{name:'Merchtem',zip:'1785'},{name:'Brussegem (Merchtem)',zip:'1785'},{name:'Wemmel',zip:'1780'},{name:'Liedekerke',zip:'1770'},{name:'Borchtlombeek (Roosdaal)',zip:'1761'},{name:'Strijtem (Roosdaal)',zip:'1760'},{name:'Roosdaal',zip:'1760'},{name:'Pamel (Roosdaal)',zip:'1760'},{name:'Onze-Lieve-Vrouw-Lombeek (Roosdaal)',zip:'1760'},{name:'Oetingen (Gooik)',zip:'1755'},{name:'Leerbeek (Gooik)',zip:'1755'},{name:'Kester (Gooik)',zip:'1755'},{name:'Gooik',zip:'1755'},{name:'Sint-Martens-Lennik (Lennik)',zip:'1750'},{name:'Sint-Kwintens-Lennik (Lennik)',zip:'1750'},{name:'Lennik',zip:'1750'},{name:'Gaasbeek (Lennik)',zip:'1750'},{name:'Opwijk',zip:'1745'},{name:'Mazenzele (Opwijk)',zip:'1745'},{name:'Sint-Katherina-Lombeek (Ternat)',zip:'1742'},{name:'Wambeek (Ternat)',zip:'1741'},{name:'Ternat',zip:'1740'},{name:'Zellik (Asse)',zip:'1731'},{name:'Relegem (Asse)',zip:'1731'},{name:'Mollem (Asse)',zip:'1730'},{name:'Kobbegem (Asse)',zip:'1730'},{name:'Bekkerzeel (Asse)',zip:'1730'},{name:'Asse',zip:'1730'},{name:'Schepdaal (Dilbeek)',zip:'1703'},{name:'Groot-Bijgaarden (Dilbeek)',zip:'1702'},{name:'Itterbeek (Dilbeek)',zip:'1701'},{name:'Sint-Ulriks-Kapelle (Dilbeek)',zip:'1700'},{name:'Sint-Martens-Bodegem (Dilbeek)',zip:'1700'},{name:'Dilbeek',zip:'1700'},{name:'Bellingen (Pepingen)',zip:'1674'},{name:'Beert (Pepingen)',zip:'1673'},{name:'Elingen (Pepingen)',zip:'1671'},{name:'Pepingen',zip:'1670'},{name:'Heikruis (Pepingen)',zip:'1670'},{name:'Bogaarden (Pepingen)',zip:'1670'},{name:'Huizingen (Beersel)',zip:'1654'},{name:'Dworp (Beersel)',zip:'1653'},{name:'Alsemberg (Beersel)',zip:'1652'},{name:'Lot (Beersel)',zip:'1651'},{name:'Beersel',zip:'1650'},{name:'Linkebeek',zip:'1630'},{name:'Drogenbos',zip:'1620'},{name:'Vlezenbeek (Sint-Pieters-Leeuw)',zip:'1602'},{name:'Sint-Pieters-Leeuw',zip:'1600'},{name:'Sint-Laureins-Berchem (Sint-Pieters-Leeuw)',zip:'1600'},{name:'Oudenaken (Sint-Pieters-Leeuw)',zip:'1600'},{name:'Vollezele (Galmaarden)',zip:'1570'},{name:'Tollembeek (Galmaarden)',zip:'1570'},{name:'Galmaarden',zip:'1570'},{name:'Hoeilaart',zip:'1560'},{name:'Herne',zip:'1540'},{name:'Herfelingen (Herne)',zip:'1540'},{name:'Lembeek (Halle)',zip:'1502'},{name:'Buizingen (Halle)',zip:'1501'},{name:'Halle',zip:'1500'},{name:'Middelburg (Maldegem)',zip:'9992'},{name:'Adegem (Maldegem)',zip:'9991'},{name:'Maldegem',zip:'9990'},{name:'Watervliet (Sint-Laureins)',zip:'9988'},{name:'Waterland-Oudeman (Sint-Laureins)',zip:'9988'},{name:'Sint-Jan-In-Eremo (Sint-Laureins)',zip:'9982'},{name:'Sint-Margriete (Sint-Laureins)',zip:'9981'},{name:'Sint-Laureins',zip:'9980'},{name:'Lembeke (Kaprijke)',zip:'9971'},{name:'Kaprijke',zip:'9970'},{name:'Oosteeklo (Assenede)',zip:'9968'},{name:'Bassevelde (Assenede)',zip:'9968'},{name:'Boekhoute (Assenede)',zip:'9961'},{name:'Assenede',zip:'9960'},{name:'Waarschoot',zip:'9950'},{name:'Sleidinge (Evergem)',zip:'9940'},{name:'Kluizen (Evergem)',zip:'9940'},{name:'Evergem',zip:'9940'},{name:'Ertvelde (Evergem)',zip:'9940'},{name:'Ronsele (Zomergem)',zip:'9932'},{name:'Oostwinkel (Zomergem)',zip:'9931'},{name:'Zomergem',zip:'9930'},{name:'Vinderhoute (Lovendegem)',zip:'9921'},{name:'Lovendegem',zip:'9920'},{name:'Ursel (Knesselare)',zip:'9910'},{name:'Knesselare',zip:'9910'},{name:'Eeklo',zip:'9900'},{name:'Vurste (Gavere)',zip:'9890'},{name:'Semmerzake (Gavere)',zip:'9890'},{name:'Gavere',zip:'9890'},{name:'Dikkelvenne (Gavere)',zip:'9890'},{name:'Baaigem (Gavere)',zip:'9890'},{name:'Asper (Gavere)',zip:'9890'},{name:'Bellem (Aalter)',zip:'9881'},{name:'Poeke (Aalter)',zip:'9880'},{name:'Lotenhulle (Aalter)',zip:'9880'},{name:'Aalter',zip:'9880'},{name:'Zulte',zip:'9870'},{name:'Olsene (Zulte)',zip:'9870'},{name:'Scheldewindeke (Oosterzele)',zip:'9860'},{name:'Oosterzele',zip:'9860'},{name:'Moortsele (Oosterzele)',zip:'9860'},{name:'Landskouter (Oosterzele)',zip:'9860'},{name:'Gijzenzele (Oosterzele)',zip:'9860'},{name:'Balegem (Oosterzele)',zip:'9860'},{name:'Vosselare (Nevele)',zip:'9850'},{name:'Poesele (Nevele)',zip:'9850'},{name:'Nevele',zip:'9850'},{name:'Merendree (Nevele)',zip:'9850'},{name:'Landegem (Nevele)',zip:'9850'},{name:'Hansbeke (Nevele)',zip:'9850'},{name:'Zevergem (De Pinte)',zip:'9840'},{name:'Deurle (Sint-Martens-Latem)',zip:'9831'},{name:'Sint-Martens-Latem',zip:'9830'},{name:'Schelderode (Merelbeke)',zip:'9820'},{name:'Munte (Merelbeke)',zip:'9820'},{name:'Merelbeke',zip:'9820'},{name:'Melsen (Merelbeke)',zip:'9820'},{name:'Lemberge (Merelbeke)',zip:'9820'},{name:'Bottelare (Merelbeke)',zip:'9820'},{name:'Nazareth',zip:'9810'},{name:'Eke (Nazareth)',zip:'9810'},{name:'Zeveren (Deinze)',zip:'9800'},{name:'Wontergem (Deinze)',zip:'9800'},{name:'Vinkt (Deinze)',zip:'9800'},{name:'Sint-Martens-Leerne (Deinze)',zip:'9800'},{name:'Petegem-Aan-De-Leie (Deinze)',zip:'9800'},{name:'Meigem (Deinze)',zip:'9800'},{name:'Grammene (Deinze)',zip:'9800'},{name:'Gottem (Deinze)',zip:'9800'},{name:'Deinze',zip:'9800'},{name:'Bachte-Maria-Leerne (Deinze)',zip:'9800'},{name:'Astene (Deinze)',zip:'9800'},{name:'Wortegem-Petegem',zip:'9790'},{name:'Wortegem (Wortegem-Petegem)',zip:'9790'},{name:'Petegem-Aan-De-Schelde (Wortegem-Petegem)',zip:'9790'},{name:'Moregem (Wortegem-Petegem)',zip:'9790'},{name:'Elsegem (Wortegem-Petegem)',zip:'9790'},{name:'Wannegem-Lede (Kruishoutem)',zip:'9772'},{name:'Nokere (Kruishoutem)',zip:'9771'},{name:'Kruishoutem',zip:'9770'},{name:'Zingem',zip:'9750'},{name:'Ouwegem (Zingem)',zip:'9750'},{name:'Huise (Zingem)',zip:'9750'},{name:'Welden (Oudenaarde)',zip:'9700'},{name:'Volkegem (Oudenaarde)',zip:'9700'},{name:'Oudenaarde',zip:'9700'},{name:'Nederename (Oudenaarde)',zip:'9700'},{name:'Mullem (Oudenaarde)',zip:'9700'},{name:'Melden (Oudenaarde)',zip:'9700'},{name:'Mater (Oudenaarde)',zip:'9700'},{name:'Leupegem (Oudenaarde)',zip:'9700'},{name:'Heurne (Oudenaarde)',zip:'9700'},{name:'Ename (Oudenaarde)',zip:'9700'},{name:'Eine (Oudenaarde)',zip:'9700'},{name:'Edelare (Oudenaarde)',zip:'9700'},{name:'Bevere (Oudenaarde)',zip:'9700'},{name:'Zulzeke (Kluisbergen)',zip:'9690'},{name:'Ruien (Kluisbergen)',zip:'9690'},{name:'Kluisbergen',zip:'9690'},{name:'Schorisse (Maarkedal)',zip:'9688'},{name:'Nukerke (Maarkedal)',zip:'9681'},{name:'Maarke-Kerkem (Maarkedal)',zip:'9680'},{name:'Maarkedal',zip:'9680'},{name:'Etikhove (Maarkedal)',zip:'9680'},{name:'Sint-Maria-Horebeke (Horebeke)',zip:'9667'},{name:'Sint-Kornelis-Horebeke (Horebeke)',zip:'9667'},{name:'Horebeke',zip:'9667'},{name:'Parike (Brakel)',zip:'9661'},{name:'Zegelsem (Brakel)',zip:'9660'},{name:'Sint-Maria-Oudenhove Brakel',zip:'9660'},{name:'Opbrakel (Brakel)',zip:'9660'},{name:'Nederbrakel (Brakel)',zip:'9660'},{name:'Michelbeke (Brakel)',zip:'9660'},{name:'Everbeek (Brakel)',zip:'9660'},{name:'Elst (Brakel)',zip:'9660'},{name:'Brakel',zip:'9660'},{name:'Nederzwalm-Hermelgem (Zwalm)',zip:'9636'},{name:'Zwalm',zip:'9630'},{name:'Sint-Maria-Latem (Zwalm)',zip:'9630'},{name:'Sint-Denijs-Boekel (Zwalm)',zip:'9630'},{name:'Sint-Blasius-Boekel (Zwalm)',zip:'9630'},{name:'Rozebeke (Zwalm)',zip:'9630'},{name:'Roborst (Zwalm)',zip:'9630'},{name:'Paulatem (Zwalm)',zip:'9630'},{name:'Munkzwalm (Zwalm)',zip:'9630'},{name:'Meilegem (Zwalm)',zip:'9630'},{name:'Hundelgem (Zwalm)',zip:'9630'},{name:'Dikkele (Zwalm)',zip:'9630'},{name:'Beerlegem (Zwalm)',zip:'9630'},{name:'Zottegem',zip:'9620'},{name:'Velzeke-Ruddershove (Zottegem)',zip:'9620'},{name:'Strijpen (Zottegem)',zip:'9620'},{name:'Sint-Maria-Oudenhove Zottegem',zip:'9620'},{name:'Sint-Goriks-Oudenhove (Zottegem)',zip:'9620'},{name:'Leeuwergem (Zottegem)',zip:'9620'},{name:'Grotenberge (Zottegem)',zip:'9620'},{name:'Godveerdegem (Zottegem)',zip:'9620'},{name:'Erwetegem (Zottegem)',zip:'9620'},{name:'Elene (Zottegem)',zip:'9620'},{name:'Kwaremont (Kluisbergen)',zip:'9690'},{name:'Sint-Martens-Lierde (Lierde)',zip:'9572'},{name:'Hemelveerdegem (Lierde)',zip:'9571'},{name:'Sint-Maria-Lierde (Lierde)',zip:'9570'},{name:'Lierde',zip:'9570'},{name:'Deftinge (Lierde)',zip:'9570'},{name:'Borsbeke (Herzele)',zip:'9552'},{name:'Ressegem (Herzele)',zip:'9551'},{name:'Woubrechtegem (Herzele)',zip:'9550'},{name:'Steenhuize-Wijnhuize (Herzele)',zip:'9550'},{name:'Sint-Lievens-Esse (Herzele)',zip:'9550'},{name:'Sint-Antelinks (Herzele)',zip:'9550'},{name:'Hillegem (Herzele)',zip:'9550'},{name:'Herzele',zip:'9550'},{name:'Letterhoutem (Sint-Lievens-Houtem)',zip:'9521'},{name:'Zonnegem (Sint-Lievens-Houtem)',zip:'9520'},{name:'Vlierzele (Sint-Lievens-Houtem)',zip:'9520'},{name:'Sint-Lievens-Houtem',zip:'9520'},{name:'Bavegem (Sint-Lievens-Houtem)',zip:'9520'},{name:'Zandbergen (Geraardsbergen)',zip:'9506'},{name:'Waarbeke (Geraardsbergen)',zip:'9506'},{name:'Smeerebbe-Vloerzegem (Geraardsbergen)',zip:'9506'},{name:'Schendelbeke (Geraardsbergen)',zip:'9506'},{name:'Nieuwenhove (Geraardsbergen)',zip:'9506'},{name:'Idegem (Geraardsbergen)',zip:'9506'},{name:'Grimminge (Geraardsbergen)',zip:'9506'},{name:'Zarlardinge (Geraardsbergen)',zip:'9500'},{name:'Viane (Geraardsbergen)',zip:'9500'},{name:'Overboelare (Geraardsbergen)',zip:'9500'},{name:'Ophasselt (Geraardsbergen)',zip:'9500'},{name:'Onkerzele (Geraardsbergen)',zip:'9500'},{name:'Nederboelare (Geraardsbergen)',zip:'9500'},{name:'Moerbeke (Geraardsbergen)',zip:'9500'},{name:'Goeferdinge (Geraardsbergen)',zip:'9500'},{name:'Geraardsbergen',zip:'9500'},{name:'Welle (Denderleeuw)',zip:'9473'},{name:'Iddergem (Denderleeuw)',zip:'9472'},{name:'Denderleeuw',zip:'9470'},{name:'Kerksken (Haaltert)',zip:'9451'},{name:'Heldergem (Haaltert)',zip:'9450'},{name:'Haaltert',zip:'9450'},{name:'Denderhoutem (Haaltert)',zip:'9450'},{name:'Vlekkem (Erpe-Mere)',zip:'9420'},{name:'Ottergem (Erpe-Mere)',zip:'9420'},{name:'Mere (Erpe-Mere)',zip:'9420'},{name:'Erpe-Mere',zip:'9420'},{name:'Erpe (Erpe-Mere)',zip:'9420'},{name:'Erondegem (Erpe-Mere)',zip:'9420'},{name:'Burst (Erpe-Mere)',zip:'9420'},{name:'Bambrugge (Erpe-Mere)',zip:'9420'},{name:'Aaigem (Erpe-Mere)',zip:'9420'},{name:'Outer (Ninove)',zip:'9406'},{name:'Aspelare (Ninove)',zip:'9404'},{name:'Neigem (Ninove)',zip:'9403'},{name:'Meerbeke (Ninove)',zip:'9402'},{name:'Pollare (Ninove)',zip:'9401'},{name:'Voorde (Ninove)',zip:'9400'},{name:'Okegem (Ninove)',zip:'9400'},{name:'Ninove',zip:'9400'},{name:'Nederhasselt (Ninove)',zip:'9400'},{name:'Lieferinge (Ninove)',zip:'9400'},{name:'Denderwindeke (Ninove)',zip:'9400'},{name:'Appelterre-Eichem (Ninove)',zip:'9400'},{name:'Wanzele (Lede)',zip:'9340'},{name:'Smetlede (Lede)',zip:'9340'},{name:'Oordegem (Lede)',zip:'9340'},{name:'Lede',zip:'9340'},{name:'Impe (Lede)',zip:'9340'},{name:'Nieuwerkerken (Aalst)',zip:'9320'},{name:'Erembodegem (Aalst)',zip:'9320'},{name:'Moorsel (Aalst)',zip:'9310'},{name:'Herdersem (Aalst)',zip:'9310'},{name:'Baardegem (Aalst)',zip:'9310'},{name:'Gijzegem (Aalst)',zip:'9308'},{name:'Aalst',zip:'9300'},{name:'Uitbergen (Berlare)',zip:'9290'},{name:'Overmere (Berlare)',zip:'9290'},{name:'Berlare',zip:'9290'},{name:'Wieze (Lebbeke)',zip:'9280'},{name:'Lebbeke',zip:'9280'},{name:'Denderbelle (Lebbeke)',zip:'9280'},{name:'Laarne',zip:'9270'},{name:'Kalken (Laarne)',zip:'9270'},{name:'Wichelen',zip:'9260'},{name:'Serskamp (Wichelen)',zip:'9260'},{name:'Schellebelle (Wichelen)',zip:'9260'},{name:'Opdorp (Buggenhout)',zip:'9255'},{name:'Buggenhout',zip:'9255'},{name:'Waasmunster',zip:'9250'},{name:'Zele',zip:'9240'},{name:'Wetteren',zip:'9230'},{name:'Westrem (Wetteren)',zip:'9230'},{name:'Massemen (Wetteren)',zip:'9230'},{name:'Moerzeke (Hamme)',zip:'9220'},{name:'Schoonaarde (Dendermonde)',zip:'9200'},{name:'Oudegem (Dendermonde)',zip:'9200'},{name:'Mespelare (Dendermonde)',zip:'9200'},{name:'Grembergen (Dendermonde)',zip:'9200'},{name:'Dendermonde',zip:'9200'},{name:'Baasrode (Dendermonde)',zip:'9200'},{name:'Appels (Dendermonde)',zip:'9200'},{name:'Stekene',zip:'9190'},{name:'Kemzeke (Stekene)',zip:'9190'},{name:'Wachtebeke',zip:'9185'},{name:'Moerbeke-Waas',zip:'9180'},{name:'Sint-Pauwels (Sint-Gillis-Waas)',zip:'9170'},{name:'Sint-Gillis-Waas',zip:'9170'},{name:'Meerdonk (Sint-Gillis-Waas)',zip:'9170'},{name:'Lokeren',zip:'9160'},{name:'Eksaarde (Lokeren)',zip:'9160'},{name:'Daknam (Lokeren)',zip:'9160'},{name:'Rupelmonde (Kruibeke)',zip:'9150'},{name:'Kruibeke',zip:'9150'},{name:'Bazel (Kruibeke)',zip:'9150'},{name:'Tielrode (Temse)',zip:'9140'},{name:'Temse',zip:'9140'},{name:'Steendorp (Temse)',zip:'9140'},{name:'Elversele (Temse)',zip:'9140'},{name:'Verrebroek (Beveren)',zip:'9130'},{name:'Kieldrecht (Beveren)',zip:'9130'},{name:'Doel (Beveren)',zip:'9130'},{name:'Vrasene (Beveren)',zip:'9120'},{name:'Melsele (Beveren)',zip:'9120'},{name:'Haasdonk (Beveren)',zip:'9120'},{name:'Sinaai-Waas (Sint-Niklaas)',zip:'9112'},{name:'Belsele (Sint-Niklaas)',zip:'9111'},{name:'Sint-Niklaas',zip:'9100'},{name:'Nieuwkerken-Waas (Sint-Niklaas)',zip:'9100'},{name:'Melle',zip:'9090'},{name:'Gontrode (Melle)',zip:'9090'},{name:'Zeveneken (Lochristi)',zip:'9080'},{name:'Zaffelare (Lochristi)',zip:'9080'},{name:'Lochristi',zip:'9080'},{name:'Beervelde (Lochristi)',zip:'9080'},{name:'Destelbergen',zip:'9070'},{name:'Zelzate',zip:'9060'},{name:'Zwijnaarde (Gent)',zip:'9052'},{name:'Sint-Denijs-Westrem (Gent)',zip:'9051'},{name:'Afsnee (Gent)',zip:'9051'},{name:'Ledeberg (Gent)',zip:'9050'},{name:'Gentbrugge (Gent)',zip:'9050'},{name:'Sint-Kruis-Winkel (Gent)',zip:'9042'},{name:'Mendonk (Gent)',zip:'9042'},{name:'Desteldonk',zip:'9042'},{name:'Oostakker (Gent)',zip:'9041'},{name:'Sint-Amandsberg (Gent)',zip:'9040'},{name:'Wondelgem (Gent)',zip:'9032'},{name:'Drongen (Gent)',zip:'9031'},{name:'Mariakerke (Gent)',zip:'9030'},{name:'Gent',zip:'9000'},{name:'Wijchmaal (Peer)',zip:'3990'},{name:'Peer',zip:'3990'},{name:'Kleine-Brogel (Peer)',zip:'3990'},{name:'Grote-Brogel (Peer)',zip:'3990'},{name:'Tessenderlo',zip:'3980'},{name:'Heppen (Leopoldsburg)',zip:'3971'},{name:'Leopoldsburg',zip:'3970'},{name:'Opitter (Bree)',zip:'3960'},{name:'Gerdingen (Bree)',zip:'3960'},{name:'Bree',zip:'3960'},{name:'Beek (Bree)',zip:'3960'},{name:'Reppel (Bocholt)',zip:'3950'},{name:'Kaulille (Bocholt)',zip:'3950'},{name:'Bocholt',zip:'3950'},{name:'Oostham (Ham)',zip:'3945'},{name:'Kwaadmechelen (Ham)',zip:'3945'},{name:'Ham',zip:'3945'},{name:'Eksel (Hechtel-Eksel)',zip:'3941'},{name:'Hechtel-Eksel',zip:'3940'},{name:'Hechtel',zip:'3940'},{name:'Hamont-Achel',zip:'3930'},{name:'Hamont (Hamont-Achel)',zip:'3930'},{name:'Achel (Hamont-Achel)',zip:'3930'},{name:'Lommel',zip:'3920'},{name:'Sint-Huibrechts-Lille (Neerpelt)',zip:'3910'},{name:'Neerpelt',zip:'3910'},{name:'Overpelt',zip:'3900'},{name:'Mielen-Boven-Aalst (Gingelom)',zip:'3891'},{name:'Buvingen (Gingelom)',zip:'3891'},{name:'Borlo (Gingelom)',zip:'3891'},{name:'Vorsen (Gingelom)',zip:'3890'},{name:'Niel-Bij-Sint-Truiden (Gingelom)',zip:'3890'},{name:'Montenaken (Gingelom)',zip:'3890'},{name:'Kortijs (Gingelom)',zip:'3890'},{name:'Jeuk (Gingelom)',zip:'3890'},{name:'Gingelom',zip:'3890'},{name:'Boekhout (Gingelom)',zip:'3890'},{name:'Veulen (Heers)',zip:'3870'},{name:'Vechmaal (Heers)',zip:'3870'},{name:'Rukkelingen-Loon (Heers)',zip:'3870'},{name:'Opheers (Heers)',zip:'3870'},{name:'Mettekoven (Heers)',zip:'3870'},{name:'Mechelen-Bovelingen (Heers)',zip:'3870'},{name:'Klein-Gelmen (Heers)',zip:'3870'},{name:'Horpmaal (Heers)',zip:'3870'},{name:'Heks (Heers)',zip:'3870'},{name:'Heers',zip:'3870'},{name:'Gutschoven (Heers)',zip:'3870'},{name:'Bovelingen (Heers)',zip:'3870'},{name:'Batsheers (Heers)',zip:'3870'},{name:'Wijer (Nieuwerkerken)',zip:'3850'},{name:'Kozen (Nieuwerkerken)',zip:'3850'},{name:'Binderveld (Nieuwerkerken)',zip:'3850'},{name:'Voort (Borgloon)',zip:'3840'},{name:'Rijkel (Borgloon)',zip:'3840'},{name:'Kuttekoven (Borgloon)',zip:'3840'},{name:'Kerniel (Borgloon)',zip:'3840'},{name:'Hoepertingen (Borgloon)',zip:'3840'},{name:'Hendrieken (Borgloon)',zip:'3840'},{name:'Groot-Loon (Borgloon)',zip:'3840'},{name:'Gotem (Borgloon)',zip:'3840'},{name:'Gors-Opleeuw (Borgloon)',zip:'3840'},{name:'Broekom (Borgloon)',zip:'3840'},{name:'Borgloon',zip:'3840'},{name:'Ulbeek (Wellen)',zip:'3832'},{name:'Herten (Wellen)',zip:'3831'},{name:'Wellen',zip:'3830'},{name:'Berlingen (Wellen)',zip:'3830'},{name:'Velm (Sint-Truiden)',zip:'3806'},{name:'Wilderen (Sint-Truiden)',zip:'3803'},{name:'Runkelen (Sint-Truiden)',zip:'3803'},{name:'Gorsem (Sint-Truiden)',zip:'3803'},{name:'Duras (Sint-Truiden)',zip:'3803'},{name:'Zepperen (Sint-Truiden)',zip:'3800'},{name:'Sint-Truiden',zip:'3800'},{name:'Ordingen (Sint-Truiden)',zip:'3800'},{name:'Kerkom-Bij-Sint-Truiden (Sint-Truiden)',zip:'3800'},{name:'Halmaal (Sint-Truiden)',zip:'3800'},{name:'Groot-Gelmen (Sint-Truiden)',zip:'3800'},{name:'Gelinden (Sint-Truiden)',zip:'3800'},{name:'Engelmanshoven (Sint-Truiden)',zip:'3800'},{name:'Brustem (Sint-Truiden)',zip:'3800'},{name:'Teuven (Voeren)',zip:'3793'},{name:'Remersdaal (Voeren)',zip:'3791'},{name:'Zichen-Zussen-Bolder (Riemst)',zip:'3770'},{name:'Vroenhoven (Riemst)',zip:'3770'},{name:'Vlijtingen (Riemst)',zip:'3770'},{name:'Val-Meer (Riemst)',zip:'3770'},{name:'Riemst',zip:'3770'},{name:'Millen (Riemst)',zip:'3770'},{name:'Membruggen (Riemst)',zip:'3770'},{name:'Kanne (Riemst)',zip:'3770'},{name:'Herderen (Riemst)',zip:'3770'},{name:'Genoelselderen (Riemst)',zip:'3770'},{name:'Hoelbeek (Bilzen)',zip:'3746'},{name:'Martenslinde (Bilzen)',zip:'3742'},{name:'Waltwilder (Bilzen)',zip:'3740'},{name:'Spouwen',zip:'3740'},{name:'Rosmeer (Bilzen)',zip:'3740'},{name:'Rijkhoven (Bilzen)',zip:'3740'},{name:'Munsterbilzen (Bilzen)',zip:'3740'},{name:'Mopertingen (Bilzen)',zip:'3740'},{name:'Kleine-Spouwen (Bilzen)',zip:'3740'},{name:'Hees (Bilzen)',zip:'3740'},{name:'Grote-Spouwen (Bilzen)',zip:'3740'},{name:'Eigenbilzen (Bilzen)',zip:'3740'},{name:'Bilzen',zip:'3740'},{name:'Beverst (Bilzen)',zip:'3740'},{name:'Schalkhoven (Hoeselt)',zip:'3732'},{name:'Werm (Hoeselt)',zip:'3730'},{name:'Sint-Huibrechts-Hern (Hoeselt)',zip:'3730'},{name:'Romershoven (Hoeselt)',zip:'3730'},{name:'Hoeselt',zip:'3730'},{name:'Vliermaal (Kortessem)',zip:'3724'},{name:'Guigoven (Kortessem)',zip:'3723'},{name:'Wintershoven (Kortessem)',zip:'3722'},{name:'Vliermaalroot (Kortessem)',zip:'3721'},{name:'Kortessem',zip:'3720'},{name:'Herstappe',zip:'3717'},{name:'Vreren (Tongeren)',zip:'3700'},{name:'Tongeren',zip:'3700'},{name:'Sluizen (Tongeren)',zip:'3700'},{name:'Rutten (Tongeren)',zip:'3700'},{name:'Riksingen (Tongeren)',zip:'3700'},{name:'Nerem (Tongeren)',zip:'3700'},{name:'Neerrepen (Tongeren)',zip:'3700'},{name:'Mal (Tongeren)',zip:'3700'},{name:'Lauw (Tongeren)',zip:'3700'},{name:'Koninksem (Tongeren)',zip:'3700'},{name:'Henis (Tongeren)',zip:'3700'},{name:'Diets-Heur (Tongeren)',zip:'3700'},{name:'Zutendaal',zip:'3690'},{name:'Opoeteren (Maaseik)',zip:'3680'},{name:'Neeroeteren (Maaseik)',zip:'3680'},{name:'Maaseik',zip:'3680'},{name:'Wijshagen (Meeuwen-Gruitrode)',zip:'3670'},{name:'Neerglabbeek (Meeuwen-Gruitrode)',zip:'3670'},{name:'Meeuwen-Gruitrode',zip:'3670'},{name:'Meeuwen (Meeuwen-Gruitrode)',zip:'3670'},{name:'Gruitrode (Meeuwen-Gruitrode)',zip:'3670'},{name:'Ellikom (Meeuwen-Gruitrode)',zip:'3670'},{name:'Niel-Bij-As (As)',zip:'3668'},{name:'As',zip:'3665'},{name:'Opglabbeek',zip:'3660'},{name:'Rotem (Dilsen-Stokkem)',zip:'3650'},{name:'Lanklaar (Dilsen-Stokkem)',zip:'3650'},{name:'Elen (Dilsen-Stokkem)',zip:'3650'},{name:'Dilsen-Stokkem',zip:'3650'},{name:'Ophoven (Kinrooi)',zip:'3640'},{name:'Molenbeersel (Kinrooi)',zip:'3640'},{name:'Kinrooi',zip:'3640'},{name:'Kessenich (Kinrooi)',zip:'3640'},{name:'Uikhoven (Maasmechelen)',zip:'3631'},{name:'Boorsem (Maasmechelen)',zip:'3631'},{name:'Vucht (Maasmechelen)',zip:'3630'},{name:'Opgrimbie (Maasmechelen)',zip:'3630'},{name:'Meeswijk (Maasmechelen)',zip:'3630'},{name:'Mechelen-Aan-De-Maas (Maasmechelen)',zip:'3630'},{name:'Maasmechelen',zip:'3630'},{name:'Leut (Maasmechelen)',zip:'3630'},{name:'Eisden (Maasmechelen)',zip:'3630'},{name:'Rekem (Lanaken)',zip:'3621'},{name:'Veldwezelt (Lanaken)',zip:'3620'},{name:'Neerharen (Lanaken)',zip:'3620'},{name:'Lanaken',zip:'3620'},{name:'Gellik (Lanaken)',zip:'3620'},{name:'Genk',zip:'3600'},{name:'Diepenbeek',zip:'3590'},{name:'Paal (Beringen)',zip:'3583'},{name:'Koersel (Beringen)',zip:'3582'},{name:'Beverlo (Beringen)',zip:'3581'},{name:'Beringen',zip:'3580'},{name:'Alken',zip:'3570'},{name:'Lummen',zip:'3560'},{name:'Linkhout (Lummen)',zip:'3560'},{name:'Zolder (Heusden-Zolder)',zip:'3550'},{name:'Heusden-Zolder',zip:'3550'},{name:'Zelem (Halen)',zip:'3545'},{name:'Loksbergen (Halen)',zip:'3545'},{name:'Halen',zip:'3545'},{name:'Schulen (Herk-De-Stad)',zip:'3540'},{name:'Herk-de-Stad',zip:'3540'},{name:'Donk (Herk-De-Stad)',zip:'3540'},{name:'Berbroek (Herk-De-Stad)',zip:'3540'},{name:'Houthalen-Helchteren',zip:'3530'},{name:'Houthalen (Houthalen-Helchteren)',zip:'3530'},{name:'Helchteren (Houthalen-Helchteren)',zip:'3530'},{name:'Zonhoven',zip:'3520'},{name:'Stevoort (Hasselt)',zip:'3512'},{name:'Stokrooie (Hasselt)',zip:'3511'},{name:'Kuringen (Hasselt)',zip:'3511'},{name:'Spalbeek (Hasselt)',zip:'3510'},{name:'Kermt (Hasselt)',zip:'3510'},{name:'Wimmertingen (Hasselt)',zip:'3501'},{name:'Sint-Lambrechts-Herk (Hasselt)',zip:'3500'},{name:'Hasselt',zip:'3500'},{name:'Wuustwezel',zip:'2990'},{name:'Loenhout (Wuustwezel)',zip:'2990'},{name:'Zoersel',zip:'2980'},{name:'Schilde',zip:'2970'},{name:'Brecht',zip:'2960'},{name:'Stabroek',zip:'2940'},{name:'Hoevenen (Stabroek)',zip:'2940'},{name:'Brasschaat',zip:'2930'},{name:'Kalmthout',zip:'2920'},{name:'Essen',zip:'2910'},{name:'Schoten',zip:'2900'},{name:'Sint-Amands',zip:'2890'},{name:'Oppuurs (Sint-Amands)',zip:'2890'},{name:'Lippelo (Sint-Amands)',zip:'2890'},{name:'Weert (Bornem)',zip:'2880'},{name:'Hingene (Bornem)',zip:'2880'},{name:'Bornem',zip:'2880'},{name:'Puurs',zip:'2870'},{name:'Liezele (Puurs)',zip:'2870'},{name:'Breendonk (Puurs)',zip:'2870'},{name:'Onze-Lieve-Vrouw-Waver (Sint-Katelijne-Waver)',zip:'2861'},{name:'Sint-Katelijne-Waver',zip:'2860'},{name:'Boom',zip:'2850'},{name:'Niel',zip:'2845'},{name:'Terhagen (Rumst)',zip:'2840'},{name:'Rumst',zip:'2840'},{name:'Reet (Rumst)',zip:'2840'},{name:'Willebroek',zip:'2830'},{name:'Tisselt (Willebroek)',zip:'2830'},{name:'Heindonk (Willebroek)',zip:'2830'},{name:'Blaasveld (Willebroek)',zip:'2830'},{name:'Rijmenam (Bonheiden)',zip:'2820'},{name:'Bonheiden',zip:'2820'},{name:'Leest (Mechelen)',zip:'2811'},{name:'Hombeek (Mechelen)',zip:'2811'},{name:'Heffen (Mechelen)',zip:'2801'},{name:'Walem (Mechelen)',zip:'2800'},{name:'Mechelen',zip:'2800'},{name:'Edegem',zip:'2650'},{name:'Mortsel',zip:'2640'},{name:'Aartselaar',zip:'2630'},{name:'Schelle',zip:'2627'},{name:'Hemiksem',zip:'2620'},{name:'Gestel (Berlaar)',zip:'2590'},{name:'Berlaar',zip:'2590'},{name:'Putte',zip:'2580'},{name:'Beerzel (Putte)',zip:'2580'},{name:'Duffel',zip:'2570'},{name:'Nijlen',zip:'2560'},{name:'Kessel (Nijlen)',zip:'2560'},{name:'Bevel (Nijlen)',zip:'2560'},{name:'Waarloos (Kontich)',zip:'2550'},{name:'Kontich',zip:'2550'},{name:'Lint',zip:'2547'},{name:'Hove',zip:'2540'},{name:'Vremde (Boechout)',zip:'2531'},{name:'Boechout',zip:'2530'},{name:'Ranst',zip:'2520'},{name:'Oelegem (Ranst)',zip:'2520'},{name:'Emblem (Ranst)',zip:'2520'},{name:'Broechem (Ranst)',zip:'2520'},{name:'Lier',zip:'2500'},{name:'Koningshooikt (Lier)',zip:'2500'},{name:'Olmen (Balen)',zip:'2491'},{name:'Balen',zip:'2490'},{name:'Dessel',zip:'2480'},{name:'Retie',zip:'2470'},{name:'Tielen (Kasterlee)',zip:'2460'},{name:'Lichtaart (Kasterlee)',zip:'2460'},{name:'Kasterlee',zip:'2460'},{name:'Meerhout',zip:'2450'},{name:'Geel',zip:'2440'},{name:'Veerle (Laakdal)',zip:'2431'},{name:'Varendonk (Laakdal)',zip:'2431'},{name:'Laakdal',zip:'2430'},{name:'Eindhout (Laakdal)',zip:'2430'},{name:'Mol',zip:'2400'},{name:'Westmalle (Malle)',zip:'2390'},{name:'Oostmalle (Malle)',zip:'2390'},{name:'Malle',zip:'2390'},{name:'Baarle-Hertog',zip:'2387'},{name:'Poppel (Ravels)',zip:'2382'},{name:'Weelde (Ravels)',zip:'2381'},{name:'Ravels',zip:'2380'},{name:'Arendonk',zip:'2370'},{name:'Oud-Turnhout',zip:'2360'},{name:'Vosselaar',zip:'2350'},{name:'Vlimmeren (Beerse)',zip:'2340'},{name:'Beerse',zip:'2340'},{name:'Merksplas',zip:'2330'},{name:'Meerle (Hoogstraten)',zip:'2328'},{name:'Wortel (Hoogstraten)',zip:'2323'},{name:'Minderhout (Hoogstraten)',zip:'2322'},{name:'Meer (Hoogstraten)',zip:'2321'},{name:'Hoogstraten',zip:'2320'},{name:'Rijkevorsel',zip:'2310'},{name:'Turnhout',zip:'2300'},{name:'Vorselaar',zip:'2290'},{name:'Bouwel (Grobbendonk)',zip:'2288'},{name:'Grobbendonk',zip:'2280'},{name:'Wechelderzande (Lille)',zip:'2275'},{name:'Poederlee (Lille)',zip:'2275'},{name:'Lille',zip:'2275'},{name:'Gierle (Lille)',zip:'2275'},{name:'Herenthout',zip:'2270'},{name:'Zoerle-Parwijs (Westerlo)',zip:'2260'},{name:'Westerlo',zip:'2260'},{name:'Oevel (Westerlo)',zip:'2260'},{name:'Olen',zip:'2250'},{name:'Pulle (Zandhoven)',zip:'2243'},{name:'Pulderbos (Zandhoven)',zip:'2242'},{name:'Zandhoven',zip:'2240'},{name:'Viersel (Zandhoven)',zip:'2240'},{name:'Massenhoven (Zandhoven)',zip:'2240'},{name:'Westmeerbeek (Hulshout)',zip:'2235'},{name:'Hulshout',zip:'2235'},{name:'Houtvenne (Hulshout)',zip:'2235'},{name:'Ramsel (Herselt)',zip:'2230'},{name:'Herselt',zip:'2230'},{name:'Schriek (Heist-Op-Den-Berg)',zip:'2223'},{name:'Wiekevorst (Heist-Op-Den-Berg)',zip:'2222'},{name:'Itegem (Heist-Op-Den-Berg)',zip:'2222'},{name:'Booischot (Heist-Op-Den-Berg)',zip:'2221'},{name:'Heist-op-den-Berg',zip:'2220'},{name:'Hallaar (Heist-Op-Den-Berg)',zip:'2220'},{name:'Noorderwijk (Herentals)',zip:'2200'},{name:'Morkhoven (Herentals)',zip:'2200'},{name:'Herentals',zip:'2200'},{name:'Wommelgem',zip:'2160'},{name:'Wijnegem',zip:'2110'},{name:'Zwijndrecht',zip:'2070'},{name:'Burcht (Zwijndrecht)',zip:'2070'},{name:'Hoboken (Antwerpen)',zip:'2660'},{name:'Wilrijk (Antwerpen)',zip:'2610'},{name:'Berchem (Antwerpen)',zip:'2600'},{name:'Ekeren (Antwerpen)',zip:'2180'},{name:'Merksem (Antwerpen)',zip:'2170'},{name:'Borgerhout (Antwerpen)',zip:'2140'},{name:'Deurne (Antwerpen)',zip:'2100'},{name:'Zandvliet (Antwerpen)',zip:'2040'},{name:'Lillo (Antwerpen)',zip:'2040'},{name:'Berendrecht (Antwerpen)',zip:'2040'},{name:'Antwerpen',zip:'2000'},{name:'Brussel',zip:'1000'},{name:'Schaarbeek (Brussel)',zip:'1030'},{name:'Etterbeek (Brussel)',zip:'1040'},{name:'Elsene (Brussel)',zip:'1050'},{name:'Sint-Gillis (Brussel)',zip:'1060'},{name:'Anderlecht (Brussel)',zip:'1070'},{name:'Sint-Jans-Molenbeek (Brussel)',zip:'1080'},{name:'Koekelberg (Brussel)',zip:'1081'},{name:'Sint-Agatha-Berchem (Brussel)',zip:'1082'},{name:'Ganshoren (Brussel)',zip:'1083'},{name:'Jette (Brussel)',zip:'1090'},{name:'Evere (Brussel)',zip:'1140'},{name:'Sint-Pieters-Woluwe (Brussel)',zip:'1150'},{name:'Oudergem (Brussel)',zip:'1160'},{name:'Watermaal-Bosvoorde (Brussel)',zip:'1170'},{name:'Ukkel (Brussel)',zip:'1180'},{name:'Vorst (Brussel)',zip:'1190'},{name:'Sint-Lambrechts-Woluwe (Brussel)',zip:'1200'},{name:'Sint-Joost-Ten-Node (Brussel)',zip:'1210'},{name:'\'s Gravenwezel (Schilde)',zip:'2970'},{name:'\'s Herenelderen (Tongeren)',zip:'3700'},{name:'Brugge 2 (Brugge)',zip:'8200'},{name:'Haren (Brussel)',zip:'1130'},{name:'Laken (Brussel)',zip:'1020'},{name:'Neder-Over-Heembeek (Brussel)',zip:'1120'},{name:'Ooike (Oudenaarde)',zip:'9700'},{name:'Sint-Job-In-\'t-Goor (Brecht)',zip:'2960'},{name:'Sint-Margriete-Houtem (Tienen)',zip:'3300'},{name:'Sint-Maria-Oudenhove (Brakel)',zip:'9660'},{name:'Sint-Margriete (Kortenaken)',zip:'3470'},{name:'Sint-Maria-Oudenhove (Zottegem)',zip:'9620'},{name:'Sint-Pieters-Kapelle (Middelkerke)',zip:'8433'},{name:'Voortkapel (Westerlo)',zip:'2260'},{name:'Sint-Pieters-Kapelle (Herne)',zip:'1541'},{name:'Bever',zip:'1547'},{name:'Ruisbroek (Sint-Pieters-Leeuw)',zip:'1601'},{name:'Sint-Genesius-Rode',zip:'1640'},{name:'Hamme (Merchtem)',zip:'1785'},{name:'Machelen',zip:'1830'},{name:'Berg (Kampenhout)',zip:'1910'},{name:'Hofstade (Zemst)',zip:'1981'},{name:'Antwerpen 18 (Antwerpen)',zip:'2018'},{name:'Antwerpen 2 (Antwerpen)',zip:'2020'},{name:'Antwerpen 3 (Antwerpen)',zip:'2030'},{name:'Antwerpen 5 (Antwerpen)',zip:'2050'},{name:'Antwerpen 6 (Antwerpen)',zip:'2060'},{name:'Borsbeek',zip:'2150'},{name:'Tongerlo (Westerlo)',zip:'2260'},{name:'Vorst (Laakdal)',zip:'2430'},{name:'Muizen (Mechelen)',zip:'2812'},{name:'Ruisbroek (Puurs)',zip:'2870'},{name:'Mariekerke (Bornem)',zip:'2880'},{name:'Kapellen',zip:'2950'},{name:'Sint-Lenaarts (Brecht)',zip:'2960'},{name:'Halle (Zoersel)',zip:'2980'},{name:'Wijgmaal (Leuven)',zip:'3018'},{name:'Kortrijk-Dutsel (Holsbeek)',zip:'3220'},{name:'Deurne (Diest)',zip:'3290'},{name:'Meldert (Hoegaarden)',zip:'3320'},{name:'Glabbeek',zip:'3380'},{name:'Kapellen (Glabbeek)',zip:'3381'},{name:'Tielt (Tielt-Winge)',zip:'3390'},{name:'Heusden (Heusden-Zolder)',zip:'3550'},{name:'Meldert (Lummen)',zip:'3560'},{name:'Berg (Tongeren)',zip:'3700'},{name:'Haren (Tongeren)',zip:'3700'},{name:'Kolmont (Tongeren)',zip:'3700'},{name:'Overrepen (Tongeren)',zip:'3700'},{name:'Piringen (Tongeren)',zip:'3700'},{name:'Widooie (Tongeren)',zip:'3700'},{name:'Moelingen (Voeren)',zip:'3790'},{name:'Sint-Martens-Voeren (Voeren)',zip:'3790'},{name:'Voeren',zip:'3790'},{name:'Sint-Pieters-Voeren (Voeren)',zip:'3792'},{name:'\'s Gravenvoeren (Voeren)',zip:'3798'},{name:'Aalst (Sint-Truiden)',zip:'3800'},{name:'Bommershoven (Borgloon)',zip:'3840'},{name:'Haren (Borgloon)',zip:'3840'},{name:'Jesseren (Borgloon)',zip:'3840'},{name:'Kolmont (Borgloon)',zip:'3840'},{name:'Nieuwerkerken',zip:'3850'},{name:'Muizen (Gingelom)',zip:'3891'},{name:'Tongerlo (Bree)',zip:'3960'},{name:'Ramskapelle (Knokke-Heist)',zip:'8301'},{name:'Oostkerke (Damme)',zip:'8340'},{name:'Zandvoorde (Oostende)',zip:'8400'},{name:'De Haan',zip:'8420'},{name:'Helkijn (Spiere-Helkijn)',zip:'8587'},{name:'Spiere (Spiere-Helkijn)',zip:'8587'},{name:'Spiere-Helkijn',zip:'8587'},{name:'Oostkerke (Diksmuide)',zip:'8600'},{name:'Ramskapelle (Nieuwpoort)',zip:'8620'},{name:'Sint-Joris (Nieuwpoort)',zip:'8620'},{name:'De Moeren (Veurne)',zip:'8630'},{name:'Houtem (Veurne)',zip:'8630'},{name:'Steenkerke (Veurne)',zip:'8630'},{name:'De Panne',zip:'8660'},{name:'Sint-Joris (Beernem)',zip:'8730'},{name:'Beveren-Leie (Waregem)',zip:'8791'},{name:'Beveren (Roeselare)',zip:'8800'},{name:'Mesen',zip:'8957'},{name:'Zandvoorde (Zonnebeke)',zip:'8980'},{name:'Heusden (Destelbergen)',zip:'9070'},{name:'Beveren-Waas',zip:'9120'},{name:'Kallo (Beveren-Waas)',zip:'9120'},{name:'Kallo (Kieldrecht - Beveren-Waas)',zip:'9130'},{name:'De Klinge (Sint-Gillis-Waas)',zip:'9170'},{name:'Sint-Gillis-Bij-Dendermonde (Dendermonde)',zip:'9200'},{name:'Hamme',zip:'9220'},{name:'Hofstade (Aalst)',zip:'9308'},{name:'Meldert (Aalst)',zip:'9310'},{name:'Ronse',zip:'9600'},{name:'Oombergen (Zottegem)',zip:'9620'},{name:'Berchem (Kluisbergen)',zip:'9690'},{name:'Ooike (Wortegem-Petegem)',zip:'9790'},{name:'De Pinte',zip:'9840'},{name:'Machelen (Zulte)',zip:'9870'},{name:'l\'Ecluse',zip:'1320'},{name:'Braine l\'Alleud',zip:'1420'},{name:'Waret-l\'Evêque',zip:'4217'},{name:'Villers-l\'Evêque',zip:'4340'},{name:'Fontaine-l\'Evêque',zip:'6140'},{name:'l\'Escaillère',zip:'6464'},{name:'Bersillies-l\'Abbaye',zip:'6560'},{name:'Bois-d\'Haine',zip:'7170'},{name:'Ecaussinnes-d\'Enghien',zip:'7190'},{name:'Mont-de-l\'Enclus',zip:'7750'},{name:'Meslin-l\'Evêque',zip:'7822'},{name:'Heultje (Westerlo)',zip:'2260'},{name:'Oosterwijk (Westerlo)',zip:'2260'},{name:'Dilsen',zip:'3650'},{name:'Stokkem',zip:'3650'},{name:'Oombergen (Sint-Lievens-Houtem)',zip:'9520'},{name:'Scherpenheuvel-Zichem',zip:'3270'}])
 
 ;
 'use strict';
@@ -2316,7 +2316,7 @@ angular
   .module('udb.core')
   .controller('CalendarSummaryController', calendarSummaryController);
 
-function calendarSummaryController($scope, $translate) {
+function calendarSummaryController($scope) {
   $scope.getOpeningHoursCount = function(offer) {
     if (offer.calendarType === 'single' && offer.startDate !== offer.endDate) {
       offer.openingHours = [{
@@ -2326,12 +2326,8 @@ function calendarSummaryController($scope, $translate) {
     }
     return offer.openingHours.length;
   };
-
-  $scope.translateCalendarSummary = function (label) {
-    return $translate.instant('calendarSummary.' + label);
-  };
 }
-calendarSummaryController.$inject = ["$scope", "$translate"];
+calendarSummaryController.$inject = ["$scope"];
 })();
 
 // Source: src/core/components/calendar-summary/calendar-summary.directive.js
@@ -2512,10 +2508,9 @@ angular
   });
 
 /* @ngInject */
-function WorkflowStatusDirectiveController($scope, $translate) {
+function WorkflowStatusDirectiveController($scope) {
   var cm = this;
   cm.event = $scope.event;
-  cm.status = translateStatus(cm.event.workflowStatus);
   cm.eventIds = eventIds;
   cm.isUrl = isUrl;
 
@@ -2523,19 +2518,11 @@ function WorkflowStatusDirectiveController($scope, $translate) {
     return _.union([event.id], event.sameAs);
   }
 
-  function translateStatus (status) {
-    return $translate.instant('workflowStatus.' + status);
-  }
-
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
   }
-
-  $scope.translateWorkFlow = function (label) {
-    return $translate.instant('workflowStatus.' + label);
-  };
 }
-WorkflowStatusDirectiveController.$inject = ["$scope", "$translate"];
+WorkflowStatusDirectiveController.$inject = ["$scope"];
 })();
 
 // Source: src/core/dutch-translations.constant.js
@@ -2876,6 +2863,11 @@ angular.module('udb.core')
       'audience': 'Toegang'
     },
     preview: {
+      tabs: {
+        'data': 'Gegevens',
+        'history': 'Historiek',
+        'publication': 'Publicatie'
+      },
       'not_found': 'Pagina niet gevonden',
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
@@ -3010,7 +3002,7 @@ angular.module('udb.core')
         'help_place': 'Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".',
         'help_description': 'Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.',
         'info_missing': 'Je vulde niet alle verplichte informatie in:',
-        'safe_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
         'continue': 'Doorgaan',
         'doubles_title': 'Vermijd dubbel werk',
         'doubles_help': 'We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.',
@@ -3035,7 +3027,7 @@ angular.module('udb.core')
         'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
         'empty': 'Leegmaken',
         'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
-        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordtgeorganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
+        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordt georganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
         'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
         'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
         'organizer': 'Organisatie',
@@ -8243,17 +8235,13 @@ angular
   });
 
 /* @ngInject */
-function BookingInfoDetailController($scope, $translate) {
+function BookingInfoDetailController($scope) {
   $scope.isEmpty = _.isEmpty;
   $scope.hasAtLeastOneContactPoint = function() {
     return $scope.bookingInfo.phone || $scope.bookingInfo.url || $scope.bookingInfo.email;
   };
-
-  $scope.translateBookingInfo = function (label) {
-    return $translate.instant('booking.' + label);
-  };
 }
-BookingInfoDetailController.$inject = ["$scope", "$translate"];
+BookingInfoDetailController.$inject = ["$scope"];
 })();
 
 // Source: src/event-detail/ui/contact-point-detail.directive.js
@@ -8280,16 +8268,12 @@ angular
   });
 
 /* @ngInject */
-function ContactPointDetailController($scope, $translate) {
+function ContactPointDetailController($scope) {
   $scope.isEmpty = function (contactPoint) {
     return _(contactPoint).values().flatten().isEmpty();
   };
-
-  $scope.translateContactPoint = function (label) {
-    return $translate.instant('contact.' + label);
-  };
 }
-ContactPointDetailController.$inject = ["$scope", "$translate"];
+ContactPointDetailController.$inject = ["$scope"];
 })();
 
 // Source: src/event-detail/ui/event-detail.controller.js
@@ -8383,16 +8367,13 @@ function EventDetail(
 
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'history',
-      header: 'Historiek'
+      id: 'history'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deleteEvent = function () {
@@ -8628,10 +8609,6 @@ function EventDetail(
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
-
-  $scope.translateEventDetail = function (label) {
-    return $translate.instant('preview.' + label);
-  };
 
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
@@ -8907,24 +8884,19 @@ angular
   .controller('FormAudienceController', FormAudienceController);
 
 /* @ngInject */
-function FormAudienceController(EventFormData, eventCrud, appConfig, $translate) {
+function FormAudienceController(EventFormData, eventCrud, appConfig) {
   var controller = this;
   var componentDisabled = _.get(appConfig, 'offerEditor.disableAudience');
 
   controller.enabled = !componentDisabled && EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
-  controller.translateAudience = translateAudience;
 
   function setAudienceType(audienceType) {
     eventCrud.setAudienceType(EventFormData, audienceType);
   }
-
-  function translateAudience (label) {
-    return $translate.instant('audience.' + label);
-  }
 }
-FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig", "$translate"];
+FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig"];
 })();
 
 // Source: src/event_form/components/audience/form-audience.directive.js
@@ -10464,8 +10436,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       UdbPlace,
       location,
       categories,
-      title,
-      $translate
+      title
   ) {
 
     $scope.categories = categories;
@@ -10582,10 +10553,6 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         .then(passOnPlaceData, showError);
     }
 
-    $scope.translateLocation = function (label) {
-      return $translate.instant('location.' + label);
-    };
-
     /**
      * Select the place that should be used.
      *
@@ -10608,7 +10575,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     }
 
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
 })();
 })();
@@ -10634,8 +10601,7 @@ function PriceFormModalController(
   EventFormData,
   price,
   $filter,
-  $scope,
-  $translate
+  $scope
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -10733,12 +10699,8 @@ function PriceFormModalController(
     $uibModalInstance.close();
   }
 
-  $scope.translatePrice = function (priceLabel) {
-    return $translate.instant('prices.' + priceLabel);
-  };
-
 }
-PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter", "$scope", "$translate"];
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter", "$scope"];
 })();
 
 // Source: src/event_form/components/price-info/price-info.component.js
@@ -12143,8 +12105,7 @@ function EventFormController(
     moment,
     jsonLDLangFilter,
     $q,
-    appConfig,
-    $translate
+    appConfig
 ) {
 
   // Other controllers won't load until this boolean is set to true.
@@ -12334,12 +12295,8 @@ function EventFormController(
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
-
-  $scope.translateEventForm = function (step, label) {
-    return $translate.instant('eventForm.' + step + '.' + label);
-  };
 }
-EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig", "$translate"];
+EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
 })();
 
 // Source: src/event_form/event-form.directive.js
@@ -15360,7 +15317,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal, $translate) {
+function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus, $uibModal) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -15375,7 +15332,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
   moc.continueValidation = continueValidation;
-  moc.translateModerationOffer = translateModerationOffer;
 
   // fetch offer
   ModerationService
@@ -15493,10 +15449,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
       });
   }
 
-  function translateModerationOffer(label) {
-    return $translate.instant('moderate.' + label);
-  }
-
   /**
    * @param {ApiProblem} problem
    */
@@ -15504,7 +15456,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 }
-ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal", "$translate"];
+ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
 })();
 
 // Source: src/management/moderation/components/moderation-summary/moderation-summary.component.js
@@ -18507,8 +18459,7 @@ function PlaceDetail(
   $q,
   $window,
   offerLabeller,
-  appConfig,
-  $translate
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -18548,20 +18499,14 @@ function PlaceDetail(
   $scope.placeHistory = [];
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
-  };
-
-  $scope.translatePlaceDetail = function (label) {
-    return $translate.instant('preview.' + label);
   };
 
   var language = 'nl';
@@ -18719,7 +18664,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
 })();
 
 // Source: src/router/offer-locator.service.js
@@ -23915,28 +23860,24 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <span ng-if=\"showOpeningHours\">\n" +
     "      <span ng-if=\"getOpeningHoursCount(offer) == 1\">\n" +
-    "        {{::translateCalendarSummary('from') | lowercase}} <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
-    "        {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.openingHours[0].endDate | date: 'HH:mm'\"></span>\n" +
+    "        <span translate-once=\"calendarSummary.from | uppercase\"></span> <span ng-bind=\"::offer.openingHours[0].startDate | date: 'HH:mm'\"></span>\n" +
+    "        <span translate-once=\"calendarSummary.till\"></span> <span ng-bind=\"::offer.openingHours[0].endDate | date: 'HH:mm'\"></span>\n" +
     "      </span>\n" +
-    "      <span ng-if=\"getOpeningHoursCount(offer) > 1\">\n" +
-    "        {{::translateCalendarSummary('openinghours')}}\n" +
-    "      </span>\n" +
+    "      <span ng-if=\"getOpeningHoursCount(offer) > 1\" translate-once=\"calendarSummary.openinghours\"></span>\n" +
     "    </span>\n" +
     "  </span>\n" +
     "\n" +
     "  <span ng-switch-when=\"multiple\">\n" +
-    "     {{::translateCalendarSummary('from')}} <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "     {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "      <span translate-once=\"calendarSummary.from\"></span> <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "      <span translate-once=\"calendarSummary.till\"></span> <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "  </span>\n" +
     "\n" +
     "  <span ng-switch-when=\"periodic\">\n" +
-    "     {{::translateCalendarSummary('from')}} <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "     {{::translateCalendarSummary('till')}} <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     <span translate-once=\"calendarSummary.from\"></span> <span ng-bind=\"::offer.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "     <span translate-once=\"calendarSummary.till\"></span> <span ng-bind=\"::offer.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "  </span>\n" +
     "\n" +
-    "  <span ng-switch-when=\"permanent\">\n" +
-    "     {{::translateCalendarSummary('permanent')}}\n" +
-    "  </span>\n" +
+    "  <span ng-switch-when=\"permanent\" translate-once=\"calendarSummary.permanent\"></span>\n" +
     "\n" +
     "</span>"
   );
@@ -23945,7 +23886,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/image-detail.directive.html',
     "<tr ng-class=\"::{muted: !images.length}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">{{translateImageDetail('label')}}</span>\n" +
+    "        <span class=\"row-label\" translate-once=\"imageDetail.label\"></span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::images.length\">\n" +
     "        <ul class=\"list-unstyled media-list\">\n" +
@@ -23954,11 +23895,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
     "                        <img class=\"media-object\"\n" +
     "                             src=\"{{image.contentUrl}}?height=100\"\n" +
-    "                             alt=\"{{translateImageDetail('alt_image', {index: $index}) }}\">\n" +
+    "                             alt=\"{{::translateImageDetail('alt_image', {index: $index}) }}\">\n" +
     "                    </a>\n" +
     "                </div>\n" +
     "                <div class=\"media-body\">\n" +
-    "                   <span ng-if=\"$first\" class=\"label label-default\">{{translateImageDetail('main_image')}}</span>\n" +
+    "                   <span ng-if=\"$first\" class=\"label label-default\" translate-once=\"imageDetail.main_image\"></span>\n" +
     "                    <p>{{image.description}}</p>\n" +
     "                    <p class=\"text-muted\">&copy; {{image.copyrightHolder}}</p>\n" +
     "                </div>\n" +
@@ -23966,23 +23907,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::!images.length\">{{translateImageDetail('no_images')}}</td>\n" +
+    "    <td ng-if=\"::!images.length\" translate-once=\"imageDetail.no_images\"></td>\n" +
     "</tr>\n"
   );
 
 
   $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
-    "    <td><span class=\"row-label\">{{translateWorkFlow('label')}}</span></td>\n" +
+    "    <td><span class=\"row-label\" translate-once=\"workflowStatus.label\"></span></td>\n" +
     "    <td>\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
-    "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{cm.status | translate }}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{::cm.status | translate }}</span>\n" +
     "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "</tr>\n" +
     "<tr>\n" +
-    "    <td><span class=\"row-label\">{{translateWorkFlow('id')}}</span></td>\n" +
+    "    <td><span class=\"row-label\" translate-once=\"workflowStatus.id\"></span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
     "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
@@ -24008,10 +23949,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
+    "    <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate-once=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
     "    <div ng-if=\"::$ctrl.permission\">\n" +
     "        <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
-    "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
+    "            <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate-once=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
     "            <div class=\"panel panel-default\">\n" +
     "                <div class=\"panel-body\">\n" +
     "                    <div class=\"row\">\n" +
@@ -24424,7 +24365,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/booking-info-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null)}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">{{translateBookingInfo('label')}}</span>\n" +
+    "        <span class=\"row-label\" translate-once=\"booking.label\"></span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"hasAtLeastOneContactPoint()\">\n" +
     "        <ul class=\"list-unstyled\" >\n" +
@@ -24440,7 +24381,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <li ng-if=\"::bookingInfo.availabilityStarts\" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"!hasAtLeastOneContactPoint()\">{{translateBookingInfo('no_booking')}}</td>\n" +
+    "    <td ng-if=\"!hasAtLeastOneContactPoint()\" translate-once=\"booking.no_booking\"></td>\n" +
     "</tr>\n"
   );
 
@@ -24448,31 +24389,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/contact-point-detail.directive.html',
     "<tr ng-class=\"::{muted: isEmpty(contactPoint)}\">\n" +
     "    <td>\n" +
-    "        <span class=\"row-label\">{{translateContactPoint('label')}}</span>\n" +
+    "        <span class=\"row-label\" translate-once=\"contact.label\"></span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"::!isEmpty(contactPoint)\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"website in ::contactPoint.url\">\n" +
     "                      <a ng-href=\"{{::website}}\" target=\"_blank\" ng-bind=\"::website\"></a>\n" +
-    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
+    "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"phone in ::contactPoint.phone\">\n" +
     "                      <span ng-bind=\"::phone\"></span>\n" +
-    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
+    "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
     "                    <span ng-repeat=\"email in ::contactPoint.email\">\n" +
     "                      <span ng-bind=\"::email\"></span>\n" +
-    "                      <span ng-if=\"::!$last\">{{translateContactPoint('or')}} </span>\n" +
+    "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
     "            </li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
-    "    <td ng-if=\"::isEmpty(contactPoint)\">{{translateContactPoint('no_contact')}}</td>\n" +
+    "    <td ng-if=\"::isEmpty(contactPoint)\" translate-once=\"contact.no_contact\"></td>\n" +
     "</tr>\n"
   );
 
@@ -24480,19 +24421,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/event-detail.html',
     "<div ng-if=\"eventIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
-    "    <h1>{{::translateEventDetail('not_found')}}</h1>\n" +
+    "    <h1 translate-once=\"preview.not_found\"></h1>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "      <p>{{::translateEventDetail('not_found_help')}}</p>\n" +
+    "      <p translate-once=\"preview.not_found_help\"></p>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"!finishedLoading()\">\n" +
     "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
-    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{::translateEventDetail('loading')}}</span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span></p>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"finishedLoading()\" class=\"event-detail\">\n" +
@@ -24503,22 +24444,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  {{::translateEventDetail('edit')}}</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  {{::translateEventDetail('duplicate')}}</button>\n" +
+    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  {{::translateEventDetail('delete')}}</button>\n" +
+    "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
     "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" translate-once=\"preview.tabs.{{tab.id}}\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "\n" +
@@ -24530,21 +24471,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </colgroup>\n" +
     "            <tbody>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('title')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.title\"></span></td>\n" +
     "                <td>{{::event.name}}</td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('type')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
     "                <td>{{::event.type.label}}</td>\n" +
     "              </tr>\n" +
     "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
-    "                <td>{{::translateAudience(event.audience.audienceType)}}\n" +
+    "                <td ng-bind=\"::translateAudience(event.audience.audienceType)\">\n" +
     "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td>\n" +
-    "                  <span class=\"row-label\">{{::translateEventDetail('labels')}}</span>\n" +
+    "                  <span class=\"row-label\" translate-once=\"preview.labels\"></span>\n" +
     "                </td>\n" +
     "                <td>\n" +
     "                  <p>\n" +
@@ -24554,10 +24495,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </udb-label-select>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                    <span translate=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
+    "                    <span translate-once=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                    <span translate=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
+    "                    <span translate-once=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                    <span ng-bind=\"labelsError\"></span>\n" +
@@ -24565,23 +24506,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: isEmpty(event.description)}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('description')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.description\"></span></td>\n" +
     "                <td ng-if=\"::(!isEmpty(event.description))\">\n" +
     "                  <div ng-bind-html=\"::event.description\" class=\"event-detail-description\"></div>\n" +
     "                </td>\n" +
-    "                <td ng-if=\"::(isEmpty(event.description))\">\n" +
-    "                  {{::translateEventDetail('no_description')}}\n" +
-    "                </td>\n" +
+    "                <td ng-if=\"::(isEmpty(event.description))\" translate-once=\"preview.no_description\"></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('where')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
     "                  {{eventLocation(event)}}\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('when')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.when\"></span></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"::calendarSummary\" ng-bind-html=\"::calendarSummary\"></span>\n" +
     "                  <span class=\"text-muted\"\n" +
@@ -24591,43 +24530,37 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('organizer')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.organizer\"></span></td>\n" +
     "                <td ng-if=\"::event.organizer\">{{::event.organizer.name}}</td>\n" +
-    "                <td ng-if=\"::(!event.organizer)\">\n" +
-    "                  {{::translateEventDetail('no_organizer')}}\n" +
-    "                </td>\n" +
+    "                <td ng-if=\"::(!event.organizer)\" translate-once=\"preview.no_organizer\"></td>\n" +
     "              </tr>\n" +
     "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('price')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.price\"></span></td>\n" +
     "                <td ng-if=\"::event.priceInfo.length\">\n" +
     "                  <table class=\"table table-bordered event-detail-price-table\">\n" +
     "                    <tr ng-repeat=\"priceInfo in ::event.priceInfo\">\n" +
     "                      <td>{{priceInfo.name}}</td>\n" +
     "                      <td>\n" +
-    "                        <span ng-if=\"priceInfo.price == 0\">\n" +
-    "                          {{::translateEventDetail('free')}}\n" +
-    "                        </span>\n" +
+    "                        <span ng-if=\"priceInfo.price == 0\" translate-once=\"preview.free\"></span>\n" +
     "                        <span ng-if=\"::priceInfo.price != 0\">\n" +
-    "                          {{priceInfo.price | currency}} {{::translateEventDetail('currency')}}\n" +
+    "                          {{priceInfo.price | currency}} <span translate-once=\"preview.currency\"></span>\n" +
     "                        </span>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </table>\n" +
     "                </td>\n" +
-    "                <td ng-if=\"::(event.priceInfo.length == 0)\">\n" +
-    "                  {{::translateEventDetail('no_price')}}\n" +
-    "                </td>\n" +
+    "                <td ng-if=\"::(event.priceInfo.length == 0)\" translate-once=\"preview.no_price\"></td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
     "            <tbody>\n" +
     "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
-    "                <td><span class=\"row-label\">{{::translateEventDetail('age_label')}}</span></td>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "                <td>\n" +
     "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
-    "                  <span ng-if=\"::allAges && !noAgeInfo\">{{::translateEventDetail('all_ages')}}</span>\n" +
-    "                  <span ng-if=\"noAgeInfo\">{{::translateEventDetail('no_age')}}</span>\n" +
+    "                  <span ng-if=\"::allAges && !noAgeInfo\" translate-once=\"preview.all_ages\"></span>\n" +
+    "                  <span ng-if=\"noAgeInfo\" translate-once=\"preview.no_age\"></span>\n" +
     "                </td>\n" +
     "\n" +
     "              </tr>\n" +
@@ -24639,7 +24572,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
     "          <p ng-show=\"!eventHistory\" class=\"text-center\">\n" +
-    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{::translateEventDetail('loading')}}</span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span>\n" +
     "          </p>\n" +
     "          <div ng-if=\"::eventHistory\">\n" +
     "            <dl ng-repeat=\"eventAction in ::eventHistory track by $index\">\n" +
@@ -24675,7 +24608,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row extra-leeftijd\">\n" +
     "    <div class=\"extra-task\" ng-class=\"{'state-complete': !!fagec.activeAgeRange}\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\" translate=\"eventForm.step5.age.age_label\"></em>\n" +
+    "            <em class=\"extra-task-label\" translate-once=\"eventForm.step5.age.age_label\"></em>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
@@ -24723,7 +24656,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row audience\" ng-if=\"::fac.enabled\">\n" +
     "    <div class=\"extra-task state-complete\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\">{{::fac.translateAudience('entrance')}}</em>\n" +
+    "            <em class=\"extra-task-label\" translate-once=\"audience.entrance\"></em>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-8\">\n" +
     "            <div class=\"radio\">\n" +
@@ -24735,7 +24668,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           id=\"audience-everyone\"\n" +
     "                           value=\"everyone\"\n" +
     "                           checked>\n" +
-    "                    {{::fac.translateAudience('everyone')}}\n" +
+    "                    <span translate-once=\"audience.everyone\"></span>\n" +
     "                </label>\n" +
     "            </div>\n" +
     "\n" +
@@ -24748,9 +24681,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           id=\"audience-members\"\n" +
     "                           value=\"members\"\n" +
     "                           aria-describedby=\"audience-members-help\">\n" +
-    "                    {{::fac.translateAudience('members')}}\n" +
-    "                    <span id=\"audience-members-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'members'\">\n" +
-    "                        {{::fac.translateAudience('members_help')}}\n" +
+    "                    <span translate-once=\"audience.members\"></span>\n" +
+    "                    <span id=\"audience-members-help\"\n" +
+    "                          class=\"help-block\"\n" +
+    "                          translate-once=\"audience.members_help\"\n" +
+    "                          ng-show=\"fac.audienceType === 'members'\">\n" +
     "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -24765,9 +24700,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           id=\"audience-education\"\n" +
     "                           value=\"education\"\n" +
     "                           aria-describedby=\"audience-education-help\">\n" +
-    "                    {{::fac.translateAudience('education')}}\n" +
-    "                    <span id=\"audience-education-help\" class=\"help-block\" ng-show=\"fac.audienceType === 'education'\">\n" +
-    "                        {{::fac.translateAudience('education_help')}}\n" +
+    "                    <span translate-once=\"audience.education\"></span>\n" +
+    "                    <span id=\"audience-education-help\"\n" +
+    "                          class=\"help-block\"\n" +
+    "                          translate-once=\"audience.education_help\"\n" +
+    "                          ng-show=\"fac.audienceType === 'education'\">\n" +
     "                    </span>\n" +
     "                </label>\n" +
     "            </div>\n" +
@@ -24810,11 +24747,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               ng-true-value=\"'periodic'\"\n" +
     "               ng-false-value=\"'permanent'\"\n" +
     "               ng-change=\"$ctrl.formData.setCalendarType($ctrl.calendarType)\">\n" +
-    "        <span translate=\"calendar.period.title\"></span>\n" +
+    "        <span translate-once=\"calendar.period.title\"></span>\n" +
     "    </label>\n" +
     "    <div class=\"periodic-info\">\n" +
     "        <div class=\"start-date\">\n" +
-    "            <label translate=\"calendar.period.from\"></label>\n" +
+    "            <label translate-once=\"calendar.period.from\"></label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
     "                                            ng-model=\"$ctrl.formData.startDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
@@ -24822,7 +24759,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <div class=\"end-date\">\n" +
-    "            <label translate=\"calendar.period.till\"></label>\n" +
+    "            <label translate-once=\"calendar.period.till\"></label>\n" +
     "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
     "                                            ng-model=\"$ctrl.formData.endDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
@@ -24832,7 +24769,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"requirements\"\n" +
     "             ng-show=\"$ctrl.formData.calendarType === 'periodic' && $ctrl.formData.periodicRangeError\">\n" +
     "            <div class=\"alert alert-danger\">\n" +
-    "                <p translate=\"calendar.period.alert\"></p>\n" +
+    "                <p translate-once=\"calendar.period.alert\"></p>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -24857,9 +24794,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
-    "            <p class=\"text-center\"><strong translate=\"calendar.one_more_days\"></strong></p></a><span class=\"or\" translate=\"calendar.or\"></span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
+    "            <p class=\"text-center\"><strong translate-once=\"calendar.one_more_days\"></strong></p></a><span class=\"or\" translate-once=\"calendar.or\"></span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
-    "            <p class=\"text-center\"><strong translate=\"calendar.default_days\"></strong></p>\n" +
+    "            <p class=\"text-center\"><strong translate-once=\"calendar.default_days\"></strong></p>\n" +
     "        </a>\n" +
     "\n" +
     "    </div>\n" +
@@ -24873,12 +24810,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <span ng-show=\"calendar.timeSpans.length > 1\" aria-hidden=\"true\" ng-click=\"calendar.removeTimeSpan(timeSpan)\" class=\"close\">×</span>\n" +
     "                    <div class=\"dates\">\n" +
     "                        <div class=\"date form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-start-date\" translate=\"calendar.start_label\"></label>\n" +
+    "                            <label for=\"time-span-{{$index}}-start-date\" translate-once=\"calendar.start_label\"></label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                        <div class=\"date form-group\">\n" +
-    "                            <label for=\"time-span-{{$index}}-end-date\" translate=\"calendar.end_label\"></label>\n" +
+    "                            <label for=\"time-span-{{$index}}-end-date\" translate-once=\"calendar.end_label\"></label>\n" +
     "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
@@ -24890,18 +24827,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
     "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
-    "                                       class=\"all-day-check\"> <span translate=\"calendar.whole_day_label\"></span>\n" +
+    "                                       class=\"all-day-check\"> <span translate-once=\"calendar.whole_day_label\"></span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label translate=\"calendar.start_hour_label\"></label>\n" +
+    "                            <label translate-once=\"calendar.start_hour_label\"></label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "\n" +
     "                        <div class=\"time form-group\">\n" +
-    "                            <label translate=\"calendar.end_hour_label\"></label>\n" +
+    "                            <label translate-once=\"calendar.end_hour_label\"></label>\n" +
     "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
@@ -24913,7 +24850,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +
-    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate=\"calendar.add_days\"></a>\n" +
+    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate-once=\"calendar.add_days\"></a>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
@@ -25100,16 +25037,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/opening-hours-editor.modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\" translate=\"calendar.openingHours.opening_hours\"></h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"calendar.openingHours.opening_hours\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <div class=\"well text-center add-opening-hours\"\n" +
     "         ng-show=\"ohemc.openingHoursCollection.openingHours.length === 0\">\n" +
-    "        <span translate=\"calendar.openingHours.permanent_title\"></span>\n" +
+    "        <span translate-once=\"calendar.openingHours.permanent_title\"></span>\n" +
     "        <br>\n" +
-    "        <span translate=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
+    "        <span translate-once=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
     "        <br>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\" translate=\"calendar.openingHours.add_hours\"></button>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ohemc.createNewOpeningHours()\" translate-once=\"calendar.openingHours.add_hours\"></button>\n" +
     "    </div>\n" +
     "    <div class=\"alert alert-danger\" role=\"alert\" ng-if=\"!!ohemc.errors.length\">\n" +
     "        <ul>\n" +
@@ -25119,9 +25056,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"opening-hours\" ng-show=\"ohemc.openingHoursCollection.openingHours.length > 0\">\n" +
     "        <div class=\"opening-hours-labels\">\n" +
-    "            <div class=\"weekdays\" translate=\"calendar.openingHours.days\"></div>\n" +
-    "            <div class=\"opening-time\" translate=\"calendar.openingHours.from\"></div>\n" +
-    "            <div class=\"closing-time\" translate=\"calendar.openingHours.till\"></div>\n" +
+    "            <div class=\"weekdays\" translate-once=\"calendar.openingHours.days\"></div>\n" +
+    "            <div class=\"opening-time\" translate-once=\"calendar.openingHours.from\"></div>\n" +
+    "            <div class=\"closing-time\" translate-once=\"calendar.openingHours.till\"></div>\n" +
     "        </div>\n" +
     "        <div class=\"opening-hours-collection\">\n" +
     "            <div class=\"opening-hours-set\" ng-form=\"openingHoursInfo\" ng-repeat=\"openingHours in ohemc.openingHoursCollection.openingHours\">\n" +
@@ -25158,15 +25095,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "\n" +
     "        <div class=\"add\">\n" +
-    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\" translate=\"calendar.openingHours.more_hours\">\n" +
+    "            <a class=\"btn btn-link btn-plus\" ng-click=\"ohemc.createNewOpeningHours()\" translate-once=\"calendar.openingHours.more_hours\">\n" +
     "            </a>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\" translate=\"calendar.openingHours.cancel\"></button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"$dismiss()\" translate-once=\"calendar.openingHours.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary openingsuren-toevoegen\"\n" +
-    "            ng-click=\"ohemc.saveOpeningHours()\" translate=\"calendar.openingHours.save\">\n" +
+    "            ng-click=\"ohemc.saveOpeningHours()\" translate-once=\"calendar.openingHours.save\">\n" +
     "    </button>\n" +
     "</div>\n"
   );
@@ -25177,18 +25114,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"empty\" ng-hide=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "    <div class=\"well text-center add-opening-hours\">\n" +
     "        <p>\n" +
-    "          <span class=\"permanent-title\" translate=\"calendar.openingHours.permanent_title\"></span>\n" +
-    "          <span class=\"permanent-subtitle\" translate=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
+    "          <span class=\"permanent-title\" translate-once=\"calendar.openingHours.permanent_title\"></span>\n" +
+    "          <span class=\"permanent-subtitle\" translate-once=\"calendar.openingHours.permanent_subtitle\"></span>\n" +
     "        </p>\n" +
-    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\" translate=\"calendar.openingHours.add_hours\"></button>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"cm.edit()\" translate-once=\"calendar.openingHours.add_hours\"></button>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"time-table\">\n" +
     "    <table class=\"table table-condensed\" ng-if=\"!!cm.openingHoursCollection.openingHours.length\">\n" +
     "      <thead>\n" +
-    "      <th translate=\"calendar.openingHours.opening_hours\"></th>\n" +
+    "      <th translate-once=\"calendar.openingHours.opening_hours\"></th>\n" +
     "      <th>\n" +
-    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\" translate=\"calendar.openingHours.change\"></a>\n" +
+    "        <a href=\"#\" ng-click=\"cm.edit()\" class=\"btn btn-default\" translate-once=\"calendar.openingHours.change\"></a>\n" +
     "      </th>\n" +
     "      </thead>\n" +
     "      <tbody>\n" +
@@ -25502,56 +25439,66 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-place-modal.html',
     "<div class=\"modal-header\">\n" +
-    "    <h4 class=\"modal-title\">{{translateLocation('title')}}</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"location.title\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "    <form name=\"placeForm\" class=\"css-form\">\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.name.$error.required }\">\n" +
-    "            <label for=\"name\">{{translateLocation('name')}}</label>\n" +
+    "            <label for=\"name\" translate-once=\"location.name\"></label>\n" +
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
-    "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
-    "        {{translateLocation('name_validation')}}\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  translate-once=\"location.name_validation\"\n" +
+    "                  ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
     "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
-    "                    <label for=\"locatie-straat\">{{translateLocation('street')}}</label>\n" +
+    "                    <label for=\"locatie-straat\" translate-once=\"location.street\"></label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
-    "                    <span class=\"help-block\" ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
-    "            {{translateLocation('street_validation')}}\n" +
+    "                    <span class=\"help-block\"\n" +
+    "                          translate-once=\"location.street_validation\"\n" +
+    "                          ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
     "          </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label>{{translateLocation('city')}}</label>\n" +
+    "                    <label translate-once=\"location.city\"></label>\n" +
     "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
-    "            <label for=\"locatie-toevoegen-types\">{{translateLocation('category')}}</label>\n" +
-    "            <p class=\"help-block\">{{translateLocation('category_help')}}</p>\n" +
+    "            <label for=\"locatie-toevoegen-types\" translate-once=\"location.category\"></label>\n" +
+    "            <p class=\"help-block\" translate-once=\"location.category_help\"></p>\n" +
     "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
-    "            <span class=\"help-block\" ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "        {{translateLocation('category_validation')}}\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  translate-once=\"location.category_validation\"\n" +
+    "                  ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
-    "                <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "                    {{translateLocation('error')}}\n" +
+    "                <div class=\"alert alert-danger\"\n" +
+    "                     translate-once=\"location.error\"\n" +
+    "                     ng-show=\"error\">\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </form>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" ng-click=\"resetAddLocation()\">{{translateLocation('cancel')}}</button>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"addLocation()\">\n" +
-    "        {{translateLocation('add')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-default\"\n" +
+    "            data-dismiss=\"modal\"\n" +
+    "            translate-once=\"location.cancel\"\n" +
+    "            ng-click=\"resetAddLocation()\"></button>\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-primary\"\n" +
+    "            ng-click=\"addLocation()\">\n" +
+    "        <span translate-once=\"location.add\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -25590,7 +25537,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-header\">\n" +
     "    <button type=\"button\" class=\"close\" ng-click=\"pfmc.cancelEditPrice()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
-    "    <h4 class=\"modal-title\">{{translatePrice('title')}}</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"prices.title\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
@@ -25602,22 +25549,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    ng-form=\"pfmc.priceForm.priceFieldForm\">\n" +
     "                    <td ng-switch on=\"priceInfo.category\"\n" +
     "                        class=\"col-xs-4\">\n" +
-    "                        <p ng-switch-when=\"base\" class=\"form-text\">\n" +
-    "                            {{translatePrice('base')}}\n" +
+    "                        <p ng-switch-when=\"base\"\n" +
+    "                           class=\"form-text\"\n" +
+    "                           translate-once=\"prices.base\">\n" +
     "                        </p>\n" +
     "                        <span ng-switch-default>\n" +
     "                            <input type=\"text\"\n" +
     "                                   class=\"form-control\"\n" +
     "                                   name=\"name\"\n" +
-    "                                   placeholder=\"{{translatePrice('target_group')}}\"\n" +
+    "                                   placeholder=\"{{::'prices.target_group' | translate }}\"\n" +
     "                                   ng-model=\"priceInfo.name\"\n" +
     "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
     "                    </td>\n" +
     "                    <td class=\"col-xs-4\">\n" +
-    "                        <span ng-if=\"priceInfo.price === 0\">\n" +
-    "                            {{translatePrice('free')}}\n" +
+    "                        <span ng-if=\"priceInfo.price === 0\"\n" +
+    "                              translate-once=\"prices.free\">\n" +
     "                        </span>\n" +
     "                        <span ng-if=\"priceInfo.price !== 0\">\n" +
     "                            <div class=\"form-inline\">\n" +
@@ -25631,7 +25579,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                           ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.price.$invalid }\"\n" +
     "                                           required />\n" +
     "                                </div>\n" +
-    "                                <div class=\"form-group\"> <span class=\"text-muted\">{{translatePrice('currency')}}</span></div>\n" +
+    "                                <div class=\"form-group\"> <span class=\"text-muted\" translate-once=\"prices.currency\"></span></div>\n" +
     "                            </div>\n" +
     "                        </span>\n" +
     "                    </td>\n" +
@@ -25639,10 +25587,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        class=\"col-xs-3\">\n" +
     "                        <a class=\"btn btn-link\"\n" +
     "                           ng-click=\"pfmc.unsetPriceItemFree(key)\"\n" +
-    "                           ng-switch-when=\"0\">{{translatePrice('add_price')}}</a>\n" +
+    "                           ng-switch-when=\"0\"\n" +
+    "                           translate-once=\"prices.add_price\">\n" +
+    "                        </a>\n" +
     "                        <a class=\"btn btn-link\"\n" +
+    "                           translate-once=\"prices.free\"\n" +
     "                           ng-click=\"pfmc.setPriceItemFree(key)\"\n" +
-    "                           ng-switch-default>{{translatePrice('free')}}</a>\n" +
+    "                           ng-switch-default>\n" +
+    "                        </a>\n" +
     "                    </td>\n" +
     "                    <td class=\"col-xs-1\">\n" +
     "                        <a aria-hidden=\"true\"\n" +
@@ -25652,31 +25604,39 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </tr>\n" +
     "                <tr>\n" +
     "                    <td colspan=\"4\">\n" +
-    "                        <a class=\"btn btn-default\" ng-click=\"pfmc.addPriceItem()\">{{translatePrice('add_tarriff')}}</a>\n" +
+    "                        <a class=\"btn btn-default\"\n" +
+    "                           translate-once=\"prices.add_tarriff\"\n" +
+    "                           ng-click=\"pfmc.addPriceItem()\">\n" +
+    "                        </a>\n" +
     "                    </td>\n" +
     "                </tr>\n" +
     "            </div>\n" +
     "        </table>\n" +
     "    </form>\n" +
-    "    <div ng-show=\"pfmc.priceError\" class=\"alert alert-danger\">\n" +
-    "        {{translatePrice('error')}}\n" +
+    "    <div ng-show=\"pfmc.priceError\"\n" +
+    "         class=\"alert alert-danger\"\n" +
+    "         translate-once=\"prices.error\">\n" +
     "    </div>\n" +
     "    <div ng-show=\"(pfmc.priceForm.priceFieldForm.price.$invalid || pfmc.priceForm.$invalid) && pfmc.priceForm.priceFieldForm.price.$dirty && !saving\" class=\"alert alert-info\">\n" +
-    "        <p>{{translatePrice('invalid')}}</p>\n" +
+    "        <p translate-once=\"prices.invalid\"></p>\n" +
     "        <ul class=\"small\">\n" +
-    "          <li>{{translatePrice('invalid_tip1')}}</li>\n" +
-    "          <li>{{translatePrice('invalid_tip2')}}</li>\n" +
-    "          <li>{{translatePrice('invalid_tip3')}}</li>\n" +
+    "          <li translate-once=\"prices.invalid_tip1\"></li>\n" +
+    "          <li translate-once=\"prices.invalid_tip2\"></li>\n" +
+    "          <li translate-once=\"prices.invalid_tip3\"></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"pfmc.cancelEditPrice()\">{{translatePrice('close')}}</button>\n" +
+    "  <button type=\"button\"\n" +
+    "          class=\"btn btn-default\"\n" +
+    "          translate-once=\"prices.close\"\n" +
+    "          ng-click=\"pfmc.cancelEditPrice()\">\n" +
+    "  </button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "          ng-click=\"pfmc.validatePrice()\"\n" +
     "          ng-disabled=\"pfmc.priceForm.$invalid || pfmc.priceForm.$pristine\">\n" +
-    "      {{translatePrice('save')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "      <span translate-once=\"prices.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -25686,7 +25646,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row extra-prijs\">\n" +
     "  <div class=\"extra-task\" ng-class=\"$ctrl.priceCssClass\">\n" +
     "    <div class=\"col-sm-3\">\n" +
-    "      <em class=\"extra-task-label\" translate=\"eventForm.step5.priceInfo.price_label\"></em>\n" +
+    "      <em class=\"extra-task-label\" translate-once=\"eventForm.step5.priceInfo.price_label\"></em>\n" +
     "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"$ctrl.savingPrice\"></i>\n" +
     "    </div>\n" +
     "    <div class=\"col-sm-8\">\n" +
@@ -25695,21 +25655,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <section>\n" +
     "          <a class=\"btn btn-default to-filling\"\n" +
     "             ng-click=\"$ctrl.priceCssClass = 'state-filling'; $ctrl.changePrice()\"\n" +
-    "             translate=\"eventForm.step5.priceInfo.add_prices\">\n" +
+    "             translate-once=\"eventForm.step5.priceInfo.add_prices\">\n" +
     "          </a>\n" +
     "          <a class=\"btn btn-link\"\n" +
     "             ng-click=\"$ctrl.setPriceFree()\"\n" +
-    "             translate=\"eventForm.step5.priceInfo.free\"></a>\n" +
+    "             translate-once=\"eventForm.step5.priceInfo.free\"></a>\n" +
     "        </section>\n" +
     "      </div>\n" +
     "      <div ng-show=\"$ctrl.price.length > 0\">\n" +
     "        <table class=\"table\">\n" +
     "          <thead>\n" +
-    "            <td translate=\"eventForm.step5.priceInfo.prices\"></td>\n" +
+    "            <td translate-once=\"eventForm.step5.priceInfo.prices\"></td>\n" +
     "            <td>\n" +
     "              <a class=\"btn btn-default pull-right\"\n" +
     "                 ng-click=\"$ctrl.changePrice()\"\n" +
-    "                 translate=\"eventForm.step5.priceInfo.change\">\n" +
+    "                 translate-once=\"eventForm.step5.priceInfo.change\">\n" +
     "            </a>\n" +
     "            </td>\n" +
     "          </thead>\n" +
@@ -25717,11 +25677,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              ng-model=\"priceInfo\">\n" +
     "            <td>{{priceInfo.name}}</td>\n" +
     "            <td>\n" +
-    "              <span ng-if=\"priceInfo.price == 0\" translate=\"eventForm.step5.priceInfo.free\">\n" +
+    "              <span ng-if=\"priceInfo.price == 0\" translate-once=\"eventForm.step5.priceInfo.free\">\n" +
     "                Gratis\n" +
     "              </span>\n" +
     "              <span ng-if=\"priceInfo.price != 0\">\n" +
-    "                {{priceInfo.price | currency:'€' }} <span translate=\"eventForm.step5.priceInfo.currency\"></span>\n" +
+    "                {{priceInfo.price | currency:'€' }} <span translate-once=\"eventForm.step5.priceInfo.currency\"></span>\n" +
     "              </span>\n" +
     "            </td>\n" +
     "          </tr>\n" +
@@ -25782,14 +25742,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <a class=\"btn btn-primary reservatie-periode-toevoegen\"\n" +
     "       href=\"#\"\n" +
     "       ng-click=\"changeHaveBookingPeriod()\"\n" +
-    "       translate=\"eventForm.step5.reservationPeriod.add_reservation_period\">\n" +
+    "       translate-once=\"eventForm.step5.reservationPeriod.add_reservation_period\">\n" +
     "    </a>\n" +
     "</div>\n" +
     "<div class=\"col-sm-12\" ng-show=\"haveBookingPeriod\">\n" +
     "    <div class=\"booking-period\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-lg-11\">\n" +
-    "                <p><strong translate=\"eventForm.step5.reservationPeriod.reservation_period\"></strong></p>\n" +
+    "                <p><strong translate-once=\"eventForm.step5.reservationPeriod.reservation_period\"></strong></p>\n" +
     "            </div>\n" +
     "            <div class=\"col-lg-1\">\n" +
     "                <button ng-if=\"!info.booking\" type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"deleteBookingPeriod()\">\n" +
@@ -25805,7 +25765,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div class=\"col-lg-6\">\n" +
     "                    <div class=\"input-group\">\n" +
     "                        <span class=\"input-group-addon\"\n" +
-    "                              translate=\"eventForm.step5.reservationPeriod.from\"></span>\n" +
+    "                              translate-once=\"eventForm.step5.reservationPeriod.from\"></span>\n" +
     "                        <input name=\"bookingStartDate\"\n" +
     "                               class=\"form-control\"\n" +
     "                               type=\"text\"\n" +
@@ -25826,7 +25786,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div class=\"col-lg-6\">\n" +
     "                    <div class=\"input-group\">\n" +
     "                        <span class=\"input-group-addon\"\n" +
-    "                              translate=\"eventForm.step5.reservationPeriod.till\"></span>\n" +
+    "                              translate-once=\"eventForm.step5.reservationPeriod.till\"></span>\n" +
     "                        <input name=\"bookingEndDate\"\n" +
     "                               type=\"text\"\n" +
     "                               class=\"form-control\"\n" +
@@ -25930,12 +25890,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <ng-switch on=\"event.calendarType\">\n" +
     "      <span ng-switch-when=\"single\" ng-bind=\"::event.startDate | date: 'dd/MM'\"></span>\n" +
     "      <span ng-switch-when=\"multiple\">\n" +
-    "        <span translate=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
+    "        <span translate-once=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate-once=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
     "      </span>\n" +
     "      <span ng-switch-when=\"periodic\">\n" +
-    "        <span translate=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
+    "        <span translate-once=\"eventForm.step4.suggestions.from\"></span> <span ng-bind=\"::event.startDate | date: 'dd/MM'\"></span> <span translate-once=\"eventForm.step4.suggestions.till\"></span> <span ng-bind=\"::event.endDate | date: 'dd/MM'\"></span>\n" +
     "      </span>\n" +
-    "      <span ng-switch-when=\"permanent\" translate=\"eventForm.step4.suggestions.permanent\"></span>\n" +
+    "      <span ng-switch-when=\"permanent\" translate-once=\"eventForm.step4.suggestions.permanent\"></span>\n" +
     "    </ng-switch>\n" +
     "    <br>\n" +
     "    <small class=\"preview-corner\"></small>\n" +
@@ -26002,7 +25962,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "     ng-click=\"previewSuggestedItem(event)\">\n" +
     "    <small class=\"label label-default\" ng-bind=\"::event.type.label\"></small><br>\n" +
     "    <strong class=\"title\" ng-bind=\"::event.name\"></strong><br>\n" +
-    "    <span translate=\"eventForm.step4.suggestions.permanent\"></span>\n" +
+    "    <span translate-once=\"eventForm.step4.suggestions.permanent\"></span>\n" +
     "    <br>\n" +
     "    <small class=\"preview-corner\"></small>\n" +
     "    <i class=\"fa fa-eye preview-icon\"></i>\n" +
@@ -26074,53 +26034,57 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section id=\"wat\">\n" +
     "    <section class=\"row\">\n" +
     "      <div class=\"col-md-12\">\n" +
-    "        <h2 class=\"title-border\"><span class=\"number\">1</span> {{::translateEventForm('step1', 'title')}}</h2>\n" +
+    "        <h2 class=\"title-border\">\n" +
+    "          <span class=\"number\">1</span>\n" +
+    "          <span translate-once=\"eventForm.step1.title\"></span>\n" +
+    "        </h2>\n" +
     "      </div>\n" +
     "    </section>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"!activeEventType\">\n" +
     "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'event'\">\n" +
-    "        <label class=\"event-type-choser-label event\"><span>{{::translateEventForm('step1', 'label_event')}}</span></label>\n" +
+    "        <label class=\"event-type-choser-label event\"><span translate-once=\"eventForm.step1.label_event\"></span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-events\">\n" +
     "          <li ng-repeat=\"eventType in ::eventTypeLabels | orderBy:'label'\" ng-show=\"eventType.primary === true || showAllEventTypes\">\n" +
     "            <button ng-bind=\"::eventType.label\" class=\"btn btn-default\"\n" +
     "                    ng-click=\"setEventType(eventType, true)\"></button>\n" +
     "          </li>\n" +
     "          <li ng-hide=\"showAllEventTypes\">\n" +
-    "            <a href=\"\" ng-click=\"toggleEventTypes()\">{{::translateEventForm('step1', 'show_everything')}}</a>\n" +
+    "            <a href=\"\" ng-click=\"toggleEventTypes()\" translate-once=\"eventForm.step1.show_everything\"></a>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-sm-2\" ng-show=\"splitTypes\">\n" +
-    "        <p class=\"text-center event-type-splitter\"><em>{{::translateEventForm('step1', 'or')}}</em></p>\n" +
+    "        <p class=\"text-center event-type-splitter\"><em translate-once=\"eventForm.step1.or\"></em></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
     "           ng-show=\"splitTypes || eventFormData.getType() === 'place'\">\n" +
-    "        <label class=\"event-type-choser-label place\"><span>{{::translateEventForm('step1', 'location_label')}}</span></label>\n" +
+    "        <label class=\"event-type-choser-label place\"><span translate-once=\"eventForm.step1.location_label\"></span></label>\n" +
     "        <ul class=\"list-inline\" id=\"step1-places\">\n" +
     "          <li ng-repeat=\"placeType in ::placeLabels | orderBy:'label'\" ng-show=\"placeType.primary == true || showAllPlaces\">\n" +
     "            <button ng-bind=\"::placeType.label\" class=\"btn btn-default\"\n" +
     "                    ng-click=\"setEventType(placeType, false)\"></button>\n" +
     "          </li>\n" +
     "          <li ng-hide=\"showAllPlaces\">\n" +
-    "            <a href=\"\" ng-click=\"togglePlaces()\">{{::translateEventForm('step1', 'show_everything')}}</a>\n" +
+    "            <a href=\"\" ng-click=\"togglePlaces()\" translate-once=\"eventForm.step1.show_everythibng\"></a>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
-    "\n" +
     "      <p class=\"col-xs-12 col-md-12\" ng-hide=\"activeEventType === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeEventTypeLabel\"></span>\n" +
-    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetEventType()\">{{::translateEventForm('step1', 'change')}}</a>\n" +
+    "        <a class=\"btn btn-link btn-default\"\n" +
+    "           href=\"\" ng-click=\"resetEventType()\"\n" +
+    "           translate-once=\"eventForm.step1.change\"></a>\n" +
     "      </p>\n" +
     "\n" +
     "      <div class=\"col-xs-12 theme-refinement\" ng-hide=\"activeEventType === '' || activeTheme !== ''\">\n" +
-    "        <label class=\"event-theme-label\" ng-show=\"eventThemeLabels.length\">{{::translateEventForm('step1', 'refine')}}</label>\n" +
+    "        <label class=\"event-theme-label\" ng-show=\"eventThemeLabels.length\" translate-once=\"eventForm.step1.refine\"></label>\n" +
     "        <div ng-repeat=\"(key, values) in eventThemeLabels | groupBy: 'group'\">\n" +
     "          <div class=\"row\">\n" +
     "            <div class=\"col-xs-2\" ng-show=\"key !== 'undefined'\" >\n" +
@@ -26136,13 +26100,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "      </div>\n" +
     "\n" +
     "      <p class=\"col-xs-12 col-md-12\"  ng-hide=\"activeTheme === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeThemeLabel\"></span>\n" +
-    "        <a class=\"btn btn-link btn-default\" href=\"\" ng-click=\"resetTheme()\">{{::translateEventForm('step1', 'change')}}</a>\n" +
+    "        <a class=\"btn btn-link btn-default\"\n" +
+    "           href=\"\" ng-click=\"resetTheme()\"\n" +
+    "           translate-once=\"eventForm.step1.change\"></a>\n" +
     "      </p>\n" +
-    "\n" +
     "    </div>\n" +
     "\n" +
     "  </section>\n" +
@@ -26157,8 +26121,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section id=\"wanneer\" ng-show=\"eventFormData.showStep2\">\n" +
     "    <h2 class=\"title-border\">\n" +
     "      <span class=\"number\">2</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step2', 'date_help_event')}}</span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step2', 'date_help_place')}}</span>\n" +
+    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step2.date_help_event\"></span>\n" +
+    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step2.date_help_place\"></span>\n" +
     "    </h2>\n" +
     "\n" +
     "    <udb-form-place-calendar ng-if=\"eventFormData.isPlace\"></udb-form-place-calendar>\n" +
@@ -26175,19 +26139,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <form name=\"step3Form\" class=\"css-form\">\n" +
     "    <h2 class=\"title-border\">\n" +
     "      <span class=\"number\">3</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step3', 'title_event')}}</span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step3', 'title_place')}}</span>\n" +
+    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step3.title_event\"></span>\n" +
+    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step3.title_place\"></span>\n" +
     "    </h2>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-12\">\n" +
-    "        <label for=\"gemeente-autocomplete\" id=\"gemeente-label\" ng-hide=\"selectedCity\">{{::translateEventForm('step3', 'choose_city')}}</label>\n" +
+    "        <label for=\"gemeente-autocomplete\"\n" +
+    "               id=\"gemeente-label\"\n" +
+    "               translate-once=\"eventForm.step3.choose_city\"\n" +
+    "               ng-hide=\"selectedCity\"></label>\n" +
     "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity\">\n" +
     "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "            <input type=\"text\"\n" +
     "                   id=\"gemeente-autocomplete\"\n" +
     "                   class=\"form-control uib-typeahead\"\n" +
-    "                   placeholder=\"{{::translateEventForm('step3', 'placeholder_city')}}\"\n" +
+    "                   translate-once-placeholder=\"eventForm.step3.placeholder_city\"\n" +
     "                   ng-model=\"cityAutocompleteTextField\"\n" +
     "                   udb-auto-scroll\n" +
     "                   uib-typeahead=\"city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)\"\n" +
@@ -26196,13 +26163,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                   typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                   autocomplete=\"off\" />\n" +
     "          </span>\n" +
-    "          <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cityAutoCompleteError\">\n" +
-    "            {{::translateEventForm('step3', 'problem_city')}}\n" +
+    "          <div class=\"alert alert-danger\"\n" +
+    "               ole=\"alert\"\n" +
+    "               translate-once=\"eventForm.step3.problem_city\"\n" +
+    "               ng-show=\"cityAutoCompleteError\">\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity\">\n" +
     "          <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"selectedCity\"></span>\n" +
-    "          <a href=\"\" class=\"btn btn-default btn-link\" ng-click=\"changeCitySelection()\">{{::translateEventForm('step3', 'change')}}</a>\n" +
+    "          <a href=\"\"\n" +
+    "             class=\"btn btn-default btn-link\"\n" +
+    "             translate-once=\"eventForm.step3.change\"\n" +
+    "             ng-click=\"changeCitySelection()\"></a>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -26211,12 +26183,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"row\">\n" +
     "        <div class=\"col-xs-12\">\n" +
     "          <label id=\"locatie-label\" ng-show=\"!selectedLocation\">\n" +
-    "            {{::translateEventForm('step3', 'choose_location')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingPlaces\"></i>\n" +
+    "            <span translate-once=\"eventForm.step3.choose_location\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingPlaces\"></i>\n" +
     "          </label>\n" +
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
-    "                     placeholder=\"{{::translateEventForm('step3', 'placeholder_location')}}\"\n" +
+    "                     translate-once-placeholder=\"eventForm.step3.placeholder_location\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
@@ -26230,17 +26202,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
     "                  <div class=\"panel-body\">\n" +
-    "                    <p>{{::translateEventForm('step3', 'location_not_found')}}</p>\n" +
-    "                    <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\"\n" +
-    "                            data-target=\"#waar-locatie-toevoegen\" ng-click=\"openPlaceModal()\">\n" +
-    "                      {{::translateEventForm('step3', 'add_location')}}\n" +
+    "                    <p translate-once=\"eventForm.step3.location_not_found\"></p>\n" +
+    "                    <button type=\"button\" class=\"btn btn-primary\"\n" +
+    "                            data-toggle=\"modal\"\n" +
+    "                            data-target=\"#waar-locatie-toevoegen\"\n" +
+    "                            translate-once=\"eventForm.step3.add_location\"\n" +
+    "                            ng-click=\"openPlaceModal()\">\n" +
     "                    </button>\n" +
     "                  </div>\n" +
     "                </div>\n" +
     "              </div>\n" +
     "            </span>\n" +
-    "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"locationAutoCompleteError\">\n" +
-    "              {{::translateEventForm('step3', 'location_error')}}\n" +
+    "            <div class=\"alert alert-danger\"\n" +
+    "                 role=\"alert\"\n" +
+    "                 translate-once=\"eventForm.step3.location_error\"\n" +
+    "                 ng-show=\"locationAutoCompleteError\">\n" +
     "            </div>\n" +
     "          </div>\n" +
     "\n" +
@@ -26250,7 +26226,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    class=\"btn btn-default btn-link\"\n" +
     "                    data-toggle=\"modal\"\n" +
     "                    data-target=\"#waar-locatie-toevoegen\"\n" +
-    "                    ng-click=\"changeLocationSelection()\">{{::translateEventForm('step3', 'change')}}</button>\n" +
+    "                    translate-once=\"eventForm.step3.change\"\n" +
+    "                    ng-click=\"changeLocationSelection()\"></button>\n" +
     "            <br>\n" +
     "            <span ng-bind=\"selectedLocation.address.streetAddress\"></span>\n" +
     "          </div>\n" +
@@ -26264,27 +26241,32 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
-    "              <label>{{::translateEventForm('step3', 'street')}}</label>\n" +
+    "              <label translate-once=\"eventForm.step3.street\"></label>\n" +
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
     "                     ng-model=\"newPlaceStreetAddress\"\n" +
-    "                     placeholder=\"{{::translateEventForm('step3', 'placeholder_street')}}\"\n" +
+    "                     translate-once-placeholder=\"eventForm.step3.placeholder_street\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
-    "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
-    "                {{::translateEventForm('step3', 'street_validate')}}\n" +
+    "              <span class=\"help-block\"\n" +
+    "                    translate-once=\"eventForm.step3.street_validate\"\n" +
+    "                    ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
     "              </span>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <a class=\"btn btn-primary plaats-ok\" ng-click=\"setPlaceStreetAddress(newPlaceStreetAddress)\">{{::translateEventForm('step3', 'ok')}}</a>\n" +
+    "        <a class=\"btn btn-primary plaats-ok\"\n" +
+    "           translate-once=\"eventForm.step3.ok\"\n" +
+    "           ng-click=\"setPlaceStreetAddress(newPlaceStreetAddress)\"></a>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"plaats-adres-resultaat\" ng-show=\"placeStreetAddress\">\n" +
     "        <span>\n" +
     "          <span class=\"btn-chosen\" ng-bind=\"eventFormData.address.streetAddress\"></span>\n" +
-    "          <a class=\"btn btn-link plaats-adres-wijzigen\" ng-click=\"changePlaceStreetAddress()\">{{::translateEventForm('step3', 'change')}}</a>\n" +
+    "          <a class=\"btn btn-link plaats-adres-wijzigen\"\n" +
+    "             translate-once=\"eventForm.step3.change\"\n" +
+    "             ng-click=\"changePlaceStreetAddress()\"></a>\n" +
     "        </span>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -26302,12 +26284,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <a name=\"titel\"></a>\n" +
     "  <section id=\"titel\" ng-show=\"eventFormData.showStep4\">\n" +
     "\n" +
-    "    <h2 class=\"title-border\"><span class=\"number\">4</span> <span>{{::translateEventForm('step4', 'basic_data')}}</span></h2>\n" +
+    "    <h2 class=\"title-border\"><span class=\"number\">4</span> <span translate-once=\"eventForm.step4.basic_data\"></span></h2>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-8 col-lg-7\">\n" +
-    "        <label ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step4', 'name_event')}}</label>\n" +
-    "        <label ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step4', 'name_place')}}</label>\n" +
+    "        <label ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step4.name_event\"></label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step4.name_place\"></label>\n" +
     "\n" +
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
@@ -26321,16 +26303,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"help-block\">\n" +
     "          <p>\n" +
-    "            <span ng-show=\"eventFormData.isEvent\" translate=\"eventForm.step4.help_event\"></span>\n" +
-    "            <span ng-show=\"eventFormData.isPlace\" translate=\"eventForm.step4.help_place\"></span>\n" +
-    "            <span translate=\"eventForm.step4.help_description\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step4.help_event\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step4.help_place\"></span>\n" +
+    "            <span translate-once=\"eventForm.step4.help_description\"></span>\n" +
     "          </p>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
-    "      <strong>{{::translateEventForm('step4', 'info_missing')}}</strong>\n" +
+    "      <strong translate-once=\"eventForm.step4.info_missing\"></strong>\n" +
     "      <ul>\n" +
     "        <li ng-repeat=\"error in missingInfo\" ng-bind-html=\"error\" translate>\n" +
     "          {{error}}\n" +
@@ -26338,15 +26320,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </ul>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "      {{::translateEventForm('step4', 'safe_error')}}\n" +
+    "    <div class=\"alert alert-danger\"\n" +
+    "         translate-once=\"eventForm.step4.save_error\"\n" +
+    "         ng-show=\"error\">\n" +
     "    </div>\n" +
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-click=\"validateEvent(true);\"\n" +
     "          ng-class=\"{'disabled': eventFormData.name.nl === ''}\">\n" +
-    "        {{::translateEventForm('step4', 'continue')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
     "\n" +
@@ -26361,8 +26344,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"panel panel-info\" ng-show=\"resultViewer.totalItems > 0\">\n" +
     "      <div class=\"panel-body bg-info text-info\">\n" +
-    "        <p class=\"h2\" style=\"margin-top: 0;\">{{::translateEventForm('step4', 'doubles_title')}}</p>\n" +
-    "        <p>{{::translateEventForm('step4', 'doubles_help')}}</p>\n" +
+    "        <p class=\"h2\" style=\"margin-top: 0;\" translate-once=\"eventForm.step4.doubles_title\"></p>\n" +
+    "        <p translate-once=\"eventForm.step4.doubles_help\"></p>\n" +
     "\n" +
     "        <div class=\"row clearfix\" ng-if=\"eventFormData.getType() === 'event'\">\n" +
     "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Event'}\">\n" +
@@ -26379,15 +26362,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <h3 ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
-    "      <span translate=\"step4.sure\" translate-values=\"{ name: '{{eventFormData.name.nl}}' }\"></span>\n" +
+    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name.nl}}' }\"></span>\n" +
     "    </h3>\n" +
     "    <ul class=\"list-inline\" ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
     "      <li>\n" +
-    "        <a class=\"btn btn-default\" href=\"dashboard\">{{::translateEventForm('step4', 'return_dashboard')}}</a>\n" +
+    "        <a class=\"btn btn-default\"\n" +
+    "           translate-once=\"eventForm.step4.return_dashboard\"\n" +
+    "           href=\"dashboard\"></a>\n" +
     "      </li>\n" +
     "      <li>\n" +
     "        <a class=\"btn btn-primary dubbeldetectie-doorgaan\" ng-click=\"saveEvent()\">\n" +
-    "          {{::translateEventForm('step4', 'yes_continue')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "          <span translate-once=\"eventForm.step4.yes_continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "        </a>\n" +
     "      </li>\n" +
     "    </ul>\n" +
@@ -26405,8 +26390,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <h2 class=\"title-border\">\n" +
     "      <span class=\"number\">5</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\">{{::translateEventForm('step5', 'expose_event')}}</span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\">{{::translateEventForm('step5', 'expose_place')}}</span>\n" +
+    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step5.expose_event\"></span>\n" +
+    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step5.expose_place\"></span>\n" +
     "    </h2>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
@@ -26415,7 +26400,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-titnieel\">\n" +
     "          <div class=\"extra-task state-complete\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'title')}}</em>\n" +
+    "              <em class=\"extra-task-label\" translate-once=\"eventForm.step5.title\"></em>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
     "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name.nl\"></p>\n" +
@@ -26426,7 +26411,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-beschrijving\">\n" +
     "          <div class=\"extra-task\" ng-class=\"descriptionCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'description')}}</em>\n" +
+    "              <em class=\"extra-task-label\" translate-once=\"eventForm.step5.description\"></em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingDescription\"></i>\n" +
     "            </div>\n" +
@@ -26434,8 +26419,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <section class=\"state incomplete\">\n" +
     "                <div class=\"row\">\n" +
     "                  <div class=\"col-sm-6\">\n" +
-    "                    <a class=\"btn btn-default to-filling\" ng-click=\"alterDescription()\">\n" +
-    "                      {{::translateEventForm('step5', 'add_text')}}\n" +
+    "                    <a class=\"btn btn-default to-filling\"\n" +
+    "                       translate-once=\"eventForm.step5.add_text\"\n" +
+    "                       ng-click=\"alterDescription()\">\n" +
     "                    </a>\n" +
     "                  </div>\n" +
     "                </div>\n" +
@@ -26451,35 +26437,33 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
     "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
-    "                    {{::translateEventForm('step5', 'required_200')}}\n" +
-    "                    {{::translateEventForm('step5', 'required_still')}} <span ng-bind=\"(200 - countCharacters())\"></span> {{::translateEventForm('step5', 'required_signs')}}\n" +
+    "                    <span translate-once=\"eventForm.step5.required_200\"></span>\n" +
+    "                    <span translate-once=\"eventForm.step5.required_still\"></span> <span ng-bind=\"(200 - countCharacters())\"></span> <span translate-once=\"eventForm.step5.required_signs\"></span>\n" +
     "                    <span class=\"loader\">\n" +
     "                      <span class=\"empty\"></span>\n" +
     "                      <span class=\"bar\" ng-style=\"{width : (countCharacters()/2)+'%'}\" ></span>\n" +
     "                    </span>\n" +
     "                  </p>\n" +
-    "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
-    "                    {{::translateEventForm('step5', 'required_200_help')}}\n" +
+    "                  <p class=\"tip description-info\"\n" +
+    "                     translate-once=\"eventForm.step5.required_200_help\"\n" +
+    "                     ng-if=\"descriptionInfoVisible && countCharacters() >= 200\">\n" +
     "                  </p>\n" +
     "                  <p>\n" +
-    "                    <a ng-if=\"description\" class=\"to-filling\" ng-click=\"saveDescription(true)\">\n" +
-    "                      {{::translateEventForm('step5', 'empty')}}\n" +
+    "                    <a ng-if=\"description\"\n" +
+    "                       class=\"to-filling\"\n" +
+    "                       translate-once=\"eventForm.step5.empty\"\n" +
+    "                       ng-click=\"saveDescription(true)\">\n" +
     "                    </a>\n" +
     "                  </p>\n" +
     "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
-    "                    <p ng-switch-when=\"0.17.0.0.0\">\n" +
-    "                      {{::translateEventForm('step5', 'tip_route')}}\n" +
-    "                    </p>\n" +
-    "                    <p ng-switch-when=\"0.7.0.0.0\">\n" +
-    "                      {{::translateEventForm('step5', 'tip_rondleiding')}}\n" +
-    "                    </p>\n" +
-    "                    <p ng-switch-when=\"0.14.0.0.0\">\n" +
-    "                      {{::translateEventForm('step5', 'tip_monument')}}\n" +
-    "                    </p>\n" +
+    "                    <p ng-switch-when=\"0.17.0.0.0\" translate-once=\"eventForm.step5.tip_route\"></p>\n" +
+    "                    <p ng-switch-when=\"0.7.0.0.0\" translate-once=\"eventForm.step5.tip_rondleiding\"></p>\n" +
+    "                    <p ng-switch-when=\"0.14.0.0.0\" translate-once=\"eventForm.step5.tip_monument\"></p>\n" +
     "                  </div>\n" +
     "                </div>\n" +
-    "                <div ng-show=\"descriptionError\" class=\"alert alert-danger\">\n" +
-    "                  {{::translateEventForm('step5', 'description_error')}}\n" +
+    "                <div ng-show=\"descriptionError\"\n" +
+    "                     class=\"alert alert-danger\"\n" +
+    "                     translate-once=\"eventForm.step5.description_error\">\n" +
     "                </div>\n" +
     "              </section>\n" +
     "            </div>\n" +
@@ -26491,14 +26475,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-organisator\">\n" +
     "          <div class=\"extra-task\" ng-class=\"organizerCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'organizer')}}</em>\n" +
+    "              <em class=\"extra-task-label\" translate-once=\"eventForm.step5.organizer\"></em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingOrganizer\"></i>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
     "              <section class=\"state incomplete\">\n" +
-    "                <a class=\"btn btn-default to-filling\" ng-click=\"organizerCssClass = 'state-filling'\">\n" +
-    "                  {{::translateEventForm('step5', 'add_organizer')}}\n" +
+    "                <a class=\"btn btn-default to-filling\"\n" +
+    "                   translate-once=\"eventForm.step5.add_organizer\"\n" +
+    "                   ng-click=\"organizerCssClass = 'state-filling'\">\n" +
     "                </a>\n" +
     "              </section>\n" +
     "              <section class=\"state complete\">\n" +
@@ -26514,7 +26499,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <section class=\"state filling\">\n" +
     "                <div class=\"form-group\">\n" +
     "                  <label>\n" +
-    "                    {{::translateEventForm('step5', 'choose_organizer')}} <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingOrganizers\"></i>\n" +
+    "                    <span translate-once=\"eventForm.step5.choose_organizer\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingOrganizers\"></i>\n" +
     "                  </label>\n" +
     "                  <div id=\"organisator-kiezer\">\n" +
     "                    <span class=\"twitter-typeahead\" style=\"position: relative; display: inline-block; direction: ltr;\">\n" +
@@ -26530,9 +26515,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                      <div class=\"dropdown-menu-no-results text-center\" ng-show=\"emptyOrganizerAutocomplete\">\n" +
     "                        <div class=\"panel panel-default text-center\">\n" +
     "                          <div class=\"panel-body\">\n" +
-    "                            <p>O{{::translateEventForm('step5', 'organizer_not_found')}}</p>\n" +
-    "                            <button type='button' class='btn btn-primary' ng-click=\"openOrganizerModal()\">\n" +
-    "                              {{::translateEventForm('step5', 'add_new_organizer')}}\n" +
+    "                            <p translate-once=\"eventForm.step5.organizer_not_found\"></p>\n" +
+    "                            <button type='button'\n" +
+    "                                    class='btn btn-primary'\n" +
+    "                                    translate-once=\"eventForm.step5.add_new_organizer\"\n" +
+    "                                    ng-click=\"openOrganizerModal()\">\n" +
     "                            </button>\n" +
     "                          </div>\n" +
     "                        </div>\n" +
@@ -26541,8 +26528,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </div>\n" +
     "                </div>\n" +
     "              </section>\n" +
-    "              <div ng-show=\"organizerError\" class=\"alert alert-danger\">\n" +
-    "                {{::translateEventForm('step5', 'organizer_error')}}\n" +
+    "              <div ng-show=\"organizerError\" class=\"alert alert-danger\" translate-once=\"eventForm.step5.organizer_error\">\n" +
     "              </div>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -26554,15 +26540,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"row extra-contact\">\n" +
     "          <div class=\"extra-task meer-info\" ng-class=\"contactInfoCssClass\">\n" +
     "            <div class=\"col-sm-3\">\n" +
-    "              <em class=\"extra-task-label\">{{::translateEventForm('step5', 'contact')}}</em>\n" +
+    "              <em class=\"extra-task-label\" translate-once=\"eventForm.step5.contact\"></em>\n" +
     "              <span> </span>\n" +
     "              <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingContactInfo\"></i>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"col-sm-8\">\n" +
     "              <section class=\"state incomplete\">\n" +
-    "                <a class=\"btn btn-default\" ng-click=\"addContactInfo()\">\n" +
-    "                  {{::translateEventForm('step5', 'add_contact')}}\n" +
+    "                <a class=\"btn btn-default\" ng-click=\"addContactInfo()\" translate-once=\"eventForm.step5.add_contact\">\n" +
     "                </a>\n" +
     "              </section>\n" +
     "\n" +
@@ -26577,9 +26562,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                      <td>\n" +
     "                        <select class=\"form-control\" ng-model=\"info.type\"\n" +
     "                                ng-change=\"clearInfo(); removeBookingInfo('{{info.type}}')\">\n" +
-    "                          <option value=\"url\">{{::translateEventForm('step5', 'website')}}</option>\n" +
-    "                          <option value=\"phone\">{{::translateEventForm('step5', 'phone')}}</option>\n" +
-    "                          <option value=\"email\">{{::translateEventForm('step5', 'e-mail')}}</option>\n" +
+    "                          <option value=\"url\" translate-once=\"eventForm.step5.website\"></option>\n" +
+    "                          <option value=\"phone\" translate-once=\"eventForm.step5.phone\"></option>\n" +
+    "                          <option value=\"email\" translate-once=\"eventForm.step5.e-mail\"></option>\n" +
     "                        </select>\n" +
     "                      </td>\n" +
     "                      <td>\n" +
@@ -26607,19 +26592,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                   class=\"reservatie-{{info.type}}-check reservatie-check\"\n" +
     "                                   ng-model=\"info.booking\"\n" +
     "                                   ng-click=\"toggleBookingType(info)\">\n" +
-    "                            {{::translateEventForm('step5', 'use_booking')}}\n" +
+    "                            <span translate-once=\"eventForm.step5.use_booking\"></span>\n" +
     "                          </label>\n" +
     "                          <div class=\"reservatie-website-info reservatie-info\"\n" +
     "                               ng-if=\"info.type === 'url' && info.booking\">\n" +
     "                            <div class=\"reservatie-info-stap2\">\n" +
     "                              <div class=\"weergave\">\n" +
-    "                                <p><strong>{{::translateEventForm('step5', 'booking_exposure')}}</strong></p>\n" +
+    "                                <p><strong translate-once=\"eventForm.step5.booking_exposure\"></strong></p>\n" +
     "                                <select ng-model=\"bookingModel.urlLabel\"\n" +
     "                                        ng-change=\"saveWebsitePreview()\">\n" +
-    "                                  <option value=\"Koop tickets\">{{::translateEventForm('step5', 'buy_tickets')}}</option>\n" +
-    "                                  <option value=\"Reserveer plaatsen\">{{::translateEventForm('step5', 'reserve_places')}}</option>\n" +
-    "                                  <option value=\"Controleer beschikbaarheid\">{{::translateEventForm('step5', 'check_availability')}}</option>\n" +
-    "                                  <option value=\"Schrijf je in\">{{::translateEventForm('step5', 'subscribe')}}</option>\n" +
+    "                                  <option value=\"Koop tickets\" translate-once=\"eventForm.step5.buy_tickets\"></option>\n" +
+    "                                  <option value=\"Reserveer plaatsen\" translate-once=\"eventForm.step5.reserve_places\"></option>\n" +
+    "                                  <option value=\"Controleer beschikbaarheid\" translate-once=\"eventForm.step5.check_availability\"></option>\n" +
+    "                                  <option value=\"Schrijf je in\" translate-once=\"eventForm.step5.subscribe\"></option>\n" +
     "                                </select>\n" +
     "                              </div>\n" +
     "                            </div>\n" +
@@ -26637,7 +26622,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </tr>\n" +
     "                    <tr>\n" +
     "                      <td colspan=\"3\">\n" +
-    "                        <a ng-click=\"addContactInfo()\">{{::translateEventForm('step5', 'add_more_contact')}}</a>\n" +
+    "                        <a ng-click=\"addContactInfo()\" translate-once=\"eventForm.step5.add_more_contact\"></a>\n" +
     "                      </td>\n" +
     "                    </tr>\n" +
     "                  </table>\n" +
@@ -26651,8 +26636,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </div>\n" +
     "              </div>\n" +
     "\n" +
-    "              <div ng-show=\"contactInfoError\" class=\"alert alert-danger\">\n" +
-    "                {{::translateEventForm('step5', 'contact_error')}}\n" +
+    "              <div ng-show=\"contactInfoError\" class=\"alert alert-danger\" translate-once=\"eventForm.step5.contact_error\">\n" +
     "              </div>\n" +
     "\n" +
     "            </div>\n" +
@@ -26668,11 +26652,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"image-upload\" ng-class=\"eventFormData.mediaObjects.length ? 'state-complete' : 'state-incomplete'\">\n" +
     "          <div class=\"image-upload-none state incomplete\">\n" +
     "            <span class=\"image-upload-icon\"></span>\n" +
-    "            <p class=\"muted\">{{::translateEventForm('step5', 'image_help')}}</p>\n" +
+    "            <p class=\"muted\" translate-once=\"eventForm.step5.image_help\"></p>\n" +
     "          </div>\n" +
     "\n" +
     "          <div class=\"image-upload-list state complete\" ng-if=\"eventFormData.mediaObjects.length > 0\">\n" +
-    "            <h4>{{::translateEventForm('step5', 'images')}}</h4>\n" +
+    "            <h4 translate-once=\"eventForm.step5.images\"></h4>\n" +
     "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl\">\n" +
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
@@ -26682,13 +26666,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "                  <div class=\"media-body\">\n" +
     "                    <div ng-bind=\"image.description\"></div>\n" +
-    "                    <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\">{{::translateEventForm('step5', 'copyright')}}</span></div>\n" +
+    "                    <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
     "                  </div>\n" +
     "\n" +
     "                  <div class=\"media-actions\">\n" +
-    "                      <a class=\"btn btn-xs btn-primary\" ng-click=\"editImage(image)\">{{::translateEventForm('step5', 'change')}}</a>\n" +
-    "                      <a class=\"btn btn-xs btn-danger\" ng-click=\"removeImage(image)\">{{::translateEventForm('step5', 'delete')}}</a>\n" +
-    "                      <a class=\"btn btn-xs btn-default select-main-image\" ng-click=\"selectMainImage(image)\">{{::translateEventForm('step5', 'main_image')}}</a>\n" +
+    "                      <a class=\"btn btn-xs btn-primary\" ng-click=\"editImage(image)\" translate-once=\"eventForm.step5.change\"></a>\n" +
+    "                      <a class=\"btn btn-xs btn-danger\" ng-click=\"removeImage(image)\" translate-once=\"eventForm.step5.delete\"></a>\n" +
+    "                      <a class=\"btn btn-xs btn-default select-main-image\" ng-click=\"selectMainImage(image)\" translate-once=\"eventForm.step5.main_image\"></a>\n" +
     "                  </div>\n" +
     "\n" +
     "                </div>\n" +
@@ -26697,7 +26681,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "\n" +
     "          <div class=\"text-center\">\n" +
-    "            <a class=\"btn btn-default\" href=\"#\" ng-click=\"openUploadImageModal(-1)\">{{::translateEventForm('step5', 'add_image')}}</a>\n" +
+    "            <a class=\"btn btn-default\"\n" +
+    "               href=\"#\"\n" +
+    "               translate-once=\"eventForm.step5.add_image\"\n" +
+    "               ng-click=\"openUploadImageModal(-1)\"></a>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
@@ -27076,17 +27063,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/moderation-offer.html',
-    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\">{{moc.translateModerationOffer('validate')}}</p>\n" +
+    "<p ng-show=\"moc.continueValidation()\" class=\"text-muted\" translate-once=\"moderate.validate\"></p>\n" +
     "\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-success btn-moderation\" ng-click=\"moc.approve()\">\n" +
-    "                <i class=\"fa fa-flag text-success\"></i>{{moc.translateModerationOffer('approve')}}</button>\n" +
+    "    <i class=\"fa fa-flag text-success\"></i><span translate-once=\"moderate.approve\"></span></button>\n" +
     "<button ng-if=\"moc.isReadyForValidation()\" type=\"submit\" class=\"btn btn-danger btn-moderation\" ng-click=\"moc.askForRejectionReasons()\">\n" +
-    "                <i class=\"fa fa-flag text-danger\"></i>{{moc.translateModerationOffer('reject')}}</button>\n" +
+    "    <i class=\"fa fa-flag text-danger\"></i><span translate-once=\"moderate.reject\"></span></button>\n" +
     "\n" +
-    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\"><i class=\"fa fa-flag\"></i>{{moc.translateModerationOffer('approved')}}</span>\n" +
-    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\"><i class=\"fa fa-flag\"></i>{{moc.translateModerationOffer('rejected')}}</span>\n" +
+    "<span ng-if=\"moc.isApproved()\" class=\"offer-approved text-success btn-moderation\">\n" +
+    "    <i class=\"fa fa-flag\"></i><span translate-once=\"moderate.approved\"></span>\n" +
+    "</span>\n" +
+    "<span ng-if=\"moc.isRejected()\" class=\"offer-rejected text-danger btn-moderation\">\n" +
+    "    <i class=\"fa fa-flag\"></i><span translate-once=\"moderate.rejected\"></span>\n" +
+    "</span>\n" +
     "\n" +
-    "<span ng-show=\"moc.continueValidation()\"><a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\">{{moc.translateModerationOffer('continue_validation')}}</a></span>\n"
+    "<span ng-show=\"moc.continueValidation()\">\n" +
+    "    <a ui-sref=\"management.moderation.list\" ui-sref-opts=\"{reload:true}\" id=\"continue-validation\" ng-if=\"(moc.isApproved() || moc.isRejected())\" translate-once=\"moderate.continue_validation\"></a></span>\n"
   );
 
 
@@ -28018,19 +28010,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/place-detail.html',
     "<div ng-if=\"placeIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
-    "    <h1>{{translatePlaceDetail('not_found')}}</h1>\n" +
+    "    <h1 translate-once=\"preview.not_found\"></h1>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "      <p>{{translatePlaceDetail('not_found_help')}}</p>\n" +
+    "      <p translate-once=\"preview.not_found_help\"></p>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"!finishedLoading\">\n" +
     "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
-    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\">{{translatePlaceDetail('loading')}}</span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span></p>\n" +
     "</div>\n" +
     "\n" +
     "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
@@ -28042,18 +28034,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  {{translatePlaceDetail('edit')}}</button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
-    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  {{translatePlaceDetail('delete')}}</button>\n" +
+    "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"col-xs-9 col-sm-pull-3\">\n" +
     "      <ul class=\"nav nav-tabs\">\n" +
     "        <li ng-repeat=\"tab in tabs\" ng-class=\"{active: isTabActive(tab.id)}\" role=\"tab\">\n" +
-    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" ng-bind=\"tab.header\" href=\"#\"></a>\n" +
+    "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" translate-once=\"preview.tabs.{{tab.id}}\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "\n" +
@@ -28065,25 +28057,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </colgroup>\n" +
     "          <tbody>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('title')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.title\"></span></td>\n" +
     "              <td>{{::place.name}}</td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('type')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
     "              <td>{{::place.type.label}}</td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr ng-class=\"::{muted: place.description==undefined}\">\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('description')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.description\"></span></td>\n" +
     "              <td ng-if=\"::(place.description!==undefined)\">\n" +
     "                <div ng-bind-html=\"::place.description\" class=\"event-detail-description\"></div>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"::(place.description==undefined)\">\n" +
-    "                {{translatePlaceDetail('no_description')}}\n" +
-    "              </td>\n" +
+    "              <td ng-if=\"::(place.description==undefined)\" translate-once=\"preview.no_description\"></td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('where')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "              <td>{{::place.address.streetAddress}}<br />\n" +
     "                {{::place.address.postalCode}} {{::place.address.addressLocality}}<br />\n" +
     "                {{::place.address.addressCountry}}</td>\n" +
@@ -28094,7 +28084,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <tbody>\n" +
     "            <tr>\n" +
     "              <td>\n" +
-    "                <span class=\"row-label\">{{translatePlaceDetail('labels')}}</span>\n" +
+    "                <span class=\"row-label\" translate-once=\"preview.labels\"></span>\n" +
     "              </td>\n" +
     "              <td>\n" +
     "                <p><udb-label-select labels=\"::place.labels\"\n" +
@@ -28102,10 +28092,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                  label-removed=\"labelRemoved(label)\">\n" +
     "                </udb-label-select></p>\n" +
     "                <p ng-if=\"labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "                  <span translate=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
+    "                  <span translate-once=\"preview.labels_error\" translate-values=\"{ labelName: '{{labelsError.name}}' }\"></span>\n" +
     "                </p>\n" +
     "                <p ng-if=\"labelResponse === 'success'\" class=\"alert alert-success\">\n" +
-    "                  <span translate=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
+    "                  <span translate-once=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                </p>\n" +
     "                <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
     "                  <span ng-bind=\"labelsError\"></span>\n" +
@@ -28113,10 +28103,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
-    "              <td><span class=\"row-label\">{{translatePlaceDetail('age_label')}}</span></td>\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "              <td>\n" +
     "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
-    "                <span ng-if=\"::(!place.typicalAgeRange)\">{{translatePlaceDetail('all_ages')}}</span>\n" +
+    "                <span ng-if=\"::(!place.typicalAgeRange)\" translate-once=\"preview.all_agges\"></span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "          </tbody>\n" +
@@ -29239,18 +29229,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row extra-uitpas\" ng-if=\"showUitpasInfo\">\n" +
     "    <div class=\"extra-task\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\" translate=\"uitpas.uitpasInfo.uitpas\"></em>\n" +
+    "            <em class=\"extra-task-label\" translate-once=\"uitpas.uitpasInfo.uitpas\"></em>\n" +
     "            <span> </span>\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"savingUitpas\"></i>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <div class=\"alert alert-info\" ng-show=\"!upic.showCardSystems\">\n" +
-    "                <p translate=\"uitpas.uitpasInfo.uitpas_alert\"></p>\n" +
+    "                <p translate-once=\"uitpas.uitpasInfo.uitpas_alert\"></p>\n" +
     "            </div>\n" +
     "\n" +
     "            <div ng-if=\"upic.showCardSystems\">\n" +
     "                <div class=\"alert alert-info\"\n" +
-    "                     role=\"alert\" translate=\"uitpas.uitpasInfo.uitpas_info\">\n" +
+    "                     role=\"alert\" translate-once=\"uitpas.uitpasInfo.uitpas_info\">\n" +
     "                </div>\n" +
     "\n" +
     "                <card-system-selector organisation=\"upic.organizer\" offer-data=\"upic.eventFormData\">\n" +

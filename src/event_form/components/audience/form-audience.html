@@ -1,7 +1,7 @@
 <div class="row audience" ng-if="::fac.enabled">
     <div class="extra-task state-complete">
         <div class="col-sm-3">
-            <em class="extra-task-label">{{::fac.translateAudience('entrance')}}</em>
+            <em class="extra-task-label" translate-once="audience.entrance"></em>
         </div>
         <div class="col-sm-8">
             <div class="radio">
@@ -13,7 +13,7 @@
                            id="audience-everyone"
                            value="everyone"
                            checked>
-                    {{::fac.translateAudience('everyone')}}
+                    <span translate-once="audience.everyone"></span>
                 </label>
             </div>
 
@@ -26,9 +26,11 @@
                            id="audience-members"
                            value="members"
                            aria-describedby="audience-members-help">
-                    {{::fac.translateAudience('members')}}
-                    <span id="audience-members-help" class="help-block" ng-show="fac.audienceType === 'members'">
-                        {{::fac.translateAudience('members_help')}}
+                    <span translate-once="audience.members"></span>
+                    <span id="audience-members-help"
+                          class="help-block"
+                          translate-once="audience.members_help"
+                          ng-show="fac.audienceType === 'members'">
                     </span>
                 </label>
             </div>
@@ -43,9 +45,11 @@
                            id="audience-education"
                            value="education"
                            aria-describedby="audience-education-help">
-                    {{::fac.translateAudience('education')}}
-                    <span id="audience-education-help" class="help-block" ng-show="fac.audienceType === 'education'">
-                        {{::fac.translateAudience('education_help')}}
+                    <span translate-once="audience.education"></span>
+                    <span id="audience-education-help"
+                          class="help-block"
+                          translate-once="audience.education_help"
+                          ng-show="fac.audienceType === 'education'">
                     </span>
                 </label>
             </div>

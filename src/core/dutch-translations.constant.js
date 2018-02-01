@@ -334,6 +334,11 @@ angular.module('udb.core')
       'audience': 'Toegang'
     },
     preview: {
+      tabs: {
+        'data': 'Gegevens',
+        'history': 'Historiek',
+        'publication': 'Publicatie'
+      },
       'not_found': 'Pagina niet gevonden',
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
@@ -468,7 +473,7 @@ angular.module('udb.core')
         'help_place': 'Gebruik de <strong>officiële benaming</strong>, bv. \"Gravensteen\", \"Abdijsite Herkenrode\", \"Cultuurcentrum De Werf\".',
         'help_description': 'Een <strong>uitgebreide beschrijving</strong> kan je in stap 5 toevoegen.',
         'info_missing': 'Je vulde niet alle verplichte informatie in:',
-        'safe_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je activiteit. Gelieve later opnieuw te proberen.',
         'continue': 'Doorgaan',
         'doubles_title': 'Vermijd dubbel werk',
         'doubles_help': 'We vonden gelijkaardige items. Controleer deze eerder ingevoerde items.',
@@ -493,7 +498,7 @@ angular.module('udb.core')
         'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
         'empty': 'Leegmaken',
         'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
-        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordtgeorganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
+        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordt georganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
         'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
         'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
         'organizer': 'Organisatie',

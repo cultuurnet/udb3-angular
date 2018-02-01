@@ -2,18 +2,18 @@
   <div class="empty" ng-hide="!!cm.openingHoursCollection.openingHours.length">
     <div class="well text-center add-opening-hours">
         <p>
-          <span class="permanent-title" translate="calendar.openingHours.permanent_title"></span>
-          <span class="permanent-subtitle" translate="calendar.openingHours.permanent_subtitle"></span>
+          <span class="permanent-title" translate-once="calendar.openingHours.permanent_title"></span>
+          <span class="permanent-subtitle" translate-once="calendar.openingHours.permanent_subtitle"></span>
         </p>
-        <button type="button" class="btn btn-primary" ng-click="cm.edit()" translate="calendar.openingHours.add_hours"></button>
+        <button type="button" class="btn btn-primary" ng-click="cm.edit()" translate-once="calendar.openingHours.add_hours"></button>
     </div>
   </div>
   <div class="time-table">
     <table class="table table-condensed" ng-if="!!cm.openingHoursCollection.openingHours.length">
       <thead>
-      <th translate="calendar.openingHours.opening_hours"></th>
+      <th translate-once="calendar.openingHours.opening_hours"></th>
       <th>
-        <a href="#" ng-click="cm.edit()" class="btn btn-default" translate="calendar.openingHours.change"></a>
+        <a href="#" ng-click="cm.edit()" class="btn btn-default" translate-once="calendar.openingHours.change"></a>
       </th>
       </thead>
       <tbody>
