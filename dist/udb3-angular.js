@@ -8322,7 +8322,8 @@ function EventDetail(
   offerLabeller,
   $translate,
   appConfig,
-  ModerationService
+  ModerationService,
+  RolePermission
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -8443,13 +8444,22 @@ function EventDetail(
     ModerationService
       .getMyRoles()
       .then(function(roles) {
-        getModerationItems(roles).then(function(result) {
-          angular.forEach(result.member, function(member) {
-            if (member['@id'] === $scope.eventId) {
-              $scope.moderationPermission = true;
-            }
+        var filteredRoles = _.filter(roles, function(role) {
+          var canModerate = _.filter(role.permissions, function(permission) {
+            return permission === RolePermission.AANBOD_MODEREREN;
           });
+          return canModerate.length > 0;
         });
+
+        if (filteredRoles.length) {
+          getModerationItems(roles).then(function(result) {
+            angular.forEach(result.member, function(member) {
+              if (member['@id'] === $scope.eventId) {
+                $scope.moderationPermission = true;
+              }
+            });
+          });
+        }
       });
   }
 
@@ -8631,7 +8641,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
