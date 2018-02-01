@@ -4,7 +4,7 @@
             ng-click="duplication.createDuplicate()"
             role="button"
             ng-class="{disabled: !duplication.readyForDuplication}"
-            translate="duplicate.title"></button>
+            translate-once="duplicate.title"></button>
     <i class="fa fa-circle-o-notch fa-spin" ng-show="duplication.duplicating"></i>
-    <span ng-show="duplication.asyncError" translate="duplicate.error"></span>
+    <span ng-show="duplication.asyncError" translate-once="duplicate.error"></span>
 </div>

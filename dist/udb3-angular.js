@@ -24192,17 +24192,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            ng-click=\"duplication.createDuplicate()\"\n" +
     "            role=\"button\"\n" +
     "            ng-class=\"{disabled: !duplication.readyForDuplication}\"\n" +
-    "            translate=\"duplicate.title\"></button>\n" +
+    "            translate-once=\"duplicate.title\"></button>\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"duplication.duplicating\"></i>\n" +
-    "    <span ng-show=\"duplication.asyncError\" translate=\"duplicate.error\"></span>\n" +
+    "    <span ng-show=\"duplication.asyncError\" translate-once=\"duplicate.error\"></span>\n" +
     "</div>"
   );
 
 
   $templateCache.put('templates/event-duplication-step.component.html',
-    "<h1 class=\"title\" translate=\"duplicate.title\"></h1>\n" +
+    "<h1 class=\"title\" translate-once=\"duplicate.title\"></h1>\n" +
     "\n" +
-    "<div class=\"alert alert-info\" role=\"alert\" translate=\"duplicate.description\"></div>\n" +
+    "<div class=\"alert alert-info\" role=\"alert\" translate-once=\"duplicate.description\"></div>\n" +
     "\n" +
     "<udb-event-duplication-calendar></udb-event-duplication-calendar>\n"
   );
