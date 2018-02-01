@@ -5,27 +5,23 @@
 
     <span ng-if="showOpeningHours">
       <span ng-if="getOpeningHoursCount(offer) == 1">
-        {{::translateCalendarSummary('from') | lowercase}} <span ng-bind="::offer.openingHours[0].startDate | date: 'HH:mm'"></span>
-        {{::translateCalendarSummary('till')}} <span ng-bind="::offer.openingHours[0].endDate | date: 'HH:mm'"></span>
+        <span translate-once="calendarSummary.from | uppercase"></span> <span ng-bind="::offer.openingHours[0].startDate | date: 'HH:mm'"></span>
+        <span translate-once="calendarSummary.till"></span> <span ng-bind="::offer.openingHours[0].endDate | date: 'HH:mm'"></span>
       </span>
-      <span ng-if="getOpeningHoursCount(offer) > 1">
-        {{::translateCalendarSummary('openinghours')}}
-      </span>
+      <span ng-if="getOpeningHoursCount(offer) > 1" translate-once="calendarSummary.openinghours"></span>
     </span>
   </span>
 
   <span ng-switch-when="multiple">
-     {{::translateCalendarSummary('from')}} <span ng-bind="::offer.startDate | date: 'dd/MM/yyyy'"></span>
-     {{::translateCalendarSummary('till')}} <span ng-bind="::offer.endDate | date: 'dd/MM/yyyy'"></span>
+      <span translate-once="calendarSummary.from"></span> <span ng-bind="::offer.startDate | date: 'dd/MM/yyyy'"></span>
+      <span translate-once="calendarSummary.till"></span> <span ng-bind="::offer.endDate | date: 'dd/MM/yyyy'"></span>
   </span>
 
   <span ng-switch-when="periodic">
-     {{::translateCalendarSummary('from')}} <span ng-bind="::offer.startDate | date: 'dd/MM/yyyy'"></span>
-     {{::translateCalendarSummary('till')}} <span ng-bind="::offer.endDate | date: 'dd/MM/yyyy'"></span>
+     <span translate-once="calendarSummary.from"></span> <span ng-bind="::offer.startDate | date: 'dd/MM/yyyy'"></span>
+     <span translate-once="calendarSummary.till"></span> <span ng-bind="::offer.endDate | date: 'dd/MM/yyyy'"></span>
   </span>
 
-  <span ng-switch-when="permanent">
-     {{::translateCalendarSummary('permanent')}}
-  </span>
+  <span ng-switch-when="permanent" translate-once="calendarSummary.permanent"></span>
 
 </span>

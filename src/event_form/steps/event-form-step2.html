@@ -3,8 +3,8 @@
   <section id="wanneer" ng-show="eventFormData.showStep2">
     <h2 class="title-border">
       <span class="number">2</span>
-      <span ng-show="eventFormData.isEvent">{{::translateEventForm('step2', 'date_help_event')}}</span>
-      <span ng-show="eventFormData.isPlace">{{::translateEventForm('step2', 'date_help_place')}}</span>
+      <span ng-show="eventFormData.isEvent" translate-once="eventForm.step2.date_help_event"></span>
+      <span ng-show="eventFormData.isPlace" translate-once="eventForm.step2.date_help_place"></span>
     </h2>
 
     <udb-form-place-calendar ng-if="eventFormData.isPlace"></udb-form-place-calendar>

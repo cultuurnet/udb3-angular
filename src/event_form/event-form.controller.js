@@ -20,8 +20,7 @@ function EventFormController(
     moment,
     jsonLDLangFilter,
     $q,
-    appConfig,
-    $translate
+    appConfig
 ) {
 
   // Other controllers won't load until this boolean is set to true.
@@ -211,8 +210,4 @@ function EventFormController(
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
-
-  $scope.translateEventForm = function (step, label) {
-    return $translate.instant('eventForm.' + step + '.' + label);
-  };
 }

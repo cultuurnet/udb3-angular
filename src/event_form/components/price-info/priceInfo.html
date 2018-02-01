@@ -1,7 +1,7 @@
 <div class="row extra-prijs">
   <div class="extra-task" ng-class="$ctrl.priceCssClass">
     <div class="col-sm-3">
-      <em class="extra-task-label" translate="eventForm.step5.priceInfo.price_label"></em>
+      <em class="extra-task-label" translate-once="eventForm.step5.priceInfo.price_label"></em>
         <i class="fa fa-circle-o-notch fa-spin" ng-show="$ctrl.savingPrice"></i>
     </div>
     <div class="col-sm-8">
@@ -10,21 +10,21 @@
         <section>
           <a class="btn btn-default to-filling"
              ng-click="$ctrl.priceCssClass = 'state-filling'; $ctrl.changePrice()"
-             translate="eventForm.step5.priceInfo.add_prices">
+             translate-once="eventForm.step5.priceInfo.add_prices">
           </a>
           <a class="btn btn-link"
              ng-click="$ctrl.setPriceFree()"
-             translate="eventForm.step5.priceInfo.free"></a>
+             translate-once="eventForm.step5.priceInfo.free"></a>
         </section>
       </div>
       <div ng-show="$ctrl.price.length > 0">
         <table class="table">
           <thead>
-            <td translate="eventForm.step5.priceInfo.prices"></td>
+            <td translate-once="eventForm.step5.priceInfo.prices"></td>
             <td>
               <a class="btn btn-default pull-right"
                  ng-click="$ctrl.changePrice()"
-                 translate="eventForm.step5.priceInfo.change">
+                 translate-once="eventForm.step5.priceInfo.change">
             </a>
             </td>
           </thead>
@@ -32,11 +32,11 @@
               ng-model="priceInfo">
             <td>{{priceInfo.name}}</td>
             <td>
-              <span ng-if="priceInfo.price == 0" translate="eventForm.step5.priceInfo.free">
+              <span ng-if="priceInfo.price == 0" translate-once="eventForm.step5.priceInfo.free">
                 Gratis
               </span>
               <span ng-if="priceInfo.price != 0">
-                {{priceInfo.price | currency:'€' }} <span translate="eventForm.step5.priceInfo.currency"></span>
+                {{priceInfo.price | currency:'€' }} <span translate-once="eventForm.step5.priceInfo.currency"></span>
               </span>
             </td>
           </tr>

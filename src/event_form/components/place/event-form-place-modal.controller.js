@@ -20,8 +20,7 @@
       UdbPlace,
       location,
       categories,
-      title,
-      $translate
+      title
   ) {
 
     $scope.categories = categories;
@@ -137,10 +136,6 @@
         .createOffer(udbPlace)
         .then(passOnPlaceData, showError);
     }
-
-    $scope.translateLocation = function (label) {
-      return $translate.instant('location.' + label);
-    };
 
     /**
      * Select the place that should be used.

@@ -1,11 +1,16 @@
-<p ng-show="moc.continueValidation()" class="text-muted">{{moc.translateModerationOffer('validate')}}</p>
+<p ng-show="moc.continueValidation()" class="text-muted" translate-once="moderate.validate"></p>
 
 <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-success btn-moderation" ng-click="moc.approve()">
-                <i class="fa fa-flag text-success"></i>{{moc.translateModerationOffer('approve')}}</button>
+    <i class="fa fa-flag text-success"></i><span translate-once="moderate.approve"></span></button>
 <button ng-if="moc.isReadyForValidation()" type="submit" class="btn btn-danger btn-moderation" ng-click="moc.askForRejectionReasons()">
-                <i class="fa fa-flag text-danger"></i>{{moc.translateModerationOffer('reject')}}</button>
+    <i class="fa fa-flag text-danger"></i><span translate-once="moderate.reject"></span></button>
 
-<span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation"><i class="fa fa-flag"></i>{{moc.translateModerationOffer('approved')}}</span>
-<span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation"><i class="fa fa-flag"></i>{{moc.translateModerationOffer('rejected')}}</span>
+<span ng-if="moc.isApproved()" class="offer-approved text-success btn-moderation">
+    <i class="fa fa-flag"></i><span translate-once="moderate.approved"></span>
+</span>
+<span ng-if="moc.isRejected()" class="offer-rejected text-danger btn-moderation">
+    <i class="fa fa-flag"></i><span translate-once="moderate.rejected"></span>
+</span>
 
-<span ng-show="moc.continueValidation()"><a ui-sref="management.moderation.list" ui-sref-opts="{reload:true}" id="continue-validation" ng-if="(moc.isApproved() || moc.isRejected())">{{moc.translateModerationOffer('continue_validation')}}</a></span>
+<span ng-show="moc.continueValidation()">
+    <a ui-sref="management.moderation.list" ui-sref-opts="{reload:true}" id="continue-validation" ng-if="(moc.isApproved() || moc.isRejected())" translate-once="moderate.continue_validation"></a></span>
