@@ -457,7 +457,32 @@
     {
       "label": "Kamp of vakantie",
       "id": "0.57.0.0.0",
-      "primary": false
+      "primary": false,
+      "themes": [{
+          "id": "1.7.2.0.0",
+          "label": "Avontuur"
+        },
+        {
+          "id": "1.42.0.0.0",
+          "label": "Creativiteit"
+        },
+        {
+          "id": "1.65.0.0.0",
+          "label": "Koken"
+        },
+        {
+          "id": "1.64.0.0.0",
+          "label": "Natuur"
+        },
+        {
+          "id": "1.51.12.0.0",
+          "label": "Sport"
+        },
+        {
+          "id": "1.21.0.0.0",
+          "label": "Technologie"
+        }
+      ]
     },
     {
       "label": "Kermis of feestelijkheid",

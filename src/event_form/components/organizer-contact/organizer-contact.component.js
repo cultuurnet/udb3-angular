@@ -41,7 +41,7 @@ function OrganizerContactComponent($scope) {
   function validateContact() {
     if (_.find(controller.contact, {'value': ''}) ||
         _.find(controller.contact, {'value': undefined}) ||
-        controller.organizerContactWrapper.$invalid) {
+        (controller.organizerContactWrapper.$invalid &&  controller.organizerContactWrapper.$dirty)) {
       controller.contactHasErrors = true;
     }
     else {

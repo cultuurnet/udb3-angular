@@ -678,7 +678,10 @@ angular.module('udb.core')
       uitpasInfo: {
         'uitpas': 'UiTPAS',
         'uitpas_alert': 'Dit is een UiTPAS organisator. Selecteer een prijs om specifieke UiTPAS-informatie toe te voegen.',
-        'uitpas_info': 'Dit is een UiTPAS activiteit.'
+        'uitpas_info': 'Dit is een UiTPAS activiteit.',
+        'cantChangePrice': 'Voor dit evenement zijn al UiTPAS-tickets verkocht met de bestaande prijsinformatie. Je kan de prijsinformatie niet meer wijzigen.',
+        'cantChangeOrganiser': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.',
+        'unavailable': 'UiTPAS kan momenteel niet bereikt worden, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be).'
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',

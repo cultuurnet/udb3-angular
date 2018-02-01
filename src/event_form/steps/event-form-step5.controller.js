@@ -19,7 +19,16 @@ angular
   .controller('EventFormStep5Controller', EventFormStep5Controller);
 
 /* @ngInject */
-function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizers, $uibModal, $rootScope, appConfig) {
+function EventFormStep5Controller(
+    $scope,
+    EventFormData,
+    eventCrud,
+    udbOrganizers,
+    $uibModal,
+    $rootScope,
+    appConfig,
+    udbUitpasApi
+  ) {
 
   var controller = this;
   var URL_REGEXP = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/;
@@ -104,13 +113,17 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
   $scope.selectOrganizer = selectOrganizer;
-  $scope.deleteOrganizer = deleteOrganizer;
+  $scope.deleteOrganizerHandler = deleteOrganizerHandler;
   $scope.openOrganizerModal = openOrganizerModal;
 
   // Contact info functions.
   $scope.deleteContactInfo = deleteContactInfo;
   $scope.saveContactInfo = saveContactInfo;
   $scope.addContactInfo = addContactInfo;
+
+  // Uitpas info
+  $scope.hasTicketSales = false;
+  $scope.hasUitpasError = false;
 
   // Image upload functions.
   $scope.openUploadImageModal = openUploadImageModal;
@@ -221,6 +234,26 @@ function EventFormStep5Controller($scope, EventFormData, eventCrud, udbOrganizer
     $scope.organizerError = true;
     $scope.savingOrganizer = false;
   };
+
+  function deleteOrganizerHandler() {
+    if (EventFormData.priceInfo.length > 0) {
+      udbUitpasApi.getTicketSales($scope.eventFormData.id, $scope.eventFormData.organizer)
+        .then(
+          function(hasTicketSales) {
+            if (hasTicketSales) {
+              $scope.hasTicketSales = hasTicketSales;
+            }
+            else {
+              deleteOrganizer();
+            }
+          }, function() {
+            $scope.hasUitpasError = true;
+          });
+    }
+    else {
+      deleteOrganizer();
+    }
+  }
 
   /**
    * Delete the selected organiser.
