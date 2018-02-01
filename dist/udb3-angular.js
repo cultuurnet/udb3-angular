@@ -3226,6 +3226,11 @@ angular.module('udb.core')
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
+    },
+    duplicate: {
+      title: 'Kopiëren en aanpassen',
+      description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
+      error: 'Er ging iets mis tijdens het aanmaken van een kopie!'
     }
   }
 );
@@ -24235,19 +24240,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            ng-disabled=\"duplication.duplicating\"\n" +
     "            ng-click=\"duplication.createDuplicate()\"\n" +
     "            role=\"button\"\n" +
-    "            ng-class=\"{disabled: !duplication.readyForDuplication}\">Kopiëren en aanpassen</button>\n" +
+    "            ng-class=\"{disabled: !duplication.readyForDuplication}\"\n" +
+    "            translate=\"duplicate.title\"></button>\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"duplication.duplicating\"></i>\n" +
-    "    <span ng-show=\"duplication.asyncError\">Er ging iets mis tijdens het aanmaken van een kopie!</span>\n" +
+    "    <span ng-show=\"duplication.asyncError\" translate=\"duplicate.error\"></span>\n" +
     "</div>"
   );
 
 
   $templateCache.put('templates/event-duplication-step.component.html',
-    "<h1 class=\"title\">Kopiëren en aanpassen</h1>\n" +
+    "<h1 class=\"title\" translate=\"duplicate.title\"></h1>\n" +
     "\n" +
-    "<div class=\"alert alert-info\" role=\"alert\">\n" +
-    "  Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.\n" +
-    "</div>\n" +
+    "<div class=\"alert alert-info\" role=\"alert\" translate=\"duplicate.description\"></div>\n" +
     "\n" +
     "<udb-event-duplication-calendar></udb-event-duplication-calendar>\n"
   );
