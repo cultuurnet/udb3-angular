@@ -4,19 +4,22 @@
   <form name="step3Form" class="css-form">
     <h2 class="title-border">
       <span class="number">3</span>
-      <span ng-show="eventFormData.isEvent">{{::translateEventForm('step3', 'title_event')}}</span>
-      <span ng-show="eventFormData.isPlace">{{::translateEventForm('step3', 'title_place')}}</span>
+      <span ng-show="eventFormData.isEvent" translate-once="eventForm.step3.title_event"></span>
+      <span ng-show="eventFormData.isPlace" translate-once="eventForm.step3.title_place"></span>
     </h2>
 
     <div class="row">
       <div class="col-xs-12">
-        <label for="gemeente-autocomplete" id="gemeente-label" ng-hide="selectedCity">{{::translateEventForm('step3', 'choose_city')}}</label>
+        <label for="gemeente-autocomplete"
+               id="gemeente-label"
+               translate-once="eventForm.step3.choose_city"
+               ng-hide="selectedCity"></label>
         <div id="gemeente-kiezer" ng-hide="selectedCity">
           <span style="position: relative; display: inline-block; direction: ltr;" class="twitter-typeahead">
             <input type="text"
                    id="gemeente-autocomplete"
                    class="form-control uib-typeahead"
-                   placeholder="{{::translateEventForm('step3', 'placeholder_city')}}"
+                   translate-once-placeholder="eventForm.step3.placeholder_city"
                    ng-model="cityAutocompleteTextField"
                    udb-auto-scroll
                    uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
@@ -25,13 +28,18 @@
                    typeahead-template-url="templates/city-suggestion.html"
                    autocomplete="off" />
           </span>
-          <div class="alert alert-danger" role="alert" ng-show="cityAutoCompleteError">
-            {{::translateEventForm('step3', 'problem_city')}}
+          <div class="alert alert-danger"
+               ole="alert"
+               translate-once="eventForm.step3.problem_city"
+               ng-show="cityAutoCompleteError">
           </div>
         </div>
         <div id="gemeente-gekozen" ng-show="selectedCity">
           <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="selectedCity"></span>
-          <a href="" class="btn btn-default btn-link" ng-click="changeCitySelection()">{{::translateEventForm('step3', 'change')}}</a>
+          <a href=""
+             class="btn btn-default btn-link"
+             translate-once="eventForm.step3.change"
+             ng-click="changeCitySelection()"></a>
         </div>
       </div>
     </div>
@@ -40,12 +48,12 @@
       <div class="row">
         <div class="col-xs-12">
           <label id="locatie-label" ng-show="!selectedLocation">
-            {{::translateEventForm('step3', 'choose_location')}} <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingPlaces"></i>
+            <span translate-once="eventForm.step3.choose_location"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingPlaces"></i>
           </label>
           <div id="locatie-kiezer" ng-hide="selectedLocation || loadingPlaces">
             <span style="position: relative; display: block; direction: ltr;" class="twitter-typeahead">
               <input type="text" ng-change="locationSearched()"
-                     placeholder="{{::translateEventForm('step3', 'placeholder_location')}}"
+                     translate-once-placeholder="eventForm.step3.placeholder_location"
                      class="form-control typeahead"
                      ng-model="locationAutocompleteTextField"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50"
@@ -59,17 +67,21 @@
                    ng-show="(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched">
                 <div class="panel panel-default text-center">
                   <div class="panel-body">
-                    <p>{{::translateEventForm('step3', 'location_not_found')}}</p>
-                    <button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#waar-locatie-toevoegen" ng-click="openPlaceModal()">
-                      {{::translateEventForm('step3', 'add_location')}}
+                    <p translate-once="eventForm.step3.location_not_found"></p>
+                    <button type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            data-target="#waar-locatie-toevoegen"
+                            translate-once="eventForm.step3.add_location"
+                            ng-click="openPlaceModal()">
                     </button>
                   </div>
                 </div>
               </div>
             </span>
-            <div class="alert alert-danger" role="alert" ng-show="locationAutoCompleteError">
-              {{::translateEventForm('step3', 'location_error')}}
+            <div class="alert alert-danger"
+                 role="alert"
+                 translate-once="eventForm.step3.location_error"
+                 ng-show="locationAutoCompleteError">
             </div>
           </div>
 
@@ -79,7 +91,8 @@
                     class="btn btn-default btn-link"
                     data-toggle="modal"
                     data-target="#waar-locatie-toevoegen"
-                    ng-click="changeLocationSelection()">{{::translateEventForm('step3', 'change')}}</button>
+                    translate-once="eventForm.step3.change"
+                    ng-click="changeLocationSelection()"></button>
             <br>
             <span ng-bind="selectedLocation.address.streetAddress"></span>
           </div>
@@ -93,27 +106,32 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="form-group" ng-class="{'has-error' : showValidation && step3Form.street.$error.required }">
-              <label>{{::translateEventForm('step3', 'street')}}</label>
+              <label translate-once="eventForm.step3.street"></label>
               <input class="form-control"
                      id="straat"
                      name="street"
                      ng-model="newPlaceStreetAddress"
-                     placeholder="{{::translateEventForm('step3', 'placeholder_street')}}"
+                     translate-once-placeholder="eventForm.step3.placeholder_street"
                      type="text"
                      required />
-              <span class="help-block" ng-show="showValidation && step3Form.street.$error.required">
-                {{::translateEventForm('step3', 'street_validate')}}
+              <span class="help-block"
+                    translate-once="eventForm.step3.street_validate"
+                    ng-show="showValidation && step3Form.street.$error.required">
               </span>
             </div>
           </div>
         </div>
-        <a class="btn btn-primary plaats-ok" ng-click="setPlaceStreetAddress(newPlaceStreetAddress)">{{::translateEventForm('step3', 'ok')}}</a>
+        <a class="btn btn-primary plaats-ok"
+           translate-once="eventForm.step3.ok"
+           ng-click="setPlaceStreetAddress(newPlaceStreetAddress)"></a>
       </div>
 
       <div class="plaats-adres-resultaat" ng-show="placeStreetAddress">
         <span>
           <span class="btn-chosen" ng-bind="eventFormData.address.streetAddress"></span>
-          <a class="btn btn-link plaats-adres-wijzigen" ng-click="changePlaceStreetAddress()">{{::translateEventForm('step3', 'change')}}</a>
+          <a class="btn btn-link plaats-adres-wijzigen"
+             translate-once="eventForm.step3.change"
+             ng-click="changePlaceStreetAddress()"></a>
         </span>
       </div>
     </div>

@@ -25,8 +25,7 @@ function PlaceDetail(
   $q,
   $window,
   offerLabeller,
-  appConfig,
-  $translate
+  appConfig
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -66,20 +65,14 @@ function PlaceDetail(
   $scope.placeHistory = [];
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
-  };
-
-  $scope.translatePlaceDetail = function (label) {
-    return $translate.instant('preview.' + label);
   };
 
   var language = 'nl';

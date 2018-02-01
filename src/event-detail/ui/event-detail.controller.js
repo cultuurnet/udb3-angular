@@ -86,16 +86,13 @@ function EventDetail(
 
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'history',
-      header: 'Historiek'
+      id: 'history'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deleteEvent = function () {
@@ -322,10 +319,6 @@ function EventDetail(
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
-
-  $scope.translateEventDetail = function (label) {
-    return $translate.instant('preview.' + label);
-  };
 
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);

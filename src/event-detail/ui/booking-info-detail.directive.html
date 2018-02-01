@@ -1,6 +1,6 @@
 <tr ng-class="::{muted: isEmpty(bookingInfo) || (bookingInfo.phone == null && bookingInfo.email == null && bookingInfo.url == null)}">
     <td>
-        <span class="row-label">{{translateBookingInfo('label')}}</span>
+        <span class="row-label" translate-once="booking.label"></span>
     </td>
     <td ng-if="hasAtLeastOneContactPoint()">
         <ul class="list-unstyled" >
@@ -16,5 +16,5 @@
             <li ng-if="::bookingInfo.availabilityStarts" > Van {{::bookingInfo.availabilityStarts | date}} tot {{::bookingInfo.availabilityEnds | date}}</li>
         </ul>
     </td>
-    <td ng-if="!hasAtLeastOneContactPoint()">{{translateBookingInfo('no_booking')}}</td>
+    <td ng-if="!hasAtLeastOneContactPoint()" translate-once="booking.no_booking"></td>
 </tr>

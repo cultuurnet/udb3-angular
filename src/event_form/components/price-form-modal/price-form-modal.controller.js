@@ -17,8 +17,7 @@ function PriceFormModalController(
   EventFormData,
   price,
   $filter,
-  $scope,
-  $translate
+  $scope
 ) {
   var pfmc = this;
   var originalPrice = [];
@@ -115,9 +114,5 @@ function PriceFormModalController(
     EventFormData.priceInfo = pfmc.price;
     $uibModalInstance.close();
   }
-
-  $scope.translatePrice = function (priceLabel) {
-    return $translate.instant('prices.' + priceLabel);
-  };
 
 }
