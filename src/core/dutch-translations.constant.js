@@ -689,6 +689,28 @@ angular.module('udb.core')
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
+    },
+    organizer: {
+      modal: {
+        'title': 'Nieuwe organisatie toevoegen',
+        'avoid_doubles': 'Vermijd dubbel werk',
+        'unique_notice': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+        'website': 'Website',
+        'alert_warning': 'Dit adres is al gebruikt door de organisatie \'{{organizerName}}\'. Geef een unieke website of',
+        'alert_button': 'gebruik {{organizerName}} als organisatie',
+        'name_help': 'De officiële publieke naam van de organisatie.',
+        'name_required': 'Gelieve een naam in te vullen',
+        'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
+        'doubles': 'We vonden deze gelijkaardige items:',
+        'select': 'Selecteren',
+        'your_input': 'Jij voerde in:',
+        'still_enter': 'Toch invoeren',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je organisatie.',
+        'address_error': 'Gelieve een geldig adres in te vullen.',
+        'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
+        'close': 'Sluiten',
+        'save': 'Bewaren'
+      }
     }
   }
 );
