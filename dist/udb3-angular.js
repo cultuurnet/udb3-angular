@@ -26100,6 +26100,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
+    "      </div>\n" +
     "\n" +
     "      <p class=\"col-xs-12 col-md-12\"  ng-hide=\"activeTheme === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeThemeLabel\"></span>\n" +
@@ -26107,7 +26108,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "           href=\"\" ng-click=\"resetTheme()\"\n" +
     "           translate-once=\"eventForm.step1.change\"></a>\n" +
     "      </p>\n" +
-    "    </div>\n" +
     "\n" +
     "  </section>\n" +
     "\n" +
