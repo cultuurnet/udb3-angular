@@ -3227,18 +3227,23 @@ angular.module('udb.core')
       'copyright': 'Copyright',
       'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
       'cancel': 'Annuleren',
+      'agree': 'Akkoord',
       upload: {
         'select_image': 'Selecteer je foto',
         'choose_file': 'Kies bestand',
         'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
-        'upload': 'Opladen',
-        'agree': 'Akkoord'
+        'upload': 'Opladen'
       },
       edit: {
         'title': 'Afbeelding info bewerken',
         'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
         'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
         'update': 'Bijwerken'
+      },
+      remove: {
+        'title': 'Afbeeldingen verwijderen',
+        'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
+        'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
       }
     }
   }
@@ -24960,20 +24965,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\">\n" +
     "      <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
-    "    <h4 class=\"modal-title\">Afbeeldingen verwijderen</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"images.remove.title\"></h4>\n" +
     "  </div>\n" +
     "  <div class=\"modal-body\">\n" +
     "\n" +
-    "    <p>Ben je zeker dat je deze afbeelding wil verwijderen?</p>\n" +
+    "    <p translate-once=\"images.remove.sure\"></p>\n" +
     "\n" +
-    "    <div ng-show=\"error\" class=\"alert alert-danger\">Er ging iets mis bij het verwijderen van de afbeelding.</div>\n" +
+    "    <div ng-show=\"error\" class=\"alert alert-danger\">\n" +
+    "      <span translate-once=\"images.remove.save_error\"></span>\n" +
+    "    </div>\n" +
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button class=\"btn btn-primary\" ng-click=\"removeImage()\">\n" +
-    "      Akkoord <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.agree\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
@@ -25042,7 +25049,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
     "      <span translate-once=\"images.upload.upload\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
-    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\" translate-once=\"images.upload.agree\"></button>\n" +
+    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\" translate-once=\"images.agree\"></button>\n" +
     "  </div>\n" +
     "</div>\n"
   );

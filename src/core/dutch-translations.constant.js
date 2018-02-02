@@ -710,6 +710,11 @@ angular.module('udb.core')
         'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
         'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
         'update': 'Bijwerken'
+      },
+      remove: {
+        'title': 'Afbeeldingen verwijderen',
+        'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
+        'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
       }
     }
   }
