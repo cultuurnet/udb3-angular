@@ -3239,6 +3239,14 @@ angular.module('udb.core')
         'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
         'close': 'Sluiten',
         'save': 'Bewaren'
+      },
+      address: {
+        'label_street': 'Straat en nummer',
+        'help_street': 'Gelieve straat en nummer in te geven.',
+        'label_city': 'Gemeente',
+        'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
+        'error_city': 'Gelieve een gemeente in te geven.',
+        'change': 'Wijzigen'
       }
     }
   }
@@ -25170,7 +25178,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "            <div class=\"form-group\"\n" +
     "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                <label>Straat en nummer</label>\n" +
+    "                <label translate-once=\"organizer.address.label_street\"></label>\n" +
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
@@ -25180,9 +25188,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
     "                <span class=\"has-error\"\n" +
     "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                    <span class=\"help-block\">\n" +
-    "                        Gelieve straat en nummer in te geven.\n" +
-    "                    </span>\n" +
+    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
     "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -25193,8 +25199,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
     "                <div class=\"form-group\"\n" +
     "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
-    "                        Gemeente\n" +
+    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" translate-once=\"organizer.address.label_city\">\n" +
     "                    </label>\n" +
     "                    <div id=\"gemeente-kiezer\">\n" +
     "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
@@ -25208,13 +25213,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                               typeahead-min-length=\"2\"\n" +
     "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                               autocomplete=\"off\">\n" +
-    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
-    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\" translate-once=\"organizer.address.help_city\">\n" +
     "                        </span>\n" +
     "                        <span class=\"has-error\"\n" +
     "                              ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                            <span class=\"help-block\">\n" +
-    "                                Gelieve een gemeente in te geven.\n" +
+    "                            <span class=\"help-block\" translate-once=\"organizer.address.error_city\">\n" +
     "                            </span>\n" +
     "                        </span>\n" +
     "                    </div>\n" +
@@ -25222,7 +25225,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
     "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
-    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\">Wijzigen</a>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
