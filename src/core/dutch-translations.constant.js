@@ -718,6 +718,21 @@ angular.module('udb.core')
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Geef een URL in',
+        'enter_email': 'Geef een e-mailadres in',
+        'enter_phone': 'Geef een telefoonnummer in<small class="text-muted">, bv. 011 32 43 54</small>',
+        'required': 'Gelieve dit veld niet leeg te laten.',
+        'valid_url': 'Gelieve een geldige url in te vullen.',
+        'valid_email': 'Gelieve een geldig e-mailadres in te vullen.',
+        'valid_phone': 'Gelieve een geldig telefoonnummer in te vullen.',
+        'cancel': 'Annuleren',
+        'add': 'Toevoegen',
+        'add_phone': 'Telefoonnummer toevoegen',
+        'add_email': 'E-mailadres toevoegen',
+        'add_url': 'Andere website toevoegen'
       }
     }
   }

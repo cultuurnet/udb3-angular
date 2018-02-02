@@ -3247,6 +3247,21 @@ angular.module('udb.core')
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Geef een URL in',
+        'enter_email': 'Geef een e-mailadres in',
+        'enter_phone': 'Geef een telefoonnummer in<small class="text-muted">, bv. 011 32 43 54</small>',
+        'required': 'Gelieve dit veld niet leeg te laten.',
+        'valid_url': 'Gelieve een geldige url in te vullen.',
+        'valid_email': 'Gelieve een geldig e-mailadres in te vullen.',
+        'valid_phone': 'Gelieve een geldig telefoonnummer in te vullen.',
+        'cancel': 'Annuleren',
+        'add': 'Toevoegen',
+        'add_phone': 'Telefoonnummer toevoegen',
+        'add_email': 'E-mailadres toevoegen',
+        'add_url': 'Andere website toevoegen'
       }
     }
   }
@@ -25236,7 +25251,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/organizer-contact.html',
     "<div class=\"row\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
-    "        <p><strong>Contact</strong></p>\n" +
+    "        <p><strong translate-once=\"organizer.contact.title\"></strong></p>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
@@ -25259,9 +25274,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"panel-body\">\n" +
     "      <form name=\"occ.organizerContactWrapper\">\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
-    "          <label ng-switch-when=\"url\">Geef een URL in</label>\n" +
-    "          <label ng-switch-when=\"email\">Geef een e-mailadres in</label>\n" +
-    "          <label ng-switch-when=\"phone\">Geef een telefoonnummer in<small class=\"text-muted\">, bv. 011 32 43 54</small></label>\n" +
+    "          <label ng-switch-when=\"url\"><span translate-once=\"organizer.contact.enter_url\"></span></label>\n" +
+    "          <label ng-switch-when=\"email\"><span translate-once=\"organizer.contact.enter_email\"></span></label>\n" +
+    "          <label ng-switch-when=\"phone\"><span translate-once=\"organizer.contact.enter_phone\"></span></label>\n" +
     "        </div>\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
@@ -25269,10 +25284,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldige url in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_url\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25282,10 +25297,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"!occ.isPristine && mailContactForm.email.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_email\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25295,21 +25310,20 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"!occ.isPristine && phoneContactForm.phone.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig telefoonnummer in te vullen.</p>\n" +
+    "                          <span translate-once=\"organizer.contact.valid_phone\"></span>\n" +
+    "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\">\n" +
-    "            Annuleren\n" +
+    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\" translate-once=\"organizer.contact.cancel\">\n" +
     "        </button>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\">\n" +
-    "            Toevoegen\n" +
+    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\" translate-once=\"organizer.contact.add\">\n" +
     "        </button>\n" +
     "\n" +
     "      </form>\n" +
@@ -25320,9 +25334,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row\" ng-hide=\"occ.addingContactEntry\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\" translate-once=\"organizer.contact.add_phone\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\" translate-once=\"organizer.contact.add_email\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\" translate-once=\"organizer.contact.add_url\"></a></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n"
