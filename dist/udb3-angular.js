@@ -3218,6 +3218,28 @@ angular.module('udb.core')
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
+    },
+    dashboard: {
+      'welcome': 'Welkom,',
+      'no_items': 'Je hebt nog geen items toegevoegd.',
+      'add_activity': 'Een activiteit of locatie toevoegen?',
+      'recent': 'Recent',
+      'add': 'Toevoegen',
+      directive: {
+        'no_publish': 'Niet gepubliceerd!',
+        'online': 'Online op',
+        'edit': 'Bewerken',
+        'example': 'Voorbeeld',
+        'delete': 'Verwijderen',
+        'expired_events': 'Afgelopen evenementen'
+      },
+      delete: {
+        'sure': 'Ben je zeker dat je \"{{name}}\" wil verwijderen?',
+        'error_location': 'De locatie \"{{name}}\" kan niet verwijderd worden omdat er activiteiten gepland zijn.',
+        'error': 'Er ging iets fout bij het verwijderen van de activiteit.',
+        'cancel': 'Annuleren',
+        'delete': 'Verwijderen'
+      }
     }
   }
 );
@@ -24011,8 +24033,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <strong>\n" +
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
-    "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
-    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
+    "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\" translate-once=\"dashboard.directive.no_publish\"></span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\"><span translate-once=\"dashboard.directive.online\"></span> <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
     "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
@@ -24026,22 +24048,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "      <ul uib-dropdown-menu role=\"menu\">\n" +
     "        <li role=\"menuitem\">\n" +
-    "          <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
+    "          <a ng-href=\"{{ event.url  + '/preview' }}\" translate-once=\"dashboard.directive.example\"></a>\n" +
     "        </li>\n" +
     "        <li class=\"divider\"></li>\n" +
     "        <li role=\"menuitem\">\n" +
-    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
+    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\" translate-once=\"dashboard.directive.delete\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "    </div>\n" +
     "  </span>\n" +
     "  <span ng-if=\"::offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right\">\n" +
-    "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
+    "      <span class=\"text-muted\" translate-once=\"dashboard.directive.expired_events\"></span>\n" +
     "    </div>\n" +
     "  </span>\n" +
     "</td>\n"
@@ -24110,7 +24132,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/dashboard.html',
     "<h1 class=\"title\" id=\"page-title\">\n" +
-    "  Welkom, <span ng-bind=\"dash.username\"></span>\n" +
+    "  <span translate-once=\"dashboard.welcome\"></span> <span ng-bind=\"dash.username\"></span>\n" +
     "</h1>\n" +
     "\n" +
     "<div class=\"text-center\" ng-show=\"dash.pagedItemViewer.loading\">\n" +
@@ -24128,8 +24150,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
     "        <div class=\"panel-body text-center\">\n" +
-    "          <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
-    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of locatie toevoegen?</a></span>\n" +
+    "          <p class=\"text-center\"><span translate-once=\"dashboard.no_items\"></span>\n" +
+    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\" translate-once=\"dashboard.add_activity\"></a></span>\n" +
     "          </p>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -24137,9 +24159,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.recent\"></span>\n" +
     "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
-    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
+    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add\"></span></a>\n" +
     "            </span>\n" +
     "          </p>\n" +
     "        </div>\n" +

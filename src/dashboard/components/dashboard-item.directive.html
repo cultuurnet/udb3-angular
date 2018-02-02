@@ -2,8 +2,8 @@
   <strong>
     <a ng-href="{{ event.url  + '/preview' }}" ng-bind="::event.name"></a>
   </strong>
-  <span ng-if="event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' " class="label label-default">Niet gepubliceerd</span>
-  <span class="label label-default" ng-if="offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate">Online op <span ng-bind="::event.availableFrom | date:'yyyy-MM-dd'"></span></span>
+  <span ng-if="event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' " class="label label-default" translate-once="dashboard.directive.no_publish"></span>
+  <span class="label label-default" ng-if="offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate"><span translate-once="dashboard.directive.online"></span> <span ng-bind="::event.availableFrom | date:'yyyy-MM-dd'"></span></span>
   <br/>
   <small>
     <span class="dashboard-item-type" ng-bind="::event.type.label"></span>
@@ -17,22 +17,22 @@
 <td ng-if="!offerCtrl.fetching">
   <span ng-if="::!offerCtrl.offerExpired">
     <div class="pull-right btn-group" uib-dropdown>
-      <a class="btn btn-default" ng-href="{{ event.url + '/edit' }}">Bewerken</a>
+      <a class="btn btn-default" ng-href="{{ event.url + '/edit' }}" translate-once="dashboard.directive.edit"></a>
       <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
       <ul uib-dropdown-menu role="menu">
         <li role="menuitem">
-          <a ng-href="{{ event.url  + '/preview' }}">Voorbeeld</a>
+          <a ng-href="{{ event.url  + '/preview' }}" translate-once="dashboard.directive.example"></a>
         </li>
         <li class="divider"></li>
         <li role="menuitem">
-          <a href="" ng-click="dash.openDeleteConfirmModal(event)">Verwijderen</a>
+          <a href="" ng-click="dash.openDeleteConfirmModal(event)" translate-once="dashboard.directive.delete"></a>
         </li>
       </ul>
     </div>
   </span>
   <span ng-if="::offerCtrl.offerExpired">
     <div class="pull-right">
-      <span class="text-muted">Afgelopen evenement</span>
+      <span class="text-muted" translate-once="dashboard.directive.expired_events"></span>
     </div>
   </span>
 </td>

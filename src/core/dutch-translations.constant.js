@@ -689,6 +689,28 @@ angular.module('udb.core')
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
+    },
+    dashboard: {
+      'welcome': 'Welkom,',
+      'no_items': 'Je hebt nog geen items toegevoegd.',
+      'add_activity': 'Een activiteit of locatie toevoegen?',
+      'recent': 'Recent',
+      'add': 'Toevoegen',
+      directive: {
+        'no_publish': 'Niet gepubliceerd!',
+        'online': 'Online op',
+        'edit': 'Bewerken',
+        'example': 'Voorbeeld',
+        'delete': 'Verwijderen',
+        'expired_events': 'Afgelopen evenementen'
+      },
+      delete: {
+        'sure': 'Ben je zeker dat je \"{{name}}\" wil verwijderen?',
+        'error_location': 'De locatie \"{{name}}\" kan niet verwijderd worden omdat er activiteiten gepland zijn.',
+        'error': 'Er ging iets fout bij het verwijderen van de activiteit.',
+        'cancel': 'Annuleren',
+        'delete': 'Verwijderen'
+      }
     }
   }
 );
