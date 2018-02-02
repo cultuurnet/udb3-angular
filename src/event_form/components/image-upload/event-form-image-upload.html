@@ -6,9 +6,9 @@
   <div class="modal-body">
 
     <p ng-show="showAgreements">
-      <span translate-once="images.upload.agreement"></span>
-       <a ng-href="{{::userAgreementUrl}}" target="_blank" translate-once="images.upload.conditions"></a>.
-       <a ng-href="{{::copyrightUrl}}" target="_blank" translate-once="images.upload.copyright_info"></a>
+      <span translate-once="images.agreement"></span>
+       <a ng-href="{{::userAgreementUrl}}" target="_blank" translate-once="images.conditions"></a>.
+       <a ng-href="{{::copyrightUrl}}" target="_blank" translate-once="images.copyright_info"></a>
     </p>
     <div ng-hide="showAgreements">
       <div class="form-group">
@@ -31,20 +31,20 @@
       </div>
 
       <div class="form-group">
-        <label><span translate-once="images.upload.description"></span> <strong class="text-danger">*</strong></label>
+        <label><span translate-once="images.description"></span> <strong class="text-danger">*</strong></label>
         <input type="text" class="form-control" ng-model="description" required>
       </div>
 
       <div class="form-group">
-        <label><span translate-once="images.upload.copyright"></span> <strong class="text-danger">*</strong></label>
+        <label><span translate-once="images.copyright"></span> <strong class="text-danger">*</strong></label>
         <input type="text" class="form-control" ng-model="copyright" required>
-        <p class="help-block" translate-once="images.upload.copyright_help"></p>
+        <p class="help-block" translate-once="images.copyright_help"></p>
       </div>
 
       <p class="image-copyright-agreements">
-        <span translate-once="images.upload.agreement"></span>
-        <a ng-href="{{::userAgreementUrl}}" target="_blank" translate-once="images.upload.conditions"></a>.
-        <a ng-href="{{::copyrightUrl}}" target="_blank" translate-once="images.upload.copyright_info"></a>
+        <span translate-once="images.agreement"></span>
+        <a ng-href="{{::userAgreementUrl}}" target="_blank" translate-once="images.conditions"></a>.
+        <a ng-href="{{::copyrightUrl}}" target="_blank" translate-once="images.copyright_info"></a>
       </p>
     </div>
 
@@ -54,10 +54,10 @@
 
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancel()" translate-once="images.upload.cancel"></button>
+    <button type="button" class="btn btn-default" ng-click="cancel()" translate-once="images.cancel"></button>
     <button type="button" class="btn btn-primary" ng-hide="showAgreements" ng-disabled="!allFieldsValid() || saving" ng-click="addImage()">
       <span translate-once="images.upload.upload"></span> <i ng-show="saving" class="fa fa-circle-o-notch fa-spin"></i>
     </button>
-    <button class="btn btn-primary" ng-show="showAgreements" ng-click="acceptAgreements()" translate-once="images.upload.agree"></button>
+    <button class="btn btn-primary" ng-show="showAgreements" ng-click="acceptAgreements()" translate-once="images.agree"></button>
   </div>
 </div>

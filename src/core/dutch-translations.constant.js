@@ -691,19 +691,25 @@ angular.module('udb.core')
       }
     },
     images: {
+      'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+      'conditions': 'algemene voorwaarden',
+      'copyright_info': 'Meer informatie over copyright',
+      'description': 'Beschrijving',
+      'copyright': 'Copyright',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'cancel': 'Annuleren',
+      'agree': 'Akkoord',
       upload: {
-        'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
-        'conditions': 'algemene voorwaarden',
-        'copyright_info': 'Meer informatie over copyright',
         'select_image': 'Selecteer je foto',
         'choose_file': 'Kies bestand',
         'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
-        'description': 'Beschrijving',
-        'copyright': 'Copyright',
-        'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
-        'cancel': 'Annuleren',
-        'upload': 'Opladen',
-        'agree': 'Akkoord'
+        'upload': 'Opladen'
+      },
+      edit: {
+        'title': 'Afbeelding info bewerken',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'update': 'Bijwerken'
       }
     }
   }
