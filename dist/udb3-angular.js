@@ -3218,6 +3218,22 @@ angular.module('udb.core')
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
+    },
+    images: {
+      upload: {
+        'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+        'conditions': 'algemene voorwaarden',
+        'copyright_info': 'Meer informatie over copyright',
+        'select_image': 'Selecteer je foto',
+        'choose_file': 'Kies bestand',
+        'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
+        'description': 'Beschrijving',
+        'copyright': 'Copyright',
+        'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+        'cancel': 'Annuleren',
+        'upload': 'Opladen',
+        'agree': 'Akkoord'
+      }
     }
   }
 );
@@ -24971,15 +24987,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <p ng-show=\"showAgreements\">\n" +
-    "      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "       Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "       wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "      <span translate-once=\"images.upload.agreement\"></span>\n" +
+    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.upload.conditions\"></a>.\n" +
+    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.upload.copyright_info\"></a>\n" +
     "    </p>\n" +
     "    <div ng-hide=\"showAgreements\">\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label for=\"inputFile\">Selecteer je foto</label>\n" +
+    "        <label for=\"inputFile\" translate-once=\"images.upload.select_image\"></label>\n" +
     "        <p>\n" +
     "          <button type=\"file\"\n" +
     "                  class=\"btn btn-primary\"\n" +
@@ -24987,35 +25001,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  ngf-select=\"selectFile($file, $invalidFiles)\"\n" +
     "                  accept=\"image/*\"\n" +
     "                  ngf-max-size=\"{{maxFileSize}}\">\n" +
-    "            Kies bestand</button>\n" +
+    "            <span translate-once=\"images.upload.choose_file\"></span></button>\n" +
     "        </p>\n" +
     "\n" +
     "        <p ng-show=\"selectedFile\">\n" +
     "          <span ng-bind=\"selectedFile.name\"></span>\n" +
     "        </p>\n" +
     "\n" +
-    "        <p class=\"help-block\">\n" +
-    "          De maximale grootte van je afbeelding is <span ng-bind=\"maxFileSize\"></span> en heeft als type .jpeg, .gif of .png</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.upload.max_filesize\" translate-values=\"{ maxFileSize: '{{maxFileSize}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.upload.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.upload.copyright\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyright\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.upload.copyright_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <p class=\"image-copyright-agreements\">\n" +
-    "        Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "        Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "        wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "        <span translate-once=\"images.upload.agreement\"></span>\n" +
+    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.upload.conditions\"></a>.\n" +
+    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.upload.copyright_info\"></a>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "\n" +
@@ -25025,11 +25035,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.upload.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
-    "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.upload.upload\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
-    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
+    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\" translate-once=\"images.upload.agree\"></button>\n" +
     "  </div>\n" +
     "</div>\n"
   );

@@ -689,6 +689,22 @@ angular.module('udb.core')
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
+    },
+    images: {
+      upload: {
+        'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+        'conditions': 'algemene voorwaarden',
+        'copyright_info': 'Meer informatie over copyright',
+        'select_image': 'Selecteer je foto',
+        'choose_file': 'Kies bestand',
+        'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
+        'description': 'Beschrijving',
+        'copyright': 'Copyright',
+        'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+        'cancel': 'Annuleren',
+        'upload': 'Opladen',
+        'agree': 'Akkoord'
+      }
     }
   }
 );
