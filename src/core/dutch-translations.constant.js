@@ -547,6 +547,12 @@ angular.module('udb.core')
           'from': 'Van',
           'till': 'Tot'
         }
+      },
+      publish: {
+        'publish_now': 'Meteen publiceren',
+        'publish_later': 'Later publiceren',
+        'edit_done': 'Klaar met bewerken',
+        'online_from': 'Online vanaf'
       }
     },
     calendar: {
