@@ -11,8 +11,15 @@ angular
   .controller('FormCalendarController', FormCalendarController);
 
 /* @ngInject */
-function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $controller) {
+function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $controller, appConfig) {
   var calendar = this;
+  calendar.onlySingleDay = false;
+
+  if (appConfig.eventOnSingleDay !== 'undefined') {
+    if (appConfig.eventOnSingleDay.toggle !== 'undefined') {
+      calendar.onlySingleDay = appConfig.eventOnSingleDay.toggle;
+    }
+  }
 
   $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
 
