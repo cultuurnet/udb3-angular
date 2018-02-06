@@ -15,6 +15,10 @@
   <div class="row udb-dashboard">
     <div class="col-xs-12">
 
+      <div class="alert alert-info" ng-if="!dash.toggleAddOffer && dash.addOfferReplaceMessage">
+        <span ng-bind-html="::dash.addOfferReplaceMessage"></span>
+      </div>
+
       <div class="panel panel-default no-new no-data" ng-hide="dash.pagedItemViewer.events.length">
         <div class="panel-body text-center">
           <p class="text-center">Je hebt nog geen items toegevoegd.

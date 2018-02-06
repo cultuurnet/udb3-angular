@@ -5931,7 +5931,16 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController(
+      $document,
+      $uibModal,
+      udbApi,
+      eventCrud,
+      offerLocator,
+      SearchResultViewer,
+      appConfig,
+      moment
+  ) {
 
     var dash = this;
 
@@ -5941,8 +5950,31 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.username = '';
     dash.hideOnlineDate = false;
 
-    if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
-      dash.toggleAddOffer = appConfig.toggleAddOffer;
+    if (typeof(appConfig.addOffer) !== 'undefined') {
+      if (typeof(appConfig.addOffer.toggleAddOffer) !== 'undefined') {
+        dash.toggleAddOffer = appConfig.addOffer.toggleAddOffer;
+
+        if (typeof(appConfig.addOffer.embargoDate) !== 'undefined' ||
+            appConfig.addOffer.embargoDate !== '') {
+          if (moment() > moment(appConfig.addOffer.embargoDate)) {
+            dash.toggleAddOffer = false;
+          }
+          else {
+            dash.toggleAddOffer = true;
+          }
+        }
+      }
+      else {
+        dash.toggleAddOffer = true;
+      }
+
+      if (typeof(appConfig.addOffer.replaceMessage) !== 'undefined' ||
+          appConfig.addOffer.replaceMessage !== '') {
+        dash.addOfferReplaceMessage = appConfig.addOffer.replaceMessage;
+      }
+      else {
+        dash.addOfferReplaceMessage = '';
+      }
     }
     else {
       dash.toggleAddOffer = true;
@@ -6048,7 +6080,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
 
 })();
 })();
@@ -24125,6 +24157,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <div class=\"row udb-dashboard\">\n" +
     "    <div class=\"col-xs-12\">\n" +
+    "\n" +
+    "      <div class=\"alert alert-info\" ng-if=\"!dash.toggleAddOffer && dash.addOfferReplaceMessage\">\n" +
+    "        <span ng-bind-html=\"::dash.addOfferReplaceMessage\"></span>\n" +
+    "      </div>\n" +
     "\n" +
     "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
     "        <div class=\"panel-body text-center\">\n" +

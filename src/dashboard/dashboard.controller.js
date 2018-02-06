@@ -13,7 +13,16 @@
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController(
+      $document,
+      $uibModal,
+      udbApi,
+      eventCrud,
+      offerLocator,
+      SearchResultViewer,
+      appConfig,
+      moment
+  ) {
 
     var dash = this;
 
@@ -23,8 +32,31 @@
     dash.username = '';
     dash.hideOnlineDate = false;
 
-    if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
-      dash.toggleAddOffer = appConfig.toggleAddOffer;
+    if (typeof(appConfig.addOffer) !== 'undefined') {
+      if (typeof(appConfig.addOffer.toggleAddOffer) !== 'undefined') {
+        dash.toggleAddOffer = appConfig.addOffer.toggleAddOffer;
+
+        if (typeof(appConfig.addOffer.embargoDate) !== 'undefined' ||
+            appConfig.addOffer.embargoDate !== '') {
+          if (moment() > moment(appConfig.addOffer.embargoDate)) {
+            dash.toggleAddOffer = false;
+          }
+          else {
+            dash.toggleAddOffer = true;
+          }
+        }
+      }
+      else {
+        dash.toggleAddOffer = true;
+      }
+
+      if (typeof(appConfig.addOffer.replaceMessage) !== 'undefined' ||
+          appConfig.addOffer.replaceMessage !== '') {
+        dash.addOfferReplaceMessage = appConfig.addOffer.replaceMessage;
+      }
+      else {
+        dash.addOfferReplaceMessage = '';
+      }
     }
     else {
       dash.toggleAddOffer = true;
