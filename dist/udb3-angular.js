@@ -13573,7 +13573,7 @@ function EventFormStep5Controller(
   $scope.savingOrganizer = false;
 
   // Price info
-  $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
+  $scope.disablePriceInfo = _.get(appConfig, 'disablePriceInfo');
 
   // Booking & tickets vars.
   $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
@@ -26570,7 +26570,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\" event-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\"></price-info>\n" +
+    "        <price-info price=\"price\" ng-if=\"!disablePriceInfo\" event-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"eventFormData.priceInfo\"></uitpas-info>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
