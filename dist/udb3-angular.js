@@ -9315,21 +9315,14 @@ angular
   .controller('FormCalendarController', FormCalendarController);
 
 /* @ngInject */
-function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $controller, appConfig) {
+function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $controller) {
   var calendar = this;
-  calendar.onlySingleDay = false;
-
-  if (appConfig.eventOnSingleDay !== 'undefined') {
-    if (appConfig.eventOnSingleDay.toggle !== 'undefined') {
-      calendar.onlySingleDay = appConfig.eventOnSingleDay.toggle;
-    }
-  }
 
   $controller('BaseCalendarController', {calendar: calendar, $scope: $scope});
 
   calendar.init(EventFormData, OpeningHoursCollection);
 }
-FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller", "appConfig"];
+FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller"];
 })();
 
 // Source: src/event_form/components/calendar/form-event-calendar.component.js
@@ -24833,7 +24826,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/form-event-calendar.component.html',
     "<div class=\"calendar-type-picker\">\n" +
-    "    <div ng-show=\"!calendar.onlySingleDay\" class=\"calendar-type-options\">\n" +
+    "    <div class=\"calendar-type-options\">\n" +
     "\n" +
     "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
@@ -24893,7 +24886,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </div>\n" +
     "                </div>\n" +
     "\n" +
-    "                <a ng-show=\"!calendar.onlySingleDay\" href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate-once=\"calendar.add_days\"></a>\n" +
+    "                <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate-once=\"calendar.add_days\"></a>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +

@@ -3,17 +3,6 @@
 describe('Controller: Form Calendar', function () {
   var $controller, EventFormData, $scope;
 
-  beforeEach(module('udb.core', function ($provide) {
-    var appConfig = {
-      eventOnSingleDay: {
-        toggle: false,
-        date: ''
-      }
-    };
-
-    $provide.constant('appConfig', appConfig);
-  }));
-
   beforeEach(module('udb.event-form'));
 
   beforeEach(inject(function($injector, $rootScope) {

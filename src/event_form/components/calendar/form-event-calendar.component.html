@@ -1,5 +1,5 @@
 <div class="calendar-type-picker">
-    <div ng-show="!calendar.onlySingleDay" class="calendar-type-options">
+    <div class="calendar-type-options">
 
         <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': calendar.type === 'single'}">
             <img src="../images/form-calendar/days.svg" class="calendar-type-icon">
@@ -59,7 +59,7 @@
                     </div>
                 </div>
 
-                <a ng-show="!calendar.onlySingleDay" href="#" ng-click="calendar.createTimeSpan()" class="add-day-link" translate-once="calendar.add_days"></a>
+                <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link" translate-once="calendar.add_days"></a>
             </div>
 
             <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
