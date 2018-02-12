@@ -5973,7 +5973,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         dash.addOfferExpirationMessage = appConfig.addOffer.expirationMessage;
       }
       else {
-        dash.addOfferExpirationMessage = '';
+        dash.addOfferMessage = '';
       }
     }
     else {
@@ -9212,11 +9212,12 @@ angular
   });
 
 /** @inject */
-function FormCalendarDatepickerController() {
+function FormCalendarDatepickerController(appConfig) {
   var datepicker = this;
   var options = {
     minDate: new Date(),
-    showWeeks: false
+    showWeeks: false,
+    customClass: getDayClass
   };
 
   datepicker.$onInit = function() {
@@ -9238,7 +9239,20 @@ function FormCalendarDatepickerController() {
       datepicker.ngModel.$setViewValue(day.toDate());
     }
   };
+
+  function getDayClass(data) {
+    if (appConfig.calendarHighlight.date !== '') {
+      var dayToCheck = moment(data.date);
+      var highlightDate = moment(appConfig.calendarHighlight.date);
+
+      if (dayToCheck.isSame(highlightDate, data.mode)) {
+        return appConfig.calendarHighlight.extraClass;
+      }
+    }
+  }
 }
+
+FormCalendarDatepickerController.$inject = ['appConfig'];
 })();
 
 // Source: src/event_form/components/calendar/form-calendar-period.component.js
