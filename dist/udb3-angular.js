@@ -5954,13 +5954,15 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
         dash.toggleAddOffer = appConfig.addOffer.toggle;
 
-        if (typeof(appConfig.addOffer.expirationDate) !== 'undefined' ||
-            appConfig.addOffer.expirationDate !== '') {
-          if (moment() > moment(appConfig.addOffer.expirationDate)) {
-            dash.toggleAddOffer = false;
-          }
-          else {
-            dash.toggleAddOffer = true;
+        if (appConfig.addOffer.toggle) {
+          if (typeof(appConfig.addOffer.expirationDate) !== 'undefined' ||
+              appConfig.addOffer.expirationDate !== '') {
+            if (moment().isAfter(moment(appConfig.addOffer.expirationDate))) {
+              dash.toggleAddOffer = false;
+            }
+            else {
+              dash.toggleAddOffer = true;
+            }
           }
         }
       }
@@ -5973,7 +5975,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         dash.addOfferExpirationMessage = appConfig.addOffer.expirationMessage;
       }
       else {
-        dash.addOfferMessage = '';
+        dash.addOfferExpirationMessage = '';
       }
     }
     else {
