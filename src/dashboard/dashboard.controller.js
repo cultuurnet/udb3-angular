@@ -33,12 +33,12 @@
     dash.hideOnlineDate = false;
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
-      if (typeof(appConfig.addOffer.toggleAddOffer) !== 'undefined') {
-        dash.toggleAddOffer = appConfig.addOffer.toggleAddOffer;
+      if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
+        dash.toggleAddOffer = appConfig.addOffer.toggle;
 
-        if (typeof(appConfig.addOffer.embargoDate) !== 'undefined' ||
-            appConfig.addOffer.embargoDate !== '') {
-          if (moment() > moment(appConfig.addOffer.embargoDate)) {
+        if (typeof(appConfig.addOffer.expirationDate) !== 'undefined' ||
+            appConfig.addOffer.expirationDate !== '') {
+          if (moment() > moment(appConfig.addOffer.expirationDate)) {
             dash.toggleAddOffer = false;
           }
           else {
@@ -50,12 +50,12 @@
         dash.toggleAddOffer = true;
       }
 
-      if (typeof(appConfig.addOffer.replaceMessage) !== 'undefined' ||
-          appConfig.addOffer.replaceMessage !== '') {
-        dash.addOfferReplaceMessage = appConfig.addOffer.replaceMessage;
+      if (typeof(appConfig.addOffer.expirationMessage) !== 'undefined' ||
+          appConfig.addOffer.expirationMessage !== '') {
+        dash.addOfferExpirationMessage = appConfig.addOffer.expirationMessage;
       }
       else {
-        dash.addOfferReplaceMessage = '';
+        dash.addOfferExpirationMessage = '';
       }
     }
     else {

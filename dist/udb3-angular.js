@@ -5951,12 +5951,12 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.hideOnlineDate = false;
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
-      if (typeof(appConfig.addOffer.toggleAddOffer) !== 'undefined') {
-        dash.toggleAddOffer = appConfig.addOffer.toggleAddOffer;
+      if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
+        dash.toggleAddOffer = appConfig.addOffer.toggle;
 
-        if (typeof(appConfig.addOffer.embargoDate) !== 'undefined' ||
-            appConfig.addOffer.embargoDate !== '') {
-          if (moment() > moment(appConfig.addOffer.embargoDate)) {
+        if (typeof(appConfig.addOffer.expirationDate) !== 'undefined' ||
+            appConfig.addOffer.expirationDate !== '') {
+          if (moment() > moment(appConfig.addOffer.expirationDate)) {
             dash.toggleAddOffer = false;
           }
           else {
@@ -5968,12 +5968,12 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         dash.toggleAddOffer = true;
       }
 
-      if (typeof(appConfig.addOffer.replaceMessage) !== 'undefined' ||
-          appConfig.addOffer.replaceMessage !== '') {
-        dash.addOfferReplaceMessage = appConfig.addOffer.replaceMessage;
+      if (typeof(appConfig.addOffer.expirationMessage) !== 'undefined' ||
+          appConfig.addOffer.expirationMessage !== '') {
+        dash.addOfferExpirationMessage = appConfig.addOffer.expirationMessage;
       }
       else {
-        dash.addOfferReplaceMessage = '';
+        dash.addOfferExpirationMessage = '';
       }
     }
     else {
@@ -24158,8 +24158,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"row udb-dashboard\">\n" +
     "    <div class=\"col-xs-12\">\n" +
     "\n" +
-    "      <div class=\"alert alert-info\" ng-if=\"!dash.toggleAddOffer && dash.addOfferReplaceMessage\">\n" +
-    "        <span ng-bind-html=\"::dash.addOfferReplaceMessage\"></span>\n" +
+    "      <div class=\"alert alert-info\" ng-if=\"!dash.toggleAddOffer && dash.addOfferExpirationMessage\">\n" +
+    "        <span ng-bind-html=\"::dash.addOfferExpirationMessage\"></span>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
