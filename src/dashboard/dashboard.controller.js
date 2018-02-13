@@ -13,7 +13,16 @@
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController(
+      $document,
+      $uibModal,
+      udbApi,
+      eventCrud,
+      offerLocator,
+      SearchResultViewer,
+      appConfig,
+      moment
+  ) {
 
     var dash = this;
 
@@ -23,8 +32,33 @@
     dash.username = '';
     dash.hideOnlineDate = false;
 
-    if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
-      dash.toggleAddOffer = appConfig.toggleAddOffer;
+    if (typeof(appConfig.addOffer) !== 'undefined') {
+      if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
+        dash.toggleAddOffer = appConfig.addOffer.toggle;
+
+        if (appConfig.addOffer.toggle) {
+          if (typeof(appConfig.addOffer.expirationDate) !== 'undefined' ||
+              appConfig.addOffer.expirationDate !== '') {
+            if (moment().isAfter(moment(appConfig.addOffer.expirationDate))) {
+              dash.toggleAddOffer = false;
+            }
+            else {
+              dash.toggleAddOffer = true;
+            }
+          }
+        }
+      }
+      else {
+        dash.toggleAddOffer = true;
+      }
+
+      if (typeof(appConfig.addOffer.expirationMessage) !== 'undefined' ||
+          appConfig.addOffer.expirationMessage !== '') {
+        dash.addOfferExpirationMessage = appConfig.addOffer.expirationMessage;
+      }
+      else {
+        dash.addOfferExpirationMessage = '';
+      }
     }
     else {
       dash.toggleAddOffer = true;

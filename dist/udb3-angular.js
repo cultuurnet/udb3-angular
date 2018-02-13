@@ -5931,7 +5931,16 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     .controller('DashboardController', DashboardController);
 
   /* @ngInject */
-  function DashboardController($document, $uibModal, udbApi, eventCrud, offerLocator, SearchResultViewer, appConfig) {
+  function DashboardController(
+      $document,
+      $uibModal,
+      udbApi,
+      eventCrud,
+      offerLocator,
+      SearchResultViewer,
+      appConfig,
+      moment
+  ) {
 
     var dash = this;
 
@@ -5941,8 +5950,33 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.username = '';
     dash.hideOnlineDate = false;
 
-    if (typeof(appConfig.toggleAddOffer) !== 'undefined') {
-      dash.toggleAddOffer = appConfig.toggleAddOffer;
+    if (typeof(appConfig.addOffer) !== 'undefined') {
+      if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
+        dash.toggleAddOffer = appConfig.addOffer.toggle;
+
+        if (appConfig.addOffer.toggle) {
+          if (typeof(appConfig.addOffer.expirationDate) !== 'undefined' ||
+              appConfig.addOffer.expirationDate !== '') {
+            if (moment().isAfter(moment(appConfig.addOffer.expirationDate))) {
+              dash.toggleAddOffer = false;
+            }
+            else {
+              dash.toggleAddOffer = true;
+            }
+          }
+        }
+      }
+      else {
+        dash.toggleAddOffer = true;
+      }
+
+      if (typeof(appConfig.addOffer.expirationMessage) !== 'undefined' ||
+          appConfig.addOffer.expirationMessage !== '') {
+        dash.addOfferExpirationMessage = appConfig.addOffer.expirationMessage;
+      }
+      else {
+        dash.addOfferExpirationMessage = '';
+      }
     }
     else {
       dash.toggleAddOffer = true;
@@ -6048,7 +6082,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
 
 })();
 })();
@@ -9180,11 +9214,12 @@ angular
   });
 
 /** @inject */
-function FormCalendarDatepickerController() {
+function FormCalendarDatepickerController(appConfig) {
   var datepicker = this;
   var options = {
     minDate: new Date(),
-    showWeeks: false
+    showWeeks: false,
+    customClass: getDayClass
   };
 
   datepicker.$onInit = function() {
@@ -9206,7 +9241,20 @@ function FormCalendarDatepickerController() {
       datepicker.ngModel.$setViewValue(day.toDate());
     }
   };
+
+  function getDayClass(data) {
+    if (appConfig.calendarHighlight.date !== '') {
+      var dayToCheck = moment(data.date);
+      var highlightDate = moment(appConfig.calendarHighlight.date);
+
+      if (dayToCheck.isSame(highlightDate, data.mode)) {
+        return appConfig.calendarHighlight.extraClass;
+      }
+    }
+  }
 }
+
+FormCalendarDatepickerController.$inject = ['appConfig'];
 })();
 
 // Source: src/event_form/components/calendar/form-calendar-period.component.js
@@ -13541,7 +13589,7 @@ function EventFormStep5Controller(
   $scope.savingOrganizer = false;
 
   // Price info
-  $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
+  $scope.disablePriceInfo = _.get(appConfig.offerEditor, 'disablePriceInfo');
 
   // Booking & tickets vars.
   $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
@@ -24126,6 +24174,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"row udb-dashboard\">\n" +
     "    <div class=\"col-xs-12\">\n" +
     "\n" +
+    "      <div class=\"alert alert-info\" ng-if=\"!dash.toggleAddOffer && dash.addOfferExpirationMessage\">\n" +
+    "        <span ng-bind-html=\"::dash.addOfferExpirationMessage\"></span>\n" +
+    "      </div>\n" +
+    "\n" +
     "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
     "        <div class=\"panel-body text-center\">\n" +
     "          <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
@@ -26534,7 +26586,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <price-info price=\"price\" ng-if=\"!hidePriceInfo\" event-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\"></price-info>\n" +
+    "        <price-info price=\"price\" ng-if=\"!disablePriceInfo\" event-id=\"eventFormData.id\" organizer=\"eventFormData.organizer\"></price-info>\n" +
     "        <uitpas-info organizer=\"eventFormData.organizer\" price=\"eventFormData.priceInfo\"></uitpas-info>\n" +
     "\n" +
     "        <div class=\"row extra-contact\">\n" +
