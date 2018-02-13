@@ -26121,7 +26121,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    ng-click=\"setEventType(placeType, false)\"></button>\n" +
     "          </li>\n" +
     "          <li ng-hide=\"showAllPlaces\">\n" +
-    "            <a href=\"\" ng-click=\"togglePlaces()\" translate-once=\"eventForm.step1.show_everythibng\"></a>\n" +
+    "            <a href=\"\" ng-click=\"togglePlaces()\" translate-once=\"eventForm.step1.show_everything\"></a>\n" +
     "          </li>\n" +
     "        </ul>\n" +
     "      </div>\n" +
