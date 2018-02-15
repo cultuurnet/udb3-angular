@@ -5989,6 +5989,13 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
 
+    if (typeof(appConfig.publicationRulesLink) !== 'undefined') {
+      var publicationRulesLink = appConfig.publicationRulesLink;
+      if (publicationRulesLink !== '') {
+        dash.publicationRulesLink = publicationRulesLink;
+      }
+    }
+
     udbApi
       .getMe()
       .then(greetUser);
@@ -24059,8 +24066,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <strong>\n" +
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
-    "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='REJECTED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
+    "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\">Niet gepubliceerd</span>\n" +
     "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
+    "  <span ng-if=\"event.workflowStatus==='REJECTED'\"><span class=\"label label-default\">Publicatie afgewezen</span><small><a ng-href=\"{{::dash.publicationRulesLink}}\" target=\"blank\">Bekijk de regels</small></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
     "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
