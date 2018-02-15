@@ -71,6 +71,16 @@ describe('Factory: UdbPlace', function () {
           label: "9600 Ronse",
           domain: "flandersregion",
           id: "reg.1417"
+        },
+        {
+          label: "Parkeerplaats",
+          domain: "facility",
+          id: "3.26.0.0.0"
+        },
+        {
+          label: "Rolstoel ter beschikking",
+          domain: "facility",
+          id: "3.23.3.0.0"
         }
       ],
       "labels": ["remove me"],

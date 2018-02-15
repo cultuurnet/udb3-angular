@@ -97,6 +97,9 @@ function RoleFormController(
 
         editor.role.users = [];
         editor.role.labels = [];
+        editor.role.permissions = _.filter(editor.availablePermissions, function (permission) {
+          return _.contains(role.permissions, permission.key);
+        });
       }, function(problem) {
         problem.detail = problem.title;
         problem.title = 'De rol kon niet gevonden worden.';
@@ -200,29 +203,23 @@ function RoleFormController(
    * @param {RolePermission} permission
    */
   function updatePermission(permission) {
-    var hasPermission = editor.role.permissions.indexOf(permission) > -1;
+    editor.loadedRolePermissions = false;
+    var permissionUpdate = $q.reject();
 
-    // permission added
-    if (!hasPermission) {
-      editor.loadedRolePermissions = false;
-      RoleManager
-        .addPermissionToRole(permission, roleId)
-        .catch(showProblem)
-        .finally(function() {
-          editor.loadedRolePermissions = true;
-        });
+    if (_.find(editor.role.permissions, {key: permission.key})) {
+      editor.role.permissions = _.reject(editor.role.permissions, {key: permission.key});
+      permissionUpdate = RoleManager.removePermissionFromRole(permission.key, roleId);
+    } else {
+      editor.role.permissions.push(permission);
+      permissionUpdate = RoleManager.addPermissionToRole(permission.key, roleId);
     }
 
-    // permission removed
-    if (hasPermission) {
-      editor.loadedRolePermissions = false;
-      RoleManager
-        .removePermissionFromRole(permission, roleId)
-        .catch(showProblem)
-        .finally(function() {
-          editor.loadedRolePermissions = true;
-        });
-    }
+    permissionUpdate
+      .catch(showProblem)
+      .finally(function() {
+        editor.loadedRolePermissions = true;
+      })
+    ;
   }
 
   function addLabel(label) {
