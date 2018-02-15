@@ -21,11 +21,13 @@ angular
   });
 
 /* @ngInject */
-function WorkflowStatusDirectiveController($scope) {
+function WorkflowStatusDirectiveController($scope, appConfig) {
   var cm = this;
   cm.event = $scope.event;
   cm.eventIds = eventIds;
   cm.isUrl = isUrl;
+
+  cm.publicationRulesLink = appConfig.publicationRulesLink;
 
   function eventIds (event) {
     return _.union([event.id], event.sameAs);
