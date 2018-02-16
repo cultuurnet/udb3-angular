@@ -600,8 +600,10 @@ angular.module('udb.core')
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',
-      'REJECTED': 'Niet gepubliceerd',
-      'DELETED': 'Niet gepubliceerd'
+      'REJECTED': 'Publicatie afgewezen',
+      'DELETED': 'Niet gepubliceerd',
+      'rules': 'Bekijk de regels',
+      'rejected_full': 'Dit item werd afgewezen voor publicatie.'
     },
     queryFieldGroup: {
       'what': 'Wat',
