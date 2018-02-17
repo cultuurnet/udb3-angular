@@ -24547,8 +24547,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </tr>\n" +
     "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
-    "                <td ng-bind=\"::translateAudience(event.audience.audienceType)\">\n" +
-    "                <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
+    "                <td>\n" +
+    "                  <p ng-bind=\"::translateAudience(event.audience.audienceType)\"></p>\n" +
+    "                  <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td>\n" +
