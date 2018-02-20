@@ -143,6 +143,14 @@ describe('Factory: UDB Organizer', function () {
     expect(organizer.name).toEqual('Club Silo');
   }));
 
+    it('it can take into account main language', inject(function (UdbOrganizer) {
+        jsonOrganizer.mainLanguage = 'en';
+        jsonOrganizer.name = {en : jsonOrganizer.name};
+
+        var organizer = new UdbOrganizer(jsonOrganizer);
+        expect(organizer.name).toEqual('Club Silo');
+    }));
+
   it('it should set deleted to true when the workflow status is DELETED', inject(function (UdbOrganizer) {
     var organizer = new UdbOrganizer(jsonOrganizerDeleted);
     expect(organizer.deleted).toEqual(true);

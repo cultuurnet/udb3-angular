@@ -5114,7 +5114,8 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = _.get(jsonOrganizer.name, 'nl', null) ||
+      this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -10303,6 +10304,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
+    mainLanguage: 'nl',
     website: 'http://',
     name : $scope.organizer,
     address : {
@@ -24549,7 +24551,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
     "                <td>\n" +
     "                  <p ng-bind=\"::translateAudience(event.audience.audienceType)\"></p>\n" +
-    "                  <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component></td>\n" +
+    "                  <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component>\n" +
+    "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td>\n" +
