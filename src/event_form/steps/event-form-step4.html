@@ -13,7 +13,7 @@
         <div class="form-group-lg">
           <input type="text"
                  class="form-control"
-                 ng-model="eventFormData.name.nl"
+                 ng-model="eventFormData.name"
                  ng-model-options="titleInputOptions"
                  ng-change="eventTitleChanged()"
                  focus-if="eventFormData.showStep4 && eventFormData.id === ''"
@@ -47,7 +47,7 @@
     <p ng-show="eventFormData.id === ''">
       <a class="btn btn-primary titel-doorgaan"
           ng-click="validateEvent(true);"
-          ng-class="{'disabled': eventFormData.name.nl === ''}">
+          ng-class="{'disabled': eventFormData.name === ''}">
         <span translate-once="eventForm.step4.continue"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
       </a>
     </p>
@@ -59,7 +59,7 @@
   </div>
 
   <a name="dubbeldetectie"></a>
-  <section class="dubbeldetectie" ng-show="eventFormData.name.nl !== ''">
+  <section class="dubbeldetectie" ng-show="eventFormData.name !== ''">
 
     <div class="panel panel-info" ng-show="resultViewer.totalItems > 0">
       <div class="panel-body bg-info text-info">
@@ -81,7 +81,7 @@
     </div>
 
     <h3 ng-show="duplicatesSearched && resultViewer.totalItems > 0">
-      <span translate-once="eventForm.step4.sure" translate-values="{ name: '{{eventFormData.name.nl}}' }"></span>
+      <span translate-once="eventForm.step4.sure" translate-once-value="{ name: '{{eventFormData.name}}' }"></span>
     </h3>
     <ul class="list-inline" ng-show="duplicatesSearched && resultViewer.totalItems > 0">
       <li>
