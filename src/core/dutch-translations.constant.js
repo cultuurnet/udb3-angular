@@ -692,6 +692,33 @@ angular.module('udb.core')
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
     },
+    images: {
+      'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+      'conditions': 'algemene voorwaarden',
+      'copyright_info': 'Meer informatie over copyright',
+      'description': 'Beschrijving',
+      'copyright': 'Copyright',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'cancel': 'Annuleren',
+      'agree': 'Akkoord',
+      upload: {
+        'select_image': 'Selecteer je foto',
+        'choose_file': 'Kies bestand',
+        'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
+        'upload': 'Opladen'
+      },
+      edit: {
+        'title': 'Afbeelding info bewerken',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'update': 'Bijwerken'
+      },
+      remove: {
+        'title': 'Afbeeldingen verwijderen',
+        'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
+        'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
+      }
+    },
     organizer: {
       modal: {
         'title': 'Nieuwe organisatie toevoegen',

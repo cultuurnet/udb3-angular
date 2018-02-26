@@ -3223,6 +3223,33 @@ angular.module('udb.core')
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
     },
+    images: {
+      'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+      'conditions': 'algemene voorwaarden',
+      'copyright_info': 'Meer informatie over copyright',
+      'description': 'Beschrijving',
+      'copyright': 'Copyright',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'cancel': 'Annuleren',
+      'agree': 'Akkoord',
+      upload: {
+        'select_image': 'Selecteer je foto',
+        'choose_file': 'Kies bestand',
+        'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
+        'upload': 'Opladen'
+      },
+      edit: {
+        'title': 'Afbeelding info bewerken',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'update': 'Bijwerken'
+      },
+      remove: {
+        'title': 'Afbeeldingen verwijderen',
+        'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
+        'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
+      }
+    },
     organizer: {
       modal: {
         'title': 'Nieuwe organisatie toevoegen',
@@ -25048,42 +25075,39 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\">\n" +
     "      <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
-    "    <h4 class=\"modal-title\">Afbeelding info bewerken</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"images.edit.title\"></h4>\n" +
     "  </div>\n" +
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <div>\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "          Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.\n" +
-    "        </p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.edit.description_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.copyright\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "          Vermeld de naam van de rechtenhoudende fotograaf (minimum 3 karakters).</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.copyright_help\"></p>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div ng-show=\"error\" class=\"alert alert-danger\">Er ging iets mis bij het opslaan van de afbeelding.</div>\n" +
+    "    <div ng-show=\"error\" class=\"alert alert-danger\">\n" +
+    "      <span translate-once=\"images.edit.save_error\"></span>\n" +
+    "    </div>\n" +
     "\n" +
     "    <p class=\"image-copyright-agreements\">\n" +
-    "      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "      Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "      wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "      <a ng-href=\"{{::uploadTermsConditionsUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "      <a ng-href=\"{{::uploadCopyRightInfoUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "      <span translate-once=\"images.agreement\"></span>\n" +
+    "      <a ng-href=\"{{::uploadTermsConditionsUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "      <a ng-href=\"{{::uploadCopyRightInfoUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "    </p>\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateImageInfo()\" ng-disabled=\"!allFieldsValid() || saving\">\n" +
-    "      Bijwerken <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.edit.update\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
@@ -25097,20 +25121,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\">\n" +
     "      <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
-    "    <h4 class=\"modal-title\">Afbeeldingen verwijderen</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"images.remove.title\"></h4>\n" +
     "  </div>\n" +
     "  <div class=\"modal-body\">\n" +
     "\n" +
-    "    <p>Ben je zeker dat je deze afbeelding wil verwijderen?</p>\n" +
+    "    <p translate-once=\"images.remove.sure\"></p>\n" +
     "\n" +
-    "    <div ng-show=\"error\" class=\"alert alert-danger\">Er ging iets mis bij het verwijderen van de afbeelding.</div>\n" +
+    "    <div ng-show=\"error\" class=\"alert alert-danger\">\n" +
+    "      <span translate-once=\"images.remove.save_error\"></span>\n" +
+    "    </div>\n" +
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button class=\"btn btn-primary\" ng-click=\"removeImage()\">\n" +
-    "      Akkoord <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.agree\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
@@ -25127,15 +25153,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <p ng-show=\"showAgreements\">\n" +
-    "      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "       Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "       wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "      <span translate-once=\"images.agreement\"></span>\n" +
+    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "    </p>\n" +
     "    <div ng-hide=\"showAgreements\">\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label for=\"inputFile\">Selecteer je foto</label>\n" +
+    "        <label for=\"inputFile\" translate-once=\"images.upload.select_image\"></label>\n" +
     "        <p>\n" +
     "          <button type=\"file\"\n" +
     "                  class=\"btn btn-primary\"\n" +
@@ -25143,35 +25167,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  ngf-select=\"selectFile($file, $invalidFiles)\"\n" +
     "                  accept=\"image/*\"\n" +
     "                  ngf-max-size=\"{{maxFileSize}}\">\n" +
-    "            Kies bestand</button>\n" +
+    "            <span translate-once=\"images.upload.choose_file\"></span></button>\n" +
     "        </p>\n" +
     "\n" +
     "        <p ng-show=\"selectedFile\">\n" +
     "          <span ng-bind=\"selectedFile.name\"></span>\n" +
     "        </p>\n" +
     "\n" +
-    "        <p class=\"help-block\">\n" +
-    "          De maximale grootte van je afbeelding is <span ng-bind=\"maxFileSize\"></span> en heeft als type .jpeg, .gif of .png</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.upload.max_filesize\" translate-values=\"{ maxFileSize: '{{maxFileSize}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.copyright\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyright\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.copyright_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <p class=\"image-copyright-agreements\">\n" +
-    "        Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "        Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "        wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "        <span translate-once=\"images.agreement\"></span>\n" +
+    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "\n" +
@@ -25181,11 +25201,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
-    "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.upload.upload\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
-    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
+    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\" translate-once=\"images.agree\"></button>\n" +
     "  </div>\n" +
     "</div>\n"
   );
