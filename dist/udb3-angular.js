@@ -11551,7 +11551,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, appConfig) {
 
   /**
    * @class EventFormData
@@ -12008,7 +12008,21 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       formData.calendarType = type;
 
       if (formData.calendarType === 'single') {
-        formData.addTimestamp('', '', '', '', '');
+        if (appConfig.calendarHighlight.date) {
+          formData.addTimestamp(
+              new Date(appConfig.calendarHighlight.date),
+              appConfig.calendarHighlight.startTime || '',
+              appConfig.calendarHighlight.startTime ?
+                  moment(appConfig.calendarHighlight.date + ' ' +
+                      appConfig.calendarHighlight.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
+              appConfig.calendarHighlight.endTime || '',
+              appConfig.endTime ?
+                  moment(appConfig.calendarHighlight.date + ' ' +
+                      appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
+          );
+        } else {
+          formData.addTimestamp('', '', '', '', '');
+        }
       }
 
       if (formData.calendarType === 'permanent') {
@@ -12159,7 +12173,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "appConfig"];
 })();
 
 // Source: src/event_form/event-form.controller.js
