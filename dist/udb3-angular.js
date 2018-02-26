@@ -13244,8 +13244,10 @@ function EventFormStep3Controller(
   }
 
   function validateAddress(streetAddress) {
-    var maximumNumberLength = 15;
-    return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    if (streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
   }
 
   /**
@@ -26344,12 +26346,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
+    "            {{ $scope.invalidStreet }}\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}\">\n" +
     "              <label translate-once=\"eventForm.step3.street\"></label>\n" +
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
     "                     ng-model=\"newPlaceStreetAddress\"\n" +
+    "                     ng-change=\"showValidation=false\"\n" +
     "                     translate-once-placeholder=\"eventForm.step3.placeholder_street\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
@@ -26357,7 +26361,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    translate-once=\"eventForm.step3.street_validate\"\n" +
     "                    ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
     "              </span>\n" +
-    "              <span class=\"help-block\" ng-show=\"showValidation && step3Form.street.$error.invalid\" translate-once=\"eventForm.step3.street_validate_long\">\n" +
+    "              <span class=\"help-block\" ng-show=\"showValidation\" translate-once=\"eventForm.step3.street_validate_long\">\n" +
     "              </span>\n" +
     "            </div>\n" +
     "          </div>\n" +

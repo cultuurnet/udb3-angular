@@ -318,8 +318,10 @@ function EventFormStep3Controller(
   }
 
   function validateAddress(streetAddress) {
-    var maximumNumberLength = 15;
-    return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    if (streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
   }
 
   /**
