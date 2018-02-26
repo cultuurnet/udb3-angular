@@ -105,7 +105,6 @@
       <div class="plaats-adres-ingeven" ng-hide="placeStreetAddress">
         <div class="row">
           <div class="col-xs-12">
-            {{ $scope.invalidStreet }}
             <div class="form-group" ng-class="{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}">
               <label translate-once="eventForm.step3.street"></label>
               <input class="form-control"
