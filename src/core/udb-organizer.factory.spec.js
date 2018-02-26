@@ -29,7 +29,7 @@ describe('Factory: UDB Organizer', function () {
       'green',
       'UiTPAS'
     ],
-    workflowStatus: 'ok',
+    workflowStatus: 'ok'
   };
 
   var jsonOrganizerWithHiddenLabel = {
@@ -56,7 +56,7 @@ describe('Factory: UDB Organizer', function () {
     hiddenLabels: [
       'UiTPAS'
     ],
-    workflowStatus: 'ok',
+    workflowStatus: 'ok'
   };
 
   var jsonOrganizerDeleted = {
@@ -83,7 +83,7 @@ describe('Factory: UDB Organizer', function () {
     hiddenLabels: [
       'UiTPAS'
     ],
-    workflowStatus: 'DELETED',
+    workflowStatus: 'DELETED'
   };
 
   it('should set all the properties when parsing a json organizer', inject(function (UdbOrganizer) {
@@ -141,6 +141,14 @@ describe('Factory: UDB Organizer', function () {
 
     var organizer = new UdbOrganizer(jsonOrganizer);
     expect(organizer.name).toEqual('Club Silo');
+  }));
+
+  it('it can take into account main language', inject(function (UdbOrganizer) {
+      jsonOrganizer.mainLanguage = 'en';
+      jsonOrganizer.name = {en : jsonOrganizer.name.nl};
+
+      var organizer = new UdbOrganizer(jsonOrganizer);
+      expect(organizer.name).toEqual('Club Silo');
   }));
 
   it('it should set deleted to true when the workflow status is DELETED', inject(function (UdbOrganizer) {

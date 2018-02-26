@@ -39,6 +39,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
+    mainLanguage: 'nl',
     website: 'http://',
     name : $scope.organizer,
     address : {
