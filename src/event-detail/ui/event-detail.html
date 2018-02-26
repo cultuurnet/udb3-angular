@@ -59,8 +59,10 @@
               </tr>
               <tr ng-if="::event.audience.audienceType !== 'everyone'">
                 <td><span class="row-label">Toegang</span></td>
-                <td ng-bind="::translateAudience(event.audience.audienceType)">
-                <udb-event-cultuurkuur-component event="event" permission="::permissions.editing" ></udb-event-cultuurkuur-component></td>
+                <td>
+                  <p ng-bind="::translateAudience(event.audience.audienceType)"></p>
+                  <udb-event-cultuurkuur-component event="event" permission="::permissions.editing" ></udb-event-cultuurkuur-component>
+                </td>
               </tr>
               <tr>
                 <td>

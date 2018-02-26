@@ -600,8 +600,10 @@ angular.module('udb.core')
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',
-      'REJECTED': 'Niet gepubliceerd',
-      'DELETED': 'Niet gepubliceerd'
+      'REJECTED': 'Publicatie afgewezen',
+      'DELETED': 'Niet gepubliceerd',
+      'rules': 'Bekijk de regels',
+      'rejected_full': 'Dit item werd afgewezen voor publicatie.'
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -733,6 +735,33 @@ angular.module('udb.core')
         'add_phone': 'Telefoonnummer toevoegen',
         'add_email': 'E-mailadres toevoegen',
         'add_url': 'Andere website toevoegen'
+      }
+    },
+    duplicate: {
+      title: 'Kopiëren en aanpassen',
+      description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
+      error: 'Er ging iets mis tijdens het aanmaken van een kopie!'
+    },
+    dashboard: {
+      'welcome': 'Welkom,',
+      'no_items': 'Je hebt nog geen items toegevoegd.',
+      'add_activity': 'Een activiteit of locatie toevoegen?',
+      'recent': 'Recent',
+      'add': 'Toevoegen',
+      directive: {
+        'no_publish': 'Niet gepubliceerd!',
+        'online': 'Online op',
+        'edit': 'Bewerken',
+        'example': 'Voorbeeld',
+        'delete': 'Verwijderen',
+        'expired_event': 'Afgelopen evenement'
+      },
+      delete: {
+        'sure': 'Ben je zeker dat je \"{{name}}\" wil verwijderen?',
+        'error_location': 'De locatie \"{{name}}\" kan niet verwijderd worden omdat er activiteiten gepland zijn.',
+        'error': 'Er ging iets fout bij het verwijderen van de activiteit.',
+        'cancel': 'Annuleren',
+        'delete': 'Verwijderen'
       }
     }
   }
