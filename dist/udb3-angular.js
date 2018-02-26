@@ -5141,7 +5141,13 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = _.get(jsonOrganizer.name, 'nl', null) ||
+      // 1. Main language is now a required property.
+      // Organizers can be created in a given main language.
+      // 2. Previous projections had a default main language of nl.
+      // 3. Even older projections had a non-translated name.
+      // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+      this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -10330,6 +10336,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
+    mainLanguage: 'nl',
     website: 'http://',
     name : $scope.organizer,
     address : {
@@ -11577,9 +11584,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.majorInfoChanged = false;
       // Properties that will be copied to UdbEvent / UdbPlace.
       this.id = '';
-      this.name = {
-        nl : ''
-      };
+      this.mainLanguage = 'nl';
+      this.name = '';
       this.description = {};
       // Events have a location
       this.location = {
@@ -12335,7 +12341,14 @@ function EventFormController(
       }
     }
 
-    EventFormData.name = item.name;
+    // 1. Main language is now a required property.
+    // Events can be created in a given main language.
+    // 2. Previous projections had a default main language of nl.
+    // 3. Even older projections had a non-translated name.
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+    EventFormData.name = _.get(item.name, item.mainLanguage, null) ||
+        _.get(item.name, 'nl', null) ||
+        _.get(item, 'name', '');
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
@@ -26403,7 +26416,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
     "                 class=\"form-control\"\n" +
-    "                 ng-model=\"eventFormData.name.nl\"\n" +
+    "                 ng-model=\"eventFormData.name\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
     "                 focus-if=\"eventFormData.showStep4 && eventFormData.id === ''\"\n" +
@@ -26437,7 +26450,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-click=\"validateEvent(true);\"\n" +
-    "          ng-class=\"{'disabled': eventFormData.name.nl === ''}\">\n" +
+    "          ng-class=\"{'disabled': eventFormData.name === ''}\">\n" +
     "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
@@ -26449,7 +26462,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "\n" +
     "  <a name=\"dubbeldetectie\"></a>\n" +
-    "  <section class=\"dubbeldetectie\" ng-show=\"eventFormData.name.nl !== ''\">\n" +
+    "  <section class=\"dubbeldetectie\" ng-show=\"eventFormData.name !== ''\">\n" +
     "\n" +
     "    <div class=\"panel panel-info\" ng-show=\"resultViewer.totalItems > 0\">\n" +
     "      <div class=\"panel-body bg-info text-info\">\n" +
@@ -26471,7 +26484,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <h3 ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
-    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name.nl}}' }\"></span>\n" +
+    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name}}' }\"></span>\n" +
     "    </h3>\n" +
     "    <ul class=\"list-inline\" ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
     "      <li>\n" +

@@ -70,9 +70,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.majorInfoChanged = false;
       // Properties that will be copied to UdbEvent / UdbPlace.
       this.id = '';
-      this.name = {
-        nl : ''
-      };
+      this.mainLanguage = 'nl';
+      this.name = '';
       this.description = {};
       // Events have a location
       this.location = {
