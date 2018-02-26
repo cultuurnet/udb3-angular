@@ -3,7 +3,7 @@
         <div class="col-sm-12 col-md-8">
             <div class="form-group"
                  ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
-                <label>Straat en nummer</label>
+                <label translate-once="organizer.address.label_street"></label>
                 <input type="text"
                        class="form-control"
                        name="street"
@@ -13,9 +13,7 @@
                        ng-model-options="{ updateOn: 'blur' }">
                 <span class="has-error"
                       ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
-                    <span class="help-block">
-                        Gelieve straat en nummer in te geven.
-                    </span>
+                    <span class="help-block" translate-once="organizer.address.help_street"></span>
                 </span>
             </div>
         </div>
@@ -26,8 +24,7 @@
             <div ng-hide="oac.selectedCity !== ''">
                 <div class="form-group"
                      ng-class="{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}">
-                    <label for="organizer-gemeente-autocomplete" id="gemeente-label">
-                        Gemeente
+                    <label for="organizer-gemeente-autocomplete" id="gemeente-label" translate-once="organizer.address.label_city">
                     </label>
                     <div id="gemeente-kiezer">
                         <input id="organizer-gemeente-autocomplete"
@@ -41,13 +38,11 @@
                                typeahead-min-length="2"
                                typeahead-template-url="templates/city-suggestion.html"
                                autocomplete="off">
-                        <span class="help-block" ng-show="oac.cityAutoCompleteError">
-                            Er was een probleem tijdens het ophalen van de steden.
+                        <span class="help-block" ng-show="oac.cityAutoCompleteError" translate-once="organizer.address.help_city">
                         </span>
                         <span class="has-error"
                               ng-show="oac.cityHasErrors && oac.organizerAddressForm.$submitted">
-                            <span class="help-block">
-                                Gelieve een gemeente in te geven.
+                            <span class="help-block" translate-once="organizer.address.error_city">
                             </span>
                         </span>
                     </div>
@@ -55,7 +50,7 @@
             </div>
             <div class="form-group" id="gemeente-gekozen" ng-if="oac.selectedCity">
                 <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::oac.selectedCity"></span>
-                <a href="#" class="btn btn-default btn-link" ng-click="oac.changeCitySelection()">Wijzigen</a>
+                <a href="#" class="btn btn-default btn-link" ng-click="oac.changeCitySelection()" translate-once="organizer.address.change"></a>
             </div>
         </div>
     </div>

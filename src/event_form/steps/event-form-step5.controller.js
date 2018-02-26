@@ -62,7 +62,7 @@ function EventFormStep5Controller(
   $scope.savingOrganizer = false;
 
   // Price info
-  $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
+  $scope.disablePriceInfo = _.get(appConfig.offerEditor, 'disablePriceInfo');
 
   // Booking & tickets vars.
   $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
