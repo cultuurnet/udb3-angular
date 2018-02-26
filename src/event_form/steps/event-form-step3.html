@@ -105,13 +105,8 @@
       <div class="plaats-adres-ingeven" ng-hide="placeStreetAddress">
         <div class="row">
           <div class="col-xs-12">
-<<<<<<< HEAD
-            <div class="form-group" ng-class="{'has-error' : showValidation && (step3Form.street.$error.required || step3Form.street.$error.invalid) }">
-              <label>{{::translateEventForm('step3', 'street')}}</label>
-=======
             <div class="form-group" ng-class="{'has-error' : showValidation && step3Form.street.$error.required }">
               <label translate-once="eventForm.step3.street"></label>
->>>>>>> master
               <input class="form-control"
                      id="straat"
                      name="street"
@@ -123,8 +118,7 @@
                     translate-once="eventForm.step3.street_validate"
                     ng-show="showValidation && step3Form.street.$error.required">
               </span>
-              <span class="help-block" ng-show="showValidation && step3Form.street.$error.invalid">
-                {{::translateEventForm('step3', 'street_validate_long')}}
+              <span class="help-block" ng-show="showValidation && step3Form.street.$error.invalid" translate-once="eventForm.step3.street_validate_long">
               </span>
             </div>
           </div>

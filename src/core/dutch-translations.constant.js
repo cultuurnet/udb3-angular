@@ -430,10 +430,8 @@ angular.module('udb.core')
       'category': 'Categorie',
       'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
       'category_validation': 'Categorie is een verplicht veld.',
-      'error': {
-        'default': 'Er ging iets fout tijdens het opslaan van je locatie.',
-        'long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
-      },
+      'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
       'add': 'Toevoegen'
     },
@@ -604,8 +602,10 @@ angular.module('udb.core')
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',
-      'REJECTED': 'Niet gepubliceerd',
-      'DELETED': 'Niet gepubliceerd'
+      'REJECTED': 'Publicatie afgewezen',
+      'DELETED': 'Niet gepubliceerd',
+      'rules': 'Bekijk de regels',
+      'rejected_full': 'Dit item werd afgewezen voor publicatie.'
     },
     queryFieldGroup: {
       'what': 'Wat',

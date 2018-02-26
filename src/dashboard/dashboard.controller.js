@@ -71,6 +71,13 @@
       }
     }
 
+    if (typeof(appConfig.publicationRulesLink) !== 'undefined') {
+      var publicationRulesLink = appConfig.publicationRulesLink;
+      if (publicationRulesLink !== '') {
+        dash.publicationRulesLink = publicationRulesLink;
+      }
+    }
+
     udbApi
       .getMe()
       .then(greetUser);
