@@ -38,7 +38,7 @@
                     ng-click="setEventType(placeType, false)"></button>
           </li>
           <li ng-hide="showAllPlaces">
-            <a href="" ng-click="togglePlaces()" translate-once="eventForm.step1.show_everythibng"></a>
+            <a href="" ng-click="togglePlaces()" translate-once="eventForm.step1.show_everything"></a>
           </li>
         </ul>
       </div>
@@ -69,6 +69,7 @@
             </div>
           </div>
         </div>
+      </div>
 
       <p class="col-xs-12 col-md-12"  ng-hide="activeTheme === ''">
         <span class="btn-chosen" ng-bind="activeThemeLabel"></span>
@@ -76,7 +77,6 @@
            href="" ng-click="resetTheme()"
            translate-once="eventForm.step1.change"></a>
       </p>
-    </div>
 
   </section>
 
