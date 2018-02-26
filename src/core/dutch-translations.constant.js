@@ -704,7 +704,7 @@ angular.module('udb.core')
         'edit': 'Bewerken',
         'example': 'Voorbeeld',
         'delete': 'Verwijderen',
-        'expired_events': 'Afgelopen evenementen'
+        'expired_event': 'Afgelopen evenement'
       },
       delete: {
         'sure': 'Ben je zeker dat je \"{{name}}\" wil verwijderen?',

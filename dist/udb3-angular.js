@@ -3235,7 +3235,7 @@ angular.module('udb.core')
         'edit': 'Bewerken',
         'example': 'Voorbeeld',
         'delete': 'Verwijderen',
-        'expired_events': 'Afgelopen evenementen'
+        'expired_event': 'Afgelopen evenement'
       },
       delete: {
         'sure': 'Ben je zeker dat je \"{{name}}\" wil verwijderen?',
@@ -24126,7 +24126,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </span>\n" +
     "  <span ng-if=\"::offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right\">\n" +
-    "      <span class=\"text-muted\" translate-once=\"dashboard.directive.expired_events\"></span>\n" +
+    "      <span class=\"text-muted\" translate-once=\"dashboard.directive.expired_event\"></span>\n" +
     "    </div>\n" +
     "  </span>\n" +
     "</td>\n"
