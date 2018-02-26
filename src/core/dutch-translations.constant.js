@@ -600,8 +600,10 @@ angular.module('udb.core')
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Gepubliceerd',
-      'REJECTED': 'Niet gepubliceerd',
-      'DELETED': 'Niet gepubliceerd'
+      'REJECTED': 'Publicatie afgewezen',
+      'DELETED': 'Niet gepubliceerd',
+      'rules': 'Bekijk de regels',
+      'rejected_full': 'Dit item werd afgewezen voor publicatie.'
     },
     queryFieldGroup: {
       'what': 'Wat',
@@ -715,6 +717,78 @@ angular.module('udb.core')
         'title': 'Afbeeldingen verwijderen',
         'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
         'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
+      }
+    },
+    organizer: {
+      modal: {
+        'title': 'Nieuwe organisatie toevoegen',
+        'avoid_doubles': 'Vermijd dubbel werk',
+        'unique_notice': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+        'website': 'Website',
+        'alert_warning': 'Dit adres is al gebruikt door de organisatie \'{{organizerName}}\'. Geef een unieke website of',
+        'alert_button': 'gebruik {{organizerName}} als organisatie',
+        'name_help': 'De officiële publieke naam van de organisatie.',
+        'name_required': 'Gelieve een naam in te vullen',
+        'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
+        'doubles': 'We vonden deze gelijkaardige items:',
+        'select': 'Selecteren',
+        'your_input': 'Jij voerde in:',
+        'still_enter': 'Toch invoeren',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je organisatie.',
+        'address_error': 'Gelieve een geldig adres in te vullen.',
+        'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
+        'close': 'Sluiten',
+        'save': 'Bewaren'
+      },
+      address: {
+        'label_street': 'Straat en nummer',
+        'help_street': 'Gelieve straat en nummer in te geven.',
+        'label_city': 'Gemeente',
+        'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
+        'error_city': 'Gelieve een gemeente in te geven.',
+        'change': 'Wijzigen'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Geef een URL in',
+        'enter_email': 'Geef een e-mailadres in',
+        'enter_phone': 'Geef een telefoonnummer in<small class="text-muted">, bv. 011 32 43 54</small>',
+        'required': 'Gelieve dit veld niet leeg te laten.',
+        'valid_url': 'Gelieve een geldige url in te vullen.',
+        'valid_email': 'Gelieve een geldig e-mailadres in te vullen.',
+        'valid_phone': 'Gelieve een geldig telefoonnummer in te vullen.',
+        'cancel': 'Annuleren',
+        'add': 'Toevoegen',
+        'add_phone': 'Telefoonnummer toevoegen',
+        'add_email': 'E-mailadres toevoegen',
+        'add_url': 'Andere website toevoegen'
+      }
+    },
+    duplicate: {
+      title: 'Kopiëren en aanpassen',
+      description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
+      error: 'Er ging iets mis tijdens het aanmaken van een kopie!'
+    },
+    dashboard: {
+      'welcome': 'Welkom,',
+      'no_items': 'Je hebt nog geen items toegevoegd.',
+      'add_activity': 'Een activiteit of locatie toevoegen?',
+      'recent': 'Recent',
+      'add': 'Toevoegen',
+      directive: {
+        'no_publish': 'Niet gepubliceerd!',
+        'online': 'Online op',
+        'edit': 'Bewerken',
+        'example': 'Voorbeeld',
+        'delete': 'Verwijderen',
+        'expired_event': 'Afgelopen evenement'
+      },
+      delete: {
+        'sure': 'Ben je zeker dat je \"{{name}}\" wil verwijderen?',
+        'error_location': 'De locatie \"{{name}}\" kan niet verwijderd worden omdat er activiteiten gepland zijn.',
+        'error': 'Er ging iets fout bij het verwijderen van de activiteit.',
+        'cancel': 'Annuleren',
+        'delete': 'Verwijderen'
       }
     }
   }
