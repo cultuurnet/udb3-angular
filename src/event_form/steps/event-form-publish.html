@@ -6,20 +6,28 @@
       <button type="submit"
               class="btn btn-success"
               ng-click="efpc.publish()"
-              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault">Meteen publiceren</button>
+              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault">
+          <span translate-once="eventForm.publish.publish_now"></span>
+      </button>
       <button class="btn btn-default"
               ng-click="efpc.publishLater()"
-              ng-if="efpc.canPublishLater()">Later publiceren</button>
+              ng-if="efpc.canPublishLater()">
+          <span translate-once="eventForm.publish.publish_later"></span>
+      </button>
       <button type="submit"
               class="btn btn-success"
               ng-click="efpc.preview()"
-              ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)">Klaar met bewerken</button>
+              ng-if="!efpc.isDraft(efpc.eventFormData.workflowStatus)">
+          <span translate-once="eventForm.publish.edit_done"></span>
+      </button>
       <button type="submit"
               class="btn btn-success"
               ng-click="efpc.publish()"
-              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault">Klaar met bewerken</button>
+              ng-if="efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault">
+          <span translate-once="eventForm.publish.edit_done"></span>
+      </button>
       <span ng-if="efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>
-          Online vanaf <span ng-bind="efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'"></span>
+          <span translate-once="eventForm.publish.online_from"></span> <span ng-bind="efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'"></span>
       </span>
     </div>
     <div ng-if="efpc.saving">
