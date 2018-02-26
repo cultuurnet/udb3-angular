@@ -31,9 +31,9 @@
     $scope.newPlace = getDefaultPlace();
     $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
+    $scope.invalidStreet = false;
     $scope.saving = false;
     $scope.error = false;
-    $scope.errorMessage = 'error.default';
 
     // Scope functions.
     $scope.addLocation = addLocation;
@@ -87,7 +87,7 @@
 
       if (!validateAddress($scope.newPlace.address.streetAddress)) {
         $scope.error = true;
-        $scope.errorMessage = 'error.long';
+        $scope.invalidStreet = true;
         return;
       }
 
