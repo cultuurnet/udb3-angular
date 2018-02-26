@@ -24157,21 +24157,26 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "\n" +
     "      <div class=\"col-xs-12\">\n" +
-    "        <p>Ben je zeker dat je \"<span ng-bind=\"::item.name\"></span>\" wil verwijderen?</p>\n" +
+    "        <p translate-once=\"dashboard.delete.sure\"\n" +
+    "           translate-values=\"{ name: '{{item.name}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "        Er ging iets fout bij het verwijderen van de activiteit.\n" +
+    "      <div class=\"alert alert-danger\"\n" +
+    "           ng-show=\"error\"\n" +
+    "           translate-once=\"dashboard.delete.error\">\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\">\n" +
-    "    Annuleren\n" +
+    "  <button\n" +
+    "          type=\"button\"\n" +
+    "          class=\"btn btn-default\"\n" +
+    "          ng-click=\"cancelRemoval()\"\n" +
+    "          translate-once=\"dashboard.delete.cancel\">\n" +
     "  </button>\n" +
     "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"deleteEvent()\">\n" +
-    "    Verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"dashboard.delete.delete\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -24182,11 +24187,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"!hasEvents\">\n" +
-    "        <p>Ben je zeker dat je \"<span ng-bind=\"::place.name\"></span>\" wil verwijderen?</p>\n" +
+    "        <p translate-once=\"dashboard.delete.sure\" translate-values=\"{ name: '{{ place.name }}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"hasEvents\">\n" +
-    "        <p>De locatie \"<span ng-bind=\"::place.name\"></span>\" kan niet verwijderd worden omdat er activiteiten gepland zijn.</p>\n" +
+    "        <p translate-once=\"dashboard.delete.error_location\" translate-values=\"{ name: '{{ place.name }}'}\"></p>\n" +
     "\n" +
     "        <ul>\n" +
     "          <li ng-click=\"$dismiss('navigating away')\" ng-repeat=\"event in events\" udb-event-link ng-hide=\"fetching\"></li>\n" +
@@ -24194,18 +24199,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "        Er ging iets fout bij het verwijderen van de locatie.\n" +
+    "      <div class=\"alert alert-danger\" ng-show=\"error\" translate-once=\"dashboard.delete.error\">\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\">\n" +
-    "    Annuleren\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\" translate-once=\"dashboard.delete.cancel\">\n" +
     "  </button>\n" +
     "  <button type=\"button\" class=\"btn btn-primary\" ng-disabled=\"hasEvents\" ng-click=\"deletePlace()\">\n" +
-    "    Verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"dashboard.delete.delete\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
