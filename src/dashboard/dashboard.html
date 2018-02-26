@@ -1,5 +1,5 @@
 <h1 class="title" id="page-title">
-  Welkom, <span ng-bind="dash.username"></span>
+  <span translate-once="dashboard.welcome"></span> <span ng-bind="dash.username"></span>
 </h1>
 
 <div class="text-center" ng-show="dash.pagedItemViewer.loading">
@@ -21,8 +21,8 @@
 
       <div class="panel panel-default no-new no-data" ng-hide="dash.pagedItemViewer.events.length">
         <div class="panel-body text-center">
-          <p class="text-center">Je hebt nog geen items toegevoegd.
-            <span ng-if="dash.toggleAddOffer"><br/><a href="event">Een activiteit of locatie toevoegen?</a></span>
+          <p class="text-center"><span translate-once="dashboard.no_items"></span>
+            <span ng-if="dash.toggleAddOffer"><br/><a href="event" translate-once="dashboard.add_activity"></a></span>
           </p>
         </div>
       </div>
@@ -30,9 +30,9 @@
       <div ng-show="dash.pagedItemViewer.events.length">
 
         <div class="clearfix">
-          <p class="invoer-title"><span class="block-header">Recent</span>
+          <p class="invoer-title"><span class="block-header" translate-once="dashboard.recent"></span>
             <span class="pull-right" ng-if="dash.toggleAddOffer">
-              <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> Toevoegen</a>
+              <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> <span translate-once="dashboard.add"></span></a>
             </span>
           </p>
         </div>
