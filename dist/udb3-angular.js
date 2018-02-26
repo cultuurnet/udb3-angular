@@ -3223,6 +3223,51 @@ angular.module('udb.core')
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
     },
+    organizer: {
+      modal: {
+        'title': 'Nieuwe organisatie toevoegen',
+        'avoid_doubles': 'Vermijd dubbel werk',
+        'unique_notice': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+        'website': 'Website',
+        'alert_warning': 'Dit adres is al gebruikt door de organisatie \'{{organizerName}}\'. Geef een unieke website of',
+        'alert_button': 'gebruik {{organizerName}} als organisatie',
+        'name_help': 'De officiële publieke naam van de organisatie.',
+        'name_required': 'Gelieve een naam in te vullen',
+        'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
+        'doubles': 'We vonden deze gelijkaardige items:',
+        'select': 'Selecteren',
+        'your_input': 'Jij voerde in:',
+        'still_enter': 'Toch invoeren',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je organisatie.',
+        'address_error': 'Gelieve een geldig adres in te vullen.',
+        'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
+        'close': 'Sluiten',
+        'save': 'Bewaren'
+      },
+      address: {
+        'label_street': 'Straat en nummer',
+        'help_street': 'Gelieve straat en nummer in te geven.',
+        'label_city': 'Gemeente',
+        'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
+        'error_city': 'Gelieve een gemeente in te geven.',
+        'change': 'Wijzigen'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Geef een URL in',
+        'enter_email': 'Geef een e-mailadres in',
+        'enter_phone': 'Geef een telefoonnummer in<small class="text-muted">, bv. 011 32 43 54</small>',
+        'required': 'Gelieve dit veld niet leeg te laten.',
+        'valid_url': 'Gelieve een geldige url in te vullen.',
+        'valid_email': 'Gelieve een geldig e-mailadres in te vullen.',
+        'valid_phone': 'Gelieve een geldig telefoonnummer in te vullen.',
+        'cancel': 'Annuleren',
+        'add': 'Toevoegen',
+        'add_phone': 'Telefoonnummer toevoegen',
+        'add_email': 'E-mailadres toevoegen',
+        'add_url': 'Andere website toevoegen'
+      }
+    },
     duplicate: {
       title: 'Kopiëren en aanpassen',
       description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
@@ -25259,7 +25304,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "            <div class=\"form-group\"\n" +
     "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                <label>Straat en nummer</label>\n" +
+    "                <label translate-once=\"organizer.address.label_street\"></label>\n" +
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
@@ -25269,9 +25314,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
     "                <span class=\"has-error\"\n" +
     "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                    <span class=\"help-block\">\n" +
-    "                        Gelieve straat en nummer in te geven.\n" +
-    "                    </span>\n" +
+    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
     "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -25282,8 +25325,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
     "                <div class=\"form-group\"\n" +
     "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
-    "                        Gemeente\n" +
+    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" translate-once=\"organizer.address.label_city\">\n" +
     "                    </label>\n" +
     "                    <div id=\"gemeente-kiezer\">\n" +
     "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
@@ -25297,13 +25339,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                               typeahead-min-length=\"2\"\n" +
     "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                               autocomplete=\"off\">\n" +
-    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
-    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\" translate-once=\"organizer.address.help_city\">\n" +
     "                        </span>\n" +
     "                        <span class=\"has-error\"\n" +
     "                              ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                            <span class=\"help-block\">\n" +
-    "                                Gelieve een gemeente in te geven.\n" +
+    "                            <span class=\"help-block\" translate-once=\"organizer.address.error_city\">\n" +
     "                            </span>\n" +
     "                        </span>\n" +
     "                    </div>\n" +
@@ -25311,7 +25351,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
     "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
-    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\">Wijzigen</a>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -25322,7 +25362,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/organizer-contact.html',
     "<div class=\"row\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
-    "        <p><strong>Contact</strong></p>\n" +
+    "        <p><strong translate-once=\"organizer.contact.title\"></strong></p>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
@@ -25345,9 +25385,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"panel-body\">\n" +
     "      <form name=\"occ.organizerContactWrapper\">\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
-    "          <label ng-switch-when=\"url\">Geef een URL in</label>\n" +
-    "          <label ng-switch-when=\"email\">Geef een e-mailadres in</label>\n" +
-    "          <label ng-switch-when=\"phone\">Geef een telefoonnummer in<small class=\"text-muted\">, bv. 011 32 43 54</small></label>\n" +
+    "          <label ng-switch-when=\"url\"><span translate-once=\"organizer.contact.enter_url\"></span></label>\n" +
+    "          <label ng-switch-when=\"email\"><span translate-once=\"organizer.contact.enter_email\"></span></label>\n" +
+    "          <label ng-switch-when=\"phone\"><span translate-once=\"organizer.contact.enter_phone\"></span></label>\n" +
     "        </div>\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
@@ -25355,10 +25395,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldige url in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_url\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25368,10 +25408,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"!occ.isPristine && mailContactForm.email.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_email\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25381,21 +25421,20 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"!occ.isPristine && phoneContactForm.phone.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig telefoonnummer in te vullen.</p>\n" +
+    "                          <span translate-once=\"organizer.contact.valid_phone\"></span>\n" +
+    "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\">\n" +
-    "            Annuleren\n" +
+    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\" translate-once=\"organizer.contact.cancel\">\n" +
     "        </button>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\">\n" +
-    "            Toevoegen\n" +
+    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\" translate-once=\"organizer.contact.add\">\n" +
     "        </button>\n" +
     "\n" +
     "      </form>\n" +
@@ -25406,9 +25445,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row\" ng-hide=\"occ.addingContactEntry\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\" translate-once=\"organizer.contact.add_phone\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\" translate-once=\"organizer.contact.add_email\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\" translate-once=\"organizer.contact.add_url\"></a></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n"
@@ -25419,19 +25458,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-header\">\n" +
     "  <button type=\"button\" class=\"close\" ng-click=\"cancel()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
-    "  <h4 class=\"modal-title\" ng-hide=\"organizersFound\">Nieuwe organisatie toevoegen</h4>\n" +
-    "  <h4 class=\"modal-title\" ng-show=\"organizersFound\">Vermijd dubbel werk</h4>\n" +
+    "  <h4 class=\"modal-title\" ng-hide=\"organizersFound\" translate-once=\"organizer.modal.title\"></h4>\n" +
+    "  <h4 class=\"modal-title\" ng-show=\"organizersFound\" translate-once=\"organizer.modal.avoid_doubles\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
-    "      <p class=\"alert alert-info\" ng-bind=\"'UNIQUE_ORGANIZER_NOTICE' | translate\"></p>\n" +
+    "      <p class=\"alert alert-info\" translate-once=\"organizer.modal.unique_notice\"></p>\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group has-feedback\"\n" +
     "               ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
-    "            <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
+    "            <label class=\"control-label\" for=\"organizer-website\" translate-once=\"organizer.modal.website\"></label>\n" +
     "            <input type=\"url\"\n" +
     "                   id=\"organizer-website\"\n" +
     "                   name=\"website\"\n" +
@@ -25450,10 +25489,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"col-sm-12\">\n" +
     "          <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">\n" +
-    "            Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'.\n" +
-    "            Geef een unieke website of\n" +
+    "            <span translate=\"organizer.modal.alert_warning\"\n" +
+    "                  translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            <a ng-click=\"selectOrganizer(firstOrganizerFound)\" class=\"alert-link\" href=\"#\">\n" +
-    "              gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie\n" +
+    "              <span translate=\"organizer.modal.alert_button\"\n" +
+    "                    translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            </a>.\n" +
     "          </p>\n" +
     "        </div>\n" +
@@ -25469,10 +25509,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                   ng-model=\"newOrganizer.name\"\n" +
     "                   ng-change=\"updateName()\"\n" +
     "                   required>\n" +
-    "            <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
-    "            <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
-    "          Gelieve een naam in te vullen\n" +
-    "        </span>\n" +
+    "            <p class=\"help-block\" translate-once=\"organizer.modal.name_help\"></p>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"showValidation && organizerForm.name.$error.required\"\n" +
+    "                  translate-once=\"organizer.modal.name_required\">\n" +
+    "            </span>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -25487,12 +25528,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section ng-show=\"organizersFound\">\n" +
     "\n" +
     "    <div class=\"alert alert-info\">\n" +
-    "      <p>\n" +
-    "         Ben je zeker dat je \"<span ng-bind=\"newOrganizer.name\"></span>\" wil toevoegen als organisatie? Dubbele invoer\n" +
-    "         van organisaties is niet toegelaten.\n" +
-    "      </p>\n" +
+    "      <p translate=\"organizer.modal.add_confirm\" translate-values=\"{ newOrganizerName: '{{newOrganizer.name}}' }\"></p>\n" +
     "    </div>\n" +
-    "    <p>We vonden deze gelijkaardige items:</p>\n" +
+    "    <p translate-once=\"organizer.modal.doubles\"></p>\n" +
     "    <table class=\"table\">\n" +
     "      <tr ng-repeat=\"organizer in organizers\" udb-organizer=\"organizer\">\n" +
     "        <td colspan=\"2\" ng-show=\"fetching\">\n" +
@@ -25504,11 +25542,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          , <span ng-bind=\"::organizer.addresses[0].postalCode\"></span>\n" +
     "           <span ng-bind=\"::organizer.addresses[0].addressLocality\"></span>\n" +
     "        </td>\n" +
-    "        <td ng-hide=\"fetching\"><a class=\"btn btn-default\" ng-click=\"selectOrganizer(organizer)\">Selecteren</a></td>\n" +
+    "        <td ng-hide=\"fetching\"><a class=\"btn btn-default\" ng-click=\"selectOrganizer(organizer)\" translate-once=\"organizer.modal.select\"></a></td>\n" +
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          Jij voerde in:\n" +
+    "          <span translate-once=\"organizer.modal.your_input\"></span>\n" +
     "          <br/>\n" +
     "          <strong ng-bind=\"newOrganizer.name\"></strong>\n" +
     "          , <span ng-bind=\"newOrganizer.street\"></span>\n" +
@@ -25516,28 +25554,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "           <span ng-bind=\"newOrganizer.postalCode\"></span>\n" +
     "           <span ng-bind=\"newOrganizer.city\"></span>\n" +
     "        </td>\n" +
-    "        <td><a class=\"btn btn-default\" ng-click=\"saveOrganizer()\">Toch invoeren</a></td>\n" +
+    "        <td><a class=\"btn btn-default\" ng-click=\"saveOrganizer()\" translate-once=\"organizer.modal.still_enter\"></a></td>\n" +
     "      </tr>\n" +
     "    </table>\n" +
     "\n" +
     "  </section>\n" +
     "\n" +
     "  <div class=\"alert alert-danger\" ng-show=\"saveError\">\n" +
-    "    Er ging iets fout tijdens het opslaan van je organisatie.\n" +
+    "    <span translate-once=\"organizer.modal.save_error\"></span>\n" +
     "  </div>\n" +
     "  <div class=\"alert alert-danger\" ng-show=\"error && (addressError || contactError)\">\n" +
-    "    <p ng-show=\"addressError\">Gelieve een geldig adres in te vullen.<br /></p>\n" +
-    "    <p ng-show=\"contactError\">Gelieve alle contactinfo correct in te vullen.<br /></p>\n" +
+    "    <p ng-show=\"addressError\"><span translate-once=\"organizer.modal.address_error\"></span><br /></p>\n" +
+    "    <p ng-show=\"contactError\"><span translate-once=\"organizer.modal.contact_error\"></span><br /></p>\n" +
     "  </div>\n" +
     "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\" ng-hide=\"organizersFound\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"organizer.modal.close\"></button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "          ng-disabled=\"disableSubmit || contactError\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
-    "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"organizer.modal.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
