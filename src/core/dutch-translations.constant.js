@@ -692,6 +692,11 @@ angular.module('udb.core')
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
     },
+    duplicate: {
+      title: 'Kopiëren en aanpassen',
+      description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
+      error: 'Er ging iets mis tijdens het aanmaken van een kopie!'
+    },
     dashboard: {
       'welcome': 'Welkom,',
       'no_items': 'Je hebt nog geen items toegevoegd.',
