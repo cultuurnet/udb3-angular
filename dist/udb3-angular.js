@@ -26586,7 +26586,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <em class=\"extra-task-label\" translate-once=\"eventForm.step5.title\"></em>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
-    "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name.nl\"></p>\n" +
+    "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name\"></p>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
