@@ -1,14 +1,17 @@
 <tr>
-    <td><span class="row-label">{{translateWorkFlow('label')}}</span></td>
-    <td>
+    <td><span class="row-label" translate-once="workflowStatus.label"></span></td>
+    <td ng-if="cm.event.workflowStatus !== 'REJECTED'">
         <span ng-if="cm.event.available" ng-bind="cm.event.available | date: 'dd/MM/yyyy'">
                     </span>
-        <span ng-if="!cm.event.available && !cm.event.availableFrom">{{cm.status | translate }}</span>
+        <span ng-if="!cm.event.available && !cm.event.availableFrom">{{::cm.status | translate }}</span>
         <span ng-if="!cm.event.available && cm.event.availableFrom">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>
     </td>
+    <td ng-if="cm.event.workflowStatus === 'REJECTED'">
+      <p><span translate-once="workflowStatus.rejected_full"></span>&nbsp;<a ng-href="{{::cm.publicationRulesLink}}" target="_blank"><span translate-once="workflowStatus.rules"></span></a></p>
+    </td>
 </tr>
-<tr>
-    <td><span class="row-label">{{translateWorkFlow('id')}}</span></td>
+<tr ng-if="cm.event.workflowStatus !== 'REJECTED'">
+    <td><span class="row-label" translate-once="workflowStatus.id"></span></td>
     <td>
         <ul>
             <li ng-repeat="id in cm.eventIds(cm.event)" ng-switch="cm.isUrl(id)">

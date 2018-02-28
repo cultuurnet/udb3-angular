@@ -4,12 +4,9 @@ describe('Controller: event form step 5', function () {
 
   beforeEach(module('udb.event-form'));
 
-  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, modalInstance;
-  var AgeRange = {
-    'ALL': {'value': 0, 'label': 'Alle leeftijden'},
-    'KIDS': {'value': 12, 'label': 'Kinderen tot 12 jaar', min: 1, max: 12},
-    'TEENS': {'value': 18, 'label': 'Jongeren tussen 12 en 18 jaar', min: 13, max: 18},
-    'ADULTS': {'value': 99, 'label': 'Volwassenen (+18 jaar)', min: 19, max: 99}
+  var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, udbUitpasApi;
+  var appConfig = {
+    uitpasUrl: 'http://foo.bar/'
   };
 
   beforeEach(inject(function ($rootScope, $injector) {
@@ -20,6 +17,7 @@ describe('Controller: event form step 5', function () {
     UdbOrganizer = $injector.get('UdbOrganizer');
     $q = $injector.get('$q');
     uibModal = $injector.get('$uibModal');
+
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['suggestOrganizers']);
     eventCrud = jasmine.createSpyObj('eventCrud', [
       'updateDescription',
@@ -29,9 +27,9 @@ describe('Controller: event form step 5', function () {
       'deleteOfferOrganizer',
       'selectMainImage',
       'updateContactPoint',
-      'updateFacilities',
       'updateBookingInfo'
     ]);
+    udbUitpasApi = jasmine.createSpyObj('udbUitpasApi', ['getTicketSales']);
     stepController = getController();
   }));
 
@@ -42,7 +40,9 @@ describe('Controller: event form step 5', function () {
       eventCrud: eventCrud,
       udbOrganizers: udbOrganizers,
       $uibModal: uibModal,
-      $rootScope: rootScope
+      $rootScope: rootScope,
+      appConfig: appConfig,
+      udbUitpasApi: udbUitpasApi
     });
   }
 
@@ -200,11 +200,75 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingOrganizer).toEqual(false);
   });
 
+  it('should delete an organizer when there is no priceInfo', function() {
+      eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
+
+      scope.deleteOrganizerHandler();
+      scope.$apply();
+
+      expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
+  });
+
+  it('should not delete the organizer when the event has sold tickets', function() {
+      EventFormData.priceInfo = [
+          {
+            category: 'base',
+            name: 'Basistarief',
+            priceCurrency: 'EUR',
+            price: 4.00
+          }
+      ];
+      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true));
+
+      scope.deleteOrganizerHandler();
+      scope.$apply();
+
+      expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+      expect(scope.hasTicketSales).toBeTruthy();
+  });
+
+  it('should delete the organizer when the event has no sold tickets', function() {
+    EventFormData.priceInfo = [
+      {
+        category: 'base',
+        name: 'Basistarief',
+        priceCurrency: 'EUR',
+        price: 4.00
+      }
+    ];
+    udbUitpasApi.getTicketSales.and.returnValue($q.resolve(false));
+    eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
+
+    scope.deleteOrganizerHandler();
+    scope.$apply();
+
+    expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+    expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
+  });
+
+  it('should throw an error when the call to UiTPAS fails', function() {
+    EventFormData.priceInfo = [
+      {
+        category: 'base',
+        name: 'Basistarief',
+        priceCurrency: 'EUR',
+        price: 4.00
+      }
+    ];
+    udbUitpasApi.getTicketSales.and.returnValue($q.reject());
+
+    scope.deleteOrganizerHandler();
+    scope.$apply();
+
+    expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
+    expect(scope.hasUitpasError).toBeTruthy();
+  });
+
   it('should persist and reset the event organizer when removing it', function () {
     eventCrud.deleteOfferOrganizer.and.returnValue($q.resolve());
     spyOn(EventFormData, 'resetOrganizer');
 
-    scope.deleteOrganizer();
+    scope.deleteOrganizerHandler();
     scope.$apply();
 
     expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
@@ -215,7 +279,7 @@ describe('Controller: event form step 5', function () {
     eventCrud.deleteOfferOrganizer.and.returnValue($q.reject('BOOOM!'));
     spyOn(stepController, 'showAsyncOrganizerError');
 
-    scope.deleteOrganizer();
+    scope.deleteOrganizerHandler();
     scope.$apply();
 
     expect(eventCrud.deleteOfferOrganizer).toHaveBeenCalled();
@@ -360,84 +424,6 @@ describe('Controller: event form step 5', function () {
     expect(scope.savingContactInfo).toBeFalsy();
   });
 
-  it('should open the facilities modal', function () {
-    EventFormData.facilities = [];
-    spyOn(uibModal, 'open').and.returnValue({
-      result: $q.resolve()
-    });
-
-    scope.openFacilitiesModal();
-    scope.$apply();
-
-    expect(uibModal.open).toHaveBeenCalled();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-    expect(scope.selectedFacilities).toEqual(EventFormData.facilities);
-    expect(scope.facilitiesInapplicable).toBeTruthy();
-  });
-
-  it('should fail in opening the facilities modal and set the state to incomplete', function () {
-    EventFormData.facilities = [];
-    spyOn(uibModal, 'open').and.returnValue({
-      result: $q.reject()
-    });
-
-    scope.openFacilitiesModal();
-    scope.$apply();
-
-    expect(uibModal.open).toHaveBeenCalled();
-    expect(scope.facilitiesCssClass).toEqual('state-incomplete');
-  });
-
-  it('should fail in opening the facilities modal and set the state to complete', function () {
-    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
-    spyOn(uibModal, 'open').and.returnValue({
-      result: $q.reject()
-    });
-
-    scope.openFacilitiesModal();
-    scope.$apply();
-
-    expect(uibModal.open).toHaveBeenCalled();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-  });
-
-  it('should set the facilities on inapplicable', function () {
-    scope.setFacilitiesInapplicable();
-
-    expect(scope.facilitiesInapplicable).toBeTruthy();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-  });
-
-  it('should remove all facilities and set it to inapplicable', function () {
-    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
-
-    eventCrud.updateFacilities.and.returnValue($q.resolve());
-
-    scope.setFacilitiesInapplicable();
-    scope.$apply();
-
-    expect(scope.facilitiesError).toBeFalsy();
-    expect(EventFormData.facilities).toEqual([]);
-
-    expect(scope.savingFacilities).toBeFalsy();
-    expect(scope.facilitiesInapplicable).toBeTruthy();
-    expect(scope.facilitiesCssClass).toEqual('state-complete');
-  });
-
-  it('should remove all facilities and handle the error', function () {
-    EventFormData.facilities = ['faciliteit 1', 'faciliteit 2'];
-
-    eventCrud.updateFacilities.and.returnValue($q.reject('pakot'));
-
-    scope.setFacilitiesInapplicable();
-    scope.$apply();
-
-    expect(EventFormData.facilities).toEqual([]);
-
-    expect(scope.savingFacilities).toBeFalsy();
-    expect(scope.facilitiesError).toBeTruthy();
-  });
-
   it('should show the booking info toggles based on contact info type', function () {
     var contactInfo = [
       {type: 'phone', value: '1234567890', booking: false},
@@ -445,7 +431,7 @@ describe('Controller: event form step 5', function () {
       {type: 'url', value: 'http://cultuurnet.be', booking: false},
       {type: 'email', value: 'info@mail.com', booking: false},
       {type: 'url', value: 'http://google.be', booking: true},
-      {type: 'email', value: 'dude@sweet.com', booking: false},
+      {type: 'email', value: 'dude@sweet.com', booking: false}
     ];
     scope.contactInfo = contactInfo;
 
@@ -578,8 +564,6 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'info@mail.com', booking: false},
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
-
-    var deleteItem = {type: 'phone', value: '0987654321', booking: true};
 
     EventFormData.bookingInfo = {
       url : '',

@@ -19,14 +19,15 @@ function EventDetail(
   jsonLDLangFilter,
   variationRepository,
   offerEditor,
-  $location,
+  $state,
   $uibModal,
   $q,
   $window,
   offerLabeller,
   $translate,
   appConfig,
-  ModerationService
+  ModerationService,
+  RolePermission
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -86,16 +87,13 @@ function EventDetail(
 
   $scope.tabs = [
     {
-      id: 'data',
-      header: 'Gegevens'
+      id: 'data'
     },
     {
-      id: 'history',
-      header: 'Historiek'
+      id: 'history'
     },
     {
-      id: 'publication',
-      header: 'Publicatie'
+      id: 'publication'
     }
   ];
   $scope.deleteEvent = function () {
@@ -148,13 +146,22 @@ function EventDetail(
     ModerationService
       .getMyRoles()
       .then(function(roles) {
-        getModerationItems(roles).then(function(result) {
-          angular.forEach(result.member, function(member) {
-            if (member['@id'] === $scope.eventId) {
-              $scope.moderationPermission = true;
-            }
+        var filteredRoles = _.filter(roles, function(role) {
+          var canModerate = _.filter(role.permissions, function(permission) {
+            return permission === RolePermission.AANBOD_MODEREREN;
           });
+          return canModerate.length > 0;
         });
+
+        if (filteredRoles.length) {
+          getModerationItems(roles).then(function(result) {
+            angular.forEach(result.member, function(member) {
+              if (member['@id'] === $scope.eventId) {
+                $scope.moderationPermission = true;
+              }
+            });
+          });
+        }
       });
   }
 
@@ -223,20 +230,14 @@ function EventDetail(
   };
 
   $scope.openEditPage = function() {
-    var eventId;
-    // When an event is published $scope.eventId is empty,
-    // so get the eventId straight from the current url.
-    if (_.isEmpty($scope.eventId)) {
-      eventId = $location.url().split('/')[2];
-    }
-    else {
-      eventId = $scope.eventId.split('/').pop();
-    }
-    $location.path('/event/' + eventId + '/edit');
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+
+    $state.go('split.eventEdit', {id: id});
   };
 
   function goToDashboard() {
-    $location.path('/dashboard');
+    $state.go('split.footer.dashboard');
   }
 
   /**

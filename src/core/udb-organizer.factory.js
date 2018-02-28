@@ -48,7 +48,13 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = _.get(jsonOrganizer.name, 'nl', null) ||
+      // 1. Main language is now a required property.
+      // Organizers can be created in a given main language.
+      // 2. Previous projections had a default main language of nl.
+      // 3. Even older projections had a non-translated name.
+      // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+      this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -59,6 +65,7 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
+      this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
     }
   };
 

@@ -33,7 +33,8 @@
         <div class="query-search-result organization-search-results"
              ng-class="{'loading-search-result': $ctrl.loading}"
              ng-show="$ctrl.searchResult.totalItems > 0">
-            <table class="table table-hover table-striped">
+          <div class="panel panel-default">
+            <table class="table">
                 <thead>
                 <tr>
                     <th>Naam</th>
@@ -54,6 +55,7 @@
                         ng-change="$ctrl.pageChanged($ctrl.page)">
                 </uib-pagination>
             </div>
+          </div>
         </div>
     </div>
 </div>

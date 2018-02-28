@@ -13,16 +13,19 @@ angular
     templateUrl: 'templates/priceInfo.html',
     controller: PriceInfoComponent,
     bindings: {
-      price: '<'
+      price: '<',
+      eventId: '<',
+      organizer: '<'
     }
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
 
   var controller = this;
 
   controller.setPriceFree = setPriceFree;
+  controller.changePrice = changePrice;
   controller.openModal = openModal;
   controller.$onInit = init;
 
@@ -48,6 +51,24 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope) {
         controller.priceCssClass = 'state-complete';
       }
     });
+  }
+
+  function changePrice() {
+    if (controller.organizer && controller.price.length > 0) {
+      // check ticketsales
+      udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
+        if (hasTicketSales) {
+          controller.hasTicketSales = hasTicketSales;
+        } else {
+          openModal();
+        }
+      }, function() {
+        controller.hasUitpasError = true;
+      });
+    }
+    else {
+      openModal();
+    }
   }
 
   function openModal() {

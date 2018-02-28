@@ -43,9 +43,9 @@ describe('Controller: Roles Form', function() {
     "name": "Beheerder west-vlaanderen",
     "constraint": "city:leuven",
     "permissions": [
-      "AANBOD_BEWERKEN",
-      "AANBOD_MODEREREN",
-      "AANBOD_VERWIJDEREN"
+      { key: 'AANBOD_BEWERKEN', name: 'AANBOD_BEWERKEN' },
+      { key: 'AANBOD_MODEREREN', name: 'AANBOD_MODEREREN' },
+      { key: 'AANBOD_VERWIJDEREN', name: 'AANBOD_VERWIJDEREN' }
     ],
     "users": [
       {
@@ -63,7 +63,8 @@ describe('Controller: Roles Form', function() {
     { key: 'AANBOD_VERWIJDEREN', name: 'AANBOD_VERWIJDEREN' },
     { key: 'ORGANISATIES_BEHEREN', name: 'ORGANISATIES_BEHEREN' },
     { key: 'GEBRUIKERS_BEHEREN', name: 'GEBRUIKERS_BEHEREN' },
-    { key: 'LABELS_BEHEREN', name: 'LABELS_BEHEREN' }
+    { key: 'LABELS_BEHEREN', name: 'LABELS_BEHEREN' },
+    { key: 'VOORZIENINGEN_BEWERKEN', name: 'VOORZIENINGEN_BEWERKEN' }
   ];
 
 
@@ -91,7 +92,7 @@ describe('Controller: Roles Form', function() {
       'addLabelToRole',
       'getRoleLabels',
       'removeLabelFromRole',
-      'removeUserFromRole',
+      'removeUserFromRole'
     ]);
 
     Usermanager = jasmine.createSpyObj('UserManager', ['find', 'findUserWithEmail']);
@@ -199,12 +200,12 @@ describe('Controller: Roles Form', function() {
 
     $scope.$digest();
     editor.role.permissions = [
-      "ORGANISATIES_BEHEREN"
+      {key: 'ORGANISATIES_BEHEREN', name: 'ORGANISATIES_BEHEREN'}
     ];
 
     RoleManager.addPermissionToRole.and.returnValue($q.resolve());
 
-    editor.updatePermission('AANBOD_BEWERKEN');
+    editor.updatePermission({key: 'AANBOD_BEWERKEN', name: 'AANBOD_BEWERKEN'});
     $scope.$digest();
 
     expect(RoleManager.addPermissionToRole).toHaveBeenCalledWith('AANBOD_BEWERKEN', id);
@@ -220,12 +221,12 @@ describe('Controller: Roles Form', function() {
 
     $scope.$digest();
     editor.role.permissions = [
-      "AANBOD_BEWERKEN"
+      {key: 'AANBOD_BEWERKEN', name: 'AANBOD_BEWERKEN'}
     ];
 
     RoleManager.removePermissionFromRole.and.returnValue($q.resolve());
 
-    editor.updatePermission('AANBOD_BEWERKEN');
+    editor.updatePermission({key: 'AANBOD_BEWERKEN', name: 'AANBOD_BEWERKEN'});
     $scope.$digest();
 
     expect(RoleManager.removePermissionFromRole).toHaveBeenCalledWith('AANBOD_BEWERKEN', id);

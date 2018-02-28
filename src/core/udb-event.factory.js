@@ -198,6 +198,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       }
       this.mainLanguage = jsonEvent.mainLanguage || 'nl';
       this.languages = jsonEvent.languages || [];
+      this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
     },
 
     /**

@@ -20,8 +20,7 @@ function EventFormController(
     moment,
     jsonLDLangFilter,
     $q,
-    appConfig,
-    $translate
+    appConfig
 ) {
 
   // Other controllers won't load until this boolean is set to true.
@@ -151,7 +150,15 @@ function EventFormController(
       }
     }
 
-    EventFormData.name = item.name;
+    // 1. Main language is now a required property.
+    // Events can be created in a given main language.
+    // 2. Previous projections had a default main language of nl.
+    // 3. Even older projections had a non-translated name.
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+    EventFormData.name = _.get(item.name, item.mainLanguage, null) ||
+        _.get(item.name, 'nl', null) ||
+        _.get(item, 'name', '');
+
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
     // Set correct date object for start and end.
@@ -210,8 +217,4 @@ function EventFormController(
     EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
-
-  $scope.translateEventForm = function (step, label) {
-    return $translate.instant('eventForm.' + step + '.' + label);
-  };
 }

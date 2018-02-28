@@ -27,6 +27,7 @@ function EventFormStep5Controller(
   $uibModal,
   $rootScope,
   appConfig,
+  udbUitpasApi,
   $translate
 ) {
 
@@ -62,7 +63,7 @@ function EventFormStep5Controller(
   $scope.savingOrganizer = false;
 
   // Price info
-  $scope.hidePriceInfo = _.get(appConfig, 'toggleHidePriceInfo');
+  $scope.disablePriceInfo = _.get(appConfig.offerEditor, 'disablePriceInfo');
 
   // Booking & tickets vars.
   $scope.editBookingPhone = !EventFormData.bookingInfo.phone;
@@ -104,11 +105,6 @@ function EventFormStep5Controller(
   $scope.contactInfoError = false;
   $scope.contactInfo = [];
 
-  // Facilities vars.
-  $scope.facilitiesCssClass = 'state-incomplete';
-  $scope.facilitiesInapplicable = false;
-  $scope.selectedFacilities = [];
-
   // Description functions.
   $scope.alterDescription = alterDescription;
   $scope.focusDescription = focusDescription;
@@ -118,7 +114,7 @@ function EventFormStep5Controller(
   // Organizer functions.
   $scope.getOrganizers = getOrganizers;
   $scope.selectOrganizer = selectOrganizer;
-  $scope.deleteOrganizer = deleteOrganizer;
+  $scope.deleteOrganizerHandler = deleteOrganizerHandler;
   $scope.openOrganizerModal = openOrganizerModal;
 
   // Contact info functions.
@@ -126,9 +122,9 @@ function EventFormStep5Controller(
   $scope.saveContactInfo = saveContactInfo;
   $scope.addContactInfo = addContactInfo;
 
-  // Facilities functions.
-  $scope.openFacilitiesModal = openFacilitiesModal;
-  $scope.setFacilitiesInapplicable = setFacilitiesInapplicable;
+  // Uitpas info
+  $scope.hasTicketSales = false;
+  $scope.hasUitpasError = false;
 
   // Image upload functions.
   $scope.openUploadImageModal = openUploadImageModal;
@@ -239,6 +235,26 @@ function EventFormStep5Controller(
     $scope.organizerError = true;
     $scope.savingOrganizer = false;
   };
+
+  function deleteOrganizerHandler() {
+    if (EventFormData.priceInfo.length > 0) {
+      udbUitpasApi.getTicketSales($scope.eventFormData.id, $scope.eventFormData.organizer)
+        .then(
+          function(hasTicketSales) {
+            if (hasTicketSales) {
+              $scope.hasTicketSales = hasTicketSales;
+            }
+            else {
+              deleteOrganizer();
+            }
+          }, function() {
+            $scope.hasUitpasError = true;
+          });
+    }
+    else {
+      deleteOrganizer();
+    }
+  }
 
   /**
    * Delete the selected organiser.
@@ -374,62 +390,6 @@ function EventFormStep5Controller(
         $scope.savingContactInfo = false;
       });
 
-    }
-  }
-
-  /**
-   * Open the facilities modal.
-   */
-  function openFacilitiesModal() {
-
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-facilities-modal.html',
-      controller: 'EventFormFacilitiesModalController'
-    });
-
-    modalInstance.result.then(function () {
-
-      $scope.facilitiesCssClass = 'state-complete';
-      $scope.selectedFacilities = EventFormData.facilities;
-
-      $scope.facilitiesInapplicable = EventFormData.facilities.length <= 0;
-    }, function () {
-      // modal dismissed.
-      if (EventFormData.facilities.length > 0 || $scope.facilitiesInapplicable) {
-        $scope.facilitiesCssClass = 'state-complete';
-      }
-      else {
-        $scope.facilitiesCssClass = 'state-incomplete';
-      }
-    });
-
-  }
-
-  /**
-   * Remove all facilities and set it to inapplicable.
-   */
-  function setFacilitiesInapplicable() {
-
-    // Delete facilities.
-    if (EventFormData.facilities.length > 0) {
-
-      $scope.facilitiesError = false;
-      EventFormData.facilities = [];
-
-      var promise = eventCrud.updateFacilities(EventFormData);
-      promise.then(function() {
-        $scope.savingFacilities = false;
-        $scope.facilitiesInapplicable = true;
-        $scope.facilitiesCssClass = 'state-complete';
-      }, function() {
-        $scope.savingFacilities = false;
-        $scope.facilitiesError = true;
-      });
-
-    }
-    else {
-      $scope.facilitiesInapplicable = true;
-      $scope.facilitiesCssClass = 'state-complete';
     }
   }
 
@@ -653,18 +613,6 @@ function EventFormStep5Controller(
     // Set correct css class for contact info.
     if ($scope.contactInfo.length > 0) {
       $scope.contactInfoCssClass = 'state-complete';
-    }
-
-    // Set default facilities.
-    if (EventFormData.id) {
-      $scope.facilitiesCssClass = 'state-complete';
-      if (!EventFormData.facilities || EventFormData.facilities.length === 0) {
-        $scope.facilitiesInapplicable = true;
-      }
-      else {
-        $scope.selectedFacilities = EventFormData.facilities;
-        $scope.facilitiesInapplicable = false;
-      }
     }
 
     if (EventFormData.priceInfo) {

@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h4 class="modal-title">Toegankelijkheidsinformatie</h4>
+</div>
+<div class="modal-body">
+
+  <div ng-repeat="(type, facilitiesForType) in facilities">
+    <label ng-bind="::('facilityLabel.' + type) | translate"></label>
+    <div class="checkbox" ng-repeat="facility in ::facilitiesForType">
+      <label>
+        <input type="checkbox" ng-model="facility.selected">
+        <span ng-bind="::facility.label"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="alert alert-danger" ng-show="error">
+    Er ging iets fout tijdens het opslaan van de voorzieningen.
+  </div>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="cancel()">Annuleren</button>
+  <button type="button" class="btn btn-primary" ng-click="saveFacilities()">
+    Bevestigen <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+  </button>
+</div>

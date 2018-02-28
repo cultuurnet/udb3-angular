@@ -562,6 +562,20 @@ function UdbApi(
 
   /**
    * @param {URL} offerLocation
+   *   The location of the offer to update
+   * @param {string[]} facilities
+   *   A list of facility ids
+   */
+  this.updateOfferFacilities = function (offerLocation, facilities) {
+    return $http.put(
+      offerLocation + '/facilities/',
+      {facilities: facilities},
+      defaultApiConfig
+    );
+  };
+
+  /**
+   * @param {URL} offerLocation
    * @param {string} label
    *
    * @return {Promise}

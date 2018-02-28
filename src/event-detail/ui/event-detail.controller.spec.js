@@ -5,7 +5,7 @@ describe('Controller: Event Detail', function() {
       eventController,
       eventId,
       udbApi,
-      $location,
+      $state,
       jsonLDLangFilter,
       variationRepository,
       offerEditor,
@@ -193,7 +193,7 @@ describe('Controller: Event Detail', function() {
     $scope = $rootScope.$new();
     eventId = 'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc';
     udbApi = $injector.get('udbApi');
-    $location = jasmine.createSpyObj('$location', ['path', 'url']);
+    $state = jasmine.createSpyObj('$state', ['go']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     variationRepository = $injector.get('variationRepository');
     offerEditor = $injector.get('offerEditor');
@@ -223,7 +223,7 @@ describe('Controller: Event Detail', function() {
         $scope: $scope,
         eventId: eventId,
         udbApi: udbApi,
-        $location: $location,
+        $state: $state,
         jsonLDLangFilter: jsonLDLangFilter,
         variationRepository: variationRepository,
         offerEditor: offerEditor,
@@ -356,28 +356,30 @@ describe('Controller: Event Detail', function() {
     eventController.goToDashboardOnJobCompletion(job);
     $scope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/dashboard');
+    expect($state.go).toHaveBeenCalledWith('split.footer.dashboard');
   });
 
-  it('should redirect to the edit page with a known eventId', function () {
-    $scope.eventId = 'event/de84f1c4-d335-470a-924d-624982b87098';
+  it('should redirect to the edit page with an eventId resolved to a URL string', function () {
+    $scope.eventId = 'http://foo.bar/events/1111be8c-a412-488d-9ecc-8fdf9e52edbc';
 
     $scope.openEditPage();
     $scope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/event/de84f1c4-d335-470a-924d-624982b87098/edit');
+    expect($state.go).toHaveBeenCalledWith('split.eventEdit', {id: '1111be8c-a412-488d-9ecc-8fdf9e52edbc'});
   });
 
-  it('should redirect to the edit page without a known eventId', function () {
-    $scope.eventId = {};
-    $location.url.and.returnValue('/event/de84f1c4-d335-470a-924d-624982b87098/saved');
+  it('should redirect to the edit page with an eventId resolved to an URL object', function () {
+    $scope.eventId = {
+      toString: function () {
+        return 'http://foo.bar/events/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+      } 
+    };
 
     $scope.openEditPage();
     $scope.$digest();
 
-    expect($location.path).toHaveBeenCalledWith('/event/de84f1c4-d335-470a-924d-624982b87098/edit');
+    expect($state.go).toHaveBeenCalledWith('split.eventEdit', {id: '1111be8c-a412-488d-9ecc-8fdf9e52edbc'});
   });
-
 
   it('should update the event when adding a label', function () {
     var label = {name:'some other label'};
