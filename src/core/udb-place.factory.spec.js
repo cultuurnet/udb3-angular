@@ -146,5 +146,18 @@ describe('Factory: UdbPlace', function () {
     var place = new UdbPlace(placeJsonWithHiddenLabel);
 
     expect(place.labels).toEqual(expectedCombinedLabels);
-  })
+  });
+
+  it('should have the dutch fallback when mainLanguage is not defined', function() {
+    expect(place.mainLanguage).toEqual('nl');
+  });
+
+  it('should reckon with another mainLanguage if defined', function() {
+    var placeJsonWithFrenchMainLanguage = getPlaceJson();
+    placeJsonWithFrenchMainLanguage.mainLanguage = 'fr';
+
+    place = new UdbPlace(placeJsonWithFrenchMainLanguage);
+    expect(place.mainLanguage).toEqual('fr');
+  });
+
 });

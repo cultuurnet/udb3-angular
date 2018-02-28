@@ -193,6 +193,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.mainLanguage = jsonPlace.mainLanguage || 'nl';
       this.languages = jsonPlace.languages || [];
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
+      this.mainLanguage = jsonPlace.mainLanguage || 'nl';
     },
 
     /**
