@@ -3,13 +3,13 @@
 
 /**
  * @ngdoc service
- * @name udbApp.dutchTranslations
+ * @name udbApp.udbDutchTranslations
  * @description
- * # dutchTranslations
+ * # udbDutchTranslations
  * Constant in the udbApp.
  */
 angular.module('udb.core')
-  .constant('dutchTranslations',
+  .constant('udbDutchTranslations',
   {
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',

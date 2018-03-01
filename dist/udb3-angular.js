@@ -2527,20 +2527,48 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
 WorkflowStatusDirectiveController.$inject = ["$scope", "appConfig"];
 })();
 
-// Source: src/core/dutch-translations.constant.js
+// Source: src/core/error-handling/unexpected-error-modal.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.core.controller:UnexpectedErrorModalController
+ * @description
+ * # UnexpectedErrorModalController
+ * Controller of the udb.core
+ */
+angular
+  .module('udb.core')
+  .controller('UnexpectedErrorModalController', UnexpectedErrorModalController);
+
+/* @ngInject */
+function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage) {
+
+  var dismiss = function () {
+    $uibModalInstance.dismiss('closed');
+  };
+
+  $scope.dismiss = dismiss;
+  $scope.errorMessage = errorMessage;
+}
+UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
+})();
+
+// Source: src/core/translations/dutch-translations.constant.js
 (function () {
 'use strict';
 // jscs:disable maximumLineLength
 
 /**
  * @ngdoc service
- * @name udbApp.dutchTranslations
+ * @name udbApp.udbDutchTranslations
  * @description
- * # dutchTranslations
+ * # udbDutchTranslations
  * Constant in the udbApp.
  */
 angular.module('udb.core')
-  .constant('dutchTranslations',
+  .constant('udbDutchTranslations',
   {
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
@@ -3330,34 +3358,6 @@ angular.module('udb.core')
     }
   }
 );
-})();
-
-// Source: src/core/error-handling/unexpected-error-modal.controller.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc function
- * @name udb.core.controller:UnexpectedErrorModalController
- * @description
- * # UnexpectedErrorModalController
- * Controller of the udb.core
- */
-angular
-  .module('udb.core')
-  .controller('UnexpectedErrorModalController', UnexpectedErrorModalController);
-
-/* @ngInject */
-function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage) {
-
-  var dismiss = function () {
-    $uibModalInstance.dismiss('closed');
-  };
-
-  $scope.dismiss = dismiss;
-  $scope.errorMessage = errorMessage;
-}
-UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
 })();
 
 // Source: src/core/udb-api.service.js
@@ -5755,14 +5755,14 @@ function UitidAuth($window, $location, appConfig, $cookies) {
   /**
    * Login by redirecting to UiTiD
    */
-  this.login = function () {
+  this.login = function (language) {
     var currentLocation = $location.absUrl(),
         loginUrl = appConfig.authUrl + 'connect';
 
     removeCookies();
 
     // redirect to login page
-    loginUrl += '?destination=' + encodeURIComponent(currentLocation);
+    loginUrl += '?destination=' + encodeURIComponent(currentLocation) + '&lang=' + language;
     $window.location.href = loginUrl;
   };
 
