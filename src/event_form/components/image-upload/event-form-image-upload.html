@@ -6,15 +6,13 @@
   <div class="modal-body">
 
     <p ng-show="showAgreements">
-      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.
-       Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke
-       wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de
-       <a ng-href="{{::userAgreementUrl}}" target="_blank">algemene voorwaarden</a>.
-       <a ng-href="{{::copyrightUrl}}" target="_blank">Meer informatie over copyright</a>
+      <span translate-once="images.agreement"></span>
+       <a ng-href="{{::userAgreementUrl}}" target="_blank" translate-once="images.conditions"></a>.
+       <a ng-href="{{::copyrightUrl}}" target="_blank" translate-once="images.copyright_info"></a>
     </p>
     <div ng-hide="showAgreements">
       <div class="form-group">
-        <label for="inputFile">Selecteer je foto</label>
+        <label for="inputFile" translate-once="images.upload.select_image"></label>
         <p>
           <button type="file"
                   class="btn btn-primary"
@@ -22,35 +20,31 @@
                   ngf-select="selectFile($file, $invalidFiles)"
                   accept="image/*"
                   ngf-max-size="{{maxFileSize}}">
-            Kies bestand</button>
+            <span translate-once="images.upload.choose_file"></span></button>
         </p>
 
         <p ng-show="selectedFile">
           <span ng-bind="selectedFile.name"></span>
         </p>
 
-        <p class="help-block">
-          De maximale grootte van je afbeelding is <span ng-bind="maxFileSize"></span> en heeft als type .jpeg, .gif of .png</p>
+        <p class="help-block" translate-once="images.upload.max_filesize" translate-values="{ maxFileSize: '{{maxFileSize}}' }"></p>
       </div>
 
       <div class="form-group">
-        <label>Beschrijving <strong class="text-danger">*</strong></label>
+        <label><span translate-once="images.description"></span> <strong class="text-danger">*</strong></label>
         <input type="text" class="form-control" ng-model="description" required>
       </div>
 
       <div class="form-group">
-        <label>Copyright <strong class="text-danger">*</strong></label>
+        <label><span translate-once="images.copyright"></span> <strong class="text-danger">*</strong></label>
         <input type="text" class="form-control" ng-model="copyright" required>
-        <p class="help-block">
-            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).</p>
+        <p class="help-block" translate-once="images.copyright_help"></p>
       </div>
 
       <p class="image-copyright-agreements">
-        Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.
-        Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke
-        wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de
-        <a ng-href="{{::userAgreementUrl}}" target="_blank">algemene voorwaarden</a>.
-        <a ng-href="{{::copyrightUrl}}" target="_blank">Meer informatie over copyright</a>
+        <span translate-once="images.agreement"></span>
+        <a ng-href="{{::userAgreementUrl}}" target="_blank" translate-once="images.conditions"></a>.
+        <a ng-href="{{::copyrightUrl}}" target="_blank" translate-once="images.copyright_info"></a>
       </p>
     </div>
 
@@ -60,10 +54,10 @@
 
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="cancel()">Annuleren</button>
+    <button type="button" class="btn btn-default" ng-click="cancel()" translate-once="images.cancel"></button>
     <button type="button" class="btn btn-primary" ng-hide="showAgreements" ng-disabled="!allFieldsValid() || saving" ng-click="addImage()">
-      Opladen <i ng-show="saving" class="fa fa-circle-o-notch fa-spin"></i>
+      <span translate-once="images.upload.upload"></span> <i ng-show="saving" class="fa fa-circle-o-notch fa-spin"></i>
     </button>
-    <button class="btn btn-primary" ng-show="showAgreements" ng-click="acceptAgreements()">Akkoord</button>
+    <button class="btn btn-primary" ng-show="showAgreements" ng-click="acceptAgreements()" translate-once="images.agree"></button>
   </div>
 </div>

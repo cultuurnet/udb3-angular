@@ -547,6 +547,12 @@ angular.module('udb.core')
           'from': 'Van',
           'till': 'Tot'
         }
+      },
+      publish: {
+        'publish_now': 'Meteen publiceren',
+        'publish_later': 'Later publiceren',
+        'edit_done': 'Klaar met bewerken',
+        'online_from': 'Online vanaf'
       }
     },
     calendar: {
@@ -690,6 +696,78 @@ angular.module('udb.core')
         'choose': '--Selecteer een verdeelsleutel--',
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
+      }
+    },
+    images: {
+      'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+      'conditions': 'algemene voorwaarden',
+      'copyright_info': 'Meer informatie over copyright',
+      'description': 'Beschrijving',
+      'copyright': 'Copyright',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'cancel': 'Annuleren',
+      'agree': 'Akkoord',
+      upload: {
+        'select_image': 'Selecteer je foto',
+        'choose_file': 'Kies bestand',
+        'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
+        'upload': 'Opladen'
+      },
+      edit: {
+        'title': 'Afbeelding info bewerken',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'update': 'Bijwerken'
+      },
+      remove: {
+        'title': 'Afbeeldingen verwijderen',
+        'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
+        'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
+      }
+    },
+    organizer: {
+      modal: {
+        'title': 'Nieuwe organisatie toevoegen',
+        'avoid_doubles': 'Vermijd dubbel werk',
+        'unique_notice': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+        'website': 'Website',
+        'alert_warning': 'Dit adres is al gebruikt door de organisatie \'{{organizerName}}\'. Geef een unieke website of',
+        'alert_button': 'gebruik {{organizerName}} als organisatie',
+        'name_help': 'De officiële publieke naam van de organisatie.',
+        'name_required': 'Gelieve een naam in te vullen',
+        'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
+        'doubles': 'We vonden deze gelijkaardige items:',
+        'select': 'Selecteren',
+        'your_input': 'Jij voerde in:',
+        'still_enter': 'Toch invoeren',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je organisatie.',
+        'address_error': 'Gelieve een geldig adres in te vullen.',
+        'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
+        'close': 'Sluiten',
+        'save': 'Bewaren'
+      },
+      address: {
+        'label_street': 'Straat en nummer',
+        'help_street': 'Gelieve straat en nummer in te geven.',
+        'label_city': 'Gemeente',
+        'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
+        'error_city': 'Gelieve een gemeente in te geven.',
+        'change': 'Wijzigen'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Geef een URL in',
+        'enter_email': 'Geef een e-mailadres in',
+        'enter_phone': 'Geef een telefoonnummer in<small class="text-muted">, bv. 011 32 43 54</small>',
+        'required': 'Gelieve dit veld niet leeg te laten.',
+        'valid_url': 'Gelieve een geldige url in te vullen.',
+        'valid_email': 'Gelieve een geldig e-mailadres in te vullen.',
+        'valid_phone': 'Gelieve een geldig telefoonnummer in te vullen.',
+        'cancel': 'Annuleren',
+        'add': 'Toevoegen',
+        'add_phone': 'Telefoonnummer toevoegen',
+        'add_email': 'E-mailadres toevoegen',
+        'add_url': 'Andere website toevoegen'
       }
     },
     duplicate: {
