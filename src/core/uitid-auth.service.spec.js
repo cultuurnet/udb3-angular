@@ -53,8 +53,8 @@ describe('Service: uitidAuth', function () {
     var currentUrl = 'blah';
     spyOn($location, 'absUrl').and.returnValue(currentUrl);
 
-    uitidAuth.login();
-    expect($window.location.href).toBe(appConfig.authUrl + 'connect?destination=blah');
+    uitidAuth.login('nl');
+    expect($window.location.href).toBe(appConfig.authUrl + 'connect?destination=blah&lang=nl');
   });
 
   it('should get a user from the cookieStore', function () {
