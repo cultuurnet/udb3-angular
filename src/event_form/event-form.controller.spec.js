@@ -117,21 +117,4 @@ describe('Controller: Event Form', function() {
     expect(EventFormData.timestamps).toEqual(expectedTimestamps);
     expect(EventFormData.calendarType).toEqual('single');
   });
-
-
-  it('should immediately show step 3 when the event type is set and a date is preselected', function () {
-    EventFormData.isEvent = true;
-
-    $controller(
-      'EventFormController', {
-        udbApi: udbApi,
-        offerId: null,
-        $scope: $scope,
-        EventFormData: EventFormData
-      }
-    );
-
-    $scope.$digest();
-    expect(EventFormData.showStep3).toEqual(true);
-  });
 });

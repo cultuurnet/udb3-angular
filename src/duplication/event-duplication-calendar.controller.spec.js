@@ -4,6 +4,19 @@ describe('Controller: Event Duplication Calendar', function () {
 
   var $controller, EventFormData, $scope, $rootScope, $timeout;
 
+  beforeEach(module('udb.event-form', function ($provide) {
+    var appConfig = {
+      'calendarHighlight': {
+        'date': '2017-09-10',
+        'startTime': '10:00',
+        'endTime': '18:00',
+        'extraClass': 'omd'
+      }
+    };
+
+    $provide.constant('appConfig', appConfig);
+  }));
+
   beforeEach(module('udb.duplication'));
 
   beforeEach(inject(function($injector, _$rootScope_) {

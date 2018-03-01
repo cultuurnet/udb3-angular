@@ -3,7 +3,18 @@
 describe('Controller: Form Calendar', function () {
   var $controller, EventFormData, $scope;
 
-  beforeEach(module('udb.event-form'));
+  beforeEach(module('udb.event-form', function ($provide) {
+    var appConfig = {
+      'calendarHighlight': {
+        'date': '2017-09-10',
+        'startTime': '10:00',
+        'endTime': '18:00',
+        'extraClass': 'omd'
+      }
+    };
+
+    $provide.constant('appConfig', appConfig);
+  }));
 
   beforeEach(inject(function($injector, $rootScope) {
     $controller = $injector.get('$controller');

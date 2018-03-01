@@ -56,7 +56,7 @@ function EventFormController(
         moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
-    EventFormData.showStep(3);
+    //EventFormData.showStep(3);
   }
 
   /**
