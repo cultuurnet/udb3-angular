@@ -3078,6 +3078,12 @@ angular.module('udb.core')
           'from': 'Van',
           'till': 'Tot'
         }
+      },
+      publish: {
+        'publish_now': 'Meteen publiceren',
+        'publish_later': 'Later publiceren',
+        'edit_done': 'Klaar met bewerken',
+        'online_from': 'Online vanaf'
       }
     },
     calendar: {
@@ -3221,6 +3227,78 @@ angular.module('udb.core')
         'choose': '--Selecteer een verdeelsleutel--',
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
+      }
+    },
+    images: {
+      'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+      'conditions': 'algemene voorwaarden',
+      'copyright_info': 'Meer informatie over copyright',
+      'description': 'Beschrijving',
+      'copyright': 'Copyright',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'cancel': 'Annuleren',
+      'agree': 'Akkoord',
+      upload: {
+        'select_image': 'Selecteer je foto',
+        'choose_file': 'Kies bestand',
+        'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
+        'upload': 'Opladen'
+      },
+      edit: {
+        'title': 'Afbeelding info bewerken',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'update': 'Bijwerken'
+      },
+      remove: {
+        'title': 'Afbeeldingen verwijderen',
+        'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
+        'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
+      }
+    },
+    organizer: {
+      modal: {
+        'title': 'Nieuwe organisatie toevoegen',
+        'avoid_doubles': 'Vermijd dubbel werk',
+        'unique_notice': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+        'website': 'Website',
+        'alert_warning': 'Dit adres is al gebruikt door de organisatie \'{{organizerName}}\'. Geef een unieke website of',
+        'alert_button': 'gebruik {{organizerName}} als organisatie',
+        'name_help': 'De officiële publieke naam van de organisatie.',
+        'name_required': 'Gelieve een naam in te vullen',
+        'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
+        'doubles': 'We vonden deze gelijkaardige items:',
+        'select': 'Selecteren',
+        'your_input': 'Jij voerde in:',
+        'still_enter': 'Toch invoeren',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je organisatie.',
+        'address_error': 'Gelieve een geldig adres in te vullen.',
+        'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
+        'close': 'Sluiten',
+        'save': 'Bewaren'
+      },
+      address: {
+        'label_street': 'Straat en nummer',
+        'help_street': 'Gelieve straat en nummer in te geven.',
+        'label_city': 'Gemeente',
+        'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
+        'error_city': 'Gelieve een gemeente in te geven.',
+        'change': 'Wijzigen'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Geef een URL in',
+        'enter_email': 'Geef een e-mailadres in',
+        'enter_phone': 'Geef een telefoonnummer in<small class="text-muted">, bv. 011 32 43 54</small>',
+        'required': 'Gelieve dit veld niet leeg te laten.',
+        'valid_url': 'Gelieve een geldige url in te vullen.',
+        'valid_email': 'Gelieve een geldig e-mailadres in te vullen.',
+        'valid_phone': 'Gelieve een geldig telefoonnummer in te vullen.',
+        'cancel': 'Annuleren',
+        'add': 'Toevoegen',
+        'add_phone': 'Telefoonnummer toevoegen',
+        'add_email': 'E-mailadres toevoegen',
+        'add_url': 'Andere website toevoegen'
       }
     },
     duplicate: {
@@ -4884,6 +4962,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       }
 
       this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
+      this.mainLanguage = jsonEvent.mainLanguage || 'nl';
     },
 
     /**
@@ -5417,6 +5496,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       }
 
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
+      this.mainLanguage = jsonPlace.mainLanguage || 'nl';
     },
 
     /**
@@ -24171,21 +24251,26 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "\n" +
     "      <div class=\"col-xs-12\">\n" +
-    "        <p>Ben je zeker dat je \"<span ng-bind=\"::item.name\"></span>\" wil verwijderen?</p>\n" +
+    "        <p translate-once=\"dashboard.delete.sure\"\n" +
+    "           translate-values=\"{ name: '{{item.name}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "        Er ging iets fout bij het verwijderen van de activiteit.\n" +
+    "      <div class=\"alert alert-danger\"\n" +
+    "           ng-show=\"error\"\n" +
+    "           translate-once=\"dashboard.delete.error\">\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\">\n" +
-    "    Annuleren\n" +
+    "  <button\n" +
+    "          type=\"button\"\n" +
+    "          class=\"btn btn-default\"\n" +
+    "          ng-click=\"cancelRemoval()\"\n" +
+    "          translate-once=\"dashboard.delete.cancel\">\n" +
     "  </button>\n" +
     "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"deleteEvent()\">\n" +
-    "    Verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"dashboard.delete.delete\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -24196,11 +24281,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"!hasEvents\">\n" +
-    "        <p>Ben je zeker dat je \"<span ng-bind=\"::place.name\"></span>\" wil verwijderen?</p>\n" +
+    "        <p translate-once=\"dashboard.delete.sure\" translate-values=\"{ name: '{{ place.name }}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"hasEvents\">\n" +
-    "        <p>De locatie \"<span ng-bind=\"::place.name\"></span>\" kan niet verwijderd worden omdat er activiteiten gepland zijn.</p>\n" +
+    "        <p translate-once=\"dashboard.delete.error_location\" translate-values=\"{ name: '{{ place.name }}'}\"></p>\n" +
     "\n" +
     "        <ul>\n" +
     "          <li ng-click=\"$dismiss('navigating away')\" ng-repeat=\"event in events\" udb-event-link ng-hide=\"fetching\"></li>\n" +
@@ -24208,18 +24293,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "        Er ging iets fout bij het verwijderen van de locatie.\n" +
+    "      <div class=\"alert alert-danger\" ng-show=\"error\" translate-once=\"dashboard.delete.error\">\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\">\n" +
-    "    Annuleren\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\" translate-once=\"dashboard.delete.cancel\">\n" +
     "  </button>\n" +
     "  <button type=\"button\" class=\"btn btn-primary\" ng-disabled=\"hasEvents\" ng-click=\"deletePlace()\">\n" +
-    "    Verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"dashboard.delete.delete\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -25014,42 +25097,39 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\">\n" +
     "      <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
-    "    <h4 class=\"modal-title\">Afbeelding info bewerken</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"images.edit.title\"></h4>\n" +
     "  </div>\n" +
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <div>\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "          Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.\n" +
-    "        </p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.edit.description_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.copyright\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "          Vermeld de naam van de rechtenhoudende fotograaf (minimum 3 karakters).</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.copyright_help\"></p>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div ng-show=\"error\" class=\"alert alert-danger\">Er ging iets mis bij het opslaan van de afbeelding.</div>\n" +
+    "    <div ng-show=\"error\" class=\"alert alert-danger\">\n" +
+    "      <span translate-once=\"images.edit.save_error\"></span>\n" +
+    "    </div>\n" +
     "\n" +
     "    <p class=\"image-copyright-agreements\">\n" +
-    "      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "      Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "      wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "      <a ng-href=\"{{::uploadTermsConditionsUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "      <a ng-href=\"{{::uploadCopyRightInfoUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "      <span translate-once=\"images.agreement\"></span>\n" +
+    "      <a ng-href=\"{{::uploadTermsConditionsUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "      <a ng-href=\"{{::uploadCopyRightInfoUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "    </p>\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateImageInfo()\" ng-disabled=\"!allFieldsValid() || saving\">\n" +
-    "      Bijwerken <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.edit.update\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
@@ -25063,20 +25143,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\">\n" +
     "      <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
-    "    <h4 class=\"modal-title\">Afbeeldingen verwijderen</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"images.remove.title\"></h4>\n" +
     "  </div>\n" +
     "  <div class=\"modal-body\">\n" +
     "\n" +
-    "    <p>Ben je zeker dat je deze afbeelding wil verwijderen?</p>\n" +
+    "    <p translate-once=\"images.remove.sure\"></p>\n" +
     "\n" +
-    "    <div ng-show=\"error\" class=\"alert alert-danger\">Er ging iets mis bij het verwijderen van de afbeelding.</div>\n" +
+    "    <div ng-show=\"error\" class=\"alert alert-danger\">\n" +
+    "      <span translate-once=\"images.remove.save_error\"></span>\n" +
+    "    </div>\n" +
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button class=\"btn btn-primary\" ng-click=\"removeImage()\">\n" +
-    "      Akkoord <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.agree\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
@@ -25093,15 +25175,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <p ng-show=\"showAgreements\">\n" +
-    "      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "       Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "       wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "      <span translate-once=\"images.agreement\"></span>\n" +
+    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "    </p>\n" +
     "    <div ng-hide=\"showAgreements\">\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label for=\"inputFile\">Selecteer je foto</label>\n" +
+    "        <label for=\"inputFile\" translate-once=\"images.upload.select_image\"></label>\n" +
     "        <p>\n" +
     "          <button type=\"file\"\n" +
     "                  class=\"btn btn-primary\"\n" +
@@ -25109,35 +25189,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  ngf-select=\"selectFile($file, $invalidFiles)\"\n" +
     "                  accept=\"image/*\"\n" +
     "                  ngf-max-size=\"{{maxFileSize}}\">\n" +
-    "            Kies bestand</button>\n" +
+    "            <span translate-once=\"images.upload.choose_file\"></span></button>\n" +
     "        </p>\n" +
     "\n" +
     "        <p ng-show=\"selectedFile\">\n" +
     "          <span ng-bind=\"selectedFile.name\"></span>\n" +
     "        </p>\n" +
     "\n" +
-    "        <p class=\"help-block\">\n" +
-    "          De maximale grootte van je afbeelding is <span ng-bind=\"maxFileSize\"></span> en heeft als type .jpeg, .gif of .png</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.upload.max_filesize\" translate-values=\"{ maxFileSize: '{{maxFileSize}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.copyright\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyright\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.copyright_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <p class=\"image-copyright-agreements\">\n" +
-    "        Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "        Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "        wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "        <span translate-once=\"images.agreement\"></span>\n" +
+    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "\n" +
@@ -25147,11 +25223,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
-    "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.upload.upload\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
-    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
+    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\" translate-once=\"images.agree\"></button>\n" +
     "  </div>\n" +
     "</div>\n"
   );
@@ -25270,7 +25346,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "            <div class=\"form-group\"\n" +
     "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                <label>Straat en nummer</label>\n" +
+    "                <label translate-once=\"organizer.address.label_street\"></label>\n" +
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
@@ -25280,9 +25356,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
     "                <span class=\"has-error\"\n" +
     "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                    <span class=\"help-block\">\n" +
-    "                        Gelieve straat en nummer in te geven.\n" +
-    "                    </span>\n" +
+    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
     "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -25293,8 +25367,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
     "                <div class=\"form-group\"\n" +
     "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
-    "                        Gemeente\n" +
+    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" translate-once=\"organizer.address.label_city\">\n" +
     "                    </label>\n" +
     "                    <div id=\"gemeente-kiezer\">\n" +
     "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
@@ -25308,13 +25381,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                               typeahead-min-length=\"2\"\n" +
     "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                               autocomplete=\"off\">\n" +
-    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
-    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\" translate-once=\"organizer.address.help_city\">\n" +
     "                        </span>\n" +
     "                        <span class=\"has-error\"\n" +
     "                              ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                            <span class=\"help-block\">\n" +
-    "                                Gelieve een gemeente in te geven.\n" +
+    "                            <span class=\"help-block\" translate-once=\"organizer.address.error_city\">\n" +
     "                            </span>\n" +
     "                        </span>\n" +
     "                    </div>\n" +
@@ -25322,7 +25393,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
     "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
-    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\">Wijzigen</a>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -25333,7 +25404,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/organizer-contact.html',
     "<div class=\"row\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
-    "        <p><strong>Contact</strong></p>\n" +
+    "        <p><strong translate-once=\"organizer.contact.title\"></strong></p>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
@@ -25356,9 +25427,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"panel-body\">\n" +
     "      <form name=\"occ.organizerContactWrapper\">\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
-    "          <label ng-switch-when=\"url\">Geef een URL in</label>\n" +
-    "          <label ng-switch-when=\"email\">Geef een e-mailadres in</label>\n" +
-    "          <label ng-switch-when=\"phone\">Geef een telefoonnummer in<small class=\"text-muted\">, bv. 011 32 43 54</small></label>\n" +
+    "          <label ng-switch-when=\"url\"><span translate-once=\"organizer.contact.enter_url\"></span></label>\n" +
+    "          <label ng-switch-when=\"email\"><span translate-once=\"organizer.contact.enter_email\"></span></label>\n" +
+    "          <label ng-switch-when=\"phone\"><span translate-once=\"organizer.contact.enter_phone\"></span></label>\n" +
     "        </div>\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
@@ -25366,10 +25437,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldige url in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_url\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25379,10 +25450,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"!occ.isPristine && mailContactForm.email.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_email\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25392,21 +25463,20 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"!occ.isPristine && phoneContactForm.phone.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig telefoonnummer in te vullen.</p>\n" +
+    "                          <span translate-once=\"organizer.contact.valid_phone\"></span>\n" +
+    "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\">\n" +
-    "            Annuleren\n" +
+    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\" translate-once=\"organizer.contact.cancel\">\n" +
     "        </button>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\">\n" +
-    "            Toevoegen\n" +
+    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\" translate-once=\"organizer.contact.add\">\n" +
     "        </button>\n" +
     "\n" +
     "      </form>\n" +
@@ -25417,9 +25487,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row\" ng-hide=\"occ.addingContactEntry\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\" translate-once=\"organizer.contact.add_phone\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\" translate-once=\"organizer.contact.add_email\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\" translate-once=\"organizer.contact.add_url\"></a></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n"
@@ -25430,19 +25500,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-header\">\n" +
     "  <button type=\"button\" class=\"close\" ng-click=\"cancel()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
-    "  <h4 class=\"modal-title\" ng-hide=\"organizersFound\">Nieuwe organisatie toevoegen</h4>\n" +
-    "  <h4 class=\"modal-title\" ng-show=\"organizersFound\">Vermijd dubbel werk</h4>\n" +
+    "  <h4 class=\"modal-title\" ng-hide=\"organizersFound\" translate-once=\"organizer.modal.title\"></h4>\n" +
+    "  <h4 class=\"modal-title\" ng-show=\"organizersFound\" translate-once=\"organizer.modal.avoid_doubles\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
-    "      <p class=\"alert alert-info\" ng-bind=\"'UNIQUE_ORGANIZER_NOTICE' | translate\"></p>\n" +
+    "      <p class=\"alert alert-info\" translate-once=\"organizer.modal.unique_notice\"></p>\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group has-feedback\"\n" +
     "               ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
-    "            <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
+    "            <label class=\"control-label\" for=\"organizer-website\" translate-once=\"organizer.modal.website\"></label>\n" +
     "            <input type=\"url\"\n" +
     "                   id=\"organizer-website\"\n" +
     "                   name=\"website\"\n" +
@@ -25461,10 +25531,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"col-sm-12\">\n" +
     "          <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">\n" +
-    "            Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'.\n" +
-    "            Geef een unieke website of\n" +
+    "            <span translate=\"organizer.modal.alert_warning\"\n" +
+    "                  translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            <a ng-click=\"selectOrganizer(firstOrganizerFound)\" class=\"alert-link\" href=\"#\">\n" +
-    "              gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie\n" +
+    "              <span translate=\"organizer.modal.alert_button\"\n" +
+    "                    translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            </a>.\n" +
     "          </p>\n" +
     "        </div>\n" +
@@ -25480,10 +25551,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                   ng-model=\"newOrganizer.name\"\n" +
     "                   ng-change=\"updateName()\"\n" +
     "                   required>\n" +
-    "            <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
-    "            <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
-    "          Gelieve een naam in te vullen\n" +
-    "        </span>\n" +
+    "            <p class=\"help-block\" translate-once=\"organizer.modal.name_help\"></p>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"showValidation && organizerForm.name.$error.required\"\n" +
+    "                  translate-once=\"organizer.modal.name_required\">\n" +
+    "            </span>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -25498,12 +25570,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section ng-show=\"organizersFound\">\n" +
     "\n" +
     "    <div class=\"alert alert-info\">\n" +
-    "      <p>\n" +
-    "         Ben je zeker dat je \"<span ng-bind=\"newOrganizer.name\"></span>\" wil toevoegen als organisatie? Dubbele invoer\n" +
-    "         van organisaties is niet toegelaten.\n" +
-    "      </p>\n" +
+    "      <p translate=\"organizer.modal.add_confirm\" translate-values=\"{ newOrganizerName: '{{newOrganizer.name}}' }\"></p>\n" +
     "    </div>\n" +
-    "    <p>We vonden deze gelijkaardige items:</p>\n" +
+    "    <p translate-once=\"organizer.modal.doubles\"></p>\n" +
     "    <table class=\"table\">\n" +
     "      <tr ng-repeat=\"organizer in organizers\" udb-organizer=\"organizer\">\n" +
     "        <td colspan=\"2\" ng-show=\"fetching\">\n" +
@@ -25515,11 +25584,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          , <span ng-bind=\"::organizer.addresses[0].postalCode\"></span>\n" +
     "           <span ng-bind=\"::organizer.addresses[0].addressLocality\"></span>\n" +
     "        </td>\n" +
-    "        <td ng-hide=\"fetching\"><a class=\"btn btn-default\" ng-click=\"selectOrganizer(organizer)\">Selecteren</a></td>\n" +
+    "        <td ng-hide=\"fetching\"><a class=\"btn btn-default\" ng-click=\"selectOrganizer(organizer)\" translate-once=\"organizer.modal.select\"></a></td>\n" +
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          Jij voerde in:\n" +
+    "          <span translate-once=\"organizer.modal.your_input\"></span>\n" +
     "          <br/>\n" +
     "          <strong ng-bind=\"newOrganizer.name\"></strong>\n" +
     "          , <span ng-bind=\"newOrganizer.street\"></span>\n" +
@@ -25527,28 +25596,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "           <span ng-bind=\"newOrganizer.postalCode\"></span>\n" +
     "           <span ng-bind=\"newOrganizer.city\"></span>\n" +
     "        </td>\n" +
-    "        <td><a class=\"btn btn-default\" ng-click=\"saveOrganizer()\">Toch invoeren</a></td>\n" +
+    "        <td><a class=\"btn btn-default\" ng-click=\"saveOrganizer()\" translate-once=\"organizer.modal.still_enter\"></a></td>\n" +
     "      </tr>\n" +
     "    </table>\n" +
     "\n" +
     "  </section>\n" +
     "\n" +
     "  <div class=\"alert alert-danger\" ng-show=\"saveError\">\n" +
-    "    Er ging iets fout tijdens het opslaan van je organisatie.\n" +
+    "    <span translate-once=\"organizer.modal.save_error\"></span>\n" +
     "  </div>\n" +
     "  <div class=\"alert alert-danger\" ng-show=\"error && (addressError || contactError)\">\n" +
-    "    <p ng-show=\"addressError\">Gelieve een geldig adres in te vullen.<br /></p>\n" +
-    "    <p ng-show=\"contactError\">Gelieve alle contactinfo correct in te vullen.<br /></p>\n" +
+    "    <p ng-show=\"addressError\"><span translate-once=\"organizer.modal.address_error\"></span><br /></p>\n" +
+    "    <p ng-show=\"contactError\"><span translate-once=\"organizer.modal.contact_error\"></span><br /></p>\n" +
     "  </div>\n" +
     "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\" ng-hide=\"organizersFound\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"organizer.modal.close\"></button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "          ng-disabled=\"disableSubmit || contactError\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
-    "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"organizer.modal.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -26126,20 +26195,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <button type=\"submit\"\n" +
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.publish()\"\n" +
-    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">\n" +
+    "          <span translate-once=\"eventForm.publish.publish_now\"></span>\n" +
+    "      </button>\n" +
     "      <button class=\"btn btn-default\"\n" +
     "              ng-click=\"efpc.publishLater()\"\n" +
-    "              ng-if=\"efpc.canPublishLater()\">Later publiceren</button>\n" +
+    "              ng-if=\"efpc.canPublishLater()\">\n" +
+    "          <span translate-once=\"eventForm.publish.publish_later\"></span>\n" +
+    "      </button>\n" +
     "      <button type=\"submit\"\n" +
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.preview()\"\n" +
-    "              ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
+    "              ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">\n" +
+    "          <span translate-once=\"eventForm.publish.edit_done\"></span>\n" +
+    "      </button>\n" +
     "      <button type=\"submit\"\n" +
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.publish()\"\n" +
-    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault\">Klaar met bewerken</button>\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault\">\n" +
+    "          <span translate-once=\"eventForm.publish.edit_done\"></span>\n" +
+    "      </button>\n" +
     "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>\n" +
-    "          Online vanaf <span ng-bind=\"efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'\"></span>\n" +
+    "          <span translate-once=\"eventForm.publish.online_from\"></span> <span ng-bind=\"efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'\"></span>\n" +
     "      </span>\n" +
     "    </div>\n" +
     "    <div ng-if=\"efpc.saving\">\n" +
@@ -26525,7 +26602,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <em class=\"extra-task-label\" translate-once=\"eventForm.step5.title\"></em>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
-    "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name.nl\"></p>\n" +
+    "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name\"></p>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +

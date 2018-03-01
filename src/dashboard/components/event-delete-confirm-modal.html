@@ -3,20 +3,25 @@
     <div class="row">
 
       <div class="col-xs-12">
-        <p>Ben je zeker dat je "<span ng-bind="::item.name"></span>" wil verwijderen?</p>
+        <p translate-once="dashboard.delete.sure"
+           translate-values="{ name: '{{item.name}}' }"></p>
       </div>
 
-      <div class="alert alert-danger" ng-show="error">
-        Er ging iets fout bij het verwijderen van de activiteit.
+      <div class="alert alert-danger"
+           ng-show="error"
+           translate-once="dashboard.delete.error">
       </div>
 
     </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-default" ng-click="cancelRemoval()">
-    Annuleren
+  <button
+          type="button"
+          class="btn btn-default"
+          ng-click="cancelRemoval()"
+          translate-once="dashboard.delete.cancel">
   </button>
   <button type="button" class="btn btn-primary" ng-click="deleteEvent()">
-    Verwijderen <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
+    <span translate-once="dashboard.delete.delete"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>
 </div>
