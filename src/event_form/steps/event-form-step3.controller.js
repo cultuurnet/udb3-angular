@@ -295,7 +295,7 @@ function EventFormStep3Controller(
 
       var location = {
         'id' : place.id,
-        'name': place.name.nl,
+        'name': place.name,
         'address': {
           'addressCountry': 'BE',
           'addressLocality': place.address.addressLocality,

@@ -10695,7 +10695,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       }
 
       var udbPlace = new UdbPlace();
-      udbPlace.name = {nl : $scope.newPlace.name};
+      udbPlace.name = $scope.newPlace.name;
       udbPlace.calendarType = 'permanent';
       udbPlace.type = {
         id : $scope.newPlace.eventType.id,
@@ -13340,7 +13340,7 @@ function EventFormStep3Controller(
 
       var location = {
         'id' : place.id,
-        'name': place.name.nl,
+        'name': place.name,
         'address': {
           'addressCountry': 'BE',
           'addressLocality': place.address.addressLocality,
