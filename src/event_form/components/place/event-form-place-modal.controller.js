@@ -119,6 +119,7 @@
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
       };
+      udbPlace.mainLanguage = 'nl';
 
       function showError() {
         $scope.saving = false;
