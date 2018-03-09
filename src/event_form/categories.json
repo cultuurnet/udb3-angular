@@ -17,7 +17,7 @@
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Art and education"
+          "label": "Art and art education"
         },
         {
           "id": "1.63.0.0.0",
@@ -313,19 +313,19 @@
       "primary": false,
       "themes": [{
           "id": "1.9.1.0.0",
-          "label": "Ballet en klassieke dans"
+          "label": "Ballet and classical dance"
         },
         {
           "id": "1.9.2.0.0",
-          "label": "Moderne dans"
+          "label": "Modern dance"
         },
         {
           "id": "1.9.5.0.0",
-          "label": "Stijl en salondansen"
+          "label": "Ballroom dance"
         },
         {
           "id": "1.9.3.0.0",
-          "label": "Volksdans en werelddans"
+          "label": "Folk dance and world dance"
         }
       ]
     },
@@ -340,7 +340,7 @@
       "primary": false,
       "themes": [{
           "id": "1.8.3.5.0",
-          "label": "Amusementsmuziek"
+          "label": "Entertainment music"
         },
         {
           "id": "0.52.0.0.0",
@@ -352,51 +352,51 @@
         },
         {
           "id": "1.8.4.0.0",
-          "label": "Folk en wereldmuziek"
+          "label": "Folk and world music"
         },
         {
           "id": "1.3.10.0.0",
-          "label": "Humor en comedy"
+          "label": "Humor and comedy"
         },
         {
           "id": "1.8.2.0.0",
-          "label": "Jazz en blues"
+          "label": "Jazz and blues"
         },
         {
           "id": "1.8.1.0.0",
-          "label": "Klassieke muziek"
+          "label": "Classical music"
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Kunst en kunsteducatie"
+          "label": "Art and art education"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literatuur"
+          "label": "Literature"
         },
         {
           "id": "1.7.14.0.0",
-          "label": "Meerdere filmgenres"
+          "label": "Multiple film genres"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
+          "label": "Multiple art forms"
         },
         {
           "id": "1.8.3.1.0",
-          "label": "Pop en rock"
+          "label": "Pop and rock"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Samenleving"
+          "label": "Society"
         },
         {
           "id": "1.3.1.0.0",
-          "label": "Tekst- en muziektheater"
+          "label": "Text and music theater"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Wetenschap"
+          "label": "Science"
         }
       ]
     },
@@ -406,19 +406,19 @@
       "primary": true,
       "themes": [{
           "id": "1.7.2.0.0",
-          "label": "Actie en avontuur"
+          "label": "Action and adventure"
         },
         {
           "id": "1.7.12.0.0",
-          "label": "Animatie en kinderfilms"
+          "label": "Animation and kids films"
         },
         {
           "id": "1.7.11.0.0",
-          "label": "Cinefiel"
+          "label": "Cinefile"
         },
         {
           "id": "1.7.1.0.0",
-          "label": "Documentaires en reportages"
+          "label": "Documentaries and reports"
         },
         {
           "id": "1.7.4.0.0",
@@ -430,19 +430,19 @@
         },
         {
           "id": "1.7.6.0.0",
-          "label": "Griezelfilm of horror"
+          "label": "Horror film"
         },
         {
           "id": "1.7.8.0.0",
-          "label": "Historische film"
+          "label": "Historical film"
         },
         {
           "id": "1.7.3.0.0",
-          "label": "Komedie"
+          "label": "Comedy"
         },
         {
           "id": "1.7.13.0.0",
-          "label": "Kortfilm"
+          "label": "Short film"
         },
         {
           "id": "1.7.7.0.0",
@@ -464,15 +464,15 @@
         },
         {
           "id": "1.42.0.0.0",
-          "label": "Creativiteit"
+          "label": "Creativity"
         },
         {
           "id": "1.65.0.0.0",
-          "label": "Koken"
+          "label": "Cooking"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Natuur"
+          "label": "Nature"
         },
         {
           "id": "1.51.12.0.0",
@@ -480,7 +480,7 @@
         },
         {
           "id": "1.21.0.0.0",
-          "label": "Technologie"
+          "label": "Technology"
         }
       ]
     },
@@ -495,59 +495,59 @@
       "primary": "false",
       "themes": [{
           "id": "1.21.0.0.0",
-          "label": "Computer en techniek"
+          "label": "Computer and technology"
         },
         {
           "id": "1.42.0.0.0",
-          "label": "Creativiteit"
+          "label": "Creativity"
         },
         {
           "id": "1.40.0.0.0",
-          "label": "Erfgoed"
+          "label": "Heritage"
         },
         {
           "id": "1.11.0.0.0",
-          "label": "Geschiedenis"
+          "label": "History"
         },
         {
           "id": "1.37.1.0.0",
-          "label": "Gezondheid en zorg"
+          "label": "Health and care"
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Kunst en kunsteducatie"
+          "label": "Art and art education"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literatuur"
+          "label": "Literature"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
+          "label": "Environment and nature"
         },
         {
           "id": "1.37.0.0.0",
-          "label": "Opvoeding"
+          "label": "Education"
         },
         {
           "id": "1.61.0.0.0",
-          "label": "Persoon en relaties"
+          "label": "Person and relationships"
         },
         {
           "id": "1.10.5.0.0",
-          "label": "Poëzie"
+          "label": "Poetry"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Samenleving"
+          "label": "Society"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Wetenschap"
+          "label": "Science"
         },
         {
           "id": "1.44.0.0.0",
-          "label": "Zingeving, filosofie en religie"
+          "label": "Meaning, philosophy and religion"
         }
       ]
     },
@@ -557,35 +557,35 @@
       "primary": false,
       "themes": [{
           "id": "1.17.0.0.0",
-          "label": "Antiek en brocante"
+          "label": "Antique and brocante"
         },
         {
           "id": "1.66.0.0.0",
-          "label": "Economie"
+          "label": "Economics"
         },
         {
           "id": "1.62.0.0.0",
-          "label": "Gezondheid en wellness"
+          "label": "Health and wellness"
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Landbouw en platteland"
+          "label": "Agriculture and countryside"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literatuur"
+          "label": "Literature"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
+          "label": "Multiple art forms"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
+          "label": "Environment and nature"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Samenleving"
+          "label": "Society"
         }
       ]
     },
@@ -595,39 +595,39 @@
       "primary": true,
       "themes": [{
           "id": "1.2.1.0.0",
-          "label": "Architectuur"
+          "label": "Architecture"
         },
         {
           "id": "1.21.0.0.0",
-          "label": "Computer en techniek"
+          "label": "Computer and technology"
         },
         {
           "id": "1.40.0.0.0",
-          "label": "Erfgoed"
+          "label": "Heritage"
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Kunst en kunsteducatie"
+          "label": "Art and art education"
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Landbouw en platteland"
+          "label": "Agriculture and countryside"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literatuur"
+          "label": "Literature"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
+          "label": "Multiple art forms"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Samenleving"
+          "label": "Society"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Wetenschap"
+          "label": "Science"
         }
       ]
     },
@@ -652,35 +652,35 @@
       "primary": false,
       "themes": [{
           "id": "1.51.14.0.0",
-          "label": "Atletiek, wandelen en fietsen"
+          "label": "Athletics walking and cycling"
         },
         {
           "id": "1.51.13.0.0",
-          "label": "Bal en racketsport"
+          "label": "Ball and racket sport"
         },
         {
           "id": "1.51.6.0.0",
-          "label": "Fitness, gymnastiek, dans en vechtsport"
+          "label": "Fitness gymnastics dance and fighting sport"
         },
         {
           "id": "1.58.8.0.0",
-          "label": "Lucht en motorsport"
+          "label": "Air and motor sport"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Omnisport en andere"
+          "label": "Omnisport and others"
         },
         {
           "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure"
+          "label": "Outdoor and adventure"
         },
         {
           "id": "1.51.10.0.0",
-          "label": "Volkssporten"
+          "label": "Folk sports"
         },
         {
           "id": "1.51.3.0.0",
-          "label": "Zwemmen en watersport"
+          "label": "Swimming and water sport"
         }
       ]
     },
@@ -690,35 +690,35 @@
       "primary": false,
       "themes": [{
           "id": "1.51.14.0.0",
-          "label": "Atletiek, wandelen en fietsen"
+          "label": "Athletics walking and cycling"
         },
         {
           "id": "1.51.13.0.0",
-          "label": "Bal en racketsport"
+          "label": "Ball and racket sport"
         },
         {
           "id": "1.51.6.0.0",
-          "label": "Fitness, gymnastiek, dans en vechtsport"
+          "label": "Fitness gymnastics dance and fighting sport"
         },
         {
           "id": "1.58.8.0.0",
-          "label": "Lucht en motorsport"
+          "label": "Air and motor sport"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Omnisport en andere"
+          "label": "Omnisport and others"
         },
         {
           "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure"
+          "label": "Outdoor and adventure"
         },
         {
           "id": "1.51.10.0.0",
-          "label": "Volkssporten"
+          "label": "Folk sports"
         },
         {
           "id": "1.51.3.0.0",
-          "label": "Zwemmen en watersport"
+          "label": "Swimming and water sport"
         }
       ]
     },
@@ -728,11 +728,11 @@
       "primary": true,
       "themes": [{
           "id": "1.1.0.0.0",
-          "label": "Audiovisuele kunst"
+          "label": "Audiovisual art"
         },
         {
           "id": "1.0.2.0.0",
-          "label": "Beeldhouwkunst"
+          "label": "Sculpture"
         },
         {
           "id": "1.0.5.0.0",
@@ -744,47 +744,47 @@
         },
         {
           "id": "1.40.0.0.0",
-          "label": "Erfgoed"
+          "label": "Heritage"
         },
         {
           "id": "1.0.6.0.0",
-          "label": "Fotografie"
+          "label": "Photography"
         },
         {
           "id": "1.11.0.0.0",
-          "label": "Geschiedenis"
+          "label": "History"
         },
         {
           "id": "1.0.4.0.0",
-          "label": "Grafiek"
+          "label": "Graphics"
         },
         {
           "id": "1.0.3.0.0",
-          "label": "Installatiekunst"
+          "label": "Installation art"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
+          "label": "Multiple art forms"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
+          "label": "Environment and nature"
         },
         {
           "id": "1.49.0.0.0",
-          "label": "Mode"
+          "label": "Fashion"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Samenleving"
+          "label": "Society"
         },
         {
           "id": "1.0.1.0.0",
-          "label": "Schilderkunst"
+          "label": "Painting"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Wetenschap"
+          "label": "Science"
         }
       ]
     },
@@ -798,15 +798,15 @@
         },
         {
           "id": "1.3.5.0.0",
-          "label": "Figuren en poppentheater"
+          "label": "Figures and puppet theater"
         },
         {
           "id": "1.3.10.0.0",
-          "label": "Humor en comedy"
+          "label": "Humor and comedy"
         },
         {
           "id": "1.3.4.0.0",
-          "label": "Mime en bewegingstheater"
+          "label": "Mime and movement theater"
         },
         {
           "id": "1.4.0.0.0",
@@ -814,11 +814,11 @@
         },
         {
           "id": "1.5.0.0.0",
-          "label": "Opera en operette"
+          "label": "Opera en operetta"
         },
         {
           "id": "1.3.1.0.0",
-          "label": "Tekst en muziektheater"
+          "label": "Text and music theater"
         }
       ]
     }
