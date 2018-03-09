@@ -895,14 +895,33 @@ angular.module('udb.core')
       'Figures and puppet theater': 'Figuren en poppentheater',
       'Mime and movement theater': 'Mime en bewegingstheater',
       'Musical': 'Musical',
-      'Opera en operetta': 'Opera en operette',
+      'Opera en operetta': 'Opera en operette'
     },
     eventThemesGroups: {
       'Dance': 'Dans',
       'Art and heritage': 'Kunst en erfgoed',
       'Music': 'Muziek',
       'Sport': 'Sport',
-      'Miscellaneous': 'Varia',
+      'Miscellaneous': 'Varia'
+    },
+    placeTypes: {
+      'Archaeological Site': 'Archeologische Site',
+      'Library or documentation center': 'Bibliotheek of documentatiecentrum',
+      'Cinema': 'Bioscoop',
+      'Culture- or meeting center': 'Cultuur- of ontmoetingscentrum',
+      'Disco': 'Discotheek',
+      'Catering industry': 'Horeca',
+      'Youth home or youth center': 'Jeugdhuis of jeugdcentrum',
+      'Monument': 'Monument',
+      'Museum or gallery': 'Museum of galerij',
+      'Nature, park or garden': 'Natuur, park of tuin',
+      'Public space': 'Openbare ruimte',
+      'Recreation domain or center': 'Recreatiedomein of centrum',
+      'Scool or education center': 'School of onderwijscentrum',
+      'Sport center': 'Sportcentrum',
+      'Theme or amusement park': 'Thema of pretpark',
+      'Shop': 'Winkel',
+      'Room or exhibition hall': 'Zaal of expohal'
     }
   }
 );

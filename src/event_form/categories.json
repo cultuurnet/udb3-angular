@@ -824,37 +824,37 @@
     }
   ],
   "place": [{
-      "label": "Archeologische Site",
+      "label": "Archaeological Site",
       "id": "3CuHvenJ+EGkcvhXLg9Ykg",
       "primary": true
     },
     {
-      "label": "Bibliotheek of documentatiecentrum",
+      "label": "Library or documentation center",
       "id": "kI7uAyn2uUu9VV6Z3uWZTA",
       "primary": true
     },
     {
-      "label": "Bioscoop",
+      "label": "Cinema",
       "id": "BtVNd33sR0WntjALVbyp3w",
       "primary": false
     },
     {
-      "label": "Cultuur- of ontmoetingscentrum",
+      "label": "Culture- or meeting center",
       "id": "Yf4aZBfsUEu2NsQqsprngw",
       "primary": false
     },
     {
-      "label": "Discotheek",
+      "label": "Disco",
       "id": "YVBc8KVdrU6XfTNvhMYUpg",
       "primary": false
     },
     {
-      "label": "Horeca",
+      "label": "Catering industry",
       "id": "ekdc4ATGoUitCa0e6me6xA",
       "primary": false
     },
     {
-      "label": "Jeugdhuis of jeugdcentrum",
+      "label": "Youth home or youth center",
       "id": "JCjA0i5COUmdjMwcyjNAFA",
       "primary": false
     },
@@ -864,47 +864,47 @@
       "primary": true
     },
     {
-      "label": "Museum of galerij",
+      "label": "Museum or gallery",
       "id": "GnPFp9uvOUyqhOckIFMKmg",
       "primary": true
     },
     {
-      "label": "Natuur, park of tuin",
+      "label": "Nature, park or garden",
       "id": "0.15.0.0.0",
       "primary": true
     },
     {
-      "label": "Openbare ruimte",
+      "label": "Public space",
       "id": "0.8.0.0.0",
       "primary": false
     },
     {
-      "label": "Recreatiedomein of centrum",
+      "label": "Recreation domain or center",
       "id": "0.53.0.0.0",
       "primary": false
     },
     {
-      "label": "School of onderwijscentrum",
+      "label": "School or education center",
       "id": "rJRFUqmd6EiqTD4c7HS90w",
       "primary": false
     },
     {
-      "label": "Sportcentrum",
+      "label": "Sport center",
       "id": "eBwaUAAhw0ur0Z02i5ttnw",
       "primary": false
     },
     {
-      "label": "Thema of pretpark",
+      "label": "Theme or amusement park",
       "id": "0.41.0.0.0",
       "primary": false
     },
     {
-      "label": "Winkel",
+      "label": "Shop",
       "id": "VRC6HX0Wa063sq98G5ciqw",
       "primary": false
     },
     {
-      "label": "Zaal of expohal",
+      "label": "Room or exhibition hall",
       "id": "OyaPaf64AEmEAYXHeLMAtA",
       "primary": false
     }

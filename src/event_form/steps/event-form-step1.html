@@ -16,8 +16,6 @@
         <label class="event-type-choser-label event"><span translate-once="eventForm.step1.label_event"></span></label>
         <ul class="list-inline" id="step1-events">
           <li ng-repeat="eventType in ::eventTypeLabels | orderBy:'label'" ng-show="eventType.primary === true || showAllEventTypes">
-            <!--<button ng-bind="::eventType.label" class="btn btn-default"
-                    ng-click="setEventType(eventType, true)"></button>-->
             <button ng-bind="::translateEventTypes(eventType.label)" class="btn btn-default"
                     ng-click="setEventType(eventType, true)"></button>
           </li>
@@ -36,7 +34,7 @@
         <label class="event-type-choser-label place"><span translate-once="eventForm.step1.location_label"></span></label>
         <ul class="list-inline" id="step1-places">
           <li ng-repeat="placeType in ::placeLabels | orderBy:'label'" ng-show="placeType.primary == true || showAllPlaces">
-            <button ng-bind="::placeType.label" class="btn btn-default"
+            <button ng-bind="::translatePlaceTypes(placeType.label)" class="btn btn-default"
                     ng-click="setEventType(placeType, false)"></button>
           </li>
           <li ng-hide="showAllPlaces">

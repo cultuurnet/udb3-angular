@@ -207,6 +207,10 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     return $translate.instant('eventTypes.' + type);
   };
 
+  $scope.translatePlaceTypes = function (type) {
+    return $translate.instant('placeTypes.' + type);
+  };
+
   $scope.translateEventThemes = function (theme) {
     return $translate.instant('eventThemes.' + theme);
   };
