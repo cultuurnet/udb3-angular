@@ -16,7 +16,9 @@
         <label class="event-type-choser-label event"><span translate-once="eventForm.step1.label_event"></span></label>
         <ul class="list-inline" id="step1-events">
           <li ng-repeat="eventType in ::eventTypeLabels | orderBy:'label'" ng-show="eventType.primary === true || showAllEventTypes">
-            <button ng-bind="::eventType.label" class="btn btn-default"
+            <!--<button ng-bind="::eventType.label" class="btn btn-default"
+                    ng-click="setEventType(eventType, true)"></button>-->
+            <button ng-bind="::translateEventTypes(eventType.label)" class="btn btn-default"
                     ng-click="setEventType(eventType, true)"></button>
           </li>
           <li ng-hide="showAllEventTypes">
@@ -57,12 +59,12 @@
         <div ng-repeat="(key, values) in eventThemeLabels | groupBy: 'group'">
           <div class="row">
             <div class="col-xs-2" ng-show="key !== 'undefined'" >
-              <p class="text-muted">{{key}}</p>
+              <p class="text-muted" ng-bind="::translateEventThemesGroups(key)"></p>
             </div>
             <div ng-class="key === 'undefined' ? 'col-xs-12' : 'col-xs-10'">
               <ul class="list-inline list-themes">
                 <li ng-repeat="eventTheme in values">
-                  <button ng-bind="::eventTheme.label" class="btn btn-default"
+                  <button ng-bind="::translateEventThemes(eventTheme.label)" class="btn btn-default"
                           ng-click="setTheme(eventTheme)"></button>
                 </li>
               </ul>

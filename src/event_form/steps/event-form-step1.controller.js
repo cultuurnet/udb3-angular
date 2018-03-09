@@ -13,7 +13,7 @@ angular
 // .filter('groupBy', GroupByFilter);
 
 /* @ngInject */
-function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCategories, placeCategories) {
+function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCategories, placeCategories, $translate) {
 
   var controller = this;
 
@@ -201,6 +201,18 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       controller.updateEventTypeAndThemePicker(EventFormData);
       $scope.splitTypes = false;
     }
+  };
+
+  $scope.translateEventTypes = function (type) {
+    return $translate.instant('eventTypes.' + type);
+  };
+
+  $scope.translateEventThemes = function (theme) {
+    return $translate.instant('eventThemes.' + theme);
+  };
+
+  $scope.translateEventThemesGroups = function (group) {
+    return $translate.instant('eventThemesGroups.' + group);
   };
 
   controller.init(EventFormData);
