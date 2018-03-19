@@ -20,7 +20,8 @@ function EventFormController(
     moment,
     jsonLDLangFilter,
     $q,
-    appConfig
+    appConfig,
+    $translate
 ) {
 
   // Other controllers won't load until this boolean is set to true.
@@ -33,6 +34,7 @@ function EventFormController(
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+
     EventFormData.initOpeningHours([]);
 
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
@@ -41,6 +43,7 @@ function EventFormController(
       preselectDate(calendarConfig);
     }
 
+    $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
   }
 
@@ -133,7 +136,8 @@ function EventFormController(
       'apiUrl',
       'workflowStatus',
       'availableFrom',
-      'labels'
+      'labels',
+      'mainLanguage'
     ];
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
@@ -187,6 +191,7 @@ function EventFormController(
 
     EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
+    $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
     EventFormData.showStep(1);
     EventFormData.showStep(2);
