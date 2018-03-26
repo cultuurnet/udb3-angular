@@ -101,7 +101,7 @@ function EventDetail(
   };
   $scope.isEmpty = _.isEmpty;
 
-  var language = 'nl';
+  var language = $translate.use() || 'nl';
   var cachedEvent;
 
   function showHistory(eventHistory) {
