@@ -9371,7 +9371,9 @@ function EventDetail(
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
 
-    $scope.event = jsonLDLangFilter(event, language);
+    language = $translate.use() || 'nl';
+
+    $scope.event = jsonLDLangFilter(event, language, true);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
 
@@ -9417,7 +9419,7 @@ function EventDetail(
   }
 
   $scope.eventLocation = function (event) {
-    var location = jsonLDLangFilter(event.location, language);
+    var location = jsonLDLangFilter(event.location, language, true);
 
     var eventLocation = [
       location.name
@@ -23634,11 +23636,12 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
-  $uibModal
+  $uibModal,
+  $translate
 ) {
   var controller = this;
   var cachedOffer;
-  var defaultLanguage = 'nl';
+  var defaultLanguage = $translate.use() || 'nl';
 
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
@@ -23665,7 +23668,7 @@ function OfferController(
           cachedOffer = offerObject;
           cachedOffer.updateTranslationState();
 
-          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
+          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
@@ -23876,7 +23879,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
 })();
 
 // Source: src/search/ui/place.directive.js
