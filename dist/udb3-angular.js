@@ -4241,7 +4241,8 @@ function UdbApi(
   UdbEvent,
   UdbPlace,
   UdbOrganizer,
-  Upload
+  Upload,
+  $translate
 ) {
   var apiUrl = appConfig.baseApiUrl;
   var defaultApiConfig = {
@@ -4266,7 +4267,7 @@ function UdbApi(
     return config;
   }
 
-  this.mainLanguage = 'nl';
+  this.mainLanguage = $translate.use() || 'nl';
 
   /**
    * Removes an item from the offerCache.
@@ -5562,7 +5563,7 @@ function UdbApi(
     }
   }
 }
-UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
+UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload", "$translate"];
 })();
 
 // Source: src/core/udb-event.factory.js
@@ -7615,7 +7616,7 @@ function EventCrud(
    */
   service.updateDescription = function(item) {
     return udbApi
-      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description.nl)
+      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description[udbApi.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
@@ -12568,6 +12569,20 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
+     * Gets the mainLanguage for a offer.
+     */
+    getMainLanguage: function() {
+      return this.mainLanguage;
+    },
+
+    /**
+     * Sets the mainLanguage for a offer.
+     */
+    setMainLanguage: function(langcode) {
+      this.mainLanguage = langcode;
+    },
+
+    /**
      * Set the description for a given langcode.
      */
     setDescription: function(description, langcode) {
@@ -14528,9 +14543,10 @@ function EventFormStep5Controller(
 
   // Scope vars.
   $scope.eventFormData = EventFormData; // main storage for event form.
+  $scope.mainLanguage = EventFormData.getMainLanguage();
 
   // Description vars.
-  $scope.description = EventFormData.getDescription('nl');
+  $scope.description = EventFormData.getDescription($scope.mainLanguage);
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -14647,7 +14663,7 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, 'nl');
+      EventFormData.setDescription($scope.description, $scope.mainLanguage);
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {

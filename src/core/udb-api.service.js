@@ -72,7 +72,8 @@ function UdbApi(
   UdbEvent,
   UdbPlace,
   UdbOrganizer,
-  Upload
+  Upload,
+  $translate
 ) {
   var apiUrl = appConfig.baseApiUrl;
   var defaultApiConfig = {
@@ -97,7 +98,7 @@ function UdbApi(
     return config;
   }
 
-  this.mainLanguage = 'nl';
+  this.mainLanguage = $translate.use() || 'nl';
 
   /**
    * Removes an item from the offerCache.

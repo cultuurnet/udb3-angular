@@ -168,6 +168,20 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
+     * Gets the mainLanguage for a offer.
+     */
+    getMainLanguage: function() {
+      return this.mainLanguage;
+    },
+
+    /**
+     * Sets the mainLanguage for a offer.
+     */
+    setMainLanguage: function(langcode) {
+      this.mainLanguage = langcode;
+    },
+
+    /**
      * Set the description for a given langcode.
      */
     setDescription: function(description, langcode) {
