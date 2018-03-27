@@ -14396,7 +14396,7 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats, udbApi) {
 
   var exporter = this;
 
@@ -14436,8 +14436,18 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats) 
     {name: 'vlieg', label: 'Vlieg'},
     {name: 'uit', label: 'UiT'},
     {name: 'uitpas', label: 'UiTPAS'},
-    {name: 'paspartoe', label: 'Paspartoe'}
+    {name: 'paspartoe', label: 'Paspartoe'},
   ];
+
+  exporter.restrictedBrands = [
+    {name: 'hvhk', label: 'Huis Van Het Kind', role: '143ab8fa-bba5-43a0-b911-96aa17c51e9b'}
+  ];
+
+  udbApi.getMyRoles().then(function(roles) {
+    angular.forEach(roles, function(value, key) {
+      exporter.brands = exporter.brands.concat(_.where(exporter.restrictedBrands, {role : roles[key].uuid}));
+    });
+  });
 
   exporter.customizations = {
     brand: exporter.brands[0].name,
@@ -14580,7 +14590,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats) 
 
   exporter.eventCount = eventExporter.activeExport.eventCount;
 }
-EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats"];
+EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats", "udbApi"];
 })();
 
 // Source: src/export/event-exporter.service.js
