@@ -14396,9 +14396,11 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, eventExporter, ExportFormats, udbApi) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats, udbApi, appConfig) {
 
   var exporter = this;
+
+  exporter.exportLogoUrl = appConfig.exportLogoUrl;
 
   exporter.dayByDay = false;
 
@@ -14433,15 +14435,13 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
   exporter.exportFormats = _.map(ExportFormats);
 
   exporter.brands = [
-    {name: 'vlieg', label: 'Vlieg'},
-    {name: 'uit', label: 'UiT'},
-    {name: 'uitpas', label: 'UiTPAS'},
-    {name: 'paspartoe', label: 'Paspartoe'},
+    {name: 'vlieg', label: 'Vlieg', logo: 'vlieg.svg'},
+    {name: 'uit', label: 'UiT', logo: 'uit.svg'},
+    {name: 'uitpas', label: 'UiTPAS', logo: 'uitpas.svg'},
+    {name: 'paspartoe', label: 'Paspartoe', logo: 'paspartoe.svg'},
   ];
 
-  exporter.restrictedBrands = [
-    {name: 'hvhk', label: 'Huis Van Het Kind', role: '143ab8fa-bba5-43a0-b911-96aa17c51e9b'}
-  ];
+  exporter.restrictedBrands = appConfig.restrictedExportBrands;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -14451,6 +14451,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.customizations = {
     brand: exporter.brands[0].name,
+    logo: exporter.exportLogoUrl + exporter.brands[0].logo,
     title: '',
     subtitle: '',
     footer: '',
@@ -14564,6 +14565,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
   };
 
   exporter.export = function () {
+
     var exportFormat = _.find(exporter.exportFormats, {type: exporter.format}),
         isCustomized = exportFormat && exportFormat.customizable === true,
         includedProperties,
@@ -14571,6 +14573,9 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
     if (isCustomized) {
       customizations = exporter.customizations;
+      customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
+      customizations.brand = exporter.selectedBrand.name;
+      console.log(customizations);
       includedProperties = [];
     } else {
       customizations = {};
@@ -14590,7 +14595,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.eventCount = eventExporter.activeExport.eventCount;
 }
-EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats", "udbApi"];
+EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats", "udbApi", "appConfig"];
 })();
 
 // Source: src/export/event-exporter.service.js
@@ -26974,11 +26979,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <div class=\"export-customization-brands\">\n" +
     "            <div class=\"export-customization-brand\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "              <label>\n" +
-    "                <img ng-src=\"images/{{brand.name}}-logo.svg\" alt=\"{{brand.name}} logo\" width=\"100px\" height=\"100px\"/>\n" +
+    "                <img ng-src=\"{{exporter.exportLogoUrl}}{{brand.logo}}\" alt=\"{{brand.name}} logo\" width=\"100px\" height=\"100px\"/>\n" +
     "\n" +
     "                <div>\n" +
-    "                  <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.customizations.brand\"\n" +
-    "                         ng-value=\"brand.name\" class=\"export-customization-brand-radio\">\n" +
+    "                  <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
+    "                         ng-value=\"brand\" class=\"export-customization-brand-radio\">\n" +
     "                  <span ng-bind=\"brand.label\" class=\"export-customization-brand-label\"></span>\n" +
     "                </div>\n" +
     "              </label>\n" +

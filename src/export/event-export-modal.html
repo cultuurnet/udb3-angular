@@ -51,11 +51,11 @@
           <div class="export-customization-brands">
             <div class="export-customization-brand" ng-repeat="brand in ::exporter.brands">
               <label>
-                <img ng-src="images/{{brand.name}}-logo.svg" alt="{{brand.name}} logo" width="100px" height="100px"/>
+                <img ng-src="{{exporter.exportLogoUrl}}{{brand.logo}}" alt="{{brand.name}} logo" width="100px" height="100px"/>
 
                 <div>
-                  <input type="radio" name="eventExportBrand" ng-model="exporter.customizations.brand"
-                         ng-value="brand.name" class="export-customization-brand-radio">
+                  <input type="radio" name="eventExportBrand" ng-model="exporter.selectedBrand"
+                         ng-value="brand" class="export-customization-brand-radio">
                   <span ng-bind="brand.label" class="export-customization-brand-label"></span>
                 </div>
               </label>
