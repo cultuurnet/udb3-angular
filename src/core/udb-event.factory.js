@@ -159,6 +159,13 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.mediaObject = jsonEvent.mediaObject || [];
       this.typicalAgeRange = jsonEvent.typicalAgeRange || '';
       this.bookingInfo = jsonEvent.bookingInfo || {};
+      if (this.bookingInfo.urlLabel) {
+        this.bookingInfo.urlLabel = _.get(
+          jsonEvent.bookingInfo.urlLabel,
+          jsonEvent.mainLanguage,
+          jsonEvent.bookingInfo.urlLabel
+        );
+      }
       this.contactPoint = jsonEvent.contactPoint || {
         'url': [],
         'phone': [],
