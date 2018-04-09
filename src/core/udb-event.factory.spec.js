@@ -159,10 +159,10 @@ describe('Factory: UdbEvent', function () {
   });
 
   it('should handle translated url labels', function() {
-      var eventJson = getEventJson();
-      eventJson.bookingInfo.urlLabel = {'nl': 'Reservatie label'};
+    var eventJson = getEventJson();
+    eventJson.bookingInfo.urlLabel = {'nl': 'Reservatie label'};
 
-      event = new UdbEvent(eventJson);
-      expect(event.bookingInfo.urlLabel.nl).toEqual('Reservatie label');
+    event = new UdbEvent(eventJson);
+    expect(event.bookingInfo.urlLabel.nl).toEqual('Reservatie label');
   });
 });

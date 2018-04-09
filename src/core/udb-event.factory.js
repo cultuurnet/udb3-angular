@@ -160,11 +160,11 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.typicalAgeRange = jsonEvent.typicalAgeRange || '';
       this.bookingInfo = jsonEvent.bookingInfo || {};
       if (this.bookingInfo.urlLabel) {
-          this.bookingInfo.urlLabel = _.get(
-              jsonEvent.bookingInfo.urlLabel,
-              jsonEvent.mainLanguage,
-              jsonEvent.bookingInfo.urlLabel
-          );
+        this.bookingInfo.urlLabel = _.get(
+          jsonEvent.bookingInfo.urlLabel,
+          jsonEvent.mainLanguage,
+          jsonEvent.bookingInfo.urlLabel
+        );
       }
       this.contactPoint = jsonEvent.contactPoint || {
         'url': [],

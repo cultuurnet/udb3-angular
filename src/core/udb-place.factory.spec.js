@@ -161,11 +161,11 @@ describe('Factory: UdbPlace', function () {
   });
 
   it('should handle translated url labels', function() {
-      var placeJson = getPlaceJson();
-      placeJson.bookingInfo.urlLabel = {};
-      placeJson.bookingInfo.urlLabel = {'nl':'Reservatie label'};
+    var placeJson = getPlaceJson();
+    placeJson.bookingInfo.urlLabel = {};
+    placeJson.bookingInfo.urlLabel = {'nl':'Reservatie label'};
 
-      place = new UdbPlace(placeJson);
-      expect(place.bookingInfo.urlLabel.nl).toEqual('Reservatie label');
+    place = new UdbPlace(placeJson);
+    expect(place.bookingInfo.urlLabel.nl).toEqual('Reservatie label');
   });
 });

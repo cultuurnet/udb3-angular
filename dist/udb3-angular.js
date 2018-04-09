@@ -5729,11 +5729,13 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.mediaObject = jsonEvent.mediaObject || [];
       this.typicalAgeRange = jsonEvent.typicalAgeRange || '';
       this.bookingInfo = jsonEvent.bookingInfo || {};
-      this.bookingInfo.urlLabel = _.get(
+      if (this.bookingInfo.urlLabel) {
+        this.bookingInfo.urlLabel = _.get(
           jsonEvent.bookingInfo.urlLabel,
           jsonEvent.mainLanguage,
           jsonEvent.bookingInfo.urlLabel
-      );
+        );
+      }
       this.contactPoint = jsonEvent.contactPoint || {
         'url': [],
         'phone': [],
@@ -6251,11 +6253,13 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
-      this.bookingInfo.urlLabel = _.get(
+      if (this.bookingInfo.urlLabel) {
+        this.bookingInfo.urlLabel = _.get(
           jsonPlace.bookingInfo.urlLabel,
           jsonPlace.mainLanguage,
           jsonPlace.bookingInfo.urlLabel
-      );
+        );
+      }
       this.contactPoint = jsonPlace.contactPoint || {
         'url': [],
         'phone': [],

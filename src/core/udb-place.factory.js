@@ -136,11 +136,11 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
       if (this.bookingInfo.urlLabel) {
-          this.bookingInfo.urlLabel = _.get(
-              jsonPlace.bookingInfo.urlLabel,
-              jsonPlace.mainLanguage,
-              jsonPlace.bookingInfo.urlLabel
-          );
+        this.bookingInfo.urlLabel = _.get(
+          jsonPlace.bookingInfo.urlLabel,
+          jsonPlace.mainLanguage,
+          jsonPlace.bookingInfo.urlLabel
+        );
       }
       this.contactPoint = jsonPlace.contactPoint || {
         'url': [],
