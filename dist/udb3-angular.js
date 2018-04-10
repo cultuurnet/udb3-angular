@@ -2524,20 +2524,20 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
   }
-  
+
   function getPublicUrl (id) {
     return getEnvironment() + id;
   }
 
   function getEnvironment() {
     if (_.includes(appConfig.baseUrl, '-acc.')) {
-      return 'http://acc.uitinvlaanderen.be/agenda/e//';
+      return 'https://acc.uitinvlaanderen.be/agenda/e//';
     }
     else if (_.includes(appConfig.baseUrl, '-test.')) {
-      return 'http://test.uitinvlaanderen.be/agenda/e//'
+      return 'https://test.uitinvlaanderen.be/agenda/e//';
     }
     else {
-      return 'http://www.uitinvlaanderen.be/agenda/e//';
+      return 'https://www.uitinvlaanderen.be/agenda/e//';
     }
   }
 }
