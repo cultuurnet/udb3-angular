@@ -7769,6 +7769,14 @@ function EventCrud(
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
 
+    if (bookingInfo.availabilityStarts) {
+      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts.toISO8061String();
+    }
+
+    if (bookingInfo.availabilityEnds) {
+      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds.toISO8061String();
+    }
+
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
     }
@@ -7926,6 +7934,10 @@ function EventCrud(
       udbApi.removeItemFromCache(offerLocation.toString());
     }, function() {});
   }
+
+  Date.prototype.toISO8061String = function() {
+    return this.toISOString().split('.')[0] + 'Z';
+  };
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);
   $rootScope.$on('eventThemeChanged', updateMajorInfo);
