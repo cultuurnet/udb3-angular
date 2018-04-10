@@ -26,6 +26,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   cm.event = $scope.event;
   cm.eventIds = eventIds;
   cm.isUrl = isUrl;
+  cm.getPublicUrl = getPublicUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
 
@@ -35,5 +36,21 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
 
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
+  }
+  
+  function getPublicUrl (id) {
+    return getEnvironment() + id;
+  }
+
+  function getEnvironment() {
+    if (_.includes(appConfig.baseUrl, '-acc.')) {
+      return 'https://acc.uitinvlaanderen.be/agenda/e//';
+    }
+    else if (_.includes(appConfig.baseUrl, '-test.')) {
+      return 'https://test.uitinvlaanderen.be/agenda/e//'
+    }
+    else {
+      return 'https://www.uitinvlaanderen.be/agenda/e//';
+    }
   }
 }
