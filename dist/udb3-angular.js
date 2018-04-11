@@ -9119,7 +9119,7 @@ function OfferTranslationJobFactory(BaseJob, JobStates) {
           propertyName = job.property;
       }
 
-      description = 'Vertaal ' + propertyName + ' van "' + job.event.name.nl + '"';
+      description = 'Vertaal ' + propertyName + ' van "' + job.offer.name.nl + '"';
     }
 
     return description;
