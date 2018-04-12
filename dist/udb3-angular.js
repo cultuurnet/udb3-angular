@@ -7770,11 +7770,11 @@ function EventCrud(
     });
 
     if (bookingInfo.availabilityStarts) {
-      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts.toISO8061String();
+      bookingInfo.availabilityStarts = toISO8061String(bookingInfo.availabilityStarts);
     }
 
     if (bookingInfo.availabilityEnds) {
-      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds.toISO8061String();
+      bookingInfo.availabilityEnds = toISO8061String(bookingInfo.availabilityEnds);
     }
 
     if (!_.has(bookingInfo, 'url')) {
@@ -7935,9 +7935,9 @@ function EventCrud(
     }, function() {});
   }
 
-  Date.prototype.toISO8061String = function() {
-    return this.toISOString().split('.')[0] + 'Z';
-  };
+  function toISO8061String(date) {
+    return date.toISOString().split('.')[0] + 'Z';
+  }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);
   $rootScope.$on('eventThemeChanged', updateMajorInfo);
