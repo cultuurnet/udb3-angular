@@ -350,8 +350,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       });
     },
 
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
 
     hasFutureAvailableFrom: function() {
