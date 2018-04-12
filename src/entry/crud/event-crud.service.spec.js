@@ -319,7 +319,7 @@ describe('Service: Event crud', function () {
     var expectedBookingInfo = {
       url: 'http://du.de',
       availabilityStarts: availabilityStarts.toISOString().split('.')[0] + 'Z',
-      availabilityEnds: availabilityEnds.toISOString().split('.')[0] + 'Z',
+      availabilityEnds: availabilityEnds.toISOString().split('.')[0] + 'Z'
     };
     promisePropertyUpdate();
 
