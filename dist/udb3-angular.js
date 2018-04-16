@@ -5636,6 +5636,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
   }
 
   function updateTranslationState(event) {
+
     var languages = {'en': false, 'fr': false, 'de': false},
         properties = ['name', 'description'];
 
@@ -5925,8 +5926,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         return label === labelName;
       });
     },
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
@@ -6485,8 +6487,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       });
     },
 
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
 
     hasFutureAvailableFrom: function() {
@@ -7647,7 +7650,7 @@ function EventCrud(
    */
   service.updateDescription = function(item) {
     return udbApi
-      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description[udbApi.mainLanguage])
+      .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
@@ -7785,6 +7788,14 @@ function EventCrud(
     var bookingInfo =  _.pick(item.bookingInfo, function(property, propertyName) {
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
+
+    if (bookingInfo.availabilityStarts) {
+      bookingInfo.availabilityStarts = toISO8061String(bookingInfo.availabilityStarts);
+    }
+
+    if (bookingInfo.availabilityEnds) {
+      bookingInfo.availabilityEnds = toISO8061String(bookingInfo.availabilityEnds);
+    }
 
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
@@ -7942,6 +7953,10 @@ function EventCrud(
     job.task.promise.then(function (offerLocation) {
       udbApi.removeItemFromCache(offerLocation.toString());
     }, function() {});
+  }
+
+  function toISO8061String(date) {
+    return date.toISOString().split('.')[0] + 'Z';
   }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);
@@ -9124,7 +9139,7 @@ function OfferTranslationJobFactory(BaseJob, JobStates) {
           propertyName = job.property;
       }
 
-      description = 'Vertaal ' + propertyName + ' van "' + job.event.name.nl + '"';
+      description = 'Vertaal ' + propertyName + ' van "' + job.offer.name.nl + '"';
     }
 
     return description;
@@ -23806,7 +23821,7 @@ function OfferController(
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator
         .translateProperty(cachedOffer, udbProperty, language, translation)
-        .then(cachedOffer.updateTranslationState);
+        .then(cachedOffer.updateTranslationState(cachedOffer));
     }
   }
 
