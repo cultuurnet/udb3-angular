@@ -2513,6 +2513,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   cm.event = $scope.event;
   cm.eventIds = eventIds;
   cm.isUrl = isUrl;
+  cm.getPublicUrl = getPublicUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
 
@@ -2522,6 +2523,22 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
 
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
+  }
+
+  function getPublicUrl (id) {
+    return getEnvironment() + id;
+  }
+
+  function getEnvironment() {
+    if (_.includes(appConfig.baseUrl, '-acc.')) {
+      return 'https://acc.uitinvlaanderen.be/agenda/e//';
+    }
+    else if (_.includes(appConfig.baseUrl, '-test.')) {
+      return 'https://test.uitinvlaanderen.be/agenda/e//';
+    }
+    else {
+      return 'https://www.uitinvlaanderen.be/agenda/e//';
+    }
   }
 }
 WorkflowStatusDirectiveController.$inject = ["$scope", "appConfig"];
@@ -2922,7 +2939,8 @@ angular.module('udb.core')
       'no_price': 'Geen prijsinformatie',
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
-      'no_age': 'Geen leeftijdsinformatie'
+      'no_age': 'Geen leeftijdsinformatie',
+      'publiq_url': 'Bekijk op UiT in Vlaanderen'
     },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
@@ -3727,7 +3745,8 @@ angular.module('udb.core')
       'no_price': 'Pas d\'information du prix',
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
-      'no_age': 'Pas d\'information de l\'âge'
+      'no_age': 'Pas d\'information de l\'âge',
+      'publiq_url': 'Voir sur UiT in Vlaanderen'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
@@ -24981,10 +25000,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <td><span class=\"row-label\" translate-once=\"workflowStatus.id\"></span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
-    "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
+    "            <li>\n" +
+    "                <span ng-bind=\"cm.event.id\"></span>\n" +
+    "            </li>\n" +
+    "            <li>\n" +
+    "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\"></a>\n" +
+    "            </li>\n" +
+    "            <!--<li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
     "                <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
     "                <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "            </li>\n" +
+    "            </li>-->\n" +
     "        </ul>\n" +
     "    </td>\n" +
     "</tr>\n"
