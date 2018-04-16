@@ -363,7 +363,8 @@ angular.module('udb.core')
       'no_price': 'Pas d\'information du prix',
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
-      'no_age': 'Pas d\'information de l\'âge'
+      'no_age': 'Pas d\'information de l\'âge',
+      'publiq_url': 'Voir sur UiT in Vlaanderen'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',

@@ -2939,7 +2939,8 @@ angular.module('udb.core')
       'no_price': 'Geen prijsinformatie',
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
-      'no_age': 'Geen leeftijdsinformatie'
+      'no_age': 'Geen leeftijdsinformatie',
+      'publiq_url': 'Bekijk op UiT in Vlaanderen'
     },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
@@ -3744,7 +3745,8 @@ angular.module('udb.core')
       'no_price': 'Pas d\'information du prix',
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
-      'no_age': 'Pas d\'information de l\'âge'
+      'no_age': 'Pas d\'information de l\'âge',
+      'publiq_url': 'Voir sur UiT in Vlaanderen'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
@@ -25002,7 +25004,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <span ng-bind=\"cm.event.id\"></span>\n" +
     "            </li>\n" +
     "            <li>\n" +
-    "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\">Bekijk op UiT in Vlaanderen</a>\n" +
+    "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\"></a>\n" +
     "            </li>\n" +
     "            <!--<li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
     "                <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +

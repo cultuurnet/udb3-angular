@@ -18,7 +18,7 @@
                 <span ng-bind="cm.event.id"></span>
             </li>
             <li>
-                <a ng-href="{{cm.getPublicUrl(cm.event.id)}}">Bekijk op UiT in Vlaanderen</a>
+                <a ng-href="{{cm.getPublicUrl(cm.event.id)}}" translate-once="preview.publiq_url"></a>
             </li>
             <!--<li ng-repeat="id in cm.eventIds(cm.event)" ng-switch="cm.isUrl(id)">
                 <a ng-switch-when="true" ng-href="{{id}}" ng-bind="id"></a>
