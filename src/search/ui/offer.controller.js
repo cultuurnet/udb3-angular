@@ -162,7 +162,7 @@ function OfferController(
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator
         .translateProperty(cachedOffer, udbProperty, language, translation)
-        .then(cachedOffer.updateTranslationState);
+        .then(cachedOffer.updateTranslationState(cachedOffer));
     }
   }
 
