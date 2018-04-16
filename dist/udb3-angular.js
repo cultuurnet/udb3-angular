@@ -7633,7 +7633,7 @@ function EventCrud(
    */
   service.updateDescription = function(item) {
     return udbApi
-      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description[udbApi.mainLanguage])
+      .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
