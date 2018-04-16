@@ -129,7 +129,7 @@ function EventCrud(
    */
   service.updateDescription = function(item) {
     return udbApi
-      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description[udbApi.mainLanguage])
+      .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
@@ -267,6 +267,14 @@ function EventCrud(
     var bookingInfo =  _.pick(item.bookingInfo, function(property, propertyName) {
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
+
+    if (bookingInfo.availabilityStarts) {
+      bookingInfo.availabilityStarts = toISO8061String(bookingInfo.availabilityStarts);
+    }
+
+    if (bookingInfo.availabilityEnds) {
+      bookingInfo.availabilityEnds = toISO8061String(bookingInfo.availabilityEnds);
+    }
 
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
@@ -424,6 +432,10 @@ function EventCrud(
     job.task.promise.then(function (offerLocation) {
       udbApi.removeItemFromCache(offerLocation.toString());
     }, function() {});
+  }
+
+  function toISO8061String(date) {
+    return date.toISOString().split('.')[0] + 'Z';
   }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);

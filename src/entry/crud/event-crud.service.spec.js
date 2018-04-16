@@ -301,4 +301,30 @@ describe('Service: Event crud', function () {
     expect(udbApi.updateProperty)
       .toHaveBeenCalledWith('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E', 'bookingInfo', expectedBookingInfo);
   });
+
+  it('should convert availability data to ISO 8061 without milliseconds', function () {
+    var availabilityStarts = new Date();
+    var availabilityEnds = new Date(availabilityStarts.getDate() + 1);
+
+    var formData = {
+      id : '217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      apiUrl: 'http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      bookingInfo : {
+        url: 'http://du.de',
+        availabilityStarts: availabilityStarts,
+        availabilityEnds:  availabilityEnds
+      }
+    };
+
+    var expectedBookingInfo = {
+      url: 'http://du.de',
+      availabilityStarts: availabilityStarts.toISOString().split('.')[0] + 'Z',
+      availabilityEnds: availabilityEnds.toISOString().split('.')[0] + 'Z'
+    };
+    promisePropertyUpdate();
+
+    eventCrud.updateBookingInfo(formData);
+    expect(udbApi.updateProperty)
+      .toHaveBeenCalledWith('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E', 'bookingInfo', expectedBookingInfo);
+  });
 });

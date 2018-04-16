@@ -49,6 +49,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
   }
 
   function updateTranslationState(event) {
+
     var languages = {'en': false, 'fr': false, 'de': false},
         properties = ['name', 'description'];
 
@@ -338,8 +339,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         return label === labelName;
       });
     },
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
