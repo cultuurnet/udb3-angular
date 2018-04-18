@@ -30,7 +30,7 @@
           </thead>
           <tr ng-repeat="(key, priceInfo) in $ctrl.price"
               ng-model="priceInfo">
-            <td>{{priceInfo.name[$ctrl.mainLanguage]}}</td>
+            <td>{{priceInfo.name}}</td>
             <td>
               <span ng-if="priceInfo.price == 0" translate-once="eventForm.step5.priceInfo.free">
                 Gratis
