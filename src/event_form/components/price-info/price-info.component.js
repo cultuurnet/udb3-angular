@@ -23,6 +23,7 @@ angular
 function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
 
   var controller = this;
+  controller.mainLanguage = EventFormData.mainLanguage;
 
   controller.setPriceFree = setPriceFree;
   controller.changePrice = changePrice;

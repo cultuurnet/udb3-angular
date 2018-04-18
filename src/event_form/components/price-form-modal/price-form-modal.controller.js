@@ -31,13 +31,16 @@ function PriceFormModalController(
   pfmc.validatePrice = validatePrice;
 
   function init() {
+    pfmc.mainLanguage = EventFormData.mainLanguage;
     pfmc.price = angular.copy(price);
     originalPrice = angular.copy(price);
 
     if (pfmc.price.length === 0) {
+      var name = {};
+      name[pfmc.mainLanguage] = 'Basistarief';
       var priceItem = {
         category: 'base',
-        name: 'Basistarief',
+        name: name,
         priceCurrency: 'EUR',
         price: ''
       };

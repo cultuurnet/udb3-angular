@@ -88,7 +88,7 @@ describe('Controller: Price Form Modal', function() {
     var controller = getController();
     var expectedPrice = [{
       category: 'base',
-      name: 'Basistarief',
+      name: {'nl': 'Basistarief'},
       priceCurrency: 'EUR',
       price: ''
     }];
