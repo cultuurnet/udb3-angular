@@ -163,6 +163,19 @@ function EventFormController(
         _.get(item.name, 'nl', null) ||
         _.get(item, 'name', '');
 
+    // Prices tariffs can be translated since III-2545
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+    if (!_.isEmpty(EventFormData.priceInfo)) {
+      if (!EventFormData.priceInfo[0].name.nl && !EventFormData.priceInfo[0].name.en &&
+        !EventFormData.priceInfo[0].name.fr && !EventFormData.priceInfo[0].name.de) {
+        EventFormData.priceInfo = _.each(EventFormData.priceInfo, function(item) {
+          var priceInfoInDutch = _.cloneDeep(item);
+          priceInfoInDutch.name = {'nl': item};
+          item = priceInfoInDutch;
+        });
+      }
+    }
+
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
     // Set correct date object for start and end.
