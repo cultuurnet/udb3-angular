@@ -20,7 +20,7 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi, $translate) {
 
   var controller = this;
   controller.mainLanguage = EventFormData.mainLanguage;
@@ -33,25 +33,30 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   function setPriceFree() {
 
     if (controller.price.length === 0) {
-      controller.price = [
-        {
-          category: 'base',
-          name: 'Basisprijs',
-          priceCurrency: 'EUR',
-          price: 0
-        }
-      ];
+      var language = controller.mainLanguage;
+      var priceObjectName = {};
+      $translate('prices.base').then(function (translations) {
+        priceObjectName[language] = translations;
+        controller.price = [
+          {
+            category: 'base',
+            name: priceObjectName,
+            priceCurrency: 'EUR',
+            price: 0
+          }
+        ];
+
+        EventFormData.priceInfo = controller.price;
+
+        var promise = eventCrud.updatePriceInfo(EventFormData);
+        promise.then(function() {
+          $rootScope.$emit('eventFormSaved', EventFormData);
+          if (!_.isEmpty(controller.price)) {
+            controller.priceCssClass = 'state-complete';
+          }
+        });
+      });
     }
-
-    EventFormData.priceInfo = controller.price;
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty(controller.price)) {
-        controller.priceCssClass = 'state-complete';
-      }
-    });
   }
 
   function changePrice() {
