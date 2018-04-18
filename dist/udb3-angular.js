@@ -2250,6 +2250,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
     return udbApi.getMyPermissions();
   };
 }
+AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope"];
 })();
 
 // Source: src/core/city-autocomplete.service.js
@@ -2304,6 +2305,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   };
 
 }
+CityAutocomplete.$inject = ["$q", "$http", "appConfig", "UdbPlace", "jsonLDLangFilter"];
 })();
 
 // Source: src/core/components/calendar-summary/calendar-summary.controller.js
@@ -2325,6 +2327,7 @@ function calendarSummaryController($scope) {
     return offer.openingHours.length;
   };
 }
+calendarSummaryController.$inject = ["$scope"];
 })();
 
 // Source: src/core/components/calendar-summary/calendar-summary.directive.js
@@ -2383,6 +2386,7 @@ function ImageDetailController($scope, $translate) {
     return $translate.instant('imageDetail.' + label, translationData);
   };
 }
+ImageDetailController.$inject = ["$scope", "$translate"];
 })();
 
 // Source: src/core/components/multiselect/multiselect.directive.js
@@ -2537,6 +2541,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
     }
   }
 }
+WorkflowStatusDirectiveController.$inject = ["$scope", "appConfig"];
 })();
 
 // Source: src/core/error-handling/unexpected-error-modal.controller.js
@@ -2564,6 +2569,7 @@ function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage)
   $scope.dismiss = dismiss;
   $scope.errorMessage = errorMessage;
 }
+UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
 })();
 
 // Source: src/core/translations/dutch-translations.constant.js
@@ -5576,6 +5582,7 @@ function UdbApi(
     }
   }
 }
+UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload", "$translate"];
 })();
 
 // Source: src/core/udb-event.factory.js
@@ -5949,6 +5956,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
   return (UdbEvent);
 }
+UdbEventFactory.$inject = ["EventTranslationState", "UdbPlace", "UdbOrganizer"];
 })();
 
 // Source: src/core/udb-organizer.directive.js
@@ -5991,6 +5999,7 @@ function udbOrganizer(udbApi) {
 
   return event;
 }
+udbOrganizer.$inject = ["udbApi"];
 })();
 
 // Source: src/core/udb-organizer.factory.js
@@ -6068,6 +6077,7 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   return (UdbOrganizer);
 }
+UdbOrganizerFactory.$inject = ["UitpasLabels"];
 })();
 
 // Source: src/core/udb-organizers.service.js
@@ -6122,6 +6132,7 @@ function UdbOrganizers($q, udbApi, udbUitpasApi, UdbOrganizer) {
   };
 
 }
+UdbOrganizers.$inject = ["$q", "udbApi", "udbUitpasApi", "UdbOrganizer"];
 })();
 
 // Source: src/core/udb-place.factory.js
@@ -6505,6 +6516,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
   return (UdbPlace);
 }
+UdbPlaceFactory.$inject = ["EventTranslationState", "placeCategories", "UdbOrganizer"];
 })();
 
 // Source: src/core/udb3-content.service.js
@@ -6535,6 +6547,7 @@ function Udb3Content($q, $http, appConfig) {
   };
 
 }
+Udb3Content.$inject = ["$q", "$http", "appConfig"];
 })();
 
 // Source: src/core/uitid-auth.service.js
@@ -6639,6 +6652,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return $cookies.getObject('user');
   };
 }
+UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
 })();
 
 // Source: src/cultuurkuur/event-cultuurkuur.component.js
@@ -6688,6 +6702,7 @@ function EventCultuurKuurComponentController(appConfig) {
     type;
   }
 }
+EventCultuurKuurComponentController.$inject = ["appConfig"];
 })();
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
@@ -6796,6 +6811,7 @@ function EventDeleteConfirmModalController($scope, $uibModalInstance, eventCrud,
   }
 
 }
+EventDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "item"];
 })();
 
 // Source: src/dashboard/components/place-delete-confirm-modal.controller.js
@@ -6854,6 +6870,7 @@ function PlaceDeleteConfirmModalController(
   }
 
 }
+PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "place", "events", "appConfig"];
 })();
 
 // Source: src/dashboard/dashboard.controller.js
@@ -7031,6 +7048,7 @@ function PlaceDeleteConfirmModalController(
       }
     }
   }
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
 
 })();
 })();
@@ -7091,6 +7109,7 @@ function DuplicationCalendarController(EventFormData, OpeningHoursCollection, $r
     .timingChanged$
     .subscribe(duplicateTimingChanged);
 }
+DuplicationCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$rootScope", "$controller", "$scope"];
 })();
 
 // Source: src/duplication/event-duplication-calendar.directive.js
@@ -7184,6 +7203,7 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
     controller.duplicating = true;
   }
 }
+EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx"];
 })();
 
 // Source: src/duplication/event-duplication-step.component.js
@@ -7215,6 +7235,7 @@ function EventDuplicationStepController(EventFormData) {
     return false;
   };
 }
+EventDuplicationStepController.$inject = ["EventFormData"];
 })();
 
 // Source: src/duplication/event-duplicator.service.js
@@ -7265,6 +7286,7 @@ function EventDuplicatorService(udbApi, offerLocator) {
       .then(rememberDuplicateLocationAndReturnId);
   };
 }
+EventDuplicatorService.$inject = ["udbApi", "offerLocator"];
 })();
 
 // Source: src/entry/components/job-logo-states.constant.js
@@ -7356,6 +7378,7 @@ function JobLogoController(JobLogoStates, jobLogger, $rootScope) {
 
   $rootScope.$on('jobListsUpdated', jl.updateCurrentState);
 }
+JobLogoController.$inject = ["JobLogoStates", "jobLogger", "$rootScope"];
 })();
 
 // Source: src/entry/components/job-logo.directive.js
@@ -7493,6 +7516,7 @@ function EventCrudJobFactory(BaseJob, $q, JobStates) {
 
   return (EventCrudJob);
 }
+EventCrudJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
 })();
 
 // Source: src/entry/crud/event-crud.service.js
@@ -7942,6 +7966,7 @@ function EventCrud(
   $rootScope.$on('eventTimingChanged', updateMajorInfo);
   $rootScope.$on('eventTitleChanged', updateMajorInfo);
 }
+EventCrud.$inject = ["jobLogger", "udbApi", "udbUitpasApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
 })();
 
 // Source: src/entry/delete/delete-offer-job.factory.js
@@ -7997,6 +8022,7 @@ function DeleteOfferJobFactory(BaseJob, $q, JobStates) {
 
   return (DeleteOfferJob);
 }
+DeleteOfferJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
 })();
 
 // Source: src/entry/editing/offer-editor.service.js
@@ -8095,6 +8121,7 @@ function OfferEditor(jobLogger, udbApi, VariationCreationJob, BaseJob, $q, varia
     return deletePromise;
   };
 }
+OfferEditor.$inject = ["jobLogger", "udbApi", "VariationCreationJob", "BaseJob", "$q", "variationRepository"];
 })();
 
 // Source: src/entry/editing/variation-creation-job.factory.js
@@ -8151,6 +8178,7 @@ function VariationCreationJobFactory(BaseJob, JobStates, $q) {
 
   return (VariationCreationJob);
 }
+VariationCreationJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
 })();
 
 // Source: src/entry/labelling/offer-label-batch-job.factory.js
@@ -8210,6 +8238,7 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
 
   return (OfferLabelBatchJob);
 }
+OfferLabelBatchJobFactory.$inject = ["BaseJob", "JobStates"];
 })();
 
 // Source: src/entry/labelling/offer-label-job.factory.js
@@ -8267,6 +8296,7 @@ function OfferLabelJobFactory(BaseJob, JobStates) {
 
   return (OfferLabelJob);
 }
+OfferLabelJobFactory.$inject = ["BaseJob", "JobStates"];
 })();
 
 // Source: src/entry/labelling/offer-label-modal.controller.js
@@ -8358,6 +8388,7 @@ function OfferLabelModalCtrl($uibModalInstance) {
     return labels;
   }
 }
+OfferLabelModalCtrl.$inject = ["$uibModalInstance"];
 })();
 
 // Source: src/entry/labelling/offer-labeller.service.js
@@ -8490,6 +8521,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$uibModal"];
 })();
 
 // Source: src/entry/labelling/query-label-job.factory.js
@@ -8537,6 +8569,7 @@ function QueryLabelJobFactory(BaseJob) {
 
   return (QueryLabelJob);
 }
+QueryLabelJobFactory.$inject = ["BaseJob"];
 })();
 
 // Source: src/entry/logging/base-job.factory.js
@@ -8725,6 +8758,7 @@ function BaseJobFactory(JobStates) {
 
   return (BaseJob);
 }
+BaseJobFactory.$inject = ["JobStates"];
 })();
 
 // Source: src/entry/logging/job-log.component.js
@@ -8757,6 +8791,7 @@ function JobLogController(jobLogger, $scope) {
 
   $scope.hideJob = jobLogger.hideJob;
 }
+JobLogController.$inject = ["jobLogger", "$scope"];
 })();
 
 // Source: src/entry/logging/job-logger.service.js
@@ -8924,6 +8959,7 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
     return logger.visible;
   };
 }
+JobLogger.$inject = ["udbSocket", "JobStates", "EventExportJob", "$rootScope"];
 })();
 
 // Source: src/entry/logging/job-states.constant.js
@@ -9013,6 +9049,7 @@ function UdbSocketFactory (socketFactory, appConfig) {
 
   return socket;
 }
+UdbSocketFactory.$inject = ["socketFactory", "appConfig"];
 })();
 
 // Source: src/entry/logging/work-indicator.directive.js
@@ -9043,6 +9080,7 @@ function udbWorkIndicator ($window, jobLogger) {
     }
   };
 }
+udbWorkIndicator.$inject = ["$window", "jobLogger"];
 })();
 
 // Source: src/entry/translation/offer-translation-job.factory.js
@@ -9111,6 +9149,7 @@ function OfferTranslationJobFactory(BaseJob, JobStates) {
 
   return (OfferTranslationJob);
 }
+OfferTranslationJobFactory.$inject = ["BaseJob", "JobStates"];
 })();
 
 // Source: src/entry/translation/offer-translator.service.js
@@ -9157,6 +9196,7 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       .then(logTranslationJob);
   };
 }
+OfferTranslator.$inject = ["jobLogger", "udbApi", "OfferTranslationJob"];
 })();
 
 // Source: src/event-detail/event-detail.directive.js
@@ -9213,6 +9253,7 @@ function BookingInfoDetailController($scope) {
     return $scope.bookingInfo.phone || $scope.bookingInfo.url || $scope.bookingInfo.email;
   };
 }
+BookingInfoDetailController.$inject = ["$scope"];
 })();
 
 // Source: src/event-detail/ui/contact-point-detail.directive.js
@@ -9244,6 +9285,7 @@ function ContactPointDetailController($scope) {
     return _(contactPoint).values().flatten().isEmpty();
   };
 }
+ContactPointDetailController.$inject = ["$scope"];
 })();
 
 // Source: src/event-detail/ui/event-detail.controller.js
@@ -9590,6 +9632,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -9811,6 +9854,7 @@ function FormAgeController($scope, EventFormData, eventCrud) {
     }
   }
 }
+FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud"];
 })();
 
 // Source: src/event_form/components/age/form-age.directive.js
@@ -9866,6 +9910,7 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
     eventCrud.setAudienceType(EventFormData, audienceType);
   }
 }
+FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig"];
 })();
 
 // Source: src/event_form/components/audience/form-audience.directive.js
@@ -9927,6 +9972,7 @@ function AutoScroll($document) {
     }
   }
 }
+AutoScroll.$inject = ["$document"];
 })();
 
 // Source: src/event_form/components/calendar/base-calendar.controller.js
@@ -10126,6 +10172,7 @@ function BaseCalendarController(calendar, $scope) {
     return _.keys(unmetRequirements);
   }
 }
+BaseCalendarController.$inject = ["calendar", "$scope"];
 })();
 
 // Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
@@ -10271,6 +10318,7 @@ function FormCalendarController(EventFormData, OpeningHoursCollection, $scope, $
 
   calendar.init(EventFormData, OpeningHoursCollection);
 }
+FormCalendarController.$inject = ["EventFormData", "OpeningHoursCollection", "$scope", "$controller"];
 })();
 
 // Source: src/event_form/components/calendar/form-event-calendar.component.js
@@ -10386,6 +10434,7 @@ function EventFormImageEditController(
     return $scope.description && $scope.copyrightHolder && $scope.copyrightHolder.length >= 3;
   }
 }
+EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
 })();
 
 // Source: src/event_form/components/image-remove/event-form-image-remove.controller.js
@@ -10445,6 +10494,7 @@ function EventFormImageRemoveController($scope, $uibModalInstance, EventFormData
       .then(updateEventFormDataAndCloseModal, showError);
   }
 }
+EventFormImageRemoveController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "image"];
 })();
 
 // Source: src/event_form/components/image-upload/event-form-image-upload.controller.js
@@ -10588,6 +10638,7 @@ function EventFormImageUploadController(
     return $scope.description && $scope.copyright && $scope.selectedFile && $scope.copyright.length >= 3;
   }
 }
+EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
 })();
 
 // Source: src/event_form/components/opening-hours-editor/opening-hours-editor.modal.controller.js
@@ -10657,6 +10708,7 @@ function OpeningHoursEditorModalController($uibModalInstance, openingHoursCollec
     clearErrors();
   }
 }
+OpeningHoursEditorModalController.$inject = ["$uibModalInstance", "openingHoursCollection"];
 })();
 
 // Source: src/event_form/components/openinghours/opening-hours-data-collection.factory.js
@@ -10858,6 +10910,7 @@ function OpeningHoursCollectionFactory(moment) {
 
   return openingHoursCollection;
 }
+OpeningHoursCollectionFactory.$inject = ["moment"];
 })();
 
 // Source: src/event_form/components/openinghours/openinghours.component.js
@@ -10918,6 +10971,7 @@ function OpeningHourComponentController($uibModal) {
     cm.openingHoursCollection.deserialize(openingHoursList);
   }
 }
+OpeningHourComponentController.$inject = ["$uibModal"];
 })();
 
 // Source: src/event_form/components/organizer-address/organizer-address.component.js
@@ -11055,6 +11109,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }
+OrganizerAddressComponent.$inject = ["$scope", "cities", "Levenshtein"];
 })();
 
 // Source: src/event_form/components/organizer-contact/organizer-contact.component.js
@@ -11171,6 +11226,7 @@ function OrganizerContactComponent($scope) {
     }
   }, true);
 }
+OrganizerContactComponent.$inject = ["$scope"];
 })();
 
 // Source: src/event_form/components/organizer/event-form-organizer-modal.controller.js
@@ -11382,6 +11438,7 @@ function EventFormOrganizerModalController(
   }
 
 }
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName"];
 })();
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
@@ -11548,6 +11605,7 @@ function EventFormOrganizerModalController(
     }
 
   }
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
 })();
 })();
@@ -11675,6 +11733,7 @@ function PriceFormModalController(
   }
 
 }
+PriceFormModalController.$inject = ["$uibModalInstance", "EventFormData", "price", "$filter", "$scope"];
 })();
 
 // Source: src/event_form/components/price-info/price-info.component.js
@@ -11805,6 +11864,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
     controller.price = EventFormData.priceInfo;
   }
 }
+PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope", "udbUitpasApi"];
 })();
 
 // Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
@@ -11876,6 +11936,7 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   }
 
 }
+EventFormPublishModalController.$inject = ["$uibModalInstance", "eventFormData", "publishEvent"];
 })();
 
 // Source: src/event_form/components/reservation-period/reservation-period.controller.js
@@ -12002,6 +12063,7 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
     }
   }
 }
+ReservationPeriodController.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
 })();
 
 // Source: src/event_form/components/reservation-period/reservation-period.directive.js
@@ -12069,6 +12131,7 @@ function TimeTrackerDirective($rootScope) {
     scope.$on('$destroy', eventFormSavedListener);
   }
 }
+TimeTrackerDirective.$inject = ["$rootScope"];
 })();
 
 // Source: src/event_form/components/suggestions/event-preview.directive.js
@@ -12257,6 +12320,7 @@ function udbPlaceSuggestion() {
     }
 
   }
+  SuggestionPreviewModalController.$inject = ["$scope", "$uibModalInstance", "selectedSuggestionId", "resultViewer", "suggestionType"];
 
 })();
 })();
@@ -12384,6 +12448,7 @@ function CopyrightNegotiator($cookies) {
     return agreement ? agreement.confirmed : false;
   };
 }
+CopyrightNegotiator.$inject = ["$cookies"];
 })();
 
 // Source: src/event_form/event-form-data.factory.js
@@ -13074,6 +13139,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   return eventFormData;
 }
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "appConfig", "$translate"];
 })();
 
 // Source: src/event_form/event-form.controller.js
@@ -13303,6 +13369,7 @@ function EventFormController(
 
   }
 }
+EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig", "$translate"];
 })();
 
 // Source: src/event_form/event-form.directive.js
@@ -13599,6 +13666,7 @@ function EventFormPublishController(
     return (status === OfferWorkflowStatus.DRAFT);
   }
 }
+EventFormPublishController.$inject = ["appConfig", "EventFormData", "eventCrud", "OfferWorkflowStatus", "$q", "$location", "$uibModal"];
 })();
 
 // Source: src/event_form/steps/event-form-step1.controller.js
@@ -13810,6 +13878,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
   controller.init(EventFormData);
 }
+EventFormStep1Controller.$inject = ["$scope", "$rootScope", "EventFormData", "eventCategories", "placeCategories"];
 })();
 
 // Source: src/event_form/steps/event-form-step2.controller.js
@@ -13848,6 +13917,7 @@ function EventFormStep2Controller($scope, $rootScope, EventFormData) {
     .timingChanged$
     .subscribe(controller.eventTimingChanged);
 }
+EventFormStep2Controller.$inject = ["$scope", "$rootScope", "EventFormData"];
 })();
 
 // Source: src/event_form/steps/event-form-step3.controller.js
@@ -14248,6 +14318,7 @@ function EventFormStep3Controller(
 
   controller.init(EventFormData);
 }
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope"];
 })();
 
 // Source: src/event_form/steps/event-form-step4.controller.js
@@ -14474,6 +14545,7 @@ function EventFormStep4Controller(
   }
 
 }
+EventFormStep4Controller.$inject = ["$scope", "EventFormData", "searchApiSwitcher", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
 })();
 
 // Source: src/event_form/steps/event-form-step5.controller.js
@@ -15103,6 +15175,7 @@ function EventFormStep5Controller(
   }
 
 }
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi"];
 })();
 
 // Source: src/export/event-export-job.factory.js
@@ -15184,6 +15257,7 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
 
   return (EventExportJob);
 }
+EventExportJobFactory.$inject = ["BaseJob", "JobStates", "ExportFormats"];
 })();
 
 // Source: src/export/event-export.controller.js
@@ -15386,6 +15460,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats) 
 
   exporter.eventCount = eventExporter.activeExport.eventCount;
 }
+EventExportController.$inject = ["$uibModalInstance", "eventExporter", "ExportFormats"];
 })();
 
 // Source: src/export/event-exporter.service.js
@@ -15450,6 +15525,7 @@ function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
     return jobPromise;
   };
 }
+eventExporter.$inject = ["jobLogger", "udbApi", "EventExportJob", "$cookies"];
 })();
 
 // Source: src/export/export-formats.constant.js
@@ -15647,6 +15723,7 @@ function LabelCreatorController(LabelManager, $uibModal, $state) {
     );
   }
 }
+LabelCreatorController.$inject = ["LabelManager", "$uibModal", "$state"];
 })();
 
 // Source: src/management/labels/label-editor.controller.js
@@ -15794,6 +15871,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
 
   loadLabelFromParams();
 }
+LabelEditorController.$inject = ["LabelManager", "$uibModal", "$stateParams", "$q"];
 })();
 
 // Source: src/management/labels/label-manager.service.js
@@ -15940,6 +16018,7 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
     return $q.resolve(job);
   }
 }
+LabelManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
 })();
 
 // Source: src/management/labels/labels-list.controller.js
@@ -16032,6 +16111,7 @@ function LabelsListController(SearchResultGenerator, rx, $scope, LabelManager) {
     })
     .subscribe();
 }
+LabelsListController.$inject = ["SearchResultGenerator", "rx", "$scope", "LabelManager"];
 })();
 
 // Source: src/management/labels/semicolon-label-check.directive.js
@@ -16057,6 +16137,7 @@ function SemicolonLabelCheckDirective($q) {
     }
   };
 }
+SemicolonLabelCheckDirective.$inject = ["$q"];
 })();
 
 // Source: src/management/labels/unique-label.directive.js
@@ -16091,6 +16172,7 @@ function UniqueLabelDirective(LabelManager, $q) {
     }
   };
 }
+UniqueLabelDirective.$inject = ["LabelManager", "$q"];
 })();
 
 // Source: src/management/list-item-defaults.factory.js
@@ -16166,6 +16248,7 @@ function listItemDefaults(RolePermission) {
     }
   ];
 }
+listItemDefaults.$inject = ["RolePermission"];
 })();
 
 // Source: src/management/list-items.factory.js
@@ -16281,6 +16364,7 @@ function listItems(
     return $q.resolve(listItems);
   }
 }
+listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults"];
 })();
 
 // Source: src/management/moderation/components/moderation-offer/moderation-offer.component.js
@@ -16446,6 +16530,7 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 }
+ModerationOfferComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus", "$uibModal"];
 })();
 
 // Source: src/management/moderation/components/moderation-summary/moderation-summary.component.js
@@ -16503,6 +16588,7 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 }
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
 })();
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
@@ -16560,6 +16646,7 @@ function RejectOfferConfirmModalCtrl($scope, $uibModalInstance, $q) {
   }
 
 }
+RejectOfferConfirmModalCtrl.$inject = ["$scope", "$uibModalInstance", "$q"];
 })();
 
 // Source: src/management/moderation/moderation-list.controller.js
@@ -16707,6 +16794,7 @@ function ModerationListController(
     );
   }
 }
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document"];
 })();
 
 // Source: src/management/moderation/moderation.service.js
@@ -16816,6 +16904,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
     return $q.resolve(job);
   }
 }
+ModerationService.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
 })();
 
 // Source: src/management/moderation/workflow.constant.js
@@ -16899,6 +16988,7 @@ function CreateDeleteOrganizerFactory(BaseJob, JobStates, $q) {
 
   return (CreateDeleteOrganizerJob);
 }
+CreateDeleteOrganizerFactory.$inject = ["BaseJob", "JobStates", "$q"];
 })();
 
 // Source: src/management/organizers/delete/organization-delete.modal.controller.js
@@ -16953,6 +17043,7 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
     $uibModalInstance.dismiss();
   }
 }
+OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
 })();
 
 // Source: src/management/organizers/edit/organizer-edit.controller.js
@@ -17177,6 +17268,7 @@ function OrganizerEditController(
     $state.go('management.organizers.search', {}, {reload: true});
   }
 }
+OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope"];
 })();
 
 // Source: src/management/organizers/organizer-detail.controller.js
@@ -17313,6 +17405,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     );
   }
 }
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location"];
 })();
 
 // Source: src/management/organizers/organizer-manager.service.js
@@ -17476,6 +17569,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
     return $q.resolve(job);
   }
 }
+OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope", "CreateDeleteOrganizerJob"];
 })();
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
@@ -17541,6 +17635,7 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
     }
   }
 }
+OrganizationSearchItemController.$inject = ["udbApi", "$rootScope"];
 })();
 
 // Source: src/management/organizers/search/organization-search.controller.js
@@ -17635,6 +17730,7 @@ function OrganizationSearchController(SearchResultGenerator, rx, $scope, Organiz
     })
     .subscribe();
 }
+OrganizationSearchController.$inject = ["SearchResultGenerator", "rx", "$scope", "OrganizerManager"];
 })();
 
 // Source: src/management/roles/components/role-delete-confirm-modal.controller.js
@@ -17689,6 +17785,7 @@ function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager
   }
 
 }
+RoleDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "RoleManager", "item"];
 })();
 
 // Source: src/management/roles/delete-role-job.factory.js
@@ -17744,6 +17841,7 @@ function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
 
   return (DeleteRoleJob);
 }
+DeleteRoleJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
 })();
 
 // Source: src/management/roles/permission.constant.js
@@ -18111,6 +18209,7 @@ function RoleFormController(
 
   init();
 }
+RoleFormController.$inject = ["RoleManager", "UserManager", "$uibModal", "$stateParams", "$q", "$translate", "RolePermission"];
 })();
 
 // Source: src/management/roles/role-manager.service.js
@@ -18343,6 +18442,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
     };
   }
 }
+RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob", "UserRoleJob"];
 })();
 
 // Source: src/management/roles/roles-list.controller.js
@@ -18459,6 +18559,7 @@ function RolesListController(SearchResultGenerator, rx, $scope, RoleManager, $ui
       $document.scrollTop(0);
     });
 }
+RolesListController.$inject = ["SearchResultGenerator", "rx", "$scope", "RoleManager", "$uibModal", "$state", "$document"];
 })();
 
 // Source: src/management/roles/search-label.component.js
@@ -18509,6 +18610,7 @@ function LabelSearchComponent(LabelManager) {
     select.availableLabels = labels;
   }
 }
+LabelSearchComponent.$inject = ["LabelManager"];
 })();
 
 // Source: src/management/roles/unique-role.directive.js
@@ -18543,6 +18645,7 @@ function UniqueRoleDirective(RoleManager, $q) {
     }
   };
 }
+UniqueRoleDirective.$inject = ["RoleManager", "$q"];
 })();
 
 // Source: src/management/search-result-generator.factory.js
@@ -18634,6 +18737,7 @@ function SearchResultGenerator(rx) {
 
   return (SearchResultGenerator);
 }
+SearchResultGenerator.$inject = ["rx"];
 })();
 
 // Source: src/management/search.service.js
@@ -18675,6 +18779,7 @@ function SearchService($q) {
     });
   };
 }
+SearchService.$inject = ["$q"];
 })();
 
 // Source: src/management/users/user-editor.controller.js
@@ -18869,6 +18974,7 @@ function UserEditorController(UserManager, RoleManager, $stateParams, $q) {
     );
   };
 }
+UserEditorController.$inject = ["UserManager", "RoleManager", "$stateParams", "$q"];
 })();
 
 // Source: src/management/users/user-manager.service.js
@@ -18937,6 +19043,7 @@ function UserManager(udbApi, $q) {
     return udbApi.getUserRoles(userId);
   };
 }
+UserManager.$inject = ["udbApi", "$q"];
 })();
 
 // Source: src/management/users/user-role-job.factory.js
@@ -19011,6 +19118,7 @@ function UserRoleJobFactory(BaseJob, JobStates, $q) {
 
   return (UserRoleJob);
 }
+UserRoleJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
 })();
 
 // Source: src/management/users/users-list.controller.js
@@ -19124,6 +19232,7 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
     $document.scrollTop(0);
   });
 }
+UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 })();
 
 // Source: src/media/create-image-job.factory.js
@@ -19178,6 +19287,7 @@ function CreateImageJobFactory(BaseJob, JobStates, $q) {
 
   return (CreateImageJob);
 }
+CreateImageJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
 })();
 
 // Source: src/media/media-manager.service.js
@@ -19279,6 +19389,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       .then(returnMediaObject);
   };
 }
+MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "udbApi"];
 })();
 
 // Source: src/migration/event-migration-footer.component.js
@@ -19318,6 +19429,7 @@ function EventMigrationFooterController(EventFormData, $stateParams, $state) {
     return !!_.get(EventFormData, 'location.id');
   }
 }
+EventMigrationFooterController.$inject = ["EventFormData", "$stateParams", "$state"];
 })();
 
 // Source: src/migration/event-migration.service.js
@@ -19626,6 +19738,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
 })();
 
 // Source: src/router/offer-locator.service.js
@@ -19715,6 +19828,7 @@ function OfferLocator($q, searchApiSwitcher) {
     return deferredLocation.promise;
   }
 }
+OfferLocator.$inject = ["$q", "searchApiSwitcher"];
 })();
 
 // Source: src/saved-searches/components/delete-search-modal.controller.js
@@ -19746,6 +19860,7 @@ function DeleteSearchModalController($scope, $uibModalInstance) {
   $scope.cancel = cancel;
   $scope.confirm = confirm;
 }
+DeleteSearchModalController.$inject = ["$scope", "$uibModalInstance"];
 })();
 
 // Source: src/saved-searches/components/save-search-modal.controller.js
@@ -19784,6 +19899,7 @@ function SaveSearchModalController($scope, $uibModalInstance) {
   $scope.queryName = '';
   $scope.wasSubmitted = false;
 }
+SaveSearchModalController.$inject = ["$scope", "$uibModalInstance"];
 })();
 
 // Source: src/saved-searches/components/save-search.directive.js
@@ -19842,6 +19958,7 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
     );
   }
 }
+udbSaveSearch.$inject = ["savedSearchesService", "$uibModal"];
 })();
 
 // Source: src/saved-searches/udb.saved-searches.service.js
@@ -19900,6 +20017,7 @@ function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
     $rootScope.$emit('savedSearchesChanged', savedSearches);
   }
 }
+SavedSearchesService.$inject = ["$q", "$http", "appConfig", "$rootScope", "udbApi"];
 
 })();
 
@@ -19975,6 +20093,7 @@ function SavedSearchesList($scope, savedSearchesService, $uibModal, $rootScope) 
 
   $scope.deleteSavedSearch = this.deleteSavedSearch;
 }
+SavedSearchesList.$inject = ["$scope", "savedSearchesService", "$uibModal", "$rootScope"];
 })();
 
 // Source: src/search/components/event-link.directive.js
@@ -20106,6 +20225,7 @@ function LabelSelectComponent(offerLabeller, $q) {
       .value();
   }
 }
+LabelSelectComponent.$inject = ["offerLabeller", "$q"];
 })();
 
 // Source: src/search/components/offer-accessibility-info.component.js
@@ -20142,6 +20262,7 @@ function AccessibilityInfoController(facilities, $uibModal) {
     });
   };
 }
+AccessibilityInfoController.$inject = ["facilities", "$uibModal"];
 })();
 
 // Source: src/search/components/query-editor-daterangepicker.directive.js
@@ -20197,6 +20318,7 @@ function udbQueryEditorDaterangepicker($translate, uibDatepickerPopupConfig) {
     }
   };
 }
+udbQueryEditorDaterangepicker.$inject = ["$translate", "uibDatepickerPopupConfig"];
 
 angular
   .module('udb.search')
@@ -20293,6 +20415,7 @@ function QueryEditorFieldController($scope) {
   $scope.getOperatorClass = getOperatorClass;
   $scope.canRemoveField = canRemoveField;
 }
+QueryEditorFieldController.$inject = ["$scope"];
 })();
 
 // Source: src/search/components/query-editor-field.directive.js
@@ -20313,6 +20436,7 @@ angular
 function udbQueryEditorField(searchApiSwitcher) {
   return searchApiSwitcher.getQueryEditorFieldDefinition();
 }
+udbQueryEditorField.$inject = ["searchApiSwitcher"];
 })();
 
 // Source: src/search/components/query-editor.controller.js
@@ -20596,6 +20720,7 @@ function QueryEditorController(
     return (qe.groupedQueryTree.nodes.length === 1);
   };
 }
+QueryEditorController.$inject = ["queryFields", "LuceneQueryBuilder", "taxonomyTerms", "fieldTypeTransformers", "searchHelper", "$translate", "$rootScope", "eventTypes", "placeTypes"];
 })();
 
 // Source: src/search/components/query-editor.directive.js
@@ -20621,6 +20746,7 @@ function udbQueryEditor(searchApiSwitcher) {
     controller: searchApiSwitcher.getQueryEditorController()
   };
 }
+udbQueryEditor.$inject = ["searchApiSwitcher"];
 })();
 
 // Source: src/search/components/sapi2.query-editor.controller.js
@@ -21021,6 +21147,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService,
     }
   };
 }
+udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService", "searchApiSwitcher"];
 })();
 
 // Source: src/search/event-types.value.js
@@ -21797,6 +21924,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     return field;
   }
 }
+LuceneQueryBuilder.$inject = ["LuceneQueryParser", "QueryTreeValidator", "QueryTreeTranslator", "queryFields", "taxonomyTerms"];
 })();
 
 // Source: src/search/services/query-field-translations.constant.js
@@ -22061,6 +22189,7 @@ function QueryTreeTranslator(queryFieldTranslations, queryFields) {
     return translateNode(queryTree, 0);
   };
 }
+QueryTreeTranslator.$inject = ["queryFieldTranslations", "queryFields"];
 })();
 
 // Source: src/search/services/query-tree-validator.service.js
@@ -22136,6 +22265,7 @@ function QueryTreeValidator(queryFields) {
   };
 
 }
+QueryTreeValidator.$inject = ["queryFields"];
 })();
 
 // Source: src/search/services/sapi2.field-type-transformers.js
@@ -22881,6 +23011,7 @@ function QueryTreeTranslator(queryFieldTranslations) {
     return translateNode(queryTree, 0);
   };
 }
+QueryTreeTranslator.$inject = ["queryFieldTranslations"];
 })();
 
 // Source: src/search/services/sapi2.query-tree-validator.service.js
@@ -23085,6 +23216,7 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
     }
   };
 }
+SearchApiSwitcher.$inject = ["appConfig", "udbApi", "$cookies", "sapi2QueryBuilder", "LuceneQueryBuilder"];
 })();
 
 // Source: src/search/services/search-helper.service.js
@@ -23156,6 +23288,7 @@ function SearchHelper(searchApiSwitcher, $rootScope) {
     return angular.copy(queryTree);
   };
 }
+SearchHelper.$inject = ["searchApiSwitcher", "$rootScope"];
 })();
 
 // Source: src/search/services/search-result-viewer.factory.js
@@ -23470,6 +23603,7 @@ function VariationRepository(udbApi, $cacheFactory, $q, UdbEvent, $rootScope, Ud
     });
   });
 }
+VariationRepository.$inject = ["udbApi", "$cacheFactory", "$q", "UdbEvent", "$rootScope", "UdbPlace"];
 })();
 
 // Source: src/search/ui/event-translation-state.constant.js
@@ -23799,6 +23933,7 @@ function OfferController(
     }
   };
 }
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -23898,6 +24033,7 @@ function SearchFacilitiesModalController($scope, $uibModalInstance, offer, event
     $scope.error = false;
   }
 }
+SearchFacilitiesModalController.$inject = ["$scope", "$uibModalInstance", "offer", "eventCrud", "facilities"];
 })();
 
 // Source: src/search/ui/search.controller.js
@@ -24203,6 +24339,7 @@ function SearchController(
 
   initListeners();
 }
+SearchController.$inject = ["$scope", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "searchApiSwitcher", "authorization", "authorizationService"];
 })();
 
 // Source: src/search/ui/search.directive.js
@@ -24377,6 +24514,7 @@ function CardSystemsController($q, udbUitpasApi, $rootScope) {
       .finally(unlockCardSystems);
   };
 }
+CardSystemsController.$inject = ["$q", "udbUitpasApi", "$rootScope"];
 })();
 
 // Source: src/uitpas/components/uitpas-info/uitpas-info.component.js
@@ -24462,6 +24600,7 @@ function UitpasInfoComponent(
     _.invoke(controller.listeners, 'call');
   }
 }
+UitpasInfoComponent.$inject = ["$scope", "$rootScope", "EventFormData"];
 })();
 
 // Source: src/uitpas/default-uitpas-labels.constant.js
@@ -24530,6 +24669,7 @@ function OrganisationSuggestionController($scope) {
   controller.organisation = $scope.organisation;
   controller.query = $scope.query;
 }
+OrganisationSuggestionController.$inject = ["$scope"];
 })();
 
 // Source: src/uitpas/organisation-suggestion.directive.js
@@ -24741,6 +24881,7 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     return repeatable().catch(retryLater);
   }
 }
+UdbUitpasApi.$inject = ["$q", "$http", "appConfig", "uitidAuth", "$timeout", "moment"];
 })();
 
 // Source: src/uitpas/uitpas-labels.provider.js
