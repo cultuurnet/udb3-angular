@@ -11645,13 +11645,16 @@ function PriceFormModalController(
   pfmc.validatePrice = validatePrice;
 
   function init() {
+    pfmc.mainLanguage = EventFormData.mainLanguage;
     pfmc.price = angular.copy(price);
     originalPrice = angular.copy(price);
 
     if (pfmc.price.length === 0) {
+      var name = {};
+      name[pfmc.mainLanguage] = 'Basistarief';
       var priceItem = {
         category: 'base',
-        name: 'Basistarief',
+        name: name,
         priceCurrency: 'EUR',
         price: ''
       };
@@ -11691,10 +11694,11 @@ function PriceFormModalController(
   function addPriceItem() {
     var priceItem = {
       category: 'tariff',
-      name: '',
+      name: {},
       priceCurrency: 'EUR',
       price: ''
     };
+    priceItem.name[pfmc.mainLanguage] = '';
     pfmc.price.push(priceItem);
   }
 
@@ -11757,9 +11761,10 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi, $translate) {
 
   var controller = this;
+  controller.mainLanguage = EventFormData.mainLanguage;
 
   controller.setPriceFree = setPriceFree;
   controller.changePrice = changePrice;
@@ -11769,25 +11774,30 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   function setPriceFree() {
 
     if (controller.price.length === 0) {
-      controller.price = [
-        {
-          category: 'base',
-          name: 'Basisprijs',
-          priceCurrency: 'EUR',
-          price: 0
-        }
-      ];
+      var language = controller.mainLanguage;
+      var priceObjectName = {};
+      $translate('prices.base').then(function (translations) {
+        priceObjectName[language] = translations;
+        controller.price = [
+          {
+            category: 'base',
+            name: priceObjectName,
+            priceCurrency: 'EUR',
+            price: 0
+          }
+        ];
+
+        EventFormData.priceInfo = controller.price;
+
+        var promise = eventCrud.updatePriceInfo(EventFormData);
+        promise.then(function() {
+          $rootScope.$emit('eventFormSaved', EventFormData);
+          if (!_.isEmpty(controller.price)) {
+            controller.priceCssClass = 'state-complete';
+          }
+        });
+      });
     }
-
-    EventFormData.priceInfo = controller.price;
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty(controller.price)) {
-        controller.priceCssClass = 'state-complete';
-      }
-    });
   }
 
   function changePrice() {
@@ -11860,7 +11870,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
     controller.price = EventFormData.priceInfo;
   }
 }
-PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope", "udbUitpasApi"];
+PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope", "udbUitpasApi", "$translate"];
 })();
 
 // Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
@@ -13304,6 +13314,21 @@ function EventFormController(
     EventFormData.name = _.get(item.name, item.mainLanguage, null) ||
         _.get(item.name, 'nl', null) ||
         _.get(item, 'name', '');
+
+    // Prices tariffs can be translated since III-2545
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+
+    if (!_.isEmpty(EventFormData.priceInfo)) {
+      if (!EventFormData.priceInfo[0].name.nl && !EventFormData.priceInfo[0].name.en &&
+        !EventFormData.priceInfo[0].name.fr && !EventFormData.priceInfo[0].name.de) {
+        EventFormData.priceInfo = _.map(EventFormData.priceInfo, function(item) {
+          var priceInfoInDutch = _.cloneDeep(item);
+          priceInfoInDutch.name = {'nl': item.name};
+          item = priceInfoInDutch;
+          return item;
+        });
+      }
+    }
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
@@ -21244,34 +21269,36 @@ angular.module('udb.search')
 /* @ngInject */
 function JsonLDLangFilter() {
   return function (jsonLDObject, preferredLanguage, shouldFallback) {
-    var translatedObject = _.cloneDeep(jsonLDObject),
-        containedProperties = ['name', 'description'],
-        languages = ['nl', 'en', 'fr', 'de'],
-        // set a default language if none is specified
-        language = preferredLanguage || 'nl';
+    var translatedJsonLDObject = _.cloneDeep(jsonLDObject);
+    translatedJsonLDObject = translateProperties(translatedJsonLDObject, preferredLanguage, shouldFallback);
+    return translatedJsonLDObject;
+  };
+}
 
-    _.each(containedProperties, function (property) {
-      // make sure the property is set on the object
-      if (translatedObject[property]) {
-        var translatedProperty = translatedObject[property][language],
-            langIndex = 0;
-
-        // if there is no translation available for the provided language or default language
-        // check for a default language
-        if (shouldFallback) {
-          while (!translatedProperty && langIndex < languages.length) {
-            var fallbackLanguage = languages[langIndex];
-            translatedProperty = translatedObject[property][fallbackLanguage];
-            ++langIndex;
+function translateProperties(jsonLDProperty, preferredLanguage, shouldFallback) {
+  var languages = ['nl', 'en', 'fr', 'de'];
+  jsonLDProperty = _.each(jsonLDProperty, function(val, key) {
+    if (_.isObject(val)) {
+      if (val.nl || val.en || val.fr || val.de) {
+        if (val[preferredLanguage]) {
+          jsonLDProperty[key] = val[preferredLanguage];
+        } else {
+          if (shouldFallback) {
+            var langIndex = 0, translatedProperty;
+            while (!translatedProperty && langIndex < languages.length) {
+              var fallbackLanguage = languages[langIndex];
+              translatedProperty = val[fallbackLanguage];
+              jsonLDProperty[key] = translatedProperty;
+              ++langIndex;
+            }
           }
         }
-
-        translatedObject[property] = translatedProperty;
+      } else {
+        val = translateProperties(val, preferredLanguage, shouldFallback);
       }
-    });
-
-    return translatedObject;
-  };
+    }
+  });
+  return jsonLDProperty;
 }
 })();
 
@@ -26633,7 +26660,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                   class=\"form-control\"\n" +
     "                                   name=\"name\"\n" +
     "                                   placeholder=\"{{::'prices.target_group' | translate }}\"\n" +
-    "                                   ng-model=\"priceInfo.name\"\n" +
+    "                                   ng-model=\"priceInfo.name[pfmc.mainLanguage]\"\n" +
     "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
@@ -26750,7 +26777,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </thead>\n" +
     "          <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
     "              ng-model=\"priceInfo\">\n" +
-    "            <td>{{priceInfo.name}}</td>\n" +
+    "            <td>{{priceInfo.name[$ctrl.mainLanguage]}}</td>\n" +
     "            <td>\n" +
     "              <span ng-if=\"priceInfo.price == 0\" translate-once=\"eventForm.step5.priceInfo.free\">\n" +
     "                Gratis\n" +
