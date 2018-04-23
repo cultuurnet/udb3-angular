@@ -11694,10 +11694,11 @@ function PriceFormModalController(
   function addPriceItem() {
     var priceItem = {
       category: 'tariff',
-      name: '',
+      name: {},
       priceCurrency: 'EUR',
       price: ''
     };
+    priceItem.name[pfmc.mainLanguage] = '';
     pfmc.price.push(priceItem);
   }
 
@@ -13316,13 +13317,15 @@ function EventFormController(
 
     // Prices tariffs can be translated since III-2545
     // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+
     if (!_.isEmpty(EventFormData.priceInfo)) {
       if (!EventFormData.priceInfo[0].name.nl && !EventFormData.priceInfo[0].name.en &&
         !EventFormData.priceInfo[0].name.fr && !EventFormData.priceInfo[0].name.de) {
-        EventFormData.priceInfo = _.each(EventFormData.priceInfo, function(item) {
+        EventFormData.priceInfo = _.map(EventFormData.priceInfo, function(item) {
           var priceInfoInDutch = _.cloneDeep(item);
-          priceInfoInDutch.name = {'nl': item};
+          priceInfoInDutch.name = {'nl': item.name};
           item = priceInfoInDutch;
+          return item;
         });
       }
     }
@@ -26657,7 +26660,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                   class=\"form-control\"\n" +
     "                                   name=\"name\"\n" +
     "                                   placeholder=\"{{::'prices.target_group' | translate }}\"\n" +
-    "                                   ng-model=\"priceInfo.name\"\n" +
+    "                                   ng-model=\"priceInfo.name[pfmc.mainLanguage]\"\n" +
     "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
@@ -26774,7 +26777,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </thead>\n" +
     "          <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
     "              ng-model=\"priceInfo\">\n" +
-    "            <td>{{priceInfo.name}}</td>\n" +
+    "            <td>{{priceInfo.name[$ctrl.mainLanguage]}}</td>\n" +
     "            <td>\n" +
     "              <span ng-if=\"priceInfo.price == 0\" translate-once=\"eventForm.step5.priceInfo.free\">\n" +
     "                Gratis\n" +

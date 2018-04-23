@@ -80,10 +80,11 @@ function PriceFormModalController(
   function addPriceItem() {
     var priceItem = {
       category: 'tariff',
-      name: '',
+      name: {},
       priceCurrency: 'EUR',
       price: ''
     };
+    priceItem.name[pfmc.mainLanguage] = '';
     pfmc.price.push(priceItem);
   }
 

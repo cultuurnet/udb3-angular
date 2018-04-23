@@ -33,19 +33,19 @@ describe('Controller: Price Form Modal', function() {
     return [
       {
         category: 'base',
-        name: 'Basistarief',
+        name: {'nl': 'Basistarief'},
         priceCurrency: 'EUR',
         price: 4.00
       },
       {
         category: 'tariff',
-        name: 'tarief1',
+        name: {'nl': 'tarief1'},
         priceCurrency: 'EUR',
         price: 0
       },
       {
         category: 'tariff',
-        name: 'tarief2',
+        name: {'nl': 'tarief2'},
         priceCurrency: 'EUR',
         price: 2.00
       }
@@ -57,19 +57,19 @@ describe('Controller: Price Form Modal', function() {
    var expectedPrice = [
      {
        category: 'base',
-       name: 'Basistarief',
+       name: {'nl': 'Basistarief'},
        priceCurrency: 'EUR',
        price: '4,00'
      },
      {
        category: 'tariff',
-       name: 'tarief1',
+       name: {'nl': 'tarief1'},
        priceCurrency: 'EUR',
        price: '0,00'
      },
      {
        category: 'tariff',
-       name: 'tarief2',
+       name: {'nl': 'tarief2'},
        priceCurrency: 'EUR',
        price: '2,00'
      }
@@ -106,19 +106,19 @@ describe('Controller: Price Form Modal', function() {
     var expectedPrice = [
       {
         category: 'base',
-        name: 'Basistarief',
+        name: {'nl': 'Basistarief'},
         priceCurrency: 'EUR',
         price: '4,00'
       },
       {
         category: 'tariff',
-        name: 'tarief1',
+        name: {'nl':  'tarief1'},
         priceCurrency: 'EUR',
         price: ''
       },
       {
         category: 'tariff',
-        name: 'tarief2',
+        name: {'nl': 'tarief2'},
         priceCurrency: 'EUR',
         price: '2,00'
       }
@@ -138,19 +138,19 @@ describe('Controller: Price Form Modal', function() {
     var expectedPrice = [
       {
         category: 'base',
-        name: 'Basistarief',
+        name: {'nl': 'Basistarief'},
         priceCurrency: 'EUR',
         price: '0,00'
       },
       {
         category: 'tariff',
-        name: 'tarief1',
+        name: {'nl': 'tarief1'},
         priceCurrency: 'EUR',
         price: '0,00'
       },
       {
         category: 'tariff',
-        name: 'tarief2',
+        name: {'nl': 'tarief2'},
         priceCurrency: 'EUR',
         price: '2,00'
       }
@@ -170,13 +170,13 @@ describe('Controller: Price Form Modal', function() {
     var expectedPrice = [
       {
         category: 'base',
-        name: 'Basistarief',
+        name: {'nl': 'Basistarief'},
         priceCurrency: 'EUR',
         price: '4,00'
       },
       {
         category: 'tariff',
-        name: 'tarief1',
+        name: {'nl': 'tarief1'},
         priceCurrency: 'EUR',
         price: '0,00'
       }
@@ -199,28 +199,29 @@ describe('Controller: Price Form Modal', function() {
   it('should add a price item', function () {
     price = getPrice();
     var controller = getController();
+    controller.mainLanguage = 'nl';
     var expectedPrice = [
       {
         category: 'base',
-        name: 'Basistarief',
+        name: {'nl': 'Basistarief'},
         priceCurrency: 'EUR',
         price: '4,00'
       },
       {
         category: 'tariff',
-        name: 'tarief1',
+        name: {'nl': 'tarief1'},
         priceCurrency: 'EUR',
         price: '0,00'
       },
       {
         category: 'tariff',
-        name: 'tarief2',
+        name: {'nl':'tarief2'},
         priceCurrency: 'EUR',
         price: '2,00'
       },
       {
         category: 'tariff',
-        name: '',
+        name: {'nl': ''},
         priceCurrency: 'EUR',
         price: ''
       }
