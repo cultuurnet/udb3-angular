@@ -269,11 +269,11 @@ function EventCrud(
     });
 
     if (bookingInfo.availabilityStarts) {
-      bookingInfo.availabilityStarts = toISO8061String(bookingInfo.availabilityStarts);
+      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts;
     }
 
     if (bookingInfo.availabilityEnds) {
-      bookingInfo.availabilityEnds = toISO8061String(bookingInfo.availabilityEnds);
+      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds;
     }
 
     if (!_.has(bookingInfo, 'url')) {
@@ -432,10 +432,6 @@ function EventCrud(
     job.task.promise.then(function (offerLocation) {
       udbApi.removeItemFromCache(offerLocation.toString());
     }, function() {});
-  }
-
-  function toISO8061String(date) {
-    return date.toISOString().split('.')[0] + 'Z';
   }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);

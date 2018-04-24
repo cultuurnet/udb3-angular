@@ -60,8 +60,8 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
   }
 
   function saveBookingPeriod() {
-    EventFormData.bookingInfo.availabilityStarts = $scope.availabilityStarts;
-    EventFormData.bookingInfo.availabilityEnds = $scope.availabilityEnds;
+    EventFormData.bookingInfo.availabilityStarts = moment($scope.availabilityStarts).format();
+    EventFormData.bookingInfo.availabilityEnds = moment($scope.availabilityEnds).format();
 
     $scope.savingBookingPeriodInfo = true;
     $scope.bookingPeriodInfoError = false;
