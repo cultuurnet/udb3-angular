@@ -7792,11 +7792,11 @@ function EventCrud(
     });
 
     if (bookingInfo.availabilityStarts) {
-      bookingInfo.availabilityStarts = toISO8061String(bookingInfo.availabilityStarts);
+      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts;
     }
 
     if (bookingInfo.availabilityEnds) {
-      bookingInfo.availabilityEnds = toISO8061String(bookingInfo.availabilityEnds);
+      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds;
     }
 
     if (!_.has(bookingInfo, 'url')) {
@@ -7955,10 +7955,6 @@ function EventCrud(
     job.task.promise.then(function (offerLocation) {
       udbApi.removeItemFromCache(offerLocation.toString());
     }, function() {});
-  }
-
-  function toISO8061String(date) {
-    return date.toISOString().split('.')[0] + 'Z';
   }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);
@@ -12009,8 +12005,13 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
   }
 
   function saveBookingPeriod() {
-    EventFormData.bookingInfo.availabilityStarts = $scope.availabilityStarts;
-    EventFormData.bookingInfo.availabilityEnds = $scope.availabilityEnds;
+    if (moment($scope.availabilityStarts).isValid() && moment($scope.availabilityEnds).isValid()) {
+      EventFormData.bookingInfo.availabilityStarts = moment($scope.availabilityStarts).format();
+      EventFormData.bookingInfo.availabilityEnds = moment($scope.availabilityEnds).format();
+    } else {
+      EventFormData.bookingInfo.availabilityStarts = '';
+      EventFormData.bookingInfo.availabilityEnds = '';
+    }
 
     $scope.savingBookingPeriodInfo = true;
     $scope.bookingPeriodInfoError = false;
@@ -13291,6 +13292,7 @@ function EventFormController(
       'labels',
       'mainLanguage'
     ];
+
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
         EventFormData[sameProperties[i]] = item[sameProperties[i]];

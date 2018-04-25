@@ -139,6 +139,7 @@ function EventFormController(
       'labels',
       'mainLanguage'
     ];
+
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
         EventFormData[sameProperties[i]] = item[sameProperties[i]];
