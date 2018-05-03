@@ -27,7 +27,8 @@ function EventDetail(
   $translate,
   appConfig,
   ModerationService,
-  RolePermission
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -143,6 +144,18 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
+
+    authorizationService
+      .getPermissions()
+      .then(function(userPermissions) {
+        var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+          return permission === RolePermission.GEBRUIKERS_BEHEREN;
+        });
+
+        if (mayAlwaysDelete.length) {
+          $scope.mayAlwaysDelete = true;
+        }
+      });
 
     ModerationService
       .getMyRoles()

@@ -9318,7 +9318,8 @@ function EventDetail(
   $translate,
   appConfig,
   ModerationService,
-  RolePermission
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -9434,6 +9435,18 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
+
+    authorizationService
+      .getPermissions()
+      .then(function(userPermissions) {
+        var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+          return permission === RolePermission.GEBRUIKERS_BEHEREN;
+        });
+
+        if (mayAlwaysDelete.length) {
+          $scope.mayAlwaysDelete = true;
+        }
+      });
 
     ModerationService
       .getMyRoles()
@@ -9631,7 +9644,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -25556,7 +25569,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <h1 class=\"title\" ng-bind=\"::event.name\"></h1>\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
-    "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
+    "      <div class=\"list-group\" ng-if=\"::permissions || ::mayAlwaysDelete\">\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
