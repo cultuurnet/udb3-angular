@@ -20,7 +20,8 @@ function EventFormController(
     moment,
     jsonLDLangFilter,
     $q,
-    appConfig
+    appConfig,
+    $translate
 ) {
 
   // Other controllers won't load until this boolean is set to true.
@@ -33,6 +34,7 @@ function EventFormController(
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+
     EventFormData.initOpeningHours([]);
 
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
@@ -41,6 +43,7 @@ function EventFormController(
       preselectDate(calendarConfig);
     }
 
+    $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
   }
 
@@ -56,7 +59,7 @@ function EventFormController(
         moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
-    EventFormData.showStep(3);
+    //EventFormData.showStep(3);
   }
 
   /**
@@ -133,8 +136,10 @@ function EventFormController(
       'apiUrl',
       'workflowStatus',
       'availableFrom',
-      'labels'
+      'labels',
+      'mainLanguage'
     ];
+
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
         EventFormData[sameProperties[i]] = item[sameProperties[i]];
@@ -150,7 +155,29 @@ function EventFormController(
       }
     }
 
-    EventFormData.name = item.name;
+    // 1. Main language is now a required property.
+    // Events can be created in a given main language.
+    // 2. Previous projections had a default main language of nl.
+    // 3. Even older projections had a non-translated name.
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+    EventFormData.name = _.get(item.name, item.mainLanguage, null) ||
+        _.get(item.name, 'nl', null) ||
+        _.get(item, 'name', '');
+
+    // Prices tariffs can be translated since III-2545
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+
+    if (!_.isEmpty(EventFormData.priceInfo)) {
+      if (!EventFormData.priceInfo[0].name.nl && !EventFormData.priceInfo[0].name.en &&
+        !EventFormData.priceInfo[0].name.fr && !EventFormData.priceInfo[0].name.de) {
+        EventFormData.priceInfo = _.map(EventFormData.priceInfo, function(item) {
+          var priceInfoInDutch = _.cloneDeep(item);
+          priceInfoInDutch.name = {'nl': item.name};
+          item = priceInfoInDutch;
+          return item;
+        });
+      }
+    }
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
@@ -180,6 +207,7 @@ function EventFormController(
 
     EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
+    $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
     EventFormData.showStep(1);
     EventFormData.showStep(2);

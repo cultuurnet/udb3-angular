@@ -2511,36 +2511,84 @@ angular
 function WorkflowStatusDirectiveController($scope, appConfig) {
   var cm = this;
   cm.event = $scope.event;
-  cm.eventIds = eventIds;
+  cm.sameAsRelations = sameAsRelations;
   cm.isUrl = isUrl;
+  cm.getPublicUrl = getPublicUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
 
-  function eventIds (event) {
-    return _.union([event.id], event.sameAs);
+  function sameAsRelations (event) {
+    var sameAsRelationsWithoutUIV = _.reject(event.sameAs, function(sameAs) {
+      return sameAs.contains('uitinvlaanderen');
+    });
+    return sameAsRelationsWithoutUIV;
   }
 
   function isUrl (potentialUrl) {
     return /^(https?)/.test(potentialUrl);
   }
+
+  function getPublicUrl (id) {
+    return getEnvironment() + id;
+  }
+
+  function getEnvironment() {
+    if (_.includes(appConfig.baseUrl, '-acc.')) {
+      return 'https://acc.uitinvlaanderen.be/agenda/e//';
+    }
+    else if (_.includes(appConfig.baseUrl, '-test.')) {
+      return 'https://test.uitinvlaanderen.be/agenda/e//';
+    }
+    else {
+      return 'https://www.uitinvlaanderen.be/agenda/e//';
+    }
+  }
 }
 WorkflowStatusDirectiveController.$inject = ["$scope", "appConfig"];
 })();
 
-// Source: src/core/dutch-translations.constant.js
+// Source: src/core/error-handling/unexpected-error-modal.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.core.controller:UnexpectedErrorModalController
+ * @description
+ * # UnexpectedErrorModalController
+ * Controller of the udb.core
+ */
+angular
+  .module('udb.core')
+  .controller('UnexpectedErrorModalController', UnexpectedErrorModalController);
+
+/* @ngInject */
+function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage) {
+
+  var dismiss = function () {
+    $uibModalInstance.dismiss('closed');
+  };
+
+  $scope.dismiss = dismiss;
+  $scope.errorMessage = errorMessage;
+}
+UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
+})();
+
+// Source: src/core/translations/dutch-translations.constant.js
 (function () {
 'use strict';
 // jscs:disable maximumLineLength
 
 /**
  * @ngdoc service
- * @name udbApp.dutchTranslations
+ * @name udbApp.udbDutchTranslations
  * @description
- * # dutchTranslations
+ * # udbDutchTranslations
  * Constant in the udbApp.
  */
 angular.module('udb.core')
-  .constant('dutchTranslations',
+  .constant('udbDutchTranslations',
   {
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
@@ -2894,7 +2942,8 @@ angular.module('udb.core')
       'no_price': 'Geen prijsinformatie',
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
-      'no_age': 'Geen leeftijdsinformatie'
+      'no_age': 'Geen leeftijdsinformatie',
+      'publiq_url': 'Bekijk op UiT in Vlaanderen'
     },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
@@ -3080,6 +3129,12 @@ angular.module('udb.core')
           'from': 'Van',
           'till': 'Tot'
         }
+      },
+      publish: {
+        'publish_now': 'Meteen publiceren',
+        'publish_later': 'Later publiceren',
+        'edit_done': 'Klaar met bewerken',
+        'online_from': 'Online vanaf'
       }
     },
     calendar: {
@@ -3224,37 +3279,914 @@ angular.module('udb.core')
         'retry': 'Opnieuw registreren',
         'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
       }
+    },
+    images: {
+      'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
+      'conditions': 'algemene voorwaarden',
+      'copyright_info': 'Meer informatie over copyright',
+      'description': 'Beschrijving',
+      'copyright': 'Copyright',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'cancel': 'Annuleren',
+      'agree': 'Akkoord',
+      upload: {
+        'select_image': 'Selecteer je foto',
+        'choose_file': 'Kies bestand',
+        'max_filesize': 'De maximale grootte van je afbeelding is {{maxFileSize}} en heeft als type .jpeg, .gif of .png',
+        'upload': 'Opladen'
+      },
+      edit: {
+        'title': 'Afbeelding info bewerken',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'update': 'Bijwerken'
+      },
+      remove: {
+        'title': 'Afbeeldingen verwijderen',
+        'sure': 'Ben je zeker dat je deze afbeelding wil verwijderen?',
+        'save_error': 'Er ging iets mis bij het verwijderen van de afbeelding.',
+      }
+    },
+    organizer: {
+      modal: {
+        'title': 'Nieuwe organisatie toevoegen',
+        'avoid_doubles': 'Vermijd dubbel werk',
+        'unique_notice': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
+        'website': 'Website',
+        'alert_warning': 'Dit adres is al gebruikt door de organisatie \'{{organizerName}}\'. Geef een unieke website of',
+        'alert_button': 'gebruik {{organizerName}} als organisatie',
+        'name_help': 'De officiële publieke naam van de organisatie.',
+        'name_required': 'Gelieve een naam in te vullen',
+        'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
+        'doubles': 'We vonden deze gelijkaardige items:',
+        'select': 'Selecteren',
+        'your_input': 'Jij voerde in:',
+        'still_enter': 'Toch invoeren',
+        'save_error': 'Er ging iets fout tijdens het opslaan van je organisatie.',
+        'address_error': 'Gelieve een geldig adres in te vullen.',
+        'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
+        'close': 'Sluiten',
+        'save': 'Bewaren'
+      },
+      address: {
+        'label_street': 'Straat en nummer',
+        'help_street': 'Gelieve straat en nummer in te geven.',
+        'label_city': 'Gemeente',
+        'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
+        'error_city': 'Gelieve een gemeente in te geven.',
+        'change': 'Wijzigen'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Geef een URL in',
+        'enter_email': 'Geef een e-mailadres in',
+        'enter_phone': 'Geef een telefoonnummer in<small class="text-muted">, bv. 011 32 43 54</small>',
+        'required': 'Gelieve dit veld niet leeg te laten.',
+        'valid_url': 'Gelieve een geldige url in te vullen.',
+        'valid_email': 'Gelieve een geldig e-mailadres in te vullen.',
+        'valid_phone': 'Gelieve een geldig telefoonnummer in te vullen.',
+        'cancel': 'Annuleren',
+        'add': 'Toevoegen',
+        'add_phone': 'Telefoonnummer toevoegen',
+        'add_email': 'E-mailadres toevoegen',
+        'add_url': 'Andere website toevoegen'
+      }
+    },
+    duplicate: {
+      title: 'Kopiëren en aanpassen',
+      description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
+      error: 'Er ging iets mis tijdens het aanmaken van een kopie!'
+    },
+    dashboard: {
+      'welcome': 'Welkom,',
+      'no_items': 'Je hebt nog geen items toegevoegd.',
+      'add_activity': 'Een activiteit of locatie toevoegen?',
+      'recent': 'Recent',
+      'add': 'Toevoegen',
+      directive: {
+        'no_publish': 'Niet gepubliceerd!',
+        'online': 'Online op',
+        'edit': 'Bewerken',
+        'example': 'Voorbeeld',
+        'delete': 'Verwijderen',
+        'expired_event': 'Afgelopen evenement'
+      },
+      delete: {
+        'sure': 'Ben je zeker dat je \"{{name}}\" wil verwijderen?',
+        'error_location': 'De locatie \"{{name}}\" kan niet verwijderd worden omdat er activiteiten gepland zijn.',
+        'error': 'Er ging iets fout bij het verwijderen van de activiteit.',
+        'cancel': 'Annuleren',
+        'delete': 'Verwijderen'
+      }
     }
   }
 );
 })();
 
-// Source: src/core/error-handling/unexpected-error-modal.controller.js
+// Source: src/core/translations/french-translations.constant.js
 (function () {
 'use strict';
+// jscs:disable maximumLineLength
 
 /**
- * @ngdoc function
- * @name udb.core.controller:UnexpectedErrorModalController
+ * @ngdoc service
+ * @name udbApp.udbFrenchTranslations
  * @description
- * # UnexpectedErrorModalController
- * Controller of the udb.core
+ * # udbFrenchTranslations
+ * Constant in the udbApp.
  */
-angular
-  .module('udb.core')
-  .controller('UnexpectedErrorModalController', UnexpectedErrorModalController);
-
-/* @ngInject */
-function UnexpectedErrorModalController($scope, $uibModalInstance, errorMessage) {
-
-  var dismiss = function () {
-    $uibModalInstance.dismiss('closed');
-  };
-
-  $scope.dismiss = dismiss;
-  $scope.errorMessage = errorMessage;
-}
-UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorMessage"];
+angular.module('udb.core')
+  .constant('udbFrenchTranslations',
+  {
+    'EN_ADJECTIVE': 'Anglais',
+    'FR_ADJECTIVE': 'Français',
+    'DE_ADJECTIVE': 'Duitse',
+    'NL_ADJECTIVE': 'Nederlandse',
+    'datepicker': {
+      'CURRENT': 'Aujourd\'hui',
+      'CLEAR': 'Supprimer',
+      'CLOSE': 'Fermer'
+    },
+    '=': 'égale',
+    '><': 'entre',
+    '+': 'égale',
+    '!': 'n\'égale pas',
+    '-': 'n\'égale pas',
+    '>': 'est plus grand ou égal',
+    '<': 'est plus petit ou égal',
+    '>_DATE': 'plus tard que',
+    '<_DATE': 'plus tôt que',
+    '=_DATE': 'égale',
+    '><_DATE': 'entre',
+    'choix': {
+      'everyone': 'tout le monde',
+      'members': 'membres',
+      'education': 'éducation',
+      'asc': 'ascendant',
+      'desc': 'descendant',
+      'today': 'aujourd\'hui',
+      'tomorrow': 'demain',
+      'thisweekend': 'ce week-end',
+      'nextweekend': 'le week-end prochain',
+      'next7days': 'les 7 jours suivants',
+      'next14days': 'les 14 jours suivants',
+      'next30days': 'les 30 jours suivants',
+      'next3months': 'les 3 mois suivants',
+      'next6months': 'les 6 mois suivants',
+      'next12months': 'les 12 mois suivants',
+      'permanent': 'permanent',
+      'event': 'événement',
+      'place': 'location',
+      'actor': 'acteur',
+      'production': 'production',
+      'nl': 'néerlandais',
+      'fr': 'français',
+      'en': 'anglais',
+      'de': 'allemand',
+      'AF': 'Afghanistan',
+      'AX': 'Îles Åland',
+      'AL': 'Albanie',
+      'DZ': 'Algérie',
+      'AS': 'Samoa américaines',
+      'VI': 'Îles Vierges des États-Unis',
+      'UM': 'Îles mineures éloignées des États-Unis',
+      'AD': 'Andorre',
+      'AO': 'Angola',
+      'AI': 'Anguilla',
+      'AQ': 'Antarctique',
+      'AG': 'Antigua-et-Barbuda',
+      'AR': 'Argentine',
+      'AM': 'Arménie',
+      'AW': 'Aruba',
+      'AU': 'Australie',
+      'AZ': 'Azerbaïdjan',
+      'BS': 'Bahamas',
+      'BH': 'Bahreïn',
+      'BD': 'Bangladesh',
+      'BB': 'Barbade',
+      'BE': 'Belgique',
+      'BZ': 'Belize',
+      'BJ': 'Bénin',
+      'BM': 'Bermudes',
+      'BT': 'Bhoutan',
+      'BO': 'Bolivie',
+      'BA': 'Bosnie-Herzégovine',
+      'BW': 'Botswana',
+      'BV': 'Île Bouvet',
+      'BR': 'Brésil',
+      'IO': 'Territoire britannique de l\'océan Indien',
+      'VG': 'Îles Vierges britanniques',
+      'BN': 'Brunei',
+      'BG': 'Bulgarie',
+      'BF': 'Burkina Faso',
+      'BI': 'Burundi',
+      'KH': 'Cambodge',
+      'CA': 'Canada',
+      'KY': 'Îles Caïmans',
+      'CF': 'République centrafricaine',
+      'CL': 'Chili',
+      'CN': 'Chine',
+      'CX': 'Île Christmas',
+      'CC': 'Îles Cocos',
+      'CO': 'Colombie',
+      'KM': 'Comores',
+      'CG': 'République du Congo',
+      'CD': 'République démocratique du Congo',
+      'CK': 'Îles Cook',
+      'CR': 'Costa Rica',
+      'CU': 'Cuba',
+      'CY': 'Chypre',
+      'DK': 'Danemark',
+      'DJ': 'Djibouti',
+      'DM': 'Dominique',
+      'DO': 'République dominicaine',
+      'DE': 'Allemagne',
+      'EC': 'Équateur',
+      'EG': 'Égypte',
+      'SV': 'Salvador',
+      'GQ': 'Guinée équatoriale',
+      'ER': 'Érythrée',
+      'EE': 'Estonie',
+      'ET': 'Éthiopie',
+      'FO': 'Îles Féroé',
+      'FK': 'Malouines',
+      'FJ': 'Fidji',
+      'PH': 'Philippines',
+      'FI': 'Finlande',
+      'FR': 'France',
+      'GF': 'Guyane',
+      'PF': 'Polynésie française',
+      'TF': 'Terres australes et antarctiques françaises',
+      'GA': 'Gabon',
+      'GM': 'Gambie',
+      'GE': 'Géorgie',
+      'GH': 'Ghana',
+      'GI': 'Gibraltar',
+      'GD': 'Grenade',
+      'GR': 'Grèce',
+      'GL': 'Groenland',
+      'GP': 'Guadeloupe',
+      'GU': 'Guam',
+      'GT': 'Guatemala',
+      'GG': 'Guernesey',
+      'GN': 'Guinée',
+      'GW': 'Guinée-Bissau',
+      'GY': 'Guyana',
+      'HT': 'Haïti',
+      'HM': 'Îles Heard-et-MacDonald',
+      'IM': 'Île de Man',
+      'HN': 'Honduras',
+      'HU': 'Hongrie',
+      'HK': 'Hong Kong',
+      'IS': 'Islande',
+      'IE': 'Irlande ',
+      'IN': 'Inde',
+      'ID': 'Indonésie',
+      'IQ': 'Irak',
+      'IR': 'Iran',
+      'IL': 'Israël',
+      'IT': 'Italie',
+      'CI': 'Côte d\'Ivoire',
+      'JM': 'Jamaïque',
+      'JP': 'Japon',
+      'YE': 'Yémen',
+      'JE': 'Jersey',
+      'JO': 'Jordanie',
+      'CV': 'Cap-Vert',
+      'CM': 'Cameroun',
+      'KZ': 'Kazakhstan',
+      'KE': 'Kenya',
+      'KG': 'Kirghizistan',
+      'KI': 'Kiribati',
+      'KW': 'Koweït',
+      'HR': 'Croatie',
+      'LA': 'Laos',
+      'LS': 'Lesotho',
+      'LV': 'Lettonie',
+      'LB': 'Liban',
+      'LR': 'Liberia',
+      'LY': 'Libye',
+      'LI': 'Liechtenstein',
+      'LT': 'Lituanie',
+      'LU': 'Luxembourg',
+      'MO': 'Macao',
+      'MK': 'République de Macédoine',
+      'MG': 'Madagascar',
+      'MW': 'Malawi',
+      'MV': 'Maldives',
+      'MY': 'Malaisie',
+      'ML': 'Mali',
+      'MT': 'Malte',
+      'MA': 'Maroc',
+      'MH': 'Îles Marshall',
+      'MQ': 'Martinique',
+      'MR': 'Mauritanie',
+      'MU': 'Maurice',
+      'YT': 'Mayotte',
+      'MX': 'Mexique',
+      'FM': 'Micronésie',
+      'MD': 'Moldavie',
+      'MC': 'Monaco',
+      'MN': 'Mongolie',
+      'ME': 'Monténégro',
+      'MS': 'Montserrat',
+      'MZ': 'Mozambique',
+      'MM': 'Birmanie',
+      'NA': 'Namibie',
+      'NR': 'Nauru',
+      'NL': 'Pays-Bas',
+      'AN': 'Antilles néerlandaises',
+      'NP': 'Népal',
+      'NI': 'Nicaragua',
+      'NC': 'Nouvelle-Calédonie',
+      'NZ': 'Nouvelle-Zélande',
+      'NE': 'Niger',
+      'NG': 'Nigeria',
+      'NU': 'Niue',
+      'KP': 'Corée du Nord',
+      'MP': 'Îles Mariannes du Nord',
+      'NO': 'Norvège',
+      'NF': 'Île Norfolk',
+      'UG': 'Ouganda',
+      'UA': 'Ukraine',
+      'UZ': 'Ouzbékistan',
+      'OM': 'Oman',
+      'ZZ': 'Inconnu',
+      'TL': 'Timor oriental',
+      'AT': 'Autriche',
+      'PK': 'Pakistan',
+      'PW': 'Palaos',
+      'PS': 'Palestine',
+      'PA': 'Panama',
+      'PG': 'Papouasie-Nouvelle-Guinée',
+      'PY': 'Paraguay',
+      'PE': 'Pérou',
+      'PN': 'Îles Pitcairn',
+      'PL': 'Pologne',
+      'PT': 'Portugal',
+      'PR': 'Porto Rico',
+      'QA': 'Qatar',
+      'RO': 'Roumanie',
+      'RU': 'Russie',
+      'RW': 'Rwanda',
+      'RE': 'La Réunion',
+      'BL': 'Saint-Barthélemy',
+      'KN': 'Saint-Christophe-et-Niévès',
+      'LC': 'Sainte-Lucie',
+      'PM': 'Saint-Pierre-et-Miquelon',
+      'VC': 'Saint-Vincent-et-les Grenadines',
+      'SB': 'Salomon',
+      'WS': 'Samoa',
+      'SM': 'Saint-Marin',
+      'ST': 'Sao Tomé-et-Principe',
+      'SA': 'Arabie saoudite',
+      'SN': 'Sénégal',
+      'RS': 'Serbie',
+      'CS': 'Serbie-et-Monténégro, ',
+      'SC': 'Seychelles',
+      'SL': 'Sierra Leone',
+      'SG': 'Singapour',
+      'SH': 'Sainte-Hélène, Ascension et Tristan da Cunha',
+      'MF': 'Saint-Martin',
+      'SI': 'Slovénie',
+      'SK': 'Slovaquie',
+      'SD': 'Soudan',
+      'SO': 'Somalie',
+      'ES': 'Espagne',
+      'LK': 'Sri Lanka',
+      'SR': 'Suriname',
+      'SJ': 'Svalbard et ile Jan Mayen',
+      'SZ': 'Swaziland',
+      'SY': 'Syrie',
+      'TJ': 'Tadjikistan',
+      'TW': 'Taïwan / (République de Chine (Taïwan))',
+      'TZ': 'Tanzanie',
+      'TH': 'Thaïlande',
+      'TG': 'Togo',
+      'TK': 'Tokelau',
+      'TO': 'Tonga',
+      'TT': 'Trinité-et-Tobago',
+      'TD': 'Tchad',
+      'CZ': 'Tchéquie',
+      'TN': 'Tunisie',
+      'TR': 'Turquie',
+      'TM': 'Turkménistan',
+      'TC': 'Îles Turques-et-Caïques',
+      'TV': 'Tuvalu',
+      'UY': 'Uruguay',
+      'VU': 'Vanuatu',
+      'VA': 'Saint-Siège(État de la Cité du Vatican)',
+      'VE': 'Venezuela',
+      'GB': 'Royaume-Uni',
+      'AE': 'Émirats arabes unis',
+      'US': 'États-Unis',
+      'VN': 'Viêt Nam',
+      'WF': 'Wallis-et-Futuna',
+      'EH': 'République arabe sahraouie démocratique',
+      'BY': 'Biélorussie',
+      'ZM': 'Zambie',
+      'ZW': 'Zimbabwe',
+      'ZA': 'Afrique du Sud',
+      'GS': 'Géorgie du Sud-et-les Îles Sandwich du Sud',
+      'KR': 'Corée du Sud',
+      'SE': 'Suède',
+      'CH': 'Suisse'
+    },
+    property: {
+      'name': 'Titre',
+      'description': 'Description',
+      'labels': 'Labels',
+      'calendarSummary': 'Aperçu du calendre',
+      'image': 'Image',
+      'location': 'Location',
+      'address': 'Adresse',
+      'organizer': 'Organisateur',
+      'priceInfo': 'Information du prix',
+      'kansentarief': 'Allocataires sociaux',
+      'bookingInfo': 'Info réservation',
+      'contactPoint': 'Info contact',
+      'creator': 'Auteur',
+      'terms.theme': 'Thème',
+      'terms.eventtype': 'Type',
+      'created': 'Date création',
+      'modified': 'Date dernière modification',
+      'publisher': 'Auteur',
+      'available': 'Disponible',
+      'endDate': 'Date fin',
+      'startDate': 'Date départ',
+      'calendarType': 'Type temps',
+      'sameAs': 'IDs externes',
+      'typicalAgeRange': ' ge',
+      'language': 'Langue',
+      'audience': 'Accès'
+    },
+    preview: {
+      tabs: {
+        'data': 'Données',
+        'history': 'Historique',
+        'publication': 'Publication'
+      },
+      'not_found': 'Page introuvable',
+      'not_found_help': 'Cette page n\'a pas pu être trouvée.',
+      'loading': 'Chargement...',
+      'edit': 'Modifier',
+      'duplicate': 'Copier et modifier',
+      'delete': 'Supprimer',
+      'title': 'Titre',
+      'type': 'Type',
+      'entrance': 'Entrée',
+      'description': 'Description',
+      'no_description': 'Aucune description',
+      'where': 'Où',
+      'when': 'Quand',
+      'labels': 'Labels',
+      'labels_error': 'Le label \'{{labelName}}\' n\'a pas pu être ajouté.',
+      'labels_success': 'Le label \'{{addedLabel}}\' a été ajouté avec succès.',
+      'organizer': 'Organisation',
+      'no_organizer': 'Pas d\'information de l\'organisation',
+      'price': 'Prix',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'no_price': 'Pas d\'information du prix',
+      'age_label': 'Adapté à',
+      'all_ages': 'Tous les âges',
+      'no_age': 'Pas d\'information de l\'âge',
+      'publiq_url': 'Voir sur UiT in Vlaanderen'
+    },
+    calendarSummary: {
+      'openinghours': 'plusieurs moments',
+      'from': 'De',
+      'till': 'à',
+      'permanent': 'Permanent'
+    },
+    moderate: {
+      'validate': 'Valider',
+      'approve': 'Approuver',
+      'approved': 'Approuvé',
+      'reject': 'Rejeter',
+      'rejected': 'Rejeté',
+      'continue_validation': 'Continuer la validation'
+    },
+    cultuurkuur: {
+      'info': 'Cet événement contient <a target=\"_blank\" href=\"{{previewLink}}\">de l\'information extra</a> pour les écoles et les enseignants.',
+      'subject': 'Sujet',
+      'target_group': 'Public cible',
+      'levels': 'Adapté à',
+      'grades': 'degrés d\'éducation',
+      'edit_link': 'Modifier sur cultuurkuur.be',
+      'incomplete_help': 'Introduisez cet événement sur cultuurkuur.be avec de l\'information extra pour les écoles et les enseignants.',
+      'continue': 'Continuer'
+    },
+    booking: {
+      'label': 'Réservation',
+      'no_booking': 'Pas d\'information de réservation'
+    },
+    contact: {
+      'label': 'Contact',
+      'or': 'ou',
+      'no_contact': 'Pas d\'information du contact'
+    },
+    imageDetail: {
+      'label': 'Images',
+      'alt_image': 'Image {{index}}',
+      'main_image': 'Image principale',
+      'no_images': 'Pas d\'images'
+    },
+    prices: {
+      'title': 'Ajouter des prix',
+      'base': 'Tarif de base',
+      'target_group': 'Public cible',
+      'free': 'Gratis',
+      'currency': 'euro',
+      'add_price': 'Ajouter prix',
+      'add_tarriff': 'Ajouter tarif',
+      'error': 'Il y a eu une erreur dans l\'enregistrement du prix.',
+      'invalid': 'Cette information du prix semble invalide et ne peut pas être enregistrée.',
+      'invalid_tip1': 'Notez les décimales avec une virgule.',
+      'invalid_tip2': 'Ne laissez aucune ligne vide, remplissez toujours un public cible et un montant.',
+      'invalid_tip3': 'Donnez au maximum deux chiffres après la virgule.',
+      'close': 'Fermer',
+      'save': 'Sauver'
+    },
+    location: {
+      'title': 'Ajouter une nouvelle location',
+      'name': 'Nom location',
+      'name_validation': 'Le nom de la location est un domaine obligatoire.',
+      'street': 'Rue et numéro',
+      'street_validation': 'Rue est un domaine obligatoire.',
+      'city': 'Commune',
+      'category': 'Catégorie',
+      'category_help': 'Choisissez une catégorie qui décrit le mieux cette location.',
+      'category_validation': 'Catégorie est un domaine obligatoire.',
+      'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
+      'cancel': 'Annuler',
+      'add': 'Ajouter'
+    },
+    eventForm: {
+      step1: {
+        'title': 'Qu\'est-ce que vous voulez ajouter?',
+        'label_event': 'Un événement',
+        'show_everything': 'Montrez tout',
+        'or': 'ou',
+        'location_label': 'Une location',
+        'change': 'Modifier',
+        'refine': 'Raffiner'
+      },
+      step2: {
+        'date_help_event': 'L\'événement ou l\'activité a lieu quand?',
+        'date_help_place': 'Cet endroit ou cette location est ouvert(e) quand?',
+      },
+      step3: {
+        'title_event': 'L\'événement ou l\'activité a lieu où?',
+        'title_place': 'Où se trouve cet endroit ou cette location?',
+        'choose_city': 'Choisissez une commune',
+        'placeholder_city': 'Commune ou code postal',
+        'problem_city': 'Il y a eu un problème durant la collection des villes',
+        'change': 'Modifier',
+        'choose_location': 'Choisissez une location',
+        'placeholder_location': 'Nom ou adresse',
+        'location_not_found': 'La location n\'a pas été trouvée?',
+        'add_location': 'Ajouter une location',
+        'location_error': 'Il y a eu un problème dans la collection des locations',
+        'street': 'Rue et numéro',
+        'placeholder_street': 'Rue de l\'église 1',
+        'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
+        'ok': 'OK'
+      },
+      step4: {
+        'basic_data': 'Données de base',
+        'name_event': 'Nom de l\'événement',
+        'name_place': 'Nom de la location',
+        'help_event': 'Utilisez un <strong>titre saillant</strong>, p.ex. \"Rouler à vélo le long des chapelles\", \"La Sage de la Licorne\".',
+        'help_place': 'Utilisez la <strong>dénomination officielle</strong>, bv. \"Gravensteen\", \"Site de l\'abbaye Herkenrode\", \"Centre culturel De Werf\".',
+        'help_description': 'Vous pouvez ajouter une <strong>description détaillée</strong> dans l\'étape 5.',
+        'info_missing': 'Vous n\'avez pas introduit toutes les informations demandées:',
+        'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'activité. Veuillez essayer plus tard.',
+        'continue': 'Continuer',
+        'doubles_title': 'Évitez les doubles emplois',
+        'doubles_help': 'Nous avons trouvé des éléments similaires. Controlez les éléments importés auparavant.',
+        'sure': 'Vous êtes sûr que vous voulez ajouter \"{{name}}\" ?',
+        'return_dashboard': 'Non, retourner au tableau de bord',
+        'yes_continue': 'Oui, procéder l\'importation',
+        suggestions: {
+          'from': 'De',
+          'till': 'à',
+          'permanent': 'Permanent'
+        }
+      },
+      step5: {
+        'expose_event': 'Faites remarquer votre événement encore plus',
+        'expose_place': 'Faites remarquer cette location encore plus',
+        'title': 'Titre',
+        'description': 'Description',
+        'add_text': 'Ajouter texte',
+        'required_200': 'Pour attirer un nouveau public, les 200 premiers symboles sont les plus importants.',
+        'required_still': 'Encore',
+        'required_signs': 'symboles.',
+        'required_200_help': 'Intégrez le message le plus important dans les 200 premiers symboles. Vous pouvez ensuite ajouter des informations générales.',
+        'empty': 'Vider',
+        'tip_route': 'Donnez ici une description saillante de la route. Mentionnez dans ce texte <strong>comment</strong> la route est parcourue (à vélo, en bateau, ...), les escales possibles, la <strong>durée</strong>, <strong>distance</strong> et comment la route est <strong>accompagnée</strong> (avec guide, brochure ou panneaux).',
+        'tip_rondleiding': 'Donnez ici une description saillante du tour. Mentionnez le <strong>nombre max. de personnes</strong> par groupe, <strong>comment</strong> le tour est organisé (de manière permanente, avec intervalles ou à des temps fixes) et s\'il y a des <strong>préoccupations spéciales</strong> (p.ex. bottes recommandées).',
+        'tip_monument': 'Donnez ici une description saillante du monument. Indiquez également si l\'ouverture du monument est limitée (p.ex. seulement des salons).',
+        'description_error': 'Il y a eu une erreur dans l\'enregistrement de la description.',
+        'organizer': 'Organisation',
+        'add_organizer': 'Ajouter l\'organisation',
+        'choose_organizer': 'Choisissez une organisation',
+        'organizer_not_found': 'L\'organisation n\'a pas été trouvée?',
+        'add_new_organizer': 'Ajouter un nouvel organisateur',
+        'organizer_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisateur.',
+        'contact': 'Contact & réservation',
+        'add_contact': 'Ajouter de l\'information du contact',
+        'website': 'Site web',
+        'phone': 'Numéro de téléphone',
+        'e-mail': 'Adresse mail',
+        'use_booking': 'Utiliser pour la réservation',
+        'booking_exposure': 'Comment ce lien peut-il apparaître?',
+        'buy_tickets': 'Achetez des tickets',
+        'reserve_places': 'Réservez des places',
+        'check_availability': 'Controlez la disponibilité',
+        'subscribe': 'Inscrivez-vous',
+        'add_more_contact': 'Ajoutez plus d\'informations du contact',
+        'contact_error': 'Il y a eu une erreur dans l\'enregistrement de l\'information du contact.',
+        'facilities': 'Accessibilité',
+        'add_facility': 'Ajouter des dispositions',
+        'facility_inapplicable': 'Pas d\'application',
+        'change': 'Modifier',
+        'image_help': 'Ajoutez une image de sorte que les visiteurs reconnaissent mieux votre activité.',
+        'images': 'Images',
+        'copyright': 'Copyright',
+        'delete': 'Supprimer',
+        'main_image': 'Créer image principale',
+        'add_image': 'Ajouter image',
+        age: {
+          'age_label': 'Adapté à'
+        },
+        priceInfo: {
+          'price_label': 'Prix',
+          'add_prices': 'Ajouter prix',
+          'free': 'Gratuit',
+          'prices': 'Prix',
+          'change': 'Modifier',
+          'currency': 'euro'
+        },
+        reservationPeriod: {
+          'add_reservation_period': 'Ajouter une période de réservation',
+          'reservation_period': 'Période de réservation',
+          'from': 'De',
+          'till': 'À'
+        }
+      },
+      publish: {
+        'publish_now': 'Publier immédiatement',
+        'publish_later': 'Publier plus tard',
+        'edit_done': 'Modification terminée',
+        'online_from': 'En ligne à partir de'
+      }
+    },
+    calendar: {
+      'one_more_days': 'Une ou plusieurs journées',
+      'or': 'ou',
+      'default_days': 'Journées fixes',
+      'start_label': 'Départ',
+      'end_label': 'Fin',
+      'whole_day_label': 'Toute la journée',
+      'start_hour_label': 'Heure de départ',
+      'end_hour_label': 'Heure de fin',
+      'add_days': 'Ajouter des jours',
+      period: {
+        'title': 'Date de départ et de fin',
+        'from': 'De',
+        'till': 'À',
+        'alert': 'Introduisez la date de départ ainsi que la date de fin. La date de fin ne peut pas tomber avant la date de départ.'
+      },
+      openingHours: {
+        'permanent_title': '24/24, 7/7',
+        'permanent_subtitle': 'Chaque jour, chaque heure',
+        'add_hours': 'Ajouter des heures',
+        'opening_hours': 'Heures d\'ouverture',
+        'change': 'Modifier',
+        'days': 'Jours',
+        'from': 'De',
+        'till': 'À',
+        'more_hours': 'Ajouter plus d\'heures d\'ouverture',
+        'cancel': 'Annuler',
+        'save': 'Sauver'
+      }
+    },
+    'facilityLabel': {
+      'motor': 'Dispositions pour des personnes de motricité réduite',
+      'visual': 'Dispositions pour des malvoyants',
+      'hearing': 'Dispositions pour des personnes d\'une limitation auditive',
+      'other': 'Autres dispositions',
+      'place': 'Dispositions de cette location'
+    },
+    audience: {
+      'entrance': 'Accès',
+      'everyone': 'Pour tout le monde',
+      'members': 'Seulement pour des membres',
+      'members_help': 'Ton item est seulement publié sur des chaînes pour des associations et leurs membres.',
+      'education': 'Spécifiquement pour des écoles',
+      'education_help': 'Ton item est seulement publié sur des chaînes d\'éducation culturelle. Après la publication tu peux encore ajouter de l\'information spécifique pour des écoles.'
+    },
+    workflowStatus: {
+      'label': 'État de publication',
+      'id': 'ID',
+      'DRAFT': 'Pas publié',
+      'READY_FOR_VALIDATION': 'Prêt à être publié',
+      'APPROVED': 'Publié',
+      'REJECTED': 'Publication rejetée',
+      'DELETED': 'Pas publié',
+      'rules': 'Regardez les règles',
+      'rejected_full': 'Cet item a été rejeté.'
+    },
+    queryFieldGroup: {
+      'what': 'Quoi',
+      'where': 'Où',
+      'when': 'Quand',
+      'input-information': 'Information input',
+      'translations': 'Traductions',
+      'other': 'Autres'
+    },
+    'queryFieldLabel': {
+      'cdbid': 'code d\'identification (CDBID)',
+      'offertype': 'type (offre)',
+      'keywords': 'label',
+      'title': 'titre',
+      'category_eventtype_name': 'type (activité)',
+      'locationtype': 'type (location)',
+      'category_theme_name': 'thème',
+      'text': 'texte',
+      'city': 'commune (nom)',
+      'zipcode': 'code postal',
+      'location_id': 'location (id)',
+      'country': 'pays',
+      'location_label': 'location (nom)',
+      'category_flandersregion_name': 'région / commune',
+      'date': 'date',
+      'permanent': 'permanent',
+      'lastupdated': 'modifié dernièrement',
+      'creationdate': 'créé',
+      'createdby': 'créé par',
+      'availablefrom': 'disponible le',
+      'detail_lang': 'traduction',
+      'organiser_keywords': 'label organisation',
+      'organiser_id': 'organisation (id)',
+      'agefrom': 'âge',
+      'price': 'prix',
+      'organiser_label': 'organisation (nom)',
+      'category_facility_name': 'dispositions',
+      'category_targetaudience_name': 'public cible',
+      'startdate': 'date de départ',
+      'enddate': 'date de fin',
+      'lastupdatedby': 'modifié dernièrement par',
+      'category_publicscope_name': 'portée de public'
+    },
+    'EVENT-EXPORT': {
+      'QUERY-IS-MISSING': 'Une exportation est seulement possible après avoir exécuté une recherche',
+      'TOO-MANY-ITEMS': 'Une exportation manuelle contenant plus de {{limit}} items n\'est pas possible. Contactez vragen@uitdatabank.be pour une solution sur mesure.'
+    },
+    'AANBOD_INVOEREN': 'Importer l\'offre',
+    'AANBOD_BEWERKEN': 'Modifier l\'offre',
+    'AANBOD_MODEREREN': 'Modérer l\'offre',
+    'AANBOD_VERWIJDEREN': 'Supprimer l\'offre',
+    'ORGANISATIES_BEHEREN': 'Gérer les organisations',
+    'GEBRUIKERS_BEHEREN': 'Gérer les utilisateurs',
+    'LABELS_BEHEREN': 'Gérer les labels',
+    'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
+    'event type missing': 'Avez-vous choisi un type en <a href="#quoi" class="alert-link">étape 1</a>?',
+    'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
+    'start or end date missing': 'Avez-vous choisi une date de départ et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
+    'when missing': 'Avez-vous fait un choix en <a href="#quand" class="alert-link">étape 2</a>?',
+    'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
+    'location missing for place': 'Avez-vous choisi une location en <a href="#où" class="alert-link">étape 3</a>?',
+    'UNIQUE_ORGANIZER_NOTICE': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
+    'OPENING_HOURS_ERROR': {
+      'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
+      'dayOfWeek': 'Choisissez au moins un jour dans chaque ligne que vous avez ajoutée.',
+      'openIsBeforeClose': 'Veuillez introduire une heure de fermeture qui tombe plus tard que l\'heure d\'ouverture.'
+    },
+    'TIME_SPAN_REQUIREMENTS': {
+      'timedWhenNotAllDay': 'L\'heure de départ et de fin est obligatoire quand un événement ne dure pas toute la journée.',
+      'startBeforeEndDay': 'La date de fin ne peut pas tomber avant la date de départ.',
+      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de départ.'
+    },
+    uitpas: {
+      uitpasInfo: {
+        'uitpas': 'UiTPAS',
+        'uitpas_alert': 'Ceci est un organisateur UiTPAS. Sélectionnez le prix afin d\'ajouter de l\'information spécifique concernant UiTPAS.',
+        'uitpas_info': 'Ceci est une activité UiTPAS.',
+        'cantChangePrice': 'Pour cet événement des tickets ont été vendus dont l\'information du prix existe déjà. Vous ne pouvez plus modifier l\'information du prix.',
+        'cantChangeOrganiser': 'Pour cet événement des tickets UiTPAS ont déjà été vendus. Vous ne pouvez plus modifier l\'organisation.',
+        'unavailable': 'UiTPAS n\'est pas disponible pour l\'instant, essayez plus tard ou contactez le helpdesk (vragen@uitdatabank.be).'
+      },
+      cardSystems: {
+        'card_systems': '<Systèmes des cartes',
+        'choose': '--Sélectionnez une clé de répartition--',
+        'retry': 'Enregistrer à nouveau',
+        'unavailable': 'ne peut pas joindre UiTPAS, essayez plus tard ou contactez le helpdesk (vragen@uitdatabank.be)'
+      }
+    },
+    images: {
+      'agreement': 'Vous êtes sur le point d\'ajouter une ou plusieurs images et de les diffuser publiquement. Pour ceci il faut respecter tous les droits d\'auteur et de portrait applicables, ainsi que d\'autres législations en vigueur. Sinon, vous pouvez être rendu responsable, comme convenu dans les',
+      'conditions': 'conditions générales',
+      'copyright_info': 'Plus d\'informations sur le copyright',
+      'description': 'Description',
+      'copyright': 'Copyright',
+      'copyright_help': 'Mentionnez le nom de photographe légitime. Introduisez seulement le nom de votre propre association ou organisation si vous êtes propriétaire vous-même des droits (au moins 3 caractères).',
+      'cancel': 'Annuler',
+      'agree': 'Accepter',
+      upload: {
+        'select_image': 'Sélectionnez votre photo',
+        'choose_file': 'Choisissez fichier',
+        'max_filesize': 'La dimension maximale de votre image est {{maxFileSize}} et a comme type .jpeg, .gif of .png',
+        'upload': 'Télécharger'
+      },
+      edit: {
+        'title': 'Modifier l\'information de l\'image',
+        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants.',
+        'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'image.',
+        'update': 'actualiser'
+      },
+      remove: {
+        'title': 'Supprimer l\'image',
+        'sure': 'Vous êtes sûr de vouloir supprimer cette image?',
+        'save_error': 'Il y a eu une erreur dans la suppression de l\'image.',
+      }
+    },
+    organizer: {
+      modal: {
+        'title': 'Ajouter une nouvelle organisation',
+        'avoid_doubles': 'Évitez les doubles emplois',
+        'unique_notice': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
+        'website': 'Site web',
+        'alert_warning': 'Cette adresse est déjà utilisée par l\'organisation \'{{organizerName}}\'. Donnez un site web unique ou',
+        'alert_button': 'utilisez {{organizerName}} comme organisation',
+        'name_help': 'Le nom public officiel de l\'organisation.',
+        'name_required': 'Veuillez introduire un nom',
+        'add_confirm': 'Vous êtes sûr d\'ajouter \"{{newOrganizerName}}\" comme organisation? La  double importation d\'organisations n\'est pas permise.',
+        'doubles': 'Nous avons trouvé des items similaires:',
+        'select': 'Sélectionner',
+        'your_input': 'Vous avez importé:',
+        'still_enter': 'Importer quand même',
+        'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisation.',
+        'address_error': 'Veuillez introduire une adresse valable.',
+        'contact_error': 'Veuillez introduire l\'information du contact correctement.',
+        'close': 'Fermer',
+        'save': 'Sauver'
+      },
+      address: {
+        'label_street': 'Rue et numéro',
+        'help_street': 'Veuillez introduire la rue et le numéro.',
+        'label_city': 'Commune',
+        'help_city': 'Il y a eu un problème dans la collection des villes.',
+        'error_city': 'Veuillez introduire une commune.',
+        'change': 'Modifier'
+      },
+      contact: {
+        'title': 'Contact',
+        'enter_url': 'Donnez un lien hypertexte',
+        'enter_email': 'Introduisez une adresse mail',
+        'enter_phone': 'Introduisez un numéro de téléphone<small class="text-muted">, p.ex. 011 32 43 54</small>',
+        'required': 'Veuillez compléter ce domaine.',
+        'valid_url': 'Veuillez introduire un lien hypertexte valable.',
+        'valid_email': 'Veuillez introduire une adresse mail valable.',
+        'valid_phone': 'Veuillez introduire un numéro de téléphone valable.',
+        'cancel': 'Annuler',
+        'add': 'Ajouter',
+        'add_phone': 'Ajouter un numéro de téléphone',
+        'add_email': 'Ajouter une adresse mail',
+        'add_url': 'Ajouter un autre site web'
+      }
+    },
+    duplicate: {
+      title: 'Copier et modifier',
+      description: 'Vous êtes sur le point de copier cet événement. Choisissez un moment pour cet événement.',
+      error: 'Il y a eu une erreur dans la création d\'une copie!'
+    },
+    dashboard: {
+      'welcome': 'Bienvenue,',
+      'no_items': 'Vous n\'avez pas encore ajouté des items.',
+      'add_activity': 'Ajouter une activité ou une location?',
+      'recent': 'Récent',
+      'add': 'Ajouter',
+      directive: {
+        'no_publish': 'Pas publié!',
+        'online': 'En ligne le',
+        'edit': 'Modifier',
+        'example': 'Exemple',
+        'delete': 'Supprimer',
+        'expired_event': 'Événement terminé'
+      },
+      delete: {
+        'sure': 'Vous êtes sûr de vouloir supprimer \"{{name}}\"?',
+        'error_location': 'La location \"{{name}}\" ne peut pas être supprimée car des activités y ont encore lieu.',
+        'error': 'Il y a eu une erreur dans la suppression de l\'activité.',
+        'cancel': 'Annuler',
+        'delete': 'Supprimer'
+      }
+    }
+  }
+);
 })();
 
 // Source: src/core/udb-api.service.js
@@ -3333,7 +4265,8 @@ function UdbApi(
   UdbEvent,
   UdbPlace,
   UdbOrganizer,
-  Upload
+  Upload,
+  $translate
 ) {
   var apiUrl = appConfig.baseApiUrl;
   var defaultApiConfig = {
@@ -3358,7 +4291,7 @@ function UdbApi(
     return config;
   }
 
-  this.mainLanguage = 'nl';
+  this.mainLanguage = $translate.use() || 'nl';
 
   /**
    * Removes an item from the offerCache.
@@ -4654,7 +5587,7 @@ function UdbApi(
     }
   }
 }
-UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload"];
+UdbApi.$inject = ["$q", "$http", "appConfig", "$cookies", "uitidAuth", "$cacheFactory", "UdbEvent", "UdbPlace", "UdbOrganizer", "Upload", "$translate"];
 })();
 
 // Source: src/core/udb-event.factory.js
@@ -4710,6 +5643,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
   }
 
   function updateTranslationState(event) {
+
     var languages = {'en': false, 'fr': false, 'de': false},
         properties = ['name', 'description'];
 
@@ -4820,6 +5754,13 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.mediaObject = jsonEvent.mediaObject || [];
       this.typicalAgeRange = jsonEvent.typicalAgeRange || '';
       this.bookingInfo = jsonEvent.bookingInfo || {};
+      if (this.bookingInfo.urlLabel) {
+        this.bookingInfo.urlLabel = _.get(
+          jsonEvent.bookingInfo.urlLabel,
+          jsonEvent.mainLanguage,
+          jsonEvent.bookingInfo.urlLabel
+        );
+      }
       this.contactPoint = jsonEvent.contactPoint || {
         'url': [],
         'phone': [],
@@ -4859,6 +5800,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       }
 
       this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
+      this.mainLanguage = jsonEvent.mainLanguage || 'nl';
     },
 
     /**
@@ -4991,8 +5933,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         return label === labelName;
       });
     },
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
@@ -5116,7 +6059,13 @@ function UdbOrganizerFactory(UitpasLabels) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
-      this.name = _.get(jsonOrganizer.name, 'nl', null) ||
+      // 1. Main language is now a required property.
+      // Organizers can be created in a given main language.
+      // 2. Previous projections had a default main language of nl.
+      // 3. Even older projections had a non-translated name.
+      // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+      this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
       this.address = jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -5330,6 +6279,13 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
+      if (this.bookingInfo.urlLabel) {
+        this.bookingInfo.urlLabel = _.get(
+          jsonPlace.bookingInfo.urlLabel,
+          jsonPlace.mainLanguage,
+          jsonPlace.bookingInfo.urlLabel
+        );
+      }
       this.contactPoint = jsonPlace.contactPoint || {
         'url': [],
         'phone': [],
@@ -5386,6 +6342,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       }
 
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
+      this.mainLanguage = jsonPlace.mainLanguage || 'nl';
     },
 
     /**
@@ -5537,8 +6494,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       });
     },
 
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
 
     hasFutureAvailableFrom: function() {
@@ -5644,14 +6602,14 @@ function UitidAuth($window, $location, appConfig, $cookies) {
   /**
    * Login by redirecting to UiTiD
    */
-  this.login = function () {
+  this.login = function (language) {
     var currentLocation = $location.absUrl(),
         loginUrl = appConfig.authUrl + 'connect';
 
     removeCookies();
 
     // redirect to login page
-    loginUrl += '?destination=' + encodeURIComponent(currentLocation);
+    loginUrl += '?destination=' + encodeURIComponent(currentLocation) + '&lang=' + language;
     $window.location.href = loginUrl;
   };
 
@@ -6699,7 +7657,7 @@ function EventCrud(
    */
   service.updateDescription = function(item) {
     return udbApi
-      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description.nl)
+      .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
@@ -6837,6 +7795,14 @@ function EventCrud(
     var bookingInfo =  _.pick(item.bookingInfo, function(property, propertyName) {
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
+
+    if (bookingInfo.availabilityStarts) {
+      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts;
+    }
+
+    if (bookingInfo.availabilityEnds) {
+      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds;
+    }
 
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
@@ -8176,7 +9142,7 @@ function OfferTranslationJobFactory(BaseJob, JobStates) {
           propertyName = job.property;
       }
 
-      description = 'Vertaal ' + propertyName + ' van "' + job.event.name.nl + '"';
+      description = 'Vertaal ' + propertyName + ' van "' + job.offer.name.nl + '"';
     }
 
     return description;
@@ -8428,7 +9394,7 @@ function EventDetail(
   };
   $scope.isEmpty = _.isEmpty;
 
-  var language = 'nl';
+  var language = $translate.use() || 'nl';
   var cachedEvent;
 
   function showHistory(eventHistory) {
@@ -8454,7 +9420,9 @@ function EventDetail(
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
 
-    $scope.event = jsonLDLangFilter(event, language);
+    language = $translate.use() || 'nl';
+
+    $scope.event = jsonLDLangFilter(event, language, true);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
 
@@ -8500,7 +9468,7 @@ function EventDetail(
   }
 
   $scope.eventLocation = function (event) {
-    var location = jsonLDLangFilter(event.location, language);
+    var location = jsonLDLangFilter(event.location, language, true);
 
     var eventLocation = [
       location.name
@@ -10305,6 +11273,7 @@ function EventFormOrganizerModalController(
   $scope.disableSubmit = true;
 
   $scope.newOrganizer = {
+    mainLanguage: 'nl',
     website: 'http://',
     name : $scope.organizer,
     address : {
@@ -10589,7 +11558,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       }
 
       var udbPlace = new UdbPlace();
-      udbPlace.name = {nl : $scope.newPlace.name};
+      udbPlace.name = $scope.newPlace.name;
       udbPlace.calendarType = 'permanent';
       udbPlace.type = {
         id : $scope.newPlace.eventType.id,
@@ -10602,6 +11571,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
       };
+      udbPlace.mainLanguage = 'nl';
 
       function showError() {
         $scope.saving = false;
@@ -10690,13 +11660,16 @@ function PriceFormModalController(
   pfmc.validatePrice = validatePrice;
 
   function init() {
+    pfmc.mainLanguage = EventFormData.mainLanguage;
     pfmc.price = angular.copy(price);
     originalPrice = angular.copy(price);
 
     if (pfmc.price.length === 0) {
+      var name = {};
+      name[pfmc.mainLanguage] = 'Basistarief';
       var priceItem = {
         category: 'base',
-        name: 'Basistarief',
+        name: name,
         priceCurrency: 'EUR',
         price: ''
       };
@@ -10736,10 +11709,11 @@ function PriceFormModalController(
   function addPriceItem() {
     var priceItem = {
       category: 'tariff',
-      name: '',
+      name: {},
       priceCurrency: 'EUR',
       price: ''
     };
+    priceItem.name[pfmc.mainLanguage] = '';
     pfmc.price.push(priceItem);
   }
 
@@ -10802,9 +11776,10 @@ angular
   });
 
 /* @ngInject */
-function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi) {
+function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udbUitpasApi, $translate) {
 
   var controller = this;
+  controller.mainLanguage = EventFormData.mainLanguage;
 
   controller.setPriceFree = setPriceFree;
   controller.changePrice = changePrice;
@@ -10814,25 +11789,30 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   function setPriceFree() {
 
     if (controller.price.length === 0) {
-      controller.price = [
-        {
-          category: 'base',
-          name: 'Basisprijs',
-          priceCurrency: 'EUR',
-          price: 0
-        }
-      ];
+      var language = controller.mainLanguage;
+      var priceObjectName = {};
+      $translate('prices.base').then(function (translations) {
+        priceObjectName[language] = translations;
+        controller.price = [
+          {
+            category: 'base',
+            name: priceObjectName,
+            priceCurrency: 'EUR',
+            price: 0
+          }
+        ];
+
+        EventFormData.priceInfo = controller.price;
+
+        var promise = eventCrud.updatePriceInfo(EventFormData);
+        promise.then(function() {
+          $rootScope.$emit('eventFormSaved', EventFormData);
+          if (!_.isEmpty(controller.price)) {
+            controller.priceCssClass = 'state-complete';
+          }
+        });
+      });
     }
-
-    EventFormData.priceInfo = controller.price;
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      $rootScope.$emit('eventFormSaved', EventFormData);
-      if (!_.isEmpty(controller.price)) {
-        controller.priceCssClass = 'state-complete';
-      }
-    });
   }
 
   function changePrice() {
@@ -10905,7 +11885,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
     controller.price = EventFormData.priceInfo;
   }
 }
-PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope", "udbUitpasApi"];
+PriceInfoComponent.$inject = ["$uibModal", "EventFormData", "eventCrud", "$rootScope", "udbUitpasApi", "$translate"];
 })();
 
 // Source: src/event_form/components/publish-modal/event-form-publish-modal.controller.js
@@ -11044,8 +12024,13 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
   }
 
   function saveBookingPeriod() {
-    EventFormData.bookingInfo.availabilityStarts = $scope.availabilityStarts;
-    EventFormData.bookingInfo.availabilityEnds = $scope.availabilityEnds;
+    if (moment($scope.availabilityStarts).isValid() && moment($scope.availabilityEnds).isValid()) {
+      EventFormData.bookingInfo.availabilityStarts = moment($scope.availabilityStarts).format();
+      EventFormData.bookingInfo.availabilityEnds = moment($scope.availabilityEnds).format();
+    } else {
+      EventFormData.bookingInfo.availabilityStarts = '';
+      EventFormData.bookingInfo.availabilityEnds = '';
+    }
 
     $scope.savingBookingPeriodInfo = true;
     $scope.bookingPeriodInfoError = false;
@@ -11545,7 +12530,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, appConfig, $translate) {
 
   /**
    * @class EventFormData
@@ -11566,9 +12551,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.majorInfoChanged = false;
       // Properties that will be copied to UdbEvent / UdbPlace.
       this.id = '';
-      this.name = {
-        nl : ''
-      };
+      this.mainLanguage = $translate.use() || 'nl';
+      this.name = '';
       this.description = {};
       // Events have a location
       this.location = {
@@ -11662,6 +12646,20 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     getName: function(langcode) {
       return this.name[langcode];
+    },
+
+    /**
+     * Gets the mainLanguage for a offer.
+     */
+    getMainLanguage: function() {
+      return this.mainLanguage;
+    },
+
+    /**
+     * Sets the mainLanguage for a offer.
+     */
+    setMainLanguage: function(langcode) {
+      this.mainLanguage = langcode;
     },
 
     /**
@@ -12002,7 +13000,21 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       formData.calendarType = type;
 
       if (formData.calendarType === 'single') {
-        formData.addTimestamp('', '', '', '', '');
+        if (appConfig.calendarHighlight.date) {
+          formData.addTimestamp(
+              new Date(appConfig.calendarHighlight.date),
+              appConfig.calendarHighlight.startTime || '',
+              appConfig.calendarHighlight.startTime ?
+                  moment(appConfig.calendarHighlight.date + ' ' +
+                      appConfig.calendarHighlight.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
+              appConfig.calendarHighlight.endTime || '',
+              appConfig.endTime ?
+                  moment(appConfig.calendarHighlight.date + ' ' +
+                      appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
+          );
+        } else {
+          formData.addTimestamp('', '', '', '', '');
+        }
       }
 
       if (formData.calendarType === 'permanent') {
@@ -12153,7 +13165,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
   return eventFormData;
 }
-EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection"];
+EventFormDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "appConfig", "$translate"];
 })();
 
 // Source: src/event_form/event-form.controller.js
@@ -12180,7 +13192,8 @@ function EventFormController(
     moment,
     jsonLDLangFilter,
     $q,
-    appConfig
+    appConfig,
+    $translate
 ) {
 
   // Other controllers won't load until this boolean is set to true.
@@ -12193,6 +13206,7 @@ function EventFormController(
     .then(fetchOffer, startCreating);
 
   function startCreating() {
+
     EventFormData.initOpeningHours([]);
 
     var calendarConfig = _.get(appConfig, 'calendarHighlight');
@@ -12201,6 +13215,7 @@ function EventFormController(
       preselectDate(calendarConfig);
     }
 
+    $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
   }
 
@@ -12216,7 +13231,7 @@ function EventFormController(
         moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
     );
     EventFormData.initCalendar();
-    EventFormData.showStep(3);
+    //EventFormData.showStep(3);
   }
 
   /**
@@ -12293,8 +13308,10 @@ function EventFormController(
       'apiUrl',
       'workflowStatus',
       'availableFrom',
-      'labels'
+      'labels',
+      'mainLanguage'
     ];
+
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
         EventFormData[sameProperties[i]] = item[sameProperties[i]];
@@ -12310,7 +13327,29 @@ function EventFormController(
       }
     }
 
-    EventFormData.name = item.name;
+    // 1. Main language is now a required property.
+    // Events can be created in a given main language.
+    // 2. Previous projections had a default main language of nl.
+    // 3. Even older projections had a non-translated name.
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+    EventFormData.name = _.get(item.name, item.mainLanguage, null) ||
+        _.get(item.name, 'nl', null) ||
+        _.get(item, 'name', '');
+
+    // Prices tariffs can be translated since III-2545
+    // @todo @mainLanguage after a full replay only case 1 needs to be supported.
+
+    if (!_.isEmpty(EventFormData.priceInfo)) {
+      if (!EventFormData.priceInfo[0].name.nl && !EventFormData.priceInfo[0].name.en &&
+        !EventFormData.priceInfo[0].name.fr && !EventFormData.priceInfo[0].name.de) {
+        EventFormData.priceInfo = _.map(EventFormData.priceInfo, function(item) {
+          var priceInfoInDutch = _.cloneDeep(item);
+          priceInfoInDutch.name = {'nl': item.name};
+          item = priceInfoInDutch;
+          return item;
+        });
+      }
+    }
 
     EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
 
@@ -12340,6 +13379,7 @@ function EventFormController(
 
     EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
+    $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
     EventFormData.showStep(1);
     EventFormData.showStep(2);
@@ -12371,7 +13411,7 @@ function EventFormController(
 
   }
 }
-EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig"];
+EventFormController.$inject = ["$scope", "offerId", "EventFormData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig", "$translate"];
 })();
 
 // Source: src/event_form/event-form.directive.js
@@ -13221,7 +14261,7 @@ function EventFormStep3Controller(
 
       var location = {
         'id' : place.id,
-        'name': place.name.nl,
+        'name': place.name,
         'address': {
           'addressCountry': 'BE',
           'addressLocality': place.address.addressLocality,
@@ -13616,9 +14656,10 @@ function EventFormStep5Controller(
 
   // Scope vars.
   $scope.eventFormData = EventFormData; // main storage for event form.
+  $scope.mainLanguage = EventFormData.getMainLanguage();
 
   // Description vars.
-  $scope.description = EventFormData.getDescription('nl');
+  $scope.description = EventFormData.getDescription($scope.mainLanguage);
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -13735,7 +14776,7 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, 'nl');
+      EventFormData.setDescription($scope.description, $scope.mainLanguage);
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {
@@ -20266,34 +21307,36 @@ angular.module('udb.search')
 /* @ngInject */
 function JsonLDLangFilter() {
   return function (jsonLDObject, preferredLanguage, shouldFallback) {
-    var translatedObject = _.cloneDeep(jsonLDObject),
-        containedProperties = ['name', 'description'],
-        languages = ['nl', 'en', 'fr', 'de'],
-        // set a default language if none is specified
-        language = preferredLanguage || 'nl';
+    var translatedJsonLDObject = _.cloneDeep(jsonLDObject);
+    translatedJsonLDObject = translateProperties(translatedJsonLDObject, preferredLanguage, shouldFallback);
+    return translatedJsonLDObject;
+  };
+}
 
-    _.each(containedProperties, function (property) {
-      // make sure the property is set on the object
-      if (translatedObject[property]) {
-        var translatedProperty = translatedObject[property][language],
-            langIndex = 0;
-
-        // if there is no translation available for the provided language or default language
-        // check for a default language
-        if (shouldFallback) {
-          while (!translatedProperty && langIndex < languages.length) {
-            var fallbackLanguage = languages[langIndex];
-            translatedProperty = translatedObject[property][fallbackLanguage];
-            ++langIndex;
+function translateProperties(jsonLDProperty, preferredLanguage, shouldFallback) {
+  var languages = ['nl', 'en', 'fr', 'de'];
+  jsonLDProperty = _.each(jsonLDProperty, function(val, key) {
+    if (_.isObject(val)) {
+      if (val.nl || val.en || val.fr || val.de) {
+        if (val[preferredLanguage]) {
+          jsonLDProperty[key] = val[preferredLanguage];
+        } else {
+          if (shouldFallback) {
+            var langIndex = 0, translatedProperty;
+            while (!translatedProperty && langIndex < languages.length) {
+              var fallbackLanguage = languages[langIndex];
+              translatedProperty = val[fallbackLanguage];
+              jsonLDProperty[key] = translatedProperty;
+              ++langIndex;
+            }
           }
         }
-
-        translatedObject[property] = translatedProperty;
+      } else {
+        val = translateProperties(val, preferredLanguage, shouldFallback);
       }
-    });
-
-    return translatedObject;
-  };
+    }
+  });
+  return jsonLDProperty;
 }
 })();
 
@@ -22706,11 +23749,12 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
-  $uibModal
+  $uibModal,
+  $translate
 ) {
   var controller = this;
   var cachedOffer;
-  var defaultLanguage = 'nl';
+  var defaultLanguage = $translate.use() || 'nl';
 
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
@@ -22737,7 +23781,7 @@ function OfferController(
           cachedOffer = offerObject;
           cachedOffer.updateTranslationState();
 
-          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
+          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
@@ -22844,7 +23888,7 @@ function OfferController(
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator
         .translateProperty(cachedOffer, udbProperty, language, translation)
-        .then(cachedOffer.updateTranslationState);
+        .then(cachedOffer.updateTranslationState(cachedOffer));
     }
   }
 
@@ -22948,7 +23992,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -24021,10 +25065,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <td><span class=\"row-label\" translate-once=\"workflowStatus.id\"></span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
-    "            <li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
-    "                <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
+    "            <li>\n" +
+    "                <span ng-bind=\"cm.event.id\"></span>\n" +
     "            </li>\n" +
+    "            <li>\n" +
+    "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\"></a>\n" +
+    "            </li>\n" +
+    "            <li ng-repeat=\"sameAs in cm.sameAsRelations(cm.event)\"><span ng-bind=\"sameAs\"></span></li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
     "</tr>\n"
@@ -24122,22 +25169,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\">Bewerken</a>\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "      <ul uib-dropdown-menu role=\"menu\">\n" +
     "        <li role=\"menuitem\">\n" +
-    "          <a ng-href=\"{{ event.url  + '/preview' }}\">Voorbeeld</a>\n" +
+    "          <a ng-href=\"{{ event.url  + '/preview' }}\" translate-once=\"dashboard.directive.example\"></a>\n" +
     "        </li>\n" +
     "        <li class=\"divider\"></li>\n" +
     "        <li role=\"menuitem\">\n" +
-    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\">Verwijderen</a>\n" +
+    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\" translate-once=\"dashboard.directive.delete\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
     "    </div>\n" +
     "  </span>\n" +
     "  <span ng-if=\"::offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right\">\n" +
-    "      <span class=\"text-muted\">Afgelopen evenement</span>\n" +
+    "      <span class=\"text-muted\" translate-once=\"dashboard.directive.expired_event\"></span>\n" +
     "    </div>\n" +
     "  </span>\n" +
     "</td>\n"
@@ -24150,21 +25197,26 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "\n" +
     "      <div class=\"col-xs-12\">\n" +
-    "        <p>Ben je zeker dat je \"<span ng-bind=\"::item.name\"></span>\" wil verwijderen?</p>\n" +
+    "        <p translate-once=\"dashboard.delete.sure\"\n" +
+    "           translate-values=\"{ name: '{{item.name}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "        Er ging iets fout bij het verwijderen van de activiteit.\n" +
+    "      <div class=\"alert alert-danger\"\n" +
+    "           ng-show=\"error\"\n" +
+    "           translate-once=\"dashboard.delete.error\">\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\">\n" +
-    "    Annuleren\n" +
+    "  <button\n" +
+    "          type=\"button\"\n" +
+    "          class=\"btn btn-default\"\n" +
+    "          ng-click=\"cancelRemoval()\"\n" +
+    "          translate-once=\"dashboard.delete.cancel\">\n" +
     "  </button>\n" +
     "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"deleteEvent()\">\n" +
-    "    Verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"dashboard.delete.delete\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -24175,11 +25227,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"row\">\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"!hasEvents\">\n" +
-    "        <p>Ben je zeker dat je \"<span ng-bind=\"::place.name\"></span>\" wil verwijderen?</p>\n" +
+    "        <p translate-once=\"dashboard.delete.sure\" translate-values=\"{ name: '{{ place.name }}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-xs-12\" ng-if=\"hasEvents\">\n" +
-    "        <p>De locatie \"<span ng-bind=\"::place.name\"></span>\" kan niet verwijderd worden omdat er activiteiten gepland zijn.</p>\n" +
+    "        <p translate-once=\"dashboard.delete.error_location\" translate-values=\"{ name: '{{ place.name }}'}\"></p>\n" +
     "\n" +
     "        <ul>\n" +
     "          <li ng-click=\"$dismiss('navigating away')\" ng-repeat=\"event in events\" udb-event-link ng-hide=\"fetching\"></li>\n" +
@@ -24187,18 +25239,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"alert alert-danger\" ng-show=\"error\">\n" +
-    "        Er ging iets fout bij het verwijderen van de locatie.\n" +
+    "      <div class=\"alert alert-danger\" ng-show=\"error\" translate-once=\"dashboard.delete.error\">\n" +
     "      </div>\n" +
     "\n" +
     "    </div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\">\n" +
-    "    Annuleren\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancelRemoval()\" translate-once=\"dashboard.delete.cancel\">\n" +
     "  </button>\n" +
     "  <button type=\"button\" class=\"btn btn-primary\" ng-disabled=\"hasEvents\" ng-click=\"deletePlace()\">\n" +
-    "    Verwijderen <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"dashboard.delete.delete\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -24206,7 +25256,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/dashboard.html',
     "<h1 class=\"title\" id=\"page-title\">\n" +
-    "  Welkom, <span ng-bind=\"dash.username\"></span>\n" +
+    "  <span translate-once=\"dashboard.welcome\"></span> <span ng-bind=\"dash.username\"></span>\n" +
     "</h1>\n" +
     "\n" +
     "<div class=\"text-center\" ng-show=\"dash.pagedItemViewer.loading\">\n" +
@@ -24228,8 +25278,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      <div class=\"panel panel-default no-new no-data\" ng-hide=\"dash.pagedItemViewer.events.length\">\n" +
     "        <div class=\"panel-body text-center\">\n" +
-    "          <p class=\"text-center\">Je hebt nog geen items toegevoegd.\n" +
-    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\">Een activiteit of locatie toevoegen?</a></span>\n" +
+    "          <p class=\"text-center\"><span translate-once=\"dashboard.no_items\"></span>\n" +
+    "            <span ng-if=\"dash.toggleAddOffer\"><br/><a href=\"event\" translate-once=\"dashboard.add_activity\"></a></span>\n" +
     "          </p>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -24237,9 +25287,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <p class=\"invoer-title\"><span class=\"block-header\">Recent</span>\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.recent\"></span>\n" +
     "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
-    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> Toevoegen</a>\n" +
+    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add\"></span></a>\n" +
     "            </span>\n" +
     "          </p>\n" +
     "        </div>\n" +
@@ -24286,19 +25336,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            ng-disabled=\"duplication.duplicating\"\n" +
     "            ng-click=\"duplication.createDuplicate()\"\n" +
     "            role=\"button\"\n" +
-    "            ng-class=\"{disabled: !duplication.readyForDuplication}\">Kopiëren en aanpassen</button>\n" +
+    "            ng-class=\"{disabled: !duplication.readyForDuplication}\"\n" +
+    "            translate-once=\"duplicate.title\"></button>\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"duplication.duplicating\"></i>\n" +
-    "    <span ng-show=\"duplication.asyncError\">Er ging iets mis tijdens het aanmaken van een kopie!</span>\n" +
+    "    <span ng-show=\"duplication.asyncError\" translate-once=\"duplicate.error\"></span>\n" +
     "</div>"
   );
 
 
   $templateCache.put('templates/event-duplication-step.component.html',
-    "<h1 class=\"title\">Kopiëren en aanpassen</h1>\n" +
+    "<h1 class=\"title\" translate-once=\"duplicate.title\"></h1>\n" +
     "\n" +
-    "<div class=\"alert alert-info\" role=\"alert\">\n" +
-    "  Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.\n" +
-    "</div>\n" +
+    "<div class=\"alert alert-info\" role=\"alert\" translate-once=\"duplicate.description\"></div>\n" +
     "\n" +
     "<udb-event-duplication-calendar></udb-event-duplication-calendar>\n"
   );
@@ -24994,42 +26043,39 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\">\n" +
     "      <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
-    "    <h4 class=\"modal-title\">Afbeelding info bewerken</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"images.edit.title\"></h4>\n" +
     "  </div>\n" +
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <div>\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "          Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.\n" +
-    "        </p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.edit.description_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.copyright\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyrightHolder\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "          Vermeld de naam van de rechtenhoudende fotograaf (minimum 3 karakters).</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.copyright_help\"></p>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div ng-show=\"error\" class=\"alert alert-danger\">Er ging iets mis bij het opslaan van de afbeelding.</div>\n" +
+    "    <div ng-show=\"error\" class=\"alert alert-danger\">\n" +
+    "      <span translate-once=\"images.edit.save_error\"></span>\n" +
+    "    </div>\n" +
     "\n" +
     "    <p class=\"image-copyright-agreements\">\n" +
-    "      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "      Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "      wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "      <a ng-href=\"{{::uploadTermsConditionsUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "      <a ng-href=\"{{::uploadCopyRightInfoUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "      <span translate-once=\"images.agreement\"></span>\n" +
+    "      <a ng-href=\"{{::uploadTermsConditionsUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "      <a ng-href=\"{{::uploadCopyRightInfoUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "    </p>\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"updateImageInfo()\" ng-disabled=\"!allFieldsValid() || saving\">\n" +
-    "      Bijwerken <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.edit.update\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
@@ -25043,20 +26089,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\">\n" +
     "      <span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span>\n" +
     "    </button>\n" +
-    "    <h4 class=\"modal-title\">Afbeeldingen verwijderen</h4>\n" +
+    "    <h4 class=\"modal-title\" translate-once=\"images.remove.title\"></h4>\n" +
     "  </div>\n" +
     "  <div class=\"modal-body\">\n" +
     "\n" +
-    "    <p>Ben je zeker dat je deze afbeelding wil verwijderen?</p>\n" +
+    "    <p translate-once=\"images.remove.sure\"></p>\n" +
     "\n" +
-    "    <div ng-show=\"error\" class=\"alert alert-danger\">Er ging iets mis bij het verwijderen van de afbeelding.</div>\n" +
+    "    <div ng-show=\"error\" class=\"alert alert-danger\">\n" +
+    "      <span translate-once=\"images.remove.save_error\"></span>\n" +
+    "    </div>\n" +
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
     "\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button class=\"btn btn-primary\" ng-click=\"removeImage()\">\n" +
-    "      Akkoord <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.agree\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
     "\n" +
     "  </div>\n" +
@@ -25073,15 +26121,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <p ng-show=\"showAgreements\">\n" +
-    "      Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "       Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "       wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "      <span translate-once=\"images.agreement\"></span>\n" +
+    "       <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "       <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "    </p>\n" +
     "    <div ng-hide=\"showAgreements\">\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label for=\"inputFile\">Selecteer je foto</label>\n" +
+    "        <label for=\"inputFile\" translate-once=\"images.upload.select_image\"></label>\n" +
     "        <p>\n" +
     "          <button type=\"file\"\n" +
     "                  class=\"btn btn-primary\"\n" +
@@ -25089,35 +26135,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  ngf-select=\"selectFile($file, $invalidFiles)\"\n" +
     "                  accept=\"image/*\"\n" +
     "                  ngf-max-size=\"{{maxFileSize}}\">\n" +
-    "            Kies bestand</button>\n" +
+    "            <span translate-once=\"images.upload.choose_file\"></span></button>\n" +
     "        </p>\n" +
     "\n" +
     "        <p ng-show=\"selectedFile\">\n" +
     "          <span ng-bind=\"selectedFile.name\"></span>\n" +
     "        </p>\n" +
     "\n" +
-    "        <p class=\"help-block\">\n" +
-    "          De maximale grootte van je afbeelding is <span ng-bind=\"maxFileSize\"></span> en heeft als type .jpeg, .gif of .png</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.upload.max_filesize\" translate-values=\"{ maxFileSize: '{{maxFileSize}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Beschrijving <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
-    "        <label>Copyright <strong class=\"text-danger\">*</strong></label>\n" +
+    "        <label><span translate-once=\"images.copyright\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"copyright\" required>\n" +
-    "        <p class=\"help-block\">\n" +
-    "            Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).</p>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.copyright_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <p class=\"image-copyright-agreements\">\n" +
-    "        Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden.\n" +
-    "        Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke\n" +
-    "        wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de\n" +
-    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\">algemene voorwaarden</a>.\n" +
-    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\">Meer informatie over copyright</a>\n" +
+    "        <span translate-once=\"images.agreement\"></span>\n" +
+    "        <a ng-href=\"{{::userAgreementUrl}}\" target=\"_blank\" translate-once=\"images.conditions\"></a>.\n" +
+    "        <a ng-href=\"{{::copyrightUrl}}\" target=\"_blank\" translate-once=\"images.copyright_info\"></a>\n" +
     "      </p>\n" +
     "    </div>\n" +
     "\n" +
@@ -25127,11 +26169,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  </div>\n" +
     "  <div class=\"modal-footer\">\n" +
-    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "    <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"images.cancel\"></button>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"showAgreements\" ng-disabled=\"!allFieldsValid() || saving\" ng-click=\"addImage()\">\n" +
-    "      Opladen <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "      <span translate-once=\"images.upload.upload\"></span> <i ng-show=\"saving\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </button>\n" +
-    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\">Akkoord</button>\n" +
+    "    <button class=\"btn btn-primary\" ng-show=\"showAgreements\" ng-click=\"acceptAgreements()\" translate-once=\"images.agree\"></button>\n" +
     "  </div>\n" +
     "</div>\n"
   );
@@ -25250,7 +26292,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "            <div class=\"form-group\"\n" +
     "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                <label>Straat en nummer</label>\n" +
+    "                <label translate-once=\"organizer.address.label_street\"></label>\n" +
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
@@ -25260,9 +26302,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
     "                <span class=\"has-error\"\n" +
     "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                    <span class=\"help-block\">\n" +
-    "                        Gelieve straat en nummer in te geven.\n" +
-    "                    </span>\n" +
+    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
     "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -25273,8 +26313,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
     "                <div class=\"form-group\"\n" +
     "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\">\n" +
-    "                        Gemeente\n" +
+    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" translate-once=\"organizer.address.label_city\">\n" +
     "                    </label>\n" +
     "                    <div id=\"gemeente-kiezer\">\n" +
     "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
@@ -25288,13 +26327,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                               typeahead-min-length=\"2\"\n" +
     "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
     "                               autocomplete=\"off\">\n" +
-    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\">\n" +
-    "                            Er was een probleem tijdens het ophalen van de steden.\n" +
+    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\" translate-once=\"organizer.address.help_city\">\n" +
     "                        </span>\n" +
     "                        <span class=\"has-error\"\n" +
     "                              ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                            <span class=\"help-block\">\n" +
-    "                                Gelieve een gemeente in te geven.\n" +
+    "                            <span class=\"help-block\" translate-once=\"organizer.address.error_city\">\n" +
     "                            </span>\n" +
     "                        </span>\n" +
     "                    </div>\n" +
@@ -25302,7 +26339,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
     "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
-    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\">Wijzigen</a>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -25313,7 +26350,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/organizer-contact.html',
     "<div class=\"row\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
-    "        <p><strong>Contact</strong></p>\n" +
+    "        <p><strong translate-once=\"organizer.contact.title\"></strong></p>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
@@ -25336,9 +26373,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"panel-body\">\n" +
     "      <form name=\"occ.organizerContactWrapper\">\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
-    "          <label ng-switch-when=\"url\">Geef een URL in</label>\n" +
-    "          <label ng-switch-when=\"email\">Geef een e-mailadres in</label>\n" +
-    "          <label ng-switch-when=\"phone\">Geef een telefoonnummer in<small class=\"text-muted\">, bv. 011 32 43 54</small></label>\n" +
+    "          <label ng-switch-when=\"url\"><span translate-once=\"organizer.contact.enter_url\"></span></label>\n" +
+    "          <label ng-switch-when=\"email\"><span translate-once=\"organizer.contact.enter_email\"></span></label>\n" +
+    "          <label ng-switch-when=\"phone\"><span translate-once=\"organizer.contact.enter_phone\"></span></label>\n" +
     "        </div>\n" +
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
@@ -25346,10 +26383,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldige url in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_url\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25359,10 +26396,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"text\" name=\"email\" ng-pattern=\"/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"mailContactForm.email.$error\" ng-show=\"!occ.isPristine && mailContactForm.email.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig e-mailadres in te vullen.\n" +
+    "                          <span translate-once=\"organizer.contact.valid_email\"></span>\n" +
     "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
@@ -25372,21 +26409,20 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <input type=\"tel\" name=\"phone\" class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^[^a-zA-Z]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"phoneContactForm.phone.$error\" ng-show=\"!occ.isPristine && phoneContactForm.phone.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
-    "                          Gelieve dit veld niet leeg te laten.\n" +
+    "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
     "                      </p>\n" +
     "                      <p ng-message=\"pattern\">\n" +
-    "                          Gelieve een geldig telefoonnummer in te vullen.</p>\n" +
+    "                          <span translate-once=\"organizer.contact.valid_phone\"></span>\n" +
+    "                      </p>\n" +
     "                  </div>\n" +
     "              </ng-form>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\">\n" +
-    "            Annuleren\n" +
+    "        <button type=\"button\" ng-click=\"occ.cancelOrganizerContactEntry()\" class=\"btn btn-link\" translate-once=\"organizer.contact.cancel\">\n" +
     "        </button>\n" +
     "\n" +
-    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\">\n" +
-    "            Toevoegen\n" +
+    "        <button type=\"button\" ng-click=\"occ.addOrganizerContactInfo()\" class=\"btn btn-default\" ng-disabled=\"occ.isPristine\" translate-once=\"organizer.contact.add\">\n" +
     "        </button>\n" +
     "\n" +
     "      </form>\n" +
@@ -25397,9 +26433,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row\" ng-hide=\"occ.addingContactEntry\">\n" +
     "    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\">Telefoonnummer toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\">E-mailadres toevoegen</a></li>\n" +
-    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\">Andere website toevoegen</a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('phone')\" href=\"#\" translate-once=\"organizer.contact.add_phone\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('email')\" href=\"#\" translate-once=\"organizer.contact.add_email\"></a></li>\n" +
+    "            <li><a ng-click=\"occ.addOrganizerContactEntry('url')\" href=\"#\" translate-once=\"organizer.contact.add_url\"></a></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
     "</div>\n"
@@ -25410,19 +26446,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-header\">\n" +
     "  <button type=\"button\" class=\"close\" ng-click=\"cancel()\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button>\n" +
-    "  <h4 class=\"modal-title\" ng-hide=\"organizersFound\">Nieuwe organisatie toevoegen</h4>\n" +
-    "  <h4 class=\"modal-title\" ng-show=\"organizersFound\">Vermijd dubbel werk</h4>\n" +
+    "  <h4 class=\"modal-title\" ng-hide=\"organizersFound\" translate-once=\"organizer.modal.title\"></h4>\n" +
+    "  <h4 class=\"modal-title\" ng-show=\"organizersFound\" translate-once=\"organizer.modal.avoid_doubles\"></h4>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
-    "      <p class=\"alert alert-info\" ng-bind=\"'UNIQUE_ORGANIZER_NOTICE' | translate\"></p>\n" +
+    "      <p class=\"alert alert-info\" translate-once=\"organizer.modal.unique_notice\"></p>\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group has-feedback\"\n" +
     "               ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
-    "            <label class=\"control-label\" for=\"organizer-website\">Website</label>\n" +
+    "            <label class=\"control-label\" for=\"organizer-website\" translate-once=\"organizer.modal.website\"></label>\n" +
     "            <input type=\"url\"\n" +
     "                   id=\"organizer-website\"\n" +
     "                   name=\"website\"\n" +
@@ -25441,10 +26477,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"col-sm-12\">\n" +
     "          <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">\n" +
-    "            Dit adres is al gebruikt door de organisatie '<span ng-bind=\"firstOrganizerFound.name\"></span>'.\n" +
-    "            Geef een unieke website of\n" +
+    "            <span translate=\"organizer.modal.alert_warning\"\n" +
+    "                  translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            <a ng-click=\"selectOrganizer(firstOrganizerFound)\" class=\"alert-link\" href=\"#\">\n" +
-    "              gebruik <span ng-bind=\"firstOrganizerFound.name\"></span> als organisatie\n" +
+    "              <span translate=\"organizer.modal.alert_button\"\n" +
+    "                    translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            </a>.\n" +
     "          </p>\n" +
     "        </div>\n" +
@@ -25460,10 +26497,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                   ng-model=\"newOrganizer.name\"\n" +
     "                   ng-change=\"updateName()\"\n" +
     "                   required>\n" +
-    "            <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
-    "            <span class=\"help-block\" ng-show=\"showValidation && organizerForm.name.$error.required\">\n" +
-    "          Gelieve een naam in te vullen\n" +
-    "        </span>\n" +
+    "            <p class=\"help-block\" translate-once=\"organizer.modal.name_help\"></p>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"showValidation && organizerForm.name.$error.required\"\n" +
+    "                  translate-once=\"organizer.modal.name_required\">\n" +
+    "            </span>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -25478,12 +26516,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section ng-show=\"organizersFound\">\n" +
     "\n" +
     "    <div class=\"alert alert-info\">\n" +
-    "      <p>\n" +
-    "         Ben je zeker dat je \"<span ng-bind=\"newOrganizer.name\"></span>\" wil toevoegen als organisatie? Dubbele invoer\n" +
-    "         van organisaties is niet toegelaten.\n" +
-    "      </p>\n" +
+    "      <p translate=\"organizer.modal.add_confirm\" translate-values=\"{ newOrganizerName: '{{newOrganizer.name}}' }\"></p>\n" +
     "    </div>\n" +
-    "    <p>We vonden deze gelijkaardige items:</p>\n" +
+    "    <p translate-once=\"organizer.modal.doubles\"></p>\n" +
     "    <table class=\"table\">\n" +
     "      <tr ng-repeat=\"organizer in organizers\" udb-organizer=\"organizer\">\n" +
     "        <td colspan=\"2\" ng-show=\"fetching\">\n" +
@@ -25495,11 +26530,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          , <span ng-bind=\"::organizer.addresses[0].postalCode\"></span>\n" +
     "           <span ng-bind=\"::organizer.addresses[0].addressLocality\"></span>\n" +
     "        </td>\n" +
-    "        <td ng-hide=\"fetching\"><a class=\"btn btn-default\" ng-click=\"selectOrganizer(organizer)\">Selecteren</a></td>\n" +
+    "        <td ng-hide=\"fetching\"><a class=\"btn btn-default\" ng-click=\"selectOrganizer(organizer)\" translate-once=\"organizer.modal.select\"></a></td>\n" +
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          Jij voerde in:\n" +
+    "          <span translate-once=\"organizer.modal.your_input\"></span>\n" +
     "          <br/>\n" +
     "          <strong ng-bind=\"newOrganizer.name\"></strong>\n" +
     "          , <span ng-bind=\"newOrganizer.street\"></span>\n" +
@@ -25507,28 +26542,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "           <span ng-bind=\"newOrganizer.postalCode\"></span>\n" +
     "           <span ng-bind=\"newOrganizer.city\"></span>\n" +
     "        </td>\n" +
-    "        <td><a class=\"btn btn-default\" ng-click=\"saveOrganizer()\">Toch invoeren</a></td>\n" +
+    "        <td><a class=\"btn btn-default\" ng-click=\"saveOrganizer()\" translate-once=\"organizer.modal.still_enter\"></a></td>\n" +
     "      </tr>\n" +
     "    </table>\n" +
     "\n" +
     "  </section>\n" +
     "\n" +
     "  <div class=\"alert alert-danger\" ng-show=\"saveError\">\n" +
-    "    Er ging iets fout tijdens het opslaan van je organisatie.\n" +
+    "    <span translate-once=\"organizer.modal.save_error\"></span>\n" +
     "  </div>\n" +
     "  <div class=\"alert alert-danger\" ng-show=\"error && (addressError || contactError)\">\n" +
-    "    <p ng-show=\"addressError\">Gelieve een geldig adres in te vullen.<br /></p>\n" +
-    "    <p ng-show=\"contactError\">Gelieve alle contactinfo correct in te vullen.<br /></p>\n" +
+    "    <p ng-show=\"addressError\"><span translate-once=\"organizer.modal.address_error\"></span><br /></p>\n" +
+    "    <p ng-show=\"contactError\"><span translate-once=\"organizer.modal.contact_error\"></span><br /></p>\n" +
     "  </div>\n" +
     "\n" +
     "</div>\n" +
     "<div class=\"modal-footer\" ng-hide=\"organizersFound\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\">Sluiten</button>\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"organizer.modal.close\"></button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
     "          ng-disabled=\"disableSubmit || contactError\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
-    "    Bewaren <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "    <span translate-once=\"organizer.modal.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -25664,7 +26699,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                   class=\"form-control\"\n" +
     "                                   name=\"name\"\n" +
     "                                   placeholder=\"{{::'prices.target_group' | translate }}\"\n" +
-    "                                   ng-model=\"priceInfo.name\"\n" +
+    "                                   ng-model=\"priceInfo.name[pfmc.mainLanguage]\"\n" +
     "                                   ng-class=\"{ 'has-error': pfmc.priceForm.priceFieldForm.name.$invalid }\"\n" +
     "                                   required />\n" +
     "                        </span>\n" +
@@ -25781,7 +26816,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </thead>\n" +
     "          <tr ng-repeat=\"(key, priceInfo) in $ctrl.price\"\n" +
     "              ng-model=\"priceInfo\">\n" +
-    "            <td>{{priceInfo.name}}</td>\n" +
+    "            <td>{{priceInfo.name[$ctrl.mainLanguage]}}</td>\n" +
     "            <td>\n" +
     "              <span ng-if=\"priceInfo.price == 0\" translate-once=\"eventForm.step5.priceInfo.free\">\n" +
     "                Gratis\n" +
@@ -26110,20 +27145,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <button type=\"submit\"\n" +
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.publish()\"\n" +
-    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">Meteen publiceren</button>\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && efpc.hasNoDefault\">\n" +
+    "          <span translate-once=\"eventForm.publish.publish_now\"></span>\n" +
+    "      </button>\n" +
     "      <button class=\"btn btn-default\"\n" +
     "              ng-click=\"efpc.publishLater()\"\n" +
-    "              ng-if=\"efpc.canPublishLater()\">Later publiceren</button>\n" +
+    "              ng-if=\"efpc.canPublishLater()\">\n" +
+    "          <span translate-once=\"eventForm.publish.publish_later\"></span>\n" +
+    "      </button>\n" +
     "      <button type=\"submit\"\n" +
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.preview()\"\n" +
-    "              ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">Klaar met bewerken</button>\n" +
+    "              ng-if=\"!efpc.isDraft(efpc.eventFormData.workflowStatus)\">\n" +
+    "          <span translate-once=\"eventForm.publish.edit_done\"></span>\n" +
+    "      </button>\n" +
     "      <button type=\"submit\"\n" +
     "              class=\"btn btn-success\"\n" +
     "              ng-click=\"efpc.publish()\"\n" +
-    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault\">Klaar met bewerken</button>\n" +
+    "              ng-if=\"efpc.isDraft(efpc.eventFormData.workflowStatus) && !efpc.hasNoDefault\">\n" +
+    "          <span translate-once=\"eventForm.publish.edit_done\"></span>\n" +
+    "      </button>\n" +
     "      <span ng-if=\"efpc.hasNoDefault && efpc.eventFormData.availableFrom !== ''\" && !efpc.isDraft(efpc.eventFormData.workflowStatus)>\n" +
-    "          Online vanaf <span ng-bind=\"efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'\"></span>\n" +
+    "          <span translate-once=\"eventForm.publish.online_from\"></span> <span ng-bind=\"efpc.eventFormData.availableFrom | date: 'dd/MM/yyyy'\"></span>\n" +
     "      </span>\n" +
     "    </div>\n" +
     "    <div ng-if=\"efpc.saving\">\n" +
@@ -26346,7 +27389,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
-    "            {{ $scope.invalidStreet }}\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}\">\n" +
     "              <label translate-once=\"eventForm.step3.street\"></label>\n" +
     "              <input class=\"form-control\"\n" +
@@ -26404,7 +27446,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"form-group-lg\">\n" +
     "          <input type=\"text\"\n" +
     "                 class=\"form-control\"\n" +
-    "                 ng-model=\"eventFormData.name.nl\"\n" +
+    "                 ng-model=\"eventFormData.name\"\n" +
     "                 ng-model-options=\"titleInputOptions\"\n" +
     "                 ng-change=\"eventTitleChanged()\"\n" +
     "                 focus-if=\"eventFormData.showStep4 && eventFormData.id === ''\"\n" +
@@ -26438,7 +27480,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-click=\"validateEvent(true);\"\n" +
-    "          ng-class=\"{'disabled': eventFormData.name.nl === ''}\">\n" +
+    "          ng-class=\"{'disabled': eventFormData.name === ''}\">\n" +
     "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
@@ -26450,7 +27492,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "\n" +
     "  <a name=\"dubbeldetectie\"></a>\n" +
-    "  <section class=\"dubbeldetectie\" ng-show=\"eventFormData.name.nl !== ''\">\n" +
+    "  <section class=\"dubbeldetectie\" ng-show=\"eventFormData.name !== ''\">\n" +
     "\n" +
     "    <div class=\"panel panel-info\" ng-show=\"resultViewer.totalItems > 0\">\n" +
     "      <div class=\"panel-body bg-info text-info\">\n" +
@@ -26472,7 +27514,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <h3 ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
-    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name.nl}}' }\"></span>\n" +
+    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name}}' }\"></span>\n" +
     "    </h3>\n" +
     "    <ul class=\"list-inline\" ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
     "      <li>\n" +
@@ -26513,7 +27555,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <em class=\"extra-task-label\" translate-once=\"eventForm.step5.title\"></em>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-8\">\n" +
-    "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name.nl\"></p>\n" +
+    "              <p id=\"extra-titel-motivator\" ng-bind=\"eventFormData.name\"></p>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
@@ -26809,6 +27851,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
+    "  <div class=\"alert alert-warning\" ng-show=\"language!== 'nl'\">\n" +
+    "    <p>Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.</p>\n" +
+    "  </div>\n" +
+    "\n" +
     "  <udb-event-form-step1></udb-event-form-step1>\n" +
     "  <udb-event-form-step2></udb-event-form-step2>\n" +
     "  <udb-event-form-step3></udb-event-form-step3>\n" +

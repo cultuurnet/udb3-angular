@@ -43,14 +43,14 @@ function UitidAuth($window, $location, appConfig, $cookies) {
   /**
    * Login by redirecting to UiTiD
    */
-  this.login = function () {
+  this.login = function (language) {
     var currentLocation = $location.absUrl(),
         loginUrl = appConfig.authUrl + 'connect';
 
     removeCookies();
 
     // redirect to login page
-    loginUrl += '?destination=' + encodeURIComponent(currentLocation);
+    loginUrl += '?destination=' + encodeURIComponent(currentLocation) + '&lang=' + language;
     $window.location.href = loginUrl;
   };
 

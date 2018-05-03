@@ -146,5 +146,26 @@ describe('Factory: UdbPlace', function () {
     var place = new UdbPlace(placeJsonWithHiddenLabel);
 
     expect(place.labels).toEqual(expectedCombinedLabels);
-  })
+  });
+
+  it('should have the dutch fallback when mainLanguage is not defined', function() {
+    expect(place.mainLanguage).toEqual('nl');
+  });
+
+  it('should reckon with another mainLanguage if defined', function() {
+    var placeJsonWithFrenchMainLanguage = getPlaceJson();
+    placeJsonWithFrenchMainLanguage.mainLanguage = 'fr';
+
+    place = new UdbPlace(placeJsonWithFrenchMainLanguage);
+    expect(place.mainLanguage).toEqual('fr');
+  });
+
+  it('should handle translated url labels', function() {
+    var placeJson = getPlaceJson();
+    placeJson.bookingInfo.urlLabel = {};
+    placeJson.bookingInfo.urlLabel = {'nl':'Reservatie label'};
+
+    place = new UdbPlace(placeJson);
+    expect(place.bookingInfo.urlLabel.nl).toEqual('Reservatie label');
+  });
 });

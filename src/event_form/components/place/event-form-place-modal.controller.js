@@ -112,7 +112,7 @@
       }
 
       var udbPlace = new UdbPlace();
-      udbPlace.name = {nl : $scope.newPlace.name};
+      udbPlace.name = $scope.newPlace.name;
       udbPlace.calendarType = 'permanent';
       udbPlace.type = {
         id : $scope.newPlace.eventType.id,
@@ -125,6 +125,7 @@
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
       };
+      udbPlace.mainLanguage = 'nl';
 
       function showError() {
         $scope.saving = false;

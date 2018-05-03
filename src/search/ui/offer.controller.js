@@ -23,11 +23,12 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
-  $uibModal
+  $uibModal,
+  $translate
 ) {
   var controller = this;
   var cachedOffer;
-  var defaultLanguage = 'nl';
+  var defaultLanguage = $translate.use() || 'nl';
 
   controller.translation = false;
   controller.activeLanguage = defaultLanguage;
@@ -54,7 +55,7 @@ function OfferController(
           cachedOffer = offerObject;
           cachedOffer.updateTranslationState();
 
-          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage);
+          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
           $scope.offerType = $scope.event.url.split('/').shift();
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
@@ -161,7 +162,7 @@ function OfferController(
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator
         .translateProperty(cachedOffer, udbProperty, language, translation)
-        .then(cachedOffer.updateTranslationState);
+        .then(cachedOffer.updateTranslationState(cachedOffer));
     }
   }
 

@@ -144,5 +144,25 @@ describe('Factory: UdbEvent', function () {
 
     event = new UdbEvent(eventJsonWithHiddenLabel);
     expect(event.labels).toEqual(expectedCombinedLabels);
-  })
+  });
+
+  it('should have the dutch fallback when mainLanguage is not defined', function() {
+    expect(event.mainLanguage).toEqual('nl');
+  });
+
+  it('should reckon with another mainLanguage if defined', function() {
+    var eventJsonWithFrenchMainLanguage = getEventJson();
+    eventJsonWithFrenchMainLanguage.mainLanguage = 'fr';
+
+    event = new UdbEvent(eventJsonWithFrenchMainLanguage);
+    expect(event.mainLanguage).toEqual('fr');
+  });
+
+  it('should handle translated url labels', function() {
+    var eventJson = getEventJson();
+    eventJson.bookingInfo.urlLabel = {'nl': 'Reservatie label'};
+
+    event = new UdbEvent(eventJson);
+    expect(event.bookingInfo.urlLabel.nl).toEqual('Reservatie label');
+  });
 });

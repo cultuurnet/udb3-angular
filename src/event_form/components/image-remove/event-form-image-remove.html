@@ -3,20 +3,22 @@
     <button type="button" class="close" ng-click="cancel()">
       <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
     </button>
-    <h4 class="modal-title">Afbeeldingen verwijderen</h4>
+    <h4 class="modal-title" translate-once="images.remove.title"></h4>
   </div>
   <div class="modal-body">
 
-    <p>Ben je zeker dat je deze afbeelding wil verwijderen?</p>
+    <p translate-once="images.remove.sure"></p>
 
-    <div ng-show="error" class="alert alert-danger">Er ging iets mis bij het verwijderen van de afbeelding.</div>
+    <div ng-show="error" class="alert alert-danger">
+      <span translate-once="images.remove.save_error"></span>
+    </div>
 
   </div>
   <div class="modal-footer">
 
-    <button type="button" class="btn btn-default" ng-click="cancel()">Annuleren</button>
+    <button type="button" class="btn btn-default" ng-click="cancel()" translate-once="images.cancel"></button>
     <button class="btn btn-primary" ng-click="removeImage()">
-      Akkoord <i ng-show="saving" class="fa fa-circle-o-notch fa-spin"></i>
+      <span translate-once="images.agree"></span> <i ng-show="saving" class="fa fa-circle-o-notch fa-spin"></i>
     </button>
 
   </div>

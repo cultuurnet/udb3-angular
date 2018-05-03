@@ -49,7 +49,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, appConfig, $translate) {
 
   /**
    * @class EventFormData
@@ -70,9 +70,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.majorInfoChanged = false;
       // Properties that will be copied to UdbEvent / UdbPlace.
       this.id = '';
-      this.name = {
-        nl : ''
-      };
+      this.mainLanguage = $translate.use() || 'nl';
+      this.name = '';
       this.description = {};
       // Events have a location
       this.location = {
@@ -166,6 +165,20 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     getName: function(langcode) {
       return this.name[langcode];
+    },
+
+    /**
+     * Gets the mainLanguage for a offer.
+     */
+    getMainLanguage: function() {
+      return this.mainLanguage;
+    },
+
+    /**
+     * Sets the mainLanguage for a offer.
+     */
+    setMainLanguage: function(langcode) {
+      this.mainLanguage = langcode;
     },
 
     /**
@@ -506,7 +519,21 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       formData.calendarType = type;
 
       if (formData.calendarType === 'single') {
-        formData.addTimestamp('', '', '', '', '');
+        if (appConfig.calendarHighlight.date) {
+          formData.addTimestamp(
+              new Date(appConfig.calendarHighlight.date),
+              appConfig.calendarHighlight.startTime || '',
+              appConfig.calendarHighlight.startTime ?
+                  moment(appConfig.calendarHighlight.date + ' ' +
+                      appConfig.calendarHighlight.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
+              appConfig.calendarHighlight.endTime || '',
+              appConfig.endTime ?
+                  moment(appConfig.calendarHighlight.date + ' ' +
+                      appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
+          );
+        } else {
+          formData.addTimestamp('', '', '', '', '');
+        }
       }
 
       if (formData.calendarType === 'permanent') {

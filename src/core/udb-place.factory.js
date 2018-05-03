@@ -135,6 +135,13 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
+      if (this.bookingInfo.urlLabel) {
+        this.bookingInfo.urlLabel = _.get(
+          jsonPlace.bookingInfo.urlLabel,
+          jsonPlace.mainLanguage,
+          jsonPlace.bookingInfo.urlLabel
+        );
+      }
       this.contactPoint = jsonPlace.contactPoint || {
         'url': [],
         'phone': [],
@@ -191,6 +198,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       }
 
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
+      this.mainLanguage = jsonPlace.mainLanguage || 'nl';
     },
 
     /**
@@ -342,8 +350,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       });
     },
 
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
 
     hasFutureAvailableFrom: function() {

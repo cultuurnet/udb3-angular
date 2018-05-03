@@ -129,7 +129,7 @@ function EventCrud(
    */
   service.updateDescription = function(item) {
     return udbApi
-      .translateProperty(item.apiUrl, 'description', udbApi.mainLanguage, item.description.nl)
+      .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
   };
 
@@ -267,6 +267,14 @@ function EventCrud(
     var bookingInfo =  _.pick(item.bookingInfo, function(property, propertyName) {
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
+
+    if (bookingInfo.availabilityStarts) {
+      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts;
+    }
+
+    if (bookingInfo.availabilityEnds) {
+      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds;
+    }
 
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
