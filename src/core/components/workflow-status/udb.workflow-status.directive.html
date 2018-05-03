@@ -20,10 +20,7 @@
             <li>
                 <a ng-href="{{cm.getPublicUrl(cm.event.id)}}" translate-once="preview.publiq_url"></a>
             </li>
-            <!--<li ng-repeat="id in cm.eventIds(cm.event)" ng-switch="cm.isUrl(id)">
-                <a ng-switch-when="true" ng-href="{{id}}" ng-bind="id"></a>
-                <span ng-switch-when="false" ng-bind="id"></span>
-            </li>-->
+            <li ng-repeat="sameAs in cm.sameAsRelations(cm.event)"><span ng-bind="sameAs"></span></li>
         </ul>
     </td>
 </tr>

@@ -24,14 +24,17 @@ angular
 function WorkflowStatusDirectiveController($scope, appConfig) {
   var cm = this;
   cm.event = $scope.event;
-  cm.eventIds = eventIds;
+  cm.sameAsRelations = sameAsRelations;
   cm.isUrl = isUrl;
   cm.getPublicUrl = getPublicUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
 
-  function eventIds (event) {
-    return _.union([event.id], event.sameAs);
+  function sameAsRelations (event) {
+    var sameAsRelationsWithoutUIV = _.reject(event.sameAs, function(sameAs) {
+      return sameAs.contains('uitinvlaanderen');
+    });
+    return sameAsRelationsWithoutUIV;
   }
 
   function isUrl (potentialUrl) {

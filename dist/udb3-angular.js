@@ -2511,14 +2511,17 @@ angular
 function WorkflowStatusDirectiveController($scope, appConfig) {
   var cm = this;
   cm.event = $scope.event;
-  cm.eventIds = eventIds;
+  cm.sameAsRelations = sameAsRelations;
   cm.isUrl = isUrl;
   cm.getPublicUrl = getPublicUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
 
-  function eventIds (event) {
-    return _.union([event.id], event.sameAs);
+  function sameAsRelations (event) {
+    var sameAsRelationsWithoutUIV = _.reject(event.sameAs, function(sameAs) {
+      return sameAs.contains('uitinvlaanderen');
+    });
+    return sameAsRelationsWithoutUIV;
   }
 
   function isUrl (potentialUrl) {
@@ -25035,10 +25038,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <li>\n" +
     "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\"></a>\n" +
     "            </li>\n" +
-    "            <!--<li ng-repeat=\"id in cm.eventIds(cm.event)\" ng-switch=\"cm.isUrl(id)\">\n" +
-    "                <a ng-switch-when=\"true\" ng-href=\"{{id}}\" ng-bind=\"id\"></a>\n" +
-    "                <span ng-switch-when=\"false\" ng-bind=\"id\"></span>\n" +
-    "            </li>-->\n" +
+    "            <li ng-repeat=\"sameAs in cm.sameAsRelations(cm.event)\"><span ng-bind=\"sameAs\"></span></li>\n" +
     "        </ul>\n" +
     "    </td>\n" +
     "</tr>\n"
