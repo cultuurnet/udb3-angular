@@ -13,16 +13,18 @@ angular
 // .filter('groupBy', GroupByFilter);
 
 /* @ngInject */
-function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCategories, placeCategories) {
+function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCategories, placeCategories, $translate) {
 
   var controller = this;
 
   // main storage for event form.
   $scope.eventFormData = EventFormData;
 
-  // Categories, event types, places.
-  $scope.eventTypeLabels = eventCategories;
-  $scope.placeLabels = placeCategories;
+  var language = $translate.use() || 'nl';
+
+  // Categories, event types, places, label as defined by mainLanguage
+  $scope.eventTypeLabels = translateCategories(eventCategories);
+  $scope.placeLabels = translateCategories(placeCategories);
 
   $scope.canRefine = false;
   $scope.canRefineByGroups = false;
@@ -54,6 +56,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       $scope.activeEventType = type.id;
       $scope.activeEventTypeLabel = type.label;
       $scope.eventThemeLabels = type.themes;
+
       $scope.eventGroupLabels = type.groups;
 
       if (type.themes) {
@@ -187,6 +190,23 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
    */
   function togglePlaces() {
     $scope.showAllPlaces = !$scope.showAllPlaces;
+  }
+
+  function translateCategories(categories) {
+    var language = $translate.use() || 'nl';
+    categories = _.clone(categories);
+
+    var translatedCategories = _.map(categories, function(category) {
+      category.label = category.label[language];
+      if (category.themes) {
+        for (var key in category.themes) {
+          category.themes[key].label = category.themes[key].label[language];
+        }
+      }
+      return category;
+    });
+
+    return translatedCategories;
   }
 
   $scope.setEventType = setEventType;

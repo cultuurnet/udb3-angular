@@ -1,912 +1,1377 @@
 {
   "event": [{
-      "label": "Begeleide rondleiding",
-      "id": "0.7.0.0.0",
-      "primary": true,
-      "themes": [{
-          "id": "1.2.1.0.0",
-          "label": "Architectuur"
-        },
-        {
-          "id": "1.40.0.0.0",
-          "label": "Erfgoed"
-        },
-        {
-          "id": "1.11.0.0.0",
-          "label": "Geschiedenis"
-        },
-        {
-          "id": "1.41.0.0.0",
-          "label": "Kunst en kunsteducatie"
-        },
-        {
-          "id": "1.63.0.0.0",
-          "label": "Landbouw en platteland"
-        },
-        {
-          "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
-        },
-        {
-          "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
-        },
-        {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving"
-        },
-        {
-          "id": "1.25.0.0.0",
-          "label": "Wetenschap"
-        },
-        {
-          "id": "1.44.0.0.0",
-          "label": "Zingeving, filosofie en religie"
-        }
-      ]
+    "label": {
+      "nl": "Begeleide uitstap of rondleiding",
+      "fr": "Tour ou excursion guidé"
     },
-    {
-      "label": "Beurs",
-      "id": "0.6.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "1.17.0.0.0",
-          "label": "Antiek en brocante"
-        },
-        {
-          "id": "1.7.2.0.0",
-          "label": "Erfgoed"
-        },
-        {
-          "id": "1.62.0.0.0",
-          "label": "Gezondheid en wellness"
-        },
-        {
-          "id": "1.10.0.0.0",
-          "label": "Literatuur"
-        },
-        {
-          "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
-        },
-        {
-          "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
-        },
-        {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving"
-        },
-        {
-          "id": "1.10.8.0.0",
-          "label": "Strips"
-        },
-        {
-          "id": "1.65.0.0.0",
-          "label": "Voeding"
-        },
-        {
-          "id": "1.25.0.0.0",
-          "label": "Wetenschap"
-        }
-      ]
+    "id": "0.7.0.0.0",
+    "primary": true,
+    "themes": [{
+      "id": "1.2.1.0.0",
+      "label": {
+        "nl": "Architectuur",
+        "fr": "Architecture"
+      }
+    }, {
+      "id": "1.40.0.0.0",
+      "label": {
+        "nl": "Erfgoed",
+        "fr": "Patrimoine"
+      }
+    }, {
+      "id": "1.11.0.0.0",
+      "label": {
+        "nl": "Geschiedenis",
+        "fr": "Histoire"
+      }
+    }, {
+      "id": "1.41.0.0.0",
+      "label": {
+        "nl": "Kunst en kunsteducatie",
+        "fr": "Arts et formation artistique"
+      }
+    }, {
+      "id": "1.63.0.0.0",
+      "label": {
+        "nl": "Landbouw en platteland",
+        "fr": "Agriculture et campagne"
+      }
+    }, {
+      "id": "1.0.9.0.0",
+      "label": {
+        "nl": "Meerdere kunstvormen",
+        "fr": "Arts multiples"
+      }
+    }, {
+      "id": "1.64.0.0.0",
+      "label": {
+        "nl": "Milieu en natuur",
+        "fr": "Environnement et nature"
+      }
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      }
+    }, {
+      "id": "1.25.0.0.0",
+      "label": {
+        "nl": "Wetenschap",
+        "fr": "Science"
+      }
+    }, {
+      "id": "1.44.0.0.0",
+      "label": {
+        "nl": "Zingeving, filosofie en religie",
+        "fr": "Sense de la vie, philosophie et religion"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Beurs",
+      "fr": "Foire / exposition"
     },
-    {
-      "label": "Concert",
-      "id": "0.50.4.0.0",
-      "primary": true,
-      "themes": [{
-          "id": "1.8.3.5.0",
-          "label": "Amusementsmuziek"
-        },
-        {
-          "id": "1.8.3.3.0",
-          "label": "Dance"
-        },
-        {
-          "id": "1.8.4.0.0",
-          "label": "Folk en wereldmuziek"
-        },
-        {
-          "id": "1.8.3.2.0",
-          "label": "Hip hop, rnb en rap"
-        },
-        {
-          "id": "1.8.2.0.0",
-          "label": "Jazz en blues"
-        },
-        {
-          "id": "1.8.1.0.0",
-          "label": "Klassieke muziek"
-        },
-        {
-          "id": "1.8.3.1.0",
-          "label": "Pop en rock"
-        }
-      ]
+    "id": "0.6.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "1.17.0.0.0",
+      "label": {
+        "nl": "Antiek en brocante",
+        "fr": "Antiquités ou brocantes"
+      }
+    }, {
+      "id": "1.7.2.0.0",
+      "label": {
+        "nl": "Actie en avontuur",
+        "fr": "Action et aventure"
+      }
+    }, {
+      "id": "1.62.0.0.0",
+      "label": {
+        "nl": "Gezondheid en wellness",
+        "fr": "Santé et bien-être"
+      }
+    }, {
+      "id": "1.10.0.0.0",
+      "label": {
+        "nl": "Literatuur",
+        "fr": "Litérature"
+      }
+    }, {
+      "id": "1.0.9.0.0",
+      "label": {
+        "nl": "Meerdere kunstvormen",
+        "fr": "Arts multiples"
+      }
+    }, {
+      "id": "1.64.0.0.0",
+      "label": {
+        "nl": "Milieu en natuur",
+        "fr": "Environnement et nature"
+      }
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      }
+    }, {
+      "id": "1.10.8.0.0",
+      "label": {
+        "nl": "Strips",
+        "fr": "Bandes dessinés"
+      }
+    }, {
+      "id": "1.65.0.0.0",
+      "label": {
+        "nl": "Voeding",
+        "fr": "Nutrition"
+      }
+    }, {
+      "id": "1.25.0.0.0",
+      "label": {
+        "nl": "Wetenschap",
+        "fr": "Science"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Concert",
+      "fr": "Concert"
     },
-    {
-      "label": "Cursus of workshop",
-      "id": "0.3.1.0.0",
-      "primary": true,
-      "themes": [{
-          "id": "1.9.1.0.0",
-          "label": "Ballet en klassieke dans",
-          "group": "Dans"
-        }, {
-          "id": "1.9.2.0.0",
-          "label": "Moderne dans",
-          "group": "Dans"
-        }, {
-          "id": "1.9.5.0.0",
-          "label": "Stijl en salondansen",
-          "group": "Dans"
-        }, {
-          "id": "1.9.3.0.0",
-          "label": "Volksdans en werelddans",
-          "group": "Dans"
-        }, {
-          "id": "1.1.0.0.0",
-          "label": "Audiovisuele kunst",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.0.2.0.0",
-          "label": "Beeldhouwkunst",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "0.52.0.0.0",
-          "label": "Circus",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.42.0.0.0",
-          "label": "Creativiteit",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.0.5.0.0",
-          "label": "Decoratieve kunst",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.2.2.0.0",
-          "label": "Design",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.40.0.0.0",
-          "label": "Erfgoed",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.0.6.0.0",
-          "label": "Fotografie",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.0.4.0.0",
-          "label": "Grafiek",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.10.0.0.0",
-          "label": "Literatuur",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.49.0.0.0",
-          "label": "Mode",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.10.5.0.0",
-          "label": "Poëzie",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.0.1.0.0",
-          "label": "Schilderkunst",
-          "group": "Kunst en erfgoed"
-        }, {
-          "id": "1.3.1.0.0",
-          "label": "Tekst- en muziektheater",
-          "group": "Kunst en erfgoed"
-        },
-        {
-          "id": "1.8.3.5.0",
-          "label": "Amusementsmuziek",
-          "group": "Muziek"
-        }, {
-          "id": "1.8.3.3.0",
-          "label": "Dance",
-          "group": "Muziek"
-        }, {
-          "id": "1.8.4.0.0",
-          "label": "Folk en wereldmuziek",
-          "group": "Muziek"
-        }, {
-          "id": "1.8.3.2.0",
-          "label": "Hiphop r&b rap",
-          "group": "Muziek"
-        }, {
-          "id": "1.8.2.0.0",
-          "label": "Jazz en blues",
-          "group": "Muziek"
-        }, {
-          "id": "1.8.1.0.0",
-          "label": "Klassieke muziek",
-          "group": "Muziek"
-        }, {
-          "id": "1.8.3.1.0",
-          "label": "Pop en rock",
-          "group": "Muziek"
-        },
-        {
-          "id": "1.51.14.0.0",
-          "label": "Atletiek wandelen en fietsen",
-          "group": "Sport"
-        }, {
-          "id": "1.51.13.0.0",
-          "label": "Bal en raketsport",
-          "group": "Sport"
-        }, {
-          "id": "1.51.6.0.0",
-          "label": "Fitness gymnastiek dans en vechtssport",
-          "group": "Sport"
-        }, {
-          "id": "1.58.8.0.0",
-          "label": "Lucht en motorsport",
-          "group": "Sport"
-        }, {
-          "id": "1.51.12.0.0",
-          "label": "Omnisport en andere",
-          "group": "Sport"
-        }, {
-          "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure",
-          "group": "Sport"
-        }, {
-          "id": "1.51.10.0.0",
-          "label": "Volkssporten",
-          "group": "Sport"
-        }, {
-          "id": "1.51.3.0.0",
-          "label": "Zwemmen en watersport",
-          "group": "Sport"
-        },
-        {
-          "id": "1.37.1.0.0",
-          "label": "Gezondheid en welness",
-          "group": "Varia"
-        }, {
-          "id": "1.43.0.0.0",
-          "label": "Interculturele vorming",
-          "group": "Varia"
-        }, {
-          "id": "1.64.0.0.0",
-          "label": "Milieu en natuur",
-          "group": "Varia"
-        }, {
-          "id": "1.37.0.0.0",
-          "label": "Opvoeding",
-          "group": "Varia"
-        }, {
-          "id": "1.61.0.0.0",
-          "label": "Persoon en relaties",
-          "group": "Varia"
-        }, {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving",
-          "group": "Varia"
-        }, {
-          "id": "1.65.0.0.0",
-          "label": "Voeding",
-          "group": "Varia"
-        }, {
-          "id": "1.25.0.0.0",
-          "label": "Wetenschap",
-          "group": "Varia"
-        }, {
-          "id": "1.44.0.0.0",
-          "label": "Zingeving filosofie en religie",
-          "group": "Varia"
-        }
-      ]
+    "id": "0.50.4.0.0",
+    "primary": true,
+    "themes": [{
+      "id": "1.8.3.5.0",
+      "label": {
+        "nl": "Amusementsmuziek",
+        "fr": "Cabaret"
+      }
+    }, {
+      "id": "1.8.3.3.0",
+      "label": {
+        "nl": "Dance",
+        "fr": "Dance"
+      }
+    }, {
+      "id": "1.8.4.0.0",
+      "label": {
+        "nl": "Folk en wereldmuziek",
+        "fr": "Musique folklorique et mondiale"
+      }
+    }, {
+      "id": "1.8.3.2.0",
+      "label": {
+        "nl": "Hip hop, rnb en rap",
+        "fr": "Hip hop, rnb et rap"
+      }
+    }, {
+      "id": "1.8.2.0.0",
+      "label": {
+        "nl": "Jazz en blues",
+        "fr": "Jazz et blues"
+      }
+    }, {
+      "id": "1.8.1.0.0",
+      "label": {
+        "nl": "Klassieke muziek",
+        "fr": "Musique classique"
+      }
+    }, {
+      "id": "1.8.3.1.0",
+      "label": {
+        "nl": "Pop en rock",
+        "fr": "Pop et rock"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Cursus of workshop",
+      "fr": "Cours ou atelier"
     },
-    {
-      "label": "Dansvoorstelling",
-      "id": "0.54.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "1.9.1.0.0",
-          "label": "Ballet en klassieke dans"
-        },
-        {
-          "id": "1.9.2.0.0",
-          "label": "Moderne dans"
-        },
-        {
-          "id": "1.9.5.0.0",
-          "label": "Stijl en salondansen"
-        },
-        {
-          "id": "1.9.3.0.0",
-          "label": "Volksdans en werelddans"
-        }
-      ]
+    "id": "0.3.1.0.0",
+    "primary": true,
+    "themes": [{
+      "id": "1.9.1.0.0",
+      "label": {
+        "nl": "Ballet en klassieke dans",
+        "fr": "Ballet et danse classique"
+      },
+      "group": "Dans"
+    }, {
+      "id": "1.9.2.0.0",
+      "label": {
+        "nl": "Moderne dans",
+        "fr": "Danse moderne"
+      },
+      "group": "Dans"
+    }, {
+      "id": "1.9.5.0.0",
+      "label": {
+        "nl": "Stijl en salondansen",
+        "fr": "Danse de salon et stylée"
+      },
+      "group": "Dans"
+    }, {
+      "id": "1.9.3.0.0",
+      "label": {
+        "nl": "Volksdans en werelddans",
+        "fr": "Danse folklorique et mondiale"
+      },
+      "group": "Dans"
+    }, {
+      "id": "1.1.0.0.0",
+      "label": {
+        "nl": "Audiovisuele kunst",
+        "fr": "Arts audiovisuels"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.0.2.0.0",
+      "label": {
+        "nl": "Beeldhouwkunst",
+        "fr": "Sculpture"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "0.52.0.0.0",
+      "label": {
+        "nl": "Circus",
+        "fr": "Cirque"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.42.0.0.0",
+      "label": {
+        "nl": "Creativiteit",
+        "fr": "Créativité"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.0.5.0.0",
+      "label": {
+        "nl": "Decoratieve kunst",
+        "fr": "Arts décoratives"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.2.2.0.0",
+      "label": {
+        "nl": "Design",
+        "fr": "Design"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.40.0.0.0",
+      "label": {
+        "nl": "Erfgoed",
+        "fr": "Patrimoine"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.0.6.0.0",
+      "label": {
+        "nl": "Fotografie",
+        "fr": "Photographie"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.0.4.0.0",
+      "label": {
+        "nl": "Grafiek",
+        "fr": "Art grafique"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.10.0.0.0",
+      "label": {
+        "nl": "Literatuur",
+        "fr": "Litérature"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.0.9.0.0",
+      "label": {
+        "nl": "Meerdere kunstvormen",
+        "fr": "Arts multiples"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.49.0.0.0",
+      "label": {
+        "nl": "Mode",
+        "fr": "Mode"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.10.5.0.0",
+      "label": {
+        "nl": "Poezie",
+        "fr": "Poésie"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.0.1.0.0",
+      "label": {
+        "nl": "Schilderkunst",
+        "fr": "Peinture"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.3.1.0.0",
+      "label": {
+        "nl": "Tekst en muziektheater",
+        "fr": "Théâtre dramatique et musical"
+      },
+      "group": "Kunst en erfgoed"
+    }, {
+      "id": "1.8.3.5.0",
+      "label": {
+        "nl": "Amusementsmuziek",
+        "fr": "Cabaret"
+      },
+      "group": "Muziek"
+    }, {
+      "id": "1.8.3.3.0",
+      "label": {
+        "nl": "Dance",
+        "fr": "Dance"
+      },
+      "group": "Muziek"
+    }, {
+      "id": "1.8.4.0.0",
+      "label": {
+        "nl": "Folk en wereldmuziek",
+        "fr": "Musique folklorique et mondiale"
+      },
+      "group": "Muziek"
+    }, {
+      "id": "1.8.3.2.0",
+      "label": {
+        "nl": "Hip hop, rnb en rap",
+        "fr": "Hip hop, rnb et rap"
+      },
+      "group": "Muziek"
+    }, {
+      "id": "1.8.2.0.0",
+      "label": {
+        "nl": "Jazz en blues",
+        "fr": "Jazz et blues"
+      },
+      "group": "Muziek"
+    }, {
+      "id": "1.8.1.0.0",
+      "label": {
+        "nl": "Klassieke muziek",
+        "fr": "Musique classique"
+      },
+      "group": "Muziek"
+    }, {
+      "id": "1.8.3.1.0",
+      "label": {
+        "nl": "Pop en rock",
+        "fr": "Pop et rock"
+      },
+      "group": "Muziek"
+    }, {
+      "id": "1.51.14.0.0",
+      "label": {
+        "nl": "Atletiek, wandelen en fietsen",
+        "fr": "Athlétisme, marche et cyclisme"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.51.13.0.0",
+      "label": {
+        "nl": "Bal en racketsport",
+        "fr": "Sports au ballons et raquettes"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.51.6.0.0",
+      "label": {
+        "nl": "Fitness, gymnastiek, dans en vechtsport",
+        "fr": "Fitness, gymnastique, danse et arts martiaux"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.58.8.0.0",
+      "label": {
+        "nl": "Lucht en motorsport",
+        "fr": "Sports aero et moteurs"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.51.12.0.0",
+      "label": {
+        "nl": "Omnisport en andere",
+        "fr": "Omnisports et autres"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.51.11.0.0",
+      "label": {
+        "nl": "Outdoor en adventure",
+        "fr": "Plein air et aventure"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.51.10.0.0",
+      "label": {
+        "nl": "Volkssporten",
+        "fr": "Sports folkloriques"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.51.3.0.0",
+      "label": {
+        "nl": "Zwemmen en watersport",
+        "fr": "Natation et sports nautiques"
+      },
+      "group": "Sport"
+    }, {
+      "id": "1.37.1.0.0",
+      "label": {
+        "nl": "Gezondheid en zorg",
+        "fr": "Santé et soins"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.43.0.0.0",
+      "label": {
+        "nl": "Interculturele vorming",
+        "fr": "Formation interculturelle"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.64.0.0.0",
+      "label": {
+        "nl": "Milieu en natuur",
+        "fr": "Environnement et nature"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.37.0.0.0",
+      "label": {
+        "nl": "Opvoeding",
+        "fr": "Éducation"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.61.0.0.0",
+      "label": {
+        "nl": "Persoon en relaties",
+        "fr": "Hommes et relations"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.65.0.0.0",
+      "label": {
+        "nl": "Voeding",
+        "fr": "Nutrition"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.25.0.0.0",
+      "label": {
+        "nl": "Wetenschap",
+        "fr": "Science"
+      },
+      "group": "Varia"
+    }, {
+      "id": "1.44.0.0.0",
+      "label": {
+        "nl": "Zingeving, filosofie en religie",
+        "fr": "Sense de la vie, philosophie et religion"
+      },
+      "group": "Varia"
+    }]
+  }, {
+    "label": {
+      "nl": "Dansvoorstelling",
+      "fr": "Spectacle de danse"
     },
-    {
-      "label": "Eten en drinken",
-      "id": "1.50.0.0.0",
-      "primary": false
+    "id": "0.54.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "1.9.1.0.0",
+      "label": {
+        "nl": "Ballet en klassieke dans",
+        "fr": "Ballet et danse classique"
+      }
+    }, {
+      "id": "1.9.2.0.0",
+      "label": {
+        "nl": "Moderne dans",
+        "fr": "Danse moderne"
+      }
+    }, {
+      "id": "1.9.5.0.0",
+      "label": {
+        "nl": "Stijl en salondansen",
+        "fr": "Danse de salon et stylée"
+      }
+    }, {
+      "id": "1.9.3.0.0",
+      "label": {
+        "nl": "Volksdans en werelddans",
+        "fr": "Danse folklorique et mondiale"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Eten en drinken",
+      "fr": "Manger et boire"
     },
-    {
-      "label": "Festival",
-      "id": "0.5.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "1.8.3.5.0",
-          "label": "Amusementsmuziek"
-        },
-        {
-          "id": "0.52.0.0.0",
-          "label": "Circus"
-        },
-        {
-          "id": "1.8.3.3.0",
-          "label": "Dance"
-        },
-        {
-          "id": "1.8.4.0.0",
-          "label": "Folk en wereldmuziek"
-        },
-        {
-          "id": "1.3.10.0.0",
-          "label": "Humor en comedy"
-        },
-        {
-          "id": "1.8.2.0.0",
-          "label": "Jazz en blues"
-        },
-        {
-          "id": "1.8.1.0.0",
-          "label": "Klassieke muziek"
-        },
-        {
-          "id": "1.41.0.0.0",
-          "label": "Kunst en kunsteducatie"
-        },
-        {
-          "id": "1.10.0.0.0",
-          "label": "Literatuur"
-        },
-        {
-          "id": "1.7.14.0.0",
-          "label": "Meerdere filmgenres"
-        },
-        {
-          "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
-        },
-        {
-          "id": "1.8.3.1.0",
-          "label": "Pop en rock"
-        },
-        {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving"
-        },
-        {
-          "id": "1.3.1.0.0",
-          "label": "Tekst- en muziektheater"
-        },
-        {
-          "id": "1.25.0.0.0",
-          "label": "Wetenschap"
-        }
-      ]
+    "id": "1.50.0.0.0",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Festival",
+      "fr": "Festival"
     },
-    {
-      "label": "Film",
-      "id": "0.50.6.0.0",
-      "primary": true,
-      "themes": [{
-          "id": "1.7.2.0.0",
-          "label": "Actie en avontuur"
-        },
-        {
-          "id": "1.7.12.0.0",
-          "label": "Animatie en kinderfilms"
-        },
-        {
-          "id": "1.7.11.0.0",
-          "label": "Cinefiel"
-        },
-        {
-          "id": "1.7.1.0.0",
-          "label": "Documentaires en reportages"
-        },
-        {
-          "id": "1.7.4.0.0",
-          "label": "Drama"
-        },
-        {
-          "id": "1.7.10.0.0",
-          "label": "Filmmusical"
-        },
-        {
-          "id": "1.7.6.0.0",
-          "label": "Griezelfilm of horror"
-        },
-        {
-          "id": "1.7.8.0.0",
-          "label": "Historische film"
-        },
-        {
-          "id": "1.7.3.0.0",
-          "label": "Komedie"
-        },
-        {
-          "id": "1.7.13.0.0",
-          "label": "Kortfilm"
-        },
-        {
-          "id": "1.7.7.0.0",
-          "label": "Science fiction"
-        },
-        {
-          "id": "1.7.15.0.0",
-          "label": "Thriller"
-        }
-      ]
+    "id": "0.5.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "1.8.3.5.0",
+      "label": {
+        "nl": "Amusementsmuziek",
+        "fr": "Cabaret"
+      }
+    }, {
+      "id": "0.52.0.0.0",
+      "label": {
+        "nl": "Circus",
+        "fr": "Cirque"
+      }
+    }, {
+      "id": "1.8.3.3.0",
+      "label": {
+        "nl": "Dance",
+        "fr": "Dance"
+      }
+    }, {
+      "id": "1.8.4.0.0",
+      "label": {
+        "nl": "Folk en wereldmuziek",
+        "fr": "Musique folklorique et mondiale"
+      }
+    }, {
+      "id": "1.3.10.0.0",
+      "label": {
+        "nl": "Humor comedy",
+        "fr": "Comédie"
+      }
+    }, {
+      "id": "1.8.2.0.0",
+      "label": {
+        "nl": "Jazz en blues",
+        "fr": "Jazz et blues"
+      }
+    }, {
+      "id": "1.8.1.0.0",
+      "label": {
+        "nl": "Klassieke muziek",
+        "fr": "Musique classique"
+      }
+    }, {
+      "id": "1.41.0.0.0",
+      "label": {
+        "nl": "Kunst en kunsteducatie",
+        "fr": "Arts et formation artistique"
+      }
+    }, {
+      "id": "1.10.0.0.0",
+      "label": {
+        "nl": "Literatuur",
+        "fr": "Litérature"
+      }
+    }, {
+      "id": "1.7.14.0.0",
+      "label": {
+        "nl": "Meerdere filmgenres",
+        "fr": "Films de tous genres"
+      }
+    }, {
+      "id": "1.0.9.0.0",
+      "label": {
+        "nl": "Meerdere kunstvormen",
+        "fr": "Arts multiples"
+      }
+    }, {
+      "id": "1.8.3.1.0",
+      "label": {
+        "nl": "Pop en rock",
+        "fr": "Pop et rock"
+      }
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      }
+    }, {
+      "id": "1.3.1.0.0",
+      "label": {
+        "nl": "Tekst en muziektheater",
+        "fr": "Théâtre dramatique et musical"
+      }
+    }, {
+      "id": "1.25.0.0.0",
+      "label": {
+        "nl": "Wetenschap",
+        "fr": "Science"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Film",
+      "fr": "Cinéma"
     },
-    {
-      "label": "Kamp of vakantie",
-      "id": "0.57.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "1.7.2.0.0",
-          "label": "Avontuur"
-        },
-        {
-          "id": "1.42.0.0.0",
-          "label": "Creativiteit"
-        },
-        {
-          "id": "1.65.0.0.0",
-          "label": "Koken"
-        },
-        {
-          "id": "1.64.0.0.0",
-          "label": "Natuur"
-        },
-        {
-          "id": "1.51.12.0.0",
-          "label": "Sport"
-        },
-        {
-          "id": "1.21.0.0.0",
-          "label": "Technologie"
-        }
-      ]
+    "id": "0.50.6.0.0",
+    "primary": true,
+    "themes": [{
+      "id": "1.7.2.0.0",
+      "label": {
+        "nl": "Actie en avontuur",
+        "fr": "Action et aventure"
+      }
+    }, {
+      "id": "1.7.12.0.0",
+      "label": {
+        "nl": "Animatie en kinderfilms",
+        "fr": "Films animés et films pour enfants"
+      }
+    }, {
+      "id": "1.7.11.0.0",
+      "label": {
+        "nl": "Cinefiel",
+        "fr": "Cinéphile"
+      }
+    }, {
+      "id": "1.7.1.0.0",
+      "label": {
+        "nl": "Documentaires en reportages",
+        "fr": "Documentaires et reportages"
+      }
+    }, {
+      "id": "1.7.4.0.0",
+      "label": {
+        "nl": "Drama",
+        "fr": "Films dramatiques"
+      }
+    }, {
+      "id": "1.7.10.0.0",
+      "label": {
+        "nl": "Filmmusical",
+        "fr": "Comédie musicale"
+      }
+    }, {
+      "id": "1.7.6.0.0",
+      "label": {
+        "nl": "Griezelfilm of horror",
+        "fr": "Films d'épouvantes ou orreurs"
+      }
+    }, {
+      "id": "1.7.8.0.0",
+      "label": {
+        "nl": "Historische film",
+        "fr": "Films historiques"
+      }
+    }, {
+      "id": "1.7.3.0.0",
+      "label": {
+        "nl": "Komedie",
+        "fr": "Comédie"
+      }
+    }, {
+      "id": "1.7.13.0.0",
+      "label": {
+        "nl": "Kortfilm",
+        "fr": "Court métrage"
+      }
+    }, {
+      "id": "1.7.7.0.0",
+      "label": {
+        "nl": "Science fiction",
+        "fr": "Science fiction"
+      }
+    }, {
+      "id": "1.7.15.0.0",
+      "label": {
+        "nl": "Thriller",
+        "fr": "Films à suspense"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Kamp of vakantie",
+      "fr": "Camp de vacance"
     },
-    {
-      "label": "Kermis of feestelijkheid",
-      "id": "0.28.0.0.0",
-      "primary": false
+    "id": "0.57.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "1.7.2.0.0",
+      "label": {
+        "nl": "Actie en avontuur",
+        "fr": "Action et aventure"
+      }
+    }, {
+      "id": "1.42.0.0.0",
+      "label": {
+        "nl": "Creativiteit",
+        "fr": "Créativité"
+      }
+    }, {
+      "id": "1.65.0.0.0",
+      "label": {
+        "nl": "Voeding",
+        "fr": "Nutrition"
+      }
+    }, {
+      "id": "1.64.0.0.0",
+      "label": {
+        "nl": "Milieu en natuur",
+        "fr": "Environnement et nature"
+      }
+    }, {
+      "id": "1.51.12.0.0",
+      "label": {
+        "nl": "Omnisport en andere",
+        "fr": "Omnisports et autres"
+      }
+    }, {
+      "id": "1.21.0.0.0",
+      "label": {
+        "nl": "Computer en techniek",
+        "fr": "Ordinateurs et technologie"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Kermis of feestelijkheid",
+      "fr": "Foire ou festivité"
     },
-    {
-      "label": "Lezing of congres",
-      "id": "0.3.2.0.0",
-      "primary": "false",
-      "themes": [{
-          "id": "1.21.0.0.0",
-          "label": "Computer en techniek"
-        },
-        {
-          "id": "1.42.0.0.0",
-          "label": "Creativiteit"
-        },
-        {
-          "id": "1.40.0.0.0",
-          "label": "Erfgoed"
-        },
-        {
-          "id": "1.11.0.0.0",
-          "label": "Geschiedenis"
-        },
-        {
-          "id": "1.37.1.0.0",
-          "label": "Gezondheid en zorg"
-        },
-        {
-          "id": "1.41.0.0.0",
-          "label": "Kunst en kunsteducatie"
-        },
-        {
-          "id": "1.10.0.0.0",
-          "label": "Literatuur"
-        },
-        {
-          "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
-        },
-        {
-          "id": "1.37.0.0.0",
-          "label": "Opvoeding"
-        },
-        {
-          "id": "1.61.0.0.0",
-          "label": "Persoon en relaties"
-        },
-        {
-          "id": "1.10.5.0.0",
-          "label": "Poëzie"
-        },
-        {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving"
-        },
-        {
-          "id": "1.25.0.0.0",
-          "label": "Wetenschap"
-        },
-        {
-          "id": "1.44.0.0.0",
-          "label": "Zingeving, filosofie en religie"
-        }
-      ]
+    "id": "0.28.0.0.0",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Lezing of congres",
+      "fr": "Conférence ou congrès"
     },
-    {
-      "label": "Markt of braderie",
-      "id": "0.37.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "1.17.0.0.0",
-          "label": "Antiek en brocante"
-        },
-        {
-          "id": "1.66.0.0.0",
-          "label": "Economie"
-        },
-        {
-          "id": "1.62.0.0.0",
-          "label": "Gezondheid en wellness"
-        },
-        {
-          "id": "1.63.0.0.0",
-          "label": "Landbouw en platteland"
-        },
-        {
-          "id": "1.10.0.0.0",
-          "label": "Literatuur"
-        },
-        {
-          "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
-        },
-        {
-          "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
-        },
-        {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving"
-        }
-      ]
+    "id": "0.3.2.0.0",
+    "primary": "false",
+    "themes": [{
+      "id": "1.21.0.0.0",
+      "label": {
+        "nl": "Computer en techniek",
+        "fr": "Ordinateurs et technologie"
+      }
+    }, {
+      "id": "1.42.0.0.0",
+      "label": {
+        "nl": "Creativiteit",
+        "fr": "Créativité"
+      }
+    }, {
+      "id": "1.40.0.0.0",
+      "label": {
+        "nl": "Erfgoed",
+        "fr": "Patrimoine"
+      }
+    }, {
+      "id": "1.11.0.0.0",
+      "label": {
+        "nl": "Geschiedenis",
+        "fr": "Histoire"
+      }
+    }, {
+      "id": "1.37.1.0.0",
+      "label": {
+        "nl": "Gezondheid en zorg",
+        "fr": "Santé et soins"
+      }
+    }, {
+      "id": "1.41.0.0.0",
+      "label": {
+        "nl": "Kunst en kunsteducatie",
+        "fr": "Arts et formation artistique"
+      }
+    }, {
+      "id": "1.10.0.0.0",
+      "label": {
+        "nl": "Literatuur",
+        "fr": "Litérature"
+      }
+    }, {
+      "id": "1.64.0.0.0",
+      "label": {
+        "nl": "Milieu en natuur",
+        "fr": "Environnement et nature"
+      }
+    }, {
+      "id": "1.37.0.0.0",
+      "label": {
+        "nl": "Opvoeding",
+        "fr": "Éducation"
+      }
+    }, {
+      "id": "1.61.0.0.0",
+      "label": {
+        "nl": "Persoon en relaties",
+        "fr": "Hommes et relations"
+      }
+    }, {
+      "id": "1.10.5.0.0",
+      "label": {
+        "nl": "Poezie",
+        "fr": "Poésie"
+      }
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      }
+    }, {
+      "id": "1.25.0.0.0",
+      "label": {
+        "nl": "Wetenschap",
+        "fr": "Science"
+      }
+    }, {
+      "id": "1.44.0.0.0",
+      "label": {
+        "nl": "Zingeving, filosofie en religie",
+        "fr": "Sense de la vie, philosophie et religion"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Markt of braderie",
+      "fr": "Marché ou braderie"
     },
-    {
-      "label": "Opendeurdag",
-      "id": "0.12.0.0.0",
-      "primary": true,
-      "themes": [{
-          "id": "1.2.1.0.0",
-          "label": "Architectuur"
-        },
-        {
-          "id": "1.21.0.0.0",
-          "label": "Computer en techniek"
-        },
-        {
-          "id": "1.40.0.0.0",
-          "label": "Erfgoed"
-        },
-        {
-          "id": "1.41.0.0.0",
-          "label": "Kunst en kunsteducatie"
-        },
-        {
-          "id": "1.63.0.0.0",
-          "label": "Landbouw en platteland"
-        },
-        {
-          "id": "1.10.0.0.0",
-          "label": "Literatuur"
-        },
-        {
-          "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
-        },
-        {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving"
-        },
-        {
-          "id": "1.25.0.0.0",
-          "label": "Wetenschap"
-        }
-      ]
+    "id": "0.37.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "1.17.0.0.0",
+      "label": {
+        "nl": "Antiek en brocante",
+        "fr": "Antiquités ou brocantes"
+      }
+    }, {
+      "id": "1.66.0.0.0",
+      "label": {
+        "nl": "Economie",
+        "fr": "Économie"
+      }
+    }, {
+      "id": "1.62.0.0.0",
+      "label": {
+        "nl": "Gezondheid en wellness",
+        "fr": "Santé et bien-être"
+      }
+    }, {
+      "id": "1.63.0.0.0",
+      "label": {
+        "nl": "Landbouw en platteland",
+        "fr": "Agriculture et campagne"
+      }
+    }, {
+      "id": "1.10.0.0.0",
+      "label": {
+        "nl": "Literatuur",
+        "fr": "Litérature"
+      }
+    }, {
+      "id": "1.0.9.0.0",
+      "label": {
+        "nl": "Meerdere kunstvormen",
+        "fr": "Arts multiples"
+      }
+    }, {
+      "id": "1.64.0.0.0",
+      "label": {
+        "nl": "Milieu en natuur",
+        "fr": "Environnement et nature"
+      }
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Opendeurdag",
+      "fr": "Journée portes ouvertes"
     },
-    {
-      "label": "Party of fuif",
-      "id": "0.49.0.0.0",
-      "primary": false
+    "id": "0.12.0.0.0",
+    "primary": true,
+    "themes": [{
+      "id": "1.2.1.0.0",
+      "label": {
+        "nl": "Architectuur",
+        "fr": "Architecture"
+      }
+    }, {
+      "id": "1.21.0.0.0",
+      "label": {
+        "nl": "Computer en techniek",
+        "fr": "Ordinateurs et technologie"
+      }
+    }, {
+      "id": "1.40.0.0.0",
+      "label": {
+        "nl": "Erfgoed",
+        "fr": "Patrimoine"
+      }
+    }, {
+      "id": "1.41.0.0.0",
+      "label": {
+        "nl": "Kunst en kunsteducatie",
+        "fr": "Arts et formation artistique"
+      }
+    }, {
+      "id": "1.63.0.0.0",
+      "label": {
+        "nl": "Landbouw en platteland",
+        "fr": "Agriculture et campagne"
+      }
+    }, {
+      "id": "1.10.0.0.0",
+      "label": {
+        "nl": "Literatuur",
+        "fr": "Litérature"
+      }
+    }, {
+      "id": "1.0.9.0.0",
+      "label": {
+        "nl": "Meerdere kunstvormen",
+        "fr": "Arts multiples"
+      }
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      }
+    }, {
+      "id": "1.25.0.0.0",
+      "label": {
+        "nl": "Wetenschap",
+        "fr": "Science"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Party of fuif",
+      "fr": "Soirée"
     },
-    {
-      "label": "Route",
-      "id": "0.17.0.0.0",
-      "primary": true
+    "id": "0.49.0.0.0",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Fiets- of wandelroute",
+      "fr": "Randonnée pédestre ou cycliste"
     },
-    {
-      "label": "Spel of quiz",
-      "id": "0.50.21.0.0",
-      "primary": false
+    "id": "0.17.0.0.0",
+    "primary": true
+  }, {
+    "label": {
+      "nl": "Spel of quiz",
+      "fr": "Jeu ou quiz"
     },
-    {
-      "label": "Sport en beweging",
-      "id": "0.59.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "1.51.14.0.0",
-          "label": "Atletiek, wandelen en fietsen"
-        },
-        {
-          "id": "1.51.13.0.0",
-          "label": "Bal en racketsport"
-        },
-        {
-          "id": "1.51.6.0.0",
-          "label": "Fitness, gymnastiek, dans en vechtsport"
-        },
-        {
-          "id": "1.58.8.0.0",
-          "label": "Lucht en motorsport"
-        },
-        {
-          "id": "1.51.12.0.0",
-          "label": "Omnisport en andere"
-        },
-        {
-          "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure"
-        },
-        {
-          "id": "1.51.10.0.0",
-          "label": "Volkssporten"
-        },
-        {
-          "id": "1.51.3.0.0",
-          "label": "Zwemmen en watersport"
-        }
-      ]
+    "id": "0.50.21.0.0",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Sportactiviteit",
+      "fr": "Activité sportive"
     },
-    {
-      "label": "Sportwedstrijd bekijken",
-      "id": "0.19.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "1.51.14.0.0",
-          "label": "Atletiek, wandelen en fietsen"
-        },
-        {
-          "id": "1.51.13.0.0",
-          "label": "Bal en racketsport"
-        },
-        {
-          "id": "1.51.6.0.0",
-          "label": "Fitness, gymnastiek, dans en vechtsport"
-        },
-        {
-          "id": "1.58.8.0.0",
-          "label": "Lucht en motorsport"
-        },
-        {
-          "id": "1.51.12.0.0",
-          "label": "Omnisport en andere"
-        },
-        {
-          "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure"
-        },
-        {
-          "id": "1.51.10.0.0",
-          "label": "Volkssporten"
-        },
-        {
-          "id": "1.51.3.0.0",
-          "label": "Zwemmen en watersport"
-        }
-      ]
+    "id": "0.59.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "1.51.14.0.0",
+      "label": {
+        "nl": "Atletiek, wandelen en fietsen",
+        "fr": "Athlétisme, marche et cyclisme"
+      }
+    }, {
+      "id": "1.51.13.0.0",
+      "label": {
+        "nl": "Bal en racketsport",
+        "fr": "Sports au ballons et raquettes"
+      }
+    }, {
+      "id": "1.51.6.0.0",
+      "label": {
+        "nl": "Fitness, gymnastiek, dans en vechtsport",
+        "fr": "Fitness, gymnastique, danse et arts martiaux"
+      }
+    }, {
+      "id": "1.58.8.0.0",
+      "label": {
+        "nl": "Lucht en motorsport",
+        "fr": "Sports aero et moteurs"
+      }
+    }, {
+      "id": "1.51.12.0.0",
+      "label": {
+        "nl": "Omnisport en andere",
+        "fr": "Omnisports et autres"
+      }
+    }, {
+      "id": "1.51.11.0.0",
+      "label": {
+        "nl": "Outdoor en adventure",
+        "fr": "Plein air et aventure"
+      }
+    }, {
+      "id": "1.51.10.0.0",
+      "label": {
+        "nl": "Volkssporten",
+        "fr": "Sports folkloriques"
+      }
+    }, {
+      "id": "1.51.3.0.0",
+      "label": {
+        "nl": "Zwemmen en watersport",
+        "fr": "Natation et sports nautiques"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Sportwedstrijd bekijken",
+      "fr": "Assister à une compétition sportive"
     },
-    {
-      "label": "Tentoonstelling",
-      "id": "0.0.0.0.0",
-      "primary": true,
-      "themes": [{
-          "id": "1.1.0.0.0",
-          "label": "Audiovisuele kunst"
-        },
-        {
-          "id": "1.0.2.0.0",
-          "label": "Beeldhouwkunst"
-        },
-        {
-          "id": "1.0.5.0.0",
-          "label": "Decoratieve kunst"
-        },
-        {
-          "id": "1.2.2.0.0",
-          "label": "Design"
-        },
-        {
-          "id": "1.40.0.0.0",
-          "label": "Erfgoed"
-        },
-        {
-          "id": "1.0.6.0.0",
-          "label": "Fotografie"
-        },
-        {
-          "id": "1.11.0.0.0",
-          "label": "Geschiedenis"
-        },
-        {
-          "id": "1.0.4.0.0",
-          "label": "Grafiek"
-        },
-        {
-          "id": "1.0.3.0.0",
-          "label": "Installatiekunst"
-        },
-        {
-          "id": "1.0.9.0.0",
-          "label": "Meerdere kunstvormen"
-        },
-        {
-          "id": "1.64.0.0.0",
-          "label": "Milieu en natuur"
-        },
-        {
-          "id": "1.49.0.0.0",
-          "label": "Mode"
-        },
-        {
-          "id": "1.37.2.0.0",
-          "label": "Samenleving"
-        },
-        {
-          "id": "1.0.1.0.0",
-          "label": "Schilderkunst"
-        },
-        {
-          "id": "1.25.0.0.0",
-          "label": "Wetenschap"
-        }
-      ]
+    "id": "0.19.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "1.51.14.0.0",
+      "label": {
+        "nl": "Atletiek, wandelen en fietsen",
+        "fr": "Athlétisme, marche et cyclisme"
+      }
+    }, {
+      "id": "1.51.13.0.0",
+      "label": {
+        "nl": "Bal en racketsport",
+        "fr": "Sports au ballons et raquettes"
+      }
+    }, {
+      "id": "1.51.6.0.0",
+      "label": {
+        "nl": "Fitness, gymnastiek, dans en vechtsport",
+        "fr": "Fitness, gymnastique, danse et arts martiaux"
+      }
+    }, {
+      "id": "1.58.8.0.0",
+      "label": {
+        "nl": "Lucht en motorsport",
+        "fr": "Sports aero et moteurs"
+      }
+    }, {
+      "id": "1.51.12.0.0",
+      "label": {
+        "nl": "Omnisport en andere",
+        "fr": "Omnisports et autres"
+      }
+    }, {
+      "id": "1.51.11.0.0",
+      "label": {
+        "nl": "Outdoor en adventure",
+        "fr": "Plein air et aventure"
+      }
+    }, {
+      "id": "1.51.10.0.0",
+      "label": {
+        "nl": "Volkssporten",
+        "fr": "Sports folkloriques"
+      }
+    }, {
+      "id": "1.51.3.0.0",
+      "label": {
+        "nl": "Zwemmen en watersport",
+        "fr": "Natation et sports nautiques"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Tentoonstelling",
+      "fr": "Exposition"
     },
-    {
-      "label": "Theatervoorstelling",
-      "id": "0.55.0.0.0",
-      "primary": false,
-      "themes": [{
-          "id": "0.52.0.0.0",
-          "label": "Circus"
-        },
-        {
-          "id": "1.3.5.0.0",
-          "label": "Figuren en poppentheater"
-        },
-        {
-          "id": "1.3.10.0.0",
-          "label": "Humor en comedy"
-        },
-        {
-          "id": "1.3.4.0.0",
-          "label": "Mime en bewegingstheater"
-        },
-        {
-          "id": "1.4.0.0.0",
-          "label": "Musical"
-        },
-        {
-          "id": "1.5.0.0.0",
-          "label": "Opera en operette"
-        },
-        {
-          "id": "1.3.1.0.0",
-          "label": "Tekst en muziektheater"
-        }
-      ]
-    }
-  ],
+    "id": "0.0.0.0.0",
+    "primary": true,
+    "themes": [{
+      "id": "1.1.0.0.0",
+      "label": {
+        "nl": "Audiovisuele kunst",
+        "fr": "Arts audiovisuels"
+      }
+    }, {
+      "id": "1.0.2.0.0",
+      "label": {
+        "nl": "Beeldhouwkunst",
+        "fr": "Sculpture"
+      }
+    }, {
+      "id": "1.0.5.0.0",
+      "label": {
+        "nl": "Decoratieve kunst",
+        "fr": "Arts décoratives"
+      }
+    }, {
+      "id": "1.2.2.0.0",
+      "label": {
+        "nl": "Design",
+        "fr": "Design"
+      }
+    }, {
+      "id": "1.40.0.0.0",
+      "label": {
+        "nl": "Erfgoed",
+        "fr": "Patrimoine"
+      }
+    }, {
+      "id": "1.0.6.0.0",
+      "label": {
+        "nl": "Fotografie",
+        "fr": "Photographie"
+      }
+    }, {
+      "id": "1.11.0.0.0",
+      "label": {
+        "nl": "Geschiedenis",
+        "fr": "Histoire"
+      }
+    }, {
+      "id": "1.0.4.0.0",
+      "label": {
+        "nl": "Grafiek",
+        "fr": "Art grafique"
+      }
+    }, {
+      "id": "1.0.3.0.0",
+      "label": {
+        "nl": "Installatiekunst",
+        "fr": "Art d'installation"
+      }
+    }, {
+      "id": "1.0.9.0.0",
+      "label": {
+        "nl": "Meerdere kunstvormen",
+        "fr": "Arts multiples"
+      }
+    }, {
+      "id": "1.64.0.0.0",
+      "label": {
+        "nl": "Milieu en natuur",
+        "fr": "Environnement et nature"
+      }
+    }, {
+      "id": "1.49.0.0.0",
+      "label": {
+        "nl": "Mode",
+        "fr": "Mode"
+      }
+    }, {
+      "id": "1.37.2.0.0",
+      "label": {
+        "nl": "Samenleving",
+        "fr": "Vivre en société"
+      }
+    }, {
+      "id": "1.0.1.0.0",
+      "label": {
+        "nl": "Schilderkunst",
+        "fr": "Peinture"
+      }
+    }, {
+      "id": "1.25.0.0.0",
+      "label": {
+        "nl": "Wetenschap",
+        "fr": "Science"
+      }
+    }]
+  }, {
+    "label": {
+      "nl": "Theatervoorstelling",
+      "fr": "Théâtre"
+    },
+    "id": "0.55.0.0.0",
+    "primary": false,
+    "themes": [{
+      "id": "0.52.0.0.0",
+      "label": {
+        "nl": "Circus",
+        "fr": "Cirque"
+      }
+    }, {
+      "id": "1.3.5.0.0",
+      "label": {
+        "nl": "Figuren en poppentheater",
+        "fr": "Théâtre de marionnettes"
+      }
+    }, {
+      "id": "1.3.10.0.0",
+      "label": {
+        "nl": "Humor comedy",
+        "fr": "Comédie"
+      }
+    }, {
+      "id": "1.3.4.0.0",
+      "label": {
+        "nl": "Mime en bewegingstheater",
+        "fr": "Mime et theéâtre de mouvements"
+      }
+    }, {
+      "id": "1.4.0.0.0",
+      "label": {
+        "nl": "Musical",
+        "fr": "Comédie musicale"
+      }
+    }, {
+      "id": "1.5.0.0.0",
+      "label": {
+        "nl": "Opera en operette",
+        "fr": "Opéra et opérette"
+      }
+    }, {
+      "id": "1.3.1.0.0",
+      "label": {
+        "nl": "Tekst en muziektheater",
+        "fr": "Théâtre dramatique et musical"
+      }
+    }]
+  }],
   "place": [{
-      "label": "Archeologische Site",
-      "id": "3CuHvenJ+EGkcvhXLg9Ykg",
-      "primary": true
+    "label": {
+      "nl": "Archeologische Site",
+      "fr": "Site archéologique"
     },
-    {
-      "label": "Bibliotheek of documentatiecentrum",
-      "id": "kI7uAyn2uUu9VV6Z3uWZTA",
-      "primary": true
+    "id": "3CuHvenJ+EGkcvhXLg9Ykg",
+    "primary": true
+  }, {
+    "label": {
+      "nl": "Bibliotheek of documentatiecentrum",
+      "fr": "Bibliothèque ou centre de documentation"
     },
-    {
-      "label": "Bioscoop",
-      "id": "BtVNd33sR0WntjALVbyp3w",
-      "primary": false
+    "id": "kI7uAyn2uUu9VV6Z3uWZTA",
+    "primary": true
+  }, {
+    "label": {
+      "nl": "Bioscoop",
+      "fr": "Cinéma"
     },
-    {
-      "label": "Cultuur- of ontmoetingscentrum",
-      "id": "Yf4aZBfsUEu2NsQqsprngw",
-      "primary": false
+    "id": "BtVNd33sR0WntjALVbyp3w",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Cultuur- of ontmoetingscentrum",
+      "fr": "Centre culturel"
     },
-    {
-      "label": "Discotheek",
-      "id": "YVBc8KVdrU6XfTNvhMYUpg",
-      "primary": false
+    "id": "Yf4aZBfsUEu2NsQqsprngw",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Discotheek",
+      "fr": "Discothèque"
     },
-    {
-      "label": "Horeca",
-      "id": "ekdc4ATGoUitCa0e6me6xA",
-      "primary": false
+    "id": "YVBc8KVdrU6XfTNvhMYUpg",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Horeca",
+      "fr": "Horeca"
     },
-    {
-      "label": "Jeugdhuis of jeugdcentrum",
-      "id": "JCjA0i5COUmdjMwcyjNAFA",
-      "primary": false
+    "id": "ekdc4ATGoUitCa0e6me6xA",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Jeugdhuis of jeugdcentrum",
+      "fr": "Maison de jeunes ou centre de jeunesse"
     },
-    {
-      "label": "Monument",
-      "id": "0.14.0.0.0",
-      "primary": true
+    "id": "JCjA0i5COUmdjMwcyjNAFA",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Monument",
+      "fr": "Monument"
     },
-    {
-      "label": "Museum of galerij",
-      "id": "GnPFp9uvOUyqhOckIFMKmg",
-      "primary": true
+    "id": "0.14.0.0.0",
+    "primary": true
+  }, {
+    "label": {
+      "nl": "Museum of galerij",
+      "fr": "Musée ou galerie"
     },
-    {
-      "label": "Natuur, park of tuin",
-      "id": "0.15.0.0.0",
-      "primary": true
+    "id": "GnPFp9uvOUyqhOckIFMKmg",
+    "primary": true
+  }, {
+    "label": {
+      "nl": "Natuurgebied of park",
+      "fr": "Zone naturel ou parc"
     },
-    {
-      "label": "Openbare ruimte",
-      "id": "0.8.0.0.0",
-      "primary": false
+    "id": "0.15.0.0.0",
+    "primary": true
+  }, {
+    "label": {
+      "nl": "Openbare ruimte",
+      "fr": "Espace public"
     },
-    {
-      "label": "Recreatiedomein of centrum",
-      "id": "0.53.0.0.0",
-      "primary": false
+    "id": "0.8.0.0.0",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Recreatiedomein of centrum",
+      "fr": "Centre de loisirs ou centre de récréation"
     },
-    {
-      "label": "School of onderwijscentrum",
-      "id": "rJRFUqmd6EiqTD4c7HS90w",
-      "primary": false
+    "id": "0.53.0.0.0",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "School of onderwijscentrum",
+      "fr": "École ou centre éducatif"
     },
-    {
-      "label": "Sportcentrum",
-      "id": "eBwaUAAhw0ur0Z02i5ttnw",
-      "primary": false
+    "id": "rJRFUqmd6EiqTD4c7HS90w",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Sportcentrum",
+      "fr": "Centre sportif"
     },
-    {
-      "label": "Thema of pretpark",
-      "id": "0.41.0.0.0",
-      "primary": false
+    "id": "eBwaUAAhw0ur0Z02i5ttnw",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Thema of pretpark",
+      "fr": "Parc à thème ou parc d'attractions"
     },
-    {
-      "label": "Winkel",
-      "id": "VRC6HX0Wa063sq98G5ciqw",
-      "primary": false
+    "id": "0.41.0.0.0",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Winkel",
+      "fr": "Magasin"
     },
-    {
-      "label": "Zaal of expohal",
-      "id": "OyaPaf64AEmEAYXHeLMAtA",
-      "primary": false
-    }
-  ]
+    "id": "VRC6HX0Wa063sq98G5ciqw",
+    "primary": false
+  }, {
+    "label": {
+      "nl": "Zaal of expohal",
+      "fr": "Salle d'exposition"
+    },
+    "id": "OyaPaf64AEmEAYXHeLMAtA",
+    "primary": false
+  }]
 }
