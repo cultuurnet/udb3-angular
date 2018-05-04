@@ -27,6 +27,7 @@ function EventDuplicatorService(udbApi, offerLocator, $rootScope) {
   function rememberDuplicateLocationAndReturnId(duplicateInfo) {
     offerLocator.add(duplicateInfo.eventId, duplicateInfo.url);
     $rootScope.$emit('offerDuplicated', duplicateInfo);
+    console.log('offer duplicated');
 
     return duplicateInfo.eventId;
   }
