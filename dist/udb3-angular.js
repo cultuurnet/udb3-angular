@@ -7256,7 +7256,7 @@ angular
   .service('eventDuplicator', EventDuplicatorService);
 
 /* @ngInject */
-function EventDuplicatorService(udbApi, offerLocator) {
+function EventDuplicatorService(udbApi, offerLocator, $rootScope) {
   var calendarDataProperties = [
     'calendarType',
     'openingHours',
@@ -7271,6 +7271,7 @@ function EventDuplicatorService(udbApi, offerLocator) {
    */
   function rememberDuplicateLocationAndReturnId(duplicateInfo) {
     offerLocator.add(duplicateInfo.eventId, duplicateInfo.url);
+    $rootScope.$emit('offerDuplicated', duplicateInfo);
 
     return duplicateInfo.eventId;
   }
@@ -7289,7 +7290,7 @@ function EventDuplicatorService(udbApi, offerLocator) {
       .then(rememberDuplicateLocationAndReturnId);
   };
 }
-EventDuplicatorService.$inject = ["udbApi", "offerLocator"];
+EventDuplicatorService.$inject = ["udbApi", "offerLocator", "$rootScope"];
 })();
 
 // Source: src/entry/components/job-logo-states.constant.js
