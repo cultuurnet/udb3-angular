@@ -9347,7 +9347,26 @@ function EventDetail(
    */
   function grantPermissions(permissionsData) {
     var event = permissionsData[1];
-    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+        });
   }
 
   function denyAllPermissions() {
@@ -9435,18 +9454,6 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
-
-    authorizationService
-      .getPermissions()
-      .then(function(userPermissions) {
-        var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
-          return permission === RolePermission.GEBRUIKERS_BEHEREN;
-        });
-
-        if (mayAlwaysDelete.length) {
-          $scope.mayAlwaysDelete = true;
-        }
-      });
 
     ModerationService
       .getMyRoles()
@@ -25569,7 +25576,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <h1 class=\"title\" ng-bind=\"::event.name\"></h1>\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
-    "      <div class=\"list-group\" ng-if=\"::permissions || ::mayAlwaysDelete\">\n" +
+    "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
