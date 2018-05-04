@@ -1,4 +1,8 @@
 <div class="offer-form" ng-if="loaded">
+  <div class="alert alert-warning" ng-show="language!== 'nl'">
+    <p>Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.</p>
+  </div>
+
   <udb-event-form-step1></udb-event-form-step1>
   <udb-event-form-step2></udb-event-form-step2>
   <udb-event-form-step3></udb-event-form-step3>

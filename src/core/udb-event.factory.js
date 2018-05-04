@@ -49,6 +49,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
   }
 
   function updateTranslationState(event) {
+
     var languages = {'en': false, 'fr': false, 'de': false},
         properties = ['name', 'description'];
 
@@ -159,6 +160,13 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.mediaObject = jsonEvent.mediaObject || [];
       this.typicalAgeRange = jsonEvent.typicalAgeRange || '';
       this.bookingInfo = jsonEvent.bookingInfo || {};
+      if (this.bookingInfo.urlLabel) {
+        this.bookingInfo.urlLabel = _.get(
+          jsonEvent.bookingInfo.urlLabel,
+          jsonEvent.mainLanguage,
+          jsonEvent.bookingInfo.urlLabel
+        );
+      }
       this.contactPoint = jsonEvent.contactPoint || {
         'url': [],
         'phone': [],
@@ -331,8 +339,9 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         return label === labelName;
       });
     },
-    updateTranslationState: function () {
-      updateTranslationState(this);
+    updateTranslationState: function (event) {
+      event = event || this;
+      updateTranslationState(event);
     },
     isExpired: function () {
       return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());

@@ -53,8 +53,8 @@ describe('Controller: reservation period directive', function () {
   });
 
   it ('should save the bookingPeriod', function () {
-    scope.availabilityEnds = new Date('02/09/2016');
-    scope.availabilityStarts = new Date('02/07/2016');
+    scope.availabilityEnds = moment(new Date('02/09/2016')).format();
+    scope.availabilityStarts = moment(new Date('02/07/2016')).format();
 
     spyOn(reservationPeriodController, 'bookingPeriodSaved');
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
@@ -71,8 +71,8 @@ describe('Controller: reservation period directive', function () {
   });
 
   it ('should fail in saving the bookingPeriod', function () {
-    scope.availabilityEnds = new Date('02/09/2016');
-    scope.availabilityStarts = new Date('02/07/2016');
+    scope.availabilityEnds = moment(new Date('02/09/2016')).format();
+    scope.availabilityStarts = moment(new Date('02/07/2016')).format();
 
     spyOn(reservationPeriodController, 'bookingPeriodSaved');
     eventCrud.updateBookingInfo.and.returnValue($q.reject());

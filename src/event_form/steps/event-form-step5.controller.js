@@ -45,9 +45,10 @@ function EventFormStep5Controller(
 
   // Scope vars.
   $scope.eventFormData = EventFormData; // main storage for event form.
+  $scope.mainLanguage = EventFormData.getMainLanguage();
 
   // Description vars.
-  $scope.description = EventFormData.getDescription('nl');
+  $scope.description = EventFormData.getDescription($scope.mainLanguage);
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -164,7 +165,7 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, 'nl');
+      EventFormData.setDescription($scope.description, $scope.mainLanguage);
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {

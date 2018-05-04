@@ -301,4 +301,5 @@ describe('Service: Event crud', function () {
     expect(udbApi.updateProperty)
       .toHaveBeenCalledWith('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E', 'bookingInfo', expectedBookingInfo);
   });
+
 });
