@@ -25767,6 +25767,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
+    "                    <span class=\"form-text\">jaar</span>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"max-age\">tot</label>\n" +
@@ -25778,6 +25779,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
+    "                    <span class=\"form-text\">jaar</span>\n" +
     "                </div>\n" +
     "               </form>\n" +
     "            </div>\n" +
