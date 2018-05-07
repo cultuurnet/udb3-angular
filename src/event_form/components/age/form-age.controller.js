@@ -13,7 +13,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController($scope, EventFormData, eventCrud) {
+function FormAgeController($scope, EventFormData, eventCrud, $translate) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -21,14 +21,14 @@ function FormAgeController($scope, EventFormData, eventCrud) {
    * @enum {Object}
    */
   var AgeRangeEnum = Object.freeze({
-    'ALL': {label: 'Alle leeftijden'},
-    'TODDLERS': {label: 'Peuters', min: 0, max: 2},
-    'PRESCHOOLERS': {label: 'Kleuters', min: 3, max: 5},
-    'KIDS': {label: 'Kinderen', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Jongeren', min: 12, max: 17},
-    'ADULTS': {label: 'Volwassenen', min: 18},
-    'SENIORS': {label: 'Senioren', min: 65},
-    'CUSTOM': {label: 'Andere'}
+    'ALL': {label: 'All ages'},
+    'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
+    'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
+    'KIDS': {label: 'Kids', min: 6, max: 11},
+    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'ADULTS': {label: 'Adults', min: 18},
+    'SENIORS': {label: 'Seniors', min: 65},
+    'CUSTOM': {label: 'Custom'}
   });
 
   controller.ageRanges = angular.copy(AgeRangeEnum);
@@ -141,4 +141,8 @@ function FormAgeController($scope, EventFormData, eventCrud) {
       saveAgeRange();
     }
   }
+
+  $scope.translateAgeRange = function (ageRange) {
+    return $translate.instant('eventForm.step5.age.' + ageRange);
+  };
 }

@@ -532,7 +532,15 @@ angular.module('udb.core')
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter image',
         age: {
-          'age_label': 'Adapté à'
+          'age_label': 'Adapté à',
+          'All ages': 'De tous âges',
+          'Toddlers': 'Tout-petits',
+          'Preschoolers': 'Enfants d\'âge préscolaire',
+          'Kids': 'Enfants',
+          'Youngsters': 'Jeunes',
+          'Adults': 'Adultes',
+          'Seniors': 'Aînés',
+          'Custom': 'Autres',
         },
         priceInfo: {
           'price_label': 'Prix',
