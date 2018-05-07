@@ -16,11 +16,10 @@ describe('Controller: Publish Form Modal', function() {
     $scope = $rootScope.$new();
     $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close', 'dismiss']);
     eventFormData = $injector.get('EventFormData');
-    eventFormData.calendarType = 'single';
-    eventFormData.timestamps = [
+    eventFormData.calendar.calendarType = 'single';
+    eventFormData.calendar.timeSpans = [
       {
-        date : new Date(),
-        startHourAsDate: new Date()
+        start : new Date()
       }
     ];
     eventCrud = jasmine.createSpyObj('eventCrud', [
@@ -75,12 +74,13 @@ describe('Controller: Publish Form Modal', function() {
 
   it('should upper limit the publication dates to choose from to a day before the calendar start of an offer with timestamps', function () {
     var formData = _.cloneDeep(eventFormData);
-    formData.timestamps = [
+    formData.calendar.type
+    formData.calendar.timeSpans = [
       {
-        startHourAsDate: new Date(2017, 9, 23)
+        start: new Date(2017, 9, 23)
       },
       {
-        startHourAsDate: new Date(2017, 8, 16)
+        start: new Date(2017, 8, 16)
       }
     ];
     var today = new Date(2017, 6, 23);

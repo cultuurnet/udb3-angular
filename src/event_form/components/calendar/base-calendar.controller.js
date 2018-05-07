@@ -36,8 +36,8 @@ function BaseCalendarController(calendar, $scope) {
    */
   function init(formData, openingHoursCollection) {
     calendar.formData = formData;
-    calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
-    calendar.setType(formData.calendarType ? formData.calendarType : 'single');
+    calendar.timeSpans = !_.isEmpty(formData.calendar.timeSpans) ? formData.calendar.timeSpans : [];
+    calendar.setType(formData.calendar.calendarType ? formData.calendar.calendarType : 'single');
     calendar.openingHoursCollection = openingHoursCollection;
   }
 
@@ -111,7 +111,7 @@ function BaseCalendarController(calendar, $scope) {
         setType('single');
       }
       clearTimeSpanRequirements();
-      calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
+      calendar.formData.saveTimestamps(calendar.timeSpans);
     }
   }
 
@@ -121,47 +121,6 @@ function BaseCalendarController(calendar, $scope) {
 
   function showTimeSpanRequirements(unmetRequirements) {
     calendar.timeSpanRequirements = unmetRequirements;
-  }
-
-  /**
-   * @param {TimeSpan[]} timeSpans
-   * @return {Timestamp[]}
-   */
-  function timeSpansToTimestamps(timeSpans) {
-    return _.map(timeSpans, function (timeSpan) {
-      var start = timeSpan.allDay ? moment(timeSpan.start).startOf('day') : moment(timeSpan.start);
-      var end = timeSpan.allDay ? moment(timeSpan.end).endOf('day').startOf('minute') : moment(timeSpan.end);
-
-      return {
-        date: moment(timeSpan.start).startOf('day').toDate(),
-        startHour: start.format('HH:mm'),
-        startHourAsDate: start.toDate(),
-        showStartHour: true,
-        endHour: end.format('HH:mm'),
-        endHourAsDate: end.toDate(),
-        showEndHour: true
-      };
-    });
-  }
-
-  /**
-   * @param {Timestamp[]} timestamps
-   * @return {TimeSpan[]}
-   */
-  function timestampsToTimeSpans(timestamps) {
-    return _.map(timestamps, function (timestamp) {
-      var start = timestamp.startHourAsDate;
-      var end = timestamp.endHourAsDate;
-      var allDay = moment(start).isSame(end, 'day') &&
-        moment(start).startOf('day').isSame(start) &&
-        moment(end).endOf('day').startOf('minute').isSame(end);
-
-      return {
-        start: start,
-        end: end,
-        allDay: allDay
-      };
-    });
   }
 
   /**

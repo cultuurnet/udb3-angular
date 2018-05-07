@@ -101,20 +101,15 @@ describe('Controller: Event Form', function() {
       }
     );
 
-    var expectedTimestamps = [
+    var expectedTimeSpans = [
       {
-        date: new Date('2017-09-10'),
-        startHour: '10:00',
-        startHourAsDate: moment('2017-09-10T10:00').toDate(),
-        endHourAsDate: moment('2017-09-10T18:00').toDate(),
-        endHour: '18:00',
-        showStartHour: true,
-        showEndHour: true
+        start: moment('2017-09-10T10:00').toISOString(),
+        end: moment('2017-09-10T18:00').toISOString(),
       }
     ];
 
     $scope.$digest();
-    expect(EventFormData.timestamps).toEqual(expectedTimestamps);
-    expect(EventFormData.calendarType).toEqual('single');
+    expect(EventFormData.calendar.timeSpans).toEqual(expectedTimeSpans);
+    expect(EventFormData.calendar.calendarType).toEqual('single');
   });
 });

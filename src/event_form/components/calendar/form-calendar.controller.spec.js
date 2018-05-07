@@ -37,7 +37,7 @@ describe('Controller: Form Calendar', function () {
 
   it('should default to the "single" calendar type when initializing', function () {
     var controller = getController();
-    expect(controller.formData.calendarType).toEqual('single');
+    expect(controller.formData.calendar.calendarType).toEqual('single');
     expect(controller.type).toEqual('single');
   });
 
@@ -109,46 +109,34 @@ describe('Controller: Form Calendar', function () {
     expect(controller.instantTimeSpanChanged).toHaveBeenCalled();
   });
 
-  it('should save timestamps to form-data when time-spans change', function () {
+  it('should save timespans to form-data when timespans change', function () {
     var controller = getController();
     controller.timeSpans = [
       {
-        allDay: true,
         start: new Date(2013, 9, 23, 2),
         end: new Date(2013, 9, 23, 5)
       },
       {
-        allDay: false,
         start: new Date(2013, 9, 23, 9),
         end: new Date(2013, 9, 23, 17)
       }
     ];
-    var expectedTimestamps = [
+    var expectedTimeSpans = [
       {
-        date: new Date(2013, 9, 23),
-        startHour: '00:00',
-        startHourAsDate: new Date(2013, 9, 23, 0, 0),
-        showStartHour: true,
-        endHour: '23:59',
-        endHourAsDate: new Date(2013, 9, 23, 23, 59),
-        showEndHour: true
+        start: new Date(2013, 9, 23, 2),
+        end: new Date(2013, 9, 23, 5)
       },
       {
-        date: new Date(2013, 9, 23),
-        startHour: '09:00',
-        startHourAsDate: new Date(2013, 9, 23, 9),
-        showStartHour: true,
-        endHour: '17:00',
-        endHourAsDate: new Date(2013, 9, 23, 17),
-        showEndHour: true
+        start: new Date(2013, 9, 23, 9),
+        end: new Date(2013, 9, 23, 17)
       }
     ];
     spyOn(controller.formData, 'timingChanged');
     controller.instantTimeSpanChanged();
-    expect(controller.formData.timestamps).toEqual(expectedTimestamps);
+    expect(controller.formData.calendar.timeSpans).toEqual(expectedTimeSpans);
   });
 
-  it('should load form-data timestamps as time-spans', function () {
+  /*it('should load form-data timestamps as time-spans', function () {
     var formData = EventFormData;
 
     var expectedTimeSpans = [
@@ -193,7 +181,7 @@ describe('Controller: Form Calendar', function () {
 
     controller.instantTimeSpanChanged();
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
-  });
+  });*/
 
   it('should update the time-span list when removing a time-span', function () {
     var controller = getController();
@@ -330,4 +318,3 @@ describe('Controller: Form Calendar', function () {
       expect(controller.type).toEqual('single');
   });
 });
-
