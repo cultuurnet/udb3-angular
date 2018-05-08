@@ -303,10 +303,14 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      *  An empty string when not set.
      */
     addTimeSpan: function(start, end) {
+      var allDay = moment(start).format("HH:mm") == "00:00" && moment(end).format("HH:mm") == "23:59";
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
-        'end': moment(end).toISOString()
+        'end': moment(end).toISOString(),
+        'allDay': allDay
       });
+      this.calendar.startDate = this.getEarliestStartDate();
+      this.calendar.endDate = this.getLatestEndDate();
     },
 
     /**
@@ -659,16 +663,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChanged();
     },
 
-    saveTimestamps: function (timeSpans) {
-      var oldTimestamps = _.cloneDeep(this.calendar.timeSpans);
-
+    saveTimeSpans: function (timeSpans) {
       this.calendar.timeSpans = timeSpans;
-
-      if (!_.isEqual(oldTimestamps, timeSpans)) {
-        this.calendar.startDate = this.getEarliestStartDate();
-        this.calendar.endDate = this.getLatestEndDate();
-        this.timingChanged();
-      }
+      this.calendar.startDate = this.getEarliestStartDate();
+      this.calendar.endDate = this.getLatestEndDate();
+      this.timingChanged();
     },
 
     periodicTimingChanged: function () {

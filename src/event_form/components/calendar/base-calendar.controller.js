@@ -62,8 +62,8 @@ function BaseCalendarController(calendar, $scope) {
     calendar.timeSpans = [
       {
         allDay: true,
-        start: moment().startOf('hour').add(1, 'h').toDate(),
-        end: moment().startOf('hour').add(4, 'h').toDate()
+        start: moment().startOf('day').toDate(),
+        end: moment().endOf('day').toDate()
       }
     ];
   }
@@ -111,7 +111,13 @@ function BaseCalendarController(calendar, $scope) {
         setType('single');
       }
       clearTimeSpanRequirements();
-      calendar.formData.saveTimestamps(calendar.timeSpans);
+      _.each(calendar.timeSpans, function(timeSpan){
+        if(timeSpan.allDay) {
+          timeSpan.start = moment(timeSpan.start).startOf('day').toDate(),
+          timeSpan.end = moment(timeSpan.end).endOf('day').toDate()
+        }
+      });
+      calendar.formData.saveTimeSpans(calendar.timeSpans);
     }
   }
 

@@ -42,13 +42,13 @@ describe('Controller: Form Calendar', function () {
   });
 
   it('should set today as the default time-span when creating a new offer', function () {
-    var today = new Date(2013, 9, 23, 1);
+    var today = new Date(2013, 9, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
     var expectedTimeSpans = [{
         allDay: true,
-        start: new Date(2013, 9, 23, 2),
-        end: new Date(2013, 9, 23, 5)
+        start: moment(today).startOf('day').toDate(),
+        end: moment(today).endOf('day').toDate()
     }];
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
@@ -93,18 +93,19 @@ describe('Controller: Form Calendar', function () {
 
   it('should initialize time-spans and trigger a change when starting a new list', function () {
     var controller = getController();
+    var today = new Date(2013, 9, 23);
+    jasmine.clock().mockDate(today);
     var expectedTimeSpans = [
       {
         allDay: true,
-        start: new Date(2013, 9, 23, 2),
-        end: new Date(2013, 9, 23, 5)
+        start: moment(today).startOf('day').toDate(),
+        end: moment(today).endOf('day').toDate()
       }
     ];
     spyOn(controller, 'instantTimeSpanChanged');
 
     controller.timeSpans = [];
     controller.createTimeSpan();
-
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
     expect(controller.instantTimeSpanChanged).toHaveBeenCalled();
   });
@@ -175,7 +176,7 @@ describe('Controller: Form Calendar', function () {
     EventFormData.init();
     EventFormData.initCalendar();
     spyOn(EventFormData, 'timingChanged');
-    EventFormData.saveTimestamps(timestamps);
+    EventFormData.saveTimeSpans(timestamps);
 
     var controller = getController(formData);
 
@@ -187,7 +188,7 @@ describe('Controller: Form Calendar', function () {
     var controller = getController();
     controller.timeSpans = [
       {
-        allDay: true,
+        allDay: false,
         start: new Date(2013, 9, 23, 2),
         end: new Date(2013, 9, 23, 5)
       },
@@ -199,7 +200,7 @@ describe('Controller: Form Calendar', function () {
     ];
     var expectedTimeSpans = [
       {
-        allDay: true,
+        allDay: false,
         start: new Date(2013, 9, 23, 2),
         end: new Date(2013, 9, 23, 5)
       }
@@ -227,11 +228,11 @@ describe('Controller: Form Calendar', function () {
       ['timedWhenNotAllDay'],
       ['startBeforeEnd']
     ];
-    spyOn(controller.formData, 'saveTimestamps');
+    spyOn(controller.formData, 'saveTimeSpans');
 
     controller.instantTimeSpanChanged();
     expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
-    expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
+    expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
   it('should show a time-span requirement when the start- is before end-day', function () {
@@ -249,11 +250,11 @@ describe('Controller: Form Calendar', function () {
       }
     ];
     var expectedRequirements = [['startBeforeEndDay'], ['startBeforeEndDay']];
-    spyOn(controller.formData, 'saveTimestamps');
+    spyOn(controller.formData, 'saveTimeSpans');
 
     controller.instantTimeSpanChanged();
     expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
-    expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
+    expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
   it('should show a time-span requirement when the begin- is before end-time', function () {
@@ -271,11 +272,11 @@ describe('Controller: Form Calendar', function () {
       }
     ];
     var expectedRequirements = [[], ['startBeforeEnd']];
-    spyOn(controller.formData, 'saveTimestamps');
+    spyOn(controller.formData, 'saveTimeSpans');
 
     controller.instantTimeSpanChanged();
     expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
-    expect(controller.formData.saveTimestamps).not.toHaveBeenCalled();
+    expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
   it('should switch the calendar type to multiple when there is more than one time-span', function () {

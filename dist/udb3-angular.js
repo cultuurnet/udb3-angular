@@ -10040,8 +10040,8 @@ function BaseCalendarController(calendar, $scope) {
     calendar.timeSpans = [
       {
         allDay: true,
-        start: moment().startOf('hour').add(1, 'h').toDate(),
-        end: moment().startOf('hour').add(4, 'h').toDate()
+        start: moment().startOf('day').toDate(),
+        end: moment().endOf('day').toDate()
       }
     ];
   }
@@ -10089,7 +10089,14 @@ function BaseCalendarController(calendar, $scope) {
         setType('single');
       }
       clearTimeSpanRequirements();
-      calendar.formData.saveTimestamps(calendar.timeSpans);
+      console.log(calendar.timeSpans);
+      _.each(calendar.timeSpans, function(timeSpan){
+        if(timeSpan.allDay) {
+          timeSpan.start = moment(timeSpan.start).startOf('day').toDate(),
+          timeSpan.end = moment(timeSpan.end).endOf('day').toDate()
+        }
+      });
+      calendar.formData.saveTimeSpans(calendar.timeSpans);
     }
   }
 
@@ -12727,10 +12734,15 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      *  An empty string when not set.
      */
     addTimeSpan: function(start, end) {
+      var allDay = moment(start).format("HH:mm") == "00:00" && moment(end).format("HH:mm") == "23:59";
+      console.log(allDay);
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
-        'end': moment(end).toISOString()
+        'end': moment(end).toISOString(),
+        'allDay': allDay
       });
+      this.calendar.startDate = this.getEarliestStartDate();
+      this.calendar.endDate = this.getLatestEndDate();
     },
 
     /**
@@ -12741,6 +12753,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.calendar.startDate = '';
       this.calendar.endDate = '';
       this.calendar.calendarType = '';
+      this.calendar.activeCalendarLabel = '';
+      this.calendar.activeCalendarType = '';
     },
 
     /**
@@ -12908,7 +12922,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       var startDate = this.getStartDate();
       var endDate = this.getEndDate();
 
-      return this.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
+      return this.calendar.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
     },
 
     /**
@@ -12924,6 +12938,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
+      console.log("timingChanged");
       this.showStep(3);
       this.timingChangedCallback(this);
     },
@@ -13081,16 +13096,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChanged();
     },
 
-    saveTimestamps: function (timeSpans) {
-      var oldTimestamps = _.cloneDeep(this.calendar.timeSpans);
-
+    saveTimeSpans: function (timeSpans) {
       this.calendar.timeSpans = timeSpans;
-
-      if (!_.isEqual(oldTimestamps, timeSpans)) {
-        this.calendar.startDate = this.getEarliestStartDate();
-        this.calendar.endDate = this.getLatestEndDate();
-        this.timingChanged();
-      }
+      this.calendar.startDate = this.getEarliestStartDate();
+      this.calendar.endDate = this.getLatestEndDate();
+      this.timingChanged();
     },
 
     periodicTimingChanged: function () {
