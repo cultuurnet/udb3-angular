@@ -30,9 +30,7 @@ function EventFormStep4Controller(
   // main storage for event form.
   $scope.eventFormData = EventFormData;
 
-  $scope.titleInputOptions = EventFormData.id === '' ?
-    {updateOn: 'default'} :
-    {updateOn: 'change blur'};
+  $scope.titleInputOptions = {updateOn: 'change blur'};
 
   $scope.infoMissing = false;
   $scope.duplicatesSearched = false;
@@ -82,6 +80,10 @@ function EventFormStep4Controller(
     }
     else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
       $scope.missingInfo.push('address missing for place');
+    }
+
+    if (EventFormData.name === '') {
+      $scope.missingInfo.push('title is missing');
     }
 
     if ($scope.missingInfo.length > 0) {
@@ -165,6 +167,7 @@ function EventFormStep4Controller(
 
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
+      $scope.titleInputOptions = {updateOn: 'change blur'};
       EventFormData.showStep(5);
 
     }, showMajorInfoError);
