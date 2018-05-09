@@ -49,7 +49,7 @@
                             rows="6"
                             udb-auto-scroll
                             focus-if="descriptionCssClass == 'state-filling'"
-                            ng-paste="handlePaste($event.originalEvent.clipboardData.getData('text/plain'))"></textarea>
+                            ng-paste="handlePaste($event.originalEvent.clipboardData.getData('text/plain').replace(/[^\x00-\x7F]/g))"></textarea>
 
                   <p class="tip description-info" ng-if="descriptionInfoVisible && countCharacters() < 200">
                     <span translate-once="eventForm.step5.required_200"></span>
