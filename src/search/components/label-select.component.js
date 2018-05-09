@@ -14,87 +14,62 @@ angular
   });
 
 /** @ngInject */
-function LabelSelectComponent(offerLabeller, $q) {
+function LabelSelectComponent($scope, offerLabeller, $q) {
+
   var select = this;
-  /** @type {Label[]} */
-  select.availableLabels = [];
-  select.suggestLabels = suggestLabels;
-  select.createLabel = createLabel;
-  select.areLengthCriteriaMet = areLengthCriteriaMet;
-  /** @type {Label[]} */
-  select.labels = objectifyLabels(select.labels);
-  select.minimumInputLength = 2;
-  select.maxInputLength = 255;
-  select.findDelay = 300;
-  select.refreshing = false;
 
-  select.$onChanges = updateLabels;
+  $scope.cachedLabels = select.labels;
+  $scope.currentLabel = '';
 
-  /**
-   * @param {Object} bindingChanges
-   * @see https://code.angularjs.org/1.5.9/docs/guide/component
-   */
-  function updateLabels(bindingChanges) {
-    select.labels = objectifyLabels(_.get(bindingChanges, 'labels.currentValue', select.labels));
-  }
+  $scope.regex = /^([a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]{1}[a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ_-\s]+)$/;
 
-  /**
-   * @param {string[]|Label[]} labels
-   * @return {Label[]}
-   */
-  function objectifyLabels(labels) {
-    return _.map(select.labels, function (label) {
-      return _.isString(label) ? {name:label} : label;
-    });
-  }
-
-  function areLengthCriteriaMet(length) {
-    return (length >= select.minimumInputLength && length <= select.maxInputLength);
-  }
-
-  function createLabel(labelName) {
-    // strip semi-colon, which doesn't get stripped automatically
-    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
-    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
-    labelName = labelName.replace(/;/g, '').trim();
-
-    var similarLabel = _.find(select.labels, function (existingLabel) {
-      return existingLabel.name.toUpperCase() === labelName.toUpperCase();
-    });
-    if (!similarLabel && select.areLengthCriteriaMet(labelName.length)) {
-      return {name:labelName};
+  $scope.findSuggestions = function(name) {
+    if ($scope.regex.test(name)) {
+      return offerLabeller
+        .getSuggestions(name, 6)
+        .then(function(labels) {
+          // 1. sort
+          labels = _.sortBy(labels, function(label) {
+            return label.name.indexOf(name);
+          });
+          // 2. add new suggestion
+          var suggestedLabels = _.map(_.pluck(suggestedLabels, 'name'), function(label) {
+            return label.toUpperCase();
+          });
+          if (!_.contains(suggestedLabels, name.toUpperCase())) {
+            labels.push({name: name});
+          }
+          // 3. filter already added labels, caseinsensitive
+          var alreadyAddedLabels = _.map($scope.cachedLabels, function(label) {
+            return label.toUpperCase();
+          });
+          labels = _.reject(labels, function(label) {
+            return alreadyAddedLabels.indexOf(label.name.toUpperCase()) > -1;
+          });
+          return labels;
+        });
+    } else {
+      return [];
     }
-  }
+  };
 
-  function findSuggestions(name) {
-    return offerLabeller
-      .getSuggestions(name, 6)
-      .then(function(labels) {
-        labels.push({name: name});
-        setAvailableLabels(labels);
-        return $q.resolve();
-      })
-      .finally(function () {
-        select.refreshing = false;
-      });
-  }
+  $scope.onSelect = function($item, $model, $label) {
+    var labelName = $label.trim();
+    var similarLabel = _.find($scope.cachedLabels, function (existingLabel) {
+      return existingLabel.toUpperCase() === labelName.toUpperCase();
+    });
+    if (!similarLabel) {
+      $scope.currentLabel = '';
+      select.labelAdded({label: $item});
+      $scope.cachedLabels.push($item.name);
+    } else {
+      $scope.currentLabel = '';
+    }
+  };
 
-  function suggestLabels(name) {
-    select.refreshing = true;
-    setAvailableLabels([]);
-    // returning the promise for testing purposes
-    return findSuggestions(name);
-  }
+  $scope.onRemove = function ($item) {
+    select.labelRemoved({label: $item});
+    $scope.cachedLabels = _.without($scope.cachedLabels, $item.name);
+  };
 
-  /** @param {Label[]} labels */
-  function setAvailableLabels(labels) {
-    select.availableLabels = _.chain(labels)
-      .reject(function(label) {
-        return _.find(select.labels, {'name': label.name});
-      })
-      .uniq(function (label) {
-        return label.name.toUpperCase();
-      })
-      .value();
-  }
 }

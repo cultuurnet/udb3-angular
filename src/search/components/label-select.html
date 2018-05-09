@@ -1,26 +1,30 @@
-<!-- adding a '.' to the token list due to: https://github.com/angular-ui/ui-select/issues/1151 -->
-<ui-select multiple
-           tagging="select.createLabel"
-           ng-model="select.labels"
-           reset-search-input="true"
-           tagging-tokens="ENTER|;|."
-           on-select="select.labelAdded({label: $item})"
-           on-remove="select.labelRemoved({label: $item})">
-    <ui-select-match placeholder="Voeg een label toe...">{{$item.name}}</ui-select-match>
-    <ui-select-no-choice ng-show="select.areLengthCriteriaMet($select.search.length) &&">
-        <div class="udb-label-select-refreshing" style="padding: 3px 20px">
-            <i class="fa fa-circle-o-notch fa-spin"></i> Suggesties laden
-        </div>
-    </ui-select-no-choice>
-    <ui-select-choices repeat="label in select.availableLabels track by label.name"
-                       ng-show="select.areLengthCriteriaMet($select.search.length) &&"
-                       ui-disable-choice="select.refreshing"
-                       refresh="select.suggestLabels($select.search)"
-                       refresh-delay="300"
-                       minimum-input-length="{{select.minimumInputLength}}">
-        <div>
-            <span ng-bind-html="label.name | highlight: $select.search"></span>
-            <span ng-if="!label.uuid"> (nieuw label toevoegen)</span>
-        </div>
-    </ui-select-choices>
-</ui-select>
+<form name="form">
+  <div class="form-group">
+    <input type="text"
+    class="form-control typeahead"
+    ng-model="currentLabel"
+    ng-pattern="regex"
+    uib-typeahead="suggestion.name for suggestion in findSuggestions($viewValue)"
+    typeahead-on-select="onSelect($item, $model, $label)"
+    typeahead-min-length="2"
+    id="input" name="input"
+    autocomplete="off"
+    ng-minlength="2"
+    ng-maxlength="50"/>
+  </div>
+</form>
+
+<div class="alert alert-warning" ng-show="!form.input.$valid && !form.input.$error.minlength ">
+  <p>Dit label is ongeldig. Een label<br>
+    <ul>
+      <li>bestaat enkel uit letters of cijfers
+      <li>bevat enkel '-' en '_', maar mag niet met deze tekens beginnen</li>
+      <li>telt 2 tot 50 karakters</li>
+    </ul>
+</div>
+
+<ul class="list-inline">
+  <li ng-repeat="(key, value) in cachedLabels">
+     <span class="badge">{{value}} <a ng-click="onRemove({name: value})" class="badge-remove">&times;</a></span>
+  </li>
+</ul>
