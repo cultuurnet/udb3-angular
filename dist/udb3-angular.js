@@ -27568,7 +27568,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
-    "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
+    "                            focus-if=\"descriptionCssClass == 'state-filling'\"\n" +
+    "                            ng-paste='handlePaste($event.originalEvent.clipboardData.getData('text/plain'))'></textarea>\n" +
     "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
     "                    <span translate-once=\"eventForm.step5.required_200\"></span>\n" +
