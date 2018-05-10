@@ -622,4 +622,8 @@ function EventFormStep5Controller(
 
   }
 
+  $scope.paste = function (event) {
+    $scope.description = $scope.description.split('\0x1f').join('');
+  };
+
 }

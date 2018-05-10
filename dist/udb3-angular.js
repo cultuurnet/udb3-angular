@@ -15220,6 +15220,10 @@ function EventFormStep5Controller(
 
   }
 
+  $scope.paste = function (event) {
+    $scope.description = $scope.description.split('\0x1f').join('');
+  };
+
 }
 EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi"];
 })();
@@ -27569,7 +27573,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
     "                            focus-if=\"descriptionCssClass == 'state-filling'\"\n" +
-    "                            ng-paste=\"handlePaste($event.originalEvent.clipboardData.getData('text/plain').split('\\0x1f').join(''))\"></textarea>\n" +
+    "                            ng-paste=\"paste($event.originalEvent)\"></textarea>\n" +
     "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
     "                    <span translate-once=\"eventForm.step5.required_200\"></span>\n" +
