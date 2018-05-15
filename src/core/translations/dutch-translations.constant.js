@@ -534,7 +534,15 @@ angular.module('udb.core')
         'main_image': 'Maak hoofdafbeelding',
         'add_image': 'Afbeelding toevoegen',
         age: {
-          'age_label': 'Geschikt voor'
+          'age_label': 'Geschikt voor',
+          'All ages': 'Alle leeftijden',
+          'Toddlers': 'Peuters',
+          'Preschoolers': 'Kleuters',
+          'Kids': 'Kinderen',
+          'Youngsters': 'Jongeren',
+          'Adults': 'Volwassenen',
+          'Seniors': 'Senioren',
+          'Custom': 'Andere',
         },
         priceInfo: {
           'price_label': 'Prijs',

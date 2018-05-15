@@ -3113,7 +3113,15 @@ angular.module('udb.core')
         'main_image': 'Maak hoofdafbeelding',
         'add_image': 'Afbeelding toevoegen',
         age: {
-          'age_label': 'Geschikt voor'
+          'age_label': 'Geschikt voor',
+          'All ages': 'Alle leeftijden',
+          'Toddlers': 'Peuters',
+          'Preschoolers': 'Kleuters',
+          'Kids': 'Kinderen',
+          'Youngsters': 'Jongeren',
+          'Adults': 'Volwassenen',
+          'Seniors': 'Senioren',
+          'Custom': 'Andere',
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -3919,7 +3927,15 @@ angular.module('udb.core')
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter image',
         age: {
-          'age_label': 'Adapté à'
+          'age_label': 'Adapté à',
+          'All ages': 'De tous âges',
+          'Toddlers': 'Tout-petits',
+          'Preschoolers': 'Enfants d\'âge préscolaire',
+          'Kids': 'Enfants',
+          'Youngsters': 'Jeunes',
+          'Adults': 'Adultes',
+          'Seniors': 'Aînés',
+          'Custom': 'Autres',
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -9320,7 +9336,8 @@ function EventDetail(
   $translate,
   appConfig,
   ModerationService,
-  RolePermission
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -9348,7 +9365,26 @@ function EventDetail(
    */
   function grantPermissions(permissionsData) {
     var event = permissionsData[1];
-    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+        });
   }
 
   function denyAllPermissions() {
@@ -9633,7 +9669,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -9726,7 +9762,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController($scope, EventFormData, eventCrud) {
+function FormAgeController($scope, EventFormData, eventCrud, $translate) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -9734,14 +9770,14 @@ function FormAgeController($scope, EventFormData, eventCrud) {
    * @enum {Object}
    */
   var AgeRangeEnum = Object.freeze({
-    'ALL': {label: 'Alle leeftijden'},
-    'TODDLERS': {label: 'Peuters', min: 0, max: 2},
-    'PRESCHOOLERS': {label: 'Kleuters', min: 3, max: 5},
-    'KIDS': {label: 'Kinderen', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Jongeren', min: 12, max: 17},
-    'ADULTS': {label: 'Volwassenen', min: 18},
-    'SENIORS': {label: 'Senioren', min: 65},
-    'CUSTOM': {label: 'Andere'}
+    'ALL': {label: 'All ages'},
+    'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
+    'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
+    'KIDS': {label: 'Kids', min: 6, max: 11},
+    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'ADULTS': {label: 'Adults', min: 18},
+    'SENIORS': {label: 'Seniors', min: 65},
+    'CUSTOM': {label: 'Custom'}
   });
 
   controller.ageRanges = angular.copy(AgeRangeEnum);
@@ -9854,8 +9890,12 @@ function FormAgeController($scope, EventFormData, eventCrud) {
       saveAgeRange();
     }
   }
+
+  $scope.translateAgeRange = function (ageRange) {
+    return $translate.instant('eventForm.step5.age.' + ageRange);
+  };
 }
-FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud"];
+FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud", "$translate"];
 })();
 
 // Source: src/event_form/components/age/form-age.directive.js
@@ -15094,8 +15134,8 @@ function EventFormStep5Controller(
       urlLabel : 'Reserveer plaatsen',
       email : '',
       phone : '',
-      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
-      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
+      availabilityStarts : moment(EventFormData.bookingInfo.availabilityStarts).format(),
+      availabilityEnds : moment(EventFormData.bookingInfo.availabilityEnds).format()
     }, $scope.bookingModel);
 
     $scope.savingBookingInfo = true;
@@ -25763,7 +25803,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
-    "                <a ng-bind=\"::ageRange.label\"\n" +
+    "                <a ng-bind=\"::translateAgeRange(ageRange.label)\"\n" +
     "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
     "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
@@ -25780,6 +25820,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
+    "                    <span class=\"form-text\">jaar</span>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"max-age\">tot</label>\n" +
@@ -25791,6 +25832,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
+    "                    <span class=\"form-text\">jaar</span>\n" +
     "                </div>\n" +
     "               </form>\n" +
     "            </div>\n" +
