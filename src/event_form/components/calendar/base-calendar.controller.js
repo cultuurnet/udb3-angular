@@ -28,6 +28,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.weeklyRecurring = false;
   calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
+  calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
 
   /**
@@ -95,6 +96,19 @@ function BaseCalendarController(calendar, $scope) {
   function instantTimeSpanChanged() {
     calendar.delayedTimeSpanChanged.cancel();
     timeSpanChanged();
+  }
+
+  function toggleAllDay(timeSpan) {
+    console.log(timeSpan.start);
+    if(timeSpan.allDay) {
+      timeSpan.start = moment(timeSpan.start).set({'hour': 0, 'minute': 0, 'millisecond': 0});
+      timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
+    }
+    else {
+      timeSpan.start = moment(timeSpan.start).set({'hour': moment().startOf('hour').format('H'), 'minute': 0}).toDate();
+      timeSpan.end = moment(timeSpan.end).set({'hour': moment().startOf('hour').add(4, 'h').format('H') , 'minute': 0}).toDate();
+    }
+    instantTimeSpanChanged();
   }
 
   function timeSpanChanged() {

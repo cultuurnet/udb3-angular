@@ -10006,6 +10006,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.weeklyRecurring = false;
   calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
+  calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
 
   /**
@@ -10075,6 +10076,19 @@ function BaseCalendarController(calendar, $scope) {
     timeSpanChanged();
   }
 
+  function toggleAllDay(timeSpan) {
+    console.log(timeSpan.start);
+    if(timeSpan.allDay) {
+      timeSpan.start = moment(timeSpan.start).set({'hour': 0, 'minute': 0, 'millisecond': 0});
+      timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
+    }
+    else {
+      timeSpan.start = moment(timeSpan.start).set({'hour': moment().startOf('hour').format('H'), 'minute': 0}).toDate();
+      timeSpan.end = moment(timeSpan.end).set({'hour': moment().startOf('hour').add(4, 'h').format('H') , 'minute': 0}).toDate();
+    }
+    instantTimeSpanChanged();
+  }
+
   function timeSpanChanged() {
     var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
 
@@ -10089,7 +10103,6 @@ function BaseCalendarController(calendar, $scope) {
         setType('single');
       }
       clearTimeSpanRequirements();
-      console.log(calendar.timeSpans);
       _.each(calendar.timeSpans, function(timeSpan){
         if(timeSpan.allDay) {
           timeSpan.start = moment(timeSpan.start).startOf('day').toDate(),
@@ -11859,7 +11872,7 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   efpmc.error = '';
   efpmc.hasPublicationDate = false;
   efpmc.publicationDate = eventFormData.availableFrom;
-  efpmc.maxDate = moment(eventFormData.getEarliestStartDate()).subtract(1, 'days').toDate();
+  efpmc.maxDate = moment(eventFormData.getFirstStartDate()).subtract(1, 'days').toDate();
   efpmc.opened = false;
   efpmc.dismiss = dismiss;
   efpmc.savePublicationDate = savePublicationDate;
@@ -12530,8 +12543,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       //
       this.calendar = {};
       this.calendar.calendarType = '';
-      this.calendar.startDate = '';
-      this.calendar.endDate = '';
       this.calendar.timeSpans = [];
       this.calendar.openingHours = [];
       //
@@ -12682,22 +12693,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       return this.theme.label ? this.theme.label : '';
     },
 
-    getStartDate : function() {
-      return this.calendar.startDate;
-    },
-
-    setStartDate: function(startDate) {
-      this.calendar.startDate = startDate;
-    },
-
-    getEndDate : function() {
-      return this.calendar.endDate;
-    },
-
-    setEndDate: function(endDate) {
-      this.calendar.endDate = endDate;
-    },
-
     /**
      * Reset the location.
      */
@@ -12735,14 +12730,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     addTimeSpan: function(start, end) {
       var allDay = moment(start).format("HH:mm") == "00:00" && moment(end).format("HH:mm") == "23:59";
-      console.log(allDay);
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
         'end': moment(end).toISOString(),
         'allDay': allDay
       });
-      this.calendar.startDate = this.getEarliestStartDate();
-      this.calendar.endDate = this.getLatestEndDate();
     },
 
     /**
@@ -12750,8 +12742,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     resetCalendar: function() {
       this.calendar.timeSpans = [];
-      this.calendar.startDate = '';
-      this.calendar.endDate = '';
       this.calendar.calendarType = '';
       this.calendar.activeCalendarLabel = '';
       this.calendar.activeCalendarType = '';
@@ -12760,29 +12750,25 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * Get the earliest date of an offer, or null for permanent events
      */
-    getEarliestStartDate: function() {
-      var earliestStartDate = null;
+    getFirstStartDate: function() {
+      var firstStartDate = null;
       if (this.calendar.calendarType === 'single' || this.calendar.calendarType === 'multiple') {
-        var allStartDates = _.pluck(this.calendar.timeSpans, 'start');
-        allStartDates = _.map(allStartDates, function(start) { return moment(start).toDate(); });
-        earliestStartDate = moment(Math.min.apply(null, allStartDates)).toDate();
+        firstStartDate = _.first(this.calendar.timeSpans).start;
       }
 
       if (eventFormData.calendar.calendarType === 'periodic') {
-        earliestStartDate = this.calendar.startDate;
+        firstStartDate = this.calendar.startDate;
       }
-      return earliestStartDate;
+      return firstStartDate;
     },
 
     /**
      * Get the earliest date of an offer, or null for permanent events
      */
-    getLatestEndDate: function() {
-      var latestEndDate = null;
+    getLastEndDate: function() {
+      var lastEndDate = null;
       if (this.calendar.calendarType === 'single' || this.calendar.calendarType === 'multiple') {
-        var allEndDates = _.pluck(this.calendar.timeSpans, 'end');
-        allEndDates = _.map(allEndDates, function(end) { return moment(end).toDate(); });
-        latestEndDate = moment(Math.max.apply(null, allEndDates)).toDate();
+        lastEndDate = _.last(this.calendar.timeSpans).end;
       }
 
       if (eventFormData.calendar.calendarType === 'periodic') {
@@ -12938,7 +12924,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
-      console.log("timingChanged");
       this.showStep(3);
       this.timingChangedCallback(this);
     },
@@ -13098,8 +13083,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     saveTimeSpans: function (timeSpans) {
       this.calendar.timeSpans = timeSpans;
-      this.calendar.startDate = this.getEarliestStartDate();
-      this.calendar.endDate = this.getLatestEndDate();
       this.timingChanged();
     },
 
@@ -13583,7 +13566,7 @@ function EventFormPublishController(
       .startOf('day')
       .toDate();
 
-    var startDate = controller.eventFormData.getEarliestStartDate();
+    var startDate = controller.eventFormData.getFirstStartDate();
 
     if (startDate && startDate < tomorrow) {
       return false;
@@ -25858,7 +25841,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"calendar-type-picker\">\n" +
     "    <div class=\"calendar-type-options\">\n" +
     "\n" +
-    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single' || calendar.type === 'multiple' }\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
     "            <p class=\"text-center\"><strong translate-once=\"calendar.one_more_days\"></strong></p></a><span class=\"or\" translate-once=\"calendar.or\"></span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
@@ -25892,7 +25875,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                <input type=\"checkbox\"\n" +
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
-    "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                       ng-change=\"calendar.toggleAllDay(timeSpan)\"\n" +
     "                                       class=\"all-day-check\"> <span translate-once=\"calendar.whole_day_label\"></span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +

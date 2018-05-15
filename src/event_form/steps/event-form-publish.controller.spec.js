@@ -151,15 +151,15 @@ describe('Controller: Event Form Publish', function () {
     EventFormData.calendar.calendarType = "multiple";
     EventFormData.calendar.timeSpans = [
       {
-        start: new Date(2017, 9, 23)
+        start: new Date(2017, 8, 22)
       },
       {
-        start: new Date(2017, 8, 22)
+        start: new Date(2017, 9, 22)
       }
     ];
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    var today = new Date(2017, 8, 23);
+    var today = new Date(2017, 9, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
     expect(controller.canPublishLater()).toEqual(false);
@@ -170,8 +170,8 @@ describe('Controller: Event Form Publish', function () {
     EventFormData.calendarType = "periodic";
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    EventFormData.setStartDate(new Date(2017, 8, 24));
-    EventFormData.setEndDate(new Date(2018, 8, 23));
+    EventFormData.setPeriodicStartDate(new Date(2017, 8, 24));
+    EventFormData.setPeriodicEndDate(new Date(2018, 8, 23));
     var today = new Date(2017, 8, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
@@ -183,8 +183,8 @@ describe('Controller: Event Form Publish', function () {
     EventFormData.calendar.calendarType = "periodic";
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    EventFormData.setStartDate(new Date(2017, 8, 23));
-    EventFormData.setEndDate(new Date(2018, 8, 23));
+    EventFormData.setPeriodicStartDate(new Date(2017, 8, 23));
+    EventFormData.setPeriodicEndDate(new Date(2018, 8, 23));
     var today = new Date(2017, 8, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
@@ -196,8 +196,8 @@ describe('Controller: Event Form Publish', function () {
     EventFormData.calendar.calendarType = "periodic";
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    EventFormData.setStartDate(new Date(2016, 8, 23));
-    EventFormData.setEndDate(new Date(2018, 8, 23));
+    EventFormData.setPeriodicStartDate(new Date(2016, 8, 23));
+    EventFormData.setPeriodicEndDate(new Date(2018, 8, 23));
     var today = new Date(2017, 8, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();

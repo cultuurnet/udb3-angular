@@ -99,8 +99,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       //
       this.calendar = {};
       this.calendar.calendarType = '';
-      this.calendar.startDate = '';
-      this.calendar.endDate = '';
       this.calendar.timeSpans = [];
       this.calendar.openingHours = [];
       //
@@ -251,19 +249,19 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       return this.theme.label ? this.theme.label : '';
     },
 
-    getStartDate : function() {
+    getPeriodicStartDate : function() {
       return this.calendar.startDate;
     },
 
-    setStartDate: function(startDate) {
+    setPeriodicStartDate: function(startDate) {
       this.calendar.startDate = startDate;
     },
 
-    getEndDate : function() {
+    getPeriodicEndDate : function() {
       return this.calendar.endDate;
     },
 
-    setEndDate: function(endDate) {
+    setPeriodicEndDate: function(endDate) {
       this.calendar.endDate = endDate;
     },
 
@@ -309,8 +307,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         'end': moment(end).toISOString(),
         'allDay': allDay
       });
-      this.calendar.startDate = this.getEarliestStartDate();
-      this.calendar.endDate = this.getLatestEndDate();
     },
 
     /**
@@ -318,8 +314,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     resetCalendar: function() {
       this.calendar.timeSpans = [];
-      this.calendar.startDate = '';
-      this.calendar.endDate = '';
       this.calendar.calendarType = '';
       this.calendar.activeCalendarLabel = '';
       this.calendar.activeCalendarType = '';
@@ -328,29 +322,25 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * Get the earliest date of an offer, or null for permanent events
      */
-    getEarliestStartDate: function() {
-      var earliestStartDate = null;
+    getFirstStartDate: function() {
+      var firstStartDate = null;
       if (this.calendar.calendarType === 'single' || this.calendar.calendarType === 'multiple') {
-        var allStartDates = _.pluck(this.calendar.timeSpans, 'start');
-        allStartDates = _.map(allStartDates, function(start) { return moment(start).toDate(); });
-        earliestStartDate = moment(Math.min.apply(null, allStartDates)).toDate();
+        firstStartDate = _.first(this.calendar.timeSpans).start;
       }
 
       if (eventFormData.calendar.calendarType === 'periodic') {
-        earliestStartDate = this.calendar.startDate;
+        firstStartDate = this.calendar.startDate;
       }
-      return earliestStartDate;
+      return firstStartDate;
     },
 
     /**
      * Get the earliest date of an offer, or null for permanent events
      */
-    getLatestEndDate: function() {
-      var latestEndDate = null;
+    getLastEndDate: function() {
+      var lastEndDate = null;
       if (this.calendar.calendarType === 'single' || this.calendar.calendarType === 'multiple') {
-        var allEndDates = _.pluck(this.calendar.timeSpans, 'end');
-        allEndDates = _.map(allEndDates, function(end) { return moment(end).toDate(); });
-        latestEndDate = moment(Math.max.apply(null, allEndDates)).toDate();
+        lastEndDate = _.last(this.calendar.timeSpans).end;
       }
 
       if (eventFormData.calendar.calendarType === 'periodic') {
@@ -487,8 +477,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * @return {boolean}
      */
     hasValidPeriodicRange: function () {
-      var startDate = this.getStartDate();
-      var endDate = this.getEndDate();
+      var startDate = this.getPeriodicStartDate();
+      var endDate = this.getPeriodicEndDate();
 
       return this.calendar.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
     },
@@ -665,8 +655,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     saveTimeSpans: function (timeSpans) {
       this.calendar.timeSpans = timeSpans;
-      this.calendar.startDate = this.getEarliestStartDate();
-      this.calendar.endDate = this.getLatestEndDate();
       this.timingChanged();
     },
 
