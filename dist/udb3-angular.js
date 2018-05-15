@@ -9336,7 +9336,8 @@ function EventDetail(
   $translate,
   appConfig,
   ModerationService,
-  RolePermission
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -9364,7 +9365,26 @@ function EventDetail(
    */
   function grantPermissions(permissionsData) {
     var event = permissionsData[1];
-    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+        });
   }
 
   function denyAllPermissions() {
@@ -9649,7 +9669,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -15086,8 +15106,8 @@ function EventFormStep5Controller(
       urlLabel : 'Reserveer plaatsen',
       email : '',
       phone : '',
-      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
-      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
+      availabilityStarts : moment(EventFormData.bookingInfo.availabilityStarts).format(),
+      availabilityEnds : moment(EventFormData.bookingInfo.availabilityEnds).format()
     }, $scope.bookingModel);
 
     $scope.savingBookingInfo = true;
