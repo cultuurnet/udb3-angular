@@ -432,6 +432,7 @@ angular.module('udb.core')
       'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
       'category_validation': 'Categorie is een verplicht veld.',
       'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
       'add': 'Toevoegen'
     },
@@ -463,7 +464,8 @@ angular.module('udb.core')
         'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
         'street': 'Straat en nummer',
         'placeholder_street': 'Kerkstraat 1',
-        'straat_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
         'ok': 'OK'
       },
       step4: {
