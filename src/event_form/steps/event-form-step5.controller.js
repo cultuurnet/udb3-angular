@@ -165,7 +165,10 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, $scope.mainLanguage);
+      EventFormData.setDescription(
+        $scope.description.replace(new RegExp(String.fromCharCode(31), 'g'), ''),
+        $scope.mainLanguage
+      );
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {
@@ -483,8 +486,8 @@ function EventFormStep5Controller(
       urlLabel : 'Reserveer plaatsen',
       email : '',
       phone : '',
-      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
-      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
+      availabilityStarts : moment(EventFormData.bookingInfo.availabilityStarts).format(),
+      availabilityEnds : moment(EventFormData.bookingInfo.availabilityEnds).format()
     }, $scope.bookingModel);
 
     $scope.savingBookingInfo = true;
@@ -621,9 +624,5 @@ function EventFormStep5Controller(
     }
 
   }
-
-  $scope.paste = function (event) {
-    $scope.description = $scope.description.split('\0x1f').join('');
-  };
 
 }

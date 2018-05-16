@@ -276,8 +276,12 @@ describe('Controller: event form step 3', function (){
 
     scope.changePlaceStreetAddress();
     scope.step3Form = {
-      $valid: true
+      $valid: true,
+      street: {
+        $setValidity: function(){ return true }
+      }
     };
+    spyOn(scope.step3Form.street, '$setValidity');
     scope.setPlaceStreetAddress('Kerkstraat 69');
 
     expect(EventFormData.address).toEqual(expectedAddress);
