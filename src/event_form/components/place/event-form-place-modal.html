@@ -8,18 +8,22 @@
             <input id="name" class="form-control" type="text" ng-model="newPlace.name" name="name" required>
             <span class="help-block"
                   translate-once="location.name_validation"
-                  ng-show="showValidation && placeForm.name.$error.required">
+                  ng-show="error">
       </span>
         </div>
         <div class="row">
             <div class="col-xs-8">
-                <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }">
+                <div class="form-group" ng-class="{'has-error' : showValidation && (placeForm.address_streetAddress.$error.required || invalidStreet)}">
                     <label for="locatie-straat" translate-once="location.street"></label>
                     <input class="form-control" id="locatie-straat" name="address_streetAddress" type="text" ng-model="newPlace.address.streetAddress" required>
                     <span class="help-block"
                           translate-once="location.street_validation"
-                          ng-show="showValidation && placeForm.address_streetAddress.$error.required">
-          </span>
+                          ng-show="error && !invalidStreet">
+                    </span>
+                    <span class="help-block"
+                          translate-once="location.invalid_street"
+                          ng-show="invalidStreet">
+                    </span>
                 </div>
             </div>
             <div class="col-xs-4">
@@ -37,7 +41,7 @@
             <span class="help-block"
                   translate-once="location.category_validation"
                   ng-show="showValidation && placeForm.eventType.$error.required">
-      </span>
+            </span>
         </div>
         <div class="row">
             <div class="col-xs-12">

@@ -21,7 +21,7 @@ describe('EventFormPlaceModalController', function() {
     $uibModalInstance = jasmine.createSpyObj('$uibModalInstance', ['close', 'dismiss']);
     eventCrud = $injector.get('eventCrud');
     UdbPlace = $injector.get('UdbPlace');
-
+    $scope.placeForm = {$valid: true};
   }));
 
   beforeEach(function(){
@@ -70,6 +70,12 @@ describe('EventFormPlaceModalController', function() {
   it('should return the id of Archeologische Site', function () {
     expect($scope.categories).toEqual(categories);
     expect($scope.newPlace.eventType.id).toEqual('3CuHvenJ+EGkcvhXLg9Ykg');
+  });
+
+  it('should not allow a long string as last part of the address', function () {
+    $scope.newPlace.address.streetAddress = 'Het laatste woord van deze zin telt meer dan vijftienkarakters';
+    $scope.addLocation();
+    expect($scope.error).toEqual(true);
   });
 
 });
