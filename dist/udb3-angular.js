@@ -14619,7 +14619,7 @@ function EventFormStep4Controller(
    * Notify that the title of an event has changed.
    */
   function eventTitleChanged() {
-    if (EventFormData.id) {
+    if (EventFormData.id && EventFormData.name !== '') {
       $rootScope.$emit('eventTitleChanged', EventFormData);
     }
   }
