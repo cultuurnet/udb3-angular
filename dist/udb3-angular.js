@@ -14816,7 +14816,10 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, $scope.mainLanguage);
+      EventFormData.setDescription(
+        $scope.description.replace(new RegExp(String.fromCharCode(31), 'g'), ''),
+        $scope.mainLanguage
+      );
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {
@@ -27628,7 +27631,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
-    "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
+    "                            focus-if=\"descriptionCssClass == 'state-filling'\">\n" +
+    "                            </textarea>\n" +
     "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
     "                    <span translate-once=\"eventForm.step5.required_200\"></span>\n" +
