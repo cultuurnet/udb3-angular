@@ -486,8 +486,14 @@ function EventFormStep5Controller(
       urlLabel : 'Reserveer plaatsen',
       email : '',
       phone : '',
-      availabilityStarts : moment(EventFormData.bookingInfo.availabilityStarts).format(),
-      availabilityEnds : moment(EventFormData.bookingInfo.availabilityEnds).format()
+      availabilityStarts :
+        EventFormData.bookingInfo.availabilityStarts ?
+          moment(EventFormData.bookingInfo.availabilityStarts).format() :
+          '',
+      availabilityEnds :
+        EventFormData.bookingInfo.availabilityEnds ?
+          moment(EventFormData.bookingInfo.availabilityEnds).format() :
+          ''
     }, $scope.bookingModel);
 
     $scope.savingBookingInfo = true;
