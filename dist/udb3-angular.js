@@ -3261,6 +3261,7 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
+    'title is missing': 'Gaf je je aanbod een titel in <a href="#titel" class="alert-link">stap 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
@@ -4075,6 +4076,7 @@ angular.module('udb.core')
     'when missing': 'Avez-vous fait un choix en <a href="#quand" class="alert-link">étape 2</a>?',
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'location missing for place': 'Avez-vous choisi une location en <a href="#où" class="alert-link">étape 3</a>?',
+    'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
@@ -14454,9 +14456,7 @@ function EventFormStep4Controller(
   // main storage for event form.
   $scope.eventFormData = EventFormData;
 
-  $scope.titleInputOptions = EventFormData.id === '' ?
-    {updateOn: 'default'} :
-    {updateOn: 'change blur'};
+  $scope.titleInputOptions = {updateOn: 'change blur'};
 
   $scope.infoMissing = false;
   $scope.duplicatesSearched = false;
@@ -14506,6 +14506,10 @@ function EventFormStep4Controller(
     }
     else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
       $scope.missingInfo.push('address missing for place');
+    }
+
+    if (EventFormData.name === '') {
+      $scope.missingInfo.push('title is missing');
     }
 
     if ($scope.missingInfo.length > 0) {
@@ -14589,6 +14593,7 @@ function EventFormStep4Controller(
 
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
+      $scope.titleInputOptions = {updateOn: 'change blur'};
       EventFormData.showStep(5);
 
     }, showMajorInfoError);
@@ -14614,7 +14619,7 @@ function EventFormStep4Controller(
    * Notify that the title of an event has changed.
    */
   function eventTitleChanged() {
-    if (EventFormData.id) {
+    if (EventFormData.id && EventFormData.name !== '') {
       $rootScope.$emit('eventTitleChanged', EventFormData);
     }
   }
@@ -27530,8 +27535,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
-    "          ng-click=\"validateEvent(true);\"\n" +
-    "          ng-class=\"{'disabled': eventFormData.name === ''}\">\n" +
+    "          ng-click=\"validateEvent(true);\">\n" +
     "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
