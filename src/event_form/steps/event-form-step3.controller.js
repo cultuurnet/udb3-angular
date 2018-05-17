@@ -313,6 +313,17 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
+  function getNumberFromStreetAddress(streetAddress) {
+    return streetAddress.split(' ').pop() || '';
+  }
+
+  function validateAddress(streetAddress) {
+    if (streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+  }
+
   /**
    * Set the street address for a Place.
    *
@@ -321,7 +332,13 @@ function EventFormStep3Controller(
   function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
+    $scope.step3Form.street.$setValidity('invalid', true);
     if (!$scope.step3Form.$valid) {
+      return;
+    }
+
+    if (!validateAddress(streetAddress)) {
+      $scope.step3Form.street.$setValidity('invalid', false);
       return;
     }
 

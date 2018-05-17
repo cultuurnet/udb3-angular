@@ -3011,6 +3011,7 @@ angular.module('udb.core')
       'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
       'category_validation': 'Categorie is een verplicht veld.',
       'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
       'add': 'Toevoegen'
     },
@@ -3042,7 +3043,8 @@ angular.module('udb.core')
         'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
         'street': 'Straat en nummer',
         'placeholder_street': 'Kerkstraat 1',
-        'straat_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
         'ok': 'OK'
       },
       step4: {
@@ -9334,7 +9336,8 @@ function EventDetail(
   $translate,
   appConfig,
   ModerationService,
-  RolePermission
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -9362,7 +9365,26 @@ function EventDetail(
    */
   function grantPermissions(permissionsData) {
     var event = permissionsData[1];
-    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+        });
   }
 
   function denyAllPermissions() {
@@ -9647,7 +9669,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -11495,6 +11517,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     $scope.newPlace = getDefaultPlace();
     $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
+    $scope.invalidStreet = false;
     $scope.saving = false;
     $scope.error = false;
 
@@ -11548,8 +11571,13 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         return;
       }
 
-      savePlace();
+      if (!validateAddress($scope.newPlace.address.streetAddress)) {
+        $scope.error = true;
+        $scope.invalidStreet = true;
+        return;
+      }
 
+      savePlace();
     }
 
     /**
@@ -11623,6 +11651,14 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       return sortedCategories[0].id;
     }
 
+    function getNumberFromStreetAddress(streetAddress) {
+      return streetAddress.split(' ').pop();
+    }
+
+    function validateAddress(streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
   }
   EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
@@ -14283,6 +14319,17 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
+  function getNumberFromStreetAddress(streetAddress) {
+    return streetAddress.split(' ').pop() || '';
+  }
+
+  function validateAddress(streetAddress) {
+    if (streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+  }
+
   /**
    * Set the street address for a Place.
    *
@@ -14291,7 +14338,13 @@ function EventFormStep3Controller(
   function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
+    $scope.step3Form.street.$setValidity('invalid', true);
     if (!$scope.step3Form.$valid) {
+      return;
+    }
+
+    if (!validateAddress(streetAddress)) {
+      $scope.step3Form.street.$setValidity('invalid', false);
       return;
     }
 
@@ -14763,7 +14816,10 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, $scope.mainLanguage);
+      EventFormData.setDescription(
+        $scope.description.replace(new RegExp(String.fromCharCode(31), 'g'), ''),
+        $scope.mainLanguage
+      );
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {
@@ -15081,8 +15137,14 @@ function EventFormStep5Controller(
       urlLabel : 'Reserveer plaatsen',
       email : '',
       phone : '',
-      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
-      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
+      availabilityStarts :
+        EventFormData.bookingInfo.availabilityStarts ?
+          moment(EventFormData.bookingInfo.availabilityStarts).format() :
+          '',
+      availabilityEnds :
+        EventFormData.bookingInfo.availabilityEnds ?
+          moment(EventFormData.bookingInfo.availabilityEnds).format() :
+          ''
     }, $scope.bookingModel);
 
     $scope.savingBookingInfo = true;
@@ -26550,18 +26612,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "            <span class=\"help-block\"\n" +
     "                  translate-once=\"location.name_validation\"\n" +
-    "                  ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
+    "                  ng-show=\"error\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
-    "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && (placeForm.address_streetAddress.$error.required || invalidStreet)}\">\n" +
     "                    <label for=\"locatie-straat\" translate-once=\"location.street\"></label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
     "                    <span class=\"help-block\"\n" +
     "                          translate-once=\"location.street_validation\"\n" +
-    "                          ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
-    "          </span>\n" +
+    "                          ng-show=\"error && !invalidStreet\">\n" +
+    "                    </span>\n" +
+    "                    <span class=\"help-block\"\n" +
+    "                          translate-once=\"location.invalid_street\"\n" +
+    "                          ng-show=\"invalidStreet\">\n" +
+    "                    </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
@@ -26579,7 +26645,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <span class=\"help-block\"\n" +
     "                  translate-once=\"location.category_validation\"\n" +
     "                  ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "      </span>\n" +
+    "            </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
@@ -27350,18 +27416,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}\">\n" +
     "              <label translate-once=\"eventForm.step3.street\"></label>\n" +
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
     "                     ng-model=\"newPlaceStreetAddress\"\n" +
+    "                     ng-change=\"showValidation=false\"\n" +
     "                     translate-once-placeholder=\"eventForm.step3.placeholder_street\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
     "              <span class=\"help-block\"\n" +
     "                    translate-once=\"eventForm.step3.street_validate\"\n" +
     "                    ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
+    "              </span>\n" +
+    "              <span class=\"help-block\" ng-show=\"showValidation\" translate-once=\"eventForm.step3.street_validate_long\">\n" +
     "              </span>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -27544,7 +27613,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
-    "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
+    "                            focus-if=\"descriptionCssClass == 'state-filling'\">\n" +
+    "                            </textarea>\n" +
     "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
     "                    <span translate-once=\"eventForm.step5.required_200\"></span>\n" +
