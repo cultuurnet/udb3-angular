@@ -3011,6 +3011,7 @@ angular.module('udb.core')
       'category_help': 'Kies een categorie die deze locatie het best omschrijft.',
       'category_validation': 'Categorie is een verplicht veld.',
       'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
+      'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
       'add': 'Toevoegen'
     },
@@ -3042,7 +3043,8 @@ angular.module('udb.core')
         'location_error': 'Er was een probleem tijdens het ophalen van de locaties',
         'street': 'Straat en nummer',
         'placeholder_street': 'Kerkstraat 1',
-        'straat_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate': 'Straat en nummer is een verplicht veld.',
+        'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
         'ok': 'OK'
       },
       step4: {
@@ -3111,7 +3113,15 @@ angular.module('udb.core')
         'main_image': 'Maak hoofdafbeelding',
         'add_image': 'Afbeelding toevoegen',
         age: {
-          'age_label': 'Geschikt voor'
+          'age_label': 'Geschikt voor',
+          'All ages': 'Alle leeftijden',
+          'Toddlers': 'Peuters',
+          'Preschoolers': 'Kleuters',
+          'Kids': 'Kinderen',
+          'Youngsters': 'Jongeren',
+          'Adults': 'Volwassenen',
+          'Seniors': 'Senioren',
+          'Custom': 'Andere',
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -3251,6 +3261,7 @@ angular.module('udb.core')
     'when missing': 'Maakte je een keuze in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
+    'title is missing': 'Gaf je je aanbod een titel in <a href="#titel" class="alert-link">stap 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
@@ -3917,7 +3928,15 @@ angular.module('udb.core')
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter image',
         age: {
-          'age_label': 'Adapté à'
+          'age_label': 'Adapté à',
+          'All ages': 'De tous âges',
+          'Toddlers': 'Tout-petits',
+          'Preschoolers': 'Enfants d\'âge préscolaire',
+          'Kids': 'Enfants',
+          'Youngsters': 'Jeunes',
+          'Adults': 'Adultes',
+          'Seniors': 'Aînés',
+          'Custom': 'Autres',
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -4057,6 +4076,7 @@ angular.module('udb.core')
     'when missing': 'Avez-vous fait un choix en <a href="#quand" class="alert-link">étape 2</a>?',
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'location missing for place': 'Avez-vous choisi une location en <a href="#où" class="alert-link">étape 3</a>?',
+    'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
@@ -9318,7 +9338,8 @@ function EventDetail(
   $translate,
   appConfig,
   ModerationService,
-  RolePermission
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -9346,7 +9367,26 @@ function EventDetail(
    */
   function grantPermissions(permissionsData) {
     var event = permissionsData[1];
-    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+        });
   }
 
   function denyAllPermissions() {
@@ -9631,7 +9671,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -9724,7 +9764,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController($scope, EventFormData, eventCrud) {
+function FormAgeController($scope, EventFormData, eventCrud, $translate) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -9732,14 +9772,14 @@ function FormAgeController($scope, EventFormData, eventCrud) {
    * @enum {Object}
    */
   var AgeRangeEnum = Object.freeze({
-    'ALL': {label: 'Alle leeftijden'},
-    'TODDLERS': {label: 'Peuters', min: 0, max: 2},
-    'PRESCHOOLERS': {label: 'Kleuters', min: 3, max: 5},
-    'KIDS': {label: 'Kinderen', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Jongeren', min: 12, max: 17},
-    'ADULTS': {label: 'Volwassenen', min: 18},
-    'SENIORS': {label: 'Senioren', min: 65},
-    'CUSTOM': {label: 'Andere'}
+    'ALL': {label: 'All ages'},
+    'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
+    'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
+    'KIDS': {label: 'Kids', min: 6, max: 11},
+    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'ADULTS': {label: 'Adults', min: 18},
+    'SENIORS': {label: 'Seniors', min: 65},
+    'CUSTOM': {label: 'Custom'}
   });
 
   controller.ageRanges = angular.copy(AgeRangeEnum);
@@ -9852,8 +9892,12 @@ function FormAgeController($scope, EventFormData, eventCrud) {
       saveAgeRange();
     }
   }
+
+  $scope.translateAgeRange = function (ageRange) {
+    return $translate.instant('eventForm.step5.age.' + ageRange);
+  };
 }
-FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud"];
+FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud", "$translate"];
 })();
 
 // Source: src/event_form/components/age/form-age.directive.js
@@ -10077,14 +10121,15 @@ function BaseCalendarController(calendar, $scope) {
   }
 
   function toggleAllDay(timeSpan) {
-    console.log(timeSpan.start);
-    if(timeSpan.allDay) {
+    if (timeSpan.allDay) {
       timeSpan.start = moment(timeSpan.start).set({'hour': 0, 'minute': 0, 'millisecond': 0});
       timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
     }
     else {
       timeSpan.start = moment(timeSpan.start).set({'hour': moment().startOf('hour').format('H'), 'minute': 0}).toDate();
-      timeSpan.end = moment(timeSpan.end).set({'hour': moment().startOf('hour').add(4, 'h').format('H') , 'minute': 0}).toDate();
+      timeSpan.end = moment(timeSpan.end).set(
+          {'hour': moment().startOf('hour').add(4, 'h').format('H') , 'minute': 0}
+        ).toDate();
     }
     instantTimeSpanChanged();
   }
@@ -10103,10 +10148,10 @@ function BaseCalendarController(calendar, $scope) {
         setType('single');
       }
       clearTimeSpanRequirements();
-      _.each(calendar.timeSpans, function(timeSpan){
-        if(timeSpan.allDay) {
-          timeSpan.start = moment(timeSpan.start).startOf('day').toDate(),
-          timeSpan.end = moment(timeSpan.end).endOf('day').toDate()
+      _.each(calendar.timeSpans, function(timeSpan) {
+        if (timeSpan.allDay) {
+          timeSpan.start = moment(timeSpan.start).startOf('day').toDate();
+          timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
         }
       });
       calendar.formData.saveTimeSpans(calendar.timeSpans);
@@ -11454,6 +11499,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     $scope.newPlace = getDefaultPlace();
     $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
+    $scope.invalidStreet = false;
     $scope.saving = false;
     $scope.error = false;
 
@@ -11507,8 +11553,13 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         return;
       }
 
-      savePlace();
+      if (!validateAddress($scope.newPlace.address.streetAddress)) {
+        $scope.error = true;
+        $scope.invalidStreet = true;
+        return;
+      }
 
+      savePlace();
     }
 
     /**
@@ -11582,6 +11633,14 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       return sortedCategories[0].id;
     }
 
+    function getNumberFromStreetAddress(streetAddress) {
+      return streetAddress.split(' ').pop();
+    }
+
+    function validateAddress(streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
   }
   EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
 
@@ -12693,6 +12752,22 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       return this.theme.label ? this.theme.label : '';
     },
 
+    getPeriodicStartDate : function() {
+      return this.calendar.startDate;
+    },
+
+    setPeriodicStartDate: function(startDate) {
+      this.calendar.startDate = startDate;
+    },
+
+    getPeriodicEndDate : function() {
+      return this.calendar.endDate;
+    },
+
+    setPeriodicEndDate: function(endDate) {
+      this.calendar.endDate = endDate;
+    },
+
     /**
      * Reset the location.
      */
@@ -12729,7 +12804,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      *  An empty string when not set.
      */
     addTimeSpan: function(start, end) {
-      var allDay = moment(start).format("HH:mm") == "00:00" && moment(end).format("HH:mm") == "23:59";
+      var allDay = moment(start).format('HH:mm') === '00:00' && moment(end).format('HH:mm') === '23:59';
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
         'end': moment(end).toISOString(),
@@ -12772,9 +12847,9 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
 
       if (eventFormData.calendar.calendarType === 'periodic') {
-        latestEndDate = this.calendar.endDate;
+        lastEndDate = this.calendar.endDate;
       }
-      return latestEndDate;
+      return lastEndDate;
     },
 
     /**
@@ -12905,8 +12980,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * @return {boolean}
      */
     hasValidPeriodicRange: function () {
-      var startDate = this.getStartDate();
-      var endDate = this.getEndDate();
+      var startDate = this.getPeriodicStartDate();
+      var endDate = this.getPeriodicEndDate();
 
       return this.calendar.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
     },
@@ -14194,6 +14269,17 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
+  function getNumberFromStreetAddress(streetAddress) {
+    return streetAddress.split(' ').pop() || '';
+  }
+
+  function validateAddress(streetAddress) {
+    if (streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+  }
+
   /**
    * Set the street address for a Place.
    *
@@ -14202,7 +14288,13 @@ function EventFormStep3Controller(
   function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
+    $scope.step3Form.street.$setValidity('invalid', true);
     if (!$scope.step3Form.$valid) {
+      return;
+    }
+
+    if (!validateAddress(streetAddress)) {
+      $scope.step3Form.street.$setValidity('invalid', false);
       return;
     }
 
@@ -14312,9 +14404,7 @@ function EventFormStep4Controller(
   // main storage for event form.
   $scope.eventFormData = EventFormData;
 
-  $scope.titleInputOptions = EventFormData.id === '' ?
-    {updateOn: 'default'} :
-    {updateOn: 'change blur'};
+  $scope.titleInputOptions = {updateOn: 'change blur'};
 
   $scope.infoMissing = false;
   $scope.duplicatesSearched = false;
@@ -14364,6 +14454,10 @@ function EventFormStep4Controller(
     }
     else if (EventFormData.isPlace && !EventFormData.address.streetAddress) {
       $scope.missingInfo.push('address missing for place');
+    }
+
+    if (EventFormData.name === '') {
+      $scope.missingInfo.push('title is missing');
     }
 
     if ($scope.missingInfo.length > 0) {
@@ -14447,6 +14541,7 @@ function EventFormStep4Controller(
 
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
+      $scope.titleInputOptions = {updateOn: 'change blur'};
       EventFormData.showStep(5);
 
     }, showMajorInfoError);
@@ -14472,7 +14567,7 @@ function EventFormStep4Controller(
    * Notify that the title of an event has changed.
    */
   function eventTitleChanged() {
-    if (EventFormData.id) {
+    if (EventFormData.id && EventFormData.name !== '') {
       $rootScope.$emit('eventTitleChanged', EventFormData);
     }
   }
@@ -14674,7 +14769,10 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, $scope.mainLanguage);
+      EventFormData.setDescription(
+        $scope.description.replace(new RegExp(String.fromCharCode(31), 'g'), ''),
+        $scope.mainLanguage
+      );
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {
@@ -14992,8 +15090,14 @@ function EventFormStep5Controller(
       urlLabel : 'Reserveer plaatsen',
       email : '',
       phone : '',
-      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
-      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
+      availabilityStarts :
+        EventFormData.bookingInfo.availabilityStarts ?
+          moment(EventFormData.bookingInfo.availabilityStarts).format() :
+          '',
+      availabilityEnds :
+        EventFormData.bookingInfo.availabilityEnds ?
+          moment(EventFormData.bookingInfo.availabilityEnds).format() :
+          ''
     }, $scope.bookingModel);
 
     $scope.savingBookingInfo = true;
@@ -25661,7 +25765,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
-    "                <a ng-bind=\"::ageRange.label\"\n" +
+    "                <a ng-bind=\"::translateAgeRange(ageRange.label)\"\n" +
     "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
     "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
@@ -25678,6 +25782,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
+    "                    <span class=\"form-text\">jaar</span>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <label for=\"max-age\">tot</label>\n" +
@@ -25689,6 +25794,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
+    "                    <span class=\"form-text\">jaar</span>\n" +
     "                </div>\n" +
     "               </form>\n" +
     "            </div>\n" +
@@ -26483,18 +26589,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <input id=\"name\" class=\"form-control\" type=\"text\" ng-model=\"newPlace.name\" name=\"name\" required>\n" +
     "            <span class=\"help-block\"\n" +
     "                  translate-once=\"location.name_validation\"\n" +
-    "                  ng-show=\"showValidation && placeForm.name.$error.required\">\n" +
+    "                  ng-show=\"error\">\n" +
     "      </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-8\">\n" +
-    "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.address_streetAddress.$error.required }\">\n" +
+    "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && (placeForm.address_streetAddress.$error.required || invalidStreet)}\">\n" +
     "                    <label for=\"locatie-straat\" translate-once=\"location.street\"></label>\n" +
     "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
     "                    <span class=\"help-block\"\n" +
     "                          translate-once=\"location.street_validation\"\n" +
-    "                          ng-show=\"showValidation && placeForm.address_streetAddress.$error.required\">\n" +
-    "          </span>\n" +
+    "                          ng-show=\"error && !invalidStreet\">\n" +
+    "                    </span>\n" +
+    "                    <span class=\"help-block\"\n" +
+    "                          translate-once=\"location.invalid_street\"\n" +
+    "                          ng-show=\"invalidStreet\">\n" +
+    "                    </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-xs-4\">\n" +
@@ -26512,7 +26622,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <span class=\"help-block\"\n" +
     "                  translate-once=\"location.category_validation\"\n" +
     "                  ng-show=\"showValidation && placeForm.eventType.$error.required\">\n" +
-    "      </span>\n" +
+    "            </span>\n" +
     "        </div>\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-xs-12\">\n" +
@@ -27283,18 +27393,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-12\">\n" +
-    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && step3Form.street.$error.required }\">\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}\">\n" +
     "              <label translate-once=\"eventForm.step3.street\"></label>\n" +
     "              <input class=\"form-control\"\n" +
     "                     id=\"straat\"\n" +
     "                     name=\"street\"\n" +
     "                     ng-model=\"newPlaceStreetAddress\"\n" +
+    "                     ng-change=\"showValidation=false\"\n" +
     "                     translate-once-placeholder=\"eventForm.step3.placeholder_street\"\n" +
     "                     type=\"text\"\n" +
     "                     required />\n" +
     "              <span class=\"help-block\"\n" +
     "                    translate-once=\"eventForm.step3.street_validate\"\n" +
     "                    ng-show=\"showValidation && step3Form.street.$error.required\">\n" +
+    "              </span>\n" +
+    "              <span class=\"help-block\" ng-show=\"showValidation\" translate-once=\"eventForm.step3.street_validate_long\">\n" +
     "              </span>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -27370,8 +27483,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
-    "          ng-click=\"validateEvent(true);\"\n" +
-    "          ng-class=\"{'disabled': eventFormData.name === ''}\">\n" +
+    "          ng-click=\"validateEvent(true);\">\n" +
     "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
@@ -27477,7 +27589,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
-    "                            focus-if=\"descriptionCssClass == 'state-filling'\"></textarea>\n" +
+    "                            focus-if=\"descriptionCssClass == 'state-filling'\">\n" +
+    "                            </textarea>\n" +
     "\n" +
     "                  <p class=\"tip description-info\" ng-if=\"descriptionInfoVisible && countCharacters() < 200\">\n" +
     "                    <span translate-once=\"eventForm.step5.required_200\"></span>\n" +

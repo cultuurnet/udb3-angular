@@ -532,7 +532,15 @@ angular.module('udb.core')
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter image',
         age: {
-          'age_label': 'Adapté à'
+          'age_label': 'Adapté à',
+          'All ages': 'De tous âges',
+          'Toddlers': 'Tout-petits',
+          'Preschoolers': 'Enfants d\'âge préscolaire',
+          'Kids': 'Enfants',
+          'Youngsters': 'Jeunes',
+          'Adults': 'Adultes',
+          'Seniors': 'Aînés',
+          'Custom': 'Autres',
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -672,6 +680,7 @@ angular.module('udb.core')
     'when missing': 'Avez-vous fait un choix en <a href="#quand" class="alert-link">étape 2</a>?',
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'location missing for place': 'Avez-vous choisi une location en <a href="#où" class="alert-link">étape 3</a>?',
+    'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
