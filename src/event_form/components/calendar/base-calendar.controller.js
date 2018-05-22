@@ -99,14 +99,15 @@ function BaseCalendarController(calendar, $scope) {
   }
 
   function toggleAllDay(timeSpan) {
-    console.log(timeSpan.start);
-    if(timeSpan.allDay) {
+    if (timeSpan.allDay) {
       timeSpan.start = moment(timeSpan.start).set({'hour': 0, 'minute': 0, 'millisecond': 0});
       timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
     }
     else {
       timeSpan.start = moment(timeSpan.start).set({'hour': moment().startOf('hour').format('H'), 'minute': 0}).toDate();
-      timeSpan.end = moment(timeSpan.end).set({'hour': moment().startOf('hour').add(4, 'h').format('H') , 'minute': 0}).toDate();
+      timeSpan.end = moment(timeSpan.end).set(
+          {'hour': moment().startOf('hour').add(4, 'h').format('H') , 'minute': 0}
+        ).toDate();
     }
     instantTimeSpanChanged();
   }
@@ -125,10 +126,10 @@ function BaseCalendarController(calendar, $scope) {
         setType('single');
       }
       clearTimeSpanRequirements();
-      _.each(calendar.timeSpans, function(timeSpan){
-        if(timeSpan.allDay) {
-          timeSpan.start = moment(timeSpan.start).startOf('day').toDate(),
-          timeSpan.end = moment(timeSpan.end).endOf('day').toDate()
+      _.each(calendar.timeSpans, function(timeSpan) {
+        if (timeSpan.allDay) {
+          timeSpan.start = moment(timeSpan.start).startOf('day').toDate();
+          timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
         }
       });
       calendar.formData.saveTimeSpans(calendar.timeSpans);

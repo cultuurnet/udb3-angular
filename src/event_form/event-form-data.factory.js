@@ -301,7 +301,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      *  An empty string when not set.
      */
     addTimeSpan: function(start, end) {
-      var allDay = moment(start).format("HH:mm") == "00:00" && moment(end).format("HH:mm") == "23:59";
+      var allDay = moment(start).format('HH:mm') === '00:00' && moment(end).format('HH:mm') === '23:59';
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
         'end': moment(end).toISOString(),
@@ -344,9 +344,9 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
 
       if (eventFormData.calendar.calendarType === 'periodic') {
-        latestEndDate = this.calendar.endDate;
+        lastEndDate = this.calendar.endDate;
       }
-      return latestEndDate;
+      return lastEndDate;
     },
 
     /**
