@@ -1,0 +1,22 @@
+'use strict';
+
+/**
+ * @ngdoc module
+ * @name udb.event-translate
+ * @description
+ * The udb form module
+ */
+angular
+  .module('udb.event-translate', [
+    'ngSanitize',
+    'ngMessages',
+    'ui.bootstrap',
+    'udb.config',
+    'udb.entry',
+    'udb.search',
+    'udb.uitpas',
+    'ngFileUpload',
+    'duScroll',
+    'focus-if',
+    'angular.filter'
+  ]);

@@ -1,0 +1,83 @@
+<div class="offer-form" ng-if="loaded">
+
+  <h1 class="title">Vertalen</h1>
+
+  <!-- Titel -->
+  <div class="row">
+    <div class="col-sm-3">
+      <p><strong>Titel</strong></p>
+    </div>
+    <div class="col-sm-9">
+      <div class="row">
+        <div class="col-sm-3">
+          <p class="orginal text-muted">Origineel</p>
+        </div>
+        <div class="col-sm-9">
+          <p class="orginal text-muted" ng-bind="originalName"></p>
+        </div>
+      </div>
+
+      <div class="row" ng-repeat="language in languages">
+        <div class="col-sm-3">
+          <p class="orginal text-muted">{{language}}</p>
+        </div>
+        <div class="col-sm-9">
+          <textarea ng-blur="saveTranslatedName(language)" class="form-control form-group" ng-model="translatedNames[language]"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Beschrijving -->
+  <div class="row">
+    <div class="col-sm-3">
+      <p><strong>Beschrijving</strong></p>
+    </div>
+    <div class="col-sm-9">
+      <div class="row">
+        <div class="col-sm-3">
+          <p class="orginal text-muted">Origineel</p>
+        </div>
+        <div class="col-sm-9">
+          <p class="orginal text-muted" ng-bind="originalDescription"></p>
+        </div>
+      </div>
+
+      <div class="row" ng-repeat="language in languages">
+        <div class="col-sm-3">
+          <p class="orginal text-muted">{{language}}</p>
+        </div>
+        <div class="col-sm-9">
+          <input type="text" ng-blur="saveTranslatedDescription(language)" class="form-control form-group" ng-model="translatedDescriptions[language]">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prijs -->
+  <div class="row" ng-repeat="originalTariff in originalTariffs track by $index">
+    <div class="col-sm-3">
+      <p><strong>Prijstarief {{$index+1}}</strong></p>
+    </div>
+    <div class="col-sm-9">
+      <div class="row">
+        <div class="col-sm-3">
+          <p class="orginal text-muted">Origineel</p>
+        </div>
+        <div class="col-sm-9">
+          <p class="orginal text-muted" ng-bind="originalTariff"></p>
+        </div>
+      </div>
+
+      <div class="row" ng-repeat="language in languages">
+        <div class="col-sm-3">
+          <p class="orginal text-muted">{{language}}</p>
+        </div>
+        <div class="col-sm-9">
+          <input type="text" ng-blur="saveTranslatedTariffs()" class="form-control form-group" ng-model="translatedTariffs[$parent.$index][language]">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

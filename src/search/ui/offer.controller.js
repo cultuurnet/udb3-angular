@@ -159,6 +159,8 @@ function OfferController(
     var language = controller.activeLanguage,
         udbProperty = apiProperty || property;
 
+    console.log(cachedOffer);
+
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator
         .translateProperty(cachedOffer, udbProperty, language, translation)
