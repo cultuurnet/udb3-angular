@@ -364,7 +364,8 @@ angular.module('udb.core')
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
       'no_age': 'Pas d\'information de l\'âge',
-      'publiq_url': 'Voir sur UiT in Vlaanderen'
+      'publiq_url': 'Voir sur UiT in Vlaanderen',
+      'translate': 'Traduire'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',

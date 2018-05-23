@@ -25,7 +25,8 @@ function PlaceDetail(
   $q,
   $window,
   offerLabeller,
-  appConfig
+  appConfig,
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -75,13 +76,14 @@ function PlaceDetail(
     openPlaceDeleteConfirmModal($scope.place);
   };
 
-  var language = 'nl';
+  var language = $translate.use() || 'nl';
+  $scope.language = language;
   var cachedPlace;
 
   function showOffer(place) {
     cachedPlace = place;
 
-    $scope.place = jsonLDLangFilter(place, language);
+    $scope.place = jsonLDLangFilter(place, language, true);
     $scope.placeIdIsInvalid = false;
 
     if (!disableVariations) {
@@ -123,6 +125,13 @@ function PlaceDetail(
     var id = placeLocation.split('/').pop();
 
     $state.go('split.placeEdit', {id: id});
+  };
+
+  $scope.openTranslatePage = function() {
+    var placeLocation = $scope.placeId.toString();
+    var id = placeLocation.split('/').pop();
+
+    $state.go('split.placeTranslate', {id: id});
   };
 
   $scope.updateDescription = function(description) {

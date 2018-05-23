@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc module
- * @name udb.event-translate
+ * @name udb.offer-translate
  * @description
  * The udb form module
  */
 angular
-  .module('udb.event-translate', [
+  .module('udb.offer-translate', [
     'ngSanitize',
     'ngMessages',
     'ui.bootstrap',

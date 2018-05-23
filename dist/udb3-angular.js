@@ -18,7 +18,7 @@ angular
         'udb.search',
         'udb.entry',
         'udb.event-form',
-        'udb.event-translate',
+        'udb.offer-translate',
         'udb.export',
         'udb.event-detail',
         'udb.place-detail',
@@ -112,12 +112,12 @@ angular
 
 /**
  * @ngdoc module
- * @name udb.event-translate
+ * @name udb.offer-translate
  * @description
  * The udb form module
  */
 angular
-  .module('udb.event-translate', [
+  .module('udb.offer-translate', [
     'ngSanitize',
     'ngMessages',
     'ui.bootstrap',
@@ -2967,7 +2967,16 @@ angular.module('udb.core')
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
-      'publiq_url': 'Bekijk op UiT in Vlaanderen'
+      'publiq_url': 'Bekijk op UiT in Vlaanderen',
+      'translate': 'Vertalen'
+    },
+    translate: {
+      'ready': 'Klaar met vertalen',
+      'translate': 'vertalen',
+      'original': 'Origineel',
+      'description': 'Beschrijving',
+      'title': 'Titel',
+      'tariff': 'Prijstarief'
     },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
@@ -3784,7 +3793,8 @@ angular.module('udb.core')
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
       'no_age': 'Pas d\'information de l\'âge',
-      'publiq_url': 'Voir sur UiT in Vlaanderen'
+      'publiq_url': 'Voir sur UiT in Vlaanderen',
+      'translate': 'Traduire'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
@@ -5843,6 +5853,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
       this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
       this.mainLanguage = jsonEvent.mainLanguage || 'nl';
+      this.languages = jsonEvent.languages || [];
     },
 
     /**
@@ -6385,6 +6396,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
       this.mainLanguage = jsonPlace.mainLanguage || 'nl';
+      this.languages = jsonPlace.languages || [];
     },
 
     /**
@@ -9457,6 +9469,7 @@ function EventDetail(
   $scope.isEmpty = _.isEmpty;
 
   var language = $translate.use() || 'nl';
+  $scope.language = language;
   var cachedEvent;
 
   function showHistory(eventHistory) {
@@ -9481,8 +9494,6 @@ function EventDetail(
         .getCalendarSummary($scope.eventId, 'lg')
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
-
-    language = $translate.use() || 'nl';
 
     $scope.event = jsonLDLangFilter(event, language, true);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -9590,6 +9601,12 @@ function EventDetail(
     var id = eventLocation.split('/').pop();
 
     $state.go('split.eventEdit', {id: id});
+  };
+
+  $scope.openTranslatePage = function() {
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+    $state.go('split.eventTranslate', {id: id});
   };
 
   function goToDashboard() {
@@ -15315,248 +15332,6 @@ function EventFormStep5Controller(
 EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi"];
 })();
 
-// Source: src/event_translate/event-translate-data.factory.js
-(function () {
-'use strict';
-
-/**
- * @typedef {Object} EventType
- * @property {string} id
- * @property {string} label
- */
-
-/**
- * @typedef {Object} EventTheme
- * @property {string} id
- * @property {string} label
- */
-
-/**
- * @typedef {Object} MediaObject
- * @property {string} @id
- * @property {string} @type
- * @property {string} id
- * @property {string} url
- * @property {string} thumbnailUrl
- * @property {string} description
- * @property {string} copyrightHolder
- */
-
-/**
- * @typedef {Object} BookingInfo
- * @property {string} url
- * @property {string} urlLabel
- * @property {string} email
- * @property {string} phone
- */
-
-/**
- * @typedef {Object} OpeningHoursData
- * @property {string} opens
- * @property {string} closes
- * @property {string[]} dayOfWeek
- */
-
-/**
- * @ngdoc service
- * @name udb.core.EventTranslateData
- * @description
- * Contains data needed for the translation of an offer
- */
-angular
-  .module('udb.event-translate')
-  .factory('EventTranslateData', EventTranslateDataFactory);
-
-/* @ngInject */
-function EventTranslateDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, appConfig, $translate) {
-
-  /**
-   * @class EventFormData
-   */
-  var eventTranslateData = {
-    /**
-     * Initialize the properties with default data
-     */
-    init: function() {
-
-    },
-
-    clone: function () {
-      var clone = _.cloneDeep(this);
-      clone.timingChanged$ = rx.createObservableFunction(clone, 'timingChangedCallback');
-
-      return clone;
-    }
-  }
-
-  // initialize the data
-  eventTranslateData.init();
-
-  return eventTranslateData;
-}
-EventTranslateDataFactory.$inject = ["rx", "calendarLabels", "moment", "OpeningHoursCollection", "appConfig", "$translate"];
-})();
-
-// Source: src/event_translate/event-translate.controller.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc function
- * @name udbApp.controller:EventTranslateController
- * @description
- * # EventTranslateController
- * Init the event form
- */
-angular
-  .module('udb.event-translate')
-  .controller('EventTranslateController', EventTranslateController);
-
-/* @ngInject */
-function EventTranslateController(
-    $scope,
-    offerId,
-    EventTranslateData,
-    udbApi,
-    moment,
-    jsonLDLangFilter,
-    $q,
-    appConfig,
-    $translate,
-    offerTranslator,
-    eventCrud
-) {
-
-  // Other controllers won't load until this boolean is set to true.
-  $scope.loaded = false;
-  $scope.mainLanguage = '';
-  $scope.eventTranslateData = EventTranslateData;
-  $scope.translatedNames = {};
-  $scope.translatedDescriptions = {};
-  $scope.translatedTariffs = [];
-  $scope.languages = ['nl', 'fr', 'en', 'de'];
-
-  // Functions
-  $scope.saveTranslatedName = saveTranslatedName;
-  $scope.saveTranslatedDescription = saveTranslatedDescription;
-  $scope.saveTranslatedTariffs = saveTranslatedTariffs;
-
-  $q.when(offerId)
-    .then(fetchOffer, offerNotFound);
-
-  function startTranslating(offer) {
-    $scope.cachedOffer = offer;
-    $scope.mainLanguage = offer['mainLanguage'] ? offer['mainLanguage'] : 'nl';
-    $scope.languages = _.reject($scope.languages, function(language){ return language == $scope.mainLanguage; });
-
-    $scope.originalName = _.get($scope.cachedOffer.name, $scope.cachedOffer.mainLanguage, null) ||
-       _.get($scope.cachedOffer.name, 'nl', null) ||
-       _.get(item, 'name', '');
-
-    $scope.originalDescription = _.get($scope.cachedOffer.description, $scope.cachedOffer.mainLanguage, null) ||
-       _.get($scope.cachedOffer.description, 'nl', null) ||
-       _.get($scope.cachedOffer, 'description', '');
-
-    $scope.originalTariffs = getOriginalTariffs();
-
-    $scope.translatedNames = _.get($scope.cachedOffer, 'name');
-    $scope.translatedDescriptions = _.get($scope.cachedOffer, 'description');
-    $scope.translatedTariffs = {};
-    $scope.loaded = true;
-  }
-
-  function offerNotFound() {
-    console.log("offer not found");
-  }
-
-  /**
-   * @param {string|null} offerId
-   */
-  function fetchOffer(offerId) {
-    if (!offerId) {
-      offerNotFound()
-    } else {
-      udbApi
-        .getOffer(offerId)
-        .then(startTranslating);
-    }
-  }
-
-  function saveTranslatedName(language) {
-    offerTranslator
-      .translateProperty($scope.cachedOffer, 'name', language, $scope.translatedNames[language])
-      .then(function(){
-        //
-      });
-  }
-
-  function saveTranslatedDescription(language) {
-    offerTranslator
-      .translateProperty($scope.cachedOffer, 'description', language, $scope.translatedDescriptions[language])
-      .then(function(){
-        //
-      });
-  }
-
-  function saveTranslatedTariffs() {
-    var EventFormData = $scope.cachedOffer;
-    for (var key in EventFormData.priceInfo) {
-      if (key > 0) {
-        var originalTariff = {};
-        originalTariff[$scope.mainLanguage] = $scope.originalTariffs[key-1];
-        EventFormData.priceInfo[key].name = _.merge(originalTariff, $scope.translatedTariffs[key-1]);
-      }
-    }
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      //
-    });
-  }
-
-  function getOriginalTariffs() {
-    var originalTariffs = [];
-
-    for (var key in $scope.cachedOffer.priceInfo) {
-      if(key > 0) {
-        originalTariffs.push(
-          $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] ?
-            $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] :
-            $scope.cachedOffer.priceInfo[key].name);
-      }
-    }
-
-    return originalTariffs;
-  }
-
-
-}
-EventTranslateController.$inject = ["$scope", "offerId", "EventTranslateData", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig", "$translate", "offerTranslator", "eventCrud"];
-})();
-
-// Source: src/event_translate/event-translate.directive.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc directive
- * @name udb.search.directive:event-translate.html
- * @description
- * # udb event form directive
- */
-angular
-  .module('udb.event-translate')
-  .directive('udbEventTranslate', EventTranslateDirective);
-
-/* @ngInject */
-function EventTranslateDirective() {
-  return {
-    templateUrl: 'templates/event-translate.html',
-    restrict: 'EA',
-  };
-}
-})();
-
 // Source: src/export/event-export-job.factory.js
 (function () {
 'use strict';
@@ -19859,6 +19634,212 @@ function EventMigrationService() {
 }
 })();
 
+// Source: src/offer_translate/offer-translate.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OfferTranslateController
+ * @description
+ * # OffertranslateController
+ * Init the event form
+ */
+angular
+  .module('udb.offer-translate')
+  .controller('OfferTranslateController', OfferTranslateController);
+
+/* @ngInject */
+function OfferTranslateController(
+    $scope,
+    offerId,
+    udbApi,
+    moment,
+    jsonLDLangFilter,
+    $q,
+    appConfig,
+    $translate,
+    offerTranslator,
+    eventCrud,
+    $state
+) {
+
+  $scope.loaded = false;
+  $scope.mainLanguage = '';
+  $scope.translatedNames = {};
+  $scope.translatedDescriptions = {};
+  $scope.translatedTariffs = [];
+  $scope.languages = ['nl', 'fr', 'en', 'de'];
+  $scope.activeLanguages = {
+    'nl': {'active': false, 'main': false},
+    'fr': {'active': false, 'main': false},
+    'en': {'active': false, 'main': false},
+    'de': {'active': false, 'main': false}
+  };
+
+
+  // Functions
+  $scope.saveTranslatedName = saveTranslatedName;
+  $scope.saveTranslatedDescription = saveTranslatedDescription;
+  $scope.saveTranslatedTariffs = saveTranslatedTariffs;
+  $scope.openEditPage = openEditPage;
+  $scope.goToDashboard = goToDashboard;
+
+  $q.when(offerId)
+    .then(fetchOffer, offerNotFound);
+
+  function startTranslating(offer) {
+    $scope.cachedOffer = offer;
+    $scope.mainLanguage = offer.mainLanguage ? offer.mainLanguage : 'nl';
+    $scope.offerType = offer.url.split('/').shift();
+    if ($scope.offerType === 'event') {
+      $scope.isEvent = true;
+      $scope.isPlace = false;
+    } else {
+      $scope.isEvent = false;
+      $scope.isPlace = true;
+    }
+
+    $scope.originalName = _.get($scope.cachedOffer.name, $scope.cachedOffer.mainLanguage, null) ||
+       _.get($scope.cachedOffer.name, 'nl', null) ||
+       _.get($scope.cachedOffer, 'name', '');
+
+    console.log($scope.cachedOffer);
+
+    $scope.originalDescription = _.get($scope.cachedOffer.description, $scope.cachedOffer.mainLanguage, '') ||
+       _.get($scope.cachedOffer.description, 'nl', '') ||
+       _.get($scope.cachedOffer, 'description', '');
+
+    $scope.originalDescription = _.isEmpty($scope.originalDescription) ? '' : $scope.originalDescription;
+
+    $scope.originalTariffs = getOriginalTariffs();
+
+    $scope.translatedNames = _.get($scope.cachedOffer, 'name');
+    $scope.translatedDescriptions = _.get($scope.cachedOffer, 'description');
+    $scope.translatedTariffs = getTranslatedTariffs();
+    $scope.loaded = true;
+
+    _.forEach($scope.cachedOffer.languages, function(language) {
+      $scope.activeLanguages[language].active = true;
+    });
+
+    $scope.activeLanguages[$scope.mainLanguage].main = true;
+  }
+
+  function offerNotFound() {
+    console.log('offer not found');
+  }
+
+  /**
+   * @param {string|null} offerId
+   */
+  function fetchOffer(offerId) {
+    if (!offerId) {
+      offerNotFound();
+    } else {
+      udbApi
+        .getOffer(offerId)
+        .then(startTranslating);
+    }
+  }
+
+  function saveTranslatedName(language) {
+    offerTranslator
+      .translateProperty($scope.cachedOffer, 'name', language, $scope.translatedNames[language])
+      .then(function() {
+        //
+      });
+  }
+
+  function saveTranslatedDescription(language) {
+    offerTranslator
+      .translateProperty($scope.cachedOffer, 'description', language, $scope.translatedDescriptions[language])
+      .then(function() {
+        //
+      });
+  }
+
+  function saveTranslatedTariffs() {
+    var EventFormData = $scope.cachedOffer;
+    for (var key in EventFormData.priceInfo) {
+      if (key > 0) {
+        var originalTariff = {};
+        originalTariff[$scope.mainLanguage] = $scope.originalTariffs[key - 1];
+        EventFormData.priceInfo[key].name =
+          _.merge(originalTariff, $scope.translatedTariffs[key - 1]);
+      }
+    }
+
+    var promise = eventCrud.updatePriceInfo(EventFormData);
+    promise.then(function() {
+      //
+    });
+  }
+
+  function getOriginalTariffs() {
+    var originalTariffs = [];
+
+    for (var key in $scope.cachedOffer.priceInfo) {
+      if (key > 0) {
+        originalTariffs.push(
+          $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] ?
+            $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] :
+            $scope.cachedOffer.priceInfo[key].name);
+      }
+    }
+
+    return originalTariffs;
+  }
+
+  function getTranslatedTariffs() {
+    var translatedTariffs = [];
+
+    for (var key in $scope.cachedOffer.priceInfo) {
+      if (key > 0) {
+        translatedTariffs.push($scope.cachedOffer.priceInfo[key].name);
+      }
+    }
+
+    return translatedTariffs;
+  }
+
+  function openEditPage() {
+    var offerLocation = $scope.cachedOffer.id.toString();
+    var id = offerLocation.split('/').pop();
+    $state.go('split.eventEdit', {id: id});
+  }
+
+  function goToDashboard() {
+    $state.go('split.footer.dashboard');
+  }
+
+}
+OfferTranslateController.$inject = ["$scope", "offerId", "udbApi", "moment", "jsonLDLangFilter", "$q", "appConfig", "$translate", "offerTranslator", "eventCrud", "$state"];
+})();
+
+// Source: src/offer_translate/offer-translate.directive.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.search.directive:offer-translate.html
+ * @description
+ * # udb offer translate directive
+ */
+angular
+  .module('udb.offer-translate')
+  .directive('udbOfferTranslate', OfferTranslateDirective);
+
+/* @ngInject */
+function OfferTranslateDirective() {
+  return {
+    templateUrl: 'templates/offer-translate.html',
+    restrict: 'EA',
+  };
+}
+})();
+
 // Source: src/place-detail/place-detail.directive.js
 (function () {
 'use strict';
@@ -19912,7 +19893,8 @@ function PlaceDetail(
   $q,
   $window,
   offerLabeller,
-  appConfig
+  appConfig,
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -19962,13 +19944,14 @@ function PlaceDetail(
     openPlaceDeleteConfirmModal($scope.place);
   };
 
-  var language = 'nl';
+  var language = $translate.use() || 'nl';
+  $scope.language = language;
   var cachedPlace;
 
   function showOffer(place) {
     cachedPlace = place;
 
-    $scope.place = jsonLDLangFilter(place, language);
+    $scope.place = jsonLDLangFilter(place, language, true);
     $scope.placeIdIsInvalid = false;
 
     if (!disableVariations) {
@@ -20010,6 +19993,13 @@ function PlaceDetail(
     var id = placeLocation.split('/').pop();
 
     $state.go('split.placeEdit', {id: id});
+  };
+
+  $scope.openTranslatePage = function() {
+    var placeLocation = $scope.placeId.toString();
+    var id = placeLocation.split('/').pop();
+
+    $state.go('split.placeTranslate', {id: id});
   };
 
   $scope.updateDescription = function(description) {
@@ -20117,7 +20107,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
 })();
 
 // Source: src/router/offer-locator.service.js
@@ -25915,7 +25905,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
@@ -28190,93 +28184,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('templates/event-translate.html',
-    "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
-    "\n" +
-    "  <h1 class=\"title\">Vertalen</h1>\n" +
-    "\n" +
-    "  <!-- Titel -->\n" +
-    "  <div class=\"row\">\n" +
-    "    <div class=\"col-sm-3\">\n" +
-    "      <p><strong>Titel</strong></p>\n" +
-    "    </div>\n" +
-    "    <div class=\"col-sm-9\">\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <p class=\"orginal text-muted\">Origineel</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <p class=\"orginal text-muted\" ng-bind=\"originalName\"></p>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\" ng-repeat=\"language in languages\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <p class=\"orginal text-muted\">{{language}}</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <textarea ng-blur=\"saveTranslatedName(language)\" class=\"form-control form-group\" ng-model=\"translatedNames[language]\"></textarea>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
-    "\n" +
-    "  <!-- Beschrijving -->\n" +
-    "  <div class=\"row\">\n" +
-    "    <div class=\"col-sm-3\">\n" +
-    "      <p><strong>Beschrijving</strong></p>\n" +
-    "    </div>\n" +
-    "    <div class=\"col-sm-9\">\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <p class=\"orginal text-muted\">Origineel</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <p class=\"orginal text-muted\" ng-bind=\"originalDescription\"></p>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\" ng-repeat=\"language in languages\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <p class=\"orginal text-muted\">{{language}}</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\" ng-blur=\"saveTranslatedDescription(language)\" class=\"form-control form-group\" ng-model=\"translatedDescriptions[language]\">\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
-    "\n" +
-    "  <!-- Prijs -->\n" +
-    "  <div class=\"row\" ng-repeat=\"originalTariff in originalTariffs track by $index\">\n" +
-    "    <div class=\"col-sm-3\">\n" +
-    "      <p><strong>Prijstarief {{$index+1}}</strong></p>\n" +
-    "    </div>\n" +
-    "    <div class=\"col-sm-9\">\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <p class=\"orginal text-muted\">Origineel</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <p class=\"orginal text-muted\" ng-bind=\"originalTariff\"></p>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"row\" ng-repeat=\"language in languages\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <p class=\"orginal text-muted\">{{language}}</p>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\" ng-blur=\"saveTranslatedTariffs()\" class=\"form-control form-group\" ng-model=\"translatedTariffs[$parent.$index][language]\">\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </div>\n" +
-    "\n" +
-    "</div>\n"
-  );
-
-
   $templateCache.put('templates/event-export-modal.html',
     "<div class=\"modal-header\">\n" +
     "  <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"exporter.close()\">\n" +
@@ -29574,6 +29481,144 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/offer-translate.html',
+    "<div ng-if=\"!loaded\">\n" +
+    "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span></p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
+    "\n" +
+    "  <h1 class=\"title\"><span ng-bind=\"originalName\"></span> <span translate-once=\"translate.translate\"></span></h1>\n" +
+    "\n" +
+    "  <div class=\"row\">\n" +
+    "    <div class=\"col-sm-12\">\n" +
+    "      <div class=\"panel panel-default pull-right\">\n" +
+    "        <div class=\"panel-body\">\n" +
+    "          <label class=\"checkbox-inline\" ng-repeat=\"language in languages\"><input type=\"checkbox\" ng-model=\"activeLanguages[language].active\" ng-disabled=\"activeLanguages[language].main\">{{language}} <a ng-show=\"activeLanguages[language].main\" ng-click=\"openEditPage()\">Bewerken</a></label>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "\n" +
+    "  <!-- Titel -->\n" +
+    "  <section class=\"translate-section\">\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-sm-3\">\n" +
+    "        <p><strong translate-once=\"translate.title\"></strong></p>\n" +
+    "      </div>\n" +
+    "      <div class=\"col-sm-9\">\n" +
+    "        <div class=\"row\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <p class=\"orginal text-muted\" ng-bind=\"originalName\"></p>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <textarea ng-blur=\"saveTranslatedName(code)\" class=\"form-control form-group\" ng-model=\"translatedNames[code]\"></textarea>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </section>\n" +
+    "\n" +
+    "  <!-- Beschrijving -->\n" +
+    "  <section class=\"translate-section\" ng-show=\"originalDescription\">\n" +
+    "    <div class=\"row\" >\n" +
+    "      <div class=\"col-sm-3\">\n" +
+    "        <p><strong translate-once=\"translate.description\"></strong></p>\n" +
+    "      </div>\n" +
+    "      <div class=\"col-sm-9\">\n" +
+    "        <div class=\"row\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <p class=\"orginal text-muted\" ng-bind=\"originalDescription\"></p>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <input type=\"text\" ng-blur=\"saveTranslatedDescription(code)\" class=\"form-control form-group\" ng-model=\"translatedDescriptions[code]\">\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </section>\n" +
+    "\n" +
+    "  <!-- Prijs -->\n" +
+    "  <section class=\"translate-section\" ng-show=\"originalTariffs.length > 0\">\n" +
+    "    <div class=\"row\" ng-repeat=\"originalTariff in originalTariffs track by $index\">\n" +
+    "      <div class=\"col-sm-3\">\n" +
+    "        <p><strong><span translate-once=\"translate.tariff\"></span> {{$index+1}}</strong></p>\n" +
+    "      </div>\n" +
+    "      <div class=\"col-sm-9\">\n" +
+    "        <div class=\"row\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <p class=\"orginal text-muted\" ng-bind=\"originalTariff\"></p>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <input type=\"text\" ng-blur=\"saveTranslatedTariffs()\" class=\"form-control form-group\" ng-model=\"translatedTariffs[$parent.$index][code]\">\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </section>\n" +
+    "\n" +
+    "  <!-- Adress -->\n" +
+    "  <section class=\"translate-section\" ng-show=\"isPlace\">\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-sm-3\">\n" +
+    "        <p><strong>Adres</strong></p>\n" +
+    "      </div>\n" +
+    "      <div class=\"col-sm-9\">\n" +
+    "        <div class=\"row\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\">Origineel</p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <p class=\"orginal text-muted\" ng-bind=\"orginalAdress\"></p>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "          <div class=\"col-sm-3\">\n" +
+    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-9\">\n" +
+    "            <input type=\"text\" ng-blur=\"saveTranslatedAddress()\" class=\"form-control form-group\" ng-model=\"translatedAdresses[code]\">\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </section>\n" +
+    "\n" +
+    "  <button class=\"btn btn-success\" ng-click=\"goToDashboard()\" translate-once=\"translate.ready\"></button>\n" +
+    "\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/place-detail.html',
     "<div ng-if=\"placeIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
@@ -29601,7 +29646,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span ng-if=\"place.mainLanguage !== language\" ng-bind=\"'(' + place.mainLanguage + ')'\"></span></button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +

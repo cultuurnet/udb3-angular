@@ -16,7 +16,7 @@ angular
         'udb.search',
         'udb.entry',
         'udb.event-form',
-        'udb.event-translate',
+        'udb.offer-translate',
         'udb.export',
         'udb.event-detail',
         'udb.place-detail',

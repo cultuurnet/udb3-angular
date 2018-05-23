@@ -207,6 +207,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
       this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
       this.mainLanguage = jsonEvent.mainLanguage || 'nl';
+      this.languages = jsonEvent.languages || [];
     },
 
     /**

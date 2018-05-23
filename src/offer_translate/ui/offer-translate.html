@@ -1,0 +1,134 @@
+<div ng-if="!loaded">
+  <p class="title"><span class="placeholder-title"></span></p>
+  <p class="text-center"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i><span class="sr-only" translate-once="preview.loading"></span></p>
+</div>
+
+<div class="offer-form" ng-if="loaded">
+
+  <h1 class="title"><span ng-bind="originalName"></span> <span translate-once="translate.translate"></span></h1>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default pull-right">
+        <div class="panel-body">
+          <label class="checkbox-inline" ng-repeat="language in languages"><input type="checkbox" ng-model="activeLanguages[language].active" ng-disabled="activeLanguages[language].main">{{language}} <a ng-show="activeLanguages[language].main" ng-click="openEditPage()">Bewerken</a></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Titel -->
+  <section class="translate-section">
+    <div class="row">
+      <div class="col-sm-3">
+        <p><strong translate-once="translate.title"></strong></p>
+      </div>
+      <div class="col-sm-9">
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="orginal text-muted" translate-once="translate.original"></p>
+          </div>
+          <div class="col-sm-9">
+            <p class="orginal text-muted" ng-bind="originalName"></p>
+          </div>
+        </div>
+
+        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
+          <div class="col-sm-3">
+            <p class="orginal text-muted">{{code}}</p>
+          </div>
+          <div class="col-sm-9">
+            <textarea ng-blur="saveTranslatedName(code)" class="form-control form-group" ng-model="translatedNames[code]"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Beschrijving -->
+  <section class="translate-section" ng-show="originalDescription">
+    <div class="row" >
+      <div class="col-sm-3">
+        <p><strong translate-once="translate.description"></strong></p>
+      </div>
+      <div class="col-sm-9">
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="orginal text-muted" translate-once="translate.original"></p>
+          </div>
+          <div class="col-sm-9">
+            <p class="orginal text-muted" ng-bind="originalDescription"></p>
+          </div>
+        </div>
+
+        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
+          <div class="col-sm-3">
+            <p class="orginal text-muted">{{code}}</p>
+          </div>
+          <div class="col-sm-9">
+            <input type="text" ng-blur="saveTranslatedDescription(code)" class="form-control form-group" ng-model="translatedDescriptions[code]">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Prijs -->
+  <section class="translate-section" ng-show="originalTariffs.length > 0">
+    <div class="row" ng-repeat="originalTariff in originalTariffs track by $index">
+      <div class="col-sm-3">
+        <p><strong><span translate-once="translate.tariff"></span> {{$index+1}}</strong></p>
+      </div>
+      <div class="col-sm-9">
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="orginal text-muted" translate-once="translate.original"></p>
+          </div>
+          <div class="col-sm-9">
+            <p class="orginal text-muted" ng-bind="originalTariff"></p>
+          </div>
+        </div>
+
+        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
+          <div class="col-sm-3">
+            <p class="orginal text-muted">{{code}}</p>
+          </div>
+          <div class="col-sm-9">
+            <input type="text" ng-blur="saveTranslatedTariffs()" class="form-control form-group" ng-model="translatedTariffs[$parent.$index][code]">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Adress -->
+  <section class="translate-section" ng-show="isPlace">
+    <div class="row">
+      <div class="col-sm-3">
+        <p><strong>Adres</strong></p>
+      </div>
+      <div class="col-sm-9">
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="orginal text-muted">Origineel</p>
+          </div>
+          <div class="col-sm-9">
+            <p class="orginal text-muted" ng-bind="orginalAdress"></p>
+          </div>
+        </div>
+
+        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
+          <div class="col-sm-3">
+            <p class="orginal text-muted">{{code}}</p>
+          </div>
+          <div class="col-sm-9">
+            <input type="text" ng-blur="saveTranslatedAddress()" class="form-control form-group" ng-model="translatedAdresses[code]">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <button class="btn btn-success" ng-click="goToDashboard()" translate-once="translate.ready"></button>
+
+</div>
