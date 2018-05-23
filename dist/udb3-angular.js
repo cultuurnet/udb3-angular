@@ -11508,7 +11508,8 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       UdbPlace,
       location,
       categories,
-      title
+      title,
+      $translate
   ) {
 
     $scope.categories = categories;
@@ -11613,7 +11614,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
       };
-      udbPlace.mainLanguage = 'nl';
+      udbPlace.mainLanguage = $translate.use() || 'nl';
 
       function showError() {
         $scope.saving = false;
@@ -11662,7 +11663,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
     }
   }
-  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title"];
+  EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
 
 })();
 })();

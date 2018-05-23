@@ -20,7 +20,8 @@
       UdbPlace,
       location,
       categories,
-      title
+      title,
+      $translate
   ) {
 
     $scope.categories = categories;
@@ -125,7 +126,7 @@
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
       };
-      udbPlace.mainLanguage = 'nl';
+      udbPlace.mainLanguage = $translate.use() || 'nl';
 
       function showError() {
         $scope.saving = false;
