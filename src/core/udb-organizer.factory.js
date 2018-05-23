@@ -56,7 +56,9 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
-      this.address = jsonOrganizer.address || [];
+      //this.address = jsonOrganizer.address || [];
+      this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       this.url = jsonOrganizer.url;
