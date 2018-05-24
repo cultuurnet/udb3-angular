@@ -1,26 +1,32 @@
-<!-- adding a '.' to the token list due to: https://github.com/angular-ui/ui-select/issues/1151 -->
-<ui-select multiple
-           tagging="select.createLabel"
-           ng-model="select.labels"
-           reset-search-input="true"
-           tagging-tokens="ENTER|;|."
-           on-select="select.labelAdded({label: $item})"
-           on-remove="select.labelRemoved({label: $item})">
-    <ui-select-match placeholder="Voeg een label toe...">{{$item.name}}</ui-select-match>
-    <ui-select-no-choice ng-show="select.areLengthCriteriaMet($select.search.length) &&">
-        <div class="udb-label-select-refreshing" style="padding: 3px 20px">
-            <i class="fa fa-circle-o-notch fa-spin"></i> Suggesties laden
-        </div>
-    </ui-select-no-choice>
-    <ui-select-choices repeat="label in select.availableLabels track by label.name"
-                       ng-show="select.areLengthCriteriaMet($select.search.length) &&"
-                       ui-disable-choice="select.refreshing"
-                       refresh="select.suggestLabels($select.search)"
-                       refresh-delay="300"
-                       minimum-input-length="{{select.minimumInputLength}}">
-        <div>
-            <span ng-bind-html="label.name | highlight: $select.search"></span>
-            <span ng-if="!label.uuid"> (nieuw label toevoegen)</span>
-        </div>
-    </ui-select-choices>
-</ui-select>
+<p class="small text-muted" translate-once="labels.what"></p>
+
+<form name="form">
+  <div class="form-group">
+    <input type="text"
+    class="form-control typeahead"
+    ng-model="select.currentLabel"
+    ng-pattern="select.regex"
+    uib-typeahead="suggestion.name for suggestion in select.suggestLabels($viewValue)"
+    typeahead-on-select="select.onSelect($item)"
+    typeahead-min-length="2"
+    id="input" name="input"
+    autocomplete="off"
+    ng-minlength="2"
+    ng-maxlength="50"/>
+  </div>
+</form>
+
+<div class="alert alert-warning" ng-show="!form.input.$valid && !form.input.$error.minlength ">
+  <p><span tranlate-once="labels.invalid"></span><br>
+    <ul>
+      <li translate-once="labels.chars"></li>
+      <li translate-once="labels.excluded"></li>
+      <li translate-once="labels.length"></li>
+    </ul>
+</div>
+
+<ul class="list-inline">
+  <li ng-repeat="label in select.labels">
+    <span class="badge">{{label.name}} <a ng-click="select.onRemove(label)" class="badge-remove">&times;</a></span>
+  </li>
+</ul>
