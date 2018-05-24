@@ -19719,7 +19719,7 @@ function OfferTranslateController(
     $scope.translatedTariffs = getTranslatedTariffs();
     $scope.loaded = true;
 
-    _.forEach($scope.cachedOffer.languages, function(language) {
+    _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
     });
 
