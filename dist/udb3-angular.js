@@ -29478,7 +29478,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "</form>\n" +
     "\n" +
     "<div class=\"alert alert-warning\" ng-show=\"!form.input.$valid && !form.input.$error.minlength \">\n" +
-    "  <p><span tranlate-once=\"labels.invalid\"></span><br>\n" +
+    "  <p><span translate-once=\"labels.invalid\"></span><br>\n" +
     "    <ul>\n" +
     "      <li translate-once=\"labels.chars\"></li>\n" +
     "      <li translate-once=\"labels.excluded\"></li>\n" +
