@@ -19684,11 +19684,13 @@ function PlaceDetail(
   $q,
   $window,
   offerLabeller,
-  appConfig
+  appConfig,
+  $translate
 ) {
   var activeTabId = 'data';
   var controller = this;
   var disableVariations = _.get(appConfig, 'disableVariations');
+  var language = $translate.use() || 'nl';
 
   $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
@@ -19734,14 +19736,20 @@ function PlaceDetail(
     openPlaceDeleteConfirmModal($scope.place);
   };
 
-  var language = 'nl';
   var cachedPlace;
 
   function showOffer(place) {
     cachedPlace = place;
 
-    $scope.place = jsonLDLangFilter(place, language);
+    $scope.place = jsonLDLangFilter(place, language, true);
     $scope.placeIdIsInvalid = false;
+    
+    if (typeof $scope.place.description === 'object') {
+      $scope.place.description = $scope.place.description[language];
+      if ($scope.place.description === undefined) {
+        $scope.place.description = '';
+      }
+    }
 
     if (!disableVariations) {
       variationRepository
@@ -19889,7 +19897,7 @@ function PlaceDetail(
       .catch(showUnlabelProblem);
   }
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
 })();
 
 // Source: src/router/offer-locator.service.js
@@ -29326,12 +29334,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <td>{{::place.type.label}}</td>\n" +
     "            </tr>\n" +
     "\n" +
-    "            <tr ng-class=\"::{muted: place.description==undefined}\">\n" +
+    "            <tr ng-class=\"{muted: !place.description}\">\n" +
     "              <td><span class=\"row-label\" translate-once=\"preview.description\"></span></td>\n" +
-    "              <td ng-if=\"::(place.description!==undefined)\">\n" +
-    "                <div ng-bind-html=\"::place.description\" class=\"event-detail-description\"></div>\n" +
+    "              <td ng-if=\"place.description\">\n" +
+    "                <div ng-bind-html=\"place.description\" class=\"event-detail-description\"></div>\n" +
     "              </td>\n" +
-    "              <td ng-if=\"::(place.description==undefined)\" translate-once=\"preview.no_description\"></td>\n" +
+    "              <td ng-if=\"!place.description\" translate-once=\"preview.no_description\"></td>\n" +
     "            </tr>\n" +
     "            <tr>\n" +
     "              <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
