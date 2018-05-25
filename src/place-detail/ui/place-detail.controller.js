@@ -84,7 +84,7 @@ function PlaceDetail(
 
     $scope.place = jsonLDLangFilter(place, language, true);
     $scope.placeIdIsInvalid = false;
-    
+
     if (typeof $scope.place.description === 'object') {
       $scope.place.description = $scope.place.description[language];
       if ($scope.place.description === undefined) {

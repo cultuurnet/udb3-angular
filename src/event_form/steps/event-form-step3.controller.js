@@ -172,13 +172,6 @@ function EventFormStep3Controller(
     location.id = $model;
     location.name = $label;
     location.address = selectedLocation.address;
-    /*(typeof $label === 'string') ? location.name = $label : location.name = $label[language];
-    if (typeof selectedLocation.address.streetAddress === 'string') {
-      location.address = selectedLocation.address;
-    }
-    else {
-      location.address = selectedLocation.address[language];
-    }*/
     EventFormData.setLocation(location);
 
     controller.stepCompleted();
@@ -261,21 +254,9 @@ function EventFormStep3Controller(
       });
       var addressMatches = words.filter(function (word) {
         return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        /*if (typeof location.address.streetAddress === 'string') {
-          return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        }
-        else {
-          return location.address[language].streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        }*/
       });
       var nameMatches = words.filter(function (word) {
         return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        /*if (typeof location.name === 'string') {
-          return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        }
-        else {
-          return location.name[language].toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        }*/
       });
 
       return addressMatches.length + nameMatches.length >= words.length;
