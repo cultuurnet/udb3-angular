@@ -366,6 +366,13 @@ angular.module('udb.core')
       'no_age': 'Geen leeftijdsinformatie',
       'publiq_url': 'Bekijk op UiT in Vlaanderen'
     },
+    labels: {
+      'what': 'Met een label voeg je korte, specifieke trefwoorden toe.',
+      'invalid': 'Dit lijkt een ongeldig label. Een label',
+      'chars': 'bestaat enkel uit letters of cijfers',
+      'excluded': 'bevat enkel \'-\' en \'_\', maar mag niet met deze tekens beginnen',
+      'length': 'telt 2 tot 50 karakters'
+    },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
       'from': 'Van',

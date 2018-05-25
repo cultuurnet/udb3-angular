@@ -2945,6 +2945,13 @@ angular.module('udb.core')
       'no_age': 'Geen leeftijdsinformatie',
       'publiq_url': 'Bekijk op UiT in Vlaanderen'
     },
+    labels: {
+      'what': 'Met een label voeg je korte, specifieke trefwoorden toe.',
+      'invalid': 'Dit lijkt een ongeldig label. Een label',
+      'chars': 'bestaat enkel uit letters of cijfers',
+      'excluded': 'bevat enkel \'-\' en \'_\', maar mag niet met deze tekens beginnen',
+      'length': 'telt 2 tot 50 karakters'
+    },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
       'from': 'Van',
@@ -6085,7 +6092,6 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
-      //this.address = jsonOrganizer.address || [];
       this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -20264,21 +20270,27 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.suggestLabels = suggestLabels;
   select.createLabel = createLabel;
   select.areLengthCriteriaMet = areLengthCriteriaMet;
+  select.areContentCriteriaMet = areContentCriteriaMet;
   /** @type {Label[]} */
   select.labels = objectifyLabels(select.labels);
   select.minimumInputLength = 2;
-  select.maxInputLength = 255;
-  select.findDelay = 300;
-  select.refreshing = false;
+  select.maxInputLength = 50;
+  select.currentLabel = '';
+  select.onSelect = onSelect;
+  select.onRemove = onRemove;
 
-  select.$onChanges = updateLabels;
+  select.regex = /^([a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]{1}[a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ_-\s]+)$/;
 
-  /**
-   * @param {Object} bindingChanges
-   * @see https://code.angularjs.org/1.5.9/docs/guide/component
-   */
-  function updateLabels(bindingChanges) {
-    select.labels = objectifyLabels(_.get(bindingChanges, 'labels.currentValue', select.labels));
+  function onSelect(item) {
+    select.currentLabel = '';
+    select.labelAdded({label: item});
+    select.labels.push(item);
+  }
+
+  function onRemove(label) {
+    select.currentLabel = '';
+    select.labelRemoved({label: label});
+    select.labels = _.without(select.labels, label);
   }
 
   /**
@@ -20295,18 +20307,21 @@ function LabelSelectComponent(offerLabeller, $q) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
   }
 
-  function createLabel(labelName) {
-    // strip semi-colon, which doesn't get stripped automatically
-    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
-    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
-    labelName = labelName.replace(/;/g, '').trim();
+  function areContentCriteriaMet(labelName) {
+    return select.regex.test(labelName);
+  }
 
-    var similarLabel = _.find(select.labels, function (existingLabel) {
-      return existingLabel.name.toUpperCase() === labelName.toUpperCase();
-    });
-    if (!similarLabel && select.areLengthCriteriaMet(labelName.length)) {
-      return {name:labelName};
+  function createLabel(labelName) {
+    if (areContentCriteriaMet(labelName)) {
+
+      var similarLabel = _.find(select.labels, function (existingLabel) {
+        return existingLabel.name.toUpperCase() === labelName.toUpperCase();
+      });
+      if (!similarLabel && select.areLengthCriteriaMet(labelName.length) && select.areContentCriteriaMet(labelName)) {
+        return {name:labelName};
+      }
     }
+
   }
 
   function findSuggestions(name) {
@@ -20314,24 +20329,25 @@ function LabelSelectComponent(offerLabeller, $q) {
       .getSuggestions(name, 6)
       .then(function(labels) {
         labels.push({name: name});
-        setAvailableLabels(labels);
-        return $q.resolve();
-      })
-      .finally(function () {
-        select.refreshing = false;
+        return setAvailableLabels(labels);
       });
   }
 
   function suggestLabels(name) {
-    select.refreshing = true;
-    setAvailableLabels([]);
-    // returning the promise for testing purposes
-    return findSuggestions(name);
+    if (areContentCriteriaMet(name)) {
+      setAvailableLabels([]);
+      return findSuggestions(name);
+    } else {
+      setAvailableLabels([]);
+    }
   }
 
   /** @param {Label[]} labels */
   function setAvailableLabels(labels) {
     select.availableLabels = _.chain(labels)
+      .filter(function(label) {
+        return areContentCriteriaMet(label.name);
+      })
       .reject(function(label) {
         return _.find(select.labels, {'name': label.name});
       })
@@ -20339,6 +20355,7 @@ function LabelSelectComponent(offerLabeller, $q) {
         return label.name.toUpperCase();
       })
       .value();
+    return select.availableLabels;
   }
 }
 LabelSelectComponent.$inject = ["offerLabeller", "$q"];
@@ -29442,32 +29459,38 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/label-select.html',
-    "<!-- adding a '.' to the token list due to: https://github.com/angular-ui/ui-select/issues/1151 -->\n" +
-    "<ui-select multiple\n" +
-    "           tagging=\"select.createLabel\"\n" +
-    "           ng-model=\"select.labels\"\n" +
-    "           reset-search-input=\"true\"\n" +
-    "           tagging-tokens=\"ENTER|;|.\"\n" +
-    "           on-select=\"select.labelAdded({label: $item})\"\n" +
-    "           on-remove=\"select.labelRemoved({label: $item})\">\n" +
-    "    <ui-select-match placeholder=\"Voeg een label toe...\">{{$item.name}}</ui-select-match>\n" +
-    "    <ui-select-no-choice ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\">\n" +
-    "        <div class=\"udb-label-select-refreshing\" style=\"padding: 3px 20px\">\n" +
-    "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Suggesties laden\n" +
-    "        </div>\n" +
-    "    </ui-select-no-choice>\n" +
-    "    <ui-select-choices repeat=\"label in select.availableLabels track by label.name\"\n" +
-    "                       ng-show=\"select.areLengthCriteriaMet($select.search.length) &&\"\n" +
-    "                       ui-disable-choice=\"select.refreshing\"\n" +
-    "                       refresh=\"select.suggestLabels($select.search)\"\n" +
-    "                       refresh-delay=\"300\"\n" +
-    "                       minimum-input-length=\"{{select.minimumInputLength}}\">\n" +
-    "        <div>\n" +
-    "            <span ng-bind-html=\"label.name | highlight: $select.search\"></span>\n" +
-    "            <span ng-if=\"!label.uuid\"> (nieuw label toevoegen)</span>\n" +
-    "        </div>\n" +
-    "    </ui-select-choices>\n" +
-    "</ui-select>\n"
+    "<p class=\"small text-muted\" translate-once=\"labels.what\"></p>\n" +
+    "\n" +
+    "<form name=\"form\">\n" +
+    "  <div class=\"form-group\">\n" +
+    "    <input type=\"text\"\n" +
+    "    class=\"form-control typeahead\"\n" +
+    "    ng-model=\"select.currentLabel\"\n" +
+    "    ng-pattern=\"select.regex\"\n" +
+    "    uib-typeahead=\"suggestion.name for suggestion in select.suggestLabels($viewValue)\"\n" +
+    "    typeahead-on-select=\"select.onSelect($item)\"\n" +
+    "    typeahead-min-length=\"2\"\n" +
+    "    id=\"input\" name=\"input\"\n" +
+    "    autocomplete=\"off\"\n" +
+    "    ng-minlength=\"2\"\n" +
+    "    ng-maxlength=\"50\"/>\n" +
+    "  </div>\n" +
+    "</form>\n" +
+    "\n" +
+    "<div class=\"alert alert-warning\" ng-show=\"!form.input.$valid && !form.input.$error.minlength \">\n" +
+    "  <p><span translate-once=\"labels.invalid\"></span><br>\n" +
+    "    <ul>\n" +
+    "      <li translate-once=\"labels.chars\"></li>\n" +
+    "      <li translate-once=\"labels.excluded\"></li>\n" +
+    "      <li translate-once=\"labels.length\"></li>\n" +
+    "    </ul>\n" +
+    "</div>\n" +
+    "\n" +
+    "<ul class=\"list-inline\">\n" +
+    "  <li ng-repeat=\"label in select.labels\">\n" +
+    "    <span class=\"badge\">{{label.name}} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
+    "  </li>\n" +
+    "</ul>\n"
   );
 
 

@@ -21,21 +21,27 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.suggestLabels = suggestLabels;
   select.createLabel = createLabel;
   select.areLengthCriteriaMet = areLengthCriteriaMet;
+  select.areContentCriteriaMet = areContentCriteriaMet;
   /** @type {Label[]} */
   select.labels = objectifyLabels(select.labels);
   select.minimumInputLength = 2;
-  select.maxInputLength = 255;
-  select.findDelay = 300;
-  select.refreshing = false;
+  select.maxInputLength = 50;
+  select.currentLabel = '';
+  select.onSelect = onSelect;
+  select.onRemove = onRemove;
 
-  select.$onChanges = updateLabels;
+  select.regex = /^([a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]{1}[a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ_-\s]+)$/;
 
-  /**
-   * @param {Object} bindingChanges
-   * @see https://code.angularjs.org/1.5.9/docs/guide/component
-   */
-  function updateLabels(bindingChanges) {
-    select.labels = objectifyLabels(_.get(bindingChanges, 'labels.currentValue', select.labels));
+  function onSelect(item) {
+    select.currentLabel = '';
+    select.labelAdded({label: item});
+    select.labels.push(item);
+  }
+
+  function onRemove(label) {
+    select.currentLabel = '';
+    select.labelRemoved({label: label});
+    select.labels = _.without(select.labels, label);
   }
 
   /**
@@ -52,18 +58,21 @@ function LabelSelectComponent(offerLabeller, $q) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
   }
 
-  function createLabel(labelName) {
-    // strip semi-colon, which doesn't get stripped automatically
-    // due to the same problem as https://github.com/angular-ui/ui-select/issues/1151
-    // see also: https://github.com/angular-ui/ui-select/blob/v0.19.4/src/uiSelectController.js#L633
-    labelName = labelName.replace(/;/g, '').trim();
+  function areContentCriteriaMet(labelName) {
+    return select.regex.test(labelName);
+  }
 
-    var similarLabel = _.find(select.labels, function (existingLabel) {
-      return existingLabel.name.toUpperCase() === labelName.toUpperCase();
-    });
-    if (!similarLabel && select.areLengthCriteriaMet(labelName.length)) {
-      return {name:labelName};
+  function createLabel(labelName) {
+    if (areContentCriteriaMet(labelName)) {
+
+      var similarLabel = _.find(select.labels, function (existingLabel) {
+        return existingLabel.name.toUpperCase() === labelName.toUpperCase();
+      });
+      if (!similarLabel && select.areLengthCriteriaMet(labelName.length) && select.areContentCriteriaMet(labelName)) {
+        return {name:labelName};
+      }
     }
+
   }
 
   function findSuggestions(name) {
@@ -71,24 +80,25 @@ function LabelSelectComponent(offerLabeller, $q) {
       .getSuggestions(name, 6)
       .then(function(labels) {
         labels.push({name: name});
-        setAvailableLabels(labels);
-        return $q.resolve();
-      })
-      .finally(function () {
-        select.refreshing = false;
+        return setAvailableLabels(labels);
       });
   }
 
   function suggestLabels(name) {
-    select.refreshing = true;
-    setAvailableLabels([]);
-    // returning the promise for testing purposes
-    return findSuggestions(name);
+    if (areContentCriteriaMet(name)) {
+      setAvailableLabels([]);
+      return findSuggestions(name);
+    } else {
+      setAvailableLabels([]);
+    }
   }
 
   /** @param {Label[]} labels */
   function setAvailableLabels(labels) {
     select.availableLabels = _.chain(labels)
+      .filter(function(label) {
+        return areContentCriteriaMet(label.name);
+      })
       .reject(function(label) {
         return _.find(select.labels, {'name': label.name});
       })
@@ -96,5 +106,6 @@ function LabelSelectComponent(offerLabeller, $q) {
         return label.name.toUpperCase();
       })
       .value();
+    return select.availableLabels;
   }
 }
