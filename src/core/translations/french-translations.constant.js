@@ -370,7 +370,7 @@ angular.module('udb.core')
       'what': 'Ajoutez des mots clés courts et spécifiques.',
       'invalid': 'Cela semble être un label invalide. Un label ',
       'chars': 'se compose uniquement de lettres ou de chiffres',
-      'excluded': 'ne contient que \ '- \' et \ '_ \', mais ne peut pas commençer avec ces caractères',
+      'excluded': 'ne contient que \'-\' et \'_\', mais ne peut pas commençer avec ces caractères',
       'length': 'compte de 2 à 50 caractères'
     },
     calendarSummary: {
