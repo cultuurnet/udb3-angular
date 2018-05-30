@@ -20279,6 +20279,16 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.onSelect = onSelect;
   select.onRemove = onRemove;
 
+  select.$onChanges = updateLabels;
+
+  /**
+   * @param {Object} bindingChanges
+   * @see https://code.angularjs.org/1.5.9/docs/guide/component
+   */
+  function updateLabels(bindingChanges) {
+    select.labels = objectifyLabels(_.get(bindingChanges, 'labels.currentValue', select.labels));
+  }
+
   select.regex = /^([a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]{1}[a-zA-Z0-9ŠŽšœžŸÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ_-\s]+)$/;
 
   function onSelect(item) {
