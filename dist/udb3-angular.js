@@ -3769,6 +3769,13 @@ angular.module('udb.core')
       'no_age': 'Pas d\'information de l\'âge',
       'publiq_url': 'Voir sur UiT in Vlaanderen'
     },
+    labels: {
+      'what': 'Ajoutez des mots clés courts et spécifiques.',
+      'invalid': 'Cela semble être un label invalide. Un label ',
+      'chars': 'se compose uniquement de lettres ou de chiffres',
+      'excluded': 'ne contient que \'-\' et \'_\', mais ne peut pas commençer avec ces caractères',
+      'length': 'compte de 2 à 50 caractères'
+    },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
       'from': 'De',
@@ -29366,7 +29373,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "              <td>\n" +
     "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
-    "                <span ng-if=\"::(!place.typicalAgeRange)\" translate-once=\"preview.all_agges\"></span>\n" +
+    "                <span ng-if=\"::(!place.typicalAgeRange)\" translate-once=\"preview.all_ages\"></span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
     "          </tbody>\n" +
