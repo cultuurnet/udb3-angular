@@ -25255,7 +25255,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <strong>\n" +
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
-    "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\" translate-once=\"DRAFT\"></span>\n" +
+    "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\" translate-once=\"workflowStatus.DRAFT\"></span>\n" +
     "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <span ng-if=\"event.workflowStatus==='REJECTED'\"><span class=\"label label-default\" translate-once=\"workflowStatus.REJECTED\">Publicatie afgewezen</span><small>&nbsp;<a ng-href=\"{{::dash.publicationRulesLink}}\" target=\"blank\" translate-once=\"workflowStatus.rules\"></a></small></span>\n" +
     "  <br/>\n" +

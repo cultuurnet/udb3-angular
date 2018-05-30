@@ -2,7 +2,7 @@
   <strong>
     <a ng-href="{{ event.url  + '/preview' }}" ng-bind="::event.name"></a>
   </strong>
-  <span ng-if="event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' " class="label label-default" translate-once="DRAFT"></span>
+  <span ng-if="event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' " class="label label-default" translate-once="workflowStatus.DRAFT"></span>
   <span class="label label-default" ng-if="offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate">Online op <span ng-bind="::event.availableFrom | date:'yyyy-MM-dd'"></span></span>
   <span ng-if="event.workflowStatus==='REJECTED'"><span class="label label-default" translate-once="workflowStatus.REJECTED">Publicatie afgewezen</span><small>&nbsp;<a ng-href="{{::dash.publicationRulesLink}}" target="blank" translate-once="workflowStatus.rules"></a></small></span>
   <br/>
