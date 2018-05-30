@@ -121,13 +121,15 @@ function EventFormImageUploadController(
         $uibModalInstance.close(mediaObject);
       }
 
+      console.log(EventFormData);
+
       eventCrud
         .addImage(EventFormData, mediaObject)
         .then(updateEventFormAndResolve, displayError);
     }
 
     MediaManager
-      .createImage($scope.selectedFile, description, copyrightHolder)
+      .createImage($scope.selectedFile, description, copyrightHolder, EventFormData.mainLanguage)
       .then(addImageToEvent, displayError);
 
     return deferredAddition.promise;

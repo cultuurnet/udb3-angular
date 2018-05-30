@@ -759,6 +759,7 @@ function UdbApi(
    * @return {Promise}
    */
   this.addImage = function(itemLocation, imageId) {
+
     var postData = {
       mediaObjectId: imageId
     };
@@ -909,13 +910,13 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
-  this.uploadMedia = function (imageFile, description, copyrightHolder) {
+  this.uploadMedia = function (imageFile, description, copyrightHolder, language) {
     var uploadOptions = {
       url: appConfig.baseUrl + 'images/',
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,
-        language: 'nl'
+        language: language
       },
       file: imageFile
     };

@@ -3,7 +3,7 @@
   <p class="text-center"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i><span class="sr-only" translate-once="preview.loading"></span></p>
 </div>
 
-<div class="offer-form" ng-if="loaded">
+<div class="offer-translate" ng-if="loaded" >
 
   <h1 class="title"><span ng-bind="originalName"></span> <span translate-once="translate.translate"></span></h1>
 
@@ -11,7 +11,7 @@
     <div class="col-sm-12">
       <div class="panel panel-default pull-right">
         <div class="panel-body">
-          <label class="checkbox-inline" ng-repeat="language in languages"><input type="checkbox" ng-model="activeLanguages[language].active" ng-disabled="activeLanguages[language].main">{{language}} <a ng-show="activeLanguages[language].main" ng-click="openEditPage()">Bewerken</a></label>
+          <label class="checkbox-inline" ng-repeat="language in languages"><input type="checkbox" ng-model="activeLanguages[language].active" ng-disabled="activeLanguages[language].main">{{language}} <a ng-show="activeLanguages[language].main" ng-click="openEditPage()" class="text-small">Bewerken</a> </label>
         </div>
       </div>
     </div>
@@ -105,7 +105,7 @@
   <section class="translate-section" ng-show="isPlace">
     <div class="row">
       <div class="col-sm-3">
-        <p><strong>Adres</strong></p>
+        <p><strong>Straat</strong></p>
       </div>
       <div class="col-sm-9">
         <div class="row">
@@ -113,7 +113,7 @@
             <p class="orginal text-muted">Origineel</p>
           </div>
           <div class="col-sm-9">
-            <p class="orginal text-muted" ng-bind="orginalAdress"></p>
+            <p class="orginal text-muted" ng-bind="originalAddress.streetAddress"></p>
           </div>
         </div>
 
@@ -122,7 +122,89 @@
             <p class="orginal text-muted">{{code}}</p>
           </div>
           <div class="col-sm-9">
-            <input type="text" ng-blur="saveTranslatedAddress()" class="form-control form-group" ng-model="translatedAdresses[code]">
+            <input type="text" ng-blur="saveTranslatedStreet(code)" class="form-control form-group" ng-model="translatedStreets[code]">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Image -->
+  <section class="translate-section">
+    <div class="row">
+      <div class="col-sm-3">
+        <p><strong>Afbeelding(en)</strong></p>
+      </div>
+      <div class="col-sm-9">
+        <div class="row">
+          <div class="col-sm-3">
+            <p class="orginal text-muted">Origineel</p>
+          </div>
+          <div class="col-sm-9">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div ng-repeat="image in imageFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': mainLanguage} track by image.contentUrl">
+                  <div class="uploaded-image">
+
+
+                        <img ng-src="{{ image.thumbnailUrl }}?width=50&height=50" style="width: 50px;">
+
+
+
+                        <div ng-bind="image.description"></div>
+                        <div class="text-muted">&copy; <span ng-bind="image.copyrightHolder"><span translate-once="eventForm.step5.copyright"></span></span></div>
+
+                          <!-- Single button -->
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Dupliceer <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li ng-repeat="(code, language) in activeLanguages"><a ng-click="translateImage(image, code)">{{code}}</a></li>
+                            </ul>
+                          </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
+          <div class="col-sm-3">
+            <p class="orginal text-muted">{{code}}</p>
+          </div>
+          <div class="col-sm-9">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div ng-repeat="image in imageFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': code} track by image.contentUrl">
+                  <div class="uploaded-image">
+                    <div class="media" ng-class="{'main-image': ($index === 0)}">
+                      <a class="media-left" href="#">
+                        <img ng-src="{{ image.thumbnailUrl }}?width=50&height=50" style="width: 50px;">
+                      </a>
+
+                      <div class="media-body">
+                        <div ng-bind="image.description"></div>
+                        <div class="text-muted">&copy; <span ng-bind="image.copyrightHolder"><span translate-once="eventForm.step5.copyright"></span></span></div>
+                      </div>
+
+                      <div class="media-actions">
+                          <a class="btn btn-xs btn-primary" ng-click="editImage(image)" translate-once="eventForm.step5.change"></a>
+                          <a class="btn btn-xs btn-danger" ng-click="removeImage(image)" translate-once="eventForm.step5.delete"></a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <a class="btn btn-default"
+                   href="#"
+                   translate-once="eventForm.step5.add_image"
+                   ng-click="openUploadImageModal(code)"></a>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
