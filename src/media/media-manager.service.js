@@ -34,7 +34,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
    *
    * @return {Promise.<MediaObject>}
    */
-  service.createImage = function(imageFile, description, copyrightHolder) {
+  service.createImage = function(imageFile, description, copyrightHolder, language) {
     var deferredMediaObject = $q.defer();
     var allowedFileExtensions = ['png', 'jpeg', 'jpg', 'gif'];
 
@@ -70,7 +70,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       });
     } else {
       udbApi
-        .uploadMedia(imageFile, description, copyrightHolder)
+        .uploadMedia(imageFile, description, copyrightHolder, language)
         .then(logCreateImageJob, deferredMediaObject.reject);
     }
 
