@@ -5134,13 +5134,13 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
-  this.uploadMedia = function (imageFile, description, copyrightHolder) {
+  this.uploadMedia = function (imageFile, description, copyrightHolder, language) {
     var uploadOptions = {
       url: appConfig.baseUrl + 'images/',
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,
-        language: 'nl'
+        language: language
       },
       file: imageFile
     };
@@ -10649,7 +10649,8 @@ function EventFormImageUploadController(
 
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
-        deferredAddition = $q.defer();
+        deferredAddition = $q.defer(),
+        language = EventFormData.mainLanguage ? EventFormData.mainLanguage : 'nl';
 
     function displayError(errorResponse) {
       var errorMessage = errorResponse.data.title;
@@ -10686,7 +10687,7 @@ function EventFormImageUploadController(
     }
 
     MediaManager
-      .createImage($scope.selectedFile, description, copyrightHolder)
+      .createImage($scope.selectedFile, description, copyrightHolder, language)
       .then(addImageToEvent, displayError);
 
     return deferredAddition.promise;
@@ -19467,7 +19468,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
    *
    * @return {Promise.<MediaObject>}
    */
-  service.createImage = function(imageFile, description, copyrightHolder) {
+  service.createImage = function(imageFile, description, copyrightHolder, language) {
     var deferredMediaObject = $q.defer();
     var allowedFileExtensions = ['png', 'jpeg', 'jpg', 'gif'];
 
@@ -19503,7 +19504,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       });
     } else {
       udbApi
-        .uploadMedia(imageFile, description, copyrightHolder)
+        .uploadMedia(imageFile, description, copyrightHolder, language)
         .then(logCreateImageJob, deferredMediaObject.reject);
     }
 
@@ -27920,7 +27921,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "          <div class=\"image-upload-list state complete\" ng-if=\"eventFormData.mediaObjects.length > 0\">\n" +
     "            <h4 translate-once=\"eventForm.step5.images\"></h4>\n" +
-    "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl\">\n" +
+    "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': eventFormData.mainLanguage} track by image.contentUrl\">\n" +
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
     "                  <a class=\"media-left\" href=\"#\">\n" +
