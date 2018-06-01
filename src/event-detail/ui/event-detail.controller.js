@@ -27,7 +27,8 @@ function EventDetail(
   $translate,
   appConfig,
   ModerationService,
-  RolePermission
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -55,7 +56,26 @@ function EventDetail(
    */
   function grantPermissions(permissionsData) {
     var event = permissionsData[1];
-    $scope.permissions = {editing: !event.isExpired(), duplication: true};
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+        });
   }
 
   function denyAllPermissions() {
@@ -101,7 +121,7 @@ function EventDetail(
   };
   $scope.isEmpty = _.isEmpty;
 
-  var language = 'nl';
+  var language = $translate.use() || 'nl';
   var cachedEvent;
 
   function showHistory(eventHistory) {
@@ -127,7 +147,9 @@ function EventDetail(
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
 
-    $scope.event = jsonLDLangFilter(event, language);
+    language = $translate.use() || 'nl';
+
+    $scope.event = jsonLDLangFilter(event, language, true);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
 
@@ -173,7 +195,7 @@ function EventDetail(
   }
 
   $scope.eventLocation = function (event) {
-    var location = jsonLDLangFilter(event.location, language);
+    var location = jsonLDLangFilter(event.location, language, true);
 
     var eventLocation = [
       location.name

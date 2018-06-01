@@ -45,9 +45,10 @@ function EventFormStep5Controller(
 
   // Scope vars.
   $scope.eventFormData = EventFormData; // main storage for event form.
+  $scope.mainLanguage = EventFormData.getMainLanguage();
 
   // Description vars.
-  $scope.description = EventFormData.getDescription('nl');
+  $scope.description = EventFormData.getDescription($scope.mainLanguage);
   $scope.descriptionCssClass = $scope.description ? 'state-complete' : 'state-incomplete';
   $scope.savingDescription = false;
   $scope.descriptionError = false;
@@ -164,7 +165,10 @@ function EventFormStep5Controller(
       $scope.savingDescription = true;
       $scope.descriptionError = false;
 
-      EventFormData.setDescription($scope.description, 'nl');
+      EventFormData.setDescription(
+        $scope.description.replace(new RegExp(String.fromCharCode(31), 'g'), ''),
+        $scope.mainLanguage
+      );
 
       var promise = eventCrud.updateDescription(EventFormData, $scope.description);
       promise.then(function() {
@@ -482,8 +486,14 @@ function EventFormStep5Controller(
       urlLabel : 'Reserveer plaatsen',
       email : '',
       phone : '',
-      availabilityStarts : EventFormData.bookingInfo.availabilityStarts,
-      availabilityEnds : EventFormData.bookingInfo.availabilityEnds
+      availabilityStarts :
+        EventFormData.bookingInfo.availabilityStarts ?
+          moment(EventFormData.bookingInfo.availabilityStarts).format() :
+          '',
+      availabilityEnds :
+        EventFormData.bookingInfo.availabilityEnds ?
+          moment(EventFormData.bookingInfo.availabilityEnds).format() :
+          ''
     }, $scope.bookingModel);
 
     $scope.savingBookingInfo = true;

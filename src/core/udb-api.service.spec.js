@@ -1463,6 +1463,8 @@ describe('Service: UDB3 Api', function () {
     var imageFile = 'imagefile';
     var description = 'Image by Dirk';
     var copyrightHolder = 'Dirk Dirkington';
+    var language = 'nl';
+
     var expectedConfig = {
       withCredentials: true,
       headers: {
@@ -1475,13 +1477,13 @@ describe('Service: UDB3 Api', function () {
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,
-        language: 'nl'
+        language: language
       },
       file: imageFile
     };
 
     service
-      .uploadMedia(imageFile, description, copyrightHolder);
+      .uploadMedia(imageFile, description, copyrightHolder, language);
 
     expect(Upload.upload).toHaveBeenCalledWith(expectedConfig);
   });

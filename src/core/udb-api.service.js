@@ -72,7 +72,8 @@ function UdbApi(
   UdbEvent,
   UdbPlace,
   UdbOrganizer,
-  Upload
+  Upload,
+  $translate
 ) {
   var apiUrl = appConfig.baseApiUrl;
   var defaultApiConfig = {
@@ -97,7 +98,7 @@ function UdbApi(
     return config;
   }
 
-  this.mainLanguage = 'nl';
+  this.mainLanguage = $translate.use() || 'nl';
 
   /**
    * Removes an item from the offerCache.
@@ -908,13 +909,13 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
-  this.uploadMedia = function (imageFile, description, copyrightHolder) {
+  this.uploadMedia = function (imageFile, description, copyrightHolder, language) {
     var uploadOptions = {
       url: appConfig.baseUrl + 'images/',
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,
-        language: 'nl'
+        language: language
       },
       file: imageFile
     };

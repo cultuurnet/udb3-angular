@@ -49,7 +49,7 @@ angular
   .factory('EventFormData', EventFormDataFactory);
 
 /* @ngInject */
-function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, appConfig) {
+function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection, appConfig, $translate) {
 
   /**
    * @class EventFormData
@@ -70,7 +70,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.majorInfoChanged = false;
       // Properties that will be copied to UdbEvent / UdbPlace.
       this.id = '';
-      this.mainLanguage = 'nl';
+      this.mainLanguage = $translate.use() || 'nl';
       this.name = '';
       this.description = {};
       // Events have a location
@@ -165,6 +165,20 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     getName: function(langcode) {
       return this.name[langcode];
+    },
+
+    /**
+     * Gets the mainLanguage for a offer.
+     */
+    getMainLanguage: function() {
+      return this.mainLanguage;
+    },
+
+    /**
+     * Sets the mainLanguage for a offer.
+     */
+    setMainLanguage: function(langcode) {
+      this.mainLanguage = langcode;
     },
 
     /**
