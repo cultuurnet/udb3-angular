@@ -46,19 +46,19 @@
       <h5>Verfraai je rapport</h5>
 
         <div class="form-group">
-          <label>Logo</label>
-
-          <div class="export-customization-brands">
-            <div class="export-customization-brand" ng-repeat="brand in ::exporter.brands">
-              <label>
-                <img ng-src="{{exporter.exportLogoUrl}}{{brand.logo}}" alt="{{brand.name}} logo" width="100px" height="100px"/>
-
-                <div>
-                  <input type="radio" name="eventExportBrand" ng-model="exporter.selectedBrand"
-                         ng-value="brand" class="export-customization-brand-radio">
-                  <span ng-bind="brand.label" class="export-customization-brand-label"></span>
-                </div>
-              </label>
+          <label>Kies een logo</label>
+          <div class="row">
+            <div class="col-sm-8">
+              <div class="radio" ng-repeat="brand in ::exporter.brands">
+                <label>
+                    <input type="radio" name="eventExportBrand" ng-model="exporter.selectedBrand"
+                           ng-value="brand" class="export-customization-brand-radio">
+                    <span ng-bind="brand.label"></span>
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <img ng-src="{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}" alt="{{exporter.selectedBrand.name}}" ng-show="exporter.selectedBrand" class="img-responsive img-thumbnail center-block export-logo"/>
             </div>
           </div>
         </div>

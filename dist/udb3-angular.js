@@ -28043,19 +28043,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <h5>Verfraai je rapport</h5>\n" +
     "\n" +
     "        <div class=\"form-group\">\n" +
-    "          <label>Logo</label>\n" +
-    "\n" +
-    "          <div class=\"export-customization-brands\">\n" +
-    "            <div class=\"export-customization-brand\" ng-repeat=\"brand in ::exporter.brands\">\n" +
-    "              <label>\n" +
-    "                <img ng-src=\"{{exporter.exportLogoUrl}}{{brand.logo}}\" alt=\"{{brand.name}} logo\" width=\"100px\" height=\"100px\"/>\n" +
-    "\n" +
-    "                <div>\n" +
-    "                  <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
-    "                         ng-value=\"brand\" class=\"export-customization-brand-radio\">\n" +
-    "                  <span ng-bind=\"brand.label\" class=\"export-customization-brand-label\"></span>\n" +
-    "                </div>\n" +
-    "              </label>\n" +
+    "          <label>Kies een logo</label>\n" +
+    "          <div class=\"row\">\n" +
+    "            <div class=\"col-sm-8\">\n" +
+    "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
+    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\">\n" +
+    "                    <span ng-bind=\"brand.label\"></span>\n" +
+    "                </label>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-4\">\n" +
+    "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +

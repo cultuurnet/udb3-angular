@@ -1927,13 +1927,6 @@ input + .alert {
 .export-format-field label {
   cursor: pointer;
 }
-.export-format-label {
-  font-weight: bold;
-  margin-left: 34px;
-}
-.export-format-description {
-  margin-left: 50px;
-}
 .export-format-field {
   padding: 10px 0px;
   border-bottom: 1px solid #e5e5e5;
@@ -1949,9 +1942,9 @@ input + .alert {
   display: inline-block;
   margin-right: 1em;
 }
-.export-customization-brand img {
-  border: 1px solid silver;
-  padding: 5px;
+.export-logo {
+  min-width: 150px;
+  background-color: white;
 }
 .udb-job-log {
   width: 320px;
