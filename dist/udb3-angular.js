@@ -21418,9 +21418,10 @@ angular.module('udb.search')
 /* @ngInject */
 function imagesByLanguageFilter() {
   return function (mediaObjects, preferredLanguage) {
+    console.log(mediaObjects);
     var filtered = _.filter(mediaObjects, function(mediaObject) {
       return mediaObject['@type'] === 'schema:ImageObject' &&
-        (mediaObject.inLanguage === preferredLanguage || mediaObject.inLanguage ===  '!!');
+        (mediaObject.inLanguage === preferredLanguage || angular.isUndefined(mediaObject.inLanguage));
     });
     return filtered;
   };
