@@ -21400,6 +21400,33 @@ function CurrencyFilter() {
 }
 })();
 
+// Source: src/search/filters/imagesbyLanguage.filter.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc filter
+ * @name udb.search.filter:imagesByLanguage
+ * @function
+ * @description
+ * # jsonLDLang
+ * Filter JsonLD objects by language.
+ */
+angular.module('udb.search')
+  .filter('imagesByLanguage', imagesByLanguageFilter);
+
+/* @ngInject */
+function imagesByLanguageFilter() {
+  return function (mediaObjects, preferredLanguage) {
+    var filtered = _.filter(mediaObjects, function(mediaObject) {
+      return mediaObject['@type'] === 'schema:ImageObject' &&
+        (mediaObject.inLanguage === preferredLanguage || mediaObject.inLanguage ===  '!!');
+    });
+    return filtered;
+  };
+}
+})();
+
 // Source: src/search/filters/json-ld-lang.filter.js
 (function () {
 'use strict';
@@ -27922,7 +27949,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "          <div class=\"image-upload-list state complete\" ng-if=\"eventFormData.mediaObjects.length > 0\">\n" +
     "            <h4 translate-once=\"eventForm.step5.images\"></h4>\n" +
-    "            <div ng-repeat=\"image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': eventFormData.mainLanguage} track by image.contentUrl\">\n" +
+    "            <div ng-repeat=\"image in eventFormData.mediaObjects | imagesByLanguage:eventFormData.mainLanguage track by image.contentUrl\">\n" +
     "              <div class=\"uploaded-image\">\n" +
     "                <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
     "                  <a class=\"media-left\" href=\"#\">\n" +
