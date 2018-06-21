@@ -20069,10 +20069,11 @@ function OfferTranslateController(
     xhr.responseType = 'blob';
     xhr.onload = function() {
       blob = xhr.response;
+      console.log(blob);
       MediaManager
         .createImage(blob, image.description, image.copyrightHolder, language)
         .then(
-          $scope.mediaObject.addImage
+          addImageToEvent, displayError
         );
     };
     xhr.send();
@@ -20118,6 +20119,37 @@ function OfferTranslateController(
         }
       }
     });
+  }
+
+  /**
+   * @param {MediaObject} mediaObject
+   */
+  function addImageToEvent(mediaObject) {
+    function updateImageForm() {
+      ImageFormData.addImage(mediaObject);
+    }
+
+    eventCrud
+      .addImage(ImageFormData, mediaObject)
+      .then(updateImageForm, displayError);
+  }
+
+  function displayError(errorResponse) {
+    var errorMessage = errorResponse.data.title;
+    var error = 'Er ging iets mis bij het opslaan van de afbeelding.';
+
+    switch (errorMessage) {
+      case 'The uploaded file is not an image.':
+        error = 'Het geüpload bestand is geen geldige afbeelding. ' +
+          'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.';
+        break;
+      case 'The file size of the uploaded image is too big.':
+        error = 'Het geüpload bestand is te groot.';
+        break;
+    }
+
+    $scope.saving = false;
+    $scope.error = error;
   }
 }
 OfferTranslateController.$inject = ["$scope", "offerId", "udbApi", "moment", "jsonLDLangFilter", "$q", "$uibModal", "appConfig", "$translate", "offerTranslator", "eventCrud", "$state", "MediaManager", "ImageFormData"];
