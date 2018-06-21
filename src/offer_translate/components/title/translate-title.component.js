@@ -20,10 +20,9 @@ angular
     });
 
 /* @ngInject */
-function TranslateTitleController(appConfig, $translate, offerTranslator) {
+function TranslateTitleController(offerTranslator) {
   var controller = this;
 
-  controller.cachedOffer = controller.offer;
   controller.translatedNames = {};
   controller.originalName = _.get(controller.offer.name, controller.offer.mainLanguage, null) ||
       _.get(controller.offer.name, 'nl', null) ||
@@ -35,7 +34,7 @@ function TranslateTitleController(appConfig, $translate, offerTranslator) {
 
   function saveTranslatedName(language) {
     offerTranslator
-        .translateProperty(controller.cachedOffer, 'name', language, controller.translatedNames[language])
+        .translateProperty(controller.offer, 'name', language, controller.translatedNames[language])
         .then(function() {
           //
         });
