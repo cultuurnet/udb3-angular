@@ -48,7 +48,6 @@ function OfferTranslateController(
   ImageFormData.init();
 
   // Functions
-  $scope.saveTranslatedName = saveTranslatedName;
   $scope.saveTranslatedDescription = saveTranslatedDescription;
   $scope.saveTranslatedTariffs = saveTranslatedTariffs;
   $scope.saveTranslatedStreet = saveTranslatedStreet;
@@ -76,10 +75,6 @@ function OfferTranslateController(
       $scope.isPlace = true;
     }
 
-    $scope.originalName = _.get($scope.cachedOffer.name, $scope.cachedOffer.mainLanguage, null) ||
-       _.get($scope.cachedOffer.name, 'nl', null) ||
-       _.get($scope.cachedOffer, 'name', '');
-
     $scope.originalDescription = _.get($scope.cachedOffer.description, $scope.cachedOffer.mainLanguage, '') ||
        _.get($scope.cachedOffer.description, 'nl', '') ||
        _.get($scope.cachedOffer, 'description', '');
@@ -88,7 +83,6 @@ function OfferTranslateController(
 
     $scope.originalTariffs = getOriginalTariffs();
 
-    $scope.translatedNames = _.get($scope.cachedOffer, 'name');
     $scope.translatedDescriptions = _.get($scope.cachedOffer, 'description');
     $scope.translatedTariffs = getTranslatedTariffs();
 
@@ -129,14 +123,6 @@ function OfferTranslateController(
         .getOffer(offerId)
         .then(startTranslating);
     }
-  }
-
-  function saveTranslatedName(language) {
-    offerTranslator
-      .translateProperty($scope.cachedOffer, 'name', language, $scope.translatedNames[language])
-      .then(function() {
-        //
-      });
   }
 
   function saveTranslatedDescription(language) {

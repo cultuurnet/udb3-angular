@@ -19647,6 +19647,54 @@ function EventMigrationService() {
 }
 })();
 
+// Source: src/offer_translate/components/title/translate-title.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateTitleController
+ * @description
+ * # TranslateTitleController
+ * Controller for the title translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateTitle', {
+      templateUrl: 'templates/translate-title.html',
+      controller: TranslateTitleController,
+      controllerAs: 'ttc',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateTitleController(appConfig, $translate, offerTranslator) {
+  var controller = this;
+
+  controller.cachedOffer = controller.offer;
+  controller.translatedNames = {};
+  controller.originalName = _.get(controller.offer.name, controller.offer.mainLanguage, null) ||
+      _.get(controller.offer.name, 'nl', null) ||
+      _.get(controller.offer, 'name', '');
+
+  controller.translatedNames = _.get(controller.offer, 'name');
+
+  controller.saveTranslatedName = saveTranslatedName;
+
+  function saveTranslatedName(language) {
+    offerTranslator
+        .translateProperty(controller.cachedOffer, 'name', language, controller.translatedNames[language])
+        .then(function() {
+          //
+        });
+  }
+}
+TranslateTitleController.$inject = ["appConfig", "$translate", "offerTranslator"];
+})();
+
 // Source: src/offer_translate/image-form-data.factory.js
 (function () {
 'use strict';
@@ -19795,7 +19843,6 @@ function OfferTranslateController(
   ImageFormData.init();
 
   // Functions
-  $scope.saveTranslatedName = saveTranslatedName;
   $scope.saveTranslatedDescription = saveTranslatedDescription;
   $scope.saveTranslatedTariffs = saveTranslatedTariffs;
   $scope.saveTranslatedStreet = saveTranslatedStreet;
@@ -19823,10 +19870,6 @@ function OfferTranslateController(
       $scope.isPlace = true;
     }
 
-    $scope.originalName = _.get($scope.cachedOffer.name, $scope.cachedOffer.mainLanguage, null) ||
-       _.get($scope.cachedOffer.name, 'nl', null) ||
-       _.get($scope.cachedOffer, 'name', '');
-
     $scope.originalDescription = _.get($scope.cachedOffer.description, $scope.cachedOffer.mainLanguage, '') ||
        _.get($scope.cachedOffer.description, 'nl', '') ||
        _.get($scope.cachedOffer, 'description', '');
@@ -19835,7 +19878,6 @@ function OfferTranslateController(
 
     $scope.originalTariffs = getOriginalTariffs();
 
-    $scope.translatedNames = _.get($scope.cachedOffer, 'name');
     $scope.translatedDescriptions = _.get($scope.cachedOffer, 'description');
     $scope.translatedTariffs = getTranslatedTariffs();
 
@@ -19876,14 +19918,6 @@ function OfferTranslateController(
         .getOffer(offerId)
         .then(startTranslating);
     }
-  }
-
-  function saveTranslatedName(language) {
-    offerTranslator
-      .translateProperty($scope.cachedOffer, 'name', language, $scope.translatedNames[language])
-      .then(function() {
-        //
-      });
   }
 
   function saveTranslatedDescription(language) {
@@ -29697,6 +29731,36 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/translate-title.html',
+    "<section class=\"translate-section\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong translate-once=\"translate.title\"></strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <p class=\"orginal text-muted\" ng-bind=\"ttc.originalName\"></p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in ttc.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <textarea ng-blur=\"ttc.saveTranslatedName(code)\" class=\"form-control form-group\" ng-model=\"ttc.translatedNames[code]\"></textarea>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
   $templateCache.put('templates/offer-translate.html',
     "<div ng-if=\"!loaded\">\n" +
     "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
@@ -29718,32 +29782,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "\n" +
     "  <!-- Titel -->\n" +
-    "  <section class=\"translate-section\">\n" +
-    "    <div class=\"row\">\n" +
-    "      <div class=\"col-sm-3\">\n" +
-    "        <p><strong translate-once=\"translate.title\"></strong></p>\n" +
-    "      </div>\n" +
-    "      <div class=\"col-sm-9\">\n" +
-    "        <div class=\"row\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <p class=\"orginal text-muted\" ng-bind=\"originalName\"></p>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <textarea ng-blur=\"saveTranslatedName(code)\" class=\"form-control form-group\" ng-model=\"translatedNames[code]\"></textarea>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </section>\n" +
+    "  <offer-translate-title offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-title>\n" +
     "\n" +
     "  <!-- Beschrijving -->\n" +
     "  <section class=\"translate-section\" ng-show=\"originalDescription\">\n" +
