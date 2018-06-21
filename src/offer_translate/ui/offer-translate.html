@@ -24,32 +24,7 @@
   <offer-translate-description offer="cachedOffer" active-languages="activeLanguages"></offer-translate-description>
 
   <!-- Prijs -->
-  <section class="translate-section" ng-show="originalTariffs.length > 0">
-    <div class="row" ng-repeat="originalTariff in originalTariffs track by $index">
-      <div class="col-sm-3">
-        <p><strong><span translate-once="translate.tariff"></span> {{$index+1}}</strong></p>
-      </div>
-      <div class="col-sm-9">
-        <div class="row">
-          <div class="col-sm-3">
-            <p class="orginal text-muted" translate-once="translate.original"></p>
-          </div>
-          <div class="col-sm-9">
-            <p class="orginal text-muted" ng-bind="originalTariff"></p>
-          </div>
-        </div>
-
-        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
-          <div class="col-sm-3">
-            <p class="orginal text-muted">{{code}}</p>
-          </div>
-          <div class="col-sm-9">
-            <input type="text" ng-blur="saveTranslatedTariffs()" class="form-control form-group" ng-model="translatedTariffs[$parent.$index][code]">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <offer-translate-tariffs offer="cachedOffer" active-languages="activeLanguages"></offer-translate-tariffs>
 
   <!-- Adress -->
   <section class="translate-section" ng-show="isPlace">

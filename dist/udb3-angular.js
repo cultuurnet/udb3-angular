@@ -19695,6 +19695,81 @@ function TranslateDescriptionController(offerTranslator) {
 TranslateDescriptionController.$inject = ["offerTranslator"];
 })();
 
+// Source: src/offer_translate/components/tariffs/translate-tariffs.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateTariffsController
+ * @description
+ * # TranslateTariffsController
+ * Controller for the tariffs translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateTariffs', {
+      templateUrl: 'templates/translate-tariffs.html',
+      controller: TranslateTariffsController,
+      controllerAs: 'ttsc',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateTariffsController(eventCrud) {
+  var controller = this;
+
+  controller.translatedTariffs = [];
+
+  controller.originalTariffs = getOriginalTariffs();
+  controller.translatedTariffs = getTranslatedTariffs();
+
+  controller.saveTranslatedTariffs = saveTranslatedTariffs;
+
+  function saveTranslatedTariffs() {
+    for (var key in controller.offer.priceInfo) {
+      if (key > 0) {
+        var originalTariff = {};
+        originalTariff[controller.offer.mainLanguage] = controller.originalTariffs[key - 1];
+        controller.offer.priceInfo[key].name =
+            _.merge(originalTariff, controller.translatedTariffs[key - 1]);
+      }
+    }
+
+    eventCrud.updatePriceInfo(controller.offer);
+  }
+
+  function getOriginalTariffs() {
+    var originalTariffs = [];
+    for (var key in controller.offer.priceInfo) {
+      if (key > 0) {
+        originalTariffs.push(
+            controller.offer.priceInfo[key].name[controller.offer.mainLanguage] ?
+                controller.offer.priceInfo[key].name[controller.offer.mainLanguage] :
+                controller.offer.priceInfo[key].name);
+      }
+    }
+
+    return originalTariffs;
+  }
+
+  function getTranslatedTariffs() {
+    var translatedTariffs = [];
+    for (var key in controller.offer.priceInfo) {
+      if (key > 0) {
+        translatedTariffs.push(controller.offer.priceInfo[key].name);
+      }
+    }
+
+    return translatedTariffs;
+  }
+}
+TranslateTariffsController.$inject = ["eventCrud"];
+})();
+
 // Source: src/offer_translate/components/title/translate-title.component.js
 (function () {
 'use strict';
@@ -19874,7 +19949,6 @@ function OfferTranslateController(
   $scope.apiUrl = '';
   $scope.loaded = false;
   $scope.mainLanguage = '';
-  $scope.translatedTariffs = [];
   $scope.translatedStreets = {};
   $scope.mediaObjects = {};
   $scope.languages = ['nl', 'fr', 'en', 'de'];
@@ -19888,7 +19962,6 @@ function OfferTranslateController(
   ImageFormData.init();
 
   // Functions
-  $scope.saveTranslatedTariffs = saveTranslatedTariffs;
   $scope.saveTranslatedStreet = saveTranslatedStreet;
   $scope.openEditPage = openEditPage;
   $scope.goToDashboard = goToDashboard;
@@ -19913,10 +19986,6 @@ function OfferTranslateController(
       $scope.isEvent = false;
       $scope.isPlace = true;
     }
-
-    $scope.originalTariffs = getOriginalTariffs();
-
-    $scope.translatedTariffs = getTranslatedTariffs();
 
     if ($scope.cachedOffer.mediaObject) {
       ImageFormData.mediaObjects = $scope.cachedOffer.mediaObject || [];
@@ -19965,48 +20034,6 @@ function OfferTranslateController(
       .then(function() {
         //
       });
-  }
-
-  function saveTranslatedTariffs() {
-    var EventFormData = $scope.cachedOffer;
-    for (var key in EventFormData.priceInfo) {
-      if (key > 0) {
-        var originalTariff = {};
-        originalTariff[$scope.mainLanguage] = $scope.originalTariffs[key - 1];
-        EventFormData.priceInfo[key].name =
-          _.merge(originalTariff, $scope.translatedTariffs[key - 1]);
-      }
-    }
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      //
-    });
-  }
-
-  function getOriginalTariffs() {
-    var originalTariffs = [];
-    for (var key in $scope.cachedOffer.priceInfo) {
-      if (key > 0) {
-        originalTariffs.push(
-          $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] ?
-            $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] :
-            $scope.cachedOffer.priceInfo[key].name);
-      }
-    }
-
-    return originalTariffs;
-  }
-
-  function getTranslatedTariffs() {
-    var translatedTariffs = [];
-    for (var key in $scope.cachedOffer.priceInfo) {
-      if (key > 0) {
-        translatedTariffs.push($scope.cachedOffer.priceInfo[key].name);
-      }
-    }
-
-    return translatedTariffs;
   }
 
   function openEditPage() {
@@ -29790,6 +29817,36 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/translate-tariffs.html',
+    "<section class=\"translate-section\" ng-show=\"ttsc.originalTariffs.length > 0\">\n" +
+    "    <div class=\"row\" ng-repeat=\"originalTariff in ttsc.originalTariffs track by $index\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong><span translate-once=\"translate.tariff\"></span> {{$index+1}}</strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <p class=\"orginal text-muted\" ng-bind=\"originalTariff\"></p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in ttsc.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <input type=\"text\" ng-blur=\"ttsc.saveTranslatedTariffs()\" class=\"form-control form-group\" ng-model=\"ttsc.translatedTariffs[$parent.$index][code]\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
   $templateCache.put('templates/translate-title.html',
     "<section class=\"translate-section\">\n" +
     "    <div class=\"row\">\n" +
@@ -29847,32 +29904,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <offer-translate-description offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-description>\n" +
     "\n" +
     "  <!-- Prijs -->\n" +
-    "  <section class=\"translate-section\" ng-show=\"originalTariffs.length > 0\">\n" +
-    "    <div class=\"row\" ng-repeat=\"originalTariff in originalTariffs track by $index\">\n" +
-    "      <div class=\"col-sm-3\">\n" +
-    "        <p><strong><span translate-once=\"translate.tariff\"></span> {{$index+1}}</strong></p>\n" +
-    "      </div>\n" +
-    "      <div class=\"col-sm-9\">\n" +
-    "        <div class=\"row\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <p class=\"orginal text-muted\" ng-bind=\"originalTariff\"></p>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <input type=\"text\" ng-blur=\"saveTranslatedTariffs()\" class=\"form-control form-group\" ng-model=\"translatedTariffs[$parent.$index][code]\">\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </section>\n" +
+    "  <offer-translate-tariffs offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-tariffs>\n" +
     "\n" +
     "  <!-- Adress -->\n" +
     "  <section class=\"translate-section\" ng-show=\"isPlace\">\n" +

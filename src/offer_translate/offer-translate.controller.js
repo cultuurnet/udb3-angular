@@ -32,7 +32,6 @@ function OfferTranslateController(
   $scope.apiUrl = '';
   $scope.loaded = false;
   $scope.mainLanguage = '';
-  $scope.translatedTariffs = [];
   $scope.translatedStreets = {};
   $scope.mediaObjects = {};
   $scope.languages = ['nl', 'fr', 'en', 'de'];
@@ -46,7 +45,6 @@ function OfferTranslateController(
   ImageFormData.init();
 
   // Functions
-  $scope.saveTranslatedTariffs = saveTranslatedTariffs;
   $scope.saveTranslatedStreet = saveTranslatedStreet;
   $scope.openEditPage = openEditPage;
   $scope.goToDashboard = goToDashboard;
@@ -71,10 +69,6 @@ function OfferTranslateController(
       $scope.isEvent = false;
       $scope.isPlace = true;
     }
-
-    $scope.originalTariffs = getOriginalTariffs();
-
-    $scope.translatedTariffs = getTranslatedTariffs();
 
     if ($scope.cachedOffer.mediaObject) {
       ImageFormData.mediaObjects = $scope.cachedOffer.mediaObject || [];
@@ -123,48 +117,6 @@ function OfferTranslateController(
       .then(function() {
         //
       });
-  }
-
-  function saveTranslatedTariffs() {
-    var EventFormData = $scope.cachedOffer;
-    for (var key in EventFormData.priceInfo) {
-      if (key > 0) {
-        var originalTariff = {};
-        originalTariff[$scope.mainLanguage] = $scope.originalTariffs[key - 1];
-        EventFormData.priceInfo[key].name =
-          _.merge(originalTariff, $scope.translatedTariffs[key - 1]);
-      }
-    }
-
-    var promise = eventCrud.updatePriceInfo(EventFormData);
-    promise.then(function() {
-      //
-    });
-  }
-
-  function getOriginalTariffs() {
-    var originalTariffs = [];
-    for (var key in $scope.cachedOffer.priceInfo) {
-      if (key > 0) {
-        originalTariffs.push(
-          $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] ?
-            $scope.cachedOffer.priceInfo[key].name[$scope.mainLanguage] :
-            $scope.cachedOffer.priceInfo[key].name);
-      }
-    }
-
-    return originalTariffs;
-  }
-
-  function getTranslatedTariffs() {
-    var translatedTariffs = [];
-    for (var key in $scope.cachedOffer.priceInfo) {
-      if (key > 0) {
-        translatedTariffs.push($scope.cachedOffer.priceInfo[key].name);
-      }
-    }
-
-    return translatedTariffs;
   }
 
   function openEditPage() {
