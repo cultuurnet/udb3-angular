@@ -525,6 +525,19 @@ function UdbApi(
     );
   };
 
+  this.translateAddress = function (offerId, language, translation) {
+    return $http.put(
+        appConfig.baseUrl + 'places/' + offerId + '/address/' + language,
+        {
+          addressCountry: translation.addressCountry,
+          addressLocality: translation.addressLocality,
+          postalCode: translation.postalCode,
+          streetAddress: translation.streetAddress
+        },
+        defaultApiConfig
+    );
+  };
+
   var offerPropertyPaths = {
     typicalAgeRange: 'typical-age-range'
   };

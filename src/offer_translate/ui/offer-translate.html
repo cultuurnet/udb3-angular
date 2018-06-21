@@ -26,36 +26,11 @@
   <!-- Prijs -->
   <offer-translate-tariffs offer="cachedOffer" active-languages="activeLanguages"></offer-translate-tariffs>
 
-  <!-- Adress -->
-  <section class="translate-section" ng-show="isPlace">
-    <div class="row">
-      <div class="col-sm-3">
-        <p><strong>Straat</strong></p>
-      </div>
-      <div class="col-sm-9">
-        <div class="row">
-          <div class="col-sm-3">
-            <p class="orginal text-muted">Origineel</p>
-          </div>
-          <div class="col-sm-9">
-            <p class="orginal text-muted" ng-bind="originalAddress.streetAddress"></p>
-          </div>
-        </div>
-
-        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
-          <div class="col-sm-3">
-            <p class="orginal text-muted">{{code}}</p>
-          </div>
-          <div class="col-sm-9">
-            <input type="text" ng-blur="saveTranslatedStreet(code)" class="form-control form-group" ng-model="translatedStreets[code]">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- Address -->
+  <offer-translate-address offer="cachedOffer" active-languages="activeLanguages" ng-if="isPlace"></offer-translate-address>
 
   <!-- Image -->
-  <section class="translate-section">
+  <section class="translate-section" ng-show="cachedOffer.mediaObject.length > 0">
     <div class="row">
       <div class="col-sm-3">
         <p><strong>Afbeelding(en)</strong></p>

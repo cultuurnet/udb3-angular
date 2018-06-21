@@ -367,6 +367,15 @@ angular.module('udb.core')
       'publiq_url': 'Voir sur UiT in Vlaanderen',
       'translate': 'Traduire'
     },
+    translate: {
+      'ready': 'Prêt à traduire',
+      'translate': 'traduire',
+      'original': 'Original',
+      'description': 'Description',
+      'title': 'Titre',
+      'tariff': 'Prix',
+      'address': 'Adresse',
+    },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
       'from': 'De',

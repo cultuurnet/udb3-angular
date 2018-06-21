@@ -373,7 +373,8 @@ angular.module('udb.core')
       'original': 'Origineel',
       'description': 'Beschrijving',
       'title': 'Titel',
-      'tariff': 'Prijstarief'
+      'tariff': 'Prijstarief',
+      'address': 'Adres',
     },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',

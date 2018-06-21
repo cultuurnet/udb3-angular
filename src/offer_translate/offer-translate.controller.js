@@ -32,7 +32,6 @@ function OfferTranslateController(
   $scope.apiUrl = '';
   $scope.loaded = false;
   $scope.mainLanguage = '';
-  $scope.translatedStreets = {};
   $scope.mediaObjects = {};
   $scope.languages = ['nl', 'fr', 'en', 'de'];
   $scope.activeLanguages = {
@@ -45,7 +44,6 @@ function OfferTranslateController(
   ImageFormData.init();
 
   // Functions
-  $scope.saveTranslatedStreet = saveTranslatedStreet;
   $scope.openEditPage = openEditPage;
   $scope.goToDashboard = goToDashboard;
   $scope.openUploadImageModal = openUploadImageModal;
@@ -61,6 +59,7 @@ function OfferTranslateController(
     $scope.apiUrl = offer.apiUrl;
     $scope.imageFormData = ImageFormData;
     $scope.mainLanguage = offer.mainLanguage ? offer.mainLanguage : 'nl';
+
     $scope.offerType = offer.url.split('/').shift();
     if ($scope.offerType === 'event') {
       $scope.isEvent = true;
@@ -76,12 +75,6 @@ function OfferTranslateController(
     ImageFormData.name = $scope.originalName;
     ImageFormData.apiUrl = offer.apiUrl;
     ImageFormData.mainLanguage = offer.mainLanguage;
-
-    if ($scope.isPlace) {
-      $scope.originalAddress = _.get($scope.cachedOffer.address, $scope.cachedOffer.mainLanguage, '') ||
-        _.get($scope.cachedOffer.address, 'nl', '') ||
-        _.get($scope.cachedOffer, 'address', '');
-    }
 
     _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
@@ -107,16 +100,6 @@ function OfferTranslateController(
         .getOffer(offerId)
         .then(startTranslating);
     }
-  }
-
-  function saveTranslatedStreet(language) {
-    var translatedAddress = $scope.originalAddress;
-    translatedAddress.streetAddress = $scope.translatedStreets[language];
-    offerTranslator
-      .translateProperty($scope.cachedOffer, 'address', language, $scope.translatedAddresses)
-      .then(function() {
-        //
-      });
   }
 
   function openEditPage() {

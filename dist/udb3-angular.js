@@ -2976,7 +2976,8 @@ angular.module('udb.core')
       'original': 'Origineel',
       'description': 'Beschrijving',
       'title': 'Titel',
-      'tariff': 'Prijstarief'
+      'tariff': 'Prijstarief',
+      'address': 'Adres',
     },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
@@ -3795,6 +3796,15 @@ angular.module('udb.core')
       'no_age': 'Pas d\'information de l\'âge',
       'publiq_url': 'Voir sur UiT in Vlaanderen',
       'translate': 'Traduire'
+    },
+    translate: {
+      'ready': 'Prêt à traduire',
+      'translate': 'traduire',
+      'original': 'Original',
+      'description': 'Description',
+      'title': 'Titre',
+      'tariff': 'Prix',
+      'address': 'Adresse',
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
@@ -4767,6 +4777,19 @@ function UdbApi(
       offerLocation + '/' + language + '/' + propertyName,
       translationData,
       defaultApiConfig
+    );
+  };
+
+  this.translateAddress = function (offerId, language, translation) {
+    return $http.put(
+        appConfig.baseUrl + 'places/' + offerId + '/address/' + language,
+        {
+          addressCountry: translation.addressCountry,
+          addressLocality: translation.addressLocality,
+          postalCode: translation.postalCode,
+          streetAddress: translation.streetAddress
+        },
+        defaultApiConfig
     );
   };
 
@@ -6301,12 +6324,13 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.calendarType = '';
     /** @type {OpeningHoursData[]} **/
     this.openinghours = [];
-    this.address = {
+    this.address = {};
+    /*this.address = {
       'addressCountry' : 'BE',
       'addressLocality' : '',
       'postalCode' : '',
       'streetAddress' : ''
-    };
+    };*/
 
     if (placeJson) {
       this.parseJson(placeJson);
@@ -6323,7 +6347,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.apiUrl = new URL(jsonPlace['@id']);
       }
       this.name = jsonPlace.name || {};
-      this.address = (jsonPlace.address && jsonPlace.address.nl) || jsonPlace.address || this.address;
+      //this.address = (jsonPlace.address && jsonPlace.address.nl) || jsonPlace.address || this.address;
+      this.address = jsonPlace.address || {};
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
       this.calendarType = jsonPlace.calendarType || '';
@@ -9261,6 +9286,20 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       .translateProperty(offer.apiUrl, property, language, translation)
       .then(logTranslationJob);
   };
+
+  this.translateAddress = function (offer, language, translation) {
+    function logTranslationJob(response) {
+      var jobData = response.data;
+
+      offer['address'][language] = translation;
+      var job = new OfferTranslationJob(jobData.commandId, offer, property, language, translation);
+      jobLogger.addJob(job);
+    }
+
+    return udbApi
+        .translateAddress(offer.id, language, translation)
+        .then(logTranslationJob)
+  }
 }
 OfferTranslator.$inject = ["jobLogger", "udbApi", "OfferTranslationJob"];
 })();
@@ -19647,6 +19686,64 @@ function EventMigrationService() {
 }
 })();
 
+// Source: src/offer_translate/components/address/translate.address.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateAddressController
+ * @description
+ * # TranslateAddressController
+ * Controller for the address translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateAddress', {
+      templateUrl: 'templates/translate-address.html',
+      controller: TranslateAddressController,
+      controllerAs: 'tac',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateAddressController(offerTranslator) {
+  var controller = this;
+
+  controller.translatedAddresses = {};
+
+  controller.originalAddress = _.get(controller.offer.address, controller.offer.mainLanguage, '') ||
+      _.get(controller.offer.address, 'nl', '') ||
+      _.get(controller.offer, 'address', '');
+
+  controller.translatedAddresses = _.get(controller.offer, 'address');
+  _.forEach(controller.activeLanguages, function(language, key){
+    if (controller.translatedAddresses[key] === undefined) {
+      controller.translatedAddresses[key] = {
+        postalCode: controller.originalAddress.postalCode,
+        addressLocality: controller.originalAddress.addressLocality,
+        addressCountry: controller.originalAddress.addressCountry
+      }
+    }
+  });
+
+  controller.saveTranslatedAddress = saveTranslatedAddress;
+
+  function saveTranslatedAddress(language) {
+
+    offerTranslator
+        .translateAddress(controller.offer, language, controller.translatedAddresses[language])
+        .then(function() {
+          //
+        });
+  }
+}
+TranslateAddressController.$inject = ["offerTranslator"];
+})();
+
 // Source: src/offer_translate/components/description/translate-description.component.js
 (function () {
 'use strict';
@@ -19949,7 +20046,6 @@ function OfferTranslateController(
   $scope.apiUrl = '';
   $scope.loaded = false;
   $scope.mainLanguage = '';
-  $scope.translatedStreets = {};
   $scope.mediaObjects = {};
   $scope.languages = ['nl', 'fr', 'en', 'de'];
   $scope.activeLanguages = {
@@ -19962,7 +20058,6 @@ function OfferTranslateController(
   ImageFormData.init();
 
   // Functions
-  $scope.saveTranslatedStreet = saveTranslatedStreet;
   $scope.openEditPage = openEditPage;
   $scope.goToDashboard = goToDashboard;
   $scope.openUploadImageModal = openUploadImageModal;
@@ -19978,6 +20073,7 @@ function OfferTranslateController(
     $scope.apiUrl = offer.apiUrl;
     $scope.imageFormData = ImageFormData;
     $scope.mainLanguage = offer.mainLanguage ? offer.mainLanguage : 'nl';
+
     $scope.offerType = offer.url.split('/').shift();
     if ($scope.offerType === 'event') {
       $scope.isEvent = true;
@@ -19993,12 +20089,6 @@ function OfferTranslateController(
     ImageFormData.name = $scope.originalName;
     ImageFormData.apiUrl = offer.apiUrl;
     ImageFormData.mainLanguage = offer.mainLanguage;
-
-    if ($scope.isPlace) {
-      $scope.originalAddress = _.get($scope.cachedOffer.address, $scope.cachedOffer.mainLanguage, '') ||
-        _.get($scope.cachedOffer.address, 'nl', '') ||
-        _.get($scope.cachedOffer, 'address', '');
-    }
 
     _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
@@ -20024,16 +20114,6 @@ function OfferTranslateController(
         .getOffer(offerId)
         .then(startTranslating);
     }
-  }
-
-  function saveTranslatedStreet(language) {
-    var translatedAddress = $scope.originalAddress;
-    translatedAddress.streetAddress = $scope.translatedStreets[language];
-    offerTranslator
-      .translateProperty($scope.cachedOffer, 'address', language, $scope.translatedAddresses)
-      .then(function() {
-        //
-      });
   }
 
   function openEditPage() {
@@ -29819,6 +29899,42 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/translate-address.html',
+    "<section class=\"translate-section\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong><span translate-once=\"translate.address\"></span></strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\"><span translate-once=\"translate.original\"></span></p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <p class=\"orginal text-muted\" ng-bind=\"tac.originalAddress.streetAddress\"></p>\n" +
+    "                    <p class=\"orginal text-muted\">\n" +
+    "                        <span ng-bind=\"tac.originalAddress.postalCode\"></span> -\n" +
+    "                        <span ng-bind=\"tac.originalAddress.addressLocality\"></span>\n" +
+    "                    </p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in tac.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].streetAddress\">\n" +
+    "                    <span class=\"text-muted\" ng-bind=\"::tac.translatedAddresses[code].postalCode\"></span>\n" +
+    "                    <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].addressLocality\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
   $templateCache.put('templates/translate-description.html',
     "<section class=\"translate-section\" ng-show=\"ttd.originalDescription\">\n" +
     "    <div class=\"row\" >\n" +
@@ -29938,36 +30054,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <!-- Prijs -->\n" +
     "  <offer-translate-tariffs offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-tariffs>\n" +
     "\n" +
-    "  <!-- Adress -->\n" +
-    "  <section class=\"translate-section\" ng-show=\"isPlace\">\n" +
-    "    <div class=\"row\">\n" +
-    "      <div class=\"col-sm-3\">\n" +
-    "        <p><strong>Straat</strong></p>\n" +
-    "      </div>\n" +
-    "      <div class=\"col-sm-9\">\n" +
-    "        <div class=\"row\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\">Origineel</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <p class=\"orginal text-muted\" ng-bind=\"originalAddress.streetAddress\"></p>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <input type=\"text\" ng-blur=\"saveTranslatedStreet(code)\" class=\"form-control form-group\" ng-model=\"translatedStreets[code]\">\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </section>\n" +
+    "  <!-- Address -->\n" +
+    "  <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace\"></offer-translate-address>\n" +
     "\n" +
     "  <!-- Image -->\n" +
-    "  <section class=\"translate-section\">\n" +
+    "  <section class=\"translate-section\" ng-show=\"cachedOffer.mediaObject.length > 0\">\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-sm-3\">\n" +
     "        <p><strong>Afbeelding(en)</strong></p>\n" +
