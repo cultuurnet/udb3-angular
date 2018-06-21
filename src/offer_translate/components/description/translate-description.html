@@ -1,0 +1,26 @@
+<section class="translate-section" ng-show="ttd.originalDescription">
+    <div class="row" >
+        <div class="col-sm-3">
+            <p><strong translate-once="translate.description"></strong></p>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="orginal text-muted" translate-once="translate.original"></p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="orginal text-muted" ng-bind="ttd.originalDescription"></p>
+                </div>
+            </div>
+
+            <div class="row" ng-repeat="(code, language) in ttd.activeLanguages" ng-show="language.active && !language.main">
+                <div class="col-sm-3">
+                    <p class="orginal text-muted">{{code}}</p>
+                </div>
+                <div class="col-sm-9">
+                    <input type="text" ng-blur="ttd.saveTranslatedDescription(code)" class="form-control form-group" ng-model="ttd.translatedDescriptions[code]">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

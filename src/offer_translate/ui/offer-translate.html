@@ -21,32 +21,7 @@
   <offer-translate-title offer="cachedOffer" active-languages="activeLanguages"></offer-translate-title>
 
   <!-- Beschrijving -->
-  <section class="translate-section" ng-show="originalDescription">
-    <div class="row" >
-      <div class="col-sm-3">
-        <p><strong translate-once="translate.description"></strong></p>
-      </div>
-      <div class="col-sm-9">
-        <div class="row">
-          <div class="col-sm-3">
-            <p class="orginal text-muted" translate-once="translate.original"></p>
-          </div>
-          <div class="col-sm-9">
-            <p class="orginal text-muted" ng-bind="originalDescription"></p>
-          </div>
-        </div>
-
-        <div class="row" ng-repeat="(code, language) in activeLanguages" ng-show="language.active && !language.main">
-          <div class="col-sm-3">
-            <p class="orginal text-muted">{{code}}</p>
-          </div>
-          <div class="col-sm-9">
-            <input type="text" ng-blur="saveTranslatedDescription(code)" class="form-control form-group" ng-model="translatedDescriptions[code]">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <offer-translate-description offer="cachedOffer" active-languages="activeLanguages"></offer-translate-description>
 
   <!-- Prijs -->
   <section class="translate-section" ng-show="originalTariffs.length > 0">
