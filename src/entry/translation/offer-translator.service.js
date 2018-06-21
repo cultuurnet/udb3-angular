@@ -44,13 +44,13 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
     function logTranslationJob(response) {
       var jobData = response.data;
 
-      offer['address'][language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, property, language, translation);
+      offer.address[language] = translation;
+      var job = new OfferTranslationJob(jobData.commandId, offer, 'address', language, translation);
       jobLogger.addJob(job);
     }
 
     return udbApi
         .translateAddress(offer.id, language, translation)
-        .then(logTranslationJob)
-  }
+        .then(logTranslationJob);
+  };
 }

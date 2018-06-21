@@ -30,13 +30,13 @@ function TranslateAddressController(offerTranslator) {
       _.get(controller.offer, 'address', '');
 
   controller.translatedAddresses = _.get(controller.offer, 'address');
-  _.forEach(controller.activeLanguages, function(language, key){
+  _.forEach(controller.activeLanguages, function(language, key) {
     if (controller.translatedAddresses[key] === undefined) {
       controller.translatedAddresses[key] = {
         postalCode: controller.originalAddress.postalCode,
         addressLocality: controller.originalAddress.addressLocality,
         addressCountry: controller.originalAddress.addressCountry
-      }
+      };
     }
   });
 
@@ -45,9 +45,6 @@ function TranslateAddressController(offerTranslator) {
   function saveTranslatedAddress(language) {
 
     offerTranslator
-        .translateAddress(controller.offer, language, controller.translatedAddresses[language])
-        .then(function() {
-          //
-        });
+        .translateAddress(controller.offer, language, controller.translatedAddresses[language]);
   }
 }

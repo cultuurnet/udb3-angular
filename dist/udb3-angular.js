@@ -9291,15 +9291,15 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
     function logTranslationJob(response) {
       var jobData = response.data;
 
-      offer['address'][language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, property, language, translation);
+      offer.address[language] = translation;
+      var job = new OfferTranslationJob(jobData.commandId, offer, 'address', language, translation);
       jobLogger.addJob(job);
     }
 
     return udbApi
         .translateAddress(offer.id, language, translation)
-        .then(logTranslationJob)
-  }
+        .then(logTranslationJob);
+  };
 }
 OfferTranslator.$inject = ["jobLogger", "udbApi", "OfferTranslationJob"];
 })();
@@ -19720,13 +19720,13 @@ function TranslateAddressController(offerTranslator) {
       _.get(controller.offer, 'address', '');
 
   controller.translatedAddresses = _.get(controller.offer, 'address');
-  _.forEach(controller.activeLanguages, function(language, key){
+  _.forEach(controller.activeLanguages, function(language, key) {
     if (controller.translatedAddresses[key] === undefined) {
       controller.translatedAddresses[key] = {
         postalCode: controller.originalAddress.postalCode,
         addressLocality: controller.originalAddress.addressLocality,
         addressCountry: controller.originalAddress.addressCountry
-      }
+      };
     }
   });
 
@@ -19735,10 +19735,7 @@ function TranslateAddressController(offerTranslator) {
   function saveTranslatedAddress(language) {
 
     offerTranslator
-        .translateAddress(controller.offer, language, controller.translatedAddresses[language])
-        .then(function() {
-          //
-        });
+        .translateAddress(controller.offer, language, controller.translatedAddresses[language]);
   }
 }
 TranslateAddressController.$inject = ["offerTranslator"];
