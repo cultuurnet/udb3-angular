@@ -1481,7 +1481,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     service
-      .uploadMedia(imageFile, description, copyrightHolder);
+      .uploadMedia(imageFile, description, copyrightHolder, 'nl');
 
     expect(Upload.upload).toHaveBeenCalledWith(expectedConfig);
   });
