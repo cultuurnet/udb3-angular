@@ -31,6 +31,7 @@ function PlaceDetail(
   var activeTabId = 'data';
   var controller = this;
   var disableVariations = _.get(appConfig, 'disableVariations');
+  var language = $translate.use() || 'nl';
 
   $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
@@ -76,7 +77,6 @@ function PlaceDetail(
     openPlaceDeleteConfirmModal($scope.place);
   };
 
-  var language = $translate.use() || 'nl';
   $scope.language = language;
   var cachedPlace;
 
@@ -85,6 +85,13 @@ function PlaceDetail(
 
     $scope.place = jsonLDLangFilter(place, language, true);
     $scope.placeIdIsInvalid = false;
+
+    if (typeof $scope.place.description === 'object') {
+      $scope.place.description = $scope.place.description[language];
+      if ($scope.place.description === undefined) {
+        $scope.place.description = '';
+      }
+    }
 
     if (!disableVariations) {
       variationRepository

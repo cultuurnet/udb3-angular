@@ -90,7 +90,8 @@ function EventFormImageUploadController(
 
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
-        deferredAddition = $q.defer();
+        deferredAddition = $q.defer(),
+        language = EventFormData.mainLanguage ? EventFormData.mainLanguage : 'nl';
 
     function displayError(errorResponse) {
       var errorMessage = errorResponse.data.title;
@@ -121,15 +122,13 @@ function EventFormImageUploadController(
         $uibModalInstance.close(mediaObject);
       }
 
-      console.log(EventFormData);
-
       eventCrud
         .addImage(EventFormData, mediaObject)
         .then(updateEventFormAndResolve, displayError);
     }
 
     MediaManager
-      .createImage($scope.selectedFile, description, copyrightHolder, EventFormData.mainLanguage)
+      .createImage($scope.selectedFile, description, copyrightHolder, language)
       .then(addImageToEvent, displayError);
 
     return deferredAddition.promise;

@@ -161,11 +161,11 @@ describe('Controller: event form step 3', function (){
 
   it('should allow to search the known locations in a city', function () {
     cityAutocomplete.getPlacesByZipcode.and.returnValue($q.resolve([
-      {name: 'hello'},
-      {name: 'world'}
+      {name: 'hello', address: {streetAddress: 'straat'}},
+      {name: 'world', address: {streetAddress: 'street'}}
     ]));
 
-    stepController.selectCity({zip: '1234'}, 'some-city-id');
+    stepController.selectCity({zip: '1234', name: 'test'}, 'some-city-id');
     scope.$apply();
 
     expect(stepController.cityHasLocations()).toEqual(true);

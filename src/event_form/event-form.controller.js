@@ -89,7 +89,7 @@ function EventFormController(
 
       // Copy location.
       if (offer.location && offer.location.id) {
-        var location = jsonLDLangFilter(offer.location, 'nl');
+        var location = jsonLDLangFilter(offer.location, offer.mainLanguage, true);
         EventFormData.location = {
           id : location.id.split('/').pop(),
           name : location.name,
@@ -107,7 +107,8 @@ function EventFormController(
 
       // Places only have an address
       if (offer.address) {
-        EventFormData.address = offer.address;
+        var translatedOffer = jsonLDLangFilter(offer, offer.mainLanguage, true);
+        EventFormData.address = translatedOffer.address;
       }
     }
   }
