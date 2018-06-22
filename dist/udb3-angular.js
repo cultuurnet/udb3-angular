@@ -19789,6 +19789,167 @@ function TranslateDescriptionController(offerTranslator) {
 TranslateDescriptionController.$inject = ["offerTranslator"];
 })();
 
+// Source: src/offer_translate/components/images/translate-images.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateImagesController
+ * @description
+ * # TranslateImagesController
+ * Controller for the images translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateImages', {
+      templateUrl: 'templates/translate-images.html',
+      controller: TranslateImagesController,
+      controllerAs: 'tic',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateImagesController($uibModal, eventCrud, MediaManager, EventFormData) {
+  var controller = this;
+
+  controller.mediaObjects = {};
+
+  //ImageFormData.init();
+  EventFormData.init();
+
+  /*controller.imageFormData = ImageFormData;
+  if (controller.offer.mediaObject) {
+    ImageFormData.mediaObjects = controller.offer.mediaObject || [];
+  }
+  ImageFormData.name = controller.offer.name;
+  ImageFormData.apiUrl = controller.offer.apiUrl;
+  ImageFormData.mainLanguage = controller.offer.mainLanguage;*/
+
+  controller.eventFormData = EventFormData;
+  if (controller.offer.mediaObject) {
+    EventFormData.mediaObjects = controller.offer.mediaObject || [];
+  }
+  EventFormData.name = controller.offer.name;
+  EventFormData.apiUrl = controller.offer.apiUrl;
+  EventFormData.mainLanguage = controller.offer.mainLanguage;
+
+  controller.openUploadImageModal = openUploadImageModal;
+  controller.removeImage = removeImage;
+  controller.editImage = editImage;
+  controller.translateImage = translateImage;
+
+  /**
+   * Open the upload modal.
+   */
+  function openUploadImageModal(language) {
+    EventFormData.mainLanguage = language;
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-image-upload.html',
+      controller: 'EventFormImageUploadController',
+      resolve: {
+        EventFormData: function () {
+          return EventFormData;
+        }
+      }
+    });
+  }
+
+  function translateImage(image, language) {
+    var blob = null;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', image.contentUrl);
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      blob = xhr.response;
+      MediaManager
+          .createImage(blob, image.description, image.copyrightHolder, language)
+          .then(
+              addImageToEvent, displayError
+          );
+    };
+    xhr.send();
+  }
+
+  /**
+   * Open the modal to edit an image of the item.
+   *
+   * @param {MediaObject} image
+   *    The media object of the image to edit.
+   */
+  function editImage(image) {
+    $uibModal.open({
+      templateUrl: 'templates/event-form-image-edit.html',
+      controller: 'EventFormImageEditController',
+      resolve: {
+        EventFormData: function () {
+          return EventFormData;
+        },
+        mediaObject: function () {
+          return image;
+        }
+      }
+    });
+  }
+
+  /**
+   * Open the modal to remove an image.
+   *
+   * @param {MediaObject} image
+   * The media object of the image to remove from the item.
+   */
+  function removeImage(image) {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-image-remove.html',
+      controller: 'EventFormImageRemoveController',
+      resolve: {
+        EventFormData: function () {
+          return EventFormData;
+        },
+        image: function () {
+          return image;
+        }
+      }
+    });
+  }
+
+  /**
+   * @param {MediaObject} mediaObject
+   */
+  function addImageToEvent(mediaObject) {
+    function updateImageForm() {
+      EventFormData.addImage(mediaObject);
+    }
+
+    eventCrud
+        .addImage(EventFormData, mediaObject)
+        .then(updateImageForm, displayError);
+  }
+
+  function displayError(errorResponse) {
+    var errorMessage = errorResponse.data.title;
+    var error = 'Er ging iets mis bij het opslaan van de afbeelding.';
+
+    switch (errorMessage) {
+      case 'The uploaded file is not an image.':
+        error = 'Het geüpload bestand is geen geldige afbeelding. ' +
+            'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.';
+        break;
+      case 'The file size of the uploaded image is too big.':
+        error = 'Het geüpload bestand is te groot.';
+        break;
+    }
+
+    controller.saving = false;
+    controller.error = error;
+  }
+}
+TranslateImagesController.$inject = ["$uibModal", "eventCrud", "MediaManager", "EventFormData"];
+})();
+
 // Source: src/offer_translate/components/tariffs/translate-tariffs.component.js
 (function () {
 'use strict';
@@ -20027,23 +20188,16 @@ function OfferTranslateController(
     $scope,
     offerId,
     udbApi,
-    moment,
     jsonLDLangFilter,
     $q,
-    $uibModal,
-    appConfig,
     $translate,
-    offerTranslator,
-    eventCrud,
     $state,
-    MediaManager,
     ImageFormData
 ) {
 
   $scope.apiUrl = '';
   $scope.loaded = false;
   $scope.mainLanguage = '';
-  $scope.mediaObjects = {};
   $scope.languages = ['nl', 'fr', 'en', 'de'];
   $scope.activeLanguages = {
     'nl': {'active': false, 'main': false},
@@ -20052,15 +20206,9 @@ function OfferTranslateController(
     'de': {'active': false, 'main': false}
   };
 
-  ImageFormData.init();
-
   // Functions
   $scope.openEditPage = openEditPage;
   $scope.goToDashboard = goToDashboard;
-  $scope.openUploadImageModal = openUploadImageModal;
-  $scope.removeImage = removeImage;
-  $scope.editImage = editImage;
-  $scope.translateImage = translateImage;
 
   $q.when(offerId)
     .then(fetchOffer, offerNotFound);
@@ -20068,7 +20216,6 @@ function OfferTranslateController(
   function startTranslating(offer) {
     $scope.cachedOffer = offer;
     $scope.apiUrl = offer.apiUrl;
-    $scope.imageFormData = ImageFormData;
     $scope.mainLanguage = offer.mainLanguage ? offer.mainLanguage : 'nl';
 
     $scope.offerType = offer.url.split('/').shift();
@@ -20079,13 +20226,6 @@ function OfferTranslateController(
       $scope.isEvent = false;
       $scope.isPlace = true;
     }
-
-    if ($scope.cachedOffer.mediaObject) {
-      ImageFormData.mediaObjects = $scope.cachedOffer.mediaObject || [];
-    }
-    ImageFormData.name = $scope.originalName;
-    ImageFormData.apiUrl = offer.apiUrl;
-    ImageFormData.mainLanguage = offer.mainLanguage;
 
     _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
@@ -20122,114 +20262,8 @@ function OfferTranslateController(
   function goToDashboard() {
     $state.go('split.footer.dashboard');
   }
-
-  /**
-  * Open the upload modal.
-  */
-  function openUploadImageModal(language) {
-    ImageFormData.mainLanguage = language;
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-image-upload.html',
-      controller: 'EventFormImageUploadController',
-      resolve: {
-        EventFormData: function () {
-          return ImageFormData;
-        }
-      }
-    });
-  }
-
-  function translateImage(image, language) {
-    var blob = null;
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', image.contentUrl);
-    xhr.responseType = 'blob';
-    xhr.onload = function() {
-      blob = xhr.response;
-      console.log(blob);
-      MediaManager
-        .createImage(blob, image.description, image.copyrightHolder, language)
-        .then(
-          addImageToEvent, displayError
-        );
-    };
-    xhr.send();
-  }
-
-  /**
-  * Open the modal to edit an image of the item.
-  *
-  * @param {MediaObject} image
-  *    The media object of the image to edit.
-  */
-  function editImage(image) {
-    $uibModal.open({
-      templateUrl: 'templates/event-form-image-edit.html',
-      controller: 'EventFormImageEditController',
-      resolve: {
-        EventFormData: function () {
-          return ImageFormData;
-        },
-        mediaObject: function () {
-          return image;
-        }
-      }
-    });
-  }
-
-  /**
-  * Open the modal to remove an image.
-  *
-  * @param {MediaObject} image
-  * The media object of the image to remove from the item.
-  */
-  function removeImage(image) {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'templates/event-form-image-remove.html',
-      controller: 'EventFormImageRemoveController',
-      resolve: {
-        EventFormData: function () {
-          return ImageFormData;
-        },
-        image: function () {
-          return image;
-        }
-      }
-    });
-  }
-
-  /**
-   * @param {MediaObject} mediaObject
-   */
-  function addImageToEvent(mediaObject) {
-    function updateImageForm() {
-      ImageFormData.addImage(mediaObject);
-    }
-
-    eventCrud
-      .addImage(ImageFormData, mediaObject)
-      .then(updateImageForm, displayError);
-  }
-
-  function displayError(errorResponse) {
-    var errorMessage = errorResponse.data.title;
-    var error = 'Er ging iets mis bij het opslaan van de afbeelding.';
-
-    switch (errorMessage) {
-      case 'The uploaded file is not an image.':
-        error = 'Het geüpload bestand is geen geldige afbeelding. ' +
-          'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.';
-        break;
-      case 'The file size of the uploaded image is too big.':
-        error = 'Het geüpload bestand is te groot.';
-        break;
-    }
-
-    $scope.saving = false;
-    $scope.error = error;
-  }
 }
-OfferTranslateController.$inject = ["$scope", "offerId", "udbApi", "moment", "jsonLDLangFilter", "$q", "$uibModal", "appConfig", "$translate", "offerTranslator", "eventCrud", "$state", "MediaManager", "ImageFormData"];
+OfferTranslateController.$inject = ["$scope", "offerId", "udbApi", "jsonLDLangFilter", "$q", "$translate", "$state", "ImageFormData"];
 })();
 
 // Source: src/offer_translate/offer-translate.directive.js
@@ -29962,6 +29996,90 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/translate-images.html',
+    "<section class=\"translate-section\" ng-show=\"tic.offer.mediaObject.length > 0\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong>Afbeelding(en)</strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\">Origineel</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <div class=\"panel panel-default\">\n" +
+    "                        <div class=\"panel-body\">\n" +
+    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': tic.offer.mainLanguage} track by image.contentUrl\">\n" +
+    "                                <div class=\"uploaded-image\">\n" +
+    "\n" +
+    "\n" +
+    "                                    <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"width: 50px;\">\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "                                    <div ng-bind=\"image.description\"></div>\n" +
+    "                                    <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
+    "\n" +
+    "                                    <!-- Single button -->\n" +
+    "                                    <div class=\"btn-group\">\n" +
+    "                                        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+    "                                            Dupliceer <span class=\"caret\"></span>\n" +
+    "                                        </button>\n" +
+    "                                        <ul class=\"dropdown-menu\">\n" +
+    "                                            <li ng-repeat=\"(code, language) in tic.activeLanguages\" ng-if=\"language.active\"><a ng-click=\"tic.translateImage(image, code)\">{{code}}</a></li>\n" +
+    "                                        </ul>\n" +
+    "                                    </div>\n" +
+    "\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in tic.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <div class=\"panel panel-default\">\n" +
+    "                        <div class=\"panel-body\">\n" +
+    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': code} track by image.contentUrl\">\n" +
+    "                                <div class=\"uploaded-image\">\n" +
+    "                                    <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
+    "                                        <a class=\"media-left\" href=\"#\">\n" +
+    "                                            <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"width: 50px;\">\n" +
+    "                                        </a>\n" +
+    "\n" +
+    "                                        <div class=\"media-body\">\n" +
+    "                                            <div ng-bind=\"image.description\"></div>\n" +
+    "                                            <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
+    "                                        </div>\n" +
+    "\n" +
+    "                                        <div class=\"media-actions\">\n" +
+    "                                            <a class=\"btn btn-xs btn-primary\" ng-click=\"tic.editImage(image)\" translate-once=\"eventForm.step5.change\"></a>\n" +
+    "                                            <a class=\"btn btn-xs btn-danger\" ng-click=\"tic.removeImage(image)\" translate-once=\"eventForm.step5.delete\"></a>\n" +
+    "                                        </div>\n" +
+    "\n" +
+    "                                    </div>\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
+    "                            <a class=\"btn btn-default\"\n" +
+    "                               href=\"#\"\n" +
+    "                               translate-once=\"eventForm.step5.add_image\"\n" +
+    "                               ng-click=\"tic.openUploadImageModal(code)\"></a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
   $templateCache.put('templates/translate-tariffs.html',
     "<section class=\"translate-section\" ng-show=\"ttsc.originalTariffs.length > 0\">\n" +
     "    <div class=\"row\" ng-repeat=\"originalTariff in ttsc.originalTariffs track by $index\">\n" +
@@ -30055,86 +30173,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace\"></offer-translate-address>\n" +
     "\n" +
     "  <!-- Image -->\n" +
-    "  <section class=\"translate-section\" ng-show=\"cachedOffer.mediaObject.length > 0\">\n" +
-    "    <div class=\"row\">\n" +
-    "      <div class=\"col-sm-3\">\n" +
-    "        <p><strong>Afbeelding(en)</strong></p>\n" +
-    "      </div>\n" +
-    "      <div class=\"col-sm-9\">\n" +
-    "        <div class=\"row\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\">Origineel</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <div class=\"panel panel-default\">\n" +
-    "              <div class=\"panel-body\">\n" +
-    "                <div ng-repeat=\"image in imageFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': mainLanguage} track by image.contentUrl\">\n" +
-    "                  <div class=\"uploaded-image\">\n" +
-    "\n" +
-    "\n" +
-    "                        <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"width: 50px;\">\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "                        <div ng-bind=\"image.description\"></div>\n" +
-    "                        <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
-    "\n" +
-    "                          <!-- Single button -->\n" +
-    "                          <div class=\"btn-group\">\n" +
-    "                            <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
-    "                              Dupliceer <span class=\"caret\"></span>\n" +
-    "                            </button>\n" +
-    "                            <ul class=\"dropdown-menu\">\n" +
-    "                              <li ng-repeat=\"(code, language) in activeLanguages\"><a ng-click=\"translateImage(image, code)\">{{code}}</a></li>\n" +
-    "                            </ul>\n" +
-    "                          </div>\n" +
-    "\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div class=\"row\" ng-repeat=\"(code, language) in activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
-    "          <div class=\"col-sm-3\">\n" +
-    "            <p class=\"orginal text-muted\">{{code}}</p>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-sm-9\">\n" +
-    "            <div class=\"panel panel-default\">\n" +
-    "              <div class=\"panel-body\">\n" +
-    "                <div ng-repeat=\"image in imageFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': code} track by image.contentUrl\">\n" +
-    "                  <div class=\"uploaded-image\">\n" +
-    "                    <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
-    "                      <a class=\"media-left\" href=\"#\">\n" +
-    "                        <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"width: 50px;\">\n" +
-    "                      </a>\n" +
-    "\n" +
-    "                      <div class=\"media-body\">\n" +
-    "                        <div ng-bind=\"image.description\"></div>\n" +
-    "                        <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
-    "                      </div>\n" +
-    "\n" +
-    "                      <div class=\"media-actions\">\n" +
-    "                          <a class=\"btn btn-xs btn-primary\" ng-click=\"editImage(image)\" translate-once=\"eventForm.step5.change\"></a>\n" +
-    "                          <a class=\"btn btn-xs btn-danger\" ng-click=\"removeImage(image)\" translate-once=\"eventForm.step5.delete\"></a>\n" +
-    "                      </div>\n" +
-    "\n" +
-    "                    </div>\n" +
-    "                  </div>\n" +
-    "                </div>\n" +
-    "                <a class=\"btn btn-default\"\n" +
-    "                   href=\"#\"\n" +
-    "                   translate-once=\"eventForm.step5.add_image\"\n" +
-    "                   ng-click=\"openUploadImageModal(code)\"></a>\n" +
-    "              </div>\n" +
-    "            </div>\n" +
-    "\n" +
-    "          </div>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "    </div>\n" +
-    "  </section>\n" +
+    "  <offer-translate-images offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-images>\n" +
     "\n" +
     "  <button class=\"btn btn-success\" ng-click=\"goToDashboard()\" translate-once=\"translate.ready\"></button>\n" +
     "\n" +
