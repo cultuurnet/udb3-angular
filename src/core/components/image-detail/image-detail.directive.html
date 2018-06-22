@@ -4,7 +4,7 @@
     </td>
     <td ng-if="::images.length">
         <ul class="list-unstyled media-list">
-            <li ng-repeat="image in images | orderBy: '-main' " class="media">
+            <li ng-repeat="image in images | imagesByLanguage:language track by image.contentUrl" class="media">
                 <div class="media-left">
                     <a target="_blank" href="{{image.contentUrl}}">
                         <img class="media-object"

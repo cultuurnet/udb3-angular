@@ -2401,8 +2401,15 @@ angular
 
 /* @ngInject */
 function ImageDetailController($scope, $translate) {
+  $scope.language = $translate.use() || 'nl';
+
   angular.forEach($scope.images, function(image) {
-    image.main = (image.contentUrl === $scope.main);
+    if (image.contentUrl === $scope.main) {
+      image.main = true;
+      var reindexedMedia = _.without($scope.images, image);
+      reindexedMedia.unshift(image);
+      $scope.images = reindexedMedia;
+    }
   });
 
   $scope.translateImageDetail = function (label, translationData) {
@@ -22012,7 +22019,7 @@ angular.module('udb.search')
 /* @ngInject */
 function imagesByLanguageFilter() {
   return function (mediaObjects, preferredLanguage) {
-    console.log(mediaObjects);
+
     var filtered = _.filter(mediaObjects, function(mediaObject) {
       return mediaObject['@type'] === 'schema:ImageObject' &&
         (mediaObject.inLanguage === preferredLanguage || angular.isUndefined(mediaObject.inLanguage));
@@ -25761,7 +25768,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </td>\n" +
     "    <td ng-if=\"::images.length\">\n" +
     "        <ul class=\"list-unstyled media-list\">\n" +
-    "            <li ng-repeat=\"image in images | orderBy: '-main' \" class=\"media\">\n" +
+    "            <li ng-repeat=\"image in images | imagesByLanguage:language track by image.contentUrl\" class=\"media\">\n" +
     "                <div class=\"media-left\">\n" +
     "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
     "                        <img class=\"media-object\"\n" +
