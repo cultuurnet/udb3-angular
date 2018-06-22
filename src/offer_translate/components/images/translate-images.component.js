@@ -23,18 +23,7 @@ angular
 function TranslateImagesController($uibModal, eventCrud, MediaManager, EventFormData) {
   var controller = this;
 
-  controller.mediaObjects = {};
-
-  //ImageFormData.init();
   EventFormData.init();
-
-  /*controller.imageFormData = ImageFormData;
-  if (controller.offer.mediaObject) {
-    ImageFormData.mediaObjects = controller.offer.mediaObject || [];
-  }
-  ImageFormData.name = controller.offer.name;
-  ImageFormData.apiUrl = controller.offer.apiUrl;
-  ImageFormData.mainLanguage = controller.offer.mainLanguage;*/
 
   controller.eventFormData = EventFormData;
   if (controller.offer.mediaObject) {

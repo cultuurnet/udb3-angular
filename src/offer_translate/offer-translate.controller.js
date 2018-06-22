@@ -19,8 +19,7 @@ function OfferTranslateController(
     jsonLDLangFilter,
     $q,
     $translate,
-    $state,
-    ImageFormData
+    $state
 ) {
 
   $scope.apiUrl = '';
