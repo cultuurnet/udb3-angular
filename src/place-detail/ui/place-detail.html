@@ -55,12 +55,12 @@
               <td>{{::place.type.label}}</td>
             </tr>
 
-            <tr ng-class="::{muted: place.description==undefined}">
+            <tr ng-class="{muted: !place.description}">
               <td><span class="row-label" translate-once="preview.description"></span></td>
-              <td ng-if="::(place.description!==undefined)">
-                <div ng-bind-html="::place.description" class="event-detail-description"></div>
+              <td ng-if="place.description">
+                <div ng-bind-html="place.description" class="event-detail-description"></div>
               </td>
-              <td ng-if="::(place.description==undefined)" translate-once="preview.no_description"></td>
+              <td ng-if="!place.description" translate-once="preview.no_description"></td>
             </tr>
             <tr>
               <td><span class="row-label" translate-once="preview.where"></span></td>
@@ -96,7 +96,7 @@
               <td><span class="row-label" translate-once="preview.age_label"></span></td>
               <td>
                 <span ng-if="::place.typicalAgeRange">{{::place.typicalAgeRange}}</span>
-                <span ng-if="::(!place.typicalAgeRange)" translate-once="preview.all_agges"></span>
+                <span ng-if="::(!place.typicalAgeRange)" translate-once="preview.all_ages"></span>
               </td>
             </tr>
           </tbody>

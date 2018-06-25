@@ -20,7 +20,8 @@
       UdbPlace,
       location,
       categories,
-      title
+      title,
+      $translate
   ) {
 
     $scope.categories = categories;
@@ -31,6 +32,7 @@
     $scope.newPlace = getDefaultPlace();
     $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
+    $scope.invalidStreet = false;
     $scope.saving = false;
     $scope.error = false;
 
@@ -84,8 +86,13 @@
         return;
       }
 
-      savePlace();
+      if (!validateAddress($scope.newPlace.address.streetAddress)) {
+        $scope.error = true;
+        $scope.invalidStreet = true;
+        return;
+      }
 
+      savePlace();
     }
 
     /**
@@ -119,7 +126,7 @@
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
       };
-      udbPlace.mainLanguage = 'nl';
+      udbPlace.mainLanguage = $translate.use() || 'nl';
 
       function showError() {
         $scope.saving = false;
@@ -159,6 +166,14 @@
       return sortedCategories[0].id;
     }
 
+    function getNumberFromStreetAddress(streetAddress) {
+      return streetAddress.split(' ').pop();
+    }
+
+    function validateAddress(streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
   }
 
 })();

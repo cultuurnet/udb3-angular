@@ -27,7 +27,8 @@ function EventFormStep3Controller(
     cities,
     Levenshtein,
     eventCrud,
-    $rootScope
+    $rootScope,
+    $translate
 ) {
 
   var controller = this;
@@ -46,6 +47,8 @@ function EventFormStep3Controller(
 
     return _.cloneDeep(emptyLocation);
   }
+
+  var language = $translate.use() || 'nl';
 
   // Scope vars.
   // main storage for event form.
@@ -210,6 +213,13 @@ function EventFormStep3Controller(
     }
 
     function updateLocationsAndReturnList (locations) {
+      // Loop over all locations to check if location is translated.
+      _.each(locations, function(location, key) {
+        if (typeof location.address.streetAddress !== 'string') {
+          locations[key].address = location.address[language];
+          locations[key].name = location.name[language];
+        }
+      });
       $scope.locationsForCity = locations;
       return locations;
     }
@@ -313,6 +323,17 @@ function EventFormStep3Controller(
       .then(setEventFormDataPlace);
   }
 
+  function getNumberFromStreetAddress(streetAddress) {
+    return streetAddress.split(' ').pop() || '';
+  }
+
+  function validateAddress(streetAddress) {
+    if (streetAddress) {
+      var maximumNumberLength = 15;
+      return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+  }
+
   /**
    * Set the street address for a Place.
    *
@@ -321,7 +342,13 @@ function EventFormStep3Controller(
   function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
+    $scope.step3Form.street.$setValidity('invalid', true);
     if (!$scope.step3Form.$valid) {
+      return;
+    }
+
+    if (!validateAddress(streetAddress)) {
+      $scope.step3Form.street.$setValidity('invalid', false);
       return;
     }
 

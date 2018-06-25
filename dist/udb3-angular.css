@@ -1733,6 +1733,13 @@ input + .alert {
 .font-bold {
   font-weight: bold;
 }
+.badge-remove {
+  cursor: pointer;
+  color: #FFF;
+}
+.badge-remove:hover {
+  text-decoration: none;
+}
 .udb-query-editor {
   padding-top: 24px;
 }

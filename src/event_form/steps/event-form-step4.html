@@ -46,8 +46,7 @@
 
     <p ng-show="eventFormData.id === ''">
       <a class="btn btn-primary titel-doorgaan"
-          ng-click="validateEvent(true);"
-          ng-class="{'disabled': eventFormData.name === ''}">
+          ng-click="validateEvent(true);">
         <span translate-once="eventForm.step4.continue"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
       </a>
     </p>

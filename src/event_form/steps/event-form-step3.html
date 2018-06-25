@@ -105,18 +105,21 @@
       <div class="plaats-adres-ingeven" ng-hide="placeStreetAddress">
         <div class="row">
           <div class="col-xs-12">
-            <div class="form-group" ng-class="{'has-error' : showValidation && step3Form.street.$error.required }">
+            <div class="form-group" ng-class="{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}">
               <label translate-once="eventForm.step3.street"></label>
               <input class="form-control"
                      id="straat"
                      name="street"
                      ng-model="newPlaceStreetAddress"
+                     ng-change="showValidation=false"
                      translate-once-placeholder="eventForm.step3.placeholder_street"
                      type="text"
                      required />
               <span class="help-block"
                     translate-once="eventForm.step3.street_validate"
                     ng-show="showValidation && step3Form.street.$error.required">
+              </span>
+              <span class="help-block" ng-show="showValidation" translate-once="eventForm.step3.street_validate_long">
               </span>
             </div>
           </div>

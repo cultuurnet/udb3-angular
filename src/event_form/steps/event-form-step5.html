@@ -48,7 +48,8 @@
                             ng-model="description"
                             rows="6"
                             udb-auto-scroll
-                            focus-if="descriptionCssClass == 'state-filling'"></textarea>
+                            focus-if="descriptionCssClass == 'state-filling'">
+                            </textarea>
 
                   <p class="tip description-info" ng-if="descriptionInfoVisible && countCharacters() < 200">
                     <span translate-once="eventForm.step5.required_200"></span>
@@ -271,7 +272,7 @@
 
           <div class="image-upload-list state complete" ng-if="eventFormData.mediaObjects.length > 0">
             <h4 translate-once="eventForm.step5.images"></h4>
-            <div ng-repeat="image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject'} track by image.contentUrl">
+            <div ng-repeat="image in eventFormData.mediaObjects | imagesByLanguage:eventFormData.mainLanguage track by image.contentUrl">
               <div class="uploaded-image">
                 <div class="media" ng-class="{'main-image': ($index === 0)}">
                   <a class="media-left" href="#">
