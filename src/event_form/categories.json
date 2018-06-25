@@ -17,11 +17,11 @@
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Art and art education"
+          "label": "Arts education"
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Agriculture and countryside"
+          "label": "Agriculture"
         },
         {
           "id": "1.0.9.0.0",
@@ -41,7 +41,7 @@
         },
         {
           "id": "1.44.0.0.0",
-          "label": "Meaning, philosophy and religion"
+          "label": "Philosophy and religion"
         }
       ]
     },
@@ -51,7 +51,7 @@
       "primary": false,
       "themes": [{
           "id": "1.17.0.0.0",
-          "label": "Antique and brocante"
+          "label": "Antiques"
         },
         {
           "id": "1.7.2.0.0",
@@ -79,11 +79,11 @@
         },
         {
           "id": "1.10.8.0.0",
-          "label": "Comics"
+          "label": "Comic books"
         },
         {
           "id": "1.65.0.0.0",
-          "label": "Food"
+          "label": "Nutrition"
         },
         {
           "id": "1.25.0.0.0",
@@ -97,7 +97,7 @@
       "primary": true,
       "themes": [{
           "id": "1.8.3.5.0",
-          "label": "Entertainment music"
+          "label": "Cabaret music"
         },
         {
           "id": "1.8.3.3.0",
@@ -109,7 +109,7 @@
         },
         {
           "id": "1.8.3.2.0",
-          "label": "Hip hop, r&b and rap"
+          "label": "Hip hop, rnb and rap"
         },
         {
           "id": "1.8.2.0.0",
@@ -131,7 +131,7 @@
       "primary": true,
       "themes": [{
           "id": "1.9.1.0.0",
-          "label": "Ballet and classical dance",
+          "label": "Classical dance and ballet",
           "group": "Dance"
         }, {
           "id": "1.9.2.0.0",
@@ -139,11 +139,11 @@
           "group": "Dance"
         }, {
           "id": "1.9.5.0.0",
-          "label": "Ballroom dance",
+          "label": "Ballroom dancing",
           "group": "Dance"
         }, {
           "id": "1.9.3.0.0",
-          "label": "Folk dance and world dance",
+          "label": "Folk dance",
           "group": "Dance"
         }, {
           "id": "1.1.0.0.0",
@@ -203,12 +203,12 @@
           "group": "Art and heritage"
         }, {
           "id": "1.3.1.0.0",
-          "label": "Text and music theater",
+          "label": "Theatre and Musical theatre",
           "group": "Art and heritage"
         },
         {
           "id": "1.8.3.5.0",
-          "label": "Entertainment music",
+          "label": "Cabaret music",
           "group": "Music"
         }, {
           "id": "1.8.3.3.0",
@@ -302,7 +302,7 @@
           "group": "Miscellaneous"
         }, {
           "id": "1.44.0.0.0",
-          "label": "Meaning, philosophy and religion",
+          "label": "Philosophy and religion",
           "group": "Miscellaneous"
         }
       ]
@@ -313,7 +313,7 @@
       "primary": false,
       "themes": [{
           "id": "1.9.1.0.0",
-          "label": "Ballet and classical dance"
+          "label": "Classical dance and ballet"
         },
         {
           "id": "1.9.2.0.0",
@@ -321,16 +321,16 @@
         },
         {
           "id": "1.9.5.0.0",
-          "label": "Ballroom dance"
+          "label": "Ballroom dancing"
         },
         {
           "id": "1.9.3.0.0",
-          "label": "Folk dance and world dance"
+          "label": "Folk dance"
         }
       ]
     },
     {
-      "label": "Food and drinks",
+      "label": "Nutrition",
       "id": "1.50.0.0.0",
       "primary": false
     },
@@ -340,7 +340,7 @@
       "primary": false,
       "themes": [{
           "id": "1.8.3.5.0",
-          "label": "Entertainment music"
+          "label": "Cabaret music"
         },
         {
           "id": "0.52.0.0.0",
@@ -356,7 +356,7 @@
         },
         {
           "id": "1.3.10.0.0",
-          "label": "Humor and comedy"
+          "label": "Comedy"
         },
         {
           "id": "1.8.2.0.0",
@@ -368,7 +368,7 @@
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Art and art education"
+          "label": "Arts education"
         },
         {
           "id": "1.10.0.0.0",
@@ -392,7 +392,7 @@
         },
         {
           "id": "1.3.1.0.0",
-          "label": "Text and music theater"
+          "label": "Theatre and Musical theatre"
         },
         {
           "id": "1.25.0.0.0",
@@ -401,7 +401,7 @@
       ]
     },
     {
-      "label": "Movie",
+      "label": "Film",
       "id": "0.50.6.0.0",
       "primary": true,
       "themes": [{
@@ -410,15 +410,15 @@
         },
         {
           "id": "1.7.12.0.0",
-          "label": "Animation and kids films"
+          "label": "Animation and children's films"
         },
         {
           "id": "1.7.11.0.0",
-          "label": "Cinefile"
+          "label": "Independent"
         },
         {
           "id": "1.7.1.0.0",
-          "label": "Documentaries and reports"
+          "label": "Documentary"
         },
         {
           "id": "1.7.4.0.0",
@@ -426,7 +426,7 @@
         },
         {
           "id": "1.7.10.0.0",
-          "label": "Filmmusical"
+          "label": "Musical"
         },
         {
           "id": "1.7.6.0.0",
@@ -455,12 +455,12 @@
       ]
     },
     {
-      "label": "Camp or holidays",
+      "label": "Camping",
       "id": "0.57.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.7.2.0.0",
-          "label": "Avontuur"
+          "label": "Action et aventure"
         },
         {
           "id": "1.42.0.0.0",
@@ -468,15 +468,15 @@
         },
         {
           "id": "1.65.0.0.0",
-          "label": "Cooking"
+          "label": "Nutrition"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Nature"
+          "label": "Environment and nature"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Sport"
+          "label": "Other sports"
         },
         {
           "id": "1.21.0.0.0",
@@ -485,12 +485,12 @@
       ]
     },
     {
-      "label": "Fun fair or festivities",
+      "label": "Fair or celebration",
       "id": "0.28.0.0.0",
       "primary": false
     },
     {
-      "label": "Lecture or congres",
+      "label": "Lecture or conference",
       "id": "0.3.2.0.0",
       "primary": "false",
       "themes": [{
@@ -515,7 +515,7 @@
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Art and art education"
+          "label": "Arts education"
         },
         {
           "id": "1.10.0.0.0",
@@ -531,7 +531,7 @@
         },
         {
           "id": "1.61.0.0.0",
-          "label": "Person and relationships"
+          "label": "People and society"
         },
         {
           "id": "1.10.5.0.0",
@@ -547,21 +547,21 @@
         },
         {
           "id": "1.44.0.0.0",
-          "label": "Meaning, philosophy and religion"
+          "label": "Philosophy and religion"
         }
       ]
     },
     {
-      "label": "Market or fare",
+      "label": "Market or bazaar",
       "id": "0.37.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.17.0.0.0",
-          "label": "Antique and brocante"
+          "label": "Antiques"
         },
         {
           "id": "1.66.0.0.0",
-          "label": "Economics"
+          "label": "Economy"
         },
         {
           "id": "1.62.0.0.0",
@@ -569,7 +569,7 @@
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Agriculture and countryside"
+          "label": "Agriculture"
         },
         {
           "id": "1.10.0.0.0",
@@ -607,11 +607,11 @@
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Art and art education"
+          "label": "Arts education"
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Agriculture and countryside"
+          "label": "Agriculture"
         },
         {
           "id": "1.10.0.0.0",
@@ -632,12 +632,12 @@
       ]
     },
     {
-      "label": "Party",
+      "label": "Party or nightlife",
       "id": "0.49.0.0.0",
       "primary": false
     },
     {
-      "label": "Route",
+      "label": "Cycling or hiking tour",
       "id": "0.17.0.0.0",
       "primary": true
     },
@@ -647,28 +647,28 @@
       "primary": false
     },
     {
-      "label": "Sports and movement",
+      "label": "Sports activity",
       "id": "0.59.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.51.14.0.0",
-          "label": "Athletics walking and cycling"
+          "label": "Athletics, running and cycling"
         },
         {
           "id": "1.51.13.0.0",
-          "label": "Ball and racket sport"
+          "label": "Ball and racket sports"
         },
         {
           "id": "1.51.6.0.0",
-          "label": "Fitness gymnastics dance and fighting sport"
+          "label": "Fitness, gymnastics, dance and martial arts"
         },
         {
           "id": "1.58.8.0.0",
-          "label": "Air and motor sport"
+          "label": "Air and motorsports"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Omnisport and others"
+          "label": "Other sports"
         },
         {
           "id": "1.51.11.0.0",
@@ -676,37 +676,37 @@
         },
         {
           "id": "1.51.10.0.0",
-          "label": "Folk sports"
+          "label": "Folklore sports"
         },
         {
           "id": "1.51.3.0.0",
-          "label": "Swimming and water sport"
+          "label": "Swimming and water sports"
         }
       ]
     },
     {
-      "label": "Watch sports game",
+      "label": "Sports Viewing",
       "id": "0.19.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.51.14.0.0",
-          "label": "Athletics walking and cycling"
+          "label": "Athletics, running and cycling"
         },
         {
           "id": "1.51.13.0.0",
-          "label": "Ball and racket sport"
+          "label": "Ball and racket sports"
         },
         {
           "id": "1.51.6.0.0",
-          "label": "Fitness gymnastics dance and fighting sport"
+          "label": "Fitness, gymnastics, dance and martial arts"
         },
         {
           "id": "1.58.8.0.0",
-          "label": "Air and motor sport"
+          "label": "Air and motor sports"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Omnisport and others"
+          "label": "Other sports"
         },
         {
           "id": "1.51.11.0.0",
@@ -714,11 +714,11 @@
         },
         {
           "id": "1.51.10.0.0",
-          "label": "Folk sports"
+          "label": "Folklore sports"
         },
         {
           "id": "1.51.3.0.0",
-          "label": "Swimming and water sport"
+          "label": "Swimming and water sports"
         }
       ]
     },
@@ -729,7 +729,7 @@
       "themes": [
         {
           "id": "1.2.1.0.0",
-          "label": "Architectuur"
+          "label": "Theatre"
         },
         {
           "id": "1.1.0.0.0",
@@ -741,7 +741,7 @@
         },
         {
           "id": "1.0.5.0.0",
-          "label": "Decoratieve kunst"
+          "label": "Decorative arts"
         },
         {
           "id": "1.2.2.0.0",
@@ -769,7 +769,7 @@
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literatuur"
+          "label": "Literature"
         },
         {
           "id": "1.0.9.0.0",
@@ -798,7 +798,7 @@
       ]
     },
     {
-      "label": "Theater performance",
+      "label": "Theatre",
       "id": "0.55.0.0.0",
       "primary": false,
       "themes": [{
@@ -807,15 +807,15 @@
         },
         {
           "id": "1.3.5.0.0",
-          "label": "Figures and puppet theater"
+          "label": "Puppetry"
         },
         {
           "id": "1.3.10.0.0",
-          "label": "Humor and comedy"
+          "label": "Comedy"
         },
         {
           "id": "1.3.4.0.0",
-          "label": "Mime and movement theater"
+          "label": "Mime"
         },
         {
           "id": "1.4.0.0.0",
@@ -823,11 +823,11 @@
         },
         {
           "id": "1.5.0.0.0",
-          "label": "Opera en operetta"
+          "label": "Opera and operetta"
         },
         {
           "id": "1.3.1.0.0",
-          "label": "Text and music theater"
+          "label": "Theatre and Musical theatre"
         }
       ]
     }
@@ -878,7 +878,7 @@
       "primary": true
     },
     {
-      "label": "Nature, park or garden",
+      "label": "Environment and nature, park or garden",
       "id": "0.15.0.0.0",
       "primary": true
     },
