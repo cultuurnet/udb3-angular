@@ -2981,6 +2981,7 @@ angular.module('udb.core')
       'ready': 'Klaar met vertalen',
       'translate': 'vertalen',
       'original': 'Origineel',
+      'translation': 'Vertaling',
       'description': 'Beschrijving',
       'title': 'Titel',
       'tariff': 'Prijstarief',
@@ -3815,6 +3816,7 @@ angular.module('udb.core')
       'ready': 'Prêt à traduire',
       'translate': 'traduire',
       'original': 'Original',
+      'translation': 'Traduction',
       'description': 'Description',
       'title': 'Titre',
       'tariff': 'Prix',
@@ -19862,7 +19864,7 @@ function TranslateImagesController($uibModal, eventCrud, MediaManager, EventForm
   controller.openUploadImageModal = openUploadImageModal;
   controller.removeImage = removeImage;
   controller.editImage = editImage;
-  controller.translateImage = translateImage;
+  controller.copyImage = copyImage;
 
   /**
    * Open the upload modal.
@@ -19880,7 +19882,8 @@ function TranslateImagesController($uibModal, eventCrud, MediaManager, EventForm
     });
   }
 
-  function translateImage(image, language) {
+  function copyImage(image, language) {
+    console.log(image);
     var blob = null;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', image.contentUrl);
@@ -20139,9 +20142,12 @@ function OfferTranslateController(
     .then(fetchOffer, offerNotFound);
 
   function startTranslating(offer) {
+    $scope.language = $translate.use() || 'nl';
     $scope.cachedOffer = offer;
     $scope.apiUrl = offer.apiUrl;
     $scope.mainLanguage = offer.mainLanguage ? offer.mainLanguage : 'nl';
+    $scope.translatedOffer = jsonLDLangFilter(offer, $scope.language, true);
+    $scope.originalName = $scope.translatedOffer.name;
 
     $scope.offerType = offer.url.split('/').shift();
     if ($scope.offerType === 'event') {
@@ -29933,7 +29939,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"row\" ng-repeat=\"(code, language) in tac.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                    <p class=\"orginal text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
     "                    <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].streetAddress\">\n" +
@@ -29956,16 +29962,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-9\">\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "                    <p class=\"text-muted\" translate-once=\"translate.original\"></p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
-    "                    <p class=\"orginal text-muted\" ng-bind=\"ttd.originalDescription\"></p>\n" +
+    "                    <p class=\"text-muted\" ng-bind=\"ttd.originalDescription\"></p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"row\" ng-repeat=\"(code, language) in ttd.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
     "                    <input type=\"text\" ng-blur=\"ttd.saveTranslatedDescription(code)\" class=\"form-control form-group\" ng-model=\"ttd.translatedDescriptions[code]\">\n" +
@@ -29986,34 +29992,38 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-9\">\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\">Origineel</p>\n" +
+    "                    <p class=\"text-muted\">Origineel</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
     "                    <div class=\"panel panel-default\">\n" +
     "                        <div class=\"panel-body\">\n" +
-    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': tic.offer.mainLanguage} track by image.contentUrl\">\n" +
-    "                                <div class=\"uploaded-image\">\n" +
+    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': tic.offer.mainLanguage} track by image.contentUrl\" class=\"media-object\">\n" +
+    "                                <div class=\"uploaded-image media\">\n" +
     "\n" +
-    "\n" +
+    "                                  <div class=\"media-left\">\n" +
     "                                    <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"width: 50px;\">\n" +
+    "                                  </div>\n" +
     "\n" +
-    "\n" +
-    "\n" +
+    "                                  <div class=\"media-body\">\n" +
     "                                    <div ng-bind=\"image.description\"></div>\n" +
     "                                    <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
-    "\n" +
-    "                                    <!-- Single button -->\n" +
-    "                                    <div class=\"btn-group\">\n" +
-    "                                        <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
-    "                                            Dupliceer <span class=\"caret\"></span>\n" +
-    "                                        </button>\n" +
-    "                                        <ul class=\"dropdown-menu\">\n" +
-    "                                            <li ng-repeat=\"(code, language) in tic.activeLanguages\" ng-if=\"language.active\"><a ng-click=\"tic.translateImage(image, code)\">{{code}}</a></li>\n" +
-    "                                        </ul>\n" +
-    "                                    </div>\n" +
+    "                                  </div>\n" +
     "\n" +
     "                                </div>\n" +
+    "                              \n" +
+    "                              <!-- Single button -->\n" +
+    "                              <div class=\"btn-group\">\n" +
+    "                                  <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+    "                                      Kopieren in een andere taal <span class=\"caret\"></span>\n" +
+    "                                  </button>\n" +
+    "                                  <ul class=\"dropdown-menu\">\n" +
+    "                                      <li ng-repeat=\"(code, language) in tic.activeLanguages\" ng-if=\"language.active && !language.main\"><button ng-click=\"tic.copyImage(image, code)\" class=\"btn-link\">{{code}}</button></li>\n" +
+    "                                  </ul>\n" +
+    "                              </div>\n" +
+    "                              \n" +
     "                            </div>\n" +
+    "\n" +
+    "\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                </div>\n" +
@@ -30021,12 +30031,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"row\" ng-repeat=\"(code, language) in tic.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
     "                    <div class=\"panel panel-default\">\n" +
     "                        <div class=\"panel-body\">\n" +
-    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': code} track by image.contentUrl\">\n" +
+    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': code} track by image.contentUrl\" class=\"media-object\">\n" +
     "                                <div class=\"uploaded-image\">\n" +
     "                                    <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
     "                                        <a class=\"media-left\" href=\"#\">\n" +
@@ -30079,7 +30089,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"row\" ng-repeat=\"(code, language) in ttsc.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
     "                    <input type=\"text\" ng-blur=\"ttsc.saveTranslatedTariffs()\" class=\"form-control form-group\" ng-model=\"ttsc.translatedTariffs[$parent.$index][code]\">\n" +
@@ -30109,7 +30119,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"row\" ng-repeat=\"(code, language) in ttc.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\">{{code}}</p>\n" +
+    "                    <p class=\"orginal text-muted\">Vertaling {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
     "                    <textarea ng-blur=\"ttc.saveTranslatedName(code)\" class=\"form-control form-group\" ng-model=\"ttc.translatedNames[code]\"></textarea>\n" +
@@ -30129,13 +30139,24 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"offer-translate\" ng-if=\"loaded\" >\n" +
     "\n" +
-    "  <h1 class=\"title\"><span ng-bind=\"originalName\"></span> <span translate-once=\"translate.translate\"></span></h1>\n" +
-    "\n" +
-    "  <div class=\"row\">\n" +
-    "    <div class=\"col-sm-12\">\n" +
-    "      <div class=\"panel panel-default pull-right\">\n" +
-    "        <div class=\"panel-body\">\n" +
-    "          <label class=\"checkbox-inline\" ng-repeat=\"language in languages\"><input type=\"checkbox\" ng-model=\"activeLanguages[language].active\" ng-disabled=\"activeLanguages[language].main\">{{language}} <a ng-show=\"activeLanguages[language].main\" ng-click=\"openEditPage()\" class=\"text-small\">Bewerken</a> </label>\n" +
+    "  <div class=\"page-header\">\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <h1><span ng-bind=\"originalName\"></span> <span translate-once=\"translate.translate\"></span></h1>\n" +
+    "      </div>\n" +
+    "      \n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <div class=\"offer-translate-chooser\">\n" +
+    "          <label class=\"form-text\">\n" +
+    "             <button ng-show=\"activeLanguages[language].main\" ng-click=\"openEditPage()\" class=\"btn-link btn-sm\">Origineel ({{mainLanguage}}) bewerken</button>\n" +
+    "          </label>\n" +
+    "          <span ng-repeat=\"language in languages\">\n" +
+    "            <span ng-if=\"!activeLanguages[language].main\">\n" +
+    "              <label class=\"checkbox-inline\" >\n" +
+    "                <input type=\"checkbox\" ng-model=\"activeLanguages[language].active\"/>{{language}}\n" +
+    "              </label>\n" +
+    "            </span>\n" +
+    "          </span>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +

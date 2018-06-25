@@ -19,7 +19,7 @@
 
             <div class="row" ng-repeat="(code, language) in tac.activeLanguages" ng-show="language.active && !language.main">
                 <div class="col-sm-3">
-                    <p class="orginal text-muted">{{code}}</p>
+                    <p class="orginal text-muted"><span translate-once="translate.translation"></span> {{code}}</p>
                 </div>
                 <div class="col-sm-9">
                     <input type="text" ng-blur="tac.saveTranslatedAddress(code)" class="form-control form-group" ng-model="tac.translatedAddresses[code].streetAddress">

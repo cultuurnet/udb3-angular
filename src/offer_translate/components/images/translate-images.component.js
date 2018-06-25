@@ -36,7 +36,7 @@ function TranslateImagesController($uibModal, eventCrud, MediaManager, EventForm
   controller.openUploadImageModal = openUploadImageModal;
   controller.removeImage = removeImage;
   controller.editImage = editImage;
-  controller.translateImage = translateImage;
+  controller.copyImage = copyImage;
 
   /**
    * Open the upload modal.
@@ -54,7 +54,8 @@ function TranslateImagesController($uibModal, eventCrud, MediaManager, EventForm
     });
   }
 
-  function translateImage(image, language) {
+  function copyImage(image, language) {
+    console.log(image);
     var blob = null;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', image.contentUrl);

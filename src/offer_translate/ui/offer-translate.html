@@ -5,13 +5,24 @@
 
 <div class="offer-translate" ng-if="loaded" >
 
-  <h1 class="title"><span ng-bind="originalName"></span> <span translate-once="translate.translate"></span></h1>
-
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="panel panel-default pull-right">
-        <div class="panel-body">
-          <label class="checkbox-inline" ng-repeat="language in languages"><input type="checkbox" ng-model="activeLanguages[language].active" ng-disabled="activeLanguages[language].main">{{language}} <a ng-show="activeLanguages[language].main" ng-click="openEditPage()" class="text-small">Bewerken</a> </label>
+  <div class="page-header">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1><span ng-bind="originalName"></span> <span translate-once="translate.translate"></span></h1>
+      </div>
+      
+      <div class="col-sm-6">
+        <div class="offer-translate-chooser">
+          <label class="form-text">
+             <button ng-show="activeLanguages[language].main" ng-click="openEditPage()" class="btn-link btn-sm">Origineel ({{mainLanguage}}) bewerken</button>
+          </label>
+          <span ng-repeat="language in languages">
+            <span ng-if="!activeLanguages[language].main">
+              <label class="checkbox-inline" >
+                <input type="checkbox" ng-model="activeLanguages[language].active"/>{{language}}
+              </label>
+            </span>
+          </span>
         </div>
       </div>
     </div>

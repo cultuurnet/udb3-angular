@@ -371,6 +371,7 @@ angular.module('udb.core')
       'ready': 'Prêt à traduire',
       'translate': 'traduire',
       'original': 'Original',
+      'translation': 'Traduction',
       'description': 'Description',
       'title': 'Titre',
       'tariff': 'Prix',

@@ -15,7 +15,7 @@
 
             <div class="row" ng-repeat="(code, language) in ttsc.activeLanguages" ng-show="language.active && !language.main">
                 <div class="col-sm-3">
-                    <p class="orginal text-muted">{{code}}</p>
+                    <p class="text-muted"><span translate-once="translate.translation"></span> {{code}}</p>
                 </div>
                 <div class="col-sm-9">
                     <input type="text" ng-blur="ttsc.saveTranslatedTariffs()" class="form-control form-group" ng-model="ttsc.translatedTariffs[$parent.$index][code]">

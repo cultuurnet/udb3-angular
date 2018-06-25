@@ -15,7 +15,7 @@
 
             <div class="row" ng-repeat="(code, language) in ttc.activeLanguages" ng-show="language.active && !language.main">
                 <div class="col-sm-3">
-                    <p class="orginal text-muted">{{code}}</p>
+                    <p class="orginal text-muted">Vertaling {{code}}</p>
                 </div>
                 <div class="col-sm-9">
                     <textarea ng-blur="ttc.saveTranslatedName(code)" class="form-control form-group" ng-model="ttc.translatedNames[code]"></textarea>

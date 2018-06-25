@@ -41,9 +41,12 @@ function OfferTranslateController(
     .then(fetchOffer, offerNotFound);
 
   function startTranslating(offer) {
+    $scope.language = $translate.use() || 'nl';
     $scope.cachedOffer = offer;
     $scope.apiUrl = offer.apiUrl;
     $scope.mainLanguage = offer.mainLanguage ? offer.mainLanguage : 'nl';
+    $scope.translatedOffer = jsonLDLangFilter(offer, $scope.language, true);
+    $scope.originalName = $scope.translatedOffer.name;
 
     $scope.offerType = offer.url.split('/').shift();
     if ($scope.offerType === 'event') {
