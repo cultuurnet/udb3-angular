@@ -121,8 +121,10 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
     }
-
-    EventFormData.setEventType(eventType);
+    // Translate type label before we send it to the EventFormData
+    var type = _.clone(eventType);
+    type.label = $scope.translateEventTypes(eventType.label);
+    EventFormData.setEventType(type);
 
     // Keep track of changes.
     if (EventFormData.id) {
@@ -153,8 +155,11 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     if (EventFormData.getTheme().id === theme.id) {
       return;
     }
+    // Translate theme label before we send it to the EventFormData
+    var eventTheme = _.clone(theme);
+    eventTheme.label = $scope.translateEventThemes(theme.label);
 
-    EventFormData.setTheme(theme);
+    EventFormData.setTheme(eventTheme);
     EventFormData.showStep(2);
     controller.updateEventTypeAndThemePicker(EventFormData);
     controller.eventThemeChanged(EventFormData);
@@ -205,10 +210,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
   $scope.translateEventTypes = function (type) {
     return $translate.instant('eventTypes.' + type);
-  };
-
-  $scope.translatePlaceTypes = function (type) {
-    return $translate.instant('placeTypes.' + type);
   };
 
   $scope.translateEventThemes = function (theme) {

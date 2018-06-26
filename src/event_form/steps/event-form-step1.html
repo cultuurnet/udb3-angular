@@ -34,7 +34,7 @@
         <label class="event-type-choser-label place"><span translate-once="eventForm.step1.location_label"></span></label>
         <ul class="list-inline" id="step1-places">
           <li ng-repeat="placeType in ::placeLabels | orderBy:'label'" ng-show="placeType.primary == true || showAllPlaces">
-            <button ng-bind="::translatePlaceTypes(placeType.label)" class="btn btn-default"
+            <button ng-bind="::translateEventTypes(placeType.label)" class="btn btn-default"
                     ng-click="setEventType(placeType, false)"></button>
           </li>
           <li ng-hide="showAllPlaces">
@@ -46,7 +46,7 @@
 
     <div class="row">
       <p class="col-xs-12 col-md-12" ng-hide="activeEventType === ''">
-        <span class="btn-chosen" ng-bind="activeEventTypeLabel"></span>
+        <span class="btn-chosen" ng-bind="translateEventTypes(activeEventTypeLabel)"></span>
         <a class="btn btn-link btn-default"
            href="" ng-click="resetEventType()"
            translate-once="eventForm.step1.change"></a>
@@ -72,7 +72,7 @@
       </div>
 
       <p class="col-xs-12 col-md-12"  ng-hide="activeTheme === ''">
-        <span class="btn-chosen" ng-bind="activeThemeLabel"></span>
+        <span class="btn-chosen" ng-bind="translateEventThemes(activeThemeLabel)"></span>
         <a class="btn btn-link btn-default"
            href="" ng-click="resetTheme()"
            translate-once="eventForm.step1.change"></a>
