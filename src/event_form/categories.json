@@ -220,7 +220,7 @@
           "group": "Music"
         }, {
           "id": "1.8.3.2.0",
-          "label": "Hiphop r&b rap",
+          "label": "Hiphop, rnb and rap",
           "group": "Music"
         }, {
           "id": "1.8.2.0.0",
@@ -237,23 +237,23 @@
         },
         {
           "id": "1.51.14.0.0",
-          "label": "Athletics walking and cycling",
+          "label": "Athletics, running and cycling",
           "group": "Sport"
         }, {
           "id": "1.51.13.0.0",
-          "label": "Ball and racket sport",
+          "label": "Ball and racket sports",
           "group": "Sport"
         }, {
           "id": "1.51.6.0.0",
-          "label": "Fitness gymnastics dance and fighting sport",
+          "label": "Fitness, gymnastics, dance and martial arts",
           "group": "Sport"
         }, {
           "id": "1.58.8.0.0",
-          "label": "Air and motor sport",
+          "label": "Air and motor sports",
           "group": "Sport"
         }, {
           "id": "1.51.12.0.0",
-          "label": "Omnisport and others",
+          "label": "Other sports",
           "group": "Sport"
         }, {
           "id": "1.51.11.0.0",
@@ -261,11 +261,11 @@
           "group": "Sport"
         }, {
           "id": "1.51.10.0.0",
-          "label": "Folk sports",
+          "label": "Folklore sports",
           "group": "Sport"
         }, {
           "id": "1.51.3.0.0",
-          "label": "Swimming and water sport",
+          "label": "Swimming and water sports",
           "group": "Sport"
         },
         {
@@ -274,7 +274,7 @@
           "group": "Miscellaneous"
         }, {
           "id": "1.43.0.0.0",
-          "label": "Intercultural education",
+          "label": "Cross-cultural education",
           "group": "Miscellaneous"
         }, {
           "id": "1.64.0.0.0",
@@ -286,7 +286,7 @@
           "group": "Miscellaneous"
         }, {
           "id": "1.61.0.0.0",
-          "label": "Person and relationships",
+          "label": "People and society",
           "group": "Miscellaneous"
         }, {
           "id": "1.37.2.0.0",
@@ -294,7 +294,7 @@
           "group": "Miscellaneous"
         }, {
           "id": "1.65.0.0.0",
-          "label": "Food",
+          "label": "Nutrition",
           "group": "Miscellaneous"
         }, {
           "id": "1.25.0.0.0",
@@ -330,7 +330,7 @@
       ]
     },
     {
-      "label": "Nutrition",
+      "label": "Food and drinks",
       "id": "1.50.0.0.0",
       "primary": false
     },
@@ -426,7 +426,7 @@
         },
         {
           "id": "1.7.10.0.0",
-          "label": "Musical"
+          "label": "Musical film"
         },
         {
           "id": "1.7.6.0.0",
@@ -438,7 +438,7 @@
         },
         {
           "id": "1.7.3.0.0",
-          "label": "Comedy"
+          "label": "Comedy film"
         },
         {
           "id": "1.7.13.0.0",
@@ -460,7 +460,7 @@
       "primary": false,
       "themes": [{
           "id": "1.7.2.0.0",
-          "label": "Action et aventure"
+          "label": "Action and aventure"
         },
         {
           "id": "1.42.0.0.0",
@@ -729,7 +729,7 @@
       "themes": [
         {
           "id": "1.2.1.0.0",
-          "label": "Theatre"
+          "label": "Architecture"
         },
         {
           "id": "1.1.0.0.0",
@@ -878,7 +878,7 @@
       "primary": true
     },
     {
-      "label": "Environment and nature, park or garden",
+      "label": "Nature, park or garden",
       "id": "0.15.0.0.0",
       "primary": true
     },
