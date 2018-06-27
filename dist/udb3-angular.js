@@ -9933,6 +9933,10 @@ function EventDetail(
     return $translate.instant('audience.' + type);
   };
 
+  $scope.translateType = function (type) {
+    return $translate.instant('offerTypes.' + type);
+  };
+
   $scope.finishedLoading = function() {
     return ($scope.event && $scope.permissions);
   };
@@ -26027,7 +26031,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
-    "                <td>{{::event.type.label}}</td>\n" +
+    "                <td>{{::translateType(event.type.label)}}</td>\n" +
     "              </tr>\n" +
     "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
