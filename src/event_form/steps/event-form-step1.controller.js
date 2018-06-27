@@ -52,7 +52,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
     if (type) {
       $scope.activeEventType = type.id;
-      $scope.activeEventTypeLabel = type.label;
+      $scope.activeEventTypeLabel = $translate.instant('offerTypes.' + type.label);
       $scope.eventThemeLabels = type.themes;
       $scope.eventGroupLabels = type.groups;
 
@@ -75,7 +75,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
     if (theme) {
       $scope.activeTheme = theme.id;
-      $scope.activeThemeLabel = theme.label;
+      $scope.activeThemeLabel = $translate.instant('offerThemes.' + theme.label);
     } else {
       $scope.activeTheme = '';
       $scope.activeThemeLabel = '';
@@ -121,10 +121,8 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.activeCalendarType = 'permanent';
       EventFormData.activeCalendarLabel = 'Permanent';
     }
-    // Translate type label before we send it to the EventFormData
-    var type = _.clone(eventType);
-    type.label = $scope.translateEventTypes(eventType.label);
-    EventFormData.setEventType(type);
+
+    EventFormData.setEventType(eventType);
 
     // Keep track of changes.
     if (EventFormData.id) {
@@ -155,11 +153,8 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     if (EventFormData.getTheme().id === theme.id) {
       return;
     }
-    // Translate theme label before we send it to the EventFormData
-    var eventTheme = _.clone(theme);
-    eventTheme.label = $scope.translateEventThemes(theme.label);
 
-    EventFormData.setTheme(eventTheme);
+    EventFormData.setTheme(theme);
     EventFormData.showStep(2);
     controller.updateEventTypeAndThemePicker(EventFormData);
     controller.eventThemeChanged(EventFormData);
@@ -208,16 +203,16 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     }
   };
 
-  $scope.translateEventTypes = function (type) {
-    return $translate.instant('eventTypes.' + type);
+  $scope.translateOfferTypes = function (type) {
+    return $translate.instant('offerTypes.' + type);
   };
 
-  $scope.translateEventThemes = function (theme) {
-    return $translate.instant('eventThemes.' + theme);
+  $scope.translateOfferThemes = function (theme) {
+    return $translate.instant('offerThemes.' + theme);
   };
 
-  $scope.translateEventThemesGroups = function (group) {
-    return $translate.instant('eventThemesGroups.' + group);
+  $scope.translateOfferThemesGroups = function (group) {
+    return $translate.instant('offerThemesGroups.' + group);
   };
 
   controller.init(EventFormData);

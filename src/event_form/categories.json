@@ -1,93 +1,93 @@
 {
   "event": [{
-      "label": "Guided tour",
+      "label": "Begeleide rondleiding",
       "id": "0.7.0.0.0",
       "primary": true,
       "themes": [{
           "id": "1.2.1.0.0",
-          "label": "Architecture"
+          "label": "Architectuur"
         },
         {
           "id": "1.40.0.0.0",
-          "label": "Heritage"
+          "label": "Erfgoed"
         },
         {
           "id": "1.11.0.0.0",
-          "label": "History"
+          "label": "Geschiedenis"
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Arts education"
+          "label": "Kunst en kunsteducatie"
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Agriculture"
+          "label": "Landbouw en platteland"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Multiple art forms"
+          "label": "Meerdere kunstvormen"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Environment and nature"
+          "label": "Milieu en natuur"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Society"
+          "label": "Samenleving"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Science"
+          "label": "Wetenschap"
         },
         {
           "id": "1.44.0.0.0",
-          "label": "Philosophy and religion"
+          "label": "Zingeving, filosofie en religie"
         }
       ]
     },
     {
-      "label": "Fair",
+      "label": "Beurs",
       "id": "0.6.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.17.0.0.0",
-          "label": "Antiques"
+          "label": "Antiek en brocante"
         },
         {
           "id": "1.7.2.0.0",
-          "label": "Heritage"
+          "label": "Erfgoed"
         },
         {
           "id": "1.62.0.0.0",
-          "label": "Health and wellness"
+          "label": "Gezondheid en wellness"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literature"
+          "label": "Literatuur"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Multiple art forms"
+          "label": "Meerdere kunstvormen"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Environment and nature"
+          "label": "Milieu en natuur"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Society"
+          "label": "Samenleving"
         },
         {
           "id": "1.10.8.0.0",
-          "label": "Comic books"
+          "label": "Strips"
         },
         {
           "id": "1.65.0.0.0",
-          "label": "Nutrition"
+          "label": "Voeding"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Science"
+          "label": "Wetenschap"
         }
       ]
     },
@@ -97,7 +97,7 @@
       "primary": true,
       "themes": [{
           "id": "1.8.3.5.0",
-          "label": "Cabaret music"
+          "label": "Amusementsmuziek"
         },
         {
           "id": "1.8.3.3.0",
@@ -105,232 +105,232 @@
         },
         {
           "id": "1.8.4.0.0",
-          "label": "Folk and world music"
+          "label": "Folk en wereldmuziek"
         },
         {
           "id": "1.8.3.2.0",
-          "label": "Hip hop, rnb and rap"
+          "label": "Hiphop, r&b en rap"
         },
         {
           "id": "1.8.2.0.0",
-          "label": "Jazz and blues"
+          "label": "Jazz en blues"
         },
         {
           "id": "1.8.1.0.0",
-          "label": "Classical music"
+          "label": "Klassieke muziek"
         },
         {
           "id": "1.8.3.1.0",
-          "label": "Pop and rock"
+          "label": "Pop en rock"
         }
       ]
     },
     {
-      "label": "Course or workshop",
+      "label": "Cursus of workshop",
       "id": "0.3.1.0.0",
       "primary": true,
       "themes": [{
           "id": "1.9.1.0.0",
-          "label": "Classical dance and ballet",
-          "group": "Dance"
+          "label": "Ballet en klassieke dans",
+          "group": "Dans"
         }, {
           "id": "1.9.2.0.0",
-          "label": "Modern dance",
-          "group": "Dance"
+          "label": "Moderne dans",
+          "group": "Dans"
         }, {
           "id": "1.9.5.0.0",
-          "label": "Ballroom dancing",
-          "group": "Dance"
+          "label": "Stijl en salondansen",
+          "group": "Dans"
         }, {
           "id": "1.9.3.0.0",
-          "label": "Folk dance",
-          "group": "Dance"
+          "label": "Volksdans en werelddans",
+          "group": "Dans"
         }, {
           "id": "1.1.0.0.0",
-          "label": "Audiovisual art",
-          "group": "Art and heritage"
+          "label": "Audiovisuele kunst",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.0.2.0.0",
-          "label": "Sculpture",
-          "group": "Art and heritage"
+          "label": "Beeldhouwkunst",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "0.52.0.0.0",
           "label": "Circus",
-          "group": "Art and heritage"
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.42.0.0.0",
-          "label": "Creativity",
-          "group": "Art and heritage"
+          "label": "Creativiteit",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.0.5.0.0",
-          "label": "Decorative art",
-          "group": "Art and heritage"
+          "label": "Decoratieve kunst",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.2.2.0.0",
           "label": "Design",
-          "group": "Art and heritage"
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.40.0.0.0",
-          "label": "Heritage",
-          "group": "Art and heritage"
+          "label": "Erfgoed",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.0.6.0.0",
-          "label": "Photography",
-          "group": "Art and heritage"
+          "label": "Fotografie",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.0.4.0.0",
-          "label": "Graphics",
-          "group": "Art and heritage"
+          "label": "Grafiek",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.10.0.0.0",
-          "label": "Literature",
-          "group": "Art and heritage"
+          "label": "Literatuur",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.0.9.0.0",
-          "label": "Multiple art forms",
-          "group": "Art and heritage"
+          "label": "Meerdere kunstvormen",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.49.0.0.0",
-          "label": "Fashion",
-          "group": "Art and heritage"
+          "label": "Mode",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.10.5.0.0",
-          "label": "Poetry",
-          "group": "Art and heritage"
+          "label": "Poëzie",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.0.1.0.0",
-          "label": "Painting",
-          "group": "Art and heritage"
+          "label": "Schilderkunst",
+          "group": "Kunst en erfgoed"
         }, {
           "id": "1.3.1.0.0",
-          "label": "Theatre and Musical theatre",
-          "group": "Art and heritage"
+          "label": "Tekst- en muziektheater",
+          "group": "Kunst en erfgoed"
         },
         {
           "id": "1.8.3.5.0",
-          "label": "Cabaret music",
-          "group": "Music"
+          "label": "Amusementsmuziek",
+          "group": "Muziek"
         }, {
           "id": "1.8.3.3.0",
           "label": "Dance",
-          "group": "Music"
+          "group": "Muziek"
         }, {
           "id": "1.8.4.0.0",
-          "label": "Folk and world music",
-          "group": "Music"
+          "label": "Folk en wereldmuziek",
+          "group": "Muziek"
         }, {
           "id": "1.8.3.2.0",
-          "label": "Hiphop, rnb and rap",
-          "group": "Music"
+          "label": "Hiphop, r&b en rap",
+          "group": "Muziek"
         }, {
           "id": "1.8.2.0.0",
-          "label": "Jazz and blues",
-          "group": "Music"
+          "label": "Jazz en blues",
+          "group": "Muziek"
         }, {
           "id": "1.8.1.0.0",
-          "label": "Classical music",
-          "group": "Music"
+          "label": "Klassieke muziek",
+          "group": "Muziek"
         }, {
           "id": "1.8.3.1.0",
-          "label": "Pop and rock",
-          "group": "Music"
+          "label": "Pop en rock",
+          "group": "Muziek"
         },
         {
           "id": "1.51.14.0.0",
-          "label": "Athletics, running and cycling",
+          "label": "Atletiek, wandelen en fietsen",
           "group": "Sport"
         }, {
           "id": "1.51.13.0.0",
-          "label": "Ball and racket sports",
+          "label": "Bal en racketsport",
           "group": "Sport"
         }, {
           "id": "1.51.6.0.0",
-          "label": "Fitness, gymnastics, dance and martial arts",
+          "label": "Fitness, gymnastiek, dans en vechtsport",
           "group": "Sport"
         }, {
           "id": "1.58.8.0.0",
-          "label": "Air and motor sports",
+          "label": "Lucht en motorsport",
           "group": "Sport"
         }, {
           "id": "1.51.12.0.0",
-          "label": "Other sports",
+          "label": "Omnisport en andere",
           "group": "Sport"
         }, {
           "id": "1.51.11.0.0",
-          "label": "Outdoor and adventure",
+          "label": "Outdoor en adventure",
           "group": "Sport"
         }, {
           "id": "1.51.10.0.0",
-          "label": "Folklore sports",
+          "label": "Volkssporten",
           "group": "Sport"
         }, {
           "id": "1.51.3.0.0",
-          "label": "Swimming and water sports",
+          "label": "Zwemmen en watersport",
           "group": "Sport"
         },
         {
           "id": "1.37.1.0.0",
-          "label": "Health and wellness",
-          "group": "Miscellaneous"
+          "label": "Gezondheid en wellness",
+          "group": "Varia"
         }, {
           "id": "1.43.0.0.0",
-          "label": "Cross-cultural education",
-          "group": "Miscellaneous"
+          "label": "Interculturele vorming",
+          "group": "Varia"
         }, {
           "id": "1.64.0.0.0",
-          "label": "Environment and nature",
-          "group": "Miscellaneous"
+          "label": "Milieu en natuur",
+          "group": "Varia"
         }, {
           "id": "1.37.0.0.0",
-          "label": "Education",
-          "group": "Miscellaneous"
+          "label": "Opvoeding",
+          "group": "Varia"
         }, {
           "id": "1.61.0.0.0",
-          "label": "People and society",
-          "group": "Miscellaneous"
+          "label": "Persoon en relaties",
+          "group": "Varia"
         }, {
           "id": "1.37.2.0.0",
-          "label": "Society",
-          "group": "Miscellaneous"
+          "label": "Samenleving",
+          "group": "Varia"
         }, {
           "id": "1.65.0.0.0",
-          "label": "Nutrition",
-          "group": "Miscellaneous"
+          "label": "Voeding",
+          "group": "Varia"
         }, {
           "id": "1.25.0.0.0",
-          "label": "Science",
-          "group": "Miscellaneous"
+          "label": "Wetenschap",
+          "group": "Varia"
         }, {
           "id": "1.44.0.0.0",
-          "label": "Philosophy and religion",
-          "group": "Miscellaneous"
+          "label": "Zingeving, filosofie en religie",
+          "group": "Varia"
         }
       ]
     },
     {
-      "label": "Dance performance",
+      "label": "Dansvoorstelling",
       "id": "0.54.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.9.1.0.0",
-          "label": "Classical dance and ballet"
+          "label": "Ballet en klassieke dans"
         },
         {
           "id": "1.9.2.0.0",
-          "label": "Modern dance"
+          "label": "Moderne dans"
         },
         {
           "id": "1.9.5.0.0",
-          "label": "Ballroom dancing"
+          "label": "Stijl en salondansen"
         },
         {
           "id": "1.9.3.0.0",
-          "label": "Folk dance"
+          "label": "Volksdans en werelddans"
         }
       ]
     },
     {
-      "label": "Food and drinks",
+      "label": "Eten en drinken",
       "id": "1.50.0.0.0",
       "primary": false
     },
@@ -340,7 +340,7 @@
       "primary": false,
       "themes": [{
           "id": "1.8.3.5.0",
-          "label": "Cabaret music"
+          "label": "Amusementsmuziek"
         },
         {
           "id": "0.52.0.0.0",
@@ -352,51 +352,51 @@
         },
         {
           "id": "1.8.4.0.0",
-          "label": "Folk and world music"
+          "label": "Folk en wereldmuziek"
         },
         {
           "id": "1.3.10.0.0",
-          "label": "Comedy"
+          "label": "Humor en comedy"
         },
         {
           "id": "1.8.2.0.0",
-          "label": "Jazz and blues"
+          "label": "Jazz en blues"
         },
         {
           "id": "1.8.1.0.0",
-          "label": "Classical music"
+          "label": "Klassieke muziek"
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Arts education"
+          "label": "Kunst en kunsteducatie"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literature"
+          "label": "Literatuur"
         },
         {
           "id": "1.7.14.0.0",
-          "label": "Multiple film genres"
+          "label": "Meerdere filmgenres"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Multiple art forms"
+          "label": "Meerdere kunstvormen"
         },
         {
           "id": "1.8.3.1.0",
-          "label": "Pop and rock"
+          "label": "Pop en rock"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Society"
+          "label": "Samenleving"
         },
         {
           "id": "1.3.1.0.0",
-          "label": "Theatre and Musical theatre"
+          "label": "Tekst- en muziektheater"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Science"
+          "label": "Wetenschap"
         }
       ]
     },
@@ -406,19 +406,19 @@
       "primary": true,
       "themes": [{
           "id": "1.7.2.0.0",
-          "label": "Action and adventure"
+          "label": "Actie en avontuur"
         },
         {
           "id": "1.7.12.0.0",
-          "label": "Animation and children's films"
+          "label": "Animatie en kinderfilms"
         },
         {
           "id": "1.7.11.0.0",
-          "label": "Independent"
+          "label": "Cinefiel"
         },
         {
           "id": "1.7.1.0.0",
-          "label": "Documentary"
+          "label": "Documentaires en reportages"
         },
         {
           "id": "1.7.4.0.0",
@@ -426,23 +426,23 @@
         },
         {
           "id": "1.7.10.0.0",
-          "label": "Musical film"
+          "label": "Filmmusical"
         },
         {
           "id": "1.7.6.0.0",
-          "label": "Horror film"
+          "label": "Griezelfilm of horror"
         },
         {
           "id": "1.7.8.0.0",
-          "label": "Historical film"
+          "label": "Historische film"
         },
         {
           "id": "1.7.3.0.0",
-          "label": "Comedy film"
+          "label": "Komedie"
         },
         {
           "id": "1.7.13.0.0",
-          "label": "Short film"
+          "label": "Kortfilm"
         },
         {
           "id": "1.7.7.0.0",
@@ -455,293 +455,293 @@
       ]
     },
     {
-      "label": "Camping",
+      "label": "Kamp of vakantie",
       "id": "0.57.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.7.2.0.0",
-          "label": "Action and aventure"
+          "label": "Avontuur"
         },
         {
           "id": "1.42.0.0.0",
-          "label": "Creativity"
+          "label": "Creativiteit"
         },
         {
           "id": "1.65.0.0.0",
-          "label": "Nutrition"
+          "label": "Koken"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Environment and nature"
+          "label": "Natuur"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Other sports"
+          "label": "Sport"
         },
         {
           "id": "1.21.0.0.0",
-          "label": "Technology"
+          "label": "Technologie"
         }
       ]
     },
     {
-      "label": "Fair or celebration",
+      "label": "Kermis of feestelijkheid",
       "id": "0.28.0.0.0",
       "primary": false
     },
     {
-      "label": "Lecture or conference",
+      "label": "Lezing of congres",
       "id": "0.3.2.0.0",
       "primary": "false",
       "themes": [{
           "id": "1.21.0.0.0",
-          "label": "Computer and technology"
+          "label": "Computer en techniek"
         },
         {
           "id": "1.42.0.0.0",
-          "label": "Creativity"
+          "label": "Creativiteit"
         },
         {
           "id": "1.40.0.0.0",
-          "label": "Heritage"
+          "label": "Erfgoed"
         },
         {
           "id": "1.11.0.0.0",
-          "label": "History"
+          "label": "Geschiedenis"
         },
         {
           "id": "1.37.1.0.0",
-          "label": "Health and care"
+          "label": "Gezondheid en zorg"
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Arts education"
+          "label": "Kunst en kunsteducatie"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literature"
+          "label": "Literatuur"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Environment and nature"
+          "label": "Milieu en natuur"
         },
         {
           "id": "1.37.0.0.0",
-          "label": "Education"
+          "label": "Opvoeding"
         },
         {
           "id": "1.61.0.0.0",
-          "label": "People and society"
+          "label": "Persoon en relaties"
         },
         {
           "id": "1.10.5.0.0",
-          "label": "Poetry"
+          "label": "Poëzie"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Society"
+          "label": "Samenleving"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Science"
+          "label": "Wetenschap"
         },
         {
           "id": "1.44.0.0.0",
-          "label": "Philosophy and religion"
+          "label": "Zingeving, filosofie en religie"
         }
       ]
     },
     {
-      "label": "Market or bazaar",
+      "label": "Markt of braderie",
       "id": "0.37.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.17.0.0.0",
-          "label": "Antiques"
+          "label": "Antiek en brocante"
         },
         {
           "id": "1.66.0.0.0",
-          "label": "Economy"
+          "label": "Economie"
         },
         {
           "id": "1.62.0.0.0",
-          "label": "Health and wellness"
+          "label": "Gezondheid en wellness"
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Agriculture"
+          "label": "Landbouw en platteland"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literature"
+          "label": "Literatuur"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Multiple art forms"
+          "label": "Meerdere kunstvormen"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Environment and nature"
+          "label": "Milieu en natuur"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Society"
+          "label": "Samenleving"
         }
       ]
     },
     {
-      "label": "Open house",
+      "label": "Opendeurdag",
       "id": "0.12.0.0.0",
       "primary": true,
       "themes": [{
           "id": "1.2.1.0.0",
-          "label": "Architecture"
+          "label": "Architectuur"
         },
         {
           "id": "1.21.0.0.0",
-          "label": "Computer and technology"
+          "label": "Computer en techniek"
         },
         {
           "id": "1.40.0.0.0",
-          "label": "Heritage"
+          "label": "Erfgoed"
         },
         {
           "id": "1.41.0.0.0",
-          "label": "Arts education"
+          "label": "Kunst en kunsteducatie"
         },
         {
           "id": "1.63.0.0.0",
-          "label": "Agriculture"
+          "label": "Landbouw en platteland"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literature"
+          "label": "Literatuur"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Multiple art forms"
+          "label": "Meerdere kunstvormen"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Society"
+          "label": "Samenleving"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Science"
+          "label": "Wetenschap"
         }
       ]
     },
     {
-      "label": "Party or nightlife",
+      "label": "Party of fuif",
       "id": "0.49.0.0.0",
       "primary": false
     },
     {
-      "label": "Cycling or hiking tour",
+      "label": "Route",
       "id": "0.17.0.0.0",
       "primary": true
     },
     {
-      "label": "Game or quiz",
+      "label": "Spel of quiz",
       "id": "0.50.21.0.0",
       "primary": false
     },
     {
-      "label": "Sports activity",
+      "label": "Sport en beweging",
       "id": "0.59.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.51.14.0.0",
-          "label": "Athletics, running and cycling"
+          "label": "Atletiek, wandelen en fietsen"
         },
         {
           "id": "1.51.13.0.0",
-          "label": "Ball and racket sports"
+          "label": "Bal en racketsport"
         },
         {
           "id": "1.51.6.0.0",
-          "label": "Fitness, gymnastics, dance and martial arts"
+          "label": "Fitness, gymnastiek, dans en vechtsport"
         },
         {
           "id": "1.58.8.0.0",
-          "label": "Air and motorsports"
+          "label": "Lucht en motorsport"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Other sports"
+          "label": "Omnisport en andere"
         },
         {
           "id": "1.51.11.0.0",
-          "label": "Outdoor and adventure"
+          "label": "Outdoor en adventure"
         },
         {
           "id": "1.51.10.0.0",
-          "label": "Folklore sports"
+          "label": "Volkssporten"
         },
         {
           "id": "1.51.3.0.0",
-          "label": "Swimming and water sports"
+          "label": "Zwemmen en watersport"
         }
       ]
     },
     {
-      "label": "Sports Viewing",
+      "label": "Sportwedstrijd bekijken",
       "id": "0.19.0.0.0",
       "primary": false,
       "themes": [{
           "id": "1.51.14.0.0",
-          "label": "Athletics, running and cycling"
+          "label": "Atletiek, wandelen en fietsen"
         },
         {
           "id": "1.51.13.0.0",
-          "label": "Ball and racket sports"
+          "label": "Bal en racketsport"
         },
         {
           "id": "1.51.6.0.0",
-          "label": "Fitness, gymnastics, dance and martial arts"
+          "label": "Fitness, gymnastiek, dans en vechtsport"
         },
         {
           "id": "1.58.8.0.0",
-          "label": "Air and motor sports"
+          "label": "Lucht en motorsport"
         },
         {
           "id": "1.51.12.0.0",
-          "label": "Other sports"
+          "label": "Omnisport en andere"
         },
         {
           "id": "1.51.11.0.0",
-          "label": "Outdoor and adventure"
+          "label": "Outdoor en adventure"
         },
         {
           "id": "1.51.10.0.0",
-          "label": "Folklore sports"
+          "label": "Volkssporten"
         },
         {
           "id": "1.51.3.0.0",
-          "label": "Swimming and water sports"
+          "label": "Zwemmen en watersport"
         }
       ]
     },
     {
-      "label": "Exhibition",
+      "label": "Tentoonstelling",
       "id": "0.0.0.0.0",
       "primary": true,
       "themes": [
         {
           "id": "1.2.1.0.0",
-          "label": "Architecture"
+          "label": "Architectuur"
         },
         {
           "id": "1.1.0.0.0",
-          "label": "Audiovisual art"
+          "label": "Audiovisuele kunst"
         },
         {
           "id": "1.0.2.0.0",
-          "label": "Sculpture"
+          "label": "Beeldhouwkunst"
         },
         {
           "id": "1.0.5.0.0",
-          "label": "Decorative art"
+          "label": "Decoratieve kunst"
         },
         {
           "id": "1.2.2.0.0",
@@ -749,56 +749,56 @@
         },
         {
           "id": "1.40.0.0.0",
-          "label": "Heritage"
+          "label": "Erfgoed"
         },
         {
           "id": "1.0.6.0.0",
-          "label": "Photography"
+          "label": "Fotografie"
         },
         {
           "id": "1.11.0.0.0",
-          "label": "History"
+          "label": "Geschiedenis"
         },
         {
           "id": "1.0.4.0.0",
-          "label": "Graphics"
+          "label": "Grafiek"
         },
         {
           "id": "1.0.3.0.0",
-          "label": "Installation art"
+          "label": "Installatiekunst"
         },
         {
           "id": "1.10.0.0.0",
-          "label": "Literature"
+          "label": "Literatuur"
         },
         {
           "id": "1.0.9.0.0",
-          "label": "Multiple art forms"
+          "label": "Meerdere kunstvormen"
         },
         {
           "id": "1.64.0.0.0",
-          "label": "Environment and nature"
+          "label": "Milieu en natuur"
         },
         {
           "id": "1.49.0.0.0",
-          "label": "Fashion"
+          "label": "Mode"
         },
         {
           "id": "1.37.2.0.0",
-          "label": "Society"
+          "label": "Samenleving"
         },
         {
           "id": "1.0.1.0.0",
-          "label": "Painting"
+          "label": "Schilderkunst"
         },
         {
           "id": "1.25.0.0.0",
-          "label": "Science"
+          "label": "Wetenschap"
         }
       ]
     },
     {
-      "label": "Theatre",
+      "label": "Theatervoorstelling",
       "id": "0.55.0.0.0",
       "primary": false,
       "themes": [{
@@ -807,15 +807,15 @@
         },
         {
           "id": "1.3.5.0.0",
-          "label": "Puppetry"
+          "label": "Figuren en poppentheater"
         },
         {
           "id": "1.3.10.0.0",
-          "label": "Comedy"
+          "label": "Humor en comedy"
         },
         {
           "id": "1.3.4.0.0",
-          "label": "Mime"
+          "label": "Mime en bewegingstheater"
         },
         {
           "id": "1.4.0.0.0",
@@ -823,47 +823,47 @@
         },
         {
           "id": "1.5.0.0.0",
-          "label": "Opera and operetta"
+          "label": "Opera en operette"
         },
         {
           "id": "1.3.1.0.0",
-          "label": "Theatre and Musical theatre"
+          "label": "Tekst en muziektheater"
         }
       ]
     }
   ],
   "place": [{
-      "label": "Archaeological Site",
+      "label": "Archeologische Site",
       "id": "3CuHvenJ+EGkcvhXLg9Ykg",
       "primary": true
     },
     {
-      "label": "Library or documentation center",
+      "label": "Bibliotheek of documentatiecentrum",
       "id": "kI7uAyn2uUu9VV6Z3uWZTA",
       "primary": true
     },
     {
-      "label": "Cinema",
+      "label": "Bioscoop",
       "id": "BtVNd33sR0WntjALVbyp3w",
       "primary": false
     },
     {
-      "label": "Culture- or meeting center",
+      "label": "Cultuur- of ontmoetingscentrum",
       "id": "Yf4aZBfsUEu2NsQqsprngw",
       "primary": false
     },
     {
-      "label": "Disco",
+      "label": "Discotheek",
       "id": "YVBc8KVdrU6XfTNvhMYUpg",
       "primary": false
     },
     {
-      "label": "Catering industry",
+      "label": "Horeca",
       "id": "ekdc4ATGoUitCa0e6me6xA",
       "primary": false
     },
     {
-      "label": "Youth home or youth center",
+      "label": "Jeugdhuis of jeugdcentrum",
       "id": "JCjA0i5COUmdjMwcyjNAFA",
       "primary": false
     },
@@ -873,47 +873,47 @@
       "primary": true
     },
     {
-      "label": "Museum or gallery",
+      "label": "Museum of galerij",
       "id": "GnPFp9uvOUyqhOckIFMKmg",
       "primary": true
     },
     {
-      "label": "Nature, park or garden",
+      "label": "Natuur, park of tuin",
       "id": "0.15.0.0.0",
       "primary": true
     },
     {
-      "label": "Public space",
+      "label": "Openbare ruimte",
       "id": "0.8.0.0.0",
       "primary": false
     },
     {
-      "label": "Recreation domain or center",
+      "label": "Recreatiedomein of centrum",
       "id": "0.53.0.0.0",
       "primary": false
     },
     {
-      "label": "School or education center",
+      "label": "School of onderwijscentrum",
       "id": "rJRFUqmd6EiqTD4c7HS90w",
       "primary": false
     },
     {
-      "label": "Sport center",
+      "label": "Sportcentrum",
       "id": "eBwaUAAhw0ur0Z02i5ttnw",
       "primary": false
     },
     {
-      "label": "Theme or amusement park",
+      "label": "Thema of pretpark",
       "id": "0.41.0.0.0",
       "primary": false
     },
     {
-      "label": "Shop",
+      "label": "Winkel",
       "id": "VRC6HX0Wa063sq98G5ciqw",
       "primary": false
     },
     {
-      "label": "Room or exhibition hall",
+      "label": "Zaal of expohal",
       "id": "OyaPaf64AEmEAYXHeLMAtA",
       "primary": false
     }
