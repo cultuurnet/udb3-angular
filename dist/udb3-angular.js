@@ -14154,7 +14154,8 @@ function EventFormStep3Controller(
     Levenshtein,
     eventCrud,
     $rootScope,
-    $translate
+    $translate,
+    jsonLDLangFilter
 ) {
 
   var controller = this;
@@ -14341,10 +14342,7 @@ function EventFormStep3Controller(
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
-        if (typeof location.address.streetAddress !== 'string') {
-          locations[key].address = location.address[language];
-          locations[key].name = location.name[language];
-        }
+        locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
       $scope.locationsForCity = locations;
       return locations;
@@ -14547,7 +14545,7 @@ function EventFormStep3Controller(
 
   controller.init(EventFormData);
 }
-EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope", "$translate"];
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope", "$translate", "jsonLDLangFilter"];
 })();
 
 // Source: src/event_form/steps/event-form-step4.controller.js
