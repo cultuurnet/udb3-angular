@@ -55,7 +55,7 @@
               </tr>
               <tr>
                 <td><span class="row-label" translate-once="preview.type"></span></td>
-                <td>{{::event.type.label}}</td>
+                <td>{{::translateType(event.type.label)}}</td>
               </tr>
               <tr ng-if="::event.audience.audienceType !== 'everyone'">
                 <td><span class="row-label">Toegang</span></td>
