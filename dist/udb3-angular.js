@@ -6897,14 +6897,14 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     $window.location.href = loginUrl;
   };
 
-  this.register = function () {
+  this.register = function (language) {
     var currentLocation = $location.absUrl(),
         registrationUrl = appConfig.authUrl + 'register';
 
     removeCookies();
 
     // redirect to login page
-    registrationUrl += '?destination=' + encodeURIComponent(currentLocation);
+    registrationUrl += '?destination=' + encodeURIComponent(currentLocation) + '&lang=' + language;
     $window.location.href = registrationUrl;
   };
 
