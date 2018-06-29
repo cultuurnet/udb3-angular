@@ -14342,8 +14342,10 @@ function EventFormStep3Controller(
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
+        console.log(key);
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
+      console.log("done")
       $scope.locationsForCity = locations;
       return locations;
     }
@@ -14377,9 +14379,11 @@ function EventFormStep3Controller(
         return word.length > 2;
       });
       var addressMatches = words.filter(function (word) {
+        console.log(location);
         return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
       var nameMatches = words.filter(function (word) {
+        console.log(location);
         return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
