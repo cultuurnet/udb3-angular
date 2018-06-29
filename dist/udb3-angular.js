@@ -14242,8 +14242,10 @@ function EventFormStep3Controller(
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
+        console.log(key);
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
+      console.log("done")
       $scope.locationsForCity = locations;
       return locations;
     }
