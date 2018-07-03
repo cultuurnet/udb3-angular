@@ -375,7 +375,8 @@ angular.module('udb.core')
       'description': 'Description',
       'title': 'Titre',
       'tariff': 'Prix',
-      'address': 'Adresse',
+      'address': 'Adres',
+      'street': 'Rue et numéro'
     },
     labels: {
       'what': 'Ajoutez des mots clés courts et spécifiques.',

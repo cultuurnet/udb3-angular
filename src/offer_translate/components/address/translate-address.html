@@ -6,25 +6,31 @@
         <div class="col-sm-9">
             <div class="row">
                 <div class="col-sm-3">
-                    <p class="orginal text-muted"><span translate-once="translate.original"></span></p>
+                    <p class="text-muted"><span translate-once="translate.original"></span></p>
                 </div>
                 <div class="col-sm-9">
-                    <p class="orginal text-muted" ng-bind="tac.originalAddress.streetAddress"></p>
-                    <p class="orginal text-muted">
-                        <span ng-bind="tac.originalAddress.postalCode"></span> -
-                        <span ng-bind="tac.originalAddress.addressLocality"></span>
+                    <p class="text-muted">
+                      <span ng-bind="tac.originalAddress.streetAddress"></span><br/>
+                      <span ng-bind="tac.originalAddress.postalCode"></span> 
+                      <span ng-bind="tac.originalAddress.addressLocality"></span>
                     </p>
                 </div>
             </div>
 
             <div class="row" ng-repeat="(code, language) in tac.activeLanguages" ng-show="language.active && !language.main">
                 <div class="col-sm-3">
-                    <p class="orginal text-muted"><span translate-once="translate.translation"></span> {{code}}</p>
+                    <p class="text-muted"><span translate-once="translate.translation"></span> {{code}}</p>
                 </div>
                 <div class="col-sm-9">
-                    <input type="text" ng-blur="tac.saveTranslatedAddress(code)" class="form-control form-group" ng-model="tac.translatedAddresses[code].streetAddress">
-                    <span class="text-muted" ng-bind="::tac.translatedAddresses[code].postalCode"></span>
-                    <input type="text" ng-blur="tac.saveTranslatedAddress(code)" class="form-control form-group" ng-model="tac.translatedAddresses[code].addressLocality">
+                    
+                    <input type="text" ng-blur="tac.saveTranslatedAddress(code)" class="form-control form-group" ng-model="tac.translatedAddresses[code].streetAddress" placeholder="{{ 'translate.street' | translate }}">
+                    <div class="row">
+                      <div class="col-xs-3">
+                        <span class="text-muted text-right form-control-static" ng-bind="::tac.translatedAddresses[code].postalCode"></span>
+                      </div>
+                      <div class="col-xs-9">
+                        <input type="text" ng-blur="tac.saveTranslatedAddress(code)" class="form-control form-group" ng-model="tac.translatedAddresses[code].addressLocality">
+                      </dvi>
                 </div>
             </div>
         </div>

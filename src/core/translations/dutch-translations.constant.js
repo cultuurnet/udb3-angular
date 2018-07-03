@@ -371,11 +371,13 @@ angular.module('udb.core')
       'ready': 'Klaar met vertalen',
       'translate': 'vertalen',
       'original': 'Origineel',
+      'edit': 'bewerken',
       'translation': 'Vertaling',
       'description': 'Beschrijving',
       'title': 'Titel',
       'tariff': 'Prijstarief',
       'address': 'Adres',
+      'street': 'Straat en nummer'
     },
     labels: {
       'what': 'Met een label voeg je korte, specifieke trefwoorden toe.',

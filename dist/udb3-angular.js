@@ -2981,11 +2981,13 @@ angular.module('udb.core')
       'ready': 'Klaar met vertalen',
       'translate': 'vertalen',
       'original': 'Origineel',
+      'edit': 'bewerken',
       'translation': 'Vertaling',
       'description': 'Beschrijving',
       'title': 'Titel',
       'tariff': 'Prijstarief',
       'address': 'Adres',
+      'street': 'Straat en nummer'
     },
     labels: {
       'what': 'Met een label voeg je korte, specifieke trefwoorden toe.',
@@ -3820,7 +3822,8 @@ angular.module('udb.core')
       'description': 'Description',
       'title': 'Titre',
       'tariff': 'Prix',
-      'address': 'Adresse',
+      'address': 'Adres',
+      'street': 'Rue et numéro'
     },
     labels: {
       'what': 'Ajoutez des mots clés courts et spécifiques.',
@@ -14342,10 +14345,8 @@ function EventFormStep3Controller(
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
-        console.log(key);
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
-      console.log("done")
       $scope.locationsForCity = locations;
       return locations;
     }
@@ -29928,25 +29929,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-9\">\n" +
     "            <div class=\"row\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\"><span translate-once=\"translate.original\"></span></p>\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.original\"></span></p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
-    "                    <p class=\"orginal text-muted\" ng-bind=\"tac.originalAddress.streetAddress\"></p>\n" +
-    "                    <p class=\"orginal text-muted\">\n" +
-    "                        <span ng-bind=\"tac.originalAddress.postalCode\"></span> -\n" +
-    "                        <span ng-bind=\"tac.originalAddress.addressLocality\"></span>\n" +
+    "                    <p class=\"text-muted\">\n" +
+    "                      <span ng-bind=\"tac.originalAddress.streetAddress\"></span><br/>\n" +
+    "                      <span ng-bind=\"tac.originalAddress.postalCode\"></span> \n" +
+    "                      <span ng-bind=\"tac.originalAddress.addressLocality\"></span>\n" +
     "                    </p>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"row\" ng-repeat=\"(code, language) in tac.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
-    "                    <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].streetAddress\">\n" +
-    "                    <span class=\"text-muted\" ng-bind=\"::tac.translatedAddresses[code].postalCode\"></span>\n" +
-    "                    <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].addressLocality\">\n" +
+    "                    \n" +
+    "                    <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].streetAddress\" placeholder=\"{{ 'translate.street' | translate }}\">\n" +
+    "                    <div class=\"row\">\n" +
+    "                      <div class=\"col-xs-3\">\n" +
+    "                        <span class=\"text-muted text-right form-control-static\" ng-bind=\"::tac.translatedAddresses[code].postalCode\"></span>\n" +
+    "                      </div>\n" +
+    "                      <div class=\"col-xs-9\">\n" +
+    "                        <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].addressLocality\">\n" +
+    "                      </dvi>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -30121,7 +30128,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"row\" ng-repeat=\"(code, language) in ttc.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
     "                <div class=\"col-sm-3\">\n" +
-    "                    <p class=\"orginal text-muted\">Vertaling {{code}}</p>\n" +
+    "                    <p class=\"orginal text-muted\"><span translate-once=\"translate.original\"></span> {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
     "                    <textarea ng-blur=\"ttc.saveTranslatedName(code)\" class=\"form-control form-group\" ng-model=\"ttc.translatedNames[code]\"></textarea>\n" +
@@ -30150,7 +30157,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"col-sm-6\">\n" +
     "        <div class=\"offer-translate-chooser\">\n" +
     "          <label class=\"form-text\">\n" +
-    "             <button ng-show=\"activeLanguages[language].main\" ng-click=\"openEditPage()\" class=\"btn-link btn-sm\">Origineel ({{mainLanguage}}) bewerken</button>\n" +
+    "             <button ng-click=\"openEditPage()\" class=\"btn-link btn-sm\">\n" +
+    "               <span translate-once=\"translate.original\"></span> ({{mainLanguage}}) <span translate-once=\"translate.edit\"></span>\n" +
+    "             </button>\n" +
     "          </label>\n" +
     "          <span ng-repeat=\"language in languages\">\n" +
     "            <span ng-if=\"!activeLanguages[language].main\">\n" +

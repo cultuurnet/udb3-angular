@@ -14,7 +14,9 @@
       <div class="col-sm-6">
         <div class="offer-translate-chooser">
           <label class="form-text">
-             <button ng-show="activeLanguages[language].main" ng-click="openEditPage()" class="btn-link btn-sm">Origineel ({{mainLanguage}}) bewerken</button>
+             <button ng-click="openEditPage()" class="btn-link btn-sm">
+               <span translate-once="translate.original"></span> ({{mainLanguage}}) <span translate-once="translate.edit"></span>
+             </button>
           </label>
           <span ng-repeat="language in languages">
             <span ng-if="!activeLanguages[language].main">
