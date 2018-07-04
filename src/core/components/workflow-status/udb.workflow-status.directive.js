@@ -42,18 +42,31 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   }
 
   function getPublicUrl (id) {
-    return getEnvironment() + id;
+    if (isPlace()) {
+      return getEnvironment() + 'p//' + id;
+    } else {
+      return getEnvironment() + 'e//' + id;
+    }
   }
 
   function getEnvironment() {
     if (_.includes(appConfig.baseUrl, '-acc.')) {
-      return 'https://acc.uitinvlaanderen.be/agenda/e//';
+      return 'https://acc.uitinvlaanderen.be/agenda/';
     }
     else if (_.includes(appConfig.baseUrl, '-test.')) {
-      return 'https://test.uitinvlaanderen.be/agenda/e//';
+      return 'https://test.uitinvlaanderen.be/agenda/';
     }
     else {
-      return 'https://www.uitinvlaanderen.be/agenda/e//';
+      return 'https://www.uitinvlaanderen.be/agenda/';
+    }
+  }
+
+  function isPlace() {
+    if (_.includes(cm.event.url, 'place')) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 }
