@@ -22062,22 +22062,22 @@ function JsonLDLangFilter() {
   };
 }
 
+function isALanguageKey(key) {
+  return key.length === 2;
+}
+
 function translateProperties(jsonLDProperty, preferredLanguage, shouldFallback) {
-  var languages = ['nl', 'en', 'fr', 'de'];
   jsonLDProperty = _.each(jsonLDProperty, function(val, key) {
     if (_.isObject(val)) {
-      if (val.nl || val.en || val.fr || val.de) {
+      var allKeys = Object.keys(val);
+      if (allKeys.length > 0 && allKeys.every(isALanguageKey)) {
         if (val[preferredLanguage]) {
           jsonLDProperty[key] = val[preferredLanguage];
         } else {
           if (shouldFallback) {
-            var langIndex = 0, translatedProperty;
-            while (!translatedProperty && langIndex < languages.length) {
-              var fallbackLanguage = languages[langIndex];
-              translatedProperty = val[fallbackLanguage];
-              jsonLDProperty[key] = translatedProperty;
-              ++langIndex;
-            }
+            var fallbackLanguage = allKeys[0];
+            var translatedProperty = val[fallbackLanguage];
+            jsonLDProperty[key] = translatedProperty;
           }
         }
       } else {
