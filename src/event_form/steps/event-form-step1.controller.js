@@ -13,7 +13,7 @@ angular
 // .filter('groupBy', GroupByFilter);
 
 /* @ngInject */
-function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCategories, placeCategories) {
+function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCategories, placeCategories, $translate) {
 
   var controller = this;
 
@@ -52,7 +52,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
     if (type) {
       $scope.activeEventType = type.id;
-      $scope.activeEventTypeLabel = type.label;
+      $scope.activeEventTypeLabel = $translate.instant('offerTypes.' + type.label);
       $scope.eventThemeLabels = type.themes;
       $scope.eventGroupLabels = type.groups;
 
@@ -75,7 +75,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
     if (theme) {
       $scope.activeTheme = theme.id;
-      $scope.activeThemeLabel = theme.label;
+      $scope.activeThemeLabel = $translate.instant('offerThemes.' + theme.label);
     } else {
       $scope.activeTheme = '';
       $scope.activeThemeLabel = '';
@@ -201,6 +201,18 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       controller.updateEventTypeAndThemePicker(EventFormData);
       $scope.splitTypes = false;
     }
+  };
+
+  $scope.translateOfferTypes = function (type) {
+    return $translate.instant('offerTypes.' + type);
+  };
+
+  $scope.translateOfferThemes = function (theme) {
+    return $translate.instant('offerThemes.' + theme);
+  };
+
+  $scope.translateOfferThemesGroups = function (group) {
+    return $translate.instant('offerThemesGroups.' + group);
   };
 
   controller.init(EventFormData);
