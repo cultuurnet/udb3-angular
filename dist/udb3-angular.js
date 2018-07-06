@@ -14321,7 +14321,8 @@ function EventFormStep3Controller(
     Levenshtein,
     eventCrud,
     $rootScope,
-    $translate
+    $translate,
+    jsonLDLangFilter
 ) {
 
   var controller = this;
@@ -14508,10 +14509,7 @@ function EventFormStep3Controller(
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
-        if (typeof location.address.streetAddress !== 'string') {
-          locations[key].address = location.address[language];
-          locations[key].name = location.name[language];
-        }
+        locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
       $scope.locationsForCity = locations;
       return locations;
@@ -14714,7 +14712,7 @@ function EventFormStep3Controller(
 
   controller.init(EventFormData);
 }
-EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope", "$translate"];
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "cities", "Levenshtein", "eventCrud", "$rootScope", "$translate", "jsonLDLangFilter"];
 })();
 
 // Source: src/event_form/steps/event-form-step4.controller.js
@@ -21719,22 +21717,22 @@ function JsonLDLangFilter() {
   };
 }
 
+function isALanguageKey(key) {
+  return key.length === 2;
+}
+
 function translateProperties(jsonLDProperty, preferredLanguage, shouldFallback) {
-  var languages = ['nl', 'en', 'fr', 'de'];
   jsonLDProperty = _.each(jsonLDProperty, function(val, key) {
     if (_.isObject(val)) {
-      if (val.nl || val.en || val.fr || val.de) {
+      var allKeys = Object.keys(val);
+      if (allKeys.length > 0 && allKeys.every(isALanguageKey)) {
         if (val[preferredLanguage]) {
           jsonLDProperty[key] = val[preferredLanguage];
         } else {
           if (shouldFallback) {
-            var langIndex = 0, translatedProperty;
-            while (!translatedProperty && langIndex < languages.length) {
-              var fallbackLanguage = languages[langIndex];
-              translatedProperty = val[fallbackLanguage];
-              jsonLDProperty[key] = translatedProperty;
-              ++langIndex;
-            }
+            var fallbackLanguage = allKeys[0];
+            var translatedProperty = val[fallbackLanguage];
+            jsonLDProperty[key] = translatedProperty;
           }
         }
       } else {
