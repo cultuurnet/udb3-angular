@@ -20151,6 +20151,10 @@ function PlaceDetail(
       .unlabel(cachedPlace, label.name)
       .catch(showUnlabelProblem);
   }
+
+  $scope.translateType = function (type) {
+    return $translate.instant('offerTypes.' + type);
+  };
 }
 PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
 })();
@@ -29625,7 +29629,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </tr>\n" +
     "            <tr>\n" +
     "              <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
-    "              <td>{{::place.type.label}}</td>\n" +
+    "              <td>{{::translateType(place.type.label)}}</td>\n" +
     "            </tr>\n" +
     "\n" +
     "            <tr ng-class=\"{muted: !place.description}\">\n" +
