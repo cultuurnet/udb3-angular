@@ -24187,6 +24187,7 @@ function OfferController(
 
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
           $scope.offerType = $scope.event.url.split('/').shift();
+          $scope.translatedOfferType = $translate.instant('offerTypes.' + $scope.event.type.label);
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
@@ -25562,7 +25563,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <span ng-if=\"event.workflowStatus==='REJECTED'\"><span class=\"label label-default\" translate-once=\"workflowStatus.REJECTED\">Publicatie afgewezen</span><small>&nbsp;<a ng-href=\"{{::dash.publicationRulesLink}}\" target=\"blank\" translate-once=\"workflowStatus.rules\"></a></small></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
-    "    <span class=\"dashboard-item-type\" ng-bind=\"::event.type.label\"></span>\n" +
+    "    <span class=\"dashboard-item-type\" ng-bind=\"::translatedOfferType\"></span>\n" +
     "    <span ng-if=\"event.calendarType && (offerType === 'event' || (event.calendarType !== 'permanent' && offerType === 'place'))\">\n" +
     "      <span> - </span>\n" +
     "      <udb-calendar-summary offer=\"event\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
