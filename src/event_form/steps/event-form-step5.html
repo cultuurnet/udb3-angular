@@ -1,4 +1,4 @@
-<div ng-controller="EventFormStep5Controller as EventFormStep5">
+<div ng-controller="EventFormStep5Controller as EventFormStep5" >
   <a name="extra"></a>
   <section id="extra" ng-show="eventFormData.showStep5">
 
@@ -272,7 +272,7 @@
 
           <div class="image-upload-list state complete" ng-if="eventFormData.mediaObjects.length > 0">
             <h4 translate-once="eventForm.step5.images"></h4>
-            <div ng-repeat="image in eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': eventFormData.mainLanguage} track by image.contentUrl">
+            <div ng-repeat="image in eventFormData.mediaObjects | imagesByLanguage:eventFormData.mainLanguage track by image.contentUrl">
               <div class="uploaded-image">
                 <div class="media" ng-class="{'main-image': ($index === 0)}">
                   <a class="media-left" href="#">

@@ -77,6 +77,7 @@ function PlaceDetail(
     openPlaceDeleteConfirmModal($scope.place);
   };
 
+  $scope.language = language;
   var cachedPlace;
 
   function showOffer(place) {
@@ -131,6 +132,13 @@ function PlaceDetail(
     var id = placeLocation.split('/').pop();
 
     $state.go('split.placeEdit', {id: id});
+  };
+
+  $scope.openTranslatePage = function() {
+    var placeLocation = $scope.placeId.toString();
+    var id = placeLocation.split('/').pop();
+
+    $state.go('split.placeTranslate', {id: id});
   };
 
   $scope.updateDescription = function(description) {
@@ -237,4 +245,8 @@ function PlaceDetail(
       .unlabel(cachedPlace, label.name)
       .catch(showUnlabelProblem);
   }
+
+  $scope.translateType = function (type) {
+    return $translate.instant('offerTypes.' + type);
+  };
 }

@@ -57,6 +57,7 @@ function OfferController(
 
           $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
           $scope.offerType = $scope.event.url.split('/').shift();
+          $scope.translatedOfferType = $translate.instant('offerTypes.' + $scope.event.type.label);
           controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
           controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
           controller.fetching = false;
@@ -158,6 +159,8 @@ function OfferController(
   function translateEventProperty(property, translation, apiProperty) {
     var language = controller.activeLanguage,
         udbProperty = apiProperty || property;
+
+    console.log(cachedOffer);
 
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator

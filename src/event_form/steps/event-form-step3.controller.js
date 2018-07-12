@@ -28,7 +28,8 @@ function EventFormStep3Controller(
     Levenshtein,
     eventCrud,
     $rootScope,
-    $translate
+    $translate,
+    jsonLDLangFilter
 ) {
 
   var controller = this;
@@ -215,10 +216,7 @@ function EventFormStep3Controller(
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
-        if (typeof location.address.streetAddress !== 'string') {
-          locations[key].address = location.address[language];
-          locations[key].name = location.name[language];
-        }
+        locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
       $scope.locationsForCity = locations;
       return locations;
@@ -253,9 +251,11 @@ function EventFormStep3Controller(
         return word.length > 2;
       });
       var addressMatches = words.filter(function (word) {
+        console.log(location);
         return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
       var nameMatches = words.filter(function (word) {
+        console.log(location);
         return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 

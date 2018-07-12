@@ -39,4 +39,18 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       .translateProperty(offer.apiUrl, property, language, translation)
       .then(logTranslationJob);
   };
+
+  this.translateAddress = function (offer, language, translation) {
+    function logTranslationJob(response) {
+      var jobData = response.data;
+
+      offer.address[language] = translation;
+      var job = new OfferTranslationJob(jobData.commandId, offer, 'address', language, translation);
+      jobLogger.addJob(job);
+    }
+
+    return udbApi
+        .translateAddress(offer.id, language, translation)
+        .then(logTranslationJob);
+  };
 }
