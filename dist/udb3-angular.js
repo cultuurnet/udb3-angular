@@ -18,6 +18,7 @@ angular
         'udb.search',
         'udb.entry',
         'udb.event-form',
+        'udb.offer-translate',
         'udb.export',
         'udb.event-detail',
         'udb.place-detail',
@@ -94,6 +95,29 @@ angular
  */
 angular
   .module('udb.event-form', [
+    'ngSanitize',
+    'ngMessages',
+    'ui.bootstrap',
+    'udb.config',
+    'udb.entry',
+    'udb.search',
+    'udb.uitpas',
+    'ngFileUpload',
+    'duScroll',
+    'focus-if',
+    'angular.filter'
+  ]);
+
+'use strict';
+
+/**
+ * @ngdoc module
+ * @name udb.offer-translate
+ * @description
+ * The udb form module
+ */
+angular
+  .module('udb.offer-translate', [
     'ngSanitize',
     'ngMessages',
     'ui.bootstrap',
@@ -2377,8 +2401,15 @@ angular
 
 /* @ngInject */
 function ImageDetailController($scope, $translate) {
+  $scope.language = $translate.use() || 'nl';
+
   angular.forEach($scope.images, function(image) {
-    image.main = (image.contentUrl === $scope.main);
+    if (image.contentUrl === $scope.main) {
+      image.main = true;
+      var reindexedMedia = _.without($scope.images, image);
+      reindexedMedia.unshift(image);
+      $scope.images = reindexedMedia;
+    }
   });
 
   $scope.translateImageDetail = function (label, translationData) {
@@ -2943,7 +2974,20 @@ angular.module('udb.core')
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
-      'publiq_url': 'Bekijk op UiT in Vlaanderen'
+      'publiq_url': 'Bekijk op UiT in Vlaanderen',
+      'translate': 'Vertalen'
+    },
+    translate: {
+      'ready': 'Klaar met vertalen',
+      'translate': 'vertalen',
+      'original': 'Origineel',
+      'edit': 'bewerken',
+      'translation': 'Vertaling',
+      'description': 'Beschrijving',
+      'title': 'Titel',
+      'tariff': 'Prijstarief',
+      'address': 'Adres',
+      'street': 'Straat en nummer'
     },
     labels: {
       'what': 'Met een label voeg je korte, specifieke trefwoorden toe.',
@@ -3892,7 +3936,19 @@ angular.module('udb.core')
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
       'no_age': 'Pas d\'information de l\'âge',
-      'publiq_url': 'Voir sur UiT in Vlaanderen'
+      'publiq_url': 'Voir sur UiT in Vlaanderen',
+      'translate': 'Traduire'
+    },
+    translate: {
+      'ready': 'Prêt à traduire',
+      'translate': 'traduire',
+      'original': 'Original',
+      'translation': 'Traduction',
+      'description': 'Description',
+      'title': 'Titre',
+      'tariff': 'Prix',
+      'address': 'Adres',
+      'street': 'Rue et numéro'
     },
     labels: {
       'what': 'Ajoutez des mots clés courts et spécifiques.',
@@ -5001,6 +5057,19 @@ function UdbApi(
     );
   };
 
+  this.translateAddress = function (offerId, language, translation) {
+    return $http.put(
+        appConfig.baseUrl + 'places/' + offerId + '/address/' + language,
+        {
+          addressCountry: translation.addressCountry,
+          addressLocality: translation.addressLocality,
+          postalCode: translation.postalCode,
+          streetAddress: translation.streetAddress
+        },
+        defaultApiConfig
+    );
+  };
+
   var offerPropertyPaths = {
     typicalAgeRange: 'typical-age-range'
   };
@@ -5235,6 +5304,7 @@ function UdbApi(
    * @return {Promise}
    */
   this.addImage = function(itemLocation, imageId) {
+
     var postData = {
       mediaObjectId: imageId
     };
@@ -6084,6 +6154,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
 
       this.facilities = _.filter(_.get(jsonEvent, 'terms', []), {domain: 'facility'});
       this.mainLanguage = jsonEvent.mainLanguage || 'nl';
+      this.languages = jsonEvent.languages || [];
     },
 
     /**
@@ -6531,12 +6602,13 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.calendarType = '';
     /** @type {OpeningHoursData[]} **/
     this.openinghours = [];
-    this.address = {
+    this.address = {};
+    /*this.address = {
       'addressCountry' : 'BE',
       'addressLocality' : '',
       'postalCode' : '',
       'streetAddress' : ''
-    };
+    };*/
 
     if (placeJson) {
       this.parseJson(placeJson);
@@ -6553,7 +6625,8 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.apiUrl = new URL(jsonPlace['@id']);
       }
       this.name = jsonPlace.name || {};
-      this.address = (jsonPlace.address && jsonPlace.address.nl) || jsonPlace.address || this.address;
+      //this.address = (jsonPlace.address && jsonPlace.address.nl) || jsonPlace.address || this.address;
+      this.address = jsonPlace.address || {};
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
       this.calendarType = jsonPlace.calendarType || '';
@@ -6627,6 +6700,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
       this.mainLanguage = jsonPlace.mainLanguage || 'nl';
+      this.languages = jsonPlace.languages || [];
     },
 
     /**
@@ -7943,6 +8017,16 @@ function EventCrud(
     return udbApi
       .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
       .then(jobCreatorFactory(item, 'updateDescription'));
+  };
+
+  /**
+   * Update the adress of a place and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.translateAddress = function(item) {
+    return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
   };
 
   /**
@@ -9480,6 +9564,20 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       .translateProperty(offer.apiUrl, property, language, translation)
       .then(logTranslationJob);
   };
+
+  this.translateAddress = function (offer, language, translation) {
+    function logTranslationJob(response) {
+      var jobData = response.data;
+
+      offer.address[language] = translation;
+      var job = new OfferTranslationJob(jobData.commandId, offer, 'address', language, translation);
+      jobLogger.addJob(job);
+    }
+
+    return udbApi
+        .translateAddress(offer.id, language, translation)
+        .then(logTranslationJob);
+  };
 }
 OfferTranslator.$inject = ["jobLogger", "udbApi", "OfferTranslationJob"];
 })();
@@ -9699,6 +9797,7 @@ function EventDetail(
   $scope.isEmpty = _.isEmpty;
 
   var language = $translate.use() || 'nl';
+  $scope.language = language;
   var cachedEvent;
 
   function showHistory(eventHistory) {
@@ -9723,8 +9822,6 @@ function EventDetail(
         .getCalendarSummary($scope.eventId, 'lg')
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
-
-    language = $translate.use() || 'nl';
 
     $scope.event = jsonLDLangFilter(event, language, true);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -9832,6 +9929,12 @@ function EventDetail(
     var id = eventLocation.split('/').pop();
 
     $state.go('split.eventEdit', {id: id});
+  };
+
+  $scope.openTranslatePage = function() {
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+    $state.go('split.eventTranslate', {id: id});
   };
 
   function goToDashboard() {
@@ -14544,9 +14647,11 @@ function EventFormStep3Controller(
         return word.length > 2;
       });
       var addressMatches = words.filter(function (word) {
+        console.log(location);
         return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
       var nameMatches = words.filter(function (word) {
+        console.log(location);
         return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
@@ -19886,6 +19991,505 @@ function EventMigrationService() {
 }
 })();
 
+// Source: src/offer_translate/components/address/translate.address.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateAddressController
+ * @description
+ * # TranslateAddressController
+ * Controller for the address translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateAddress', {
+      templateUrl: 'templates/translate-address.html',
+      controller: TranslateAddressController,
+      controllerAs: 'tac',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateAddressController(offerTranslator) {
+  var controller = this;
+
+  controller.translatedAddresses = {};
+
+  controller.originalAddress = _.get(controller.offer.address, controller.offer.mainLanguage, '') ||
+      _.get(controller.offer.address, 'nl', '') ||
+      _.get(controller.offer, 'address', '');
+
+  controller.translatedAddresses = _.get(controller.offer, 'address');
+  _.forEach(controller.activeLanguages, function(language, key) {
+    if (controller.translatedAddresses[key] === undefined) {
+      controller.translatedAddresses[key] = {
+        postalCode: controller.originalAddress.postalCode,
+        addressLocality: controller.originalAddress.addressLocality,
+        addressCountry: controller.originalAddress.addressCountry
+      };
+    }
+  });
+
+  controller.saveTranslatedAddress = saveTranslatedAddress;
+
+  function saveTranslatedAddress(language) {
+
+    offerTranslator
+        .translateAddress(controller.offer, language, controller.translatedAddresses[language]);
+  }
+}
+TranslateAddressController.$inject = ["offerTranslator"];
+})();
+
+// Source: src/offer_translate/components/description/translate-description.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateDescriptionController
+ * @description
+ * # TranslateDescriptionController
+ * Controller for the description translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateDescription', {
+      templateUrl: 'templates/translate-description.html',
+      controller: TranslateDescriptionController,
+      controllerAs: 'ttd',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateDescriptionController(offerTranslator) {
+  var controller = this;
+
+  controller.translatedDescriptions = {};
+  controller.originalDescription = _.get(controller.offer.description, controller.offer.mainLanguage, '') ||
+      _.get(controller.offer.description, 'nl', '') ||
+      _.get(controller.offer, 'description', '');
+  controller.originalDescription = _.isEmpty(controller.originalDescription) ? '' : controller.originalDescription;
+
+  controller.translatedDescriptions = _.get(controller.offer, 'description');
+
+  controller.saveTranslatedDescription = saveTranslatedDescription;
+
+  function saveTranslatedDescription(language) {
+    offerTranslator
+        .translateProperty(controller.offer, 'description', language, controller.translatedDescriptions[language])
+        .then(function() {
+          //
+        });
+  }
+}
+TranslateDescriptionController.$inject = ["offerTranslator"];
+})();
+
+// Source: src/offer_translate/components/images/translate-images.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateImagesController
+ * @description
+ * # TranslateImagesController
+ * Controller for the images translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateImages', {
+      templateUrl: 'templates/translate-images.html',
+      controller: TranslateImagesController,
+      controllerAs: 'tic',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateImagesController($uibModal, eventCrud, MediaManager, EventFormData) {
+  var controller = this;
+
+  EventFormData.init();
+
+  controller.eventFormData = EventFormData;
+  if (controller.offer.mediaObject) {
+    EventFormData.mediaObjects = controller.offer.mediaObject || [];
+  }
+  EventFormData.name = controller.offer.name;
+  EventFormData.apiUrl = controller.offer.apiUrl;
+  EventFormData.mainLanguage = controller.offer.mainLanguage;
+
+  controller.openUploadImageModal = openUploadImageModal;
+  controller.removeImage = removeImage;
+  controller.editImage = editImage;
+  controller.copyImage = copyImage;
+
+  /**
+   * Open the upload modal.
+   */
+  function openUploadImageModal(language) {
+    EventFormData.mainLanguage = language;
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-image-upload.html',
+      controller: 'EventFormImageUploadController',
+      resolve: {
+        EventFormData: function () {
+          return EventFormData;
+        }
+      }
+    });
+  }
+
+  function copyImage(image, language) {
+    console.log(image);
+    var blob = null;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', image.contentUrl);
+    xhr.responseType = 'blob';
+    xhr.onload = function() {
+      blob = xhr.response;
+      MediaManager
+          .createImage(blob, image.description, image.copyrightHolder, language)
+          .then(
+              addImageToEvent, displayError
+          );
+    };
+    xhr.send();
+  }
+
+  /**
+   * Open the modal to edit an image of the item.
+   *
+   * @param {MediaObject} image
+   *    The media object of the image to edit.
+   */
+  function editImage(image) {
+    $uibModal.open({
+      templateUrl: 'templates/event-form-image-edit.html',
+      controller: 'EventFormImageEditController',
+      resolve: {
+        EventFormData: function () {
+          return EventFormData;
+        },
+        mediaObject: function () {
+          return image;
+        }
+      }
+    });
+  }
+
+  /**
+   * Open the modal to remove an image.
+   *
+   * @param {MediaObject} image
+   * The media object of the image to remove from the item.
+   */
+  function removeImage(image) {
+    var modalInstance = $uibModal.open({
+      templateUrl: 'templates/event-form-image-remove.html',
+      controller: 'EventFormImageRemoveController',
+      resolve: {
+        EventFormData: function () {
+          return EventFormData;
+        },
+        image: function () {
+          return image;
+        }
+      }
+    });
+  }
+
+  /**
+   * @param {MediaObject} mediaObject
+   */
+  function addImageToEvent(mediaObject) {
+    function updateImageForm() {
+      EventFormData.addImage(mediaObject);
+    }
+
+    eventCrud
+        .addImage(EventFormData, mediaObject)
+        .then(updateImageForm, displayError);
+  }
+
+  function displayError(errorResponse) {
+    var errorMessage = errorResponse.data.title;
+    var error = 'Er ging iets mis bij het opslaan van de afbeelding.';
+
+    switch (errorMessage) {
+      case 'The uploaded file is not an image.':
+        error = 'Het geüpload bestand is geen geldige afbeelding. ' +
+            'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.';
+        break;
+      case 'The file size of the uploaded image is too big.':
+        error = 'Het geüpload bestand is te groot.';
+        break;
+    }
+
+    controller.saving = false;
+    controller.error = error;
+  }
+}
+TranslateImagesController.$inject = ["$uibModal", "eventCrud", "MediaManager", "EventFormData"];
+})();
+
+// Source: src/offer_translate/components/tariffs/translate-tariffs.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateTariffsController
+ * @description
+ * # TranslateTariffsController
+ * Controller for the tariffs translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateTariffs', {
+      templateUrl: 'templates/translate-tariffs.html',
+      controller: TranslateTariffsController,
+      controllerAs: 'ttsc',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateTariffsController(eventCrud) {
+  var controller = this;
+
+  controller.translatedTariffs = [];
+
+  controller.originalTariffs = getOriginalTariffs();
+  controller.translatedTariffs = getTranslatedTariffs();
+
+  controller.saveTranslatedTariffs = saveTranslatedTariffs;
+
+  function saveTranslatedTariffs() {
+    for (var key in controller.offer.priceInfo) {
+      if (key > 0) {
+        var originalTariff = {};
+        originalTariff[controller.offer.mainLanguage] = controller.originalTariffs[key - 1];
+        controller.offer.priceInfo[key].name =
+            _.merge(originalTariff, controller.translatedTariffs[key - 1]);
+      }
+    }
+
+    eventCrud.updatePriceInfo(controller.offer);
+  }
+
+  function getOriginalTariffs() {
+    var originalTariffs = [];
+    for (var key in controller.offer.priceInfo) {
+      if (key > 0) {
+        originalTariffs.push(
+            controller.offer.priceInfo[key].name[controller.offer.mainLanguage] ?
+                controller.offer.priceInfo[key].name[controller.offer.mainLanguage] :
+                controller.offer.priceInfo[key].name);
+      }
+    }
+
+    return originalTariffs;
+  }
+
+  function getTranslatedTariffs() {
+    var translatedTariffs = [];
+    for (var key in controller.offer.priceInfo) {
+      if (key > 0) {
+        translatedTariffs.push(controller.offer.priceInfo[key].name);
+      }
+    }
+
+    return translatedTariffs;
+  }
+}
+TranslateTariffsController.$inject = ["eventCrud"];
+})();
+
+// Source: src/offer_translate/components/title/translate-title.component.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.offer-translate:TranslateTitleController
+ * @description
+ * # TranslateTitleController
+ * Controller for the title translation component
+ */
+angular
+    .module('udb.offer-translate')
+    .component('offerTranslateTitle', {
+      templateUrl: 'templates/translate-title.html',
+      controller: TranslateTitleController,
+      controllerAs: 'ttc',
+      bindings: {
+        offer: '<',
+        activeLanguages: '<'
+      }
+    });
+
+/* @ngInject */
+function TranslateTitleController(offerTranslator) {
+  var controller = this;
+
+  controller.translatedNames = {};
+  controller.originalName = _.get(controller.offer.name, controller.offer.mainLanguage, null) ||
+      _.get(controller.offer.name, 'nl', null) ||
+      _.get(controller.offer, 'name', '');
+
+  controller.translatedNames = _.get(controller.offer, 'name');
+
+  controller.saveTranslatedName = saveTranslatedName;
+
+  function saveTranslatedName(language) {
+    offerTranslator
+        .translateProperty(controller.offer, 'name', language, controller.translatedNames[language])
+        .then(function() {
+          //
+        });
+  }
+}
+TranslateTitleController.$inject = ["offerTranslator"];
+})();
+
+// Source: src/offer_translate/offer-translate.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OfferTranslateController
+ * @description
+ * # OffertranslateController
+ * Init the event form
+ */
+angular
+  .module('udb.offer-translate')
+  .controller('OfferTranslateController', OfferTranslateController);
+
+/* @ngInject */
+function OfferTranslateController(
+    $scope,
+    offerId,
+    udbApi,
+    jsonLDLangFilter,
+    $q,
+    $translate,
+    $state
+) {
+
+  $scope.apiUrl = '';
+  $scope.loaded = false;
+  $scope.mainLanguage = '';
+  $scope.languages = ['nl', 'fr', 'en', 'de'];
+  $scope.activeLanguages = {
+    'nl': {'active': false, 'main': false},
+    'fr': {'active': false, 'main': false},
+    'en': {'active': false, 'main': false},
+    'de': {'active': false, 'main': false}
+  };
+
+  // Functions
+  $scope.openEditPage = openEditPage;
+  $scope.goToDashboard = goToDashboard;
+
+  $q.when(offerId)
+    .then(fetchOffer, offerNotFound);
+
+  function startTranslating(offer) {
+    $scope.language = $translate.use() || 'nl';
+    $scope.cachedOffer = offer;
+    $scope.apiUrl = offer.apiUrl;
+    $scope.mainLanguage = offer.mainLanguage ? offer.mainLanguage : 'nl';
+    $scope.translatedOffer = jsonLDLangFilter(offer, $scope.language, true);
+    $scope.originalName = $scope.translatedOffer.name;
+
+    $scope.offerType = offer.url.split('/').shift();
+    if ($scope.offerType === 'event') {
+      $scope.isEvent = true;
+      $scope.isPlace = false;
+    } else {
+      $scope.isEvent = false;
+      $scope.isPlace = true;
+    }
+
+    _.forEach($scope.cachedOffer.name, function(name, language) {
+      $scope.activeLanguages[language].active = true;
+    });
+
+    $scope.activeLanguages[$scope.mainLanguage].main = true;
+
+    $scope.loaded = true;
+  }
+
+  function offerNotFound() {
+    console.log('offer not found');
+  }
+
+  /**
+   * @param {string|null} offerId
+   */
+  function fetchOffer(offerId) {
+    if (!offerId) {
+      offerNotFound();
+    } else {
+      udbApi
+        .getOffer(offerId)
+        .then(startTranslating);
+    }
+  }
+
+  function openEditPage() {
+    var offerLocation = $scope.cachedOffer.id.toString();
+    var id = offerLocation.split('/').pop();
+    $state.go('split.eventEdit', {id: id});
+  }
+
+  function goToDashboard() {
+    $state.go('split.footer.dashboard');
+  }
+}
+OfferTranslateController.$inject = ["$scope", "offerId", "udbApi", "jsonLDLangFilter", "$q", "$translate", "$state"];
+})();
+
+// Source: src/offer_translate/offer-translate.directive.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.search.directive:offer-translate.html
+ * @description
+ * # udb offer translate directive
+ */
+angular
+  .module('udb.offer-translate')
+  .directive('udbOfferTranslate', OfferTranslateDirective);
+
+/* @ngInject */
+function OfferTranslateDirective() {
+  return {
+    templateUrl: 'templates/offer-translate.html',
+    restrict: 'EA',
+  };
+}
+})();
+
 // Source: src/place-detail/place-detail.directive.js
 (function () {
 'use strict';
@@ -19991,6 +20595,7 @@ function PlaceDetail(
     openPlaceDeleteConfirmModal($scope.place);
   };
 
+  $scope.language = language;
   var cachedPlace;
 
   function showOffer(place) {
@@ -20045,6 +20650,13 @@ function PlaceDetail(
     var id = placeLocation.split('/').pop();
 
     $state.go('split.placeEdit', {id: id});
+  };
+
+  $scope.openTranslatePage = function() {
+    var placeLocation = $scope.placeId.toString();
+    var id = placeLocation.split('/').pop();
+
+    $state.go('split.placeTranslate', {id: id});
   };
 
   $scope.updateDescription = function(description) {
@@ -21687,7 +22299,7 @@ angular.module('udb.search')
 /* @ngInject */
 function imagesByLanguageFilter() {
   return function (mediaObjects, preferredLanguage) {
-    console.log(mediaObjects);
+
     var filtered = _.filter(mediaObjects, function(mediaObject) {
       return mediaObject['@type'] === 'schema:ImageObject' &&
         (mediaObject.inLanguage === preferredLanguage || angular.isUndefined(mediaObject.inLanguage));
@@ -24294,6 +24906,8 @@ function OfferController(
     var language = controller.activeLanguage,
         udbProperty = apiProperty || property;
 
+    console.log(cachedOffer);
+
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator
         .translateProperty(cachedOffer, udbProperty, language, translation)
@@ -25435,7 +26049,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </td>\n" +
     "    <td ng-if=\"::images.length\">\n" +
     "        <ul class=\"list-unstyled media-list\">\n" +
-    "            <li ng-repeat=\"image in images | orderBy: '-main' \" class=\"media\">\n" +
+    "            <li ng-repeat=\"image in images | imagesByLanguage:language track by image.contentUrl\" class=\"media\">\n" +
     "                <div class=\"media-left\">\n" +
     "                    <a target=\"_blank\" href=\"{{image.contentUrl}}\">\n" +
     "                        <img class=\"media-object\"\n" +
@@ -26002,7 +26616,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
@@ -27946,7 +28564,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/event-form-step5.html',
-    "<div ng-controller=\"EventFormStep5Controller as EventFormStep5\">\n" +
+    "<div ng-controller=\"EventFormStep5Controller as EventFormStep5\" >\n" +
     "  <a name=\"extra\"></a>\n" +
     "  <section id=\"extra\" ng-show=\"eventFormData.showStep5\">\n" +
     "\n" +
@@ -29574,6 +30192,280 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/translate-address.html',
+    "<section class=\"translate-section\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong><span translate-once=\"translate.address\"></span></strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.original\"></span></p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <p class=\"text-muted\">\n" +
+    "                      <span ng-bind=\"tac.originalAddress.streetAddress\"></span><br/>\n" +
+    "                      <span ng-bind=\"tac.originalAddress.postalCode\"></span> \n" +
+    "                      <span ng-bind=\"tac.originalAddress.addressLocality\"></span>\n" +
+    "                    </p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in tac.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    \n" +
+    "                    <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].streetAddress\" placeholder=\"{{ 'translate.street' | translate }}\">\n" +
+    "                    <div class=\"row\">\n" +
+    "                      <div class=\"col-xs-3\">\n" +
+    "                        <span class=\"text-muted text-right form-control-static\" ng-bind=\"::tac.translatedAddresses[code].postalCode\"></span>\n" +
+    "                      </div>\n" +
+    "                      <div class=\"col-xs-9\">\n" +
+    "                        <input type=\"text\" ng-blur=\"tac.saveTranslatedAddress(code)\" class=\"form-control form-group\" ng-model=\"tac.translatedAddresses[code].addressLocality\">\n" +
+    "                      </dvi>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
+  $templateCache.put('templates/translate-description.html',
+    "<section class=\"translate-section\" ng-show=\"ttd.originalDescription\">\n" +
+    "    <div class=\"row\" >\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong translate-once=\"translate.description\"></strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <p class=\"text-muted\" ng-bind=\"ttd.originalDescription\"></p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in ttd.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <input type=\"text\" ng-blur=\"ttd.saveTranslatedDescription(code)\" class=\"form-control form-group\" ng-model=\"ttd.translatedDescriptions[code]\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
+  $templateCache.put('templates/translate-images.html',
+    "<section class=\"translate-section\" ng-show=\"tic.offer.mediaObject.length > 0\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong>Afbeelding(en)</strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"text-muted\">Origineel</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <div class=\"panel panel-default\">\n" +
+    "                        <div class=\"panel-body\">\n" +
+    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': tic.offer.mainLanguage} track by image.contentUrl\" class=\"media-object\">\n" +
+    "                                <div class=\"uploaded-image media\">\n" +
+    "\n" +
+    "                                  <div class=\"media-left\">\n" +
+    "                                    <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"width: 50px;\">\n" +
+    "                                  </div>\n" +
+    "\n" +
+    "                                  <div class=\"media-body\">\n" +
+    "                                    <div ng-bind=\"image.description\"></div>\n" +
+    "                                    <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
+    "                                  </div>\n" +
+    "\n" +
+    "                                </div>\n" +
+    "                              \n" +
+    "                              <!-- Single button -->\n" +
+    "                              <div class=\"btn-group\">\n" +
+    "                                  <button type=\"button\" class=\"btn btn-default dropdown-toggle\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">\n" +
+    "                                      Kopieren in een andere taal <span class=\"caret\"></span>\n" +
+    "                                  </button>\n" +
+    "                                  <ul class=\"dropdown-menu\">\n" +
+    "                                      <li ng-repeat=\"(code, language) in tic.activeLanguages\" ng-if=\"language.active && !language.main\"><button ng-click=\"tic.copyImage(image, code)\" class=\"btn-link\">{{code}}</button></li>\n" +
+    "                                  </ul>\n" +
+    "                              </div>\n" +
+    "                              \n" +
+    "                            </div>\n" +
+    "\n" +
+    "\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in tic.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <div class=\"panel panel-default\">\n" +
+    "                        <div class=\"panel-body\">\n" +
+    "                            <div ng-repeat=\"image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': code} track by image.contentUrl\" class=\"media-object\">\n" +
+    "                                <div class=\"uploaded-image\">\n" +
+    "                                    <div class=\"media\" ng-class=\"{'main-image': ($index === 0)}\">\n" +
+    "                                        <a class=\"media-left\" href=\"#\">\n" +
+    "                                            <img ng-src=\"{{ image.thumbnailUrl }}?width=50&height=50\" style=\"width: 50px;\">\n" +
+    "                                        </a>\n" +
+    "\n" +
+    "                                        <div class=\"media-body\">\n" +
+    "                                            <div ng-bind=\"image.description\"></div>\n" +
+    "                                            <div class=\"text-muted\">&copy; <span ng-bind=\"image.copyrightHolder\"><span translate-once=\"eventForm.step5.copyright\"></span></span></div>\n" +
+    "                                        </div>\n" +
+    "\n" +
+    "                                        <div class=\"media-actions\">\n" +
+    "                                            <a class=\"btn btn-xs btn-primary\" ng-click=\"tic.editImage(image)\" translate-once=\"eventForm.step5.change\"></a>\n" +
+    "                                            <a class=\"btn btn-xs btn-danger\" ng-click=\"tic.removeImage(image)\" translate-once=\"eventForm.step5.delete\"></a>\n" +
+    "                                        </div>\n" +
+    "\n" +
+    "                                    </div>\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
+    "                            <a class=\"btn btn-default\"\n" +
+    "                               href=\"#\"\n" +
+    "                               translate-once=\"eventForm.step5.add_image\"\n" +
+    "                               ng-click=\"tic.openUploadImageModal(code)\"></a>\n" +
+    "                        </div>\n" +
+    "                    </div>\n" +
+    "\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
+  $templateCache.put('templates/translate-tariffs.html',
+    "<section class=\"translate-section\" ng-show=\"ttsc.originalTariffs.length > 0\">\n" +
+    "    <div class=\"row\" ng-repeat=\"originalTariff in ttsc.originalTariffs track by $index\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong><span translate-once=\"translate.tariff\"></span> {{$index+1}}</strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <p class=\"orginal text-muted\" ng-bind=\"originalTariff\"></p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in ttsc.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <input type=\"text\" ng-blur=\"ttsc.saveTranslatedTariffs()\" class=\"form-control form-group\" ng-model=\"ttsc.translatedTariffs[$parent.$index][code]\">\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
+  $templateCache.put('templates/translate-title.html',
+    "<section class=\"translate-section\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-sm-3\">\n" +
+    "            <p><strong translate-once=\"translate.title\"></strong></p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-sm-9\">\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\" translate-once=\"translate.original\"></p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <p class=\"orginal text-muted\" ng-bind=\"ttc.originalName\"></p>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"row\" ng-repeat=\"(code, language) in ttc.activeLanguages\" ng-show=\"language.active && !language.main\">\n" +
+    "                <div class=\"col-sm-3\">\n" +
+    "                    <p class=\"orginal text-muted\"><span translate-once=\"translate.original\"></span> {{code}}</p>\n" +
+    "                </div>\n" +
+    "                <div class=\"col-sm-9\">\n" +
+    "                    <textarea ng-blur=\"ttc.saveTranslatedName(code)\" class=\"form-control form-group\" ng-model=\"ttc.translatedNames[code]\"></textarea>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</section>"
+  );
+
+
+  $templateCache.put('templates/offer-translate.html',
+    "<div ng-if=\"!loaded\">\n" +
+    "  <p class=\"title\"><span class=\"placeholder-title\"></span></p>\n" +
+    "  <p class=\"text-center\"><i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span></p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"offer-translate\" ng-if=\"loaded\" >\n" +
+    "\n" +
+    "  <div class=\"page-header\">\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <h1><span ng-bind=\"originalName\"></span> <span translate-once=\"translate.translate\"></span></h1>\n" +
+    "      </div>\n" +
+    "      \n" +
+    "      <div class=\"col-sm-6\">\n" +
+    "        <div class=\"offer-translate-chooser\">\n" +
+    "          <label class=\"form-text\">\n" +
+    "             <button ng-click=\"openEditPage()\" class=\"btn-link btn-sm\">\n" +
+    "               <span translate-once=\"translate.original\"></span> ({{mainLanguage}}) <span translate-once=\"translate.edit\"></span>\n" +
+    "             </button>\n" +
+    "          </label>\n" +
+    "          <span ng-repeat=\"language in languages\">\n" +
+    "            <span ng-if=\"!activeLanguages[language].main\">\n" +
+    "              <label class=\"checkbox-inline\" >\n" +
+    "                <input type=\"checkbox\" ng-model=\"activeLanguages[language].active\"/>{{language}}\n" +
+    "              </label>\n" +
+    "            </span>\n" +
+    "          </span>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </div>\n" +
+    "\n" +
+    "  <!-- Titel -->\n" +
+    "  <offer-translate-title offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-title>\n" +
+    "\n" +
+    "  <!-- Beschrijving -->\n" +
+    "  <offer-translate-description offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-description>\n" +
+    "\n" +
+    "  <!-- Prijs -->\n" +
+    "  <offer-translate-tariffs offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-tariffs>\n" +
+    "\n" +
+    "  <!-- Address -->\n" +
+    "  <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace\"></offer-translate-address>\n" +
+    "\n" +
+    "  <!-- Image -->\n" +
+    "  <offer-translate-images offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-images>\n" +
+    "\n" +
+    "  <button class=\"btn btn-success\" ng-click=\"goToDashboard()\" translate-once=\"translate.ready\"></button>\n" +
+    "\n" +
+    "</div>\n"
+  );
+
+
   $templateCache.put('templates/place-detail.html',
     "<div ng-if=\"placeIdIsInvalid\">\n" +
     "  <div class=\"page-header\">\n" +
@@ -29601,7 +30493,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span></button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span ng-if=\"place.mainLanguage !== language\" ng-bind=\"'(' + place.mainLanguage + ')'\"></span></button>\n" +
+    "        <button ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +

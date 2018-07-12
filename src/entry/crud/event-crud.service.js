@@ -134,6 +134,16 @@ function EventCrud(
   };
 
   /**
+   * Update the adress of a place and add it to the job logger.
+   *
+   * @param {EventFormData} item
+   * @returns {Promise.<EventCrudJob>}
+   */
+  service.translateAddress = function(item) {
+    return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
+  };
+
+  /**
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item

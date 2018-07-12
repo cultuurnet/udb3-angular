@@ -1,0 +1,26 @@
+<section class="translate-section">
+    <div class="row">
+        <div class="col-sm-3">
+            <p><strong translate-once="translate.title"></strong></p>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="orginal text-muted" translate-once="translate.original"></p>
+                </div>
+                <div class="col-sm-9">
+                    <p class="orginal text-muted" ng-bind="ttc.originalName"></p>
+                </div>
+            </div>
+
+            <div class="row" ng-repeat="(code, language) in ttc.activeLanguages" ng-show="language.active && !language.main">
+                <div class="col-sm-3">
+                    <p class="orginal text-muted"><span translate-once="translate.original"></span> {{code}}</p>
+                </div>
+                <div class="col-sm-9">
+                    <textarea ng-blur="ttc.saveTranslatedName(code)" class="form-control form-group" ng-model="ttc.translatedNames[code]"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
