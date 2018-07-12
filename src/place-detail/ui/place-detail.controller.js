@@ -245,4 +245,8 @@ function PlaceDetail(
       .unlabel(cachedPlace, label.name)
       .catch(showUnlabelProblem);
   }
+
+  $scope.translateType = function (type) {
+    return $translate.instant('offerTypes.' + type);
+  };
 }

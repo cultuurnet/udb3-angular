@@ -361,6 +361,10 @@ function EventDetail(
     return $translate.instant('audience.' + type);
   };
 
+  $scope.translateType = function (type) {
+    return $translate.instant('offerTypes.' + type);
+  };
+
   $scope.finishedLoading = function() {
     return ($scope.event && $scope.permissions);
   };
