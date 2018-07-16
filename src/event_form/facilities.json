@@ -5,8 +5,12 @@
       "id": "3.23.2.0.0"
     },
     {
-      "label": "Oplaadzone rolstoelen",
-      "id": "3.37.0.0.0"
+      "label": "Parkeerplaats",
+      "id": "3.26.0.0.0"
+    },
+    {
+      "label": "Rolstoel ter beschikking",
+      "id": "3.23.3.0.0"
     },
     {
       "label": "Rolstoelpodium",
@@ -49,6 +53,12 @@
       "id": "3.17.2.0.0"
     }
   ],
+  "mental": [
+    {
+      "label": "Vereenvoudigde informatie",
+      "id": "3.34.0.0.0"
+    }
+  ],
   "other": [
     {
       "label": "1 begeleider gratis",
@@ -63,6 +73,10 @@
       "id": "3.39.0.0.0"
     },
     {
+      "label": "Contactpunt voor personen met handicap",
+      "id": "3.25.0.0.0"
+    },
+    {
       "label": "Gegarandeerd zicht",
       "id": "3.29.0.0.0"
     },
@@ -75,12 +89,8 @@
       "id": "3.40.0.0.0"
     },
     {
-      "label": "Parkeerplaats",
-      "id": "3.26.0.0.0"
-    },
-    {
-      "label": "Vereenvoudigde informatie",
-      "id": "3.34.0.0.0"
+      "label": "Stroomvoorziening voor handicap",
+      "id": "3.37.0.0.0"
     },
     {
       "label": "Verzorgingsruimte",
