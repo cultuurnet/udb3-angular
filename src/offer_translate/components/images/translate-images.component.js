@@ -55,7 +55,6 @@ function TranslateImagesController($uibModal, eventCrud, MediaManager, EventForm
   }
 
   function copyImage(image, language) {
-    console.log(image);
     var blob = null;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', image.contentUrl);

@@ -14647,11 +14647,9 @@ function EventFormStep3Controller(
         return word.length > 2;
       });
       var addressMatches = words.filter(function (word) {
-        console.log(location);
         return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
       var nameMatches = words.filter(function (word) {
-        console.log(location);
         return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
@@ -15966,7 +15964,6 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
       customizations = exporter.customizations;
       customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
       customizations.brand = exporter.selectedBrand.name;
-      console.log(customizations);
       includedProperties = [];
     } else {
       customizations = {};
@@ -20168,7 +20165,6 @@ function TranslateImagesController($uibModal, eventCrud, MediaManager, EventForm
   }
 
   function copyImage(image, language) {
-    console.log(image);
     var blob = null;
     var xhr = new XMLHttpRequest();
     xhr.open('GET', image.contentUrl);
@@ -24920,8 +24916,6 @@ function OfferController(
   function translateEventProperty(property, translation, apiProperty) {
     var language = controller.activeLanguage,
         udbProperty = apiProperty || property;
-
-    console.log(cachedOffer);
 
     if (translation && translation !== cachedOffer[property][language]) {
       offerTranslator

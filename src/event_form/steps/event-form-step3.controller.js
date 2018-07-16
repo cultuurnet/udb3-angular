@@ -251,11 +251,9 @@ function EventFormStep3Controller(
         return word.length > 2;
       });
       var addressMatches = words.filter(function (word) {
-        console.log(location);
         return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
       var nameMatches = words.filter(function (word) {
-        console.log(location);
         return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 

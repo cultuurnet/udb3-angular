@@ -191,7 +191,6 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
       customizations = exporter.customizations;
       customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
       customizations.brand = exporter.selectedBrand.name;
-      console.log(customizations);
       includedProperties = [];
     } else {
       customizations = {};
