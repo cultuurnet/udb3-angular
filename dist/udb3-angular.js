@@ -30434,7 +30434,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"col-sm-6\">\n" +
     "        <h1><span ng-bind=\"originalName\"></span> <span translate-once=\"translate.translate\"></span></h1>\n" +
     "      </div>\n" +
-    "      \n" +
+    "\n" +
     "      <div class=\"col-sm-6\">\n" +
     "        <div class=\"offer-translate-chooser\">\n" +
     "          <label class=\"form-text\">\n" +
@@ -30465,9 +30465,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <!-- Address -->\n" +
     "  <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace\"></offer-translate-address>\n" +
-    "\n" +
-    "  <!-- Image -->\n" +
-    "  <offer-translate-images offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-images>\n" +
     "\n" +
     "  <button class=\"btn btn-success\" ng-click=\"goToDashboard()\" translate-once=\"translate.ready\"></button>\n" +
     "\n" +
