@@ -428,7 +428,7 @@ angular.module('udb.core')
       'title': 'Ajouter des prix',
       'base': 'Tarif de base',
       'target_group': 'Public cible',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'add_price': 'Ajouter prix',
       'add_tarriff': 'Ajouter tarif',
