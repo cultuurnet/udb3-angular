@@ -778,12 +778,14 @@ angular.module('udb.core')
         'address_error': 'Veuillez introduire une adresse valable.',
         'contact_error': 'Veuillez introduire l\'information du contact correctement.',
         'close': 'Fermer',
-        'save': 'Sauver'
+        'save': 'Sauver',
+        'label_name': 'Nom'
       },
       address: {
         'label_street': 'Rue et numéro',
         'help_street': 'Veuillez introduire la rue et le numéro.',
         'label_city': 'Commune',
+        'placeholder_city': 'Commune of code postal',
         'help_city': 'Il y a eu un problème dans la collection des villes.',
         'error_city': 'Veuillez introduire une commune.',
         'change': 'Modifier'

@@ -3393,12 +3393,14 @@ angular.module('udb.core')
         'address_error': 'Gelieve een geldig adres in te vullen.',
         'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
         'close': 'Sluiten',
-        'save': 'Bewaren'
+        'save': 'Bewaren',
+        'label_name': 'Naam'
       },
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
+        'placeholder_city': 'Gemeente of postcode',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen'
@@ -4387,12 +4389,14 @@ angular.module('udb.core')
         'address_error': 'Veuillez introduire une adresse valable.',
         'contact_error': 'Veuillez introduire l\'information du contact correctement.',
         'close': 'Fermer',
-        'save': 'Sauver'
+        'save': 'Sauver',
+        'label_name': 'Nom'
       },
       address: {
         'label_street': 'Rue et numéro',
         'help_street': 'Veuillez introduire la rue et le numéro.',
         'label_city': 'Commune',
+        'placeholder_city': 'Commune of code postal',
         'help_city': 'Il y a eu un problème dans la collection des villes.',
         'error_city': 'Veuillez introduire une commune.',
         'change': 'Modifier'
@@ -27415,7 +27419,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
-    "                       placeholder=\"Straat en nummer\"\n" +
+    "                       placeholder=\"{{ 'organizer.address.label_street' | translate }}\"\n" +
     "                       ng-model=\"oac.address.streetAddress\"\n" +
     "                       ng-change=\"oac.validateAddress()\"\n" +
     "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
@@ -27439,7 +27443,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                               type=\"text\"\n" +
     "                               name=\"city\"\n" +
     "                               class=\"form-control uib-typeahead\"\n" +
-    "                               placeholder=\"Gemeente of postcode\"\n" +
+    "                               placeholder=\"{{ 'organizer.address.placeholder_city' | translate }}\"\n" +
     "                               ng-model=\"oac.cityAutocompleteTextField\"\n" +
     "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
     "                               typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
@@ -27609,7 +27613,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
-    "            <label>Naam</label>\n" +
+    "            <label translate-once=\"organizer.modal.label_name\"></label>\n" +
     "            <input type=\"text\"\n" +
     "                   name=\"name\"\n" +
     "                   class=\"form-control\"\n" +

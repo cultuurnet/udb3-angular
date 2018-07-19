@@ -779,12 +779,14 @@ angular.module('udb.core')
         'address_error': 'Gelieve een geldig adres in te vullen.',
         'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
         'close': 'Sluiten',
-        'save': 'Bewaren'
+        'save': 'Bewaren',
+        'label_name': 'Naam'
       },
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
+        'placeholder_city': 'Gemeente of postcode',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen'
