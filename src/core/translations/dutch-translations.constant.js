@@ -953,6 +953,36 @@ angular.module('udb.core')
       'Muziek': 'Muziek',
       'Sport': 'Sport',
       'Varia': 'Varia'
+    },
+    weekdays: {
+      monday: {
+        label: 'Ma',
+        name: 'Maandag'
+      },
+      tuesday: {
+        label: 'Di',
+        name: 'Dinsdag'
+      },
+      wednesday: {
+        label: 'Wo',
+        name: 'Woensdag'
+      },
+      thursday: {
+        label: 'Do',
+        name: 'Donderdag'
+      },
+      friday: {
+        label: 'Vr',
+        name: 'Vrijdag'
+      },
+      saturday: {
+        label: 'Za',
+        name: 'Zaterdag'
+      },
+      sunday: {
+        label: 'Zo',
+        name: 'Zondag'
+      }
     }
   }
 );

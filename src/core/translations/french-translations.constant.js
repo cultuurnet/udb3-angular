@@ -951,6 +951,36 @@ angular.module('udb.core')
       'Muziek': 'Musique',
       'Sport': 'Sport',
       'Varia': 'Divers'
+    },
+    weekdays: {
+      monday: {
+        label: 'lun.',
+        name: 'Lundi'
+      },
+      tuesday: {
+        label: 'mar.',
+        name: 'Mardi'
+      },
+      wednesday: {
+        label: 'mer.',
+        name: 'Mercredi'
+      },
+      thursday: {
+        label: 'jeu.',
+        name: 'Jeudi'
+      },
+      friday: {
+        label: 'ven.',
+        name: 'Vendredi'
+      },
+      saturday: {
+        label: 'sam.',
+        name: 'Samedi'
+      },
+      sunday: {
+        label: 'dim.',
+        name: 'Dimanche'
+      }
     }
   }
 );
