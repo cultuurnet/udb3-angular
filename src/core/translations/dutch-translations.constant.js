@@ -563,6 +563,9 @@ angular.module('udb.core')
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
           'Custom': 'Andere',
+          'from': 'Van',
+          'till': 'tot',
+          'age': 'jaar'
         },
         priceInfo: {
           'price_label': 'Prijs',

@@ -562,6 +562,9 @@ angular.module('udb.core')
           'Adults': 'Adultes',
           'Seniors': 'Aînés',
           'Custom': 'Autres',
+          'from': 'De',
+          'till': 'à',
+          'age': 'ans'
         },
         priceInfo: {
           'price_label': 'Prix',

@@ -3177,6 +3177,9 @@ angular.module('udb.core')
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
           'Custom': 'Andere',
+          'from': 'Van',
+          'till': 'tot',
+          'age': 'jaar'
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -4168,6 +4171,9 @@ angular.module('udb.core')
           'Adults': 'Adultes',
           'Seniors': 'Aînés',
           'Custom': 'Autres',
+          'from': 'De',
+          'till': 'à',
+          'age': 'ans'
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -26882,7 +26888,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "               <form name=\"ageForm\">\n" +
     "                   <div class=\"form-group\" >\n" +
-    "                    <label for=\"min-age\">Van</label>\n" +
+    "                    <label for=\"min-age\" translate-once=\"eventForm.step5.age.from\"></label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"min-age\"\n" +
@@ -26891,10 +26897,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
-    "                    <span class=\"form-text\">jaar</span>\n" +
+    "                    <span class=\"form-text\" translate-once=\"eventForm.step5.age.age\"></span>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label for=\"max-age\">tot</label>\n" +
+    "                    <label for=\"max-age\" translate-once=\"eventForm.step5.age.till\"></label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"max-age\"\n" +
@@ -26903,7 +26909,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
-    "                    <span class=\"form-text\">jaar</span>\n" +
+    "                    <span class=\"form-text\" translate-once=\"eventForm.step5.age.age\"></span>\n" +
     "                </div>\n" +
     "               </form>\n" +
     "            </div>\n" +
