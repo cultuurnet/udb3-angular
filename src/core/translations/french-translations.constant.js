@@ -451,6 +451,7 @@ angular.module('udb.core')
       'category_help': 'Choisissez une catégorie qui décrit le mieux cette location.',
       'category_validation': 'Catégorie est un domaine obligatoire.',
       'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
+      'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter'
     },
@@ -483,6 +484,7 @@ angular.module('udb.core')
         'street': 'Rue et numéro',
         'placeholder_street': 'Rue de l\'église 1',
         'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
+        'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
         'ok': 'OK'
       },
       step4: {
