@@ -2204,7 +2204,7 @@ angular
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
-function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
+function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $translate) {
   this.isLoggedIn = function () {
     var deferred = $q.defer();
 
@@ -2241,7 +2241,10 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
     if (uitidAuth.getToken()) {
       udbApi
         .getMe()
-        .then(redirect, deferredRedirect.reject);
+        .then(redirect, deferredRedirect.reject)
+        .finally(function () {
+          $rootScope.$emit('$changeLocales', $translate.use());
+        });
     } else {
       deferredRedirect.resolve(true);
     }
@@ -2274,7 +2277,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
     return udbApi.getMyPermissions();
   };
 }
-AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope"];
+AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope", "$translate"];
 })();
 
 // Source: src/core/city-autocomplete.service.js
@@ -7261,7 +7264,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment
+      moment,
+      tmhDynamicLocale
   ) {
 
     var dash = this;
@@ -7325,6 +7329,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function greetUser(user) {
       dash.username = user.nick;
     }
+
+    console.log(tmhDynamicLocale.get());
 
     /**
      * @param {PagedCollection} results
@@ -7411,7 +7417,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "tmhDynamicLocale"];
 
 })();
 })();

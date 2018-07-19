@@ -21,7 +21,7 @@ angular
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
-function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
+function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $translate) {
   this.isLoggedIn = function () {
     var deferred = $q.defer();
 
@@ -58,7 +58,11 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
     if (uitidAuth.getToken()) {
       udbApi
         .getMe()
-        .then(redirect, deferredRedirect.reject);
+        .then(redirect, deferredRedirect.reject)
+        // Send an emit u
+        .finally(function () {
+          $rootScope.$emit('$changeLocales', $translate.use());
+        });
     } else {
       deferredRedirect.resolve(true);
     }
