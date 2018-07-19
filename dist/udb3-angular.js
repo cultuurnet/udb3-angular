@@ -2242,6 +2242,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $tra
       udbApi
         .getMe()
         .then(redirect, deferredRedirect.reject)
+        // Send an emit u
         .finally(function () {
           $rootScope.$emit('$changeLocales', $translate.use());
         });
@@ -7329,8 +7330,6 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function greetUser(user) {
       dash.username = user.nick;
     }
-
-    console.log(tmhDynamicLocale.get());
 
     /**
      * @param {PagedCollection} results
@@ -28897,6 +28896,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
     "  <div class=\"alert alert-warning\" ng-show=\"language!== 'nl'\">\n" +
     "    <p>Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.</p>\n" +
+    "    <p>Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n'est pas l'intention, s'il vous plaît contacter avec vragen@uitdatabank.be</p>\n" +
     "  </div>\n" +
     "\n" +
     "  <udb-event-form-step1></udb-event-form-step1>\n" +
