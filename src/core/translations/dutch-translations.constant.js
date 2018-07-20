@@ -587,6 +587,14 @@ angular.module('udb.core')
         'publish_later': 'Later publiceren',
         'edit_done': 'Klaar met bewerken',
         'online_from': 'Online vanaf'
+      },
+      embargo: {
+        'title': 'Kies een publicatiedatum',
+        'help': 'Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em>',
+        'error_past': 'Een publicatiedatum kan niet in het verleden liggen.',
+        'error_empty': 'Kies een publicatiedatum.',
+        'cancel': 'Annuleren',
+        'ready': 'Klaar met bewerken'
       }
     },
     calendar: {

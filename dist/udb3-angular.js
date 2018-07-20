@@ -3201,6 +3201,14 @@ angular.module('udb.core')
         'publish_later': 'Later publiceren',
         'edit_done': 'Klaar met bewerken',
         'online_from': 'Online vanaf'
+      },
+      embargo: {
+        'title': 'Kies een publicatiedatum',
+        'help': 'Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em>',
+        'error_past': 'Een publicatiedatum kan niet in het verleden liggen.',
+        'error_empty': 'Kies een publicatiedatum.',
+        'cancel': 'Annuleren',
+        'ready': 'Klaar met bewerken'
       }
     },
     calendar: {
@@ -4197,6 +4205,14 @@ angular.module('udb.core')
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
         'online_from': 'En ligne à partir de'
+      },
+      embargo: {
+        'title': 'Choisissez une date de publication',
+        'help': 'A partir de quand cela peut-il apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous pouves définier cette date une seule fois.</em>',
+        'error_past': 'Une date de publication ne peut pas être antérieure.',
+        'error_empty': 'Choisissez une date de publication.',
+        'cancel': 'Annuler',
+        'ready': 'Prêt à modifier'
       }
     },
     calendar: {
@@ -27962,10 +27978,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-publish-modal.html',
     "<div class=\"modal-header\">\n" +
-    "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
+    "  <h4 class=\"modal-title\" translate-once=\"eventForm.embargo.title\"></h4>\n" +
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
-    "  <p>Vanaf wanneer mag dit online verschijnen? <em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>\n" +
+    "  <p translate-once=\"eventForm.embargo.help\"></p>\n" +
     "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
     "      <div class=\"input-group\">\n" +
     "      <input\n" +
@@ -27987,15 +28003,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "    </div>\n" +
     "    <br>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\" translate-once=\"eventForm.embargo.error_past\"></div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\" translate-once=\"eventForm.embargo.error_empty\"></div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
-    "    Annuleren\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\" translate-once=\"eventForm.embargo.cancel\">\n" +
     "  </button>\n" +
-    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\">\n" +
-    "    Klaar met bewerken\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\" translate-once=\"eventForm.embargo.ready\">\n" +
     "  </button>\n" +
     "</div>\n"
   );
