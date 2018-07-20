@@ -15,7 +15,9 @@ function TimeTrackerDirective($rootScope) {
 
   var template =
     '<div class="save-time-tracker small" ng-if="::timeLastSaved">' +
-    '  <span translate-once="eventForm.timeTracker.automatic_saved"></span> <span class="time-last-saved" ng-bind="timeLastSaved | date:\'HH:mm\'"></span> <span translate-once="eventForm.timeTracker.hour"></span>' +
+    '<span translate-once="eventForm.timeTracker.automatic_saved"></span> ' +
+    '<span class="time-last-saved" ng-bind="timeLastSaved | date:\'HH:mm\'"></span> ' +
+    '<span translate-once="eventForm.timeTracker.hour"></span>' +
     '</div>';
 
   return {
