@@ -3202,6 +3202,10 @@ angular.module('udb.core')
         'edit_done': 'Klaar met bewerken',
         'online_from': 'Online vanaf'
       },
+      timeTracker: {
+        'automatic_saved': 'Automatisch bewaard om',
+        'hour': 'uur',
+      },
       embargo: {
         'title': 'Kies een publicatiedatum',
         'help': 'Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em>',
@@ -4205,6 +4209,10 @@ angular.module('udb.core')
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
         'online_from': 'En ligne à partir de'
+      },
+      timeTracker: {
+        'automatic_saved': 'Sauvegardé automatic à',
+        'hour': 'heures',
       },
       embargo: {
         'title': 'Choisissez une date de publication',
@@ -12654,7 +12662,7 @@ function TimeTrackerDirective($rootScope) {
 
   var template =
     '<div class="save-time-tracker small" ng-if="::timeLastSaved">' +
-    '  Automatisch bewaard om <span class="time-last-saved" ng-bind="timeLastSaved | date:\'HH:mm\'"></span> uur' +
+    '  <span translate-once="eventForm.timeTracker.automatic_saved"></span> <span class="time-last-saved" ng-bind="timeLastSaved | date:\'HH:mm\'"></span> <span translate-once="eventForm.timeTracker.hour"></span>' +
     '</div>';
 
   return {

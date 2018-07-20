@@ -588,6 +588,10 @@ angular.module('udb.core')
         'edit_done': 'Klaar met bewerken',
         'online_from': 'Online vanaf'
       },
+      timeTracker: {
+        'automatic_saved': 'Automatisch bewaard om',
+        'hour': 'uur',
+      },
       embargo: {
         'title': 'Kies een publicatiedatum',
         'help': 'Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em>',
