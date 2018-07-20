@@ -36,7 +36,7 @@
         <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.eventType.$error.required }">
             <label for="locatie-toevoegen-types" translate-once="location.category"></label>
             <p class="help-block" translate-once="location.category_help"></p>
-            <select class="form-control" size="4" name="eventType" id="locatie-toevoegen-types" ng-model="newPlace.eventType" required  ng-options="category as category.label for category in categories | orderBy:'label' track by category.id">
+            <select class="form-control" size="4" name="eventType" id="locatie-toevoegen-types" ng-model="newPlace.eventType" required  ng-options="category as ::translateEventTypes(category.label) for category in categories | orderBy:'label' track by category.id">
             </select>
             <span class="help-block"
                   translate-once="location.category_validation"

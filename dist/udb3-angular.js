@@ -11995,6 +11995,9 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
   ) {
 
     $scope.categories = categories;
+    /*_.forEach($scope.categories, function(category, key) {
+      $scope.categories[key].label = translateEventTypes(category.label);
+    });*/
     $scope.location = location;
     $scope.title = title;
 
@@ -12009,6 +12012,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     // Scope functions.
     $scope.addLocation = addLocation;
     $scope.resetAddLocation = resetAddLocation;
+    $scope.translateEventTypes = translateEventTypes;
 
     /**
      * Get the default Place data
@@ -12143,6 +12147,10 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     function validateAddress(streetAddress) {
       var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+
+    function translateEventTypes(type) {
+      return $translate.instant('offerTypes.' + type);
     }
   }
   EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
@@ -27759,7 +27767,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
     "            <label for=\"locatie-toevoegen-types\" translate-once=\"location.category\"></label>\n" +
     "            <p class=\"help-block\" translate-once=\"location.category_help\"></p>\n" +
-    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
+    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as ::translateEventTypes(category.label) for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
     "            <span class=\"help-block\"\n" +
     "                  translate-once=\"location.category_validation\"\n" +

@@ -39,6 +39,7 @@
     // Scope functions.
     $scope.addLocation = addLocation;
     $scope.resetAddLocation = resetAddLocation;
+    $scope.translateEventTypes = translateEventTypes;
 
     /**
      * Get the default Place data
@@ -173,6 +174,10 @@
     function validateAddress(streetAddress) {
       var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+
+    function translateEventTypes(type) {
+      return $translate.instant('offerTypes.' + type);
     }
   }
 
