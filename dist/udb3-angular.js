@@ -7353,8 +7353,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment,
-      tmhDynamicLocale
+      moment
   ) {
 
     var dash = this;
@@ -7504,7 +7503,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "tmhDynamicLocale"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
 
 })();
 })();

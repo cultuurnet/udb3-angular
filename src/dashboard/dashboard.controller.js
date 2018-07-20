@@ -21,8 +21,7 @@
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment,
-      tmhDynamicLocale
+      moment
   ) {
 
     var dash = this;
