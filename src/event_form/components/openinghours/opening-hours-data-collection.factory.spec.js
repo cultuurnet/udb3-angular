@@ -35,43 +35,41 @@ describe('Factory: Opening hours collection', function () {
     return angular.copy(formDataOpeningHours);
   }
 
+  function getExpectedDayOfWeekOpeningHours() {
+    return {
+      'monday': {label: 'weekdays.monday.label', name: 'weekdays.monday.name', open: false},
+      'tuesday': {label: 'weekdays.tuesday.label', name: 'weekdays.tuesday.name', open: false},
+      'wednesday': {label: 'weekdays.wednesday.label', name: 'weekdays.wednesday.name', open: false},
+      'thursday': {label: 'weekdays.thursday.label', name: 'weekdays.thursday.name', open: false},
+      'friday': {label: 'weekdays.friday.label', name: 'weekdays.friday.name', open: false},
+      'saturday': {label: 'weekdays.saturday.label', name: 'weekdays.saturday.name', open: false},
+      'sunday': {label: 'weekdays.sunday.label', name: 'weekdays.sunday.name', open: false}
+    }
+  }
+
   it('should deserialize opening hours from form data', function () {
     var formDataOpeningHours = giveSomeOpeningHours();
     OpeningHoursCollection.deserialize(formDataOpeningHours);
     var expectedOpeningHours = [
       {
-        'dayOfWeek': {
-          'monday': {label: 'Ma', name: 'Maandag', open: true},
-          'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
-          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
-          'thursday': {label: 'Do', name: 'Donderdag', open: false},
-          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
-          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
-          'sunday': {label: 'Zo', name: 'Zondag', open: false}
-        },
+        'dayOfWeek': getExpectedDayOfWeekOpeningHours(),
         'opens': '11:00',
         'opensAsDate': new Date(1970, 0, 1, 11),
         'closes': '14:00',
         'closesAsDate': new Date(1970, 0, 1, 14),
-        'label': 'Maandag'
+        'label': 'weekdays.monday.name'
       },
       {
-        'dayOfWeek': {
-          'monday': {label: 'Ma', name: 'Maandag', open: false},
-          'tuesday': {label: 'Di', name: 'Dinsdag', open: true},
-          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
-          'thursday': {label: 'Do', name: 'Donderdag', open: false},
-          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
-          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
-          'sunday': {label: 'Zo', name: 'Zondag', open: false}
-        },
+        'dayOfWeek': getExpectedDayOfWeekOpeningHours(),
         'opens': '12:00',
         'opensAsDate': new Date(1970, 0, 1, 12),
         'closes': '14:00',
         'closesAsDate': new Date(1970, 0, 1, 14),
-        'label': 'Dinsdag'
+        'label': 'weekdays.tuesday.name'
       }
     ];
+    expectedOpeningHours[0].dayOfWeek.monday.open = true;
+    expectedOpeningHours[1].dayOfWeek.tuesday.open = true;
 
     expect(OpeningHoursCollection.getOpeningHours()).toEqual(expectedOpeningHours);
   });
@@ -81,15 +79,7 @@ describe('Factory: Opening hours collection', function () {
 
     var expectedOpeningHours = [
       {
-        'dayOfWeek': {
-          'monday': {label: 'Ma', name: 'Maandag', open: false},
-          'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
-          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
-          'thursday': {label: 'Do', name: 'Donderdag', open: false},
-          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
-          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
-          'sunday': {label: 'Zo', name: 'Zondag', open: false}
-        },
+        'dayOfWeek': getExpectedDayOfWeekOpeningHours(),
         'opens': '00:00',
         'opensAsDate': new Date(1970, 0, 1),
         'closes': '00:00',
@@ -105,22 +95,15 @@ describe('Factory: Opening hours collection', function () {
     var formDataOpeningHours = giveSomeOpeningHours();
     var expectedOpeningHours = [
       {
-        'dayOfWeek': {
-          'monday': {label: 'Ma', name: 'Maandag', open: false},
-          'tuesday': {label: 'Di', name: 'Dinsdag', open: true},
-          'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
-          'thursday': {label: 'Do', name: 'Donderdag', open: false},
-          'friday': {label: 'Vr', name: 'Vrijdag', open: false},
-          'saturday': {label: 'Za', name: 'Zaterdag', open: false},
-          'sunday': {label: 'Zo', name: 'Zondag', open: false}
-        },
+        'dayOfWeek': getExpectedDayOfWeekOpeningHours(),
         'opens': '12:00',
         'opensAsDate': new Date(1970, 0, 1, 12),
         'closes': '14:00',
         'closesAsDate': new Date(1970, 0, 1, 14),
-        'label': 'Dinsdag'
+        'label': 'weekdays.tuesday.name'
       }
     ];
+    expectedOpeningHours[0].dayOfWeek.tuesday.open = true;
 
     OpeningHoursCollection.deserialize(formDataOpeningHours);
     OpeningHoursCollection.removeOpeningHours(OpeningHoursCollection.getOpeningHours()[0]);
