@@ -51,12 +51,12 @@
           id: ''
         },
         address: {
-          addressCountry: 'BE',
+          addressCountry: $scope.location.address.addressCountry,
           addressLocality: $scope.location.address.addressLocality,
           postalCode: $scope.location.address.postalCode,
           streetAddress: '',
           locationNumber : '',
-          country : 'BE'
+          country : $scope.location.address.country
         }
       };
     }
@@ -121,7 +121,7 @@
         domain : 'eventtype'
       };
       udbPlace.address = {
-        addressCountry : 'BE',
+        addressCountry : $scope.newPlace.address.addressCountry,
         addressLocality : $scope.newPlace.address.addressLocality,
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress

@@ -39,7 +39,7 @@ function EventFormStep3Controller(
       'id' : null,
       'name': '',
       'address': {
-        'addressCountry': 'BE',
+        'addressCountry': '',
         'addressLocality': '',
         'postalCode': '',
         'streetAddress': ''
@@ -115,11 +115,13 @@ function EventFormStep3Controller(
   controller.selectCity = function (city, $label) {
 
     var zipcode = city.zip,
-        name = city.name;
+        name = city.name,
+        country = city.country;
 
     var newAddressInfo = {
       postalCode: zipcode,
-      addressLocality: name
+      addressLocality: name,
+      addressCountry: country
     };
 
     if (EventFormData.isPlace) {
@@ -305,7 +307,7 @@ function EventFormStep3Controller(
         'id' : place.id,
         'name': place.name,
         'address': {
-          'addressCountry': 'BE',
+          'addressCountry': place.address.addressCountry,
           'addressLocality': place.address.addressLocality,
           'postalCode': place.address.postalCode,
           'streetAddress': place.address.streetAddress

@@ -22,7 +22,7 @@
                    translate-once-placeholder="eventForm.step3.placeholder_city"
                    ng-model="cityAutocompleteTextField"
                    udb-auto-scroll
-                   uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
+                   uib-typeahead="city as city.zip + ' ' + city.name + ' (' + city.country + ')' for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
                    typeahead-on-select="selectCity($item, $label)"
                    typeahead-min-length="2"
                    typeahead-template-url="templates/city-suggestion.html"

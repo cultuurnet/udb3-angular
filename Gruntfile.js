@@ -36,23 +36,7 @@ module.exports = function (grunt) {
   };
 
   var getCities = function () {
-    var parser = new xml2js.Parser({mergeAttrs: true, explicitArray: false});
-    var xmlBuffer = grunt.file.read('cities.xml');
-    var cities = [];
-    parser.parseString(xmlBuffer, function (err, result) {
-      // Limit cities data to Dutch name and zip code. That's all we currently
-      // need in the application.
-      cities = result.cdbxml.cities.city.map(
-        function (city) {
-          return {
-            'name': city.labelnl,
-            'zip': city.zip
-          };
-        }
-      );
-    });
-
-    return cities;
+    return require('./src/event_form/cities.json');
   };
 
   var getEventFormCategories = function () {
