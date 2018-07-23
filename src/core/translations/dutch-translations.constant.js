@@ -457,6 +457,7 @@ angular.module('udb.core')
       'add': 'Toevoegen'
     },
     eventForm: {
+      'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
       step1: {
         'title': 'Wat wil je toevoegen?',
         'label_event': 'Een evenement',

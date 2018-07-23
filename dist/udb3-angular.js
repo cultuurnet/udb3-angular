@@ -3071,6 +3071,7 @@ angular.module('udb.core')
       'add': 'Toevoegen'
     },
     eventForm: {
+      'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
       step1: {
         'title': 'Wat wil je toevoegen?',
         'label_event': 'Een evenement',
@@ -4079,6 +4080,7 @@ angular.module('udb.core')
       'add': 'Ajouter'
     },
     eventForm: {
+      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
       step1: {
         'title': 'Qu\'est-ce que vous voulez ajouter?',
         'label_event': 'Un événement',
@@ -13730,6 +13732,7 @@ function EventFormController(
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
+  $scope.showLangWarning = false;
 
   // Make sure we start off with clean data every time this controller gets called
   EventFormData.init();
@@ -13815,6 +13818,12 @@ function EventFormController(
         EventFormData.address = translatedOffer.address;
       }
     }
+    if ($translate.use() !== $scope.language) {
+      $scope.showLangWarning = true;
+    }
+    console.log($scope.language);
+    console.log($translate.use());
+    console.log($scope.showLangWarning);
   }
 
   /**
@@ -29002,9 +29011,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
-    "  <div class=\"alert alert-warning\" ng-show=\"language!== 'nl'\">\n" +
-    "    <p>Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.</p>\n" +
-    "    <p>Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n'est pas l'intention, s'il vous plaît contacter avec vragen@uitdatabank.be</p>\n" +
+    "  <div class=\"alert alert-warning\" ng-show=\"showLangWarning\">\n" +
+    "    <p translate-once=\"eventForm.langWarning\"></p>\n" +
     "  </div>\n" +
     "\n" +
     "  <udb-event-form-step1></udb-event-form-step1>\n" +
