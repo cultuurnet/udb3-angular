@@ -112,12 +112,10 @@ function EventFormController(
         EventFormData.address = translatedOffer.address;
       }
     }
+
     if ($translate.use() !== $scope.language) {
       $scope.showLangWarning = true;
     }
-    console.log($scope.language);
-    console.log($translate.use());
-    console.log($scope.showLangWarning);
   }
 
   /**
