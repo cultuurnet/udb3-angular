@@ -2564,18 +2564,31 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   }
 
   function getPublicUrl (id) {
-    return getEnvironment() + id;
+    if (isPlace()) {
+      return getEnvironment() + 'p//' + id;
+    } else {
+      return getEnvironment() + 'e//' + id;
+    }
   }
 
   function getEnvironment() {
     if (_.includes(appConfig.baseUrl, '-acc.')) {
-      return 'https://acc.uitinvlaanderen.be/agenda/e//';
+      return 'https://acc.uitinvlaanderen.be/agenda/';
     }
     else if (_.includes(appConfig.baseUrl, '-test.')) {
-      return 'https://test.uitinvlaanderen.be/agenda/e//';
+      return 'https://test.uitinvlaanderen.be/agenda/';
     }
     else {
-      return 'https://www.uitinvlaanderen.be/agenda/e//';
+      return 'https://www.uitinvlaanderen.be/agenda/';
+    }
+  }
+
+  function isPlace() {
+    if (_.includes(cm.event.url, 'place')) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 }
@@ -24561,9 +24574,7 @@ function SearchResultViewerFactory() {
       image: {name: 'Afbeelding', visible: false}
     };
     this.eventSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'},
-      {id: 'price', name: 'Prijs-informatie'},
-      {id: 'translation', name: 'Vertaalstatus'}
+      {id: 'input', name: 'Invoer-informatie'}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];
@@ -31326,25 +31337,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
     "        <span ng-bind=\"event.organizer ? event.organizer.name : '-'\"></span>\n" +
     "      </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"rv-event-info-price\"\n" +
-    "         ng-show=\"resultViewer.activeSpecific.id === 'price'\" ng-switch=\"event.pricing\">\n" +
-    "      <span ng-switch-when=\"free\">gratis</span>\n" +
-    "      <span ng-switch-when=\"payed\">\n" +
-    "          <i class=\"fa fa-eur meta icon\"></i><span ng-if=\"event.price\" ng-bind=\"event.price | currency\"></span>\n" +
-    "      </span>\n" +
-    "      <span ng-switch-when=\"unknown\">niet ingevoerd</span>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"rv-event-info-translation btn-toolbar\"\n" +
-    "         ng-show=\"resultViewer.activeSpecific.id === 'translation'\">\n" +
-    "      <button type=\"button\" ng-repeat=\"language in ::eventCtrl.languageSelector\"\n" +
-    "              ng-class=\"{active: eventCtrl.activeLanguage === language.lang}\"\n" +
-    "              class=\"btn btn-default\" ng-click=\"eventCtrl.toggleLanguage(language.lang)\">\n" +
-    "        <span class=\"fa {{eventCtrl.getLanguageTranslationIcon(language.lang)}}\"></span>\n" +
-    "        {{language.lang}}\n" +
-    "      </button>\n" +
     "    </div>\n" +
     "\n" +
     "    <div ng-if=\"resultViewer.activeSpecific.id === 'accessibility'\" class=\"rv-event-info-accessibility\">\n" +
