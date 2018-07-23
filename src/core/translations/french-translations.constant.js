@@ -593,7 +593,7 @@ angular.module('udb.core')
       },
       embargo: {
         'title': 'Choisissez une date de publication',
-        'help': 'A partir de quand cela peut-il apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous pouves définier cette date une seule fois.</em>',
+        'help': 'A partir de quand cela peut-il apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous pouvez définier cette date une seule fois.</em>',
         'error_past': 'Une date de publication ne peut pas être antérieure.',
         'error_empty': 'Choisissez une date de publication.',
         'cancel': 'Annuler',
