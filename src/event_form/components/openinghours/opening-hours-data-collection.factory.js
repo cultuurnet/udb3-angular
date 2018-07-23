@@ -11,7 +11,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment) {
+function OpeningHoursCollectionFactory(moment, $translate) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,
@@ -20,14 +20,22 @@ function OpeningHoursCollectionFactory(moment) {
   };
 
   var weekdays = {
-    'monday': {label: 'Ma', name: 'Maandag', open: false},
-    'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
-    'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
-    'thursday': {label: 'Do', name: 'Donderdag', open: false},
-    'friday': {label: 'Vr', name: 'Vrijdag', open: false},
-    'saturday': {label: 'Za', name: 'Zaterdag', open: false},
-    'sunday': {label: 'Zo', name: 'Zondag', open: false}
+    'monday': {label: translateWeekdayLabel('monday'), name: translateWeekdayName('monday'), open: false},
+    'tuesday': {label: translateWeekdayLabel('tuesday'), name: translateWeekdayName('tuesday'), open: false},
+    'wednesday': {label: translateWeekdayLabel('wednesday'), name: translateWeekdayName('wednesday'), open: false},
+    'thursday': {label: translateWeekdayLabel('thursday'), name: translateWeekdayName('thursday'), open: false},
+    'friday': {label: translateWeekdayLabel('friday'), name: translateWeekdayName('friday'), open: false},
+    'saturday': {label: translateWeekdayLabel('saturday'), name: translateWeekdayName('saturday'), open: false},
+    'sunday': {label: translateWeekdayLabel('sunday'), name: translateWeekdayName('sunday'), open: false}
   };
+
+  function translateWeekdayLabel(day) {
+    return $translate.instant('weekdays.' + day + '.label');
+  }
+
+  function translateWeekdayName(day) {
+    return $translate.instant('weekdays.' + day + '.name');
+  }
 
   /**
    * @param {OpeningHours[]} openingHoursList
