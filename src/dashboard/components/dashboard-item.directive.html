@@ -7,7 +7,7 @@
   <span ng-if="event.workflowStatus==='REJECTED'"><span class="label label-default" translate-once="workflowStatus.REJECTED">Publicatie afgewezen</span><small>&nbsp;<a ng-href="{{::dash.publicationRulesLink}}" target="blank" translate-once="workflowStatus.rules"></a></small></span>
   <br/>
   <small>
-    <span class="dashboard-item-type" ng-bind="::event.type.label"></span>
+    <span class="dashboard-item-type" ng-bind="::translatedOfferType"></span>
     <span ng-if="event.calendarType && (offerType === 'event' || (event.calendarType !== 'permanent' && offerType === 'place'))">
       <span> - </span>
       <udb-calendar-summary offer="event" show-opening-hours="true"></udb-calendar-summary>

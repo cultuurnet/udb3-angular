@@ -122,6 +122,7 @@ function EventDetail(
   $scope.isEmpty = _.isEmpty;
 
   var language = $translate.use() || 'nl';
+  $scope.language = language;
   var cachedEvent;
 
   function showHistory(eventHistory) {
@@ -146,8 +147,6 @@ function EventDetail(
         .getCalendarSummary($scope.eventId, 'lg')
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
-
-    language = $translate.use() || 'nl';
 
     $scope.event = jsonLDLangFilter(event, language, true);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
@@ -255,6 +254,12 @@ function EventDetail(
     var id = eventLocation.split('/').pop();
 
     $state.go('split.eventEdit', {id: id});
+  };
+
+  $scope.openTranslatePage = function() {
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+    $state.go('split.eventTranslate', {id: id});
   };
 
   function goToDashboard() {

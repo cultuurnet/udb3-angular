@@ -364,7 +364,20 @@ angular.module('udb.core')
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
-      'publiq_url': 'Bekijk op UiT in Vlaanderen'
+      'publiq_url': 'Bekijk op UiT in Vlaanderen',
+      'translate': 'Vertalen'
+    },
+    translate: {
+      'ready': 'Klaar met vertalen',
+      'translate': 'vertalen',
+      'original': 'Origineel',
+      'edit': 'bewerken',
+      'translation': 'Vertaling',
+      'description': 'Beschrijving',
+      'title': 'Titel',
+      'tariff': 'Prijstarief',
+      'address': 'Adres',
+      'street': 'Straat en nummer'
     },
     labels: {
       'what': 'Met een label voeg je korte, specifieke trefwoorden toe.',

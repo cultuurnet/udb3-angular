@@ -12,9 +12,11 @@ angular
   .controller('EventExportController', EventExportController);
 
 /* @ngInject */
-function EventExportController($uibModalInstance, eventExporter, ExportFormats) {
+function EventExportController($uibModalInstance, eventExporter, ExportFormats, udbApi, appConfig) {
 
   var exporter = this;
+
+  exporter.exportLogoUrl = appConfig.exportLogoUrl;
 
   exporter.dayByDay = false;
 
@@ -49,14 +51,23 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats) 
   exporter.exportFormats = _.map(ExportFormats);
 
   exporter.brands = [
-    {name: 'vlieg', label: 'Vlieg'},
-    {name: 'uit', label: 'UiT'},
-    {name: 'uitpas', label: 'UiTPAS'},
-    {name: 'paspartoe', label: 'Paspartoe'}
+    {name: 'vlieg', label: 'Vlieg', logo: 'vlieg.svg'},
+    {name: 'uit', label: 'UiT', logo: 'uit.svg'},
+    {name: 'uitpas', label: 'UiTPAS', logo: 'uitpas.svg'},
+    {name: 'paspartoe', label: 'Paspartoe', logo: 'paspartoe.svg'},
   ];
+
+  exporter.restrictedBrands = appConfig.restrictedExportBrands;
+
+  udbApi.getMyRoles().then(function(roles) {
+    angular.forEach(roles, function(value, key) {
+      exporter.brands = exporter.brands.concat(_.where(exporter.restrictedBrands, {role : roles[key].uuid}));
+    });
+  });
 
   exporter.customizations = {
     brand: exporter.brands[0].name,
+    logo: exporter.exportLogoUrl + exporter.brands[0].logo,
     title: '',
     subtitle: '',
     footer: '',
@@ -170,6 +181,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats) 
   };
 
   exporter.export = function () {
+
     var exportFormat = _.find(exporter.exportFormats, {type: exporter.format}),
         isCustomized = exportFormat && exportFormat.customizable === true,
         includedProperties,
@@ -177,6 +189,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats) 
 
     if (isCustomized) {
       customizations = exporter.customizations;
+      customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
+      customizations.brand = exporter.selectedBrand.name;
       includedProperties = [];
     } else {
       customizations = {};
