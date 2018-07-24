@@ -28945,10 +28945,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                <select ng-model=\"bookingModel.urlLabel[mainLanguage]\"\n" +
     "                                        ng-change=\"saveWebsitePreview()\"\n" +
     "                                        ng-options=\"translateBookingInfoUrlLabels(option) as translateBookingInfoUrlLabels(option) for option in bookingOptions\">\n" +
-    "                                  <!--<option value=\"translate\" translate-once=\"eventForm.step5.buy_tickets\"></option>\n" +
-    "                                  <option value=\"Reserveer plaatsen\" translate-once=\"eventForm.step5.reserve_places\"></option>\n" +
-    "                                  <option value=\"Controleer beschikbaarheid\" translate-once=\"eventForm.step5.check_availability\"></option>\n" +
-    "                                  <option value=\"Schrijf je in\" translate-once=\"eventForm.step5.subscribe\"></option>-->\n" +
     "                                </select>\n" +
     "                              </div>\n" +
     "                            </div>\n" +
