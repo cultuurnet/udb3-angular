@@ -93,7 +93,17 @@ function EventFormStep5Controller(
     $scope.bookingModel.urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
   }
 
-  $scope.bookingOptions = ['buy_tickets', 'reserve_places', 'check_availability', 'subscribe'];
+  $scope.bookingOptions = [
+    translateBookingInfoUrlLabels('buy_tickets'),
+    translateBookingInfoUrlLabels('reserve_places'),
+    translateBookingInfoUrlLabels('check_availability'),
+    translateBookingInfoUrlLabels('subscribe')
+  ];
+  // Add urlLabel to the option list when it is not in the options list.
+  // This is mostly the case when the user is editing in another language as the offer's mainLanguage.
+  if (!_.find($scope.bookingOptions, $scope.bookingModel.urlLabel[$scope.mainLanguage])) {
+    $scope.bookingOptions.unshift($scope.bookingModel.urlLabel[$scope.mainLanguage]);
+  }
 
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
   $scope.viaEmail = !EventFormData.bookingInfo.email;
