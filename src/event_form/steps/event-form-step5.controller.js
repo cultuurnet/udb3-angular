@@ -93,6 +93,8 @@ function EventFormStep5Controller(
     $scope.bookingModel.urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
   }
 
+  $scope.bookingOptions = ['buy_tickets', 'reserve_places', 'check_availability', 'subscribe'];
+
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
   $scope.viaEmail = !EventFormData.bookingInfo.email;
   $scope.viaPhone = !EventFormData.bookingInfo.phone;
@@ -145,6 +147,7 @@ function EventFormStep5Controller(
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
 
+  $scope.translateBookingInfoUrlLabels = translateBookingInfoUrlLabels;
   // Init the controller for editing.
   initEditForm();
 

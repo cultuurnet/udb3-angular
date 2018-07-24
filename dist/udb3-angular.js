@@ -15280,6 +15280,8 @@ function EventFormStep5Controller(
     $scope.bookingModel.urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
   }
 
+  $scope.bookingOptions = ['buy_tickets', 'reserve_places', 'check_availability', 'subscribe'];
+
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
   $scope.viaEmail = !EventFormData.bookingInfo.email;
   $scope.viaPhone = !EventFormData.bookingInfo.phone;
@@ -15332,6 +15334,7 @@ function EventFormStep5Controller(
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
 
+  $scope.translateBookingInfoUrlLabels = translateBookingInfoUrlLabels;
   // Init the controller for editing.
   initEditForm();
 
@@ -28940,11 +28943,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                              <div class=\"weergave\">\n" +
     "                                <p><strong translate-once=\"eventForm.step5.booking_exposure\"></strong></p>\n" +
     "                                <select ng-model=\"bookingModel.urlLabel[mainLanguage]\"\n" +
-    "                                        ng-change=\"saveWebsitePreview()\">\n" +
-    "                                  <option value=\"Koop tickets\" translate-once=\"eventForm.step5.buy_tickets\"></option>\n" +
+    "                                        ng-change=\"saveWebsitePreview()\"\n" +
+    "                                        ng-options=\"translateBookingInfoUrlLabels(option) as translateBookingInfoUrlLabels(option) for option in bookingOptions\">\n" +
+    "                                  <!--<option value=\"translate\" translate-once=\"eventForm.step5.buy_tickets\"></option>\n" +
     "                                  <option value=\"Reserveer plaatsen\" translate-once=\"eventForm.step5.reserve_places\"></option>\n" +
     "                                  <option value=\"Controleer beschikbaarheid\" translate-once=\"eventForm.step5.check_availability\"></option>\n" +
-    "                                  <option value=\"Schrijf je in\" translate-once=\"eventForm.step5.subscribe\"></option>\n" +
+    "                                  <option value=\"Schrijf je in\" translate-once=\"eventForm.step5.subscribe\"></option>-->\n" +
     "                                </select>\n" +
     "                              </div>\n" +
     "                            </div>\n" +
