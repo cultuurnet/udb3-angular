@@ -428,7 +428,7 @@ angular.module('udb.core')
       'title': 'Ajouter des prix',
       'base': 'Tarif de base',
       'target_group': 'Public cible',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'add_price': 'Ajouter prix',
       'add_tarriff': 'Ajouter tarif',
@@ -451,10 +451,12 @@ angular.module('udb.core')
       'category_help': 'Choisissez une catégorie qui décrit le mieux cette location.',
       'category_validation': 'Catégorie est un domaine obligatoire.',
       'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
+      'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter'
     },
     eventForm: {
+      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
       step1: {
         'title': 'Qu\'est-ce que vous voulez ajouter?',
         'label_event': 'Un événement',
@@ -483,6 +485,7 @@ angular.module('udb.core')
         'street': 'Rue et numéro',
         'placeholder_street': 'Rue de l\'église 1',
         'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
+        'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
         'ok': 'OK'
       },
       step4: {
@@ -560,6 +563,9 @@ angular.module('udb.core')
           'Adults': 'Adultes',
           'Seniors': 'Aînés',
           'Custom': 'Autres',
+          'from': 'De',
+          'till': 'à',
+          'age': 'ans'
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -581,6 +587,18 @@ angular.module('udb.core')
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
         'online_from': 'En ligne à partir de'
+      },
+      timeTracker: {
+        'automatic_saved': 'Sauvegardé automatic à',
+        'hour': 'heures',
+      },
+      embargo: {
+        'title': 'Choisissez une date de publication',
+        'help': 'A partir de quand cela peut-il apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous pouvez définier cette date une seule fois.</em>',
+        'error_past': 'Une date de publication ne peut pas être antérieure.',
+        'error_empty': 'Choisissez une date de publication.',
+        'cancel': 'Annuler',
+        'ready': 'Prêt à modifier'
       }
     },
     calendar: {
@@ -773,12 +791,14 @@ angular.module('udb.core')
         'address_error': 'Veuillez introduire une adresse valable.',
         'contact_error': 'Veuillez introduire l\'information du contact correctement.',
         'close': 'Fermer',
-        'save': 'Sauver'
+        'save': 'Sauver',
+        'label_name': 'Nom'
       },
       address: {
         'label_street': 'Rue et numéro',
         'help_street': 'Veuillez introduire la rue et le numéro.',
         'label_city': 'Commune',
+        'placeholder_city': 'Commune of code postal',
         'help_city': 'Il y a eu un problème dans la collection des villes.',
         'error_city': 'Veuillez introduire une commune.',
         'change': 'Modifier'
@@ -951,6 +971,36 @@ angular.module('udb.core')
       'Muziek': 'Musique',
       'Sport': 'Sport',
       'Varia': 'Divers'
+    },
+    weekdays: {
+      monday: {
+        label: 'lun.',
+        name: 'Lundi'
+      },
+      tuesday: {
+        label: 'mar.',
+        name: 'Mardi'
+      },
+      wednesday: {
+        label: 'mer.',
+        name: 'Mercredi'
+      },
+      thursday: {
+        label: 'jeu.',
+        name: 'Jeudi'
+      },
+      friday: {
+        label: 'ven.',
+        name: 'Vendredi'
+      },
+      saturday: {
+        label: 'sam.',
+        name: 'Samedi'
+      },
+      sunday: {
+        label: 'dim.',
+        name: 'Dimanche'
+      }
     }
   }
 );

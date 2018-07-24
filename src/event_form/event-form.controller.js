@@ -26,6 +26,7 @@ function EventFormController(
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
+  $scope.showLangWarning = false;
 
   // Make sure we start off with clean data every time this controller gets called
   EventFormData.init();
@@ -110,6 +111,10 @@ function EventFormController(
         var translatedOffer = jsonLDLangFilter(offer, offer.mainLanguage, true);
         EventFormData.address = translatedOffer.address;
       }
+    }
+
+    if ($translate.use() !== $scope.language) {
+      $scope.showLangWarning = true;
     }
   }
 

@@ -2204,7 +2204,7 @@ angular
   .service('authorizationService', AuthorizationService);
 
 /* @ngInject */
-function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
+function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $translate) {
   this.isLoggedIn = function () {
     var deferred = $q.defer();
 
@@ -2241,7 +2241,11 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
     if (uitidAuth.getToken()) {
       udbApi
         .getMe()
-        .then(redirect, deferredRedirect.reject);
+        .then(redirect, deferredRedirect.reject)
+        // Send an emit u
+        .finally(function () {
+          $rootScope.$emit('$changeLocales', $translate.use());
+        });
     } else {
       deferredRedirect.resolve(true);
     }
@@ -2274,7 +2278,7 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope) {
     return udbApi.getMyPermissions();
   };
 }
-AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope"];
+AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope", "$translate"];
 })();
 
 // Source: src/core/city-autocomplete.service.js
@@ -3080,6 +3084,7 @@ angular.module('udb.core')
       'add': 'Toevoegen'
     },
     eventForm: {
+      'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
       step1: {
         'title': 'Wat wil je toevoegen?',
         'label_event': 'Een evenement',
@@ -3186,6 +3191,9 @@ angular.module('udb.core')
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
           'Custom': 'Andere',
+          'from': 'Van',
+          'till': 'tot',
+          'age': 'jaar'
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -3207,6 +3215,18 @@ angular.module('udb.core')
         'publish_later': 'Later publiceren',
         'edit_done': 'Klaar met bewerken',
         'online_from': 'Online vanaf'
+      },
+      timeTracker: {
+        'automatic_saved': 'Automatisch bewaard om',
+        'hour': 'uur',
+      },
+      embargo: {
+        'title': 'Kies een publicatiedatum',
+        'help': 'Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em>',
+        'error_past': 'Een publicatiedatum kan niet in het verleden liggen.',
+        'error_empty': 'Kies een publicatiedatum.',
+        'cancel': 'Annuleren',
+        'ready': 'Klaar met bewerken'
       }
     },
     calendar: {
@@ -3399,12 +3419,14 @@ angular.module('udb.core')
         'address_error': 'Gelieve een geldig adres in te vullen.',
         'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
         'close': 'Sluiten',
-        'save': 'Bewaren'
+        'save': 'Bewaren',
+        'label_name': 'Naam'
       },
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
+        'placeholder_city': 'Gemeente of postcode',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen'
@@ -3576,6 +3598,36 @@ angular.module('udb.core')
       'Muziek': 'Muziek',
       'Sport': 'Sport',
       'Varia': 'Varia'
+    },
+    weekdays: {
+      monday: {
+        label: 'Ma',
+        name: 'Maandag'
+      },
+      tuesday: {
+        label: 'Di',
+        name: 'Dinsdag'
+      },
+      wednesday: {
+        label: 'Wo',
+        name: 'Woensdag'
+      },
+      thursday: {
+        label: 'Do',
+        name: 'Donderdag'
+      },
+      friday: {
+        label: 'Vr',
+        name: 'Vrijdag'
+      },
+      saturday: {
+        label: 'Za',
+        name: 'Zaterdag'
+      },
+      sunday: {
+        label: 'Zo',
+        name: 'Zondag'
+      }
     }
   }
 );
@@ -4013,7 +4065,7 @@ angular.module('udb.core')
       'title': 'Ajouter des prix',
       'base': 'Tarif de base',
       'target_group': 'Public cible',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'add_price': 'Ajouter prix',
       'add_tarriff': 'Ajouter tarif',
@@ -4036,10 +4088,12 @@ angular.module('udb.core')
       'category_help': 'Choisissez une catégorie qui décrit le mieux cette location.',
       'category_validation': 'Catégorie est un domaine obligatoire.',
       'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
+      'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter'
     },
     eventForm: {
+      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
       step1: {
         'title': 'Qu\'est-ce que vous voulez ajouter?',
         'label_event': 'Un événement',
@@ -4068,6 +4122,7 @@ angular.module('udb.core')
         'street': 'Rue et numéro',
         'placeholder_street': 'Rue de l\'église 1',
         'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
+        'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
         'ok': 'OK'
       },
       step4: {
@@ -4145,6 +4200,9 @@ angular.module('udb.core')
           'Adults': 'Adultes',
           'Seniors': 'Aînés',
           'Custom': 'Autres',
+          'from': 'De',
+          'till': 'à',
+          'age': 'ans'
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -4166,6 +4224,18 @@ angular.module('udb.core')
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
         'online_from': 'En ligne à partir de'
+      },
+      timeTracker: {
+        'automatic_saved': 'Sauvegardé automatic à',
+        'hour': 'heures',
+      },
+      embargo: {
+        'title': 'Choisissez une date de publication',
+        'help': 'A partir de quand cela peut-il apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous pouvez définier cette date une seule fois.</em>',
+        'error_past': 'Une date de publication ne peut pas être antérieure.',
+        'error_empty': 'Choisissez une date de publication.',
+        'cancel': 'Annuler',
+        'ready': 'Prêt à modifier'
       }
     },
     calendar: {
@@ -4358,12 +4428,14 @@ angular.module('udb.core')
         'address_error': 'Veuillez introduire une adresse valable.',
         'contact_error': 'Veuillez introduire l\'information du contact correctement.',
         'close': 'Fermer',
-        'save': 'Sauver'
+        'save': 'Sauver',
+        'label_name': 'Nom'
       },
       address: {
         'label_street': 'Rue et numéro',
         'help_street': 'Veuillez introduire la rue et le numéro.',
         'label_city': 'Commune',
+        'placeholder_city': 'Commune of code postal',
         'help_city': 'Il y a eu un problème dans la collection des villes.',
         'error_city': 'Veuillez introduire une commune.',
         'change': 'Modifier'
@@ -4536,6 +4608,36 @@ angular.module('udb.core')
       'Muziek': 'Musique',
       'Sport': 'Sport',
       'Varia': 'Divers'
+    },
+    weekdays: {
+      monday: {
+        label: 'lun.',
+        name: 'Lundi'
+      },
+      tuesday: {
+        label: 'mar.',
+        name: 'Mardi'
+      },
+      wednesday: {
+        label: 'mer.',
+        name: 'Mercredi'
+      },
+      thursday: {
+        label: 'jeu.',
+        name: 'Jeudi'
+      },
+      friday: {
+        label: 'ven.',
+        name: 'Vendredi'
+      },
+      saturday: {
+        label: 'sam.',
+        name: 'Samedi'
+      },
+      sunday: {
+        label: 'dim.',
+        name: 'Dimanche'
+      }
     }
   }
 );
@@ -11156,7 +11258,7 @@ angular
   .factory('OpeningHoursCollection', OpeningHoursCollectionFactory);
 
 /* @ngInject */
-function OpeningHoursCollectionFactory(moment) {
+function OpeningHoursCollectionFactory(moment, $translate) {
 
   var validationRequirements = {
     'openAndClose': opensAndCloses,
@@ -11165,14 +11267,22 @@ function OpeningHoursCollectionFactory(moment) {
   };
 
   var weekdays = {
-    'monday': {label: 'Ma', name: 'Maandag', open: false},
-    'tuesday': {label: 'Di', name: 'Dinsdag', open: false},
-    'wednesday': {label: 'Wo', name: 'Woensdag', open: false},
-    'thursday': {label: 'Do', name: 'Donderdag', open: false},
-    'friday': {label: 'Vr', name: 'Vrijdag', open: false},
-    'saturday': {label: 'Za', name: 'Zaterdag', open: false},
-    'sunday': {label: 'Zo', name: 'Zondag', open: false}
+    'monday': {label: translateWeekdayLabel('monday'), name: translateWeekdayName('monday'), open: false},
+    'tuesday': {label: translateWeekdayLabel('tuesday'), name: translateWeekdayName('tuesday'), open: false},
+    'wednesday': {label: translateWeekdayLabel('wednesday'), name: translateWeekdayName('wednesday'), open: false},
+    'thursday': {label: translateWeekdayLabel('thursday'), name: translateWeekdayName('thursday'), open: false},
+    'friday': {label: translateWeekdayLabel('friday'), name: translateWeekdayName('friday'), open: false},
+    'saturday': {label: translateWeekdayLabel('saturday'), name: translateWeekdayName('saturday'), open: false},
+    'sunday': {label: translateWeekdayLabel('sunday'), name: translateWeekdayName('sunday'), open: false}
   };
+
+  function translateWeekdayLabel(day) {
+    return $translate.instant('weekdays.' + day + '.label');
+  }
+
+  function translateWeekdayName(day) {
+    return $translate.instant('weekdays.' + day + '.name');
+  }
 
   /**
    * @param {OpeningHours[]} openingHoursList
@@ -11340,7 +11450,7 @@ function OpeningHoursCollectionFactory(moment) {
 
   return openingHoursCollection;
 }
-OpeningHoursCollectionFactory.$inject = ["moment"];
+OpeningHoursCollectionFactory.$inject = ["moment", "$translate"];
 })();
 
 // Source: src/event_form/components/openinghours/openinghours.component.js
@@ -11914,6 +12024,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     // Scope functions.
     $scope.addLocation = addLocation;
     $scope.resetAddLocation = resetAddLocation;
+    $scope.translateEventTypes = translateEventTypes;
 
     /**
      * Get the default Place data
@@ -12048,6 +12159,10 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     function validateAddress(streetAddress) {
       var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+
+    function translateEventTypes(type) {
+      return $translate.instant('offerTypes.' + type);
     }
   }
   EventFormPlaceModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "UdbPlace", "location", "categories", "title", "$translate"];
@@ -12567,7 +12682,9 @@ function TimeTrackerDirective($rootScope) {
 
   var template =
     '<div class="save-time-tracker small" ng-if="::timeLastSaved">' +
-    '  Automatisch bewaard om <span class="time-last-saved" ng-bind="timeLastSaved | date:\'HH:mm\'"></span> uur' +
+    '<span translate-once="eventForm.timeTracker.automatic_saved"></span> ' +
+    '<span class="time-last-saved" ng-bind="timeLastSaved | date:\'HH:mm\'"></span> ' +
+    '<span translate-once="eventForm.timeTracker.hour"></span>' +
     '</div>';
 
   return {
@@ -13628,6 +13745,7 @@ function EventFormController(
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
+  $scope.showLangWarning = false;
 
   // Make sure we start off with clean data every time this controller gets called
   EventFormData.init();
@@ -13712,6 +13830,10 @@ function EventFormController(
         var translatedOffer = jsonLDLangFilter(offer, offer.mainLanguage, true);
         EventFormData.address = translatedOffer.address;
       }
+    }
+
+    if ($translate.use() !== $scope.language) {
+      $scope.showLangWarning = true;
     }
   }
 
@@ -26837,7 +26959,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "               <form name=\"ageForm\">\n" +
     "                   <div class=\"form-group\" >\n" +
-    "                    <label for=\"min-age\">Van</label>\n" +
+    "                    <label for=\"min-age\" translate-once=\"eventForm.step5.age.from\"></label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"min-age\"\n" +
@@ -26846,10 +26968,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
-    "                    <span class=\"form-text\">jaar</span>\n" +
+    "                    <span class=\"form-text\" translate-once=\"eventForm.step5.age.age\"></span>\n" +
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
-    "                    <label for=\"max-age\">tot</label>\n" +
+    "                    <label for=\"max-age\" translate-once=\"eventForm.step5.age.till\"></label>\n" +
     "                    <input type=\"text\"\n" +
     "                           class=\"form-control\"\n" +
     "                           id=\"max-age\"\n" +
@@ -26858,7 +26980,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
     "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
     "                           udb-age-input>\n" +
-    "                    <span class=\"form-text\">jaar</span>\n" +
+    "                    <span class=\"form-text\" translate-once=\"eventForm.step5.age.age\"></span>\n" +
     "                </div>\n" +
     "               </form>\n" +
     "            </div>\n" +
@@ -27364,7 +27486,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
     "                       name=\"street\"\n" +
-    "                       placeholder=\"Straat en nummer\"\n" +
+    "                       placeholder=\"{{ 'organizer.address.label_street' | translate }}\"\n" +
     "                       ng-model=\"oac.address.streetAddress\"\n" +
     "                       ng-change=\"oac.validateAddress()\"\n" +
     "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
@@ -27388,7 +27510,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                               type=\"text\"\n" +
     "                               name=\"city\"\n" +
     "                               class=\"form-control uib-typeahead\"\n" +
-    "                               placeholder=\"Gemeente of postcode\"\n" +
+    "                               placeholder=\"{{ 'organizer.address.placeholder_city' | translate }}\"\n" +
     "                               ng-model=\"oac.cityAutocompleteTextField\"\n" +
     "                               uib-typeahead=\"city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
     "                               typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
@@ -27558,7 +27680,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-12 col-md-8\">\n" +
     "          <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
-    "            <label>Naam</label>\n" +
+    "            <label translate-once=\"organizer.modal.label_name\"></label>\n" +
     "            <input type=\"text\"\n" +
     "                   name=\"name\"\n" +
     "                   class=\"form-control\"\n" +
@@ -27681,7 +27803,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
     "            <label for=\"locatie-toevoegen-types\" translate-once=\"location.category\"></label>\n" +
     "            <p class=\"help-block\" translate-once=\"location.category_help\"></p>\n" +
-    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as category.label for category in categories | orderBy:'label' track by category.id\">\n" +
+    "            <select class=\"form-control\" size=\"4\" name=\"eventType\" id=\"locatie-toevoegen-types\" ng-model=\"newPlace.eventType\" required  ng-options=\"category as ::translateEventTypes(category.label) for category in categories | orderBy:'label' track by category.id\">\n" +
     "            </select>\n" +
     "            <span class=\"help-block\"\n" +
     "                  translate-once=\"location.category_validation\"\n" +
@@ -27907,10 +28029,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-publish-modal.html',
     "<div class=\"modal-header\">\n" +
-    "  <h4 class=\"modal-title\">Kies een publicatiedatum</h4>\n" +
+    "  <h4 class=\"modal-title\" translate-once=\"eventForm.embargo.title\"></h4>\n" +
     "</div>\n" +
     "<div id=\"event-form-publish-modal\" class=\"modal-body\">\n" +
-    "  <p>Vanaf wanneer mag dit online verschijnen? <em class=\"text-info\"><i class=\"fa fa-exclamation-circle\" aria-hidden=\"true\"></i> Opgelet, deze datum kan je maar één keer instellen.</em></p>\n" +
+    "  <p translate-once=\"eventForm.embargo.help\"></p>\n" +
     "    <div ng-if=\"!efpmc.eventFormData.availableFrom\" class=\"form-inline\">\n" +
     "      <div class=\"input-group\">\n" +
     "      <input\n" +
@@ -27932,15 +28054,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "    </div>\n" +
     "    <br>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\">Een publicatiedatum kan niet in het verleden liggen.</div>\n" +
-    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\">Kies een publicatiedatum.</div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='past'\" translate-once=\"eventForm.embargo.error_past\"></div>\n" +
+    "    <div class=\"alert alert-warning\" ng-if=\"efpmc.error==='empty'\" translate-once=\"eventForm.embargo.error_empty\"></div>\n" +
     "</div>\n" +
     "<div class=\"modal-footer\">\n" +
-    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\">\n" +
-    "    Annuleren\n" +
+    "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"efpmc.dismiss();\" data-dismiss=\"modal\" translate-once=\"eventForm.embargo.cancel\">\n" +
     "  </button>\n" +
-    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\">\n" +
-    "    Klaar met bewerken\n" +
+    "  <button type=\"button\" class=\"btn btn-primary\" ng-click=\"efpmc.savePublicationDate()\" translate-once=\"eventForm.embargo.ready\">\n" +
     "  </button>\n" +
     "</div>\n"
   );
@@ -28919,8 +29039,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
-    "  <div class=\"alert alert-warning\" ng-show=\"language!== 'nl'\">\n" +
-    "    <p>Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.</p>\n" +
+    "  <div class=\"alert alert-warning\" ng-show=\"showLangWarning\">\n" +
+    "    <p translate-once=\"eventForm.langWarning\"></p>\n" +
     "  </div>\n" +
     "\n" +
     "  <udb-event-form-step1></udb-event-form-step1>\n" +
