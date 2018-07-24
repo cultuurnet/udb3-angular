@@ -27,7 +27,8 @@ function EventFormStep5Controller(
     $uibModal,
     $rootScope,
     appConfig,
-    udbUitpasApi
+    udbUitpasApi,
+    $translate
   ) {
 
   var controller = this;
@@ -74,11 +75,23 @@ function EventFormStep5Controller(
     emailRequired : false,
     phoneRequired : false,
     url : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.url : '',
-    urlLabel : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.urlLabel : 'Reserveer plaatsen',
+    urlLabel : {},
     urlLabelCustom : '',
     phone : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.phone : '',
     email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
+
+  if (EventFormData.bookingInfo.urlLabel) {
+    if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] = EventFormData.bookingInfo.urlLabel;
+    }
+    else {
+      $scope.bookingModel.urlLabel = EventFormData.bookingInfo.urlLabel;
+    }
+  }
+  else {
+    $scope.bookingModel.urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
+  }
 
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
   $scope.viaEmail = !EventFormData.bookingInfo.email;
@@ -479,11 +492,13 @@ function EventFormStep5Controller(
    * Saves the booking info
    */
   function saveBookingInfo() {
+    var urlLabel = {};
+    urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
 
     // Make sure all default values are set.
     EventFormData.bookingInfo = angular.extend({}, {
       url : '',
-      urlLabel : 'Reserveer plaatsen',
+      urlLabel : urlLabel,
       email : '',
       phone : '',
       availabilityStarts :
@@ -629,6 +644,10 @@ function EventFormStep5Controller(
       $scope.priceCssClass = 'state-complete';
     }
 
+  }
+
+  function translateBookingInfoUrlLabels(label) {
+    return $translate.instant('eventForm.step5.' + label);
   }
 
 }

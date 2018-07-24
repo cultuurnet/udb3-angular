@@ -12937,7 +12937,7 @@ CopyrightNegotiator.$inject = ["$cookies"];
 /**
  * @typedef {Object} BookingInfo
  * @property {string} url
- * @property {string} urlLabel
+ * @property {Object} urlLabel
  * @property {string} email
  * @property {string} phone
  */
@@ -15092,7 +15092,8 @@ function EventFormStep5Controller(
     $uibModal,
     $rootScope,
     appConfig,
-    udbUitpasApi
+    udbUitpasApi,
+    $translate
   ) {
 
   var controller = this;
@@ -15139,11 +15140,23 @@ function EventFormStep5Controller(
     emailRequired : false,
     phoneRequired : false,
     url : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.url : '',
-    urlLabel : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.urlLabel : 'Reserveer plaatsen',
+    urlLabel : {},
     urlLabelCustom : '',
     phone : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.phone : '',
     email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
+
+  if (EventFormData.bookingInfo.urlLabel) {
+    if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] = EventFormData.bookingInfo.urlLabel;
+    }
+    else {
+      $scope.bookingModel.urlLabel = EventFormData.bookingInfo.urlLabel;
+    }
+  }
+  else {
+    $scope.bookingModel.urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
+  }
 
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
   $scope.viaEmail = !EventFormData.bookingInfo.email;
@@ -15544,11 +15557,13 @@ function EventFormStep5Controller(
    * Saves the booking info
    */
   function saveBookingInfo() {
+    var urlLabel = {};
+    urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
 
     // Make sure all default values are set.
     EventFormData.bookingInfo = angular.extend({}, {
       url : '',
-      urlLabel : 'Reserveer plaatsen',
+      urlLabel : urlLabel,
       email : '',
       phone : '',
       availabilityStarts :
@@ -15696,8 +15711,12 @@ function EventFormStep5Controller(
 
   }
 
+  function translateBookingInfoUrlLabels(label) {
+    return $translate.instant('eventForm.step5.' + label);
+  }
+
 }
-EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi"];
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi", "$translate"];
 })();
 
 // Source: src/export/event-export-job.factory.js
@@ -28800,7 +28819,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            <div class=\"reservatie-info-stap2\">\n" +
     "                              <div class=\"weergave\">\n" +
     "                                <p><strong translate-once=\"eventForm.step5.booking_exposure\"></strong></p>\n" +
-    "                                <select ng-model=\"bookingModel.urlLabel\"\n" +
+    "                                <select ng-model=\"bookingModel.urlLabel[mainLanguage]\"\n" +
     "                                        ng-change=\"saveWebsitePreview()\">\n" +
     "                                  <option value=\"Koop tickets\" translate-once=\"eventForm.step5.buy_tickets\"></option>\n" +
     "                                  <option value=\"Reserveer plaatsen\" translate-once=\"eventForm.step5.reserve_places\"></option>\n" +

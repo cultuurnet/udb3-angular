@@ -26,7 +26,7 @@
 /**
  * @typedef {Object} BookingInfo
  * @property {string} url
- * @property {string} urlLabel
+ * @property {Object} urlLabel
  * @property {string} email
  * @property {string} phone
  */
