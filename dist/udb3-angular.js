@@ -15329,7 +15329,8 @@ function EventFormStep5Controller(
     $scope.descriptionCssClass = 'state-filling';
   }
 
-  function focusDescription () {
+  function focusDescription ($event) {
+    console.log($event);
     $scope.descriptionInfoVisible = true;
     $scope.originalDescription = $scope.description;
   }
@@ -26935,7 +26936,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <a ng-bind=\"::translateAgeRange(ageRange.label)\"\n" +
     "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
     "                   href=\"#\"\n" +
-    "                   ng-click=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
+    "                   ng-mousedown=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "               <form name=\"ageForm\">\n" +
@@ -28749,7 +28750,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <section class=\"state complete filling\">\n" +
     "                <div class=\"form-group\">\n" +
     "                  <textarea ng-blur=\"saveDescription()\"\n" +
-    "                            ng-focus=\"focusDescription()\"\n" +
+    "                            ng-focus=\"focusDescription($event)\"\n" +
     "                            class=\"form-control\"\n" +
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
