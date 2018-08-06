@@ -7155,10 +7155,6 @@ function EventCultuurKuurComponentController(appConfig) {
   var cm = this,
       cultuurkuurUrl = _.get(appConfig, 'cultuurkuurUrl');
 
-  if (!cultuurkuurUrl) {
-    throw 'cultuurkuur url is not configured';
-  }
-
   cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id + getUTMParameters('preview1.0');
   cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
   cm.continueLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('continue1.0');
