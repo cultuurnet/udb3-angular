@@ -27774,8 +27774,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"form-group\">\n" +
     "            <label translate-once=\"location.city\"></label>\n" +
     "            <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\">\n" +
-    "                <span ng-bind=\"newPlace.address.postalCode\"></span>\n" +
-    "                <span ng-bind=\"newPlace.address.addressLocality\"></span> \n" +
+    "                <span ng-bind=\"newPlace.address.postalCode\"></span> <span ng-bind=\"newPlace.address.addressLocality\"></span><br>\n" +
     "                <span ng-bind=\"newPlace.address.addressCountry\"></span>\n" +
     "            </p>\n" +
     "        </div>\n" +
