@@ -13663,6 +13663,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
     saveTimeSpans: function (timeSpans) {
       this.calendar.timeSpans = timeSpans;
+      this.calendar.startDate = this.getFirstStartDate();
+      this.calendar.endDate = this.getLastEndDate();
       this.timingChanged();
     },
 
