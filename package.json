@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "dependencies": {
     "@bower_components/accounting": "josscrowcroft/accounting.js#~0.3.2",
-    "@bower_components/angular": "angular/bower-angular#>=1.2.0 <1.7.0",
+    "@bower_components/angular": "angular/bower-angular#~1.5.5",
     "@bower_components/angular-bootstrap": "angular-ui/bootstrap-bower#~1.3.2",
     "@bower_components/angular-cookies": "angular/bower-angular-cookies#~1.5.5",
     "@bower_components/angular-filter": "a8m/angular-filter#^0.5.17",

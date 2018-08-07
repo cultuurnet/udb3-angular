@@ -81,9 +81,9 @@
     jquery "^1.11.1"
     moment "^2.5.0"
 
-"@bower_components/angular@angular/bower-angular#>=1.2.0 <1.7.0":
-  version "1.6.10"
-  resolved "https://codeload.github.com/angular/bower-angular/tar.gz/309e7f82ecc9098e1f93870eb33083b84dead289"
+"@bower_components/angular@angular/bower-angular#~1.5.5":
+  version "1.5.11"
+  resolved "https://codeload.github.com/angular/bower-angular/tar.gz/0f57428c3ffe2f486264ab7fbee3968dccc7b720"
 
 "@bower_components/animate.css@daneden/animate.css#~3.2.6":
   version "3.2.6"
