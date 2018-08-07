@@ -27757,29 +27757,26 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <span class=\"help-block\"\n" +
     "                  translate-once=\"location.name_validation\"\n" +
     "                  ng-show=\"error\">\n" +
-    "      </span>\n" +
+    "            </span>\n" +
     "        </div>\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-xs-8\">\n" +
-    "                <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && (placeForm.address_streetAddress.$error.required || invalidStreet)}\">\n" +
-    "                    <label for=\"locatie-straat\" translate-once=\"location.street\"></label>\n" +
-    "                    <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
-    "                    <span class=\"help-block\"\n" +
-    "                          translate-once=\"location.street_validation\"\n" +
-    "                          ng-show=\"error && !invalidStreet\">\n" +
+    "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && (placeForm.address_streetAddress.$error.required || invalidStreet)}\">\n" +
+    "            <label for=\"locatie-straat\" translate-once=\"location.street\"></label>\n" +
+    "            <input class=\"form-control\" id=\"locatie-straat\" name=\"address_streetAddress\" type=\"text\" ng-model=\"newPlace.address.streetAddress\" required>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  translate-once=\"location.street_validation\"\n" +
+    "                  ng-show=\"error && !invalidStreet\">\n" +
     "                    </span>\n" +
-    "                    <span class=\"help-block\"\n" +
-    "                          translate-once=\"location.invalid_street\"\n" +
-    "                          ng-show=\"invalidStreet\">\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  translate-once=\"location.invalid_street\"\n" +
+    "                  ng-show=\"invalidStreet\">\n" +
     "                    </span>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"col-xs-4\">\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label translate-once=\"location.city\"></label>\n" +
-    "                    <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\" ng-bind=\"newPlace.address.addressLocality\"></p>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <label translate-once=\"location.city\"></label>\n" +
+    "            <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\">\n" +
+    "                <span ng-bind=\"newPlace.address.postalCode\"></span> <span ng-bind=\"newPlace.address.addressLocality\"></span>\n" +
+    "                <span class=\"text-muted\">(<span ng-bind=\"newPlace.address.addressCountry\"></span>)</span>\n" +
+    "            </p>\n" +
     "        </div>\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
     "            <label for=\"locatie-toevoegen-types\" translate-once=\"location.category\"></label>\n" +
