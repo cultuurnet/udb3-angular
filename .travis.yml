@@ -4,8 +4,7 @@ node_js:
   - "6"
 before_install:
   - npm install -g npm@2
-  - npm install -g grunt-cli bower
+  - npm install -g grunt-cli yarn
 install:
-  - npm install
-  - bower install
+  - yarn install
 script: grunt build && grunt test && grunt coveralls
