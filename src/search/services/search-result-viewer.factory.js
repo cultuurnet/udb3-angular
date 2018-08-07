@@ -52,9 +52,7 @@ function SearchResultViewerFactory() {
       image: {name: 'Afbeelding', visible: false}
     };
     this.eventSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'},
-      {id: 'price', name: 'Prijs-informatie'},
-      {id: 'translation', name: 'Vertaalstatus'}
+      {id: 'input', name: 'Invoer-informatie'}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];

@@ -27,7 +27,9 @@ function EventFormStep3Controller(
     cities,
     Levenshtein,
     eventCrud,
-    $rootScope
+    $rootScope,
+    $translate,
+    jsonLDLangFilter
 ) {
 
   var controller = this;
@@ -46,6 +48,8 @@ function EventFormStep3Controller(
 
     return _.cloneDeep(emptyLocation);
   }
+
+  var language = $translate.use() || 'nl';
 
   // Scope vars.
   // main storage for event form.
@@ -210,6 +214,10 @@ function EventFormStep3Controller(
     }
 
     function updateLocationsAndReturnList (locations) {
+      // Loop over all locations to check if location is translated.
+      _.each(locations, function(location, key) {
+        locations[key] = jsonLDLangFilter(locations[key], language, true);
+      });
       $scope.locationsForCity = locations;
       return locations;
     }

@@ -1,0 +1,84 @@
+<section class="translate-section" ng-show="tic.offer.mediaObject.length > 0">
+    <div class="row">
+        <div class="col-sm-3">
+            <p><strong>Afbeelding(en)</strong></p>
+        </div>
+        <div class="col-sm-9">
+            <div class="row">
+                <div class="col-sm-3">
+                    <p class="text-muted">Origineel</p>
+                </div>
+                <div class="col-sm-9">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div ng-repeat="image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': tic.offer.mainLanguage} track by image.contentUrl" class="media-object">
+                                <div class="uploaded-image media">
+
+                                  <div class="media-left">
+                                    <img ng-src="{{ image.thumbnailUrl }}?width=50&height=50" style="width: 50px;">
+                                  </div>
+
+                                  <div class="media-body">
+                                    <div ng-bind="image.description"></div>
+                                    <div class="text-muted">&copy; <span ng-bind="image.copyrightHolder"><span translate-once="eventForm.step5.copyright"></span></span></div>
+                                  </div>
+
+                                </div>
+                              
+                              <!-- Single button -->
+                              <div class="btn-group">
+                                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      Kopieren in een andere taal <span class="caret"></span>
+                                  </button>
+                                  <ul class="dropdown-menu">
+                                      <li ng-repeat="(code, language) in tic.activeLanguages" ng-if="language.active && !language.main"><button ng-click="tic.copyImage(image, code)" class="btn-link">{{code}}</button></li>
+                                  </ul>
+                              </div>
+                              
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" ng-repeat="(code, language) in tic.activeLanguages" ng-show="language.active && !language.main">
+                <div class="col-sm-3">
+                    <p class="text-muted"><span translate-once="translate.translation"></span> {{code}}</p>
+                </div>
+                <div class="col-sm-9">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div ng-repeat="image in tic.eventFormData.mediaObjects | filter:{'@type': 'schema:ImageObject', 'inLanguage': code} track by image.contentUrl" class="media-object">
+                                <div class="uploaded-image">
+                                    <div class="media" ng-class="{'main-image': ($index === 0)}">
+                                        <a class="media-left" href="#">
+                                            <img ng-src="{{ image.thumbnailUrl }}?width=50&height=50" style="width: 50px;">
+                                        </a>
+
+                                        <div class="media-body">
+                                            <div ng-bind="image.description"></div>
+                                            <div class="text-muted">&copy; <span ng-bind="image.copyrightHolder"><span translate-once="eventForm.step5.copyright"></span></span></div>
+                                        </div>
+
+                                        <div class="media-actions">
+                                            <a class="btn btn-xs btn-primary" ng-click="tic.editImage(image)" translate-once="eventForm.step5.change"></a>
+                                            <a class="btn btn-xs btn-danger" ng-click="tic.removeImage(image)" translate-once="eventForm.step5.delete"></a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="btn btn-default"
+                               href="#"
+                               translate-once="eventForm.step5.add_image"
+                               ng-click="tic.openUploadImageModal(code)"></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

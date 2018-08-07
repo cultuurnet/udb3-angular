@@ -26,6 +26,7 @@ function EventFormController(
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
+  $scope.showLangWarning = false;
 
   // Make sure we start off with clean data every time this controller gets called
   EventFormData.init();
@@ -84,7 +85,7 @@ function EventFormController(
 
       // Copy location.
       if (offer.location && offer.location.id) {
-        var location = jsonLDLangFilter(offer.location, 'nl');
+        var location = jsonLDLangFilter(offer.location, offer.mainLanguage, true);
         EventFormData.location = {
           id : location.id.split('/').pop(),
           name : location.name,
@@ -102,8 +103,13 @@ function EventFormController(
 
       // Places only have an address
       if (offer.address) {
-        EventFormData.address = offer.address;
+        var translatedOffer = jsonLDLangFilter(offer, offer.mainLanguage, true);
+        EventFormData.address = translatedOffer.address;
       }
+    }
+
+    if ($translate.use() !== $scope.language) {
+      $scope.showLangWarning = true;
     }
   }
 

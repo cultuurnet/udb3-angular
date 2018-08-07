@@ -364,7 +364,27 @@ angular.module('udb.core')
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
-      'publiq_url': 'Bekijk op UiT in Vlaanderen'
+      'publiq_url': 'Bekijk op UiT in Vlaanderen',
+      'translate': 'Vertalen'
+    },
+    translate: {
+      'ready': 'Klaar met vertalen',
+      'translate': 'vertalen',
+      'original': 'Origineel',
+      'edit': 'bewerken',
+      'translation': 'Vertaling',
+      'description': 'Beschrijving',
+      'title': 'Titel',
+      'tariff': 'Prijstarief',
+      'address': 'Adres',
+      'street': 'Straat en nummer'
+    },
+    labels: {
+      'what': 'Met een label voeg je korte, specifieke trefwoorden toe.',
+      'invalid': 'Dit lijkt een ongeldig label. Een label',
+      'chars': 'bestaat enkel uit letters of cijfers',
+      'excluded': 'bevat enkel \'-\' en \'_\', maar mag niet met deze tekens beginnen',
+      'length': 'telt 2 tot 50 karakters'
     },
     calendarSummary: {
       'openinghours': 'meerdere tijdstippen',
@@ -437,6 +457,7 @@ angular.module('udb.core')
       'add': 'Toevoegen'
     },
     eventForm: {
+      'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
       step1: {
         'title': 'Wat wil je toevoegen?',
         'label_event': 'Een evenement',
@@ -543,6 +564,9 @@ angular.module('udb.core')
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
           'Custom': 'Andere',
+          'from': 'Van',
+          'till': 'tot',
+          'age': 'jaar'
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -564,6 +588,18 @@ angular.module('udb.core')
         'publish_later': 'Later publiceren',
         'edit_done': 'Klaar met bewerken',
         'online_from': 'Online vanaf'
+      },
+      timeTracker: {
+        'automatic_saved': 'Automatisch bewaard om',
+        'hour': 'uur',
+      },
+      embargo: {
+        'title': 'Kies een publicatiedatum',
+        'help': 'Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em>',
+        'error_past': 'Een publicatiedatum kan niet in het verleden liggen.',
+        'error_empty': 'Kies een publicatiedatum.',
+        'cancel': 'Annuleren',
+        'ready': 'Klaar met bewerken'
       }
     },
     calendar: {
@@ -756,12 +792,14 @@ angular.module('udb.core')
         'address_error': 'Gelieve een geldig adres in te vullen.',
         'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
         'close': 'Sluiten',
-        'save': 'Bewaren'
+        'save': 'Bewaren',
+        'label_name': 'Naam'
       },
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
+        'placeholder_city': 'Gemeente of postcode',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen'
@@ -807,6 +845,161 @@ angular.module('udb.core')
         'error': 'Er ging iets fout bij het verwijderen van de activiteit.',
         'cancel': 'Annuleren',
         'delete': 'Verwijderen'
+      }
+    },
+    offerTypes: {
+      'Concert': 'Concert',
+      'Theatervoorstelling': 'Theatervoorstelling',
+      'Lezing of congres': 'Lezing of congres',
+      'Dansvoorstelling': 'Dansvoorstelling',
+      'Festival': 'Festival',
+      'Film': 'Film',
+      'Sportwedstrijd bekijken': 'Sportwedstrijd bekijken',
+      'Cursus of workshop': 'Cursus of workshop',
+      'Sport en beweging': 'Sport en beweging',
+      'Kamp of vakantie': 'Kamp of vakantie',
+      'Begeleide rondleiding': 'Begeleide  rondleiding',
+      'Route': 'Route',
+      'Spel of quiz': 'Spel of quiz',
+      'Party of fuif': 'Party of fuif',
+      'Kermis of feestelijkheid': 'Kermis of feestelijkheid',
+      'Congres of studiedag': 'Congres of studiedag',
+      'Eten en drinken': 'Eten en drinken',
+      'Thema of pretpark': 'Thema of pretpark',
+      'Jeugdhuis of jeugdcentrum': 'Jeugdhuis of jeugdcentrum',
+      'Cultuur- of ontmoetingscentrum': 'Cultuur- of ontmoetingscentrum',
+      'Discotheek': 'Discotheek',
+      'Bibliotheek of documentatiecentrum': 'Bibliotheek of documentatiecentrum',
+      'Bioscoop': 'Bioscoop',
+      'Horeca': 'Horeca',
+      'Openbare ruimte': 'Openbare ruimte',
+      'Tentoonstelling': 'Tentoonstelling',
+      'Markt of braderie': 'Markt of braderie',
+      'Natuur, park of tuin': 'Natuur, park of tuin',
+      'Beurs': 'Beurs',
+      'Monument': 'Monument',
+      'Opendeurdag': 'Opendeurdag',
+      'Recreatiedomein of centrum': 'Recreatiedomein of centrum',
+      'Park of tuin': 'Park of tuin',
+      'Archeologische Site': 'Archeologische Site',
+      'School of onderwijscentrum': 'School of onderwijscentrum',
+      'Sportcentrum': 'Sportcentrum',
+      'Winkel': 'Winkel',
+      'Museum of galerij': 'Museum of galerij',
+      'Zaal of expohal': 'Zaal of expohal'
+    },
+    offerThemes: {
+      'Antiek en brocante': 'Antiek en brocante',
+      'Architectuur': 'Architectuur',
+      'Audiovisuele kunst': 'Audiovisuele kunst',
+      'Beeldhouwkunst': 'Beeldhouwkunst',
+      'Fotografie': 'Fotografie',
+      'Grafiek': 'Grafiek',
+      'Installatiekunst': 'Installatiekunst',
+      'Schilderkunst': 'Schilderkunst',
+      'Decoratieve kunst': 'Decoratieve kunst',
+      'Design': 'Design',
+      'Mode': 'Mode',
+      'Meerdere kunstvormen': 'Meerdere kunstvormen',
+      'Ballet en klassieke dans': 'Ballet en klassieke dans',
+      'Volksdans en werelddans': 'Volksdans en werelddans',
+      'Stijl en salondansen': 'Stijl en salondansen',
+      'Moderne dans': 'Moderne dans',
+      'Erfgoed': 'Erfgoed',
+      'Actie en avontuur': 'Actie en avontuur',
+      'Animatie en kinderfilms': 'Animatie en kinderfilms',
+      'Documentaires en reportages': 'Documentaires en reportages',
+      'Griezelfilm of horror': 'Griezelfilm of horror',
+      'Historische film': 'Historische film',
+      'Komedie': 'Komedie',
+      'Kortfilm': 'Kortfilm',
+      'Filmmusical': 'Filmmusical',
+      'Drama': 'Drama',
+      'Science fiction': 'Science fiction',
+      'Cinefiel': 'Cinefiel',
+      'Thriller': 'Thriller',
+      'Meerdere filmgenres': 'Meerdere filmgenres',
+      'Geschiedenis': 'Geschiedenis',
+      'Gezondheid en wellness': 'Gezondheid en wellness',
+      'Landbouw en platteland': 'Landbouw en platteland',
+      'Milieu en natuur': 'Milieu en natuur',
+      'Literatuur': 'Literatuur',
+      'Poëzie': 'Poëzie',
+      'Fictie': 'Fictie',
+      'Non fictie': 'Non fictie',
+      'Strips': 'Strips',
+      'Klassieke muziek': 'Klassieke muziek',
+      'Jazz en blues': 'Jazz en blues',
+      'Pop en rock': 'Pop en rock',
+      'Hip hop, r&b en rap': 'Hip hop, r&b en rap',
+      'Dance': 'Dance',
+      'Folk en wereldmuziek': 'Folk en wereldmuziek',
+      'Amusementsmuziek': 'Amusementsmuziek',
+      'Politiek en maatschappij': 'Politiek en maatschappij',
+      'Creativiteit': 'Creativiteit',
+      'Computer en techniek': 'Computer en techniek',
+      'Opvoeding': 'Opvoeding',
+      'Persoon en relaties': 'Persoon en relaties',
+      'Interculturele vorming': 'Interculturele vorming',
+      'Kunst en kunsteducatie': 'Kunst en kunsteducatie',
+      'Gezondheid en zorg': 'Gezondheid en zorg',
+      'Samenleving': 'Samenleving',
+      'Bal en racketsport': 'Bal en racketsport',
+      'Atletiek, wandelen en fietsen': 'Atletiek, wandelen en fietsen',
+      'Zwemmen en watersport': 'Zwemmen en watersport',
+      'Fitness, gymnastiek, dans en vechtsport': 'Fitness, gymnastiek, dans en vechtsport',
+      'Outdoor en adventure': 'Outdoor en adventure',
+      'Lucht en motorsport': 'Lucht en motorsport',
+      'Volkssporten': 'Volkssporten',
+      'Omnisport en andere': 'Omnisport en andere',
+      'Tekst- en muziektheater': 'Tekst- en muziektheater',
+      'Humor comedy': 'Humor comedy',
+      'Musical': 'Musical',
+      'Figuren en poppentheater': 'Figuren en poppentheater',
+      'Opera en operette': 'Opera en operette',
+      'Mime en bewegingstheater': 'Mime en bewegingstheater',
+      'Wetenschap': 'Wetenschap',
+      'Zingeving, filosofie en religie': 'Zingeving, filosofie en religie',
+      'Thema onbepaald': 'Thema onbepaald',
+      'Circus': 'Circus',
+      'Voeding': 'Voeding',
+      'Economie': 'Economie'
+    },
+    offerThemesGroups: {
+      'Dans': 'Dans',
+      'Kunst en erfgoed': 'Kunst en erfgoed',
+      'Muziek': 'Muziek',
+      'Sport': 'Sport',
+      'Varia': 'Varia'
+    },
+    weekdays: {
+      monday: {
+        label: 'Ma',
+        name: 'Maandag'
+      },
+      tuesday: {
+        label: 'Di',
+        name: 'Dinsdag'
+      },
+      wednesday: {
+        label: 'Wo',
+        name: 'Woensdag'
+      },
+      thursday: {
+        label: 'Do',
+        name: 'Donderdag'
+      },
+      friday: {
+        label: 'Vr',
+        name: 'Vrijdag'
+      },
+      saturday: {
+        label: 'Za',
+        name: 'Zaterdag'
+      },
+      sunday: {
+        label: 'Zo',
+        name: 'Zondag'
       }
     }
   }

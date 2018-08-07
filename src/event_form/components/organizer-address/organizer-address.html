@@ -7,7 +7,7 @@
                 <input type="text"
                        class="form-control"
                        name="street"
-                       placeholder="Straat en nummer"
+                       placeholder="{{ 'organizer.address.label_street' | translate }}"
                        ng-model="oac.address.streetAddress"
                        ng-change="oac.validateAddress()"
                        ng-model-options="{ updateOn: 'blur' }">
@@ -31,7 +31,7 @@
                                type="text"
                                name="city"
                                class="form-control uib-typeahead"
-                               placeholder="Gemeente of postcode"
+                               placeholder="{{ 'organizer.address.placeholder_city' | translate }}"
                                ng-model="oac.cityAutocompleteTextField"
                                uib-typeahead="city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
                                typeahead-on-select="oac.selectCity($item, $label)"
