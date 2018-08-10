@@ -457,6 +457,7 @@ angular.module('udb.core')
       'add': 'Toevoegen'
     },
     eventForm: {
+      'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
       step1: {
         'title': 'Wat wil je toevoegen?',
         'label_event': 'Een evenement',
@@ -563,6 +564,9 @@ angular.module('udb.core')
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
           'Custom': 'Andere',
+          'from': 'Van',
+          'till': 'tot',
+          'age': 'jaar'
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -584,6 +588,18 @@ angular.module('udb.core')
         'publish_later': 'Later publiceren',
         'edit_done': 'Klaar met bewerken',
         'online_from': 'Online vanaf'
+      },
+      timeTracker: {
+        'automatic_saved': 'Automatisch bewaard om',
+        'hour': 'uur',
+      },
+      embargo: {
+        'title': 'Kies een publicatiedatum',
+        'help': 'Vanaf wanneer mag dit online verschijnen? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Opgelet, deze datum kan je maar één keer instellen.</em>',
+        'error_past': 'Een publicatiedatum kan niet in het verleden liggen.',
+        'error_empty': 'Kies een publicatiedatum.',
+        'cancel': 'Annuleren',
+        'ready': 'Klaar met bewerken'
       }
     },
     calendar: {
@@ -777,12 +793,14 @@ angular.module('udb.core')
         'address_error': 'Gelieve een geldig adres in te vullen.',
         'contact_error': 'Gelieve alle contactinfo correct in te vullen.',
         'close': 'Sluiten',
-        'save': 'Bewaren'
+        'save': 'Bewaren',
+        'label_name': 'Naam'
       },
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
+        'placeholder_city': 'Gemeente of postcode',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen'
@@ -954,6 +972,36 @@ angular.module('udb.core')
       'Muziek': 'Muziek',
       'Sport': 'Sport',
       'Varia': 'Varia'
+    },
+    weekdays: {
+      monday: {
+        label: 'Ma',
+        name: 'Maandag'
+      },
+      tuesday: {
+        label: 'Di',
+        name: 'Dinsdag'
+      },
+      wednesday: {
+        label: 'Wo',
+        name: 'Woensdag'
+      },
+      thursday: {
+        label: 'Do',
+        name: 'Donderdag'
+      },
+      friday: {
+        label: 'Vr',
+        name: 'Vrijdag'
+      },
+      saturday: {
+        label: 'Za',
+        name: 'Zaterdag'
+      },
+      sunday: {
+        label: 'Zo',
+        name: 'Zondag'
+      }
     }
   }
 );

@@ -1,6 +1,6 @@
 <div class="offer-form" ng-if="loaded">
-  <div class="alert alert-warning" ng-show="language!== 'nl'">
-    <p>Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.</p>
+  <div class="alert alert-warning" ng-show="showLangWarning">
+    <p translate-once="eventForm.langWarning"></p>
   </div>
 
   <udb-event-form-step1></udb-event-form-step1>

@@ -37,7 +37,7 @@ describe('Directive: Save time tracker', function () {
 
     $rootScope.$emit('eventFormSaved', {});
     $rootScope.$apply();
-    var timeLastSavedElement = trackerElement.find('span');
+    var timeLastSavedElement = trackerElement.find('span.time-last-saved');
     expect(timeLastSavedElement.html()).toEqual('22:23');
   });
 });
