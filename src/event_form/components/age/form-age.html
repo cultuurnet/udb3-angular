@@ -8,7 +8,7 @@
                 <a ng-bind="::translateAgeRange(ageRange.label)"
                    ng-class="{'font-bold': fagec.activeAgeRange === type}"
                    href="#"
-                   ng-click="fagec.setAgeRangeByType(type)"></a><span ng-if="::!$last">, </span>
+                   ng-mousedown="fagec.setAgeRangeByType(type)"></a><span ng-if="::!$last">, </span>
             </span>
             <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
                <form name="ageForm">
