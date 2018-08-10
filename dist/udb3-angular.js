@@ -13548,6 +13548,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       }
 
       if (formData.calendar.calendarType === 'permanent') {
+        formData.calendar.startDate = undefined;
+        formData.calendar.endDate = undefined;
         formData.timingChanged();
       }
 
