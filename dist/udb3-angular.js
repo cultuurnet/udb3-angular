@@ -10535,6 +10535,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.weeklyRecurring = false;
   calendar.delayedTimeSpanChanged = _.debounce(digestTimeSpanChanged, 1000);
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
+  calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
 
   /**
@@ -10543,8 +10544,8 @@ function BaseCalendarController(calendar, $scope) {
    */
   function init(formData, openingHoursCollection) {
     calendar.formData = formData;
-    calendar.timeSpans = !_.isEmpty(formData.timestamps) ? timestampsToTimeSpans(formData.timestamps) : [];
-    calendar.setType(formData.calendarType ? formData.calendarType : 'single');
+    calendar.timeSpans = !_.isEmpty(formData.calendar.timeSpans) ? formData.calendar.timeSpans : [];
+    calendar.setType(formData.calendar.calendarType ? formData.calendar.calendarType : 'single');
     calendar.openingHoursCollection = openingHoursCollection;
   }
 
@@ -10569,8 +10570,8 @@ function BaseCalendarController(calendar, $scope) {
     calendar.timeSpans = [
       {
         allDay: true,
-        start: moment().startOf('hour').add(1, 'h').toDate(),
-        end: moment().startOf('hour').add(4, 'h').toDate()
+        start: moment().startOf('day').toDate(),
+        end: moment().endOf('day').toDate()
       }
     ];
   }
@@ -10604,6 +10605,20 @@ function BaseCalendarController(calendar, $scope) {
     timeSpanChanged();
   }
 
+  function toggleAllDay(timeSpan) {
+    if (timeSpan.allDay) {
+      timeSpan.start = moment(timeSpan.start).set({'hour': 0, 'minute': 0, 'millisecond': 0}).toDate();
+      timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
+    }
+    else {
+      timeSpan.start = moment(timeSpan.start).set({'hour': moment().startOf('hour').format('H'), 'minute': 0}).toDate();
+      timeSpan.end = moment(timeSpan.end).set(
+          {'hour': moment().startOf('hour').add(4, 'h').format('H') , 'minute': 0, 'second': 0}
+      ).toDate();
+    }
+    instantTimeSpanChanged();
+  }
+
   function timeSpanChanged() {
     var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
 
@@ -10618,7 +10633,13 @@ function BaseCalendarController(calendar, $scope) {
         setType('single');
       }
       clearTimeSpanRequirements();
-      calendar.formData.saveTimestamps(timeSpansToTimestamps(calendar.timeSpans));
+      _.each(calendar.timeSpans, function(timeSpan) {
+        if (timeSpan.allDay) {
+          timeSpan.start = moment(timeSpan.start).startOf('day').toDate();
+          timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
+        }
+      });
+      calendar.formData.saveTimeSpans(calendar.timeSpans);
     }
   }
 
@@ -10628,47 +10649,6 @@ function BaseCalendarController(calendar, $scope) {
 
   function showTimeSpanRequirements(unmetRequirements) {
     calendar.timeSpanRequirements = unmetRequirements;
-  }
-
-  /**
-   * @param {TimeSpan[]} timeSpans
-   * @return {Timestamp[]}
-   */
-  function timeSpansToTimestamps(timeSpans) {
-    return _.map(timeSpans, function (timeSpan) {
-      var start = timeSpan.allDay ? moment(timeSpan.start).startOf('day') : moment(timeSpan.start);
-      var end = timeSpan.allDay ? moment(timeSpan.end).endOf('day').startOf('minute') : moment(timeSpan.end);
-
-      return {
-        date: moment(timeSpan.start).startOf('day').toDate(),
-        startHour: start.format('HH:mm'),
-        startHourAsDate: start.toDate(),
-        showStartHour: true,
-        endHour: end.format('HH:mm'),
-        endHourAsDate: end.toDate(),
-        showEndHour: true
-      };
-    });
-  }
-
-  /**
-   * @param {Timestamp[]} timestamps
-   * @return {TimeSpan[]}
-   */
-  function timestampsToTimeSpans(timestamps) {
-    return _.map(timestamps, function (timestamp) {
-      var start = timestamp.startHourAsDate;
-      var end = timestamp.endHourAsDate;
-      var allDay = moment(start).isSame(end, 'day') &&
-        moment(start).startOf('day').isSame(start) &&
-        moment(end).endOf('day').startOf('minute').isSame(end);
-
-      return {
-        start: start,
-        end: end,
-        allDay: allDay
-      };
-    });
   }
 
   /**
@@ -10787,7 +10767,7 @@ angular
 
 function FormCalendarPeriodComponentController() {
   var controller = this;
-  controller.calendarType = controller.formData.calendarType;
+  controller.calendarType = controller.formData.calendar.calendarType;
 }
 })();
 
@@ -12451,7 +12431,7 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   efpmc.error = '';
   efpmc.hasPublicationDate = false;
   efpmc.publicationDate = eventFormData.availableFrom;
-  efpmc.maxDate = moment(eventFormData.getEarliestStartDate()).subtract(1, 'days').toDate();
+  efpmc.maxDate = moment(eventFormData.getFirstStartDate()).subtract(1, 'days').toDate();
   efpmc.opened = false;
   efpmc.dismiss = dismiss;
   efpmc.savePublicationDate = savePublicationDate;
@@ -13121,13 +13101,12 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.type = {};
       /** @type {EventTheme} */
       this.theme = {};
-      this.activeCalendarType = ''; // only needed for the angular.
-      this.activeCalendarLabel = ''; // only needed for the angular.
-      this.calendarType = '';
-      this.startDate = '';
-      this.endDate = '';
-      this.timestamps = [];
-      this.openingHours = [];
+      //
+      this.calendar = {};
+      this.calendar.calendarType = '';
+      this.calendar.timeSpans = [];
+      this.calendar.openingHours = [];
+      //
       this.typicalAgeRange = '';
       this.organizer = {};
       this.contactPoint = {
@@ -13275,20 +13254,20 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       return this.theme.label ? this.theme.label : '';
     },
 
-    getStartDate : function() {
-      return this.startDate;
+    getPeriodicStartDate : function() {
+      return this.calendar.startDate;
     },
 
-    setStartDate: function(startDate) {
-      this.startDate = startDate;
+    setPeriodicStartDate: function(startDate) {
+      this.calendar.startDate = startDate;
     },
 
-    getEndDate : function() {
-      return this.endDate;
+    getPeriodicEndDate : function() {
+      return this.calendar.endDate;
     },
 
-    setEndDate: function(endDate) {
-      this.endDate = endDate;
+    setPeriodicEndDate: function(endDate) {
+      this.calendar.endDate = endDate;
     },
 
     /**
@@ -13322,23 +13301,16 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * @param {Date} date
-     * @param {string} startHour HH:mm
-     * @param {Date|string} startHourAsDate
-     *  An empty string when not set.
-     * @param {string} endHour HH:mm
-     * @param {Date|string} endHourAsDate
+     * @param {Date|string} start
+     * @param {Date|string} end
      *  An empty string when not set.
      */
-    addTimestamp: function(date, startHour, startHourAsDate, endHour, endHourAsDate) {
-      this.timestamps.push({
-        'date' : date,
-        'startHour' : startHour,
-        'startHourAsDate' : startHourAsDate,
-        'endHourAsDate' : endHourAsDate,
-        'endHour' : endHour,
-        'showStartHour' : !!startHour,
-        'showEndHour' : (endHour && endHour !== startHour)
+    addTimeSpan: function(start, end) {
+      var allDay = moment(start).format('HH:mm') === '00:00' && moment(end).format('HH:mm') === '23:59';
+      this.calendar.timeSpans.push({
+        'start': moment(start).toISOString(),
+        'end': moment(end).toISOString(),
+        'allDay': allDay
       });
     },
 
@@ -13346,28 +13318,40 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * Reset the calendar.
      */
     resetCalendar: function() {
-      this.openingHours = [];
-      this.timestamps = [];
-      this.startDate = '';
-      this.endDate = '';
-      this.calendarType = '';
-      this.activeCalendarType = '';
+      this.calendar.timeSpans = [];
+      this.calendar.calendarType = '';
+      this.calendar.activeCalendarLabel = '';
+      this.calendar.activeCalendarType = '';
     },
 
     /**
      * Get the earliest date of an offer, or null for permanent events
      */
-    getEarliestStartDate: function() {
-      var earliestStartDate = null;
-      if (this.calendarType === 'single' || this.calendarType === 'multiple') {
-        var allStartHoursAsDate = _.pluck(this.timestamps, 'startHourAsDate');
-        earliestStartDate = moment(Math.min.apply(null, allStartHoursAsDate)).toDate();
+    getFirstStartDate: function() {
+      var firstStartDate = null;
+      if (this.calendar.calendarType === 'single' || this.calendar.calendarType === 'multiple') {
+        firstStartDate = _.first(this.calendar.timeSpans).start;
       }
 
-      if (eventFormData.calendarType === 'periodic') {
-        earliestStartDate = this.getStartDate();
+      if (eventFormData.calendar.calendarType === 'periodic') {
+        firstStartDate = this.calendar.startDate;
       }
-      return earliestStartDate;
+      return firstStartDate;
+    },
+
+    /**
+     * Get the earliest date of an offer, or null for permanent events
+     */
+    getLastEndDate: function() {
+      var lastEndDate = null;
+      if (this.calendar.calendarType === 'single' || this.calendar.calendarType === 'multiple') {
+        lastEndDate = _.last(this.calendar.timeSpans).end;
+      }
+
+      if (eventFormData.calendar.calendarType === 'periodic') {
+        lastEndDate = this.calendar.endDate;
+      }
+      return lastEndDate;
     },
 
     /**
@@ -13498,10 +13482,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * @return {boolean}
      */
     hasValidPeriodicRange: function () {
-      var startDate = this.getStartDate();
-      var endDate = this.getEndDate();
+      var startDate = this.getPeriodicStartDate();
+      var endDate = this.getPeriodicEndDate();
 
-      return this.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
+      return this.calendar.calendarType === 'periodic' && !!startDate && !!endDate && startDate < endDate;
     },
 
     /**
@@ -13509,11 +13493,10 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      */
     initCalendar: function () {
       var formData = this;
-      var calendarType = _.findWhere(calendarLabels, {id: formData.calendarType});
-
+      var calendarType = _.findWhere(calendarLabels, {id: formData.calendar.calendarType});
       if (calendarType) {
-        this.activeCalendarLabel = calendarType.label;
-        this.activeCalendarType = formData.calendarType;
+        this.calendar.activeCalendarLabel = calendarType.label;
+        this.calendar.activeCalendarType = formData.calendar.calendarType;
       }
     },
 
@@ -13535,17 +13518,17 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.
-      if (formData.calendarType === type) {
+      if (formData.calendar.calendarType === type) {
         return;
       }
 
       // A type is chosen, start a complete new calendar, removing old data
       formData.resetCalendar();
-      formData.calendarType = type;
+      formData.calendar.calendarType = type;
 
-      if (formData.calendarType === 'single') {
+      if (formData.calendar.calendarType === 'single') {
         if (appConfig.calendarHighlight.date) {
-          formData.addTimestamp(
+          formData.addTimeSpan(
               new Date(appConfig.calendarHighlight.date),
               appConfig.calendarHighlight.startTime || '',
               appConfig.calendarHighlight.startTime ?
@@ -13557,17 +13540,19 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
                       appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
           );
         } else {
-          formData.addTimestamp('', '', '', '', '');
+          formData.addTimeSpan('', '');
         }
       }
 
-      if (formData.calendarType === 'permanent') {
+      if (formData.calendar.calendarType === 'permanent') {
+        formData.calendar.startDate = undefined;
+        formData.calendar.endDate = undefined;
         formData.timingChanged();
       }
 
-      if (formData.calendarType === 'periodic') {
-        formData.startDate = moment().startOf('day').toDate();
-        formData.endDate = moment().add(1, 'y').startOf('day').toDate();
+      if (formData.calendar.calendarType === 'periodic') {
+        formData.calendar.startDate = moment().startOf('day').toDate();
+        formData.calendar.endDate = moment().add(1, 'y').startOf('day').toDate();
         formData.timingChanged();
       }
 
@@ -13580,112 +13565,106 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * Check if the given timestamp is a valid date object.
-     * @param {Object} timestamp
+     * Check if the given timeSpan is a valid date object.
+     * @param {Object} timeSpan
      * @returns {boolean}
      */
-    isValidDate: function(timestamp) {
-      return timestamp instanceof Date;
+    isValidDate: function(timeSpan) {
+      return timeSpan instanceof Date;
     },
 
     /**
-     * Toggle the starthour field for given timestamp.
-     * @param {Object} timestamp
-     *   Timestamp to change
+     * Toggle the starthour field for given timeSpan.
+     * @param {Object} timeSpan
+     *   Timespan to change
      */
-    toggleStartHour: function(timestamp) {
+    toggleStartHour: function(timeSpan) {
       // If we hide the textfield, empty all other time fields.
-      if (!timestamp.showStartHour) {
-        timestamp.startHour = '';
-        timestamp.startHourAsDate = '';
-        timestamp.endHour = '';
-        timestamp.endHourAsDate = '';
-        timestamp.showEndHour = false;
-        timestamp.date.setHours(0);
-        timestamp.date.setMinutes(0);
+      if (!timeSpan.showStartHour) {
+        timeSpan.start.setHours(0);
+        timeSpan.start.setMinutes(0);
+        timeSpan.end.setHours(0);
+        timeSpan.end.setMinutes(0);
         this.timingChanged();
       }
       else {
-        var startHour = moment(timestamp.date);
-        var endHour = moment(timestamp.date).endOf('day');
+        var startHour = moment(timeSpan.date);
+        var endHour = moment(timeSpan.date).endOf('day');
 
-        timestamp.startHour = startHour.format('HH:mm');
-        timestamp.startHourAsDate = startHour.toDate();
-        timestamp.endHour = endHour.format('HH:mm');
-        timestamp.endHourAsDate = endHour.toDate();
-        timestamp.showEndHour = false;
+        timeSpan.startHour = startHour.format('HH:mm');
+        timeSpan.startHourAsDate = startHour.toDate();
+        timeSpan.endHour = endHour.format('HH:mm');
+        timeSpan.endHourAsDate = endHour.toDate();
+        timeSpan.showEndHour = false;
       }
     },
 
     /**
-     * Toggle the endhour field for given timestamp
-     * @param {Object} timestamp
+     * Toggle the endhour field for given timeSpan
+     * @param {Object} timeSpan
      *   Timestamp to change
      */
-    toggleEndHour: function(timestamp) {
-      var endHourAsDate = timestamp.date;
+    toggleEndHour: function(timeSpan) {
+      var endHourAsDate = timeSpan.date;
       // If we hide the textfield, empty also the input.
-      if (!timestamp.showEndHour) {
+      if (!timeSpan.showEndHour) {
         endHourAsDate.setHours(23);
         endHourAsDate.setMinutes(59);
 
-        timestamp.endHour = '23:59';
-        timestamp.endHourAsDate = endHourAsDate;
+        timeSpan.endHour = '23:59';
+        timeSpan.endHourAsDate = endHourAsDate;
         this.timingChanged();
       }
       else {
-        var nextThreeHours = moment(timestamp.startHourAsDate).add(3, 'hours').minutes(0);
+        var nextThreeHours = moment(timeSpan.startHourAsDate).add(3, 'hours').minutes(0);
         endHourAsDate.setHours(nextThreeHours.hours());
         endHourAsDate.setMinutes(nextThreeHours.minutes());
 
-        timestamp.endHour = moment(endHourAsDate).format('HH:mm');
-        timestamp.endHourAsDate = endHourAsDate;
+        timeSpan.endHour = moment(endHourAsDate).format('HH:mm');
+        timeSpan.endHourAsDate = endHourAsDate;
       }
     },
 
-    hoursChanged: function (timestamp) {
+    hoursChanged: function (timeSpan) {
       var startHourAsDate;
       var endHourAsDate;
-      if (timestamp.showStartHour || timestamp.showEndHour) {
-        if (timestamp.showStartHour) {
-          if (timestamp.startHourAsDate !== undefined) {
-            startHourAsDate = moment(timestamp.startHourAsDate);
+      if (timeSpan.showStartHour || timeSpan.showEndHour) {
+        if (timeSpan.showStartHour) {
+          if (timeSpan.startHourAsDate !== undefined) {
+            startHourAsDate = moment(timeSpan.startHourAsDate);
           }
           else {
-            startHourAsDate = moment(timestamp.startHourAsDate);
+            startHourAsDate = moment(timeSpan.startHourAsDate);
             startHourAsDate.hours(0);
             startHourAsDate.minutes(0);
           }
-          timestamp.startHour = startHourAsDate.format('HH:mm');
+          timeSpan.startHour = startHourAsDate.format('HH:mm');
         }
 
-        if (timestamp.showEndHour) {
+        if (timeSpan.showEndHour) {
           // if the endhour is invalid, send starthour to backend.
-          if (timestamp.endHourAsDate !== undefined) {
-            endHourAsDate = moment(timestamp.endHourAsDate);
+          if (timeSpan.endHourAsDate !== undefined) {
+            endHourAsDate = moment(timeSpan.endHourAsDate);
           }
           else {
             endHourAsDate = startHourAsDate;
           }
-          timestamp.endHour = endHourAsDate.format('HH:mm');
+          timeSpan.endHour = endHourAsDate.format('HH:mm');
         }
         this.timingChanged();
       }
     },
 
     saveOpeningHours: function (openingHours) {
-      this.openingHours = openingHours;
+      this.calendar.openingHours = openingHours;
       this.timingChanged();
     },
 
-    saveTimestamps: function (timestamps) {
-      var oldTimestamps = _.cloneDeep(this.timestamps);
-
-      this.timestamps = timestamps;
-
-      if (!_.isEqual(oldTimestamps, timestamps)) {
-        this.timingChanged();
-      }
+    saveTimeSpans: function (timeSpans) {
+      this.calendar.timeSpans = timeSpans;
+      this.calendar.startDate = this.getFirstStartDate();
+      this.calendar.endDate = this.getLastEndDate();
+      this.timingChanged();
     },
 
     periodicTimingChanged: function () {
@@ -13765,15 +13744,10 @@ function EventFormController(
   }
 
   function preselectDate(calendarConfig) {
-    EventFormData.calendarType = 'single';
-    EventFormData.addTimestamp(
-      new Date(calendarConfig.date),
-      calendarConfig.startTime || '',
-      calendarConfig.startTime ?
-        moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
-      calendarConfig.endTime || '',
-      calendarConfig.endTime ?
-        moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
+    EventFormData.calendar.calendarType = 'single';
+    EventFormData.addTimeSpan(
+      calendarConfig.startTime ? moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm') : '',
+      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : ''
     );
     EventFormData.initCalendar();
     //EventFormData.showStep(3);
@@ -13901,33 +13875,33 @@ function EventFormController(
       }
     }
 
-    EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
+    EventFormData.calendar.calendarType = item.calendarType; // === 'multiple' ? 'single' : item.calendarType;
 
     // Set correct date object for start and end.
     if (item.startDate) {
-      EventFormData.startDate = moment(item.startDate).toDate();
+      EventFormData.calendar.startDate = moment(item.startDate).toDate();
     }
 
     if (item.endDate) {
-      EventFormData.endDate = moment(item.endDate).toDate();
+      EventFormData.calendar.endDate = moment(item.endDate).toDate();
     }
 
-    // SubEvents are timestamps.
+    // SubEvents are timeSpans.
     if (item.calendarType === 'multiple' && item.subEvent) {
       for (var j = 0; j < item.subEvent.length; j++) {
         var subEvent = item.subEvent[j];
-        addTimestamp(subEvent.startDate, subEvent.endDate);
+        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate);
       }
     }
     else if (item.calendarType === 'single') {
-      addTimestamp(item.startDate, item.endDate);
+      EventFormData.addTimeSpan(item.startDate, item.endDate);
     }
 
     if (EventFormData.calendarType) {
       EventFormData.initCalendar();
     }
 
-    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
+    EventFormData.initOpeningHours(_.get(EventFormData.calendar, 'openingHours', []));
 
     $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
@@ -13936,28 +13910,6 @@ function EventFormController(
     EventFormData.showStep(3);
     EventFormData.showStep(4);
     EventFormData.showStep(5);
-
-  }
-
-  /**
-   * Add a timestamp based on a given start and enddate.
-   */
-  function addTimestamp(startDateString, endDateString) {
-
-    var startDate = moment(startDateString);
-    var endDate = moment(endDateString);
-
-    var startHour = startDate.format('HH:mm');
-    var endHour = endDate.format('HH:mm');
-
-    startHour = startHour === '00:00' ? '' : startHour;
-    endHour = endHour === '00:00' ? '' : endHour;
-
-    var startHourAsDate = moment(startDateString).toDate();
-    var endHourAsDate = moment(endDateString).toDate();
-
-    // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
-    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
 }
@@ -14201,7 +14153,7 @@ function EventFormPublishController(
       .startOf('day')
       .toDate();
 
-    var startDate = controller.eventFormData.getEarliestStartDate();
+    var startDate = controller.eventFormData.getFirstStartDate();
 
     if (startDate && startDate < tomorrow) {
       return false;
@@ -27071,16 +27023,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"periodic-info\">\n" +
     "        <div class=\"start-date\">\n" +
     "            <label translate-once=\"calendar.period.from\"></label>\n" +
-    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                                            ng-model=\"$ctrl.formData.startDate\"\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendar.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.calendar.startDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
     "            </udb-form-calendar-datepicker>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"end-date\">\n" +
     "            <label translate-once=\"calendar.period.till\"></label>\n" +
-    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendarType !== 'periodic'\"\n" +
-    "                                            ng-model=\"$ctrl.formData.endDate\"\n" +
+    "            <udb-form-calendar-datepicker ng-disabled=\"$ctrl.formData.calendar.calendarType !== 'periodic'\"\n" +
+    "                                            ng-model=\"$ctrl.formData.calendar.endDate\"\n" +
     "                                            ng-change=\"$ctrl.formData.periodicTimingChanged()\">\n" +
     "            </udb-form-calendar-datepicker>\n" +
     "        </div>\n" +
@@ -27111,7 +27063,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"calendar-type-picker\">\n" +
     "    <div class=\"calendar-type-options\">\n" +
     "\n" +
-    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single'}\">\n" +
+    "        <a href=\"#\" ng-click=\"calendar.setType('single')\" ng-class=\"{'selected': calendar.type === 'single' || calendar.type === 'multiple' }\">\n" +
     "            <img src=\"../images/form-calendar/days.svg\" class=\"calendar-type-icon\">\n" +
     "            <p class=\"text-center\"><strong translate-once=\"calendar.one_more_days\"></strong></p></a><span class=\"or\" translate-once=\"calendar.or\"></span><a href=\"#\" ng-click=\"calendar.setType('periodic')\" ng-class=\"{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}\">\n" +
     "            <img src=\"../images/form-calendar/period.svg\" class=\"calendar-type-icon\">\n" +
@@ -27145,7 +27097,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                <input type=\"checkbox\"\n" +
     "                                       id=\"time-span-{{$index}}-has-timing-info\"\n" +
     "                                       ng-model=\"timeSpan.allDay\"\n" +
-    "                                       ng-change=\"calendar.instantTimeSpanChanged()\"\n" +
+    "                                       ng-change=\"calendar.toggleAllDay(timeSpan)\"\n" +
     "                                       class=\"all-day-check\"> <span translate-once=\"calendar.whole_day_label\"></span>\n" +
     "                            </label>\n" +
     "                        </div>\n" +
@@ -27191,12 +27143,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
     "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
     "                <hr>\n" +
-    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData.calendar\" opening-hours=\"calendar.openingHoursCollection\">\n" +
     "                </udb-event-form-opening-hours>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>"
+    "</div>\n"
   );
 
 

@@ -18,5 +18,5 @@ angular
 
 function FormCalendarPeriodComponentController() {
   var controller = this;
-  controller.calendarType = controller.formData.calendarType;
+  controller.calendarType = controller.formData.calendar.calendarType;
 }

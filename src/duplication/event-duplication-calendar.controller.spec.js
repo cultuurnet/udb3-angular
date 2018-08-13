@@ -50,7 +50,7 @@ describe('Controller: Event Duplication Calendar', function () {
 
     calendarController.formData.setCalendarType('permanent');
 
-    expect(EventFormData.calendarType).toEqual('single');
+    expect(EventFormData.calendar.calendarType).toEqual('single');
   });
 
   it('should emit a message when the timing of a duplicate changes', function (done) {
