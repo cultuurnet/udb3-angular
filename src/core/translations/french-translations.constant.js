@@ -711,6 +711,7 @@ angular.module('udb.core')
     'GEBRUIKERS_BEHEREN': 'Gérer les utilisateurs',
     'LABELS_BEHEREN': 'Gérer les labels',
     'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
+    'ORGANISATIES_BEWERKEN': 'Modifier les organisations',
     'event type missing': 'Avez-vous choisi un type en <a href="#quoi" class="alert-link">étape 1</a>?',
     'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
     'start or end date missing': 'Avez-vous choisi une date de départ et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
