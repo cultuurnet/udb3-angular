@@ -115,7 +115,7 @@
 
       var udbPlace = new UdbPlace();
       udbPlace.name = $scope.newPlace.name;
-      udbPlace.calendarType = 'permanent';
+      udbPlace.calendar.calendarType = 'permanent';
       udbPlace.type = {
         id : $scope.newPlace.eventType.id,
         label : eventTypeLabel,

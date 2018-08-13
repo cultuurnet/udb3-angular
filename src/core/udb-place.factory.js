@@ -100,9 +100,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.name = {};
     this.type = '';
     this.theme = {};
-    this.calendarType = '';
-    /** @type {OpeningHoursData[]} **/
-    this.openinghours = [];
+    this.calendar = {};
     this.address = {};
     /*this.address = {
       'addressCountry' : 'BE',
@@ -130,10 +128,13 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.address = jsonPlace.address || {};
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
-      this.calendarType = jsonPlace.calendarType || '';
-      this.startDate = jsonPlace.startDate;
-      this.endDate = jsonPlace.endDate;
-      this.openingHours = jsonPlace.openingHours || [];
+      this.calendar = jsonPlace.calendar || {};
+      if (this.calendar.calendarType) {
+        this.calendar.calendarType = jsonPlace.calendar.calendarType || '';
+        this.calendar.startDate = jsonPlace.calendar.startDate;
+        this.calendar.endDate = jsonPlace.calendar.endDate;
+        this.calendar.openingHours = jsonPlace.calendar.openingHours || [];
+      }
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};
@@ -272,7 +273,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
      * Reset the opening hours.
      */
     resetOpeningHours: function() {
-      this.openinghours = [];
+      this.calendar.openinghours = [];
     },
 
     /**
@@ -281,7 +282,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
      * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
-      return this.openinghours;
+      return this.calendar.openinghours;
     },
 
     setCountry: function(country) {
