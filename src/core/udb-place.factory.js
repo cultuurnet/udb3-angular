@@ -128,13 +128,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.address = jsonPlace.address || {};
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
       this.description = angular.copy(jsonPlace.description) || {};
-      this.calendar = jsonPlace.calendar || {};
-      if (this.calendar.calendarType) {
-        this.calendar.calendarType = jsonPlace.calendar.calendarType || '';
-        this.calendar.startDate = jsonPlace.calendar.startDate;
-        this.calendar.endDate = jsonPlace.calendar.endDate;
-        this.calendar.openingHours = jsonPlace.calendar.openingHours || [];
-      }
+      this.calendarType = jsonPlace.calendarType || '';
+      this.startDate = jsonPlace.startDate;
+      this.endDate = jsonPlace.endDate;
+      this.openingHours = jsonPlace.openingHours || [];
       this.typicalAgeRange = jsonPlace.typicalAgeRange || '';
       this.priceInfo = jsonPlace.priceInfo || [];
       this.bookingInfo = jsonPlace.bookingInfo || {};

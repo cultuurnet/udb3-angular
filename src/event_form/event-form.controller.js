@@ -202,11 +202,11 @@ function EventFormController(
       EventFormData.addTimeSpan(item.startDate, item.endDate);
     }
 
-    if (EventFormData.calendarType) {
+    if (EventFormData.calendar.calendarType) {
       EventFormData.initCalendar();
     }
 
-    EventFormData.initOpeningHours(_.get(EventFormData.calendar, 'openingHours', []));
+    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
     $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
