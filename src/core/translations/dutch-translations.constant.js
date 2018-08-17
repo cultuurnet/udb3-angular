@@ -713,6 +713,7 @@ angular.module('udb.core')
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
     'LABELS_BEHEREN': 'Labels beheren',
     'VOORZIENINGEN_BEWERKEN': 'Voorzieningen bewerken',
+    'ORGANISATIES_BEWERKEN': 'Organisaties bewerken',
     'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
     'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',

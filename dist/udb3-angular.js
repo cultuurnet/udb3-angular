@@ -3340,6 +3340,7 @@ angular.module('udb.core')
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
     'LABELS_BEHEREN': 'Labels beheren',
     'VOORZIENINGEN_BEWERKEN': 'Voorzieningen bewerken',
+    'ORGANISATIES_BEWERKEN': 'Organisaties bewerken',
     'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
     'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',
@@ -4349,6 +4350,7 @@ angular.module('udb.core')
     'GEBRUIKERS_BEHEREN': 'Gérer les utilisateurs',
     'LABELS_BEHEREN': 'Gérer les labels',
     'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
+    'ORGANISATIES_BEWERKEN': 'Modifier les organisations',
     'event type missing': 'Avez-vous choisi un type en <a href="#quoi" class="alert-link">étape 1</a>?',
     'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
     'start or end date missing': 'Avez-vous choisi une date de départ et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
@@ -18474,6 +18476,7 @@ angular
       'AANBOD_BEWERKEN': 'AANBOD_BEWERKEN',
       'AANBOD_MODEREREN': 'AANBOD_MODEREREN',
       'AANBOD_VERWIJDEREN': 'AANBOD_VERWIJDEREN',
+      'ORGANISATIES_BEWERKEN': 'ORGANISATIES_BEWERKEN',
       'ORGANISATIES_BEHEREN': 'ORGANISATIES_BEHEREN',
       'GEBRUIKERS_BEHEREN': 'GEBRUIKERS_BEHEREN',
       'LABELS_BEHEREN': 'LABELS_BEHEREN',
@@ -28625,7 +28628,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <h3 ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
-    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name}}' }\"></span>\n" +
+    "      <span translate-once=\"eventForm.step4.sure\" translate-values=\"{ name: '{{eventFormData.name}}' }\"></span>\n" +
     "    </h3>\n" +
     "    <ul class=\"list-inline\" ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
     "      <li>\n" +
@@ -28964,7 +28967,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/event-form.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
     "  <div class=\"alert alert-warning\" ng-show=\"showLangWarning\">\n" +
-    "    <p translate-once=\"eventForm.langWarning\"></p>\n" +
+    "    <p translate-once=\"eventForm.langWarning\" translate-values=\"{ language: '{{language}}' }\"></p>\n" +
     "  </div>\n" +
     "\n" +
     "  <udb-event-form-step1></udb-event-form-step1>\n" +
