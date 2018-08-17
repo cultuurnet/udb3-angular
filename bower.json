@@ -62,6 +62,11 @@
     "angular": "~1.5.5"
   },
   "overrides": {
+    "angular-i18n":{
+      "main":[
+       "angular-locale_nl-be.js"
+      ]
+    },
     "codemirror": {
       "main": [
         "lib/codemirror.js",
