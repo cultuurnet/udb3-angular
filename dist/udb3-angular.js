@@ -6887,7 +6887,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
      * Reset the opening hours.
      */
     resetOpeningHours: function() {
-      this.calendar.openinghours = [];
+      this.openinghours = [];
     },
 
     /**
@@ -6896,7 +6896,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
      * @returns {OpeningHoursData[]}
      */
     getOpeningHours: function() {
-      return this.calendar.openinghours;
+      return this.openinghours;
     },
 
     setCountry: function(country) {
