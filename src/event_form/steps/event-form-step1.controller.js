@@ -109,7 +109,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     else {
 
       // Reset calendar if user switched to permanent.
-      if (EventFormData.calendarType !== 'permanent') {
+      if (EventFormData.calendar.calendarType !== 'permanent') {
         EventFormData.resetCalendar();
       }
 
@@ -117,9 +117,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.isPlace = true;
 
       // Places are default permanent. Users should not see a selection.
-      EventFormData.calendarType = 'permanent';
-      EventFormData.activeCalendarType = 'permanent';
-      EventFormData.activeCalendarLabel = 'Permanent';
+      EventFormData.calendar.calendarType = 'permanent';
     }
 
     EventFormData.setEventType(eventType);

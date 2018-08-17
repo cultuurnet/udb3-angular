@@ -6717,9 +6717,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.name = {};
     this.type = '';
     this.theme = {};
-    this.calendarType = '';
-    /** @type {OpeningHoursData[]} **/
-    this.openinghours = [];
+    this.calendar = {};
     this.address = {};
     /*this.address = {
       'addressCountry' : 'BE',
@@ -12079,7 +12077,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
 
       var udbPlace = new UdbPlace();
       udbPlace.name = $scope.newPlace.name;
-      udbPlace.calendarType = 'permanent';
+      udbPlace.calendar.calendarType = 'permanent';
       udbPlace.type = {
         id : $scope.newPlace.eventType.id,
         label : eventTypeLabel,
@@ -13134,6 +13132,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.audienceType = 'everyone';
 
       this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
+
     },
 
     clone: function () {
@@ -13899,11 +13898,11 @@ function EventFormController(
       EventFormData.addTimeSpan(item.startDate, item.endDate);
     }
 
-    if (EventFormData.calendarType) {
+    if (EventFormData.calendar.calendarType) {
       EventFormData.initCalendar();
     }
 
-    EventFormData.initOpeningHours(_.get(EventFormData.calendar, 'openingHours', []));
+    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
     $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
@@ -14328,7 +14327,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     else {
 
       // Reset calendar if user switched to permanent.
-      if (EventFormData.calendarType !== 'permanent') {
+      if (EventFormData.calendar.calendarType !== 'permanent') {
         EventFormData.resetCalendar();
       }
 
@@ -14336,9 +14335,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       EventFormData.isPlace = true;
 
       // Places are default permanent. Users should not see a selection.
-      EventFormData.calendarType = 'permanent';
-      EventFormData.activeCalendarType = 'permanent';
-      EventFormData.activeCalendarLabel = 'Permanent';
+      EventFormData.calendar.calendarType = 'permanent';
     }
 
     EventFormData.setEventType(eventType);
@@ -27146,7 +27143,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
     "                <udb-form-calendar-period form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
     "                <hr>\n" +
-    "                <udb-event-form-opening-hours form-data=\"calendar.formData.calendar\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                <udb-event-form-opening-hours form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
     "                </udb-event-form-opening-hours>\n" +
     "            </div>\n" +
     "        </div>\n" +

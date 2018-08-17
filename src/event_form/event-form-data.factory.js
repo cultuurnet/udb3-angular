@@ -127,6 +127,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.audienceType = 'everyone';
 
       this.timingChanged$ = rx.createObservableFunction(this, 'timingChangedCallback');
+
     },
 
     clone: function () {
