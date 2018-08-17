@@ -1,6 +1,6 @@
 <div class="offer-form" ng-if="loaded">
   <div class="alert alert-warning" ng-show="showLangWarning">
-    <p translate-once="eventForm.langWarning"></p>
+    <p translate-once="eventForm.langWarning" translate-values="{ language: '{{language}}' }"></p>
   </div>
 
   <udb-event-form-step1></udb-event-form-step1>
