@@ -28628,7 +28628,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <h3 ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
-    "      <span translate-once=\"eventForm.step4.sure\" translate-once-value=\"{ name: '{{eventFormData.name}}' }\"></span>\n" +
+    "      <span translate-once=\"eventForm.step4.sure\" translate-values=\"{ name: '{{eventFormData.name}}' }\"></span>\n" +
     "    </h3>\n" +
     "    <ul class=\"list-inline\" ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
     "      <li>\n" +
@@ -28967,7 +28967,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/event-form.html',
     "<div class=\"offer-form\" ng-if=\"loaded\">\n" +
     "  <div class=\"alert alert-warning\" ng-show=\"showLangWarning\">\n" +
-    "    <p translate-once=\"eventForm.langWarning\"></p>\n" +
+    "    <p translate-once=\"eventForm.langWarning\" translate-values=\"{ language: '{{language}}' }\"></p>\n" +
     "  </div>\n" +
     "\n" +
     "  <udb-event-form-step1></udb-event-form-step1>\n" +
