@@ -88,13 +88,19 @@ function EventFormStep5Controller(
     {value: 'check_availability', label: translateBookingInfoUrlLabels('check_availability')},
     {value: 'subscribe', label: translateBookingInfoUrlLabels('subscribe')}
   ];
-  
+
   if (EventFormData.bookingInfo.urlLabel) {
     if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
-      $scope.bookingModel.urlLabel[$scope.mainLanguage] = _.findWhere($scope.bookingOptions, {label: EventFormData.bookingInfo.urlLabel});
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] =
+          _.findWhere($scope.bookingOptions,
+              {label: EventFormData.bookingInfo.urlLabel}
+          );
     }
     else {
-      $scope.bookingModel.urlLabel[$scope.mainLanguage] = _.findWhere($scope.bookingOptions, {label: EventFormData.bookingInfo.urlLabel[$scope.mainLanguage]});
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] =
+          _.findWhere($scope.bookingOptions,
+              {label: EventFormData.bookingInfo.urlLabel[$scope.mainLanguage]}
+          );
     }
   }
   else {
