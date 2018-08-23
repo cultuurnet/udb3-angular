@@ -30341,7 +30341,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <p class=\"text-muted\"><span translate-once=\"translate.translation\"></span> {{code}}</p>\n" +
     "                </div>\n" +
     "                <div class=\"col-sm-9\">\n" +
-    "                    <input type=\"text\" ng-blur=\"ttd.saveTranslatedDescription(code)\" class=\"form-control form-group\" ng-model=\"ttd.translatedDescriptions[code]\">\n" +
+    "                    <textarea ng-blur=\"ttd.saveTranslatedDescription(code)\" class=\"form-control form-group\" ng-model=\"ttd.translatedDescriptions[code]\"></textarea>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
