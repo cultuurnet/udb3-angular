@@ -15216,25 +15216,27 @@ function EventFormStep5Controller(
     phone : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.phone : '',
     email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
+  $scope.newBookingModel = {};
 
+  $scope.bookingOptions = [
+    {value: 'buy_tickets', label: translateBookingInfoUrlLabels('buy_tickets')},
+    {value: 'reserve_places', label: translateBookingInfoUrlLabels('reserve_places')},
+    {value: 'check_availability', label: translateBookingInfoUrlLabels('check_availability')},
+    {value: 'subscribe', label: translateBookingInfoUrlLabels('subscribe')}
+  ];
+  
   if (EventFormData.bookingInfo.urlLabel) {
     if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
-      $scope.bookingModel.urlLabel[$scope.mainLanguage] = EventFormData.bookingInfo.urlLabel;
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] = _.findWhere($scope.bookingOptions, {label: EventFormData.bookingInfo.urlLabel});
     }
     else {
-      $scope.bookingModel.urlLabel = EventFormData.bookingInfo.urlLabel;
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] = _.findWhere($scope.bookingOptions, {label: EventFormData.bookingInfo.urlLabel[$scope.mainLanguage]});
     }
   }
   else {
-    $scope.bookingModel.urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
+    $scope.bookingModel.urlLabel[$scope.mainLanguage] = $scope.bookingOptions[1];
   }
 
-  $scope.bookingOptions = [
-    translateBookingInfoUrlLabels('buy_tickets'),
-    translateBookingInfoUrlLabels('reserve_places'),
-    translateBookingInfoUrlLabels('check_availability'),
-    translateBookingInfoUrlLabels('subscribe')
-  ];
   // Add urlLabel to the option list when it is not in the options list.
   // This is mostly the case when the user is editing in another language as the offer's mainLanguage.
   if (!_.find($scope.bookingOptions, $scope.bookingModel.urlLabel[$scope.mainLanguage])) {
@@ -15259,6 +15261,7 @@ function EventFormStep5Controller(
   $scope.deleteBookingInfo = deleteBookingInfo;
   $scope.removeBookingInfo = removeBookingInfo;
   $scope.hasBookingInfo = hasBookingInfo;
+  $scope.translateBookingInfoUrlLabels = translateBookingInfoUrlLabels;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -15292,8 +15295,6 @@ function EventFormStep5Controller(
   $scope.removeImage = removeImage;
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
-
-  $scope.translateBookingInfoUrlLabels = translateBookingInfoUrlLabels;
   // Init the controller for editing.
   initEditForm();
 
@@ -15637,6 +15638,12 @@ function EventFormStep5Controller(
     }
   }
 
+  function formatBookingInfoUrlLabel(urlLabel) {
+    var returnValue = {};
+    returnValue[$scope.mainLanguage] = urlLabel[$scope.mainLanguage].label;
+    return returnValue;
+  }
+
   /**
    * Saves the booking info
    */
@@ -15659,6 +15666,8 @@ function EventFormStep5Controller(
           moment(EventFormData.bookingInfo.availabilityEnds).format() :
           ''
     }, $scope.bookingModel);
+
+    EventFormData.bookingInfo.urlLabel = formatBookingInfoUrlLabel(EventFormData.bookingInfo.urlLabel);
 
     $scope.savingBookingInfo = true;
     $scope.bookingInfoError = false;
@@ -28900,7 +28909,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                <p><strong translate-once=\"eventForm.step5.booking_exposure\"></strong></p>\n" +
     "                                <select ng-model=\"bookingModel.urlLabel[mainLanguage]\"\n" +
     "                                        ng-change=\"saveWebsitePreview()\"\n" +
-    "                                        ng-options=\"option as option for option in bookingOptions\">\n" +
+    "                                        ng-options=\"option.label for option in bookingOptions\">\n" +
     "                                </select>\n" +
     "                              </div>\n" +
     "                            </div>\n" +

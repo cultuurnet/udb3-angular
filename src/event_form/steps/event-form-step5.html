@@ -216,7 +216,7 @@
                                 <p><strong translate-once="eventForm.step5.booking_exposure"></strong></p>
                                 <select ng-model="bookingModel.urlLabel[mainLanguage]"
                                         ng-change="saveWebsitePreview()"
-                                        ng-options="option as option for option in bookingOptions">
+                                        ng-options="option.label for option in bookingOptions">
                                 </select>
                               </div>
                             </div>
