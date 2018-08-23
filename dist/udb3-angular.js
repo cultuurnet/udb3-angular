@@ -3560,7 +3560,7 @@ angular.module('udb.core')
       'Klassieke muziek': 'Klassieke muziek',
       'Jazz en blues': 'Jazz en blues',
       'Pop en rock': 'Pop en rock',
-      'Hip hop, r&b en rap': 'Hip hop, r&b en rap',
+      'Hiphop, r&b en rap': 'Hiphop, r&b en rap',
       'Dance': 'Dance',
       'Folk en wereldmuziek': 'Folk en wereldmuziek',
       'Amusementsmuziek': 'Amusementsmuziek',
