@@ -3560,7 +3560,7 @@ angular.module('udb.core')
       'Klassieke muziek': 'Klassieke muziek',
       'Jazz en blues': 'Jazz en blues',
       'Pop en rock': 'Pop en rock',
-      'Hip hop, r&b en rap': 'Hip hop, r&b en rap',
+      'Hiphop, r&b en rap': 'Hiphop, r&b en rap',
       'Dance': 'Dance',
       'Folk en wereldmuziek': 'Folk en wereldmuziek',
       'Amusementsmuziek': 'Amusementsmuziek',
@@ -10149,7 +10149,14 @@ function EventDetail(
   };
 
   $scope.translateType = function (type) {
-    return $translate.instant('offerTypes.' + type);
+    // Work around for III-2695
+    var translatedString = $translate.instant('offerTypes.' + type);
+    if (_.includes(translatedString, 'offerTypes.')) {
+      return type;
+    }
+    else {
+      return translatedString;
+    }
   };
 
   $scope.finishedLoading = function() {
@@ -20854,7 +20861,14 @@ function PlaceDetail(
   }
 
   $scope.translateType = function (type) {
-    return $translate.instant('offerTypes.' + type);
+    // Work around for III-2695
+    var translatedString = $translate.instant('offerTypes.' + type);
+    if (_.includes(translatedString, 'offerTypes.')) {
+      return type;
+    }
+    else {
+      return translatedString;
+    }
   };
 }
 PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
