@@ -15906,13 +15906,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.exportFormats = _.map(ExportFormats);
 
-  exporter.brands = [
-    {name: 'vlieg', label: 'Vlieg', logo: 'vlieg.svg'},
-    {name: 'uit', label: 'UiT', logo: 'uit.svg'},
-    {name: 'uitpas', label: 'UiTPAS', logo: 'uitpas.svg'},
-    {name: 'paspartoe', label: 'Paspartoe', logo: 'paspartoe.svg'},
-  ];
-
+  exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
 
   udbApi.getMyRoles().then(function(roles) {
