@@ -22404,8 +22404,10 @@ function imagesByLanguageFilter() {
   return function (mediaObjects, preferredLanguage) {
 
     var filtered = _.filter(mediaObjects, function(mediaObject) {
-      return mediaObject['@type'] === 'schema:ImageObject' &&
-        (mediaObject.inLanguage === preferredLanguage || angular.isUndefined(mediaObject.inLanguage));
+      if (typeof mediaObject !== 'undefined') {
+        return mediaObject['@type'] === 'schema:ImageObject' &&
+          (mediaObject.inLanguage === preferredLanguage || angular.isUndefined(mediaObject.inLanguage));
+      }
     });
     return filtered;
   };
