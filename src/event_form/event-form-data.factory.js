@@ -536,7 +536,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
                       appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
           );
         } else {
-          formData.addTimeSpan('', '');
+          formData.addTimeSpan(moment(), moment());
         }
       }
 
