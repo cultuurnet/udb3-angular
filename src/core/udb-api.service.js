@@ -923,6 +923,21 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
+  /**
+   * @param {int} page
+   * @return {Promise.<PagedCollection>}
+   */
+  this.getDashboardOrganizers = function(page) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    if (page > 1) {
+      requestConfig.params.page = page;
+    }
+
+    return $http
+        .get(appConfig.baseUrl + 'user/organizers/', requestConfig)
+        .then(returnUnwrappedData);
+  };
+
   this.uploadMedia = function (imageFile, description, copyrightHolder, language) {
     var uploadOptions = {
       url: appConfig.baseUrl + 'images/',

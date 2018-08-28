@@ -30,7 +30,7 @@
       <div ng-show="dash.pagedItemViewer.events.length">
 
         <div class="clearfix">
-          <p class="invoer-title"><span class="block-header" translate-once="dashboard.recent"></span>
+          <p class="invoer-title"><span class="block-header" translate-once="dashboard.my_activities"></span>
             <span class="pull-right" ng-if="dash.toggleAddOffer">
               <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> <span translate-once="dashboard.add"></span></a>
             </span>
@@ -60,6 +60,40 @@
               ng-show="dash.pagedItemViewer.totalItems > 0"
               max-size="10"
               ng-change="dash.updateItemViewer()">
+            </uib-pagination>
+          </div>
+
+        </div>
+      </div>
+
+      <div ng-show="dash.pagedItemViewerOrganizers.events.length">
+
+        <div class="clearfix">
+          <p class="invoer-title"><span class="block-header" translate-once="dashboard.my_organizers"></span>
+            <span class="pull-right" ng-if="dash.toggleAddOffer">
+              <a class="btn btn-primary" href="event"><i class="fa fa-plus-circle"></i> <span translate-once="dashboard.add"></span></a>
+            </span>
+          </p>
+        </div>
+
+        <div class="panel panel-default">
+          <table class="table">
+            <tbody>
+            <tr udb-dashboard-organizer-item
+                class="dashboard-item" ng-class="{'deleting': event.showDeleted}"
+                ng-repeat-start="event in dash.pagedItemViewerOrganizers.events"
+                ng-repeat-end>
+            </tr>
+            </tbody>
+          </table>
+          <div class="panel-footer">
+            <uib-pagination
+                    total-items="dash.pagedItemViewerOrganizers.totalItems"
+                    ng-model="dash.pagedItemViewerOrganizers.currentPage"
+                    items-per-page="dash.pagedItemViewerOrganizers.pageSize"
+                    ng-show="dash.pagedItemViewerOrganizers.totalItems > 0"
+                    max-size="10"
+                    ng-change="dash.updateOrganizerViewer()">
             </uib-pagination>
           </div>
 

@@ -3458,7 +3458,8 @@ angular.module('udb.core')
       'welcome': 'Welkom,',
       'no_items': 'Je hebt nog geen items toegevoegd.',
       'add_activity': 'Een activiteit of locatie toevoegen?',
-      'recent': 'Recent',
+      'my_activities': 'Mijn activiteiten en locaties',
+      'my_organizers': 'Mijn organisaties',
       'add': 'Toevoegen',
       directive: {
         'no_publish': 'Niet gepubliceerd!',
@@ -4468,7 +4469,8 @@ angular.module('udb.core')
       'welcome': 'Bienvenue,',
       'no_items': 'Vous n\'avez pas encore ajouté des items.',
       'add_activity': 'Ajouter une activité ou une location?',
-      'recent': 'Récent',
+      'my_activities': 'Mes activitées et locations',
+      'my_organizers': 'Mes organisations',
       'add': 'Ajouter',
       directive: {
         'no_publish': 'Pas publié!',
@@ -5571,6 +5573,21 @@ function UdbApi(
     return $http
       .get(appConfig.baseUrl + 'dashboard/items', requestConfig)
       .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {int} page
+   * @return {Promise.<PagedCollection>}
+   */
+  this.getDashboardOrganizers = function(page) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    if (page > 1) {
+      requestConfig.params.page = page;
+    }
+
+    return $http
+        .get(appConfig.baseUrl + 'user/organizers/', requestConfig)
+        .then(returnUnwrappedData);
   };
 
   this.uploadMedia = function (imageFile, description, copyrightHolder, language) {
@@ -7207,6 +7224,33 @@ function udbDashboardEventItem() {
 }
 })();
 
+// Source: src/dashboard/components/dashboard-organizer-item.directive.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.dashboard.directive:udbDashboardEventItem
+ * @description
+ *  Renders a dashboard item for place
+ */
+angular
+  .module('udb.dashboard')
+  .directive('udbDashboardOrganizerItem', udbDashboardOrganizerItem);
+
+/* @ngInject */
+function udbDashboardOrganizerItem() {
+  var dashboardOrganizerItemDirective = {
+    restrict: 'AE',
+    controller: 'OfferController',
+    controllerAs: 'offerCtrl',
+    templateUrl: 'templates/dashboard-item.directive.html'
+  };
+
+  return dashboardOrganizerItemDirective;
+}
+})();
+
 // Source: src/dashboard/components/dashboard-place-item.directive.js
 (function () {
 'use strict';
@@ -7373,16 +7417,22 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment
+      moment,
+      $q
   ) {
 
     var dash = this;
 
     dash.pagedItemViewer = new SearchResultViewer(50, 1);
+    dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
+    dash.updateOrganizerViewer = updateOrganizerViewer();
     dash.username = '';
     dash.hideOnlineDate = false;
+
+    var dashboardItems = udbApi.getDashboardItems(dash.pagedItemViewer.currentPage);
+    var userOrganizers = udbApi.getDashboardOrganizers(dash.pagedItemViewer.currentPage);
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
@@ -7454,6 +7504,22 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     }
     updateItemViewer();
 
+    /**
+     * @param {PagedCollection} results
+     */
+    function setOrganizerViewerResults(results) {
+      offerLocator.addPagedCollection(results);
+      dash.pagedItemViewerOrganizers.setResults(results);
+      $document.scrollTop(0);
+    }
+
+    function updateOrganizerViewer() {
+      udbApi
+          .getDashboardOrganizers(dash.pagedItemViewer.currentPage)
+          .then(setOrganizerViewerResults);
+    }
+    updateOrganizerViewer();
+
     function openEventDeleteConfirmModal(item) {
       var modalInstance = $uibModal.open({
         templateUrl: 'templates/event-delete-confirm-modal.html',
@@ -7523,7 +7589,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "$q"];
 
 })();
 })();
@@ -26407,7 +26473,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.recent\"></span>\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.my_activities\"></span>\n" +
     "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
     "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add\"></span></a>\n" +
     "            </span>\n" +
@@ -26437,6 +26503,41 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              ng-show=\"dash.pagedItemViewer.totalItems > 0\"\n" +
     "              max-size=\"10\"\n" +
     "              ng-change=\"dash.updateItemViewer()\">\n" +
+    "            </uib-pagination>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div ng-show=\"dash.pagedItemViewerOrganizers.events.length\">\n" +
+    "\n" +
+    "        <div class=\"clearfix\">\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.my_organizers\"></span>\n" +
+    "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
+    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add\"></span></a>\n" +
+    "            </span>\n" +
+    "          </p>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"panel panel-default\">\n" +
+    "          <table class=\"table\">\n" +
+    "            <tbody>\n" +
+    "            <tr udb-dashboard-organizer-item\n" +
+    "                ng-if=\"event['@type'] === 'Organizer'\"\n" +
+    "                class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
+    "                ng-repeat-start=\"event in dash.pagedItemViewerOrganizers.events\"\n" +
+    "                ng-repeat-end>\n" +
+    "            </tr>\n" +
+    "            </tbody>\n" +
+    "          </table>\n" +
+    "          <div class=\"panel-footer\">\n" +
+    "            <uib-pagination\n" +
+    "                    total-items=\"dash.pagedItemViewerOrganizers.totalItems\"\n" +
+    "                    ng-model=\"dash.pagedItemViewerOrganizers.currentPage\"\n" +
+    "                    items-per-page=\"dash.pagedItemViewerOrganizers.pageSize\"\n" +
+    "                    ng-show=\"dash.pagedItemViewerOrganizers.totalItems > 0\"\n" +
+    "                    max-size=\"10\"\n" +
+    "                    ng-change=\"dash.updateOrganizerViewer()\">\n" +
     "            </uib-pagination>\n" +
     "          </div>\n" +
     "\n" +

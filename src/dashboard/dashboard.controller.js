@@ -21,16 +21,22 @@
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment
+      moment,
+      $q
   ) {
 
     var dash = this;
 
     dash.pagedItemViewer = new SearchResultViewer(50, 1);
+    dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
+    dash.updateOrganizerViewer = updateOrganizerViewer();
     dash.username = '';
     dash.hideOnlineDate = false;
+
+    var dashboardItems = udbApi.getDashboardItems(dash.pagedItemViewer.currentPage);
+    var userOrganizers = udbApi.getDashboardOrganizers(dash.pagedItemViewer.currentPage);
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
@@ -101,6 +107,22 @@
         .then(setItemViewerResults);
     }
     updateItemViewer();
+
+    /**
+     * @param {PagedCollection} results
+     */
+    function setOrganizerViewerResults(results) {
+      offerLocator.addPagedCollection(results);
+      dash.pagedItemViewerOrganizers.setResults(results);
+      $document.scrollTop(0);
+    }
+
+    function updateOrganizerViewer() {
+      udbApi
+          .getDashboardOrganizers(dash.pagedItemViewer.currentPage)
+          .then(setOrganizerViewerResults);
+    }
+    updateOrganizerViewer();
 
     function openEventDeleteConfirmModal(item) {
       var modalInstance = $uibModal.open({
