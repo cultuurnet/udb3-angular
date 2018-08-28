@@ -7730,11 +7730,7 @@ angular
 /* @ngInject */
 function EventDuplicatorService(udbApi, offerLocator) {
   var calendarDataProperties = [
-    'calendarType',
-    'openingHours',
-    'timestamps',
-    'startDate',
-    'endDate'
+    'calendar'
   ];
 
   /**
@@ -7757,7 +7753,7 @@ function EventDuplicatorService(udbApi, offerLocator) {
     var calendarData = _.pick(formData, calendarDataProperties);
 
     return udbApi
-      .duplicateEvent(formData.apiUrl, calendarData)
+      .duplicateEvent(formData.apiUrl, calendarData.calendar)
       .then(rememberDuplicateLocationAndReturnId);
   };
 }
