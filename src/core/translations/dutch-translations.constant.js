@@ -831,8 +831,10 @@ angular.module('udb.core')
       'welcome': 'Welkom,',
       'no_items': 'Je hebt nog geen items toegevoegd.',
       'add_activity': 'Een activiteit of locatie toevoegen?',
-      'recent': 'Recent',
+      'my_activities': 'Mijn activiteiten en locaties',
+      'my_organizers': 'Mijn organisaties',
       'add': 'Toevoegen',
+      'add_organizer': 'Organisatie toevoegen',
       directive: {
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',

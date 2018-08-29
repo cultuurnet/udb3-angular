@@ -35,9 +35,6 @@
     dash.username = '';
     dash.hideOnlineDate = false;
 
-    var dashboardItems = udbApi.getDashboardItems(dash.pagedItemViewer.currentPage);
-    var userOrganizers = udbApi.getDashboardOrganizers(dash.pagedItemViewer.currentPage);
-
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
         dash.toggleAddOffer = appConfig.addOffer.toggle;
