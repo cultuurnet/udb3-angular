@@ -7682,6 +7682,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
+    dash.openCreateOrganizerModal = openCreateOrganizerModal;
     dash.updateOrganizerViewer = updateOrganizerViewer();
     dash.username = '';
     dash.hideOnlineDate = false;
@@ -7831,7 +7832,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
      * @param {Object} item
      */
     function openDeleteConfirmModal(item) {
-      var itemType = item['@id'].indexOf('event') === -1 ? 'place' : 'event';
+      var itemType = item['@id'].indexOf('place') === -1 ? 'event' : 'place';
 
       if (itemType === 'event') {
         openEventDeleteConfirmModal(item);
@@ -7839,6 +7840,22 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       else {
         openPlaceDeleteConfirmModal(item);
       }
+    }
+
+    function openCreateOrganizerModal() {
+      var modalInstance = $uibModal.open({
+        templateUrl: 'templates/event-form-organizer-modal.html',
+        controller: 'EventFormOrganizerModalController',
+        resolve: {
+          organizerName: function () {
+            return '';
+          }
+        }
+      });
+
+      modalInstance.result.then(function(organization) {
+        $state.go('management.organizers.detail', {id: organization.id});
+      });
     }
   }
   DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
@@ -26798,7 +26815,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"clearfix\">\n" +
     "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.my_organizers\"></span>\n" +
     "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
-    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add_organizer\"></span></a>\n" +
+    "              <a class=\"btn btn-primary\" ng-click=\"dash.openCreateOrganizerModal()\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add_organizer\"></span></a>\n" +
     "            </span>\n" +
     "          </p>\n" +
     "        </div>\n" +

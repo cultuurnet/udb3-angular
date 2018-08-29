@@ -30,6 +30,7 @@
     dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
+    dash.openCreateOrganizerModal = openCreateOrganizerModal;
     dash.updateOrganizerViewer = updateOrganizerViewer();
     dash.username = '';
     dash.hideOnlineDate = false;
@@ -179,7 +180,7 @@
      * @param {Object} item
      */
     function openDeleteConfirmModal(item) {
-      var itemType = item['@id'].indexOf('event') === -1 ? 'place' : 'event';
+      var itemType = item['@id'].indexOf('place') === -1 ? 'event' : 'place';
 
       if (itemType === 'event') {
         openEventDeleteConfirmModal(item);
@@ -187,6 +188,22 @@
       else {
         openPlaceDeleteConfirmModal(item);
       }
+    }
+
+    function openCreateOrganizerModal() {
+      var modalInstance = $uibModal.open({
+        templateUrl: 'templates/event-form-organizer-modal.html',
+        controller: 'EventFormOrganizerModalController',
+        resolve: {
+          organizerName: function () {
+            return '';
+          }
+        }
+      });
+
+      modalInstance.result.then(function(organization) {
+        $state.go('management.organizers.detail', {id: organization.id});
+      });
     }
   }
 
