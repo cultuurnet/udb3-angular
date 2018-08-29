@@ -14,8 +14,8 @@ angular
 function udbDashboardOrganizerItem() {
   var dashboardOrganizerItemDirective = {
     restrict: 'AE',
-    controller: 'OfferController',
-    controllerAs: 'offerCtrl',
+    controller: 'OrganizerController',
+    controllerAs: 'organizerCtrl',
     templateUrl: 'templates/dashboard-organizer-item.directive.html'
   };
 

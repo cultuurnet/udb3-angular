@@ -1,6 +1,6 @@
 <td>
   <strong>
-    <a ng-href="{{ event.url  + '/preview' }}" ng-bind="::event.name"></a>
+    <a ng-href="{{ event.detailUrl }}" ng-bind="::event.name"></a>
   </strong>
   <br/>
   <small ng-if="event.address">
@@ -9,25 +9,20 @@
   </small>
 </td>
 
-<td ng-if="!offerCtrl.fetching">
-  <span ng-if="::!offerCtrl.offerExpired">
+<td ng-if="!organizerCtrl.fetching">
+  <span ng-if="!event.deleted">
     <div class="pull-right btn-group" uib-dropdown>
-      <a class="btn btn-default" ng-href="{{ event.url + '/edit' }}" translate-once="dashboard.directive.edit"></a>
+      <a class="btn btn-default" ng-href="{{ event.detailUrl + '/edit' }}" translate-once="dashboard.directive.edit"></a>
       <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
       <ul uib-dropdown-menu role="menu">
         <li role="menuitem">
-          <a ng-href="{{ event.url  + '/preview' }}" translate-once="dashboard.directive.example"></a>
+          <a ng-href="{{ event.detailUrl }}" translate-once="dashboard.directive.example"></a>
         </li>
         <li class="divider"></li>
         <li role="menuitem">
           <a href="" ng-click="dash.openDeleteConfirmModal(event)" translate-once="dashboard.directive.delete"></a>
         </li>
       </ul>
-    </div>
-  </span>
-  <span ng-if="::offerCtrl.offerExpired">
-    <div class="pull-right">
-      <span class="text-muted" translate-once="dashboard.directive.expired_event"></span>
     </div>
   </span>
 </td>
