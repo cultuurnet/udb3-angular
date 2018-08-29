@@ -3461,6 +3461,7 @@ angular.module('udb.core')
       'my_activities': 'Mijn activiteiten en locaties',
       'my_organizers': 'Mijn organisaties',
       'add': 'Toevoegen',
+      'add_organizer': 'Organisatie toevoegen',
       directive: {
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',
@@ -4472,6 +4473,7 @@ angular.module('udb.core')
       'my_activities': 'Mes activitées et locations',
       'my_organizers': 'Mes organisations',
       'add': 'Ajouter',
+      'add_organizer': 'Ajouter une organisation',
       directive: {
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',
@@ -4855,7 +4857,16 @@ function UdbApi(
     function cacheAndResolveOffer(jsonOffer) {
       var type = jsonOffer['@id'].split('/').reverse()[1];
 
-      var offer = (type === 'event') ? new UdbEvent() : new UdbPlace();
+      var offer = {};
+      if (type === 'event') {
+        offer = new UdbEvent();
+      }
+      else if (type === 'place') {
+        offer = new UdbPlace();
+      }
+      else {
+        offer = new UdbOrganizer();
+      }
       offer.parseJson(jsonOffer);
       offerCache.put(offerLocation, offer);
       deferredOffer.resolve(offer);
@@ -7244,7 +7255,7 @@ function udbDashboardOrganizerItem() {
     restrict: 'AE',
     controller: 'OfferController',
     controllerAs: 'offerCtrl',
-    templateUrl: 'templates/dashboard-item.directive.html'
+    templateUrl: 'templates/dashboard-organizer-item.directive.html'
   };
 
   return dashboardOrganizerItemDirective;
@@ -7430,9 +7441,6 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.updateOrganizerViewer = updateOrganizerViewer();
     dash.username = '';
     dash.hideOnlineDate = false;
-
-    var dashboardItems = udbApi.getDashboardItems(dash.pagedItemViewer.currentPage);
-    var userOrganizers = udbApi.getDashboardOrganizers(dash.pagedItemViewer.currentPage);
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
@@ -26377,6 +26385,43 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/dashboard-organizer-item.directive.html',
+    "<td>\n" +
+    "  <strong>\n" +
+    "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
+    "  </strong>\n" +
+    "  <br/>\n" +
+    "  <small ng-if=\"event.address\">\n" +
+    "    <span ng-bind=\"::event.address.streetAddress\"></span>,\n" +
+    "    <span ng-bind=\"::event.address.postalCode\"></span> <span ng-bind=\"::event.address.addressLocality\"></span>\n" +
+    "  </small>\n" +
+    "</td>\n" +
+    "\n" +
+    "<td ng-if=\"!offerCtrl.fetching\">\n" +
+    "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
+    "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
+    "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "      <ul uib-dropdown-menu role=\"menu\">\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a ng-href=\"{{ event.url  + '/preview' }}\" translate-once=\"dashboard.directive.example\"></a>\n" +
+    "        </li>\n" +
+    "        <li class=\"divider\"></li>\n" +
+    "        <li role=\"menuitem\">\n" +
+    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\" translate-once=\"dashboard.directive.delete\"></a>\n" +
+    "        </li>\n" +
+    "      </ul>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
+    "  <span ng-if=\"::offerCtrl.offerExpired\">\n" +
+    "    <div class=\"pull-right\">\n" +
+    "      <span class=\"text-muted\" translate-once=\"dashboard.directive.expired_event\"></span>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
+    "</td>\n"
+  );
+
+
   $templateCache.put('templates/event-delete-confirm-modal.html',
     "<div class=\"modal-body\">\n" +
     "\n" +
@@ -26514,7 +26559,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"clearfix\">\n" +
     "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.my_organizers\"></span>\n" +
     "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
-    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add\"></span></a>\n" +
+    "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add_organizer\"></span></a>\n" +
     "            </span>\n" +
     "          </p>\n" +
     "        </div>\n" +
@@ -26523,7 +26568,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <table class=\"table\">\n" +
     "            <tbody>\n" +
     "            <tr udb-dashboard-organizer-item\n" +
-    "                ng-if=\"event['@type'] === 'Organizer'\"\n" +
     "                class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
     "                ng-repeat-start=\"event in dash.pagedItemViewerOrganizers.events\"\n" +
     "                ng-repeat-end>\n" +

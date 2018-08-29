@@ -203,7 +203,16 @@ function UdbApi(
     function cacheAndResolveOffer(jsonOffer) {
       var type = jsonOffer['@id'].split('/').reverse()[1];
 
-      var offer = (type === 'event') ? new UdbEvent() : new UdbPlace();
+      var offer = {};
+      if (type === 'event') {
+        offer = new UdbEvent();
+      }
+      else if (type === 'place') {
+        offer = new UdbPlace();
+      }
+      else {
+        offer = new UdbOrganizer();
+      }
       offer.parseJson(jsonOffer);
       offerCache.put(offerLocation, offer);
       deferredOffer.resolve(offer);
