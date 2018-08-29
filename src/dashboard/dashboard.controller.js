@@ -21,7 +21,8 @@
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment
+      moment,
+      $state
   ) {
 
     var dash = this;
