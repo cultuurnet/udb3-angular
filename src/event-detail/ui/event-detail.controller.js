@@ -362,7 +362,14 @@ function EventDetail(
   };
 
   $scope.translateType = function (type) {
-    return $translate.instant('offerTypes.' + type);
+    // Work around for III-2695
+    var translatedString = $translate.instant('offerTypes.' + type);
+    if (_.includes(translatedString, 'offerTypes.')) {
+      return type;
+    }
+    else {
+      return translatedString;
+    }
   };
 
   $scope.finishedLoading = function() {

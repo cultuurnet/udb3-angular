@@ -3560,7 +3560,7 @@ angular.module('udb.core')
       'Klassieke muziek': 'Klassieke muziek',
       'Jazz en blues': 'Jazz en blues',
       'Pop en rock': 'Pop en rock',
-      'Hip hop, r&b en rap': 'Hip hop, r&b en rap',
+      'Hiphop, r&b en rap': 'Hiphop, r&b en rap',
       'Dance': 'Dance',
       'Folk en wereldmuziek': 'Folk en wereldmuziek',
       'Amusementsmuziek': 'Amusementsmuziek',
@@ -7730,11 +7730,7 @@ angular
 /* @ngInject */
 function EventDuplicatorService(udbApi, offerLocator) {
   var calendarDataProperties = [
-    'calendarType',
-    'openingHours',
-    'timestamps',
-    'startDate',
-    'endDate'
+    'calendar'
   ];
 
   /**
@@ -7757,7 +7753,7 @@ function EventDuplicatorService(udbApi, offerLocator) {
     var calendarData = _.pick(formData, calendarDataProperties);
 
     return udbApi
-      .duplicateEvent(formData.apiUrl, calendarData)
+      .duplicateEvent(formData.apiUrl, calendarData.calendar)
       .then(rememberDuplicateLocationAndReturnId);
   };
 }
@@ -10149,7 +10145,14 @@ function EventDetail(
   };
 
   $scope.translateType = function (type) {
-    return $translate.instant('offerTypes.' + type);
+    // Work around for III-2695
+    var translatedString = $translate.instant('offerTypes.' + type);
+    if (_.includes(translatedString, 'offerTypes.')) {
+      return type;
+    }
+    else {
+      return translatedString;
+    }
   };
 
   $scope.finishedLoading = function() {
@@ -13541,7 +13544,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
                       appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
           );
         } else {
-          formData.addTimeSpan('', '');
+          formData.addTimeSpan(moment(), moment());
         }
       }
 
@@ -15906,13 +15909,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.exportFormats = _.map(ExportFormats);
 
-  exporter.brands = [
-    {name: 'vlieg', label: 'Vlieg', logo: 'vlieg.svg'},
-    {name: 'uit', label: 'UiT', logo: 'uit.svg'},
-    {name: 'uitpas', label: 'UiTPAS', logo: 'uitpas.svg'},
-    {name: 'paspartoe', label: 'Paspartoe', logo: 'paspartoe.svg'},
-  ];
-
+  exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
 
   udbApi.getMyRoles().then(function(roles) {
@@ -20860,7 +20857,14 @@ function PlaceDetail(
   }
 
   $scope.translateType = function (type) {
-    return $translate.instant('offerTypes.' + type);
+    // Work around for III-2695
+    var translatedString = $translate.instant('offerTypes.' + type);
+    if (_.includes(translatedString, 'offerTypes.')) {
+      return type;
+    }
+    else {
+      return translatedString;
+    }
   };
 }
 PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
@@ -22396,8 +22400,10 @@ function imagesByLanguageFilter() {
   return function (mediaObjects, preferredLanguage) {
 
     var filtered = _.filter(mediaObjects, function(mediaObject) {
-      return mediaObject['@type'] === 'schema:ImageObject' &&
-        (mediaObject.inLanguage === preferredLanguage || angular.isUndefined(mediaObject.inLanguage));
+      if (typeof mediaObject !== 'undefined') {
+        return mediaObject['@type'] === 'schema:ImageObject' &&
+          (mediaObject.inLanguage === preferredLanguage || angular.isUndefined(mediaObject.inLanguage));
+      }
     });
     return filtered;
   };
