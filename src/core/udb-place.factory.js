@@ -180,7 +180,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
         // Only add terms related to locations.
         angular.forEach(jsonPlace.terms, function (term) {
-          angular.forEach(placeCategories, function(category) {
+          angular.forEach(placeCategories.items, function(category) {
             if (term.id === category.id) {
               place.type = term;
               return;

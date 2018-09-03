@@ -21,8 +21,8 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
   $scope.eventFormData = EventFormData;
 
   // Categories, event types, places.
-  $scope.eventTypeLabels = eventCategories;
-  $scope.placeLabels = placeCategories;
+  $scope.eventTypeLabels = eventCategories.items;
+  $scope.placeLabels = placeCategories.items;
 
   $scope.canRefine = false;
   $scope.canRefineByGroups = false;
@@ -46,7 +46,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     var eventTypeId = eventFormData.getEventType().id;
     var eventThemeId = eventFormData.getTheme().id;
 
-    var eventTypes = _.union(eventCategories, placeCategories);
+    var eventTypes = _.union(eventCategories.items, placeCategories.items);
     var type = _.findWhere(eventTypes, {id: eventTypeId});
     var theme;
 
