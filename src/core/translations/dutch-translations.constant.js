@@ -955,7 +955,7 @@ angular.module('udb.core')
       'Volkssporten': 'Volkssporten',
       'Omnisport en andere': 'Omnisport en andere',
       'Tekst- en muziektheater': 'Tekst- en muziektheater',
-      'Humor comedy': 'Humor comedy',
+      'Humor en comedy': 'Humor en comedy',
       'Musical': 'Musical',
       'Figuren en poppentheater': 'Figuren en poppentheater',
       'Opera en operette': 'Opera en operette',
@@ -965,7 +965,12 @@ angular.module('udb.core')
       'Thema onbepaald': 'Thema onbepaald',
       'Circus': 'Circus',
       'Voeding': 'Voeding',
-      'Economie': 'Economie'
+      'Economie': 'Economie',
+      'Avontuur': 'Avontuur',
+      'Natuur': 'Natuur',
+      'Sport': 'Sport',
+      'Technologie': 'Technologie',
+      'Koken': 'Koken'
     },
     offerThemesGroups: {
       'Dans': 'Dans',
