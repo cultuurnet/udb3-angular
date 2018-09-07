@@ -25,7 +25,7 @@ describe('Label Select Component', function() {
     expect(ctrl.labels[1].name).toBe('Deadpool');
   });
 
-  it('should evalutate whether the length criteria are met', function() {
+  it('should evalualate whether the length criteria are met', function() {
     var ctrl = getComponentController(bindings);
 
     // needs to be higher than or equal to 2
@@ -33,6 +33,20 @@ describe('Label Select Component', function() {
     // needs to be less than or equal to 255
     expect(ctrl.areLengthCriteriaMet(256)).toBe(false);
     expect(ctrl.areLengthCriteriaMet(45)).toBe(true);
+  });
+
+  it('should evalualate whether the content criteria are met', function() {
+    var ctrl = getComponentController(bindings);
+
+    var invalidLabels = ['_underscore', 'leesteken!', '#hashtag', 'sp.a', '\"quote\"' ];
+    for(var label = 0; label < invalidLabels.length; label++) {
+      expect(ctrl.areContentCriteriaMet(invalidLabels[label])).toBe(false);
+    }
+
+    var validLabels = ['week_van_het_bos', '14-18', 'sp-a'];
+    for(var label = 0; label < validLabels.length; label++) {
+      expect(ctrl.areContentCriteriaMet(validLabels[label])).toBe(true);
+    }
   });
 
   it('should not add the same label twice', function() {
@@ -55,21 +69,10 @@ describe('Label Select Component', function() {
     expect(ctrl.createLabel(bigLabel)).toBe(undefined);
   });
 
-  it('should remove a semicolon from a label when adding a label', function() {
-    var ctrl = getComponentController(bindings);
-
-    // removes last semicolon
-    expect(ctrl.createLabel('spinazie pesto;')).toEqual({name:'spinazie pesto'});
-
-    // removes stray semicolons (this should never be needed)
-    expect(ctrl.createLabel('spinazie; pesto; komkommer;')).toEqual({name:'spinazie pesto komkommer'});
-  });
-
   it('should find suggestions according to supplied search string', function(done) {
     var ctrl = getComponentController(bindings);
 
     expect(ctrl.availableLabels).toEqual([]);
-    expect(ctrl.refreshing).toBe(false);
 
     var suggestions = [{name: 'one'}, {name: 'two'}];
     offerLabeller.getSuggestions.and.returnValue($q.resolve(suggestions));
@@ -79,7 +82,6 @@ describe('Label Select Component', function() {
       expect(ctrl.availableLabels).toEqual([{name: 'one'}, {name: 'two'}, {name: 'Blub'}]);
       done();
     });
-    expect(ctrl.refreshing).toEqual(true);
     $scope.$digest();
   });
 
@@ -87,7 +89,6 @@ describe('Label Select Component', function() {
     var ctrl = getComponentController(bindings);
 
     expect(ctrl.availableLabels).toEqual([]);
-    expect(ctrl.refreshing).toBe(false);
 
     var suggestions = [{name: 'one', uuid: 'uuid1'}, {name: 'two', uuid: 'uuid2'}];
     offerLabeller.getSuggestions.and.returnValue($q.resolve(suggestions));
@@ -97,7 +98,23 @@ describe('Label Select Component', function() {
       expect(ctrl.availableLabels).toEqual([{name: 'one', uuid: 'uuid1'}, {name: 'two', uuid: 'uuid2'}]);
       done();
     });
-    expect(ctrl.refreshing).toEqual(true);
     $scope.$digest();
   });
+
+  it('should not suggest a label wherefore the content criteria are not met', function(done) {
+    var ctrl = getComponentController(bindings);
+
+    expect(ctrl.availableLabels).toEqual([]);
+
+    var suggestions = [{name: 'wrong!', uuid: 'uuid1'}, {name: 'valid', uuid: 'uuid2'}];
+    offerLabeller.getSuggestions.and.returnValue($q.resolve(suggestions));
+
+    ctrl.suggestLabels('one').then(function() {
+      expect(offerLabeller.getSuggestions).toHaveBeenCalledWith('one', 6);
+      expect(ctrl.availableLabels).toEqual([{name: 'valid', uuid: 'uuid2'},{name: 'one'}]);
+      done();
+    });
+    $scope.$digest();
+  });
+
 });

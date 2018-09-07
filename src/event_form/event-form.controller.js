@@ -26,6 +26,7 @@ function EventFormController(
 
   // Other controllers won't load until this boolean is set to true.
   $scope.loaded = false;
+  $scope.showLangWarning = false;
 
   // Make sure we start off with clean data every time this controller gets called
   EventFormData.init();
@@ -48,15 +49,10 @@ function EventFormController(
   }
 
   function preselectDate(calendarConfig) {
-    EventFormData.calendarType = 'single';
-    EventFormData.addTimestamp(
-      new Date(calendarConfig.date),
-      calendarConfig.startTime || '',
-      calendarConfig.startTime ?
-        moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
-      calendarConfig.endTime || '',
-      calendarConfig.endTime ?
-        moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
+    EventFormData.calendar.calendarType = 'single';
+    EventFormData.addTimeSpan(
+      calendarConfig.startTime ? moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm') : '',
+      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : ''
     );
     EventFormData.initCalendar();
     //EventFormData.showStep(3);
@@ -89,7 +85,7 @@ function EventFormController(
 
       // Copy location.
       if (offer.location && offer.location.id) {
-        var location = jsonLDLangFilter(offer.location, 'nl');
+        var location = jsonLDLangFilter(offer.location, offer.mainLanguage, true);
         EventFormData.location = {
           id : location.id.split('/').pop(),
           name : location.name,
@@ -107,8 +103,13 @@ function EventFormController(
 
       // Places only have an address
       if (offer.address) {
-        EventFormData.address = offer.address;
+        var translatedOffer = jsonLDLangFilter(offer, offer.mainLanguage, true);
+        EventFormData.address = translatedOffer.address;
       }
+    }
+
+    if ($translate.use() !== $scope.language) {
+      $scope.showLangWarning = true;
     }
   }
 
@@ -179,29 +180,29 @@ function EventFormController(
       }
     }
 
-    EventFormData.calendarType = item.calendarType === 'multiple' ? 'single' : item.calendarType;
+    EventFormData.calendar.calendarType = item.calendarType; // === 'multiple' ? 'single' : item.calendarType;
 
     // Set correct date object for start and end.
     if (item.startDate) {
-      EventFormData.startDate = moment(item.startDate).toDate();
+      EventFormData.calendar.startDate = moment(item.startDate).toDate();
     }
 
     if (item.endDate) {
-      EventFormData.endDate = moment(item.endDate).toDate();
+      EventFormData.calendar.endDate = moment(item.endDate).toDate();
     }
 
-    // SubEvents are timestamps.
+    // SubEvents are timeSpans.
     if (item.calendarType === 'multiple' && item.subEvent) {
       for (var j = 0; j < item.subEvent.length; j++) {
         var subEvent = item.subEvent[j];
-        addTimestamp(subEvent.startDate, subEvent.endDate);
+        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate);
       }
     }
     else if (item.calendarType === 'single') {
-      addTimestamp(item.startDate, item.endDate);
+      EventFormData.addTimeSpan(item.startDate, item.endDate);
     }
 
-    if (EventFormData.calendarType) {
+    if (EventFormData.calendar.calendarType) {
       EventFormData.initCalendar();
     }
 
@@ -214,28 +215,6 @@ function EventFormController(
     EventFormData.showStep(3);
     EventFormData.showStep(4);
     EventFormData.showStep(5);
-
-  }
-
-  /**
-   * Add a timestamp based on a given start and enddate.
-   */
-  function addTimestamp(startDateString, endDateString) {
-
-    var startDate = moment(startDateString);
-    var endDate = moment(endDateString);
-
-    var startHour = startDate.format('HH:mm');
-    var endHour = endDate.format('HH:mm');
-
-    startHour = startHour === '00:00' ? '' : startHour;
-    endHour = endHour === '00:00' ? '' : endHour;
-
-    var startHourAsDate = moment(startDateString).toDate();
-    var endHourAsDate = moment(endDateString).toDate();
-
-    // reset startDate hours to 0 to avoid date indication problems with udbDatepicker
-    EventFormData.addTimestamp(startDate.hours(0).toDate(), startHour, startHourAsDate, endHour, endHourAsDate);
 
   }
 }

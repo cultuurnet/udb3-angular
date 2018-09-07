@@ -22,8 +22,15 @@ angular
 
 /* @ngInject */
 function ImageDetailController($scope, $translate) {
+  $scope.language = $translate.use() || 'nl';
+
   angular.forEach($scope.images, function(image) {
-    image.main = (image.contentUrl === $scope.main);
+    if (image.contentUrl === $scope.main) {
+      image.main = true;
+      var reindexedMedia = _.without($scope.images, image);
+      reindexedMedia.unshift(image);
+      $scope.images = reindexedMedia;
+    }
   });
 
   $scope.translateImageDetail = function (label, translationData) {

@@ -1,7 +1,7 @@
 <div class="calendar-type-picker">
     <div class="calendar-type-options">
 
-        <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': calendar.type === 'single'}">
+        <a href="#" ng-click="calendar.setType('single')" ng-class="{'selected': calendar.type === 'single' || calendar.type === 'multiple' }">
             <img src="../images/form-calendar/days.svg" class="calendar-type-icon">
             <p class="text-center"><strong translate-once="calendar.one_more_days"></strong></p></a><span class="or" translate-once="calendar.or"></span><a href="#" ng-click="calendar.setType('periodic')" ng-class="{'selected': calendar.type === 'periodic' || calendar.type === 'permanent'}">
             <img src="../images/form-calendar/period.svg" class="calendar-type-icon">
@@ -35,7 +35,7 @@
                                 <input type="checkbox"
                                        id="time-span-{{$index}}-has-timing-info"
                                        ng-model="timeSpan.allDay"
-                                       ng-change="calendar.instantTimeSpanChanged()"
+                                       ng-change="calendar.toggleAllDay(timeSpan)"
                                        class="all-day-check"> <span translate-once="calendar.whole_day_label"></span>
                             </label>
                         </div>

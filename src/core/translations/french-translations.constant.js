@@ -364,7 +364,26 @@ angular.module('udb.core')
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
       'no_age': 'Pas d\'information de l\'âge',
-      'publiq_url': 'Voir sur UiT in Vlaanderen'
+      'publiq_url': 'Voir sur UiT in Vlaanderen',
+      'translate': 'Traduire'
+    },
+    translate: {
+      'ready': 'Prêt à traduire',
+      'translate': 'traduire',
+      'original': 'Original',
+      'translation': 'Traduction',
+      'description': 'Description',
+      'title': 'Titre',
+      'tariff': 'Prix',
+      'address': 'Adres',
+      'street': 'Rue et numéro'
+    },
+    labels: {
+      'what': 'Ajoutez des mots clés courts et spécifiques.',
+      'invalid': 'Cela semble être un label invalide. Un label ',
+      'chars': 'se compose uniquement de lettres ou de chiffres',
+      'excluded': 'ne contient que \'-\' et \'_\', mais ne peut pas commençer avec ces caractères',
+      'length': 'compte de 2 à 50 caractères'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
@@ -409,7 +428,7 @@ angular.module('udb.core')
       'title': 'Ajouter des prix',
       'base': 'Tarif de base',
       'target_group': 'Public cible',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'add_price': 'Ajouter prix',
       'add_tarriff': 'Ajouter tarif',
@@ -432,10 +451,12 @@ angular.module('udb.core')
       'category_help': 'Choisissez une catégorie qui décrit le mieux cette location.',
       'category_validation': 'Catégorie est un domaine obligatoire.',
       'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
+      'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter'
     },
     eventForm: {
+      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
       step1: {
         'title': 'Qu\'est-ce que vous voulez ajouter?',
         'label_event': 'Un événement',
@@ -464,6 +485,7 @@ angular.module('udb.core')
         'street': 'Rue et numéro',
         'placeholder_street': 'Rue de l\'église 1',
         'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
+        'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
         'ok': 'OK'
       },
       step4: {
@@ -541,6 +563,9 @@ angular.module('udb.core')
           'Adults': 'Adultes',
           'Seniors': 'Aînés',
           'Custom': 'Autres',
+          'from': 'De',
+          'till': 'à',
+          'age': 'ans'
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -562,6 +587,18 @@ angular.module('udb.core')
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
         'online_from': 'En ligne à partir de'
+      },
+      timeTracker: {
+        'automatic_saved': 'Sauvegardé automatic à',
+        'hour': 'heures',
+      },
+      embargo: {
+        'title': 'Choisissez une date de publication',
+        'help': 'A partir de quand cela peut-il apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous pouvez définier cette date une seule fois.</em>',
+        'error_past': 'Une date de publication ne peut pas être antérieure.',
+        'error_empty': 'Choisissez une date de publication.',
+        'cancel': 'Annuler',
+        'ready': 'Prêt à modifier'
       }
     },
     calendar: {
@@ -674,6 +711,7 @@ angular.module('udb.core')
     'GEBRUIKERS_BEHEREN': 'Gérer les utilisateurs',
     'LABELS_BEHEREN': 'Gérer les labels',
     'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
+    'ORGANISATIES_BEWERKEN': 'Modifier les organisations',
     'event type missing': 'Avez-vous choisi un type en <a href="#quoi" class="alert-link">étape 1</a>?',
     'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
     'start or end date missing': 'Avez-vous choisi une date de départ et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
@@ -754,12 +792,14 @@ angular.module('udb.core')
         'address_error': 'Veuillez introduire une adresse valable.',
         'contact_error': 'Veuillez introduire l\'information du contact correctement.',
         'close': 'Fermer',
-        'save': 'Sauver'
+        'save': 'Sauver',
+        'label_name': 'Nom'
       },
       address: {
         'label_street': 'Rue et numéro',
         'help_street': 'Veuillez introduire la rue et le numéro.',
         'label_city': 'Commune',
+        'placeholder_city': 'Commune of code postal',
         'help_city': 'Il y a eu un problème dans la collection des villes.',
         'error_city': 'Veuillez introduire une commune.',
         'change': 'Modifier'
@@ -805,6 +845,167 @@ angular.module('udb.core')
         'error': 'Il y a eu une erreur dans la suppression de l\'activité.',
         'cancel': 'Annuler',
         'delete': 'Supprimer'
+      }
+    },
+    offerTypes: {
+      'Concert': 'Concert',
+      'Theatervoorstelling': 'Théâtre',
+      'Lezing of congres': 'Conférence ou congrès',
+      'Dansvoorstelling': 'Spectacle de danse',
+      'Festival': 'Festival',
+      'Toeristisch evenement': 'Événement touristique',
+      'Film': 'Cinéma',
+      'Sportwedstrijd bekijken': 'Assister à une compétition sportive',
+      'Cursus of workshop': 'Cours ou atelier',
+      'Sportactiviteit': 'Activité sportive',
+      'Kamp of vakantie': 'Camp de vacance',
+      'Begeleide rondleiding': 'Tour ou excursion guidé',
+      'Route': 'Route',
+      'Spel of quiz': 'Jeu ou quiz',
+      'Party of fuif': 'Soirée',
+      'Kermis of feestelijkheid': 'Foire ou festivité',
+      'Congres of studiedag': 'Congrès ou journée d\'étude',
+      'Eten en drinken': 'Manger et boire',
+      'Thema of pretpark': 'Parc à thème ou parc d\'attractions',
+      'Jeugdhuis of jeugdcentrum': 'Maison de jeunes ou centre de jeunesse',
+      'Cultuur- of ontmoetingscentrum': 'Centre culturel ou centre de réunion',
+      'Discotheek': 'Discothèque',
+      'Bibliotheek of documentatiecentrum': 'Bibliothèque ou centre de documentation',
+      'Bioscoop': 'Cinéma',
+      'Horeca': 'Horeca',
+      'Openbare ruimte': 'Espace public',
+      'Tentoonstelling': 'Exposition',
+      'Markt of braderie': 'Marché ou braderie',
+      'Natuurgebied of park': 'Zone naturel ou parc',
+      'Beurs': 'Foire / exposition',
+      'Monument': 'Monument',
+      'Opendeurdag': 'Journée portes ouvertes',
+      'Recreatiedomein of centrum': 'Centre de loisirs ou centre de récréation',
+      'Park of tuin': 'Jardin ou parc',
+      'Archeologische Site': 'Site Archeologique',
+      'School of onderwijscentrum': 'École ou centre éducatif',
+      'Sportcentrum': 'Centre sportif',
+      'Winkel': 'Magasin',
+      'Museum of galerij': 'Musée ou galerie',
+      'Zaal of expohal': 'Hall ou salle d\'expo'
+    },
+    offerThemes: {
+      'Antiek en brocante': 'Antiquités ou brocantes',
+      'Architectuur': 'Architecture',
+      'Audiovisuele kunst': 'Arts audiovisuels',
+      'Beeldhouwkunst': 'Sculpture',
+      'Fotografie': 'Photographie',
+      'Grafiek': 'Art grafique',
+      'Installatiekunst': 'Art d\'installation',
+      'Schilderkunst': 'Peinture',
+      'Decoratieve kunst': 'Arts décoratives',
+      'Design': 'Design',
+      'Mode': 'Mode',
+      'Meerdere kunstvormen': 'Arts multiples',
+      'Ballet en klassieke dans': 'Ballet et danse classique',
+      'Volksdans en werelddans': 'Danse folklorique et mondiale',
+      'Stijl en salondansen': 'Danse de salon et stylée',
+      'Moderne dans': 'Danse moderne',
+      'Erfgoed': 'Patrimoine',
+      'Avontuur': 'Aventure',
+      'Natuur': 'Nature',
+      'Sport': 'Sport',
+      'Technologie': 'La technologie',
+      'Koken': 'La cuisine',
+      'Actie en avontuur': 'Action et aventure',
+      'Animatie en kinderfilms': 'Films animés et films pour enfants',
+      'Documentaires en reportages': 'Documentaires et reportages',
+      'Griezelfilm of horror': 'Films d\'épouvantes ou orreurs',
+      'Historische film': 'Films historiques',
+      'Komedie': 'Comédie',
+      'Kortfilm': 'Court métrage',
+      'Filmmusical': 'Comédie musicale',
+      'Drama': 'Films dramatiques',
+      'Science fiction': 'Science fiction',
+      'Cinefiel': 'Cinéphile',
+      'Thriller': 'Films à suspense',
+      'Meerdere filmgenres': 'Films de tous genres',
+      'Geschiedenis': 'Histoire',
+      'Gezondheid en wellness': 'Santé et bien-être',
+      'Landbouw en platteland': 'Agriculture et campagne',
+      'Milieu en natuur': 'Environnement et nature',
+      'Literatuur': 'Litérature',
+      'Poezie': 'Poésie',
+      'Fictie': 'Fiction',
+      'Non fictie': 'Non fiction',
+      'Strips': 'Bandes dessinés',
+      'Klassieke muziek': 'Musique classique',
+      'Jazz en blues': 'Jazz et blues',
+      'Pop en rock': 'Pop et rock',
+      'Hiphop, r&b en rap': 'Hiphop, r&b et rap',
+      'Dance': 'Dance',
+      'Folk en wereldmuziek': 'Musique folklorique et mondiale',
+      'Amusementsmuziek': 'Cabaret',
+      'Politiek en maatschappij': 'Politique et société',
+      'Creativiteit': 'Créativité',
+      'Computer en techniek': 'Ordinateurs et technologie',
+      'Opvoeding': 'Éducation',
+      'Persoon en relaties': 'Hommes et relations',
+      'Interculturele vorming': 'Formation interculturelle',
+      'Kunst en kunsteducatie': 'Arts et formation artistique',
+      'Gezondheid en zorg': 'Santé et soins',
+      'Samenleving': 'Vivre en société',
+      'Bal en racketsport': 'Sports au ballons et raquettes',
+      'Atletiek, wandelen en fietsen': 'Athlétisme, marche et cyclisme',
+      'Zwemmen en watersport': 'Natation et sports nautiques',
+      'Fitness, gymnastiek, dans en vechtsport': 'Fitness, gymnastique, danse et arts martiaux',
+      'Outdoor en adventure': 'Plein air et aventure',
+      'Lucht en motorsport': 'Sports aero et moteurs',
+      'Volkssporten': 'Sports folkloriques',
+      'Omnisport en andere': 'Omnisports et autres',
+      'Tekst en muziektheater': 'Théâtre dramatique et musical',
+      'Humor en comedy': 'Comédie',
+      'Musical': 'Comédie musicale',
+      'Figuren en poppentheater': 'Théâtre de marionnettes',
+      'Opera en operette': 'Opéra et opérette',
+      'Mime en bewegingstheater': 'Mime et theéâtre de mouvements',
+      'Wetenschap': 'Science',
+      'Zingeving, filosofie en religie': 'Sense de la vie, philosophie et religion',
+      'Thema onbepaald': 'Thème non défini',
+      'Circus': 'Cirque',
+      'Voeding': 'Nutrition',
+      'Economie': 'Économie'
+    },
+    offerThemesGroups: {
+      'Dans': 'Dance',
+      'Kunst en erfgoed': 'Art et Patrimoine',
+      'Muziek': 'Musique',
+      'Sport': 'Sport',
+      'Varia': 'Divers'
+    },
+    weekdays: {
+      monday: {
+        label: 'lun.',
+        name: 'Lundi'
+      },
+      tuesday: {
+        label: 'mar.',
+        name: 'Mardi'
+      },
+      wednesday: {
+        label: 'mer.',
+        name: 'Mercredi'
+      },
+      thursday: {
+        label: 'jeu.',
+        name: 'Jeudi'
+      },
+      friday: {
+        label: 'ven.',
+        name: 'Vendredi'
+      },
+      saturday: {
+        label: 'sam.',
+        name: 'Samedi'
+      },
+      sunday: {
+        label: 'dim.',
+        name: 'Dimanche'
       }
     }
   }

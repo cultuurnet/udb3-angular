@@ -20,7 +20,8 @@
       UdbPlace,
       location,
       categories,
-      title
+      title,
+      $translate
   ) {
 
     $scope.categories = categories;
@@ -38,6 +39,7 @@
     // Scope functions.
     $scope.addLocation = addLocation;
     $scope.resetAddLocation = resetAddLocation;
+    $scope.translateEventTypes = translateEventTypes;
 
     /**
      * Get the default Place data
@@ -113,7 +115,7 @@
 
       var udbPlace = new UdbPlace();
       udbPlace.name = $scope.newPlace.name;
-      udbPlace.calendarType = 'permanent';
+      udbPlace.calendar.calendarType = 'permanent';
       udbPlace.type = {
         id : $scope.newPlace.eventType.id,
         label : eventTypeLabel,
@@ -125,7 +127,7 @@
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
       };
-      udbPlace.mainLanguage = 'nl';
+      udbPlace.mainLanguage = $translate.use() || 'nl';
 
       function showError() {
         $scope.saving = false;
@@ -172,6 +174,10 @@
     function validateAddress(streetAddress) {
       var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+
+    function translateEventTypes(type) {
+      return $translate.instant('offerTypes.' + type);
     }
   }
 

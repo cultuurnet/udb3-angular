@@ -14,40 +14,40 @@ describe('Factory: Event form data', function () {
     var timingData = [
       {
         type: 'periodic',
-        start: new Date('2012-12-12'),
-        end: null,
+        startDate: new Date('2012-12-12'),
+        endDate: null,
         valid: false
       },
       {
         type: 'periodic',
-        start: null,
-        end: new Date('2012-12-12'),
+        startDate: null,
+        endDate: new Date('2012-12-12'),
         valid: false
       },
       {
         type: 'permanent',
-        start: new Date('2012-12-12'),
-        end: null,
+        startDate: new Date('2012-12-12'),
+        endDate: null,
         valid: false
       },
       {
         type: 'periodic',
-        start: new Date('2012-12-13'),
-        end: new Date('2012-12-12'),
+        startDate: new Date('2012-12-13'),
+        endDate: new Date('2012-12-12'),
         valid: false
       },
       {
         type: 'periodic',
-        start: new Date('2012-12-11'),
-        end: new Date('2012-12-12'),
+        startDate: new Date('2012-12-11'),
+        endDate: new Date('2012-12-12'),
         valid: true
       }
     ];
 
     timingData.forEach(function (timing) {
-      EventFormData.calendarType = timing.type;
-      EventFormData.startDate = timing.start;
-      EventFormData.endDate = timing.end;
+      EventFormData.calendar.calendarType = timing.type;
+      EventFormData.calendar.startDate = timing.startDate;
+      EventFormData.calendar.endDate = timing.endDate;
 
       expect(EventFormData.hasValidPeriodicRange()).toEqual(timing.valid);
     });
@@ -144,19 +144,16 @@ describe('Factory: Event form data', function () {
   it('should notify that the event timing has changed when toggling off the start time', function (done) {
     EventFormData.initCalendar();
 
-    var timestamp = {
-      date: new Date(),
-      startHour: '',
-      endHour: '',
-      showEndHour: true,
-      showStartHour: false
+    var timeSpan = {
+      start: new Date(),
+      end: new Date()
     };
 
     EventFormData
       .timingChanged$
       .subscribe(done);
 
-    EventFormData.toggleStartHour(timestamp);
+    EventFormData.toggleStartHour(timeSpan);
   });
 
   it('should notify that the event timing has changed when toggling off the end time', function (done) {
@@ -194,8 +191,8 @@ describe('Factory: Event form data', function () {
     EventFormData.initCalendar();
 
     function checkTiming(formData) {
-      expect(formData.startDate).toEqual(new Date(3000, 0, 1));
-      expect(formData.endDate).toEqual(new Date(3001, 0, 1));
+      expect(formData.calendar.startDate).toEqual(new Date(3000, 0, 1));
+      expect(formData.calendar.endDate).toEqual(new Date(3001, 0, 1));
       done();
     }
 
@@ -229,13 +226,13 @@ describe('Factory: Event form data', function () {
   });
 
   it('should reset both activeCalendarType and calendarType when resetting the calendar', function () {
-    EventFormData.calendarType = 'periodic';
-    EventFormData.activeCalendarType = 'periodic';
+    EventFormData.calendar.calendarType = 'periodic';
+    EventFormData.calendar.activeCalendarType = 'periodic';
     EventFormData.initCalendar();
     EventFormData.resetCalendar();
 
-    expect(EventFormData.calendarType).toEqual('');
-    expect(EventFormData.activeCalendarType).toEqual('');
+    expect(EventFormData.calendar.calendarType).toEqual('');
+    expect(EventFormData.calendar.activeCalendarType).toEqual('');
   });
 
   it('should notify that the event timing has changed when the start or end hour is reset', function (done) {

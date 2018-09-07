@@ -56,25 +56,6 @@
       </div>
     </div>
 
-    <div class="rv-event-info-price"
-         ng-show="resultViewer.activeSpecific.id === 'price'" ng-switch="event.pricing">
-      <span ng-switch-when="free">gratis</span>
-      <span ng-switch-when="payed">
-          <i class="fa fa-eur meta icon"></i><span ng-if="event.price" ng-bind="event.price | currency"></span>
-      </span>
-      <span ng-switch-when="unknown">niet ingevoerd</span>
-    </div>
-
-    <div class="rv-event-info-translation btn-toolbar"
-         ng-show="resultViewer.activeSpecific.id === 'translation'">
-      <button type="button" ng-repeat="language in ::eventCtrl.languageSelector"
-              ng-class="{active: eventCtrl.activeLanguage === language.lang}"
-              class="btn btn-default" ng-click="eventCtrl.toggleLanguage(language.lang)">
-        <span class="fa {{eventCtrl.getLanguageTranslationIcon(language.lang)}}"></span>
-        {{language.lang}}
-      </button>
-    </div>
-
     <div ng-if="resultViewer.activeSpecific.id === 'accessibility'" class="rv-event-info-accessibility">
       <udb-offer-accessibility-info offer="event" offer-type="offerType"></udb-offer-accessibility-info>
     </div>

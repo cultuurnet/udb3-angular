@@ -90,7 +90,8 @@ function EventFormImageUploadController(
 
     var description = $scope.description,
         copyrightHolder = $scope.copyright,
-        deferredAddition = $q.defer();
+        deferredAddition = $q.defer(),
+        language = EventFormData.mainLanguage ? EventFormData.mainLanguage : 'nl';
 
     function displayError(errorResponse) {
       var errorMessage = errorResponse.data.title;
@@ -127,7 +128,7 @@ function EventFormImageUploadController(
     }
 
     MediaManager
-      .createImage($scope.selectedFile, description, copyrightHolder)
+      .createImage($scope.selectedFile, description, copyrightHolder, language)
       .then(addImageToEvent, displayError);
 
     return deferredAddition.promise;

@@ -866,6 +866,29 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  //translateAddress
+  it('should put a translation for an address to the api', function(done) {
+    var offerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var language = 'fr';
+    var translation = {
+      addressCountry: "BE",
+      addressLocality: "Bruxelles",
+      postalCode: "1000",
+      streetAddress: "Rue de Saint-Gislein"
+    };
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'places/' + offerId + '/address/' + language)
+        .respond(JSON.stringify(response));
+    service
+        .translateAddress(offerId, language, translation)
+        .then(done);
+    $httpBackend.flush();
+  });
+
   // updateProperty
   it('should update properties', function(done){
     var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
@@ -1463,6 +1486,8 @@ describe('Service: UDB3 Api', function () {
     var imageFile = 'imagefile';
     var description = 'Image by Dirk';
     var copyrightHolder = 'Dirk Dirkington';
+    var language = 'nl';
+
     var expectedConfig = {
       withCredentials: true,
       headers: {
@@ -1475,13 +1500,13 @@ describe('Service: UDB3 Api', function () {
       fields: {
         description: description,
         copyrightHolder: copyrightHolder,
-        language: 'nl'
+        language: language
       },
       file: imageFile
     };
 
     service
-      .uploadMedia(imageFile, description, copyrightHolder);
+      .uploadMedia(imageFile, description, copyrightHolder, language);
 
     expect(Upload.upload).toHaveBeenCalledWith(expectedConfig);
   });

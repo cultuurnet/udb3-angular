@@ -8,12 +8,12 @@
                 <a ng-bind="::translateAgeRange(ageRange.label)"
                    ng-class="{'font-bold': fagec.activeAgeRange === type}"
                    href="#"
-                   ng-click="fagec.setAgeRangeByType(type)"></a><span ng-if="::!$last">, </span>
+                   ng-mousedown="fagec.setAgeRangeByType(type)"></a><span ng-if="::!$last">, </span>
             </span>
             <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
                <form name="ageForm">
                    <div class="form-group" >
-                    <label for="min-age">Van</label>
+                    <label for="min-age" translate-once="eventForm.step5.age.from"></label>
                     <input type="text"
                            class="form-control"
                            id="min-age"
@@ -22,10 +22,10 @@
                            ng-blur="fagec.instantSaveAgeRange()"
                            ng-change="fagec.delayedSaveAgeRange()"
                            udb-age-input>
-                    <span class="form-text">jaar</span>
+                    <span class="form-text" translate-once="eventForm.step5.age.age"></span>
                 </div>
                 <div class="form-group">
-                    <label for="max-age">tot</label>
+                    <label for="max-age" translate-once="eventForm.step5.age.till"></label>
                     <input type="text"
                            class="form-control"
                            id="max-age"
@@ -34,7 +34,7 @@
                            ng-blur="fagec.instantSaveAgeRange()"
                            ng-change="fagec.delayedSaveAgeRange()"
                            udb-age-input>
-                    <span class="form-text">jaar</span>
+                    <span class="form-text" translate-once="eventForm.step5.age.age"></span>
                 </div>
                </form>
             </div>
