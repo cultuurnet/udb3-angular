@@ -18,7 +18,7 @@
                     <p class="text-muted"><span translate-once="translate.translation"></span> {{code}}</p>
                 </div>
                 <div class="col-sm-9">
-                    <input type="text" ng-blur="ttd.saveTranslatedDescription(code)" class="form-control form-group" ng-model="ttd.translatedDescriptions[code]">
+                    <textarea ng-blur="ttd.saveTranslatedDescription(code)" class="form-control form-group" ng-model="ttd.translatedDescriptions[code]"></textarea>
                 </div>
             </div>
         </div>
