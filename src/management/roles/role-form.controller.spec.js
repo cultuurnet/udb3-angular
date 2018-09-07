@@ -61,6 +61,7 @@ describe('Controller: Roles Form', function() {
     { key: 'AANBOD_BEWERKEN', name: 'AANBOD_BEWERKEN' },
     { key: 'AANBOD_MODEREREN', name: 'AANBOD_MODEREREN' },
     { key: 'AANBOD_VERWIJDEREN', name: 'AANBOD_VERWIJDEREN' },
+    { key: 'ORGANISATIES_BEWERKEN', name: 'ORGANISATIES_BEWERKEN' },
     { key: 'ORGANISATIES_BEHEREN', name: 'ORGANISATIES_BEHEREN' },
     { key: 'GEBRUIKERS_BEHEREN', name: 'GEBRUIKERS_BEHEREN' },
     { key: 'LABELS_BEHEREN', name: 'LABELS_BEHEREN' },
