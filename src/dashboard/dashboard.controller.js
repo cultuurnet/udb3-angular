@@ -21,7 +21,8 @@
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment
+      moment,
+      $sanitize
   ) {
 
     var dash = this;
@@ -162,6 +163,9 @@
      */
     function openDeleteConfirmModal(item) {
       var itemType = item['@id'].indexOf('event') === -1 ? 'place' : 'event';
+
+      // Fix for III-2625. Escaping single quotes won't work here.
+      item.name = item.name.replace(/'/g, '');
 
       if (itemType === 'event') {
         openEventDeleteConfirmModal(item);
