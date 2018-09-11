@@ -7371,7 +7371,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       offerLocator,
       SearchResultViewer,
       appConfig,
-      moment
+      moment,
+      $sanitize
   ) {
 
     var dash = this;
@@ -7513,6 +7514,9 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     function openDeleteConfirmModal(item) {
       var itemType = item['@id'].indexOf('event') === -1 ? 'place' : 'event';
 
+      // Fix for III-2625. Escaping single quotes won't work here.
+      item.name = item.name.replace(/'/g, '');
+
       if (itemType === 'event') {
         openEventDeleteConfirmModal(item);
       }
@@ -7521,7 +7525,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "$sanitize"];
 
 })();
 })();
