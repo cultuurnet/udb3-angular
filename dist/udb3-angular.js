@@ -11774,7 +11774,9 @@ function EventFormOrganizerModalController(
   UdbOrganizer,
   eventCrud,
   $q,
-  organizerName
+  organizerName,
+  OrganizerManager,
+  appConfig
 ) {
 
   var controller = this;
@@ -11950,6 +11952,12 @@ function EventFormOrganizerModalController(
     eventCrud
       .createOrganizer(organizer)
       .then(function(jsonResponse) {
+        var defaultOrganizerLabel = _.get(appConfig, 'offerEditor.defaultOrganizerLabel');
+        if (typeof(defaultOrganizerLabel) !== 'undefined' &&
+            defaultOrganizerLabel !== '') {
+          OrganizerManager
+            .addLabelToOrganizer(jsonResponse.data.organizerId, defaultOrganizerLabel);
+        }
         $scope.newOrganizer.id = jsonResponse.data.organizerId;
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;
@@ -11960,7 +11968,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName", "OrganizerManager", "appConfig"];
 })();
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
