@@ -6501,7 +6501,8 @@ function UdbOrganizerFactory(UitpasLabels) {
   }
 
   function hasUitpasLabel(labels) {
-    return arrayToLowerCase(labels) && !_.isEmpty(_.intersection(arrayToLowerCase(labels), _.values(arrayToLowerCase(UitpasLabels))));
+    return arrayToLowerCase(labels) &&
+        !_.isEmpty(_.intersection(arrayToLowerCase(labels), _.values(arrayToLowerCase(UitpasLabels))));
   }
 
   function arrayToLowerCase(array) {
