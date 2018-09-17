@@ -10533,3 +10533,8 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success
   margin-top: 15px;
   margin-bottom: 15px;
 }
+.organizer-address-form {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 15px;
+}

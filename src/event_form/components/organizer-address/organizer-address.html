@@ -1,5 +1,21 @@
 <form name="oac.organizerAddressForm" class="organizer-address-form">
     <div class="row">
+      <div class="col-sm-12 col-md-8">
+        <div class="row">
+          <div class="col-xs-6">
+            <label>Adres</label>
+          </div>
+          <div class="col-xs-6">
+            <select ng-change="oac.changeCountrySelection()"
+              ng-options="option.label for option in oac.availableCountries track by option.code"
+              ng-model="oac.selectedCountry"
+              class="form-control">
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
         <div class="col-sm-12 col-md-8">
             <div class="form-group"
                  ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
@@ -18,7 +34,25 @@
             </div>
         </div>
     </div>
-
+    <div class="row" ng-show="oac.address.addressCountry == 'NL'">
+        <div class="col-sm-12 col-md-8">
+            <div class="form-group"
+                 ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
+                <label translate-once="organizer.address.zip"></label>
+                <input type="text"
+                       class="form-control"
+                       name="street"
+                       placeholder="{{ 'organizer.address.zip' | translate }}"
+                       ng-model="oac.address.postalCode"
+                       ng-change="oac.validateAddress()"
+                       ng-model-options="{ updateOn: 'blur' }">
+                <span class="has-error"
+                      ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
+                    <span class="help-block" translate-once="organizer.address.help_street"></span>
+                </span>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12 col-md-8">
             <div ng-hide="oac.selectedCity !== ''">
@@ -33,7 +67,7 @@
                                class="form-control uib-typeahead"
                                placeholder="{{ 'organizer.address.placeholder_city' | translate }}"
                                ng-model="oac.cityAutocompleteTextField"
-                               uib-typeahead="city as city.zip + ' ' + city.name for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
+                               uib-typeahead="city as city.label for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
                                typeahead-on-select="oac.selectCity($item, $label)"
                                typeahead-min-length="2"
                                typeahead-template-url="templates/city-suggestion.html"

@@ -30,9 +30,9 @@ describe('Controller: event form step 3', function (){
     var zipcode = '1234';
     spyOn(stepController, 'getLocations');
 
-    stepController.selectCity({zip: zipcode}, 'some-city-id');
+    stepController.selectCity({zip: zipcode, country: 'BE'}, 'some-city-id');
 
-    expect(stepController.getLocations).toHaveBeenCalledWith(zipcode);
+    expect(stepController.getLocations).toHaveBeenCalledWith({zip: zipcode, country: 'BE'});
   });
 
   it('should update the event form address when a city is selected for a place', function () {
@@ -41,21 +41,23 @@ describe('Controller: event form step 3', function (){
       'addressCountry': 'BE',
       'addressLocality': 'Tienen',
       'postalCode': '3300',
-      'streetAddress': 'Sluisstraat 79'
+      'streetAddress': 'Sluisstraat 79',
+      'country': 'BE'
     };
 
     var expectedAddress = {
       'addressCountry': 'BE',
       'addressLocality': 'Leuven',
       'postalCode': '3000',
-      'streetAddress': 'Sluisstraat 79'
+      'streetAddress': 'Sluisstraat 79',
+      'country': 'BE'
     };
 
     EventFormData.address = address;
     EventFormData.isPlace = true;
     stepController.init(EventFormData);
 
-    stepController.selectCity({zip: '3000', name: 'Leuven'}, '3300 Leuven');
+    stepController.selectCity({zip: '3000', name: 'Leuven', country: 'BE'}, '3300 Leuven');
     expect(EventFormData.address).toEqual(expectedAddress);
   });
 
@@ -68,7 +70,8 @@ describe('Controller: event form step 3', function (){
         'addressCountry': 'BE',
         'addressLocality': 'Leuven',
         'postalCode': '3000',
-        'streetAddress': 'Sluisstraat 79'
+        'streetAddress': 'Sluisstraat 79',
+        'country': 'BE'
       }
     };
 
@@ -79,7 +82,8 @@ describe('Controller: event form step 3', function (){
         'addressCountry': 'BE',
         'addressLocality': 'Brussel',
         'postalCode': '1000',
-        'streetAddress': 'Sluisstraat 79'
+        'streetAddress': 'Sluisstraat 79',
+        'country': 'BE'
       }
     };
 

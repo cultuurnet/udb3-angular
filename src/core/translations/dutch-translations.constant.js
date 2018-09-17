@@ -454,7 +454,8 @@ angular.module('udb.core')
       'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
       'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
-      'add': 'Toevoegen'
+      'add': 'Toevoegen',
+      'zip': 'Postcode'
     },
     eventForm: {
       'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
@@ -475,6 +476,9 @@ angular.module('udb.core')
         'title_event': 'Waar vindt dit evenement of deze activiteit plaats?',
         'title_place': 'Waar is deze plaats of locatie?',
         'choose_city': 'Kies een gemeente',
+        'choose_city_helper': 'bv. Gent of 9000',
+        'choose_residence': 'Kies een woonplaats',
+        'choose_residence_helper': 'bv. Groningen of Amsterdam',
         'placeholder_city': 'Gemeente of postcode',
         'problem_city': 'Er was een probleem tijdens het ophalen van de steden',
         'change': 'Wijzigen',
@@ -804,7 +808,8 @@ angular.module('udb.core')
         'placeholder_city': 'Gemeente of postcode',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
-        'change': 'Wijzigen'
+        'change': 'Wijzigen',
+        'zip': 'Postcode'
       },
       contact: {
         'title': 'Contact',

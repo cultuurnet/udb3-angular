@@ -21,7 +21,9 @@ function EventFormOrganizerModalController(
   $q,
   organizerName,
   OrganizerManager,
-  appConfig
+  appConfig,
+  citiesBE,
+  citiesNL
 ) {
 
   var controller = this;

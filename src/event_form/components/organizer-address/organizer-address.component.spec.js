@@ -19,7 +19,7 @@ describe('Component: Organizer Address', function() {
   beforeEach(inject(function($rootScope, _$componentController_, $injector) {
     $scope = $rootScope.$new();
     $componentController = _$componentController_;
-    cities = $injector.get('cities');
+    cities = $injector.get('citiesBE');
     Levenshtein = $injector.get('Levenshtein')
   }));
 
@@ -40,6 +40,7 @@ describe('Component: Organizer Address', function() {
 
   it('should initialise the organizer address component', function () {
     component = getComponent();
+    component.selectedCountry.code = 'BE';
     expect(component.selectedCity).toEqual('3000 Leuven');
     expect(component.cities).toEqual(cities);
   });
