@@ -26,7 +26,7 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   function arrayToLowerCase(array) {
     var lowerCaseArray = [];
-    angular.forEach(array, function(element, key) {
+    _.each(array, function(element, key) {
       lowerCaseArray[key] = element.toLowerCase();
     });
 
