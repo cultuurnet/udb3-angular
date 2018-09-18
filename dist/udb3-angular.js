@@ -7768,6 +7768,13 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
 
+    if (typeof(appConfig.enableMyOrganizers) !== 'undefined') {
+      var enableMyOrganizers = appConfig.enableMyOrganizers;
+      if (enableMyOrganizers !== '') {
+        dash.enableMyOrganizers = enableMyOrganizers;
+      }
+    }
+
     udbApi
       .getMe()
       .then(greetUser);
@@ -26914,7 +26921,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div ng-show=\"dash.pagedItemViewerOrganizers.events.length\">\n" +
+    "      <div ng-show=\"dash.pagedItemViewerOrganizers.events.length && dash.enableMyOrganizers\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
     "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.my_organizers\"></span>\n" +

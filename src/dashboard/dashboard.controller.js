@@ -82,6 +82,13 @@
       }
     }
 
+    if (typeof(appConfig.enableMyOrganizers) !== 'undefined') {
+      var enableMyOrganizers = appConfig.enableMyOrganizers;
+      if (enableMyOrganizers !== '') {
+        dash.enableMyOrganizers = enableMyOrganizers;
+      }
+    }
+
     udbApi
       .getMe()
       .then(greetUser);
