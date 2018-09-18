@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Controller: Organizer Detail', function() {
-  var OrganizerManager, LabelManager, $uibModal, $stateParams, $q, $controller, $scope, $rootScope;
+  var OrganizerManager, LabelManager, $uibModal, $stateParams, $q, $controller, $scope, $rootScope, $state;
 
   var fakeOrganizer = {
     "name": "STUK",
@@ -45,10 +45,11 @@ describe('Controller: Organizer Detail', function() {
 
   var result = {commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'};
 
+  beforeEach(module('ui.router'));
   beforeEach(module('udb.management'));
   beforeEach(module('udb.management.organizers'));
 
-  beforeEach(inject(function(_$rootScope_, _$q_, _$controller_) {
+  beforeEach(inject(function(_$rootScope_, _$q_, _$controller_, _$state_) {
     $controller = _$controller_;
     $q = _$q_;
     $rootScope = _$rootScope_;
@@ -63,6 +64,8 @@ describe('Controller: Organizer Detail', function() {
     ]);
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
 
+    $state = _$state_;
+    $state.current.name = 'manage.organizer.detail';
     $stateParams = { "id": id };
   }));
 
@@ -73,7 +76,8 @@ describe('Controller: Organizer Detail', function() {
         LabelManager: LabelManager,
         $uibModal: $uibModal,
         $stateParams: $stateParams,
-        $scope: $scope
+        $scope: $scope,
+        $state: $state
       }
     );
   }
