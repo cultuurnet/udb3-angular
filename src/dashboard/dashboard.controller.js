@@ -32,7 +32,7 @@
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.openCreateOrganizerModal = openCreateOrganizerModal;
-    dash.updateOrganizerViewer = updateOrganizerViewer();
+    dash.updateOrganizerViewer = updateOrganizerViewer;
     dash.username = '';
     dash.hideOnlineDate = false;
 
