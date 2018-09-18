@@ -108,7 +108,7 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
       this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
-      this.detailUrl = '/manage/organisations/' + this.id;
+      this.detailUrl = '/organizer/' + this.id;
     },
     updateTranslationState: function (organizer) {
       organizer = organizer || this;

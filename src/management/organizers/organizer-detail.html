@@ -7,13 +7,22 @@
 <div class="row" ng-if="odc.organizer">
   <div class="col-sm-3 col-sm-push-9">
     <div class="list-group" ng-if="!odc.organizer.deleted">
-      <button class="list-group-item"
-         type="button"
-         ui-sref="management.organizers.edit({id: odc.organizer.id})"><i class="fa fa-pencil" aria-hidden="true"></i> Bewerken</button>
-      <button class="list-group-item"
-              ng-click="odc.deleteOrganization()"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</button>
-      <button class="list-group-item"
-         ui-sref="management.organizers.search({id: odc.organizer.id})"><i class="fa fa-arrow-left" aria-hidden="true"></i> Terug naar overzicht</button>
+      <span ng-if="odc.isManageState()">
+        <button class="list-group-item"
+                type="button"
+                ui-sref="management.organizers.edit({id: odc.organizer.id})"><i class="fa fa-pencil" aria-hidden="true"></i> Bewerken</button>
+        <button class="list-group-item"
+                ng-click="odc.deleteOrganization()"><i class="fa fa-trash" aria-hidden="true"></i> Verwijderen</button>
+        <button class="list-group-item"
+                ui-sref="management.organizers.search({id: odc.organizer.id})"><i class="fa fa-arrow-left" aria-hidden="true"></i> Terug naar overzicht</button>
+      </span>
+      <span ng-if="!odc.isManageState()">
+        <button class="list-group-item"
+                type="button"
+                ui-sref="split.organizer.edit({id: odc.organizer.id})"><i class="fa fa-pencil" aria-hidden="true"></i> Bewerken</button>
+        <button class="list-group-item"
+                ui-sref="split.footer.dashboard"><i class="fa fa-arrow-left" aria-hidden="true"></i> Terug naar dashboard</button>
+      </span>
     </div>
   </div>
   <div class="col-sm-9 col-sm-pull-3">

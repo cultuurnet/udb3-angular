@@ -6617,7 +6617,7 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
       this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
-      this.detailUrl = '/manage/organisations/' + this.id;
+      this.detailUrl = '/organizer/' + this.id;
     },
     updateTranslationState: function (organizer) {
       organizer = organizer || this;
@@ -7692,7 +7692,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.openCreateOrganizerModal = openCreateOrganizerModal;
-    dash.updateOrganizerViewer = updateOrganizerViewer();
+    dash.updateOrganizerViewer = updateOrganizerViewer;
     dash.username = '';
     dash.hideOnlineDate = false;
 
@@ -18076,6 +18076,7 @@ function OrganizerEditController(
   ) {
   var controller = this;
   var organizerId = $stateParams.id;
+  var stateName = $state.current.name;
 
   controller.contact = [];
   controller.showWebsiteValidation = false;
@@ -18095,6 +18096,7 @@ function OrganizerEditController(
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
   controller.cancel = cancel;
+  controller.isManageState = isManageState;
 
   var oldOrganizer = {};
   var oldContact = [];
@@ -18260,7 +18262,11 @@ function OrganizerEditController(
 
     $q.all(promises)
         .then(function() {
-          $state.go('management.organizers.search', {}, {reload: true});
+          if (isManageState) {
+            $state.go('management.organizers.search', {}, {reload: true});
+          } else {
+            $state.go('split.footer.dashboard', {}, {reload: true});
+          }
         })
         .catch(function () {
           controller.hasErrors = true;
@@ -18270,7 +18276,15 @@ function OrganizerEditController(
 
   function cancel() {
     OrganizerManager.removeOrganizerFromCache(organizerId);
-    $state.go('management.organizers.search', {}, {reload: true});
+    if (isManageState) {
+      $state.go('management.organizers.search', {}, {reload: true});
+    } else {
+      $state.go('split.footer.dashboard', {}, {reload: true});
+    }
+  }
+
+  function isManageState() {
+    return (stateName.indexOf('manage') !== -1);
   }
 }
 OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope"];
@@ -18291,9 +18305,10 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state) {
   var controller = this;
   var organizerId = $stateParams.id;
+  var stateName = $state.current.name;
 
   // labels scope variables and functions
   controller.labelSaving = false;
@@ -18302,6 +18317,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.labelResponse = '';
   controller.labelsError = '';
   controller.deleteOrganization = deleteOrganization;
+  controller.isManageState = isManageState;
 
   loadOrganizer(organizerId);
 
@@ -18351,6 +18367,10 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   function clearLabelsError() {
     controller.labelResponse = '';
     controller.labelsError = '';
+  }
+
+  function isManageState() {
+    return (stateName.indexOf('manage') !== -1);
   }
 
   function goToOrganizerOverview() {
@@ -18410,7 +18430,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     );
   }
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location"];
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state"];
 })();
 
 // Source: src/management/organizers/organizer-manager.service.js
@@ -26720,25 +26740,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </strong>\n" +
     "  <br/>\n" +
     "  <small ng-if=\"event.address\">\n" +
-    "    <span ng-bind=\"::event.address.streetAddress\"></span>,\n" +
+    "    <span ng-bind=\"::event.address.streetAddress\"></span>\n" +
+    "    <span ng-if=\"_.isEmpty(event.address)\">,</span>\n" +
     "    <span ng-bind=\"::event.address.postalCode\"></span> <span ng-bind=\"::event.address.addressLocality\"></span>\n" +
     "  </small>\n" +
     "</td>\n" +
     "\n" +
     "<td ng-if=\"!organizerCtrl.fetching\">\n" +
     "  <span ng-if=\"!event.deleted\">\n" +
-    "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "    <div class=\"pull-right\">\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.detailUrl + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
-    "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
-    "      <ul uib-dropdown-menu role=\"menu\">\n" +
-    "        <li role=\"menuitem\">\n" +
-    "          <a ng-href=\"{{ event.detailUrl }}\" translate-once=\"dashboard.directive.example\"></a>\n" +
-    "        </li>\n" +
-    "        <li class=\"divider\"></li>\n" +
-    "        <li role=\"menuitem\">\n" +
-    "          <a href=\"\" ng-click=\"dash.openDeleteConfirmModal(event)\" translate-once=\"dashboard.directive.delete\"></a>\n" +
-    "        </li>\n" +
-    "      </ul>\n" +
     "    </div>\n" +
     "  </span>\n" +
     "</td>\n"
@@ -30076,13 +30087,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row\" ng-if=\"odc.organizer\">\n" +
     "  <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "    <div class=\"list-group\" ng-if=\"!odc.organizer.deleted\">\n" +
-    "      <button class=\"list-group-item\"\n" +
-    "         type=\"button\"\n" +
-    "         ui-sref=\"management.organizers.edit({id: odc.organizer.id})\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Bewerken</button>\n" +
-    "      <button class=\"list-group-item\"\n" +
-    "              ng-click=\"odc.deleteOrganization()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i> Verwijderen</button>\n" +
-    "      <button class=\"list-group-item\"\n" +
-    "         ui-sref=\"management.organizers.search({id: odc.organizer.id})\"><i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i> Terug naar overzicht</button>\n" +
+    "      <span ng-if=\"odc.isManageState()\">\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ui-sref=\"management.organizers.edit({id: odc.organizer.id})\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Bewerken</button>\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                ng-click=\"odc.deleteOrganization()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i> Verwijderen</button>\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                ui-sref=\"management.organizers.search({id: odc.organizer.id})\"><i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i> Terug naar overzicht</button>\n" +
+    "      </span>\n" +
+    "      <span ng-if=\"!odc.isManageState()\">\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ui-sref=\"split.organizer.edit({id: odc.organizer.id})\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Bewerken</button>\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                ui-sref=\"split.footer.dashboard\"><i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i> Terug naar dashboard</button>\n" +
+    "      </span>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"col-sm-9 col-sm-pull-3\">\n" +

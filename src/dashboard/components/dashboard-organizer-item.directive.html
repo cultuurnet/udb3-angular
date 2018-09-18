@@ -4,25 +4,16 @@
   </strong>
   <br/>
   <small ng-if="event.address">
-    <span ng-bind="::event.address.streetAddress"></span>,
+    <span ng-bind="::event.address.streetAddress"></span>
+    <span ng-if="_.isEmpty(event.address)">,</span>
     <span ng-bind="::event.address.postalCode"></span> <span ng-bind="::event.address.addressLocality"></span>
   </small>
 </td>
 
 <td ng-if="!organizerCtrl.fetching">
   <span ng-if="!event.deleted">
-    <div class="pull-right btn-group" uib-dropdown>
+    <div class="pull-right">
       <a class="btn btn-default" ng-href="{{ event.detailUrl + '/edit' }}" translate-once="dashboard.directive.edit"></a>
-      <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
-      <ul uib-dropdown-menu role="menu">
-        <li role="menuitem">
-          <a ng-href="{{ event.detailUrl }}" translate-once="dashboard.directive.example"></a>
-        </li>
-        <li class="divider"></li>
-        <li role="menuitem">
-          <a href="" ng-click="dash.openDeleteConfirmModal(event)" translate-once="dashboard.directive.delete"></a>
-        </li>
-      </ul>
     </div>
   </span>
 </td>
