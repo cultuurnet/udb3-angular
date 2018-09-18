@@ -214,12 +214,9 @@
                             <div class="reservatie-info-stap2">
                               <div class="weergave">
                                 <p><strong translate-once="eventForm.step5.booking_exposure"></strong></p>
-                                <select ng-model="bookingModel.urlLabel"
-                                        ng-change="saveWebsitePreview()">
-                                  <option value="Koop tickets" translate-once="eventForm.step5.buy_tickets"></option>
-                                  <option value="Reserveer plaatsen" translate-once="eventForm.step5.reserve_places"></option>
-                                  <option value="Controleer beschikbaarheid" translate-once="eventForm.step5.check_availability"></option>
-                                  <option value="Schrijf je in" translate-once="eventForm.step5.subscribe"></option>
+                                <select ng-model="bookingModel.urlLabel[mainLanguage]"
+                                        ng-change="saveWebsitePreview()"
+                                        ng-options="option.label for option in bookingOptions">
                                 </select>
                               </div>
                             </div>

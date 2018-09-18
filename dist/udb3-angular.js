@@ -6529,7 +6529,17 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
   }
 
   function hasUitpasLabel(labels) {
-    return labels && !_.isEmpty(_.intersection(labels, _.values(UitpasLabels)));
+    return arrayToLowerCase(labels) &&
+        !_.isEmpty(_.intersection(arrayToLowerCase(labels), _.values(arrayToLowerCase(UitpasLabels))));
+  }
+
+  function arrayToLowerCase(array) {
+    var lowerCaseArray = [];
+    _.each(array, function(element, key) {
+      lowerCaseArray[key] = element.toLowerCase();
+    });
+
+    return lowerCaseArray;
   }
 
   function getFirst(jsonOrganizer, path) {
@@ -12109,7 +12119,9 @@ function EventFormOrganizerModalController(
   UdbOrganizer,
   eventCrud,
   $q,
-  organizerName
+  organizerName,
+  OrganizerManager,
+  appConfig
 ) {
 
   var controller = this;
@@ -12285,6 +12297,12 @@ function EventFormOrganizerModalController(
     eventCrud
       .createOrganizer(organizer)
       .then(function(jsonResponse) {
+        var defaultOrganizerLabel = _.get(appConfig, 'offerEditor.defaultOrganizerLabel');
+        if (typeof(defaultOrganizerLabel) !== 'undefined' &&
+            defaultOrganizerLabel !== '') {
+          OrganizerManager
+            .addLabelToOrganizer(jsonResponse.data.organizerId, defaultOrganizerLabel);
+        }
         $scope.newOrganizer.id = jsonResponse.data.organizerId;
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;
@@ -12295,7 +12313,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName", "OrganizerManager", "appConfig"];
 })();
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
@@ -13371,7 +13389,7 @@ CopyrightNegotiator.$inject = ["$cookies"];
 /**
  * @typedef {Object} BookingInfo
  * @property {string} url
- * @property {string} urlLabel
+ * @property {Object} urlLabel
  * @property {string} email
  * @property {string} phone
  */
@@ -15502,7 +15520,8 @@ function EventFormStep5Controller(
     $uibModal,
     $rootScope,
     appConfig,
-    udbUitpasApi
+    udbUitpasApi,
+    $translate
   ) {
 
   var controller = this;
@@ -15549,11 +15568,43 @@ function EventFormStep5Controller(
     emailRequired : false,
     phoneRequired : false,
     url : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.url : '',
-    urlLabel : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.urlLabel : 'Reserveer plaatsen',
+    urlLabel : {},
     urlLabelCustom : '',
     phone : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.phone : '',
     email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
+  $scope.newBookingModel = {};
+
+  $scope.bookingOptions = [
+    {value: 'buy_tickets', label: translateBookingInfoUrlLabels('buy_tickets')},
+    {value: 'reserve_places', label: translateBookingInfoUrlLabels('reserve_places')},
+    {value: 'check_availability', label: translateBookingInfoUrlLabels('check_availability')},
+    {value: 'subscribe', label: translateBookingInfoUrlLabels('subscribe')}
+  ];
+
+  if (EventFormData.bookingInfo.urlLabel) {
+    if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] =
+          _.findWhere($scope.bookingOptions,
+              {label: EventFormData.bookingInfo.urlLabel}
+          );
+    }
+    else {
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] =
+          _.findWhere($scope.bookingOptions,
+              {label: EventFormData.bookingInfo.urlLabel[$scope.mainLanguage]}
+          );
+    }
+  }
+  else {
+    $scope.bookingModel.urlLabel[$scope.mainLanguage] = $scope.bookingOptions[1];
+  }
+
+  // Add urlLabel to the option list when it is not in the options list.
+  // This is mostly the case when the user is editing in another language as the offer's mainLanguage.
+  if (!_.find($scope.bookingOptions, $scope.bookingModel.urlLabel[$scope.mainLanguage])) {
+    $scope.bookingOptions.unshift($scope.bookingModel.urlLabel[$scope.mainLanguage]);
+  }
 
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
   $scope.viaEmail = !EventFormData.bookingInfo.email;
@@ -15573,6 +15624,7 @@ function EventFormStep5Controller(
   $scope.deleteBookingInfo = deleteBookingInfo;
   $scope.removeBookingInfo = removeBookingInfo;
   $scope.hasBookingInfo = hasBookingInfo;
+  $scope.translateBookingInfoUrlLabels = translateBookingInfoUrlLabels;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -15606,7 +15658,6 @@ function EventFormStep5Controller(
   $scope.removeImage = removeImage;
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
-
   // Init the controller for editing.
   initEditForm();
 
@@ -15950,15 +16001,23 @@ function EventFormStep5Controller(
     }
   }
 
+  function formatBookingInfoUrlLabel(urlLabel) {
+    var returnValue = {};
+    returnValue[$scope.mainLanguage] = urlLabel[$scope.mainLanguage].label;
+    return returnValue;
+  }
+
   /**
    * Saves the booking info
    */
   function saveBookingInfo() {
+    var urlLabel = {};
+    urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
 
     // Make sure all default values are set.
     EventFormData.bookingInfo = angular.extend({}, {
       url : '',
-      urlLabel : 'Reserveer plaatsen',
+      urlLabel : urlLabel,
       email : '',
       phone : '',
       availabilityStarts :
@@ -15970,6 +16029,8 @@ function EventFormStep5Controller(
           moment(EventFormData.bookingInfo.availabilityEnds).format() :
           ''
     }, $scope.bookingModel);
+
+    EventFormData.bookingInfo.urlLabel = formatBookingInfoUrlLabel(EventFormData.bookingInfo.urlLabel);
 
     $scope.savingBookingInfo = true;
     $scope.bookingInfoError = false;
@@ -16106,8 +16167,12 @@ function EventFormStep5Controller(
 
   }
 
+  function translateBookingInfoUrlLabels(label) {
+    return $translate.instant('eventForm.step5.' + label);
+  }
+
 }
-EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi"];
+EventFormStep5Controller.$inject = ["$scope", "EventFormData", "eventCrud", "udbOrganizers", "$uibModal", "$rootScope", "appConfig", "udbUitpasApi", "$translate"];
 })();
 
 // Source: src/export/event-export-job.factory.js
@@ -29275,12 +29340,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            <div class=\"reservatie-info-stap2\">\n" +
     "                              <div class=\"weergave\">\n" +
     "                                <p><strong translate-once=\"eventForm.step5.booking_exposure\"></strong></p>\n" +
-    "                                <select ng-model=\"bookingModel.urlLabel\"\n" +
-    "                                        ng-change=\"saveWebsitePreview()\">\n" +
-    "                                  <option value=\"Koop tickets\" translate-once=\"eventForm.step5.buy_tickets\"></option>\n" +
-    "                                  <option value=\"Reserveer plaatsen\" translate-once=\"eventForm.step5.reserve_places\"></option>\n" +
-    "                                  <option value=\"Controleer beschikbaarheid\" translate-once=\"eventForm.step5.check_availability\"></option>\n" +
-    "                                  <option value=\"Schrijf je in\" translate-once=\"eventForm.step5.subscribe\"></option>\n" +
+    "                                <select ng-model=\"bookingModel.urlLabel[mainLanguage]\"\n" +
+    "                                        ng-change=\"saveWebsitePreview()\"\n" +
+    "                                        ng-options=\"option.label for option in bookingOptions\">\n" +
     "                                </select>\n" +
     "                              </div>\n" +
     "                            </div>\n" +

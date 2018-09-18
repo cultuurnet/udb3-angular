@@ -27,7 +27,8 @@ function EventFormStep5Controller(
     $uibModal,
     $rootScope,
     appConfig,
-    udbUitpasApi
+    udbUitpasApi,
+    $translate
   ) {
 
   var controller = this;
@@ -74,11 +75,43 @@ function EventFormStep5Controller(
     emailRequired : false,
     phoneRequired : false,
     url : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.url : '',
-    urlLabel : EventFormData.bookingInfo.urlLabel ? EventFormData.bookingInfo.urlLabel : 'Reserveer plaatsen',
+    urlLabel : {},
     urlLabelCustom : '',
     phone : EventFormData.bookingInfo.phone ? EventFormData.bookingInfo.phone : '',
     email : EventFormData.bookingInfo.email ? EventFormData.bookingInfo.email : ''
   };
+  $scope.newBookingModel = {};
+
+  $scope.bookingOptions = [
+    {value: 'buy_tickets', label: translateBookingInfoUrlLabels('buy_tickets')},
+    {value: 'reserve_places', label: translateBookingInfoUrlLabels('reserve_places')},
+    {value: 'check_availability', label: translateBookingInfoUrlLabels('check_availability')},
+    {value: 'subscribe', label: translateBookingInfoUrlLabels('subscribe')}
+  ];
+
+  if (EventFormData.bookingInfo.urlLabel) {
+    if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] =
+          _.findWhere($scope.bookingOptions,
+              {label: EventFormData.bookingInfo.urlLabel}
+          );
+    }
+    else {
+      $scope.bookingModel.urlLabel[$scope.mainLanguage] =
+          _.findWhere($scope.bookingOptions,
+              {label: EventFormData.bookingInfo.urlLabel[$scope.mainLanguage]}
+          );
+    }
+  }
+  else {
+    $scope.bookingModel.urlLabel[$scope.mainLanguage] = $scope.bookingOptions[1];
+  }
+
+  // Add urlLabel to the option list when it is not in the options list.
+  // This is mostly the case when the user is editing in another language as the offer's mainLanguage.
+  if (!_.find($scope.bookingOptions, $scope.bookingModel.urlLabel[$scope.mainLanguage])) {
+    $scope.bookingOptions.unshift($scope.bookingModel.urlLabel[$scope.mainLanguage]);
+  }
 
   $scope.viaWebsite =  !EventFormData.bookingInfo.url;
   $scope.viaEmail = !EventFormData.bookingInfo.email;
@@ -98,6 +131,7 @@ function EventFormStep5Controller(
   $scope.deleteBookingInfo = deleteBookingInfo;
   $scope.removeBookingInfo = removeBookingInfo;
   $scope.hasBookingInfo = hasBookingInfo;
+  $scope.translateBookingInfoUrlLabels = translateBookingInfoUrlLabels;
 
   // Contactinfo vars.
   $scope.contactInfoCssClass = 'state-incomplete';
@@ -131,7 +165,6 @@ function EventFormStep5Controller(
   $scope.removeImage = removeImage;
   $scope.editImage = editImage;
   $scope.selectMainImage = selectMainImage;
-
   // Init the controller for editing.
   initEditForm();
 
@@ -475,15 +508,23 @@ function EventFormStep5Controller(
     }
   }
 
+  function formatBookingInfoUrlLabel(urlLabel) {
+    var returnValue = {};
+    returnValue[$scope.mainLanguage] = urlLabel[$scope.mainLanguage].label;
+    return returnValue;
+  }
+
   /**
    * Saves the booking info
    */
   function saveBookingInfo() {
+    var urlLabel = {};
+    urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
 
     // Make sure all default values are set.
     EventFormData.bookingInfo = angular.extend({}, {
       url : '',
-      urlLabel : 'Reserveer plaatsen',
+      urlLabel : urlLabel,
       email : '',
       phone : '',
       availabilityStarts :
@@ -495,6 +536,8 @@ function EventFormStep5Controller(
           moment(EventFormData.bookingInfo.availabilityEnds).format() :
           ''
     }, $scope.bookingModel);
+
+    EventFormData.bookingInfo.urlLabel = formatBookingInfoUrlLabel(EventFormData.bookingInfo.urlLabel);
 
     $scope.savingBookingInfo = true;
     $scope.bookingInfoError = false;
@@ -629,6 +672,10 @@ function EventFormStep5Controller(
       $scope.priceCssClass = 'state-complete';
     }
 
+  }
+
+  function translateBookingInfoUrlLabels(label) {
+    return $translate.instant('eventForm.step5.' + label);
   }
 
 }
