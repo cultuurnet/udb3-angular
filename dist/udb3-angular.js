@@ -3148,7 +3148,8 @@ angular.module('udb.core')
         'placeholder_street': 'Kerkstraat 1',
         'street_validate': 'Straat en nummer is een verplicht veld.',
         'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
-        'ok': 'OK'
+        'ok': 'OK',
+        'zip': 'Postcode'
       },
       step4: {
         'basic_data': 'Basisgegevens',
@@ -3462,7 +3463,7 @@ angular.module('udb.core')
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
-        'placeholder_city': 'Gemeente of postcode',
+        'label_residence': 'Woonplaats',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen',
@@ -14683,8 +14684,6 @@ function EventFormStep3Controller(
     var zipcode = city.zip,
         name = city.name;
 
-        console.log($scope.selectedCountry.code);
-
     var newAddressInfo = {
       postalCode: zipcode,
       addressLocality: name,
@@ -14943,7 +14942,8 @@ function EventFormStep3Controller(
 
     var currentAddress = EventFormData.address;
     var newAddressInfo = {
-      streetAddress: streetAddress
+      streetAddress: streetAddress,
+      postalCode: $scope.newPlacePostalCode
     };
 
     EventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
@@ -27571,42 +27571,36 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/organizer-address.html',
     "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
     "    <div class=\"row\">\n" +
-    "      <div class=\"col-sm-12 col-md-8\">\n" +
-    "        <div class=\"row\">\n" +
-    "          <div class=\"col-xs-6\">\n" +
-    "            <label>Adres</label>\n" +
-    "          </div>\n" +
-    "          <div class=\"col-xs-6\">\n" +
-    "            <select ng-change=\"oac.changeCountrySelection()\"\n" +
-    "              ng-options=\"option.label for option in oac.availableCountries track by option.code\"\n" +
-    "              ng-model=\"oac.selectedCountry\"\n" +
-    "              class=\"form-control\">\n" +
-    "            </select>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
+    "      <div class=\"col-xs-6\">\n" +
+    "        <label>Adres</label>\n" +
+    "      </div>\n" +
+    "      <div class=\"col-xs-6\">\n" +
+    "        <select ng-change=\"oac.changeCountrySelection()\"\n" +
+    "          ng-options=\"option.label for option in oac.availableCountries track by option.code\"\n" +
+    "          ng-model=\"oac.selectedCountry\"\n" +
+    "          class=\"form-control\">\n" +
+    "        </select>\n" +
     "      </div>\n" +
     "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                <label translate-once=\"organizer.address.label_street\"></label>\n" +
-    "                <input type=\"text\"\n" +
-    "                       class=\"form-control\"\n" +
-    "                       name=\"street\"\n" +
-    "                       placeholder=\"{{ 'organizer.address.label_street' | translate }}\"\n" +
-    "                       ng-model=\"oac.address.streetAddress\"\n" +
-    "                       ng-change=\"oac.validateAddress()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
-    "                <span class=\"has-error\"\n" +
-    "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
-    "                </span>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
+    "\n" +
+    "    <div class=\"form-group\"\n" +
+    "         ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "        <label translate-once=\"organizer.address.label_street\"></label>\n" +
+    "        <input type=\"text\"\n" +
+    "               class=\"form-control\"\n" +
+    "               name=\"street\"\n" +
+    "               placeholder=\"{{ 'organizer.address.label_street' | translate }}\"\n" +
+    "               ng-model=\"oac.address.streetAddress\"\n" +
+    "               ng-change=\"oac.validateAddress()\"\n" +
+    "               ng-model-options=\"{ updateOn: 'blur' }\">\n" +
+    "        <span class=\"has-error\"\n" +
+    "              ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "            <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
+    "        </span>\n" +
     "    </div>\n" +
-    "    <div class=\"row\" ng-show=\"oac.address.addressCountry == 'NL'\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
+    "\n" +
+    "    <div class=\"row\" >\n" +
+    "        <div class=\"col-xs-6\" ng-show=\"oac.address.addressCountry == 'NL'\">\n" +
     "            <div class=\"form-group\"\n" +
     "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
     "                <label translate-once=\"organizer.address.zip\"></label>\n" +
@@ -27623,40 +27617,35 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "            <div ng-hide=\"oac.selectedCity !== ''\">\n" +
-    "                <div class=\"form-group\"\n" +
-    "                     ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                    <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" translate-once=\"organizer.address.label_city\">\n" +
-    "                    </label>\n" +
-    "                    <div id=\"gemeente-kiezer\">\n" +
-    "                        <input id=\"organizer-gemeente-autocomplete\"\n" +
-    "                               type=\"text\"\n" +
-    "                               name=\"city\"\n" +
-    "                               class=\"form-control uib-typeahead\"\n" +
-    "                               placeholder=\"{{ 'organizer.address.placeholder_city' | translate }}\"\n" +
-    "                               ng-model=\"oac.cityAutocompleteTextField\"\n" +
-    "                               uib-typeahead=\"city as city.label for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
-    "                               typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
-    "                               typeahead-min-length=\"2\"\n" +
-    "                               typeahead-template-url=\"templates/city-suggestion.html\"\n" +
-    "                               autocomplete=\"off\">\n" +
-    "                        <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\" translate-once=\"organizer.address.help_city\">\n" +
+    "        <div class=\"col-xs-6\">\n" +
+    "            <div class=\"form-group\" ng-hide=\"oac.selectedCity !== ''\"\n" +
+    "                 ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "                <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" translate-once=\"organizer.address.label_city\" ng-show=\"oac.selectedCountry.code === 'BE'\"></label>\n" +
+    "                <label for=\"organizer-gemeente-autocomplete\" id=\"gemeente-label\" translate-once=\"organizer.address.label_residence\" ng-show=\"oac.selectedCountry.code === 'NL'\"></label>\n" +
+    "                <div id=\"gemeente-kiezer\">\n" +
+    "                    <input id=\"organizer-gemeente-autocomplete\"\n" +
+    "                           type=\"text\"\n" +
+    "                           name=\"city\"\n" +
+    "                           class=\"form-control uib-typeahead\"\n" +
+    "                           ng-model=\"oac.cityAutocompleteTextField\"\n" +
+    "                           uib-typeahead=\"city as city.label for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)\"\n" +
+    "                           typeahead-on-select=\"oac.selectCity($item, $label)\"\n" +
+    "                           typeahead-min-length=\"2\"\n" +
+    "                           typeahead-template-url=\"templates/city-suggestion.html\"\n" +
+    "                           autocomplete=\"off\">\n" +
+    "                    <span class=\"help-block\" ng-show=\"oac.cityAutoCompleteError\" translate-once=\"organizer.address.help_city\">\n" +
+    "                    </span>\n" +
+    "                    <span class=\"has-error\"\n" +
+    "                          ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "                        <span class=\"help-block\" translate-once=\"organizer.address.error_city\">\n" +
     "                        </span>\n" +
-    "                        <span class=\"has-error\"\n" +
-    "                              ng-show=\"oac.cityHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                            <span class=\"help-block\" translate-once=\"organizer.address.error_city\">\n" +
-    "                            </span>\n" +
-    "                        </span>\n" +
-    "                    </div>\n" +
+    "                    </span>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
-    "                <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
-    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
-    "            </div>\n" +
+    "              <span id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
+    "              <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</form>\n"
@@ -27770,28 +27759,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <section ng-hide=\"organizersFound\">\n" +
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
     "      <p class=\"alert alert-info\" translate-once=\"organizer.modal.unique_notice\"></p>\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "          <div class=\"form-group has-feedback\"\n" +
-    "               ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
-    "            <label class=\"control-label\" for=\"organizer-website\" translate-once=\"organizer.modal.website\"></label>\n" +
-    "            <input type=\"url\"\n" +
-    "                   id=\"organizer-website\"\n" +
-    "                   name=\"website\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   ng-model-options=\"{ debounce: 300 }\"\n" +
-    "                   ng-model=\"newOrganizer.website\"\n" +
-    "                   aria-describedby=\"organizer-website-status\"\n" +
-    "                   ng-change=\"validateWebsite()\"\n" +
-    "                   autocomplete=\"off\"\n" +
-    "                   required>\n" +
-    "            <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
-    "            <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
+    "      <div class=\"form-group has-feedback\"\n" +
+    "           ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
+    "        <label class=\"control-label\" for=\"organizer-website\" translate-once=\"organizer.modal.website\"></label>\n" +
+    "        <input type=\"url\"\n" +
+    "               id=\"organizer-website\"\n" +
+    "               name=\"website\"\n" +
+    "               class=\"form-control\"\n" +
+    "               ng-model-options=\"{ debounce: 300 }\"\n" +
+    "               ng-model=\"newOrganizer.website\"\n" +
+    "               aria-describedby=\"organizer-website-status\"\n" +
+    "               ng-change=\"validateWebsite()\"\n" +
+    "               autocomplete=\"off\"\n" +
+    "               required>\n" +
+    "        <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
+    "        <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
     "\n" +
-    "\n" +
-    "        <div class=\"col-sm-12\">\n" +
     "          <p class=\"alert alert-warning\" ng-show=\"organizersWebsiteFound\">\n" +
     "            <span translate=\"organizer.modal.alert_warning\"\n" +
     "                  translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
@@ -27800,26 +27783,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            </a>.\n" +
     "          </p>\n" +
-    "        </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"row\">\n" +
-    "        <div class=\"col-sm-12 col-md-8\">\n" +
-    "          <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
-    "            <label translate-once=\"organizer.modal.label_name\"></label>\n" +
-    "            <input type=\"text\"\n" +
-    "                   name=\"name\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   ng-model=\"newOrganizer.name\"\n" +
-    "                   ng-change=\"updateName()\"\n" +
-    "                   required>\n" +
-    "            <p class=\"help-block\" translate-once=\"organizer.modal.name_help\"></p>\n" +
-    "            <span class=\"help-block\"\n" +
-    "                  ng-show=\"showValidation && organizerForm.name.$error.required\"\n" +
-    "                  translate-once=\"organizer.modal.name_required\">\n" +
-    "            </span>\n" +
-    "          </div>\n" +
-    "        </div>\n" +
+    "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
+    "        <label translate-once=\"organizer.modal.label_name\"></label>\n" +
+    "        <input type=\"text\"\n" +
+    "               name=\"name\"\n" +
+    "               class=\"form-control\"\n" +
+    "               ng-model=\"newOrganizer.name\"\n" +
+    "               ng-change=\"updateName()\"\n" +
+    "               required>\n" +
+    "        <p class=\"help-block\" translate-once=\"organizer.modal.name_help\"></p>\n" +
+    "        <span class=\"help-block\"\n" +
+    "              ng-show=\"showValidation && organizerForm.name.$error.required\"\n" +
+    "              translate-once=\"organizer.modal.name_required\">\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "    </form>\n" +
     "\n" +
@@ -27916,17 +27894,25 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  ng-show=\"invalidStreet\">\n" +
     "                    </span>\n" +
     "        </div>\n" +
-    "        <div class=\"form-group\">\n" +
-    "          <label translate-once=\"location.zip\"></label>\n" +
-    "          <input class=\"form-control\" id=\"locatie-straat\" name=\"address_postalCode\" type=\"text\" ng-model=\"newPlace.address.postalCode\" required>\n" +
+    "        \n" +
+    "        <div class=\"row\">\n" +
+    "          <div class=\"col-xs-4\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "              <label translate-once=\"location.zip\"></label>\n" +
+    "              <input class=\"form-control\" id=\"locatie-straat\" name=\"address_postalCode\" type=\"text\" ng-model=\"newPlace.address.postalCode\" required>\n" +
+    "            </div>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-xs-8\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label translate-once=\"location.city\"></label>\n" +
+    "                <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\">\n" +
+    "                    <span ng-bind=\"newPlace.address.addressLocality\"></span>\n" +
+    "                    <span class=\"text-muted\">(<span ng-bind=\"newPlace.address.addressCountry\"></span>)</span>\n" +
+    "                </p>\n" +
+    "            </div>\n" +
+    "          </div>\n" +
     "        </div>\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <label translate-once=\"location.city\"></label>\n" +
-    "            <p class=\"form-control-static\" id=\"waar-locatie-toevoegen-gemeente\">\n" +
-    "                <span ng-bind=\"newPlace.address.addressLocality\"></span>\n" +
-    "                <span class=\"text-muted\">(<span ng-bind=\"newPlace.address.addressCountry\"></span>)</span>\n" +
-    "            </p>\n" +
-    "        </div>\n" +
+    "\n" +
     "        <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && placeForm.eventType.$error.required }\">\n" +
     "            <label for=\"locatie-toevoegen-types\" translate-once=\"location.category\"></label>\n" +
     "            <p class=\"help-block\" translate-once=\"location.category_help\"></p>\n" +
@@ -28496,14 +28482,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div ng-controller=\"EventFormStep1Controller as EventFormStep1\">\n" +
     "  <a name=\"wat\"></a>\n" +
     "  <section id=\"wat\">\n" +
-    "    <section class=\"row\">\n" +
-    "      <div class=\"col-md-12\">\n" +
-    "        <h2 class=\"title-border\">\n" +
-    "          <span class=\"number\">1</span>\n" +
-    "          <span translate-once=\"eventForm.step1.title\"></span>\n" +
-    "        </h2>\n" +
+    "    <div class=\"step-title\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "          <h2>\n" +
+    "            <span class=\"number\">1</span>\n" +
+    "            <span translate-once=\"eventForm.step1.title\"></span>\n" +
+    "          </h2>\n" +
+    "        </div>\n" +
     "      </div>\n" +
-    "    </section>\n" +
+    "    </div>\n" +
     "\n" +
     "    <div class=\"row\" ng-show=\"!activeEventType\">\n" +
     "      <div ng-class=\"splitTypes ? 'col-sm-5': 'col-sm-12'\"\n" +
@@ -28583,11 +28571,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div ng-controller=\"EventFormStep2Controller as EventFormStep2\">\n" +
     "  <a name=\"wanneer\"></a>\n" +
     "  <section id=\"wanneer\" ng-show=\"eventFormData.showStep2\">\n" +
-    "    <h2 class=\"title-border\">\n" +
-    "      <span class=\"number\">2</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step2.date_help_event\"></span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step2.date_help_place\"></span>\n" +
-    "    </h2>\n" +
+    "    <div class=\"step-title\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "          <h2>\n" +
+    "            <span class=\"number\">2</span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step2.date_help_event\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step2.date_help_place\"></span>\n" +
+    "          </h2>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "\n" +
     "    <udb-form-place-calendar ng-if=\"eventFormData.isPlace\"></udb-form-place-calendar>\n" +
     "    <udb-form-event-calendar ng-if=\"eventFormData.isEvent\"></udb-form-event-calendar>\n" +
@@ -28601,17 +28595,24 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<section id=\"waar\" ng-show=\"eventFormData.showStep3\">\n" +
     "  <form name=\"step3Form\" class=\"css-form\">\n" +
-    "    <h2 class=\"title-border\">\n" +
-    "      <span class=\"number\">3</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step3.title_event\"></span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step3.title_place\"></span>\n" +
-    "    </h2>\n" +
-    "\n" +
-    "    <select ng-change=\"changeCountrySelection()\"\n" +
-    "      ng-options=\"option.label for option in availableCountries track by option.code\"\n" +
-    "      ng-model=\"selectedCountry\"\n" +
-    "      class=\"form-control\">\n" +
-    "    </select>\n" +
+    "    <div class=\"step-title\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-xs-8\">\n" +
+    "          <h2>\n" +
+    "            <span class=\"number\">3</span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step3.title_event\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step3.title_place\"></span>\n" +
+    "          </h2>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-4\">\n" +
+    "          <select ng-change=\"changeCountrySelection()\"\n" +
+    "            ng-options=\"option.label for option in availableCountries track by option.code\"\n" +
+    "            ng-model=\"selectedCountry\"\n" +
+    "            class=\"form-control\">\n" +
+    "          </select>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-12\">\n" +
@@ -28619,7 +28620,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <label for=\"gemeente-autocomplete\"\n" +
     "                 id=\"gemeente-label\"\n" +
     "                 ng-hide=\"selectedCity\">\n" +
-    "                 <span translate-once=\"eventForm.step3.choose_city\"></span> \n" +
+    "                 <span translate-once=\"eventForm.step3.choose_city\"></span>\n" +
     "                 <span translate-once=\"eventForm.step3.choose_city_helper\" class=\"text-muted\"></span>\n" +
     "         </label>\n" +
     "       </span>\n" +
@@ -28719,7 +28720,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div id=\"waar-plaats\" class=\"clearfix\" ng-show=\"eventFormData.isPlace && selectedCity\">\n" +
     "      <div class=\"plaats-adres-ingeven\" ng-hide=\"placeStreetAddress\">\n" +
     "        <div class=\"row\">\n" +
-    "          <div class=\"col-xs-12\">\n" +
+    "          <div class=\"col-xs-12 col-md-4\">\n" +
     "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}\">\n" +
     "              <label translate-once=\"eventForm.step3.street\"></label>\n" +
     "              <input class=\"form-control\"\n" +
@@ -28736,6 +28737,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </span>\n" +
     "              <span class=\"help-block\" ng-show=\"showValidation\" translate-once=\"eventForm.step3.street_validate_long\">\n" +
     "              </span>\n" +
+    "            </div>\n" +
+    "            <div class=\"form-group\" ng-show=\"selectedCountry.code==='NL'\">\n" +
+    "              <label translate-once=\"eventForm.step3.zip\"></label>\n" +
+    "              <input class=\"form-control\"\n" +
+    "                     id=\"postalCode\"\n" +
+    "                     name=\"postalCode\"\n" +
+    "                     ng-model=\"newPlacePostalCode\"\n" +
+    "                     ng-change=\"showValidation=false\"\n" +
+    "                     translate-once-placeholder=\"eventForm.step3.placeholder_zip\"\n" +
+    "                     type=\"text\"\n" +
+    "                     required />\n" +
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
@@ -28766,8 +28778,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <a name=\"titel\"></a>\n" +
     "  <section id=\"titel\" ng-show=\"eventFormData.showStep4\">\n" +
-    "\n" +
-    "    <h2 class=\"title-border\"><span class=\"number\">4</span> <span translate-once=\"eventForm.step4.basic_data\"></span></h2>\n" +
+    "    <div class=\"step-title\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "          <h2>\n" +
+    "            <span class=\"number\">4</span>\n" +
+    "            <span translate-once=\"eventForm.step4.basic_data\"></span>\n" +
+    "          </h2>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-8 col-lg-7\">\n" +
@@ -28870,11 +28890,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <a name=\"extra\"></a>\n" +
     "  <section id=\"extra\" ng-show=\"eventFormData.showStep5\">\n" +
     "\n" +
-    "    <h2 class=\"title-border\">\n" +
-    "      <span class=\"number\">5</span>\n" +
-    "      <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step5.expose_event\"></span>\n" +
-    "      <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step5.expose_place\"></span>\n" +
-    "    </h2>\n" +
+    "    <div class=\"step-title\">\n" +
+    "      <div class=\"row\">\n" +
+    "        <div class=\"col-xs-12\">\n" +
+    "          <h2>\n" +
+    "            <span class=\"number\">5</span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step5.expose_event\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step5.expose_place\"></span>\n" +
+    "          </h2>\n" +
+    "          </h2>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-sm-7\">\n" +

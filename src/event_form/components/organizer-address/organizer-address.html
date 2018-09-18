@@ -1,41 +1,35 @@
 <form name="oac.organizerAddressForm" class="organizer-address-form">
     <div class="row">
-      <div class="col-sm-12 col-md-8">
-        <div class="row">
-          <div class="col-xs-6">
-            <label>Adres</label>
-          </div>
-          <div class="col-xs-6">
-            <select ng-change="oac.changeCountrySelection()"
-              ng-options="option.label for option in oac.availableCountries track by option.code"
-              ng-model="oac.selectedCountry"
-              class="form-control">
-            </select>
-          </div>
-        </div>
+      <div class="col-xs-6">
+        <label>Adres</label>
+      </div>
+      <div class="col-xs-6">
+        <select ng-change="oac.changeCountrySelection()"
+          ng-options="option.label for option in oac.availableCountries track by option.code"
+          ng-model="oac.selectedCountry"
+          class="form-control">
+        </select>
       </div>
     </div>
-    <div class="row">
-        <div class="col-sm-12 col-md-8">
-            <div class="form-group"
-                 ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
-                <label translate-once="organizer.address.label_street"></label>
-                <input type="text"
-                       class="form-control"
-                       name="street"
-                       placeholder="{{ 'organizer.address.label_street' | translate }}"
-                       ng-model="oac.address.streetAddress"
-                       ng-change="oac.validateAddress()"
-                       ng-model-options="{ updateOn: 'blur' }">
-                <span class="has-error"
-                      ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
-                    <span class="help-block" translate-once="organizer.address.help_street"></span>
-                </span>
-            </div>
-        </div>
+
+    <div class="form-group"
+         ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
+        <label translate-once="organizer.address.label_street"></label>
+        <input type="text"
+               class="form-control"
+               name="street"
+               placeholder="{{ 'organizer.address.label_street' | translate }}"
+               ng-model="oac.address.streetAddress"
+               ng-change="oac.validateAddress()"
+               ng-model-options="{ updateOn: 'blur' }">
+        <span class="has-error"
+              ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
+            <span class="help-block" translate-once="organizer.address.help_street"></span>
+        </span>
     </div>
-    <div class="row" ng-show="oac.address.addressCountry == 'NL'">
-        <div class="col-sm-12 col-md-8">
+
+    <div class="row" >
+        <div class="col-xs-6" ng-show="oac.address.addressCountry == 'NL'">
             <div class="form-group"
                  ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
                 <label translate-once="organizer.address.zip"></label>
@@ -52,40 +46,35 @@
                 </span>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12 col-md-8">
-            <div ng-hide="oac.selectedCity !== ''">
-                <div class="form-group"
-                     ng-class="{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}">
-                    <label for="organizer-gemeente-autocomplete" id="gemeente-label" translate-once="organizer.address.label_city">
-                    </label>
-                    <div id="gemeente-kiezer">
-                        <input id="organizer-gemeente-autocomplete"
-                               type="text"
-                               name="city"
-                               class="form-control uib-typeahead"
-                               placeholder="{{ 'organizer.address.placeholder_city' | translate }}"
-                               ng-model="oac.cityAutocompleteTextField"
-                               uib-typeahead="city as city.label for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
-                               typeahead-on-select="oac.selectCity($item, $label)"
-                               typeahead-min-length="2"
-                               typeahead-template-url="templates/city-suggestion.html"
-                               autocomplete="off">
-                        <span class="help-block" ng-show="oac.cityAutoCompleteError" translate-once="organizer.address.help_city">
+        <div class="col-xs-6">
+            <div class="form-group" ng-hide="oac.selectedCity !== ''"
+                 ng-class="{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}">
+                <label for="organizer-gemeente-autocomplete" id="gemeente-label" translate-once="organizer.address.label_city" ng-show="oac.selectedCountry.code === 'BE'"></label>
+                <label for="organizer-gemeente-autocomplete" id="gemeente-label" translate-once="organizer.address.label_residence" ng-show="oac.selectedCountry.code === 'NL'"></label>
+                <div id="gemeente-kiezer">
+                    <input id="organizer-gemeente-autocomplete"
+                           type="text"
+                           name="city"
+                           class="form-control uib-typeahead"
+                           ng-model="oac.cityAutocompleteTextField"
+                           uib-typeahead="city as city.label for city in oac.cities | filter:oac.filterCities($viewValue) | orderBy:oac.orderByLevenshteinDistance($viewValue)"
+                           typeahead-on-select="oac.selectCity($item, $label)"
+                           typeahead-min-length="2"
+                           typeahead-template-url="templates/city-suggestion.html"
+                           autocomplete="off">
+                    <span class="help-block" ng-show="oac.cityAutoCompleteError" translate-once="organizer.address.help_city">
+                    </span>
+                    <span class="has-error"
+                          ng-show="oac.cityHasErrors && oac.organizerAddressForm.$submitted">
+                        <span class="help-block" translate-once="organizer.address.error_city">
                         </span>
-                        <span class="has-error"
-                              ng-show="oac.cityHasErrors && oac.organizerAddressForm.$submitted">
-                            <span class="help-block" translate-once="organizer.address.error_city">
-                            </span>
-                        </span>
-                    </div>
+                    </span>
                 </div>
             </div>
             <div class="form-group" id="gemeente-gekozen" ng-if="oac.selectedCity">
-                <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="::oac.selectedCity"></span>
-                <a href="#" class="btn btn-default btn-link" ng-click="oac.changeCitySelection()" translate-once="organizer.address.change"></a>
-            </div>
+              <span id="gemeente-gekozen-button" ng-bind="::oac.selectedCity"></span>
+              <a href="#" class="btn btn-default btn-link" ng-click="oac.changeCitySelection()" translate-once="organizer.address.change"></a>
+          </div>
         </div>
     </div>
 </form>

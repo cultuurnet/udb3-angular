@@ -125,8 +125,6 @@ function EventFormStep3Controller(
     var zipcode = city.zip,
         name = city.name;
 
-        console.log($scope.selectedCountry.code);
-
     var newAddressInfo = {
       postalCode: zipcode,
       addressLocality: name,
@@ -385,7 +383,8 @@ function EventFormStep3Controller(
 
     var currentAddress = EventFormData.address;
     var newAddressInfo = {
-      streetAddress: streetAddress
+      streetAddress: streetAddress,
+      postalCode: $scope.newPlacePostalCode
     };
 
     EventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
