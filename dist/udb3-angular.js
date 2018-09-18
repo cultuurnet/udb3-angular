@@ -3440,7 +3440,14 @@ angular.module('udb.core')
         'edit': 'Bewerken',
         'delete': 'Verwijderen',
         'overview': 'Terug naar overzicht',
-        'dashboard': 'Terug naar dashboard'
+        'dashboard': 'Terug naar dashboard',
+        'name': 'Naam',
+        'address': 'Adres',
+        'website': 'Website',
+        'phone': 'Telefoonnummer',
+        'email': 'E-mailadres',
+        'labels': 'Labels',
+        'removed': 'Deze organisatie is verwijderd.'
       }
     },
     duplicate: {
@@ -4463,7 +4470,14 @@ angular.module('udb.core')
         'edit': 'Modifier',
         'delete': 'Supprimer',
         'overview': 'Retourner à l\'aperçu',
-        'dashboard': 'Retourner au tableau de bord'
+        'dashboard': 'Retourner au tableau de bord',
+        'name': 'Nom',
+        'address': 'Adresse',
+        'website': 'Site Internet',
+        'phone': 'Numéro de téléphone',
+        'email': 'Adresse e-mail',
+        'labels': 'Labels',
+        'removed': 'Cette organisation a été supprimée.'
       }
     },
     duplicate: {
@@ -30140,7 +30154,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </colgroup>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Naam</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.name\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.name\"></span>\n" +
@@ -30148,7 +30162,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Adres</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.address\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.address.streetAddress\"></span><br/>\n" +
@@ -30157,7 +30171,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Website</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.website\"></span>\n" +
     "        </div>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.url\"></span>\n" +
@@ -30165,7 +30179,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Telefoonnummer</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.phone\"></span>\n" +
     "        </div>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.phone\"></span>\n" +
@@ -30173,7 +30187,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">E-mailadres</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.email\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.email\"></span>\n" +
@@ -30181,7 +30195,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Labels</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.labels\"></span>\n" +
     "          <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
     "        </td>\n" +
     "        <td>\n" +
@@ -30196,7 +30210,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </table>\n" +
     "\n" +
     "    <div class=\"alert alert-danger\" ng-if=\"odc.organizer && odc.organizer.deleted\">\n" +
-    "      Deze organisatie is verwijderd.\n" +
+    "      <span translate-once=\"organizer.manage.removed\"></span>\n" +
     "    </div>\n" +
     "\n" +
     "    <div ng-show=\"odc.loadingError\">\n" +

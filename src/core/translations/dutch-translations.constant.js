@@ -825,7 +825,14 @@ angular.module('udb.core')
         'edit': 'Bewerken',
         'delete': 'Verwijderen',
         'overview': 'Terug naar overzicht',
-        'dashboard': 'Terug naar dashboard'
+        'dashboard': 'Terug naar dashboard',
+        'name': 'Naam',
+        'address': 'Adres',
+        'website': 'Website',
+        'phone': 'Telefoonnummer',
+        'email': 'E-mailadres',
+        'labels': 'Labels',
+        'removed': 'Deze organisatie is verwijderd.'
       }
     },
     duplicate: {

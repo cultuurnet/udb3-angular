@@ -823,7 +823,14 @@ angular.module('udb.core')
         'edit': 'Modifier',
         'delete': 'Supprimer',
         'overview': 'Retourner à l\'aperçu',
-        'dashboard': 'Retourner au tableau de bord'
+        'dashboard': 'Retourner au tableau de bord',
+        'name': 'Nom',
+        'address': 'Adresse',
+        'website': 'Site Internet',
+        'phone': 'Numéro de téléphone',
+        'email': 'Adresse e-mail',
+        'labels': 'Labels',
+        'removed': 'Cette organisation a été supprimée.'
       }
     },
     duplicate: {

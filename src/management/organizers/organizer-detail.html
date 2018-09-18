@@ -48,7 +48,7 @@
       </colgroup>
       <tr>
         <td>
-          <span class="row-label">Naam</span>
+          <span class="row-label" translate-once="organizer.manage.name"></span>
         </td>
         <td>
           <span ng-bind="odc.organizer.name"></span>
@@ -56,7 +56,7 @@
       </tr>
       <tr>
         <td>
-          <span class="row-label">Adres</span>
+          <span class="row-label" translate-once="organizer.manage.address"></span>
         </td>
         <td>
           <span ng-bind="odc.organizer.address.streetAddress"></span><br/>
@@ -65,7 +65,7 @@
       </tr>
       <tr>
         <td>
-          <span class="row-label">Website</span>
+          <span class="row-label" translate-once="organizer.manage.website"></span>
         </div>
         <td>
           <span ng-bind="odc.organizer.url"></span>
@@ -73,7 +73,7 @@
       </tr>
       <tr>
         <td>
-          <span class="row-label">Telefoonnummer</span>
+          <span class="row-label" translate-once="organizer.manage.phone"></span>
         </div>
         <td>
           <span ng-bind="odc.organizer.phone"></span>
@@ -81,7 +81,7 @@
       </div>
       <tr>
         <td>
-          <span class="row-label">E-mailadres</span>
+          <span class="row-label" translate-once="organizer.manage.email"></span>
         </td>
         <td>
           <span ng-bind="odc.organizer.email"></span>
@@ -89,7 +89,7 @@
       </tr>
       <tr>
         <td>
-          <span class="row-label">Labels</span>
+          <span class="row-label" translate-once="organizer.manage.labels"></span>
           <i class="fa fa-circle-o-notch fa-spin" ng-show="labelSaving"></i>
         </td>
         <td>
@@ -104,7 +104,7 @@
     </table>
 
     <div class="alert alert-danger" ng-if="odc.organizer && odc.organizer.deleted">
-      Deze organisatie is verwijderd.
+      <span translate-once="organizer.manage.removed"></span>
     </div>
 
     <div ng-show="odc.loadingError">
