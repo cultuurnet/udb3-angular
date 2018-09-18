@@ -820,6 +820,12 @@ angular.module('udb.core')
         'add_phone': 'Telefoonnummer toevoegen',
         'add_email': 'E-mailadres toevoegen',
         'add_url': 'Andere website toevoegen'
+      },
+      manage: {
+        'edit': 'Bewerken',
+        'delete': 'Verwijderen',
+        'overview': 'Terug naar overzicht',
+        'dashboard': 'Terug naar dashboard'
       }
     },
     duplicate: {

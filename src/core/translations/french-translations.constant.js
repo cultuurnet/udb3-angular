@@ -818,6 +818,12 @@ angular.module('udb.core')
         'add_phone': 'Ajouter un numéro de téléphone',
         'add_email': 'Ajouter une adresse mail',
         'add_url': 'Ajouter un autre site web'
+      },
+      manage: {
+        'edit': 'Modifier',
+        'delete': 'Supprimer',
+        'overview': 'Retourner à l\'aperçu',
+        'dashboard': 'Retourner au tableau de bord'
       }
     },
     duplicate: {

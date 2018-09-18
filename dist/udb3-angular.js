@@ -3435,6 +3435,12 @@ angular.module('udb.core')
         'add_phone': 'Telefoonnummer toevoegen',
         'add_email': 'E-mailadres toevoegen',
         'add_url': 'Andere website toevoegen'
+      },
+      manage: {
+        'edit': 'Bewerken',
+        'delete': 'Verwijderen',
+        'overview': 'Terug naar overzicht',
+        'dashboard': 'Terug naar dashboard'
       }
     },
     duplicate: {
@@ -4452,6 +4458,12 @@ angular.module('udb.core')
         'add_phone': 'Ajouter un numéro de téléphone',
         'add_email': 'Ajouter une adresse mail',
         'add_url': 'Ajouter un autre site web'
+      },
+      manage: {
+        'edit': 'Modifier',
+        'delete': 'Supprimer',
+        'overview': 'Retourner à l\'aperçu',
+        'dashboard': 'Retourner au tableau de bord'
       }
     },
     duplicate: {
@@ -30090,18 +30102,33 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <span ng-if=\"odc.isManageState()\">\n" +
     "        <button class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref=\"management.organizers.edit({id: odc.organizer.id})\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Bewerken</button>\n" +
+    "                ui-sref=\"management.organizers.edit({id: odc.organizer.id})\">\n" +
+    "          <i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.edit\"></span>\n" +
+    "        </button>\n" +
     "        <button class=\"list-group-item\"\n" +
-    "                ng-click=\"odc.deleteOrganization()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i> Verwijderen</button>\n" +
+    "                ng-click=\"odc.deleteOrganization()\">\n" +
+    "          <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.delete\"></span>\n" +
+    "        </button>\n" +
     "        <button class=\"list-group-item\"\n" +
-    "                ui-sref=\"management.organizers.search({id: odc.organizer.id})\"><i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i> Terug naar overzicht</button>\n" +
+    "                ui-sref=\"management.organizers.search({id: odc.organizer.id})\">\n" +
+    "          <i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.overview\"></span>\n" +
+    "        </button>\n" +
     "      </span>\n" +
     "      <span ng-if=\"!odc.isManageState()\">\n" +
     "        <button class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref=\"split.organizer.edit({id: odc.organizer.id})\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Bewerken</button>\n" +
+    "                ui-sref=\"split.organizer.edit({id: odc.organizer.id})\">\n" +
+    "          <i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.edit\"></span>\n" +
+    "        </button>\n" +
     "        <button class=\"list-group-item\"\n" +
-    "                ui-sref=\"split.footer.dashboard\"><i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i> Terug naar dashboard</button>\n" +
+    "                ui-sref=\"split.footer.dashboard\">\n" +
+    "          <i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.dashboard\"></span>\n" +
+    "        </button>\n" +
     "      </span>\n" +
     "    </div>\n" +
     "  </div>\n" +
