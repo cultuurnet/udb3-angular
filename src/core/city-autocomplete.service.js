@@ -64,7 +64,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     var config = {
       params: {
         'city': city,
-        'zipcode': 'test',
+        'zipcode': '',
         'country': country
       }
     };
