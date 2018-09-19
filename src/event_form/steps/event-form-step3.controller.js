@@ -445,7 +445,7 @@ function EventFormStep3Controller(
     if (address) {
       $scope.selectedCity = address.addressLocality;
       $scope.selectedCountry = _.find($scope.availableCountries, function(country) {
-        return country.code == address.addressCountry;
+        return country.code === address.addressCountry;
       });
     }
   };

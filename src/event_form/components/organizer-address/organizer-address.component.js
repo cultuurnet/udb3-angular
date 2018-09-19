@@ -20,7 +20,7 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig) {
   var controller = this;
 
   controller.availableCountries = appConfig.offerEditor.countries;

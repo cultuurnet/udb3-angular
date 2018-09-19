@@ -11582,7 +11582,7 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig) {
   var controller = this;
 
   controller.availableCountries = appConfig.offerEditor.countries;
@@ -11707,7 +11707,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL) {
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }
-OrganizerAddressComponent.$inject = ["$scope", "Levenshtein", "citiesBE", "citiesNL"];
+OrganizerAddressComponent.$inject = ["$scope", "Levenshtein", "citiesBE", "citiesNL", "appConfig"];
 })();
 
 // Source: src/event_form/components/organizer-contact/organizer-contact.component.js
@@ -15015,7 +15015,7 @@ function EventFormStep3Controller(
     if (address) {
       $scope.selectedCity = address.addressLocality;
       $scope.selectedCountry = _.find($scope.availableCountries, function(country) {
-        return country.code == address.addressCountry;
+        return country.code === address.addressCountry;
       });
     }
   };
