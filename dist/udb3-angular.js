@@ -2668,6 +2668,8 @@ UnexpectedErrorModalController.$inject = ["$scope", "$uibModalInstance", "errorM
 angular.module('udb.core')
   .constant('udbDutchTranslations',
   {
+    'BE': 'België',
+    'NL': 'Nederland',
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
     'DE_ADJECTIVE': 'Duitse',
@@ -3691,6 +3693,8 @@ angular.module('udb.core')
 angular.module('udb.core')
   .constant('udbFrenchTranslations',
   {
+    'BE': 'Belgique',
+    'NL': 'Pays-Bas',
     'EN_ADJECTIVE': 'Anglais',
     'FR_ADJECTIVE': 'Français',
     'DE_ADJECTIVE': 'Duitse',
@@ -11571,13 +11575,10 @@ angular
 function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL) {
   var controller = this;
 
-  controller.availableCountries = [
-      {code: 'BE', label: 'België'},
-      {code: 'NL', label: 'Nederland'}
-    ];
-
-  controller.defaultCountry = {code: 'BE', label: 'België'};
+  controller.availableCountries = appConfig.offerEditor.countries;
+  controller.defaultCountry = _.find(controller.availableCountries, function(country){ return country.default; });
   controller.selectedCountry = controller.defaultCountry;
+
   controller.cities = [];
   controller.selectedCity = '';
   controller.requiredAddress = false;
@@ -14589,7 +14590,8 @@ function EventFormStep3Controller(
     eventCrud,
     $rootScope,
     $translate,
-    jsonLDLangFilter
+    jsonLDLangFilter,
+    appConfig
 ) {
 
   var controller = this;
@@ -14623,11 +14625,8 @@ function EventFormStep3Controller(
   // Autocomplete model field for the Location.
   $scope.locationAutocompleteTextField = '';
 
-  $scope.availableCountries = [
-      {code: 'BE', label: 'België'},
-      {code: 'NL', label: 'Nederland'}
-    ];
-  $scope.defaultCountry = {code: 'BE', label: 'België'};
+  $scope.availableCountries = appConfig.offerEditor.countries;
+  $scope.defaultCountry = _.find($scope.availableCountries, function(country){ return country.default; });
   $scope.selectedCountry = $scope.defaultCountry;
 
   // Autocomplete helper vars.
@@ -15005,12 +15004,13 @@ function EventFormStep3Controller(
 
     if (address) {
       $scope.selectedCity = address.addressLocality;
+      $scope.selectedCountry = _.find($scope.availableCountries, function(country){ return country.code == address.addressCountry; }); ;
     }
   };
 
   controller.init(EventFormData);
 }
-EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "citiesBE", "citiesNL", "Levenshtein", "eventCrud", "$rootScope", "$translate", "jsonLDLangFilter"];
+EventFormStep3Controller.$inject = ["$scope", "EventFormData", "cityAutocomplete", "placeCategories", "$uibModal", "citiesBE", "citiesNL", "Levenshtein", "eventCrud", "$rootScope", "$translate", "jsonLDLangFilter", "appConfig"];
 })();
 
 // Source: src/event_form/steps/event-form-step4.controller.js
@@ -28606,7 +28606,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-xs-4\">\n" +
     "          <select ng-change=\"changeCountrySelection()\"\n" +
-    "            ng-options=\"option.label for option in availableCountries track by option.code\"\n" +
+    "            ng-options=\"option.code | translate for option in availableCountries track by option.code\"\n" +
     "            ng-model=\"selectedCountry\"\n" +
     "            class=\"form-control\">\n" +
     "          </select>\n" +

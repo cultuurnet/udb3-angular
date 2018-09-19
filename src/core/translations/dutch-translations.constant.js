@@ -11,6 +11,8 @@
 angular.module('udb.core')
   .constant('udbDutchTranslations',
   {
+    'BE': 'België',
+    'NL': 'Nederland',
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
     'DE_ADJECTIVE': 'Duitse',

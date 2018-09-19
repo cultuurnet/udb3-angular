@@ -30,7 +30,8 @@ function EventFormStep3Controller(
     eventCrud,
     $rootScope,
     $translate,
-    jsonLDLangFilter
+    jsonLDLangFilter,
+    appConfig
 ) {
 
   var controller = this;
@@ -64,11 +65,8 @@ function EventFormStep3Controller(
   // Autocomplete model field for the Location.
   $scope.locationAutocompleteTextField = '';
 
-  $scope.availableCountries = [
-      {code: 'BE', label: 'België'},
-      {code: 'NL', label: 'Nederland'}
-    ];
-  $scope.defaultCountry = {code: 'BE', label: 'België'};
+  $scope.availableCountries = appConfig.offerEditor.countries;
+  $scope.defaultCountry = _.find($scope.availableCountries, function(country){ return country.default; });
   $scope.selectedCountry = $scope.defaultCountry;
 
   // Autocomplete helper vars.
@@ -446,6 +444,7 @@ function EventFormStep3Controller(
 
     if (address) {
       $scope.selectedCity = address.addressLocality;
+      $scope.selectedCountry = _.find($scope.availableCountries, function(country){ return country.code == address.addressCountry; }); ;
     }
   };
 

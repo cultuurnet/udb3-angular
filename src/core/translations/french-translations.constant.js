@@ -11,6 +11,8 @@
 angular.module('udb.core')
   .constant('udbFrenchTranslations',
   {
+    'BE': 'Belgique',
+    'NL': 'Pays-Bas',
     'EN_ADJECTIVE': 'Anglais',
     'FR_ADJECTIVE': 'Français',
     'DE_ADJECTIVE': 'Duitse',

@@ -23,13 +23,10 @@ angular
 function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL) {
   var controller = this;
 
-  controller.availableCountries = [
-      {code: 'BE', label: 'België'},
-      {code: 'NL', label: 'Nederland'}
-    ];
-
-  controller.defaultCountry = {code: 'BE', label: 'België'};
+  controller.availableCountries = appConfig.offerEditor.countries;
+  controller.defaultCountry = _.find(controller.availableCountries, function(country){ return country.default; });
   controller.selectedCountry = controller.defaultCountry;
+
   controller.cities = [];
   controller.selectedCity = '';
   controller.requiredAddress = false;
