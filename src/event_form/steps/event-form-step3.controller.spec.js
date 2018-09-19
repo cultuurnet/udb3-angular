@@ -6,8 +6,8 @@ describe('Controller: event form step 3', function (){
     var appConfig = {
       "offerEditor": {
         "countries": [
-          {"code": "BE", "default": false},
-          {"code": "NL", "default": true}
+          {"code": "BE", "default": true},
+          {"code": "NL", "default": false}
         ]
       }
     };

@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Component: Organizer Address', function() {
-  var $scope, $componentController, cities, component, Levenshtein;
+  var $scope, $componentController, citiesBE, citiesNL, component, Levenshtein;
 
   var fakeAddress =  {
     addressCountry: 'BE',
@@ -18,8 +18,8 @@ describe('Component: Organizer Address', function() {
     var appConfig = {
       "offerEditor": {
         "countries": [
-          {"code": "BE", "default": false},
-          {"code": "NL", "default": true}
+          {"code": "BE", "default": true},
+          {"code": "NL", "default": false}
         ]
       }
     };
@@ -32,7 +32,8 @@ describe('Component: Organizer Address', function() {
   beforeEach(inject(function($rootScope, _$componentController_, $injector) {
     $scope = $rootScope.$new();
     $componentController = _$componentController_;
-    cities = $injector.get('citiesBE');
+    citiesBE = $injector.get('citiesBE');
+    citiesNL = $injector.get('citiesNL');
     Levenshtein = $injector.get('Levenshtein')
   }));
 
@@ -46,7 +47,8 @@ describe('Component: Organizer Address', function() {
         'udbOrganizerAddress',
         {$scope: $scope},
         {address: fakeAddress},
-        {cities: cities},
+        {citiesBE: citiesBE},
+        {citiesNL: citiesNL},
         {Levenshtein: Levenshtein}
     );
   }
@@ -55,7 +57,7 @@ describe('Component: Organizer Address', function() {
     component = getComponent();
     component.selectedCountry.code = 'BE';
     expect(component.selectedCity).toEqual('3000 Leuven');
-    expect(component.cities).toEqual(cities);
+    expect(component.cities).toEqual(citiesBE);
   });
 
   it('should initialise the component even when the address is empty', function () {
