@@ -43,7 +43,7 @@ describe('Controller: event form step 3', function (){
     var zipcode = '1234';
     spyOn(stepController, 'getLocations');
 
-    stepController.selectCity({city: 'some-city-id', country: 'NL'}, 'some-Dutch-city');
+    stepController.selectCity({city: 'some-Dutch-city', country: 'NL'}, 'some-Dutch-city');
 
     expect(stepController.getLocations).toHaveBeenCalledWith({city: 'some-Dutch-city', country: 'NL'});
   });
