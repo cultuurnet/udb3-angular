@@ -66,7 +66,7 @@ function EventFormStep3Controller(
   $scope.locationAutocompleteTextField = '';
 
   $scope.availableCountries = appConfig.offerEditor.countries;
-  $scope.defaultCountry = _.find($scope.availableCountries, function(country){ return country.default; });
+  $scope.defaultCountry = _.find($scope.availableCountries, function(country) { return country.default; });
   $scope.selectedCountry = $scope.defaultCountry;
 
   // Autocomplete helper vars.
@@ -444,7 +444,9 @@ function EventFormStep3Controller(
 
     if (address) {
       $scope.selectedCity = address.addressLocality;
-      $scope.selectedCountry = _.find($scope.availableCountries, function(country){ return country.code == address.addressCountry; }); ;
+      $scope.selectedCountry = _.find($scope.availableCountries, function(country) {
+        return country.code == address.addressCountry;
+      });
     }
   };
 
