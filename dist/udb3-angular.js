@@ -11589,7 +11589,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
   controller.selectedCountry = controller.defaultCountry;
 
-  controller.cities = [];
+  controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
   controller.selectedCity = '';
   controller.requiredAddress = false;
 
@@ -12099,7 +12099,6 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
      * @returns {undefined}
      */
     function getDefaultPlace() {
-      console.log($scope.location.address.addressCountry);
       return {
         name: $scope.title,
         eventType: {

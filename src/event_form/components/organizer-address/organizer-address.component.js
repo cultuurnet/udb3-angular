@@ -27,7 +27,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
   controller.selectedCountry = controller.defaultCountry;
 
-  (controller.selectedCountry.code === 'BE') ? controller.cities = citiesBE : controller.cities = citiesNL;
+  controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
   controller.selectedCity = '';
   controller.requiredAddress = false;
 

@@ -46,7 +46,6 @@
      * @returns {undefined}
      */
     function getDefaultPlace() {
-      console.log($scope.location.address.addressCountry);
       return {
         name: $scope.title,
         eventType: {
