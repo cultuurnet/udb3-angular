@@ -2,6 +2,19 @@
 
 describe('Controller: event form step 3', function (){
 
+  beforeEach(module('udb.core', function ($provide) {
+    var appConfig = {
+      "offerEditor": {
+        "countries": [
+          {"code": "BE", "default": false},
+          {"code": "NL", "default": true}
+        ]
+      }
+    };
+
+    $provide.constant('appConfig', appConfig);
+  }));
+
   beforeEach(module('udb.event-form'));
 
   var $controller, stepController, scope, $q, cityAutocomplete, EventFormData, eventCrud;

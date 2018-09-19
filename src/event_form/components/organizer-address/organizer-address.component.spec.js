@@ -14,6 +14,19 @@ describe('Component: Organizer Address', function() {
     $submitted: false
   };
 
+  beforeEach(module('udb.core', function ($provide) {
+    var appConfig = {
+      "offerEditor": {
+        "countries": [
+          {"code": "BE", "default": false},
+          {"code": "NL", "default": true}
+        ]
+      }
+    };
+
+    $provide.constant('appConfig', appConfig);
+  }));
+
   beforeEach(module('udb.event-form'));
 
   beforeEach(inject(function($rootScope, _$componentController_, $injector) {
