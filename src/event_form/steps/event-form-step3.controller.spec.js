@@ -39,6 +39,15 @@ describe('Controller: event form step 3', function (){
     EventFormData.id = 1;
   }
 
+  it('should fetch a list of places by city when a Dutch city is selected', function () {
+    var zipcode = '1234';
+    spyOn(stepController, 'getLocations');
+
+    stepController.selectCity({city: 'some-city-id', country: 'NL'}, 'some-Dutch-city');
+
+    expect(stepController.getLocations).toHaveBeenCalledWith({city: 'some-Dutch-city', country: 'NL'});
+  });
+
   it('should fetch a list of places by zipcode when a city is selected', function () {
     var zipcode = '1234';
     spyOn(stepController, 'getLocations');
