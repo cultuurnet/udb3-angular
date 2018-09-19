@@ -6553,7 +6553,17 @@ function UdbOrganizerFactory(UitpasLabels) {
   }
 
   function hasUitpasLabel(labels) {
-    return labels && !_.isEmpty(_.intersection(labels, _.values(UitpasLabels)));
+    return arrayToLowerCase(labels) &&
+        !_.isEmpty(_.intersection(arrayToLowerCase(labels), _.values(arrayToLowerCase(UitpasLabels))));
+  }
+
+  function arrayToLowerCase(array) {
+    var lowerCaseArray = [];
+    _.each(array, function(element, key) {
+      lowerCaseArray[key] = element.toLowerCase();
+    });
+
+    return lowerCaseArray;
   }
 
   function getFirst(jsonOrganizer, path) {
