@@ -23,12 +23,12 @@
                   ng-show="invalidStreet">
                     </span>
         </div>
-        
+
         <div class="row">
           <div class="col-xs-4">
             <div class="form-group">
               <label translate-once="location.zip"></label>
-              <input class="form-control" id="locatie-straat" name="address_postalCode" type="text" ng-model="newPlace.address.postalCode" required>
+              <input class="form-control" id="locatie-straat" name="address_postalCode" type="text" ng-model="newPlace.address.postalCode" required ng-disabled="newPlace.address.addressCountry === 'BE'">
             </div>
           </div>
           <div class="col-xs-8">

@@ -27905,12 +27905,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  ng-show=\"invalidStreet\">\n" +
     "                    </span>\n" +
     "        </div>\n" +
-    "        \n" +
+    "\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-4\">\n" +
     "            <div class=\"form-group\">\n" +
     "              <label translate-once=\"location.zip\"></label>\n" +
-    "              <input class=\"form-control\" id=\"locatie-straat\" name=\"address_postalCode\" type=\"text\" ng-model=\"newPlace.address.postalCode\" required>\n" +
+    "              <input class=\"form-control\" id=\"locatie-straat\" name=\"address_postalCode\" type=\"text\" ng-model=\"newPlace.address.postalCode\" required ng-disabled=\"newPlace.address.addressCountry === 'BE'\">\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <div class=\"col-xs-8\">\n" +
