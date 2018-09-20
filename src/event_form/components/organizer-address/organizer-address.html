@@ -5,7 +5,7 @@
       </div>
       <div class="col-xs-6">
         <select ng-change="oac.changeCountrySelection()"
-          ng-options="option.label for option in oac.availableCountries track by option.code"
+          ng-options="option.code | translate for option in oac.availableCountries track by option.code"
           ng-model="oac.selectedCountry"
           class="form-control">
         </select>
@@ -29,7 +29,7 @@
     </div>
 
     <div class="row" >
-        <div class="col-xs-6" ng-show="oac.address.addressCountry == 'NL'">
+        <div class="col-xs-6" ng-show="oac.selectedCountry.code == 'NL'">
             <div class="form-group"
                  ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
                 <label translate-once="organizer.address.zip"></label>

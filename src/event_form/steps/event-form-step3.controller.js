@@ -89,7 +89,7 @@ function EventFormStep3Controller(
 
   // Scope functions.
 
-  $scope.cities = citiesBE;
+  $scope.cities = $scope.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
 
   $scope.changeCountrySelection = changeCountrySelection;
   $scope.changeCitySelection = changeCitySelection;
