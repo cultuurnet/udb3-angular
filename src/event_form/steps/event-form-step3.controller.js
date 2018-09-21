@@ -397,6 +397,7 @@ function EventFormStep3Controller(
   function changePlaceStreetAddress() {
     $scope.newPlaceStreetAddress = $scope.placeStreetAddress ? $scope.placeStreetAddress : '';
     $scope.placeStreetAddress = '';
+    $scope.showValidation = false;
     controller.stepUncompleted();
   }
 
