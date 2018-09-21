@@ -6507,7 +6507,7 @@ function UdbOrganizerFactory(UitpasLabels) {
 
   function arrayToLowerCase(array) {
     var lowerCaseArray = [];
-    angular.forEach(array, function(element, key) {
+    _.each(array, function(element, key) {
       lowerCaseArray[key] = element.toLowerCase();
     });
 
@@ -14439,6 +14439,14 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
     if (EventFormData.id) {
       controller.updateEventTypeAndThemePicker(EventFormData);
       $scope.splitTypes = false;
+    }
+
+    if (_.where($scope.eventTypeLabels, {primary: true}).length === $scope.eventTypeLabels.length) {
+      $scope.showAllEventTypes = true;
+    }
+
+    if (_.where($scope.placeLabels, {primary: true}).length === $scope.placeLabels.length) {
+      $scope.showAllPlaces = true;
     }
   };
 
