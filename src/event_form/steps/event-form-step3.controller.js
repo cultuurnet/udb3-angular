@@ -100,7 +100,7 @@ function EventFormStep3Controller(
   $scope.filterCities = function(value) {
     return function (city) {
       var length = value.length;
-      var words = value.match(/\w+/g);
+      var words = value.match(/.+/g);
       var labelMatches = words.filter(function (word) {
         return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
