@@ -26,6 +26,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.availableCountries = appConfig.offerEditor.countries;
   controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
   controller.selectedCountry = controller.defaultCountry;
+  controller.address.addressCountry = controller.selectedCountry.code;
 
   controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
   controller.selectedCity = '';
@@ -80,7 +81,6 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
         controller.cityHasErrors = true;
       }
     }
-
     sendUpdate();
   }
 
@@ -106,7 +106,10 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
    * Select City.
    */
   function selectCity($item, $label) {
-    controller.address.postalCode = $item.zip;
+    if (controller.selectedCountry.code === 'BE') {
+      controller.address.postalCode = $item.zip;
+    }
+
     controller.address.addressLocality = $item.name;
 
     controller.cityAutocompleteTextField = '';

@@ -11588,6 +11588,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.availableCountries = appConfig.offerEditor.countries;
   controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
   controller.selectedCountry = controller.defaultCountry;
+  controller.address.addressCountry = controller.selectedCountry.code;
 
   controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
   controller.selectedCity = '';
@@ -11642,7 +11643,6 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
         controller.cityHasErrors = true;
       }
     }
-
     sendUpdate();
   }
 
@@ -11668,7 +11668,10 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
    * Select City.
    */
   function selectCity($item, $label) {
-    controller.address.postalCode = $item.zip;
+    if (controller.selectedCountry.code === 'BE') {
+      controller.address.postalCode = $item.zip;
+    }
+
     controller.address.addressLocality = $item.name;
 
     controller.cityAutocompleteTextField = '';
@@ -11881,7 +11884,7 @@ function EventFormOrganizerModalController(
       streetAddress : '',
       addressLocality : '',
       postalCode: '',
-      addressCountry : 'BE'
+      addressCountry : ''
     },
     contact: []
   };
@@ -27611,23 +27614,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\" >\n" +
-    "        <div class=\"col-xs-6\" ng-show=\"oac.selectedCountry.code == 'NL'\">\n" +
-    "            <div class=\"form-group\"\n" +
-    "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
-    "                <label translate-once=\"organizer.address.zip\"></label>\n" +
-    "                <input type=\"text\"\n" +
-    "                       class=\"form-control\"\n" +
-    "                       name=\"street\"\n" +
-    "                       placeholder=\"{{ 'organizer.address.zip' | translate }}\"\n" +
-    "                       ng-model=\"oac.address.postalCode\"\n" +
-    "                       ng-change=\"oac.validateAddress()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
-    "                <span class=\"has-error\"\n" +
-    "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
-    "                </span>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
     "        <div class=\"col-xs-6\">\n" +
     "            <div class=\"form-group\" ng-hide=\"oac.selectedCity !== ''\"\n" +
     "                 ng-class=\"{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
@@ -27654,9 +27640,30 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"form-group\" id=\"gemeente-gekozen\" ng-if=\"oac.selectedCity\">\n" +
-    "              <span id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
-    "              <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
-    "          </div>\n" +
+    "              <label id=\"gemeente-label\" translate-once=\"organizer.address.label_city\" ng-show=\"oac.selectedCountry.code === 'BE'\"></label>\n" +
+    "              <label id=\"gemeente-label\" translate-once=\"organizer.address.label_residence\" ng-show=\"oac.selectedCountry.code === 'NL'\"></label>\n" +
+    "              <p class=\"form-text\">\n" +
+    "                <span id=\"gemeente-gekozen-button\" ng-bind=\"::oac.selectedCity\"></span>\n" +
+    "                <a href=\"#\" class=\"btn btn-default btn-link\" ng-click=\"oac.changeCitySelection()\" translate-once=\"organizer.address.change\"></a>\n" +
+    "              </p>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-xs-6\" ng-show=\"oac.selectedCountry.code == 'NL'\">\n" +
+    "            <div class=\"form-group\"\n" +
+    "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "                <label translate-once=\"organizer.address.zip\"></label>\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"street\"\n" +
+    "                       placeholder=\"{{ 'organizer.address.zip' | translate }}\"\n" +
+    "                       ng-model=\"oac.address.postalCode\"\n" +
+    "                       ng-change=\"oac.validateAddress()\"\n" +
+    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
+    "                <span class=\"has-error\"\n" +
+    "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
+    "                </span>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</form>\n"

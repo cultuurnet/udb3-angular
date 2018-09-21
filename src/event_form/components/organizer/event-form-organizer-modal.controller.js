@@ -50,7 +50,7 @@ function EventFormOrganizerModalController(
       streetAddress : '',
       addressLocality : '',
       postalCode: '',
-      addressCountry : 'BE'
+      addressCountry : ''
     },
     contact: []
   };

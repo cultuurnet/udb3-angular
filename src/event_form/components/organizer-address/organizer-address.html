@@ -29,23 +29,6 @@
     </div>
 
     <div class="row" >
-        <div class="col-xs-6" ng-show="oac.selectedCountry.code == 'NL'">
-            <div class="form-group"
-                 ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
-                <label translate-once="organizer.address.zip"></label>
-                <input type="text"
-                       class="form-control"
-                       name="street"
-                       placeholder="{{ 'organizer.address.zip' | translate }}"
-                       ng-model="oac.address.postalCode"
-                       ng-change="oac.validateAddress()"
-                       ng-model-options="{ updateOn: 'blur' }">
-                <span class="has-error"
-                      ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
-                    <span class="help-block" translate-once="organizer.address.help_street"></span>
-                </span>
-            </div>
-        </div>
         <div class="col-xs-6">
             <div class="form-group" ng-hide="oac.selectedCity !== ''"
                  ng-class="{'has-error' : oac.cityHasErrors && oac.organizerAddressForm.$submitted}">
@@ -72,9 +55,30 @@
                 </div>
             </div>
             <div class="form-group" id="gemeente-gekozen" ng-if="oac.selectedCity">
-              <span id="gemeente-gekozen-button" ng-bind="::oac.selectedCity"></span>
-              <a href="#" class="btn btn-default btn-link" ng-click="oac.changeCitySelection()" translate-once="organizer.address.change"></a>
-          </div>
+              <label id="gemeente-label" translate-once="organizer.address.label_city" ng-show="oac.selectedCountry.code === 'BE'"></label>
+              <label id="gemeente-label" translate-once="organizer.address.label_residence" ng-show="oac.selectedCountry.code === 'NL'"></label>
+              <p class="form-text">
+                <span id="gemeente-gekozen-button" ng-bind="::oac.selectedCity"></span>
+                <a href="#" class="btn btn-default btn-link" ng-click="oac.changeCitySelection()" translate-once="organizer.address.change"></a>
+              </p>
+            </div>
+        </div>
+        <div class="col-xs-6" ng-show="oac.selectedCountry.code == 'NL'">
+            <div class="form-group"
+                 ng-class="{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}">
+                <label translate-once="organizer.address.zip"></label>
+                <input type="text"
+                       class="form-control"
+                       name="street"
+                       placeholder="{{ 'organizer.address.zip' | translate }}"
+                       ng-model="oac.address.postalCode"
+                       ng-change="oac.validateAddress()"
+                       ng-model-options="{ updateOn: 'blur' }">
+                <span class="has-error"
+                      ng-show="oac.streetHasErrors && oac.organizerAddressForm.$submitted">
+                    <span class="help-block" translate-once="organizer.address.help_street"></span>
+                </span>
+            </div>
         </div>
     </div>
 </form>
