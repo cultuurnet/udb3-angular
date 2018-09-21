@@ -13564,7 +13564,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
                       appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
           );
         } else {
-          formData.addTimeSpan(moment(), moment());
+          formData.addTimeSpan(moment().startOf('day'), moment().endOf('day'));
         }
       }
 
