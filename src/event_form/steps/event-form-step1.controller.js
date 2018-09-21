@@ -199,6 +199,14 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       controller.updateEventTypeAndThemePicker(EventFormData);
       $scope.splitTypes = false;
     }
+
+    if (_.where($scope.eventTypeLabels, {primary: true}).length === $scope.eventTypeLabels.length) {
+      $scope.showAllEventTypes = true;
+    }
+
+    if (_.where($scope.placeLabels, {primary: true}).length === $scope.placeLabels.length) {
+      $scope.showAllPlaces = true;
+    }
   };
 
   $scope.translateOfferTypes = function (type) {
