@@ -27,8 +27,7 @@ function EventFormStep5Controller(
     $uibModal,
     $rootScope,
     appConfig,
-    udbUitpasApi,
-    $translate
+    udbUitpasApi
   ) {
 
   var controller = this;
@@ -92,27 +91,27 @@ function EventFormStep5Controller(
       {value: 'reserve_places', label: translateBookingInfoUrlLabels('reserve_places', language)},
       {value: 'check_availability', label: translateBookingInfoUrlLabels('check_availability', language)},
       {value: 'subscribe', label: translateBookingInfoUrlLabels('subscribe', language)}
-    ]
+    ];
   });
-  /*$scope.bookingOptions = [
-    {value: 'buy_tickets', label: translateBookingInfoUrlLabels('buy_tickets', $scope.mainLanguage)},
-    {value: 'reserve_places', label: translateBookingInfoUrlLabels('reserve_places', $scope.mainLanguage)},
-    {value: 'check_availability', label: translateBookingInfoUrlLabels('check_availability', $scope.mainLanguage)},
-    {value: 'subscribe', label: translateBookingInfoUrlLabels('subscribe', $scope.mainLanguage)}
-  ];*/
 
   if (EventFormData.bookingInfo.urlLabel) {
     $scope.bookingModel.urlLabel = [];
-    $scope.usedBookingOption = _.findWhere($scope.bookingOptions[$scope.mainLanguage], {label: EventFormData.bookingInfo.urlLabel});
+    $scope.usedBookingOption = _.findWhere($scope.bookingOptions[$scope.mainLanguage],
+        {label: EventFormData.bookingInfo.urlLabel}
+    );
 
     if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
       _.each($scope.translatableLanguages, function (language) {
-        $scope.bookingModel.urlLabel[language] = _.findWhere($scope.bookingOptions[language], {value: $scope.usedBookingOption.value})
+        $scope.bookingModel.urlLabel[language] = _.findWhere($scope.bookingOptions[language],
+            {value: $scope.usedBookingOption.value}
+        );
       });
     }
     else {
       _.each($scope.translatableLanguages, function (language) {
-        $scope.bookingModel.urlLabel[language] = _.findWhere($scope.bookingOptions[language], {value: $scope.usedBookingOption.value})
+        $scope.bookingModel.urlLabel[language] = _.findWhere($scope.bookingOptions[language],
+            {value: $scope.usedBookingOption.value}
+        );
       });
     }
   }
@@ -122,15 +121,9 @@ function EventFormStep5Controller(
     });
   }
 
-  //$scope.bookingOptions[$scope.mainLanguage].unshift($scope.usedBookingOption);
-
   // Add urlLabel to the option list when it is not in the options list.
   // This is mostly the case when the user is editing in another language as the offer's mainLanguage.
   if ($scope.usedBookingOption && !_.find($scope.bookingOptions[$scope.mainLanguage], $scope.usedBookingOption)) {
-    //$scope.bookingOptions.unshift($scope.bookingModel.urlLabel[$scope.mainLanguage]);
-    /*_.each($scope.translatableLanguages, function(language) {
-      _.findWhere($scope.bookingOptions[language], {label: EventFormData.bookingInfo.urlLabel})
-    });*/
     $scope.bookingOptions[$scope.mainLanguage].unshift($scope.usedBookingOption);
   }
 
@@ -546,7 +539,6 @@ function EventFormStep5Controller(
     _.each($scope.translatableLanguages, function(language) {
       urlLabel[language] = translateBookingInfoUrlLabels('reserve_places', language);
     });
-    //urlLabel[$scope.mainLanguage] = translateBookingInfoUrlLabels('reserve_places');
 
     // Make sure all default values are set.
     EventFormData.bookingInfo = angular.extend({}, {
@@ -564,7 +556,11 @@ function EventFormStep5Controller(
           ''
     }, $scope.bookingModel);
 
-    EventFormData.bookingInfo.urlLabel = formatBookingInfoUrlLabel(EventFormData.bookingInfo.urlLabel);
+    if (typeof EventFormData.bookingInfo.urlLabel !== 'string') {
+      EventFormData.bookingInfo.urlLabel = formatBookingInfoUrlLabel(EventFormData.bookingInfo.urlLabel);
+    } else {
+      EventFormData.bookingInfo.urlLabel = formatBookingInfoUrlLabel(EventFormData.bookingInfo.urlLabel);
+    }
 
     $scope.savingBookingInfo = true;
     $scope.bookingInfoError = false;
