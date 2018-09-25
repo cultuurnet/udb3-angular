@@ -23,13 +23,25 @@
                   ng-show="invalidStreet">
                     </span>
         </div>
-        <div class="form-group">
-            <label translate-once="location.city"></label>
-            <p class="form-control-static" id="waar-locatie-toevoegen-gemeente">
-                <span ng-bind="newPlace.address.postalCode"></span> <span ng-bind="newPlace.address.addressLocality"></span>
-                <span class="text-muted">(<span ng-bind="newPlace.address.addressCountry"></span>)</span>
-            </p>
+
+        <div class="row">
+          <div class="col-xs-4">
+            <div class="form-group">
+              <label translate-once="location.zip"></label>
+              <input class="form-control" id="locatie-straat" name="address_postalCode" type="text" ng-model="newPlace.address.postalCode" required ng-disabled="newPlace.address.addressCountry === 'BE'">
+            </div>
+          </div>
+          <div class="col-xs-8">
+            <div class="form-group">
+                <label translate-once="location.city"></label>
+                <p class="form-control-static" id="waar-locatie-toevoegen-gemeente">
+                    <span ng-bind="newPlace.address.addressLocality"></span>
+                    <span class="text-muted">(<span ng-bind="newPlace.address.addressCountry"></span>)</span>
+                </p>
+            </div>
+          </div>
         </div>
+
         <div class="form-group" ng-class="{'has-error' : showValidation && placeForm.eventType.$error.required }">
             <label for="locatie-toevoegen-types" translate-once="location.category"></label>
             <p class="help-block" translate-once="location.category_help"></p>

@@ -1,14 +1,16 @@
 <div ng-controller="EventFormStep1Controller as EventFormStep1">
   <a name="wat"></a>
   <section id="wat">
-    <section class="row">
-      <div class="col-md-12">
-        <h2 class="title-border">
-          <span class="number">1</span>
-          <span translate-once="eventForm.step1.title"></span>
-        </h2>
+    <div class="step-title">
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>
+            <span class="number">1</span>
+            <span translate-once="eventForm.step1.title"></span>
+          </h2>
+        </div>
       </div>
-    </section>
+    </div>
 
     <div class="row" ng-show="!activeEventType">
       <div ng-class="splitTypes ? 'col-sm-5': 'col-sm-12'"

@@ -11,6 +11,8 @@
 angular.module('udb.core')
   .constant('udbDutchTranslations',
   {
+    'BE': 'België',
+    'NL': 'Nederland',
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
     'DE_ADJECTIVE': 'Duitse',
@@ -454,7 +456,8 @@ angular.module('udb.core')
       'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
       'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
-      'add': 'Toevoegen'
+      'add': 'Toevoegen',
+      'zip': 'Postcode'
     },
     eventForm: {
       'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
@@ -475,6 +478,9 @@ angular.module('udb.core')
         'title_event': 'Waar vindt dit evenement of deze activiteit plaats?',
         'title_place': 'Waar is deze plaats of locatie?',
         'choose_city': 'Kies een gemeente',
+        'choose_city_helper': 'bv. Gent of 9000',
+        'choose_residence': 'Kies een woonplaats',
+        'choose_residence_helper': 'bv. Groningen of Amsterdam',
         'placeholder_city': 'Gemeente of postcode',
         'problem_city': 'Er was een probleem tijdens het ophalen van de steden',
         'change': 'Wijzigen',
@@ -487,7 +493,8 @@ angular.module('udb.core')
         'placeholder_street': 'Kerkstraat 1',
         'street_validate': 'Straat en nummer is een verplicht veld.',
         'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
-        'ok': 'OK'
+        'ok': 'OK',
+        'zip': 'Postcode'
       },
       step4: {
         'basic_data': 'Basisgegevens',
@@ -801,10 +808,11 @@ angular.module('udb.core')
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
-        'placeholder_city': 'Gemeente of postcode',
+        'label_residence': 'Woonplaats',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
-        'change': 'Wijzigen'
+        'change': 'Wijzigen',
+        'zip': 'Postcode'
       },
       contact: {
         'title': 'Contact',
