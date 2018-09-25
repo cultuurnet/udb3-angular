@@ -869,6 +869,7 @@ angular.module('udb.core')
       'Congres of studiedag': 'Congrès ou journée d\'étude',
       'Eten en drinken': 'Manger et boire',
       'Thema of pretpark': 'Parc à thème ou parc d\'attractions',
+      'Theater': 'Théâtre',
       'Jeugdhuis of jeugdcentrum': 'Maison de jeunes ou centre de jeunesse',
       'Cultuur- of ontmoetingscentrum': 'Centre culturel ou centre de réunion',
       'Discotheek': 'Discothèque',
