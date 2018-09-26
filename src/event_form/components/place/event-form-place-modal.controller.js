@@ -94,7 +94,7 @@
       }
 
       if ($scope.newPlace.address.addressCountry === 'NL') {
-        if (!validatePostalNlCode($scope.newPlace.address.postalCode)) {
+        if (!validateNlPostalCode($scope.newPlace.address.postalCode)) {
           $scope.error = true;
           $scope.invalidNlPostalCode = true;
           return;
@@ -184,7 +184,7 @@
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
     }
 
-    function validatePostalNlCode(postalCode) {
+    function validateNlPostalCode(postalCode) {
       var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
       return regex.test(postalCode);
     }

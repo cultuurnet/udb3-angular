@@ -496,7 +496,9 @@ angular.module('udb.core')
         'street_validate': 'Straat en nummer is een verplicht veld.',
         'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
         'ok': 'OK',
-        'zip': 'Postcode'
+        'zip': 'Postcode',
+        'zip_validate': 'Postcode is een verplicht veld.',
+        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.'
       },
       step4: {
         'basic_data': 'Basisgegevens',
