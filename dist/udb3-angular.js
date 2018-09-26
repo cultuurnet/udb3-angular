@@ -3114,7 +3114,9 @@ angular.module('udb.core')
       'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
       'add': 'Toevoegen',
-      'zip': 'Postcode'
+      'zip': 'Postcode',
+      'nlPostalCode_validation': 'Postcode is een verplicht veld.',
+      'invalid_PostalCode': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.'
     },
     eventForm: {
       'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
@@ -4138,7 +4140,8 @@ angular.module('udb.core')
       'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
-      'add': 'Ajouter'
+      'add': 'Ajouter',
+      'nlPostalCode_validation': 'Code postal est un domaine obligatoire.'
     },
     eventForm: {
       'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
@@ -12091,6 +12094,7 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
     $scope.invalidStreet = false;
+    $scope.invalidNlPostalCode = false;
     $scope.saving = false;
     $scope.error = false;
 
@@ -12148,6 +12152,14 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
         $scope.error = true;
         $scope.invalidStreet = true;
         return;
+      }
+
+      if ($scope.newPlace.address.addressCountry === 'NL') {
+        if (!validatePostalNlCode($scope.newPlace.address.postalCode)) {
+          $scope.error = true;
+          $scope.invalidNlPostalCode = true;
+          return;
+        }
       }
 
       savePlace();
@@ -12231,6 +12243,11 @@ EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udb
     function validateAddress(streetAddress) {
       var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+
+    function validatePostalNlCode(postalCode) {
+      var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+      return regex.test(postalCode);
     }
 
     function translateEventTypes(type) {
@@ -27926,9 +27943,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-xs-4\">\n" +
-    "            <div class=\"form-group\">\n" +
+    "            <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && (placeForm.address_postalCode.$error.required || invalidNlPostalCode)}\">\n" +
     "              <label translate-once=\"location.zip\"></label>\n" +
+    "              <span class=\"text-muted\" ng-if=\"newPlace.address.addressCountry === 'NL'\">bv. 1104CA</span>\n" +
     "              <input class=\"form-control\" id=\"locatie-straat\" name=\"address_postalCode\" type=\"text\" ng-model=\"newPlace.address.postalCode\" required ng-disabled=\"newPlace.address.addressCountry === 'BE'\">\n" +
+    "                <span class=\"help-block\"\n" +
+    "                      translate-once=\"location.nlPostalCode_validation\"\n" +
+    "                      ng-show=\"error && !invalidNlPostalCode\">\n" +
+    "                    </span>\n" +
+    "                <span class=\"help-block\"\n" +
+    "                      translate-once=\"location.invalid_PostalCode\"\n" +
+    "                      ng-show=\"invalidNlPostalCode\">\n" +
+    "                    </span>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <div class=\"col-xs-8\">\n" +

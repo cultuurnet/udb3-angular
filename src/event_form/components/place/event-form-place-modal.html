@@ -26,9 +26,18 @@
 
         <div class="row">
           <div class="col-xs-4">
-            <div class="form-group">
+            <div class="form-group" ng-class="{'has-error' : showValidation && (placeForm.address_postalCode.$error.required || invalidNlPostalCode)}">
               <label translate-once="location.zip"></label>
+              <span class="text-muted" ng-if="newPlace.address.addressCountry === 'NL'">bv. 1104CA</span>
               <input class="form-control" id="locatie-straat" name="address_postalCode" type="text" ng-model="newPlace.address.postalCode" required ng-disabled="newPlace.address.addressCountry === 'BE'">
+                <span class="help-block"
+                      translate-once="location.nlPostalCode_validation"
+                      ng-show="error && !invalidNlPostalCode">
+                    </span>
+                <span class="help-block"
+                      translate-once="location.invalid_PostalCode"
+                      ng-show="invalidNlPostalCode">
+                    </span>
             </div>
           </div>
           <div class="col-xs-8">
