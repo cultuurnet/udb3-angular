@@ -3468,6 +3468,8 @@ angular.module('udb.core')
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
+        'help_zip': 'Gelieve een postcode in te geven.',
+        'validate_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.',
         'label_city': 'Gemeente',
         'label_residence': 'Woonplaats',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
@@ -11609,6 +11611,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.streetHasErrors = false;
   controller.cityHasErrors = false;
   controller.addressHasErrors = false;
+  controller.zipHasErrors = false;
+  controller.zipValidateError = false;
 
   controller.validateAddress = validateAddress;
   controller.filterCities = filterCities;
@@ -11626,6 +11630,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   function reset() {
     controller.streetHasErrors = false;
     controller.cityHasErrors = false;
+    controller.zipValidateError = false;
+    controller.zipHasErrors = false;
     controller.addressHasErrors = false;
   }
 
@@ -11639,18 +11645,63 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
       if (controller.selectedCity === '') {
         controller.cityHasErrors = true;
       }
+      if (controller.selectedCountry.code === 'NL') {
+        if (controller.address.postalCode === '' ||
+            controller.address.postalCode === undefined) {
+          controller.zipHasErrors = true;
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
+      }
     }
     else {
-      if ((controller.address.streetAddress === '' ||
-          controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
-        controller.streetHasErrors = true;
+      if (controller.selectedCity !== '') {
+        if (controller.address.streetAddress === '' ||
+            controller.address.streetAddress === undefined) {
+          controller.streetHasErrors = true;
+        }
+
+        if (controller.selectedCountry.code === 'NL') {
+          if (controller.address.postalCode === '' ||
+              controller.address.postalCode === undefined) {
+            controller.zipHasErrors = true;
+            controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+          }
+        }
       }
 
-      if (controller.selectedCity === '' && controller.address.streetAddress !== '') {
-        controller.cityHasErrors = true;
+      if (controller.address.streetAddress !== '') {
+        if (controller.selectedCity === '') {
+          controller.cityHasErrors = true;
+        }
+
+        if (controller.address.postalCode === '' ||
+            controller.address.postalCode === undefined) {
+          controller.zipHasErrors = true;
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
+      }
+
+      if (controller.selectedCountry.code === 'NL') {
+        if (controller.address.postalCode !== '') {
+          if (controller.address.streetAddress === '' ||
+              controller.address.streetAddress === undefined) {
+            controller.streetHasErrors = true;
+          }
+
+          if (controller.selectedCity === '') {
+            controller.cityHasErrors = true;
+          }
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
       }
     }
     sendUpdate();
+  }
+
+  function validateNlPostalCode(postalCode) {
+    console.log(postalCode);
+    var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+    return regex.test(postalCode);
   }
 
   function filterCities(value) {
@@ -11713,7 +11764,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   }
 
   function sendUpdate() {
-    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors;
+    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors ||
+        controller.zipHasErrors || controller.zipValidateError;
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }
@@ -27746,18 +27798,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-xs-6\" ng-show=\"oac.selectedCountry.code == 'NL'\">\n" +
     "            <div class=\"form-group\"\n" +
-    "                 ng-class=\"{'has-error' : oac.streetHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
+    "                 ng-class=\"{'has-error' : oac.zipHasErrors && oac.organizerAddressForm.$submitted}\">\n" +
     "                <label translate-once=\"organizer.address.zip\"></label>\n" +
+    "                <span class=\"text-muted\">bv. 1104CA</span>\n" +
     "                <input type=\"text\"\n" +
     "                       class=\"form-control\"\n" +
-    "                       name=\"street\"\n" +
+    "                       name=\"postalCode\"\n" +
     "                       placeholder=\"{{ 'organizer.address.zip' | translate }}\"\n" +
     "                       ng-model=\"oac.address.postalCode\"\n" +
-    "                       ng-change=\"oac.validateAddress()\"\n" +
-    "                       ng-model-options=\"{ updateOn: 'blur' }\">\n" +
+    "                       ng-change=\"oac.validateAddress()\">\n" +
     "                <span class=\"has-error\"\n" +
-    "                      ng-show=\"oac.streetHasErrors && oac.organizerAddressForm.$submitted\">\n" +
-    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_street\"></span>\n" +
+    "                      ng-show=\"oac.zipHasErrors && oac.organizerAddressForm.$submitted\">\n" +
+    "                    <span class=\"help-block\" translate-once=\"organizer.address.help_zip\"></span>\n" +
+    "                </span>\n" +
+    "                <span class=\"has-error\"\n" +
+    "                      ng-show=\"!oac.zipHasErrors && oac.zipValidateError && oac.organizerAddressForm.$submitted\">\n" +
+    "                    <span class=\"help-block\" translate-once=\"organizer.address.validate_zip\"></span>\n" +
     "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +

@@ -40,6 +40,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.streetHasErrors = false;
   controller.cityHasErrors = false;
   controller.addressHasErrors = false;
+  controller.zipHasErrors = false;
+  controller.zipValidateError = false;
 
   controller.validateAddress = validateAddress;
   controller.filterCities = filterCities;
@@ -57,6 +59,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   function reset() {
     controller.streetHasErrors = false;
     controller.cityHasErrors = false;
+    controller.zipValidateError = false;
+    controller.zipHasErrors = false;
     controller.addressHasErrors = false;
   }
 
@@ -70,18 +74,62 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
       if (controller.selectedCity === '') {
         controller.cityHasErrors = true;
       }
+      if (controller.selectedCountry.code === 'NL') {
+        if (controller.address.postalCode === '' ||
+            controller.address.postalCode === undefined) {
+          controller.zipHasErrors = true;
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
+      }
     }
     else {
-      if ((controller.address.streetAddress === '' ||
-          controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
-        controller.streetHasErrors = true;
+      if (controller.selectedCity !== '') {
+        if (controller.address.streetAddress === '' ||
+            controller.address.streetAddress === undefined) {
+          controller.streetHasErrors = true;
+        }
+
+        if (controller.selectedCountry.code === 'NL') {
+          if (controller.address.postalCode === '' ||
+              controller.address.postalCode === undefined) {
+            controller.zipHasErrors = true;
+            controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+          }
+        }
       }
 
-      if (controller.selectedCity === '' && controller.address.streetAddress !== '') {
-        controller.cityHasErrors = true;
+      if (controller.address.streetAddress !== '') {
+        if (controller.selectedCity === '') {
+          controller.cityHasErrors = true;
+        }
+
+        if (controller.address.postalCode === '' ||
+            controller.address.postalCode === undefined) {
+          controller.zipHasErrors = true;
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
+      }
+
+      if (controller.selectedCountry.code === 'NL') {
+        if (controller.address.postalCode !== '') {
+          if (controller.address.streetAddress === '' ||
+              controller.address.streetAddress === undefined) {
+            controller.streetHasErrors = true;
+          }
+
+          if (controller.selectedCity === '') {
+            controller.cityHasErrors = true;
+          }
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
       }
     }
     sendUpdate();
+  }
+
+  function validateNlPostalCode(postalCode) {
+    var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+    return regex.test(postalCode);
   }
 
   function filterCities(value) {
@@ -144,7 +192,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   }
 
   function sendUpdate() {
-    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors;
+    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors ||
+        controller.zipHasErrors || controller.zipValidateError;
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }

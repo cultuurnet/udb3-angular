@@ -60,6 +60,30 @@ describe('Component: Organizer Address', function() {
     expect(component.cities).toEqual(citiesBE);
   });
 
+  it('should load a different cities list when country is changed', function () {
+    component = getComponent();
+    component.selectedCountry.code = 'NL';
+
+    component.onUpdate = function() {
+      sendUpdateMock();
+    };
+
+    component.changeCountrySelection();
+    expect(component.cities).toEqual(citiesNL);
+  });
+
+  it('should load belgian cities', function () {
+    component = getComponent();
+    component.selectedCountry.code = 'BE';
+
+    component.onUpdate = function() {
+      sendUpdateMock();
+    };
+
+    component.changeCountrySelection();
+    expect(component.cities).toEqual(citiesBE);
+  });
+
   it('should initialise the component even when the address is empty', function () {
     fakeAddress.addressLocality = '';
     component = getComponent();
@@ -85,7 +109,7 @@ describe('Component: Organizer Address', function() {
     expect(component.cityHasErrors).toBeTruthy();
   });
 
-  it('should validate the address when address is not required', function () {
+  it('should validate a belgian address when address is not required', function () {
     fakeAddress.addressLocality = '';
     fakeAddress.addressCountry = '';
     fakeAddress.postalCode = '';
@@ -115,6 +139,57 @@ describe('Component: Organizer Address', function() {
     component.validateAddress();
 
     expect(component.cityHasErrors).toBeTruthy();
+  });
+
+  it('should validate a dutch address when address is not required', function () {
+    fakeAddress.addressLocality = '';
+    fakeAddress.addressCountry = '';
+    fakeAddress.postalCode = '';
+    fakeAddress.streetAddress = '';
+
+    component = getComponent();
+    component.selectedCountry.code = 'NL';
+    component.organizerAddressForm = organizerAddressForm;
+    component.requiredAddress = false;
+    component.selectedCity = 'Groningen';
+    component.onUpdate = function() {
+      sendUpdateMock();
+    };
+
+    component.validateAddress();
+
+    expect(component.streetHasErrors).toBeTruthy();
+
+    fakeAddress.streetAddress = 'Sluisstraat 79';
+    component = getComponent();
+    component.selectedCountry.code = 'NL';
+    component.organizerAddressForm = organizerAddressForm;
+    component.requiredAddress = false;
+    component.selectedCity = '';
+    component.onUpdate = function() {
+      sendUpdateMock();
+    };
+
+    component.validateAddress();
+
+    expect(component.cityHasErrors).toBeTruthy();
+
+    component = getComponent();
+    component.selectedCountry.code = 'NL';
+    component.address.postalCode = '1004AC';
+    component.address.streetAddress = '';
+    component.organizerAddressForm = organizerAddressForm;
+    component.requiredAddress = false;
+    component.selectedCity = '';
+    component.onUpdate = function() {
+      sendUpdateMock();
+    };
+
+    component.validateAddress();
+
+    expect(component.streetHasErrors).toBeTruthy();
+    expect(component.cityHasErrors).toBeTruthy();
+
   });
 
   it('should select a city', function() {

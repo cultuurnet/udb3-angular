@@ -811,6 +811,8 @@ angular.module('udb.core')
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
+        'help_zip': 'Gelieve een postcode in te geven.',
+        'validate_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.',
         'label_city': 'Gemeente',
         'label_residence': 'Woonplaats',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
