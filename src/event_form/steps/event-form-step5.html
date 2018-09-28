@@ -2,11 +2,18 @@
   <a name="extra"></a>
   <section id="extra" ng-show="eventFormData.showStep5">
 
-    <h2 class="title-border">
-      <span class="number">5</span>
-      <span ng-show="eventFormData.isEvent" translate-once="eventForm.step5.expose_event"></span>
-      <span ng-show="eventFormData.isPlace" translate-once="eventForm.step5.expose_place"></span>
-    </h2>
+    <div class="step-title">
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>
+            <span class="number">5</span>
+            <span ng-show="eventFormData.isEvent" translate-once="eventForm.step5.expose_event"></span>
+            <span ng-show="eventFormData.isPlace" translate-once="eventForm.step5.expose_place"></span>
+          </h2>
+          </h2>
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-sm-7">
@@ -214,12 +221,9 @@
                             <div class="reservatie-info-stap2">
                               <div class="weergave">
                                 <p><strong translate-once="eventForm.step5.booking_exposure"></strong></p>
-                                <select ng-model="bookingModel.urlLabel"
-                                        ng-change="saveWebsitePreview()">
-                                  <option value="Koop tickets" translate-once="eventForm.step5.buy_tickets"></option>
-                                  <option value="Reserveer plaatsen" translate-once="eventForm.step5.reserve_places"></option>
-                                  <option value="Controleer beschikbaarheid" translate-once="eventForm.step5.check_availability"></option>
-                                  <option value="Schrijf je in" translate-once="eventForm.step5.subscribe"></option>
+                                <select ng-model="bookingModel.urlLabel[mainLanguage]"
+                                        ng-change="saveWebsitePreview()"
+                                        ng-options="option.label for option in bookingOptions">
                                 </select>
                               </div>
                             </div>

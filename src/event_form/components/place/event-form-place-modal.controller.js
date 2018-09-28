@@ -52,12 +52,11 @@
           id: ''
         },
         address: {
-          addressCountry: 'BE',
+          addressCountry: $scope.location.address.addressCountry,
           addressLocality: $scope.location.address.addressLocality,
           postalCode: $scope.location.address.postalCode,
           streetAddress: '',
-          locationNumber : '',
-          country : 'BE'
+          locationNumber : ''
         }
       };
     }
@@ -115,14 +114,14 @@
 
       var udbPlace = new UdbPlace();
       udbPlace.name = $scope.newPlace.name;
-      udbPlace.calendarType = 'permanent';
+      udbPlace.calendar.calendarType = 'permanent';
       udbPlace.type = {
         id : $scope.newPlace.eventType.id,
         label : eventTypeLabel,
         domain : 'eventtype'
       };
       udbPlace.address = {
-        addressCountry : 'BE',
+        addressCountry : $scope.newPlace.address.addressCountry,
         addressLocality : $scope.newPlace.address.addressLocality,
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress

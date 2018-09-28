@@ -19,7 +19,11 @@ function EventFormOrganizerModalController(
   UdbOrganizer,
   eventCrud,
   $q,
-  organizerName
+  organizerName,
+  OrganizerManager,
+  appConfig,
+  citiesBE,
+  citiesNL
 ) {
 
   var controller = this;
@@ -46,7 +50,7 @@ function EventFormOrganizerModalController(
       streetAddress : '',
       addressLocality : '',
       postalCode: '',
-      addressCountry : 'BE'
+      addressCountry : ''
     },
     contact: []
   };
@@ -195,6 +199,12 @@ function EventFormOrganizerModalController(
     eventCrud
       .createOrganizer(organizer)
       .then(function(jsonResponse) {
+        var defaultOrganizerLabel = _.get(appConfig, 'offerEditor.defaultOrganizerLabel');
+        if (typeof(defaultOrganizerLabel) !== 'undefined' &&
+            defaultOrganizerLabel !== '') {
+          OrganizerManager
+            .addLabelToOrganizer(jsonResponse.data.organizerId, defaultOrganizerLabel);
+        }
         $scope.newOrganizer.id = jsonResponse.data.organizerId;
         selectOrganizer($scope.newOrganizer);
         $scope.saving = false;

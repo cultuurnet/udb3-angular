@@ -11,16 +11,16 @@
     <div class="periodic-info">
         <div class="start-date">
             <label translate-once="calendar.period.from"></label>
-            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                                            ng-model="$ctrl.formData.startDate"
+            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendar.calendarType !== 'periodic'"
+                                            ng-model="$ctrl.formData.calendar.startDate"
                                             ng-change="$ctrl.formData.periodicTimingChanged()">
             </udb-form-calendar-datepicker>
         </div>
 
         <div class="end-date">
             <label translate-once="calendar.period.till"></label>
-            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendarType !== 'periodic'"
-                                            ng-model="$ctrl.formData.endDate"
+            <udb-form-calendar-datepicker ng-disabled="$ctrl.formData.calendar.calendarType !== 'periodic'"
+                                            ng-model="$ctrl.formData.calendar.endDate"
                                             ng-change="$ctrl.formData.periodicTimingChanged()">
             </udb-form-calendar-datepicker>
         </div>

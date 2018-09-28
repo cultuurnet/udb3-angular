@@ -46,7 +46,7 @@ function EventFormPublishController(
       .startOf('day')
       .toDate();
 
-    var startDate = controller.eventFormData.getEarliestStartDate();
+    var startDate = controller.eventFormData.getFirstStartDate();
 
     if (startDate && startDate < tomorrow) {
       return false;

@@ -24,9 +24,11 @@ describe('Service: Event Duplicator', function () {
   it('should duplicate an event with timing from form-data and return its id', function (done) {
     var formData = {
       apiUrl: new URL('http://du.de/event/1da2bb3c-616f-4e89-9b17-f142413046d2'),
-      calendarType: 'periodic',
-      startDate: new Date('2013-03-01T00:00:00Z'),
-      endDate: new Date('2013-03-03T00:00:00Z')
+      calendar: {
+        calendarType: 'periodic',
+        startDate: new Date('2013-03-01T00:00:00Z'),
+        endDate: new Date('2013-03-03T00:00:00Z')
+      }
     };
     var expectedCalenderData = {
       calendarType: 'periodic',

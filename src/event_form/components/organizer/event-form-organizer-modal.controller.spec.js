@@ -61,10 +61,11 @@ describe('Controller: Event Form Organizer Modal', function() {
           modified: '2015-05-07T12:02:53+00:00',
           url: 'http://www.stuk.be/',
           labels: [
-            {
-              uuid: '80f63f49-5de2-42ea-9642-59fc0400f2c5',
-              name: 'Mijn label'
-            }
+              '80f63f49-5de2-42ea-9642-59fc0400f2c5',
+              'Mijn label'
+          ],
+          hiddenLabes: [
+              'UiTPAS Gent'
           ]
         }
       ]

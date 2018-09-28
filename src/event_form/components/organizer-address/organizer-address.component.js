@@ -20,10 +20,15 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, cities, Levenshtein) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig) {
   var controller = this;
 
-  controller.cities = cities;
+  controller.availableCountries = appConfig.offerEditor.countries;
+  controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
+  controller.selectedCountry = controller.defaultCountry;
+  controller.address.addressCountry = controller.selectedCountry.code;
+
+  controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
   controller.selectedCity = '';
   controller.requiredAddress = false;
 
@@ -41,6 +46,7 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
+  controller.changeCountrySelection = changeCountrySelection;
 
   $scope.$on('organizerAddressSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
@@ -75,7 +81,6 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
         controller.cityHasErrors = true;
       }
     }
-
     sendUpdate();
   }
 
@@ -83,20 +88,17 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
     return function (city) {
       var length = value.length;
       var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+      var labelMatches = words.filter(function (word) {
+        return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
-      return zipMatches.length + nameMatches.length >= words.length;
+      return labelMatches.length >= words.length;
     };
   }
 
   function orderByLevenshteinDistance(value) {
     return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
+      return new Levenshtein(value, city.label);
     };
   }
 
@@ -104,9 +106,11 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
    * Select City.
    */
   function selectCity($item, $label) {
-    controller.address.postalCode = $item.zip;
+    if (controller.selectedCountry.code === 'BE') {
+      controller.address.postalCode = $item.zip;
+    }
+
     controller.address.addressLocality = $item.name;
-    controller.address.addressCountry = 'BE';
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
@@ -119,11 +123,24 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   function changeCitySelection() {
     controller.address.postalCode = '';
     controller.address.addressLocality = '';
-    controller.address.addressCountry = '';
 
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
     validateAddress();
+  }
+
+  /**
+   * Change a city selection.
+   */
+  function changeCountrySelection() {
+    if (controller.selectedCountry.code === 'NL') {
+      controller.cities = citiesNL;
+    }
+    else {
+      controller.cities = citiesBE;
+    }
+    controller.address.addressCountry = controller.selectedCountry.code;
+    changeCitySelection();
   }
 
   function sendUpdate() {

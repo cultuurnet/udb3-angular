@@ -129,13 +129,13 @@ describe('Controller: Event Form Publish', function () {
 
   it('should show the "Publish later"-button if an event has an earliest startdate later then tomorrow', function () {
     EventFormData.init();
-    EventFormData.calendarType = "multiple";
-    EventFormData.timestamps = [
+    EventFormData.calendar.calendarType = "multiple";
+    EventFormData.calendar.timeSpans = [
       {
-        startHourAsDate: new Date(2017, 9, 23)
+        start: new Date(2017, 9, 23)
       },
       {
-        startHourAsDate: new Date(2017, 8, 22)
+        start: new Date(2017, 8, 22)
       }
     ];
     EventFormData.hasNoDefault = true;
@@ -148,18 +148,18 @@ describe('Controller: Event Form Publish', function () {
 
   it('should not show the "Publish later"-button if an event has an earliest startdate earlier then tomorrow', function () {
     EventFormData.init();
-    EventFormData.calendarType = "multiple";
-    EventFormData.timestamps = [
+    EventFormData.calendar.calendarType = "multiple";
+    EventFormData.calendar.timeSpans = [
       {
-        startHourAsDate: new Date(2017, 9, 23)
+        start: new Date(2017, 8, 22)
       },
       {
-        startHourAsDate: new Date(2017, 8, 22)
+        start: new Date(2017, 9, 22)
       }
     ];
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    var today = new Date(2017, 8, 23);
+    var today = new Date(2017, 9, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
     expect(controller.canPublishLater()).toEqual(false);
@@ -170,8 +170,8 @@ describe('Controller: Event Form Publish', function () {
     EventFormData.calendarType = "periodic";
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    EventFormData.setStartDate(new Date(2017, 8, 24));
-    EventFormData.setEndDate(new Date(2018, 8, 23));
+    EventFormData.setPeriodicStartDate(new Date(2017, 8, 24));
+    EventFormData.setPeriodicEndDate(new Date(2018, 8, 23));
     var today = new Date(2017, 8, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
@@ -180,11 +180,11 @@ describe('Controller: Event Form Publish', function () {
 
   it('should not show the "Publish later"-button for periodic events that start today', function () {
     EventFormData.init();
-    EventFormData.calendarType = "periodic";
+    EventFormData.calendar.calendarType = "periodic";
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    EventFormData.setStartDate(new Date(2017, 8, 23));
-    EventFormData.setEndDate(new Date(2018, 8, 23));
+    EventFormData.setPeriodicStartDate(new Date(2017, 8, 23));
+    EventFormData.setPeriodicEndDate(new Date(2018, 8, 23));
     var today = new Date(2017, 8, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
@@ -193,11 +193,11 @@ describe('Controller: Event Form Publish', function () {
 
   it('should not show the "Publish later"-button for periodic events that already started', function () {
     EventFormData.init();
-    EventFormData.calendarType = "periodic";
+    EventFormData.calendar.calendarType = "periodic";
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
-    EventFormData.setStartDate(new Date(2016, 8, 23));
-    EventFormData.setEndDate(new Date(2018, 8, 23));
+    EventFormData.setPeriodicStartDate(new Date(2016, 8, 23));
+    EventFormData.setPeriodicEndDate(new Date(2018, 8, 23));
     var today = new Date(2017, 8, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
@@ -206,7 +206,7 @@ describe('Controller: Event Form Publish', function () {
 
   it('should always show the "Publish later"-button for permanent events ', function () {
     EventFormData.init();
-    EventFormData.calendarType = "permanent";
+    EventFormData.calendar.calendarType = "permanent";
     EventFormData.hasNoDefault = true;
     EventFormData.workflowStatus = 'DRAFT';
     var today = new Date(2017, 8, 23);

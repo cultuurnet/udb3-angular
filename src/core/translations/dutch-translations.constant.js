@@ -11,6 +11,8 @@
 angular.module('udb.core')
   .constant('udbDutchTranslations',
   {
+    'BE': 'België',
+    'NL': 'Nederland',
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
     'DE_ADJECTIVE': 'Duitse',
@@ -454,7 +456,8 @@ angular.module('udb.core')
       'error': 'Er ging iets fout tijdens het opslaan van je locatie.',
       'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
-      'add': 'Toevoegen'
+      'add': 'Toevoegen',
+      'zip': 'Postcode'
     },
     eventForm: {
       'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
@@ -475,6 +478,9 @@ angular.module('udb.core')
         'title_event': 'Waar vindt dit evenement of deze activiteit plaats?',
         'title_place': 'Waar is deze plaats of locatie?',
         'choose_city': 'Kies een gemeente',
+        'choose_city_helper': 'bv. Gent of 9000',
+        'choose_residence': 'Kies een woonplaats',
+        'choose_residence_helper': 'bv. Groningen of Amsterdam',
         'placeholder_city': 'Gemeente of postcode',
         'problem_city': 'Er was een probleem tijdens het ophalen van de steden',
         'change': 'Wijzigen',
@@ -487,7 +493,8 @@ angular.module('udb.core')
         'placeholder_street': 'Kerkstraat 1',
         'street_validate': 'Straat en nummer is een verplicht veld.',
         'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
-        'ok': 'OK'
+        'ok': 'OK',
+        'zip': 'Postcode'
       },
       step4: {
         'basic_data': 'Basisgegevens',
@@ -637,7 +644,8 @@ angular.module('udb.core')
       'visual': 'Voorzieningen voor personen met een visuele beperking',
       'hearing': 'Voorzieningen voor personen met een auditieve beperking',
       'other': 'Andere voorzieningen',
-      'place': 'Voorzieningen op deze locatie'
+      'place': 'Voorzieningen op deze locatie',
+      'mental': 'Voorzieningen voor personen met een verstandelijke beperking'
     },
     audience: {
       'entrance': 'Toegang',
@@ -712,6 +720,7 @@ angular.module('udb.core')
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
     'LABELS_BEHEREN': 'Labels beheren',
     'VOORZIENINGEN_BEWERKEN': 'Voorzieningen bewerken',
+    'ORGANISATIES_BEWERKEN': 'Organisaties bewerken',
     'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
     'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',
@@ -799,10 +808,11 @@ angular.module('udb.core')
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
         'label_city': 'Gemeente',
-        'placeholder_city': 'Gemeente of postcode',
+        'label_residence': 'Woonplaats',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
-        'change': 'Wijzigen'
+        'change': 'Wijzigen',
+        'zip': 'Postcode'
       },
       contact: {
         'title': 'Contact',
@@ -866,6 +876,7 @@ angular.module('udb.core')
       'Congres of studiedag': 'Congres of studiedag',
       'Eten en drinken': 'Eten en drinken',
       'Thema of pretpark': 'Thema of pretpark',
+      'Theater': 'Theater',
       'Jeugdhuis of jeugdcentrum': 'Jeugdhuis of jeugdcentrum',
       'Cultuur- of ontmoetingscentrum': 'Cultuur- of ontmoetingscentrum',
       'Discotheek': 'Discotheek',
@@ -931,7 +942,7 @@ angular.module('udb.core')
       'Klassieke muziek': 'Klassieke muziek',
       'Jazz en blues': 'Jazz en blues',
       'Pop en rock': 'Pop en rock',
-      'Hip hop, r&b en rap': 'Hip hop, r&b en rap',
+      'Hiphop, r&b en rap': 'Hiphop, r&b en rap',
       'Dance': 'Dance',
       'Folk en wereldmuziek': 'Folk en wereldmuziek',
       'Amusementsmuziek': 'Amusementsmuziek',
@@ -953,7 +964,7 @@ angular.module('udb.core')
       'Volkssporten': 'Volkssporten',
       'Omnisport en andere': 'Omnisport en andere',
       'Tekst- en muziektheater': 'Tekst- en muziektheater',
-      'Humor comedy': 'Humor comedy',
+      'Humor en comedy': 'Humor en comedy',
       'Musical': 'Musical',
       'Figuren en poppentheater': 'Figuren en poppentheater',
       'Opera en operette': 'Opera en operette',
@@ -963,7 +974,12 @@ angular.module('udb.core')
       'Thema onbepaald': 'Thema onbepaald',
       'Circus': 'Circus',
       'Voeding': 'Voeding',
-      'Economie': 'Economie'
+      'Economie': 'Economie',
+      'Avontuur': 'Avontuur',
+      'Natuur': 'Natuur',
+      'Sport': 'Sport',
+      'Technologie': 'Technologie',
+      'Koken': 'Koken'
     },
     offerThemesGroups: {
       'Dans': 'Dans',

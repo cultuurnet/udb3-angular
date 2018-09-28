@@ -2,27 +2,51 @@
 
 <section id="waar" ng-show="eventFormData.showStep3">
   <form name="step3Form" class="css-form">
-    <h2 class="title-border">
-      <span class="number">3</span>
-      <span ng-show="eventFormData.isEvent" translate-once="eventForm.step3.title_event"></span>
-      <span ng-show="eventFormData.isPlace" translate-once="eventForm.step3.title_place"></span>
-    </h2>
+    <div class="step-title">
+      <div class="row">
+        <div class="col-xs-8">
+          <h2>
+            <span class="number">3</span>
+            <span ng-show="eventFormData.isEvent" translate-once="eventForm.step3.title_event"></span>
+            <span ng-show="eventFormData.isPlace" translate-once="eventForm.step3.title_place"></span>
+          </h2>
+        </div>
+        <div class="col-xs-4">
+          <select ng-change="changeCountrySelection()"
+            ng-options="option.code | translate for option in availableCountries track by option.code"
+            ng-model="selectedCountry"
+            class="form-control">
+          </select>
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-xs-12">
-        <label for="gemeente-autocomplete"
-               id="gemeente-label"
-               translate-once="eventForm.step3.choose_city"
-               ng-hide="selectedCity"></label>
-        <div id="gemeente-kiezer" ng-hide="selectedCity">
+        <span ng-show="selectedCountry.code==='BE'">
+          <label for="gemeente-autocomplete"
+                 id="gemeente-label"
+                 ng-hide="selectedCity">
+                 <span translate-once="eventForm.step3.choose_city"></span>
+                 <span translate-once="eventForm.step3.choose_city_helper" class="text-muted"></span>
+         </label>
+       </span>
+       <span ng-show="selectedCountry.code==='NL'">
+         <label for="gemeente-autocomplete"
+                id="gemeente-label"
+                ng-hide="selectedCity">
+                <span translate-once="eventForm.step3.choose_residence"></span>
+                <span translate-once="eventForm.step3.choose_residence_helper" class="text-muted"></span>
+        </label>
+        </span>
+        <div id="gemeente-kiezer" ng-hide="selectedCity" ng-show="selectedCountry=='nl'">
           <span style="position: relative; display: inline-block; direction: ltr;" class="twitter-typeahead">
             <input type="text"
                    id="gemeente-autocomplete"
                    class="form-control uib-typeahead"
-                   translate-once-placeholder="eventForm.step3.placeholder_city"
                    ng-model="cityAutocompleteTextField"
                    udb-auto-scroll
-                   uib-typeahead="city as city.zip + ' ' + city.name for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
+                   uib-typeahead="city as city.label for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
                    typeahead-on-select="selectCity($item, $label)"
                    typeahead-min-length="2"
                    typeahead-template-url="templates/city-suggestion.html"
@@ -41,8 +65,7 @@
              translate-once="eventForm.step3.change"
              ng-click="changeCitySelection()"></a>
         </div>
-      </div>
-    </div>
+
 
     <div id="waar-evenement" class="clearfix" ng-show="eventFormData.isEvent && selectedCity">
       <div class="row">
@@ -104,7 +127,7 @@
     <div id="waar-plaats" class="clearfix" ng-show="eventFormData.isPlace && selectedCity">
       <div class="plaats-adres-ingeven" ng-hide="placeStreetAddress">
         <div class="row">
-          <div class="col-xs-12">
+          <div class="col-xs-12 col-md-4">
             <div class="form-group" ng-class="{'has-error' : showValidation || (step3Form.street.$error.required && !step3Form.street.$pristine)}">
               <label translate-once="eventForm.step3.street"></label>
               <input class="form-control"
@@ -121,6 +144,17 @@
               </span>
               <span class="help-block" ng-show="showValidation" translate-once="eventForm.step3.street_validate_long">
               </span>
+            </div>
+            <div class="form-group" ng-show="selectedCountry.code==='NL'">
+              <label translate-once="eventForm.step3.zip"></label>
+              <input class="form-control"
+                     id="postalCode"
+                     name="postalCode"
+                     ng-model="newPlacePostalCode"
+                     ng-change="showValidation=false"
+                     translate-once-placeholder="eventForm.step3.placeholder_zip"
+                     type="text"
+                     required />
             </div>
           </div>
         </div>

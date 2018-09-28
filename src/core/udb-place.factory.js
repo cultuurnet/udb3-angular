@@ -100,9 +100,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.name = {};
     this.type = '';
     this.theme = {};
-    this.calendarType = '';
-    /** @type {OpeningHoursData[]} **/
-    this.openinghours = [];
+    this.calendar = {};
     this.address = {};
     /*this.address = {
       'addressCountry' : 'BE',
