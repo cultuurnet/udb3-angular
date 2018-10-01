@@ -21,7 +21,9 @@ function EventFormOrganizerModalController(
   $q,
   organizerName,
   OrganizerManager,
-  appConfig
+  appConfig,
+  citiesBE,
+  citiesNL
 ) {
 
   var controller = this;
@@ -48,7 +50,7 @@ function EventFormOrganizerModalController(
       streetAddress : '',
       addressLocality : '',
       postalCode: '',
-      addressCountry : 'BE'
+      addressCountry : ''
     },
     contact: []
   };

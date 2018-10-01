@@ -9,28 +9,22 @@
   <section ng-hide="organizersFound">
     <form name="organizerForm" class="organizer-form">
       <p class="alert alert-info" translate-once="organizer.modal.unique_notice"></p>
-      <div class="row">
-        <div class="col-sm-12 col-md-8">
-          <div class="form-group has-feedback"
-               ng-class="{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }">
-            <label class="control-label" for="organizer-website" translate-once="organizer.modal.website"></label>
-            <input type="url"
-                   id="organizer-website"
-                   name="website"
-                   class="form-control"
-                   ng-model-options="{ debounce: 300 }"
-                   ng-model="newOrganizer.website"
-                   aria-describedby="organizer-website-status"
-                   ng-change="validateWebsite()"
-                   autocomplete="off"
-                   required>
-            <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
-            <span id="organizer-website-status" class="sr-only">(warning)</span>
-          </div>
-        </div>
+      <div class="form-group has-feedback"
+           ng-class="{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }">
+        <label class="control-label" for="organizer-website" translate-once="organizer.modal.website"></label>
+        <input type="url"
+               id="organizer-website"
+               name="website"
+               class="form-control"
+               ng-model-options="{ debounce: 300 }"
+               ng-model="newOrganizer.website"
+               aria-describedby="organizer-website-status"
+               ng-change="validateWebsite()"
+               autocomplete="off"
+               required>
+        <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
+        <span id="organizer-website-status" class="sr-only">(warning)</span>
 
-
-        <div class="col-sm-12">
           <p class="alert alert-warning" ng-show="organizersWebsiteFound">
             <span translate="organizer.modal.alert_warning"
                   translate-values="{ organizerName: '{{firstOrganizerFound.name}}' }"></span>
@@ -39,26 +33,21 @@
                     translate-values="{ organizerName: '{{firstOrganizerFound.name}}' }"></span>
             </a>.
           </p>
-        </div>
       </div>
 
-      <div class="row">
-        <div class="col-sm-12 col-md-8">
-          <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
-            <label translate-once="organizer.modal.label_name"></label>
-            <input type="text"
-                   name="name"
-                   class="form-control"
-                   ng-model="newOrganizer.name"
-                   ng-change="updateName()"
-                   required>
-            <p class="help-block" translate-once="organizer.modal.name_help"></p>
-            <span class="help-block"
-                  ng-show="showValidation && organizerForm.name.$error.required"
-                  translate-once="organizer.modal.name_required">
-            </span>
-          </div>
-        </div>
+      <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
+        <label translate-once="organizer.modal.label_name"></label>
+        <input type="text"
+               name="name"
+               class="form-control"
+               ng-model="newOrganizer.name"
+               ng-change="updateName()"
+               required>
+        <p class="help-block" translate-once="organizer.modal.name_help"></p>
+        <span class="help-block"
+              ng-show="showValidation && organizerForm.name.$error.required"
+              translate-once="organizer.modal.name_required">
+        </span>
       </div>
     </form>
 

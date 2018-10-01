@@ -24,12 +24,14 @@ function EventFormStep3Controller(
     cityAutocomplete,
     placeCategories,
     $uibModal,
-    cities,
+    citiesBE,
+    citiesNL,
     Levenshtein,
     eventCrud,
     $rootScope,
     $translate,
-    jsonLDLangFilter
+    jsonLDLangFilter,
+    appConfig
 ) {
 
   var controller = this;
@@ -39,7 +41,7 @@ function EventFormStep3Controller(
       'id' : null,
       'name': '',
       'address': {
-        'addressCountry': 'BE',
+        'addressCountry': '',
         'addressLocality': '',
         'postalCode': '',
         'streetAddress': ''
@@ -63,6 +65,10 @@ function EventFormStep3Controller(
   // Autocomplete model field for the Location.
   $scope.locationAutocompleteTextField = '';
 
+  $scope.availableCountries = appConfig.offerEditor.countries;
+  $scope.defaultCountry = _.find($scope.availableCountries, function(country) { return country.default; });
+  $scope.selectedCountry = $scope.defaultCountry;
+
   // Autocomplete helper vars.
   $scope.searchingCities = false;
   $scope.cityAutoCompleteError = false;
@@ -73,38 +79,44 @@ function EventFormStep3Controller(
   $scope.selectedCity = '';
   $scope.selectedLocation = undefined;
   $scope.placeStreetAddress = '';
+  $scope.newPlaceStreetAddress = '';
   $scope.openPlaceModal = openPlaceModal;
 
   // Validation.
   $scope.showValidation = false;
+  $scope.showStreetValidation = false;
+  $scope.showZipValidation = false;
 
   // Convenient scope variables for current controller (in multistep).
   $scope.locationsForCity = [];
 
   // Scope functions.
-  $scope.cities = cities;
+
+  $scope.cities = $scope.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
+
+  $scope.changeCountrySelection = changeCountrySelection;
   $scope.changeCitySelection = changeCitySelection;
   $scope.changeLocationSelection = changeLocationSelection;
   $scope.setPlaceStreetAddress = setPlaceStreetAddress;
+  $scope.setNLPlaceStreetAddress = setNLPlaceStreetAddress;
   $scope.changePlaceStreetAddress = changePlaceStreetAddress;
+  $scope.resetStreetValidation = resetStreetValidation;
+  $scope.resetZipValidation = resetZipValidation;
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
       var length = value.length;
-      var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+      var words = value.match(/.+/g);
+      var labelMatches = words.filter(function (word) {
+        return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
-      return zipMatches.length + nameMatches.length >= words.length;
+      return labelMatches.length >= words.length;
     };
   };
   $scope.orderByLevenshteinDistance = function(value) {
     return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
+      return new Levenshtein(value, city.label);
     };
   };
 
@@ -119,7 +131,8 @@ function EventFormStep3Controller(
 
     var newAddressInfo = {
       postalCode: zipcode,
-      addressLocality: name
+      addressLocality: name,
+      addressCountry: $scope.selectedCountry.code
     };
 
     if (EventFormData.isPlace) {
@@ -138,7 +151,7 @@ function EventFormStep3Controller(
 
     setMajorInfoChanged();
 
-    controller.getLocations(zipcode);
+    controller.getLocations(city);
   };
   $scope.selectCity = controller.selectCity;
 
@@ -153,6 +166,19 @@ function EventFormStep3Controller(
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
     controller.stepUncompleted();
+  }
+
+  /**
+   * Change a country selection.
+   */
+  function changeCountrySelection() {
+    if ($scope.selectedCountry.code === 'NL') {
+      $scope.cities = citiesNL;
+    }
+    else {
+      $scope.cities = citiesBE;
+    }
+    changeCitySelection();
   }
 
   /**
@@ -204,9 +230,9 @@ function EventFormStep3Controller(
   /**
    * Get locations for Event.
    * @returns {undefined}
-   * @param {string} zipcode
+   * @param {Object} city
    */
-  controller.getLocations = function (zipcode) {
+  controller.getLocations = function (city) {
 
     function showErrorAndReturnEmptyList () {
       $scope.locationAutoCompleteError = true;
@@ -229,10 +255,19 @@ function EventFormStep3Controller(
 
     $scope.loadingPlaces = true;
     $scope.locationAutoCompleteError = false;
-    return cityAutocomplete
-      .getPlacesByZipcode(zipcode)
-      .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList)
-      .finally(clearLoadingState);
+
+    if ($scope.selectedCountry.code === 'BE') {
+      return cityAutocomplete
+        .getPlacesByZipcode(city.zip, 'BE')
+        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList)
+        .finally(clearLoadingState);
+    }
+    if ($scope.selectedCountry.code === 'NL') {
+      return cityAutocomplete
+        .getPlacesByCity(city.label, 'NL')
+        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList)
+        .finally(clearLoadingState);
+    }
   };
 
   controller.cityHasLocations = function () {
@@ -305,7 +340,7 @@ function EventFormStep3Controller(
         'id' : place.id,
         'name': place.name,
         'address': {
-          'addressCountry': 'BE',
+          'addressCountry': $scope.selectedCountry.code,
           'addressLocality': place.address.addressLocality,
           'postalCode': place.address.postalCode,
           'streetAddress': place.address.streetAddress
@@ -332,6 +367,11 @@ function EventFormStep3Controller(
     }
   }
 
+  function validateNlPostalCode(postalCode) {
+    var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+    return regex.test(postalCode);
+  }
+
   /**
    * Set the street address for a Place.
    *
@@ -340,12 +380,14 @@ function EventFormStep3Controller(
   function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
+
     $scope.step3Form.street.$setValidity('invalid', true);
     if (!$scope.step3Form.$valid) {
       return;
     }
 
     if (!validateAddress(streetAddress)) {
+      $scope.showStreetValidation = true;
       $scope.step3Form.street.$setValidity('invalid', false);
       return;
     }
@@ -361,12 +403,67 @@ function EventFormStep3Controller(
     controller.stepCompleted();
   }
 
+  function setNLPlaceStreetAddress(streetAddress, postalCode) {
+    // Forms are automatically known in scope.
+    $scope.showValidation = true;
+
+    $scope.step3Form.street.$setValidity('invalid', true);
+
+    if ($scope.selectedCountry.code === 'NL') {
+      $scope.step3Form.postalCode.$setValidity('invalid', true);
+    }
+
+    if (!$scope.step3Form.$valid) {
+      return;
+    }
+
+    if (!validateAddress(streetAddress)) {
+      $scope.showStreetValidation = true;
+      $scope.step3Form.street.$setValidity('invalid', false);
+    }
+
+    if ($scope.selectedCountry.code === 'NL') {
+      if (!validateNlPostalCode(postalCode)) {
+        $scope.showZipValidation = true;
+        $scope.step3Form.postalCode.$setValidity('invalid', false);
+      }
+    }
+
+    if ($scope.showStreetValidation || $scope.showZipValidation) {
+      return;
+    }
+
+    var currentAddress = EventFormData.address;
+    var newAddressInfo = {
+      streetAddress: streetAddress,
+      postalCode: postalCode
+    };
+
+    EventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
+    $scope.placeStreetAddress = streetAddress;
+
+    controller.stepCompleted();
+  }
+
+  function resetStreetValidation() {
+    $scope.showValidation = false;
+    $scope.showStreetValidation = false;
+  }
+
+  function resetZipValidation() {
+    $scope.showValidation = false;
+    $scope.showZipValidation = false;
+  }
+
   /**
    * Change StreetAddress
    */
   function changePlaceStreetAddress() {
     $scope.newPlaceStreetAddress = $scope.placeStreetAddress ? $scope.placeStreetAddress : '';
     $scope.placeStreetAddress = '';
+    $scope.showValidation = false;
+    $scope.showStreetValidation = false;
+    $scope.showZipValidation = false;
     controller.stepUncompleted();
   }
 
@@ -414,6 +511,9 @@ function EventFormStep3Controller(
 
     if (address) {
       $scope.selectedCity = address.addressLocality;
+      $scope.selectedCountry = _.find($scope.availableCountries, function(country) {
+        return country.code === address.addressCountry;
+      });
     }
   };
 

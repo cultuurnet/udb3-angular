@@ -1,11 +1,17 @@
 <div ng-controller="EventFormStep2Controller as EventFormStep2">
   <a name="wanneer"></a>
   <section id="wanneer" ng-show="eventFormData.showStep2">
-    <h2 class="title-border">
-      <span class="number">2</span>
-      <span ng-show="eventFormData.isEvent" translate-once="eventForm.step2.date_help_event"></span>
-      <span ng-show="eventFormData.isPlace" translate-once="eventForm.step2.date_help_place"></span>
-    </h2>
+    <div class="step-title">
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>
+            <span class="number">2</span>
+            <span ng-show="eventFormData.isEvent" translate-once="eventForm.step2.date_help_event"></span>
+            <span ng-show="eventFormData.isPlace" translate-once="eventForm.step2.date_help_place"></span>
+          </h2>
+        </div>
+      </div>
+    </div>
 
     <udb-form-place-calendar ng-if="eventFormData.isPlace"></udb-form-place-calendar>
     <udb-form-event-calendar ng-if="eventFormData.isEvent"></udb-form-event-calendar>
