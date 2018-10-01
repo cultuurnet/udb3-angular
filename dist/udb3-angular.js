@@ -27748,6 +27748,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <select ng-change=\"oac.changeCountrySelection()\"\n" +
     "          ng-options=\"option.code | translate for option in oac.availableCountries track by option.code\"\n" +
     "          ng-model=\"oac.selectedCountry\"\n" +
+    "          ng-show=\"oac.availableCountries.length > 1\"\n" +
     "          class=\"form-control\">\n" +
     "        </select>\n" +
     "      </div>\n" +
@@ -28795,7 +28796,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <select ng-change=\"changeCountrySelection()\"\n" +
     "            ng-options=\"option.code | translate for option in availableCountries track by option.code\"\n" +
     "            ng-model=\"selectedCountry\"\n" +
-    "            class=\"form-control\">\n" +
+    "            class=\"form-control\"\n" +
+    "            ng-show=\"availableCountries.length > 1\">\n" +
     "          </select>\n" +
     "        </div>\n" +
     "      </div>\n" +

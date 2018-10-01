@@ -15,7 +15,8 @@
           <select ng-change="changeCountrySelection()"
             ng-options="option.code | translate for option in availableCountries track by option.code"
             ng-model="selectedCountry"
-            class="form-control">
+            class="form-control"
+            ng-show="availableCountries.length > 1">
           </select>
         </div>
       </div>
