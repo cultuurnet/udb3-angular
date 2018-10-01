@@ -366,7 +366,7 @@ angular.module('udb.core')
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
-      'publiq_url': 'Bekijk op UiT in Vlaanderen',
+      'publiq_url': 'Bekijk op {{publicationBrand}}',
       'translate': 'Vertalen'
     },
     translate: {
