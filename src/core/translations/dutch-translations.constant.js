@@ -457,7 +457,9 @@ angular.module('udb.core')
       'invalid_street': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
       'cancel': 'Annuleren',
       'add': 'Toevoegen',
-      'zip': 'Postcode'
+      'zip': 'Postcode',
+      'nlPostalCode_validation': 'Postcode is een verplicht veld.',
+      'invalid_PostalCode': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.'
     },
     eventForm: {
       'langWarning': 'Opgelet, je (be)werkt in een andere taal: {{language}}. Is dit niet de bedoeling, neem dan contact op met vragen@uitdatabank.be.',
@@ -494,7 +496,9 @@ angular.module('udb.core')
         'street_validate': 'Straat en nummer is een verplicht veld.',
         'street_validate_long': 'Dit lijkt een ongeldig adres. Wanneer je spaties gebruikt in het adres, mogen er na de laatste spatie niet meer dan 15 karakters staan.',
         'ok': 'OK',
-        'zip': 'Postcode'
+        'zip': 'Postcode',
+        'zip_validate': 'Postcode is een verplicht veld.',
+        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.'
       },
       step4: {
         'basic_data': 'Basisgegevens',
@@ -807,6 +811,8 @@ angular.module('udb.core')
       address: {
         'label_street': 'Straat en nummer',
         'help_street': 'Gelieve straat en nummer in te geven.',
+        'help_zip': 'Gelieve een postcode in te geven.',
+        'validate_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.',
         'label_city': 'Gemeente',
         'label_residence': 'Woonplaats',
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',

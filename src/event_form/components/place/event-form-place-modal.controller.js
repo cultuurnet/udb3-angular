@@ -33,6 +33,7 @@
     $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
     $scope.invalidStreet = false;
+    $scope.invalidNlPostalCode = false;
     $scope.saving = false;
     $scope.error = false;
 
@@ -90,6 +91,14 @@
         $scope.error = true;
         $scope.invalidStreet = true;
         return;
+      }
+
+      if ($scope.newPlace.address.addressCountry === 'NL') {
+        if (!validateNlPostalCode($scope.newPlace.address.postalCode)) {
+          $scope.error = true;
+          $scope.invalidNlPostalCode = true;
+          return;
+        }
       }
 
       savePlace();
@@ -173,6 +182,11 @@
     function validateAddress(streetAddress) {
       var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+
+    function validateNlPostalCode(postalCode) {
+      var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+      return regex.test(postalCode);
     }
 
     function translateEventTypes(type) {

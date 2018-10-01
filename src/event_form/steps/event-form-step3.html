@@ -134,7 +134,7 @@
                      id="straat"
                      name="street"
                      ng-model="newPlaceStreetAddress"
-                     ng-change="showValidation=false"
+                     ng-change="resetStreetValidation()"
                      translate-once-placeholder="eventForm.step3.placeholder_street"
                      type="text"
                      required />
@@ -142,25 +142,39 @@
                     translate-once="eventForm.step3.street_validate"
                     ng-show="showValidation && step3Form.street.$error.required">
               </span>
-              <span class="help-block" ng-show="showValidation" translate-once="eventForm.step3.street_validate_long">
+              <span class="help-block" ng-show="showValidation && showStreetValidation" translate-once="eventForm.step3.street_validate_long">
               </span>
             </div>
-            <div class="form-group" ng-show="selectedCountry.code==='NL'">
+            <div class="form-group"
+                 ng-if="selectedCountry.code==='NL'"
+                 ng-class="{'has-error' : showValidation || (step3Form.postalCode.$error.required && !step3Form.postalCode.$pristine)}">
               <label translate-once="eventForm.step3.zip"></label>
+              <span class="text-muted">bv. 1104CA</span>
               <input class="form-control"
                      id="postalCode"
                      name="postalCode"
                      ng-model="newPlacePostalCode"
-                     ng-change="showValidation=false"
+                     ng-change="resetZipValidation()"
                      translate-once-placeholder="eventForm.step3.placeholder_zip"
                      type="text"
                      required />
+              <span class="help-block"
+                    translate-once="eventForm.step3.zip_validate"
+                    ng-show="showValidation && step3Form.postalCode.$error.required">
+              </span>
+              <span class="help-block" ng-show="showValidation && showZipValidation" translate-once="eventForm.step3.invalid_zip">
+              </span>
             </div>
           </div>
         </div>
         <a class="btn btn-primary plaats-ok"
+           ng-if="selectedCountry.code==='BE'"
            translate-once="eventForm.step3.ok"
            ng-click="setPlaceStreetAddress(newPlaceStreetAddress)"></a>
+        <a class="btn btn-primary plaats-ok"
+           ng-if="selectedCountry.code==='NL'"
+           translate-once="eventForm.step3.ok"
+           ng-click="setNLPlaceStreetAddress(newPlaceStreetAddress, step3Form.postalCode.$viewValue)"></a>
       </div>
 
       <div class="plaats-adres-resultaat" ng-show="placeStreetAddress">

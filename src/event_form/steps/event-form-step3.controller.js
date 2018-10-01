@@ -79,10 +79,13 @@ function EventFormStep3Controller(
   $scope.selectedCity = '';
   $scope.selectedLocation = undefined;
   $scope.placeStreetAddress = '';
+  $scope.newPlaceStreetAddress = '';
   $scope.openPlaceModal = openPlaceModal;
 
   // Validation.
   $scope.showValidation = false;
+  $scope.showStreetValidation = false;
+  $scope.showZipValidation = false;
 
   // Convenient scope variables for current controller (in multistep).
   $scope.locationsForCity = [];
@@ -95,7 +98,10 @@ function EventFormStep3Controller(
   $scope.changeCitySelection = changeCitySelection;
   $scope.changeLocationSelection = changeLocationSelection;
   $scope.setPlaceStreetAddress = setPlaceStreetAddress;
+  $scope.setNLPlaceStreetAddress = setNLPlaceStreetAddress;
   $scope.changePlaceStreetAddress = changePlaceStreetAddress;
+  $scope.resetStreetValidation = resetStreetValidation;
+  $scope.resetZipValidation = resetZipValidation;
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
@@ -361,6 +367,11 @@ function EventFormStep3Controller(
     }
   }
 
+  function validateNlPostalCode(postalCode) {
+    var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+    return regex.test(postalCode);
+  }
+
   /**
    * Set the street address for a Place.
    *
@@ -369,26 +380,79 @@ function EventFormStep3Controller(
   function setPlaceStreetAddress(streetAddress) {
     // Forms are automatically known in scope.
     $scope.showValidation = true;
+
     $scope.step3Form.street.$setValidity('invalid', true);
     if (!$scope.step3Form.$valid) {
       return;
     }
 
     if (!validateAddress(streetAddress)) {
+      $scope.showStreetValidation = true;
       $scope.step3Form.street.$setValidity('invalid', false);
       return;
     }
 
     var currentAddress = EventFormData.address;
     var newAddressInfo = {
-      streetAddress: streetAddress,
-      postalCode: $scope.newPlacePostalCode
+      streetAddress: streetAddress
     };
 
     EventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
     $scope.placeStreetAddress = streetAddress;
 
     controller.stepCompleted();
+  }
+
+  function setNLPlaceStreetAddress(streetAddress, postalCode) {
+    // Forms are automatically known in scope.
+    $scope.showValidation = true;
+
+    $scope.step3Form.street.$setValidity('invalid', true);
+
+    if ($scope.selectedCountry.code === 'NL') {
+      $scope.step3Form.postalCode.$setValidity('invalid', true);
+    }
+
+    if (!$scope.step3Form.$valid) {
+      return;
+    }
+
+    if (!validateAddress(streetAddress)) {
+      $scope.showStreetValidation = true;
+      $scope.step3Form.street.$setValidity('invalid', false);
+    }
+
+    if ($scope.selectedCountry.code === 'NL') {
+      if (!validateNlPostalCode(postalCode)) {
+        $scope.showZipValidation = true;
+        $scope.step3Form.postalCode.$setValidity('invalid', false);
+      }
+    }
+
+    if ($scope.showStreetValidation || $scope.showZipValidation) {
+      return;
+    }
+
+    var currentAddress = EventFormData.address;
+    var newAddressInfo = {
+      streetAddress: streetAddress,
+      postalCode: postalCode
+    };
+
+    EventFormData.address = _.merge(getEmptyLocation().address, currentAddress, newAddressInfo);
+    $scope.placeStreetAddress = streetAddress;
+
+    controller.stepCompleted();
+  }
+
+  function resetStreetValidation() {
+    $scope.showValidation = false;
+    $scope.showStreetValidation = false;
+  }
+
+  function resetZipValidation() {
+    $scope.showValidation = false;
+    $scope.showZipValidation = false;
   }
 
   /**
@@ -398,6 +462,8 @@ function EventFormStep3Controller(
     $scope.newPlaceStreetAddress = $scope.placeStreetAddress ? $scope.placeStreetAddress : '';
     $scope.placeStreetAddress = '';
     $scope.showValidation = false;
+    $scope.showStreetValidation = false;
+    $scope.showZipValidation = false;
     controller.stepUncompleted();
   }
 
