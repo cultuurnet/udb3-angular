@@ -2539,9 +2539,13 @@ input + .alert {
 .offer-form #step3-list a {
   text-decoration: underline;
 }
-.offer-form .title-border {
+.offer-form .step-title {
   border-bottom: 1px solid #555555;
-  padding-bottom: 1em;
+  padding: 10px 0 10px;
+  margin-bottom: 1em;
+}
+.offer-form .step-title h2 {
+  margin: 7px 0 0 0;
   text-transform: uppercase;
   font-weight: bold;
   color: #333333;
@@ -10531,5 +10535,10 @@ udb-moderation-summary .moderation-summary footer .btn-moderation i.text-success
 }
 .contact-row {
   margin-top: 15px;
+  margin-bottom: 15px;
+}
+.organizer-address-form {
+  border: 1px solid #ccc;
+  padding: 15px;
   margin-bottom: 15px;
 }

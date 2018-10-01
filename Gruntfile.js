@@ -35,7 +35,7 @@ module.exports = function (grunt) {
     return terms;
   };
 
-  var getCities = function () {
+  var getCitiesBE = function () {
     var parser = new xml2js.Parser({mergeAttrs: true, explicitArray: false});
     var xmlBuffer = grunt.file.read('cities.xml');
     var cities = [];
@@ -45,6 +45,7 @@ module.exports = function (grunt) {
       cities = result.cdbxml.cities.city.map(
         function (city) {
           return {
+            'label': city.zip + ' ' + city.labelnl,
             'name': city.labelnl,
             'zip': city.zip
           };
@@ -53,6 +54,10 @@ module.exports = function (grunt) {
     });
 
     return cities;
+  };
+
+  var getCitiesNL = function () {
+    return require('./src/event_form/citiesNL.json').cities;
   };
 
   var getEventFormCategories = function () {
@@ -388,7 +393,8 @@ module.exports = function (grunt) {
             eventCategories: getEventFormCategories().event,
             placeCategories: getEventFormCategories().place,
             facilities: getFacilities(),
-            cities: getCities()
+            citiesBE: getCitiesBE(),
+            citiesNL: getCitiesNL()
           };
         }
       },
@@ -400,7 +406,8 @@ module.exports = function (grunt) {
             eventCategories: getEventFormCategories().event,
             placeCategories: getEventFormCategories().place,
             facilities: getFacilities(),
-            cities: getCities()
+            citiesBE: getCitiesBE(),
+            citiesNL: getCitiesNL()
           };
         }
       }
@@ -408,11 +415,11 @@ module.exports = function (grunt) {
 
     curl: {
       'taxonomy-terms': {
-        src: 'http://taxonomy.uitdatabank.be/api/term',
+        src: 'https://taxonomy.uitdatabank.be/api/term',
         dest: 'taxonomy-terms.xml'
       },
       'cities': {
-        src: 'http://taxonomy.uitdatabank.be/api/city',
+        src: 'https://taxonomy.uitdatabank.be/api/city',
         dest: 'cities.xml'
       }
     },

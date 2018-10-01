@@ -11,6 +11,8 @@
 angular.module('udb.core')
   .constant('udbFrenchTranslations',
   {
+    'BE': 'Belgique',
+    'NL': 'Pays-Bas',
     'EN_ADJECTIVE': 'Anglais',
     'FR_ADJECTIVE': 'Français',
     'DE_ADJECTIVE': 'Duitse',
@@ -453,7 +455,8 @@ angular.module('udb.core')
       'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
-      'add': 'Ajouter'
+      'add': 'Ajouter',
+      'nlPostalCode_validation': 'Code postal est un domaine obligatoire.'
     },
     eventForm: {
       'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
@@ -867,6 +870,7 @@ angular.module('udb.core')
       'Congres of studiedag': 'Congrès ou journée d\'étude',
       'Eten en drinken': 'Manger et boire',
       'Thema of pretpark': 'Parc à thème ou parc d\'attractions',
+      'Theater': 'Théâtre',
       'Jeugdhuis of jeugdcentrum': 'Maison de jeunes ou centre de jeunesse',
       'Cultuur- of ontmoetingscentrum': 'Centre culturel ou centre de réunion',
       'Discotheek': 'Discothèque',
