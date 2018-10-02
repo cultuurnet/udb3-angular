@@ -1,6 +1,7 @@
 {
   "name": "udb3-angular",
   "version": "0.0.0",
+  "main": "index.js",
   "dependencies": {
     "@bower_components/accounting": "josscrowcroft/accounting.js#~0.3.2",
     "@bower_components/angular": "angular/bower-angular#~1.5.5",
