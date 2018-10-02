@@ -114,7 +114,7 @@ module.exports = function (grunt) {
       styles: {
         files: [
           '<%= yeoman.app %>/styles/{,*/}*.less',
-          'bower_components/components-font-awesome/{,*/}*.less'
+          'node_modules/components-font-awesome/{,*/}*.less'
         ],
         tasks: ['less', 'newer:copy:styles', 'autoprefixer']
       },
@@ -152,8 +152,8 @@ module.exports = function (grunt) {
               connect.static('.tmp'),
               connect.static('test'),
               connect().use(
-                '/bower_components',
-                connect.static('./bower_components')
+                '/node_modules',
+                connect.static('./node_modules')
               ),
               connect.static(appConfig.app)
             ];
@@ -209,8 +209,8 @@ module.exports = function (grunt) {
       app: {
         options: {
           paths: [
-            'bower_components/bootstrap/less',
-            'bower_components/components-font-awesome/less',
+            'node_modules/bootstrap/less',
+            'node_modules/components-font-awesome/less',
           ],
           strictMath: true
         },
@@ -240,8 +240,8 @@ module.exports = function (grunt) {
       app: {
         src: ['<%= yeoman.app %>/index.html'],
         exclude: [
-          'bower_components/bootstrap/dist/css/bootstrap.css',
-          'bower_components/components-font-awesome/css/font-awesome.css'
+          'node_modules/bootstrap/dist/css/bootstrap.css',
+          'node_modules/components-font-awesome/css/font-awesome.css'
         ],
         ignorePath:  /\.\.\//,
         options: {
