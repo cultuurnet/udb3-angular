@@ -7,5 +7,4 @@ before_install:
   - npm install -g grunt-cli yarn
 install:
   - yarn install
-  - yarn postinstall
 script: grunt build && grunt test && grunt coveralls
