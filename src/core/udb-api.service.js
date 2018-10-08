@@ -203,7 +203,16 @@ function UdbApi(
     function cacheAndResolveOffer(jsonOffer) {
       var type = jsonOffer['@id'].split('/').reverse()[1];
 
-      var offer = (type === 'event') ? new UdbEvent() : new UdbPlace();
+      var offer = {};
+      if (type === 'event') {
+        offer = new UdbEvent();
+      }
+      else if (type === 'place') {
+        offer = new UdbPlace();
+      }
+      else {
+        offer = new UdbOrganizer();
+      }
       offer.parseJson(jsonOffer);
       offerCache.put(offerLocation, offer);
       deferredOffer.resolve(offer);
@@ -921,6 +930,21 @@ function UdbApi(
     return $http
       .get(appConfig.baseUrl + 'dashboard/items', requestConfig)
       .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {int} page
+   * @return {Promise.<PagedCollection>}
+   */
+  this.getDashboardOrganizers = function(page) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    if (page > 1) {
+      requestConfig.params.page = page;
+    }
+
+    return $http
+        .get(appConfig.baseUrl + 'user/organizers/', requestConfig)
+        .then(returnUnwrappedData);
   };
 
   this.uploadMedia = function (imageFile, description, copyrightHolder, language) {

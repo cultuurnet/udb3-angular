@@ -3500,6 +3500,19 @@ angular.module('udb.core')
         'add_phone': 'Telefoonnummer toevoegen',
         'add_email': 'E-mailadres toevoegen',
         'add_url': 'Andere website toevoegen'
+      },
+      manage: {
+        'edit': 'Bewerken',
+        'delete': 'Verwijderen',
+        'overview': 'Terug naar overzicht',
+        'dashboard': 'Terug naar dashboard',
+        'name': 'Naam',
+        'address': 'Adres',
+        'website': 'Website',
+        'phone': 'Telefoonnummer',
+        'email': 'E-mailadres',
+        'labels': 'Labels',
+        'removed': 'Deze organisatie is verwijderd.'
       }
     },
     duplicate: {
@@ -3511,8 +3524,10 @@ angular.module('udb.core')
       'welcome': 'Welkom,',
       'no_items': 'Je hebt nog geen items toegevoegd.',
       'add_activity': 'Een activiteit of locatie toevoegen?',
-      'recent': 'Recent',
+      'my_activities': 'Mijn activiteiten en locaties',
+      'my_organizers': 'Mijn organisaties',
       'add': 'Toevoegen',
+      'add_organizer': 'Organisatie toevoegen',
       directive: {
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',
@@ -4519,6 +4534,19 @@ angular.module('udb.core')
         'add_phone': 'Ajouter un numéro de téléphone',
         'add_email': 'Ajouter une adresse mail',
         'add_url': 'Ajouter un autre site web'
+      },
+      manage: {
+        'edit': 'Modifier',
+        'delete': 'Supprimer',
+        'overview': 'Retourner à l\'aperçu',
+        'dashboard': 'Retourner au tableau de bord',
+        'name': 'Nom',
+        'address': 'Adresse',
+        'website': 'Site Internet',
+        'phone': 'Numéro de téléphone',
+        'email': 'Adresse e-mail',
+        'labels': 'Labels',
+        'removed': 'Cette organisation a été supprimée.'
       }
     },
     duplicate: {
@@ -4530,8 +4558,10 @@ angular.module('udb.core')
       'welcome': 'Bienvenue,',
       'no_items': 'Vous n\'avez pas encore ajouté des items.',
       'add_activity': 'Ajouter une activité ou une location?',
-      'recent': 'Récent',
+      'my_activities': 'Mes activitées et locations',
+      'my_organizers': 'Mes organisations',
       'add': 'Ajouter',
+      'add_organizer': 'Ajouter une organisation',
       directive: {
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',
@@ -4921,7 +4951,16 @@ function UdbApi(
     function cacheAndResolveOffer(jsonOffer) {
       var type = jsonOffer['@id'].split('/').reverse()[1];
 
-      var offer = (type === 'event') ? new UdbEvent() : new UdbPlace();
+      var offer = {};
+      if (type === 'event') {
+        offer = new UdbEvent();
+      }
+      else if (type === 'place') {
+        offer = new UdbPlace();
+      }
+      else {
+        offer = new UdbOrganizer();
+      }
       offer.parseJson(jsonOffer);
       offerCache.put(offerLocation, offer);
       deferredOffer.resolve(offer);
@@ -5639,6 +5678,21 @@ function UdbApi(
     return $http
       .get(appConfig.baseUrl + 'dashboard/items', requestConfig)
       .then(returnUnwrappedData);
+  };
+
+  /**
+   * @param {int} page
+   * @return {Promise.<PagedCollection>}
+   */
+  this.getDashboardOrganizers = function(page) {
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    if (page > 1) {
+      requestConfig.params.page = page;
+    }
+
+    return $http
+        .get(appConfig.baseUrl + 'user/organizers/', requestConfig)
+        .then(returnUnwrappedData);
   };
 
   this.uploadMedia = function (imageFile, description, copyrightHolder, language) {
@@ -6563,7 +6617,7 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory(UitpasLabels) {
+function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
 
   function isUitpas(organizer) {
     return hasUitpasLabel(organizer.labels) ||
@@ -6590,6 +6644,37 @@ function UdbOrganizerFactory(UitpasLabels) {
       .get(path, [])
       .first()
       .value();
+  }
+
+  function updateTranslationState(organizer) {
+
+    var languages = {'en': false, 'fr': false, 'de': false},
+        properties = ['name'];
+
+    _.forEach(languages, function (language, languageKey) {
+      var translationCount = 0,
+          state;
+
+      _.forEach(properties, function (property) {
+        if (organizer[property] && organizer[property][languageKey]) {
+          ++translationCount;
+        }
+      });
+
+      if (translationCount) {
+        if (translationCount === properties.length) {
+          state = EventTranslationState.ALL;
+        } else {
+          state = EventTranslationState.SOME;
+        }
+      } else {
+        state = EventTranslationState.NONE;
+      }
+
+      languages[languageKey] = state;
+    });
+
+    organizer.translationState = languages;
   }
 
   /**
@@ -6628,12 +6713,17 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
       this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
+      this.detailUrl = '/organizer/' + this.id;
+    },
+    updateTranslationState: function (organizer) {
+      organizer = organizer || this;
+      updateTranslationState(organizer);
     }
   };
 
   return (UdbOrganizer);
 }
-UdbOrganizerFactory.$inject = ["UitpasLabels"];
+UdbOrganizerFactory.$inject = ["UitpasLabels", "EventTranslationState"];
 })();
 
 // Source: src/core/udb-organizers.service.js
@@ -7285,6 +7375,33 @@ function udbDashboardEventItem() {
 }
 })();
 
+// Source: src/dashboard/components/dashboard-organizer-item.directive.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.dashboard.directive:udbDashboardEventItem
+ * @description
+ *  Renders a dashboard item for place
+ */
+angular
+  .module('udb.dashboard')
+  .directive('udbDashboardOrganizerItem', udbDashboardOrganizerItem);
+
+/* @ngInject */
+function udbDashboardOrganizerItem() {
+  var dashboardOrganizerItemDirective = {
+    restrict: 'AE',
+    controller: 'OrganizerController',
+    controllerAs: 'organizerCtrl',
+    templateUrl: 'templates/dashboard-organizer-item.directive.html'
+  };
+
+  return dashboardOrganizerItemDirective;
+}
+})();
+
 // Source: src/dashboard/components/dashboard-place-item.directive.js
 (function () {
 'use strict';
@@ -7365,6 +7482,215 @@ function EventDeleteConfirmModalController($scope, $uibModalInstance, eventCrud,
 
 }
 EventDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eventCrud", "item"];
+})();
+
+// Source: src/dashboard/components/organizer.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc controller
+ * @name udb.dashboard.controller:OrganizerController
+ * @description
+ * # OrganizerController
+ */
+angular
+    .module('udb.dashboard')
+    .controller('OrganizerController', OrganizerController);
+
+/* @ngInject */
+function OrganizerController(
+    udbApi,
+    $scope,
+    jsonLDLangFilter,
+    EventTranslationState,
+    offerTranslator,
+    offerLabeller,
+    $window,
+    offerEditor,
+    variationRepository,
+    $q,
+    appConfig,
+    $uibModal,
+    $translate
+) {
+  var controller = this;
+  var cachedOrganizer;
+  var defaultLanguage = $translate.use() || 'nl';
+
+  controller.translation = false;
+  controller.activeLanguage = defaultLanguage;
+  controller.languageSelector = [
+    {'lang': 'fr'},
+    {'lang': 'en'},
+    {'lang': 'de'}
+  ];
+  controller.labelRemoved = labelRemoved;
+
+  controller.init = function () {
+    if (!$scope.event.title) {
+      controller.fetching = true;
+
+      return udbApi
+          .getOffer($scope.event['@id'])
+          .then(function (offerObject) {
+
+            cachedOrganizer = offerObject;
+            cachedOrganizer.updateTranslationState();
+
+            $scope.event = jsonLDLangFilter(cachedOrganizer, defaultLanguage, true);
+            $scope.offerType = 'organizer';
+
+            controller.fetching = false;
+            watchLabels();
+            return cachedOrganizer;
+          });
+    } else {
+      controller.fetching = false;
+    }
+  };
+
+  // initialize controller and take optional event actions
+  $q.when(controller.init())
+  // translate location before fetching the maybe non-existant variation
+  // a variation does not change the location
+      .finally(function () {
+        controller.editable = true;
+      });
+
+  function watchLabels() {
+    $scope.$watch(function () {
+      return cachedOrganizer.labels;
+    }, function (labels) {
+      $scope.event.labels = angular.copy(labels);
+    });
+  }
+
+  controller.hasActiveTranslation = function () {
+    var organizer = cachedOrganizer;
+    return organizer && organizer.translationState[controller.activeLanguage] !== EventTranslationState.NONE;
+  };
+
+  controller.getLanguageTranslationIcon = function (lang) {
+    var icon = EventTranslationState.NONE.icon;
+
+    if (cachedOrganizer && lang) {
+      icon = cachedOrganizer.translationState[lang].icon;
+    }
+
+    return icon;
+  };
+
+  controller.translate = function () {
+    controller.applyPropertyChanges('name');
+  };
+
+  /**
+   * Sets the provided language as active or toggles it off when already active
+   *
+   * @param {String} lang
+   */
+  controller.toggleLanguage = function (lang) {
+    if (lang === controller.activeLanguage) {
+      controller.stopTranslating();
+    } else {
+      controller.activeLanguage = lang;
+      controller.translation = jsonLDLangFilter(cachedOrganizer, controller.activeLanguage);
+    }
+  };
+
+  controller.hasPropertyChanged = function (propertyName) {
+    var lang = controller.activeLanguage,
+        translation = controller.translation;
+
+    return controller.translation && cachedOrganizer[propertyName][lang] !== translation[propertyName];
+  };
+
+  controller.undoPropertyChanges = function (propertyName) {
+    var lang = controller.activeLanguage,
+        translation = controller.translation;
+
+    if (translation) {
+      translation[propertyName] = cachedOrganizer[propertyName][lang];
+    }
+  };
+
+  controller.applyPropertyChanges = function (propertyName) {
+    var translation = controller.translation[propertyName];
+    translateEventProperty(propertyName, translation, propertyName);
+  };
+
+  controller.stopTranslating = function () {
+    controller.translation = undefined;
+    controller.activeLanguage = defaultLanguage;
+  };
+
+  function translateEventProperty(property, translation, apiProperty) {
+    var language = controller.activeLanguage,
+        udbProperty = apiProperty || property;
+
+    if (translation && translation !== cachedOrganizer[property][language]) {
+      offerTranslator
+          .translateProperty(cachedOrganizer, udbProperty, language, translation)
+          .then(cachedOrganizer.updateTranslationState(cachedOrganizer));
+    }
+  }
+
+  // Labelling
+  /**
+   * @param {Label} newLabel
+   */
+  controller.labelAdded = function (newLabel) {
+    var similarLabel = _.find(cachedOrganizer.labels, function (label) {
+      return newLabel.name.toUpperCase() === label.toUpperCase();
+    });
+    if (similarLabel) {
+      $scope.$apply(function () {
+        $scope.event.labels = angular.copy(cachedOrganizer.labels);
+      });
+      $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
+    } else {
+      offerLabeller.label(cachedOrganizer, newLabel.name)
+          .then(function(response) {
+            if (response.success) {
+              controller.labelResponse = 'success';
+              controller.addedLabel = response.name;
+            }
+            else {
+              controller.labelResponse = 'error';
+              controller.labelsError = response;
+            }
+            $scope.event.labels = angular.copy(cachedOrganizer.labels);
+          });
+    }
+  };
+
+  function clearLabelsError() {
+    controller.labelResponse = '';
+    controller.labelsError = '';
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showUnlabelProblem(problem) {
+    $scope.event.labels = angular.copy(cachedOrganizer.labels);
+    controller.labelResponse = 'unlabelError';
+    controller.labelsError = problem.title;
+  }
+
+  /**
+   * @param {Label} label
+   */
+  function labelRemoved(label) {
+    clearLabelsError();
+
+    offerLabeller
+        .unlabel(cachedOrganizer, label.name)
+        .catch(showUnlabelProblem);
+  }
+}
+OrganizerController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
 })();
 
 // Source: src/dashboard/components/place-delete-confirm-modal.controller.js
@@ -7452,14 +7778,17 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       SearchResultViewer,
       appConfig,
       moment,
-      $sanitize
+      $state
   ) {
 
     var dash = this;
 
     dash.pagedItemViewer = new SearchResultViewer(50, 1);
+    dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
+    dash.openCreateOrganizerModal = openCreateOrganizerModal;
+    dash.updateOrganizerViewer = updateOrganizerViewer;
     dash.username = '';
     dash.hideOnlineDate = false;
 
@@ -7509,6 +7838,13 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       }
     }
 
+    if (typeof(appConfig.enableMyOrganizers) !== 'undefined') {
+      var enableMyOrganizers = appConfig.enableMyOrganizers;
+      if (enableMyOrganizers !== '') {
+        dash.enableMyOrganizers = enableMyOrganizers;
+      }
+    }
+
     udbApi
       .getMe()
       .then(greetUser);
@@ -7532,6 +7868,22 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         .then(setItemViewerResults);
     }
     updateItemViewer();
+
+    /**
+     * @param {PagedCollection} results
+     */
+    function setOrganizerViewerResults(results) {
+      offerLocator.addPagedCollection(results);
+      dash.pagedItemViewerOrganizers.setResults(results);
+      $document.scrollTop(0);
+    }
+
+    function updateOrganizerViewer() {
+      udbApi
+          .getDashboardOrganizers(dash.pagedItemViewer.currentPage)
+          .then(setOrganizerViewerResults);
+    }
+    updateOrganizerViewer();
 
     function openEventDeleteConfirmModal(item) {
       var modalInstance = $uibModal.open({
@@ -7592,7 +7944,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
      * @param {Object} item
      */
     function openDeleteConfirmModal(item) {
-      var itemType = item['@id'].indexOf('event') === -1 ? 'place' : 'event';
+      var itemType = item['@id'].indexOf('place') === -1 ? 'event' : 'place';
 
       // Fix for III-2625. Escaping single quotes won't work here.
       item.name = item.name.replace(/'/g, '');
@@ -7604,8 +7956,24 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
         openPlaceDeleteConfirmModal(item);
       }
     }
+
+    function openCreateOrganizerModal() {
+      var modalInstance = $uibModal.open({
+        templateUrl: 'templates/event-form-organizer-modal.html',
+        controller: 'EventFormOrganizerModalController',
+        resolve: {
+          organizerName: function () {
+            return '';
+          }
+        }
+      });
+
+      modalInstance.result.then(function(organization) {
+        $state.go('management.organizers.detail', {id: organization.id});
+      });
+    }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "$sanitize"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "$state"];
 
 })();
 })();
@@ -18064,6 +18432,7 @@ function OrganizerEditController(
   ) {
   var controller = this;
   var organizerId = $stateParams.id;
+  var stateName = $state.current.name;
 
   controller.contact = [];
   controller.showWebsiteValidation = false;
@@ -18083,6 +18452,7 @@ function OrganizerEditController(
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
   controller.cancel = cancel;
+  controller.isManageState = isManageState;
 
   var oldOrganizer = {};
   var oldContact = [];
@@ -18248,7 +18618,11 @@ function OrganizerEditController(
 
     $q.all(promises)
         .then(function() {
-          $state.go('management.organizers.search', {}, {reload: true});
+          if (isManageState) {
+            $state.go('management.organizers.search', {}, {reload: true});
+          } else {
+            $state.go('split.footer.dashboard', {}, {reload: true});
+          }
         })
         .catch(function () {
           controller.hasErrors = true;
@@ -18258,7 +18632,15 @@ function OrganizerEditController(
 
   function cancel() {
     OrganizerManager.removeOrganizerFromCache(organizerId);
-    $state.go('management.organizers.search', {}, {reload: true});
+    if (isManageState) {
+      $state.go('management.organizers.search', {}, {reload: true});
+    } else {
+      $state.go('split.footer.dashboard', {}, {reload: true});
+    }
+  }
+
+  function isManageState() {
+    return (stateName.indexOf('manage') !== -1);
   }
 }
 OrganizerEditController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope"];
@@ -18279,9 +18661,10 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state) {
   var controller = this;
   var organizerId = $stateParams.id;
+  var stateName = $state.current.name;
 
   // labels scope variables and functions
   controller.labelSaving = false;
@@ -18290,6 +18673,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.labelResponse = '';
   controller.labelsError = '';
   controller.deleteOrganization = deleteOrganization;
+  controller.isManageState = isManageState;
 
   loadOrganizer(organizerId);
 
@@ -18339,6 +18723,10 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   function clearLabelsError() {
     controller.labelResponse = '';
     controller.labelsError = '';
+  }
+
+  function isManageState() {
+    return (stateName.indexOf('manage') !== -1);
   }
 
   function goToOrganizerOverview() {
@@ -18398,7 +18786,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     );
   }
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location"];
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state"];
 })();
 
 // Source: src/management/organizers/organizer-manager.service.js
@@ -26701,6 +27089,29 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
+  $templateCache.put('templates/dashboard-organizer-item.directive.html',
+    "<td>\n" +
+    "  <strong>\n" +
+    "    <a ng-href=\"{{ event.detailUrl }}\" ng-bind=\"::event.name\"></a>\n" +
+    "  </strong>\n" +
+    "  <br/>\n" +
+    "  <small ng-if=\"event.address\">\n" +
+    "    <span ng-bind=\"::event.address.streetAddress\"></span>\n" +
+    "    <span ng-if=\"_.isEmpty(event.address)\">,</span>\n" +
+    "    <span ng-bind=\"::event.address.postalCode\"></span> <span ng-bind=\"::event.address.addressLocality\"></span>\n" +
+    "  </small>\n" +
+    "</td>\n" +
+    "\n" +
+    "<td ng-if=\"!organizerCtrl.fetching\">\n" +
+    "  <span ng-if=\"!event.deleted\">\n" +
+    "    <div class=\"pull-right\">\n" +
+    "      <a class=\"btn btn-default\" ng-href=\"{{ event.detailUrl + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
+    "    </div>\n" +
+    "  </span>\n" +
+    "</td>\n"
+  );
+
+
   $templateCache.put('templates/event-delete-confirm-modal.html',
     "<div class=\"modal-body\">\n" +
     "\n" +
@@ -26797,7 +27208,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div ng-show=\"dash.pagedItemViewer.events.length\">\n" +
     "\n" +
     "        <div class=\"clearfix\">\n" +
-    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.recent\"></span>\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.my_activities\"></span>\n" +
     "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
     "              <a class=\"btn btn-primary\" href=\"event\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add\"></span></a>\n" +
     "            </span>\n" +
@@ -26827,6 +27238,40 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              ng-show=\"dash.pagedItemViewer.totalItems > 0\"\n" +
     "              max-size=\"10\"\n" +
     "              ng-change=\"dash.updateItemViewer()\">\n" +
+    "            </uib-pagination>\n" +
+    "          </div>\n" +
+    "\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div ng-show=\"dash.pagedItemViewerOrganizers.events.length && dash.enableMyOrganizers\">\n" +
+    "\n" +
+    "        <div class=\"clearfix\">\n" +
+    "          <p class=\"invoer-title\"><span class=\"block-header\" translate-once=\"dashboard.my_organizers\"></span>\n" +
+    "            <span class=\"pull-right\" ng-if=\"dash.toggleAddOffer\">\n" +
+    "              <a class=\"btn btn-primary\" ng-click=\"dash.openCreateOrganizerModal()\"><i class=\"fa fa-plus-circle\"></i> <span translate-once=\"dashboard.add_organizer\"></span></a>\n" +
+    "            </span>\n" +
+    "          </p>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"panel panel-default\">\n" +
+    "          <table class=\"table\">\n" +
+    "            <tbody>\n" +
+    "            <tr udb-dashboard-organizer-item\n" +
+    "                class=\"dashboard-item\" ng-class=\"{'deleting': event.showDeleted}\"\n" +
+    "                ng-repeat-start=\"event in dash.pagedItemViewerOrganizers.events\"\n" +
+    "                ng-repeat-end>\n" +
+    "            </tr>\n" +
+    "            </tbody>\n" +
+    "          </table>\n" +
+    "          <div class=\"panel-footer\">\n" +
+    "            <uib-pagination\n" +
+    "                    total-items=\"dash.pagedItemViewerOrganizers.totalItems\"\n" +
+    "                    ng-model=\"dash.pagedItemViewerOrganizers.currentPage\"\n" +
+    "                    items-per-page=\"dash.pagedItemViewerOrganizers.pageSize\"\n" +
+    "                    ng-show=\"dash.pagedItemViewerOrganizers.totalItems > 0\"\n" +
+    "                    max-size=\"10\"\n" +
+    "                    ng-change=\"dash.updateOrganizerViewer()\">\n" +
     "            </uib-pagination>\n" +
     "          </div>\n" +
     "\n" +
@@ -30112,13 +30557,37 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"row\" ng-if=\"odc.organizer\">\n" +
     "  <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "    <div class=\"list-group\" ng-if=\"!odc.organizer.deleted\">\n" +
-    "      <button class=\"list-group-item\"\n" +
-    "         type=\"button\"\n" +
-    "         ui-sref=\"management.organizers.edit({id: odc.organizer.id})\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i> Bewerken</button>\n" +
-    "      <button class=\"list-group-item\"\n" +
-    "              ng-click=\"odc.deleteOrganization()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i> Verwijderen</button>\n" +
-    "      <button class=\"list-group-item\"\n" +
-    "         ui-sref=\"management.organizers.search({id: odc.organizer.id})\"><i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i> Terug naar overzicht</button>\n" +
+    "      <span ng-if=\"odc.isManageState()\">\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ui-sref=\"management.organizers.edit({id: odc.organizer.id})\">\n" +
+    "          <i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.edit\"></span>\n" +
+    "        </button>\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                ng-click=\"odc.deleteOrganization()\">\n" +
+    "          <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.delete\"></span>\n" +
+    "        </button>\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                ui-sref=\"management.organizers.search({id: odc.organizer.id})\">\n" +
+    "          <i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.overview\"></span>\n" +
+    "        </button>\n" +
+    "      </span>\n" +
+    "      <span ng-if=\"!odc.isManageState()\">\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ui-sref=\"split.organizer.edit({id: odc.organizer.id})\">\n" +
+    "          <i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.edit\"></span>\n" +
+    "        </button>\n" +
+    "        <button class=\"list-group-item\"\n" +
+    "                ui-sref=\"split.footer.dashboard\">\n" +
+    "          <i class=\"fa fa-arrow-left\" aria-hidden=\"true\"></i>\n" +
+    "          <span translate-once=\"organizer.manage.dashboard\"></span>\n" +
+    "        </button>\n" +
+    "      </span>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"col-sm-9 col-sm-pull-3\">\n" +
@@ -30129,7 +30598,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </colgroup>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Naam</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.name\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.name\"></span>\n" +
@@ -30137,7 +30606,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Adres</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.address\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.address.streetAddress\"></span><br/>\n" +
@@ -30146,7 +30615,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Website</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.website\"></span>\n" +
     "        </div>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.url\"></span>\n" +
@@ -30154,7 +30623,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Telefoonnummer</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.phone\"></span>\n" +
     "        </div>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.phone\"></span>\n" +
@@ -30162,7 +30631,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">E-mailadres</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.email\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
     "          <span ng-bind=\"odc.organizer.email\"></span>\n" +
@@ -30170,7 +30639,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </tr>\n" +
     "      <tr>\n" +
     "        <td>\n" +
-    "          <span class=\"row-label\">Labels</span>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.labels\"></span>\n" +
     "          <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
     "        </td>\n" +
     "        <td>\n" +
@@ -30185,7 +30654,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </table>\n" +
     "\n" +
     "    <div class=\"alert alert-danger\" ng-if=\"odc.organizer && odc.organizer.deleted\">\n" +
-    "      Deze organisatie is verwijderd.\n" +
+    "      <span translate-once=\"organizer.manage.removed\"></span>\n" +
     "    </div>\n" +
     "\n" +
     "    <div ng-show=\"odc.loadingError\">\n" +

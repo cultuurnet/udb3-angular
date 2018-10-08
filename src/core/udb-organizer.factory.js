@@ -12,7 +12,7 @@ angular
   .factory('UdbOrganizer', UdbOrganizerFactory);
 
 /* @ngInject */
-function UdbOrganizerFactory(UitpasLabels) {
+function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
 
   function isUitpas(organizer) {
     return hasUitpasLabel(organizer.labels) ||
@@ -39,6 +39,37 @@ function UdbOrganizerFactory(UitpasLabels) {
       .get(path, [])
       .first()
       .value();
+  }
+
+  function updateTranslationState(organizer) {
+
+    var languages = {'en': false, 'fr': false, 'de': false},
+        properties = ['name'];
+
+    _.forEach(languages, function (language, languageKey) {
+      var translationCount = 0,
+          state;
+
+      _.forEach(properties, function (property) {
+        if (organizer[property] && organizer[property][languageKey]) {
+          ++translationCount;
+        }
+      });
+
+      if (translationCount) {
+        if (translationCount === properties.length) {
+          state = EventTranslationState.ALL;
+        } else {
+          state = EventTranslationState.SOME;
+        }
+      } else {
+        state = EventTranslationState.NONE;
+      }
+
+      languages[languageKey] = state;
+    });
+
+    organizer.translationState = languages;
   }
 
   /**
@@ -77,6 +108,11 @@ function UdbOrganizerFactory(UitpasLabels) {
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
       this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
+      this.detailUrl = '/organizer/' + this.id;
+    },
+    updateTranslationState: function (organizer) {
+      organizer = organizer || this;
+      updateTranslationState(organizer);
     }
   };
 

@@ -117,7 +117,8 @@ describe('Factory: UDB Organizer', function () {
       ],
       'isUitpas': true,
       'created': new Date('2017-03-28T12:09:18+00:00'),
-      'deleted': false
+      'deleted': false,
+      'detailUrl': '/organizer/357D5297-9E37-1DE9-62398987EA110D38'
     };
 
     var organizerFromJson = new UdbOrganizer(jsonOrganizer);

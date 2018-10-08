@@ -21,6 +21,7 @@ function OrganizerEditController(
   ) {
   var controller = this;
   var organizerId = $stateParams.id;
+  var stateName = $state.current.name;
 
   controller.contact = [];
   controller.showWebsiteValidation = false;
@@ -40,6 +41,7 @@ function OrganizerEditController(
   controller.checkChanges = checkChanges;
   controller.validateOrganizer = validateOrganizer;
   controller.cancel = cancel;
+  controller.isManageState = isManageState;
 
   var oldOrganizer = {};
   var oldContact = [];
@@ -205,7 +207,11 @@ function OrganizerEditController(
 
     $q.all(promises)
         .then(function() {
-          $state.go('management.organizers.search', {}, {reload: true});
+          if (isManageState) {
+            $state.go('management.organizers.search', {}, {reload: true});
+          } else {
+            $state.go('split.footer.dashboard', {}, {reload: true});
+          }
         })
         .catch(function () {
           controller.hasErrors = true;
@@ -215,6 +221,14 @@ function OrganizerEditController(
 
   function cancel() {
     OrganizerManager.removeOrganizerFromCache(organizerId);
-    $state.go('management.organizers.search', {}, {reload: true});
+    if (isManageState) {
+      $state.go('management.organizers.search', {}, {reload: true});
+    } else {
+      $state.go('split.footer.dashboard', {}, {reload: true});
+    }
+  }
+
+  function isManageState() {
+    return (stateName.indexOf('manage') !== -1);
   }
 }

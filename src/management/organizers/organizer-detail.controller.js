@@ -11,9 +11,10 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state) {
   var controller = this;
   var organizerId = $stateParams.id;
+  var stateName = $state.current.name;
 
   // labels scope variables and functions
   controller.labelSaving = false;
@@ -22,6 +23,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.labelResponse = '';
   controller.labelsError = '';
   controller.deleteOrganization = deleteOrganization;
+  controller.isManageState = isManageState;
 
   loadOrganizer(organizerId);
 
@@ -71,6 +73,10 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   function clearLabelsError() {
     controller.labelResponse = '';
     controller.labelsError = '';
+  }
+
+  function isManageState() {
+    return (stateName.indexOf('manage') !== -1);
   }
 
   function goToOrganizerOverview() {

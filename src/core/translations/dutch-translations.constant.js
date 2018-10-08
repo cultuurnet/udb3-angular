@@ -834,6 +834,19 @@ angular.module('udb.core')
         'add_phone': 'Telefoonnummer toevoegen',
         'add_email': 'E-mailadres toevoegen',
         'add_url': 'Andere website toevoegen'
+      },
+      manage: {
+        'edit': 'Bewerken',
+        'delete': 'Verwijderen',
+        'overview': 'Terug naar overzicht',
+        'dashboard': 'Terug naar dashboard',
+        'name': 'Naam',
+        'address': 'Adres',
+        'website': 'Website',
+        'phone': 'Telefoonnummer',
+        'email': 'E-mailadres',
+        'labels': 'Labels',
+        'removed': 'Deze organisatie is verwijderd.'
       }
     },
     duplicate: {
@@ -845,8 +858,10 @@ angular.module('udb.core')
       'welcome': 'Welkom,',
       'no_items': 'Je hebt nog geen items toegevoegd.',
       'add_activity': 'Een activiteit of locatie toevoegen?',
-      'recent': 'Recent',
+      'my_activities': 'Mijn activiteiten en locaties',
+      'my_organizers': 'Mijn organisaties',
       'add': 'Toevoegen',
+      'add_organizer': 'Organisatie toevoegen',
       directive: {
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',

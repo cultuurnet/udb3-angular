@@ -821,6 +821,19 @@ angular.module('udb.core')
         'add_phone': 'Ajouter un numéro de téléphone',
         'add_email': 'Ajouter une adresse mail',
         'add_url': 'Ajouter un autre site web'
+      },
+      manage: {
+        'edit': 'Modifier',
+        'delete': 'Supprimer',
+        'overview': 'Retourner à l\'aperçu',
+        'dashboard': 'Retourner au tableau de bord',
+        'name': 'Nom',
+        'address': 'Adresse',
+        'website': 'Site Internet',
+        'phone': 'Numéro de téléphone',
+        'email': 'Adresse e-mail',
+        'labels': 'Labels',
+        'removed': 'Cette organisation a été supprimée.'
       }
     },
     duplicate: {
@@ -832,8 +845,10 @@ angular.module('udb.core')
       'welcome': 'Bienvenue,',
       'no_items': 'Vous n\'avez pas encore ajouté des items.',
       'add_activity': 'Ajouter une activité ou une location?',
-      'recent': 'Récent',
+      'my_activities': 'Mes activitées et locations',
+      'my_organizers': 'Mes organisations',
       'add': 'Ajouter',
+      'add_organizer': 'Ajouter une organisation',
       directive: {
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',

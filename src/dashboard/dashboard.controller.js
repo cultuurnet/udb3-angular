@@ -22,14 +22,17 @@
       SearchResultViewer,
       appConfig,
       moment,
-      $sanitize
+      $state
   ) {
 
     var dash = this;
 
     dash.pagedItemViewer = new SearchResultViewer(50, 1);
+    dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
+    dash.openCreateOrganizerModal = openCreateOrganizerModal;
+    dash.updateOrganizerViewer = updateOrganizerViewer;
     dash.username = '';
     dash.hideOnlineDate = false;
 
@@ -79,6 +82,13 @@
       }
     }
 
+    if (typeof(appConfig.enableMyOrganizers) !== 'undefined') {
+      var enableMyOrganizers = appConfig.enableMyOrganizers;
+      if (enableMyOrganizers !== '') {
+        dash.enableMyOrganizers = enableMyOrganizers;
+      }
+    }
+
     udbApi
       .getMe()
       .then(greetUser);
@@ -102,6 +112,22 @@
         .then(setItemViewerResults);
     }
     updateItemViewer();
+
+    /**
+     * @param {PagedCollection} results
+     */
+    function setOrganizerViewerResults(results) {
+      offerLocator.addPagedCollection(results);
+      dash.pagedItemViewerOrganizers.setResults(results);
+      $document.scrollTop(0);
+    }
+
+    function updateOrganizerViewer() {
+      udbApi
+          .getDashboardOrganizers(dash.pagedItemViewer.currentPage)
+          .then(setOrganizerViewerResults);
+    }
+    updateOrganizerViewer();
 
     function openEventDeleteConfirmModal(item) {
       var modalInstance = $uibModal.open({
@@ -162,7 +188,7 @@
      * @param {Object} item
      */
     function openDeleteConfirmModal(item) {
-      var itemType = item['@id'].indexOf('event') === -1 ? 'place' : 'event';
+      var itemType = item['@id'].indexOf('place') === -1 ? 'event' : 'place';
 
       // Fix for III-2625. Escaping single quotes won't work here.
       item.name = item.name.replace(/'/g, '');
@@ -173,6 +199,22 @@
       else {
         openPlaceDeleteConfirmModal(item);
       }
+    }
+
+    function openCreateOrganizerModal() {
+      var modalInstance = $uibModal.open({
+        templateUrl: 'templates/event-form-organizer-modal.html',
+        controller: 'EventFormOrganizerModalController',
+        resolve: {
+          organizerName: function () {
+            return '';
+          }
+        }
+      });
+
+      modalInstance.result.then(function(organization) {
+        $state.go('management.organizers.detail', {id: organization.id});
+      });
     }
   }
 

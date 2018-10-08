@@ -54,13 +54,15 @@ describe('Controller: Organizer Edit', function() {
 
   var result = {commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'};
 
+  beforeEach(module('ui.router'));
   beforeEach(module('udb.management'));
   beforeEach(module('udb.management.organizers'));
 
-  beforeEach(inject(function(_$q_, _$controller_, $rootScope) {
+  beforeEach(inject(function(_$q_, _$controller_, $rootScope, _$state_) {
     $controller = _$controller_;
     $q = _$q_;
     $scope = $rootScope.$new();
+    $state = _$state_;
 
     OrganizerManager = jasmine.createSpyObj('OrganizerManager', [
       'get',
@@ -71,7 +73,8 @@ describe('Controller: Organizer Edit', function() {
       'removeOrganizerFromCache'
     ]);
     udbOrganizers = jasmine.createSpyObj('udbOrganizers', ['findOrganizersWebsite']);
-    $state = jasmine.createSpyObj('$state', ['go']);
+    spyOn($state, 'go');
+    $state.current.name = 'manage.organizers.edit';
     $stateParams = { "id": id };
     organizerEditForm = {
       $valid: true,
