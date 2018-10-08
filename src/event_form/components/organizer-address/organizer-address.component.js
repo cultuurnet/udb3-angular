@@ -20,10 +20,15 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, cities, Levenshtein) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig) {
   var controller = this;
 
-  controller.cities = cities;
+  controller.availableCountries = appConfig.offerEditor.countries;
+  controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
+  controller.selectedCountry = controller.defaultCountry;
+  controller.address.addressCountry = controller.selectedCountry.code;
+
+  controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
   controller.selectedCity = '';
   controller.requiredAddress = false;
 
@@ -35,12 +40,15 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   controller.streetHasErrors = false;
   controller.cityHasErrors = false;
   controller.addressHasErrors = false;
+  controller.zipHasErrors = false;
+  controller.zipValidateError = false;
 
   controller.validateAddress = validateAddress;
   controller.filterCities = filterCities;
   controller.orderByLevenshteinDistance = orderByLevenshteinDistance;
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
+  controller.changeCountrySelection = changeCountrySelection;
 
   $scope.$on('organizerAddressSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
@@ -51,6 +59,8 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   function reset() {
     controller.streetHasErrors = false;
     controller.cityHasErrors = false;
+    controller.zipValidateError = false;
+    controller.zipHasErrors = false;
     controller.addressHasErrors = false;
   }
 
@@ -64,39 +74,79 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
       if (controller.selectedCity === '') {
         controller.cityHasErrors = true;
       }
+      if (controller.selectedCountry.code === 'NL') {
+        if (controller.address.postalCode === '' ||
+            controller.address.postalCode === undefined) {
+          controller.zipHasErrors = true;
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
+      }
     }
     else {
-      if ((controller.address.streetAddress === '' ||
-          controller.address.streetAddress === undefined) && controller.selectedCity !== '') {
-        controller.streetHasErrors = true;
+      if (controller.selectedCity !== '') {
+        if (controller.address.streetAddress === '' ||
+            controller.address.streetAddress === undefined) {
+          controller.streetHasErrors = true;
+        }
+
+        if (controller.selectedCountry.code === 'NL') {
+          if (controller.address.postalCode === '' ||
+              controller.address.postalCode === undefined) {
+            controller.zipHasErrors = true;
+            controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+          }
+        }
       }
 
-      if (controller.selectedCity === '' && controller.address.streetAddress !== '') {
-        controller.cityHasErrors = true;
+      if (controller.address.streetAddress !== '') {
+        if (controller.selectedCity === '') {
+          controller.cityHasErrors = true;
+        }
+
+        if (controller.address.postalCode === '' ||
+            controller.address.postalCode === undefined) {
+          controller.zipHasErrors = true;
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
+      }
+
+      if (controller.selectedCountry.code === 'NL') {
+        if (controller.address.postalCode !== '') {
+          if (controller.address.streetAddress === '' ||
+              controller.address.streetAddress === undefined) {
+            controller.streetHasErrors = true;
+          }
+
+          if (controller.selectedCity === '') {
+            controller.cityHasErrors = true;
+          }
+          controller.zipValidateError = !validateNlPostalCode(controller.address.postalCode);
+        }
       }
     }
-
     sendUpdate();
+  }
+
+  function validateNlPostalCode(postalCode) {
+    var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+    return regex.test(postalCode);
   }
 
   function filterCities(value) {
     return function (city) {
       var length = value.length;
       var words = value.match(/\w+/g);
-      var zipMatches = words.filter(function (word) {
-        return city.zip.substring(0, length) === word;
-      });
-      var nameMatches = words.filter(function (word) {
-        return city.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+      var labelMatches = words.filter(function (word) {
+        return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
-      return zipMatches.length + nameMatches.length >= words.length;
+      return labelMatches.length >= words.length;
     };
   }
 
   function orderByLevenshteinDistance(value) {
     return function (city) {
-      return new Levenshtein(value, city.zip + '' + city.name);
+      return new Levenshtein(value, city.label);
     };
   }
 
@@ -104,9 +154,11 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
    * Select City.
    */
   function selectCity($item, $label) {
-    controller.address.postalCode = $item.zip;
+    if (controller.selectedCountry.code === 'BE') {
+      controller.address.postalCode = $item.zip;
+    }
+
     controller.address.addressLocality = $item.name;
-    controller.address.addressCountry = 'BE';
 
     controller.cityAutocompleteTextField = '';
     controller.selectedCity = $label;
@@ -119,15 +171,29 @@ function OrganizerAddressComponent($scope, cities, Levenshtein) {
   function changeCitySelection() {
     controller.address.postalCode = '';
     controller.address.addressLocality = '';
-    controller.address.addressCountry = '';
 
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
     validateAddress();
   }
 
+  /**
+   * Change a city selection.
+   */
+  function changeCountrySelection() {
+    if (controller.selectedCountry.code === 'NL') {
+      controller.cities = citiesNL;
+    }
+    else {
+      controller.cities = citiesBE;
+    }
+    controller.address.addressCountry = controller.selectedCountry.code;
+    changeCitySelection();
+  }
+
   function sendUpdate() {
-    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors;
+    controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors ||
+        controller.zipHasErrors || controller.zipValidateError;
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }

@@ -29,6 +29,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   cm.getPublicUrl = getPublicUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
+  cm.publicationBrand = appConfig.publicationUrl.brand;
 
   function sameAsRelations (event) {
     var sameAsRelationsWithoutUIV = _.reject(event.sameAs, function(sameAs) {
@@ -43,9 +44,17 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
 
   function getPublicUrl (id) {
     if (isPlace()) {
-      return appConfig.publicationUrl.place + id;
+      if (appConfig.publicationUrl.place) {
+        return appConfig.publicationUrl.place + id;
+      } else {
+        return false;
+      }
     } else {
-      return appConfig.publicationUrl.event + id;
+      if (appConfig.publicationUrl.event) {
+        return appConfig.publicationUrl.event + id;
+      } else {
+        return false;
+      }
     }
   }
 

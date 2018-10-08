@@ -78,4 +78,11 @@ describe('EventFormPlaceModalController', function() {
     expect($scope.error).toEqual(true);
   });
 
+  it('should validate a NL postalCode', function () {
+    $scope.newPlace.address.addressCountry = 'NL';
+    $scope.newPlace.address.postalCode = 'dit is een foute postcode';
+    $scope.addLocation();
+    expect($scope.invalidNlPostalCode).toBeTruthy();
+  });
+
 });
