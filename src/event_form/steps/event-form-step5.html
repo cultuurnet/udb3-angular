@@ -2,11 +2,18 @@
   <a name="extra"></a>
   <section id="extra" ng-show="eventFormData.showStep5">
 
-    <h2 class="title-border">
-      <span class="number">5</span>
-      <span ng-show="eventFormData.isEvent" translate-once="eventForm.step5.expose_event"></span>
-      <span ng-show="eventFormData.isPlace" translate-once="eventForm.step5.expose_place"></span>
-    </h2>
+    <div class="step-title">
+      <div class="row">
+        <div class="col-xs-12">
+          <h2>
+            <span class="number">5</span>
+            <span ng-show="eventFormData.isEvent" translate-once="eventForm.step5.expose_event"></span>
+            <span ng-show="eventFormData.isPlace" translate-once="eventForm.step5.expose_place"></span>
+          </h2>
+          </h2>
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-sm-7">
@@ -216,7 +223,7 @@
                                 <p><strong translate-once="eventForm.step5.booking_exposure"></strong></p>
                                 <select ng-model="bookingModel.urlLabel[mainLanguage]"
                                         ng-change="saveWebsitePreview()"
-                                        ng-options="option.label for option in bookingOptions">
+                                        ng-options="option.label for option in bookingOptions[mainLanguage]">
                                 </select>
                               </div>
                             </div>

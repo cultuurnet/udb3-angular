@@ -33,6 +33,7 @@
     $scope.newPlace.eventType.id = getFirstCategoryId();
     $scope.showValidation = false;
     $scope.invalidStreet = false;
+    $scope.invalidNlPostalCode = false;
     $scope.saving = false;
     $scope.error = false;
 
@@ -52,12 +53,11 @@
           id: ''
         },
         address: {
-          addressCountry: 'BE',
+          addressCountry: $scope.location.address.addressCountry,
           addressLocality: $scope.location.address.addressLocality,
           postalCode: $scope.location.address.postalCode,
           streetAddress: '',
-          locationNumber : '',
-          country : 'BE'
+          locationNumber : ''
         }
       };
     }
@@ -93,6 +93,14 @@
         return;
       }
 
+      if ($scope.newPlace.address.addressCountry === 'NL') {
+        if (!validateNlPostalCode($scope.newPlace.address.postalCode)) {
+          $scope.error = true;
+          $scope.invalidNlPostalCode = true;
+          return;
+        }
+      }
+
       savePlace();
     }
 
@@ -122,7 +130,7 @@
         domain : 'eventtype'
       };
       udbPlace.address = {
-        addressCountry : 'BE',
+        addressCountry : $scope.newPlace.address.addressCountry,
         addressLocality : $scope.newPlace.address.addressLocality,
         postalCode : $scope.newPlace.address.postalCode,
         streetAddress : $scope.newPlace.address.streetAddress
@@ -174,6 +182,11 @@
     function validateAddress(streetAddress) {
       var maximumNumberLength = 15;
       return getNumberFromStreetAddress(streetAddress).length <= maximumNumberLength;
+    }
+
+    function validateNlPostalCode(postalCode) {
+      var regex = new RegExp(/^[0-9]{4}[a-z]{2}$/i);
+      return regex.test(postalCode);
     }
 
     function translateEventTypes(type) {

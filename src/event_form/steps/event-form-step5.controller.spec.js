@@ -475,6 +475,12 @@ describe('Controller: event form step 5', function () {
       {type: 'url', value: 'http://google.be', booking: true}
     ];
     scope.contactInfoForm = {};
+
+    scope.bookingModel.urlLabel['nl'] = {
+      value: 'reserve_places',
+      label: 'Reserveer plaatsen'
+    };
+
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
 
     scope.toggleBookingType(contactInfos[0]);
@@ -492,6 +498,12 @@ describe('Controller: event form step 5', function () {
       {type: 'phone', value: '0987654321', booking: true}
     ];
     scope.contactInfoForm = {};
+
+    scope.bookingModel.urlLabel['nl'] = {
+      value: 'reserve_places',
+      label: 'Reserveer plaatsen'
+    };
+
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
 
     scope.toggleBookingType(contactInfos[0]);
@@ -509,6 +521,12 @@ describe('Controller: event form step 5', function () {
       {type: 'email', value: 'dude@sweet.com', booking: true}
     ];
     scope.contactInfoForm = {};
+
+    scope.bookingModel.urlLabel['nl'] = {
+      value: 'reserve_places',
+      label: 'Reserveer plaatsen'
+    };
+
     eventCrud.updateBookingInfo.and.returnValue($q.resolve());
 
     scope.toggleBookingType(contactInfos[0]);
@@ -633,11 +651,14 @@ describe('Controller: event form step 5', function () {
   });
 
   it('should fail in saving the booking info', function () {
-    scope.bookingModel = {
-      url: 'http://google.be',
-      phone: '1234567890',
-      email: 'info@mail.com'
+    scope.mainLanguage = 'nl';
+    scope.bookingModel.url = 'http://google.be';
+    scope.bookingModel.urlLabel['nl'] = {
+      value: 'reserve_places',
+      label: 'Reserveer plaatsen'
     };
+    scope.bookingModel.phone = '1234567890';
+    scope.bookingModel.email = 'info@mail.com';
 
     eventCrud.updateBookingInfo.and.returnValue($q.reject());
 
