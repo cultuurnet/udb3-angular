@@ -162,6 +162,7 @@ describe('Controller: event form step 5', function () {
 
   it('should promise a list of organizers and show a loading state while waiting for it', function (done) {
     var organizer = new UdbOrganizer();
+    organizer.labels = ['foo'];
     udbOrganizers.suggestOrganizers.and.returnValue($q.resolve([organizer]));
 
     function assertOrganizers (organizers) {

@@ -265,7 +265,7 @@ function EventFormStep5Controller(
       if (appConfig.offerEditor.excludeOrganizerLabel && appConfig.offerEditor.excludeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
           if (organizer.labels) {
-            return !organizer.labels.includes(appConfig.offerEditor.excludeOrganizerLabel);
+            return organizer.labels.indexOf(appConfig.offerEditor.excludeOrganizerLabel) !== -1;
           } else {
             return true;
           }
@@ -274,7 +274,7 @@ function EventFormStep5Controller(
       if (appConfig.offerEditor.includeOrganizerLabel && appConfig.offerEditor.includeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
           if (organizer.labels) {
-            return organizer.labels.includes(appConfig.offerEditor.includeOrganizerLabel);
+            return organizer.labels.indexOf(appConfig.offerEditor.includeOrganizerLabel) >= 0;
           } else {
             return false;
           }
