@@ -16049,12 +16049,20 @@ function EventFormStep5Controller(
       var suitableOrganizers = organizers;
       if (appConfig.offerEditor.excludeOrganizerLabel && appConfig.offerEditor.excludeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
-          return !organizer.labels.includes(appConfig.offerEditor.excludeOrganizerLabel);
+          if(organizer.labels) {
+            return !organizer.labels.includes(appConfig.offerEditor.excludeOrganizerLabel);
+          } else {
+            return true;
+          }
         });
       }
       if (appConfig.offerEditor.includeOrganizerLabel && appConfig.offerEditor.includeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
-          return organizer.labels.includes(appConfig.offerEditor.includeOrganizerLabel);
+          if(organizer.labels) {
+            return organizer.labels.includes(appConfig.offerEditor.includeOrganizerLabel);
+          } else {
+            return false;
+          }
         });
       }
       $scope.emptyOrganizerAutocomplete = suitableOrganizers.length <= 0;
