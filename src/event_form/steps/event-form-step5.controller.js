@@ -264,7 +264,7 @@ function EventFormStep5Controller(
       var suitableOrganizers = organizers;
       if (appConfig.offerEditor.excludeOrganizerLabel && appConfig.offerEditor.excludeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
-          if(organizer.labels) {
+          if (organizer.labels) {
             return !organizer.labels.includes(appConfig.offerEditor.excludeOrganizerLabel);
           } else {
             return true;
@@ -273,7 +273,7 @@ function EventFormStep5Controller(
       }
       if (appConfig.offerEditor.includeOrganizerLabel && appConfig.offerEditor.includeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
-          if(organizer.labels) {
+          if (organizer.labels) {
             return organizer.labels.includes(appConfig.offerEditor.includeOrganizerLabel);
           } else {
             return false;
