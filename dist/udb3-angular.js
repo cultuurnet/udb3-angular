@@ -16046,10 +16046,21 @@ function EventFormStep5Controller(
    */
   function getOrganizers(value) {
     function suggestExistingOrNewOrganiser (organizers) {
-      $scope.emptyOrganizerAutocomplete = organizers.length <= 0;
+      var suitableOrganizers = organizers;
+      if (appConfig.offerEditor.excludeOrganizerLabel && appConfig.offerEditor.excludeOrganizerLabel !== '') {
+        suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
+          return !organizer.labels.includes(appConfig.offerEditor.excludeOrganizerLabel);
+        });
+      }
+      if (appConfig.offerEditor.includeOrganizerLabel && appConfig.offerEditor.includeOrganizerLabel !== '') {
+        suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
+          return organizer.labels.includes(appConfig.offerEditor.includeOrganizerLabel);
+        });
+      }
+      $scope.emptyOrganizerAutocomplete = suitableOrganizers.length <= 0;
       $scope.loadingOrganizers = false;
 
-      return organizers;
+      return suitableOrganizers;
     }
 
     $scope.loadingOrganizers = true;
