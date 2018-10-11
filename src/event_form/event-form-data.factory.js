@@ -318,6 +318,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.calendar.calendarType = '';
       this.calendar.activeCalendarLabel = '';
       this.calendar.activeCalendarType = '';
+      this.calendar.startDate = '';
+      this.calendar.endDate = '';
     },
 
     /**
@@ -329,7 +331,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         firstStartDate = _.first(this.calendar.timeSpans).start;
       }
 
-      if (eventFormData.calendar.calendarType === 'periodic') {
+      if (this.calendar.calendarType === 'periodic') {
         firstStartDate = this.calendar.startDate;
       }
       return firstStartDate;
@@ -344,7 +346,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         lastEndDate = _.last(this.calendar.timeSpans).end;
       }
 
-      if (eventFormData.calendar.calendarType === 'periodic') {
+      if (this.calendar.calendarType === 'periodic') {
         lastEndDate = this.calendar.endDate;
       }
       return lastEndDate;
@@ -538,6 +540,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         } else {
           formData.addTimeSpan(moment().startOf('day'), moment().endOf('day'));
         }
+        formData.saveTimeSpans(formData.calendar.timeSpans);
       }
 
       if (formData.calendar.calendarType === 'permanent') {
