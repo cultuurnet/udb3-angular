@@ -6,7 +6,11 @@ describe('Controller: event form step 5', function () {
 
   var $controller, stepController, scope, rootScope, EventFormData, udbOrganizers, UdbOrganizer, $q, eventCrud, uibModal, udbUitpasApi;
   var appConfig = {
-    uitpasUrl: 'http://foo.bar/'
+    uitpasUrl: 'http://foo.bar/',
+    offerEditor: {
+      'excludeOrganizerLabel': '',
+      'includeOrganizerLabel': 'foo'
+    }
   };
 
   beforeEach(inject(function ($rootScope, $injector) {
@@ -158,6 +162,7 @@ describe('Controller: event form step 5', function () {
 
   it('should promise a list of organizers and show a loading state while waiting for it', function (done) {
     var organizer = new UdbOrganizer();
+    organizer.labels = ['foo'];
     udbOrganizers.suggestOrganizers.and.returnValue($q.resolve([organizer]));
 
     function assertOrganizers (organizers) {
