@@ -6116,12 +6116,14 @@ function UdbApi(
       .then(returnUnwrappedData, returnApiProblem);
   };
 
-  this.getCalendarSummary = function(offerUrl, format) {
+  this.getCalendarSummary = function(offerId, format, language) {
     var plainConfig = _.cloneDeep(defaultApiConfig);
+    var offerUrl = appConfig.baseUrl + 'events/' + offerId;
+    var langCode = language + '_BE';
     plainConfig.headers.Accept = 'text/html';
 
     return $http
-      .get(offerUrl + '/calendar-summary?format=' + format, plainConfig)
+      .get(offerUrl + '/calsum?format=' + format + '&langCode=' + langCode, plainConfig)
       .then(returnUnwrappedData);
   };
 
@@ -10377,7 +10379,7 @@ function EventDetail(
       showCalendarSummary('Altijd open');
     } else {
       udbApi
-        .getCalendarSummary($scope.eventId, 'lg')
+        .getCalendarSummary(event.id, 'lg', $scope.language)
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
 

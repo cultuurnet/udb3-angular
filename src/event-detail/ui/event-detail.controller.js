@@ -144,7 +144,7 @@ function EventDetail(
       showCalendarSummary('Altijd open');
     } else {
       udbApi
-        .getCalendarSummary($scope.eventId, 'lg')
+        .getCalendarSummary(event.id, 'lg', $scope.language)
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
 
