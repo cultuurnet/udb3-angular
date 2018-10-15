@@ -272,7 +272,7 @@ describe('Service: UDB3 Api', function () {
       'publisher': 'Invoerders Algemeen',
       'calendarType': 'single'
     };
-    var offerSummary = 'http://foobar/event/0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var offerSummary = 'http://foo.bar/events/0823f57e-a6bd-450a-b4f5-8459b4b11043';
     var responseSummary = 'test';
     $httpBackend
       .expectGET(offerLocation)
@@ -282,10 +282,10 @@ describe('Service: UDB3 Api', function () {
       .then(done);
 
     $httpBackend
-      .expectGET(offerSummary + '/calendar-summary?format=lg')
+      .expectGET(offerSummary + '/calsum?format=lg&langCode=nl_BE')
       .respond(JSON.stringify(responseSummary));
     service
-      .getCalendarSummary(offerSummary, 'lg')
+      .getCalendarSummary('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'lg', 'nl')
       .then(done);
     $httpBackend.flush();
   });
