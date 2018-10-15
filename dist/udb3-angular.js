@@ -4609,6 +4609,7 @@ angular.module('udb.core')
       'Tentoonstelling': 'Exposition',
       'Markt of braderie': 'Marché ou braderie',
       'Natuurgebied of park': 'Zone naturel ou parc',
+      'Natuur, park of tuin': 'Zone naturel ou parc',
       'Beurs': 'Foire / exposition',
       'Monument': 'Monument',
       'Opendeurdag': 'Journée portes ouvertes',
@@ -4630,7 +4631,7 @@ angular.module('udb.core')
       'Grafiek': 'Art grafique',
       'Installatiekunst': 'Art d\'installation',
       'Schilderkunst': 'Peinture',
-      'Decoratieve kunst': 'Arts décoratives',
+      'Decoratieve kunst': 'Arts Décoratifs',
       'Design': 'Design',
       'Mode': 'Mode',
       'Meerdere kunstvormen': 'Arts multiples',
@@ -10436,7 +10437,7 @@ function EventDetail(
     ];
 
     if (event.location.type) {
-      eventLocation.push(event.location.type.label);
+      eventLocation.push($scope.translateType(event.location.type.label));
     }
 
     if (event.location.address.streetAddress) {

@@ -201,7 +201,7 @@ function EventDetail(
     ];
 
     if (event.location.type) {
-      eventLocation.push(event.location.type.label);
+      eventLocation.push($scope.translateType(event.location.type.label));
     }
 
     if (event.location.address.streetAddress) {
