@@ -2,16 +2,16 @@
 
 /**
  * @ngdoc function
- * @name udbApp.controller:OrganizerEditController
+ * @name udbApp.controller:OrganizerFormController
  * @description
- * # OrganizerEditController
+ * # OrganizerFormController
  */
-/*angular
-  .module('udb.management.organizers')
-  .controller('OrganizerEditController', OrganizerEditController);
+angular
+  .module('udb.organizers')
+  .controller('OrganizerFormController', OrganizerFormController);
 
 /* @ngInject */
-function OrganizerEditController(
+function OrganizerFormController(
     OrganizerManager,
     udbOrganizers,
     $state,
@@ -23,6 +23,7 @@ function OrganizerEditController(
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
 
+  controller.loadingError = false;
   controller.contact = [];
   controller.showWebsiteValidation = false;
   controller.urlError = false;
@@ -50,14 +51,36 @@ function OrganizerEditController(
   var isAddressChanged = false;
   var isContactChanged = false;
 
-  loadOrganizer(organizerId);
+  if (organizerId) {
+    loadOrganizer(organizerId);
+  }
+  else {
+    startCreatingOrganizer();
+  }
+
+  function startCreatingOrganizer() {
+    controller.organizer = {
+      mainLanguage: 'nl',
+      website: 'http://',
+      name : '',
+      address : {
+        streetAddress : '',
+        addressLocality : '',
+        postalCode: '',
+        addressCountry : ''
+      },
+      contact: []
+    };
+  }
 
   function loadOrganizer(organizerId) {
     OrganizerManager.removeOrganizerFromCache(organizerId);
 
     OrganizerManager
       .get(organizerId)
-      .then(showOrganizer);
+      .then(showOrganizer, function () {
+        controller.loadingError = true;
+      });
   }
 
   /**
@@ -92,7 +115,7 @@ function OrganizerEditController(
   function validateWebsite() {
     controller.showWebsiteValidation = true;
 
-    if (!controller.organizerEditForm.website.$valid) {
+    if (!controller.organizerForm.website.$valid) {
       controller.showWebsiteValidation = false;
       controller.urlError = true;
       return;
@@ -126,7 +149,7 @@ function OrganizerEditController(
   }
 
   function validateName() {
-    if (!controller.organizerEditForm.name.$valid) {
+    if (!controller.organizerForm.name.$valid) {
       controller.nameError = true;
     }
     else {
@@ -151,7 +174,7 @@ function OrganizerEditController(
    */
   function validateOrganizer() {
     controller.showValidation = true;
-    if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
+    if (!controller.organizerForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||
         controller.addressError || controller.contactError) {
       controller.hasErrors = true;
@@ -177,7 +200,7 @@ function OrganizerEditController(
       controller.disableSubmit = true;
     }
 
-    if (controller.organizerEditForm.$valid && !controller.organizersWebsiteFound &&
+    if (controller.organizerForm.$valid && !controller.organizersWebsiteFound &&
         !controller.websiteError && !controller.urlError && !controller.nameError &&
         !controller.addressError && !controller.contactError) {
       controller.hasErrors = false;

@@ -1,0 +1,71 @@
+<h1 class="title" ng-bind="ofc.originalName"></h1>
+
+<div ng-show="ofc.loadingError">
+    <i class="fa fa-circle-o-notch fa-spin"></i>
+</div>
+
+    <form name="ofc.organizerForm" class="organizer-edit-form">
+        <div class="row">
+            <div class="col-sm-12 col-md-8">
+                <p class="alert alert-danger" ng-show="ofc.hasErrors">
+                    <span ng-show="ofc.organizersWebsiteFound">Deze URL is al in gebruik door een andere organisatie.<br /></span>
+                    <span ng-show="ofc.websiteError">Er ging iets mis met het controleren van de website.<br /></span>
+                    <span ng-show="ofc.organizerEditForm.website.$error.required || ofc.urlError">Gelieve een website in te vullen.<br /></span>
+                    <span ng-show="ofc.organizerEditForm.name.$error.required">Gelieve een naam in te vullen.<br /></span>
+                    <span ng-show="ofc.addressError">Gelieve een geldig adres in te vullen.<br /></span>
+                    <span ng-show="ofc.contactError">Gelieve alle contactinfo correct in te vullen.<br /></span>
+                    <span ng-show="ofc.saveError">Er ging iets mis tijdens het opslaan.<br /></span>
+                </p>
+
+                <div class="form-group has-feedback"
+                     ng-class="{'has-error' : (ofc.organizersWebsiteFound || ofc.urlError || ofc.organizerEditForm.website.$error.required) && ofc.hasErrors }">
+                    <label>Website</label>
+                    <input type="url"
+                           id="organizer-website"
+                           udb-http-prefix
+                           name="website"
+                           class="form-control"
+                           ng-model-options="{ debounce: 300 }"
+                           ng-model="ofc.organizer.url"
+                           ng-change="ofc.validateWebsite()"
+                           aria-describedby="organizer-website-status"
+                           autocomplete="off"
+                           required>
+                    <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="ofc.showWebsiteValidation" aria-hidden="true"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-md-8">
+                <div class="form-group" ng-class="{'has-error' : ofc.nameError && ofc.hasErrors }">
+                    <label>Naam</label>
+                    <input type="text"
+                           name="name"
+                           class="form-control"
+                           ng-model="ofc.organizer.name"
+                           ng-change="ofc.validateName()"
+                           required>
+                    <p class="help-block">De officiële publieke naam van de organisatie.</p>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <udb-organizer-address address="ofc.organizer.address"
+                           on-update="ofc.validateAddress(error)"></udb-organizer-address>
+    <udb-organizer-contact contact="ofc.contact"
+                           on-update="ofc.validateContact(error)"></udb-organizer-contact>
+
+    <button type="button"
+            class="btn btn-primary organisator-bewerken-bewaren"
+            ng-disabled="ofc.disableSubmit || ofc.contactError"
+            ng-click="ofc.validateOrganizer()">
+        Bewaren
+    </button>
+    <a class="btn btn-default organisator-bewerken-annuleren"
+       ng-click="ofc.cancel()">Annuleren</a>
+
+<div ng-show="ofc.loadingError">
+    <span ng-bind="ofc.loadingError"></span>
+</div>

@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc service
- * @name udb.management.organizers
+ * @name udb.organizers
  * @description
  * # Organizer Manager
  * This service allows you to lookup organizers and perform actions on them.
  */
 angular
-  .module('udb.management.organizers')
+  .module('udb.organizers')
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */

@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name udbApp.controller:EventFormOrganizerAddressController
+ * @name udbApp.controller:OrganizerAddressController
  * @description
- * # EventFormOrganizerAddressController
+ * # OrganizerAddressController
  * Modal for setting the reservation period.
  */
 angular
-    .module('udb.event-form')
+    .module('udb.organizers')
     .component('udbOrganizerAddress', {
       templateUrl: 'templates/organizer-address.html',
       controller: OrganizerAddressComponent,

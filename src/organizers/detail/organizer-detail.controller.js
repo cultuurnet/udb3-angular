@@ -6,8 +6,8 @@
  * @description
  * # OrganizerDetailController
  */
-/*angular
-  .module('udb.management.organizers')
+angular
+  .module('udb.organizers')
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */

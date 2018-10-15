@@ -8,7 +8,7 @@
  * Modal for setting the reservation period.
  */
 angular
-    .module('udb.event-form')
+    .module('udb.organizers')
     .component('udbOrganizerContact', {
       templateUrl: 'templates/organizer-contact.html',
       controller: OrganizerContactComponent,
