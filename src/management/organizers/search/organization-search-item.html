@@ -1,5 +1,5 @@
 <tr class="organization-search-item" ng-class="{'deleted': osic.organizationDeleted}" ng-if="::osic.organization">
-    <td><strong><a ng-bind="::osic.organization.name" ui-sref="management.organizers.detail({id: osic.organization.id})"></a></strong></td>
+    <td><strong><a ng-bind="::osic.organization.name" ui-sref="split.organizerDetail({id: osic.organization.id})"></a></strong></td>
     <td>
         <span ng-bind="::osic.organization.address.streetAddress"></span>
         <br>
@@ -16,7 +16,7 @@
     </td>
     <td class="text-right">
         <div class="pull-right btn-group" uib-dropdown>
-            <a class="btn btn-default" ui-sref="management.organizers.edit({id: osic.organization.id})">Bewerken</a>
+            <a class="btn btn-default" ui-sref="split.organizerEdit({id: osic.organization.id})">Bewerken</a>
             <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
             <ul uib-dropdown-menu role="menu">
                 <li role="menuitem">
