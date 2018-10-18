@@ -43,7 +43,7 @@ function OrganizerFormController(
 
   var oldOrganizer = {};
   var oldContact = [];
-  var isUrlChanged = false;
+  var isWebsiteChanged = false;
   var isNameChanged = false;
   var isAddressChanged = false;
   var isContactChanged = false;
@@ -186,7 +186,7 @@ function OrganizerFormController(
       return;
     }
     if (controller.isNew) {
-      createNewOrganizer()
+      createNewOrganizer();
     }
     else {
       saveOrganizer();
@@ -194,14 +194,14 @@ function OrganizerFormController(
   }
 
   function checkChanges() {
-    isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
+    isWebsiteChanged = !_.isEqual(controller.organizer.website, oldOrganizer.website);
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
-    // Also check if address is empty!
-    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address)
-        && !_.isEmpty(controller.organizer.streetAddress);
+    // Also check if the address isn't empty
+    isAddressChanged = (!_.isEqual(controller.organizer.address, oldOrganizer.address) &&
+        !_.isEmpty(controller.organizer.address.streetAddress));
     isContactChanged = !_.isEqual(controller.contact, oldContact);
 
-    if (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) {
+    if (isWebsiteChanged || isNameChanged || isAddressChanged || isContactChanged) {
       controller.disableSubmit = false;
     }
     else {
@@ -218,8 +218,8 @@ function OrganizerFormController(
   function saveOrganizer() {
     var promises = [];
 
-    if (isUrlChanged) {
-      promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.url));
+    if (isWebsiteChanged) {
+      promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.website));
     }
 
     if (isNameChanged) {
@@ -285,7 +285,7 @@ function OrganizerFormController(
 
   function redirectToDetailPage() {
     OrganizerManager.removeOrganizerFromCache(controller.organizer.id);
-    $state.go('split.organizerDetail', { id: controller.organizer.id }, {reload: true});
+    $state.go('split.organizerDetail', {id: controller.organizer.id}, {reload: true});
   }
 
   function isManageState() {

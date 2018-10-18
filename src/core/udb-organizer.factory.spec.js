@@ -99,7 +99,7 @@ describe('Factory: UDB Organizer', function () {
       },
       'email': 'info@silo.be',
       'phone': '+32 476 838982',
-      'url': 'http://foo.bar',
+      'website': 'http://foo.bar',
       'contactPoint': {
         'email': [
           'info@silo.be'

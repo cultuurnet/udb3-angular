@@ -27,7 +27,7 @@ describe('Component: Organizer Address', function() {
     $provide.constant('appConfig', appConfig);
   }));
 
-  beforeEach(module('udb.event-form'));
+  beforeEach(module('udb.organizers'));
 
   beforeEach(inject(function($rootScope, _$componentController_, $injector) {
     $scope = $rootScope.$new();
@@ -55,6 +55,7 @@ describe('Component: Organizer Address', function() {
 
   it('should initialise the organizer address component', function () {
     component = getComponent();
+    component.$onInit();
     component.selectedCountry.code = 'BE';
     expect(component.selectedCity).toEqual('3000 Leuven');
     expect(component.cities).toEqual(citiesBE);
@@ -62,6 +63,7 @@ describe('Component: Organizer Address', function() {
 
   it('should load a different cities list when country is changed', function () {
     component = getComponent();
+    component.$onInit();
     component.selectedCountry.code = 'NL';
 
     component.onUpdate = function() {
@@ -74,6 +76,7 @@ describe('Component: Organizer Address', function() {
 
   it('should load belgian cities', function () {
     component = getComponent();
+    component.$onInit();
     component.selectedCountry.code = 'BE';
 
     component.onUpdate = function() {
@@ -87,6 +90,7 @@ describe('Component: Organizer Address', function() {
   it('should initialise the component even when the address is empty', function () {
     fakeAddress.addressLocality = '';
     component = getComponent();
+    component.$onInit();
 
     expect(component.selectedCity).toEqual('');
   });
@@ -98,6 +102,7 @@ describe('Component: Organizer Address', function() {
     fakeAddress.streetAddress = '';
 
     component = getComponent();
+    component.$onInit();
     component.requiredAddress = true;
     component.onUpdate = function() {
       sendUpdateMock();
@@ -116,6 +121,7 @@ describe('Component: Organizer Address', function() {
     fakeAddress.streetAddress = '';
 
     component = getComponent();
+    component.$onInit();
     component.organizerAddressForm = organizerAddressForm;
     component.requiredAddress = false;
     component.selectedCity = '2300 Turnhout';
@@ -129,6 +135,7 @@ describe('Component: Organizer Address', function() {
 
     fakeAddress.streetAddress = 'Sluisstraat 79';
     component = getComponent();
+    component.$onInit();
     component.organizerAddressForm = organizerAddressForm;
     component.requiredAddress = false;
     component.selectedCity = '';
@@ -148,6 +155,7 @@ describe('Component: Organizer Address', function() {
     fakeAddress.streetAddress = '';
 
     component = getComponent();
+    component.$onInit();
     component.selectedCountry.code = 'NL';
     component.organizerAddressForm = organizerAddressForm;
     component.requiredAddress = false;
@@ -162,6 +170,7 @@ describe('Component: Organizer Address', function() {
 
     fakeAddress.streetAddress = 'Sluisstraat 79';
     component = getComponent();
+    component.$onInit();
     component.selectedCountry.code = 'NL';
     component.organizerAddressForm = organizerAddressForm;
     component.requiredAddress = false;
@@ -175,6 +184,7 @@ describe('Component: Organizer Address', function() {
     expect(component.cityHasErrors).toBeTruthy();
 
     component = getComponent();
+    component.$onInit();
     component.selectedCountry.code = 'NL';
     component.address.postalCode = '1004AC';
     component.address.streetAddress = '';
@@ -198,6 +208,7 @@ describe('Component: Organizer Address', function() {
       zip: '2300'
     };
     component = getComponent();
+    component.$onInit();
     component.organizerAddressForm = organizerAddressForm;
     component.onUpdate = function() {
       sendUpdateMock();
@@ -213,6 +224,7 @@ describe('Component: Organizer Address', function() {
 
   it('should reset the city selection', function () {
     component = getComponent();
+    component.$onInit();
     component.onUpdate = function() {
       sendUpdateMock();
     };
