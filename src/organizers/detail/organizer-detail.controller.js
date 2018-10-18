@@ -24,14 +24,15 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.labelsError = '';
   controller.deleteOrganization = deleteOrganization;
   controller.isManageState = isManageState;
-
-  loadOrganizer(organizerId);
+  controller.finishedLoading = finishedLoading;
 
   function loadOrganizer(organizerId) {
     OrganizerManager
       .get(organizerId)
       .then(showOrganizer);
   }
+
+  loadOrganizer(organizerId);
 
   /**
    * @param {udbOrganizer} organizer
@@ -134,5 +135,9 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
         }
       }
     );
+  }
+
+  function finishedLoading () {
+    return (controller.organizer && !controller.loadingError);
   }
 }

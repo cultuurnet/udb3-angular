@@ -1,10 +1,10 @@
-<div ng-show="!odc.organizer && !odc.loadingError">
+<div ng-if="!odc.finishedLoading()">
     <i class="fa fa-circle-o-notch fa-spin"></i>
 </div>
 
 <h1 class="title" ng-bind="odc.organizer.name"></h1>
 
-<div class="row" ng-if="odc.organizer">
+<div class="row" ng-if="odc.finishedLoading()">
   <div class="col-sm-3 col-sm-push-9">
     <div class="list-group" ng-if="!odc.organizer.deleted">
       <button class="list-group-item"
