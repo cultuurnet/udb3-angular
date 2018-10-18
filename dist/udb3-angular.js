@@ -308,6 +308,7 @@ angular
   .module('udb.management.organizers', [
     'rx',
     'udb.event-form',
+    'udb.organizers',
     'ngTagsInput'
   ]);
 'use strict';
@@ -325,7 +326,7 @@ angular
     'udb.management.roles',
     'udb.management.users',
     'udb.management.moderation',
-    //'udb.management.organizers'
+    'udb.management.organizers'
   ]);
 
 'use strict';
@@ -18150,9 +18151,7 @@ angular
   .module('udb.management.organizers')
   .controller('OrganizationSearchController', OrganizationSearchController);
 
-/**
- * @inject
- */
+/* @ngInject */
 function OrganizationSearchController(SearchResultGenerator, rx, $scope, OrganizerManager) {
   var controller = this;
 
@@ -30443,7 +30442,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <i ng-show=\"$ctrl.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-5 text-right\">\n" +
-    "        <a class=\"btn btn-primary\" ui-sref=\"management.organizers.search.create\">\n" +
+    "        <a class=\"btn btn-primary\" ui-sref=\"split.organizer\">\n" +
     "            <i class=\"fa fa-plus-circle\"></i> Organisatie toevoegen\n" +
     "        </a>\n" +
     "    </div>\n" +

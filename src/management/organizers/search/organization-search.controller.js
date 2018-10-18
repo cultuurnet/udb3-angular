@@ -10,9 +10,7 @@ angular
   .module('udb.management.organizers')
   .controller('OrganizationSearchController', OrganizationSearchController);
 
-/**
- * @inject
- */
+/* @ngInject */
 function OrganizationSearchController(SearchResultGenerator, rx, $scope, OrganizerManager) {
   var controller = this;
 
