@@ -249,8 +249,9 @@ describe('Controller: Event Detail', function() {
     );
 
     expect(udbApi.getCalendarSummary).toHaveBeenCalledWith(
-        'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc',
-        'lg'
+        '1111be8c-a412-488d-9ecc-8fdf9e52edbc',
+        'lg',
+        'nl'
     );
 
     expect($scope.eventId).toEqual(eventId);

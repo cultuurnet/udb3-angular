@@ -144,7 +144,7 @@ function EventDetail(
       showCalendarSummary('Altijd open');
     } else {
       udbApi
-        .getCalendarSummary($scope.eventId, 'lg')
+        .getCalendarSummary(event.id, 'lg', $scope.language)
         .then(showCalendarSummary, notifyCalendarSummaryIsUnavailable);
     }
 
@@ -201,7 +201,7 @@ function EventDetail(
     ];
 
     if (event.location.type) {
-      eventLocation.push(event.location.type.label);
+      eventLocation.push($scope.translateType(event.location.type.label));
     }
 
     if (event.location.address.streetAddress) {
