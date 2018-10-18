@@ -20837,14 +20837,15 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.labelsError = '';
   controller.deleteOrganization = deleteOrganization;
   controller.isManageState = isManageState;
-
-  loadOrganizer(organizerId);
+  controller.finishedLoading = finishedLoading;
 
   function loadOrganizer(organizerId) {
     OrganizerManager
       .get(organizerId)
       .then(showOrganizer);
   }
+
+  loadOrganizer(organizerId);
 
   /**
    * @param {udbOrganizer} organizer
@@ -20947,6 +20948,10 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
         }
       }
     );
+  }
+
+  function finishedLoading () {
+    return (controller.organizer && !controller.loadingError);
   }
 }
 OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state"];
@@ -21204,7 +21209,9 @@ function OrganizerFormController(
   function checkChanges() {
     isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
-    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
+    // Also check if address is empty!
+    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address)
+        && !_.isEmpty(controller.organizer.streetAddress);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
 
     if (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) {
@@ -21274,15 +21281,14 @@ function OrganizerFormController(
                 .addLabelToOrganizer(jsonResponse.data.organizerId, defaultOrganizerLabel);
           }
           controller.organizer.id = jsonResponse.data.organizerId;
+          redirectToDetailPage();
         }, function() {
           controller.hasErrors = true;
           controller.saveError = true;
-        })
-        .finally(redirectToDetailPage());
+        });
   }
 
   function cancel() {
-    OrganizerManager.removeOrganizerFromCache(organizerId);
     if (isManageState()) {
       $state.go('management.organizers.search', {}, {reload: true});
     } else {
@@ -21291,7 +21297,7 @@ function OrganizerFormController(
   }
 
   function redirectToDetailPage() {
-    OrganizerManager.removeOrganizerFromCache(organizerId);
+    OrganizerManager.removeOrganizerFromCache(controller.organizer.id);
     $state.go('split.organizerDetail', { id: controller.organizer.id }, {reload: true});
   }
 
@@ -31447,13 +31453,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/organizer-detail.html',
-    "<div ng-show=\"!odc.organizer && !odc.loadingError\">\n" +
+    "<div ng-if=\"!odc.finishedLoading()\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
     "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
     "\n" +
-    "<div class=\"row\" ng-if=\"odc.organizer\">\n" +
+    "<div class=\"row\" ng-if=\"odc.finishedLoading()\">\n" +
     "  <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "    <div class=\"list-group\" ng-if=\"!odc.organizer.deleted\">\n" +
     "      <button class=\"list-group-item\"\n" +

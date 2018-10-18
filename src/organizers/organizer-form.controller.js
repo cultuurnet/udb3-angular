@@ -196,7 +196,9 @@ function OrganizerFormController(
   function checkChanges() {
     isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
-    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
+    // Also check if address is empty!
+    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address)
+        && !_.isEmpty(controller.organizer.streetAddress);
     isContactChanged = !_.isEqual(controller.contact, oldContact);
 
     if (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) {
@@ -266,15 +268,14 @@ function OrganizerFormController(
                 .addLabelToOrganizer(jsonResponse.data.organizerId, defaultOrganizerLabel);
           }
           controller.organizer.id = jsonResponse.data.organizerId;
+          redirectToDetailPage();
         }, function() {
           controller.hasErrors = true;
           controller.saveError = true;
-        })
-        .finally(redirectToDetailPage());
+        });
   }
 
   function cancel() {
-    OrganizerManager.removeOrganizerFromCache(organizerId);
     if (isManageState()) {
       $state.go('management.organizers.search', {}, {reload: true});
     } else {
@@ -283,7 +284,7 @@ function OrganizerFormController(
   }
 
   function redirectToDetailPage() {
-    OrganizerManager.removeOrganizerFromCache(organizerId);
+    OrganizerManager.removeOrganizerFromCache(controller.organizer.id);
     $state.go('split.organizerDetail', { id: controller.organizer.id }, {reload: true});
   }
 
