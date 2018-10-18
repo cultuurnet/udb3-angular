@@ -1,15 +1,5 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name udbApp.controller:OrganizerFormController
- * @description
- * # OrganizerFormController
- */
-angular
-  .module('udb.organizers')
-  .controller('OrganizerFormController', OrganizerFormController);
-
 /* @ngInject */
 function OrganizerFormController(
     OrganizerManager,
@@ -21,13 +11,14 @@ function OrganizerFormController(
     $translate,
     eventCrud,
     appConfig
-  ) {
+) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
   var language = $translate.use() || 'nl';
 
   controller.language = language;
+  controller.showAddressComponent = false;
   controller.isNew = true;
   controller.loadingError = false;
   controller.contact = [];
@@ -78,16 +69,20 @@ function OrganizerFormController(
       },
       contact: []
     };
+    controller.showAddressComponent = true;
   }
 
   function loadOrganizer(organizerId) {
     OrganizerManager.removeOrganizerFromCache(organizerId);
 
     OrganizerManager
-      .get(organizerId)
-      .then(showOrganizer, function () {
-        controller.loadingError = true;
-      });
+        .get(organizerId)
+        .then(showOrganizer, function () {
+          controller.loadingError = true;
+        })
+        .finally(function () {
+          controller.showAddressComponent = true;
+        });
   }
 
   /**
@@ -241,11 +236,6 @@ function OrganizerFormController(
 
     $q.all(promises)
         .then(function() {
-          /*if (isManageState) {
-            $state.go('management.organizers.search', {}, {reload: true});
-          } else {
-            $state.go('split.footer.dashboard', {}, {reload: true});
-          }*/
           redirectToDetailPage();
         })
         .catch(function () {
@@ -293,6 +283,7 @@ function OrganizerFormController(
   }
 
   function redirectToDetailPage() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
     $state.go('split.organizerDetail', { id: controller.organizer.id }, {reload: true});
   }
 
@@ -300,3 +291,13 @@ function OrganizerFormController(
     return (stateName.indexOf('manage') !== -1);
   }
 }
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerFormController
+ * @description
+ * # OrganizerFormController
+ */
+angular
+  .module('udb.organizers')
+  .controller('OrganizerFormController', OrganizerFormController);

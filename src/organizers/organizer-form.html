@@ -52,7 +52,8 @@
         </div>
     </form>
 
-    <udb-organizer-address address="ofc.organizer.address"
+    <udb-organizer-address ng-if="ofc.showAddressComponent"
+                           address="ofc.organizer.address"
                            on-update="ofc.validateAddress(error)"></udb-organizer-address>
     <udb-organizer-contact contact="ofc.contact"
                            on-update="ofc.validateContact(error)"></udb-organizer-contact>

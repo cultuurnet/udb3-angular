@@ -4958,7 +4958,7 @@ function UdbApi(
 
   /**
    * @param {URL} offerLocation
-   * @return {UdbPlace|UdbEvent}
+   * @return {UdbPlace|UdbEvent|UdbOrganizer}
    */
   this.getOffer = function(offerLocation) {
     var deferredOffer = $q.defer();
@@ -20501,21 +20501,32 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig, $q) {
   var controller = this;
 
-  controller.availableCountries = appConfig.offerEditor.countries;
-  controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
-  controller.selectedCountry = controller.defaultCountry;
-  controller.address.addressCountry = controller.selectedCountry.code;
+  function init () {
+    controller.availableCountries = appConfig.offerEditor.countries;
+    controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
+    controller.selectedCountry = controller.defaultCountry;
+    if (controller.address.addressCountry !== '') {
+      controller.selectedCountry = {
+        code: controller.address.addressCountry,
+        default: true
+      }
+    }
+    else {
+      controller.selectedCountry = controller.defaultCountry;
+    }
+    controller.address.addressCountry = controller.selectedCountry.code;
 
-  controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
-  controller.selectedCity = '';
-  controller.requiredAddress = false;
+    controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
+    controller.selectedCity = '';
+    controller.requiredAddress = false;
 
-  if (controller.address.addressLocality) {
-    controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
-    controller.requiredAddress = true;
+    if (controller.address.addressLocality) {
+      controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
+      controller.requiredAddress = true;
+    }
   }
 
   controller.streetHasErrors = false;
@@ -20530,6 +20541,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
   controller.changeCountrySelection = changeCountrySelection;
+  controller.$onInit = init;
 
   $scope.$on('organizerAddressSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
@@ -20678,7 +20690,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }
-OrganizerAddressComponent.$inject = ["$scope", "Levenshtein", "citiesBE", "citiesNL", "appConfig"];
+OrganizerAddressComponent.$inject = ["$scope", "Levenshtein", "citiesBE", "citiesNL", "appConfig", "$q"];
 })();
 
 // Source: src/organizers/components/organizer-contact/organizer-contact.component.js
@@ -20997,16 +21009,6 @@ CreateDeleteOrganizerFactory.$inject = ["BaseJob", "JobStates", "$q"];
 (function () {
 'use strict';
 
-/**
- * @ngdoc function
- * @name udbApp.controller:OrganizerFormController
- * @description
- * # OrganizerFormController
- */
-angular
-  .module('udb.organizers')
-  .controller('OrganizerFormController', OrganizerFormController);
-
 /* @ngInject */
 function OrganizerFormController(
     OrganizerManager,
@@ -21018,13 +21020,14 @@ function OrganizerFormController(
     $translate,
     eventCrud,
     appConfig
-  ) {
+) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
   var language = $translate.use() || 'nl';
 
   controller.language = language;
+  controller.showAddressComponent = false;
   controller.isNew = true;
   controller.loadingError = false;
   controller.contact = [];
@@ -21075,16 +21078,20 @@ function OrganizerFormController(
       },
       contact: []
     };
+    controller.showAddressComponent = true;
   }
 
   function loadOrganizer(organizerId) {
     OrganizerManager.removeOrganizerFromCache(organizerId);
 
     OrganizerManager
-      .get(organizerId)
-      .then(showOrganizer, function () {
-        controller.loadingError = true;
-      });
+        .get(organizerId)
+        .then(showOrganizer, function () {
+          controller.loadingError = true;
+        })
+        .finally(function () {
+          controller.showAddressComponent = true;
+        });
   }
 
   /**
@@ -21238,11 +21245,6 @@ function OrganizerFormController(
 
     $q.all(promises)
         .then(function() {
-          /*if (isManageState) {
-            $state.go('management.organizers.search', {}, {reload: true});
-          } else {
-            $state.go('split.footer.dashboard', {}, {reload: true});
-          }*/
           redirectToDetailPage();
         })
         .catch(function () {
@@ -21290,6 +21292,7 @@ function OrganizerFormController(
   }
 
   function redirectToDetailPage() {
+    OrganizerManager.removeOrganizerFromCache(organizerId);
     $state.go('split.organizerDetail', { id: controller.organizer.id }, {reload: true});
   }
 
@@ -21298,6 +21301,16 @@ function OrganizerFormController(
   }
 }
 OrganizerFormController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope", "$translate", "eventCrud", "appConfig"];
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerFormController
+ * @description
+ * # OrganizerFormController
+ */
+angular
+  .module('udb.organizers')
+  .controller('OrganizerFormController', OrganizerFormController);
 })();
 
 // Source: src/organizers/organizer-manager.service.js
@@ -31601,7 +31614,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "    </form>\n" +
     "\n" +
-    "    <udb-organizer-address address=\"ofc.organizer.address\"\n" +
+    "    <udb-organizer-address ng-if=\"ofc.showAddressComponent\"\n" +
+    "                           address=\"ofc.organizer.address\"\n" +
     "                           on-update=\"ofc.validateAddress(error)\"></udb-organizer-address>\n" +
     "    <udb-organizer-contact contact=\"ofc.contact\"\n" +
     "                           on-update=\"ofc.validateContact(error)\"></udb-organizer-contact>\n" +

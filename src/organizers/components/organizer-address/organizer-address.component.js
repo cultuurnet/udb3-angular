@@ -20,21 +20,32 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig, $q) {
   var controller = this;
 
-  controller.availableCountries = appConfig.offerEditor.countries;
-  controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
-  controller.selectedCountry = controller.defaultCountry;
-  controller.address.addressCountry = controller.selectedCountry.code;
+  function init () {
+    controller.availableCountries = appConfig.offerEditor.countries;
+    controller.defaultCountry = _.find(controller.availableCountries, function(country) { return country.default; });
+    controller.selectedCountry = controller.defaultCountry;
+    if (controller.address.addressCountry !== '') {
+      controller.selectedCountry = {
+        code: controller.address.addressCountry,
+        default: true
+      }
+    }
+    else {
+      controller.selectedCountry = controller.defaultCountry;
+    }
+    controller.address.addressCountry = controller.selectedCountry.code;
 
-  controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
-  controller.selectedCity = '';
-  controller.requiredAddress = false;
+    controller.cities = controller.selectedCountry.code === 'BE' ? citiesBE : citiesNL;
+    controller.selectedCity = '';
+    controller.requiredAddress = false;
 
-  if (controller.address.addressLocality) {
-    controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
-    controller.requiredAddress = true;
+    if (controller.address.addressLocality) {
+      controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
+      controller.requiredAddress = true;
+    }
   }
 
   controller.streetHasErrors = false;
@@ -49,6 +60,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
   controller.changeCountrySelection = changeCountrySelection;
+  controller.$onInit = init;
 
   $scope.$on('organizerAddressSubmit', function () {
     controller.organizerAddressForm.$setSubmitted();
