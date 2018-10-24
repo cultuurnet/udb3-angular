@@ -20,6 +20,7 @@ angular
         'udb.export',
         'udb.event-detail',
         'udb.place-detail',
+        'udb.organizers',
         'udb.dashboard',
         'udb.saved-searches',
         'udb.media',

@@ -1,6 +1,6 @@
 <td>
   <strong>
-    <a ng-href="{{ event.detailUrl }}" ng-bind="::event.name"></a>
+    <a ui-sref="split.organizerDetail({ id: event.id })" ng-bind="::event.name"></a>
   </strong>
   <br/>
   <small ng-if="event.address">
@@ -13,7 +13,7 @@
 <td ng-if="!organizerCtrl.fetching">
   <span ng-if="!event.deleted">
     <div class="pull-right">
-      <a class="btn btn-default" ng-href="{{ event.detailUrl + '/edit' }}" translate-once="dashboard.directive.edit"></a>
+      <a class="btn btn-default" ui-sref="split.organizerEdit({ id: event.id })" translate-once="dashboard.directive.edit"></a>
     </div>
   </span>
 </td>

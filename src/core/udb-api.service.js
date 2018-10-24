@@ -194,7 +194,7 @@ function UdbApi(
 
   /**
    * @param {URL} offerLocation
-   * @return {UdbPlace|UdbEvent}
+   * @return {UdbPlace|UdbEvent|UdbOrganizer}
    */
   this.getOffer = function(offerLocation) {
     var deferredOffer = $q.defer();

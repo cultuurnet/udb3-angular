@@ -1,28 +1,26 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name udbApp.controller:OrganizerEditController
- * @description
- * # OrganizerEditController
- */
-angular
-  .module('udb.management.organizers')
-  .controller('OrganizerEditController', OrganizerEditController);
-
 /* @ngInject */
-function OrganizerEditController(
+function OrganizerFormController(
     OrganizerManager,
     udbOrganizers,
     $state,
     $stateParams,
     $q,
-    $scope
-  ) {
+    $scope,
+    $translate,
+    eventCrud,
+    appConfig
+) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
+  var language = $translate.use() || 'nl';
 
+  controller.language = language;
+  controller.showAddressComponent = false;
+  controller.isNew = true;
+  controller.loadingError = false;
   controller.contact = [];
   controller.showWebsiteValidation = false;
   controller.urlError = false;
@@ -45,19 +43,46 @@ function OrganizerEditController(
 
   var oldOrganizer = {};
   var oldContact = [];
-  var isUrlChanged = false;
+  var isWebsiteChanged = false;
   var isNameChanged = false;
   var isAddressChanged = false;
   var isContactChanged = false;
 
-  loadOrganizer(organizerId);
+  if (organizerId) {
+    controller.isNew = false;
+    loadOrganizer(organizerId);
+  }
+  else {
+    startCreatingOrganizer();
+  }
+
+  function startCreatingOrganizer() {
+    controller.organizer = {
+      mainLanguage: language,
+      website: 'http://',
+      name : '',
+      address : {
+        streetAddress : '',
+        addressLocality : '',
+        postalCode: '',
+        addressCountry : ''
+      },
+      contact: []
+    };
+    controller.showAddressComponent = true;
+  }
 
   function loadOrganizer(organizerId) {
     OrganizerManager.removeOrganizerFromCache(organizerId);
 
     OrganizerManager
-      .get(organizerId)
-      .then(showOrganizer);
+        .get(organizerId)
+        .then(showOrganizer, function () {
+          controller.loadingError = true;
+        })
+        .finally(function () {
+          controller.showAddressComponent = true;
+        });
   }
 
   /**
@@ -92,14 +117,14 @@ function OrganizerEditController(
   function validateWebsite() {
     controller.showWebsiteValidation = true;
 
-    if (!controller.organizerEditForm.website.$valid) {
+    if (!controller.organizerForm.website.$valid) {
       controller.showWebsiteValidation = false;
       controller.urlError = true;
       return;
     }
 
     udbOrganizers
-        .findOrganizersWebsite(controller.organizer.url)
+        .findOrganizersWebsite(controller.organizer.website)
         .then(function (data) {
           controller.urlError = false;
           if (data.totalItems > 0) {
@@ -126,7 +151,7 @@ function OrganizerEditController(
   }
 
   function validateName() {
-    if (!controller.organizerEditForm.name.$valid) {
+    if (!controller.organizerForm.name.$valid) {
       controller.nameError = true;
     }
     else {
@@ -151,7 +176,7 @@ function OrganizerEditController(
    */
   function validateOrganizer() {
     controller.showValidation = true;
-    if (!controller.organizerEditForm.$valid || controller.organizersWebsiteFound ||
+    if (!controller.organizerForm.$valid || controller.organizersWebsiteFound ||
         controller.websiteError || controller.urlError || controller.nameError ||
         controller.addressError || controller.contactError) {
       controller.hasErrors = true;
@@ -160,24 +185,30 @@ function OrganizerEditController(
       $scope.$broadcast('organizerContactSubmit');
       return;
     }
-
-    saveOrganizer();
+    if (controller.isNew) {
+      createNewOrganizer();
+    }
+    else {
+      saveOrganizer();
+    }
   }
 
   function checkChanges() {
-    isUrlChanged = !_.isEqual(controller.organizer.url, oldOrganizer.url);
+    isWebsiteChanged = !_.isEqual(controller.organizer.website, oldOrganizer.website);
     isNameChanged = !_.isEqual(controller.organizer.name, oldOrganizer.name);
-    isAddressChanged = !_.isEqual(controller.organizer.address, oldOrganizer.address);
+    // Also check if the address isn't empty
+    isAddressChanged = (!_.isEqual(controller.organizer.address, oldOrganizer.address) &&
+        !_.isEmpty(controller.organizer.address.streetAddress));
     isContactChanged = !_.isEqual(controller.contact, oldContact);
 
-    if (isUrlChanged || isNameChanged || isAddressChanged || isContactChanged) {
+    if (isWebsiteChanged || isNameChanged || isAddressChanged || isContactChanged) {
       controller.disableSubmit = false;
     }
     else {
       controller.disableSubmit = true;
     }
 
-    if (controller.organizerEditForm.$valid && !controller.organizersWebsiteFound &&
+    if (controller.organizerForm.$valid && !controller.organizersWebsiteFound &&
         !controller.websiteError && !controller.urlError && !controller.nameError &&
         !controller.addressError && !controller.contactError) {
       controller.hasErrors = false;
@@ -187,8 +218,8 @@ function OrganizerEditController(
   function saveOrganizer() {
     var promises = [];
 
-    if (isUrlChanged) {
-      promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.url));
+    if (isWebsiteChanged) {
+      promises.push(OrganizerManager.updateOrganizerWebsite(organizerId, controller.organizer.website));
     }
 
     if (isNameChanged) {
@@ -207,11 +238,7 @@ function OrganizerEditController(
 
     $q.all(promises)
         .then(function() {
-          if (isManageState) {
-            $state.go('management.organizers.search', {}, {reload: true});
-          } else {
-            $state.go('split.footer.dashboard', {}, {reload: true});
-          }
+          redirectToDetailPage();
         })
         .catch(function () {
           controller.hasErrors = true;
@@ -219,16 +246,59 @@ function OrganizerEditController(
         });
   }
 
+  function createNewOrganizer() {
+
+    var organizer = _.clone(controller.organizer);
+    // remove the address when it's empty
+    if (
+        !organizer.address.streetAddress &&
+        !organizer.address.addressLocality &&
+        !organizer.address.postalCode
+    ) {
+      delete organizer.address;
+    }
+
+    eventCrud
+        .createOrganizer(organizer)
+        .then(function(jsonResponse) {
+          var defaultOrganizerLabel = _.get(appConfig, 'offerEditor.defaultOrganizerLabel');
+          if (typeof(defaultOrganizerLabel) !== 'undefined' &&
+              defaultOrganizerLabel !== '') {
+            OrganizerManager
+                .addLabelToOrganizer(jsonResponse.data.organizerId, defaultOrganizerLabel);
+          }
+          controller.organizer.id = jsonResponse.data.organizerId;
+          redirectToDetailPage();
+        }, function() {
+          controller.hasErrors = true;
+          controller.saveError = true;
+        });
+  }
+
   function cancel() {
-    OrganizerManager.removeOrganizerFromCache(organizerId);
-    if (isManageState) {
+    if (isManageState()) {
       $state.go('management.organizers.search', {}, {reload: true});
     } else {
       $state.go('split.footer.dashboard', {}, {reload: true});
     }
   }
 
+  function redirectToDetailPage() {
+    OrganizerManager.removeOrganizerFromCache(controller.organizer.id);
+    $state.go('split.organizerDetail', {id: controller.organizer.id}, {reload: true});
+  }
+
   function isManageState() {
     return (stateName.indexOf('manage') !== -1);
   }
 }
+
+/**
+ * @ngdoc function
+ * @name udbApp.controller:OrganizerFormController
+ * @description
+ * # OrganizerFormController
+ */
+angular
+  .module('udb.organizers')
+  .controller('OrganizerFormController', OrganizerFormController);

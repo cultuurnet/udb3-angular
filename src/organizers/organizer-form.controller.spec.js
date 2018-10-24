@@ -1,8 +1,8 @@
 'use strict';
 
-describe('Controller: Organizer Edit', function() {
+describe('Controller: Organizer Form', function() {
   var OrganizerManager, udbOrganizers, $state, $stateParams,
-      $q, $controller, $scope, organizerEditForm, fakeSearchResult;
+      $q, $controller, $scope, organizerForm, fakeSearchResult;
 
   var fakeOrganizer = {
     "name": "STUK",
@@ -26,7 +26,7 @@ describe('Controller: Organizer Edit', function() {
     "creator": "evenementen@stad.diksmuide.be",
     "created": "2015-05-07T12:02:53+00:00",
     "modified": "2015-05-07T12:02:53+00:00",
-    "url": "http://www.stuk.be/",
+    "website": "http://www.stuk.be/",
     "labels": [
       {
         "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
@@ -55,8 +55,7 @@ describe('Controller: Organizer Edit', function() {
   var result = {commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'};
 
   beforeEach(module('ui.router'));
-  beforeEach(module('udb.management'));
-  beforeEach(module('udb.management.organizers'));
+  beforeEach(module('udb.organizers'));
 
   beforeEach(inject(function(_$q_, _$controller_, $rootScope, _$state_) {
     $controller = _$controller_;
@@ -76,7 +75,7 @@ describe('Controller: Organizer Edit', function() {
     spyOn($state, 'go');
     $state.current.name = 'manage.organizers.edit';
     $stateParams = { "id": id };
-    organizerEditForm = {
+    organizerForm = {
       $valid: true,
       website: {
         $valid: true
@@ -110,7 +109,7 @@ describe('Controller: Organizer Edit', function() {
           "creator": "evenementen@stad.diksmuide.be",
           "created": "2015-05-07T12:02:53+00:00",
           "modified": "2015-05-07T12:02:53+00:00",
-          "url": "http://www.stuk.be/",
+          "website": "http://www.stuk.be/",
           "labels": [
             {
               "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
@@ -125,7 +124,7 @@ describe('Controller: Organizer Edit', function() {
 
   function getController() {
     return $controller(
-      'OrganizerEditController', {
+      'OrganizerFormController', {
         OrganizerManager: OrganizerManager,
         udbOrganizers: udbOrganizers,
         $state: $state,
@@ -177,7 +176,7 @@ describe('Controller: Organizer Edit', function() {
   });
 
   it ('shouldn\'t validate the website when the form field isn\'t valid', function () {
-    organizerEditForm = {
+    organizerForm = {
       website: {
         $valid: false
       },
@@ -189,7 +188,7 @@ describe('Controller: Organizer Edit', function() {
     var controller = getController();
     $scope.$digest();
 
-    controller.organizerEditForm = organizerEditForm;
+    controller.organizerForm = organizerForm;
     controller.validateWebsite();
     $scope.$digest();
 
@@ -202,12 +201,12 @@ describe('Controller: Organizer Edit', function() {
     var controller = getController();
     $scope.$digest();
 
-    controller.organizerEditForm = organizerEditForm;
+    controller.organizerForm = organizerForm;
     udbOrganizers.findOrganizersWebsite.and.returnValue($q.resolve(fakeSearchResult));
     controller.validateWebsite();
     $scope.$digest();
 
-    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
+    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.website);
     expect(controller.organizersWebsiteFound).toBeTruthy();
     expect(controller.showWebsiteValidation).toBeFalsy();
     expect(controller.disableSubmit).toBeTruthy();
@@ -219,13 +218,13 @@ describe('Controller: Organizer Edit', function() {
     var controller = getController();
     $scope.$digest();
 
-    controller.organizerEditForm = organizerEditForm;
+    controller.organizerForm = organizerForm;
     fakeSearchResult.totalItems = 0;
     udbOrganizers.findOrganizersWebsite.and.returnValue($q.resolve(fakeSearchResult));
     controller.validateWebsite();
     $scope.$digest();
 
-    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
+    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.website);
     expect(controller.organizersWebsiteFound).toBeFalsy();
     expect(controller.showWebsiteValidation).toBeFalsy();
   });
@@ -237,7 +236,7 @@ describe('Controller: Organizer Edit', function() {
         var controller = getController();
         $scope.$digest();
 
-        controller.organizerEditForm = organizerEditForm;
+        controller.organizerForm = organizerForm;
         fakeSearchResult.totalItems = 1;
         fakeSearchResult.member[0].name = 'STUK';
 
@@ -245,7 +244,7 @@ describe('Controller: Organizer Edit', function() {
         controller.validateWebsite();
         $scope.$digest();
 
-        expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
+        expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.website);
         expect(controller.organizersWebsiteFound).toBeFalsy();
         expect(controller.showWebsiteValidation).toBeFalsy();
         expect(controller.hasErrors).toBeFalsy();
@@ -257,18 +256,18 @@ describe('Controller: Organizer Edit', function() {
     var controller = getController();
     $scope.$digest();
 
-    controller.organizerEditForm = organizerEditForm;
+    controller.organizerForm = organizerForm;
     udbOrganizers.findOrganizersWebsite.and.returnValue($q.reject());
     controller.validateWebsite();
     $scope.$digest();
 
-    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.url);
+    expect(udbOrganizers.findOrganizersWebsite).toHaveBeenCalledWith(fakeOrganizer.website);
     expect(controller.websiteError).toBeTruthy();
     expect(controller.showWebsiteValidation).toBeFalsy();
   });
 
   it ('should validate the name', function () {
-    organizerEditForm = {
+    organizerForm = {
       name: {
         $valid: true
       }
@@ -276,7 +275,7 @@ describe('Controller: Organizer Edit', function() {
 
     getMockUps();
     var controller = getController();
-    controller.organizerEditForm = organizerEditForm;
+    controller.organizerForm = organizerForm;
     $scope.$digest();
 
     controller.validateName();
@@ -285,7 +284,7 @@ describe('Controller: Organizer Edit', function() {
   });
 
   it ('should throw an error when the name is not valid', function() {
-    organizerEditForm = {
+    organizerForm = {
       name: {
         $valid: false
       }
@@ -293,7 +292,7 @@ describe('Controller: Organizer Edit', function() {
 
     getMockUps();
     var controller = getController();
-    controller.organizerEditForm = organizerEditForm;
+    controller.organizerForm = organizerForm;
     $scope.$digest();
 
     controller.validateName();
@@ -305,7 +304,7 @@ describe('Controller: Organizer Edit', function() {
     getMockUps();
     var controller = getController();
     $scope.$digest();
-    controller.organizerEditForm = {
+    controller.organizerForm = {
       $valid: true
     };
     controller.validateAddress(false);
@@ -317,7 +316,7 @@ describe('Controller: Organizer Edit', function() {
     getMockUps();
     var controller = getController();
     $scope.$digest();
-    controller.organizerEditForm = {
+    controller.organizerForm = {
       $valid: true
     };
     controller.validateContact(false);
@@ -326,7 +325,7 @@ describe('Controller: Organizer Edit', function() {
   });
 
   it ('shouldn\'t validate the organizer when the form is invalid', function () {
-    organizerEditForm = {
+    organizerForm = {
       $valid: false
     };
 
@@ -334,15 +333,15 @@ describe('Controller: Organizer Edit', function() {
     var controller = getController();
     $scope.$digest();
 
-    controller.organizerEditForm = organizerEditForm;
-    controller.organizer.url = 'http://asdfasdf.com';
+    controller.organizerForm = organizerForm;
+    controller.organizer.website = 'http://asdfasdf.com';
     controller.validateOrganizer();
 
     expect(OrganizerManager.updateOrganizerWebsite).not.toHaveBeenCalled();
   });
 
   it ('should validate the organizer and save the changes', function () {
-    organizerEditForm = {
+    organizerForm = {
       $valid: true,
       website: {
         $valid: true
@@ -357,9 +356,10 @@ describe('Controller: Organizer Edit', function() {
     var controller = getController();
     $scope.$digest();
 
-    controller.organizerEditForm = organizerEditForm;
+    controller.organizerForm = organizerForm;
 
-    controller.organizer.url = 'http://yahoo.com';
+    controller.organizer.id = 'orgID';
+    controller.organizer.website = 'http://yahoo.com';
     controller.organizer.name = 'Cnet Vlaanderen';
     controller.organizer.address = {
       addressCountry: 'BE',
@@ -401,16 +401,16 @@ describe('Controller: Organizer Edit', function() {
     controller.validateOrganizer();
     $scope.$apply();
 
-    expect(OrganizerManager.updateOrganizerWebsite).toHaveBeenCalledWith(id, controller.organizer.url);
+    expect(OrganizerManager.updateOrganizerWebsite).toHaveBeenCalledWith(id, controller.organizer.website);
     expect(OrganizerManager.updateOrganizerName).toHaveBeenCalledWith(id, controller.organizer.name);
     expect(OrganizerManager.updateOrganizerAddress).toHaveBeenCalledWith(id, controller.organizer.address);
     expect(OrganizerManager.updateOrganizerContact).toHaveBeenCalledWith(id, controller.contact);
     expect(OrganizerManager.removeOrganizerFromCache).toHaveBeenCalledWith(id);
-    expect($state.go).toHaveBeenCalledWith('management.organizers.search', {}, {reload:true});
+    expect($state.go).toHaveBeenCalledWith('split.organizerDetail', {id: 'orgID'}, {reload:true});
   });
 
   it ('should show an error message when saving failed', function () {
-    organizerEditForm = {
+    organizerForm = {
       $valid: true
     };
 
@@ -419,8 +419,8 @@ describe('Controller: Organizer Edit', function() {
     var controller = getController();
     $scope.$digest();
 
-    controller.organizerEditForm = organizerEditForm;
-    controller.organizer.url = 'http://yahoo.com';
+    controller.organizerForm = organizerForm;
+    controller.organizer.website = 'http://yahoo.com';
 
     controller.validateOrganizer();
     $scope.$apply();

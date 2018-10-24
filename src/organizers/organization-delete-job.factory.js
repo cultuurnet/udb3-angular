@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc service
- * @name udbApp.management.organizers.CreateDeleteOrganizerJob
+ * @name udbApp.organizers.CreateDeleteOrganizerJob
  * @description
  * # Oragnizer deletion job
  * This factory creates a job that tracks organizer deletion.
  */
 angular
-  .module('udb.management.organizers')
+  .module('udb.organizers')
   .factory('CreateDeleteOrganizerJob', CreateDeleteOrganizerFactory);
 
 /* @ngInject */

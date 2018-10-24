@@ -10,5 +10,6 @@ angular
   .module('udb.management.organizers', [
     'rx',
     'udb.event-form',
+    'udb.organizers',
     'ngTagsInput'
   ]);
