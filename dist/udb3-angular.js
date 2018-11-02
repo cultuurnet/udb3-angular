@@ -5877,21 +5877,58 @@ function UdbApi(
   };
 
   /**
+   *
    * @param {uuid}    roleId
+   * @param {string}  version
    * @param {string}  constraint
-   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   * @return {Promise.<Object|ApiProblem>} Object containing created constraint.
    */
-  this.updateRoleConstraint = function (roleId, constraint) {
+  this.createRoleConstraint = function (roleId, version, constraint) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
-    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=SetConstraint';
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=addConstraint';
 
-    var updateData = {
-      'constraint': constraint
+    var constraintData = {
+      query: constraint
     };
 
     return $http
-      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, requestOptions)
-      .then(returnUnwrappedData, returnApiProblem);
+        .post(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, constraintData, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {uuid}    roleId
+   * @param {string}  version
+   * @param {string}  constraint
+   * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
+   */
+  this.updateRoleConstraint = function (roleId, version, constraint) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=updateConstraint';
+
+    var updateData = {
+      query: constraint
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, updateData, requestOptions)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {uuid}    roleId
+   * @param {string}  version
+   * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
+   */
+  this.removeRoleConstraint = function (roleId, version) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=removeConstraint';
+
+    return $http
+        .delete(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, requestOptions)
+        .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -18444,7 +18481,8 @@ function RoleFormController(
   };
   editor.errorMessage = false;
   editor.editName = false;
-  editor.editConstraint = false;
+  editor.editConstraintV2 = false;
+  editor.editConstraintV3 = false;
 
   editor.addUser = addUser;
   editor.addLabel = addLabel;
@@ -18453,7 +18491,10 @@ function RoleFormController(
   editor.removeUser = removeUser;
   editor.updatePermission = updatePermission;
   editor.updateName = updateName;
+  editor.createConstraint = createConstraint;
   editor.updateConstraint = updateConstraint;
+  editor.removeConstraint = removeConstraint;
+  editor.constraintExists = constraintExists;
 
   function init() {
     getAllRolePermissions()
@@ -18476,6 +18517,7 @@ function RoleFormController(
       .get(roleId)
       .then(function(role) {
         editor.role = role;
+        editor.originalRole = role;
 
         editor.role.users = [];
         editor.role.labels = [];
@@ -18556,16 +18598,59 @@ function RoleFormController(
     }
   }
 
-  function updateConstraint() {
+  function constraintExists(version) {
+    return _.has(editor.originalRole.constraints, version);
+  }
+
+  function createConstraint(version) {
     editor.saving = true;
     RoleManager
-      .updateRoleConstraint(roleId, editor.role.constraint)
+        .createRoleConstraint(roleId, version, editor.role.constraints[version])
+        .then(function() {
+          if (version === 'v3') {
+            editor.editConstraintV3 = false;
+          }
+          else {
+            editor.editConstraintV2 = false;
+          }
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        })
+  }
+
+  function updateConstraint(version) {
+    editor.saving = true;
+    RoleManager
+      .updateRoleConstraint(roleId, version, editor.role.constraints[version])
       .then(function() {
-        editor.editConstraint = false;
+        if (version === 'v3') {
+          editor.editConstraintV3 = false;
+        }
+        else {
+          editor.editConstraintV2 = false;
+        }
       }, showProblem)
       .finally(function() {
         editor.saving = false;
       });
+  }
+
+  function removeConstraint(version) {
+    editor.saving = true;
+    RoleManager
+        .removeRoleConstraint(roleId, version)
+        .then(function() {
+          if (version === 'v3') {
+            editor.editConstraintV3 = false;
+          }
+          else {
+            editor.editConstraintV2 = false;
+          }
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        });
   }
 
   function updateName() {
@@ -18843,14 +18928,40 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
   };
 
   /**
+   *
    * @param {uuid} roleId
+   * @param {string} version
+   * @param {string} constraint
+   * @returns {Promise}
+   */
+  service.createRoleConstraint = function(roleId, version, constraint) {
+    return udbApi
+        .createRoleConstraint(roleId, version, constraint)
+        .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {string} version
    * @param {string} constraint
    * @return {Promise}
    */
-  service.updateRoleConstraint = function(roleId, constraint) {
+  service.updateRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-      .updateRoleConstraint(roleId, constraint)
-      .then(logRoleJob);
+        .updateRoleConstraint(roleId, version, constraint)
+        .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {string} version
+   * @param {string} constraint
+   * @return {Promise}
+   */
+  service.removeRoleConstraint = function(roleId, version) {
+    return udbApi
+        .removeRoleConstraint(roleId, version)
+        .then(logRoleJob);
   };
 
   /**
@@ -30580,28 +30691,72 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"row\" ng-show=\"editor.role['uuid']\">\n" +
     "        <div class=\"col-md-12\">\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraint\">\n" +
-    "              <label class=\"control-label\">Bewerkrecht</label>\n" +
-    "              <p><span ng-bind=\"editor.role.constraint\"></span>\n" +
-    "              <a href ng-click=\"editor.editConstraint = true\">Wijzigen</a></p>\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraintV2\">\n" +
+    "              <label class=\"control-label\">Bewerkrecht v2</label>\n" +
+    "              <p><span ng-bind=\"editor.role.constraints.v2\"></span>\n" +
+    "              <a href ng-click=\"editor.editConstraintV2 = true\">Wijzigen</a>\n" +
+    "              <a href ng-click=\"editor.removeConstraint('v2')\" ng-if=\"editor.constraintExists('v2')\">Verwijderen</a></p>\n" +
     "            </div>\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"editor.editConstraint\">\n" +
-    "                <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht</label>\n" +
-    "                <input id=\"label-name-field\"\n" +
-    "                       class=\"form-control\"\n" +
-    "                       name=\"constraint\"\n" +
-    "                       type=\"text\"\n" +
-    "                       ng-maxlength=\"255\"\n" +
-    "                       ng-model=\"editor.role.constraint\"\n" +
-    "                       ng-disabled=\"editor.saving\">\n" +
+    "            <div ng-if=\"editor.editConstraintV2\">\n" +
+    "                <div class=\"form-group\" udb-form-group>\n" +
+    "                    <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht v2</label>\n" +
+    "                    <input id=\"constraint-v2-field\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           name=\"constraintv2\"\n" +
+    "                           type=\"text\"\n" +
+    "                           ng-maxlength=\"255\"\n" +
+    "                           ng-model=\"editor.role.constraints.v2\"\n" +
+    "                           ng-disabled=\"editor.saving\">\n" +
+    "                </div>\n" +
+    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "                  type=\"button\"\n" +
+    "                  class=\"btn btn-primary\"\n" +
+    "                  ng-if=\"::editor.constraintExists('v2')\"\n" +
+    "                  ng-click=\"editor.updateConstraint('v2')\">\n" +
+    "                  Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "                </button>\n" +
+    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "                        type=\"button\"\n" +
+    "                        class=\"btn btn-primary\"\n" +
+    "                        ng-if=\"::!editor.constraintExists('v2')\"\n" +
+    "                        ng-click=\"editor.createConstraint('v2')\">\n" +
+    "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "                </button>\n" +
     "            </div>\n" +
-    "            <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "              type=\"button\"\n" +
-    "              class=\"btn btn-primary\"\n" +
-    "              ng-if=\"editor.editConstraint\"\n" +
-    "              ng-click=\"editor.updateConstraint()\">\n" +
-    "              Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "            </button>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-12\">\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraintV3\">\n" +
+    "                <label class=\"control-label\">Bewerkrecht v3</label>\n" +
+    "                <p><span ng-bind=\"editor.role.constraints.v3\"></span>\n" +
+    "                    <a href ng-click=\"editor.editConstraintV3 = true\">Wijzigen</a>\n" +
+    "                    <a href ng-click=\"editor.removeConstraint('v3')\" ng-if=\"editor.constraintExists('v3')\">Verwijderen</a></p>\n" +
+    "            </div>\n" +
+    "            <div ng-if=\"editor.editConstraintV3\">\n" +
+    "                <div class=\"form-group\" udb-form-group>\n" +
+    "                    <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht v3</label>\n" +
+    "                    <input id=\"constraint-v3-field\"\n" +
+    "                           class=\"form-control\"\n" +
+    "                           name=\"constraintv3\"\n" +
+    "                           type=\"text\"\n" +
+    "                           ng-maxlength=\"255\"\n" +
+    "                           ng-model=\"editor.role.constraints.v3\"\n" +
+    "                           ng-disabled=\"editor.saving\">\n" +
+    "                </div>\n" +
+    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "                        type=\"button\"\n" +
+    "                        class=\"btn btn-primary\"\n" +
+    "                        ng-if=\"::editor.constraintExists('v3')\"\n" +
+    "                        ng-click=\"editor.updateConstraint('v3')\">\n" +
+    "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "                </button>\n" +
+    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "                        type=\"button\"\n" +
+    "                        class=\"btn btn-primary\"\n" +
+    "                        ng-if=\"::!editor.constraintExists('v3')\"\n" +
+    "                        ng-click=\"editor.createConstraint('v3')\">\n" +
+    "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "                </button>\n" +
+    "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"row\" ng-show=\"editor.role['uuid']\">\n" +

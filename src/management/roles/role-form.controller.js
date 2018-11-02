@@ -62,7 +62,8 @@ function RoleFormController(
   };
   editor.errorMessage = false;
   editor.editName = false;
-  editor.editConstraint = false;
+  editor.editConstraintV2 = false;
+  editor.editConstraintV3 = false;
 
   editor.addUser = addUser;
   editor.addLabel = addLabel;
@@ -71,7 +72,10 @@ function RoleFormController(
   editor.removeUser = removeUser;
   editor.updatePermission = updatePermission;
   editor.updateName = updateName;
+  editor.createConstraint = createConstraint;
   editor.updateConstraint = updateConstraint;
+  editor.removeConstraint = removeConstraint;
+  editor.constraintExists = constraintExists;
 
   function init() {
     getAllRolePermissions()
@@ -94,6 +98,7 @@ function RoleFormController(
       .get(roleId)
       .then(function(role) {
         editor.role = role;
+        editor.originalRole = role;
 
         editor.role.users = [];
         editor.role.labels = [];
@@ -174,16 +179,59 @@ function RoleFormController(
     }
   }
 
-  function updateConstraint() {
+  function constraintExists(version) {
+    return _.has(editor.originalRole.constraints, version);
+  }
+
+  function createConstraint(version) {
     editor.saving = true;
     RoleManager
-      .updateRoleConstraint(roleId, editor.role.constraint)
+        .createRoleConstraint(roleId, version, editor.role.constraints[version])
+        .then(function() {
+          if (version === 'v3') {
+            editor.editConstraintV3 = false;
+          }
+          else {
+            editor.editConstraintV2 = false;
+          }
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        })
+  }
+
+  function updateConstraint(version) {
+    editor.saving = true;
+    RoleManager
+      .updateRoleConstraint(roleId, version, editor.role.constraints[version])
       .then(function() {
-        editor.editConstraint = false;
+        if (version === 'v3') {
+          editor.editConstraintV3 = false;
+        }
+        else {
+          editor.editConstraintV2 = false;
+        }
       }, showProblem)
       .finally(function() {
         editor.saving = false;
       });
+  }
+
+  function removeConstraint(version) {
+    editor.saving = true;
+    RoleManager
+        .removeRoleConstraint(roleId, version)
+        .then(function() {
+          if (version === 'v3') {
+            editor.editConstraintV3 = false;
+          }
+          else {
+            editor.editConstraintV2 = false;
+          }
+        }, showProblem)
+        .finally(function() {
+          editor.saving = false;
+        });
   }
 
   function updateName() {
