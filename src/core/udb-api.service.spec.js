@@ -617,13 +617,46 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should create the constraint through the api', function (done) {
+    var expectedData = {
+      'query': 'newconstraint'
+    };
+    var expectedHeaders = {
+      'Content-Type': 'application/ld+json;domain-model=addConstraint',
+      'Authorization': 'Bearer bob',
+      'X-Api-Key': 'secret api key',
+      'Accept': 'application/json, text/plain, */*'
+    };
+
+    // in order for the headers to match we also need the getMe()
+    // function to be called so it can set the Authorization headers
+    uitidAuth.getUser.and.returnValue(null);
+    uitidAuth.getToken.and.returnValue('bob');
+    $httpBackend
+        .expectGET(baseUrl + 'user')
+        .respond(JSON.stringify({}));
+
+    service
+        .getMe();
+
+    // What we actually want to check
+    $httpBackend
+        .expectPOST(baseUrl + 'roles/roleid/constraints/v2', expectedData, expectedHeaders)
+        .respond(JSON.stringify({}));
+
+    service
+        .createRoleConstraint('roleid', 'v2', 'newconstraint')
+        .then(done);
+    $httpBackend.flush();
+  });
+
   // updateRoleConstraint
   it('should update the constraint trough the api', function (done) {
     var expectedData = {
-      'constraint': 'newconstraint'
+      'query': 'newconstraint'
     };
     var expectedHeaders = {
-      'Content-Type': 'application/ld+json;domain-model=SetConstraint',
+      'Content-Type': 'application/ld+json;domain-model=updateConstraint',
       'Authorization': 'Bearer bob',
       'X-Api-Key': 'secret api key',
       'Accept': 'application/json, text/plain, */*'
@@ -642,12 +675,42 @@ describe('Service: UDB3 Api', function () {
 
     // What we actually want to check
     $httpBackend
-      .expectPATCH(baseUrl + 'roles/roleid', expectedData, expectedHeaders)
+      .expectPUT(baseUrl + 'roles/roleid/constraints/v2', expectedData, expectedHeaders)
       .respond(JSON.stringify({}));
 
     service
-      .updateRoleConstraint('roleid', 'newconstraint')
+      .updateRoleConstraint('roleid', 'v2', 'newconstraint')
       .then(done);
+    $httpBackend.flush();
+  });
+
+  it('should remove the constraint trough the api', function (done) {
+
+    var expectedHeaders = {
+      'Authorization': 'Bearer bob',
+      'X-Api-Key': 'secret api key',
+      'Accept': 'application/json, text/plain, */*'
+    };
+
+    // in order for the headers to match we also need the getMe()
+    // function to be called so it can set the Authorization headers
+    uitidAuth.getUser.and.returnValue(null);
+    uitidAuth.getToken.and.returnValue('bob');
+    $httpBackend
+        .expectGET(baseUrl + 'user')
+        .respond(JSON.stringify({}));
+
+    service
+        .getMe();
+
+    // What we actually want to check
+    $httpBackend
+        .expectDELETE(baseUrl + 'roles/roleid/constraints/v2', expectedHeaders)
+        .respond(JSON.stringify({}));
+
+    service
+        .removeRoleConstraint('roleid', 'v2')
+        .then(done);
     $httpBackend.flush();
   });
 
@@ -1976,13 +2039,13 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  it('should update the constraint of a given role', function(done) {
+  it('should add the constraint of a given role', function(done) {
     var expectedCommandId = {
       "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
     };
 
     var updateData = {
-      'constraint': 'bazinga!'
+      'query': 'bazinga!'
     };
 
     function assertRole(role) {
@@ -1991,12 +2054,58 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-      .expectPATCH(baseUrl + 'roles/1', updateData)
+        .expectPOST(baseUrl + 'roles/1/constraints/v2', updateData)
+        .respond(JSON.stringify(expectedCommandId));
+
+    service
+        .createRoleConstraint(1, 'v2', 'bazinga!')
+        .then(assertRole);
+
+    $httpBackend.flush();
+  });
+
+  it('should update the constraint of a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    var updateData = {
+      'query': 'bazinga!'
+    };
+
+    function assertRole(role) {
+      expect(role).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+      .expectPUT(baseUrl + 'roles/1/constraints/v2', updateData)
       .respond(JSON.stringify(expectedCommandId));
 
     service
-      .updateRoleConstraint(1, 'bazinga!')
+      .updateRoleConstraint(1, 'v2', 'bazinga!')
       .then(assertRole);
+
+    $httpBackend.flush();
+  });
+
+  it('should remove the constraint of a given role', function(done) {
+    var expectedCommandId = {
+      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    function assertRole(role) {
+      expect(role).toEqual(expectedCommandId);
+      done();
+    }
+
+    $httpBackend
+        .expectDELETE(baseUrl + 'roles/1/constraints/v2')
+        .respond(JSON.stringify(expectedCommandId));
+
+    service
+        .removeRoleConstraint(1, 'v2')
+        .then(assertRole);
 
     $httpBackend.flush();
   });
