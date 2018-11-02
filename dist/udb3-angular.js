@@ -5892,7 +5892,7 @@ function UdbApi(
     };
 
     return $http
-        .post(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, constraintData, defaultApiConfig)
+        .post(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, constraintData, requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -18616,7 +18616,7 @@ function RoleFormController(
         }, showProblem)
         .finally(function() {
           editor.saving = false;
-        })
+        });
   }
 
   function updateConstraint(version) {

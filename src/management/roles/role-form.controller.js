@@ -197,7 +197,7 @@ function RoleFormController(
         }, showProblem)
         .finally(function() {
           editor.saving = false;
-        })
+        });
   }
 
   function updateConstraint(version) {
