@@ -336,12 +336,13 @@ function UdbApi(
   /**
    * @param {string} organizerId
    * @param {Object} address
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerAddress = function(organizerId, address) {
+  this.updateOrganizerAddress = function(organizerId, address, language) {
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address/' + language, address, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 

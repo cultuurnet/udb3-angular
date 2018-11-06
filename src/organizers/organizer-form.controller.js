@@ -227,7 +227,7 @@ function OrganizerFormController(
     }
 
     if (isAddressChanged) {
-      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address));
+      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address, 'nl'));
     }
 
     if (isContactChanged) {

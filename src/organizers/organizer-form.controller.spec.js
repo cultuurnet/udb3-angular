@@ -390,6 +390,8 @@ describe('Controller: Organizer Form', function() {
       }
     ];
 
+    var language = 'nl';
+
     controller.organizersWebsiteFound = false;
     controller.websiteError = false;
     controller.urlError = false;
@@ -403,7 +405,7 @@ describe('Controller: Organizer Form', function() {
 
     expect(OrganizerManager.updateOrganizerWebsite).toHaveBeenCalledWith(id, controller.organizer.website);
     expect(OrganizerManager.updateOrganizerName).toHaveBeenCalledWith(id, controller.organizer.name);
-    expect(OrganizerManager.updateOrganizerAddress).toHaveBeenCalledWith(id, controller.organizer.address);
+    expect(OrganizerManager.updateOrganizerAddress).toHaveBeenCalledWith(id, controller.organizer.address, language);
     expect(OrganizerManager.updateOrganizerContact).toHaveBeenCalledWith(id, controller.contact);
     expect(OrganizerManager.removeOrganizerFromCache).toHaveBeenCalledWith(id);
     expect($state.go).toHaveBeenCalledWith('split.organizerDetail', {id: 'orgID'}, {reload:true});

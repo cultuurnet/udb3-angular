@@ -308,16 +308,18 @@ describe('Service: Organizer manager Service', function () {
       ]
     };
 
+    var language = 'nl';
+
     udbApi.updateOrganizerContact.and.returnValue($q.resolve(expectedCommandId));
 
     function assertOrganizerResult (job) {
-      expect(udbApi.updateOrganizerContact).toHaveBeenCalledWith(organizerId, contactPoint);
+      expect(udbApi.updateOrganizerContact).toHaveBeenCalledWith(organizerId, contactPoint, language);
       expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
     service
-        .updateOrganizerContact(organizerId, contactPoint)
+        .updateOrganizerContact(organizerId, contactPoint, language)
         .then(assertOrganizerResult);
 
     $scope.$apply();
