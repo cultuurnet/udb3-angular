@@ -41,7 +41,7 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   };
 
   ss.deleteSavedSearch = function (searchId) {
-    return udbApi.deleteSavedSearch(searchId).then(function () {
+    return udbApi.deleteSavedSearch(sapiVersion, searchId).then(function () {
       _.remove(savedSearches, {id: searchId});
       savedSearchesChanged();
 

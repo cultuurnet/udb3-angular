@@ -129,9 +129,9 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
-  this.deleteSavedSearch = function (searchId) {
+  this.deleteSavedSearch = function (sapiVersion, searchId) {
     return $http
-      .delete(appConfig.baseUrl + 'saved-searches/' + searchId, defaultApiConfig)
+      .delete(appConfig.baseUrl + 'saved-searches/' + sapiVersion + '/' + searchId, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
