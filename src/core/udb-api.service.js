@@ -112,8 +112,9 @@ function UdbApi(
     }
   };
 
-  this.createSavedSearch = function (name, queryString) {
+  this.createSavedSearch = function (sapiVersion, name, queryString) {
     var post = {
+      sapiVersion: sapiVersion,
       name: name,
       query: queryString
     };

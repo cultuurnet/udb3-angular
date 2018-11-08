@@ -4877,8 +4877,9 @@ function UdbApi(
     }
   };
 
-  this.createSavedSearch = function (name, queryString) {
+  this.createSavedSearch = function (sapiVersion, name, queryString) {
     var post = {
+      sapiVersion: sapiVersion,
       name: name,
       query: queryString
     };
@@ -22119,7 +22120,7 @@ angular
   .service('savedSearchesService', SavedSearchesService);
 
 /* @ngInject */
-function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
+function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi) {
   var apiUrl = appConfig.baseUrl;
   var defaultApiConfig = {
     withCredentials: true,
@@ -22129,10 +22130,11 @@ function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
   };
   var savedSearches = [];
   var ss = this;
+  var sapiVersion = getSapiVersion();
 
   ss.createSavedSearch = function(name, query) {
-    return udbApi.createSavedSearch(name, query).then(function () {
-      savedSearches.push({'name': name, 'query': query});
+    return udbApi.createSavedSearch(sapiVersion, name, query).then(function () {
+      savedSearches.push({'sapiVersion': sapiVersion, 'name': name, 'query': query});
       savedSearchesChanged();
 
       return $q.resolve();
@@ -22158,8 +22160,18 @@ function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
   function savedSearchesChanged () {
     $rootScope.$emit('savedSearchesChanged', savedSearches);
   }
+
+  /**
+   * @returns {String}
+   */
+  function getSapiVersion() {
+    var apiVersionCookieKey = 'search-api-version';
+    var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
+
+    return 'v' + ($cookies.get(apiVersionCookieKey) || defaultApiVersion);
+  }
 }
-SavedSearchesService.$inject = ["$q", "$http", "appConfig", "$rootScope", "udbApi"];
+SavedSearchesService.$inject = ["$q", "$http", "$cookies", "appConfig", "$rootScope", "udbApi"];
 
 })();
 

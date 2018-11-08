@@ -44,6 +44,7 @@ describe('Service: savedSearchesService', function() {
 
   it('posts a JSON-encoded title & query to /saved-searches', function() {
     var newSavedSearch = {
+      sapiVersion: 'v2',
       name: 'In Leuven',
       query: 'city:"Leuven"'
     };
@@ -54,7 +55,7 @@ describe('Service: savedSearchesService', function() {
     $rootScope.$digest();
     expect($rootScope.$emit).toHaveBeenCalledWith('savedSearchesChanged', [newSavedSearch]);
 
-    expect(udbApi.createSavedSearch).toHaveBeenCalledWith('In Leuven', 'city:"Leuven"');
+    expect(udbApi.createSavedSearch).toHaveBeenCalledWith('v2', 'In Leuven', 'city:"Leuven"');
   });
 
   it('gets a list of JSON-encoded saved searches', function () {

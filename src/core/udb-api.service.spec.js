@@ -162,12 +162,13 @@ describe('Service: UDB3 Api', function () {
     var response = {};
     $httpBackend
       .expectPOST(baseUrl + 'saved-searches/', {
+        sapiVersion: 'v2',
         name: 'saved-search-name',
         query: 'saved-search-query'
       })
       .respond(JSON.stringify(response));
     service
-      .createSavedSearch('saved-search-name', 'saved-search-query')
+      .createSavedSearch('v2', 'saved-search-name', 'saved-search-query')
       .then(done);
 
     $httpBackend.flush();
