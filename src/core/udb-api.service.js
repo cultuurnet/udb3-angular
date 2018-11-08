@@ -114,12 +114,11 @@ function UdbApi(
 
   this.createSavedSearch = function (sapiVersion, name, queryString) {
     var post = {
-      sapiVersion: sapiVersion,
       name: name,
       query: queryString
     };
     return $http
-      .post(appConfig.baseUrl + 'saved-searches/', post, defaultApiConfig)
+      .post(appConfig.baseUrl + 'saved-searches/' + sapiVersion, post, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 

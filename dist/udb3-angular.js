@@ -4879,12 +4879,11 @@ function UdbApi(
 
   this.createSavedSearch = function (sapiVersion, name, queryString) {
     var post = {
-      sapiVersion: sapiVersion,
       name: name,
       query: queryString
     };
     return $http
-      .post(appConfig.baseUrl + 'saved-searches/', post, defaultApiConfig)
+      .post(appConfig.baseUrl + 'saved-searches/' + sapiVersion, post, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
@@ -22134,7 +22133,7 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
 
   ss.createSavedSearch = function(name, query) {
     return udbApi.createSavedSearch(sapiVersion, name, query).then(function () {
-      savedSearches.push({'sapiVersion': sapiVersion, 'name': name, 'query': query});
+      savedSearches.push({'name': name, 'query': query});
       savedSearchesChanged();
 
       return $q.resolve();

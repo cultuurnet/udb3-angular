@@ -44,7 +44,6 @@ describe('Service: savedSearchesService', function() {
 
   it('posts a JSON-encoded title & query to /saved-searches', function() {
     var newSavedSearch = {
-      sapiVersion: 'v2',
       name: 'In Leuven',
       query: 'city:"Leuven"'
     };
@@ -78,6 +77,6 @@ describe('Service: savedSearchesService', function() {
 
     $rootScope.$digest();
     expect($rootScope.$emit).toHaveBeenCalledWith('savedSearchesChanged', []);
-    expect(udbApi.deleteSavedSearch).toHaveBeenCalledWith(searchId);
+    expect(udbApi.deleteSavedSearch).toHaveBeenCalledWith('v2', searchId);
   });
 });

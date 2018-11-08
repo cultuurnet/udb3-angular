@@ -26,7 +26,7 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
 
   ss.createSavedSearch = function(name, query) {
     return udbApi.createSavedSearch(sapiVersion, name, query).then(function () {
-      savedSearches.push({'sapiVersion': sapiVersion, 'name': name, 'query': query});
+      savedSearches.push({'name': name, 'query': query});
       savedSearchesChanged();
 
       return $q.resolve();
