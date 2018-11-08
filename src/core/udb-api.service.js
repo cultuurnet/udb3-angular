@@ -122,9 +122,9 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
-  this.getSavedSearches = function () {
+  this.getSavedSearches = function (sapiVersion) {
     return $http
-      .get(appConfig.baseUrl + 'saved-searches/', defaultApiConfig)
+      .get(appConfig.baseUrl + 'saved-searches/' + sapiVersion, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 

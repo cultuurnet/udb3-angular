@@ -177,10 +177,10 @@ describe('Service: UDB3 Api', function () {
   it('should get saved searches from the api', function (done) {
     var response = {};
     $httpBackend
-      .expectGET(baseUrl + 'saved-searches/')
+      .expectGET(baseUrl + 'saved-searches/v2')
       .respond(JSON.stringify(response));
     service
-      .getSavedSearches()
+      .getSavedSearches('v2')
       .then(done);
 
     $httpBackend.flush();

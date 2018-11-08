@@ -4887,9 +4887,9 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
-  this.getSavedSearches = function () {
+  this.getSavedSearches = function (sapiVersion) {
     return $http
-      .get(appConfig.baseUrl + 'saved-searches/', defaultApiConfig)
+      .get(appConfig.baseUrl + 'saved-searches/' + sapiVersion, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
@@ -22141,7 +22141,7 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   };
 
   ss.getSavedSearches = function () {
-    return udbApi.getSavedSearches().then(function (data) {
+    return udbApi.getSavedSearches(sapiVersion).then(function (data) {
       savedSearches = data;
       return $q.resolve(data);
     });

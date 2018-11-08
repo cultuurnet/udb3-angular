@@ -34,7 +34,7 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   };
 
   ss.getSavedSearches = function () {
-    return udbApi.getSavedSearches().then(function (data) {
+    return udbApi.getSavedSearches(sapiVersion).then(function (data) {
       savedSearches = data;
       return $q.resolve(data);
     });
