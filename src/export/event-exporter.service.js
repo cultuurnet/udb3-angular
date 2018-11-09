@@ -12,7 +12,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
+function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies) {
 
   var ex = this; // jshint ignore:line
 
@@ -41,7 +41,16 @@ function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
         details = null,
         user = $cookies.getObject('user');
 
-    var jobPromise = udbApi.exportEvents(queryString, email, format, properties, perDay, selection, customizations);
+    var jobPromise = udbApi.exportEvents(
+        getSapiVersion(),
+        queryString,
+        email,
+        format,
+        properties,
+        perDay,
+        selection,
+        customizations
+    );
     details = {
         format : format,
         user : user.id,
@@ -57,4 +66,13 @@ function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
 
     return jobPromise;
   };
+
+  /**
+   * @returns {String}
+   */
+  function getSapiVersion() {
+    var apiVersionCookieKey = 'search-api-version';
+    var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
+    return 'v' + ($cookies.get(apiVersionCookieKey) || defaultApiVersion);
+  }
 }

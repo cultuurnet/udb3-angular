@@ -5243,7 +5243,7 @@ function UdbApi(
   };
 
   /**
-   *
+   * @param {string} sapiVersion
    * @param {string} query
    * @param {string} [email]
    * @param {string} format
@@ -5253,9 +5253,10 @@ function UdbApi(
    * @param {Object} [customizations]
    * @return {*}
    */
-  this.exportEvents = function (query, email, format, properties, perDay, selection, customizations) {
+  this.exportEvents = function (sapiVersion, query, email, format, properties, perDay, selection, customizations) {
 
     var exportData = {
+      sapiVersion: sapiVersion,
       query: query,
       selection: _.map(selection, function (url) {
         return url.toString();
@@ -16558,7 +16559,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
+function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies) {
 
   var ex = this; // jshint ignore:line
 
@@ -16587,7 +16588,16 @@ function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
         details = null,
         user = $cookies.getObject('user');
 
-    var jobPromise = udbApi.exportEvents(queryString, email, format, properties, perDay, selection, customizations);
+    var jobPromise = udbApi.exportEvents(
+        getSapiVersion(),
+        queryString,
+        email,
+        format,
+        properties,
+        perDay,
+        selection,
+        customizations
+    );
     details = {
         format : format,
         user : user.id,
@@ -16603,8 +16613,17 @@ function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
 
     return jobPromise;
   };
+
+  /**
+   * @returns {String}
+   */
+  function getSapiVersion() {
+    var apiVersionCookieKey = 'search-api-version';
+    var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
+    return 'v' + ($cookies.get(apiVersionCookieKey) || defaultApiVersion);
+  }
 }
-eventExporter.$inject = ["jobLogger", "udbApi", "EventExportJob", "$cookies"];
+eventExporter.$inject = ["jobLogger", "appConfig", "udbApi", "EventExportJob", "$cookies"];
 })();
 
 // Source: src/export/export-formats.constant.js
