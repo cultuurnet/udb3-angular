@@ -265,7 +265,7 @@ function EventFormStep5Controller(
       if (appConfig.offerEditor.excludeOrganizerLabel && appConfig.offerEditor.excludeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
           if (organizer.labels && organizer.labels.length > 0) {
-            return organizer.labels.indexOf(appConfig.offerEditor.excludeOrganizerLabel) !== -1;
+            return organizer.labels.indexOf(appConfig.offerEditor.excludeOrganizerLabel) < 0;
           } else {
             return true;
           }
