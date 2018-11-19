@@ -14088,6 +14088,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
           formData.addTimeSpan(moment().startOf('day'), moment().endOf('day'));
         }
         formData.saveTimeSpans(formData.calendar.timeSpans);
+        formData.timingChanged();
       }
 
       if (formData.calendar.calendarType === 'permanent') {
@@ -14210,7 +14211,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.calendar.timeSpans = timeSpans;
       this.calendar.startDate = this.getFirstStartDate();
       this.calendar.endDate = this.getLastEndDate();
-      this.timingChanged();
     },
 
     periodicTimingChanged: function () {
