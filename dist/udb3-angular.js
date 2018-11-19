@@ -15584,6 +15584,13 @@ function EventFormStep5Controller(
         {label: EventFormData.bookingInfo.urlLabel}
     );
 
+    // Quick fix for III-2791
+    if ($scope.usedBookingOption === undefined) {
+      $scope.usedBookingOption = _.findWhere($scope.bookingOptions[$scope.mainLanguage],
+          {value: 'reserve_places'}
+      );
+    }
+
     if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
       _.each($scope.translatableLanguages, function (language) {
         $scope.bookingModel.urlLabel[language] = _.findWhere($scope.bookingOptions[language],
