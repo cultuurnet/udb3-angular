@@ -11037,6 +11037,10 @@ function BaseCalendarController(calendar, $scope) {
     if (calendarType === 'single' && _.isEmpty(calendar.timeSpans)) {
       initTimeSpans();
     }
+
+    if (calendarType === 'single' || calendarType === 'multiple') {
+      timeSpanChanged();
+    }
   }
 
   function initTimeSpans() {
