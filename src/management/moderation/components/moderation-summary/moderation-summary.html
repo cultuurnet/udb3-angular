@@ -18,7 +18,9 @@
                 <udb-calendar-summary offer="::moc.offer" show-opening-hours="true"></udb-calendar-summary>
             </p>
 
-            <div class="content" ng-bind-html="moc.offer.description"></div>
+            <div class="content"
+                 ng-show="moc.showDescription"
+                 ng-bind-html="moc.offer.description"></div>
 
             <a ng-href="{{ ::moc.offer.url  + '/preview' }}">
                 Alle info bekijken
