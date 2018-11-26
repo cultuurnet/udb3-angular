@@ -5086,27 +5086,29 @@ function UdbApi(
   /**
    * @param {string} organizerId
    * @param {string} name
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerName = function(organizerId, name) {
+  this.updateOrganizerName = function(organizerId, name, language) {
     var params = {
       name: name
     };
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language, params, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
    * @param {string} organizerId
    * @param {Object} address
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerAddress = function(organizerId, address) {
+  this.updateOrganizerAddress = function(organizerId, address, language) {
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address/' + language, address, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -21238,11 +21240,11 @@ function OrganizerFormController(
     }
 
     if (isNameChanged) {
-      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name));
+      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name, language));
     }
 
     if (isAddressChanged) {
-      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address));
+      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address, language));
     }
 
     if (isContactChanged) {
@@ -21435,12 +21437,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update the name of a specific organizer.
    * @param {string} organizerId
    * @param {string} name
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerName = function(organizerId, name) {
+  service.updateOrganizerName = function(organizerId, name, language) {
     return udbApi
-        .updateOrganizerName(organizerId, name)
+        .updateOrganizerName(organizerId, name, language)
         .then(logUpdateOrganizerJob);
   };
 
@@ -21448,12 +21451,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update the address of a specific organizer.
    * @param {string} organizerId
    * @param {Object} address
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerAddress = function(organizerId, address) {
+  service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
-        .updateOrganizerAddress(organizerId, address)
+        .updateOrganizerAddress(organizerId, address, language)
         .then(logUpdateOrganizerJob);
   };
 

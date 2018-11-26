@@ -321,27 +321,29 @@ function UdbApi(
   /**
    * @param {string} organizerId
    * @param {string} name
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerName = function(organizerId, name) {
+  this.updateOrganizerName = function(organizerId, name, language) {
     var params = {
       name: name
     };
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language, params, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
    * @param {string} organizerId
    * @param {Object} address
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerAddress = function(organizerId, address) {
+  this.updateOrganizerAddress = function(organizerId, address, language) {
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address/' + language, address, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
