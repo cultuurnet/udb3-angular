@@ -3459,7 +3459,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Afbeelding info bewerken',
-        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking. (max. 250 karakters)',
         'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
         'update': 'Bijwerken'
       },
@@ -4497,7 +4497,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Modifier l\'information de l\'image',
-        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants.',
+        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants. (max. 250 caractères)',
         'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'image.',
         'update': 'actualiser'
       },
@@ -11414,7 +11414,8 @@ function EventFormImageEditController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyrightHolder && $scope.copyrightHolder.length >= 3;
+    return $scope.description && $scope.copyrightHolder &&
+        $scope.description.length <= 250 && $scope.copyrightHolder.length >= 3;
   }
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
@@ -11619,7 +11620,8 @@ function EventFormImageUploadController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyright && $scope.selectedFile && $scope.description.length<=250 && $scope.copyright.length >= 3;
+    return $scope.description && $scope.copyright && $scope.selectedFile &&
+        $scope.description.length <= 250 && $scope.copyright.length >= 3;
   }
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
@@ -28135,7 +28137,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <div>\n" +
-    "      <div class=\"form-group\">\n" +
+    "      <div class=\"form-group\" ng-class=\"{ 'has-error': description.length > 250 }\">\n" +
     "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "        <p class=\"help-block\" translate-once=\"images.edit.description_help\"></p>\n" +

@@ -777,7 +777,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Afbeelding info bewerken',
-        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking. (max. 250 karakters)',
         'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
         'update': 'Bijwerken'
       },

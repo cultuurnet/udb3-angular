@@ -767,7 +767,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Modifier l\'information de l\'image',
-        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants.',
+        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants. (max. 250 caractères)',
         'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'image.',
         'update': 'actualiser'
       },
