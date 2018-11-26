@@ -3446,6 +3446,7 @@ angular.module('udb.core')
       'conditions': 'algemene voorwaarden',
       'copyright_info': 'Meer informatie over copyright',
       'description': 'Beschrijving',
+      'description_help': 'max. 250 karakters.',
       'copyright': 'Copyright',
       'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
       'cancel': 'Annuleren',
@@ -4483,6 +4484,7 @@ angular.module('udb.core')
       'conditions': 'conditions générales',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
+      'description_help': 'max. 250 caractères.',
       'copyright': 'Copyright',
       'copyright_help': 'Mentionnez le nom de photographe légitime. Introduisez seulement le nom de votre propre association ou organisation si vous êtes propriétaire vous-même des droits (au moins 3 caractères).',
       'cancel': 'Annuler',
@@ -11617,7 +11619,7 @@ function EventFormImageUploadController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyright && $scope.selectedFile && $scope.copyright.length >= 3;
+    return $scope.description && $scope.copyright && $scope.selectedFile && $scope.description.length<=250 && $scope.copyright.length >= 3;
   }
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
@@ -28230,9 +28232,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <p class=\"help-block\" translate-once=\"images.upload.max_filesize\" translate-values=\"{ maxFileSize: '{{maxFileSize}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
+    "      <div class=\"form-group\" ng-class=\"{ 'has-error': description.length > 250 }\">\n" +
     "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.description_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
