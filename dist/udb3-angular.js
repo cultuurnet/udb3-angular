@@ -14950,6 +14950,9 @@ function EventFormStep3Controller(
     var location = EventFormData.getLocation();
     location.id = '';
     location.name = '';
+    var city = {};
+    city.zip = location.address.postalCode;
+    city.name = location.address.addressLocality;
     EventFormData.setLocation(location);
 
     $scope.selectedLocation = false;
@@ -14957,6 +14960,7 @@ function EventFormStep3Controller(
     $scope.locationsSearched = false;
 
     controller.stepUncompleted();
+    controller.getLocations(city);
   }
 
   /**
