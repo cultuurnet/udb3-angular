@@ -754,7 +754,7 @@ angular.module('udb.core')
       'conditions': 'conditions générales',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
-      'description_help': 'max. 250 caractères.',
+      'description_help': 'Maximum 250 caractères',
       'copyright': 'Copyright',
       'copyright_help': 'Mentionnez le nom de photographe légitime. Introduisez seulement le nom de votre propre association ou organisation si vous êtes propriétaire vous-même des droits (au moins 3 caractères).',
       'cancel': 'Annuler',
