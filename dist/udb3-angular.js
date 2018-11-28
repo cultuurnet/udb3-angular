@@ -21480,12 +21480,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update contact info of a specific organizer.
    * @param {string} organizerId
    * @param {Array} contact
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerContact = function(organizerId, contact) {
+  service.updateOrganizerContact = function(organizerId, contact, language) {
     return udbApi
-        .updateOrganizerContact(organizerId, contact)
+        .updateOrganizerContact(organizerId, contact, language)
         .then(logUpdateOrganizerJob);
   };
 

@@ -574,12 +574,13 @@ describe('Service: UDB3 Api', function () {
       "postalCode": 3000,
       "streetAddress": "Sluisstraat 79"
     };
+    var language = 'nl';
 
     $httpBackend
         .expectPUT(baseUrl + 'organizers/' + organizerId + '/address/' + language, address)
         .respond(JSON.stringify(response));
     service
-        .updateOrganizerAddress(organizerId, address, 'nl')
+        .updateOrganizerAddress(organizerId, address, language)
         .then(done);
     $httpBackend.flush();
   });

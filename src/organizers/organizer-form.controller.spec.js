@@ -391,6 +391,8 @@ describe('Controller: Organizer Form', function() {
       }
     ];
 
+    var language = 'nl';
+
     controller.organizersWebsiteFound = false;
     controller.websiteError = false;
     controller.urlError = false;
