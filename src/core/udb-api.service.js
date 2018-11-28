@@ -321,15 +321,16 @@ function UdbApi(
   /**
    * @param {string} organizerId
    * @param {string} name
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerName = function(organizerId, name) {
+  this.updateOrganizerName = function(organizerId, name, language) {
     var params = {
       name: name
     };
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language, params, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 

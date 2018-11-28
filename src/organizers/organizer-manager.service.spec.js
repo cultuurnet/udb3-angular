@@ -252,13 +252,13 @@ describe('Service: Organizer manager Service', function () {
     udbApi.updateOrganizerName.and.returnValue($q.resolve(expectedCommandId));
 
     function assertOrganizerResult (job) {
-      expect(udbApi.updateOrganizerName).toHaveBeenCalledWith(organizerId, 'blaaaaah');
+      expect(udbApi.updateOrganizerName).toHaveBeenCalledWith(organizerId, 'blaaaaah', 'nl');
       expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
     service
-        .updateOrganizerName(organizerId, 'blaaaaah')
+        .updateOrganizerName(organizerId, 'blaaaaah', 'nl')
         .then(assertOrganizerResult);
 
     $scope.$apply();
@@ -279,13 +279,13 @@ describe('Service: Organizer manager Service', function () {
     udbApi.updateOrganizerAddress.and.returnValue($q.resolve(expectedCommandId));
 
     function assertOrganizerResult (job) {
-      expect(udbApi.updateOrganizerAddress).toHaveBeenCalledWith(organizerId, address);
+      expect(udbApi.updateOrganizerAddress).toHaveBeenCalledWith(organizerId, address, 'nl');
       expect(job.id).toEqual(expectedCommandId.commandId);
       done();
     }
 
     service
-        .updateOrganizerAddress(organizerId, address)
+        .updateOrganizerAddress(organizerId, address, 'nl')
         .then(assertOrganizerResult);
 
     $scope.$apply();

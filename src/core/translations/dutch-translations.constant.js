@@ -764,6 +764,7 @@ angular.module('udb.core')
       'conditions': 'algemene voorwaarden',
       'copyright_info': 'Meer informatie over copyright',
       'description': 'Beschrijving',
+      'description_help': 'Maximum 250 karakters',
       'copyright': 'Copyright',
       'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
       'cancel': 'Annuleren',
@@ -776,7 +777,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Afbeelding info bewerken',
-        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking. (max. 250 karakters)',
         'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
         'update': 'Bijwerken'
       },
