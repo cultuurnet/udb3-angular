@@ -30,9 +30,10 @@
         <p class="help-block" translate-once="images.upload.max_filesize" translate-values="{ maxFileSize: '{{maxFileSize}}' }"></p>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" ng-class="{ 'has-error': description.length > 250 }">
         <label><span translate-once="images.description"></span> <strong class="text-danger">*</strong></label>
         <input type="text" class="form-control" ng-model="description" required>
+        <p class="help-block" translate-once="images.description_help"></p>
       </div>
 
       <div class="form-group">
