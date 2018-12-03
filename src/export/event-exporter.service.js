@@ -12,7 +12,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies) {
+function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, searchApiSwitcher) {
 
   var ex = this; // jshint ignore:line
 
@@ -71,8 +71,6 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies) {
    * @returns {String}
    */
   function getSapiVersion() {
-    var apiVersionCookieKey = 'search-api-version';
-    var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
-    return 'v' + ($cookies.get(apiVersionCookieKey) || defaultApiVersion);
+    return 'v' + searchApiSwitcher.getApiVersion();
   }
 }
