@@ -4,6 +4,7 @@ describe('Service: UDB3 Api', function () {
 
   var $httpBackend, $scope, service, uitidAuth, offerCache, Upload;
   var baseUrl = 'http://foo.bar/';
+  var language = 'nl';
 
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
@@ -528,10 +529,10 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-        .expectPUT(baseUrl + 'organizers/' + organizerId + '/name', params)
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/name/' + language, params)
         .respond(JSON.stringify(response));
     service
-        .updateOrganizerName(organizerId, 'blub')
+        .updateOrganizerName(organizerId, 'blub', 'nl')
         .then(done);
     $httpBackend.flush();
   });
@@ -573,12 +574,13 @@ describe('Service: UDB3 Api', function () {
       "postalCode": 3000,
       "streetAddress": "Sluisstraat 79"
     };
+    var language = 'nl';
 
     $httpBackend
-        .expectPUT(baseUrl + 'organizers/' + organizerId + '/address', address)
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/address/' + language, address)
         .respond(JSON.stringify(response));
     service
-        .updateOrganizerAddress(organizerId, address)
+        .updateOrganizerAddress(organizerId, address, language)
         .then(done);
     $httpBackend.flush();
   });
