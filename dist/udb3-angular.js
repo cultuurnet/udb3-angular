@@ -17478,7 +17478,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
-  moc.showDescription = true;
 
   moc.isReadyForValidation = isReadyForValidation;
   moc.isApproved = isApproved;
@@ -17486,7 +17485,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   moc.approve = approve;
   moc.askForRejectionReasons = askForRejectionReasons;
   moc.continueValidation = continueValidation;
-  moc.isString = isString;
 
   // fetch offer
   ModerationService
@@ -17497,7 +17495,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     })
     .catch(showLoadingError)
     .finally(function() {
-      moc.showDescription = isString(moc.offer.description);
       moc.loading = false;
     });
 
@@ -17605,11 +17602,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
       });
   }
 
-  function isString(stringToCheck) {
-    console.log(typeof stringToCheck === 'string');
-    return typeof stringToCheck === 'string';
-  }
-
   /**
    * @param {ApiProblem} problem
    */
@@ -17658,6 +17650,9 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      if (_.isEmpty(moc.offer.description)) {
+        moc.offer.description = '';
+      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -30270,9 +30265,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <udb-calendar-summary offer=\"::moc.offer\" show-opening-hours=\"true\"></udb-calendar-summary>\n" +
     "            </p>\n" +
     "\n" +
-    "            <div class=\"content\"\n" +
-    "                 ng-show=\"moc.showDescription\"\n" +
-    "                 ng-bind-html=\"moc.offer.description\"></div>\n" +
+    "            <div class=\"content\" ng-bind-html=\"moc.offer.description\"></div>\n" +
     "\n" +
     "            <a ng-href=\"{{ ::moc.offer.url  + '/preview' }}\">\n" +
     "                Alle info bekijken\n" +
