@@ -11116,6 +11116,9 @@ function BaseCalendarController(calendar, $scope) {
           timeSpan.start = moment(timeSpan.start).startOf('day').toDate();
           timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
         }
+        if (timeSpan.start > timeSpan.end) {
+          timeSpan.end = moment(timeSpan.start).endOf('day').toDate();
+        }
       });
       calendar.formData.saveTimeSpans(calendar.timeSpans);
     }
@@ -11140,9 +11143,9 @@ function BaseCalendarController(calendar, $scope) {
       'timedWhenNotAllDay': function (timeSpan) {
         return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
       },
-      'startBeforeEndDay': function (timeSpan) {
+      /*'startBeforeEndDay': function (timeSpan) {
         return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
-      },
+      },*/
       'startBeforeEnd': function (timeSpan) {
         return !timeSpan.allDay &&
             (timeSpan.start && timeSpan.end) &&

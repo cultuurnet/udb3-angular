@@ -188,7 +188,7 @@ describe('Controller: Form Calendar', function () {
     expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
-  it('should show a time-span requirement when the start- is before end-day', function () {
+  /*it('should show a time-span requirement when the start- is before end-day', function () {
     var controller = getController();
     controller.timeSpans = [
       {
@@ -208,7 +208,7 @@ describe('Controller: Form Calendar', function () {
     controller.instantTimeSpanChanged();
     expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
     expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
-  });
+  });*/
 
   it('should show a time-span requirement when the begin- is before end-time', function () {
     var controller = getController();
