@@ -834,7 +834,8 @@ angular.module('udb.core')
         'phone': 'Numéro de téléphone',
         'email': 'Adresse e-mail',
         'labels': 'Labels',
-        'removed': 'Cette organisation a été supprimée.'
+        'removed': 'Cette organisation a été supprimée.',
+        'translate': 'Traduire'
       }
     },
     duplicate: {

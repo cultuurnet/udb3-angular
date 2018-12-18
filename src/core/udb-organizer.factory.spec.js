@@ -10,12 +10,17 @@ describe('Factory: UDB Organizer', function () {
     'created': '2017-03-28T12:09:18+00:00',
     'creator': '357D5297-9E37-1DE9-62398987EA110D38',
     'url': 'http://foo.bar',
-    'name': 'Club Silo',
+    mainLanguage: 'nl',
+    'name': {
+      nl: 'Club Silo'
+    },
     'address': {
-      addressCountry: 'BE',
-      addressLocality: 'Leuven',
-      postalCode: '3000',
-      streetAddress: 'Vaartkom 39'
+        nl: {
+          addressCountry: 'BE',
+          addressLocality: 'Leuven',
+          postalCode: '3000',
+          streetAddress: 'Vaartkom 39'
+        }
     },
     contactPoint: {
       'email': [
@@ -35,12 +40,16 @@ describe('Factory: UDB Organizer', function () {
   var jsonOrganizerWithHiddenLabel = {
     '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
     '@context': '/api/1.0/organizer.jsonld',
-    'name': 'Club Silo',
+    'name': {
+      nl: 'Club Silo'
+    },
     'address': {
-      addressCountry: 'BE',
-      addressLocality: 'Leuven',
-      postalCode: '3000',
-      streetAddress: 'Vaartkom 39'
+        nl: {
+          addressCountry: 'BE',
+          addressLocality: 'Leuven',
+          postalCode: '3000',
+          streetAddress: 'Vaartkom 39'
+        }
     },
     contactPoint: {
       'email': [
@@ -62,12 +71,16 @@ describe('Factory: UDB Organizer', function () {
   var jsonOrganizerDeleted = {
     '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
     '@context': '/api/1.0/organizer.jsonld',
-    'name': 'Club Silo',
+    'name': {
+      nl: 'Club Silo'
+    },
     'address': {
-      addressCountry: 'BE',
-      addressLocality: 'Leuven',
-      postalCode: '3000',
-      streetAddress: 'Vaartkom 39'
+      nl: {
+        addressCountry: 'BE',
+        addressLocality: 'Leuven',
+        postalCode: '3000',
+        streetAddress: 'Vaartkom 39'
+      }
     },
     contactPoint: {
       'email': [
@@ -90,12 +103,17 @@ describe('Factory: UDB Organizer', function () {
     var expectedOrganizer = {
       '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
       'id': '357D5297-9E37-1DE9-62398987EA110D38',
-      'name': 'Club Silo',
+      mainLanguage: 'nl',
+      'name': {
+        nl: 'Club Silo'
+      },
       'address': {
-        addressCountry: 'BE',
-        addressLocality: 'Leuven',
-        postalCode: '3000',
-        streetAddress: 'Vaartkom 39'
+          nl: {
+            addressCountry: 'BE',
+            addressLocality: 'Leuven',
+            postalCode: '3000',
+            streetAddress: 'Vaartkom 39'
+          }
       },
       'email': 'info@silo.be',
       'phone': '+32 476 838982',
@@ -118,7 +136,7 @@ describe('Factory: UDB Organizer', function () {
       'isUitpas': true,
       'created': new Date('2017-03-28T12:09:18+00:00'),
       'deleted': false,
-      'detailUrl': '/organizer/357D5297-9E37-1DE9-62398987EA110D38'
+      'detailUrl': 'organizer/357D5297-9E37-1DE9-62398987EA110D38'
     };
 
     var organizerFromJson = new UdbOrganizer(jsonOrganizer);
@@ -137,19 +155,12 @@ describe('Factory: UDB Organizer', function () {
     expect(organizer.labels).toEqual(expectedCombinedLabels);
   }));
 
-  it('it can take into account translated name', inject(function (UdbOrganizer) {
-    jsonOrganizer.name = {nl : jsonOrganizer.name};
-
-    var organizer = new UdbOrganizer(jsonOrganizer);
-    expect(organizer.name).toEqual('Club Silo');
-  }));
-
   it('it can take into account main language', inject(function (UdbOrganizer) {
       jsonOrganizer.mainLanguage = 'en';
-      jsonOrganizer.name = {en : jsonOrganizer.name.nl};
+      jsonOrganizer.name.en = jsonOrganizer.name.nl;
 
       var organizer = new UdbOrganizer(jsonOrganizer);
-      expect(organizer.name).toEqual('Club Silo');
+      expect(organizer.name).toEqual(jsonOrganizer.name);
   }));
 
   it('it should set deleted to true when the workflow status is DELETED', inject(function (UdbOrganizer) {

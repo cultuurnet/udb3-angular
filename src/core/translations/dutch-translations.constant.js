@@ -847,7 +847,8 @@ angular.module('udb.core')
         'phone': 'Telefoonnummer',
         'email': 'E-mailadres',
         'labels': 'Labels',
-        'removed': 'Deze organisatie is verwijderd.'
+        'removed': 'Deze organisatie is verwijderd.',
+        'translate': 'Vertalen'
       }
     },
     duplicate: {

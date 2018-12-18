@@ -89,16 +89,19 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
+      this.mainLanguage = jsonOrganizer.mainLanguage;
       // 1. Main language is now a required property.
       // Organizers can be created in a given main language.
       // 2. Previous projections had a default main language of nl.
       // 3. Even older projections had a non-translated name.
       // @todo @mainLanguage after a full replay only case 1 needs to be supported.
-      this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
+      /*this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.name, 'nl', null) ||
-        _.get(jsonOrganizer, 'name', '');
-      this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
-          _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
+        _.get(jsonOrganizer, 'name', '');*/
+      this.name = jsonOrganizer.name || {};
+      /*this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];*/
+      this.address = jsonOrganizer.address || {};
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       //this.url = jsonOrganizer.url;
@@ -109,7 +112,7 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
       this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
-      this.detailUrl = '/organizer/' + this.id;
+      this.detailUrl = 'organizer/' + this.id;
     },
     updateTranslationState: function (organizer) {
       organizer = organizer || this;

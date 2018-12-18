@@ -3529,7 +3529,8 @@ angular.module('udb.core')
         'phone': 'Telefoonnummer',
         'email': 'E-mailadres',
         'labels': 'Labels',
-        'removed': 'Deze organisatie is verwijderd.'
+        'removed': 'Deze organisatie is verwijderd.',
+        'translate': 'Vertalen'
       }
     },
     duplicate: {
@@ -4564,7 +4565,8 @@ angular.module('udb.core')
         'phone': 'Numéro de téléphone',
         'email': 'Adresse e-mail',
         'labels': 'Labels',
-        'removed': 'Cette organisation a été supprimée.'
+        'removed': 'Cette organisation a été supprimée.',
+        'translate': 'Traduire'
       }
     },
     duplicate: {
@@ -6718,16 +6720,19 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
+      this.mainLanguage = jsonOrganizer.mainLanguage;
       // 1. Main language is now a required property.
       // Organizers can be created in a given main language.
       // 2. Previous projections had a default main language of nl.
       // 3. Even older projections had a non-translated name.
       // @todo @mainLanguage after a full replay only case 1 needs to be supported.
-      this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
+      /*this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.name, 'nl', null) ||
-        _.get(jsonOrganizer, 'name', '');
-      this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
-          _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
+        _.get(jsonOrganizer, 'name', '');*/
+      this.name = jsonOrganizer.name || {};
+      /*this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];*/
+      this.address = jsonOrganizer.address || {};
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
       this.phone = getFirst(jsonOrganizer, 'contactPoint.phone');
       //this.url = jsonOrganizer.url;
@@ -6738,7 +6743,7 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.isUitpas = isUitpas(jsonOrganizer);
       this.created = new Date(jsonOrganizer.created);
       this.deleted = Boolean(jsonOrganizer.workflowStatus === 'DELETED');
-      this.detailUrl = '/organizer/' + this.id;
+      this.detailUrl = 'organizer/' + this.id;
     },
     updateTranslationState: function (organizer) {
       organizer = organizer || this;
@@ -20441,15 +20446,26 @@ function OfferTranslateController(
     $scope.translatedOffer = jsonLDLangFilter(offer, $scope.language, true);
     $scope.originalName = $scope.translatedOffer.name;
 
-    $scope.offerType = offer.url.split('/').shift();
+    if (offer.url !== undefined) {
+      $scope.offerType = offer.url.split('/').shift();
+    } else {
+      $scope.offerType = 'organizer';
+    }
     if ($scope.offerType === 'event') {
       $scope.isEvent = true;
       $scope.isPlace = false;
+      $scope.isOrganizer = false;
+    } else if ($scope.offerType === 'organizer') {
+      $scope.isEvent = false;
+      $scope.isPlace = false;
+      $scope.isOrganizer = true;
     } else {
       $scope.isEvent = false;
       $scope.isPlace = true;
+      $scope.isOrganizer = false;
     }
 
+    console.log($scope.cachedOffer);
     _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
     });
@@ -31512,6 +31528,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              ui-sref=\"split.organizerEdit({id: odc.organizer.id})\">\n" +
     "        <i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n" +
     "        <span translate-once=\"organizer.manage.edit\"></span>\n" +
+    "      </button>\n" +
+    "      <button class=\"list-group-item\"\n" +
+    "              type=\"button\"\n" +
+    "              ui-sref=\"split.organizerTranslate({id: odc.organizer.id})\">\n" +
+    "        <i class=\"fa fa-globe\" aria-hidden=\"true\"></i>\n" +
+    "        <span translate-once=\"organizer.manage.translate\"></span>\n" +
     "      </button>\n" +
     "      <span ng-if=\"odc.isManageState()\">\n" +
     "        <button class=\"list-group-item\"\n" +

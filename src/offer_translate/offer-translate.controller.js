@@ -48,15 +48,26 @@ function OfferTranslateController(
     $scope.translatedOffer = jsonLDLangFilter(offer, $scope.language, true);
     $scope.originalName = $scope.translatedOffer.name;
 
-    $scope.offerType = offer.url.split('/').shift();
+    if (offer.url !== undefined) {
+      $scope.offerType = offer.url.split('/').shift();
+    } else {
+      $scope.offerType = 'organizer';
+    }
     if ($scope.offerType === 'event') {
       $scope.isEvent = true;
       $scope.isPlace = false;
+      $scope.isOrganizer = false;
+    } else if ($scope.offerType === 'organizer') {
+      $scope.isEvent = false;
+      $scope.isPlace = false;
+      $scope.isOrganizer = true;
     } else {
       $scope.isEvent = false;
       $scope.isPlace = true;
+      $scope.isOrganizer = false;
     }
 
+    console.log($scope.cachedOffer);
     _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
     });
