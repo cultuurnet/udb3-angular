@@ -35,12 +35,18 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       jobLogger.addJob(job);
     }
 
-    return udbApi
-      .translateProperty(offer.apiUrl, property, language, translation)
-      .then(logTranslationJob);
+    if (offer.detailUrl.split('/').shift() === 'organizer') {
+      return udbApi
+          .translateOrganizerProperty(offer.id, property, language, translation)
+          .then(logTranslationJob);
+    } else {
+      return udbApi
+          .translateProperty(offer.apiUrl, property, language, translation)
+          .then(logTranslationJob);
+    }
   };
 
-  this.translateAddress = function (offer, language, translation) {
+  this.translateAddress = function (offer, language, translation, offerType) {
     function logTranslationJob(response) {
       var jobData = response.data;
 
@@ -50,7 +56,7 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
     }
 
     return udbApi
-        .translateAddress(offer.id, language, translation)
+        .translateAddress(offer.id, language, translation, offerType)
         .then(logTranslationJob);
   };
 }

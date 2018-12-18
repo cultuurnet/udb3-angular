@@ -67,7 +67,6 @@ function OfferTranslateController(
       $scope.isOrganizer = false;
     }
 
-    console.log($scope.cachedOffer);
     _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
     });
@@ -94,10 +93,15 @@ function OfferTranslateController(
     }
   }
 
-  function openEditPage() {
+  function openEditPage(offerType) {
     var offerLocation = $scope.cachedOffer.id.toString();
     var id = offerLocation.split('/').pop();
-    $state.go('split.eventEdit', {id: id});
+
+    if (offerType === 'organizer') {
+      $state.go('split.organizerEdit', {id: id});
+    } else {
+      $state.go('split.eventEdit', {id: id});
+    }
   }
 
   function goToDashboard() {

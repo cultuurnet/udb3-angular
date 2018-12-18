@@ -89,6 +89,7 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
+      this.apiUrl = new URL(jsonOrganizer['@id']);
       this.mainLanguage = jsonOrganizer.mainLanguage;
       // 1. Main language is now a required property.
       // Organizers can be created in a given main language.

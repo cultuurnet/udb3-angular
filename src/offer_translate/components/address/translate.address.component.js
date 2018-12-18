@@ -22,8 +22,14 @@ angular
 /* @ngInject */
 function TranslateAddressController(offerTranslator) {
   var controller = this;
+  var offerType = '';
 
   controller.translatedAddresses = {};
+  if (controller.offer.url !== undefined) {
+    offerType = 'places';
+  } else {
+    offerType = 'organizers';
+  }
 
   controller.originalAddress = _.get(controller.offer.address, controller.offer.mainLanguage, '') ||
       _.get(controller.offer.address, 'nl', '') ||
@@ -45,6 +51,6 @@ function TranslateAddressController(offerTranslator) {
   function saveTranslatedAddress(language) {
 
     offerTranslator
-        .translateAddress(controller.offer, language, controller.translatedAddresses[language]);
+        .translateAddress(controller.offer, language, controller.translatedAddresses[language], offerType);
   }
 }

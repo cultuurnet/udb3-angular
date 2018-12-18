@@ -5306,15 +5306,25 @@ function UdbApi(
     );
   };
 
-  this.translateAddress = function (offerId, language, translation) {
+  this.translateAddress = function (offerId, language, translation, offerType) {
     return $http.put(
-        appConfig.baseUrl + 'places/' + offerId + '/address/' + language,
+        appConfig.baseUrl + offerType + '/' + offerId + '/address/' + language,
         {
           addressCountry: translation.addressCountry,
           addressLocality: translation.addressLocality,
           postalCode: translation.postalCode,
           streetAddress: translation.streetAddress
         },
+        defaultApiConfig
+    );
+  };
+
+  this.translateOrganizerProperty = function(organizerId, propertyName, language, translation) {
+    var translationData = {};
+    translationData[propertyName] = translation;
+    return $http.put(
+        appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language,
+        translationData,
         defaultApiConfig
     );
   };
@@ -6720,6 +6730,7 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
     parseJson: function (jsonOrganizer) {
       this['@id'] = jsonOrganizer['@id'];
       this.id = jsonOrganizer['@id'].split('/').pop();
+      this.apiUrl = new URL(jsonOrganizer['@id']);
       this.mainLanguage = jsonOrganizer.mainLanguage;
       // 1. Main language is now a required property.
       // Organizers can be created in a given main language.
@@ -10148,12 +10159,18 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       jobLogger.addJob(job);
     }
 
-    return udbApi
-      .translateProperty(offer.apiUrl, property, language, translation)
-      .then(logTranslationJob);
+    if (offer.detailUrl.split('/').shift() === 'organizer') {
+      return udbApi
+          .translateOrganizerProperty(offer.id, property, language, translation)
+          .then(logTranslationJob);
+    } else {
+      return udbApi
+          .translateProperty(offer.apiUrl, property, language, translation)
+          .then(logTranslationJob);
+    }
   };
 
-  this.translateAddress = function (offer, language, translation) {
+  this.translateAddress = function (offer, language, translation, offerType) {
     function logTranslationJob(response) {
       var jobData = response.data;
 
@@ -10163,7 +10180,7 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
     }
 
     return udbApi
-        .translateAddress(offer.id, language, translation)
+        .translateAddress(offer.id, language, translation, offerType)
         .then(logTranslationJob);
   };
 }
@@ -18140,7 +18157,7 @@ function OrganizationSearchItem() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemController(udbApi, $rootScope) {
+function OrganizationSearchItemController(udbApi, $rootScope, jsonLDLangFilter) {
   var controller = this;
   var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
 
@@ -18153,7 +18170,7 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
    * @param {UdbOrganizer} organization
    */
   function showOrganization(organization) {
-    controller.organization = organization;
+    controller.organization = jsonLDLangFilter(organization, organization.mainLanguage, true);
   }
 
   function markAsDeleted() {
@@ -18175,7 +18192,7 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
     }
   }
 }
-OrganizationSearchItemController.$inject = ["udbApi", "$rootScope"];
+OrganizationSearchItemController.$inject = ["udbApi", "$rootScope", "jsonLDLangFilter"];
 })();
 
 // Source: src/management/organizers/search/organization-search.controller.js
@@ -20045,8 +20062,14 @@ angular
 /* @ngInject */
 function TranslateAddressController(offerTranslator) {
   var controller = this;
+  var offerType = '';
 
   controller.translatedAddresses = {};
+  if (controller.offer.url !== undefined) {
+    offerType = 'places';
+  } else {
+    offerType = 'organizers';
+  }
 
   controller.originalAddress = _.get(controller.offer.address, controller.offer.mainLanguage, '') ||
       _.get(controller.offer.address, 'nl', '') ||
@@ -20068,7 +20091,7 @@ function TranslateAddressController(offerTranslator) {
   function saveTranslatedAddress(language) {
 
     offerTranslator
-        .translateAddress(controller.offer, language, controller.translatedAddresses[language]);
+        .translateAddress(controller.offer, language, controller.translatedAddresses[language], offerType);
   }
 }
 TranslateAddressController.$inject = ["offerTranslator"];
@@ -20465,7 +20488,6 @@ function OfferTranslateController(
       $scope.isOrganizer = false;
     }
 
-    console.log($scope.cachedOffer);
     _.forEach($scope.cachedOffer.name, function(name, language) {
       $scope.activeLanguages[language].active = true;
     });
@@ -20492,10 +20514,15 @@ function OfferTranslateController(
     }
   }
 
-  function openEditPage() {
+  function openEditPage(offerType) {
     var offerLocation = $scope.cachedOffer.id.toString();
     var id = offerLocation.split('/').pop();
-    $state.go('split.eventEdit', {id: id});
+
+    if (offerType === 'organizer') {
+      $state.go('split.organizerEdit', {id: id});
+    } else {
+      $state.go('split.eventEdit', {id: id});
+    }
   }
 
   function goToDashboard() {
@@ -21083,7 +21110,8 @@ function OrganizerFormController(
     $scope,
     $translate,
     eventCrud,
-    appConfig
+    appConfig,
+    jsonLDLangFilter
 ) {
   var controller = this;
   var organizerId = $stateParams.id;
@@ -21163,6 +21191,8 @@ function OrganizerFormController(
    * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
+    controller.organizer = jsonLDLangFilter(organizer, organizer.mainLanguage, true);
+
     if (_.isEmpty(organizer.address)) {
       organizer.address = {
         streetAddress : '',
@@ -21171,8 +21201,7 @@ function OrganizerFormController(
         addressCountry : ''
       };
     }
-    controller.organizer = organizer;
-    oldOrganizer = _.cloneDeep(organizer);
+    oldOrganizer = _.cloneDeep(jsonLDLangFilter(organizer, organizer.mainLanguage, true));
     controller.originalName = oldOrganizer.name;
 
     if (controller.organizer.contactPoint !== null) {
@@ -21370,7 +21399,7 @@ function OrganizerFormController(
     return (stateName.indexOf('manage') !== -1);
   }
 }
-OrganizerFormController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope", "$translate", "eventCrud", "appConfig"];
+OrganizerFormController.$inject = ["OrganizerManager", "udbOrganizers", "$state", "$stateParams", "$q", "$scope", "$translate", "eventCrud", "appConfig", "jsonLDLangFilter"];
 
 /**
  * @ngdoc function
@@ -31299,7 +31328,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"col-sm-6\">\n" +
     "        <div class=\"offer-translate-chooser\">\n" +
     "          <label class=\"form-text\">\n" +
-    "             <button ng-click=\"openEditPage()\" class=\"btn-link btn-sm\">\n" +
+    "             <button ng-click=\"openEditPage(offerType)\" class=\"btn-link btn-sm\">\n" +
     "               <span translate-once=\"translate.original\"></span> ({{mainLanguage}}) <span translate-once=\"translate.edit\"></span>\n" +
     "             </button>\n" +
     "          </label>\n" +
@@ -31325,7 +31354,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <offer-translate-tariffs offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-tariffs>\n" +
     "\n" +
     "  <!-- Address -->\n" +
-    "  <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace\"></offer-translate-address>\n" +
+    "  <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace || isOrganizer\"></offer-translate-address>\n" +
     "\n" +
     "  <button class=\"btn btn-success\" ng-click=\"goToDashboard()\" translate-once=\"translate.ready\"></button>\n" +
     "\n" +

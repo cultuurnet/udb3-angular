@@ -10,7 +10,8 @@ function OrganizerFormController(
     $scope,
     $translate,
     eventCrud,
-    appConfig
+    appConfig,
+    jsonLDLangFilter
 ) {
   var controller = this;
   var organizerId = $stateParams.id;
@@ -90,6 +91,8 @@ function OrganizerFormController(
    * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
+    controller.organizer = jsonLDLangFilter(organizer, organizer.mainLanguage, true);
+
     if (_.isEmpty(organizer.address)) {
       organizer.address = {
         streetAddress : '',
@@ -98,8 +101,7 @@ function OrganizerFormController(
         addressCountry : ''
       };
     }
-    controller.organizer = organizer;
-    oldOrganizer = _.cloneDeep(organizer);
+    oldOrganizer = _.cloneDeep(jsonLDLangFilter(organizer, organizer.mainLanguage, true));
     controller.originalName = oldOrganizer.name;
 
     if (controller.organizer.contactPoint !== null) {

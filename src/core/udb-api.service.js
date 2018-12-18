@@ -537,15 +537,25 @@ function UdbApi(
     );
   };
 
-  this.translateAddress = function (offerId, language, translation) {
+  this.translateAddress = function (offerId, language, translation, offerType) {
     return $http.put(
-        appConfig.baseUrl + 'places/' + offerId + '/address/' + language,
+        appConfig.baseUrl + offerType + '/' + offerId + '/address/' + language,
         {
           addressCountry: translation.addressCountry,
           addressLocality: translation.addressLocality,
           postalCode: translation.postalCode,
           streetAddress: translation.streetAddress
         },
+        defaultApiConfig
+    );
+  };
+
+  this.translateOrganizerProperty = function(organizerId, propertyName, language, translation) {
+    var translationData = {};
+    translationData[propertyName] = translation;
+    return $http.put(
+        appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language,
+        translationData,
         defaultApiConfig
     );
   };
