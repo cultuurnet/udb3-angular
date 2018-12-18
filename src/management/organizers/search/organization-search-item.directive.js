@@ -24,7 +24,7 @@ function OrganizationSearchItem() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemController(udbApi, $rootScope) {
+function OrganizationSearchItemController(udbApi, $rootScope, jsonLDLangFilter) {
   var controller = this;
   var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
 
@@ -37,7 +37,7 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
    * @param {UdbOrganizer} organization
    */
   function showOrganization(organization) {
-    controller.organization = organization;
+    controller.organization = jsonLDLangFilter(organization, organization.mainLanguage, true);
   }
 
   function markAsDeleted() {
