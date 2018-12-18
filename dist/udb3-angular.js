@@ -3721,6 +3721,10 @@ angular.module('udb.core')
         label: 'Zo',
         name: 'Zondag'
       }
+    },
+    search: {
+      exportButton: 'Activiteiten exporteren',
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
   }
 );
@@ -4758,6 +4762,10 @@ angular.module('udb.core')
         label: 'dim.',
         name: 'Dimanche'
       }
+    },
+    search: {
+      exportButton: 'Activités d\'exportation',
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
   }
 );
@@ -26361,7 +26369,9 @@ function SearchController(
         .value();
 
       if (!selectedIds.length) {
-        $window.alert('First select the events you want to label.');
+        $window.alert(
+            $translate.instant('search.modal')
+        );
         return;
       } else {
         eventCount = selectedIds.length;
@@ -32788,7 +32798,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <i class=\"fa fa-tag\"></i> Labelen\n" +
     "                    </button>\n" +
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"exportEvents()\">\n" +
-    "                        <i class=\"fa fa-cloud-download\"></i> Activiteiten exporteren\n" +
+    "                        <i class=\"fa fa-cloud-download\"></i> <span translate-once=\"search.exportButton\"></span>\n" +
     "                    </button>\n" +
     "                    <a href=\"#\" class=\"alert-link rv-action\" ng-click=\"resultViewer.deselectAll()\">Deselecteren</a>\n" +
     "                </div>\n" +
