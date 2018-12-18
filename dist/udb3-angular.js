@@ -5323,7 +5323,7 @@ function UdbApi(
     var translationData = {};
     translationData[propertyName] = translation;
     return $http.put(
-        appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language,
+        appConfig.baseUrl + 'organizers/' + organizerId + '/' + propertyName + '/' + language,
         translationData,
         defaultApiConfig
     );
@@ -10159,7 +10159,7 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       jobLogger.addJob(job);
     }
 
-    if (offer.detailUrl.split('/').shift() === 'organizer') {
+    if (offer.detailUrl && offer.detailUrl.split('/').shift() === 'organizer') {
       return udbApi
           .translateOrganizerProperty(offer.id, property, language, translation)
           .then(logTranslationJob);
@@ -21193,8 +21193,8 @@ function OrganizerFormController(
   function showOrganizer(organizer) {
     controller.organizer = jsonLDLangFilter(organizer, organizer.mainLanguage, true);
 
-    if (_.isEmpty(organizer.address)) {
-      organizer.address = {
+    if (_.isEmpty(controller.organizer.address)) {
+      controller.organizer.address = {
         streetAddress : '',
         addressLocality : '',
         postalCode: '',

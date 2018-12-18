@@ -103,6 +103,7 @@ describe('Factory: UDB Organizer', function () {
     var expectedOrganizer = {
       '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
       'id': '357D5297-9E37-1DE9-62398987EA110D38',
+      'apiUrl': new URL('http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38'),
       mainLanguage: 'nl',
       'name': {
         nl: 'Club Silo'

@@ -882,15 +882,38 @@ describe('Service: UDB3 Api', function () {
       postalCode: "1000",
       streetAddress: "Rue de Saint-Gislein"
     };
+    var offerType = 'places';
     var response = {
       "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
     };
 
     $httpBackend
-        .expectPUT(baseUrl + 'places/' + offerId + '/address/' + language)
+        .expectPUT(baseUrl + offerType + '/' + offerId + '/address/' + language)
         .respond(JSON.stringify(response));
     service
-        .translateAddress(offerId, language, translation)
+        .translateAddress(offerId, language, translation, offerType)
+        .then(done);
+    $httpBackend.flush();
+  });
+
+  //translateOrganizerProperty
+  it('should put a translation for an organizer\'s property to the api', function(done) {
+    var organizerId = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
+    var propertyName = 'name';
+    var language = 'nl';
+    var translation = 'organizer naam';
+    var expectedBody = {
+      'name': translation
+    };
+    var response = {
+      "commandId": "c75003dd-cc77-4424-a186-66aa4abd917f"
+    };
+
+    $httpBackend
+        .expectPUT(baseUrl + 'organizers/' + organizerId + '/name/' + language)
+        .respond(JSON.stringify(response));
+    service
+        .translateOrganizerProperty(organizerId, propertyName, language, translation)
         .then(done);
     $httpBackend.flush();
   });

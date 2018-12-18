@@ -93,8 +93,8 @@ function OrganizerFormController(
   function showOrganizer(organizer) {
     controller.organizer = jsonLDLangFilter(organizer, organizer.mainLanguage, true);
 
-    if (_.isEmpty(organizer.address)) {
-      organizer.address = {
+    if (_.isEmpty(controller.organizer.address)) {
+      controller.organizer.address = {
         streetAddress : '',
         addressLocality : '',
         postalCode: '',

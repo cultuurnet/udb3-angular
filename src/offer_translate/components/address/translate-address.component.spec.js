@@ -108,6 +108,6 @@ describe('Component: offer translate address', function () {
     controller.saveTranslatedAddress('fr');
     $scope.$apply();
 
-    expect(offerTranslator.translateAddress).toHaveBeenCalledWith(controller.offer, 'fr', controller.translatedAddresses['fr']);
+    expect(offerTranslator.translateAddress).toHaveBeenCalledWith(controller.offer, 'fr', controller.translatedAddresses['fr'], 'organizers');
   });
 });

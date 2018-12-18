@@ -554,7 +554,7 @@ function UdbApi(
     var translationData = {};
     translationData[propertyName] = translation;
     return $http.put(
-        appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language,
+        appConfig.baseUrl + 'organizers/' + organizerId + '/' + propertyName + '/' + language,
         translationData,
         defaultApiConfig
     );

@@ -35,7 +35,7 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
       jobLogger.addJob(job);
     }
 
-    if (offer.detailUrl.split('/').shift() === 'organizer') {
+    if (offer.detailUrl && offer.detailUrl.split('/').shift() === 'organizer') {
       return udbApi
           .translateOrganizerProperty(offer.id, property, language, translation)
           .then(logTranslationJob);

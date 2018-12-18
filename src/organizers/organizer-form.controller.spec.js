@@ -5,6 +5,43 @@ describe('Controller: Organizer Form', function() {
       $q, $controller, $scope, organizerForm, fakeSearchResult;
 
   var fakeOrganizer = {
+    "mainLanguage": "nl",
+    "name": {
+      "nl": "STUK"
+    },
+    "address": {
+      "nl": {
+        "addressCountry": "BE",
+        "addressLocality": "Leuven",
+        "postalCode": 3000,
+        "streetAddress": "Sluisstraat 79"
+      }
+    },
+    "contactPoint": {
+      "url": [
+        "http://google.be"
+      ],
+      "email": [
+        "joske@2dotstwice.be"
+      ],
+      "phone": [
+        "0123456789"
+      ]
+    },
+    "creator": "evenementen@stad.diksmuide.be",
+    "created": "2015-05-07T12:02:53+00:00",
+    "modified": "2015-05-07T12:02:53+00:00",
+    "website": "http://www.stuk.be/",
+    "labels": [
+      {
+        "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
+        "name": "Mijn label"
+      }
+    ]
+  };
+
+  var fakeTranslatedOrganizer = {
+    "mainLanguage": "nl",
     "name": "STUK",
     "address": {
       "addressCountry": "BE",
@@ -89,12 +126,17 @@ describe('Controller: Organizer Form', function() {
       "totalItems": 3562,
       "member": [
         {
-          "name": "STUK2",
+          "mainLanguage": "nl",
+          "name": {
+            "nl": "STUK2"
+          },
           "address": {
-            "addressCountry": "BE",
-            "addressLocality": "Leuven",
-            "postalCode": 3000,
-            "streetAddress": "Sluisstraat 79"
+            "nl": {
+              "addressCountry": "BE",
+              "addressLocality": "Leuven",
+              "postalCode": 3000,
+              "streetAddress": "Sluisstraat 79"
+            }
           },
           "contactPoint": {
             "url": [
@@ -152,13 +194,13 @@ describe('Controller: Organizer Form', function() {
     $scope.$digest();
 
     expect(OrganizerManager.get).toHaveBeenCalledWith(id);
-    expect(controller.organizer).toEqual(fakeOrganizer);
-    expect(controller.originalName).toEqual(fakeOrganizer.name);
+    expect(controller.organizer).toEqual(fakeTranslatedOrganizer);
+    expect(controller.originalName).toEqual(fakeTranslatedOrganizer.name);
     expect(controller.contact).toEqual(contact);
   });
 
   it ('should load the organizer detail and set an empty address object when address is empty', function () {
-    fakeOrganizer.address = {};
+    fakeOrganizer.address.nl = {};
     var emptyAddress = {
       streetAddress : '',
       addressLocality : '',
@@ -171,7 +213,7 @@ describe('Controller: Organizer Form', function() {
     $scope.$digest();
 
     expect(OrganizerManager.get).toHaveBeenCalledWith(id);
-    expect(controller.originalName).toEqual(fakeOrganizer.name);
+    expect(controller.originalName).toEqual(fakeOrganizer.name.nl);
     expect(controller.contact).toEqual(contact);
     expect(controller.organizer.address).toEqual(emptyAddress);
   });
