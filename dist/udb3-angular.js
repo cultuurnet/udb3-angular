@@ -21080,6 +21080,7 @@ function OrganizerFormController(
   controller.hasErrors = false;
   controller.disableSubmit = true;
   controller.saveError = false;
+  controller.showLanguageWarning = false;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
@@ -21157,6 +21158,10 @@ function OrganizerFormController(
         });
       });
       oldContact = _.cloneDeep(controller.contact);
+    }
+
+    if (controller.organizer.mainLanguage !== controller.language) {
+      controller.showLanguageWarning = true;
     }
   }
 
@@ -31614,6 +31619,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <form name=\"ofc.organizerForm\" class=\"organizer-edit-form\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-sm-12 col-md-8\">\n" +
+    "                <div class=\"alert alert-warning\" ng-show=\"ofc.showLanguageWarning\">\n" +
+    "                    <p translate-once=\"eventForm.langWarning\" translate-values=\"{ language: '{{ofc.language}}' }\"></p>\n" +
+    "                </div>\n" +
     "                <p class=\"alert alert-danger\" ng-show=\"ofc.hasErrors\">\n" +
     "                    <span ng-show=\"ofc.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
     "                    <span ng-show=\"ofc.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +

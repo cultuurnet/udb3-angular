@@ -31,6 +31,7 @@ function OrganizerFormController(
   controller.hasErrors = false;
   controller.disableSubmit = true;
   controller.saveError = false;
+  controller.showLanguageWarning = false;
 
   controller.validateWebsite = validateWebsite;
   controller.validateName = validateName;
@@ -108,6 +109,10 @@ function OrganizerFormController(
         });
       });
       oldContact = _.cloneDeep(controller.contact);
+    }
+
+    if (controller.organizer.mainLanguage !== controller.language) {
+      controller.showLanguageWarning = true;
     }
   }
 
