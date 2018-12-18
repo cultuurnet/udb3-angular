@@ -11,7 +11,14 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state) {
+function OrganizerDetailController(
+    OrganizerManager,
+    $uibModal,
+    $stateParams,
+    $location,
+    $state,
+    jsonLDLangFilter
+) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
@@ -38,7 +45,8 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
    * @param {udbOrganizer} organizer
    */
   function showOrganizer(organizer) {
-    controller.organizer = organizer;
+    //controller.organizerMainLanguage = organizer.mainLanguage;
+    controller.organizer = jsonLDLangFilter(organizer, organizer.mainLanguage, true);
   }
 
   function addLabel(label) {
