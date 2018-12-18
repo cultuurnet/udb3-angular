@@ -32788,7 +32788,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <i class=\"fa fa-tag\"></i> Labelen\n" +
     "                    </button>\n" +
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"exportEvents()\">\n" +
-    "                        <i class=\"fa fa-cloud-download\"></i> Exporteren\n" +
+    "                        <i class=\"fa fa-cloud-download\"></i> Activiteiten exporteren\n" +
     "                    </button>\n" +
     "                    <a href=\"#\" class=\"alert-link rv-action\" ng-click=\"resultViewer.deselectAll()\">Deselecteren</a>\n" +
     "                </div>\n" +
