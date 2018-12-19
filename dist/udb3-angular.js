@@ -10363,17 +10363,28 @@ function EventDetail(
   $scope.eventHistory = undefined;
   $scope.calendarSummary = undefined;
 
-  $scope.tabs = [
-    {
-      id: 'data'
-    },
-    {
-      id: 'history'
-    },
-    {
-      id: 'publication'
-    }
-  ];
+  if ($scope.mayAlwaysDelete) {
+    $scope.tabs = [
+      {
+        id: 'data'
+      },
+      {
+        id: 'history'
+      },
+      {
+        id: 'publication'
+      }
+    ];
+  } else {
+    $scope.tabs = [
+      {
+        id: 'data'
+      },
+      {
+        id: 'publication'
+      }
+    ];
+  }
   $scope.deleteEvent = function () {
     openEventDeleteConfirmModal($scope.event);
   };
@@ -17690,6 +17701,9 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      if (_.isEmpty(moc.offer.description)) {
+        moc.offer.description = '';
+      }
     })
     .catch(showLoadingError)
     .finally(function() {
@@ -28428,7 +28442,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
     "      <p class=\"alert alert-info\" translate-once=\"organizer.modal.unique_notice\"></p>\n" +
     "      <div class=\"form-group has-feedback\"\n" +
-    "           ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
+    "           ng-class=\"{'has-warning' : organizersWebsiteFound || (organizerForm.website.$error.required && organizerForm.website.$dirty) || (organizerForm.website.$error.pattern && organizerForm.website.$dirty) }\">\n" +
     "        <label class=\"control-label\" for=\"organizer-website\" translate-once=\"organizer.modal.website\"></label>\n" +
     "        <input type=\"url\"\n" +
     "               id=\"organizer-website\"\n" +
@@ -28439,6 +28453,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               aria-describedby=\"organizer-website-status\"\n" +
     "               ng-change=\"validateWebsite()\"\n" +
     "               autocomplete=\"off\"\n" +
+    "               udb-http-prefix\n" +
+    "               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\"\n" +
     "               required>\n" +
     "        <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
     "        <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
@@ -28451,6 +28467,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            </a>.\n" +
     "          </p>\n" +
+    "          <div class=\"help-block\" ng-messages=\"organizerForm.website.$error\" ng-show=\"organizerForm.website.$dirty && organizerForm.website.$error\">\n" +
+    "            <p ng-message=\"required\">\n" +
+    "              <span translate-once=\"organizer.contact.required\"></span>\n" +
+    "            </p>\n" +
+    "            <p ng-message=\"pattern\">\n" +
+    "              <span translate-once=\"organizer.contact.valid_url\"></span>\n" +
+    "            </p>\n" +
+    "          </div>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
@@ -28523,7 +28547,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"organizer.modal.close\"></button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "          ng-disabled=\"disableSubmit || contactError\"\n" +
+    "          ng-disabled=\"disableSubmit || contactError || organizerForm.website.$invalid\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
     "    <span translate-once=\"organizer.modal.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
@@ -31436,7 +31460,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
     "              <ng-form name=\"urlContactForm\">\n" +
-    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          <span translate-once=\"organizer.contact.required\"></span>\n" +

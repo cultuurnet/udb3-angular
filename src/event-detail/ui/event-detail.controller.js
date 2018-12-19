@@ -105,17 +105,28 @@ function EventDetail(
   $scope.eventHistory = undefined;
   $scope.calendarSummary = undefined;
 
-  $scope.tabs = [
-    {
-      id: 'data'
-    },
-    {
-      id: 'history'
-    },
-    {
-      id: 'publication'
-    }
-  ];
+  if ($scope.mayAlwaysDelete) {
+    $scope.tabs = [
+      {
+        id: 'data'
+      },
+      {
+        id: 'history'
+      },
+      {
+        id: 'publication'
+      }
+    ];
+  } else {
+    $scope.tabs = [
+      {
+        id: 'data'
+      },
+      {
+        id: 'publication'
+      }
+    ];
+  }
   $scope.deleteEvent = function () {
     openEventDeleteConfirmModal($scope.event);
   };
