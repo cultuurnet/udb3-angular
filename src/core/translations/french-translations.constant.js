@@ -754,6 +754,7 @@ angular.module('udb.core')
       'conditions': 'conditions générales',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
+      'description_help': 'Maximum 250 caractères',
       'copyright': 'Copyright',
       'copyright_help': 'Mentionnez le nom de photographe légitime. Introduisez seulement le nom de votre propre association ou organisation si vous êtes propriétaire vous-même des droits (au moins 3 caractères).',
       'cancel': 'Annuler',
@@ -766,7 +767,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Modifier l\'information de l\'image',
-        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants.',
+        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants. (max. 250 caractères)',
         'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'image.',
         'update': 'actualiser'
       },

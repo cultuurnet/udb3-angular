@@ -111,12 +111,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update the name of a specific organizer.
    * @param {string} organizerId
    * @param {string} name
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerName = function(organizerId, name) {
+  service.updateOrganizerName = function(organizerId, name, language) {
     return udbApi
-        .updateOrganizerName(organizerId, name)
+        .updateOrganizerName(organizerId, name, language)
         .then(logUpdateOrganizerJob);
   };
 
@@ -124,12 +125,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update the address of a specific organizer.
    * @param {string} organizerId
    * @param {Object} address
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerAddress = function(organizerId, address) {
+  service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
-        .updateOrganizerAddress(organizerId, address)
+        .updateOrganizerAddress(organizerId, address, language)
         .then(logUpdateOrganizerJob);
   };
 
@@ -137,12 +139,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update contact info of a specific organizer.
    * @param {string} organizerId
    * @param {Array} contact
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerContact = function(organizerId, contact) {
+  service.updateOrganizerContact = function(organizerId, contact, language) {
     return udbApi
-        .updateOrganizerContact(organizerId, contact)
+        .updateOrganizerContact(organizerId, contact, language)
         .then(logUpdateOrganizerJob);
   };
 

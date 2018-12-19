@@ -223,11 +223,11 @@ function OrganizerFormController(
     }
 
     if (isNameChanged) {
-      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name));
+      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name, language));
     }
 
     if (isAddressChanged) {
-      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address));
+      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address, language));
     }
 
     if (isContactChanged) {

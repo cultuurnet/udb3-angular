@@ -53,6 +53,7 @@ describe('Controller: Organizer Form', function() {
   var id = '0823f57e-a6bd-450a-b4f5-8459b4b11043';
 
   var result = {commandId: 'c75003dd-cc77-4424-a186-66aa4abd917f'};
+  var language = 'nl';
 
   beforeEach(module('ui.router'));
   beforeEach(module('udb.organizers'));
@@ -390,6 +391,8 @@ describe('Controller: Organizer Form', function() {
       }
     ];
 
+    var language = 'nl';
+
     controller.organizersWebsiteFound = false;
     controller.websiteError = false;
     controller.urlError = false;
@@ -402,8 +405,8 @@ describe('Controller: Organizer Form', function() {
     $scope.$apply();
 
     expect(OrganizerManager.updateOrganizerWebsite).toHaveBeenCalledWith(id, controller.organizer.website);
-    expect(OrganizerManager.updateOrganizerName).toHaveBeenCalledWith(id, controller.organizer.name);
-    expect(OrganizerManager.updateOrganizerAddress).toHaveBeenCalledWith(id, controller.organizer.address);
+    expect(OrganizerManager.updateOrganizerName).toHaveBeenCalledWith(id, controller.organizer.name, language);
+    expect(OrganizerManager.updateOrganizerAddress).toHaveBeenCalledWith(id, controller.organizer.address, language);
     expect(OrganizerManager.updateOrganizerContact).toHaveBeenCalledWith(id, controller.contact);
     expect(OrganizerManager.removeOrganizerFromCache).toHaveBeenCalledWith(id);
     expect($state.go).toHaveBeenCalledWith('split.organizerDetail', {id: 'orgID'}, {reload:true});

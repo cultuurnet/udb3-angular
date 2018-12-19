@@ -3446,6 +3446,7 @@ angular.module('udb.core')
       'conditions': 'algemene voorwaarden',
       'copyright_info': 'Meer informatie over copyright',
       'description': 'Beschrijving',
+      'description_help': 'Maximum 250 karakters',
       'copyright': 'Copyright',
       'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
       'cancel': 'Annuleren',
@@ -3458,7 +3459,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Afbeelding info bewerken',
-        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking.',
+        'description_help': 'Een goede beschrijving van je afbeelding wordt gelezen door zoekmachines en gebruikers met een visuele beperking. (max. 250 karakters)',
         'save_error': 'Er ging iets mis bij het opslaan van de afbeelding.',
         'update': 'Bijwerken'
       },
@@ -4483,6 +4484,7 @@ angular.module('udb.core')
       'conditions': 'conditions générales',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
+      'description_help': 'Maximum 250 caractères',
       'copyright': 'Copyright',
       'copyright_help': 'Mentionnez le nom de photographe légitime. Introduisez seulement le nom de votre propre association ou organisation si vous êtes propriétaire vous-même des droits (au moins 3 caractères).',
       'cancel': 'Annuler',
@@ -4495,7 +4497,7 @@ angular.module('udb.core')
       },
       edit: {
         'title': 'Modifier l\'information de l\'image',
-        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants.',
+        'description_help': 'Une bonne description de l\'image est lue par les moteurs de recherche et des utilisateurs malvoyants. (max. 250 caractères)',
         'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'image.',
         'update': 'actualiser'
       },
@@ -5086,27 +5088,29 @@ function UdbApi(
   /**
    * @param {string} organizerId
    * @param {string} name
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerName = function(organizerId, name) {
+  this.updateOrganizerName = function(organizerId, name, language) {
     var params = {
       name: name
     };
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name', params, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/name/' + language, params, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
    * @param {string} organizerId
    * @param {Object} address
+   * @param {string} language
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
-  this.updateOrganizerAddress = function(organizerId, address) {
+  this.updateOrganizerAddress = function(organizerId, address, language) {
 
     return $http
-        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address', address, defaultApiConfig)
+        .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address/' + language, address, defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -5243,7 +5247,7 @@ function UdbApi(
   };
 
   /**
-   *
+   * @param {string} sapiVersion
    * @param {string} query
    * @param {string} [email]
    * @param {string} format
@@ -5253,9 +5257,10 @@ function UdbApi(
    * @param {Object} [customizations]
    * @return {*}
    */
-  this.exportEvents = function (query, email, format, properties, perDay, selection, customizations) {
+  this.exportEvents = function (sapiVersion, query, email, format, properties, perDay, selection, customizations) {
 
     var exportData = {
+      sapiVersion: sapiVersion,
       query: query,
       selection: _.map(selection, function (url) {
         return url.toString();
@@ -11412,7 +11417,8 @@ function EventFormImageEditController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyrightHolder && $scope.copyrightHolder.length >= 3;
+    return $scope.description && $scope.copyrightHolder &&
+        $scope.description.length <= 250 && $scope.copyrightHolder.length >= 3;
   }
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
@@ -11617,7 +11623,8 @@ function EventFormImageUploadController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyright && $scope.selectedFile && $scope.copyright.length >= 3;
+    return $scope.description && $scope.copyright && $scope.selectedFile &&
+        $scope.description.length <= 250 && $scope.copyright.length >= 3;
   }
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
@@ -14946,6 +14953,9 @@ function EventFormStep3Controller(
     var location = EventFormData.getLocation();
     location.id = '';
     location.name = '';
+    var city = {};
+    city.zip = location.address.postalCode;
+    city.name = location.address.addressLocality;
     EventFormData.setLocation(location);
 
     $scope.selectedLocation = false;
@@ -14953,6 +14963,7 @@ function EventFormStep3Controller(
     $scope.locationsSearched = false;
 
     controller.stepUncompleted();
+    controller.getLocations(city);
   }
 
   /**
@@ -15583,6 +15594,13 @@ function EventFormStep5Controller(
     $scope.usedBookingOption = _.findWhere($scope.bookingOptions[$scope.mainLanguage],
         {label: EventFormData.bookingInfo.urlLabel}
     );
+
+    // Quick fix for III-2791
+    if ($scope.usedBookingOption === undefined) {
+      $scope.usedBookingOption = _.findWhere($scope.bookingOptions[$scope.mainLanguage],
+          {value: 'reserve_places'}
+      );
+    }
 
     if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
       _.each($scope.translatableLanguages, function (language) {
@@ -16558,7 +16576,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
+function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, searchApiSwitcher) {
 
   var ex = this; // jshint ignore:line
 
@@ -16587,7 +16605,16 @@ function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
         details = null,
         user = $cookies.getObject('user');
 
-    var jobPromise = udbApi.exportEvents(queryString, email, format, properties, perDay, selection, customizations);
+    var jobPromise = udbApi.exportEvents(
+        getSapiVersion(),
+        queryString,
+        email,
+        format,
+        properties,
+        perDay,
+        selection,
+        customizations
+    );
     details = {
         format : format,
         user : user.id,
@@ -16603,8 +16630,15 @@ function eventExporter(jobLogger, udbApi, EventExportJob, $cookies) {
 
     return jobPromise;
   };
+
+  /**
+   * @returns {String}
+   */
+  function getSapiVersion() {
+    return 'v' + searchApiSwitcher.getApiVersion();
+  }
 }
-eventExporter.$inject = ["jobLogger", "udbApi", "EventExportJob", "$cookies"];
+eventExporter.$inject = ["jobLogger", "appConfig", "udbApi", "EventExportJob", "$cookies", "searchApiSwitcher"];
 })();
 
 // Source: src/export/export-formats.constant.js
@@ -21241,11 +21275,11 @@ function OrganizerFormController(
     }
 
     if (isNameChanged) {
-      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name));
+      promises.push(OrganizerManager.updateOrganizerName(organizerId, controller.organizer.name, language));
     }
 
     if (isAddressChanged) {
-      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address));
+      promises.push(OrganizerManager.updateOrganizerAddress(organizerId, controller.organizer.address, language));
     }
 
     if (isContactChanged) {
@@ -21438,12 +21472,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update the name of a specific organizer.
    * @param {string} organizerId
    * @param {string} name
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerName = function(organizerId, name) {
+  service.updateOrganizerName = function(organizerId, name, language) {
     return udbApi
-        .updateOrganizerName(organizerId, name)
+        .updateOrganizerName(organizerId, name, language)
         .then(logUpdateOrganizerJob);
   };
 
@@ -21451,12 +21486,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update the address of a specific organizer.
    * @param {string} organizerId
    * @param {Object} address
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerAddress = function(organizerId, address) {
+  service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
-        .updateOrganizerAddress(organizerId, address)
+        .updateOrganizerAddress(organizerId, address, language)
         .then(logUpdateOrganizerJob);
   };
 
@@ -21464,12 +21500,13 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    * Update contact info of a specific organizer.
    * @param {string} organizerId
    * @param {Array} contact
+   * @param {string} language
    *
    * @returns {Promise}
    */
-  service.updateOrganizerContact = function(organizerId, contact) {
+  service.updateOrganizerContact = function(organizerId, contact, language) {
     return udbApi
-        .updateOrganizerContact(organizerId, contact)
+        .updateOrganizerContact(organizerId, contact, language)
         .then(logUpdateOrganizerJob);
   };
 
@@ -28136,7 +28173,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"modal-body\">\n" +
     "\n" +
     "    <div>\n" +
-    "      <div class=\"form-group\">\n" +
+    "      <div class=\"form-group\" ng-class=\"{ 'has-error': description.length > 250 }\">\n" +
     "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
     "        <p class=\"help-block\" translate-once=\"images.edit.description_help\"></p>\n" +
@@ -28233,9 +28270,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <p class=\"help-block\" translate-once=\"images.upload.max_filesize\" translate-values=\"{ maxFileSize: '{{maxFileSize}}' }\"></p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
+    "      <div class=\"form-group\" ng-class=\"{ 'has-error': description.length > 250 }\">\n" +
     "        <label><span translate-once=\"images.description\"></span> <strong class=\"text-danger\">*</strong></label>\n" +
     "        <input type=\"text\" class=\"form-control\" ng-model=\"description\" required>\n" +
+    "        <p class=\"help-block\" translate-once=\"images.description_help\"></p>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
@@ -28387,7 +28425,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <form name=\"organizerForm\" class=\"organizer-form\">\n" +
     "      <p class=\"alert alert-info\" translate-once=\"organizer.modal.unique_notice\"></p>\n" +
     "      <div class=\"form-group has-feedback\"\n" +
-    "           ng-class=\"{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }\">\n" +
+    "           ng-class=\"{'has-warning' : organizersWebsiteFound || (organizerForm.website.$error.required && organizerForm.website.$dirty) || (organizerForm.website.$error.pattern && organizerForm.website.$dirty) }\">\n" +
     "        <label class=\"control-label\" for=\"organizer-website\" translate-once=\"organizer.modal.website\"></label>\n" +
     "        <input type=\"url\"\n" +
     "               id=\"organizer-website\"\n" +
@@ -28398,6 +28436,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               aria-describedby=\"organizer-website-status\"\n" +
     "               ng-change=\"validateWebsite()\"\n" +
     "               autocomplete=\"off\"\n" +
+    "               udb-http-prefix\n" +
+    "               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\"\n" +
     "               required>\n" +
     "        <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
     "        <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
@@ -28410,6 +28450,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    translate-values=\"{ organizerName: '{{firstOrganizerFound.name}}' }\"></span>\n" +
     "            </a>.\n" +
     "          </p>\n" +
+    "          <div class=\"help-block\" ng-messages=\"organizerForm.website.$error\" ng-show=\"organizerForm.website.$dirty && organizerForm.website.$error\">\n" +
+    "            <p ng-message=\"required\">\n" +
+    "              <span translate-once=\"organizer.contact.required\"></span>\n" +
+    "            </p>\n" +
+    "            <p ng-message=\"pattern\">\n" +
+    "              <span translate-once=\"organizer.contact.valid_url\"></span>\n" +
+    "            </p>\n" +
+    "          </div>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
@@ -28482,7 +28530,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"cancel()\" translate-once=\"organizer.modal.close\"></button>\n" +
     "  <button type=\"button\"\n" +
     "          class=\"btn btn-primary organisator-toevoegen-bewaren\"\n" +
-    "          ng-disabled=\"disableSubmit || contactError\"\n" +
+    "          ng-disabled=\"disableSubmit || contactError || organizerForm.website.$invalid\"\n" +
     "          ng-click=\"validateNewOrganizer()\">\n" +
     "    <span translate-once=\"organizer.modal.save\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "  </button>\n" +
@@ -31395,7 +31443,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
     "              <ng-form name=\"urlContactForm\">\n" +
-    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
