@@ -13812,7 +13812,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
       if (formData.calendar.calendarType === 'periodic') {
         formData.calendar.startDate = moment().startOf('day').toDate();
-        formData.calendar.endDate = moment().add(1, 'y').startOf('day').toDate();
+        if (appConfig.addOffer.defaultEndPeriod) {
+          var defaultEndPeriod = appConfig.addOffer.defaultEndPeriod;
+          formData.calendar.endDate =
+              moment(formData.calendar.startDate).add(defaultEndPeriod, 'd').startOf('day').toDate();
+        } else {
+          formData.calendar.endDate = moment().add(1, 'y').startOf('day').toDate();
+        }
         formData.timingChanged();
       }
 
