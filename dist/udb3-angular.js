@@ -7345,10 +7345,11 @@ angular
 /**
  * @ngInject
  */
-function EventCultuurKuurComponentController(appConfig) {
+function EventCultuurKuurComponentController(appConfig, uitidAuth) {
   var cm = this,
       cultuurkuurUrl = _.get(appConfig, 'cultuurkuurUrl');
 
+  cm.user = uitidAuth.getUser();
   cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id + getUTMParameters('preview1.0');
   cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
   cm.continueLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('continue1.0');
@@ -7366,11 +7367,11 @@ function EventCultuurKuurComponentController(appConfig) {
     return '?utm_source=uitdatabank.be' +
     '&utm_medium=referral' +
     '&utm_campaign=udb3' +
-    '&utm_content=' +
-    type;
+    '&utm_content=' + type +
+    '&uid=' + cm.user.id;
   }
 }
-EventCultuurKuurComponentController.$inject = ["appConfig"];
+EventCultuurKuurComponentController.$inject = ["appConfig", "uitidAuth"];
 })();
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
