@@ -100,6 +100,13 @@ function EventFormStep5Controller(
         {label: EventFormData.bookingInfo.urlLabel}
     );
 
+    // Quick fix for III-2791
+    if ($scope.usedBookingOption === undefined) {
+      $scope.usedBookingOption = _.findWhere($scope.bookingOptions[$scope.mainLanguage],
+          {value: 'reserve_places'}
+      );
+    }
+
     if (typeof EventFormData.bookingInfo.urlLabel === 'string') {
       _.each($scope.translatableLanguages, function (language) {
         $scope.bookingModel.urlLabel[language] = _.findWhere($scope.bookingOptions[language],
@@ -265,7 +272,7 @@ function EventFormStep5Controller(
       if (appConfig.offerEditor.excludeOrganizerLabel && appConfig.offerEditor.excludeOrganizerLabel !== '') {
         suitableOrganizers = _.filter(suitableOrganizers, function(organizer) {
           if (organizer.labels && organizer.labels.length > 0) {
-            return organizer.labels.indexOf(appConfig.offerEditor.excludeOrganizerLabel) !== -1;
+            return organizer.labels.indexOf(appConfig.offerEditor.excludeOrganizerLabel) < 0;
           } else {
             return true;
           }
