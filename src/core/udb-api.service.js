@@ -1115,21 +1115,58 @@ function UdbApi(
   };
 
   /**
+   *
    * @param {uuid}    roleId
+   * @param {string}  version
    * @param {string}  constraint
-   * @return {Promise.<Object|ApiProblem>} Object containing created roleId
+   * @return {Promise.<Object|ApiProblem>} Object containing created constraint.
    */
-  this.updateRoleConstraint = function (roleId, constraint) {
+  this.createRoleConstraint = function (roleId, version, constraint) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
-    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=SetConstraint';
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=addConstraint';
 
-    var updateData = {
-      'constraint': constraint
+    var constraintData = {
+      query: constraint
     };
 
     return $http
-      .patch(appConfig.baseUrl + 'roles/' + roleId, updateData, requestOptions)
-      .then(returnUnwrappedData, returnApiProblem);
+        .post(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, constraintData, requestOptions)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {uuid}    roleId
+   * @param {string}  version
+   * @param {string}  constraint
+   * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
+   */
+  this.updateRoleConstraint = function (roleId, version, constraint) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=updateConstraint';
+
+    var updateData = {
+      query: constraint
+    };
+
+    return $http
+        .put(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, updateData, requestOptions)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   *
+   * @param {uuid}    roleId
+   * @param {string}  version
+   * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
+   */
+  this.removeRoleConstraint = function (roleId, version) {
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=removeConstraint';
+
+    return $http
+        .delete(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, requestOptions)
+        .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
