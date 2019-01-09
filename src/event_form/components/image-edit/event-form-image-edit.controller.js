@@ -66,6 +66,7 @@ function EventFormImageEditController(
   }
 
   function allFieldsValid() {
-    return $scope.description && $scope.copyrightHolder && $scope.copyrightHolder.length >= 3;
+    return $scope.description && $scope.copyrightHolder &&
+        $scope.description.length <= 250 && $scope.copyrightHolder.length >= 3;
   }
 }
