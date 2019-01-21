@@ -10336,6 +10336,7 @@ function EventDetail(
   var activeTabId = 'data';
   var controller = this;
   var disableVariations = _.get(appConfig, 'disableVariations');
+  $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
@@ -27897,7 +27898,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
     "                <td>\n" +
     "                  <p ng-bind=\"::translateAudience(event.audience.audienceType)\"></p>\n" +
-    "                  <udb-event-cultuurkuur-component event=\"event\" permission=\"::permissions.editing\" ></udb-event-cultuurkuur-component>\n" +
+    "                  <udb-event-cultuurkuur-component\n" +
+    "                          ng-if=\"::cultuurkuurEnabled\"\n" +
+    "                          event=\"event\"\n" +
+    "                          permission=\"::permissions.editing\" >\n" +
+    "                  </udb-event-cultuurkuur-component>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
