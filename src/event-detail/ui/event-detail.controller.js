@@ -33,6 +33,7 @@ function EventDetail(
   var activeTabId = 'data';
   var controller = this;
   var disableVariations = _.get(appConfig, 'disableVariations');
+  $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
