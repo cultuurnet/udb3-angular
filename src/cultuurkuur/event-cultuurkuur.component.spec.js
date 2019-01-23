@@ -3,6 +3,8 @@
 describe('Event Cultuurkuur Component', function () {
   var $componentController;
   var UdbEvent;
+  var uitidAuth;
+  var appConfig;
   var exampleEventJson = {
         "@id": "http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc",
         "@context": "/api/1.0/event.jsonld",
@@ -143,8 +145,13 @@ describe('Event Cultuurkuur Component', function () {
         "workflowStatus": "DRAFT"
       };
 
+  var user = {
+    nick: 'user-name',
+    id: '1234567890'
+  };
+
   beforeEach(module('udb.cultuurkuur', function ($provide) {
-    var appConfig = {
+    appConfig = {
       cultuurkuurUrl: 'http://dev.cultuurkuur.be/'
     };
 
@@ -154,16 +161,22 @@ describe('Event Cultuurkuur Component', function () {
   beforeEach(inject(function ($injector) {
     $componentController = $injector.get('$componentController');
     UdbEvent = $injector.get('UdbEvent');
-
+    uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser']);
+    uitidAuth.getUser.and.returnValue(user);
   }));
 
   function getComponentController(event,permission) {
-    var bindings = {
-      event : event,
-     permission: permission
+    var locals = {
+      appConfig: appConfig,
+      uitidAuth: uitidAuth
     };
 
-    return $componentController('udbEventCultuurkuurComponent', {}, bindings);
+    var bindings = {
+      event : event,
+      permission: permission
+    };
+
+    return $componentController('udbEventCultuurkuurComponent', locals, bindings);
   }
 
   it('should have a previewLink and editLink', function () {
@@ -172,8 +185,11 @@ describe('Event Cultuurkuur Component', function () {
     var controller = getComponentController(event,permission);
 
     expect(controller.previewLink).toContain('preview');
+    expect(controller.previewLink).toContain('1234567890');
     expect(controller.editLink).toContain('edit');
+    expect(controller.editLink).toContain('1234567890');
     expect(controller.continueLink).toContain('continue');
+    expect(controller.continueLink).toContain('1234567890');
   });
 
   it('should show CultuurKuur as incomplete if no educationfields/levels', function () {
