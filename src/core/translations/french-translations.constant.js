@@ -990,7 +990,9 @@ angular.module('udb.core')
       'Thema onbepaald': 'Thème non défini',
       'Circus': 'Cirque',
       'Voeding': 'Nutrition',
-      'Economie': 'Économie'
+      'Economie': 'Économie',
+      'Themakamp': 'Camp thématique',
+      'Taal': 'Langue et communication'
     },
     offerThemesGroups: {
       'Dans': 'Dance',

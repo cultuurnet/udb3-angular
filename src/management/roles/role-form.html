@@ -47,28 +47,72 @@
     </div>
     <div class="row" ng-show="editor.role['uuid']">
         <div class="col-md-12">
-            <div class="form-group" udb-form-group ng-if="!editor.editConstraint">
-              <label class="control-label">Bewerkrecht</label>
-              <p><span ng-bind="editor.role.constraint"></span>
-              <a href ng-click="editor.editConstraint = true">Wijzigen</a></p>
+            <div class="form-group" udb-form-group ng-if="!editor.editConstraintV2">
+              <label class="control-label">Bewerkrecht v2</label>
+              <p><span ng-bind="editor.role.constraints.v2"></span>
+              <a href ng-click="editor.editConstraintV2 = true">Wijzigen</a>
+              <a href ng-click="editor.removeConstraint('v2')" ng-if="editor.constraintExists('v2')">Verwijderen</a></p>
             </div>
-            <div class="form-group" udb-form-group ng-if="editor.editConstraint">
-                <label class="control-label" for="label-name-field">Bewerkrecht</label>
-                <input id="label-name-field"
-                       class="form-control"
-                       name="constraint"
-                       type="text"
-                       ng-maxlength="255"
-                       ng-model="editor.role.constraint"
-                       ng-disabled="editor.saving">
+            <div ng-if="editor.editConstraintV2">
+                <div class="form-group" udb-form-group>
+                    <label class="control-label" for="label-name-field">Bewerkrecht v2</label>
+                    <input id="constraint-v2-field"
+                           class="form-control"
+                           name="constraintv2"
+                           type="text"
+                           ng-maxlength="255"
+                           ng-model="editor.role.constraints.v2"
+                           ng-disabled="editor.saving">
+                </div>
+                <button ng-disabled="!editor.form.$valid || editor.saving"
+                  type="button"
+                  class="btn btn-primary"
+                  ng-if="::editor.constraintExists('v2')"
+                  ng-click="editor.updateConstraint('v2')">
+                  Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+                </button>
+                <button ng-disabled="!editor.form.$valid || editor.saving"
+                        type="button"
+                        class="btn btn-primary"
+                        ng-if="::!editor.constraintExists('v2')"
+                        ng-click="editor.createConstraint('v2')">
+                    Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+                </button>
             </div>
-            <button ng-disabled="!editor.form.$valid || editor.saving"
-              type="button"
-              class="btn btn-primary"
-              ng-if="editor.editConstraint"
-              ng-click="editor.updateConstraint()">
-              Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
-            </button>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group" udb-form-group ng-if="!editor.editConstraintV3">
+                <label class="control-label">Bewerkrecht v3</label>
+                <p><span ng-bind="editor.role.constraints.v3"></span>
+                    <a href ng-click="editor.editConstraintV3 = true">Wijzigen</a>
+                    <a href ng-click="editor.removeConstraint('v3')" ng-if="editor.constraintExists('v3')">Verwijderen</a></p>
+            </div>
+            <div ng-if="editor.editConstraintV3">
+                <div class="form-group" udb-form-group>
+                    <label class="control-label" for="label-name-field">Bewerkrecht v3</label>
+                    <input id="constraint-v3-field"
+                           class="form-control"
+                           name="constraintv3"
+                           type="text"
+                           ng-maxlength="255"
+                           ng-model="editor.role.constraints.v3"
+                           ng-disabled="editor.saving">
+                </div>
+                <button ng-disabled="!editor.form.$valid || editor.saving"
+                        type="button"
+                        class="btn btn-primary"
+                        ng-if="::editor.constraintExists('v3')"
+                        ng-click="editor.updateConstraint('v3')">
+                    Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+                </button>
+                <button ng-disabled="!editor.form.$valid || editor.saving"
+                        type="button"
+                        class="btn btn-primary"
+                        ng-if="::!editor.constraintExists('v3')"
+                        ng-click="editor.createConstraint('v3')">
+                    Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+                </button>
+            </div>
         </div>
     </div>
     <div class="row" ng-show="editor.role['uuid']">
