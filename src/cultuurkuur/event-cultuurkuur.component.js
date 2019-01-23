@@ -38,7 +38,6 @@ function EventCultuurKuurComponentController(appConfig) {
     cm.cultuurkuurMessage = _.get(appConfig, 'cultuurkuur.cultuurkuurMessage');
   }
 
-
   function getUTMParameters(type) {
     return '?utm_source=uitdatabank.be' +
         '&utm_medium=referral' +
