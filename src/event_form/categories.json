@@ -481,6 +481,14 @@
         {
           "id": "1.21.0.0.0",
           "label": "Technologie"
+        },
+        {
+          "id": "1.11.2.0.0",
+          "label": "Themakamp"
+        },
+        {
+          "id": "1.11.1.0.0",
+          "label": "Taal"
         }
       ]
     },
