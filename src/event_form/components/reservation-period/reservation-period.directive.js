@@ -15,6 +15,9 @@ function ReservationPeriodDirective() {
 
   return {
     restrict: 'AE',
+    scope: {
+      onBookingPeriodSaved: '&'
+    },
     controller: 'ReservationPeriodController',
     templateUrl: 'templates/reservation-period.html'
   };
