@@ -89,7 +89,9 @@ describe('Controller: Roles Form', function() {
       'removePermissionFromRole',
       'addUserToRole',
       'updateRoleName',
+      'createRoleConstraint',
       'updateRoleConstraint',
+      'removeRoleConstraint',
       'addLabelToRole',
       'getRoleLabels',
       'removeLabelFromRole',
@@ -173,6 +175,27 @@ describe('Controller: Roles Form', function() {
     expect(editor.saving).toEqual(false);
   });
 
+  it('should create a constraint of the role', function() {
+    getMockups();
+
+    $stateParams = { "id": id};
+
+    var editor = getController();
+
+    $scope.$digest();
+    editor.role.constraints = {
+      v2: 'Ander constraint'
+    };
+    RoleManager.createRoleConstraint.and.returnValue($q.resolve());
+
+    editor.createConstraint('v2');
+    $scope.$digest();
+
+    expect(RoleManager.createRoleConstraint).toHaveBeenCalledWith(id, 'v2', 'Ander constraint');
+    expect(editor.editConstraintV2).toEqual(false);
+    expect(editor.saving).toEqual(false);
+  });
+
   it('should update the constraint of the role', function() {
     getMockups();
 
@@ -181,14 +204,34 @@ describe('Controller: Roles Form', function() {
     var editor = getController();
 
     $scope.$digest();
-    editor.role.constraint = "Ander constraint";
+    editor.role.constraints = {
+      v2: 'Ander constraint'
+    };
     RoleManager.updateRoleConstraint.and.returnValue($q.resolve());
 
-    editor.updateConstraint();
+    editor.updateConstraint('v2');
     $scope.$digest();
 
-    expect(RoleManager.updateRoleConstraint).toHaveBeenCalledWith(id, "Ander constraint");
-    expect(editor.editConstraint).toEqual(false);
+    expect(RoleManager.updateRoleConstraint).toHaveBeenCalledWith(id, 'v2', 'Ander constraint');
+    expect(editor.editConstraintV2).toEqual(false);
+    expect(editor.saving).toEqual(false);
+  });
+
+  it('should remove the constraint of the role', function() {
+    getMockups();
+
+    $stateParams = { "id": id};
+
+    var editor = getController();
+
+    $scope.$digest();
+    RoleManager.removeRoleConstraint.and.returnValue($q.resolve());
+
+    editor.removeConstraint('v2');
+    $scope.$digest();
+
+    expect(RoleManager.removeRoleConstraint).toHaveBeenCalledWith(id, 'v2');
+    expect(editor.editConstraintV2).toEqual(false);
     expect(editor.saving).toEqual(false);
   });
 

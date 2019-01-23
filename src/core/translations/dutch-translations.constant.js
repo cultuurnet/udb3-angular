@@ -1001,7 +1001,9 @@ angular.module('udb.core')
       'Natuur': 'Natuur',
       'Sport': 'Sport',
       'Technologie': 'Technologie',
-      'Koken': 'Koken'
+      'Koken': 'Koken',
+      'Themakamp': 'Themakamp',
+      'Taal': 'Taal en communicatie'
     },
     offerThemesGroups: {
       'Dans': 'Dans',
