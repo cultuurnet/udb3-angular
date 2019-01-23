@@ -990,7 +990,9 @@ angular.module('udb.core')
       'Thema onbepaald': 'Thème non défini',
       'Circus': 'Cirque',
       'Voeding': 'Nutrition',
-      'Economie': 'Économie'
+      'Economie': 'Économie',
+      'Themakamp': 'Camp thématique',
+      'Taal': 'Langue et communication'
     },
     offerThemesGroups: {
       'Dans': 'Dance',
@@ -1028,6 +1030,10 @@ angular.module('udb.core')
         label: 'dim.',
         name: 'Dimanche'
       }
+    },
+    search: {
+      exportButton: 'Activités d\'exportation',
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
   }
 );

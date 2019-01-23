@@ -1001,7 +1001,9 @@ angular.module('udb.core')
       'Natuur': 'Natuur',
       'Sport': 'Sport',
       'Technologie': 'Technologie',
-      'Koken': 'Koken'
+      'Koken': 'Koken',
+      'Themakamp': 'Themakamp',
+      'Taal': 'Taal en communicatie'
     },
     offerThemesGroups: {
       'Dans': 'Dans',
@@ -1039,6 +1041,10 @@ angular.module('udb.core')
         label: 'Zo',
         name: 'Zondag'
       }
+    },
+    search: {
+      exportButton: 'Activiteiten exporteren',
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
   }
 );

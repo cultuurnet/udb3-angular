@@ -203,7 +203,9 @@ function SearchController(
         .value();
 
       if (!selectedIds.length) {
-        $window.alert('First select the events you want to label.');
+        $window.alert(
+            $translate.instant('search.modal')
+        );
         return;
       } else {
         eventCount = selectedIds.length;
