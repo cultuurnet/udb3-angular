@@ -1030,6 +1030,10 @@ angular.module('udb.core')
         label: 'dim.',
         name: 'Dimanche'
       }
+    },
+    search: {
+      exportButton: 'Activités d\'exportation',
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
   }
 );
