@@ -992,7 +992,7 @@ angular.module('udb.core')
       'Voeding': 'Nutrition',
       'Economie': 'Économie',
       'Themakamp': 'Camp thématique',
-      'Taal': 'Langue et communication'
+      'Taal en communicatie': 'Langue'
     },
     offerThemesGroups: {
       'Dans': 'Dance',
