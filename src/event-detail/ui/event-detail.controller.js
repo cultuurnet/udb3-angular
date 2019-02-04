@@ -90,7 +90,7 @@ function EventDetail(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints[$scope.apiVersion]) {
+      if (role.constraints && role.constraints[$scope.apiVersion]) {
         query += (query ? ' OR ' : '') + '(' + role.constraints[$scope.apiVersion] + ')';
       }
     });

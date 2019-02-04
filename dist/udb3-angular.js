@@ -10405,7 +10405,7 @@ function EventDetail(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints[$scope.apiVersion]) {
+      if (role.constraints && role.constraints[$scope.apiVersion]) {
         query += (query ? ' OR ' : '') + '(' + role.constraints[$scope.apiVersion] + ')';
       }
     });
@@ -17497,7 +17497,7 @@ function listItems(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints[apiVersion]) {
+      if (role.constraints !== undefined && role.constraints[apiVersion]) {
         query += (query ? ' OR ' : '') + role.constraints[apiVersion];
       }
     });
