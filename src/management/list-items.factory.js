@@ -47,7 +47,7 @@ function listItems(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints[apiVersion]) {
+      if (role.constraints !== undefined && role.constraints[apiVersion]) {
         query += (query ? ' OR ' : '') + role.constraints[apiVersion];
       }
     });

@@ -1,7 +1,12 @@
 'use strict';
 
 describe('Factory: List Items', function () {
-  var authorizationService, ModerationService, $q, $scope, managementListItems;
+  var authorizationService,
+      ModerationService,
+      $q,
+      $scope,
+      managementListItems,
+      searchApiSwitcher;
 
   var permissions = [
     'AANBOD_BEWERKEN',
@@ -19,7 +24,9 @@ describe('Factory: List Items', function () {
         "AANBOD_MODEREREN",
         "AANBOD_VERWIJDEREN"
       ],
-      "constraint": "city:leuven"
+      "constraints": {
+        "v2": "city:leuven"
+      }
     }
   ];
 
@@ -77,10 +84,12 @@ describe('Factory: List Items', function () {
   beforeEach(function () {
     authorizationService = jasmine.createSpyObj('authorizationService', ['getPermissions']);
     ModerationService = jasmine.createSpyObj('ModerationService', ['getMyRoles', 'find']);
+    searchApiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['getApiVersion']);
 
     module(function($provide) {
       $provide.value('authorizationService', authorizationService);
       $provide.value('ModerationService', ModerationService);
+      $provide.value('searchApiSwitcher', searchApiSwitcher);
     });
   });
 
@@ -92,6 +101,7 @@ describe('Factory: List Items', function () {
       authorizationService.getPermissions.and.returnValue($q.resolve(permissions));
       ModerationService.getMyRoles.and.returnValue($q.resolve(roles));
       ModerationService.find.and.returnValue($q.resolve(resultset));
+      searchApiSwitcher.getApiVersion.and.returnValue('2');
 
       managementListItems = $injector.get('managementListItems');
     });
@@ -144,6 +154,7 @@ describe('Factory: List Items', function () {
         }
       ]));
       ModerationService.find.and.returnValue($q.resolve(resultset));
+      searchApiSwitcher.getApiVersion.and.returnValue('2');
 
       managementListItems = $injector.get('managementListItems');
     });
@@ -173,7 +184,9 @@ describe('Factory: List Items', function () {
             "AANBOD_MODEREREN",
             "AANBOD_VERWIJDEREN"
           ],
-          "constraint": "city:leuven"
+          "constraints": {
+            "v2": "city:leuven"
+          }
         },
         {
           "uuid": "89cd17af-d72a-42ec-8897-6159a7a62a22",
@@ -186,6 +199,7 @@ describe('Factory: List Items', function () {
         }
       ]));
       ModerationService.find.and.returnValue($q.resolve(resultset));
+      searchApiSwitcher.getApiVersion.and.returnValue('2');
 
       managementListItems = $injector.get('managementListItems');
     });
