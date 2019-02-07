@@ -4,7 +4,7 @@ describe('Controller: reservation period directive', function () {
 
   beforeEach(module('udb.event-form'));
 
-  var $controller, reservationPeriodController, scope, rootScope, EventFormData, $q, eventCrud;
+  var $controller, reservationPeriodController, scope, rootScope, EventFormData, $q;
 
   beforeEach(inject(function ($rootScope, $injector) {
     $controller = $injector.get('$controller');
@@ -12,26 +12,17 @@ describe('Controller: reservation period directive', function () {
     rootScope = $rootScope;
     EventFormData = $injector.get('EventFormData');
     $q = $injector.get('$q');
-    eventCrud = jasmine.createSpyObj('eventCrud', ['updateBookingInfo']);
     reservationPeriodController = getController();
+    scope.onBookingPeriodSaved = jasmine.createSpy('onBookingPeriodSaved');
   }));
 
   function getController() {
     return $controller('ReservationPeriodController', {
       $scope: scope,
       EventFormData: EventFormData,
-      eventCrud: eventCrud,
       $rootScope: rootScope
     });
   }
-
-  it ('should fire an emit when saving the bookingPeriod', function() {
-    spyOn(rootScope, '$emit');
-
-    reservationPeriodController.bookingPeriodSaved();
-
-    expect(rootScope.$emit).toHaveBeenCalledWith('bookingPeriodSaved', EventFormData);
-  });
 
   it ('should fail in validating the booking period', function () {
     scope.availabilityStarts = new Date('02/09/2016');
@@ -45,7 +36,6 @@ describe('Controller: reservation period directive', function () {
   it ('should validate the booking period', function () {
     scope.availabilityEnds = new Date('02/09/2016');
     scope.availabilityStarts = new Date('02/07/2016');
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
 
     scope.validateBookingPeriod();
 
@@ -56,17 +46,12 @@ describe('Controller: reservation period directive', function () {
     scope.availabilityEnds = moment(new Date('02/09/2016')).format();
     scope.availabilityStarts = moment(new Date('02/07/2016')).format();
 
-    spyOn(reservationPeriodController, 'bookingPeriodSaved');
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
-
     scope.saveBookingPeriod();
     scope.$digest();
 
     expect(EventFormData.bookingInfo.availabilityStarts).toEqual(scope.availabilityStarts);
     expect(EventFormData.bookingInfo.availabilityEnds).toEqual(scope.availabilityEnds);
-    expect(reservationPeriodController.bookingPeriodSaved).toHaveBeenCalled();
-    expect(scope.bookingPeriodInfoCssClass).toEqual('state-complete');
-    expect(scope.savingBookingPeriodInfo).toBeFalsy();
+    expect(scope.onBookingPeriodSaved).toHaveBeenCalled();
     expect(scope.bookingPeriodInfoError).toBeFalsy();
   });
 
@@ -74,23 +59,17 @@ describe('Controller: reservation period directive', function () {
     scope.availabilityEnds = moment(new Date('02/09/2016')).format();
     scope.availabilityStarts = moment(new Date('02/07/2016')).format();
 
-    spyOn(reservationPeriodController, 'bookingPeriodSaved');
-    eventCrud.updateBookingInfo.and.returnValue($q.reject());
-
     scope.saveBookingPeriod();
     scope.$digest();
 
     expect(EventFormData.bookingInfo.availabilityStarts).toEqual(scope.availabilityStarts);
     expect(EventFormData.bookingInfo.availabilityEnds).toEqual(scope.availabilityEnds);
-    expect(scope.savingBookingPeriodInfo).toBeFalsy();
-    expect(scope.bookingPeriodInfoError).toBeTruthy();
   });
 
   it ('should delete the booking period', function () {
     scope.availabilityEnds = new Date('02/09/2016');
     scope.availabilityStarts = new Date('02/07/2016');
 
-    eventCrud.updateBookingInfo.and.returnValue($q.resolve());
     scope.deleteBookingPeriod();
 
     expect(scope.availabilityStarts).toEqual('');

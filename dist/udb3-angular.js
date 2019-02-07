@@ -12834,14 +12834,11 @@ angular
   .controller('ReservationPeriodController', ReservationPeriodController);
 
 /* @ngInject */
-function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScope) {
+function ReservationPeriodController($scope, EventFormData, $rootScope) {
 
   var controller = this;
 
   $scope.haveBookingPeriod = false;
-  $scope.bookingPeriodInfoCssClass = 'state-incomplete';
-  $scope.savingBookingPeriodInfo = false;
-  $scope.bookingPeriodInfoError = false;
   $scope.availabilityStarts = '';
   $scope.availabilityEnds = '';
   $scope.errorMessage = '';
@@ -12869,10 +12866,6 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
 
   initBookingPeriodForm();
 
-  controller.bookingPeriodSaved = function () {
-    $rootScope.$emit('bookingPeriodSaved', EventFormData);
-  };
-
   function validateBookingPeriod() {
     if ($scope.availabilityStarts > $scope.availabilityEnds) {
       $scope.errorMessage = 'De gekozen einddatum moet na de startdatum vallen.';
@@ -12891,19 +12884,7 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
       EventFormData.bookingInfo.availabilityEnds = '';
     }
 
-    $scope.savingBookingPeriodInfo = true;
-    $scope.bookingPeriodInfoError = false;
-
-    var promise = eventCrud.updateBookingInfo(EventFormData);
-    promise.then(function() {
-      controller.bookingPeriodSaved();
-      $scope.bookingPeriodInfoCssClass = 'state-complete';
-      $scope.savingBookingPeriodInfo = false;
-      $scope.bookingPeriodInfoError = false;
-    }, function() {
-      $scope.savingBookingPeriodInfo = false;
-      $scope.bookingPeriodInfoError = true;
-    });
+    $scope.onBookingPeriodSaved();
   }
 
   function deleteBookingPeriod() {
@@ -12948,7 +12929,7 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
     }
   }
 }
-ReservationPeriodController.$inject = ["$scope", "EventFormData", "eventCrud", "$rootScope"];
+ReservationPeriodController.$inject = ["$scope", "EventFormData", "$rootScope"];
 })();
 
 // Source: src/event_form/components/reservation-period/reservation-period.directive.js
@@ -12970,6 +12951,9 @@ function ReservationPeriodDirective() {
 
   return {
     restrict: 'AE',
+    scope: {
+      onBookingPeriodSaved: '&'
+    },
     controller: 'ReservationPeriodController',
     templateUrl: 'templates/reservation-period.html'
   };
@@ -16355,8 +16339,6 @@ function EventFormStep5Controller(
     }
 
     return _.findWhere(labels, {value: label}).label;
-
-    //return $translate.instant('eventForm.step5.' + label);
   }
 
 }
@@ -30029,7 +30011,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <div class=\"row extra-tickets-periode\"\n" +
     "                   ng-show=\"hasBookingInfo()\">\n" +
     "                  <div class=\"extra-task\">\n" +
-    "                      <udb-reservation-period></udb-reservation-period>\n" +
+    "                      <udb-reservation-period on-booking-period-saved=\"saveBookingInfo()\"></udb-reservation-period>\n" +
     "                  </div>\n" +
     "              </div>\n" +
     "\n" +
