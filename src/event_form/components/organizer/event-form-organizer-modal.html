@@ -10,7 +10,7 @@
     <form name="organizerForm" class="organizer-form">
       <p class="alert alert-info" translate-once="organizer.modal.unique_notice"></p>
       <div class="form-group has-feedback"
-           ng-class="{'has-warning' : organizersWebsiteFound || organizerForm.website.$error.required }">
+           ng-class="{'has-warning' : organizersWebsiteFound || (organizerForm.website.$error.required && organizerForm.website.$dirty) || (organizerForm.website.$error.pattern && organizerForm.website.$dirty) }">
         <label class="control-label" for="organizer-website" translate-once="organizer.modal.website"></label>
         <input type="url"
                id="organizer-website"
@@ -21,6 +21,8 @@
                aria-describedby="organizer-website-status"
                ng-change="validateWebsite()"
                autocomplete="off"
+               udb-http-prefix
+               ng-pattern="/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-\/]*$/"
                required>
         <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
         <span id="organizer-website-status" class="sr-only">(warning)</span>
@@ -33,6 +35,14 @@
                     translate-values="{ organizerName: '{{firstOrganizerFound.name}}' }"></span>
             </a>.
           </p>
+          <div class="help-block" ng-messages="organizerForm.website.$error" ng-show="organizerForm.website.$dirty && organizerForm.website.$error">
+            <p ng-message="required">
+              <span translate-once="organizer.contact.required"></span>
+            </p>
+            <p ng-message="pattern">
+              <span translate-once="organizer.contact.valid_url"></span>
+            </p>
+          </div>
       </div>
 
       <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
@@ -105,7 +115,7 @@
   <button type="button" class="btn btn-default" ng-click="cancel()" translate-once="organizer.modal.close"></button>
   <button type="button"
           class="btn btn-primary organisator-toevoegen-bewaren"
-          ng-disabled="disableSubmit || contactError"
+          ng-disabled="disableSubmit || contactError || organizerForm.website.$invalid"
           ng-click="validateNewOrganizer()">
     <span translate-once="organizer.modal.save"></span> <i class="fa fa-circle-o-notch fa-spin" ng-show="saving"></i>
   </button>

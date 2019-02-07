@@ -34,6 +34,9 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
     .then(function(offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
+      if (_.isEmpty(moc.offer.description)) {
+        moc.offer.description = '';
+      }
     })
     .catch(showLoadingError)
     .finally(function() {

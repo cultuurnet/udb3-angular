@@ -19,7 +19,9 @@ describe('Controller: Event Detail', function() {
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Moderator Leuven",
-      "constraint": "city:leuven",
+      "constraints": {
+        "v2": "city:leuven"
+      },
       "permissions": [
         "AANBOD_MODEREREN"
       ]
@@ -27,7 +29,9 @@ describe('Controller: Event Detail', function() {
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
       "name": "Beheerder Leuven",
-      "constraint": "city:leuven",
+      "constraints": {
+        "v2": "city:leuven"
+      },
       "permissions": [
         "GEBRUIKERS_BEHEREN"
       ]

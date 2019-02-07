@@ -25,7 +25,9 @@ describe('Service: Role Manager', function () {
       'removePermissionFromRole',
       'addUserToRole',
       'updateRoleName',
+      'createRoleConstraint',
       'updateRoleConstraint',
+      'removeRoleConstraint',
       'removeLabelFromRole',
       'removeUserFromRole'
     ]);
@@ -241,6 +243,25 @@ describe('Service: Role Manager', function () {
     $scope.$apply();
   });
 
+  it('should add a constraint of a role', function(done) {
+    var expectedCommandId = {
+      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    udbApi.createRoleConstraint.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertRole(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+        .createRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v2', 'andere constraint')
+        .then(assertRole);
+
+    $scope.$apply();
+  });
+
   it('should update the constraint of a role', function(done) {
     var expectedCommandId = {
       "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
@@ -254,8 +275,27 @@ describe('Service: Role Manager', function () {
     }
 
     service
-      .updateRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'andere constraint')
+      .updateRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v2', 'andere constraint')
       .then(assertRole);
+
+    $scope.$apply();
+  });
+
+  it('should remove the constraint of a role', function(done) {
+    var expectedCommandId = {
+      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
+    };
+
+    udbApi.removeRoleConstraint.and.returnValue($q.resolve(expectedCommandId));
+
+    function assertRole(job) {
+      expect(job.id).toEqual(expectedCommandId.commandId);
+      done();
+    }
+
+    service
+        .removeRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v2')
+        .then(assertRole);
 
     $scope.$apply();
   });

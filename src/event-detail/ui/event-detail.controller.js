@@ -28,11 +28,14 @@ function EventDetail(
   appConfig,
   ModerationService,
   RolePermission,
-  authorizationService
+  authorizationService,
+  searchApiSwitcher
 ) {
   var activeTabId = 'data';
   var controller = this;
   var disableVariations = _.get(appConfig, 'disableVariations');
+  $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
+  $scope.apiVersion = 'v' + searchApiSwitcher.getApiVersion();
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
@@ -75,6 +78,7 @@ function EventDetail(
           else {
             $scope.permissions = {editing: !event.isExpired(), duplication: true};
           }
+          setTabs();
         });
   }
 
@@ -86,12 +90,13 @@ function EventDetail(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraint) {
-        query += (query ? ' OR ' : '') + '(' + role.constraint + ')';
+      if (role.constraints && role.constraints[$scope.apiVersion]) {
+        query += (query ? ' OR ' : '') + '(' + role.constraints[$scope.apiVersion] + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
     query = '(' + query + ' AND cdbid:' + $scope.event.id + ')';
+
     return ModerationService
       .find(query, 10, 0)
       .then(function(searchResult) {
@@ -105,17 +110,31 @@ function EventDetail(
   $scope.eventHistory = undefined;
   $scope.calendarSummary = undefined;
 
-  $scope.tabs = [
-    {
-      id: 'data'
-    },
-    {
-      id: 'history'
-    },
-    {
-      id: 'publication'
+  function setTabs() {
+    if ($scope.mayAlwaysDelete) {
+      $scope.tabs = [
+        {
+          id: 'data'
+        },
+        {
+          id: 'history'
+        },
+        {
+          id: 'publication'
+        }
+      ];
+    } else {
+      $scope.tabs = [
+        {
+          id: 'data'
+        },
+        {
+          id: 'publication'
+        }
+      ];
     }
-  ];
+  }
+
   $scope.deleteEvent = function () {
     openEventDeleteConfirmModal($scope.event);
   };

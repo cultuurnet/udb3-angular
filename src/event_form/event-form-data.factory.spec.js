@@ -4,7 +4,15 @@ describe('Factory: Event form data', function () {
 
   var EventFormData;
 
-  beforeEach(module('udb.event-form'));
+  beforeEach(module('udb.event-form', function ($provide) {
+    var appConfig = {
+      'addOffer': {
+        'defaultEndPeriod': 365
+      }
+    };
+
+    $provide.constant('appConfig', appConfig);
+  }));
 
   beforeEach(inject(function (_EventFormData_) {
     EventFormData = _EventFormData_;
