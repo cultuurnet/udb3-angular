@@ -538,6 +538,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
         } else {
           formData.addTimeSpan(moment().startOf('day'), moment().endOf('day'));
         }
+        formData.saveTimeSpans(formData.calendar.timeSpans);
       }
 
       if (formData.calendar.calendarType === 'permanent') {

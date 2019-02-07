@@ -20,7 +20,8 @@ function listItems(
   authorizationService,
   ModerationService,
   $q,
-  managementListItemDefaults
+  managementListItemDefaults,
+  searchApiSwitcher
 ) {
   var globalPermissionListItems = authorizationService
     .getPermissions()
@@ -29,6 +30,8 @@ function listItems(
   var moderationListItems = ModerationService
     .getMyRoles()
     .then(generateModerationListItems);
+
+  var apiVersion;
 
   return $q
     .all([globalPermissionListItems, moderationListItems])
@@ -39,11 +42,13 @@ function listItems(
    * @return {number}
    */
   function countOffersWaitingForValidation(roles) {
+    apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraint) {
-        query += (query ? ' OR ' : '') + role.constraint;
+      if (role.constraints !== undefined && role.constraints[apiVersion]) {
+        query += (query ? ' OR ' : '') + role.constraints[apiVersion];
       }
     });
     query = (query ? '(' + query + ')' : '');
@@ -66,6 +71,7 @@ function listItems(
     );
 
     var moderationListItem = angular.copy(defaultModerationListItem);
+    //
     moderationListItem.notificationCount = waitingOfferCount;
 
     return moderationListItem;

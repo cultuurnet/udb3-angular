@@ -20,12 +20,12 @@
                     <div class="dates">
                         <div class="date form-group">
                             <label for="time-span-{{$index}}-start-date" translate-once="calendar.start_label"></label>
-                            <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()">
+                            <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged('start')">
                             </udb-form-calendar-datepicker>
                         </div>
                         <div class="date form-group">
                             <label for="time-span-{{$index}}-end-date" translate-once="calendar.end_label"></label>
-                            <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()">
+                            <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged('end')">
                             </udb-form-calendar-datepicker>
                         </div>
                     </div>
@@ -43,12 +43,12 @@
                     <div class="timing" ng-if="!timeSpan.allDay">
                         <div class="time form-group">
                             <label translate-once="calendar.start_hour_label"></label>
-                            <udb-form-calendar-timepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
+                            <udb-form-calendar-timepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged('start')"></udb-form-calendar-timepicker>
                         </div>
 
                         <div class="time form-group">
                             <label translate-once="calendar.end_hour_label"></label>
-                            <udb-form-calendar-timepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged()"></udb-form-calendar-timepicker>
+                            <udb-form-calendar-timepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged('end')"></udb-form-calendar-timepicker>
                         </div>
                     </div>
                     <div class="requirements" ng-show="calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length">

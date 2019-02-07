@@ -41,6 +41,10 @@ describe('Controller: Event Duplication Calendar', function () {
   }
 
   it('should not edit the original event when changing timing info', function(done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+    
     EventFormData.setCalendarType('single');
     var calendarController = getController(EventFormData);
 
@@ -54,6 +58,10 @@ describe('Controller: Event Duplication Calendar', function () {
   });
 
   it('should emit a message when the timing of a duplicate changes', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var calendarController = getController();
     spyOn($rootScope, '$emit');
 
