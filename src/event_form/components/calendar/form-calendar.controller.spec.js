@@ -56,7 +56,8 @@ describe('Controller: Form Calendar', function () {
     var expectedTimeSpans = [{
         allDay: true,
         start: moment(today).startOf('day').toDate(),
-        end: moment(today).endOf('day').toDate()
+        end: moment(today).endOf('day').toDate(),
+        endTouched: false
     }];
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
@@ -115,7 +116,8 @@ describe('Controller: Form Calendar', function () {
       {
         allDay: true,
         start: moment(today).startOf('day').toDate(),
-        end: moment(today).endOf('day').toDate()
+        end: moment(today).endOf('day').toDate(),
+        endTouched: false
       }
     ];
     spyOn(controller, 'instantTimeSpanChanged');
@@ -226,12 +228,14 @@ describe('Controller: Form Calendar', function () {
       {
         allDay: false,
         start: new Date(2013, 9, 23, 13),
-        end: new Date(2013, 9, 21, 9)
+        end: new Date(2013, 9, 21, 9),
+        endTouched: true
       },
       {
         allDay: true,
         start: new Date(2013, 9, 23, 13),
-        end: new Date(2013, 9, 21, 9)
+        end: new Date(2013, 9, 21, 9),
+        endTouched: true
       }
     ];
     var expectedRequirements = [['startBeforeEndDay'], ['startBeforeEndDay']];

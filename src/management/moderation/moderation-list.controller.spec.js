@@ -15,7 +15,9 @@ describe('Controller: Moderation List', function() {
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Moderator Leuven",
-      "constraint": "city:leuven",
+      "constraints": {
+        "v2": "city:leuven"
+      },
       "permissions": [
         "AANBOD_MODEREREN"
       ]
@@ -23,7 +25,9 @@ describe('Controller: Moderation List', function() {
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
       "name": "Beheerder Leuven",
-      "constraint": "city:leuven",
+      "constraints": {
+        "v2": "city:leuven"
+      },
       "permissions": [
         "GEBRUIKERS_BEHEREN"
       ]
@@ -69,7 +73,9 @@ describe('Controller: Moderation List', function() {
     expect(moderator.roles).toEqual([{
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Moderator Leuven",
-      "constraint": "city:leuven",
+      "constraints": {
+        "v2": "city:leuven"
+      },
       "permissions": [
         "AANBOD_MODEREREN"
       ]
@@ -97,7 +103,9 @@ describe('Controller: Moderation List', function() {
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Editor Leuven",
-      "constraint": "city:leuven",
+      "constraints": {
+        "v2": "city:leuven"
+      },
       "permissions": [
         "AANBOD_INVOEREN"
       ]
@@ -105,7 +113,9 @@ describe('Controller: Moderation List', function() {
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
       "name": "Beheerder Leuven",
-      "constraint": "city:leuven",
+      "constraints": {
+        "v2": "city:leuven"
+      },
       "permissions": [
         "GEBRUIKERS_BEHEREN"
       ]
@@ -150,7 +160,7 @@ describe('Controller: Moderation List', function() {
     var sub = searchResult$.subscribe(assertSeachResults);
 
     moderator
-      .findModerationContent({uuid:'3aad5023-84e2-4ba9-b1ce-201cee64504c', constraint:'city:leuven'});
+      .findModerationContent({uuid:'3aad5023-84e2-4ba9-b1ce-201cee64504c', constraints: {v2: 'city:leuven'}});
 
     $scope.$digest();
     expect(moderator.loading).toEqual(true);

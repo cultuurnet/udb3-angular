@@ -127,14 +127,40 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
   };
 
   /**
+   *
    * @param {uuid} roleId
+   * @param {string} version
+   * @param {string} constraint
+   * @returns {Promise}
+   */
+  service.createRoleConstraint = function(roleId, version, constraint) {
+    return udbApi
+        .createRoleConstraint(roleId, version, constraint)
+        .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {string} version
    * @param {string} constraint
    * @return {Promise}
    */
-  service.updateRoleConstraint = function(roleId, constraint) {
+  service.updateRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-      .updateRoleConstraint(roleId, constraint)
-      .then(logRoleJob);
+        .updateRoleConstraint(roleId, version, constraint)
+        .then(logRoleJob);
+  };
+
+  /**
+   * @param {uuid} roleId
+   * @param {string} version
+   * @param {string} constraint
+   * @return {Promise}
+   */
+  service.removeRoleConstraint = function(roleId, version) {
+    return udbApi
+        .removeRoleConstraint(roleId, version)
+        .then(logRoleJob);
   };
 
   /**
