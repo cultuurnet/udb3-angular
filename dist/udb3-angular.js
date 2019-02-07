@@ -11125,7 +11125,8 @@ function BaseCalendarController(calendar, $scope) {
       {
         allDay: true,
         start: moment().startOf('day').toDate(),
-        end: moment().endOf('day').toDate()
+        end: moment().endOf('day').toDate(),
+        endTouched: false
       }
     ];
   }
@@ -11150,8 +11151,8 @@ function BaseCalendarController(calendar, $scope) {
     }
   }
 
-  function digestTimeSpanChanged() {
-    $scope.$apply(timeSpanChanged);
+  function digestTimeSpanChanged(whichDate) {
+    $scope.$apply(timeSpanChanged(whichDate));
   }
 
   function instantTimeSpanChanged() {
@@ -11173,7 +11174,8 @@ function BaseCalendarController(calendar, $scope) {
     instantTimeSpanChanged();
   }
 
-  function timeSpanChanged() {
+  function timeSpanChanged(whichDate) {
+
     var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
 
     if (!_.isEmpty(_.flatten(unmetRequirements))) {
@@ -11188,9 +11190,17 @@ function BaseCalendarController(calendar, $scope) {
       }
       clearTimeSpanRequirements();
       _.each(calendar.timeSpans, function(timeSpan) {
+        if (whichDate === 'end' && !timeSpan.endTouched) {
+          timeSpan.endTouched = true;
+        }
         if (timeSpan.allDay) {
           timeSpan.start = moment(timeSpan.start).startOf('day').toDate();
           timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
+        }
+        if (whichDate === 'start' && !timeSpan.endTouched) {
+          if (timeSpan.start > timeSpan.end) {
+            timeSpan.end = moment(timeSpan.start).endOf('day').toDate();
+          }
         }
       });
       calendar.formData.saveTimeSpans(calendar.timeSpans);
@@ -11217,7 +11227,10 @@ function BaseCalendarController(calendar, $scope) {
         return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
       },
       'startBeforeEndDay': function (timeSpan) {
-        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
+        return timeSpan.endTouched &&
+            timeSpan.start &&
+            timeSpan.end &&
+            moment(timeSpan.start).isAfter(timeSpan.end, 'day');
       },
       'startBeforeEnd': function (timeSpan) {
         return !timeSpan.allDay &&
@@ -28264,12 +28277,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <div class=\"dates\">\n" +
     "                        <div class=\"date form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-start-date\" translate-once=\"calendar.start_label\"></label>\n" +
-    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged('start')\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                        <div class=\"date form-group\">\n" +
     "                            <label for=\"time-span-{{$index}}-end-date\" translate-once=\"calendar.end_label\"></label>\n" +
-    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\">\n" +
+    "                            <udb-form-calendar-datepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged('end')\">\n" +
     "                            </udb-form-calendar-datepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
@@ -28287,12 +28300,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
     "                        <div class=\"time form-group\">\n" +
     "                            <label translate-once=\"calendar.start_hour_label\"></label>\n" +
-    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged('start')\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "\n" +
     "                        <div class=\"time form-group\">\n" +
     "                            <label translate-once=\"calendar.end_hour_label\"></label>\n" +
-    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged()\"></udb-form-calendar-timepicker>\n" +
+    "                            <udb-form-calendar-timepicker ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged('end')\"></udb-form-calendar-timepicker>\n" +
     "                        </div>\n" +
     "                    </div>\n" +
     "                    <div class=\"requirements\" ng-show=\"calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length\">\n" +

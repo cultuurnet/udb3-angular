@@ -64,7 +64,8 @@ function BaseCalendarController(calendar, $scope) {
       {
         allDay: true,
         start: moment().startOf('day').toDate(),
-        end: moment().endOf('day').toDate()
+        end: moment().endOf('day').toDate(),
+        endTouched: false
       }
     ];
   }
@@ -89,8 +90,8 @@ function BaseCalendarController(calendar, $scope) {
     }
   }
 
-  function digestTimeSpanChanged() {
-    $scope.$apply(timeSpanChanged);
+  function digestTimeSpanChanged(whichDate) {
+    $scope.$apply(timeSpanChanged(whichDate));
   }
 
   function instantTimeSpanChanged() {
@@ -112,7 +113,8 @@ function BaseCalendarController(calendar, $scope) {
     instantTimeSpanChanged();
   }
 
-  function timeSpanChanged() {
+  function timeSpanChanged(whichDate) {
+
     var unmetRequirements = _.map(calendar.timeSpans, validateTimeSpan);
 
     if (!_.isEmpty(_.flatten(unmetRequirements))) {
@@ -127,9 +129,17 @@ function BaseCalendarController(calendar, $scope) {
       }
       clearTimeSpanRequirements();
       _.each(calendar.timeSpans, function(timeSpan) {
+        if (whichDate === 'end' && !timeSpan.endTouched) {
+          timeSpan.endTouched = true;
+        }
         if (timeSpan.allDay) {
           timeSpan.start = moment(timeSpan.start).startOf('day').toDate();
           timeSpan.end = moment(timeSpan.end).endOf('day').toDate();
+        }
+        if (whichDate === 'start' && !timeSpan.endTouched) {
+          if (timeSpan.start > timeSpan.end) {
+            timeSpan.end = moment(timeSpan.start).endOf('day').toDate();
+          }
         }
       });
       calendar.formData.saveTimeSpans(calendar.timeSpans);
@@ -156,7 +166,10 @@ function BaseCalendarController(calendar, $scope) {
         return !timeSpan.allDay && (!timeSpan.start || !timeSpan.end);
       },
       'startBeforeEndDay': function (timeSpan) {
-        return timeSpan.start && timeSpan.end && moment(timeSpan.start).isAfter(timeSpan.end, 'day');
+        return timeSpan.endTouched &&
+            timeSpan.start &&
+            timeSpan.end &&
+            moment(timeSpan.start).isAfter(timeSpan.end, 'day');
       },
       'startBeforeEnd': function (timeSpan) {
         return !timeSpan.allDay &&
