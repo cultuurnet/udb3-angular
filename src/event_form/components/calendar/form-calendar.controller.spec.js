@@ -35,13 +35,21 @@ describe('Controller: Form Calendar', function () {
     });
   }
 
-  it('should default to the "single" calendar type when initializing', function () {
+  it('should default to the "single" calendar type when initializing', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     expect(controller.formData.calendar.calendarType).toEqual('single');
     expect(controller.type).toEqual('single');
   });
 
-  it('should set today as the default time-span when creating a new offer', function () {
+  it('should set today as the default time-span when creating a new offer', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var today = new Date(2013, 9, 23);
     jasmine.clock().mockDate(today);
     var controller = getController();
@@ -54,7 +62,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
 
-  it('should copy the last time-span without triggering a change when creating a new one', function () {
+  it('should copy the last time-span without triggering a change when creating a new one', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     controller.timeSpans = [
       {
@@ -92,7 +104,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.instantTimeSpanChanged).not.toHaveBeenCalled();
   });
 
-  it('should initialize time-spans and trigger a change when starting a new list', function () {
+  it('should initialize time-spans and trigger a change when starting a new list', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     var today = new Date(2013, 9, 23);
     jasmine.clock().mockDate(today);
@@ -112,7 +128,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.instantTimeSpanChanged).toHaveBeenCalled();
   });
 
-  it('should save timespans to form-data when timespans change', function () {
+  it('should save timespans to form-data when timespans change', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     controller.timeSpans = [
       {
@@ -139,7 +159,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.formData.calendar.timeSpans).toEqual(expectedTimeSpans);
   });
 
-  it('should update the time-span list when removing a time-span', function () {
+  it('should update the time-span list when removing a time-span', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     controller.timeSpans = [
       {
@@ -165,7 +189,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
 
-  it('should validate time-spans before saving them and show missing requirements', function () {
+  it('should validate time-spans before saving them and show missing requirements', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     controller.timeSpans = [
       {
@@ -190,7 +218,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
-  it('should show a time-span requirement when the start- is before end-day', function () {
+  it('should show a time-span requirement when the start- is before end-day', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     controller.timeSpans = [
       {
@@ -214,7 +246,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
-  it('should show a time-span requirement when the begin- is before end-time', function () {
+  it('should show a time-span requirement when the begin- is before end-time', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
     var controller = getController();
     controller.timeSpans = [
       {
@@ -236,7 +272,11 @@ describe('Controller: Form Calendar', function () {
     expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
-  it('should switch the calendar type to multiple when there is more than one time-span', function () {
+  it('should switch the calendar type to multiple when there is more than one time-span', function (done) {
+      EventFormData
+        .timingChanged$
+        .subscribe(done);
+
       var controller = getController();
       controller.type = 'single';
       controller.timeSpans = [
@@ -256,7 +296,11 @@ describe('Controller: Form Calendar', function () {
       expect(controller.type).toEqual('multiple');
   });
 
-  it('should switch the calendar type to single when a time-span is removed and there is only one left', function () {
+  it('should switch the calendar type to single when a time-span is removed and there is only one left', function (done) {
+      EventFormData
+        .timingChanged$
+        .subscribe(done);
+
       var controller = getController();
       controller.type = 'multiple';
       controller.timeSpans = [
@@ -271,6 +315,7 @@ describe('Controller: Form Calendar', function () {
               end: new Date(2013, 9, 23, 19)
           }
       ];
+
       spyOn(controller.formData, 'timingChanged');
       controller.removeTimeSpan(controller.timeSpans[1]);
       expect(controller.type).toEqual('single');
