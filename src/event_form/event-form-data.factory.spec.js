@@ -307,6 +307,7 @@ describe('Factory: Event form data', function () {
   });
 
   it('should show step 3 when timing changes', function (done) {
+    EventFormData.showStep2 = true;
     EventFormData.initCalendar();
 
     EventFormData
@@ -315,5 +316,17 @@ describe('Factory: Event form data', function () {
 
     EventFormData.timingChanged();
     expect(EventFormData.showStep3).toEqual(true);
+  });
+
+  it('should not show step 3 when timing changes and step 2 isn\'t shown', function (done) {
+    EventFormData.showStep2 = false;
+    EventFormData.initCalendar();
+
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
+    EventFormData.timingChanged();
+    expect(EventFormData.showStep3).toEqual(false);
   });
 });

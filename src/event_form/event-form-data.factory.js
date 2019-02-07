@@ -497,7 +497,9 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     timingChanged: function () {
-      this.showStep(3);
+      if (this.showStep2) {
+        this.showStep(3);
+      }
       this.timingChangedCallback(this);
     },
 
