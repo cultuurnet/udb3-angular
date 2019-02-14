@@ -12,7 +12,7 @@ angular
   .service('savedSearchesService', SavedSearchesService);
 
 /* @ngInject */
-function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi) {
+function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi, searchApiSwitcher) {
   var apiUrl = appConfig.baseUrl;
   var defaultApiConfig = {
     withCredentials: true,
@@ -57,10 +57,7 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
    * @returns {String}
    */
   function getSapiVersion() {
-    var apiVersionCookieKey = 'search-api-version';
-    var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
-
-    return 'v' + ($cookies.get(apiVersionCookieKey) || defaultApiVersion);
+    return 'v' + searchApiSwitcher.getApiVersion();
   }
 }
 
