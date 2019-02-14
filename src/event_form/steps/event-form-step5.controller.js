@@ -764,8 +764,6 @@ function EventFormStep5Controller(
     }
 
     return _.findWhere(labels, {value: label}).label;
-
-    //return $translate.instant('eventForm.step5.' + label);
   }
 
 }

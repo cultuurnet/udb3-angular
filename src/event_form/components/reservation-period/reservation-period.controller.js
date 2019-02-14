@@ -11,14 +11,11 @@ angular
   .controller('ReservationPeriodController', ReservationPeriodController);
 
 /* @ngInject */
-function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScope) {
+function ReservationPeriodController($scope, EventFormData, $rootScope) {
 
   var controller = this;
 
   $scope.haveBookingPeriod = false;
-  $scope.bookingPeriodInfoCssClass = 'state-incomplete';
-  $scope.savingBookingPeriodInfo = false;
-  $scope.bookingPeriodInfoError = false;
   $scope.availabilityStarts = '';
   $scope.availabilityEnds = '';
   $scope.errorMessage = '';
@@ -46,10 +43,6 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
 
   initBookingPeriodForm();
 
-  controller.bookingPeriodSaved = function () {
-    $rootScope.$emit('bookingPeriodSaved', EventFormData);
-  };
-
   function validateBookingPeriod() {
     if ($scope.availabilityStarts > $scope.availabilityEnds) {
       $scope.errorMessage = 'De gekozen einddatum moet na de startdatum vallen.';
@@ -68,19 +61,7 @@ function ReservationPeriodController($scope, EventFormData, eventCrud, $rootScop
       EventFormData.bookingInfo.availabilityEnds = '';
     }
 
-    $scope.savingBookingPeriodInfo = true;
-    $scope.bookingPeriodInfoError = false;
-
-    var promise = eventCrud.updateBookingInfo(EventFormData);
-    promise.then(function() {
-      controller.bookingPeriodSaved();
-      $scope.bookingPeriodInfoCssClass = 'state-complete';
-      $scope.savingBookingPeriodInfo = false;
-      $scope.bookingPeriodInfoError = false;
-    }, function() {
-      $scope.savingBookingPeriodInfo = false;
-      $scope.bookingPeriodInfoError = true;
-    });
+    $scope.onBookingPeriodSaved();
   }
 
   function deleteBookingPeriod() {
