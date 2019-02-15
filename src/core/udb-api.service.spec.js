@@ -162,13 +162,13 @@ describe('Service: UDB3 Api', function () {
   it('should post saved searches to the api', function (done) {
     var response = {};
     $httpBackend
-      .expectPOST(baseUrl + 'saved-searches/', {
+      .expectPOST(baseUrl + 'saved-searches/v2', {
         name: 'saved-search-name',
         query: 'saved-search-query'
       })
       .respond(JSON.stringify(response));
     service
-      .createSavedSearch('saved-search-name', 'saved-search-query')
+      .createSavedSearch('v2', 'saved-search-name', 'saved-search-query')
       .then(done);
 
     $httpBackend.flush();
@@ -178,10 +178,10 @@ describe('Service: UDB3 Api', function () {
   it('should get saved searches from the api', function (done) {
     var response = {};
     $httpBackend
-      .expectGET(baseUrl + 'saved-searches/')
+      .expectGET(baseUrl + 'saved-searches/v2')
       .respond(JSON.stringify(response));
     service
-      .getSavedSearches()
+      .getSavedSearches('v2')
       .then(done);
 
     $httpBackend.flush();
@@ -191,10 +191,10 @@ describe('Service: UDB3 Api', function () {
   it('should delete saved searches from the api', function (done) {
     var response = {};
     $httpBackend
-      .expectDELETE(baseUrl + 'saved-searches/searchid')
+      .expectDELETE(baseUrl + 'saved-searches/v2/searchid')
       .respond(JSON.stringify(response));
     service
-      .deleteSavedSearch('searchid')
+      .deleteSavedSearch('v2', 'searchid')
       .then(done);
 
     $httpBackend.flush();

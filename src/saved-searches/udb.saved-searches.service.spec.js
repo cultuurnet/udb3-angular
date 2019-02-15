@@ -54,7 +54,7 @@ describe('Service: savedSearchesService', function() {
     $rootScope.$digest();
     expect($rootScope.$emit).toHaveBeenCalledWith('savedSearchesChanged', [newSavedSearch]);
 
-    expect(udbApi.createSavedSearch).toHaveBeenCalledWith('In Leuven', 'city:"Leuven"');
+    expect(udbApi.createSavedSearch).toHaveBeenCalledWith('v2', 'In Leuven', 'city:"Leuven"');
   });
 
   it('gets a list of JSON-encoded saved searches', function () {
@@ -77,6 +77,6 @@ describe('Service: savedSearchesService', function() {
 
     $rootScope.$digest();
     expect($rootScope.$emit).toHaveBeenCalledWith('savedSearchesChanged', []);
-    expect(udbApi.deleteSavedSearch).toHaveBeenCalledWith(searchId);
+    expect(udbApi.deleteSavedSearch).toHaveBeenCalledWith('v2', searchId);
   });
 });

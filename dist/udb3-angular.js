@@ -4891,25 +4891,25 @@ function UdbApi(
     }
   };
 
-  this.createSavedSearch = function (name, queryString) {
+  this.createSavedSearch = function (sapiVersion, name, queryString) {
     var post = {
       name: name,
       query: queryString
     };
     return $http
-      .post(appConfig.baseUrl + 'saved-searches/', post, defaultApiConfig)
+      .post(appConfig.baseUrl + 'saved-searches/' + sapiVersion, post, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
-  this.getSavedSearches = function () {
+  this.getSavedSearches = function (sapiVersion) {
     return $http
-      .get(appConfig.baseUrl + 'saved-searches/', defaultApiConfig)
+      .get(appConfig.baseUrl + 'saved-searches/' + sapiVersion, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
-  this.deleteSavedSearch = function (searchId) {
+  this.deleteSavedSearch = function (sapiVersion, searchId) {
     return $http
-      .delete(appConfig.baseUrl + 'saved-searches/' + searchId, defaultApiConfig)
+      .delete(appConfig.baseUrl + 'saved-searches/' + sapiVersion + '/' + searchId, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
@@ -22210,7 +22210,7 @@ angular
   .service('savedSearchesService', SavedSearchesService);
 
 /* @ngInject */
-function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
+function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi, searchApiSwitcher) {
   var apiUrl = appConfig.baseUrl;
   var defaultApiConfig = {
     withCredentials: true,
@@ -22220,9 +22220,10 @@ function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
   };
   var savedSearches = [];
   var ss = this;
+  var sapiVersion = getSapiVersion();
 
   ss.createSavedSearch = function(name, query) {
-    return udbApi.createSavedSearch(name, query).then(function () {
+    return udbApi.createSavedSearch(sapiVersion, name, query).then(function () {
       savedSearches.push({'name': name, 'query': query});
       savedSearchesChanged();
 
@@ -22231,14 +22232,14 @@ function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
   };
 
   ss.getSavedSearches = function () {
-    return udbApi.getSavedSearches().then(function (data) {
+    return udbApi.getSavedSearches(sapiVersion).then(function (data) {
       savedSearches = data;
       return $q.resolve(data);
     });
   };
 
   ss.deleteSavedSearch = function (searchId) {
-    return udbApi.deleteSavedSearch(searchId).then(function () {
+    return udbApi.deleteSavedSearch(sapiVersion, searchId).then(function () {
       _.remove(savedSearches, {id: searchId});
       savedSearchesChanged();
 
@@ -22249,8 +22250,15 @@ function SavedSearchesService($q, $http, appConfig, $rootScope, udbApi) {
   function savedSearchesChanged () {
     $rootScope.$emit('savedSearchesChanged', savedSearches);
   }
+
+  /**
+   * @returns {String}
+   */
+  function getSapiVersion() {
+    return 'v' + searchApiSwitcher.getApiVersion();
+  }
 }
-SavedSearchesService.$inject = ["$q", "$http", "appConfig", "$rootScope", "udbApi"];
+SavedSearchesService.$inject = ["$q", "$http", "$cookies", "appConfig", "$rootScope", "udbApi", "searchApiSwitcher"];
 
 })();
 

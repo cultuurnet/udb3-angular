@@ -112,25 +112,25 @@ function UdbApi(
     }
   };
 
-  this.createSavedSearch = function (name, queryString) {
+  this.createSavedSearch = function (sapiVersion, name, queryString) {
     var post = {
       name: name,
       query: queryString
     };
     return $http
-      .post(appConfig.baseUrl + 'saved-searches/', post, defaultApiConfig)
+      .post(appConfig.baseUrl + 'saved-searches/' + sapiVersion, post, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
-  this.getSavedSearches = function () {
+  this.getSavedSearches = function (sapiVersion) {
     return $http
-      .get(appConfig.baseUrl + 'saved-searches/', defaultApiConfig)
+      .get(appConfig.baseUrl + 'saved-searches/' + sapiVersion, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
-  this.deleteSavedSearch = function (searchId) {
+  this.deleteSavedSearch = function (sapiVersion, searchId) {
     return $http
-      .delete(appConfig.baseUrl + 'saved-searches/' + searchId, defaultApiConfig)
+      .delete(appConfig.baseUrl + 'saved-searches/' + sapiVersion + '/' + searchId, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
