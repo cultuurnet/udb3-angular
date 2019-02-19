@@ -56,6 +56,10 @@ module.exports = function (grunt) {
     return cities;
   };
 
+  var getSapi3CitiesBE = function() {
+    return require('sapi3Cities.json').cities;
+  };
+
   var getCitiesNL = function () {
     return require('./src/event_form/citiesNL.json').cities;
   };
@@ -395,6 +399,7 @@ module.exports = function (grunt) {
             placeCategories: getEventFormCategories().place,
             facilities: getFacilities(),
             citiesBE: getCitiesBE(),
+            sapi3CitiesBE: getSapi3CitiesBE(),
             citiesNL: getCitiesNL()
           };
         }
@@ -408,6 +413,7 @@ module.exports = function (grunt) {
             placeCategories: getEventFormCategories().place,
             facilities: getFacilities(),
             citiesBE: getCitiesBE(),
+            sapi3CitiesBE: getSapi3CitiesBE(),
             citiesNL: getCitiesNL()
           };
         }
