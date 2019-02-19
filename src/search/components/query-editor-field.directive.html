@@ -32,6 +32,13 @@
       </select>
     </div>
 
+    <div ng-switch-when="termNis">
+      <select ng-options="term.key as term.name for term in qe.termOptions[field.name]"
+              ng-model="field.term" class="form-control">
+        <option value="">-- maak een keuze --</option>
+      </select>
+    </div>
+
     <div ng-switch-when="choice">
       <select ng-options="'choice.' + option | translate for option in qe.termOptions[field.name]"
               ng-model="field.term" class="form-control">
