@@ -693,6 +693,7 @@ angular.module('udb.core')
       'country': 'land',
       'location_label': 'locatie (naam)',
       'category_flandersregion_name': 'regio / gemeente',
+      'nisRegions': 'regio / gemeente',
       'date': 'datum',
       'permanent': 'permanent',
       'lastupdated': 'laatst aangepast',

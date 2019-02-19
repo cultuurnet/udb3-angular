@@ -57,7 +57,7 @@ module.exports = function (grunt) {
   };
 
   var getSapi3CitiesBE = function() {
-    return require('sapi3Cities.json').cities;
+    return require('./sapi3Cities.json').cities;
   };
 
   var getCitiesNL = function () {
