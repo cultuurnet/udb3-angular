@@ -7400,7 +7400,7 @@ function EventCultuurKuurComponentController(appConfig, uitidAuth) {
   cm.cultuurkuurMaintenance = _.get(appConfig, 'cultuurkuur.maintenance');
 
   if (!cm.cultuurkuurMaintenance) {
-    var cultuurkuurUrl = _.get(appConfig, 'cultuurkuurUrl');
+    var cultuurkuurUrl = _.get(appConfig, 'cultuurkuur.cultuurkuurUrl');
     cm.user = uitidAuth.getUser();
     cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id + getUTMParameters('preview1.0');
     cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
