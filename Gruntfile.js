@@ -57,7 +57,7 @@ module.exports = function (grunt) {
   };
 
   var getSapi3CitiesBE = function() {
-    return require('./sapi3Cities.json').cities;
+    return require('./sapi3Cities.json');
   };
 
   var getCitiesNL = function () {
@@ -428,6 +428,10 @@ module.exports = function (grunt) {
       'cities': {
         src: 'https://taxonomy.uitdatabank.be/api/city',
         dest: 'cities.xml'
+      },
+      'sapi3cities': {
+        src: 'https://search.uitdatabank.be/autocomplete.json',
+        dest: 'sapi3Cities.json'
       }
     },
 
@@ -487,6 +491,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'curl:taxonomy-terms',
     'curl:cities',
+    'curl:sapi3cities',
     'ngconstant:dist',
     'peg',
     'less',
