@@ -27390,7 +27390,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/dashboard-item.directive.html',
-    "<td>\n" +
+    "<td ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <strong>\n" +
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
@@ -27407,7 +27407,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </small>\n" +
     "</td>\n" +
     "\n" +
-    "<td ng-if=\"!offerCtrl.fetching\">\n" +
+    "<td ng-if=\"!offerCtrl.fetching\" ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
