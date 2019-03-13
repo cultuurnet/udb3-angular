@@ -56,6 +56,10 @@ module.exports = function (grunt) {
     return cities;
   };
 
+  var getSapi3CitiesBE = function() {
+    return require('./sapi3Cities.json');
+  };
+
   var getCitiesNL = function () {
     return require('./src/event_form/citiesNL.json').cities;
   };
@@ -395,6 +399,7 @@ module.exports = function (grunt) {
             placeCategories: getEventFormCategories().place,
             facilities: getFacilities(),
             citiesBE: getCitiesBE(),
+            sapi3CitiesBE: getSapi3CitiesBE(),
             citiesNL: getCitiesNL()
           };
         }
@@ -408,6 +413,7 @@ module.exports = function (grunt) {
             placeCategories: getEventFormCategories().place,
             facilities: getFacilities(),
             citiesBE: getCitiesBE(),
+            sapi3CitiesBE: getSapi3CitiesBE(),
             citiesNL: getCitiesNL()
           };
         }
@@ -422,6 +428,10 @@ module.exports = function (grunt) {
       'cities': {
         src: 'https://taxonomy.uitdatabank.be/api/city',
         dest: 'cities.xml'
+      },
+      'sapi3cities': {
+        src: 'https://search.uitdatabank.be/autocomplete.json',
+        dest: 'sapi3Cities.json'
       }
     },
 
@@ -481,6 +491,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'curl:taxonomy-terms',
     'curl:cities',
+    'curl:sapi3cities',
     'ngconstant:dist',
     'peg',
     'less',

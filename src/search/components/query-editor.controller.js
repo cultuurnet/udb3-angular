@@ -21,6 +21,7 @@ function QueryEditorController(
   queryFields,
   LuceneQueryBuilder,
   taxonomyTerms,
+  sapi3CitiesBE,
   fieldTypeTransformers,
   searchHelper,
   $translate,
@@ -80,6 +81,7 @@ function QueryEditorController(
     return 'category_' + term.domain + '_name';
   });
   qe.termOptions.locationtype = placeTypes;
+  qe.termOptions.nisRegions = sapi3CitiesBE;
   qe.termOptions['category_eventtype_name'] = eventTypes; // jshint ignore:line
   _.forEach(queryFields, function (field) {
     if (field.type === 'choice') {

@@ -683,6 +683,7 @@ angular.module('udb.core')
       'country': 'pays',
       'location_label': 'location (nom)',
       'category_flandersregion_name': 'région / commune',
+      'nisRegions': 'région / commune',
       'date': 'date',
       'permanent': 'permanent',
       'lastupdated': 'modifié dernièrement',
