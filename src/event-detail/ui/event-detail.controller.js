@@ -171,8 +171,8 @@ function EventDetail(
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
 
-    if (event.typicalAgeRange.indexOf('-') === event.typicalAgeRange.length -1) {
-      $scope.ageRange = event.typicalAgeRange.slice(0,-1) + '+';
+    if (event.typicalAgeRange.indexOf('-') === event.typicalAgeRange.length - 1) {
+      $scope.ageRange = event.typicalAgeRange.slice(0, -1) + '+';
     }
     else {
       $scope.ageRange = event.typicalAgeRange;
