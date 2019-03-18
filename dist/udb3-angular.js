@@ -2297,6 +2297,10 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $tra
   this.getPermissions = function () {
     return udbApi.getMyPermissions();
   };
+
+  this.isGodUser = function () {
+    return this.hasPermission('GEBRUIKERS_BEHEREN');
+  };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope", "$translate"];
 })();
@@ -26056,7 +26060,7 @@ function OfferController(
   }
 
   function isGodUser() {
-    return authorizationService.hasPermission('GEBRUIKERS_BEHEREN');
+    return authorizationService.isGodUser();
   }
 
   function watchLabels() {
@@ -32821,7 +32825,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!eventCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::eventCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ eventCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +

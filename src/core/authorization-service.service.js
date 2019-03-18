@@ -97,5 +97,5 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $tra
 
   this.isGodUser = function () {
     return this.hasPermission('GEBRUIKERS_BEHEREN');
-  }
+  };
 }
