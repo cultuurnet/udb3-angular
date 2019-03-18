@@ -25988,7 +25988,8 @@ function OfferController(
   $q,
   appConfig,
   $uibModal,
-  $translate
+  $translate,
+  authorizationService
 ) {
   var controller = this;
   var cachedOffer;
@@ -26001,7 +26002,9 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
+  controller.isGodUser = isGodUser;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -26050,6 +26053,10 @@ function OfferController(
     } else {
       return $q.reject();
     }
+  }
+
+  function isGodUser() {
+    return authorizationService.hasPermission('GEBRUIKERS_BEHEREN');
   }
 
   function watchLabels() {
@@ -26231,7 +26238,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate", "authorizationService"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -32660,7 +32667,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!eventCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::eventCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ eventCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
