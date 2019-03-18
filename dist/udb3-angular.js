@@ -17763,7 +17763,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authorizationService, appConfig) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -17771,6 +17771,8 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
+  moc.uitId = _.get(appConfig, 'uitidUrl');
+  moc.isGodUser = isGodUser;
 
   // fetch offer
   ModerationService
@@ -17797,8 +17799,12 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   function showProblem(problem) {
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
+  }
 }
-ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "authorizationService", "appConfig"];
 })();
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
@@ -30529,7 +30535,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "    </div>\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
-    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "        <div class=\"col-md-6\">Toegevoegd door\n" +
+    "            <span ng-if=\"::!moc.isGodUser\">\n" +
+    "                <span ng-bind=\"moc.offer.creator\"></span>\n" +
+    "            </span>\n" +
+    "            <span ng-if=\"::moc.isGodUser\">\n" +
+    "                <a href=\"{{ moc.uitId + moc.offer.creator }}\"><span ng-bind=\"moc.offer.creator\"></span></a>\n" +
+    "            </span>\n" +
+    "        </div>\n" +
     "        <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right\">\n" +
     "            <udb-moderation-offer offer-id=\"{{moc.offerId}}\" continue=\"false\"></udb-moderation-offer>\n" +
     "        </div>\n" +

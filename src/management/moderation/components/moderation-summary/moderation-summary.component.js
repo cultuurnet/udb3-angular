@@ -19,7 +19,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authorizationService, appConfig) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -27,6 +27,8 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
+  moc.uitId = _.get(appConfig, 'uitidUrl');
+  moc.isGodUser = isGodUser;
 
   // fetch offer
   ModerationService
@@ -52,5 +54,9 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
    */
   function showProblem(problem) {
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
+  }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
   }
 }
