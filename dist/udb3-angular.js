@@ -16489,6 +16489,10 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
+  exporter.templates = [
+      {name: 'tips', label: 'Tipsrapport' },
+      {name: 'map', label: 'Weergave op kaart' }
+  ];
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -16502,7 +16506,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     title: '',
     subtitle: '',
     footer: '',
-    publisher: ''
+    publisher: '',
+    onMap: false
   };
 
   /**
@@ -16622,6 +16627,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
       customizations = exporter.customizations;
       customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
       customizations.brand = exporter.selectedBrand.name;
+      customizations.onMap = exporter.selectedTemplate.name === 'map';
       includedProperties = [];
     } else {
       customizations = {};
@@ -30175,6 +30181,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
+    "\n" +
+    "      <div class=\"form-group\">\n" +
+    "        <label>Kies een sjabloon</label>\n" +
+    "        <div class=\"row\">\n" +
+    "          <div class=\"col-sm-8\">\n" +
+    "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
+    "              <label>\n" +
+    "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
+    "                       ng-value=\"template\" class=\"export-customization-brand-radio\">\n" +
+    "                <span ng-bind=\"template.label\"></span>\n" +
+    "              </label>\n" +
+    "            </div>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "\n" +
     "        <div class=\"form-group\">\n" +
     "          <label for=\"export-customization-title\">Titel</label> <small class=\"text-muted\">verplicht in te vullen</small>\n" +
