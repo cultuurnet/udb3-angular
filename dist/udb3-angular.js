@@ -17886,13 +17886,13 @@ function ModerationListController(
   $scope,
   $q,
   $document,
-  searchApiSwitcher
+  appConfig
 ) {
   var moderator = this;
 
   var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-  $scope.apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   moderator.roles = [];
 
@@ -18002,7 +18002,7 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document", "searchApiSwitcher"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document", "appConfig"];
 })();
 
 // Source: src/management/moderation/moderation.service.js
@@ -18041,9 +18041,6 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(queryString, itemsPerPage, offset) {
-    var moderationFilter = 'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]';
-    queryString = (queryString ? '(' + queryString + ')' + ' AND ' : '') + moderationFilter;
-
     return udbApi
       .findToModerate(queryString, offset, itemsPerPage);
   };

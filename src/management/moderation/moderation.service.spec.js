@@ -187,7 +187,7 @@ describe('Service: Moderation Service', function () {
 
     function assertResultset (result) {
       expect(udbApi.findToModerate).toHaveBeenCalledWith(
-        '(city:leuven) AND wfstatus:"readyforvalidation" AND startdate:[NOW TO *]',
+        'city:leuven',
         0,
         10
       );
@@ -207,7 +207,7 @@ describe('Service: Moderation Service', function () {
 
     function assertResultset (result) {
       expect(udbApi.findToModerate).toHaveBeenCalledWith(
-        'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]',
+        '',
         0,
         10
       );
