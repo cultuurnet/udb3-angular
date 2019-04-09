@@ -35,7 +35,13 @@ describe('Controller: Moderation List', function() {
   ];
 
   beforeEach(module('udb.management'));
-  beforeEach(module('udb.management.moderation'));
+  beforeEach(module('udb.management.moderation', function ($provide) {
+      var appConfig = {
+          roleConstraintsMode: 'v2'
+      };
+
+      $provide.constant('appConfig', appConfig);
+  }));
 
   beforeEach(inject(function($rootScope, _$q_, _$controller_, _SearchResultGenerator_) {
     $controller = _$controller_;

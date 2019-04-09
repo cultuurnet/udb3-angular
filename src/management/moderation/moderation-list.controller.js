@@ -27,13 +27,13 @@ function ModerationListController(
   $scope,
   $q,
   $document,
-  searchApiSwitcher
+  appConfig
 ) {
   var moderator = this;
 
   var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-  $scope.apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   moderator.roles = [];
 
