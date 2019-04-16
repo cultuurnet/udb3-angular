@@ -17473,7 +17473,7 @@ function listItems(
   ModerationService,
   $q,
   managementListItemDefaults,
-  searchApiSwitcher
+  appConfig
 ) {
   var globalPermissionListItems = authorizationService
     .getPermissions()
@@ -17494,7 +17494,7 @@ function listItems(
    * @return {number}
    */
   function countOffersWaitingForValidation(roles) {
-    apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+    apiVersion = appConfig.roleConstraintsMode;
 
     var query = '';
 
@@ -17567,7 +17567,7 @@ function listItems(
     return $q.resolve(listItems);
   }
 }
-listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults", "searchApiSwitcher"];
+listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults", "appConfig"];
 })();
 
 // Source: src/management/moderation/components/moderation-offer/moderation-offer.component.js

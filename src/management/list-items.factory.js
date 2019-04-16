@@ -21,7 +21,7 @@ function listItems(
   ModerationService,
   $q,
   managementListItemDefaults,
-  searchApiSwitcher
+  appConfig
 ) {
   var globalPermissionListItems = authorizationService
     .getPermissions()
@@ -42,7 +42,7 @@ function listItems(
    * @return {number}
    */
   function countOffersWaitingForValidation(roles) {
-    apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+    apiVersion = appConfig.roleConstraintsMode;
 
     var query = '';
 
