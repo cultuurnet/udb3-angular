@@ -16507,7 +16507,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     subtitle: '',
     footer: '',
     publisher: '',
-    onMap: false
+    template: ''
   };
 
   /**
@@ -16627,7 +16627,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
       customizations = exporter.customizations;
       customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
       customizations.brand = exporter.selectedBrand.name;
-      customizations.onMap = exporter.selectedTemplate.name === 'map';
+      customizations.template = exporter.selectedTemplate.name;
       includedProperties = [];
     } else {
       customizations = {};
