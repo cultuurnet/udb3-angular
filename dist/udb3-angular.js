@@ -10347,14 +10347,13 @@ function EventDetail(
   appConfig,
   ModerationService,
   RolePermission,
-  authorizationService,
-  searchApiSwitcher
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
   var disableVariations = _.get(appConfig, 'disableVariations');
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
-  $scope.apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
@@ -10409,12 +10408,17 @@ function EventDetail(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints && role.constraints[$scope.apiVersion]) {
+      if (_.contains(role.permissions, 'AANBOD_MODEREREN') && role.constraints && role.constraints[$scope.apiVersion]) {
         query += (query ? ' OR ' : '') + '(' + role.constraints[$scope.apiVersion] + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
-    query = '(' + query + ' AND cdbid:' + $scope.event.id + ')';
+    var idField = 'id';
+    if ($scope.apiVersion === 'v2') {
+      idField = 'cdbid';
+    }
+
+    query = '(' + query + ' AND ' + idField + ':' + $scope.event.id + ')';
 
     return ModerationService
       .find(query, 10, 0)
@@ -10714,7 +10718,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService", "searchApiSwitcher"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "variationRepository", "offerEditor", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
@@ -17479,7 +17483,7 @@ function listItems(
   ModerationService,
   $q,
   managementListItemDefaults,
-  searchApiSwitcher
+  appConfig
 ) {
   var globalPermissionListItems = authorizationService
     .getPermissions()
@@ -17500,7 +17504,7 @@ function listItems(
    * @return {number}
    */
   function countOffersWaitingForValidation(roles) {
-    apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+    apiVersion = appConfig.roleConstraintsMode;
 
     var query = '';
 
@@ -17573,7 +17577,7 @@ function listItems(
     return $q.resolve(listItems);
   }
 }
-listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults", "searchApiSwitcher"];
+listItems.$inject = ["RolePermission", "authorizationService", "ModerationService", "$q", "managementListItemDefaults", "appConfig"];
 })();
 
 // Source: src/management/moderation/components/moderation-offer/moderation-offer.component.js
@@ -17892,13 +17896,13 @@ function ModerationListController(
   $scope,
   $q,
   $document,
-  searchApiSwitcher
+  appConfig
 ) {
   var moderator = this;
 
   var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-  $scope.apiVersion = 'v' + searchApiSwitcher.getApiVersion();
+  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   moderator.roles = [];
 
@@ -18008,7 +18012,7 @@ function ModerationListController(
     );
   }
 }
-ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document", "searchApiSwitcher"];
+ModerationListController.$inject = ["ModerationService", "$uibModal", "RolePermission", "SearchResultGenerator", "rx", "$scope", "$q", "$document", "appConfig"];
 })();
 
 // Source: src/management/moderation/moderation.service.js
@@ -18047,9 +18051,6 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(queryString, itemsPerPage, offset) {
-    var moderationFilter = 'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]';
-    queryString = (queryString ? '(' + queryString + ')' + ' AND ' : '') + moderationFilter;
-
     return udbApi
       .findToModerate(queryString, offset, itemsPerPage);
   };
