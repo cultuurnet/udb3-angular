@@ -63,6 +63,21 @@
           </div>
         </div>
 
+      <div class="form-group">
+        <label>Kies een sjabloon</label>
+        <div class="row">
+          <div class="col-sm-8">
+            <div class="radio" ng-repeat="template in ::exporter.templates">
+              <label>
+                <input type="radio" name="eventExportTemplate" ng-model="exporter.selectedTemplate"
+                       ng-value="template" class="export-customization-brand-radio">
+                <span ng-bind="template.label"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
         <div class="form-group">
           <label for="export-customization-title">Titel</label> <small class="text-muted">verplicht in te vullen</small>
           <input placeholder="Bv. Uit met Vlieg of UiT in Gent" class="form-control" id="export-customization-title"
