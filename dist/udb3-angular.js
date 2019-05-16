@@ -22312,6 +22312,11 @@ function SavedSearchesList($scope, savedSearchesService, $uibModal, $rootScope) 
     $scope.savedSearches = savedSearches;
   });
 
+  this.encodeURI = function (uri) {
+    return encodeURIComponent(uri);
+  };
+  $scope.encodeURI = this.encodeURI;
+
   this.deleteSavedSearch = function(searchId) {
     var modal = $uibModal.open({
       templateUrl: 'templates/delete-search-modal.html',
@@ -32131,7 +32136,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <p>\n" +
     "                  <i class=\"fa fa-bookmark\"></i>\n" +
     "                  <span ng-bind=\"::savedSearch.name\"></span></p>\n" +
-    "                <p><a ng-href=\"search?query={{::savedSearch.query}}\" class=\"small\">Resultaten bekijken</a></p>\n" +
+    "                <p><a ng-href=\"search?query={{::encodeURI(savedSearch.query)}}\" class=\"small\">Resultaten bekijken</a></p>\n" +
     "            </td>\n" +
     "            <td class=\"saved-search-query\">\n" +
     "                <textarea ui-codemirror=\"{ onLoad : codemirrorLoaded }\" ng-model=\"::savedSearch.query\" class=\"query form-control\" rows=\"3\"\n" +
