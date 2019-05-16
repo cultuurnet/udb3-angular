@@ -4927,7 +4927,8 @@ function UdbApi(
     var offset = start || 0,
         searchParams = {
           start: offset,
-          disableDefaultFilters: true
+          disableDefaultFilters: true,
+          workflowStatus: 'READY_FOR_VALIDATION,APPROVED',
         };
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.params = searchParams;
