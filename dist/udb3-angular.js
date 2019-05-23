@@ -16496,7 +16496,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
   exporter.templates = [
       {name: 'tips', label: 'Tipsrapport'},
-      {name: 'map', label: 'Weergave op kaart'}
+      {name: 'map', label: 'Weergave op kaart (beta)'}
   ];
 
   udbApi.getMyRoles().then(function(roles) {
