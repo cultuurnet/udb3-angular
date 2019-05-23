@@ -30896,7 +30896,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           class=\"form-control\"\n" +
     "                           name=\"constraintv3\"\n" +
     "                           type=\"text\"\n" +
-    "                           ng-maxlength=\"255\"\n" +
     "                           ng-model=\"editor.role.constraints.v3\"\n" +
     "                           ng-disabled=\"editor.saving\">\n" +
     "                </div>\n" +
