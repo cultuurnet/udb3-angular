@@ -28640,7 +28640,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               ng-change=\"validateWebsite()\"\n" +
     "               autocomplete=\"off\"\n" +
     "               udb-http-prefix\n" +
-    "               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\"\n" +
+    "               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[A-Za-z0-9][A-Za-z0-9\\-\\/]*$/\"\n" +
     "               required>\n" +
     "        <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
     "        <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
@@ -31704,7 +31704,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
     "              <ng-form name=\"urlContactForm\">\n" +
-    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[A-Za-z0-9][A-Za-z0-9\\-\\/]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          <span translate-once=\"organizer.contact.required\"></span>\n" +

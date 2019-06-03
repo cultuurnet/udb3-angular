@@ -22,7 +22,7 @@
                ng-change="validateWebsite()"
                autocomplete="off"
                udb-http-prefix
-               ng-pattern="/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-\/]*$/"
+               ng-pattern="/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[A-Za-z0-9][A-Za-z0-9\-\/]*$/"
                required>
         <span class="fa fa-circle-o-notch fa-spin form-control-feedback" ng-show="showWebsiteValidation" aria-hidden="true"></span>
         <span id="organizer-website-status" class="sr-only">(warning)</span>

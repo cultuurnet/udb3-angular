@@ -30,7 +30,7 @@
         <div ng-switch="occ.newContact.type">
           <div ng-switch-when="url" class="form-group" ng-class="{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }">
               <ng-form name="urlContactForm">
-                  <input type="text" name="url" udb-http-prefix class="form-control" ng-model="occ.newContact.value" ng-pattern="/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[a-z0-9][a-z0-9\-\/]*$/" ng-model-options="{allowInvalid:true}" required>
+                  <input type="text" name="url" udb-http-prefix class="form-control" ng-model="occ.newContact.value" ng-pattern="/^(http\:\/\/|https\:\/\/)?([a-z0-9][a-z0-9\-]*\.)+[A-Za-z0-9][A-Za-z0-9\-\/]*$/" ng-model-options="{allowInvalid:true}" required>
                   <div class="help-block" ng-messages="urlContactForm.url.$error" ng-show="!occ.isPristine && urlContactForm.url.$error">
                       <p ng-message="required">
                           <span translate-once="organizer.contact.required"></span>
