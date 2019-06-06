@@ -5719,7 +5719,7 @@ function UdbApi(
     if (dashboardApi === 'sapi3') {
       var activeUser = uitidAuth.getUser();
       var userId = activeUser.id;
-      dashboardPath = 'offers/?creator=' + userId + '&disableDefaultFilters=true&sort[modified]=desc';
+      dashboardPath = 'offers/?creator=' + userId + '&disableDefaultFilters=true&sort[modified]=desc&sort[created]=asc';
     }
 
     return $http
