@@ -5743,18 +5743,22 @@ function UdbApi(
    * @return {Promise.<PagedCollection>}
    */
   this.getDashboardItems = function(page) {
-    var requestConfig = _.cloneDeep(defaultApiConfig);
+    var activeUser = uitidAuth.getUser();
+    var params = {
+      'creator': activeUser.id,
+      'disableDefaultFilters': true,
+      'sort[modified]': 'desc',
+      'sort[created]': 'asc',
+    };
     if (page > 1) {
-      requestConfig.params.page = page;
+      params.page = page;
     }
 
-    var activeUser = uitidAuth.getUser();
-    var userId = activeUser.id;
-    var dashboardPath = 'offers/?creator=' +
-        userId + '&disableDefaultFilters=true&sort[modified]=desc&sort[created]=asc';
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    requestConfig.params = params;
 
     return $http
-      .get(appConfig.baseUrl + dashboardPath, requestConfig)
+      .get(appConfig.baseUrl + 'offers/', requestConfig)
       .then(returnUnwrappedData);
   };
 

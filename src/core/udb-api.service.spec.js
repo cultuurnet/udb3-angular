@@ -1534,7 +1534,7 @@ describe('Service: UDB3 Api', function () {
     uitidAuth.getUser.and.returnValue({id: 1});
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&sort[modified]=desc&sort[created]=asc')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc')
       .respond(JSON.stringify(response));
     service
       .getDashboardItems()
@@ -1543,7 +1543,7 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&sort[modified]=desc&sort[created]=asc&page=23')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc&page=23')
       .respond(JSON.stringify(response));
     service
       .getDashboardItems(23)
