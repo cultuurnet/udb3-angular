@@ -931,8 +931,16 @@ function UdbApi(
       requestConfig.params.page = page;
     }
 
+    var dashboardApi = _.get(appConfig, 'dashboard.defaultApi', 'udb3');
+    var dashboardPath = 'dashboard/items';
+    if (dashboardApi === 'sapi3') {
+      var activeUser = uitidAuth.getUser();
+      var userId = activeUser.id;
+      dashboardPath = 'offers/?creator=' + userId + '&disableDefaultFilters=true&sort[modified]=desc';
+    }
+
     return $http
-      .get(appConfig.baseUrl + 'dashboard/items', requestConfig)
+      .get(appConfig.baseUrl + dashboardPath, requestConfig)
       .then(returnUnwrappedData);
   };
 
