@@ -23,30 +23,17 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByZipcode = function(zipcode, country) {
 
     var deferredPlaces = $q.defer();
-
-    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
-
-    var url = appConfig.baseUrl + 'places';
+    var url = appConfig.baseUrl + 'places/';
     var config = {
       params: {
-        'zipcode': zipcode,
-        'country': country
+        'postalCode': zipcode,
+        'addressCountry': country,
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
       }
     };
-
-    if (placesApi === 'sapi3') {
-      url = appConfig.baseUrl + 'places/';
-      config = {
-        params: {
-          'postalCode': zipcode,
-          'addressCountry': country,
-          'disableDefaultFilters': true,
-          'embed': true,
-          'limit': 1000,
-          'sort[created]': 'asc'
-        }
-      };
-    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -77,31 +64,17 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByCity = function(city, country) {
 
     var deferredPlaces = $q.defer();
-
-    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
-
-    var url = appConfig.baseUrl + 'places';
+    var url = appConfig.baseUrl + 'places/';
     var config = {
       params: {
-        'city': city,
-        'zipcode': '',
-        'country': country
+        'q': 'address.\\*.addressLocality:' + city,
+        'addressCountry': country,
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
       }
     };
-
-    if (placesApi === 'sapi3') {
-      url = appConfig.baseUrl + 'places/';
-      config = {
-        params: {
-          'q': 'address.\\*.addressLocality:' + city,
-          'addressCountry': country,
-          'disableDefaultFilters': true,
-          'embed': true,
-          'limit': 1000,
-          'sort[created]': 'asc'
-        }
-      };
-    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
