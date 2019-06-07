@@ -1,17 +1,14 @@
 'use strict';
 
 describe('Component: Organizer Contact', function() {
-  var $scope, $componentController, $http, $q, component, fakeContact, organizerContactWrapper;
+  var $scope, $componentController, component, fakeContact, organizerContactWrapper;
 
 
   beforeEach(module('udb.event-form'));
 
-  beforeEach(inject(function ($rootScope, _$componentController_, _$http_, _$q_) {
+  beforeEach(inject(function ($rootScope, _$componentController_) {
     $scope = $rootScope.$new();
     $componentController = _$componentController_;
-    $http = _$http_;
-    $q = _$q_;
-
     fakeContact = [
       {
         type: 'url',
