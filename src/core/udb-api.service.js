@@ -934,9 +934,25 @@ function UdbApi(
     var dashboardApi = _.get(appConfig, 'dashboard.defaultApi', 'udb3');
     var dashboardPath = 'dashboard/items';
     if (dashboardApi === 'sapi3') {
+      dashboardPath = 'offers/';
+
+      requestConfig.params.disableDefaultFilters = true;
+      requestConfig.params['sort[modified]'] = 'desc';
+      requestConfig.params['sort[created]'] = 'asc';
+
+      var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
+
       var activeUser = uitidAuth.getUser();
       var userId = activeUser.id;
-      dashboardPath = 'offers/?creator=' + userId + '&disableDefaultFilters=true&sort[modified]=desc&sort[created]=asc';
+      var userEmail = activeUser.email;
+
+      if (createdByQueryMode === 'uuid') {
+        requestConfig.params.creator = userId;
+      } else if (createdByQueryMode === 'email') {
+        requestConfig.params.creator = userEmail;
+      } else if (createdByQueryMode === 'mixed') {
+        requestConfig.params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+      }
     }
 
     return $http
