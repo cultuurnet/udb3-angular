@@ -335,4 +335,15 @@ describe('Controller: Event Form Organizer Modal', function() {
     expect($scope.newOrganizer.id).not.toEqual('73dbf765-1622-4454-aed9-6c1fe5771568');
     expect($uibModalInstance.close).not.toHaveBeenCalled();
   });
+
+  it('should verify if contact url is valid according to the regex', function(){
+    getController();
+    var regexp = new RegExp($scope.contactUrlRegex);
+    var mockUrls = MockData.urls;
+    var mockUrlsLength = mockUrls.length;
+    for (var i = 0; i < mockUrlsLength; i++) {
+      expect(regexp.test(mockUrls[i].url)).toEqual(mockUrls[i].valid);
+    }
+  })
+
 });

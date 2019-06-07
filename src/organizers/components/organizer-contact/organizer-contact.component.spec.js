@@ -1,14 +1,16 @@
 'use strict';
 
 describe('Component: Organizer Contact', function() {
-  var $scope, $componentController, component, fakeContact, organizerContactWrapper;
+  var $scope, $componentController, $http, $q, component, fakeContact, organizerContactWrapper;
 
 
   beforeEach(module('udb.event-form'));
 
-  beforeEach(inject(function ($rootScope, _$componentController_) {
+  beforeEach(inject(function ($rootScope, _$componentController_, _$http_, _$q_) {
     $scope = $rootScope.$new();
     $componentController = _$componentController_;
+    $http = _$http_;
+    $q = _$q_;
 
     fakeContact = [
       {
@@ -127,5 +129,17 @@ describe('Component: Organizer Contact', function() {
     component.addOrganizerContactInfo();
     expect(component.contact).toEqual(expectedContact);
   });
+
+
+  it('should verify if contact url is valid according to the regex', function(){
+    component = getComponent();
+    var regexp = new RegExp(component.contactUrlRegex);
+    var mockUrls= MockData.urls;
+    var mockUrlsLength = mockUrls.length;
+    for (var i = 0; i < mockUrlsLength; i++) {
+      expect(regexp.test(mockUrls[i].url)).toEqual(mockUrls[i].valid);
+    }
+  })
+
 
 });
