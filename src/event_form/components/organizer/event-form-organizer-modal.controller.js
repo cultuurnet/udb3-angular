@@ -23,8 +23,7 @@ function EventFormOrganizerModalController(
   OrganizerManager,
   appConfig,
   citiesBE,
-  citiesNL,
-  contactUrlRegex
+  citiesNL
 ) {
 
   var controller = this;
@@ -42,8 +41,7 @@ function EventFormOrganizerModalController(
   $scope.organizers = [];
   $scope.selectedCity = '';
   $scope.disableSubmit = true;
-  $scope.contactUrlRegex = contactUrlRegex;
-
+  $scope.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
   $scope.newOrganizer = {
     mainLanguage: 'nl',
     website: 'http://',
