@@ -2342,6 +2342,9 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     if (placesApi === 'sapi3') {
       url = appConfig.baseUrl + 'places/';
       config = {
+        headers: {
+          'X-Api-Key': _.get(appConfig, 'apiKey')
+        },
         params: {
           'postalCode': zipcode,
           'addressCountry': country,
@@ -2397,6 +2400,9 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     if (placesApi === 'sapi3') {
       url = appConfig.baseUrl + 'places/';
       config = {
+        headers: {
+          'X-Api-Key': _.get(appConfig, 'apiKey')
+        },
         params: {
           'q': 'address.\\*.addressLocality:' + city,
           'addressCountry': country,
