@@ -190,8 +190,15 @@ describe('Controller: Event Detail', function() {
   var deferredEvent, deferredVariation, deferredPermission, deferredUpdate,
       deferredHistory;
 
+  var appConfig = {
+    'roleConstraintsMode': 'v2'
+  };
+
   beforeEach(module('udb.search'));
   beforeEach(module('udb.templates'));
+  beforeEach(module('udb.event-detail', function ($provide) {
+    $provide.constant('appConfig', appConfig);
+  }));
 
   beforeEach(inject(function($injector, $rootScope, $controller, _$q_) {
     $scope = $rootScope.$new();
@@ -257,6 +264,8 @@ describe('Controller: Event Detail', function() {
         'lg',
         'nl'
     );
+
+    expect(ModerationService.find).toHaveBeenCalledWith('(((city:leuven)) AND cdbid:1111be8c-a412-488d-9ecc-8fdf9e52edbc)', 10, 0);
 
     expect($scope.eventId).toEqual(eventId);
   });

@@ -32,9 +32,6 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(queryString, itemsPerPage, offset) {
-    var moderationFilter = 'wfstatus:"readyforvalidation" AND startdate:[NOW TO *]';
-    queryString = (queryString ? '(' + queryString + ')' + ' AND ' : '') + moderationFilter;
-
     return udbApi
       .findToModerate(queryString, offset, itemsPerPage);
   };
