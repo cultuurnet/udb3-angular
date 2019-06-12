@@ -71,4 +71,11 @@ describe('Service: uitidAuth', function () {
     uitidAuth.getUser();
     expect($cookies.getObject).toHaveBeenCalledWith('user');
   });
+
+  it('should decode the current user\'s token data', function () {
+    var data = uitidAuth.getTokenData();
+    expect(data.uid).toEqual('C88F3BF5-B456-41D0-923E-D2137BE93A99');
+    expect(data.nick).toEqual('test');
+    expect(data.email).toEqual('test@test.com');
+  });
 });
