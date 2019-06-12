@@ -40,8 +40,8 @@ describe('Service: uitidAuth', function () {
   }));
 
   beforeEach(inject(function ($injector) {
-    uitidAuth = $injector.get('uitidAuth');
     jwtHelper = $injector.get('jwtHelper');
+    uitidAuth = $injector.get('uitidAuth');
   }));
 
   it('should set a token', function () {
