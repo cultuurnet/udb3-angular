@@ -10559,6 +10559,13 @@ function EventDetail(
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
 
+    if (event.typicalAgeRange.indexOf('-') === event.typicalAgeRange.length - 1) {
+      $scope.ageRange = event.typicalAgeRange.slice(0, -1) + '+';
+    }
+    else {
+      $scope.ageRange = event.typicalAgeRange;
+    }
+
     $scope.eventIdIsInvalid = false;
 
     if (!disableVariations) {
@@ -21890,6 +21897,12 @@ function PlaceDetail(
     }
 
     $scope.finishedLoading = true;
+    if (place.typicalAgeRange.indexOf('-') === place.typicalAgeRange.length - 1) {
+      $scope.ageRange = place.typicalAgeRange.slice(0, -1) + '+';
+    }
+    else {
+      $scope.ageRange = place.typicalAgeRange;
+    }
   }
 
   function showVariation(variation) {
@@ -28099,7 +28112,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{ageRange}}</span>\n" +
     "                  <span ng-if=\"::allAges && !noAgeInfo\" translate-once=\"preview.all_ages\"></span>\n" +
     "                  <span ng-if=\"noAgeInfo\" translate-once=\"preview.no_age\"></span>\n" +
     "                </td>\n" +
@@ -32120,7 +32133,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <tr>\n" +
     "              <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "              <td>\n" +
-    "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
+    "                <span ng-if=\"::place.typicalAgeRange\">{{ageRange}}</span>\n" +
     "                <span ng-if=\"::(!place.typicalAgeRange)\" translate-once=\"preview.all_ages\"></span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
