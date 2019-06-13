@@ -32,6 +32,7 @@ angular
         'btford.socket-io',
         'pascalprecht.translate',
         'angular.filter',
+        'angular-jwt'
     ])
     .constant('Levenshtein', window.Levenshtein);
 
@@ -5726,7 +5727,6 @@ function UdbApi(
    * @return {Promise.<PagedCollection>}
    */
   this.getDashboardItems = function(page) {
-    var activeUser = uitidAuth.getUser();
     var params = {
       'disableDefaultFilters': true,
       'sort[modified]': 'desc',
@@ -5735,8 +5735,9 @@ function UdbApi(
 
     var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-    var userId = activeUser.id;
-    var userEmail = activeUser.email;
+    var tokenData = uitidAuth.getTokenData();
+    var userId = tokenData.uid;
+    var userEmail = tokenData.email;
 
     if (createdByQueryMode === 'uuid') {
       params.creator = userId;
@@ -7331,7 +7332,7 @@ angular
   .service('uitidAuth', UitidAuth);
 
 /* @ngInject */
-function UitidAuth($window, $location, appConfig, $cookies) {
+function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
 
   function removeCookies () {
     $cookies.remove('token');
@@ -7409,6 +7410,10 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return currentToken;
   };
 
+  this.getTokenData = function () {
+    return jwtHelper.decodeToken(this.getToken());
+  };
+
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
   /**
    * Returns the currently logged in user
@@ -7417,7 +7422,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return $cookies.getObject('user');
   };
 }
-UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
+UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies", "jwtHelper"];
 })();
 
 // Source: src/cultuurkuur/event-cultuurkuur.component.js

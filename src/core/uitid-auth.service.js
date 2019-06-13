@@ -12,7 +12,7 @@ angular
   .service('uitidAuth', UitidAuth);
 
 /* @ngInject */
-function UitidAuth($window, $location, appConfig, $cookies) {
+function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
 
   function removeCookies () {
     $cookies.remove('token');
@@ -88,6 +88,10 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     }
 
     return currentToken;
+  };
+
+  this.getTokenData = function () {
+    return jwtHelper.decodeToken(this.getToken());
   };
 
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.

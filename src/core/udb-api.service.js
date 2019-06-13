@@ -926,7 +926,6 @@ function UdbApi(
    * @return {Promise.<PagedCollection>}
    */
   this.getDashboardItems = function(page) {
-    var activeUser = uitidAuth.getUser();
     var params = {
       'disableDefaultFilters': true,
       'sort[modified]': 'desc',
@@ -935,8 +934,9 @@ function UdbApi(
 
     var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-    var userId = activeUser.id;
-    var userEmail = activeUser.email;
+    var tokenData = uitidAuth.getTokenData();
+    var userId = tokenData.uid;
+    var userEmail = tokenData.email;
 
     if (createdByQueryMode === 'uuid') {
       params.creator = userId;

@@ -30,5 +30,6 @@ angular
         'btford.socket-io',
         'pascalprecht.translate',
         'angular.filter',
+        'angular-jwt'
     ])
     .constant('Levenshtein', window.Levenshtein);
