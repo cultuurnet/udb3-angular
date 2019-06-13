@@ -94,4 +94,8 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $tra
   this.getPermissions = function () {
     return udbApi.getMyPermissions();
   };
+
+  this.isGodUser = function () {
+    return this.hasPermission('GEBRUIKERS_BEHEREN');
+  };
 }
