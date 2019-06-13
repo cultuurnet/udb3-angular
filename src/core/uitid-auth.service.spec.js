@@ -2,9 +2,18 @@
 
 describe('Service: uitidAuth', function () {
 
-  var $window, $location, $cookies, uitidAuth;
+  var $window, $location, $cookies, jwtHelper, uitidAuth;
   var appConfig = { authUrl: 'http://google.be/', baseUrl: 'http://culudb-app.dev:8080/' };
-  var token = 'blubblub';
+
+  // uid: C88F3BF5-B456-41D0-923E-D2137BE93A99
+  // nick: test
+  // email: test@test.com
+  // iss: http://culudb-jwt-provider.dev
+  // iat: 1560339749
+  // exp: 1560343349
+  // nbf: 1560339749
+  // signature keys: same as dev environments
+  var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9jdWx1ZGItand0LXByb3ZpZGVyLmRldiIsInVpZCI6IjZFOTE1RjRGLThFRTctNDczOS04Mzg1LUEwNjI3QkNGNDhDQiIsIm5pY2siOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNTYwMzM5NzQ5LCJleHAiOjE1NjAzNDMzNDksIm5iZiI6MTU2MDMzOTc0OX0.qWYtN19T8yBsBcCAIHB8lnj5kri9hCBFIMeMAuYRFsoxC5BAYKgSvHWTEwrCWGJD8Af2hjVxlFjvUBvGt97XBdMh_-BxUMRategXeGAhIYweO3ES4q9sHB-bcgw9cTEg8XchMPftqIzKr3m23vyJSH6FQnACswMQQ9-8og_wE2DMCHuGFhBW8atIsAYt9hSMLg0UvNeKTikRLQCCPl5bZWa9be7I4LS7TgqSPPJA6Yq0vMqMciZV2_b7OkQjx9QTUk4C6rDhsiOWM3o1PUzus-KK0g67GT_fiALR5W6gJ8JJCf9HVrEoivis6YOsWBE_sP_cBGmN9-fzprSJkrQ-eQ';
 
   beforeEach(module('udb.core', function ($provide) {
     $provide.constant('appConfig', appConfig);
@@ -31,6 +40,7 @@ describe('Service: uitidAuth', function () {
   }));
 
   beforeEach(inject(function ($injector) {
+    jwtHelper = $injector.get('jwtHelper');
     uitidAuth = $injector.get('uitidAuth');
   }));
 

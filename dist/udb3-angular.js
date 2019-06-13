@@ -32,6 +32,7 @@ angular
         'btford.socket-io',
         'pascalprecht.translate',
         'angular.filter',
+        'angular-jwt'
     ])
     .constant('Levenshtein', window.Levenshtein);
 
@@ -2296,6 +2297,10 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $tra
    */
   this.getPermissions = function () {
     return udbApi.getMyPermissions();
+  };
+
+  this.isGodUser = function () {
+    return this.hasPermission('GEBRUIKERS_BEHEREN');
   };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope", "$translate"];
@@ -5765,9 +5770,9 @@ function UdbApi(
 
       var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-      var activeUser = uitidAuth.getUser();
-      var userId = activeUser.id;
-      var userEmail = activeUser.email;
+      var tokenData = uitidAuth.getTokenData();
+      var userId = tokenData.uid;
+      var userEmail = tokenData.email;
 
       if (createdByQueryMode === 'uuid') {
         requestConfig.params.creator = userId;
@@ -7356,7 +7361,7 @@ angular
   .service('uitidAuth', UitidAuth);
 
 /* @ngInject */
-function UitidAuth($window, $location, appConfig, $cookies) {
+function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
 
   function removeCookies () {
     $cookies.remove('token');
@@ -7434,6 +7439,10 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return currentToken;
   };
 
+  this.getTokenData = function () {
+    return jwtHelper.decodeToken(this.getToken());
+  };
+
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
   /**
    * Returns the currently logged in user
@@ -7442,7 +7451,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return $cookies.getObject('user');
   };
 }
-UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
+UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies", "jwtHelper"];
 })();
 
 // Source: src/cultuurkuur/event-cultuurkuur.component.js
@@ -17841,7 +17850,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authorizationService, appConfig) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -17849,6 +17858,8 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
+  moc.uitId = _.get(appConfig, 'uitidUrl');
+  moc.isGodUser = isGodUser;
 
   // fetch offer
   ModerationService
@@ -17875,8 +17886,12 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   function showProblem(problem) {
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
+  }
 }
-ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "authorizationService", "appConfig"];
 })();
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
@@ -26078,7 +26093,8 @@ function OfferController(
   $q,
   appConfig,
   $uibModal,
-  $translate
+  $translate,
+  authorizationService
 ) {
   var controller = this;
   var cachedOffer;
@@ -26091,7 +26107,9 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
+  controller.isGodUser = isGodUser;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -26140,6 +26158,10 @@ function OfferController(
     } else {
       return $q.reject();
     }
+  }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
   }
 
   function watchLabels() {
@@ -26321,7 +26343,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate", "authorizationService"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -30623,7 +30645,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "    </div>\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
-    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "        <div class=\"col-md-6\">Toegevoegd door\n" +
+    "            <span ng-if=\"::!moc.isGodUser\">\n" +
+    "                <span ng-bind=\"moc.offer.creator\"></span>\n" +
+    "            </span>\n" +
+    "            <span ng-if=\"::moc.isGodUser\">\n" +
+    "                <a href=\"{{ moc.uitId + moc.offer.creator }}\"><span ng-bind=\"moc.offer.creator\"></span></a>\n" +
+    "            </span>\n" +
+    "        </div>\n" +
     "        <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right\">\n" +
     "            <udb-moderation-offer offer-id=\"{{moc.offerId}}\" continue=\"false\"></udb-moderation-offer>\n" +
     "        </div>\n" +
@@ -32764,7 +32793,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!eventCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::eventCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ eventCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
@@ -32913,7 +32947,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!placeCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::placeCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ placeCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
