@@ -840,7 +840,7 @@ angular.module('udb.core')
     },
     duplicate: {
       title: 'Copier et modifier',
-      description: 'Vous êtes sur le point de copier cet événement. Choisissez un moment pour cet événement.',
+      description: 'Vous êtes sur le point de copier un événement. Choisissez une date pour cet événement.',
       error: 'Il y a eu une erreur dans la création d\'une copie!'
     },
     dashboard: {
