@@ -5,8 +5,7 @@ describe('Factory: List Items', function () {
       ModerationService,
       $q,
       $scope,
-      managementListItems,
-      searchApiSwitcher;
+      managementListItems;
 
   var permissions = [
     'AANBOD_BEWERKEN',
@@ -29,6 +28,10 @@ describe('Factory: List Items', function () {
       }
     }
   ];
+
+  var appConfig = {
+    "roleConstraintsMode": "v2"
+  };
 
   var resultset = {
     "@context": "http://www.w3.org/ns/hydra/context.jsonld",
@@ -84,12 +87,11 @@ describe('Factory: List Items', function () {
   beforeEach(function () {
     authorizationService = jasmine.createSpyObj('authorizationService', ['getPermissions']);
     ModerationService = jasmine.createSpyObj('ModerationService', ['getMyRoles', 'find']);
-    searchApiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['getApiVersion']);
 
     module(function($provide) {
       $provide.value('authorizationService', authorizationService);
       $provide.value('ModerationService', ModerationService);
-      $provide.value('searchApiSwitcher', searchApiSwitcher);
+      $provide.constant('appConfig', appConfig);
     });
   });
 
@@ -101,7 +103,6 @@ describe('Factory: List Items', function () {
       authorizationService.getPermissions.and.returnValue($q.resolve(permissions));
       ModerationService.getMyRoles.and.returnValue($q.resolve(roles));
       ModerationService.find.and.returnValue($q.resolve(resultset));
-      searchApiSwitcher.getApiVersion.and.returnValue('2');
 
       managementListItems = $injector.get('managementListItems');
     });
@@ -154,7 +155,6 @@ describe('Factory: List Items', function () {
         }
       ]));
       ModerationService.find.and.returnValue($q.resolve(resultset));
-      searchApiSwitcher.getApiVersion.and.returnValue('2');
 
       managementListItems = $injector.get('managementListItems');
     });
@@ -199,7 +199,6 @@ describe('Factory: List Items', function () {
         }
       ]));
       ModerationService.find.and.returnValue($q.resolve(resultset));
-      searchApiSwitcher.getApiVersion.and.returnValue('2');
 
       managementListItems = $injector.get('managementListItems');
     });

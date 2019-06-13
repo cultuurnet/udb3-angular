@@ -34,11 +34,11 @@
       </div>
       <div class="udb-email">
         <span class="fa fa-user"></span>&nbsp;
-        <span ng-if="::!eventCtrl.isGodUser">
+        <span ng-if="::!placeCtrl.isGodUser">
           <span ng-bind="event.creator"></span>
         </span>
-        <span ng-if="::eventCtrl.isGodUser">
-          <a href="{{ eventCtrl.uitId + event.creator }}"><span ng-bind="event.creator"></span></a>
+        <span ng-if="::placeCtrl.isGodUser">
+          <a href="{{ placeCtrl.uitId + event.creator }}"><span ng-bind="event.creator"></span></a>
         </span>
       </div>
       <div class="udb-organizer-name">

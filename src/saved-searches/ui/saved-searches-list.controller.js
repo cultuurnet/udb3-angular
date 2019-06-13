@@ -41,6 +41,11 @@ function SavedSearchesList($scope, savedSearchesService, $uibModal, $rootScope) 
     $scope.savedSearches = savedSearches;
   });
 
+  this.encodeURI = function (uri) {
+    return encodeURIComponent(uri);
+  };
+  $scope.encodeURI = this.encodeURI;
+
   this.deleteSavedSearch = function(searchId) {
     var modal = $uibModal.open({
       templateUrl: 'templates/delete-search-modal.html',
