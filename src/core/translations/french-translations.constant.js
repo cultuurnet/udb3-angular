@@ -867,6 +867,11 @@ angular.module('udb.core')
         'delete': 'Supprimer'
       }
     },
+    entry: {
+      'exported_documents': 'Documents exportés',
+      'notifications': 'Notifications',
+      'in_progress': 'Occupé'
+    },
     offerTypes: {
       'Concert': 'Concert',
       'Theatervoorstelling': 'Théâtre',
