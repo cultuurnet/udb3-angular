@@ -25,6 +25,9 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
         'postalCode': zipcode,
         'addressCountry': country,
@@ -66,6 +69,9 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
         'q': 'address.\\*.addressLocality:' + city,
         'addressCountry': country,

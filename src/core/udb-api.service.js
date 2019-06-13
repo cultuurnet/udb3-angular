@@ -928,11 +928,24 @@ function UdbApi(
   this.getDashboardItems = function(page) {
     var activeUser = uitidAuth.getUser();
     var params = {
-      'creator': activeUser.id,
       'disableDefaultFilters': true,
       'sort[modified]': 'desc',
       'sort[created]': 'asc',
     };
+
+    var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
+
+    var userId = activeUser.id;
+    var userEmail = activeUser.email;
+
+    if (createdByQueryMode === 'uuid') {
+      params.creator = userId;
+    } else if (createdByQueryMode === 'email') {
+      params.creator = userEmail;
+    } else if (createdByQueryMode === 'mixed') {
+      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+    }
+
     if (page > 1) {
       params.page = page;
     }

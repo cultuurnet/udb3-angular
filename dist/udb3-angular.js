@@ -2297,6 +2297,10 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $tra
   this.getPermissions = function () {
     return udbApi.getMyPermissions();
   };
+
+  this.isGodUser = function () {
+    return this.hasPermission('GEBRUIKERS_BEHEREN');
+  };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope", "$translate"];
 })();
@@ -2330,6 +2334,9 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
         'postalCode': zipcode,
         'addressCountry': country,
@@ -2371,6 +2378,9 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
         'q': 'address.\\*.addressLocality:' + city,
         'addressCountry': country,
@@ -5718,11 +5728,24 @@ function UdbApi(
   this.getDashboardItems = function(page) {
     var activeUser = uitidAuth.getUser();
     var params = {
-      'creator': activeUser.id,
       'disableDefaultFilters': true,
       'sort[modified]': 'desc',
       'sort[created]': 'asc',
     };
+
+    var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
+
+    var userId = activeUser.id;
+    var userEmail = activeUser.email;
+
+    if (createdByQueryMode === 'uuid') {
+      params.creator = userId;
+    } else if (createdByQueryMode === 'email') {
+      params.creator = userEmail;
+    } else if (createdByQueryMode === 'mixed') {
+      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+    }
+
     if (page > 1) {
       params.page = page;
     }
@@ -10510,6 +10533,13 @@ function EventDetail(
     $scope.event = jsonLDLangFilter(event, language, true);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
+
+    if (event.typicalAgeRange.indexOf('-') === event.typicalAgeRange.length - 1) {
+      $scope.ageRange = event.typicalAgeRange.slice(0, -1) + '+';
+    }
+    else {
+      $scope.ageRange = event.typicalAgeRange;
+    }
 
     $scope.eventIdIsInvalid = false;
 
@@ -17786,7 +17816,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authorizationService, appConfig) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -17794,6 +17824,8 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
+  moc.uitId = _.get(appConfig, 'uitidUrl');
+  moc.isGodUser = isGodUser;
 
   // fetch offer
   ModerationService
@@ -17820,8 +17852,12 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   function showProblem(problem) {
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
+  }
 }
-ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "authorizationService", "appConfig"];
 })();
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
@@ -21842,6 +21878,12 @@ function PlaceDetail(
     }
 
     $scope.finishedLoading = true;
+    if (place.typicalAgeRange.indexOf('-') === place.typicalAgeRange.length - 1) {
+      $scope.ageRange = place.typicalAgeRange.slice(0, -1) + '+';
+    }
+    else {
+      $scope.ageRange = place.typicalAgeRange;
+    }
   }
 
   function showVariation(variation) {
@@ -26017,7 +26059,8 @@ function OfferController(
   $q,
   appConfig,
   $uibModal,
-  $translate
+  $translate,
+  authorizationService
 ) {
   var controller = this;
   var cachedOffer;
@@ -26030,7 +26073,9 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
+  controller.isGodUser = isGodUser;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -26079,6 +26124,10 @@ function OfferController(
     } else {
       return $q.reject();
     }
+  }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
   }
 
   function watchLabels() {
@@ -26260,7 +26309,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate", "authorizationService"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -28051,7 +28100,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{ageRange}}</span>\n" +
     "                  <span ng-if=\"::allAges && !noAgeInfo\" translate-once=\"preview.all_ages\"></span>\n" +
     "                  <span ng-if=\"noAgeInfo\" translate-once=\"preview.no_age\"></span>\n" +
     "                </td>\n" +
@@ -30562,7 +30611,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "    </div>\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
-    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "        <div class=\"col-md-6\">Toegevoegd door\n" +
+    "            <span ng-if=\"::!moc.isGodUser\">\n" +
+    "                <span ng-bind=\"moc.offer.creator\"></span>\n" +
+    "            </span>\n" +
+    "            <span ng-if=\"::moc.isGodUser\">\n" +
+    "                <a href=\"{{ moc.uitId + moc.offer.creator }}\"><span ng-bind=\"moc.offer.creator\"></span></a>\n" +
+    "            </span>\n" +
+    "        </div>\n" +
     "        <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right\">\n" +
     "            <udb-moderation-offer offer-id=\"{{moc.offerId}}\" continue=\"false\"></udb-moderation-offer>\n" +
     "        </div>\n" +
@@ -32072,7 +32128,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <tr>\n" +
     "              <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "              <td>\n" +
-    "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
+    "                <span ng-if=\"::place.typicalAgeRange\">{{ageRange}}</span>\n" +
     "                <span ng-if=\"::(!place.typicalAgeRange)\" translate-once=\"preview.all_ages\"></span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
@@ -32703,7 +32759,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!eventCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::eventCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ eventCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
@@ -32852,7 +32913,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!placeCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::placeCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ placeCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
