@@ -14,7 +14,7 @@ describe('Service: UDB3 Api', function () {
       baseSearchUrl: baseUrl
     };
 
-    uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
+    uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken', 'getTokenData']);
 
     $provide.constant('appConfig', appConfig);
 
@@ -1531,7 +1531,7 @@ describe('Service: UDB3 Api', function () {
       ]
     };
 
-    uitidAuth.getUser.and.returnValue({id: 1});
+    uitidAuth.getTokenData.and.returnValue({uid: 1, email: 'test@test.com'});
 
     $httpBackend
       .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc')
