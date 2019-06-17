@@ -20,16 +20,17 @@ function EventFormImageUploadController(
   appConfig,
   MediaManager,
   $q,
-  copyrightNegotiator
+  copyrightNegotiator,
+  $translate
 ) {
 
   // Scope vars.
   $scope.userAgreementUrl = _.get(appConfig, 'media.userAgreementUrl', '/user-agreement');
-  $scope.copyrightUrl = _.get(appConfig, 'media.copyrightUrl', '/copyright');
+  $scope.copyrightUrl = '/' + $translate.use() + _.get(appConfig, 'media.copyrightUrl', '/copyright');
   $scope.saving = false;
   $scope.error = false;
   $scope.showAgreements = !copyrightNegotiator.confirmed();
-  $scope.modalTitle = 'Afbeelding toevoegen';
+  $scope.modalTitle = $translate.instant('eventForm.imageUpload.modalTitle');
   $scope.description = '';
   $scope.copyright = '';
   $scope.maxFileSize = _.get(appConfig, 'media.fileSizeLimit', '1MB');
@@ -44,7 +45,7 @@ function EventFormImageUploadController(
 
   var invalidFileErrors = {
     'default': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
-    'maxSize': 'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is ' + $scope.maxFileSize + '.'
+    'maxSize': $translate.instant('eventForm.imageUpload.maxSize') + $scope.maxFileSize + '.'
   };
 
   /**

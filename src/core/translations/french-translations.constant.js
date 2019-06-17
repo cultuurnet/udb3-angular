@@ -452,11 +452,12 @@ angular.module('udb.core')
       'category': 'Catégorie',
       'category_help': 'Choisissez la catégorie qui décrit le mieux ce lieu.',
       'category_validation': 'Catégorie est un domaine obligatoire.',
-      'error': 'Il y a eu une erreur durant l\'enregistrement du lieu.',
+      'error': 'Il s\'est produit une erreur lors de l\'enregistrement du lieu.',
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter',
-      'nlPostalCode_validation': 'Code postal est un domaine obligatoire.'
+      'nlPostalCode_validation': 'Code postal est un domaine obligatoire.',
+      'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
     eventForm: {
       'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
@@ -477,6 +478,7 @@ angular.module('udb.core')
         'title_event': 'Où L\'événement ou l\'activité a-t-elle lieu?',
         'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
+        'choose_city_helper': 'p. ex Mons ou 7000',
         'placeholder_city': 'Commune ou code postal',
         'problem_city': 'Il y a eu un problème durant la collection des villes',
         'change': 'Modifier',
@@ -489,7 +491,8 @@ angular.module('udb.core')
         'placeholder_street': 'Rue de l\'église 1',
         'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
         'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
-        'ok': 'OK'
+        'ok': 'OK',
+        'zip': 'Code postal'
       },
       step4: {
         'basic_data': 'Données de base',
@@ -498,8 +501,8 @@ angular.module('udb.core')
         'help_event': 'Choisissez un <strong>bon titre</strong>, p.ex. \"Rouler à vélo le long des chapelles\", \"La Saga de la Licorne\".',
         'help_place': 'Utilisez la <strong>dénomination officielle</strong>, p.ex. \"Argos, centre pour l\'art et les médias\", \"Site de l\'abbaye Herkenrode\", \"Centre culturel De Werf\".',
         'help_description': 'Vous pouvez ajouter une <strong>description détaillée</strong> dans l\'étape 5.',
-        'info_missing': 'Vous n\'avez pas introduit toutes les informations demandées:',
-        'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'activité. Veuillez essayer plus tard.',
+        'info_missing': 'Vous n\'avez pas rempli tous les champs d\'informations obligatoires:',
+        'save_error': 'Une erreur s\'est produite lors de l\'enregistrement de votre activité. Merci de réessayer un peu plus tard.',
         'continue': 'Continuer',
         'doubles_title': 'Évitez les doubles emplois',
         'doubles_help': 'Nous avons trouvé des éléments similaires. Controlez les éléments importés auparavant.',
@@ -544,7 +547,7 @@ angular.module('udb.core')
         'reserve_places': 'Réservez des places',
         'check_availability': 'Controlez la disponibilité',
         'subscribe': 'Inscrivez-vous',
-        'add_more_contact': 'Ajoutez plus d\'informations du contact',
+        'add_more_contact': 'Ajouter plus de coordonnées',
         'contact_error': 'Il y a eu une erreur dans l\'enregistrement de l\'information du contact.',
         'facilities': 'Accessibilité',
         'add_facility': 'Ajouter des dispositions',
@@ -568,7 +571,8 @@ angular.module('udb.core')
           'Custom': 'Autres',
           'from': 'Du',
           'till': 'au',
-          'age': 'ans'
+          'age': 'ans',
+          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -602,6 +606,10 @@ angular.module('udb.core')
         'error_empty': 'Choisissez une date de publication.',
         'cancel': 'Annuler',
         'ready': 'Prêt à modifier'
+      },
+      imageUpload: {
+        'modalTitle': 'Ajouter une image',
+        'maxSize':'Le fichier que vous souhaitez télécharger est trop gros. La taille maximale est '
       }
     },
     calendar: {
@@ -716,18 +724,18 @@ angular.module('udb.core')
     'LABELS_BEHEREN': 'Gérer les labels',
     'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
     'ORGANISATIES_BEWERKEN': 'Modifier les organisations',
-    'event type missing': 'Avez-vous choisi un type en <a href="#quoi" class="alert-link">étape 1</a>?',
+    'event type missing': 'Choisissez un type à <a href="#quoi" class="alert-link">l\'étape 1</a>?',
     'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
     'start or end date missing': 'Avez-vous choisi une date de début et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
     'when missing': 'Avez-vous fait un choix en <a href="#quand" class="alert-link">étape 2</a>?',
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'location missing for place': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
-    'UNIQUE_ORGANIZER_NOTICE': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
+    'UNIQUE_ORGANIZER_NOTICE': 'Pour préserver à chaque organisation une identité unique dans UiTdatabank, nous demandons à chaque organisation de fournir un hyperlien unique et valide.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
-      'dayOfWeek': 'Choisissez au moins un jour dans chaque ligne que vous avez ajoutée.',
-      'openIsBeforeClose': 'Veuillez introduire une heure de fermeture qui tombe plus tard que l\'heure d\'ouverture.'
+      'dayOfWeek': 'Choisissez au moins un jour dans chaque ligne ajoutée.',
+      'openIsBeforeClose': 'L\'heure de fermeture doit être postérieure à l\'heure d’ouverture.'
     },
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'L\'heure de début et de fin est obligatoire quand un événement ne dure pas toute la journée.',
@@ -751,7 +759,7 @@ angular.module('udb.core')
       }
     },
     images: {
-      'agreement': 'Vous êtes sur le point d\'ajouter une ou plusieurs images et de les diffuser publiquement. Pour ceci il faut respecter tous les droits d\'auteur et de portrait applicables, ainsi que d\'autres législations en vigueur. Sinon, vous pouvez être rendu responsable, comme convenu dans les',
+      'agreement': 'Vous êtes sur le point d\'ajouter une ou plusieurs images et de les diffuser publiquement. Pour ceci il faut respecter tous les droits d\'auteur et de portrait applicables, ainsi que d\'autres législations en vigueur. Dans le cas contraire, vous pouvez en être tenu responsable, comme précisé dans les',
       'conditions': 'conditions générales',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
@@ -782,7 +790,7 @@ angular.module('udb.core')
       modal: {
         'title': 'Ajouter une nouvelle organisation',
         'avoid_doubles': 'Évitez les doubles emplois',
-        'unique_notice': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
+        'unique_notice': 'Pour préserver à chaque organisation une identité unique dans UiTdatabank, nous demandons à chaque organisation de fournir un hyperlien unique et valide.',
         'website': 'Site web',
         'alert_warning': 'Cette adresse est déjà utilisée par l\'organisation \'{{organizerName}}\'. Donnez un site web unique ou',
         'alert_button': 'utilisez {{organizerName}} comme organisation',
@@ -815,9 +823,9 @@ angular.module('udb.core')
         'enter_email': 'Introduisez une adresse mail',
         'enter_phone': 'Introduisez un numéro de téléphone<small class="text-muted">, p.ex. 011 32 43 54</small>',
         'required': 'Veuillez compléter ce domaine.',
-        'valid_url': 'Veuillez introduire un lien hypertexte valable.',
-        'valid_email': 'Veuillez introduire une adresse mail valable.',
-        'valid_phone': 'Veuillez introduire un numéro de téléphone valable.',
+        'valid_url': 'Cette url n\'est pas valable.',
+        'valid_email': 'Cette adresse e-mail n\'est pas valable.',
+        'valid_phone': 'Ce numéro de téléphone n\'est pas valable.',
         'cancel': 'Annuler',
         'add': 'Ajouter',
         'add_phone': 'Ajouter un numéro de téléphone',

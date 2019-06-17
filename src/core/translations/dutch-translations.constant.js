@@ -577,7 +577,8 @@ angular.module('udb.core')
           'Custom': 'Andere',
           'from': 'Van',
           'till': 'tot',
-          'age': 'jaar'
+          'age': 'jaar',
+          'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -611,6 +612,10 @@ angular.module('udb.core')
         'error_empty': 'Kies een publicatiedatum.',
         'cancel': 'Annuleren',
         'ready': 'Klaar met bewerken'
+      },
+      imageUpload: {
+        'modalTitle': 'Afbeelding toevoegen',
+        'maxSize':'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is '
       }
     },
     calendar: {
