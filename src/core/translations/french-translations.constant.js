@@ -382,10 +382,10 @@ angular.module('udb.core')
     },
     labels: {
       'what': 'Ajoutez des mots clés courts et spécifiques.',
-      'invalid': 'Cela semble être un label invalide. Un label ',
-      'chars': 'se compose uniquement de lettres ou de chiffres',
-      'excluded': 'ne contient que \'-\' et \'_\', mais ne peut pas commençer avec ces caractères',
-      'length': 'compte de 2 à 50 caractères'
+      'invalid': 'Ce label ne semble pas valable. Un label ',
+      'chars': 'Ne comporte que des lettres ou des chiffres',
+      'excluded': 'Ne comporte que \'-\' ou \'_\' mais ne peut commencer avec ces caractêres',
+      'length': 'Comporte de 2 à 50 caractères'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
