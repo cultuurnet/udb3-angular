@@ -21,11 +21,12 @@ function EventFormImageUploadController(
   MediaManager,
   $q,
   copyrightNegotiator,
-  $translate
+  $translate,
+  $filter
 ) {
 
   // Scope vars.
-  $scope.userAgreementUrl = _.get(appConfig, 'media.userAgreementUrl', '/user-agreement');
+  $scope.userAgreementUrl = $filter('translate')('images.conditions_url');
   $scope.copyrightUrl = '/' + $translate.use() + _.get(appConfig, 'media.copyrightUrl', '/copyright');
   $scope.saving = false;
   $scope.error = false;

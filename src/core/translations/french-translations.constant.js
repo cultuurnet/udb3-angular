@@ -762,6 +762,7 @@ angular.module('udb.core')
     images: {
       'agreement': 'Vous êtes sur le point d\'ajouter une ou plusieurs images et de les diffuser publiquement. Pour ceci il faut respecter tous les droits d\'auteur et de portrait applicables, ainsi que d\'autres législations en vigueur. Dans le cas contraire, vous pouvez en être tenu responsable, comme précisé dans les',
       'conditions': 'conditions générales',
+      'conditions_url': 'https://www.publiq.be/fr/accord-utilisation-uitdatabank',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
       'description_help': 'Maximum 250 caractères',

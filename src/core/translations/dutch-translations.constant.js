@@ -768,6 +768,7 @@ angular.module('udb.core')
     images: {
       'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
       'conditions': 'algemene voorwaarden',
+      'conditions_url': 'https://www.publiq.be/nl/gebruikersovereenkomst-uitdatabank',
       'copyright_info': 'Meer informatie over copyright',
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
