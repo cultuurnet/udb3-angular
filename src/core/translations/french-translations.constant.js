@@ -594,7 +594,7 @@ angular.module('udb.core')
         'publish_now': 'Publier immédiatement',
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
-        'online_from': 'En ligne à partir de'
+        'online_from': 'Publié le'
       },
       timeTracker: {
         'automatic_saved': 'Sauvegardé automatiquement à',
