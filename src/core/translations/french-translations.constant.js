@@ -372,7 +372,8 @@ angular.module('udb.core')
     translate: {
       'ready': 'Prêt à traduire',
       'translate': 'traduire',
-      'original': 'Original',
+      'original': 'l\'original',
+      'edit': 'Modifier',
       'translation': 'Traduction',
       'description': 'Description',
       'title': 'Titre',
@@ -460,7 +461,7 @@ angular.module('udb.core')
       'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
     eventForm: {
-      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
+      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Si ce n\'est pas votre intention, contactez-nous à vragen@uitdatabank.be.',
       step1: {
         'title': 'Qu\'est-ce que vous voulez ajouter?',
         'label_event': 'Un événement',

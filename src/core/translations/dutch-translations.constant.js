@@ -372,8 +372,8 @@ angular.module('udb.core')
     translate: {
       'ready': 'Klaar met vertalen',
       'translate': 'vertalen',
-      'original': 'Origineel',
-      'edit': 'bewerken',
+      'original': 'origineel',
+      'edit': 'Bewerk',
       'translation': 'Vertaling',
       'description': 'Beschrijving',
       'title': 'Titel',
