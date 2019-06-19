@@ -3101,8 +3101,8 @@ angular.module('udb.core')
     translate: {
       'ready': 'Klaar met vertalen',
       'translate': 'vertalen',
-      'original': 'Origineel',
-      'edit': 'bewerken',
+      'original': 'origineel',
+      'edit': 'Bewerk',
       'translation': 'Vertaling',
       'description': 'Beschrijving',
       'title': 'Titel',
@@ -3497,6 +3497,7 @@ angular.module('udb.core')
     images: {
       'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
       'conditions': 'algemene voorwaarden',
+      'conditions_url': 'https://www.publiq.be/nl/gebruikersovereenkomst-uitdatabank',
       'copyright_info': 'Meer informatie over copyright',
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
@@ -4166,7 +4167,8 @@ angular.module('udb.core')
     translate: {
       'ready': 'Prêt à traduire',
       'translate': 'traduire',
-      'original': 'Original',
+      'original': 'l\'original',
+      'edit': 'Modifier',
       'translation': 'Traduction',
       'description': 'Description',
       'title': 'Titre',
@@ -4176,10 +4178,10 @@ angular.module('udb.core')
     },
     labels: {
       'what': 'Ajoutez des mots clés courts et spécifiques.',
-      'invalid': 'Cela semble être un label invalide. Un label ',
-      'chars': 'se compose uniquement de lettres ou de chiffres',
-      'excluded': 'ne contient que \'-\' et \'_\', mais ne peut pas commençer avec ces caractères',
-      'length': 'compte de 2 à 50 caractères'
+      'invalid': 'Ce label ne semble pas valable. Un label ',
+      'chars': 'Ne comporte que des lettres ou des chiffres',
+      'excluded': 'Ne comporte que \'-\' ou \'_\' mais ne peut commencer avec ces caractêres',
+      'length': 'Comporte de 2 à 50 caractères'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
@@ -4254,7 +4256,7 @@ angular.module('udb.core')
       'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
     eventForm: {
-      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
+      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Si ce n\'est pas votre intention, contactez-nous à vragen@uitdatabank.be.',
       step1: {
         'title': 'Qu\'est-ce que vous voulez ajouter?',
         'label_event': 'Un événement',
@@ -4387,7 +4389,7 @@ angular.module('udb.core')
         'publish_now': 'Publier immédiatement',
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
-        'online_from': 'En ligne à partir de'
+        'online_from': 'Publié le'
       },
       timeTracker: {
         'automatic_saved': 'Sauvegardé automatiquement à',
@@ -4555,6 +4557,7 @@ angular.module('udb.core')
     images: {
       'agreement': 'Vous êtes sur le point d\'ajouter une ou plusieurs images et de les diffuser publiquement. Pour ceci il faut respecter tous les droits d\'auteur et de portrait applicables, ainsi que d\'autres législations en vigueur. Dans le cas contraire, vous pouvez en être tenu responsable, comme précisé dans les',
       'conditions': 'conditions générales',
+      'conditions_url': 'https://www.publiq.be/fr/accord-utilisation-uitdatabank',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
       'description_help': 'Maximum 250 caractères',
@@ -11710,11 +11713,12 @@ function EventFormImageUploadController(
   MediaManager,
   $q,
   copyrightNegotiator,
-  $translate
+  $translate,
+  $filter
 ) {
 
   // Scope vars.
-  $scope.userAgreementUrl = _.get(appConfig, 'media.userAgreementUrl', '/user-agreement');
+  $scope.userAgreementUrl = $filter('translate')('images.conditions_url');
   $scope.copyrightUrl = '/' + $translate.use() + _.get(appConfig, 'media.copyrightUrl', '/copyright');
   $scope.saving = false;
   $scope.error = false;
@@ -11829,7 +11833,7 @@ function EventFormImageUploadController(
         $scope.description.length <= 250 && $scope.copyright.length >= 3;
   }
 }
-EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator", "$translate"];
+EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator", "$translate", "$filter"];
 })();
 
 // Source: src/event_form/components/opening-hours-editor/opening-hours-editor.modal.controller.js
@@ -31675,7 +31679,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"offer-translate-chooser\">\n" +
     "          <label class=\"form-text\">\n" +
     "             <button ng-click=\"openEditPage()\" class=\"btn-link btn-sm\">\n" +
-    "               <span translate-once=\"translate.original\"></span> ({{mainLanguage}}) <span translate-once=\"translate.edit\"></span>\n" +
+    "               <span translate-once=\"translate.edit\"></span> <span translate-once=\"translate.original\"></span> ({{mainLanguage}})\n" +
     "             </button>\n" +
     "          </label>\n" +
     "          <span ng-repeat=\"language in languages\">\n" +
