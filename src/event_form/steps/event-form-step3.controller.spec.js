@@ -208,7 +208,6 @@ describe('Controller: event form step 3', function (){
   });
 
   it('should set the location when initializing with event form data', function () {
-    spyOn(stepController, 'getLocations');
     var location = {
       'id' : 182,
       'name': 'De Hoorn',
@@ -225,7 +224,6 @@ describe('Controller: event form step 3', function (){
 
     expect(scope.selectedCity).toEqual('Leuven');
     expect(scope.selectedLocation).toEqual(location);
-    expect(stepController.getLocations).toHaveBeenCalledWith('3000');
   });
 
   it('should set the address when initializing with place form data', function () {
