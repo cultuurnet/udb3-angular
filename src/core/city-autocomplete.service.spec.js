@@ -165,7 +165,7 @@ describe('Service: City autocomplete', function () {
     var zipcode = '3000';
 
     $httpBackend
-      .expectGET(baseUrl + 'places/?disableDefaultFilters=true&embed=true&limit=1000&postalCode=' + zipcode + '&sort%5Bcreated%5D=asc')
+      .expectGET(baseUrl + 'places/?disableDefaultFilters=true&embed=true&limit=1000&postalCode=' + zipcode + '&sort%5Bcreated%5D=asc&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED')
       .respond(200, JSON.stringify(pagedPlaceCollection));
 
     var assertPlaces = function (places) {

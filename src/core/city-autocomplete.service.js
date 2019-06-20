@@ -31,6 +31,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
       params: {
         'postalCode': zipcode,
         'addressCountry': country,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
         'disableDefaultFilters': true,
         'embed': true,
         'limit': 1000,
@@ -75,6 +76,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
       params: {
         'q': 'address.\\*.addressLocality:' + city,
         'addressCountry': country,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
         'disableDefaultFilters': true,
         'embed': true,
         'limit': 1000,
