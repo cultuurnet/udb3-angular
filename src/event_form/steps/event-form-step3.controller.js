@@ -500,7 +500,6 @@ function EventFormStep3Controller(
     // Set location data when the form data contains an Event with a location
     if (EventFormData.isEvent && EventFormData.location.name) {
       address = _.get(EventFormData, 'location.address');
-      controller.getLocations(address.postalCode);
       if (EventFormData.location.name) {
         $scope.selectedLocation = angular.copy(EventFormData.location);
       }
