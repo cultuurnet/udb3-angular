@@ -8634,10 +8634,16 @@ function EventCrud(
    * @param {EventFormData} formData
    */
   function pickMajorInfoFromFormData(formData) {
-    return _.pick(formData, function(property, name) {
+    var majorInfo = _.pick(formData, function(property, name) {
       var isStream = name.charAt(name.length - 1) === '$';
       return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
+
+    if (majorInfo.location && majorInfo.location.id) {
+      majorInfo.location = majorInfo.location.id;
+    }
+
+    return majorInfo;
   }
 
   /**
@@ -13686,7 +13692,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * Reset the location.
      */
-    resetLocation: function(location) {
+    resetLocation: function() {
       this.location = {
         'id' : null,
         'name': '',
@@ -13707,7 +13713,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * Get the calendar.
+     * Get the location.
      */
     getLocation: function() {
       return this.location;
