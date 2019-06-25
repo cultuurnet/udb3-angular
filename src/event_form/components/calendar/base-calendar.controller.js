@@ -18,7 +18,7 @@ angular
   .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function BaseCalendarController(calendar, $scope) {
+function BaseCalendarController(calendar, $scope, appConfig) {
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -30,6 +30,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
+  calendar.maxYearTimeSpan = _.get(appConfig, 'offerEditor.calendar.maxYearTimeSpan', 10);
 
   /**
    * @param {EventFormData} formData
@@ -176,6 +177,11 @@ function BaseCalendarController(calendar, $scope) {
             (timeSpan.start && timeSpan.end) &&
             moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
             moment(timeSpan.start).isAfter(timeSpan.end);
+      },
+      'tooFarInFuture': function (timespan) {
+        var d = new Date();
+        var maxDate = new Date(d.getFullYear() + calendar.maxYearTimeSpan, d.getMonth(), d.getDate());
+        return moment(timeSpan.start).isAfter(maxDate) || moment(timeSpan.end).isAfter(maxDate) ;
       }
     };
 
