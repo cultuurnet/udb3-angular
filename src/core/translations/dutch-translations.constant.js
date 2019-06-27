@@ -615,7 +615,13 @@ angular.module('udb.core')
       },
       imageUpload: {
         'modalTitle': 'Afbeelding toevoegen',
-        'maxSize':'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is '
+        'defaultError': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
+        'noFileSelectedError': 'Er is geen bestand geselecteerd',
+        'somethingWentWrongError': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'maxSize': 'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is ',
+        'formatNotValidError': 'Het geüpload bestand is geen geldige afbeelding.',
+        'extensionsAllowed': 'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.',
+        'sizeError': 'Het geüpload bestand is te groot.'
       }
     },
     calendar: {

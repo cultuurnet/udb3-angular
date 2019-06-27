@@ -45,7 +45,7 @@ function EventFormImageUploadController(
   $scope.allFieldsValid = allFieldsValid;
 
   var invalidFileErrors = {
-    'default': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
+    'default': $translate.instant('eventForm.imageUpload.defaultError'),
     'maxSize': $translate.instant('eventForm.imageUpload.maxSize') + $scope.maxFileSize + '.'
   };
 
@@ -53,7 +53,7 @@ function EventFormImageUploadController(
    * Accept the agreements.
    */
   function acceptAgreements() {
-    $scope.modalTitle = 'Nieuwe afbeelding toevoegen';
+    $scope.modalTitle = $translate.instant('eventForm.imageUpload.modalTitle');
     $scope.showAgreements = false;
     copyrightNegotiator.confirm();
   }
@@ -84,7 +84,7 @@ function EventFormImageUploadController(
   function uploadAndAddImage() {
     // Abort if no valid file is selected.
     if (!$scope.selectedFile) {
-      $scope.error = 'Er is geen bestand geselecteerd';
+      $scope.error = $translate.instant('eventForm.imageUpload.noFileSelectedError');
       return;
     }
 
@@ -97,15 +97,15 @@ function EventFormImageUploadController(
 
     function displayError(errorResponse) {
       var errorMessage = errorResponse.data.title;
-      var error = 'Er ging iets mis bij het opslaan van de afbeelding.';
+      var error = $translate.instant('eventForm.imageUpload.somethingWentWrongError');
 
       switch (errorMessage) {
         case 'The uploaded file is not an image.':
-          error = 'Het geüpload bestand is geen geldige afbeelding. ' +
-            'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.';
+          error = $translate.instant('eventForm.imageUpload.formatNotValidError') +
+            $translate.instant('eventForm.imageUpload.extensionsAllowed');
           break;
         case 'The file size of the uploaded image is too big.':
-          error = 'Het geüpload bestand is te groot.';
+          error = $transalte.instant('eventForm.imageUpload.sizeError');
           break;
       }
 

@@ -612,7 +612,13 @@ angular.module('udb.core')
       },
       imageUpload: {
         'modalTitle': 'Ajouter une image',
-        'maxSize':'Le fichier que vous souhaitez télécharger est trop gros. La taille maximale est '
+        'defaultError': 'Le fichier sélectionné ne répond pas à nos critères.',
+        'noFileSelectedError': 'Il n\'y a pas de fichier sélectionné',
+        'somethingWentWrongError': 'Une erreur s\'est produite lors de l\'enregistrement de l\'image.',
+        'maxSize': 'Le fichier que vous souhaitez télécharger est trop gros. La taille maximale est ',
+        'formatNotValidError': 'Le fichier téléchargé n\'est pas une image valable.',
+        'extensionsAllowed': 'Seuls les fichiers avec les extensions .jpeg, .gif ou .png sont autorisés.',
+        'sizeError': 'Le fichier téléchargé est trop grand.'
       }
     },
     calendar: {
