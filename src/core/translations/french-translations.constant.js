@@ -480,6 +480,8 @@ angular.module('udb.core')
         'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
         'choose_city_helper': 'p. ex Mons ou 7000',
+        'choose_residence': 'Choisir le lieu de résidence',
+        'choose_residence_helper': 'par ex. Groningue ou Amsterdam',
         'placeholder_city': 'Commune ou code postal',
         'problem_city': 'Il y a eu un problème durant la collection des villes',
         'change': 'Modifier',
