@@ -272,6 +272,29 @@ describe('Controller: Form Calendar', function () {
     expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
   });
 
+  it('should show a time-span requirement when the begin or end date is too far in the future', function (done) {
+    EventFormData
+        .timingChanged$
+        .subscribe(done);
+
+    // Get current date
+    var d = new Date();
+    var controller = getController();
+    controller.timeSpans = [
+      {
+        allDay: true,
+        start: new Date(2013, 9, 23, 9),
+        end: new Date(2023, 9, 23, 9)
+      }
+    ];
+    var expectedRequirements = [['tooFarInFuture']];
+
+    spyOn(controller.formData, 'saveTimeSpans');
+    controller.instantTimeSpanChanged();
+    expect(controller.timeSpanRequirements).toEqual(expectedRequirements);
+    expect(controller.formData.saveTimeSpans).not.toHaveBeenCalled();
+  });
+
   it('should switch the calendar type to multiple when there is more than one time-span', function (done) {
       EventFormData
         .timingChanged$

@@ -3473,7 +3473,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
-      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.',
+      'tooFarInFuture': 'De gekozen einddatum en startdatum mogen niet verder dan 10 jaar in de toekomst liggen.'
     },
     uitpas: {
       uitpasInfo: {
@@ -11176,7 +11177,7 @@ angular
   .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function BaseCalendarController(calendar, $scope) {
+function BaseCalendarController(calendar, $scope, appConfig) {
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -11188,6 +11189,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
+  calendar.maxYearTimeSpan = _.get(appConfig, 'offerEditor.calendar.maxYearTimeSpan', 10);
 
   /**
    * @param {EventFormData} formData
@@ -11334,6 +11336,10 @@ function BaseCalendarController(calendar, $scope) {
             (timeSpan.start && timeSpan.end) &&
             moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
             moment(timeSpan.start).isAfter(timeSpan.end);
+      },
+      'tooFarInFuture': function (timespan) {
+        var maxDate = moment().add(calendar.maxYearTimeSpan, 'y');
+        return moment(timeSpan.end).isAfter(maxDate);
       }
     };
 
@@ -11344,7 +11350,7 @@ function BaseCalendarController(calendar, $scope) {
     return _.keys(unmetRequirements);
   }
 }
-BaseCalendarController.$inject = ["calendar", "$scope"];
+BaseCalendarController.$inject = ["calendar", "$scope", "appConfig"];
 })();
 
 // Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
