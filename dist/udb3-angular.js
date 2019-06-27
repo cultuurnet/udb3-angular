@@ -11338,7 +11338,7 @@ function BaseCalendarController(calendar, $scope, appConfig) {
             moment(timeSpan.start).isAfter(timeSpan.end);
       },
       'tooFarInFuture': function (timespan) {
-        var maxDate = moment(new Date()).add(calendar.maxYearTimeSpan, 'y');
+        var maxDate = moment().add(calendar.maxYearTimeSpan, 'y');
         return moment(timeSpan.end).isAfter(maxDate);
       }
     };
