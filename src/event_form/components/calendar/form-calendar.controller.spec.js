@@ -283,16 +283,11 @@ describe('Controller: Form Calendar', function () {
     controller.timeSpans = [
       {
         allDay: true,
-        start: new Date(2023, 9, 23, 9),
-        end: new Date(2013, 9, 23, 9)
-      },
-      {
-        allDay: true,
         start: new Date(2013, 9, 23, 9),
         end: new Date(2023, 9, 23, 9)
       }
     ];
-    var expectedRequirements = [['tooFarInFuture'],['tooFarInFuture']];
+    var expectedRequirements = [['tooFarInFuture']];
 
     spyOn(controller.formData, 'saveTimeSpans');
     controller.instantTimeSpanChanged();
