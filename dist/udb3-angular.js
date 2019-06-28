@@ -16587,10 +16587,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
-  exporter.templates = [
-      {name: 'tips', label: 'Tipsrapport'},
-      {name: 'map', label: 'Weergave op kaart (beta)'}
-  ];
+  exporter.templateUrl = appConfig.exportTemplateUrl;
+  exporter.templates = appConfig.exportTemplateTypes;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -30312,6 +30310,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
+    "          </div>\n" +
+    "          <div class=\"col-sm-4\">\n" +
+    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
