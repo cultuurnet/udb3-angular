@@ -30288,7 +30288,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "                <label>\n" +
     "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
-    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\">\n" +
+    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                    <span ng-bind=\"brand.label\"></span>\n" +
     "                </label>\n" +
     "              </div>\n" +
@@ -30297,6 +30297,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
+    "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
@@ -30306,7 +30307,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
     "              <label>\n" +
     "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
-    "                       ng-value=\"template\" class=\"export-customization-brand-radio\">\n" +
+    "                       ng-value=\"template\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
@@ -30315,6 +30316,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
+    "        <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportTemplate.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "      </div>\n" +
     "\n" +
     "        <div class=\"form-group\">\n" +

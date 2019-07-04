@@ -52,7 +52,7 @@
               <div class="radio" ng-repeat="brand in ::exporter.brands">
                 <label>
                     <input type="radio" name="eventExportBrand" ng-model="exporter.selectedBrand"
-                           ng-value="brand" class="export-customization-brand-radio">
+                           ng-value="brand" class="export-customization-brand-radio" ng-required="true">
                     <span ng-bind="brand.label"></span>
                 </label>
               </div>
@@ -61,6 +61,7 @@
               <img ng-src="{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}" alt="{{exporter.selectedBrand.name}}" ng-show="exporter.selectedBrand" class="img-responsive img-thumbnail center-block export-logo"/>
             </div>
           </div>
+          <p class="alert alert-danger" role="alert" ng-show="exporter.hasErrors && customizeForm.eventExportBrand.$error.required">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>
         </div>
 
       <div class="form-group">
@@ -70,7 +71,7 @@
             <div class="radio" ng-repeat="template in ::exporter.templates">
               <label>
                 <input type="radio" name="eventExportTemplate" ng-model="exporter.selectedTemplate"
-                       ng-value="template" class="export-customization-brand-radio">
+                       ng-value="template" class="export-customization-brand-radio" ng-required="true">
                 <span ng-bind="template.label"></span>
               </label>
             </div>
@@ -79,6 +80,7 @@
             <img ng-src="{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}" alt="{{exporter.selectedTemplate.label}}" ng-show="exporter.selectedTemplate" class="img-responsive img-thumbnail center-block export-template"/>
           </div>
         </div>
+        <p class="alert alert-danger" role="alert" ng-show="exporter.hasErrors && customizeForm.eventExportTemplate.$error.required">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>
       </div>
 
         <div class="form-group">
