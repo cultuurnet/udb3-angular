@@ -30299,7 +30299,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
-    "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
+    "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
