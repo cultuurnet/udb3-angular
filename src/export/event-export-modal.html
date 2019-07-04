@@ -76,6 +76,9 @@
               </label>
             </div>
           </div>
+          <div class="col-sm-4">
+            <img ng-src="{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}" alt="{{exporter.selectedTemplate.label}}" ng-show="exporter.selectedTemplate" class="img-responsive img-thumbnail center-block export-template"/>
+          </div>
         </div>
         <p class="alert alert-danger" role="alert" ng-show="exporter.hasErrors && customizeForm.eventExportTemplate.$error.required">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>
       </div>
