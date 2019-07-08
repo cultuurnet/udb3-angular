@@ -672,7 +672,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Pas publié',
       'READY_FOR_VALIDATION': 'Prêt à être publié',
-      'APPROVED': 'Publié',
+      'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
       'DELETED': 'Pas publié',
       'rules': 'Regardez les règles',

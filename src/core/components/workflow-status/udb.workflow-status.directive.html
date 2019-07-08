@@ -4,7 +4,7 @@
         <span ng-if="cm.event.available" ng-bind="cm.event.available | date: 'dd/MM/yyyy'">
                     </span>
         <span ng-if="!cm.event.available && !cm.event.availableFrom">{{::cm.status | translate }}</span>
-        <span ng-if="!cm.event.available && cm.event.availableFrom">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>
+        <span ng-if="!cm.event.available && cm.event.availableFrom"><span translate-once="workflowStatus.APPROVED"></span> {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>
     </td>
     <td ng-if="cm.event.workflowStatus === 'REJECTED'">
       <p><span translate-once="workflowStatus.rejected_full"></span>&nbsp;<a ng-href="{{::cm.publicationRulesLink}}" target="_blank"><span translate-once="workflowStatus.rules"></span></a></p>
