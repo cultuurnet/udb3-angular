@@ -571,6 +571,7 @@ angular.module('udb.core')
           'Toddlers': 'Peuters',
           'Preschoolers': 'Kleuters',
           'Kids': 'Kinderen',
+          'Teenagers': 'Tieners',
           'Youngsters': 'Jongeren',
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
