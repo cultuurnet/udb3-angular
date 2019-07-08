@@ -40,8 +40,10 @@ function OfferController(
   ];
   controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
-  controller.isGodUser = isGodUser;
-
+  authorizationService.isGodUser()
+    .then(function (permission) {
+      controller.isGodUser = permission;
+    });
   controller.init = function () {
     if (!$scope.event.title) {
       controller.fetching = true;
@@ -89,10 +91,6 @@ function OfferController(
     } else {
       return $q.reject();
     }
-  }
-
-  function isGodUser() {
-    return authorizationService.isGodUser();
   }
 
   function watchLabels() {

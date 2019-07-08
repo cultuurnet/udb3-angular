@@ -17913,7 +17913,10 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
   moc.sendingJob = false;
   moc.error = false;
   moc.uitId = _.get(appConfig, 'uitidUrl');
-  moc.isGodUser = isGodUser;
+  authorizationService.isGodUser()
+    .then(function (permission) {
+      moc.isGodUser = permission;
+    });
 
   // fetch offer
   ModerationService
@@ -17941,9 +17944,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 
-  function isGodUser() {
-    return authorizationService.isGodUser();
-  }
 }
 ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "authorizationService", "appConfig"];
 })();
@@ -26163,8 +26163,10 @@ function OfferController(
   ];
   controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
-  controller.isGodUser = isGodUser;
-
+  authorizationService.isGodUser()
+    .then(function (permission) {
+      controller.isGodUser = permission;
+    });
   controller.init = function () {
     if (!$scope.event.title) {
       controller.fetching = true;
@@ -26212,10 +26214,6 @@ function OfferController(
     } else {
       return $q.reject();
     }
-  }
-
-  function isGodUser() {
-    return authorizationService.isGodUser();
   }
 
   function watchLabels() {
