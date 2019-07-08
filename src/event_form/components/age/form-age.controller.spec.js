@@ -92,7 +92,7 @@ describe('Controller: Form: Age', function () {
     controller.maxAge = 3;
     controller.instantSaveAgeRange();
 
-    expect(controller.error).toEqual('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.');
+    expect(controller.hasError).toBeTruthy();
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
   });
 
@@ -104,7 +104,7 @@ describe('Controller: Form: Age', function () {
     controller.maxAge = 0;
     controller.instantSaveAgeRange();
 
-    expect(controller.error).toEqual('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.');
+    expect(controller.hasError).toBeTruthy();
     expect(formData.setTypicalAgeRange).not.toHaveBeenCalled();
   });
 

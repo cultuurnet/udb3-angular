@@ -372,8 +372,8 @@ angular.module('udb.core')
     translate: {
       'ready': 'Klaar met vertalen',
       'translate': 'vertalen',
-      'original': 'Origineel',
-      'edit': 'bewerken',
+      'original': 'origineel',
+      'edit': 'Bewerk',
       'translation': 'Vertaling',
       'description': 'Beschrijving',
       'title': 'Titel',
@@ -578,7 +578,8 @@ angular.module('udb.core')
           'Custom': 'Andere',
           'from': 'Van',
           'till': 'tot',
-          'age': 'jaar'
+          'age': 'jaar',
+          'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -612,6 +613,16 @@ angular.module('udb.core')
         'error_empty': 'Kies een publicatiedatum.',
         'cancel': 'Annuleren',
         'ready': 'Klaar met bewerken'
+      },
+      imageUpload: {
+        'modalTitle': 'Afbeelding toevoegen',
+        'defaultError': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
+        'noFileSelectedError': 'Er is geen bestand geselecteerd',
+        'somethingWentWrongError': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'maxSize': 'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is ',
+        'formatNotValidError': 'Het geüpload bestand is geen geldige afbeelding.',
+        'extensionsAllowed': 'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.',
+        'sizeError': 'Het geüpload bestand is te groot.'
       }
     },
     calendar: {
@@ -765,6 +776,7 @@ angular.module('udb.core')
     images: {
       'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
       'conditions': 'algemene voorwaarden',
+      'conditions_url': 'https://www.publiq.be/nl/gebruikersovereenkomst-uitdatabank',
       'copyright_info': 'Meer informatie over copyright',
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
@@ -881,6 +893,11 @@ angular.module('udb.core')
         'cancel': 'Annuleren',
         'delete': 'Verwijderen'
       }
+    },
+    entry: {
+      'exported_documents': 'Geëxporteerde documenten',
+      'notifications': 'Meldingen',
+      'in_progress': 'Bezig'
     },
     offerTypes: {
       'Concert': 'Concert',
