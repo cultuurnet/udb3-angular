@@ -25,7 +25,8 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
     'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
     'KIDS': {label: 'Kids', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'TEENAGERS': {label: 'Teenagers', min: 12, max: 15},
+    'YOUNGSTERS': {label: 'Youngsters', min: 16, max: 26},
     'ADULTS': {label: 'Adults', min: 18},
     'SENIORS': {label: 'Seniors', min: 65},
     'CUSTOM': {label: 'Custom'}

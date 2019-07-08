@@ -55,12 +55,12 @@ describe('Controller: Form: Age', function () {
   });
 
   it('should initialize with an active age range and boundary when form data matches this range', function () {
-    var formData = getMockedFormData('12-17');
+    var formData = getMockedFormData('16-26');
     var controller = getController(formData);
 
     expect(controller.activeAgeRange).toEqual('YOUNGSTERS');
-    expect(controller.minAge).toEqual(12);
-    expect(controller.maxAge).toEqual(17);
+    expect(controller.minAge).toEqual(16);
+    expect(controller.maxAge).toEqual(26);
   });
 
   it('should initialize with an active age range and boundary when form data matches a range with one boundary', function () {

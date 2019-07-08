@@ -52,10 +52,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
-  exporter.templates = [
-      {name: 'tips', label: 'Tipsrapport'},
-      {name: 'map', label: 'Weergave op kaart (beta)'}
-  ];
+  exporter.templateUrl = appConfig.exportTemplateUrl;
+  exporter.templates = appConfig.exportTemplateTypes;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {

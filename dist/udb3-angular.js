@@ -2353,6 +2353,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         params: {
           'postalCode': zipcode,
           'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
           'disableDefaultFilters': true,
           'embed': true,
           'limit': 1000,
@@ -2411,6 +2412,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         params: {
           'q': 'address.\\*.addressLocality:' + city,
           'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
           'disableDefaultFilters': true,
           'embed': true,
           'limit': 1000,
@@ -3300,6 +3302,7 @@ angular.module('udb.core')
           'Toddlers': 'Peuters',
           'Preschoolers': 'Kleuters',
           'Kids': 'Kinderen',
+          'Teenagers': 'Tieners',
           'Youngsters': 'Jongeren',
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
@@ -3344,7 +3347,13 @@ angular.module('udb.core')
       },
       imageUpload: {
         'modalTitle': 'Afbeelding toevoegen',
-        'maxSize':'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is '
+        'defaultError': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
+        'noFileSelectedError': 'Er is geen bestand geselecteerd',
+        'somethingWentWrongError': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'maxSize': 'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is ',
+        'formatNotValidError': 'Het geüpload bestand is geen geldige afbeelding.',
+        'extensionsAllowed': 'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.',
+        'sizeError': 'Het geüpload bestand is te groot.'
       }
     },
     calendar: {
@@ -3476,7 +3485,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
-      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.',
+      'tooFarInFuture': 'De gekozen einddatum en startdatum mogen niet verder dan 10 jaar in de toekomst liggen.'
     },
     uitpas: {
       uitpasInfo: {
@@ -4275,6 +4285,8 @@ angular.module('udb.core')
         'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
         'choose_city_helper': 'p. ex Mons ou 7000',
+        'choose_residence': 'Choisir le lieu de résidence',
+        'choose_residence_helper': 'par ex. Groningue ou Amsterdam',
         'placeholder_city': 'Commune ou code postal',
         'problem_city': 'Il y a eu un problème durant la collection des villes',
         'change': 'Modifier',
@@ -4361,6 +4373,7 @@ angular.module('udb.core')
           'Toddlers': 'Tout-petits',
           'Preschoolers': 'Enfants d\'âge préscolaire',
           'Kids': 'Enfants',
+          'Teenagers': 'Adolescents',
           'Youngsters': 'Jeunes',
           'Adults': 'Adultes',
           'Seniors': 'Seniors',
@@ -4405,7 +4418,13 @@ angular.module('udb.core')
       },
       imageUpload: {
         'modalTitle': 'Ajouter une image',
-        'maxSize':'Le fichier que vous souhaitez télécharger est trop gros. La taille maximale est '
+        'defaultError': 'Le fichier sélectionné ne répond pas à nos critères.',
+        'noFileSelectedError': 'Il n\'y a pas de fichier sélectionné',
+        'somethingWentWrongError': 'Une erreur s\'est produite lors de l\'enregistrement de l\'image.',
+        'maxSize': 'Le fichier que vous souhaitez télécharger est trop gros. La taille maximale est ',
+        'formatNotValidError': 'Le fichier téléchargé n\'est pas une image valable.',
+        'extensionsAllowed': 'Seuls les fichiers avec les extensions .jpeg, .gif ou .png sont autorisés.',
+        'sizeError': 'Le fichier téléchargé est trop grand.'
       }
     },
     calendar: {
@@ -8658,10 +8677,16 @@ function EventCrud(
    * @param {EventFormData} formData
    */
   function pickMajorInfoFromFormData(formData) {
-    return _.pick(formData, function(property, name) {
+    var majorInfo = _.pick(formData, function(property, name) {
       var isStream = name.charAt(name.length - 1) === '$';
       return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
+
+    if (majorInfo.location && majorInfo.location.id) {
+      majorInfo.location = majorInfo.location.id;
+    }
+
+    return majorInfo;
   }
 
   /**
@@ -10930,7 +10955,8 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
     'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
     'KIDS': {label: 'Kids', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'TEENAGERS': {label: 'Teenagers', min: 12, max: 15},
+    'YOUNGSTERS': {label: 'Youngsters', min: 16, max: 26},
     'ADULTS': {label: 'Adults', min: 18},
     'SENIORS': {label: 'Seniors', min: 65},
     'CUSTOM': {label: 'Custom'}
@@ -11196,7 +11222,7 @@ angular
   .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function BaseCalendarController(calendar, $scope) {
+function BaseCalendarController(calendar, $scope, appConfig) {
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -11208,6 +11234,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
+  calendar.maxYearTimeSpan = _.get(appConfig, 'offerEditor.calendar.maxYearTimeSpan', 10);
 
   /**
    * @param {EventFormData} formData
@@ -11354,6 +11381,10 @@ function BaseCalendarController(calendar, $scope) {
             (timeSpan.start && timeSpan.end) &&
             moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
             moment(timeSpan.start).isAfter(timeSpan.end);
+      },
+      'tooFarInFuture': function (timespan) {
+        var maxDate = moment().add(calendar.maxYearTimeSpan, 'y');
+        return moment(timeSpan.end).isAfter(maxDate);
       }
     };
 
@@ -11364,7 +11395,7 @@ function BaseCalendarController(calendar, $scope) {
     return _.keys(unmetRequirements);
   }
 }
-BaseCalendarController.$inject = ["calendar", "$scope"];
+BaseCalendarController.$inject = ["calendar", "$scope", "appConfig"];
 })();
 
 // Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
@@ -11739,7 +11770,7 @@ function EventFormImageUploadController(
   $scope.allFieldsValid = allFieldsValid;
 
   var invalidFileErrors = {
-    'default': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
+    'default': $translate.instant('eventForm.imageUpload.defaultError'),
     'maxSize': $translate.instant('eventForm.imageUpload.maxSize') + $scope.maxFileSize + '.'
   };
 
@@ -11747,7 +11778,7 @@ function EventFormImageUploadController(
    * Accept the agreements.
    */
   function acceptAgreements() {
-    $scope.modalTitle = 'Nieuwe afbeelding toevoegen';
+    $scope.modalTitle = $translate.instant('eventForm.imageUpload.modalTitle');
     $scope.showAgreements = false;
     copyrightNegotiator.confirm();
   }
@@ -11778,7 +11809,7 @@ function EventFormImageUploadController(
   function uploadAndAddImage() {
     // Abort if no valid file is selected.
     if (!$scope.selectedFile) {
-      $scope.error = 'Er is geen bestand geselecteerd';
+      $scope.error = $translate.instant('eventForm.imageUpload.noFileSelectedError');
       return;
     }
 
@@ -11791,15 +11822,15 @@ function EventFormImageUploadController(
 
     function displayError(errorResponse) {
       var errorMessage = errorResponse.data.title;
-      var error = 'Er ging iets mis bij het opslaan van de afbeelding.';
+      var error = $translate.instant('eventForm.imageUpload.somethingWentWrongError');
 
       switch (errorMessage) {
         case 'The uploaded file is not an image.':
-          error = 'Het geüpload bestand is geen geldige afbeelding. ' +
-            'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.';
+          error = $translate.instant('eventForm.imageUpload.formatNotValidError') +
+            $translate.instant('eventForm.imageUpload.extensionsAllowed');
           break;
         case 'The file size of the uploaded image is too big.':
-          error = 'Het geüpload bestand is te groot.';
+          error = $translate.instant('eventForm.imageUpload.sizeError');
           break;
       }
 
@@ -13714,7 +13745,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * Reset the location.
      */
-    resetLocation: function(location) {
+    resetLocation: function() {
       this.location = {
         'id' : null,
         'name': '',
@@ -13735,7 +13766,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * Get the calendar.
+     * Get the location.
      */
     getLocation: function() {
       return this.location;
@@ -15436,7 +15467,6 @@ function EventFormStep3Controller(
     // Set location data when the form data contains an Event with a location
     if (EventFormData.isEvent && EventFormData.location.name) {
       address = _.get(EventFormData, 'location.address');
-      controller.getLocations(address.postalCode);
       if (EventFormData.location.name) {
         $scope.selectedLocation = angular.copy(EventFormData.location);
       }
@@ -16604,10 +16634,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
-  exporter.templates = [
-      {name: 'tips', label: 'Tipsrapport'},
-      {name: 'map', label: 'Weergave op kaart (beta)'}
-  ];
+  exporter.templateUrl = appConfig.exportTemplateUrl;
+  exporter.templates = appConfig.exportTemplateTypes;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -30307,7 +30335,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "                <label>\n" +
     "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
-    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\">\n" +
+    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                    <span ng-bind=\"brand.label\"></span>\n" +
     "                </label>\n" +
     "              </div>\n" +
@@ -30316,6 +30344,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
+    "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
@@ -30325,12 +30354,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
     "              <label>\n" +
     "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
-    "                       ng-value=\"template\" class=\"export-customization-brand-radio\">\n" +
+    "                       ng-value=\"template\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
     "          </div>\n" +
+    "          <div class=\"col-sm-4\">\n" +
+    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
+    "          </div>\n" +
     "        </div>\n" +
+    "        <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportTemplate.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "      </div>\n" +
     "\n" +
     "        <div class=\"form-group\">\n" +

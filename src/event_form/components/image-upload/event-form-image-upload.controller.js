@@ -105,7 +105,7 @@ function EventFormImageUploadController(
             $translate.instant('eventForm.imageUpload.extensionsAllowed');
           break;
         case 'The file size of the uploaded image is too big.':
-          error = $transalte.instant('eventForm.imageUpload.sizeError');
+          error = $translate.instant('eventForm.imageUpload.sizeError');
           break;
       }
 

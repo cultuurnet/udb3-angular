@@ -568,6 +568,7 @@ angular.module('udb.core')
           'Toddlers': 'Tout-petits',
           'Preschoolers': 'Enfants d\'âge préscolaire',
           'Kids': 'Enfants',
+          'Teenagers': 'Adolescents',
           'Youngsters': 'Jeunes',
           'Adults': 'Adultes',
           'Seniors': 'Seniors',
