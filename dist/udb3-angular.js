@@ -8683,10 +8683,6 @@ function EventCrud(
       return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
 
-    if (majorInfo.location && majorInfo.location.id) {
-      majorInfo.location = majorInfo.location.id;
-    }
-
     return majorInfo;
   }
 
@@ -12256,7 +12252,7 @@ function EventFormOrganizerModalController(
   $scope.organizers = [];
   $scope.selectedCity = '';
   $scope.disableSubmit = true;
-
+  $scope.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
   $scope.newOrganizer = {
     mainLanguage: 'nl',
     website: 'http://',
@@ -21074,11 +21070,10 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent($scope) {
+function OrganizerContactComponent($scope, appConfig) {
   var controller = this;
 
   controller.newContact = {};
-
   controller.addingContactEntry = false;
   controller.isPristine = true;
   controller.validateContact = validateContact;
@@ -21087,6 +21082,7 @@ function OrganizerContactComponent($scope) {
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
+  controller.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
 
   $scope.$on('organizerContactSubmit', function() {
     controller.organizerContactWrapper.$setSubmitted();
@@ -21164,7 +21160,7 @@ function OrganizerContactComponent($scope) {
     }
   }, true);
 }
-OrganizerContactComponent.$inject = ["$scope"];
+OrganizerContactComponent.$inject = ["$scope", "appConfig"];
 })();
 
 // Source: src/organizers/detail/organizer-detail.controller.js
@@ -28798,7 +28794,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               ng-change=\"validateWebsite()\"\n" +
     "               autocomplete=\"off\"\n" +
     "               udb-http-prefix\n" +
-    "               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\"\n" +
+    "               ng-pattern=\"contactUrlRegex\"\n" +
     "               required>\n" +
     "        <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
     "        <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
@@ -31874,7 +31870,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
     "              <ng-form name=\"urlContactForm\">\n" +
-    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"occ.contactUrlRegex\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
