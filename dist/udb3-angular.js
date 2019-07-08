@@ -32,6 +32,7 @@ angular
         'btford.socket-io',
         'pascalprecht.translate',
         'angular.filter',
+        'angular-jwt'
     ])
     .constant('Levenshtein', window.Levenshtein);
 
@@ -2297,6 +2298,10 @@ function AuthorizationService($q, uitidAuth, udbApi, $location, $rootScope, $tra
   this.getPermissions = function () {
     return udbApi.getMyPermissions();
   };
+
+  this.isGodUser = function () {
+    return this.hasPermission('GEBRUIKERS_BEHEREN');
+  };
 }
 AuthorizationService.$inject = ["$q", "uitidAuth", "udbApi", "$location", "$rootScope", "$translate"];
 })();
@@ -2348,6 +2353,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         params: {
           'postalCode': zipcode,
           'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
           'disableDefaultFilters': true,
           'embed': true,
           'limit': 1000,
@@ -2406,6 +2412,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         params: {
           'q': 'address.\\*.addressLocality:' + city,
           'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
           'disableDefaultFilters': true,
           'embed': true,
           'limit': 1000,
@@ -3295,6 +3302,7 @@ angular.module('udb.core')
           'Toddlers': 'Peuters',
           'Preschoolers': 'Kleuters',
           'Kids': 'Kinderen',
+          'Teenagers': 'Tieners',
           'Youngsters': 'Jongeren',
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
@@ -3466,7 +3474,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
-      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.',
+      'tooFarInFuture': 'De gekozen einddatum en startdatum mogen niet verder dan 10 jaar in de toekomst liggen.'
     },
     uitpas: {
       uitpasInfo: {
@@ -4341,6 +4350,7 @@ angular.module('udb.core')
           'Toddlers': 'Tout-petits',
           'Preschoolers': 'Enfants d\'âge préscolaire',
           'Kids': 'Enfants',
+          'Teenagers': 'Adolescents',
           'Youngsters': 'Jeunes',
           'Adults': 'Adultes',
           'Seniors': 'Aînés',
@@ -5765,9 +5775,9 @@ function UdbApi(
 
       var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-      var activeUser = uitidAuth.getUser();
-      var userId = activeUser.id;
-      var userEmail = activeUser.email;
+      var tokenData = uitidAuth.getTokenData();
+      var userId = tokenData.uid;
+      var userEmail = tokenData.email;
 
       if (createdByQueryMode === 'uuid') {
         requestConfig.params.creator = userId;
@@ -7356,7 +7366,7 @@ angular
   .service('uitidAuth', UitidAuth);
 
 /* @ngInject */
-function UitidAuth($window, $location, appConfig, $cookies) {
+function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
 
   function removeCookies () {
     $cookies.remove('token');
@@ -7434,6 +7444,10 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return currentToken;
   };
 
+  this.getTokenData = function () {
+    return jwtHelper.decodeToken(this.getToken());
+  };
+
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
   /**
    * Returns the currently logged in user
@@ -7442,7 +7456,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return $cookies.getObject('user');
   };
 }
-UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
+UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies", "jwtHelper"];
 })();
 
 // Source: src/cultuurkuur/event-cultuurkuur.component.js
@@ -8623,10 +8637,16 @@ function EventCrud(
    * @param {EventFormData} formData
    */
   function pickMajorInfoFromFormData(formData) {
-    return _.pick(formData, function(property, name) {
+    var majorInfo = _.pick(formData, function(property, name) {
       var isStream = name.charAt(name.length - 1) === '$';
       return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
+
+    if (majorInfo.location && majorInfo.location.id) {
+      majorInfo.location = majorInfo.location.id;
+    }
+
+    return majorInfo;
   }
 
   /**
@@ -10559,6 +10579,13 @@ function EventDetail(
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
 
+    if (event.typicalAgeRange.indexOf('-') === event.typicalAgeRange.length - 1) {
+      $scope.ageRange = event.typicalAgeRange.slice(0, -1) + '+';
+    }
+    else {
+      $scope.ageRange = event.typicalAgeRange;
+    }
+
     $scope.eventIdIsInvalid = false;
 
     if (!disableVariations) {
@@ -10888,7 +10915,8 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
     'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
     'KIDS': {label: 'Kids', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'TEENAGERS': {label: 'Teenagers', min: 12, max: 15},
+    'YOUNGSTERS': {label: 'Youngsters', min: 16, max: 26},
     'ADULTS': {label: 'Adults', min: 18},
     'SENIORS': {label: 'Seniors', min: 65},
     'CUSTOM': {label: 'Custom'}
@@ -11152,7 +11180,7 @@ angular
   .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function BaseCalendarController(calendar, $scope) {
+function BaseCalendarController(calendar, $scope, appConfig) {
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -11164,6 +11192,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
+  calendar.maxYearTimeSpan = _.get(appConfig, 'offerEditor.calendar.maxYearTimeSpan', 10);
 
   /**
    * @param {EventFormData} formData
@@ -11310,6 +11339,10 @@ function BaseCalendarController(calendar, $scope) {
             (timeSpan.start && timeSpan.end) &&
             moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
             moment(timeSpan.start).isAfter(timeSpan.end);
+      },
+      'tooFarInFuture': function (timespan) {
+        var maxDate = moment().add(calendar.maxYearTimeSpan, 'y');
+        return moment(timeSpan.end).isAfter(maxDate);
       }
     };
 
@@ -11320,7 +11353,7 @@ function BaseCalendarController(calendar, $scope) {
     return _.keys(unmetRequirements);
   }
 }
-BaseCalendarController.$inject = ["calendar", "$scope"];
+BaseCalendarController.$inject = ["calendar", "$scope", "appConfig"];
 })();
 
 // Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
@@ -13668,7 +13701,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * Reset the location.
      */
-    resetLocation: function(location) {
+    resetLocation: function() {
       this.location = {
         'id' : null,
         'name': '',
@@ -13689,7 +13722,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * Get the calendar.
+     * Get the location.
      */
     getLocation: function() {
       return this.location;
@@ -15390,7 +15423,6 @@ function EventFormStep3Controller(
     // Set location data when the form data contains an Event with a location
     if (EventFormData.isEvent && EventFormData.location.name) {
       address = _.get(EventFormData, 'location.address');
-      controller.getLocations(address.postalCode);
       if (EventFormData.location.name) {
         $scope.selectedLocation = angular.copy(EventFormData.location);
       }
@@ -16558,10 +16590,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
-  exporter.templates = [
-      {name: 'tips', label: 'Tipsrapport'},
-      {name: 'map', label: 'Weergave op kaart (beta)'}
-  ];
+  exporter.templateUrl = appConfig.exportTemplateUrl;
+  exporter.templates = appConfig.exportTemplateTypes;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -17834,7 +17864,7 @@ angular
   });
 
 /* @ngInject */
-function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWorkflowStatus) {
+function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authorizationService, appConfig) {
   var moc = this;
   var defaultLanguage = 'nl';
 
@@ -17842,6 +17872,8 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   moc.offer = {};
   moc.sendingJob = false;
   moc.error = false;
+  moc.uitId = _.get(appConfig, 'uitidUrl');
+  moc.isGodUser = isGodUser;
 
   // fetch offer
   ModerationService
@@ -17868,8 +17900,12 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, OfferWo
   function showProblem(problem) {
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
+  }
 }
-ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "OfferWorkflowStatus"];
+ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "authorizationService", "appConfig"];
 })();
 
 // Source: src/management/moderation/components/reject-offer-confirm-modal.controller.js
@@ -21890,6 +21926,12 @@ function PlaceDetail(
     }
 
     $scope.finishedLoading = true;
+    if (place.typicalAgeRange.indexOf('-') === place.typicalAgeRange.length - 1) {
+      $scope.ageRange = place.typicalAgeRange.slice(0, -1) + '+';
+    }
+    else {
+      $scope.ageRange = place.typicalAgeRange;
+    }
   }
 
   function showVariation(variation) {
@@ -26065,7 +26107,8 @@ function OfferController(
   $q,
   appConfig,
   $uibModal,
-  $translate
+  $translate,
+  authorizationService
 ) {
   var controller = this;
   var cachedOffer;
@@ -26078,7 +26121,9 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
+  controller.isGodUser = isGodUser;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -26127,6 +26172,10 @@ function OfferController(
     } else {
       return $q.reject();
     }
+  }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
   }
 
   function watchLabels() {
@@ -26308,7 +26357,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate", "authorizationService"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -28099,7 +28148,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr  ng-class=\"::{muted: noAgeInfo}\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{event.typicalAgeRange}}</span>\n" +
+    "                  <span ng-if=\"::!allAges && !noAgeInfo\">{{ageRange}}</span>\n" +
     "                  <span ng-if=\"::allAges && !noAgeInfo\" translate-once=\"preview.all_ages\"></span>\n" +
     "                  <span ng-if=\"noAgeInfo\" translate-once=\"preview.no_age\"></span>\n" +
     "                </td>\n" +
@@ -30242,7 +30291,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "                <label>\n" +
     "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
-    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\">\n" +
+    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                    <span ng-bind=\"brand.label\"></span>\n" +
     "                </label>\n" +
     "              </div>\n" +
@@ -30251,6 +30300,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
+    "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
@@ -30260,12 +30310,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
     "              <label>\n" +
     "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
-    "                       ng-value=\"template\" class=\"export-customization-brand-radio\">\n" +
+    "                       ng-value=\"template\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
     "          </div>\n" +
+    "          <div class=\"col-sm-4\">\n" +
+    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
+    "          </div>\n" +
     "        </div>\n" +
+    "        <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportTemplate.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "      </div>\n" +
     "\n" +
     "        <div class=\"form-group\">\n" +
@@ -30610,7 +30664,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "    </div>\n" +
     "    <footer class=\"row\" ng-hide=\"moc.loading\">\n" +
-    "        <div class=\"col-md-6\">Toegevoegd door {{moc.offer.creator}}</div>\n" +
+    "        <div class=\"col-md-6\">Toegevoegd door\n" +
+    "            <span ng-if=\"::!moc.isGodUser\">\n" +
+    "                <span ng-bind=\"moc.offer.creator\"></span>\n" +
+    "            </span>\n" +
+    "            <span ng-if=\"::moc.isGodUser\">\n" +
+    "                <a href=\"{{ moc.uitId + moc.offer.creator }}\"><span ng-bind=\"moc.offer.creator\"></span></a>\n" +
+    "            </span>\n" +
+    "        </div>\n" +
     "        <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right\">\n" +
     "            <udb-moderation-offer offer-id=\"{{moc.offerId}}\" continue=\"false\"></udb-moderation-offer>\n" +
     "        </div>\n" +
@@ -32120,7 +32181,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <tr>\n" +
     "              <td><span class=\"row-label\" translate-once=\"preview.age_label\"></span></td>\n" +
     "              <td>\n" +
-    "                <span ng-if=\"::place.typicalAgeRange\">{{::place.typicalAgeRange}}</span>\n" +
+    "                <span ng-if=\"::place.typicalAgeRange\">{{ageRange}}</span>\n" +
     "                <span ng-if=\"::(!place.typicalAgeRange)\" translate-once=\"preview.all_ages\"></span>\n" +
     "              </td>\n" +
     "            </tr>\n" +
@@ -32751,7 +32812,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!eventCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::eventCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ eventCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
@@ -32900,7 +32966,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.creator\"></span>\n" +
+    "        <span ng-if=\"::!placeCtrl.isGodUser\">\n" +
+    "          <span ng-bind=\"event.creator\"></span>\n" +
+    "        </span>\n" +
+    "        <span ng-if=\"::placeCtrl.isGodUser\">\n" +
+    "          <a href=\"{{ placeCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
+    "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
     "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +

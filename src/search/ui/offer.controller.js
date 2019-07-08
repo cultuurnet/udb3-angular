@@ -24,7 +24,8 @@ function OfferController(
   $q,
   appConfig,
   $uibModal,
-  $translate
+  $translate,
+  authorizationService
 ) {
   var controller = this;
   var cachedOffer;
@@ -37,7 +38,9 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
+  controller.isGodUser = isGodUser;
 
   controller.init = function () {
     if (!$scope.event.title) {
@@ -86,6 +89,10 @@ function OfferController(
     } else {
       return $q.reject();
     }
+  }
+
+  function isGodUser() {
+    return authorizationService.isGodUser();
   }
 
   function watchLabels() {

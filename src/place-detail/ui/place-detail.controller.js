@@ -100,6 +100,12 @@ function PlaceDetail(
     }
 
     $scope.finishedLoading = true;
+    if (place.typicalAgeRange.indexOf('-') === place.typicalAgeRange.length - 1) {
+      $scope.ageRange = place.typicalAgeRange.slice(0, -1) + '+';
+    }
+    else {
+      $scope.ageRange = place.typicalAgeRange;
+    }
   }
 
   function showVariation(variation) {

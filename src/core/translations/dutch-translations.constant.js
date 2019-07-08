@@ -571,6 +571,7 @@ angular.module('udb.core')
           'Toddlers': 'Peuters',
           'Preschoolers': 'Kleuters',
           'Kids': 'Kinderen',
+          'Teenagers': 'Tieners',
           'Youngsters': 'Jongeren',
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
@@ -742,7 +743,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
-      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.',
+      'tooFarInFuture': 'De gekozen einddatum en startdatum mogen niet verder dan 10 jaar in de toekomst liggen.'
     },
     uitpas: {
       uitpasInfo: {

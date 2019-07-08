@@ -942,9 +942,9 @@ function UdbApi(
 
       var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-      var activeUser = uitidAuth.getUser();
-      var userId = activeUser.id;
-      var userEmail = activeUser.email;
+      var tokenData = uitidAuth.getTokenData();
+      var userId = tokenData.uid;
+      var userEmail = tokenData.email;
 
       if (createdByQueryMode === 'uuid') {
         requestConfig.params.creator = userId;

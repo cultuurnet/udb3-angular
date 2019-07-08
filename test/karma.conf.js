@@ -71,6 +71,7 @@ module.exports = function(config) {
       'bower_components/angular-scroll/angular-scroll.js',
       'bower_components/angular-filter/dist/angular-filter.js',
       'test/mock/*.js',
+      'bower_components/angular-jwt/dist/angular-jwt.js',
       'src/**/*.module.js',
       'src/**/*.js',
       'src/**/*.html'
