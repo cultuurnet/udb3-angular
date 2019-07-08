@@ -4262,6 +4262,7 @@ angular.module('udb.core')
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter',
+      'zip': 'Code postal',
       'nlPostalCode_validation': 'Code postal est un domaine obligatoire.',
       'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
