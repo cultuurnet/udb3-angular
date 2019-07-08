@@ -32,6 +32,7 @@ angular
         'btford.socket-io',
         'pascalprecht.translate',
         'angular.filter',
+        'angular-jwt'
     ])
     .constant('Levenshtein', window.Levenshtein);
 
@@ -2352,6 +2353,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         params: {
           'postalCode': zipcode,
           'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
           'disableDefaultFilters': true,
           'embed': true,
           'limit': 1000,
@@ -2410,6 +2412,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         params: {
           'q': 'address.\\*.addressLocality:' + city,
           'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
           'disableDefaultFilters': true,
           'embed': true,
           'limit': 1000,
@@ -3100,8 +3103,8 @@ angular.module('udb.core')
     translate: {
       'ready': 'Klaar met vertalen',
       'translate': 'vertalen',
-      'original': 'Origineel',
-      'edit': 'bewerken',
+      'original': 'origineel',
+      'edit': 'Bewerk',
       'translation': 'Vertaling',
       'description': 'Beschrijving',
       'title': 'Titel',
@@ -3299,13 +3302,15 @@ angular.module('udb.core')
           'Toddlers': 'Peuters',
           'Preschoolers': 'Kleuters',
           'Kids': 'Kinderen',
+          'Teenagers': 'Tieners',
           'Youngsters': 'Jongeren',
           'Adults': 'Volwassenen',
           'Seniors': 'Senioren',
           'Custom': 'Andere',
           'from': 'Van',
           'till': 'tot',
-          'age': 'jaar'
+          'age': 'jaar',
+          'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
         },
         priceInfo: {
           'price_label': 'Prijs',
@@ -3339,6 +3344,16 @@ angular.module('udb.core')
         'error_empty': 'Kies een publicatiedatum.',
         'cancel': 'Annuleren',
         'ready': 'Klaar met bewerken'
+      },
+      imageUpload: {
+        'modalTitle': 'Afbeelding toevoegen',
+        'defaultError': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
+        'noFileSelectedError': 'Er is geen bestand geselecteerd',
+        'somethingWentWrongError': 'Er ging iets mis bij het opslaan van de afbeelding.',
+        'maxSize': 'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is ',
+        'formatNotValidError': 'Het geüpload bestand is geen geldige afbeelding.',
+        'extensionsAllowed': 'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.',
+        'sizeError': 'Het geüpload bestand is te groot.'
       }
     },
     calendar: {
@@ -3470,7 +3485,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'Een eind- en beginuur zijn verplicht wanneer een evenement niet de hele dag duurt.',
       'startBeforeEndDay': 'De einddatum kan niet voor de begindatum vallen.',
-      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.'
+      'startBeforeEnd': 'Het einduur kan niet voor het beginuur vallen.',
+      'tooFarInFuture': 'De gekozen einddatum en startdatum mogen niet verder dan 10 jaar in de toekomst liggen.'
     },
     uitpas: {
       uitpasInfo: {
@@ -3491,6 +3507,7 @@ angular.module('udb.core')
     images: {
       'agreement': 'Je staat op het punt (een) afbeelding(en) toe te voegen en openbaar te verspreiden. Je dient daartoe alle geldende auteurs- en portretrechten te respecteren, alsook alle andere toepasselijke wetgeving. Je kan daarvoor aansprakelijk worden gehouden, zoals vastgelegd in de',
       'conditions': 'algemene voorwaarden',
+      'conditions_url': 'https://www.publiq.be/nl/gebruikersovereenkomst-uitdatabank',
       'copyright_info': 'Meer informatie over copyright',
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
@@ -3607,6 +3624,11 @@ angular.module('udb.core')
         'cancel': 'Annuleren',
         'delete': 'Verwijderen'
       }
+    },
+    entry: {
+      'exported_documents': 'Geëxporteerde documenten',
+      'notifications': 'Meldingen',
+      'in_progress': 'Bezig'
     },
     offerTypes: {
       'Concert': 'Concert',
@@ -3834,7 +3856,7 @@ angular.module('udb.core')
       'next12months': 'les 12 mois suivants',
       'permanent': 'permanent',
       'event': 'événement',
-      'place': 'location',
+      'place': 'lieu',
       'actor': 'acteur',
       'production': 'production',
       'nl': 'néerlandais',
@@ -4096,7 +4118,7 @@ angular.module('udb.core')
       'labels': 'Labels',
       'calendarSummary': 'Aperçu du calendre',
       'image': 'Image',
-      'location': 'Location',
+      'location': 'Lieu',
       'address': 'Adresse',
       'organizer': 'Organisateur',
       'priceInfo': 'Information du prix',
@@ -4106,7 +4128,7 @@ angular.module('udb.core')
       'creator': 'Auteur',
       'terms.theme': 'Thème',
       'terms.eventtype': 'Type',
-      'created': 'Date création',
+      'created': 'Date début',
       'modified': 'Date dernière modification',
       'publisher': 'Auteur',
       'available': 'Disponible',
@@ -4155,25 +4177,26 @@ angular.module('udb.core')
     translate: {
       'ready': 'Prêt à traduire',
       'translate': 'traduire',
-      'original': 'Original',
+      'original': 'l\'original',
+      'edit': 'Modifier',
       'translation': 'Traduction',
       'description': 'Description',
       'title': 'Titre',
       'tariff': 'Prix',
-      'address': 'Adres',
+      'address': 'Adresse',
       'street': 'Rue et numéro'
     },
     labels: {
       'what': 'Ajoutez des mots clés courts et spécifiques.',
-      'invalid': 'Cela semble être un label invalide. Un label ',
-      'chars': 'se compose uniquement de lettres ou de chiffres',
-      'excluded': 'ne contient que \'-\' et \'_\', mais ne peut pas commençer avec ces caractères',
-      'length': 'compte de 2 à 50 caractères'
+      'invalid': 'Ce label ne semble pas valable. Un label ',
+      'chars': 'Ne comporte que des lettres ou des chiffres',
+      'excluded': 'Ne comporte que \'-\' ou \'_\' mais ne peut commencer avec ces caractêres',
+      'length': 'Comporte de 2 à 50 caractères'
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
-      'from': 'De',
-      'till': 'à',
+      'from': 'Du',
+      'till': 'au',
       'permanent': 'Permanent'
     },
     moderate: {
@@ -4226,63 +4249,68 @@ angular.module('udb.core')
       'save': 'Sauver'
     },
     location: {
-      'title': 'Ajouter une nouvelle location',
-      'name': 'Nom location',
-      'name_validation': 'Le nom de la location est un domaine obligatoire.',
+      'title': 'Ajouter un nouveau lieu',
+      'name': 'Nom de lieu',
+      'name_validation': 'Le nom du lieu est un domaine obligatoire.',
       'street': 'Rue et numéro',
       'street_validation': 'Rue est un domaine obligatoire.',
       'city': 'Commune',
       'category': 'Catégorie',
-      'category_help': 'Choisissez une catégorie qui décrit le mieux cette location.',
+      'category_help': 'Choisissez la catégorie qui décrit le mieux ce lieu.',
       'category_validation': 'Catégorie est un domaine obligatoire.',
-      'error': 'Il y a eu une erreur durant l\'enregistrement de la location.',
+      'error': 'Il s\'est produit une erreur lors de l\'enregistrement du lieu.',
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter',
-      'nlPostalCode_validation': 'Code postal est un domaine obligatoire.'
+      'nlPostalCode_validation': 'Code postal est un domaine obligatoire.',
+      'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
     eventForm: {
-      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Quand ceci n\'est pas l\'intention, s\'il vous plaît contacter avec vragen@uitdatabank.be',
+      'langWarning': 'Attention, vous éditez dans une autre langue: {{language}}. Si ce n\'est pas votre intention, contactez-nous à vragen@uitdatabank.be.',
       step1: {
         'title': 'Qu\'est-ce que vous voulez ajouter?',
         'label_event': 'Un événement',
         'show_everything': 'Montrez tout',
         'or': 'ou',
-        'location_label': 'Une location',
+        'location_label': 'Un lieu',
         'change': 'Modifier',
         'refine': 'Raffiner'
       },
       step2: {
         'date_help_event': 'L\'événement ou l\'activité a lieu quand?',
-        'date_help_place': 'Cet endroit ou cette location est ouvert(e) quand?',
+        'date_help_place': 'Cet endroit ou ce lieu est ouvert(e) quand?',
       },
       step3: {
-        'title_event': 'L\'événement ou l\'activité a lieu où?',
-        'title_place': 'Où se trouve cet endroit ou cette location?',
+        'title_event': 'Où L\'événement ou l\'activité a-t-elle lieu?',
+        'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
+        'choose_city_helper': 'p. ex Mons ou 7000',
+        'choose_residence': 'Choisir le lieu de résidence',
+        'choose_residence_helper': 'par ex. Groningue ou Amsterdam',
         'placeholder_city': 'Commune ou code postal',
         'problem_city': 'Il y a eu un problème durant la collection des villes',
         'change': 'Modifier',
-        'choose_location': 'Choisissez une location',
+        'choose_location': 'Choisissez un lieu',
         'placeholder_location': 'Nom ou adresse',
-        'location_not_found': 'La location n\'a pas été trouvée?',
-        'add_location': 'Ajouter une location',
-        'location_error': 'Il y a eu un problème dans la collection des locations',
+        'location_not_found': 'Le lieu n\'a pas été trouvée?',
+        'add_location': 'Ajouter un lieu',
+        'location_error': 'Il y a eu un problème dans la collection des lieux',
         'street': 'Rue et numéro',
         'placeholder_street': 'Rue de l\'église 1',
         'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
         'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
-        'ok': 'OK'
+        'ok': 'OK',
+        'zip': 'Code postal'
       },
       step4: {
         'basic_data': 'Données de base',
         'name_event': 'Nom de l\'événement',
-        'name_place': 'Nom de la location',
-        'help_event': 'Utilisez un <strong>titre saillant</strong>, p.ex. \"Rouler à vélo le long des chapelles\", \"La Sage de la Licorne\".',
-        'help_place': 'Utilisez la <strong>dénomination officielle</strong>, bv. \"Gravensteen\", \"Site de l\'abbaye Herkenrode\", \"Centre culturel De Werf\".',
+        'name_place': 'Nom du lieu',
+        'help_event': 'Choisissez un <strong>bon titre</strong>, p.ex. \"Rouler à vélo le long des chapelles\", \"La Saga de la Licorne\".',
+        'help_place': 'Utilisez la <strong>dénomination officielle</strong>, p.ex. \"Argos, centre pour l\'art et les médias\", \"Site de l\'abbaye Herkenrode\", \"Centre culturel De Werf\".',
         'help_description': 'Vous pouvez ajouter une <strong>description détaillée</strong> dans l\'étape 5.',
-        'info_missing': 'Vous n\'avez pas introduit toutes les informations demandées:',
-        'save_error': 'Il y a eu une erreur dans l\'enregistrement de l\'activité. Veuillez essayer plus tard.',
+        'info_missing': 'Vous n\'avez pas rempli tous les champs d\'informations obligatoires:',
+        'save_error': 'Une erreur s\'est produite lors de l\'enregistrement de votre activité. Merci de réessayer un peu plus tard.',
         'continue': 'Continuer',
         'doubles_title': 'Évitez les doubles emplois',
         'doubles_help': 'Nous avons trouvé des éléments similaires. Controlez les éléments importés auparavant.',
@@ -4290,14 +4318,14 @@ angular.module('udb.core')
         'return_dashboard': 'Non, retourner au tableau de bord',
         'yes_continue': 'Oui, procéder l\'importation',
         suggestions: {
-          'from': 'De',
-          'till': 'à',
+          'from': 'Du',
+          'till': 'au',
           'permanent': 'Permanent'
         }
       },
       step5: {
-        'expose_event': 'Faites remarquer votre événement encore plus',
-        'expose_place': 'Faites remarquer cette location encore plus',
+        'expose_event': 'Augmentez la visibilité de votre évènement',
+        'expose_place': 'Augmentez la visibilité de votre lieu',
         'title': 'Titre',
         'description': 'Description',
         'add_text': 'Ajouter texte',
@@ -4317,7 +4345,7 @@ angular.module('udb.core')
         'add_new_organizer': 'Ajouter un nouvel organisateur',
         'organizer_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisateur.',
         'contact': 'Contact & réservation',
-        'add_contact': 'Ajouter de l\'information du contact',
+        'add_contact': 'Ajouter les coordonnées',
         'website': 'Site web',
         'phone': 'Numéro de téléphone',
         'e-mail': 'Adresse mail',
@@ -4327,7 +4355,7 @@ angular.module('udb.core')
         'reserve_places': 'Réservez des places',
         'check_availability': 'Controlez la disponibilité',
         'subscribe': 'Inscrivez-vous',
-        'add_more_contact': 'Ajoutez plus d\'informations du contact',
+        'add_more_contact': 'Ajouter plus de coordonnées',
         'contact_error': 'Il y a eu une erreur dans l\'enregistrement de l\'information du contact.',
         'facilities': 'Accessibilité',
         'add_facility': 'Ajouter des dispositions',
@@ -4338,20 +4366,22 @@ angular.module('udb.core')
         'copyright': 'Copyright',
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
-        'add_image': 'Ajouter image',
+        'add_image': 'Ajouter un image',
         age: {
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
           'Toddlers': 'Tout-petits',
           'Preschoolers': 'Enfants d\'âge préscolaire',
           'Kids': 'Enfants',
+          'Teenagers': 'Adolescents',
           'Youngsters': 'Jeunes',
           'Adults': 'Adultes',
-          'Seniors': 'Aînés',
+          'Seniors': 'Seniors',
           'Custom': 'Autres',
-          'from': 'De',
-          'till': 'à',
-          'age': 'ans'
+          'from': 'Du',
+          'till': 'au',
+          'age': 'ans',
+          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
         },
         priceInfo: {
           'price_label': 'Prix',
@@ -4372,36 +4402,46 @@ angular.module('udb.core')
         'publish_now': 'Publier immédiatement',
         'publish_later': 'Publier plus tard',
         'edit_done': 'Modification terminée',
-        'online_from': 'En ligne à partir de'
+        'online_from': 'Publié le'
       },
       timeTracker: {
-        'automatic_saved': 'Sauvegardé automatic à',
+        'automatic_saved': 'Sauvegardé automatiquement à',
         'hour': 'heures',
       },
       embargo: {
         'title': 'Choisissez une date de publication',
-        'help': 'A partir de quand cela peut-il apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous pouvez définier cette date une seule fois.</em>',
+        'help': 'A partir de quand l\'activité peut-elle apparaître en ligne? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Attention, vous ne pouvez définir cette date qu\'une seule fois.</em>',
         'error_past': 'Une date de publication ne peut pas être antérieure.',
         'error_empty': 'Choisissez une date de publication.',
         'cancel': 'Annuler',
         'ready': 'Prêt à modifier'
+      },
+      imageUpload: {
+        'modalTitle': 'Ajouter une image',
+        'defaultError': 'Le fichier sélectionné ne répond pas à nos critères.',
+        'noFileSelectedError': 'Il n\'y a pas de fichier sélectionné',
+        'somethingWentWrongError': 'Une erreur s\'est produite lors de l\'enregistrement de l\'image.',
+        'maxSize': 'Le fichier que vous souhaitez télécharger est trop gros. La taille maximale est ',
+        'formatNotValidError': 'Le fichier téléchargé n\'est pas une image valable.',
+        'extensionsAllowed': 'Seuls les fichiers avec les extensions .jpeg, .gif ou .png sont autorisés.',
+        'sizeError': 'Le fichier téléchargé est trop grand.'
       }
     },
     calendar: {
       'one_more_days': 'Une ou plusieurs journées',
       'or': 'ou',
-      'default_days': 'Journées fixes',
-      'start_label': 'Départ',
+      'default_days': 'Schéma fixe',
+      'start_label': 'Début',
       'end_label': 'Fin',
       'whole_day_label': 'Toute la journée',
-      'start_hour_label': 'Heure de départ',
+      'start_hour_label': 'Heure de début',
       'end_hour_label': 'Heure de fin',
       'add_days': 'Ajouter des jours',
       period: {
-        'title': 'Date de départ et de fin',
-        'from': 'De',
-        'till': 'À',
-        'alert': 'Introduisez la date de départ ainsi que la date de fin. La date de fin ne peut pas tomber avant la date de départ.'
+        'title': 'Date de début et de fin',
+        'from': 'Du',
+        'till': 'au',
+        'alert': 'Introduisez la date de début ainsi que la date de fin. La date de fin ne peut pas tomber avant la date de début.'
       },
       openingHours: {
         'permanent_title': '24/24, 7/7',
@@ -4481,7 +4521,7 @@ angular.module('udb.core')
       'organiser_label': 'organisation (nom)',
       'category_facility_name': 'dispositions',
       'category_targetaudience_name': 'public cible',
-      'startdate': 'date de départ',
+      'startdate': 'date de début',
       'enddate': 'date de fin',
       'lastupdatedby': 'modifié dernièrement par',
       'category_publicscope_name': 'portée de public'
@@ -4499,23 +4539,23 @@ angular.module('udb.core')
     'LABELS_BEHEREN': 'Gérer les labels',
     'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
     'ORGANISATIES_BEWERKEN': 'Modifier les organisations',
-    'event type missing': 'Avez-vous choisi un type en <a href="#quoi" class="alert-link">étape 1</a>?',
+    'event type missing': 'Choisissez un type à <a href="#quoi" class="alert-link">l\'étape 1</a>?',
     'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
-    'start or end date missing': 'Avez-vous choisi une date de départ et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
+    'start or end date missing': 'Avez-vous choisi une date de début et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
     'when missing': 'Avez-vous fait un choix en <a href="#quand" class="alert-link">étape 2</a>?',
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
-    'location missing for place': 'Avez-vous choisi une location en <a href="#où" class="alert-link">étape 3</a>?',
+    'location missing for place': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
-    'UNIQUE_ORGANIZER_NOTICE': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
+    'UNIQUE_ORGANIZER_NOTICE': 'Pour préserver à chaque organisation une identité unique dans UiTdatabank, nous demandons à chaque organisation de fournir un hyperlien unique et valide.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
-      'dayOfWeek': 'Choisissez au moins un jour dans chaque ligne que vous avez ajoutée.',
-      'openIsBeforeClose': 'Veuillez introduire une heure de fermeture qui tombe plus tard que l\'heure d\'ouverture.'
+      'dayOfWeek': 'Choisissez au moins un jour dans chaque ligne ajoutée.',
+      'openIsBeforeClose': 'L\'heure de fermeture doit être postérieure à l\'heure d’ouverture.'
     },
     'TIME_SPAN_REQUIREMENTS': {
-      'timedWhenNotAllDay': 'L\'heure de départ et de fin est obligatoire quand un événement ne dure pas toute la journée.',
-      'startBeforeEndDay': 'La date de fin ne peut pas tomber avant la date de départ.',
-      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de départ.'
+      'timedWhenNotAllDay': 'L\'heure de début et de fin est obligatoire quand un événement ne dure pas toute la journée.',
+      'startBeforeEndDay': 'La date de fin ne peut pas tomber avant la date de début.',
+      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.'
     },
     uitpas: {
       uitpasInfo: {
@@ -4534,18 +4574,19 @@ angular.module('udb.core')
       }
     },
     images: {
-      'agreement': 'Vous êtes sur le point d\'ajouter une ou plusieurs images et de les diffuser publiquement. Pour ceci il faut respecter tous les droits d\'auteur et de portrait applicables, ainsi que d\'autres législations en vigueur. Sinon, vous pouvez être rendu responsable, comme convenu dans les',
+      'agreement': 'Vous êtes sur le point d\'ajouter une ou plusieurs images et de les diffuser publiquement. Pour ceci il faut respecter tous les droits d\'auteur et de portrait applicables, ainsi que d\'autres législations en vigueur. Dans le cas contraire, vous pouvez en être tenu responsable, comme précisé dans les',
       'conditions': 'conditions générales',
+      'conditions_url': 'https://www.publiq.be/fr/accord-utilisation-uitdatabank',
       'copyright_info': 'Plus d\'informations sur le copyright',
       'description': 'Description',
       'description_help': 'Maximum 250 caractères',
       'copyright': 'Copyright',
-      'copyright_help': 'Mentionnez le nom de photographe légitime. Introduisez seulement le nom de votre propre association ou organisation si vous êtes propriétaire vous-même des droits (au moins 3 caractères).',
+      'copyright_help': 'Mentionnez le nom de photographe légitime. Mentionnez le nom de votre association ou organisation uniquement si vous êtes propriétaire des droits (au moins 3 caractères).',
       'cancel': 'Annuler',
       'agree': 'Accepter',
       upload: {
         'select_image': 'Sélectionnez votre photo',
-        'choose_file': 'Choisissez fichier',
+        'choose_file': 'Choisissez un fichier',
         'max_filesize': 'La dimension maximale de votre image est {{maxFileSize}} et a comme type .jpeg, .gif of .png',
         'upload': 'Télécharger'
       },
@@ -4565,7 +4606,7 @@ angular.module('udb.core')
       modal: {
         'title': 'Ajouter une nouvelle organisation',
         'avoid_doubles': 'Évitez les doubles emplois',
-        'unique_notice': 'Afin de vérifier que chaque organisation dans la base de données soit unique, nous demandons pour chaque organisation un lien hypertexte unique et valable.',
+        'unique_notice': 'Pour préserver à chaque organisation une identité unique dans UiTdatabank, nous demandons à chaque organisation de fournir un hyperlien unique et valide.',
         'website': 'Site web',
         'alert_warning': 'Cette adresse est déjà utilisée par l\'organisation \'{{organizerName}}\'. Donnez un site web unique ou',
         'alert_button': 'utilisez {{organizerName}} comme organisation',
@@ -4594,13 +4635,13 @@ angular.module('udb.core')
       },
       contact: {
         'title': 'Contact',
-        'enter_url': 'Donnez un lien hypertexte',
+        'enter_url': 'Entrez un lien hypertexte',
         'enter_email': 'Introduisez une adresse mail',
         'enter_phone': 'Introduisez un numéro de téléphone<small class="text-muted">, p.ex. 011 32 43 54</small>',
         'required': 'Veuillez compléter ce domaine.',
-        'valid_url': 'Veuillez introduire un lien hypertexte valable.',
-        'valid_email': 'Veuillez introduire une adresse mail valable.',
-        'valid_phone': 'Veuillez introduire un numéro de téléphone valable.',
+        'valid_url': 'Cette url n\'est pas valable.',
+        'valid_email': 'Cette adresse e-mail n\'est pas valable.',
+        'valid_phone': 'Ce numéro de téléphone n\'est pas valable.',
         'cancel': 'Annuler',
         'add': 'Ajouter',
         'add_phone': 'Ajouter un numéro de téléphone',
@@ -4623,14 +4664,14 @@ angular.module('udb.core')
     },
     duplicate: {
       title: 'Copier et modifier',
-      description: 'Vous êtes sur le point de copier cet événement. Choisissez un moment pour cet événement.',
+      description: 'Vous êtes sur le point de copier un événement. Choisissez une date pour cet événement.',
       error: 'Il y a eu une erreur dans la création d\'une copie!'
     },
     dashboard: {
       'welcome': 'Bienvenue,',
       'no_items': 'Vous n\'avez pas encore ajouté des items.',
       'add_activity': 'Ajouter une activité ou une location?',
-      'my_activities': 'Mes activitées et locations',
+      'my_activities': 'Mes activitées et lieux',
       'my_organizers': 'Mes organisations',
       'add': 'Ajouter',
       'add_organizer': 'Ajouter une organisation',
@@ -4644,11 +4685,16 @@ angular.module('udb.core')
       },
       delete: {
         'sure': 'Vous êtes sûr de vouloir supprimer \"{{name}}\"?',
-        'error_location': 'La location \"{{name}}\" ne peut pas être supprimée car des activités y ont encore lieu.',
+        'error_location': 'Le lieu \"{{name}}\" ne peut pas être supprimée car des activités y ont encore lieu.',
         'error': 'Il y a eu une erreur dans la suppression de l\'activité.',
         'cancel': 'Annuler',
         'delete': 'Supprimer'
       }
+    },
+    entry: {
+      'exported_documents': 'Documents exportés',
+      'notifications': 'Notifications',
+      'in_progress': 'Occupé'
     },
     offerTypes: {
       'Concert': 'Concert',
@@ -4661,12 +4707,12 @@ angular.module('udb.core')
       'Sportwedstrijd bekijken': 'Assister à une compétition sportive',
       'Cursus of workshop': 'Cours ou atelier',
       'Sportactiviteit': 'Activité sportive',
-      'Kamp of vakantie': 'Camp de vacance',
-      'Begeleide rondleiding': 'Tour ou excursion guidé',
-      'Route': 'Route',
+      'Kamp of vakantie': 'Camp de vacances',
+      'Begeleide rondleiding': 'Visite guidé',
+      'Route': 'Itinéraire',
       'Spel of quiz': 'Jeu ou quiz',
       'Party of fuif': 'Soirée',
-      'Kermis of feestelijkheid': 'Foire ou festivité',
+      'Kermis of feestelijkheid': 'Kermesse ou festivité',
       'Congres of studiedag': 'Congrès ou journée d\'étude',
       'Eten en drinken': 'Manger et boire',
       'Thema of pretpark': 'Parc à thème ou parc d\'attractions',
@@ -4680,14 +4726,14 @@ angular.module('udb.core')
       'Openbare ruimte': 'Espace public',
       'Tentoonstelling': 'Exposition',
       'Markt of braderie': 'Marché ou braderie',
-      'Natuurgebied of park': 'Zone naturel ou parc',
-      'Natuur, park of tuin': 'Zone naturel ou parc',
+      'Natuurgebied of park': 'Zone naturelle ou parc',
+      'Natuur, park of tuin': 'Zone naturelle ou parc',
       'Beurs': 'Foire / exposition',
       'Monument': 'Monument',
       'Opendeurdag': 'Journée portes ouvertes',
       'Recreatiedomein of centrum': 'Centre de loisirs ou centre de récréation',
       'Park of tuin': 'Jardin ou parc',
-      'Archeologische Site': 'Site Archeologique',
+      'Archeologische Site': 'Site Archéologique',
       'School of onderwijscentrum': 'École ou centre éducatif',
       'Sportcentrum': 'Centre sportif',
       'Winkel': 'Magasin',
@@ -4697,16 +4743,16 @@ angular.module('udb.core')
     offerThemes: {
       'Antiek en brocante': 'Antiquités ou brocantes',
       'Architectuur': 'Architecture',
-      'Audiovisuele kunst': 'Arts audiovisuels',
+      'Audiovisuele kunst': 'Arts graphiques',
       'Beeldhouwkunst': 'Sculpture',
       'Fotografie': 'Photographie',
       'Grafiek': 'Art grafique',
       'Installatiekunst': 'Art d\'installation',
       'Schilderkunst': 'Peinture',
-      'Decoratieve kunst': 'Arts Décoratifs',
+      'Decoratieve kunst': 'Arts décoratifs',
       'Design': 'Design',
       'Mode': 'Mode',
-      'Meerdere kunstvormen': 'Arts multiples',
+      'Meerdere kunstvormen': 'Arts pluridisciplinaires',
       'Ballet en klassieke dans': 'Ballet et danse classique',
       'Volksdans en werelddans': 'Danse folklorique et mondiale',
       'Stijl en salondansen': 'Danse de salon et stylée',
@@ -4734,11 +4780,11 @@ angular.module('udb.core')
       'Gezondheid en wellness': 'Santé et bien-être',
       'Landbouw en platteland': 'Agriculture et campagne',
       'Milieu en natuur': 'Environnement et nature',
-      'Literatuur': 'Litérature',
+      'Literatuur': 'Littérature',
       'Poezie': 'Poésie',
       'Fictie': 'Fiction',
       'Non fictie': 'Non fiction',
-      'Strips': 'Bandes dessinés',
+      'Strips': 'Bandes dessinées',
       'Klassieke muziek': 'Musique classique',
       'Jazz en blues': 'Jazz et blues',
       'Pop en rock': 'Pop et rock',
@@ -4755,7 +4801,7 @@ angular.module('udb.core')
       'Kunst en kunsteducatie': 'Arts et formation artistique',
       'Gezondheid en zorg': 'Santé et soins',
       'Samenleving': 'Vivre en société',
-      'Bal en racketsport': 'Sports au ballons et raquettes',
+      'Bal en racketsport': 'Sports de balles et raquettes',
       'Atletiek, wandelen en fietsen': 'Athlétisme, marche et cyclisme',
       'Zwemmen en watersport': 'Natation et sports nautiques',
       'Fitness, gymnastiek, dans en vechtsport': 'Fitness, gymnastique, danse et arts martiaux',
@@ -4770,7 +4816,7 @@ angular.module('udb.core')
       'Opera en operette': 'Opéra et opérette',
       'Mime en bewegingstheater': 'Mime et theéâtre de mouvements',
       'Wetenschap': 'Science',
-      'Zingeving, filosofie en religie': 'Sense de la vie, philosophie et religion',
+      'Zingeving, filosofie en religie': 'Sens de la vie, philosophie et religion',
       'Thema onbepaald': 'Thème non défini',
       'Circus': 'Cirque',
       'Voeding': 'Nutrition',
@@ -4779,7 +4825,7 @@ angular.module('udb.core')
       'Taal en communicatie': 'Langue'
     },
     offerThemesGroups: {
-      'Dans': 'Dance',
+      'Dans': 'Danse',
       'Kunst en erfgoed': 'Art et Patrimoine',
       'Muziek': 'Musique',
       'Sport': 'Sport',
@@ -5769,9 +5815,9 @@ function UdbApi(
 
       var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-      var activeUser = uitidAuth.getUser();
-      var userId = activeUser.id;
-      var userEmail = activeUser.email;
+      var tokenData = uitidAuth.getTokenData();
+      var userId = tokenData.uid;
+      var userEmail = tokenData.email;
 
       if (createdByQueryMode === 'uuid') {
         requestConfig.params.creator = userId;
@@ -7360,7 +7406,7 @@ angular
   .service('uitidAuth', UitidAuth);
 
 /* @ngInject */
-function UitidAuth($window, $location, appConfig, $cookies) {
+function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
 
   function removeCookies () {
     $cookies.remove('token');
@@ -7438,6 +7484,10 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return currentToken;
   };
 
+  this.getTokenData = function () {
+    return jwtHelper.decodeToken(this.getToken());
+  };
+
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
   /**
    * Returns the currently logged in user
@@ -7446,7 +7496,7 @@ function UitidAuth($window, $location, appConfig, $cookies) {
     return $cookies.getObject('user');
   };
 }
-UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies"];
+UitidAuth.$inject = ["$window", "$location", "appConfig", "$cookies", "jwtHelper"];
 })();
 
 // Source: src/cultuurkuur/event-cultuurkuur.component.js
@@ -8627,10 +8677,12 @@ function EventCrud(
    * @param {EventFormData} formData
    */
   function pickMajorInfoFromFormData(formData) {
-    return _.pick(formData, function(property, name) {
+    var majorInfo = _.pick(formData, function(property, name) {
       var isStream = name.charAt(name.length - 1) === '$';
       return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
+
+    return majorInfo;
   }
 
   /**
@@ -10899,7 +10951,8 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
     'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
     'KIDS': {label: 'Kids', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'TEENAGERS': {label: 'Teenagers', min: 12, max: 15},
+    'YOUNGSTERS': {label: 'Youngsters', min: 16, max: 26},
     'ADULTS': {label: 'Adults', min: 18},
     'SENIORS': {label: 'Seniors', min: 65},
     'CUSTOM': {label: 'Custom'}
@@ -10933,7 +10986,8 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     }
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
-      showError('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'); return;
+      controller.hasError = true;
+      showError($translate.instant('eventForm.step5.age.error_max_lower_than_min')); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
@@ -10955,6 +11009,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
 
   function clearError() {
     controller.error = '';
+    controller.hasError = false;
   }
 
   /**
@@ -11163,7 +11218,7 @@ angular
   .controller('BaseCalendarController', BaseCalendarController);
 
 /* @ngInject */
-function BaseCalendarController(calendar, $scope) {
+function BaseCalendarController(calendar, $scope, appConfig) {
   calendar.type = '';
   calendar.setType = setType;
   calendar.createTimeSpan = createTimeSpan;
@@ -11175,6 +11230,7 @@ function BaseCalendarController(calendar, $scope) {
   calendar.instantTimeSpanChanged = instantTimeSpanChanged;
   calendar.toggleAllDay = toggleAllDay;
   calendar.init = init;
+  calendar.maxYearTimeSpan = _.get(appConfig, 'offerEditor.calendar.maxYearTimeSpan', 10);
 
   /**
    * @param {EventFormData} formData
@@ -11321,6 +11377,10 @@ function BaseCalendarController(calendar, $scope) {
             (timeSpan.start && timeSpan.end) &&
             moment(timeSpan.start).isSame(timeSpan.end, 'day') &&
             moment(timeSpan.start).isAfter(timeSpan.end);
+      },
+      'tooFarInFuture': function (timespan) {
+        var maxDate = moment().add(calendar.maxYearTimeSpan, 'y');
+        return moment(timeSpan.end).isAfter(maxDate);
       }
     };
 
@@ -11331,7 +11391,7 @@ function BaseCalendarController(calendar, $scope) {
     return _.keys(unmetRequirements);
   }
 }
-BaseCalendarController.$inject = ["calendar", "$scope"];
+BaseCalendarController.$inject = ["calendar", "$scope", "appConfig"];
 })();
 
 // Source: src/event_form/components/calendar/form-calendar-datepicker.component.js
@@ -11681,16 +11741,18 @@ function EventFormImageUploadController(
   appConfig,
   MediaManager,
   $q,
-  copyrightNegotiator
+  copyrightNegotiator,
+  $translate,
+  $filter
 ) {
 
   // Scope vars.
-  $scope.userAgreementUrl = _.get(appConfig, 'media.userAgreementUrl', '/user-agreement');
-  $scope.copyrightUrl = _.get(appConfig, 'media.copyrightUrl', '/copyright');
+  $scope.userAgreementUrl = $filter('translate')('images.conditions_url');
+  $scope.copyrightUrl = '/' + $translate.use() + _.get(appConfig, 'media.copyrightUrl', '/copyright');
   $scope.saving = false;
   $scope.error = false;
   $scope.showAgreements = !copyrightNegotiator.confirmed();
-  $scope.modalTitle = 'Afbeelding toevoegen';
+  $scope.modalTitle = $translate.instant('eventForm.imageUpload.modalTitle');
   $scope.description = '';
   $scope.copyright = '';
   $scope.maxFileSize = _.get(appConfig, 'media.fileSizeLimit', '1MB');
@@ -11704,15 +11766,15 @@ function EventFormImageUploadController(
   $scope.allFieldsValid = allFieldsValid;
 
   var invalidFileErrors = {
-    'default': 'Het geselecteerde bestand voldoet niet aan onze voorwaarden.',
-    'maxSize': 'Het bestand dat je probeert te uploaden is te groot. De maximum grootte is ' + $scope.maxFileSize + '.'
+    'default': $translate.instant('eventForm.imageUpload.defaultError'),
+    'maxSize': $translate.instant('eventForm.imageUpload.maxSize') + $scope.maxFileSize + '.'
   };
 
   /**
    * Accept the agreements.
    */
   function acceptAgreements() {
-    $scope.modalTitle = 'Nieuwe afbeelding toevoegen';
+    $scope.modalTitle = $translate.instant('eventForm.imageUpload.modalTitle');
     $scope.showAgreements = false;
     copyrightNegotiator.confirm();
   }
@@ -11743,7 +11805,7 @@ function EventFormImageUploadController(
   function uploadAndAddImage() {
     // Abort if no valid file is selected.
     if (!$scope.selectedFile) {
-      $scope.error = 'Er is geen bestand geselecteerd';
+      $scope.error = $translate.instant('eventForm.imageUpload.noFileSelectedError');
       return;
     }
 
@@ -11756,15 +11818,15 @@ function EventFormImageUploadController(
 
     function displayError(errorResponse) {
       var errorMessage = errorResponse.data.title;
-      var error = 'Er ging iets mis bij het opslaan van de afbeelding.';
+      var error = $translate.instant('eventForm.imageUpload.somethingWentWrongError');
 
       switch (errorMessage) {
         case 'The uploaded file is not an image.':
-          error = 'Het geüpload bestand is geen geldige afbeelding. ' +
-            'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.';
+          error = $translate.instant('eventForm.imageUpload.formatNotValidError') +
+            $translate.instant('eventForm.imageUpload.extensionsAllowed');
           break;
         case 'The file size of the uploaded image is too big.':
-          error = 'Het geüpload bestand is te groot.';
+          error = $translate.instant('eventForm.imageUpload.sizeError');
           break;
       }
 
@@ -11800,7 +11862,7 @@ function EventFormImageUploadController(
         $scope.description.length <= 250 && $scope.copyright.length >= 3;
   }
 }
-EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator"];
+EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator", "$translate", "$filter"];
 })();
 
 // Source: src/event_form/components/opening-hours-editor/opening-hours-editor.modal.controller.js
@@ -12189,7 +12251,7 @@ function EventFormOrganizerModalController(
   $scope.organizers = [];
   $scope.selectedCity = '';
   $scope.disableSubmit = true;
-
+  $scope.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
   $scope.newOrganizer = {
     mainLanguage: 'nl',
     website: 'http://',
@@ -13679,7 +13741,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * Reset the location.
      */
-    resetLocation: function(location) {
+    resetLocation: function() {
       this.location = {
         'id' : null,
         'name': '',
@@ -13700,7 +13762,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * Get the calendar.
+     * Get the location.
      */
     getLocation: function() {
       return this.location;
@@ -15401,7 +15463,6 @@ function EventFormStep3Controller(
     // Set location data when the form data contains an Event with a location
     if (EventFormData.isEvent && EventFormData.location.name) {
       address = _.get(EventFormData, 'location.address');
-      controller.getLocations(address.postalCode);
       if (EventFormData.location.name) {
         $scope.selectedLocation = angular.copy(EventFormData.location);
       }
@@ -16569,10 +16630,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
-  exporter.templates = [
-      {name: 'tips', label: 'Tipsrapport'},
-      {name: 'map', label: 'Weergave op kaart (beta)'}
-  ];
+  exporter.templateUrl = appConfig.exportTemplateUrl;
+  exporter.templates = appConfig.exportTemplateTypes;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -21010,11 +21069,10 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent($scope) {
+function OrganizerContactComponent($scope, appConfig) {
   var controller = this;
 
   controller.newContact = {};
-
   controller.addingContactEntry = false;
   controller.isPristine = true;
   controller.validateContact = validateContact;
@@ -21023,6 +21081,7 @@ function OrganizerContactComponent($scope) {
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
+  controller.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
 
   $scope.$on('organizerContactSubmit', function() {
     controller.organizerContactWrapper.$setSubmitted();
@@ -21100,7 +21159,7 @@ function OrganizerContactComponent($scope) {
     }
   }, true);
 }
-OrganizerContactComponent.$inject = ["$scope"];
+OrganizerContactComponent.$inject = ["$scope", "appConfig"];
 })();
 
 // Source: src/organizers/detail/organizer-detail.controller.js
@@ -27884,7 +27943,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-12\">\n" +
     "      <div class=\"udb-job-block udb-job-block-ready\">\n" +
-    "        <p class=\"udb-job-title\">Geëxporteerde documenten</p>\n" +
+    "        <p class=\"udb-job-title\" translate-once=\"entry.exported_documents\"></p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
     "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getFinishedExportJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
@@ -27893,7 +27952,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "\n" +
     "      <div class=\"udb-job-block udb-job-block-errors\">\n" +
-    "        <p class=\"udb-job-title\">Meldingen <span class=\"badge\" ng-bind=\"logger.getFailedJobs().length\"></span></p>\n" +
+    "        <p class=\"udb-job-title\" translate-once=\"entry.notifications\"> <span class=\"badge\" ng-bind=\"logger.getFailedJobs().length\"></span></p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
     "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getFailedJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
@@ -27902,7 +27961,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "\n" +
     "      <div class=\"udb-job-block udb-job-block-pending\">\n" +
-    "        <p class=\"udb-job-title\">Bezig</p>\n" +
+    "        <p class=\"udb-job-title\" translate=\"entry.in_progress\"></p>\n" +
     "        <ul class=\"list-unstyled udb-job-messages\">\n" +
     "          <li class=\"udb-alert repeat-animation\" ng-repeat=\"job in logger.getQueuedJobs()\">\n" +
     "            <udb-job></udb-job>\n" +
@@ -28732,7 +28791,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               ng-change=\"validateWebsite()\"\n" +
     "               autocomplete=\"off\"\n" +
     "               udb-http-prefix\n" +
-    "               ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\"\n" +
+    "               ng-pattern=\"contactUrlRegex\"\n" +
     "               required>\n" +
     "        <span class=\"fa fa-circle-o-notch fa-spin form-control-feedback\" ng-show=\"showWebsiteValidation\" aria-hidden=\"true\"></span>\n" +
     "        <span id=\"organizer-website-status\" class=\"sr-only\">(warning)</span>\n" +
@@ -30270,7 +30329,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "                <label>\n" +
     "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
-    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\">\n" +
+    "                           ng-value=\"brand\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                    <span ng-bind=\"brand.label\"></span>\n" +
     "                </label>\n" +
     "              </div>\n" +
@@ -30279,6 +30338,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
+    "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "        </div>\n" +
     "\n" +
     "      <div class=\"form-group\">\n" +
@@ -30288,12 +30348,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
     "              <label>\n" +
     "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
-    "                       ng-value=\"template\" class=\"export-customization-brand-radio\">\n" +
+    "                       ng-value=\"template\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
     "          </div>\n" +
+    "          <div class=\"col-sm-4\">\n" +
+    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
+    "          </div>\n" +
     "        </div>\n" +
+    "        <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportTemplate.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
     "      </div>\n" +
     "\n" +
     "        <div class=\"form-group\">\n" +
@@ -31644,7 +31708,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"offer-translate-chooser\">\n" +
     "          <label class=\"form-text\">\n" +
     "             <button ng-click=\"openEditPage()\" class=\"btn-link btn-sm\">\n" +
-    "               <span translate-once=\"translate.original\"></span> ({{mainLanguage}}) <span translate-once=\"translate.edit\"></span>\n" +
+    "               <span translate-once=\"translate.edit\"></span> <span translate-once=\"translate.original\"></span> ({{mainLanguage}})\n" +
     "             </button>\n" +
     "          </label>\n" +
     "          <span ng-repeat=\"language in languages\">\n" +
@@ -31803,7 +31867,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-switch=\"occ.newContact.type\">\n" +
     "          <div ng-switch-when=\"url\" class=\"form-group\" ng-class=\"{ 'has-error': urlContactForm.url.$touched && urlContactForm.url.$invalid }\">\n" +
     "              <ng-form name=\"urlContactForm\">\n" +
-    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"/^(http\\:\\/\\/|https\\:\\/\\/)?([a-z0-9][a-z0-9\\-]*\\.)+[a-z0-9][a-z0-9\\-\\/]*$/\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
+    "                  <input type=\"text\" name=\"url\" udb-http-prefix class=\"form-control\" ng-model=\"occ.newContact.value\" ng-pattern=\"occ.contactUrlRegex\" ng-model-options=\"{allowInvalid:true}\" required>\n" +
     "                  <div class=\"help-block\" ng-messages=\"urlContactForm.url.$error\" ng-show=\"!occ.isPristine && urlContactForm.url.$error\">\n" +
     "                      <p ng-message=\"required\">\n" +
     "                          <span translate-once=\"organizer.contact.required\"></span>\n" +
