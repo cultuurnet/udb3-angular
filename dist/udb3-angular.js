@@ -3407,7 +3407,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
-      'APPROVED': 'Gepubliceerd',
+      'APPROVED': 'Online vanaf',
       'REJECTED': 'Publicatie afgewezen',
       'DELETED': 'Niet gepubliceerd',
       'rules': 'Bekijk de regels',
@@ -4477,7 +4477,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Pas publié',
       'READY_FOR_VALIDATION': 'Prêt à être publié',
-      'APPROVED': 'Publié',
+      'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
       'DELETED': 'Pas publié',
       'rules': 'Regardez les règles',
@@ -27466,7 +27466,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
     "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{::cm.status | translate }}</span>\n" +
-    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\"><span translate-once=\"workflowStatus.APPROVED\"></span> {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"cm.event.workflowStatus === 'REJECTED'\">\n" +
     "      <p><span translate-once=\"workflowStatus.rejected_full\"></span>&nbsp;<a ng-href=\"{{::cm.publicationRulesLink}}\" target=\"_blank\"><span translate-once=\"workflowStatus.rules\"></span></a></p>\n" +
