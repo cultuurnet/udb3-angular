@@ -676,7 +676,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
-      'APPROVED': 'Gepubliceerd',
+      'APPROVED': 'Online vanaf',
       'REJECTED': 'Publicatie afgewezen',
       'DELETED': 'Niet gepubliceerd',
       'rules': 'Bekijk de regels',
