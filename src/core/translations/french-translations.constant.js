@@ -541,7 +541,7 @@ angular.module('udb.core')
         'add_new_organizer': 'Ajouter un nouvel organisateur',
         'organizer_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisateur.',
         'contact': 'Contact & réservation',
-        'add_contact': 'Ajouter les coordonnées',
+        'add_contact': 'Ajouter plus de coordonnées',
         'website': 'Site web',
         'phone': 'Numéro de téléphone',
         'e-mail': 'Adresse mail',
@@ -562,7 +562,7 @@ angular.module('udb.core')
         'copyright': 'Copyright',
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
-        'add_image': 'Ajouter un image',
+        'add_image': 'Ajouter une image',
         age: {
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
