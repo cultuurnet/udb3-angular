@@ -16640,7 +16640,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
   });
 
   exporter.customizations = {
-    brand: exporter.brands[0].name,
+    brand: '',
     logo: exporter.exportLogoUrl + exporter.brands[0].logo,
     title: '',
     subtitle: '',
@@ -16680,7 +16680,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     customize: {
       name: 'customize',
       incomplete: function () {
-        return !exporter.customizations.brand || !exporter.customizations.title;
+        return !exporter.customizations.brand || !exporter.customizations.title || !exporter.customizations.template ;
       }
     },
     filter: {
@@ -16764,9 +16764,9 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
     if (isCustomized) {
       customizations = exporter.customizations;
-      customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
-      customizations.brand = exporter.selectedBrand.name;
-      customizations.template = exporter.selectedTemplate.name;
+      customizations.logo = exporter.exportLogoUrl + customizations.brand.logo;
+      customizations.brand = customizations.brand.name;
+      customizations.template = customizations.template.name;
       includedProperties = [];
     } else {
       customizations = {};
@@ -30328,14 +30328,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"col-sm-8\">\n" +
     "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "                <label>\n" +
-    "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
+    "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.customizations.brand\"\n" +
     "                           ng-value=\"brand\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                    <span ng-bind=\"brand.label\"></span>\n" +
     "                </label>\n" +
     "              </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-4\">\n" +
-    "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
+    "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.customizations.brand.logo}}\" alt=\"{{exporter.customizations.brand.name}}\" ng-show=\"exporter.customizations.brand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
@@ -30347,14 +30347,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <div class=\"col-sm-8\">\n" +
     "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
     "              <label>\n" +
-    "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
+    "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.customizations.template\"\n" +
     "                       ng-value=\"template\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <div class=\"col-sm-4\">\n" +
-    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
+    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.customizations.template.img}}\" alt=\"{{exporter.customizations.template.label}}\" ng-show=\"exporter.customizations.template\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportTemplate.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
@@ -30439,7 +30439,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <button class=\"btn btn-default pull-left\" ng-click=\"exporter.previousStep()\"\n" +
     "          ng-hide=\"exporter.isOnFirstStep()\">Vorige stap</button>\n" +
     "  <button ng-hide=\"exporter.onLastStep()\" class=\"btn btn-primary\"\n" +
-    "          ng-click=\"exporter.nextStep()\">Volgende</button>\n" +
+    "          ng-click=\"exporter.nextStep()\">Volgende </button>\n" +
     "  <button ng-show=\"exporter.onLastStep()\" class=\"btn btn-primary\" ng-click=\"exporter.export()\">Exporteren</button>\n" +
     "</div>\n"
   );
