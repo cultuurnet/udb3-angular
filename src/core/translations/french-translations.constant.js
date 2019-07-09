@@ -751,7 +751,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'L\'heure de début et de fin est obligatoire quand un événement ne dure pas toute la journée.',
       'startBeforeEndDay': 'La date de fin ne peut pas tomber avant la date de début.',
-      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.'
+      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.',
+      'tooFarInFuture': 'La date de fin et la date de début choisies ne peuvent pas dépasser 10 ans.'
     },
     uitpas: {
       uitpasInfo: {
