@@ -3407,7 +3407,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
-      'APPROVED': 'Gepubliceerd',
+      'APPROVED': 'Online vanaf',
       'REJECTED': 'Publicatie afgewezen',
       'DELETED': 'Niet gepubliceerd',
       'rules': 'Bekijk de regels',
@@ -4262,6 +4262,7 @@ angular.module('udb.core')
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter',
+      'zip': 'Code postal',
       'nlPostalCode_validation': 'Code postal est un domaine obligatoire.',
       'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
@@ -4345,7 +4346,7 @@ angular.module('udb.core')
         'add_new_organizer': 'Ajouter un nouvel organisateur',
         'organizer_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisateur.',
         'contact': 'Contact & réservation',
-        'add_contact': 'Ajouter les coordonnées',
+        'add_contact': 'Ajouter plus de coordonnées',
         'website': 'Site web',
         'phone': 'Numéro de téléphone',
         'e-mail': 'Adresse mail',
@@ -4366,7 +4367,7 @@ angular.module('udb.core')
         'copyright': 'Copyright',
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
-        'add_image': 'Ajouter un image',
+        'add_image': 'Ajouter une image',
         age: {
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
@@ -4477,7 +4478,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Pas publié',
       'READY_FOR_VALIDATION': 'Prêt à être publié',
-      'APPROVED': 'Publié',
+      'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
       'DELETED': 'Pas publié',
       'rules': 'Regardez les règles',
@@ -27460,7 +27461,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
     "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{::cm.status | translate }}</span>\n" +
-    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\"><span translate-once=\"workflowStatus.APPROVED\"></span> {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"cm.event.workflowStatus === 'REJECTED'\">\n" +
     "      <p><span translate-once=\"workflowStatus.rejected_full\"></span>&nbsp;<a ng-href=\"{{::cm.publicationRulesLink}}\" target=\"_blank\"><span translate-once=\"workflowStatus.rules\"></span></a></p>\n" +
@@ -27566,7 +27567,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\" translate-once=\"workflowStatus.DRAFT\"></span>\n" +
-    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\"><span translate-once=\"workflowStatus.APPROVED\">Online op</span> <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <span ng-if=\"event.workflowStatus==='REJECTED'\"><span class=\"label label-default\" translate-once=\"workflowStatus.REJECTED\">Publicatie afgewezen</span><small>&nbsp;<a ng-href=\"{{::dash.publicationRulesLink}}\" target=\"blank\" translate-once=\"workflowStatus.rules\"></a></small></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
