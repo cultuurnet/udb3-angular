@@ -32055,8 +32055,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <p class=\"alert alert-danger\" ng-show=\"ofc.hasErrors\">\n" +
     "                    <span ng-show=\"ofc.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
     "                    <span ng-show=\"ofc.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
-    "                    <span ng-show=\"ofc.organizerEditForm.website.$error.required || ofc.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
-    "                    <span ng-show=\"ofc.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.website.$error.required || ofc.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.name.$error.maxlength\">De naam van de organisatie kan maar 250 karakters bevatten.<br /></span>\n" +
     "                    <span ng-show=\"ofc.addressError\">Gelieve een geldig adres in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.contactError\">Gelieve alle contactinfo correct in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +
@@ -32090,6 +32091,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"ofc.organizer.name\"\n" +
     "                           ng-change=\"ofc.validateName()\"\n" +
+    "                           ng-maxlength=\"250\"\n" +
     "                           required>\n" +
     "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
     "                </div>\n" +
