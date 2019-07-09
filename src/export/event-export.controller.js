@@ -52,6 +52,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
+  exporter.templateUrl = appConfig.exportTemplateUrl;
+  exporter.templates = appConfig.exportTemplateTypes;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -65,7 +67,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     title: '',
     subtitle: '',
     footer: '',
-    publisher: ''
+    publisher: '',
+    template: ''
   };
 
   /**
@@ -185,6 +188,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
       customizations = exporter.customizations;
       customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
       customizations.brand = exporter.selectedBrand.name;
+      customizations.template = exporter.selectedTemplate.name;
       includedProperties = [];
     } else {
       customizations = {};

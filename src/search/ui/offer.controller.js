@@ -24,7 +24,8 @@ function OfferController(
   $q,
   appConfig,
   $uibModal,
-  $translate
+  $translate,
+  authorizationService
 ) {
   var controller = this;
   var cachedOffer;
@@ -37,8 +38,12 @@ function OfferController(
     {'lang': 'en'},
     {'lang': 'de'}
   ];
+  controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
-
+  authorizationService.isGodUser()
+    .then(function (permission) {
+      controller.isGodUser = permission;
+    });
   controller.init = function () {
     if (!$scope.event.title) {
       controller.fetching = true;

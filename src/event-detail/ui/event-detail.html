@@ -147,7 +147,7 @@
               <tr  ng-class="::{muted: noAgeInfo}">
                 <td><span class="row-label" translate-once="preview.age_label"></span></td>
                 <td>
-                  <span ng-if="::!allAges && !noAgeInfo">{{event.typicalAgeRange}}</span>
+                  <span ng-if="::!allAges && !noAgeInfo">{{ageRange}}</span>
                   <span ng-if="::allAges && !noAgeInfo" translate-once="preview.all_ages"></span>
                   <span ng-if="noAgeInfo" translate-once="preview.no_age"></span>
                 </td>

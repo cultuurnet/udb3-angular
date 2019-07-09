@@ -24,12 +24,33 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
 
     var deferredPlaces = $q.defer();
 
+    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
+
+    var url = appConfig.baseUrl + 'places';
     var config = {
       params: {
         'zipcode': zipcode,
         'country': country
       }
     };
+
+    if (placesApi === 'sapi3') {
+      url = appConfig.baseUrl + 'places/';
+      config = {
+        headers: {
+          'X-Api-Key': _.get(appConfig, 'apiKey')
+        },
+        params: {
+          'postalCode': zipcode,
+          'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+          'disableDefaultFilters': true,
+          'embed': true,
+          'limit': 1000,
+          'sort[created]': 'asc'
+        }
+      };
+    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -44,7 +65,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
       deferredPlaces.reject('something went wrong while getting places for city with zipcode: ' + zipcode);
     };
 
-    $http.get(appConfig.baseUrl + 'places', config).then(parsePagedCollection, failed);
+    $http.get(url, config).then(parsePagedCollection, failed);
 
     return deferredPlaces.promise;
   };
@@ -61,6 +82,9 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
 
     var deferredPlaces = $q.defer();
 
+    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
+
+    var url = appConfig.baseUrl + 'places';
     var config = {
       params: {
         'city': city,
@@ -68,6 +92,24 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'country': country
       }
     };
+
+    if (placesApi === 'sapi3') {
+      url = appConfig.baseUrl + 'places/';
+      config = {
+        headers: {
+          'X-Api-Key': _.get(appConfig, 'apiKey')
+        },
+        params: {
+          'q': 'address.\\*.addressLocality:' + city,
+          'addressCountry': country,
+          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+          'disableDefaultFilters': true,
+          'embed': true,
+          'limit': 1000,
+          'sort[created]': 'asc'
+        }
+      };
+    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -82,7 +124,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
       deferredPlaces.reject('something went wrong while getting places for city with city: ' + city);
     };
 
-    $http.get(appConfig.baseUrl + 'places', config).then(parsePagedCollection, failed);
+    $http.get(url, config).then(parsePagedCollection, failed);
 
     return deferredPlaces.promise;
   };

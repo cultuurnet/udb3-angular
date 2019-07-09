@@ -20,11 +20,10 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent($scope) {
+function OrganizerContactComponent($scope, appConfig) {
   var controller = this;
 
   controller.newContact = {};
-
   controller.addingContactEntry = false;
   controller.isPristine = true;
   controller.validateContact = validateContact;
@@ -33,6 +32,7 @@ function OrganizerContactComponent($scope) {
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
+  controller.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
 
   $scope.$on('organizerContactSubmit', function() {
     controller.organizerContactWrapper.$setSubmitted();
