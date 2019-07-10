@@ -930,6 +930,8 @@ function UdbApi(
       'disableDefaultFilters': true,
       'sort[modified]': 'desc',
       'sort[created]': 'asc',
+      'limit': 50,
+      'start': (page - 1) * 50
     };
 
     var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
@@ -944,10 +946,6 @@ function UdbApi(
       params.creator = userEmail;
     } else if (createdByQueryMode === 'mixed') {
       params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
-    }
-
-    if (page > 1) {
-      params.page = page;
     }
 
     var requestConfig = _.cloneDeep(defaultApiConfig);

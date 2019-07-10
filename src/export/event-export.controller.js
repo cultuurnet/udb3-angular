@@ -52,10 +52,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
   exporter.brands = appConfig.exportBrands;
   exporter.restrictedBrands = appConfig.restrictedExportBrands;
-  exporter.templates = [
-      {name: 'tips', label: 'Tipsrapport'},
-      {name: 'map', label: 'Weergave op kaart (beta)'}
-  ];
+  exporter.templateUrl = appConfig.exportTemplateUrl;
+  exporter.templates = appConfig.exportTemplateTypes;
 
   udbApi.getMyRoles().then(function(roles) {
     angular.forEach(roles, function(value, key) {
@@ -64,7 +62,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
   });
 
   exporter.customizations = {
-    brand: exporter.brands[0].name,
+    brand: '',
     logo: exporter.exportLogoUrl + exporter.brands[0].logo,
     title: '',
     subtitle: '',
@@ -104,7 +102,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     customize: {
       name: 'customize',
       incomplete: function () {
-        return !exporter.customizations.brand || !exporter.customizations.title;
+        return !exporter.customizations.brand || !exporter.customizations.title || !exporter.customizations.template ;
       }
     },
     filter: {
@@ -188,9 +186,9 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
     if (isCustomized) {
       customizations = exporter.customizations;
-      customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
-      customizations.brand = exporter.selectedBrand.name;
-      customizations.template = exporter.selectedTemplate.name;
+      customizations.logo = exporter.exportLogoUrl + customizations.brand.logo;
+      customizations.brand = customizations.brand.name;
+      customizations.template = customizations.template.name;
       includedProperties = [];
     } else {
       customizations = {};

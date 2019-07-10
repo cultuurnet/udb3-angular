@@ -25,7 +25,8 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     'TODDLERS': {label: 'Toddlers', min: 0, max: 2},
     'PRESCHOOLERS': {label: 'Preschoolers', min: 3, max: 5},
     'KIDS': {label: 'Kids', min: 6, max: 11},
-    'YOUNGSTERS': {label: 'Youngsters', min: 12, max: 17},
+    'TEENAGERS': {label: 'Teenagers', min: 12, max: 15},
+    'YOUNGSTERS': {label: 'Youngsters', min: 16, max: 26},
     'ADULTS': {label: 'Adults', min: 18},
     'SENIORS': {label: 'Seniors', min: 65},
     'CUSTOM': {label: 'Custom'}
@@ -59,7 +60,8 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     }
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
-      showError('De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'); return;
+      controller.hasError = true;
+      showError($translate.instant('eventForm.step5.age.error_max_lower_than_min')); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
@@ -81,6 +83,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
 
   function clearError() {
     controller.error = '';
+    controller.hasError = false;
   }
 
   /**

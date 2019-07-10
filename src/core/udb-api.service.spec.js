@@ -1521,7 +1521,7 @@ describe('Service: UDB3 Api', function () {
   // getDashboardItems
   it('should get dashboard items', function(done){
     var response = {
-      "itemsPerPage": 30,
+      "itemsPerPage": 50,
       "totalItems": 1,
       "member": [
         {
@@ -1534,19 +1534,19 @@ describe('Service: UDB3 Api', function () {
     uitidAuth.getTokenData.and.returnValue({uid: 1, email: 'test@test.com'});
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc&start=0')
       .respond(JSON.stringify(response));
     service
-      .getDashboardItems()
+      .getDashboardItems(1)
       .then();
 
     $httpBackend.flush();
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc&page=23')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc&start=50')
       .respond(JSON.stringify(response));
     service
-      .getDashboardItems(23)
+      .getDashboardItems(2)
       .then(done);
 
     $httpBackend.flush();

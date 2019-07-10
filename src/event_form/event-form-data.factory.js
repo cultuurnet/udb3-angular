@@ -269,7 +269,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * Reset the location.
      */
-    resetLocation: function(location) {
+    resetLocation: function() {
       this.location = {
         'id' : null,
         'name': '',
@@ -290,7 +290,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     /**
-     * Get the calendar.
+     * Get the location.
      */
     getLocation: function() {
       return this.location;

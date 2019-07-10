@@ -51,16 +51,17 @@
             <div class="col-sm-8">
               <div class="radio" ng-repeat="brand in ::exporter.brands">
                 <label>
-                    <input type="radio" name="eventExportBrand" ng-model="exporter.selectedBrand"
-                           ng-value="brand" class="export-customization-brand-radio">
+                    <input type="radio" name="eventExportBrand" ng-model="exporter.customizations.brand"
+                           ng-value="brand" class="export-customization-brand-radio" ng-required="true">
                     <span ng-bind="brand.label"></span>
                 </label>
               </div>
             </div>
             <div class="col-sm-4">
-              <img ng-src="{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}" alt="{{exporter.selectedBrand.name}}" ng-show="exporter.selectedBrand" class="img-responsive img-thumbnail center-block export-logo"/>
+              <img ng-src="{{exporter.exportLogoUrl}}{{exporter.customizations.brand.logo}}" alt="{{exporter.customizations.brand.name}}" ng-show="exporter.customizations.brand" class="img-responsive img-thumbnail center-block export-logo"/>
             </div>
           </div>
+          <p class="alert alert-danger" role="alert" ng-show="exporter.hasErrors && customizeForm.eventExportBrand.$error.required">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>
         </div>
 
       <div class="form-group">
@@ -69,13 +70,17 @@
           <div class="col-sm-8">
             <div class="radio" ng-repeat="template in ::exporter.templates">
               <label>
-                <input type="radio" name="eventExportTemplate" ng-model="exporter.selectedTemplate"
-                       ng-value="template" class="export-customization-brand-radio">
+                <input type="radio" name="eventExportTemplate" ng-model="exporter.customizations.template"
+                       ng-value="template" class="export-customization-brand-radio" ng-required="true">
                 <span ng-bind="template.label"></span>
               </label>
             </div>
           </div>
+          <div class="col-sm-4">
+            <img ng-src="{{exporter.templateUrl}}{{exporter.customizations.template.img}}" alt="{{exporter.customizations.template.label}}" ng-show="exporter.customizations.template" class="img-responsive img-thumbnail center-block export-template"/>
+          </div>
         </div>
+        <p class="alert alert-danger" role="alert" ng-show="exporter.hasErrors && customizeForm.eventExportTemplate.$error.required">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>
       </div>
 
         <div class="form-group">
