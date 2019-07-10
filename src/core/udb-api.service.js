@@ -950,6 +950,11 @@ function UdbApi(
       } else if (createdByQueryMode === 'mixed') {
         requestConfig.params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
       }
+
+      if (page > 1) {
+        requestConfig.params.limit = 50;
+        requestConfig.params.start = (page - 1) * 50;
+      }
     } else {
       if (page > 1) {
         requestConfig.params.page = page;
