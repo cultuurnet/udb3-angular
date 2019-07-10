@@ -927,12 +927,9 @@ function UdbApi(
    */
   this.getDashboardItems = function(page) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
-    if (page > 1) {
-      requestConfig.params.page = page;
-    }
-
     var dashboardApi = _.get(appConfig, 'dashboard.defaultApi', 'udb3');
     var dashboardPath = 'dashboard/items';
+
     if (dashboardApi === 'sapi3') {
       dashboardPath = 'offers/';
 
@@ -952,6 +949,10 @@ function UdbApi(
         requestConfig.params.creator = userEmail;
       } else if (createdByQueryMode === 'mixed') {
         requestConfig.params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+      }
+    } else {
+      if (page > 1) {
+        requestConfig.params.page = page;
       }
     }
 
