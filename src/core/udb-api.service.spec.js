@@ -1521,7 +1521,7 @@ describe('Service: UDB3 Api', function () {
   // getDashboardItems
   it('should get dashboard items', function(done){
     var response = {
-      "itemsPerPage": 30,
+      "itemsPerPage": 50,
       "totalItems": 1,
       "member": [
         {
@@ -1541,10 +1541,10 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
 
     $httpBackend
-      .expectGET(baseUrl + 'dashboard/items?page=23')
+      .expectGET(baseUrl + 'dashboard/items?page=1')
       .respond(JSON.stringify(response));
     service
-      .getDashboardItems(23)
+      .getDashboardItems(1)
       .then(done);
 
     $httpBackend.flush();
