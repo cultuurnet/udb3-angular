@@ -3407,7 +3407,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
-      'APPROVED': 'Gepubliceerd',
+      'APPROVED': 'Online vanaf',
       'REJECTED': 'Publicatie afgewezen',
       'DELETED': 'Niet gepubliceerd',
       'rules': 'Bekijk de regels',
@@ -4262,6 +4262,7 @@ angular.module('udb.core')
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter',
+      'zip': 'Code postal',
       'nlPostalCode_validation': 'Code postal est un domaine obligatoire.',
       'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
@@ -4345,7 +4346,7 @@ angular.module('udb.core')
         'add_new_organizer': 'Ajouter un nouvel organisateur',
         'organizer_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisateur.',
         'contact': 'Contact & réservation',
-        'add_contact': 'Ajouter les coordonnées',
+        'add_contact': 'Ajouter plus de coordonnées',
         'website': 'Site web',
         'phone': 'Numéro de téléphone',
         'e-mail': 'Adresse mail',
@@ -4366,7 +4367,7 @@ angular.module('udb.core')
         'copyright': 'Copyright',
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
-        'add_image': 'Ajouter un image',
+        'add_image': 'Ajouter une image',
         age: {
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
@@ -4477,7 +4478,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Pas publié',
       'READY_FOR_VALIDATION': 'Prêt à être publié',
-      'APPROVED': 'Publié',
+      'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
       'DELETED': 'Pas publié',
       'rules': 'Regardez les règles',
@@ -4555,7 +4556,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'L\'heure de début et de fin est obligatoire quand un événement ne dure pas toute la journée.',
       'startBeforeEndDay': 'La date de fin ne peut pas tomber avant la date de début.',
-      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.'
+      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.',
+      'tooFarInFuture': 'La date de fin et la date de début choisies ne peuvent pas dépasser 10 ans.'
     },
     uitpas: {
       uitpasInfo: {
@@ -16640,7 +16642,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
   });
 
   exporter.customizations = {
-    brand: exporter.brands[0].name,
+    brand: '',
     logo: exporter.exportLogoUrl + exporter.brands[0].logo,
     title: '',
     subtitle: '',
@@ -16680,7 +16682,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     customize: {
       name: 'customize',
       incomplete: function () {
-        return !exporter.customizations.brand || !exporter.customizations.title;
+        return !exporter.customizations.brand || !exporter.customizations.title || !exporter.customizations.template ;
       }
     },
     filter: {
@@ -16764,9 +16766,9 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
     if (isCustomized) {
       customizations = exporter.customizations;
-      customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
-      customizations.brand = exporter.selectedBrand.name;
-      customizations.template = exporter.selectedTemplate.name;
+      customizations.logo = exporter.exportLogoUrl + customizations.brand.logo;
+      customizations.brand = customizations.brand.name;
+      customizations.template = customizations.template.name;
       includedProperties = [];
     } else {
       customizations = {};
@@ -27460,7 +27462,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
     "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{::cm.status | translate }}</span>\n" +
-    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\"><span translate-once=\"workflowStatus.APPROVED\"></span> {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"cm.event.workflowStatus === 'REJECTED'\">\n" +
     "      <p><span translate-once=\"workflowStatus.rejected_full\"></span>&nbsp;<a ng-href=\"{{::cm.publicationRulesLink}}\" target=\"_blank\"><span translate-once=\"workflowStatus.rules\"></span></a></p>\n" +
@@ -27566,7 +27568,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\" translate-once=\"workflowStatus.DRAFT\"></span>\n" +
-    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\"><span translate-once=\"workflowStatus.APPROVED\">Online op</span> <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <span ng-if=\"event.workflowStatus==='REJECTED'\"><span class=\"label label-default\" translate-once=\"workflowStatus.REJECTED\">Publicatie afgewezen</span><small>&nbsp;<a ng-href=\"{{::dash.publicationRulesLink}}\" target=\"blank\" translate-once=\"workflowStatus.rules\"></a></small></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
@@ -30328,14 +30330,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"col-sm-8\">\n" +
     "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "                <label>\n" +
-    "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
+    "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.customizations.brand\"\n" +
     "                           ng-value=\"brand\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                    <span ng-bind=\"brand.label\"></span>\n" +
     "                </label>\n" +
     "              </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-4\">\n" +
-    "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
+    "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.customizations.brand.logo}}\" alt=\"{{exporter.customizations.brand.name}}\" ng-show=\"exporter.customizations.brand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
@@ -30347,14 +30349,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <div class=\"col-sm-8\">\n" +
     "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
     "              <label>\n" +
-    "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
+    "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.customizations.template\"\n" +
     "                       ng-value=\"template\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <div class=\"col-sm-4\">\n" +
-    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
+    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.customizations.template.img}}\" alt=\"{{exporter.customizations.template.label}}\" ng-show=\"exporter.customizations.template\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportTemplate.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
@@ -30439,7 +30441,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <button class=\"btn btn-default pull-left\" ng-click=\"exporter.previousStep()\"\n" +
     "          ng-hide=\"exporter.isOnFirstStep()\">Vorige stap</button>\n" +
     "  <button ng-hide=\"exporter.onLastStep()\" class=\"btn btn-primary\"\n" +
-    "          ng-click=\"exporter.nextStep()\">Volgende</button>\n" +
+    "          ng-click=\"exporter.nextStep()\">Volgende </button>\n" +
     "  <button ng-show=\"exporter.onLastStep()\" class=\"btn btn-primary\" ng-click=\"exporter.export()\">Exporteren</button>\n" +
     "</div>\n"
   );
@@ -32054,8 +32056,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <p class=\"alert alert-danger\" ng-show=\"ofc.hasErrors\">\n" +
     "                    <span ng-show=\"ofc.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
     "                    <span ng-show=\"ofc.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
-    "                    <span ng-show=\"ofc.organizerEditForm.website.$error.required || ofc.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
-    "                    <span ng-show=\"ofc.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.website.$error.required || ofc.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.name.$error.maxlength\">De naam van de organisatie kan maar 250 karakters bevatten.<br /></span>\n" +
     "                    <span ng-show=\"ofc.addressError\">Gelieve een geldig adres in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.contactError\">Gelieve alle contactinfo correct in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +
@@ -32089,6 +32092,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"ofc.organizer.name\"\n" +
     "                           ng-change=\"ofc.validateName()\"\n" +
+    "                           ng-maxlength=\"250\"\n" +
     "                           required>\n" +
     "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
     "                </div>\n" +
