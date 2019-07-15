@@ -2333,34 +2333,21 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByZipcode = function(zipcode, country) {
 
     var deferredPlaces = $q.defer();
-
-    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
-
-    var url = appConfig.baseUrl + 'places';
+    var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
-        'zipcode': zipcode,
-        'country': country
+        'postalCode': zipcode,
+        'addressCountry': country,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
       }
     };
-
-    if (placesApi === 'sapi3') {
-      url = appConfig.baseUrl + 'places/';
-      config = {
-        headers: {
-          'X-Api-Key': _.get(appConfig, 'apiKey')
-        },
-        params: {
-          'postalCode': zipcode,
-          'addressCountry': country,
-          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
-          'disableDefaultFilters': true,
-          'embed': true,
-          'limit': 1000,
-          'sort[created]': 'asc'
-        }
-      };
-    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -2391,35 +2378,21 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByCity = function(city, country) {
 
     var deferredPlaces = $q.defer();
-
-    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
-
-    var url = appConfig.baseUrl + 'places';
+    var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
-        'city': city,
-        'zipcode': '',
-        'country': country
+        'q': 'address.\\*.addressLocality:' + city,
+        'addressCountry': country,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
       }
     };
-
-    if (placesApi === 'sapi3') {
-      url = appConfig.baseUrl + 'places/';
-      config = {
-        headers: {
-          'X-Api-Key': _.get(appConfig, 'apiKey')
-        },
-        params: {
-          'q': 'address.\\*.addressLocality:' + city,
-          'addressCountry': country,
-          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
-          'disableDefaultFilters': true,
-          'embed': true,
-          'limit': 1000,
-          'sort[created]': 'asc'
-        }
-      };
-    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -5801,39 +5774,33 @@ function UdbApi(
    * @return {Promise.<PagedCollection>}
    */
   this.getDashboardItems = function(page) {
-    var requestConfig = _.cloneDeep(defaultApiConfig);
-    var dashboardApi = _.get(appConfig, 'dashboard.defaultApi', 'udb3');
-    var dashboardPath = 'dashboard/items';
+    var params = {
+      'disableDefaultFilters': true,
+      'sort[modified]': 'desc',
+      'sort[created]': 'asc',
+      'limit': 50,
+      'start': (page - 1) * 50
+    };
 
-    if (dashboardApi === 'sapi3') {
-      dashboardPath = 'offers/';
+    var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-      requestConfig.params.disableDefaultFilters = true;
-      requestConfig.params['sort[modified]'] = 'desc';
-      requestConfig.params['sort[created]'] = 'asc';
+    var tokenData = uitidAuth.getTokenData();
+    var userId = tokenData.uid;
+    var userEmail = tokenData.email;
 
-      var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
-
-      var tokenData = uitidAuth.getTokenData();
-      var userId = tokenData.uid;
-      var userEmail = tokenData.email;
-
-      if (createdByQueryMode === 'uuid') {
-        requestConfig.params.creator = userId;
-      } else if (createdByQueryMode === 'email') {
-        requestConfig.params.creator = userEmail;
-      } else if (createdByQueryMode === 'mixed') {
-        requestConfig.params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
-      }
-
-      requestConfig.params.limit = 50;
-      requestConfig.params.start = (page - 1) * 50;
-    } else {
-      requestConfig.params.page = page;
+    if (createdByQueryMode === 'uuid') {
+      params.creator = userId;
+    } else if (createdByQueryMode === 'email') {
+      params.creator = userEmail;
+    } else if (createdByQueryMode === 'mixed') {
+      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
     }
 
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    requestConfig.params = params;
+
     return $http
-      .get(appConfig.baseUrl + dashboardPath, requestConfig)
+      .get(appConfig.baseUrl + 'offers/', requestConfig)
       .then(returnUnwrappedData);
   };
 

@@ -926,39 +926,33 @@ function UdbApi(
    * @return {Promise.<PagedCollection>}
    */
   this.getDashboardItems = function(page) {
-    var requestConfig = _.cloneDeep(defaultApiConfig);
-    var dashboardApi = _.get(appConfig, 'dashboard.defaultApi', 'udb3');
-    var dashboardPath = 'dashboard/items';
+    var params = {
+      'disableDefaultFilters': true,
+      'sort[modified]': 'desc',
+      'sort[created]': 'asc',
+      'limit': 50,
+      'start': (page - 1) * 50
+    };
 
-    if (dashboardApi === 'sapi3') {
-      dashboardPath = 'offers/';
+    var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-      requestConfig.params.disableDefaultFilters = true;
-      requestConfig.params['sort[modified]'] = 'desc';
-      requestConfig.params['sort[created]'] = 'asc';
+    var tokenData = uitidAuth.getTokenData();
+    var userId = tokenData.uid;
+    var userEmail = tokenData.email;
 
-      var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
-
-      var tokenData = uitidAuth.getTokenData();
-      var userId = tokenData.uid;
-      var userEmail = tokenData.email;
-
-      if (createdByQueryMode === 'uuid') {
-        requestConfig.params.creator = userId;
-      } else if (createdByQueryMode === 'email') {
-        requestConfig.params.creator = userEmail;
-      } else if (createdByQueryMode === 'mixed') {
-        requestConfig.params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
-      }
-
-      requestConfig.params.limit = 50;
-      requestConfig.params.start = (page - 1) * 50;
-    } else {
-      requestConfig.params.page = page;
+    if (createdByQueryMode === 'uuid') {
+      params.creator = userId;
+    } else if (createdByQueryMode === 'email') {
+      params.creator = userEmail;
+    } else if (createdByQueryMode === 'mixed') {
+      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
     }
 
+    var requestConfig = _.cloneDeep(defaultApiConfig);
+    requestConfig.params = params;
+
     return $http
-      .get(appConfig.baseUrl + dashboardPath, requestConfig)
+      .get(appConfig.baseUrl + 'offers/', requestConfig)
       .then(returnUnwrappedData);
   };
 
