@@ -191,7 +191,7 @@ describe('Service: sapi2QueryBuilder', function () {
             "operator": "OR",
             "nodes": [
               {
-                "field": "location_label",
+                "field": "location_name",
                 "term": "Bibliotheek Tienen",
                 "fieldType": "tokenized-string",
                 "transformer": "+"
@@ -203,7 +203,7 @@ describe('Service: sapi2QueryBuilder', function () {
       };
 
       var queryString = sapi2QueryBuilder.unparseGroupedTree(groupedTree);
-      expect(queryString).toBe('city:Tienen NOT location_label:"Bibliotheek Tienen"');
+      expect(queryString).toBe('city:Tienen NOT location_name:"Bibliotheek Tienen"');
     });
   });
 
