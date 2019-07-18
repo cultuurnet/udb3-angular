@@ -12,7 +12,6 @@ angular
 
 /* @ngInject */
 function EventCrud(
-  jobLogger,
   udbApi,
   udbUitpasApi,
   DeleteOfferJob,
@@ -248,14 +247,6 @@ function EventCrud(
     var bookingInfo =  _.pick(item.bookingInfo, function(property, propertyName) {
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
-
-    if (bookingInfo.availabilityStarts) {
-      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts;
-    }
-
-    if (bookingInfo.availabilityEnds) {
-      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds;
-    }
 
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
