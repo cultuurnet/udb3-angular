@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: Media Manager', function () {
-  var mediaManager, $q, CreateImageJob;
+  var mediaManager, $q;
   var appConfig = {
     baseUrl: 'http://foo.bar/'
   };
@@ -26,7 +26,6 @@ describe('Service: Media Manager', function () {
   beforeEach(inject(function($injector){
     mediaManager = $injector.get('MediaManager');
     $q = $injector.get('$q');
-    CreateImageJob = $injector.get('CreateImageJob');
     $rootScope = $injector.get('$rootScope');
   }));
 
@@ -63,23 +62,31 @@ describe('Service: Media Manager', function () {
     $rootScope.$digest();
   });
 
-  it('should log the creation of an image', function (done) {
+  it('should create an image', function () {
     var file = {type: 'image/png'},
         description = 'description',
         copyrightHolder = 'Foo Bar';
 
-    function assertJobLogged() {
-      expect(jobLogger.addJob).toHaveBeenCalled();
-      done();
-    }
+    udbApi.uploadMedia.and.returnValue($q.resolve({'data': {'imageId': 128}}));
 
-    udbApi.uploadMedia.and.returnValue($q.resolve({'data': {'commandId': 128}}));
+    var jsonMediaObject = {
+      '@id': 'some-image-id',
+      '@type': 'schema:MediaObject',
+      'contentUrl': 'http://foo.bar',
+      'thumbnailUrl': 'http://foo.bar',
+      'description': 'description',
+      'copyrightHolder': 'Foo Bar'
+    };
+
+    udbApi.getMedia.and.returnValue($q.resolve(jsonMediaObject));
 
     mediaManager
-      .createImage(file, description, copyrightHolder);
+      .createImage(file, description, copyrightHolder)
+      .then(function () {
+        expect(udbApi.uploadMedia).toHaveBeenCalled();
+      });
 
     $rootScope.$digest();
-    assertJobLogged();
   });
 
   it('should not try to create a file with an invalid file extension', function (done) {

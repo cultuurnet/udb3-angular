@@ -24,7 +24,7 @@ angular
 /**
  * @ngInject
  */
-function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
+function MediaManager(jobLogger, appConfig, $q, udbApi) {
   var service = this;
 
   /**
@@ -46,19 +46,9 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       return allowedFileExtensions.indexOf(fileExtension) >= 0;
     }
 
-    function logCreateImageJob(uploadResponse) {
-      var jobData = uploadResponse.data;
-      var job = new CreateImageJob(jobData  .commandId);
-      jobLogger.addJob(job);
-
-      job.task.promise
-        .then(fetchAndReturnMedia);
-    }
-
-    function fetchAndReturnMedia(jobInfo) {
-      var imageId = _.get(jobInfo, 'file_id');
+    function fetchAndReturnMedia(response) {
       service
-        .getImage(imageId)
+        .getImage(response.data.imageId)
         .then(deferredMediaObject.resolve, deferredMediaObject.reject);
     }
 
@@ -71,7 +61,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
     } else {
       udbApi
         .uploadMedia(imageFile, description, copyrightHolder, language)
-        .then(logCreateImageJob, deferredMediaObject.reject);
+        .then(fetchAndReturnMedia, deferredMediaObject.reject);
     }
 
     return deferredMediaObject.promise;

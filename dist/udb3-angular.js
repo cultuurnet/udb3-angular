@@ -19891,61 +19891,6 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
 UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 })();
 
-// Source: src/media/create-image-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.media.CreateImageJob
- * @description
- * # Image creation job
- * This factory creates a job that tracks image creation.
- */
-angular
-  .module('udb.media')
-  .factory('CreateImageJob', CreateImageJobFactory);
-
-/* @ngInject */
-function CreateImageJobFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class CreateImageJob
-   * @constructor
-   * @param {string} commandId
-   */
-  var CreateImageJob = function (commandId) {
-    BaseJob.call(this, commandId);
-    this.task = $q.defer();
-  };
-
-  CreateImageJob.prototype = Object.create(BaseJob.prototype);
-  CreateImageJob.prototype.constructor = CreateImageJob;
-
-  CreateImageJob.prototype.finish = function () {
-    if (this.state !== JobStates.FAILED) {
-      this.state = JobStates.FINISHED;
-      this.finished = new Date();
-    }
-    this.progress = 100;
-  };
-
-  CreateImageJob.prototype.info = function (jobInfo) {
-    this.task.resolve(jobInfo);
-  };
-
-  CreateImageJob.prototype.fail = function () {
-    this.finished = new Date();
-    this.state = JobStates.FAILED;
-    this.progress = 100;
-    this.task.reject('Failed to create an image object');
-  };
-
-  return (CreateImageJob);
-}
-CreateImageJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
-})();
-
 // Source: src/media/media-manager.service.js
 (function () {
 'use strict';
@@ -19974,7 +19919,7 @@ angular
 /**
  * @ngInject
  */
-function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
+function MediaManager(jobLogger, appConfig, $q, udbApi) {
   var service = this;
 
   /**
@@ -19996,19 +19941,9 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       return allowedFileExtensions.indexOf(fileExtension) >= 0;
     }
 
-    function logCreateImageJob(uploadResponse) {
-      var jobData = uploadResponse.data;
-      var job = new CreateImageJob(jobData  .commandId);
-      jobLogger.addJob(job);
-
-      job.task.promise
-        .then(fetchAndReturnMedia);
-    }
-
-    function fetchAndReturnMedia(jobInfo) {
-      var imageId = _.get(jobInfo, 'file_id');
+    function fetchAndReturnMedia(response) {
       service
-        .getImage(imageId)
+        .getImage(response.data.imageId)
         .then(deferredMediaObject.resolve, deferredMediaObject.reject);
     }
 
@@ -20021,7 +19956,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
     } else {
       udbApi
         .uploadMedia(imageFile, description, copyrightHolder, language)
-        .then(logCreateImageJob, deferredMediaObject.reject);
+        .then(fetchAndReturnMedia, deferredMediaObject.reject);
     }
 
     return deferredMediaObject.promise;
@@ -20045,7 +19980,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       .then(returnMediaObject);
   };
 }
-MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "udbApi"];
+MediaManager.$inject = ["jobLogger", "appConfig", "$q", "udbApi"];
 })();
 
 // Source: src/migration/event-migration-footer.component.js
