@@ -60,13 +60,12 @@ function EventFormPublishController(
     controller.error = '';
     eventCrud
       .publishOffer(EventFormData, controller.eventFormData.availableFrom)
-      .then(function(job) {
-        job.task.promise
-          .then(setEventAsReadyForValidation)
-          .then(redirectToDetailPage)
-          .catch(function() {
-            controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
-          });
+      .then(function() {
+        setEventAsReadyForValidation();
+        redirectToDetailPage();
+      })
+      .catch(function () {
+        controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
       });
   }
 
