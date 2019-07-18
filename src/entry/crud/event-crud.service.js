@@ -90,18 +90,13 @@ function EventCrud(
    * @return {Promise.<EventCrudJob>}
    */
   service.deleteOffer = function (offer) {
-    function logJobAndFlagAsDeleted(response) {
-      var jobData = response.data;
-      var job = new DeleteOfferJob(jobData.commandId, offer);
+    function flagAsDeleted() {
       offer.showDeleted = true;
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
     }
 
     return udbApi
       .deleteOffer(offer)
-      .then(logJobAndFlagAsDeleted);
+      .then(flagAsDeleted);
   };
 
   /**
@@ -113,7 +108,7 @@ function EventCrud(
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
-      .then(jobCreatorFactory(eventFormData, 'updateItem'));
+      .then(responseHandlerFactory(eventFormData));
   };
 
   /**
@@ -132,7 +127,7 @@ function EventCrud(
   service.updateDescription = function(item) {
     return udbApi
       .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
-      .then(jobCreatorFactory(item, 'updateDescription'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -164,7 +159,7 @@ function EventCrud(
   service.deleteTypicalAgeRange = function(item) {
     return udbApi
       .deleteTypicalAgeRange(item.apiUrl)
-      .then(jobCreatorFactory(item, 'updateTypicalAgeRange'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -176,7 +171,7 @@ function EventCrud(
   service.updateOrganizer = function(item) {
     return udbApi
       .updateProperty(item.apiUrl, 'organizer', item.organizer.id)
-      .then(jobCreatorFactory(item, 'updateOrganizer'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -188,7 +183,7 @@ function EventCrud(
   service.deleteOfferOrganizer = function(item) {
     return udbApi
       .deleteOfferOrganizer(item.apiUrl, item.organizer.id)
-      .then(jobCreatorFactory(item, 'deleteOrganizer'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -200,7 +195,7 @@ function EventCrud(
   service.updateEventUitpasData = function(item) {
     return udbUitpasApi
         .updateEventUitpasData(item.usedDistributionKeys, item.id)
-        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+        .then(responseHandlerFactory(item));
   };
 
   /**
@@ -213,25 +208,6 @@ function EventCrud(
   };
 
   /**
-   * @param {EventFormData} item
-   * @param {string} jobName
-   *
-   * @return {Function}
-   *  Return a job creator that takes an http job creation response and turns it into a EventCrudJob promise.
-   */
-  function jobCreatorFactory(item, jobName) {
-    function jobCreator(response) {
-      var jobData = response.data ? response.data : response;
-      var job = new EventCrudJob(jobData.commandId, item, jobName);
-      addJobAndInvalidateCache(jobLogger, job);
-
-      return $q.resolve(job);
-    }
-
-    return jobCreator;
-  }
-
-  /**
    * Update the price info and add it to the job logger.
    *
    * @param {EventFormData} item
@@ -240,13 +216,7 @@ function EventCrud(
   service.updatePriceInfo = function(item) {
     return udbApi
       .updatePriceInfo(item.apiUrl, item.priceInfo)
-      .then(function (response) {
-        var jobData = response.data;
-        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -298,7 +268,7 @@ function EventCrud(
 
     return udbApi
       .updateProperty(item.apiUrl, 'bookingInfo', bookingInfo)
-      .then(jobCreatorFactory(item, 'updateBookingInfo'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -311,13 +281,7 @@ function EventCrud(
   function updateOfferProperty(offer, propertyName, jobName) {
     return udbApi
       .updateProperty(offer.apiUrl, propertyName, offer[propertyName])
-      .then(function (response) {
-        var jobData = response.data;
-        var job = new EventCrudJob(jobData.commandId, offer, jobName);
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(offer));
   }
 
   /**
@@ -329,7 +293,7 @@ function EventCrud(
   service.updateFacilities = function(item, facilities) {
     return udbApi
       .updateOfferFacilities(item.apiUrl, _.map(facilities, 'id'))
-      .then(jobCreatorFactory(item, 'updateFacilities'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -344,7 +308,7 @@ function EventCrud(
 
     return udbApi
       .addImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'addImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -361,7 +325,7 @@ function EventCrud(
 
     return udbApi
       .updateImage(item.apiUrl, imageId, description, copyrightHolder)
-      .then(jobCreatorFactory(item, 'updateImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -376,7 +340,7 @@ function EventCrud(
 
     return udbApi
       .removeImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'removeImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -391,7 +355,7 @@ function EventCrud(
 
     return udbApi
       .selectMainImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'selectMainImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -404,7 +368,7 @@ function EventCrud(
   service.setAudienceType = function (item, audienceType) {
     return udbApi
       .setAudienceType(item.apiUrl, audienceType)
-      .then(jobCreatorFactory(item, 'setAudienceType'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -416,13 +380,7 @@ function EventCrud(
   service.publishOffer = function(offer, publicationDate) {
     return udbApi
       .publishOffer(offer.apiUrl, publicationDate)
-      .then(function (response) {
-        var job = new EventCrudJob(response.commandId, offer, 'publishOffer');
-
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(offer));
   };
 
   /**
@@ -433,17 +391,12 @@ function EventCrud(
     service.updateMajorInfo(eventFormData);
   }
 
-  /**
-   * @param {JobLogger} jobLogger
-   * @param {EventCrudJob} job
-     */
-  function addJobAndInvalidateCache(jobLogger, job) {
-    jobLogger.addJob(job);
+  function responseHandlerFactory(offer) {
+    function responseHandler(response) {
+      udbApi.removeItemFromCache(offer.apiUrl.toString());
+    }
 
-    // unvalidate cache on success
-    job.task.promise.then(function (offerLocation) {
-      udbApi.removeItemFromCache(offerLocation.toString());
-    }, function() {});
+    return responseHandler;
   }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);
