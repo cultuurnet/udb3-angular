@@ -15,7 +15,6 @@ function EventCrud(
   jobLogger,
   udbApi,
   udbUitpasApi,
-  EventCrudJob,
   DeleteOfferJob,
   $rootScope,
   $q,
@@ -87,7 +86,7 @@ function EventCrud(
    *
    * @param {UdbPlace|UdbEvent} offer
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.deleteOffer = function (offer) {
     function flagAsDeleted() {
@@ -122,7 +121,7 @@ function EventCrud(
    * Update the main language description and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateDescription = function(item) {
     return udbApi
@@ -134,7 +133,7 @@ function EventCrud(
    * Update the adress of a place and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.translateAddress = function(item) {
     return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
@@ -144,7 +143,7 @@ function EventCrud(
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateTypicalAgeRange = function(item) {
     return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
@@ -154,7 +153,7 @@ function EventCrud(
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.deleteTypicalAgeRange = function(item) {
     return udbApi
@@ -166,7 +165,7 @@ function EventCrud(
    * Update the connected organizer and it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateOrganizer = function(item) {
     return udbApi
@@ -178,7 +177,7 @@ function EventCrud(
    * Delete the organizer for the event / place.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.deleteOfferOrganizer = function(item) {
     return udbApi
@@ -190,7 +189,7 @@ function EventCrud(
    * Update UiTPAS info for the event.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateEventUitpasData = function(item) {
     return udbUitpasApi
@@ -211,7 +210,7 @@ function EventCrud(
    * Update the price info and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updatePriceInfo = function(item) {
     return udbApi
@@ -223,7 +222,7 @@ function EventCrud(
    * Update the contact point and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateContactPoint = function(item) {
     return updateOfferProperty(item, 'contactPoint', 'updateContactInfo');
@@ -234,7 +233,7 @@ function EventCrud(
    *
    * @param {EventFormData} item
    *
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateBookingInfo = function(item) {
     var allowedProperties = [
@@ -276,7 +275,7 @@ function EventCrud(
    * @param {string} propertyName
    * @param {string} jobName
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   function updateOfferProperty(offer, propertyName, jobName) {
     return udbApi
@@ -288,7 +287,7 @@ function EventCrud(
    * @param {udbEvent|udbPlace} item
    * @param {Object[]} facilities
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.updateFacilities = function(item, facilities) {
     return udbApi
@@ -301,7 +300,7 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {MediaObject} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.addImage = function(item, image) {
     var imageId = image.id || image['@id'].split('/').pop();
@@ -318,7 +317,7 @@ function EventCrud(
    * @param {MediaObject} image
    * @param {string} description
    * @param {string} copyrightHolder
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateImage = function(item, image, description, copyrightHolder) {
     var imageId = image['@id'].split('/').pop();
@@ -333,7 +332,7 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {image} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.removeImage = function(item, image) {
     var imageId = image['@id'].split('/').pop();
@@ -348,7 +347,7 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {image} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.selectMainImage = function (item, image) {
     var imageId = image['@id'].split('/').pop();
@@ -363,7 +362,7 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {string} audienceType
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.setAudienceType = function (item, audienceType) {
     return udbApi
@@ -375,7 +374,7 @@ function EventCrud(
    * @param {EventFormData} offer
    * @param {Date} [publicationDate]
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.publishOffer = function(offer, publicationDate) {
     return udbApi
