@@ -18583,12 +18583,14 @@ function RoleFormController(
         .removeRoleConstraint(roleId, version)
         .then(function() {
           if (version === 'v3') {
-            editor.role.constraints.v3 = null;
             editor.editConstraintV3 = false;
           }
           else {
-            editor.role.constraints.v2 = null;
             editor.editConstraintV2 = false;
+          }
+
+          if (_.has(editor.role.constraints, version)) {
+            delete(editor.role.constraints[version]);
           }
         }, showProblem)
         .finally(function() {
