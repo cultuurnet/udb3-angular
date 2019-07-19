@@ -26,7 +26,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob) {
+function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
   var service = this;
 
   /**
@@ -107,12 +107,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    *  The user you want to add a role to
    * @param {Role} role
    *  The role you want added to the user
-   * @return {Promise.<UserRoleJob>}
+   * @return {Promise}
    */
   service.addUserToRole = function(user, role) {
     return udbApi
-      .addUserToRole(user.uuid, role.uuid)
-      .then(userRoleJobCreator(user, role));
+      .addUserToRole(user.uuid, role.uuid);
   };
 
   /**
@@ -197,12 +196,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
   /**
    * @param {Role} role
    * @param {User} user
-   * @return {Promise.<UserRoleJob>}
+   * @return {Promise}
    */
   service.removeUserFromRole = function(role, user) {
     return udbApi
-      .removeUserFromRole(role.uuid, user.uuid)
-      .then(userRoleJobCreator(user, role));
+      .removeUserFromRole(role.uuid, user.uuid);
   };
 
   /**
@@ -231,24 +229,5 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
     jobLogger.addJob(job);
 
     return $q.resolve(job);
-  }
-
-  /**
-   * Returns a callable function that takes a command info and returns a user role job promise.
-   *
-   * @param {User} user
-   * @param {Role} role
-   */
-  function userRoleJobCreator(user, role) {
-    /**
-     * @param {CommandInfo} commandInfo
-     * @return {Promise.<UserRoleJob>}
-     */
-    return function(commandInfo) {
-      var job = new UserRoleJob(commandInfo.commandId, user, role);
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
-    };
   }
 }

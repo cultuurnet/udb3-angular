@@ -206,20 +206,22 @@ describe('Service: Role Manager', function () {
   });
 
   it('should add a user to a role', function(done) {
-    var expectedCommandId = {
-      commandId: "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
+    udbApi.addUserToRole.and.returnValue($q.resolve());
 
-    udbApi.addUserToRole.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertUser(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
+      expect(udbApi.addUserToRole).toHaveBeenCalledWith(
+          '6f072ba8-c510-40ac-b387-51f582650e27',
+          '0823f57e-a6bd-450a-b4f5-8459b4b11043'
+      );
       done();
     }
 
     service
-      .addUserToRole('6f072ba8-c510-40ac-b387-51f582650e27', '0823f57e-a6bd-450a-b4f5-8459b4b11043')
-      .then(assertUser);
+      .addUserToRole(
+          { 'uuid': '6f072ba8-c510-40ac-b387-51f582650e27' },
+          { 'uuid': '0823f57e-a6bd-450a-b4f5-8459b4b11043' }
+      )
+      .then(assertAPICall);
 
     $scope.$apply();
   });
@@ -396,14 +398,10 @@ describe('Service: Role Manager', function () {
       'name': 'godmode',
       'constraint': '*:*'
     };
-    var expectedCommandId = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
 
-    udbApi.removeUserFromRole.and.returnValue($q.resolve(expectedCommandId));
+    udbApi.removeUserFromRole.and.returnValue($q.resolve());
 
-    function assertCommand(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
       expect(udbApi.removeUserFromRole).toHaveBeenCalledWith(
         '4bd7dc40-4571-4469-b52c-c5481885bc27',
         '6f072ba8-c510-40ac-b387-51f582650e27'
@@ -413,7 +411,7 @@ describe('Service: Role Manager', function () {
 
     service
       .removeUserFromRole(role, user)
-      .then(assertCommand);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
