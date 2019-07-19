@@ -26,7 +26,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
+function RoleManager(udbApi) {
   var service = this;
 
   /**
@@ -85,8 +85,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   service.addPermissionToRole = function(permission, roleId) {
     return udbApi
-      .addPermissionToRole(permission, roleId)
-      .then(logRoleJob);
+      .addPermissionToRole(permission, roleId);
   };
 
   /**
@@ -98,8 +97,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   service.removePermissionFromRole = function(permission, roleId) {
     return udbApi
-      .removePermissionFromRole(permission, roleId)
-      .then(logRoleJob);
+      .removePermissionFromRole(permission, roleId);
   };
 
   /**
@@ -121,8 +119,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   service.updateRoleName = function(roleId, name) {
     return udbApi
-      .updateRoleName(roleId, name)
-      .then(logRoleJob);
+      .updateRoleName(roleId, name);
   };
 
   /**
@@ -134,8 +131,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   service.createRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-        .createRoleConstraint(roleId, version, constraint)
-        .then(logRoleJob);
+        .createRoleConstraint(roleId, version, constraint);
   };
 
   /**
@@ -146,20 +142,17 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   service.updateRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-        .updateRoleConstraint(roleId, version, constraint)
-        .then(logRoleJob);
+        .updateRoleConstraint(roleId, version, constraint);
   };
 
   /**
    * @param {uuid} roleId
    * @param {string} version
-   * @param {string} constraint
    * @return {Promise}
    */
   service.removeRoleConstraint = function(roleId, version) {
     return udbApi
-        .removeRoleConstraint(roleId, version)
-        .then(logRoleJob);
+        .removeRoleConstraint(roleId, version);
   };
 
   /**
@@ -169,8 +162,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   service.addLabelToRole = function(roleId, labelId) {
     return udbApi
-      .addLabelToRole(roleId, labelId)
-      .then(logRoleJob);
+      .addLabelToRole(roleId, labelId);
   };
 
   /**
@@ -189,8 +181,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    */
   service.removeLabelFromRole = function(roleId, labelId) {
     return udbApi
-      .removeLabelFromRole(roleId, labelId)
-      .then(logRoleJob);
+      .removeLabelFromRole(roleId, labelId);
   };
 
   /**
@@ -208,26 +199,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob) {
    * @return {Promise}
    */
   service.deleteRole = function (role) {
-    function logDeleteJob(jobData) {
-      var job = new DeleteRoleJob(jobData.commandId, role);
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
-    }
-
     return udbApi
-      .removeRole(role.uuid)
-      .then(logDeleteJob);
+      .removeRole(role.uuid);
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logRoleJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }

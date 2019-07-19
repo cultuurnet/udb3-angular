@@ -1,7 +1,7 @@
 'use strict';
 
 describe('Service: Role Manager', function () {
-  var udbApi, jobLogger, BaseJob, $q, service, DeleteRoleJob, $scope;
+  var udbApi, jobLogger, BaseJob, $q, service, $scope;
 
   var baseUrl = 'http://example.com/';
 
@@ -45,12 +45,10 @@ describe('Service: Role Manager', function () {
     });
   }));
 
-  beforeEach(inject(function (_DeleteRoleJob_, RoleManager, $rootScope, _$q_, _BaseJob_) {
-    DeleteRoleJob = _DeleteRoleJob_;
+  beforeEach(inject(function (RoleManager, $rootScope, _$q_) {
     service = RoleManager;
     $scope = $rootScope.$new();
     $q = _$q_;
-    BaseJob = _BaseJob_;
   }));
 
   it('should return a list of roles for a given query', function (done) {
@@ -93,14 +91,14 @@ describe('Service: Role Manager', function () {
     };
     udbApi.getRoleById.and.returnValue($q.resolve(role));
 
-    function assertRole (role) {
+    function assertAPICall (role) {
       expect(role).toEqual(role);
       done();
     }
 
     service
       .get('blub-id')
-      .then(assertRole);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
@@ -168,39 +166,37 @@ describe('Service: Role Manager', function () {
   });
 
   it('should add a permission to a role', function(done) {
-    var expectedCommandId = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
+    udbApi.addPermissionToRole.and.returnValue($q.resolve());
 
-    udbApi.addPermissionToRole.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertPermission(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
+      expect(udbApi.addPermissionToRole).toHaveBeenCalledWith(
+        'TEST_PERMISSION',
+        '0823f57e-a6bd-450a-b4f5-8459b4b11043'
+      );
       done();
     }
 
     service
       .addPermissionToRole('TEST_PERMISSION', '0823f57e-a6bd-450a-b4f5-8459b4b11043')
-      .then(assertPermission);
+      .then(assertAPICall);
 
       $scope.$apply();
   });
 
   it('should remove a permission from a role', function(done) {
-    var expectedCommandId = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
+    udbApi.removePermissionFromRole.and.returnValue($q.resolve());
 
-    udbApi.removePermissionFromRole.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertPermission(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
+      expect(udbApi.removePermissionFromRole).toHaveBeenCalledWith(
+        'AANBOD_INVOEREN',
+        '0823f57e-a6bd-450a-b4f5-8459b4b11043'
+      );
       done();
     }
 
     service
       .removePermissionFromRole('AANBOD_INVOEREN', '0823f57e-a6bd-450a-b4f5-8459b4b11043')
-      .then(assertPermission);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
@@ -210,8 +206,8 @@ describe('Service: Role Manager', function () {
 
     function assertAPICall() {
       expect(udbApi.addUserToRole).toHaveBeenCalledWith(
-          '6f072ba8-c510-40ac-b387-51f582650e27',
-          '0823f57e-a6bd-450a-b4f5-8459b4b11043'
+        '6f072ba8-c510-40ac-b387-51f582650e27',
+        '0823f57e-a6bd-450a-b4f5-8459b4b11043'
       );
       done();
     }
@@ -227,97 +223,88 @@ describe('Service: Role Manager', function () {
   });
 
   it('should update the name of a role', function(done) {
-    var expectedCommandId = {
-      commandId: "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
+    udbApi.updateRoleName.and.returnValue($q.resolve());
 
-    udbApi.updateRoleName.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertRole(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
+      expect(udbApi.updateRoleName).toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'andere rolnaam');
       done();
     }
 
     service
       .updateRoleName('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'andere rolnaam')
-      .then(assertRole);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
 
   it('should add a constraint of a role', function(done) {
-    var expectedCommandId = {
-      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
+    udbApi.createRoleConstraint.and.returnValue($q.resolve());
 
-    udbApi.createRoleConstraint.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertRole(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
+      expect(udbApi.createRoleConstraint).toHaveBeenCalledWith(
+        '0823f57e-a6bd-450a-b4f5-8459b4b11043',
+        'v2',
+        'andere constraint'
+      );
       done();
     }
 
     service
         .createRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v2', 'andere constraint')
-        .then(assertRole);
+        .then(assertAPICall);
 
     $scope.$apply();
   });
 
   it('should update the constraint of a role', function(done) {
-    var expectedCommandId = {
-      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
+    udbApi.updateRoleConstraint.and.returnValue($q.resolve());
 
-    udbApi.updateRoleConstraint.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertRole(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
+      expect(udbApi.updateRoleConstraint).toHaveBeenCalledWith(
+        '0823f57e-a6bd-450a-b4f5-8459b4b11043',
+        'v2',
+        'andere constraint'
+      );
       done();
     }
 
     service
       .updateRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v2', 'andere constraint')
-      .then(assertRole);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
 
   it('should remove the constraint of a role', function(done) {
-    var expectedCommandId = {
-      "id": "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
+    udbApi.removeRoleConstraint.and.returnValue($q.resolve());
 
-    udbApi.removeRoleConstraint.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertRole(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
+      expect(udbApi.removeRoleConstraint).toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v2');
       done();
     }
 
     service
         .removeRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v2')
-        .then(assertRole);
+        .then(assertAPICall);
 
     $scope.$apply();
   });
 
-  it('should return a new DeleteRoleJob when a role is deleted', function (done) {
+  it('should delete a role', function (done) {
     var role = {
       uuid: 'blub-id',
       name: 'Blub'
     };
-    udbApi.removeRole.and.returnValue($q.resolve({commandId: 'blubblub'}));
+    udbApi.removeRole.and.returnValue($q.resolve());
 
-    function assertJobCreation (job) {
-      expect(job.role).toEqual(role);
-      expect(job.id).toEqual('blubblub');
+    function assertAPICall() {
+      expect(udbApi.removeRole).toHaveBeenCalledWith(role.uuid);
       done();
     }
 
     service
       .deleteRole(role)
-      .then(assertJobCreation);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
@@ -347,32 +334,24 @@ describe('Service: Role Manager', function () {
   });
 
   it('should add a label to a role', function (done) {
-    var command = {
-      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
-    udbApi.addLabelToRole.and.returnValue($q.resolve(command));
+    udbApi.addLabelToRole.and.returnValue($q.resolve());
 
-    function assertJob (job) {
-      expect(job.id).toEqual(command.commandId);
+    function assertAPICall() {
+      expect(udbApi.addLabelToRole).toHaveBeenCalledWith('role-id', 'label-id');
       done();
     }
 
     service
-      .addLabelToRole('blub-id')
-      .then(assertJob);
+      .addLabelToRole('role-id', 'label-id')
+      .then(assertAPICall);
 
     $scope.$apply();
   });
 
   it('should remove a label from a role', function(done) {
-    var expectedCommandId = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
+    udbApi.removeLabelFromRole.and.returnValue($q.resolve());
 
-    udbApi.removeLabelFromRole.and.returnValue($q.resolve(expectedCommandId));
-
-    function assertCommand(job) {
-      expect(job.id).toEqual(expectedCommandId.commandId);
+    function assertAPICall() {
       expect(udbApi.removeLabelFromRole).toHaveBeenCalledWith(
         '0823f57e-a6bd-450a-b4f5-8459b4b11043',
         'label-id'
@@ -382,7 +361,7 @@ describe('Service: Role Manager', function () {
 
     service
       .removeLabelFromRole('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'label-id')
-      .then(assertCommand);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
