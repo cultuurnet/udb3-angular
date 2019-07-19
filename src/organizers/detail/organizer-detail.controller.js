@@ -84,10 +84,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     $location.path('/manage/organizations');
   }
 
-  function goToOrganizerOverviewOnJobCompletion(job) {
-    job.task.promise.then(goToOrganizerOverview);
-  }
-
   function deleteOrganization() {
     openOrganizationDeleteConfirmModal(controller.organizer);
   }
@@ -105,7 +101,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     });
 
     modalInstance.result
-      .then(goToOrganizerOverviewOnJobCompletion);
+      .then(goToOrganizerOverview);
   }
 
   /**

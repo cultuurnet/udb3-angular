@@ -647,7 +647,7 @@ function UdbApi(
   this.deleteOrganization = function (organization) {
     return $http
       .delete(organization['@id'], defaultApiConfig)
-      .then(returnJobData, returnApiProblem);
+      .catch(returnApiProblem);
   };
 
   /**
@@ -795,8 +795,7 @@ function UdbApi(
         itemLocation + '/images',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -819,8 +818,7 @@ function UdbApi(
         itemLocation + '/images/' + imageId,
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -835,7 +833,7 @@ function UdbApi(
     return $http.delete(
       itemLocation + '/images/' + imageId,
       defaultApiConfig
-    ).then(returnJobData);
+    );
   };
 
   /**
@@ -856,8 +854,7 @@ function UdbApi(
         itemLocation + '/images/main',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -871,17 +868,6 @@ function UdbApi(
       .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
-
-  /**
-   * @param {object} response
-   *  The response that is returned when creating a job.
-   *
-   * @return {Promise.<Object>}
-   *  The object containing the job data
-   */
-  function returnJobData(response) {
-    return $q.resolve(response.data);
-  }
 
   this.getOfferVariations = function (ownerId, purpose, offerUrl) {
     var parameters = {

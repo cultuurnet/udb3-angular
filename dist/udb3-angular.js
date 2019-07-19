@@ -5495,7 +5495,7 @@ function UdbApi(
   this.deleteOrganization = function (organization) {
     return $http
       .delete(organization['@id'], defaultApiConfig)
-      .then(returnJobData, returnApiProblem);
+      .catch(returnApiProblem);
   };
 
   /**
@@ -5643,8 +5643,7 @@ function UdbApi(
         itemLocation + '/images',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5667,8 +5666,7 @@ function UdbApi(
         itemLocation + '/images/' + imageId,
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5683,7 +5681,7 @@ function UdbApi(
     return $http.delete(
       itemLocation + '/images/' + imageId,
       defaultApiConfig
-    ).then(returnJobData);
+    );
   };
 
   /**
@@ -5704,8 +5702,7 @@ function UdbApi(
         itemLocation + '/images/main',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5719,17 +5716,6 @@ function UdbApi(
       .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
-
-  /**
-   * @param {object} response
-   *  The response that is returned when creating a job.
-   *
-   * @return {Promise.<Object>}
-   *  The object containing the job data
-   */
-  function returnJobData(response) {
-    return $q.resolve(response.data);
-  }
 
   this.getOfferVariations = function (ownerId, purpose, offerUrl) {
     var parameters = {
@@ -18048,7 +18034,7 @@ angular
   .controller('OrganizationDeleteModalController', OrganizationDeleteModalController);
 
 /* @ngInject */
-function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization) {
+function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization, $rootScope) {
   var controller = this;
 
   controller.organization = organization;
@@ -18072,7 +18058,10 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
 
     OrganizerManager
       .delete(organization)
-      .then($uibModalInstance.close)
+      .then(function () {
+        $uibModalInstance.close();
+        $rootScope.$emit('organizationDeleted', organization);
+      })
       .catch(showError);
   }
 
@@ -18083,7 +18072,7 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
     $uibModalInstance.dismiss();
   }
 }
-OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
+OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization", "$rootScope"];
 })();
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
@@ -20736,10 +20725,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     $location.path('/manage/organizations');
   }
 
-  function goToOrganizerOverviewOnJobCompletion(job) {
-    job.task.promise.then(goToOrganizerOverview);
-  }
-
   function deleteOrganization() {
     openOrganizationDeleteConfirmModal(controller.organizer);
   }
@@ -20757,7 +20742,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     });
 
     modalInstance.result
-      .then(goToOrganizerOverviewOnJobCompletion);
+      .then(goToOrganizerOverview);
   }
 
   /**
@@ -20794,58 +20779,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   }
 }
 OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state"];
-})();
-
-// Source: src/organizers/organization-delete-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udbApp.organizers.CreateDeleteOrganizerJob
- * @description
- * # Oragnizer deletion job
- * This factory creates a job that tracks organizer deletion.
- */
-angular
-  .module('udb.organizers')
-  .factory('CreateDeleteOrganizerJob', CreateDeleteOrganizerFactory);
-
-/* @ngInject */
-function CreateDeleteOrganizerFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class CreateDeleteOrganizerJob
-   * @constructor
-   * @param {string} commandId
-   */
-  var CreateDeleteOrganizerJob = function (commandId) {
-    BaseJob.call(this, commandId);
-    this.task = $q.defer();
-  };
-
-  CreateDeleteOrganizerJob.prototype = Object.create(BaseJob.prototype);
-  CreateDeleteOrganizerJob.prototype.constructor = CreateDeleteOrganizerJob;
-
-  CreateDeleteOrganizerJob.prototype.finish = function () {
-    if (this.state !== JobStates.FAILED) {
-      this.state = JobStates.FINISHED;
-      this.finished = new Date();
-      this.task.resolve();
-    }
-    this.progress = 100;
-  };
-
-  CreateDeleteOrganizerJob.prototype.fail = function () {
-    this.finished = new Date();
-    this.state = JobStates.FAILED;
-    this.progress = 100;
-    this.task.reject('Failed to delete the organization');
-  };
-
-  return (CreateDeleteOrganizerJob);
-}
-CreateDeleteOrganizerFactory.$inject = ["BaseJob", "JobStates", "$q"];
 })();
 
 // Source: src/organizers/organizer-form.controller.js
@@ -21173,35 +21106,17 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDeleteOrganizerJob) {
+function OrganizerManager(udbApi) {
   var service = this;
 
   /**
    * @param {UdbOrganizer} organization
+   * @returns {Promise}
    */
   service.delete = function (organization) {
     return udbApi
-      .deleteOrganization(organization)
-      .then(logOrganizationDeleted(organization));
+      .deleteOrganization(organization);
   };
-
-  /**
-   * @param {UdbOrganizer} organization
-   * @return {Function}
-   */
-  function logOrganizationDeleted(organization) {
-    /**
-     * @param {Object} commandInfo
-     * @return {Promise.<CreateDeleteOrganizerJob>}
-     */
-    return function (commandInfo) {
-      var job = new CreateDeleteOrganizerJob(commandInfo.commandId);
-      jobLogger.addJob(job);
-      $rootScope.$emit('organizationDeleted', organization);
-      return $q.resolve(job);
-    };
-
-  }
 
   /**
    * @param {string} query
@@ -21231,8 +21146,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .addLabelToOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -21243,8 +21157,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .deleteLabelFromOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -21264,8 +21177,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerWebsite = function(organizerId, website) {
     return udbApi
-        .updateOrganizerWebsite(organizerId, website)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerWebsite(organizerId, website);
   };
 
   /**
@@ -21278,8 +21190,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerName = function(organizerId, name, language) {
     return udbApi
-        .updateOrganizerName(organizerId, name, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerName(organizerId, name, language);
   };
 
   /**
@@ -21292,8 +21203,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
-        .updateOrganizerAddress(organizerId, address, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerAddress(organizerId, address, language);
   };
 
   /**
@@ -21306,22 +21216,10 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerContact = function(organizerId, contact, language) {
     return udbApi
-        .updateOrganizerContact(organizerId, contact, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerContact(organizerId, contact, language);
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logUpdateOrganizerJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
-OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope", "CreateDeleteOrganizerJob"];
+OrganizerManager.$inject = ["udbApi"];
 })();
 
 // Source: src/place-detail/place-detail.directive.js
