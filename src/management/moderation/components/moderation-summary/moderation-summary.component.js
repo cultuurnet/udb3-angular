@@ -25,7 +25,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
 
   moc.loading = true;
   moc.offer = {};
-  moc.sendingJob = false;
   moc.error = false;
   moc.uitId = _.get(appConfig, 'uitidUrl');
   authorizationService.isGodUser()
