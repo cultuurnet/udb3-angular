@@ -5,14 +5,16 @@ describe('Service: Event crud', function () {
   var eventCrud, $rootScope, $q, logger, udbApi, udbUitpasApi;
 
   beforeEach(module('udb.entry', function ($provide) {
-    logger = jasmine.createSpyObj('jobLogger', ['addJob']);
     udbApi = jasmine.createSpyObj('udbApi', [
       'updateProperty',
       'translateProperty',
       'patchOffer',
       'publishOffer',
       'createOffer',
-      'updateMajorInfo'
+      'updateMajorInfo',
+      'updateBookingInfo',
+      'updateDescription',
+      'removeItemFromCache'
     ]);
     udbApi.mainLanguage = 'nl';
 
@@ -20,12 +22,6 @@ describe('Service: Event crud', function () {
       'getEventUitpasData',
       'updateEventUitpasData'
     ]);
-
-    $provide.provider('jobLogger', {
-      $get: function () {
-        return logger;
-      }
-    });
 
     $provide.provider('udbApi', {
       $get: function () {
@@ -64,7 +60,7 @@ describe('Service: Event crud', function () {
     });
   });
 
-  it('should create a job and log it when updating an offer property', function () {
+  it('should persist booking info', function () {
     var eventFormData = {
       apiUrl: 'http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E',
       bookingInfo: {
@@ -75,58 +71,53 @@ describe('Service: Event crud', function () {
       }
     };
 
-    promisePropertyUpdate();
+    udbApi.updateProperty.and.returnValue($q.resolve());
 
     eventCrud.updateBookingInfo(eventFormData);
     $rootScope.$digest();
 
-    expect(logger.addJob).toHaveBeenCalled();
+    expect(udbApi.updateProperty).toHaveBeenCalledWith(
+        eventFormData.apiUrl,
+        'bookingInfo',
+        eventFormData.bookingInfo
+    );
   });
 
-  it('should create a job when updating the description of an Offer', function () {
+  it('should update the description of an Offer', function () {
     var eventFormData = {
       apiUrl: 'http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E',
+      mainLanguage: 'nl',
       description: {
         nl: 'foodier'
       }
     };
 
-    udbApi.translateProperty.and.returnValue($q.resolve({
-      data: {
-        commandId: 'D3F6B805-ECE7-4042-A495-35E26766512A'
-      }
-    }));
+    udbApi.translateProperty.and.returnValue($q.resolve());
 
     eventCrud.updateDescription(eventFormData);
     $rootScope.$digest();
 
-    expect(logger.addJob).toHaveBeenCalled();
+    expect(udbApi.translateProperty).toHaveBeenCalledWith(
+        eventFormData.apiUrl,
+        'description',
+        eventFormData.mainLanguage,
+        eventFormData.description.nl
+    );
   });
 
-  function promisePropertyUpdate() {
-    udbApi.updateProperty.and.returnValue($q.resolve({
-      data: {
-        commandId: 'D3F6B805-ECE7-4042-A495-35E26766512A'
-      }
-    }));
-  }
-
-  it('should create a job when publishing an offer', function() {
+  it('should publish an offer', function() {
     var eventFormData = {
-      apiUrl: new URL('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E'),
-      description: {
-        nl: 'foodier'
-      }
+      apiUrl: new URL('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E')
     };
 
-    udbApi.publishOffer.and.returnValue($q.resolve({
-      commandId: 'D3F6B805-ECE7-4042-A495-35E26766512A'
-    }));
+    udbApi.publishOffer.and.returnValue($q.resolve());
 
-    eventCrud.publishOffer(eventFormData);
+    var publicationDate = new Date();
+
+    eventCrud.publishOffer(eventFormData, publicationDate);
     $rootScope.$digest();
 
-    expect(logger.addJob).toHaveBeenCalled();
+    expect(udbApi.publishOffer).toHaveBeenCalledWith(eventFormData.apiUrl, publicationDate);
   });
 
   it('should pass along a date when publishing an offer on a date in the future', function() {
@@ -232,20 +223,22 @@ describe('Service: Event crud', function () {
     expect(udbUitpasApi.getEventUitpasData).toHaveBeenCalledWith(cdbid);
   });
 
-  it('should create a job when updating the UiTPAS info for an event', function () {
+  it('should update the UiTPAS info for an event', function () {
     var formData = {
+      apiUrl: new URL('http://du.de/event/217781E3-F644-4243-8D1C-1A55AB8EFA2E'),
       id : '217781E3-F644-4243-8D1C-1A55AB8EFA2E',
       usedDistributionKeys : ['1', '3']
     };
 
-    udbUitpasApi.updateEventUitpasData.and.returnValue($q.resolve({
-      commandId: 'D3F6B805-ECE7-4042-A495-35E26766512A'
-    }));
+    udbUitpasApi.updateEventUitpasData.and.returnValue($q.resolve());
 
-    eventCrud.updateEventUitpasData(formData);
+    eventCrud
+      .updateEventUitpasData(formData)
+      .then(function () {
+        expect(udbUitpasApi.updateEventUitpasData).toHaveBeenCalledWith(formData.usedDistributionKeys, formData.id);
+      });
+
     $rootScope.$digest();
-
-    expect(logger.addJob).toHaveBeenCalled();
   });
 
   it('should strip view values when updating booking info', function () {
@@ -271,7 +264,7 @@ describe('Service: Event crud', function () {
       email: 'dirk@du.de'
     };
 
-    promisePropertyUpdate();
+    udbApi.updateProperty.and.returnValue($q.resolve());
 
     eventCrud.updateBookingInfo(formData);
     expect(udbApi.updateProperty)
@@ -295,7 +288,7 @@ describe('Service: Event crud', function () {
 
     var expectedBookingInfo = {};
 
-    promisePropertyUpdate();
+    udbApi.updateProperty.and.returnValue($q.resolve());
 
     eventCrud.updateBookingInfo(formData);
     expect(udbApi.updateProperty)

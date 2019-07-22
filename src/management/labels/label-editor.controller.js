@@ -20,8 +20,8 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
   editor.save = save;
 
   function rename() {
-    function showRenamedLabel(jobInfo) {
-      loadLabel(jobInfo.labelId);
+    function showRenamedLabel(response) {
+      loadLabel(response.uuid);
     }
 
     editor.renaming = true;
@@ -30,6 +30,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
       .then(showRenamedLabel, showProblem)
       .finally(function () {
         editor.renaming = false;
+        editor.saving = false;
       });
   }
 

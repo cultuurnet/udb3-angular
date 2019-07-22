@@ -55,11 +55,6 @@ function RoleFormController(
    * @type {TranslatedPermission[]}
    */
   editor.availablePermissions = [];
-  editor.originalRole = {
-    permissions: [],
-    users: [],
-    labels: []
-  };
   editor.errorMessage = false;
   editor.editName = false;
   editor.editConstraintV2 = false;
@@ -98,8 +93,6 @@ function RoleFormController(
       .get(roleId)
       .then(function(role) {
         editor.role = role;
-        editor.originalRole = role;
-
         editor.role.users = [];
         editor.role.labels = [];
         editor.role.permissions = _.filter(editor.availablePermissions, function (permission) {
@@ -165,7 +158,6 @@ function RoleFormController(
     roleId = response.roleId;
     // set uuid because a GET role would have a uuid as well
     editor.role.uuid = roleId;
-    editor.originalRole.uuid = roleId;
   }
 
   function createRole() {
@@ -180,7 +172,7 @@ function RoleFormController(
   }
 
   function constraintExists(version) {
-    return _.has(editor.originalRole.constraints, version);
+    return _.has(editor.role.constraints, version) && editor.role.constraints[version] !== null;
   }
 
   function createConstraint(version) {
@@ -227,6 +219,10 @@ function RoleFormController(
           }
           else {
             editor.editConstraintV2 = false;
+          }
+
+          if (_.has(editor.role.constraints, version)) {
+            delete(editor.role.constraints[version]);
           }
         }, showProblem)
         .finally(function() {

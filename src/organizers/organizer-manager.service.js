@@ -12,35 +12,17 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDeleteOrganizerJob) {
+function OrganizerManager(udbApi) {
   var service = this;
 
   /**
    * @param {UdbOrganizer} organization
+   * @returns {Promise}
    */
   service.delete = function (organization) {
     return udbApi
-      .deleteOrganization(organization)
-      .then(logOrganizationDeleted(organization));
+      .deleteOrganization(organization);
   };
-
-  /**
-   * @param {UdbOrganizer} organization
-   * @return {Function}
-   */
-  function logOrganizationDeleted(organization) {
-    /**
-     * @param {Object} commandInfo
-     * @return {Promise.<CreateDeleteOrganizerJob>}
-     */
-    return function (commandInfo) {
-      var job = new CreateDeleteOrganizerJob(commandInfo.commandId);
-      jobLogger.addJob(job);
-      $rootScope.$emit('organizationDeleted', organization);
-      return $q.resolve(job);
-    };
-
-  }
 
   /**
    * @param {string} query
@@ -70,8 +52,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .addLabelToOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -82,8 +63,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .deleteLabelFromOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -103,8 +83,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerWebsite = function(organizerId, website) {
     return udbApi
-        .updateOrganizerWebsite(organizerId, website)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerWebsite(organizerId, website);
   };
 
   /**
@@ -117,8 +96,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerName = function(organizerId, name, language) {
     return udbApi
-        .updateOrganizerName(organizerId, name, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerName(organizerId, name, language);
   };
 
   /**
@@ -131,8 +109,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
-        .updateOrganizerAddress(organizerId, address, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerAddress(organizerId, address, language);
   };
 
   /**
@@ -145,18 +122,6 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerContact = function(organizerId, contact, language) {
     return udbApi
-        .updateOrganizerContact(organizerId, contact, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerContact(organizerId, contact, language);
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logUpdateOrganizerJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }

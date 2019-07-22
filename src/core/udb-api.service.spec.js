@@ -2307,23 +2307,13 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  it('should return the job data or remove role', function (done) {
-    var expectedJob = {
-      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
-
-    function assertJob (jobinfo) {
-      expect(jobinfo).toEqual(expectedJob);
-      done();
-    }
-
+  it('should remove role', function () {
     $httpBackend
       .expectDELETE(baseUrl + 'roles/blub')
-      .respond(JSON.stringify(expectedJob));
+      .respond();
 
     service
-      .removeRole('blub')
-      .then(assertJob);
+      .removeRole('blub');
 
     $httpBackend.flush();
   });
@@ -2381,23 +2371,13 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  it('should remove a label from a given role', function(done) {
-    var expectedCommandId = {
-      "commandId": "8cdc13e62efaecb9d8c21d59a29b9de4"
-    };
-
-    function assertCommand(command) {
-      expect(command).toEqual(expectedCommandId);
-      done();
-    }
-
+  it('should remove a label from a given role', function() {
     $httpBackend
       .expectDELETE(baseUrl + 'roles/uuid1-role/labels/uuid2-label')
-      .respond(JSON.stringify(expectedCommandId));
+      .respond();
 
     service
-      .removeLabelFromRole('uuid1-role', 'uuid2-label')
-      .then(assertCommand);
+      .removeLabelFromRole('uuid1-role', 'uuid2-label');
 
     $httpBackend.flush();
   });

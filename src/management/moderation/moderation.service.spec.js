@@ -239,102 +239,90 @@ describe('Service: Moderation Service', function () {
   });
 
   it('should dispatch an "Approve" command when approving an offer', function(done) {
-    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
     };
 
-    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+    udbApi.patchOffer.and.returnValue($q.resolve());
 
-    function assertCommand(baseJob) {
+    function assertAPICall() {
       expect(udbApi.patchOffer).toHaveBeenCalledWith(
         'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
         'Approve'
       );
-      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
-      expect(jobLogger.addJob).toHaveBeenCalled();
       done();
     }
 
     service
       .approve(offer)
-      .then(assertCommand);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
 
   it('should dispatch a "Reject" command with a reason when rejecting an offer', function(done) {
-    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
     };
 
-    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+    udbApi.patchOffer.and.returnValue($q.resolve());
 
-    function assertCommand(baseJob) {
+    function assertAPICall() {
       expect(udbApi.patchOffer).toHaveBeenCalledWith(
         'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
         'Reject',
         'Mijn reden.'
       );
-      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
-      expect(jobLogger.addJob).toHaveBeenCalled();
       done();
     }
 
     service
       .reject(offer, 'Mijn reden.')
-      .then(assertCommand);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
 
   it('should dispatch a "FlagAsDuplicate" command when flagging an offer as duplicate', function(done) {
-    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
     };
 
-    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+    udbApi.patchOffer.and.returnValue($q.resolve());
 
-    function assertCommand(baseJob) {
+    function assertAPICall() {
       expect(udbApi.patchOffer).toHaveBeenCalledWith(
         'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
         'FlagAsDuplicate'
       );
-      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
-      expect(jobLogger.addJob).toHaveBeenCalled();
       done();
     }
 
     service
       .flagAsDuplicate(offer)
-      .then(assertCommand);
+      .then(assertAPICall);
 
     $scope.$apply();
   });
 
   it('should should dispatch a "FlagAsInappropriate" command when flagging and offer as inappropriate', function(done) {
-    var commandId = {commandId: 'aedb6c4a447ac78b6a6b78369590a27a'};
     var offer = {
       '@id': 'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62'
     };
 
-    udbApi.patchOffer.and.returnValue($q.resolve(commandId));
+    udbApi.patchOffer.and.returnValue($q.resolve());
 
-    function assertCommand(baseJob) {
+    function assertAPICall() {
       expect(udbApi.patchOffer).toHaveBeenCalledWith(
         'http://udb-silex.dev/event/3096cec9-3be8-449e-9b9a-161688d4da62',
         'FlagAsInappropriate'
       );
-      expect(baseJob.id).toEqual('aedb6c4a447ac78b6a6b78369590a27a');
-      expect(jobLogger.addJob).toHaveBeenCalled();
       done();
     }
 
     service
       .flagAsInappropriate(offer)
-      .then(assertCommand);
+      .then(assertAPICall);
 
     $scope.$apply();
   });

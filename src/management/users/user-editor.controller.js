@@ -9,7 +9,6 @@
 
 /**
  * @callback ActionCallback
- * @param {Promise.<UserRoleJob>} job
  */
 
 /**

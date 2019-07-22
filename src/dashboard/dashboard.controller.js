@@ -139,7 +139,9 @@
           }
         }
       });
-      modalInstance.result.then(updateItemViewerOnJobFeedback);
+      modalInstance.result.then(function () {
+        item.showDeleted = true;
+      });
     }
 
     function openPlaceDeleteConfirmModal(place) {
@@ -158,7 +160,9 @@
           }
         });
 
-        modalInstance.result.then(updateItemViewerOnJobFeedback);
+        modalInstance.result.then(function () {
+          place.showDeleted = true;
+        });
       }
 
       function showModalWithEvents(events) {
@@ -169,17 +173,6 @@
       eventCrud
         .findEventsAtPlace(place.apiUrl)
         .then(showModalWithEvents);
-    }
-
-    /**
-     * @param {EventCrudJob} job
-     */
-    function updateItemViewerOnJobFeedback(job) {
-      function unlockItem() {
-        job.item.showDeleted = false;
-      }
-
-      job.task.promise.then(updateItemViewer, unlockItem);
     }
 
     /**
