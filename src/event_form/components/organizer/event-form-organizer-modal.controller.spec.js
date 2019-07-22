@@ -338,13 +338,4 @@ describe('Controller: Event Form Organizer Modal', function() {
     expect($uibModalInstance.close).not.toHaveBeenCalled();
   });
 
-  it('should verify if contact url is valid according to the regex', function(){
-    getController();
-    var regexp = $scope.contactUrlRegex;
-    var mockUrls = MockData.urls;
-    mockUrls.map(function(mockUrl){
-      expect(regexp.test(mockUrl.url)).toEqual(mockUrl.valid);
-    });
-  });
-
 });
