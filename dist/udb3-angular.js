@@ -5495,7 +5495,7 @@ function UdbApi(
   this.deleteOrganization = function (organization) {
     return $http
       .delete(organization['@id'], defaultApiConfig)
-      .then(returnJobData, returnApiProblem);
+      .catch(returnApiProblem);
   };
 
   /**
@@ -5643,8 +5643,7 @@ function UdbApi(
         itemLocation + '/images',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5667,8 +5666,7 @@ function UdbApi(
         itemLocation + '/images/' + imageId,
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5683,7 +5681,7 @@ function UdbApi(
     return $http.delete(
       itemLocation + '/images/' + imageId,
       defaultApiConfig
-    ).then(returnJobData);
+    );
   };
 
   /**
@@ -5704,8 +5702,7 @@ function UdbApi(
         itemLocation + '/images/main',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5719,17 +5716,6 @@ function UdbApi(
       .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
-
-  /**
-   * @param {object} response
-   *  The response that is returned when creating a job.
-   *
-   * @return {Promise.<Object>}
-   *  The object containing the job data
-   */
-  function returnJobData(response) {
-    return $q.resolve(response.data);
-  }
 
   this.getOfferVariations = function (ownerId, purpose, offerUrl) {
     var parameters = {
@@ -8074,7 +8060,9 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
           }
         }
       });
-      modalInstance.result.then(updateItemViewerOnJobFeedback);
+      modalInstance.result.then(function () {
+        item.showDeleted = true;
+      });
     }
 
     function openPlaceDeleteConfirmModal(place) {
@@ -8093,7 +8081,9 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
           }
         });
 
-        modalInstance.result.then(updateItemViewerOnJobFeedback);
+        modalInstance.result.then(function () {
+          place.showDeleted = true;
+        });
       }
 
       function showModalWithEvents(events) {
@@ -8104,17 +8094,6 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       eventCrud
         .findEventsAtPlace(place.apiUrl)
         .then(showModalWithEvents);
-    }
-
-    /**
-     * @param {EventCrudJob} job
-     */
-    function updateItemViewerOnJobFeedback(job) {
-      function unlockItem() {
-        job.item.showDeleted = false;
-      }
-
-      job.task.promise.then(updateItemViewer, unlockItem);
     }
 
     /**
@@ -8511,114 +8490,6 @@ function udbJobLogo() {
 }
 })();
 
-// Source: src/entry/crud/event-crud-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.EventCreationJob
- * @description
- * This Is the factory that creates an event creation job.
- */
-angular
-  .module('udb.entry')
-  .factory('EventCrudJob', EventCrudJobFactory);
-
-/* @ngInject */
-function EventCrudJobFactory(BaseJob, $q, JobStates) {
-
-  /**
-   * @class EventCrudJob
-   * @constructor
-   * @param {string} commandId
-   * @param {EventFormData} item
-   * @param {string} action
-   */
-  var EventCrudJob = function (commandId, item, action) {
-    BaseJob.call(this, commandId);
-    this.item = item;
-    this.action = action;
-    this.task = $q.defer();
-  };
-
-  EventCrudJob.prototype = Object.create(BaseJob.prototype);
-  EventCrudJob.prototype.constructor = EventCrudJob;
-
-  EventCrudJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-    this.task.resolve(this.item.apiUrl);
-  };
-
-  EventCrudJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-    this.task.reject();
-  };
-
-  EventCrudJob.prototype.getDescription = function() {
-
-    switch (this.action) {
-
-      case 'createEvent':
-        return 'Evenement toevoegen: "' + this.item.name.nl + '".';
-
-      case 'createPlace':
-        return 'Locatie toevoegen: "' + this.item.name.nl + '".';
-
-      case 'updateDescription':
-        return 'Beschrijving aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateTypicalAgeRange':
-        return 'Leeftijd aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateOrganizer':
-        return 'Organisator aanpassen: "' + this.item.name.nl + '".';
-
-      case 'createOrganizer':
-        return 'Organisatie toevoegen: "' + this.item.name.nl + '".';
-
-      case 'deleteOrganizer':
-        return 'Organisatie verwijderen: "' + this.item.name.nl + '".';
-
-      case 'updateContactPoint':
-        return 'Contact informatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateBookingInfo':
-        return 'Reservatie informatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateExtraInfo':
-        return 'Extra informatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateFacilities':
-        return 'Voorzieningen aanpassen: "' + this.item.name.nl + '".';
-
-      case 'addImage':
-        return 'Afbeelding toevoegen: "' + this.item.name.nl + '".';
-
-      case 'updateImage':
-        return 'Afbeelding aanpassen: "' + this.item.name.nl + '".';
-
-      case 'deleteImage':
-        return 'Afbeelding verwijderen: "' + this.item.name.nl + '".';
-
-      case 'updateMajorInfo':
-        return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
-
-      case 'updatePriceInfo':
-        return 'Prijsinformatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'publishOffer':
-        return 'Aanbod publiceren: "' + this.item.name.nl + '".';
-
-    }
-
-  };
-
-  return (EventCrudJob);
-}
-EventCrudJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
-})();
-
 // Source: src/entry/crud/event-crud.service.js
 (function () {
 'use strict';
@@ -8635,10 +8506,8 @@ angular
 
 /* @ngInject */
 function EventCrud(
-  jobLogger,
   udbApi,
   udbUitpasApi,
-  EventCrudJob,
   DeleteOfferJob,
   $rootScope,
   $q,
@@ -8710,21 +8579,16 @@ function EventCrud(
    *
    * @param {UdbPlace|UdbEvent} offer
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.deleteOffer = function (offer) {
-    function logJobAndFlagAsDeleted(response) {
-      var jobData = response.data;
-      var job = new DeleteOfferJob(jobData.commandId, offer);
+    function flagAsDeleted() {
       offer.showDeleted = true;
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
     }
 
     return udbApi
       .deleteOffer(offer)
-      .then(logJobAndFlagAsDeleted);
+      .then(flagAsDeleted);
   };
 
   /**
@@ -8736,7 +8600,7 @@ function EventCrud(
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
-      .then(jobCreatorFactory(eventFormData, 'updateItem'));
+      .then(responseHandlerFactory(eventFormData));
   };
 
   /**
@@ -8750,19 +8614,19 @@ function EventCrud(
    * Update the main language description and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateDescription = function(item) {
     return udbApi
       .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
-      .then(jobCreatorFactory(item, 'updateDescription'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update the adress of a place and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.translateAddress = function(item) {
     return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
@@ -8772,7 +8636,7 @@ function EventCrud(
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateTypicalAgeRange = function(item) {
     return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
@@ -8782,48 +8646,48 @@ function EventCrud(
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.deleteTypicalAgeRange = function(item) {
     return udbApi
       .deleteTypicalAgeRange(item.apiUrl)
-      .then(jobCreatorFactory(item, 'updateTypicalAgeRange'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update the connected organizer and it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateOrganizer = function(item) {
     return udbApi
       .updateProperty(item.apiUrl, 'organizer', item.organizer.id)
-      .then(jobCreatorFactory(item, 'updateOrganizer'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Delete the organizer for the event / place.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.deleteOfferOrganizer = function(item) {
     return udbApi
       .deleteOfferOrganizer(item.apiUrl, item.organizer.id)
-      .then(jobCreatorFactory(item, 'deleteOrganizer'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update UiTPAS info for the event.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateEventUitpasData = function(item) {
     return udbUitpasApi
         .updateEventUitpasData(item.usedDistributionKeys, item.id)
-        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+        .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8836,47 +8700,22 @@ function EventCrud(
   };
 
   /**
-   * @param {EventFormData} item
-   * @param {string} jobName
-   *
-   * @return {Function}
-   *  Return a job creator that takes an http job creation response and turns it into a EventCrudJob promise.
-   */
-  function jobCreatorFactory(item, jobName) {
-    function jobCreator(response) {
-      var jobData = response.data ? response.data : response;
-      var job = new EventCrudJob(jobData.commandId, item, jobName);
-      addJobAndInvalidateCache(jobLogger, job);
-
-      return $q.resolve(job);
-    }
-
-    return jobCreator;
-  }
-
-  /**
    * Update the price info and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updatePriceInfo = function(item) {
     return udbApi
       .updatePriceInfo(item.apiUrl, item.priceInfo)
-      .then(function (response) {
-        var jobData = response.data;
-        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update the contact point and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateContactPoint = function(item) {
     return updateOfferProperty(item, 'contactPoint', 'updateContactInfo');
@@ -8887,7 +8726,7 @@ function EventCrud(
    *
    * @param {EventFormData} item
    *
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateBookingInfo = function(item) {
     var allowedProperties = [
@@ -8903,14 +8742,6 @@ function EventCrud(
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
 
-    if (bookingInfo.availabilityStarts) {
-      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts;
-    }
-
-    if (bookingInfo.availabilityEnds) {
-      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds;
-    }
-
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
     }
@@ -8921,7 +8752,7 @@ function EventCrud(
 
     return udbApi
       .updateProperty(item.apiUrl, 'bookingInfo', bookingInfo)
-      .then(jobCreatorFactory(item, 'updateBookingInfo'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8929,30 +8760,24 @@ function EventCrud(
    * @param {string} propertyName
    * @param {string} jobName
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   function updateOfferProperty(offer, propertyName, jobName) {
     return udbApi
       .updateProperty(offer.apiUrl, propertyName, offer[propertyName])
-      .then(function (response) {
-        var jobData = response.data;
-        var job = new EventCrudJob(jobData.commandId, offer, jobName);
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(offer));
   }
 
   /**
    * @param {udbEvent|udbPlace} item
    * @param {Object[]} facilities
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.updateFacilities = function(item, facilities) {
     return udbApi
       .updateOfferFacilities(item.apiUrl, _.map(facilities, 'id'))
-      .then(jobCreatorFactory(item, 'updateFacilities'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8960,14 +8785,14 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {MediaObject} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.addImage = function(item, image) {
     var imageId = image.id || image['@id'].split('/').pop();
 
     return udbApi
       .addImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'addImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8977,14 +8802,14 @@ function EventCrud(
    * @param {MediaObject} image
    * @param {string} description
    * @param {string} copyrightHolder
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateImage = function(item, image, description, copyrightHolder) {
     var imageId = image['@id'].split('/').pop();
 
     return udbApi
       .updateImage(item.apiUrl, imageId, description, copyrightHolder)
-      .then(jobCreatorFactory(item, 'updateImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8992,14 +8817,14 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {image} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.removeImage = function(item, image) {
     var imageId = image['@id'].split('/').pop();
 
     return udbApi
       .removeImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'removeImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -9007,14 +8832,14 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {image} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.selectMainImage = function (item, image) {
     var imageId = image['@id'].split('/').pop();
 
     return udbApi
       .selectMainImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'selectMainImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -9022,30 +8847,24 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {string} audienceType
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.setAudienceType = function (item, audienceType) {
     return udbApi
       .setAudienceType(item.apiUrl, audienceType)
-      .then(jobCreatorFactory(item, 'setAudienceType'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * @param {EventFormData} offer
    * @param {Date} [publicationDate]
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.publishOffer = function(offer, publicationDate) {
     return udbApi
       .publishOffer(offer.apiUrl, publicationDate)
-      .then(function (response) {
-        var job = new EventCrudJob(response.commandId, offer, 'publishOffer');
-
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(offer));
   };
 
   /**
@@ -9056,17 +8875,12 @@ function EventCrud(
     service.updateMajorInfo(eventFormData);
   }
 
-  /**
-   * @param {JobLogger} jobLogger
-   * @param {EventCrudJob} job
-     */
-  function addJobAndInvalidateCache(jobLogger, job) {
-    jobLogger.addJob(job);
+  function responseHandlerFactory(offer) {
+    function responseHandler(response) {
+      udbApi.removeItemFromCache(offer.apiUrl.toString());
+    }
 
-    // unvalidate cache on success
-    job.task.promise.then(function (offerLocation) {
-      udbApi.removeItemFromCache(offerLocation.toString());
-    }, function() {});
+    return responseHandler;
   }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);
@@ -9074,7 +8888,7 @@ function EventCrud(
   $rootScope.$on('eventTimingChanged', updateMajorInfo);
   $rootScope.$on('eventTitleChanged', updateMajorInfo);
 }
-EventCrud.$inject = ["jobLogger", "udbApi", "udbUitpasApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
+EventCrud.$inject = ["udbApi", "udbUitpasApi", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
 })();
 
 // Source: src/entry/delete/delete-offer-job.factory.js
@@ -14614,13 +14428,12 @@ function EventFormPublishController(
     controller.error = '';
     eventCrud
       .publishOffer(EventFormData, controller.eventFormData.availableFrom)
-      .then(function(job) {
-        job.task.promise
-          .then(setEventAsReadyForValidation)
-          .then(redirectToDetailPage)
-          .catch(function() {
-            controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
-          });
+      .then(function() {
+        setEventAsReadyForValidation();
+        redirectToDetailPage();
+      })
+      .catch(function () {
+        controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
       });
   }
 
@@ -17004,7 +16817,7 @@ function LabelCreatorController(LabelManager, $uibModal, $state) {
   };
 
   function create() {
-    function goToOverview(jobInfo) {
+    function goToOverview() {
       $state.go('split.manageLabels.list');
     }
 
@@ -17062,8 +16875,8 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
   editor.save = save;
 
   function rename() {
-    function showRenamedLabel(jobInfo) {
-      loadLabel(jobInfo.labelId);
+    function showRenamedLabel(response) {
+      loadLabel(response.uuid);
     }
 
     editor.renaming = true;
@@ -17072,6 +16885,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
       .then(showRenamedLabel, showProblem)
       .finally(function () {
         editor.renaming = false;
+        editor.saving = false;
       });
   }
 
@@ -17210,7 +17024,7 @@ angular
   .service('LabelManager', LabelManager);
 
 /* @ngInject */
-function LabelManager(udbApi, jobLogger, BaseJob, $q) {
+function LabelManager(udbApi) {
   var service = this;
 
   /**
@@ -17238,99 +17052,69 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    * @param {boolean} isVisible
    * @param {boolean} isPrivate
    *
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.create = function (name, isVisible, isPrivate) {
     return udbApi
-      .createLabel(name, isVisible, isPrivate)
-      .then(createNewLabelJob);
+      .createLabel(name, isVisible, isPrivate);
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.copy = function (label) {
     return udbApi
-      .createLabel(label.name, label.isVisible, label.isPrivate, label.uuid)
-      .then(createNewLabelJob);
+      .createLabel(label.name, label.isVisible, label.isPrivate, label.uuid);
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.delete = function (label) {
     return udbApi
-      .deleteLabel(label.uuid)
-      .then(logLabelJob);
+      .deleteLabel(label.uuid);
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makeInvisible = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakeInvisible')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakeInvisible');
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makeVisible = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakeVisible')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakeVisible');
   };
 
   /**
    *
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makePrivate = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakePrivate')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakePrivate');
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makePublic = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakePublic')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakePublic');
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logLabelJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function createNewLabelJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    job.labelId = commandInfo.uuid;
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
-LabelManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+LabelManager.$inject = ["udbApi"];
 })();
 
 // Source: src/management/labels/labels-list.controller.js
@@ -17715,7 +17499,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
 
   moc.loading = true;
   moc.offer = {};
-  moc.sendingJob = false;
   moc.error = false;
 
   moc.isReadyForValidation = isReadyForValidation;
@@ -17758,17 +17541,13 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   }
 
   function approve() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .approve(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function askForRejectionReasons() {
@@ -17800,45 +17579,33 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
    * an offer can be rejected without a reason added.
    */
   function rejectWithReason(reason) {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .reject(moc.offer, reason)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function flagAsDuplicate() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .flagAsDuplicate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function flagAsInappropriate() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .flagAsInappropriate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   /**
@@ -17880,7 +17647,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
 
   moc.loading = true;
   moc.offer = {};
-  moc.sendingJob = false;
   moc.error = false;
   moc.uitId = _.get(appConfig, 'uitidUrl');
   authorizationService.isGodUser()
@@ -18182,8 +17948,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.approve = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'Approve')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'Approve');
   };
 
   /**
@@ -18193,8 +17958,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.reject = function(offer, reason) {
     return udbApi
-      .patchOffer(offer['@id'], 'Reject', reason)
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'Reject', reason);
   };
 
   /**
@@ -18204,8 +17968,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.flagAsDuplicate = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'FlagAsDuplicate')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'FlagAsDuplicate');
   };
 
   /**
@@ -18215,20 +17978,8 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.flagAsInappropriate = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'FlagAsInappropriate')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'FlagAsInappropriate');
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logModerationJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
 ModerationService.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
 })();
@@ -18282,7 +18033,7 @@ angular
   .controller('OrganizationDeleteModalController', OrganizationDeleteModalController);
 
 /* @ngInject */
-function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization) {
+function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization, $rootScope) {
   var controller = this;
 
   controller.organization = organization;
@@ -18306,7 +18057,10 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
 
     OrganizerManager
       .delete(organization)
-      .then($uibModalInstance.close)
+      .then(function () {
+        $uibModalInstance.close();
+        $rootScope.$emit('organizationDeleted', organization);
+      })
       .catch(showError);
   }
 
@@ -18317,7 +18071,7 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
     $uibModalInstance.dismiss();
   }
 }
-OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
+OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization", "$rootScope"];
 })();
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
@@ -18534,62 +18288,6 @@ function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager
 RoleDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "RoleManager", "item"];
 })();
 
-// Source: src/management/roles/delete-role-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.management.roles.DeleteRoleJob
- * @description
- * This is the factory that creates jobs to delete roles.
- */
-angular
-  .module('udb.management.roles')
-  .factory('DeleteRoleJob', DeleteRoleJobFactory);
-
-/* @ngInject */
-function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
-
-  /**
-   * @class DeleteRoleJob
-   * @constructor
-   * @param {string} commandId
-   * @param {Role} role
-   */
-  var DeleteRoleJob = function (commandId, role) {
-    BaseJob.call(this, commandId);
-
-    this.role = role;
-    this.task = $q.defer();
-  };
-
-  DeleteRoleJob.prototype = Object.create(BaseJob.prototype);
-  DeleteRoleJob.prototype.constructor = DeleteRoleJob;
-
-  DeleteRoleJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve();
-    }
-  };
-
-  DeleteRoleJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-
-    this.task.reject();
-  };
-
-  DeleteRoleJob.prototype.getDescription = function() {
-    return 'Rol verwijderen: "' +  this.role.name + '".';
-  };
-
-  return (DeleteRoleJob);
-}
-DeleteRoleJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
-})();
-
 // Source: src/management/roles/permission.constant.js
 (function () {
 'use strict';
@@ -18684,11 +18382,6 @@ function RoleFormController(
    * @type {TranslatedPermission[]}
    */
   editor.availablePermissions = [];
-  editor.originalRole = {
-    permissions: [],
-    users: [],
-    labels: []
-  };
   editor.errorMessage = false;
   editor.editName = false;
   editor.editConstraintV2 = false;
@@ -18727,8 +18420,6 @@ function RoleFormController(
       .get(roleId)
       .then(function(role) {
         editor.role = role;
-        editor.originalRole = role;
-
         editor.role.users = [];
         editor.role.labels = [];
         editor.role.permissions = _.filter(editor.availablePermissions, function (permission) {
@@ -18794,7 +18485,6 @@ function RoleFormController(
     roleId = response.roleId;
     // set uuid because a GET role would have a uuid as well
     editor.role.uuid = roleId;
-    editor.originalRole.uuid = roleId;
   }
 
   function createRole() {
@@ -18809,7 +18499,7 @@ function RoleFormController(
   }
 
   function constraintExists(version) {
-    return _.has(editor.originalRole.constraints, version);
+    return _.has(editor.role.constraints, version) && editor.role.constraints[version] !== null;
   }
 
   function createConstraint(version) {
@@ -18856,6 +18546,10 @@ function RoleFormController(
           }
           else {
             editor.editConstraintV2 = false;
+          }
+
+          if (_.has(editor.role.constraints, version)) {
+            delete(editor.role.constraints[version]);
           }
         }, showProblem)
         .finally(function() {
@@ -19037,7 +18731,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob) {
+function RoleManager(udbApi) {
   var service = this;
 
   /**
@@ -19096,8 +18790,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.addPermissionToRole = function(permission, roleId) {
     return udbApi
-      .addPermissionToRole(permission, roleId)
-      .then(logRoleJob);
+      .addPermissionToRole(permission, roleId);
   };
 
   /**
@@ -19109,8 +18802,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.removePermissionFromRole = function(permission, roleId) {
     return udbApi
-      .removePermissionFromRole(permission, roleId)
-      .then(logRoleJob);
+      .removePermissionFromRole(permission, roleId);
   };
 
   /**
@@ -19118,12 +18810,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    *  The user you want to add a role to
    * @param {Role} role
    *  The role you want added to the user
-   * @return {Promise.<UserRoleJob>}
+   * @return {Promise}
    */
   service.addUserToRole = function(user, role) {
     return udbApi
-      .addUserToRole(user.uuid, role.uuid)
-      .then(userRoleJobCreator(user, role));
+      .addUserToRole(user.uuid, role.uuid);
   };
 
   /**
@@ -19133,8 +18824,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.updateRoleName = function(roleId, name) {
     return udbApi
-      .updateRoleName(roleId, name)
-      .then(logRoleJob);
+      .updateRoleName(roleId, name);
   };
 
   /**
@@ -19146,8 +18836,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.createRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-        .createRoleConstraint(roleId, version, constraint)
-        .then(logRoleJob);
+        .createRoleConstraint(roleId, version, constraint);
   };
 
   /**
@@ -19158,20 +18847,17 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.updateRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-        .updateRoleConstraint(roleId, version, constraint)
-        .then(logRoleJob);
+        .updateRoleConstraint(roleId, version, constraint);
   };
 
   /**
    * @param {uuid} roleId
    * @param {string} version
-   * @param {string} constraint
    * @return {Promise}
    */
   service.removeRoleConstraint = function(roleId, version) {
     return udbApi
-        .removeRoleConstraint(roleId, version)
-        .then(logRoleJob);
+        .removeRoleConstraint(roleId, version);
   };
 
   /**
@@ -19181,8 +18867,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.addLabelToRole = function(roleId, labelId) {
     return udbApi
-      .addLabelToRole(roleId, labelId)
-      .then(logRoleJob);
+      .addLabelToRole(roleId, labelId);
   };
 
   /**
@@ -19201,19 +18886,17 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.removeLabelFromRole = function(roleId, labelId) {
     return udbApi
-      .removeLabelFromRole(roleId, labelId)
-      .then(logRoleJob);
+      .removeLabelFromRole(roleId, labelId);
   };
 
   /**
    * @param {Role} role
    * @param {User} user
-   * @return {Promise.<UserRoleJob>}
+   * @return {Promise}
    */
   service.removeUserFromRole = function(role, user) {
     return udbApi
-      .removeUserFromRole(role.uuid, user.uuid)
-      .then(userRoleJobCreator(user, role));
+      .removeUserFromRole(role.uuid, user.uuid);
   };
 
   /**
@@ -19221,49 +18904,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    * @return {Promise}
    */
   service.deleteRole = function (role) {
-    function logDeleteJob(jobData) {
-      var job = new DeleteRoleJob(jobData.commandId, role);
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
-    }
-
     return udbApi
-      .removeRole(role.uuid)
-      .then(logDeleteJob);
+      .removeRole(role.uuid);
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logRoleJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
-
-  /**
-   * Returns a callable function that takes a command info and returns a user role job promise.
-   *
-   * @param {User} user
-   * @param {Role} role
-   */
-  function userRoleJobCreator(user, role) {
-    /**
-     * @param {CommandInfo} commandInfo
-     * @return {Promise.<UserRoleJob>}
-     */
-    return function(commandInfo) {
-      var job = new UserRoleJob(commandInfo.commandId, user, role);
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
-    };
-  }
 }
-RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob", "UserRoleJob"];
+RoleManager.$inject = ["udbApi"];
 })();
 
 // Source: src/management/roles/roles-list.controller.js
@@ -19616,7 +19261,6 @@ SearchService.$inject = ["$q"];
 
 /**
  * @callback ActionCallback
- * @param {Promise.<UserRoleJob>} job
  */
 
 /**
@@ -19867,81 +19511,6 @@ function UserManager(udbApi, $q) {
 UserManager.$inject = ["udbApi", "$q"];
 })();
 
-// Source: src/management/users/user-role-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.management.users.UserRoleJob
- * @description
- * # User Role Job
- * This Is the factory that creates a user role job
- */
-angular
-  .module('udb.management.users')
-  .factory('UserRoleJob', UserRoleJobFactory);
-
-/* @ngInject */
-function UserRoleJobFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class UserRoleJob
-   * @constructor
-   * @param {string} commandId
-   * @param {User} user
-   * @param {Role} role
-   */
-  var UserRoleJob = function (commandId, user, role) {
-    BaseJob.call(this, commandId);
-
-    this.role = role;
-    this.user = user;
-    this.task = $q.defer();
-  };
-
-  UserRoleJob.prototype = Object.create(BaseJob.prototype);
-  UserRoleJob.prototype.constructor = UserRoleJob;
-
-  UserRoleJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve();
-    }
-  };
-
-  UserRoleJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-
-    this.task.reject();
-  };
-
-  UserRoleJob.prototype.getDescription = function () {
-    var job = this,
-      description;
-
-    var failedDescriptionTemplate = _.template(
-      'Het toekennen of verwijderen van de rol: "${role.name}" is mislukt voor "${user.username}".'
-    );
-    var descriptionTemplate = _.template(
-      'Toevoegen of verwijderen van de rol: "${role.name}" voor gebruiker "${user.username}".'
-    );
-
-    if (this.state === JobStates.FAILED) {
-      description = failedDescriptionTemplate(job);
-    } else {
-      description = descriptionTemplate(job);
-    }
-
-    return description;
-  };
-
-  return (UserRoleJob);
-}
-UserRoleJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
-})();
-
 // Source: src/management/users/users-list.controller.js
 (function () {
 'use strict';
@@ -20056,61 +19625,6 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
 UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 })();
 
-// Source: src/media/create-image-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.media.CreateImageJob
- * @description
- * # Image creation job
- * This factory creates a job that tracks image creation.
- */
-angular
-  .module('udb.media')
-  .factory('CreateImageJob', CreateImageJobFactory);
-
-/* @ngInject */
-function CreateImageJobFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class CreateImageJob
-   * @constructor
-   * @param {string} commandId
-   */
-  var CreateImageJob = function (commandId) {
-    BaseJob.call(this, commandId);
-    this.task = $q.defer();
-  };
-
-  CreateImageJob.prototype = Object.create(BaseJob.prototype);
-  CreateImageJob.prototype.constructor = CreateImageJob;
-
-  CreateImageJob.prototype.finish = function () {
-    if (this.state !== JobStates.FAILED) {
-      this.state = JobStates.FINISHED;
-      this.finished = new Date();
-    }
-    this.progress = 100;
-  };
-
-  CreateImageJob.prototype.info = function (jobInfo) {
-    this.task.resolve(jobInfo);
-  };
-
-  CreateImageJob.prototype.fail = function () {
-    this.finished = new Date();
-    this.state = JobStates.FAILED;
-    this.progress = 100;
-    this.task.reject('Failed to create an image object');
-  };
-
-  return (CreateImageJob);
-}
-CreateImageJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
-})();
-
 // Source: src/media/media-manager.service.js
 (function () {
 'use strict';
@@ -20139,7 +19653,7 @@ angular
 /**
  * @ngInject
  */
-function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
+function MediaManager(jobLogger, appConfig, $q, udbApi) {
   var service = this;
 
   /**
@@ -20161,19 +19675,9 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       return allowedFileExtensions.indexOf(fileExtension) >= 0;
     }
 
-    function logCreateImageJob(uploadResponse) {
-      var jobData = uploadResponse.data;
-      var job = new CreateImageJob(jobData  .commandId);
-      jobLogger.addJob(job);
-
-      job.task.promise
-        .then(fetchAndReturnMedia);
-    }
-
-    function fetchAndReturnMedia(jobInfo) {
-      var imageId = _.get(jobInfo, 'file_id');
+    function fetchAndReturnMedia(response) {
       service
-        .getImage(imageId)
+        .getImage(response.data.imageId)
         .then(deferredMediaObject.resolve, deferredMediaObject.reject);
     }
 
@@ -20186,7 +19690,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
     } else {
       udbApi
         .uploadMedia(imageFile, description, copyrightHolder, language)
-        .then(logCreateImageJob, deferredMediaObject.reject);
+        .then(fetchAndReturnMedia, deferredMediaObject.reject);
     }
 
     return deferredMediaObject.promise;
@@ -20210,7 +19714,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       .then(returnMediaObject);
   };
 }
-MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "udbApi"];
+MediaManager.$inject = ["jobLogger", "appConfig", "$q", "udbApi"];
 })();
 
 // Source: src/migration/event-migration-footer.component.js
@@ -21220,10 +20724,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     $location.path('/manage/organizations');
   }
 
-  function goToOrganizerOverviewOnJobCompletion(job) {
-    job.task.promise.then(goToOrganizerOverview);
-  }
-
   function deleteOrganization() {
     openOrganizationDeleteConfirmModal(controller.organizer);
   }
@@ -21241,7 +20741,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     });
 
     modalInstance.result
-      .then(goToOrganizerOverviewOnJobCompletion);
+      .then(goToOrganizerOverview);
   }
 
   /**
@@ -21278,58 +20778,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   }
 }
 OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state"];
-})();
-
-// Source: src/organizers/organization-delete-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udbApp.organizers.CreateDeleteOrganizerJob
- * @description
- * # Oragnizer deletion job
- * This factory creates a job that tracks organizer deletion.
- */
-angular
-  .module('udb.organizers')
-  .factory('CreateDeleteOrganizerJob', CreateDeleteOrganizerFactory);
-
-/* @ngInject */
-function CreateDeleteOrganizerFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class CreateDeleteOrganizerJob
-   * @constructor
-   * @param {string} commandId
-   */
-  var CreateDeleteOrganizerJob = function (commandId) {
-    BaseJob.call(this, commandId);
-    this.task = $q.defer();
-  };
-
-  CreateDeleteOrganizerJob.prototype = Object.create(BaseJob.prototype);
-  CreateDeleteOrganizerJob.prototype.constructor = CreateDeleteOrganizerJob;
-
-  CreateDeleteOrganizerJob.prototype.finish = function () {
-    if (this.state !== JobStates.FAILED) {
-      this.state = JobStates.FINISHED;
-      this.finished = new Date();
-      this.task.resolve();
-    }
-    this.progress = 100;
-  };
-
-  CreateDeleteOrganizerJob.prototype.fail = function () {
-    this.finished = new Date();
-    this.state = JobStates.FAILED;
-    this.progress = 100;
-    this.task.reject('Failed to delete the organization');
-  };
-
-  return (CreateDeleteOrganizerJob);
-}
-CreateDeleteOrganizerFactory.$inject = ["BaseJob", "JobStates", "$q"];
 })();
 
 // Source: src/organizers/organizer-form.controller.js
@@ -21657,35 +21105,17 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDeleteOrganizerJob) {
+function OrganizerManager(udbApi) {
   var service = this;
 
   /**
    * @param {UdbOrganizer} organization
+   * @returns {Promise}
    */
   service.delete = function (organization) {
     return udbApi
-      .deleteOrganization(organization)
-      .then(logOrganizationDeleted(organization));
+      .deleteOrganization(organization);
   };
-
-  /**
-   * @param {UdbOrganizer} organization
-   * @return {Function}
-   */
-  function logOrganizationDeleted(organization) {
-    /**
-     * @param {Object} commandInfo
-     * @return {Promise.<CreateDeleteOrganizerJob>}
-     */
-    return function (commandInfo) {
-      var job = new CreateDeleteOrganizerJob(commandInfo.commandId);
-      jobLogger.addJob(job);
-      $rootScope.$emit('organizationDeleted', organization);
-      return $q.resolve(job);
-    };
-
-  }
 
   /**
    * @param {string} query
@@ -21715,8 +21145,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .addLabelToOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -21727,8 +21156,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .deleteLabelFromOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -21748,8 +21176,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerWebsite = function(organizerId, website) {
     return udbApi
-        .updateOrganizerWebsite(organizerId, website)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerWebsite(organizerId, website);
   };
 
   /**
@@ -21762,8 +21189,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerName = function(organizerId, name, language) {
     return udbApi
-        .updateOrganizerName(organizerId, name, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerName(organizerId, name, language);
   };
 
   /**
@@ -21776,8 +21202,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
-        .updateOrganizerAddress(organizerId, address, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerAddress(organizerId, address, language);
   };
 
   /**
@@ -21790,22 +21215,10 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerContact = function(organizerId, contact, language) {
     return udbApi
-        .updateOrganizerContact(organizerId, contact, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerContact(organizerId, contact, language);
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logUpdateOrganizerJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
-OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope", "CreateDeleteOrganizerJob"];
+OrganizerManager.$inject = ["udbApi"];
 })();
 
 // Source: src/place-detail/place-detail.directive.js

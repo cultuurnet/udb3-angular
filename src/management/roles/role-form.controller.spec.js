@@ -430,7 +430,6 @@ describe('Controller: Roles Form', function() {
 
     expect(RoleManager.create).toHaveBeenCalledWith('Test123');
     expect(editor.role.uuid).toEqual('uuid-test123');
-    expect(editor.originalRole.uuid).toEqual('uuid-test123');
   });
 
   it('should not create a role when a uuid specified', function() {

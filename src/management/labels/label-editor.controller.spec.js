@@ -195,7 +195,7 @@ describe('Controller: Labels Editor', function() {
 
     $scope.$digest();
     editor.label.name = 'Coco';
-    LabelManager.copy.and.returnValue($q.resolve({labelId:"new-id"}));
+    LabelManager.copy.and.returnValue($q.resolve({uuid:"new-id"}));
     LabelManager.get.and.returnValue($q.resolve(newLabel));
 
     editor.save();
