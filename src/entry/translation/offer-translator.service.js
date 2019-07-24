@@ -12,8 +12,7 @@ angular
   .service('offerTranslator', OfferTranslator);
 
 /* @ngInject */
-function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
-
+function OfferTranslator(udbApi) {
   /**
    * Translates an offer property to a given language and adds the job to the logger
    *
@@ -23,34 +22,22 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
    * @param {string}  translation Translation to save
    */
   this.translateProperty = function (offer, property, language, translation) {
-    function logTranslationJob(response) {
-      var jobData = response.data;
-
-      if (property === 'title') {
-        property = 'name';
-      }
-
-      offer[property][language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, property, language, translation);
-      jobLogger.addJob(job);
+    if (property === 'title') {
+      property = 'name';
     }
 
     return udbApi
       .translateProperty(offer.apiUrl, property, language, translation)
-      .then(logTranslationJob);
+      .then(function () {
+        offer[property][language] = translation;
+      });
   };
 
   this.translateAddress = function (offer, language, translation) {
-    function logTranslationJob(response) {
-      var jobData = response.data;
-
-      offer.address[language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, 'address', language, translation);
-      jobLogger.addJob(job);
-    }
-
     return udbApi
-        .translateAddress(offer.id, language, translation)
-        .then(logTranslationJob);
+      .translateAddress(offer.id, language, translation)
+      .then(function () {
+        offer.address[language] = translation;
+      });
   };
 }
