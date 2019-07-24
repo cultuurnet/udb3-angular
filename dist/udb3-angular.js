@@ -9160,64 +9160,6 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
 OfferLabelBatchJobFactory.$inject = ["BaseJob", "JobStates"];
 })();
 
-// Source: src/entry/labelling/offer-label-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.OfferLabelJob
- * @description
- * # Event Label Job
- * This Is the factory that creates an event label job
- */
-angular
-  .module('udb.entry')
-  .factory('OfferLabelJob', OfferLabelJobFactory);
-
-/* @ngInject */
-function OfferLabelJobFactory(BaseJob, JobStates) {
-
-  /**
-   * @class OfferLabelJob
-   * @constructor
-   * @param {string} commandId
-   * @param {UdbEvent|UdbPlace} offer
-   * @param {string} label
-   * @param {boolean} unlabel set to true when unlabeling
-   */
-  var OfferLabelJob = function (commandId, offer, label, unlabel) {
-    BaseJob.call(this, commandId);
-    this.offer = offer;
-    this.label = label;
-    this.unlabel = !!unlabel || false;
-  };
-
-  OfferLabelJob.prototype = Object.create(BaseJob.prototype);
-  OfferLabelJob.prototype.constructor = OfferLabelJob;
-
-  OfferLabelJob.prototype.getDescription = function () {
-    var job = this,
-        description;
-
-    if (job.state === JobStates.FAILED) {
-      description = 'Labelen van evenement mislukt';
-    } else {
-      if (job.unlabel) {
-        description = 'Verwijder label "' + job.label + '" van "' + job.offer.name.nl + '"';
-      } else {
-        description = 'Label "' + job.offer.name.nl + '" met "' + job.label + '"';
-      }
-    }
-
-    return description;
-  };
-
-  return (OfferLabelJob);
-}
-OfferLabelJobFactory.$inject = ["BaseJob", "JobStates"];
-})();
-
 // Source: src/entry/labelling/offer-label-modal.controller.js
 (function () {
 'use strict';
@@ -9326,7 +9268,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $uibModal) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q) {
   var offerLabeller = this;
 
   /**
@@ -9367,7 +9309,6 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
 
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName))
       .then(function(response) {
         offer.label(labelName);
         result.success = true;
@@ -9384,19 +9325,15 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * Unlabel a label from an event
    * @param {UdbEvent|UdbPlace} offer
    * @param {string} labelName
-   *
-   * @return {Promise.<OfferLabelJob|ApiProblem>}
+   * @return {Promise}
    */
   this.unlabel = function (offer, labelName) {
-    function eagerlyUnlabelAndPassOnResponse(response) {
-      offer.unlabel(labelName);
-      return response;
-    }
-
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
-      .then(eagerlyUnlabelAndPassOnResponse)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName, true));
+      .then(function (response) {
+        offer.unlabel(labelName);
+        return response;
+      });
   };
 
   /**
@@ -9440,7 +9377,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
-OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$uibModal"];
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
 })();
 
 // Source: src/entry/labelling/query-label-job.factory.js
