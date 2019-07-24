@@ -87,6 +87,8 @@ describe('Service: Offer labeller', function () {
   it('should label an offer', function (done) {
     var place = new UdbPlace(examplePlaceJson);
 
+    udbApi.labelOffer.and.returnValue($q.resolve());
+
     function assertLabelAdded(response) {
       expect(place.labels).toContain('awesome');
       expect(udbApi.labelOffer).toHaveBeenCalledWith(

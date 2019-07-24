@@ -46,22 +46,10 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
    * @param {string} labelName
    */
   this.label = function (offer, labelName) {
-    var result = {
-      success: false,
-      name: labelName
-    };
-
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(function(response) {
+      .then(function() {
         offer.label(labelName);
-        result.success = true;
-        result.message = response.id;
-        return result;
-      })
-      .catch(function(error) {
-        result.message = error.data.title;
-        return result;
       });
   };
 
@@ -74,9 +62,8 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
   this.unlabel = function (offer, labelName) {
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
-      .then(function (response) {
+      .then(function () {
         offer.unlabel(labelName);
-        return response;
       });
   };
 
