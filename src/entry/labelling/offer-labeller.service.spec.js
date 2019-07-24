@@ -2,7 +2,7 @@
 
 describe('Service: Offer labeller', function () {
 
-  var logger, udbApi, labeller, $q, UdbPlace, $scope, OfferLabelJob;
+  var logger, udbApi, labeller, $q, UdbPlace, $scope;
   var examplePlaceJson = {
     '@id': "http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702",
     '@context': "/api/1.0/place.jsonld",
@@ -69,11 +69,10 @@ describe('Service: Offer labeller', function () {
     });
   }));
 
-  beforeEach(inject(function(_$q_, _UdbPlace_, $rootScope, _OfferLabelJob_) {
+  beforeEach(inject(function(_$q_, _UdbPlace_, $rootScope) {
     $q = _$q_;
     UdbPlace = _UdbPlace_;
     $scope = $rootScope.$new();
-    OfferLabelJob = _OfferLabelJob_;
 
     var fixedDate = new Date();
     spyOn(window, 'Date').and.returnValue(function() {
@@ -85,55 +84,21 @@ describe('Service: Offer labeller', function () {
     labeller = offerLabeller;
   }));
 
-  it('should create a job and log it when labelling an offer', function (done) {
+  it('should label an offer', function (done) {
     var place = new UdbPlace(examplePlaceJson);
-    var expectedJob = new OfferLabelJob('E53F8BAA-A640-419F-9C2A-411B86969608', place, 'awesome');
-    udbApi.labelOffer.and.returnValue($q.resolve({
-      data: {
-        commandId: 'E53F8BAA-A640-419F-9C2A-411B86969608'
-      }
-    }));
 
-    var jobPromise = labeller.label(place, 'awesome');
-
-    function assertJob(response) {
+    function assertLabelAdded(response) {
       expect(place.labels).toContain('awesome');
-      expect(response.name).toEqual(expectedJob.label);
       expect(udbApi.labelOffer).toHaveBeenCalledWith(
         new URL('http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'),
         'awesome'
       );
-
       done();
     }
 
-    jobPromise.then(assertJob);
-    $scope.$digest();
-  });
+    labeller.label(place, 'awesome')
+        .then(assertLabelAdded);
 
-  it('should catch the error when labelling an offer failed', function (done) {
-    var place = new UdbPlace(examplePlaceJson);
-    var expectedResult = {
-      success: false,
-      message: 'error title',
-      name: 'awesome'
-    };
-    udbApi.labelOffer.and.returnValue($q.reject({
-      data: {
-        title: 'error title'
-      }
-    }));
-
-    var jobPromise = labeller.label(place, 'awesome');
-
-    function assertJob(error) {
-      expect(error.message).toEqual(expectedResult.message);
-      expect(error.name).toEqual(expectedResult.name);
-
-      done();
-    }
-
-    jobPromise.then(assertJob);
     $scope.$digest();
   });
 
