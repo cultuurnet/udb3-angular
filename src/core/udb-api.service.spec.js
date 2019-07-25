@@ -1534,7 +1534,7 @@ describe('Service: UDB3 Api', function () {
     uitidAuth.getTokenData.and.returnValue({uid: 1, email: 'test@test.com'});
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc&start=0')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&start=0&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
       .respond(JSON.stringify(response));
     service
       .getDashboardItems(1)
@@ -1543,7 +1543,7 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&sort%5Bcreated%5D=asc&start=50')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&start=50&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
       .respond(JSON.stringify(response));
     service
       .getDashboardItems(2)
