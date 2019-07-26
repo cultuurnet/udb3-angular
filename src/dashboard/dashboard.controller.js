@@ -101,7 +101,7 @@
      * @param {PagedCollection} results
      */
     function setItemViewerResults(results) {
-      if(results.member){
+      if (results.member) {
         results.member = results.member.map(function(member) {
           var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
           memberContext = memberContext.charAt(0).toUpperCase() + memberContext.slice(1);
