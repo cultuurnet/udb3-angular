@@ -19,6 +19,7 @@
  * @typedef {Object} OfferIdentifier
  * @property {string} @id
  * @property {string} @type
+ * @property {string} @context
  */
 
 /**
@@ -200,10 +201,8 @@ function UdbApi(
   this.getOffer = function(offerLocation) {
     var deferredOffer = $q.defer();
     var offer = offerCache.get(offerLocation);
-
     function cacheAndResolveOffer(jsonOffer) {
       var type = jsonOffer['@id'].split('/').reverse()[1];
-
       var offer = {};
       if (type === 'event') {
         offer = new UdbEvent();
@@ -917,7 +916,8 @@ function UdbApi(
       'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED',
       'sort[modified]': 'desc',
       'limit': 50,
-      'start': (page - 1) * 50
+      'start': (page - 1) * 50,
+      'embed': true
     };
 
     var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
@@ -936,7 +936,6 @@ function UdbApi(
 
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = params;
-
     return $http
       .get(appConfig.baseUrl + 'offers/', requestConfig)
       .then(returnUnwrappedData);

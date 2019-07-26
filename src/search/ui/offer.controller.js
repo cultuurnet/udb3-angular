@@ -23,6 +23,9 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
+  UdbEvent,
+  UdbPlace,
+  UdbOrganizer,
   $uibModal,
   $translate,
   authorizationService
@@ -48,31 +51,52 @@ function OfferController(
     if (!$scope.event.title) {
       controller.fetching = true;
 
+      if ($scope.event.name) {
+        var offer = {};
+        var type = $scope.event['@type'].toLowerCase();
+        if (type === 'event') {
+          offer = new UdbEvent();
+        }
+        else if (type === 'place') {
+          offer = new UdbPlace();
+        }
+        else {
+          offer = new UdbOrganizer();
+        }
+        offer.parseJson($scope.event);
+        formatOffers(offer);
+        return;
+      }
       return udbApi
         .getOffer($scope.event['@id'])
         .then(function (offerObject) {
-          var sortedFacilities = offerObject.facilities.sort(
-            function(a, b) {
-              return a.label.localeCompare(b.label);
-            });
-          offerObject.facilities = sortedFacilities;
-
-          cachedOffer = offerObject;
-          cachedOffer.updateTranslationState();
-
-          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
-          $scope.offerType = $scope.event.url.split('/').shift();
-          $scope.translatedOfferType = $translate.instant('offerTypes.' + $scope.event.type.label);
-          controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
-          controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
-          controller.fetching = false;
-          watchLabels();
-          return cachedOffer;
+          formatOffers(offerObject);
         });
     } else {
       controller.fetching = false;
     }
   };
+
+  function formatOffers(offerObject) {
+
+    var sortedFacilities = offerObject.facilities.sort(
+      function(a, b) {
+        return a.label.localeCompare(b.label);
+      });
+    offerObject.facilities = sortedFacilities;
+
+    cachedOffer = offerObject;
+    cachedOffer.updateTranslationState();
+
+    $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
+    $scope.offerType = $scope.event.url.split('/').shift();
+    $scope.translatedOfferType = $translate.instant('offerTypes.' +  $scope.event.type.label);
+    controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
+    controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
+    controller.fetching = false;
+    watchLabels();
+    return cachedOffer;
+  }
 
   // initialize controller and take optional event actions
   $q.when(controller.init())

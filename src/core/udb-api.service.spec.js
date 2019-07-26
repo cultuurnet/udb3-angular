@@ -1535,7 +1535,10 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend
       .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&start=0&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
-      .respond(JSON.stringify(response));
+      .respond(function(response){
+        console.log(response);
+        JSON.stringify(response)
+      });
     service
       .getDashboardItems(1)
       .then();
