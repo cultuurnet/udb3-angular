@@ -101,12 +101,14 @@
      * @param {PagedCollection} results
      */
     function setItemViewerResults(results) {
-      results.member = results.member.map(function(member) {
-        var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
-        memberContext = memberContext.charAt(0).toUpperCase() + memberContext.slice(1);
-        member['@type'] = (member['@type']) ? member['@type'] : memberContext;
-        return member;
-      });
+      if(results.member){
+        results.member = results.member.map(function(member) {
+          var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
+          memberContext = memberContext.charAt(0).toUpperCase() + memberContext.slice(1);
+          member['@type'] = (member['@type']) ? member['@type'] : memberContext;
+          return member;
+        });
+      }
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
       $document.scrollTop(0);
