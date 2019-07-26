@@ -5762,7 +5762,7 @@ function UdbApi(
   this.getDashboardItems = function(page) {
     var params = {
       'disableDefaultFilters': true,
-      'workflowStatus': 'DRAFT, READY_FOR_VALIDATION, APPROVED, REJECTED',
+      'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED',
       'sort[modified]': 'desc',
       'limit': 50,
       'start': (page - 1) * 50
