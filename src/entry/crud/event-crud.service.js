@@ -14,7 +14,6 @@ angular
 function EventCrud(
   udbApi,
   udbUitpasApi,
-  DeleteOfferJob,
   $rootScope,
   $q,
   offerLocator

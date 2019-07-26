@@ -5762,8 +5762,8 @@ function UdbApi(
   this.getDashboardItems = function(page) {
     var params = {
       'disableDefaultFilters': true,
+      'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED',
       'sort[modified]': 'desc',
-      'sort[created]': 'asc',
       'limit': 50,
       'start': (page - 1) * 50
     };
@@ -8508,7 +8508,6 @@ angular
 function EventCrud(
   udbApi,
   udbUitpasApi,
-  DeleteOfferJob,
   $rootScope,
   $q,
   offerLocator
@@ -8888,63 +8887,7 @@ function EventCrud(
   $rootScope.$on('eventTimingChanged', updateMajorInfo);
   $rootScope.$on('eventTitleChanged', updateMajorInfo);
 }
-EventCrud.$inject = ["udbApi", "udbUitpasApi", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
-})();
-
-// Source: src/entry/delete/delete-offer-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.DeleteOfferJob
- * @description
- * This is the factory that creates jobs to delete events and places.
- */
-angular
-  .module('udb.entry')
-  .factory('DeleteOfferJob', DeleteOfferJobFactory);
-
-/* @ngInject */
-function DeleteOfferJobFactory(BaseJob, $q, JobStates) {
-
-  /**
-   * @class DeleteOfferJob
-   * @constructor
-   * @param {string} commandId
-   * @param {UdbEvent|UdbPlace} item
-   */
-  var DeleteOfferJob = function (commandId, item) {
-    BaseJob.call(this, commandId);
-
-    this.item = item;
-    this.task = $q.defer();
-  };
-
-  DeleteOfferJob.prototype = Object.create(BaseJob.prototype);
-  DeleteOfferJob.prototype.constructor = DeleteOfferJob;
-
-  DeleteOfferJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve();
-    }
-  };
-
-  DeleteOfferJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-
-    this.task.reject();
-  };
-
-  DeleteOfferJob.prototype.getDescription = function() {
-    return 'Item verwijderen: "' +  this.item.name + '".';
-  };
-
-  return (DeleteOfferJob);
-}
-DeleteOfferJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
+EventCrud.$inject = ["udbApi", "udbUitpasApi", "$rootScope", "$q", "offerLocator"];
 })();
 
 // Source: src/entry/editing/offer-editor.service.js
@@ -9163,64 +9106,6 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
 OfferLabelBatchJobFactory.$inject = ["BaseJob", "JobStates"];
 })();
 
-// Source: src/entry/labelling/offer-label-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.OfferLabelJob
- * @description
- * # Event Label Job
- * This Is the factory that creates an event label job
- */
-angular
-  .module('udb.entry')
-  .factory('OfferLabelJob', OfferLabelJobFactory);
-
-/* @ngInject */
-function OfferLabelJobFactory(BaseJob, JobStates) {
-
-  /**
-   * @class OfferLabelJob
-   * @constructor
-   * @param {string} commandId
-   * @param {UdbEvent|UdbPlace} offer
-   * @param {string} label
-   * @param {boolean} unlabel set to true when unlabeling
-   */
-  var OfferLabelJob = function (commandId, offer, label, unlabel) {
-    BaseJob.call(this, commandId);
-    this.offer = offer;
-    this.label = label;
-    this.unlabel = !!unlabel || false;
-  };
-
-  OfferLabelJob.prototype = Object.create(BaseJob.prototype);
-  OfferLabelJob.prototype.constructor = OfferLabelJob;
-
-  OfferLabelJob.prototype.getDescription = function () {
-    var job = this,
-        description;
-
-    if (job.state === JobStates.FAILED) {
-      description = 'Labelen van evenement mislukt';
-    } else {
-      if (job.unlabel) {
-        description = 'Verwijder label "' + job.label + '" van "' + job.offer.name.nl + '"';
-      } else {
-        description = 'Label "' + job.offer.name.nl + '" met "' + job.label + '"';
-      }
-    }
-
-    return description;
-  };
-
-  return (OfferLabelJob);
-}
-OfferLabelJobFactory.$inject = ["BaseJob", "JobStates"];
-})();
-
 // Source: src/entry/labelling/offer-label-modal.controller.js
 (function () {
 'use strict';
@@ -9329,7 +9214,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $uibModal) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q) {
   var offerLabeller = this;
 
   /**
@@ -9363,23 +9248,10 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} labelName
    */
   this.label = function (offer, labelName) {
-    var result = {
-      success: false,
-      name: labelName
-    };
-
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName))
-      .then(function(response) {
+      .then(function() {
         offer.label(labelName);
-        result.success = true;
-        result.message = response.id;
-        return result;
-      })
-      .catch(function(error) {
-        result.message = error.data.title;
-        return result;
       });
   };
 
@@ -9387,19 +9259,14 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * Unlabel a label from an event
    * @param {UdbEvent|UdbPlace} offer
    * @param {string} labelName
-   *
-   * @return {Promise.<OfferLabelJob|ApiProblem>}
+   * @return {Promise}
    */
   this.unlabel = function (offer, labelName) {
-    function eagerlyUnlabelAndPassOnResponse(response) {
-      offer.unlabel(labelName);
-      return response;
-    }
-
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
-      .then(eagerlyUnlabelAndPassOnResponse)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName, true));
+      .then(function () {
+        offer.unlabel(labelName);
+      });
   };
 
   /**
@@ -9443,7 +9310,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
-OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$uibModal"];
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
 })();
 
 // Source: src/entry/labelling/query-label-job.factory.js
@@ -10005,75 +9872,6 @@ function udbWorkIndicator ($window, jobLogger) {
 udbWorkIndicator.$inject = ["$window", "jobLogger"];
 })();
 
-// Source: src/entry/translation/offer-translation-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.OfferTranslationJob
- * @description
- * # Offer Label Job
- * This Is the factory that creates an offer label job
- */
-angular
-  .module('udb.entry')
-  .factory('OfferTranslationJob', OfferTranslationJobFactory);
-
-/* @ngInject */
-function OfferTranslationJobFactory(BaseJob, JobStates) {
-
-  /**
-   * @class OfferTranslationJob
-   * @constructor
-   * @param {string} commandId
-   * @param {UdbEvent|UdbPlace} offer
-   * @param {string} property
-   * @param {string} language
-   * @param {string} translation
-   */
-  var OfferTranslationJob = function (commandId, offer, property, language, translation) {
-    BaseJob.call(this, commandId);
-    this.offer = offer;
-    this.property = property;
-    this.language = language;
-    this.translation = translation;
-  };
-
-  OfferTranslationJob.prototype = Object.create(BaseJob.prototype);
-  OfferTranslationJob.prototype.constructor = OfferTranslationJob;
-
-  OfferTranslationJob.prototype.getDescription = function () {
-    var job = this,
-        description;
-
-    if (this.state === JobStates.FAILED) {
-      description = 'Vertalen van aanbod mislukt';
-    } else {
-      var propertyName;
-
-      switch (job.property) {
-        case 'name':
-          propertyName = 'titel';
-          break;
-        case 'description':
-          propertyName = 'omschrijving';
-          break;
-        default:
-          propertyName = job.property;
-      }
-
-      description = 'Vertaal ' + propertyName + ' van "' + job.offer.name.nl + '"';
-    }
-
-    return description;
-  };
-
-  return (OfferTranslationJob);
-}
-OfferTranslationJobFactory.$inject = ["BaseJob", "JobStates"];
-})();
-
 // Source: src/entry/translation/offer-translator.service.js
 (function () {
 'use strict';
@@ -10090,8 +9888,7 @@ angular
   .service('offerTranslator', OfferTranslator);
 
 /* @ngInject */
-function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
-
+function OfferTranslator(udbApi) {
   /**
    * Translates an offer property to a given language and adds the job to the logger
    *
@@ -10101,38 +9898,26 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
    * @param {string}  translation Translation to save
    */
   this.translateProperty = function (offer, property, language, translation) {
-    function logTranslationJob(response) {
-      var jobData = response.data;
-
-      if (property === 'title') {
-        property = 'name';
-      }
-
-      offer[property][language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, property, language, translation);
-      jobLogger.addJob(job);
+    if (property === 'title') {
+      property = 'name';
     }
 
     return udbApi
       .translateProperty(offer.apiUrl, property, language, translation)
-      .then(logTranslationJob);
+      .then(function () {
+        offer[property][language] = translation;
+      });
   };
 
   this.translateAddress = function (offer, language, translation) {
-    function logTranslationJob(response) {
-      var jobData = response.data;
-
-      offer.address[language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, 'address', language, translation);
-      jobLogger.addJob(job);
-    }
-
     return udbApi
-        .translateAddress(offer.id, language, translation)
-        .then(logTranslationJob);
+      .translateAddress(offer.id, language, translation)
+      .then(function () {
+        offer.address[language] = translation;
+      });
   };
 }
-OfferTranslator.$inject = ["jobLogger", "udbApi", "OfferTranslationJob"];
+OfferTranslator.$inject = ["udbApi"];
 })();
 
 // Source: src/event-detail/event-detail.directive.js
