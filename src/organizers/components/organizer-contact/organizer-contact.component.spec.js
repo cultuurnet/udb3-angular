@@ -131,15 +131,4 @@ describe('Component: Organizer Contact', function() {
     expect(component.contact).toEqual(expectedContact);
   });
 
-
-  it('should verify if contact url is valid according to the regex', function(){
-    component = getComponent();
-    var regexp = component.contactUrlRegex;
-    var mockUrls= MockData.urls;
-    mockUrls.map(function(mockUrl){
-      expect(regexp.test(mockUrl.url)).toEqual(mockUrl.valid);
-    });
-  });
-
-
 });
