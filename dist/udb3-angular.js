@@ -8524,6 +8524,10 @@ function EventCrud(
       return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
 
+    if (majorInfo.location && majorInfo.location.id) {
+      majorInfo.location = majorInfo.location.id;
+    }
+
     return majorInfo;
   }
 
