@@ -26,7 +26,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
 
   moc.loading = true;
   moc.offer = {};
-  moc.sendingJob = false;
   moc.error = false;
 
   moc.isReadyForValidation = isReadyForValidation;
@@ -69,17 +68,13 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   }
 
   function approve() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .approve(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function askForRejectionReasons() {
@@ -111,45 +106,33 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
    * an offer can be rejected without a reason added.
    */
   function rejectWithReason(reason) {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .reject(moc.offer, reason)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function flagAsDuplicate() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .flagAsDuplicate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function flagAsInappropriate() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .flagAsInappropriate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   /**

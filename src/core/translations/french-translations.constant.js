@@ -457,6 +457,7 @@ angular.module('udb.core')
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter',
+      'zip': 'Code postal',
       'nlPostalCode_validation': 'Code postal est un domaine obligatoire.',
       'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
@@ -540,7 +541,7 @@ angular.module('udb.core')
         'add_new_organizer': 'Ajouter un nouvel organisateur',
         'organizer_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisateur.',
         'contact': 'Contact & réservation',
-        'add_contact': 'Ajouter les coordonnées',
+        'add_contact': 'Ajouter plus de coordonnées',
         'website': 'Site web',
         'phone': 'Numéro de téléphone',
         'e-mail': 'Adresse mail',
@@ -561,7 +562,7 @@ angular.module('udb.core')
         'copyright': 'Copyright',
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
-        'add_image': 'Ajouter un image',
+        'add_image': 'Ajouter une image',
         age: {
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
@@ -672,7 +673,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Pas publié',
       'READY_FOR_VALIDATION': 'Prêt à être publié',
-      'APPROVED': 'Publié',
+      'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
       'DELETED': 'Pas publié',
       'rules': 'Regardez les règles',
@@ -750,7 +751,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'L\'heure de début et de fin est obligatoire quand un événement ne dure pas toute la journée.',
       'startBeforeEndDay': 'La date de fin ne peut pas tomber avant la date de début.',
-      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.'
+      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.',
+      'tooFarInFuture': 'La date de fin et la date de début choisies ne peuvent pas dépasser 10 ans.'
     },
     uitpas: {
       uitpasInfo: {

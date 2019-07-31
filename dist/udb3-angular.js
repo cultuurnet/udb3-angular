@@ -2333,34 +2333,21 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByZipcode = function(zipcode, country) {
 
     var deferredPlaces = $q.defer();
-
-    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
-
-    var url = appConfig.baseUrl + 'places';
+    var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
-        'zipcode': zipcode,
-        'country': country
+        'postalCode': zipcode,
+        'addressCountry': country,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
       }
     };
-
-    if (placesApi === 'sapi3') {
-      url = appConfig.baseUrl + 'places/';
-      config = {
-        headers: {
-          'X-Api-Key': _.get(appConfig, 'apiKey')
-        },
-        params: {
-          'postalCode': zipcode,
-          'addressCountry': country,
-          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
-          'disableDefaultFilters': true,
-          'embed': true,
-          'limit': 1000,
-          'sort[created]': 'asc'
-        }
-      };
-    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -2391,35 +2378,21 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByCity = function(city, country) {
 
     var deferredPlaces = $q.defer();
-
-    var placesApi = _.get(appConfig, 'places.defaultApi', 'udb3');
-
-    var url = appConfig.baseUrl + 'places';
+    var url = appConfig.baseUrl + 'places/';
     var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
       params: {
-        'city': city,
-        'zipcode': '',
-        'country': country
+        'q': 'address.\\*.addressLocality:' + city,
+        'addressCountry': country,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
       }
     };
-
-    if (placesApi === 'sapi3') {
-      url = appConfig.baseUrl + 'places/';
-      config = {
-        headers: {
-          'X-Api-Key': _.get(appConfig, 'apiKey')
-        },
-        params: {
-          'q': 'address.\\*.addressLocality:' + city,
-          'addressCountry': country,
-          'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
-          'disableDefaultFilters': true,
-          'embed': true,
-          'limit': 1000,
-          'sort[created]': 'asc'
-        }
-      };
-    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -3407,7 +3380,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Niet gepubliceerd',
       'READY_FOR_VALIDATION': 'Gepubliceerd',
-      'APPROVED': 'Gepubliceerd',
+      'APPROVED': 'Online vanaf',
       'REJECTED': 'Publicatie afgewezen',
       'DELETED': 'Niet gepubliceerd',
       'rules': 'Bekijk de regels',
@@ -4262,6 +4235,7 @@ angular.module('udb.core')
       'invalid_street': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
       'cancel': 'Annuler',
       'add': 'Ajouter',
+      'zip': 'Code postal',
       'nlPostalCode_validation': 'Code postal est un domaine obligatoire.',
       'invalid_PostalCode': 'Il semble que le code postale n\'est pas valable. Un code postal comporte 4 chiffres et 2 lettres sans espace.'
     },
@@ -4345,7 +4319,7 @@ angular.module('udb.core')
         'add_new_organizer': 'Ajouter un nouvel organisateur',
         'organizer_error': 'Il y a eu une erreur dans l\'enregistrement de l\'organisateur.',
         'contact': 'Contact & réservation',
-        'add_contact': 'Ajouter les coordonnées',
+        'add_contact': 'Ajouter plus de coordonnées',
         'website': 'Site web',
         'phone': 'Numéro de téléphone',
         'e-mail': 'Adresse mail',
@@ -4366,7 +4340,7 @@ angular.module('udb.core')
         'copyright': 'Copyright',
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
-        'add_image': 'Ajouter un image',
+        'add_image': 'Ajouter une image',
         age: {
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
@@ -4477,7 +4451,7 @@ angular.module('udb.core')
       'id': 'ID',
       'DRAFT': 'Pas publié',
       'READY_FOR_VALIDATION': 'Prêt à être publié',
-      'APPROVED': 'Publié',
+      'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
       'DELETED': 'Pas publié',
       'rules': 'Regardez les règles',
@@ -4555,7 +4529,8 @@ angular.module('udb.core')
     'TIME_SPAN_REQUIREMENTS': {
       'timedWhenNotAllDay': 'L\'heure de début et de fin est obligatoire quand un événement ne dure pas toute la journée.',
       'startBeforeEndDay': 'La date de fin ne peut pas tomber avant la date de début.',
-      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.'
+      'startBeforeEnd': 'L\'heure de fin ne peut pas tomber avant l\'heure de début.',
+      'tooFarInFuture': 'La date de fin et la date de début choisies ne peuvent pas dépasser 10 ans.'
     },
     uitpas: {
       uitpasInfo: {
@@ -5520,7 +5495,7 @@ function UdbApi(
   this.deleteOrganization = function (organization) {
     return $http
       .delete(organization['@id'], defaultApiConfig)
-      .then(returnJobData, returnApiProblem);
+      .catch(returnApiProblem);
   };
 
   /**
@@ -5668,8 +5643,7 @@ function UdbApi(
         itemLocation + '/images',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5692,8 +5666,7 @@ function UdbApi(
         itemLocation + '/images/' + imageId,
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5708,7 +5681,7 @@ function UdbApi(
     return $http.delete(
       itemLocation + '/images/' + imageId,
       defaultApiConfig
-    ).then(returnJobData);
+    );
   };
 
   /**
@@ -5729,8 +5702,7 @@ function UdbApi(
         itemLocation + '/images/main',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -5744,17 +5716,6 @@ function UdbApi(
       .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
-
-  /**
-   * @param {object} response
-   *  The response that is returned when creating a job.
-   *
-   * @return {Promise.<Object>}
-   *  The object containing the job data
-   */
-  function returnJobData(response) {
-    return $q.resolve(response.data);
-  }
 
   this.getOfferVariations = function (ownerId, purpose, offerUrl) {
     var parameters = {
@@ -5799,37 +5760,33 @@ function UdbApi(
    * @return {Promise.<PagedCollection>}
    */
   this.getDashboardItems = function(page) {
+    var params = {
+      'disableDefaultFilters': true,
+      'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED',
+      'sort[modified]': 'desc',
+      'limit': 50,
+      'start': (page - 1) * 50
+    };
+
+    var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
+
+    var tokenData = uitidAuth.getTokenData();
+    var userId = tokenData.uid;
+    var userEmail = tokenData.email;
+
+    if (createdByQueryMode === 'uuid') {
+      params.creator = userId;
+    } else if (createdByQueryMode === 'email') {
+      params.creator = userEmail;
+    } else if (createdByQueryMode === 'mixed') {
+      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+    }
+
     var requestConfig = _.cloneDeep(defaultApiConfig);
-    if (page > 1) {
-      requestConfig.params.page = page;
-    }
-
-    var dashboardApi = _.get(appConfig, 'dashboard.defaultApi', 'udb3');
-    var dashboardPath = 'dashboard/items';
-    if (dashboardApi === 'sapi3') {
-      dashboardPath = 'offers/';
-
-      requestConfig.params.disableDefaultFilters = true;
-      requestConfig.params['sort[modified]'] = 'desc';
-      requestConfig.params['sort[created]'] = 'asc';
-
-      var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
-
-      var tokenData = uitidAuth.getTokenData();
-      var userId = tokenData.uid;
-      var userEmail = tokenData.email;
-
-      if (createdByQueryMode === 'uuid') {
-        requestConfig.params.creator = userId;
-      } else if (createdByQueryMode === 'email') {
-        requestConfig.params.creator = userEmail;
-      } else if (createdByQueryMode === 'mixed') {
-        requestConfig.params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
-      }
-    }
+    requestConfig.params = params;
 
     return $http
-      .get(appConfig.baseUrl + dashboardPath, requestConfig)
+      .get(appConfig.baseUrl + 'offers/', requestConfig)
       .then(returnUnwrappedData);
   };
 
@@ -6911,6 +6868,9 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
     updateTranslationState: function (organizer) {
       organizer = organizer || this;
       updateTranslationState(organizer);
+    },
+    regex : {
+      url: new RegExp(/^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i)
     }
   };
 
@@ -8100,7 +8060,9 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
           }
         }
       });
-      modalInstance.result.then(updateItemViewerOnJobFeedback);
+      modalInstance.result.then(function () {
+        item.showDeleted = true;
+      });
     }
 
     function openPlaceDeleteConfirmModal(place) {
@@ -8119,7 +8081,9 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
           }
         });
 
-        modalInstance.result.then(updateItemViewerOnJobFeedback);
+        modalInstance.result.then(function () {
+          place.showDeleted = true;
+        });
       }
 
       function showModalWithEvents(events) {
@@ -8130,17 +8094,6 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       eventCrud
         .findEventsAtPlace(place.apiUrl)
         .then(showModalWithEvents);
-    }
-
-    /**
-     * @param {EventCrudJob} job
-     */
-    function updateItemViewerOnJobFeedback(job) {
-      function unlockItem() {
-        job.item.showDeleted = false;
-      }
-
-      job.task.promise.then(updateItemViewer, unlockItem);
     }
 
     /**
@@ -8537,114 +8490,6 @@ function udbJobLogo() {
 }
 })();
 
-// Source: src/entry/crud/event-crud-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.EventCreationJob
- * @description
- * This Is the factory that creates an event creation job.
- */
-angular
-  .module('udb.entry')
-  .factory('EventCrudJob', EventCrudJobFactory);
-
-/* @ngInject */
-function EventCrudJobFactory(BaseJob, $q, JobStates) {
-
-  /**
-   * @class EventCrudJob
-   * @constructor
-   * @param {string} commandId
-   * @param {EventFormData} item
-   * @param {string} action
-   */
-  var EventCrudJob = function (commandId, item, action) {
-    BaseJob.call(this, commandId);
-    this.item = item;
-    this.action = action;
-    this.task = $q.defer();
-  };
-
-  EventCrudJob.prototype = Object.create(BaseJob.prototype);
-  EventCrudJob.prototype.constructor = EventCrudJob;
-
-  EventCrudJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-    this.task.resolve(this.item.apiUrl);
-  };
-
-  EventCrudJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-    this.task.reject();
-  };
-
-  EventCrudJob.prototype.getDescription = function() {
-
-    switch (this.action) {
-
-      case 'createEvent':
-        return 'Evenement toevoegen: "' + this.item.name.nl + '".';
-
-      case 'createPlace':
-        return 'Locatie toevoegen: "' + this.item.name.nl + '".';
-
-      case 'updateDescription':
-        return 'Beschrijving aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateTypicalAgeRange':
-        return 'Leeftijd aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateOrganizer':
-        return 'Organisator aanpassen: "' + this.item.name.nl + '".';
-
-      case 'createOrganizer':
-        return 'Organisatie toevoegen: "' + this.item.name.nl + '".';
-
-      case 'deleteOrganizer':
-        return 'Organisatie verwijderen: "' + this.item.name.nl + '".';
-
-      case 'updateContactPoint':
-        return 'Contact informatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateBookingInfo':
-        return 'Reservatie informatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateExtraInfo':
-        return 'Extra informatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'updateFacilities':
-        return 'Voorzieningen aanpassen: "' + this.item.name.nl + '".';
-
-      case 'addImage':
-        return 'Afbeelding toevoegen: "' + this.item.name.nl + '".';
-
-      case 'updateImage':
-        return 'Afbeelding aanpassen: "' + this.item.name.nl + '".';
-
-      case 'deleteImage':
-        return 'Afbeelding verwijderen: "' + this.item.name.nl + '".';
-
-      case 'updateMajorInfo':
-        return 'Hoofdinformatie aanpassen: "' +  this.item.name.nl + '".';
-
-      case 'updatePriceInfo':
-        return 'Prijsinformatie aanpassen: "' + this.item.name.nl + '".';
-
-      case 'publishOffer':
-        return 'Aanbod publiceren: "' + this.item.name.nl + '".';
-
-    }
-
-  };
-
-  return (EventCrudJob);
-}
-EventCrudJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
-})();
-
 // Source: src/entry/crud/event-crud.service.js
 (function () {
 'use strict';
@@ -8661,11 +8506,8 @@ angular
 
 /* @ngInject */
 function EventCrud(
-  jobLogger,
   udbApi,
   udbUitpasApi,
-  EventCrudJob,
-  DeleteOfferJob,
   $rootScope,
   $q,
   offerLocator
@@ -8740,21 +8582,16 @@ function EventCrud(
    *
    * @param {UdbPlace|UdbEvent} offer
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.deleteOffer = function (offer) {
-    function logJobAndFlagAsDeleted(response) {
-      var jobData = response.data;
-      var job = new DeleteOfferJob(jobData.commandId, offer);
+    function flagAsDeleted() {
       offer.showDeleted = true;
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
     }
 
     return udbApi
       .deleteOffer(offer)
-      .then(logJobAndFlagAsDeleted);
+      .then(flagAsDeleted);
   };
 
   /**
@@ -8766,7 +8603,7 @@ function EventCrud(
 
     udbApi
       .updateMajorInfo(eventFormData.apiUrl, majorInfo)
-      .then(jobCreatorFactory(eventFormData, 'updateItem'));
+      .then(responseHandlerFactory(eventFormData));
   };
 
   /**
@@ -8780,19 +8617,19 @@ function EventCrud(
    * Update the main language description and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateDescription = function(item) {
     return udbApi
       .translateProperty(item.apiUrl, 'description', item.mainLanguage, item.description[item.mainLanguage])
-      .then(jobCreatorFactory(item, 'updateDescription'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update the adress of a place and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.translateAddress = function(item) {
     return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
@@ -8802,7 +8639,7 @@ function EventCrud(
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateTypicalAgeRange = function(item) {
     return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
@@ -8812,48 +8649,48 @@ function EventCrud(
    * Update the typical age range and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.deleteTypicalAgeRange = function(item) {
     return udbApi
       .deleteTypicalAgeRange(item.apiUrl)
-      .then(jobCreatorFactory(item, 'updateTypicalAgeRange'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update the connected organizer and it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateOrganizer = function(item) {
     return udbApi
       .updateProperty(item.apiUrl, 'organizer', item.organizer.id)
-      .then(jobCreatorFactory(item, 'updateOrganizer'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Delete the organizer for the event / place.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.deleteOfferOrganizer = function(item) {
     return udbApi
       .deleteOfferOrganizer(item.apiUrl, item.organizer.id)
-      .then(jobCreatorFactory(item, 'deleteOrganizer'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update UiTPAS info for the event.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateEventUitpasData = function(item) {
     return udbUitpasApi
         .updateEventUitpasData(item.usedDistributionKeys, item.id)
-        .then(jobCreatorFactory(item, 'updateUitpasInfo'));
+        .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8866,47 +8703,22 @@ function EventCrud(
   };
 
   /**
-   * @param {EventFormData} item
-   * @param {string} jobName
-   *
-   * @return {Function}
-   *  Return a job creator that takes an http job creation response and turns it into a EventCrudJob promise.
-   */
-  function jobCreatorFactory(item, jobName) {
-    function jobCreator(response) {
-      var jobData = response.data ? response.data : response;
-      var job = new EventCrudJob(jobData.commandId, item, jobName);
-      addJobAndInvalidateCache(jobLogger, job);
-
-      return $q.resolve(job);
-    }
-
-    return jobCreator;
-  }
-
-  /**
    * Update the price info and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updatePriceInfo = function(item) {
     return udbApi
       .updatePriceInfo(item.apiUrl, item.priceInfo)
-      .then(function (response) {
-        var jobData = response.data;
-        var job = new EventCrudJob(jobData.commandId, item, 'updatePriceInfo');
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * Update the contact point and add it to the job logger.
    *
    * @param {EventFormData} item
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateContactPoint = function(item) {
     return updateOfferProperty(item, 'contactPoint', 'updateContactInfo');
@@ -8917,7 +8729,7 @@ function EventCrud(
    *
    * @param {EventFormData} item
    *
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateBookingInfo = function(item) {
     var allowedProperties = [
@@ -8933,14 +8745,6 @@ function EventCrud(
       return _.includes(allowedProperties, propertyName) && (_.isDate(property) || !_.isEmpty(property));
     });
 
-    if (bookingInfo.availabilityStarts) {
-      bookingInfo.availabilityStarts = bookingInfo.availabilityStarts;
-    }
-
-    if (bookingInfo.availabilityEnds) {
-      bookingInfo.availabilityEnds = bookingInfo.availabilityEnds;
-    }
-
     if (!_.has(bookingInfo, 'url')) {
       bookingInfo = _.omit(bookingInfo, 'urlLabel');
     }
@@ -8951,7 +8755,7 @@ function EventCrud(
 
     return udbApi
       .updateProperty(item.apiUrl, 'bookingInfo', bookingInfo)
-      .then(jobCreatorFactory(item, 'updateBookingInfo'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8959,30 +8763,24 @@ function EventCrud(
    * @param {string} propertyName
    * @param {string} jobName
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   function updateOfferProperty(offer, propertyName, jobName) {
     return udbApi
       .updateProperty(offer.apiUrl, propertyName, offer[propertyName])
-      .then(function (response) {
-        var jobData = response.data;
-        var job = new EventCrudJob(jobData.commandId, offer, jobName);
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(offer));
   }
 
   /**
    * @param {udbEvent|udbPlace} item
    * @param {Object[]} facilities
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.updateFacilities = function(item, facilities) {
     return udbApi
       .updateOfferFacilities(item.apiUrl, _.map(facilities, 'id'))
-      .then(jobCreatorFactory(item, 'updateFacilities'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8990,14 +8788,14 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {MediaObject} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.addImage = function(item, image) {
     var imageId = image.id || image['@id'].split('/').pop();
 
     return udbApi
       .addImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'addImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -9007,14 +8805,14 @@ function EventCrud(
    * @param {MediaObject} image
    * @param {string} description
    * @param {string} copyrightHolder
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.updateImage = function(item, image, description, copyrightHolder) {
     var imageId = image['@id'].split('/').pop();
 
     return udbApi
       .updateImage(item.apiUrl, imageId, description, copyrightHolder)
-      .then(jobCreatorFactory(item, 'updateImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -9022,14 +8820,14 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {image} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.removeImage = function(item, image) {
     var imageId = image['@id'].split('/').pop();
 
     return udbApi
       .removeImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'removeImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -9037,14 +8835,14 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {image} image
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.selectMainImage = function (item, image) {
     var imageId = image['@id'].split('/').pop();
 
     return udbApi
       .selectMainImage(item.apiUrl, imageId)
-      .then(jobCreatorFactory(item, 'selectMainImage'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -9052,30 +8850,24 @@ function EventCrud(
    *
    * @param {EventFormData} item
    * @param {string} audienceType
-   * @returns {Promise.<EventCrudJob>}
+   * @returns {Promise}
    */
   service.setAudienceType = function (item, audienceType) {
     return udbApi
       .setAudienceType(item.apiUrl, audienceType)
-      .then(jobCreatorFactory(item, 'setAudienceType'));
+      .then(responseHandlerFactory(item));
   };
 
   /**
    * @param {EventFormData} offer
    * @param {Date} [publicationDate]
    *
-   * @return {Promise.<EventCrudJob>}
+   * @return {Promise}
    */
   service.publishOffer = function(offer, publicationDate) {
     return udbApi
       .publishOffer(offer.apiUrl, publicationDate)
-      .then(function (response) {
-        var job = new EventCrudJob(response.commandId, offer, 'publishOffer');
-
-        addJobAndInvalidateCache(jobLogger, job);
-
-        return $q.resolve(job);
-      });
+      .then(responseHandlerFactory(offer));
   };
 
   /**
@@ -9086,17 +8878,12 @@ function EventCrud(
     service.updateMajorInfo(eventFormData);
   }
 
-  /**
-   * @param {JobLogger} jobLogger
-   * @param {EventCrudJob} job
-     */
-  function addJobAndInvalidateCache(jobLogger, job) {
-    jobLogger.addJob(job);
+  function responseHandlerFactory(offer) {
+    function responseHandler(response) {
+      udbApi.removeItemFromCache(offer.apiUrl.toString());
+    }
 
-    // unvalidate cache on success
-    job.task.promise.then(function (offerLocation) {
-      udbApi.removeItemFromCache(offerLocation.toString());
-    }, function() {});
+    return responseHandler;
   }
 
   $rootScope.$on('eventTypeChanged', updateMajorInfo);
@@ -9104,63 +8891,7 @@ function EventCrud(
   $rootScope.$on('eventTimingChanged', updateMajorInfo);
   $rootScope.$on('eventTitleChanged', updateMajorInfo);
 }
-EventCrud.$inject = ["jobLogger", "udbApi", "udbUitpasApi", "EventCrudJob", "DeleteOfferJob", "$rootScope", "$q", "offerLocator"];
-})();
-
-// Source: src/entry/delete/delete-offer-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.DeleteOfferJob
- * @description
- * This is the factory that creates jobs to delete events and places.
- */
-angular
-  .module('udb.entry')
-  .factory('DeleteOfferJob', DeleteOfferJobFactory);
-
-/* @ngInject */
-function DeleteOfferJobFactory(BaseJob, $q, JobStates) {
-
-  /**
-   * @class DeleteOfferJob
-   * @constructor
-   * @param {string} commandId
-   * @param {UdbEvent|UdbPlace} item
-   */
-  var DeleteOfferJob = function (commandId, item) {
-    BaseJob.call(this, commandId);
-
-    this.item = item;
-    this.task = $q.defer();
-  };
-
-  DeleteOfferJob.prototype = Object.create(BaseJob.prototype);
-  DeleteOfferJob.prototype.constructor = DeleteOfferJob;
-
-  DeleteOfferJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve();
-    }
-  };
-
-  DeleteOfferJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-
-    this.task.reject();
-  };
-
-  DeleteOfferJob.prototype.getDescription = function() {
-    return 'Item verwijderen: "' +  this.item.name + '".';
-  };
-
-  return (DeleteOfferJob);
-}
-DeleteOfferJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
+EventCrud.$inject = ["udbApi", "udbUitpasApi", "$rootScope", "$q", "offerLocator"];
 })();
 
 // Source: src/entry/editing/offer-editor.service.js
@@ -9379,64 +9110,6 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
 OfferLabelBatchJobFactory.$inject = ["BaseJob", "JobStates"];
 })();
 
-// Source: src/entry/labelling/offer-label-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.OfferLabelJob
- * @description
- * # Event Label Job
- * This Is the factory that creates an event label job
- */
-angular
-  .module('udb.entry')
-  .factory('OfferLabelJob', OfferLabelJobFactory);
-
-/* @ngInject */
-function OfferLabelJobFactory(BaseJob, JobStates) {
-
-  /**
-   * @class OfferLabelJob
-   * @constructor
-   * @param {string} commandId
-   * @param {UdbEvent|UdbPlace} offer
-   * @param {string} label
-   * @param {boolean} unlabel set to true when unlabeling
-   */
-  var OfferLabelJob = function (commandId, offer, label, unlabel) {
-    BaseJob.call(this, commandId);
-    this.offer = offer;
-    this.label = label;
-    this.unlabel = !!unlabel || false;
-  };
-
-  OfferLabelJob.prototype = Object.create(BaseJob.prototype);
-  OfferLabelJob.prototype.constructor = OfferLabelJob;
-
-  OfferLabelJob.prototype.getDescription = function () {
-    var job = this,
-        description;
-
-    if (job.state === JobStates.FAILED) {
-      description = 'Labelen van evenement mislukt';
-    } else {
-      if (job.unlabel) {
-        description = 'Verwijder label "' + job.label + '" van "' + job.offer.name.nl + '"';
-      } else {
-        description = 'Label "' + job.offer.name.nl + '" met "' + job.label + '"';
-      }
-    }
-
-    return description;
-  };
-
-  return (OfferLabelJob);
-}
-OfferLabelJobFactory.$inject = ["BaseJob", "JobStates"];
-})();
-
 // Source: src/entry/labelling/offer-label-modal.controller.js
 (function () {
 'use strict';
@@ -9545,7 +9218,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $uibModal) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q) {
   var offerLabeller = this;
 
   /**
@@ -9579,23 +9252,10 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} labelName
    */
   this.label = function (offer, labelName) {
-    var result = {
-      success: false,
-      name: labelName
-    };
-
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName))
-      .then(function(response) {
+      .then(function() {
         offer.label(labelName);
-        result.success = true;
-        result.message = response.id;
-        return result;
-      })
-      .catch(function(error) {
-        result.message = error.data.title;
-        return result;
       });
   };
 
@@ -9603,19 +9263,14 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * Unlabel a label from an event
    * @param {UdbEvent|UdbPlace} offer
    * @param {string} labelName
-   *
-   * @return {Promise.<OfferLabelJob|ApiProblem>}
+   * @return {Promise}
    */
   this.unlabel = function (offer, labelName) {
-    function eagerlyUnlabelAndPassOnResponse(response) {
-      offer.unlabel(labelName);
-      return response;
-    }
-
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
-      .then(eagerlyUnlabelAndPassOnResponse)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName, true));
+      .then(function () {
+        offer.unlabel(labelName);
+      });
   };
 
   /**
@@ -9659,7 +9314,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
       .then(returnSimilarLabels);
   };
 }
-OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelJob", "OfferLabelBatchJob", "QueryLabelJob", "$q", "$uibModal"];
+OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
 })();
 
 // Source: src/entry/labelling/query-label-job.factory.js
@@ -10221,75 +9876,6 @@ function udbWorkIndicator ($window, jobLogger) {
 udbWorkIndicator.$inject = ["$window", "jobLogger"];
 })();
 
-// Source: src/entry/translation/offer-translation-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.entry.OfferTranslationJob
- * @description
- * # Offer Label Job
- * This Is the factory that creates an offer label job
- */
-angular
-  .module('udb.entry')
-  .factory('OfferTranslationJob', OfferTranslationJobFactory);
-
-/* @ngInject */
-function OfferTranslationJobFactory(BaseJob, JobStates) {
-
-  /**
-   * @class OfferTranslationJob
-   * @constructor
-   * @param {string} commandId
-   * @param {UdbEvent|UdbPlace} offer
-   * @param {string} property
-   * @param {string} language
-   * @param {string} translation
-   */
-  var OfferTranslationJob = function (commandId, offer, property, language, translation) {
-    BaseJob.call(this, commandId);
-    this.offer = offer;
-    this.property = property;
-    this.language = language;
-    this.translation = translation;
-  };
-
-  OfferTranslationJob.prototype = Object.create(BaseJob.prototype);
-  OfferTranslationJob.prototype.constructor = OfferTranslationJob;
-
-  OfferTranslationJob.prototype.getDescription = function () {
-    var job = this,
-        description;
-
-    if (this.state === JobStates.FAILED) {
-      description = 'Vertalen van aanbod mislukt';
-    } else {
-      var propertyName;
-
-      switch (job.property) {
-        case 'name':
-          propertyName = 'titel';
-          break;
-        case 'description':
-          propertyName = 'omschrijving';
-          break;
-        default:
-          propertyName = job.property;
-      }
-
-      description = 'Vertaal ' + propertyName + ' van "' + job.offer.name.nl + '"';
-    }
-
-    return description;
-  };
-
-  return (OfferTranslationJob);
-}
-OfferTranslationJobFactory.$inject = ["BaseJob", "JobStates"];
-})();
-
 // Source: src/entry/translation/offer-translator.service.js
 (function () {
 'use strict';
@@ -10306,8 +9892,7 @@ angular
   .service('offerTranslator', OfferTranslator);
 
 /* @ngInject */
-function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
-
+function OfferTranslator(udbApi) {
   /**
    * Translates an offer property to a given language and adds the job to the logger
    *
@@ -10317,38 +9902,26 @@ function OfferTranslator(jobLogger, udbApi, OfferTranslationJob) {
    * @param {string}  translation Translation to save
    */
   this.translateProperty = function (offer, property, language, translation) {
-    function logTranslationJob(response) {
-      var jobData = response.data;
-
-      if (property === 'title') {
-        property = 'name';
-      }
-
-      offer[property][language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, property, language, translation);
-      jobLogger.addJob(job);
+    if (property === 'title') {
+      property = 'name';
     }
 
     return udbApi
       .translateProperty(offer.apiUrl, property, language, translation)
-      .then(logTranslationJob);
+      .then(function () {
+        offer[property][language] = translation;
+      });
   };
 
   this.translateAddress = function (offer, language, translation) {
-    function logTranslationJob(response) {
-      var jobData = response.data;
-
-      offer.address[language] = translation;
-      var job = new OfferTranslationJob(jobData.commandId, offer, 'address', language, translation);
-      jobLogger.addJob(job);
-    }
-
     return udbApi
-        .translateAddress(offer.id, language, translation)
-        .then(logTranslationJob);
+      .translateAddress(offer.id, language, translation)
+      .then(function () {
+        offer.address[language] = translation;
+      });
   };
 }
-OfferTranslator.$inject = ["jobLogger", "udbApi", "OfferTranslationJob"];
+OfferTranslator.$inject = ["udbApi"];
 })();
 
 // Source: src/event-detail/event-detail.directive.js
@@ -12235,12 +11808,8 @@ function EventFormOrganizerModalController(
   $q,
   organizerName,
   OrganizerManager,
-  appConfig,
-  citiesBE,
-  citiesNL
+  appConfig
 ) {
-
-  var controller = this;
 
   // Scope vars.
   $scope.organizer = organizerName;
@@ -12255,7 +11824,7 @@ function EventFormOrganizerModalController(
   $scope.organizers = [];
   $scope.selectedCity = '';
   $scope.disableSubmit = true;
-  $scope.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
+  $scope.contactUrlRegex = new UdbOrganizer().regex.url;
   $scope.newOrganizer = {
     mainLanguage: 'nl',
     website: 'http://',
@@ -12429,7 +11998,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName", "OrganizerManager", "appConfig", "citiesBE", "citiesNL"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName", "OrganizerManager", "appConfig"];
 })();
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
@@ -14648,13 +14217,12 @@ function EventFormPublishController(
     controller.error = '';
     eventCrud
       .publishOffer(EventFormData, controller.eventFormData.availableFrom)
-      .then(function(job) {
-        job.task.promise
-          .then(setEventAsReadyForValidation)
-          .then(redirectToDetailPage)
-          .catch(function() {
-            controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
-          });
+      .then(function() {
+        setEventAsReadyForValidation();
+        redirectToDetailPage();
+      })
+      .catch(function () {
+        controller.error = 'Dit event kon niet gepubliceerd worden, gelieve later opnieuw te proberen.';
       });
   }
 
@@ -16644,7 +16212,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
   });
 
   exporter.customizations = {
-    brand: exporter.brands[0].name,
+    brand: '',
     logo: exporter.exportLogoUrl + exporter.brands[0].logo,
     title: '',
     subtitle: '',
@@ -16684,7 +16252,7 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     customize: {
       name: 'customize',
       incomplete: function () {
-        return !exporter.customizations.brand || !exporter.customizations.title;
+        return !exporter.customizations.brand || !exporter.customizations.title || !exporter.customizations.template ;
       }
     },
     filter: {
@@ -16768,9 +16336,9 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
 
     if (isCustomized) {
       customizations = exporter.customizations;
-      customizations.logo = exporter.exportLogoUrl + exporter.selectedBrand.logo;
-      customizations.brand = exporter.selectedBrand.name;
-      customizations.template = exporter.selectedTemplate.name;
+      customizations.logo = exporter.exportLogoUrl + customizations.brand.logo;
+      customizations.brand = customizations.brand.name;
+      customizations.template = customizations.template.name;
       includedProperties = [];
     } else {
       customizations = {};
@@ -17038,7 +16606,7 @@ function LabelCreatorController(LabelManager, $uibModal, $state) {
   };
 
   function create() {
-    function goToOverview(jobInfo) {
+    function goToOverview() {
       $state.go('split.manageLabels.list');
     }
 
@@ -17096,8 +16664,8 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
   editor.save = save;
 
   function rename() {
-    function showRenamedLabel(jobInfo) {
-      loadLabel(jobInfo.labelId);
+    function showRenamedLabel(response) {
+      loadLabel(response.uuid);
     }
 
     editor.renaming = true;
@@ -17106,6 +16674,7 @@ function LabelEditorController(LabelManager, $uibModal, $stateParams, $q) {
       .then(showRenamedLabel, showProblem)
       .finally(function () {
         editor.renaming = false;
+        editor.saving = false;
       });
   }
 
@@ -17244,7 +16813,7 @@ angular
   .service('LabelManager', LabelManager);
 
 /* @ngInject */
-function LabelManager(udbApi, jobLogger, BaseJob, $q) {
+function LabelManager(udbApi) {
   var service = this;
 
   /**
@@ -17272,99 +16841,69 @@ function LabelManager(udbApi, jobLogger, BaseJob, $q) {
    * @param {boolean} isVisible
    * @param {boolean} isPrivate
    *
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.create = function (name, isVisible, isPrivate) {
     return udbApi
-      .createLabel(name, isVisible, isPrivate)
-      .then(createNewLabelJob);
+      .createLabel(name, isVisible, isPrivate);
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.copy = function (label) {
     return udbApi
-      .createLabel(label.name, label.isVisible, label.isPrivate, label.uuid)
-      .then(createNewLabelJob);
+      .createLabel(label.name, label.isVisible, label.isPrivate, label.uuid);
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.delete = function (label) {
     return udbApi
-      .deleteLabel(label.uuid)
-      .then(logLabelJob);
+      .deleteLabel(label.uuid);
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makeInvisible = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakeInvisible')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakeInvisible');
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makeVisible = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakeVisible')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakeVisible');
   };
 
   /**
    *
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makePrivate = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakePrivate')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakePrivate');
   };
 
   /**
    * @param {Label} label
-   * @return {Promise.<BaseJob>}
+   * @return {Promise}
    */
   service.makePublic = function (label) {
     return udbApi
-      .updateLabel(label.uuid, 'MakePublic')
-      .then(logLabelJob);
+      .updateLabel(label.uuid, 'MakePublic');
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logLabelJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function createNewLabelJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    job.labelId = commandInfo.uuid;
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
-LabelManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q"];
+LabelManager.$inject = ["udbApi"];
 })();
 
 // Source: src/management/labels/labels-list.controller.js
@@ -17749,7 +17288,6 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
 
   moc.loading = true;
   moc.offer = {};
-  moc.sendingJob = false;
   moc.error = false;
 
   moc.isReadyForValidation = isReadyForValidation;
@@ -17792,17 +17330,13 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   }
 
   function approve() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .approve(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function askForRejectionReasons() {
@@ -17834,45 +17368,33 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
    * an offer can be rejected without a reason added.
    */
   function rejectWithReason(reason) {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .reject(moc.offer, reason)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function flagAsDuplicate() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .flagAsDuplicate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   function flagAsInappropriate() {
-    moc.sendingJob = true;
     moc.error = false;
     ModerationService
       .flagAsInappropriate(moc.offer)
       .then(function() {
         moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
       })
-      .catch(showProblem)
-      .finally(function() {
-        moc.sendingJob = false;
-      });
+      .catch(showProblem);
   }
 
   /**
@@ -17914,10 +17436,12 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
 
   moc.loading = true;
   moc.offer = {};
-  moc.sendingJob = false;
   moc.error = false;
   moc.uitId = _.get(appConfig, 'uitidUrl');
-  moc.isGodUser = isGodUser;
+  authorizationService.isGodUser()
+    .then(function (permission) {
+      moc.isGodUser = permission;
+    });
 
   // fetch offer
   ModerationService
@@ -17945,9 +17469,6 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 
-  function isGodUser() {
-    return authorizationService.isGodUser();
-  }
 }
 ModerationSummaryComponent.$inject = ["ModerationService", "jsonLDLangFilter", "authorizationService", "appConfig"];
 })();
@@ -18216,8 +17737,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.approve = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'Approve')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'Approve');
   };
 
   /**
@@ -18227,8 +17747,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.reject = function(offer, reason) {
     return udbApi
-      .patchOffer(offer['@id'], 'Reject', reason)
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'Reject', reason);
   };
 
   /**
@@ -18238,8 +17757,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.flagAsDuplicate = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'FlagAsDuplicate')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'FlagAsDuplicate');
   };
 
   /**
@@ -18249,20 +17767,8 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.flagAsInappropriate = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'FlagAsInappropriate')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'FlagAsInappropriate');
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logModerationJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
 ModerationService.$inject = ["udbApi", "OfferWorkflowStatus", "jobLogger", "BaseJob", "$q"];
 })();
@@ -18316,7 +17822,7 @@ angular
   .controller('OrganizationDeleteModalController', OrganizationDeleteModalController);
 
 /* @ngInject */
-function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization) {
+function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization, $rootScope) {
   var controller = this;
 
   controller.organization = organization;
@@ -18340,7 +17846,10 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
 
     OrganizerManager
       .delete(organization)
-      .then($uibModalInstance.close)
+      .then(function () {
+        $uibModalInstance.close();
+        $rootScope.$emit('organizationDeleted', organization);
+      })
       .catch(showError);
   }
 
@@ -18351,7 +17860,7 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
     $uibModalInstance.dismiss();
   }
 }
-OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization"];
+OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization", "$rootScope"];
 })();
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
@@ -18568,62 +18077,6 @@ function RoleDeleteConfirmModalController($scope, $uibModalInstance, RoleManager
 RoleDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "RoleManager", "item"];
 })();
 
-// Source: src/management/roles/delete-role-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.management.roles.DeleteRoleJob
- * @description
- * This is the factory that creates jobs to delete roles.
- */
-angular
-  .module('udb.management.roles')
-  .factory('DeleteRoleJob', DeleteRoleJobFactory);
-
-/* @ngInject */
-function DeleteRoleJobFactory(BaseJob, $q, JobStates) {
-
-  /**
-   * @class DeleteRoleJob
-   * @constructor
-   * @param {string} commandId
-   * @param {Role} role
-   */
-  var DeleteRoleJob = function (commandId, role) {
-    BaseJob.call(this, commandId);
-
-    this.role = role;
-    this.task = $q.defer();
-  };
-
-  DeleteRoleJob.prototype = Object.create(BaseJob.prototype);
-  DeleteRoleJob.prototype.constructor = DeleteRoleJob;
-
-  DeleteRoleJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve();
-    }
-  };
-
-  DeleteRoleJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-
-    this.task.reject();
-  };
-
-  DeleteRoleJob.prototype.getDescription = function() {
-    return 'Rol verwijderen: "' +  this.role.name + '".';
-  };
-
-  return (DeleteRoleJob);
-}
-DeleteRoleJobFactory.$inject = ["BaseJob", "$q", "JobStates"];
-})();
-
 // Source: src/management/roles/permission.constant.js
 (function () {
 'use strict';
@@ -18718,11 +18171,6 @@ function RoleFormController(
    * @type {TranslatedPermission[]}
    */
   editor.availablePermissions = [];
-  editor.originalRole = {
-    permissions: [],
-    users: [],
-    labels: []
-  };
   editor.errorMessage = false;
   editor.editName = false;
   editor.editConstraintV2 = false;
@@ -18761,8 +18209,6 @@ function RoleFormController(
       .get(roleId)
       .then(function(role) {
         editor.role = role;
-        editor.originalRole = role;
-
         editor.role.users = [];
         editor.role.labels = [];
         editor.role.permissions = _.filter(editor.availablePermissions, function (permission) {
@@ -18828,7 +18274,6 @@ function RoleFormController(
     roleId = response.roleId;
     // set uuid because a GET role would have a uuid as well
     editor.role.uuid = roleId;
-    editor.originalRole.uuid = roleId;
   }
 
   function createRole() {
@@ -18843,7 +18288,7 @@ function RoleFormController(
   }
 
   function constraintExists(version) {
-    return _.has(editor.originalRole.constraints, version);
+    return _.has(editor.role.constraints, version) && editor.role.constraints[version] !== null;
   }
 
   function createConstraint(version) {
@@ -18890,6 +18335,10 @@ function RoleFormController(
           }
           else {
             editor.editConstraintV2 = false;
+          }
+
+          if (_.has(editor.role.constraints, version)) {
+            delete(editor.role.constraints[version]);
           }
         }, showProblem)
         .finally(function() {
@@ -19071,7 +18520,7 @@ angular
   .service('RoleManager', RoleManager);
 
 /* @ngInject */
-function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob) {
+function RoleManager(udbApi) {
   var service = this;
 
   /**
@@ -19130,8 +18579,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.addPermissionToRole = function(permission, roleId) {
     return udbApi
-      .addPermissionToRole(permission, roleId)
-      .then(logRoleJob);
+      .addPermissionToRole(permission, roleId);
   };
 
   /**
@@ -19143,8 +18591,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.removePermissionFromRole = function(permission, roleId) {
     return udbApi
-      .removePermissionFromRole(permission, roleId)
-      .then(logRoleJob);
+      .removePermissionFromRole(permission, roleId);
   };
 
   /**
@@ -19152,12 +18599,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    *  The user you want to add a role to
    * @param {Role} role
    *  The role you want added to the user
-   * @return {Promise.<UserRoleJob>}
+   * @return {Promise}
    */
   service.addUserToRole = function(user, role) {
     return udbApi
-      .addUserToRole(user.uuid, role.uuid)
-      .then(userRoleJobCreator(user, role));
+      .addUserToRole(user.uuid, role.uuid);
   };
 
   /**
@@ -19167,8 +18613,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.updateRoleName = function(roleId, name) {
     return udbApi
-      .updateRoleName(roleId, name)
-      .then(logRoleJob);
+      .updateRoleName(roleId, name);
   };
 
   /**
@@ -19180,8 +18625,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.createRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-        .createRoleConstraint(roleId, version, constraint)
-        .then(logRoleJob);
+        .createRoleConstraint(roleId, version, constraint);
   };
 
   /**
@@ -19192,20 +18636,17 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.updateRoleConstraint = function(roleId, version, constraint) {
     return udbApi
-        .updateRoleConstraint(roleId, version, constraint)
-        .then(logRoleJob);
+        .updateRoleConstraint(roleId, version, constraint);
   };
 
   /**
    * @param {uuid} roleId
    * @param {string} version
-   * @param {string} constraint
    * @return {Promise}
    */
   service.removeRoleConstraint = function(roleId, version) {
     return udbApi
-        .removeRoleConstraint(roleId, version)
-        .then(logRoleJob);
+        .removeRoleConstraint(roleId, version);
   };
 
   /**
@@ -19215,8 +18656,7 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.addLabelToRole = function(roleId, labelId) {
     return udbApi
-      .addLabelToRole(roleId, labelId)
-      .then(logRoleJob);
+      .addLabelToRole(roleId, labelId);
   };
 
   /**
@@ -19235,19 +18675,17 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    */
   service.removeLabelFromRole = function(roleId, labelId) {
     return udbApi
-      .removeLabelFromRole(roleId, labelId)
-      .then(logRoleJob);
+      .removeLabelFromRole(roleId, labelId);
   };
 
   /**
    * @param {Role} role
    * @param {User} user
-   * @return {Promise.<UserRoleJob>}
+   * @return {Promise}
    */
   service.removeUserFromRole = function(role, user) {
     return udbApi
-      .removeUserFromRole(role.uuid, user.uuid)
-      .then(userRoleJobCreator(user, role));
+      .removeUserFromRole(role.uuid, user.uuid);
   };
 
   /**
@@ -19255,49 +18693,11 @@ function RoleManager(udbApi, jobLogger, BaseJob, $q, DeleteRoleJob, UserRoleJob)
    * @return {Promise}
    */
   service.deleteRole = function (role) {
-    function logDeleteJob(jobData) {
-      var job = new DeleteRoleJob(jobData.commandId, role);
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
-    }
-
     return udbApi
-      .removeRole(role.uuid)
-      .then(logDeleteJob);
+      .removeRole(role.uuid);
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logRoleJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
-
-  /**
-   * Returns a callable function that takes a command info and returns a user role job promise.
-   *
-   * @param {User} user
-   * @param {Role} role
-   */
-  function userRoleJobCreator(user, role) {
-    /**
-     * @param {CommandInfo} commandInfo
-     * @return {Promise.<UserRoleJob>}
-     */
-    return function(commandInfo) {
-      var job = new UserRoleJob(commandInfo.commandId, user, role);
-      jobLogger.addJob(job);
-
-      return $q.resolve(job);
-    };
-  }
 }
-RoleManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "DeleteRoleJob", "UserRoleJob"];
+RoleManager.$inject = ["udbApi"];
 })();
 
 // Source: src/management/roles/roles-list.controller.js
@@ -19650,7 +19050,6 @@ SearchService.$inject = ["$q"];
 
 /**
  * @callback ActionCallback
- * @param {Promise.<UserRoleJob>} job
  */
 
 /**
@@ -19901,81 +19300,6 @@ function UserManager(udbApi, $q) {
 UserManager.$inject = ["udbApi", "$q"];
 })();
 
-// Source: src/management/users/user-role-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.management.users.UserRoleJob
- * @description
- * # User Role Job
- * This Is the factory that creates a user role job
- */
-angular
-  .module('udb.management.users')
-  .factory('UserRoleJob', UserRoleJobFactory);
-
-/* @ngInject */
-function UserRoleJobFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class UserRoleJob
-   * @constructor
-   * @param {string} commandId
-   * @param {User} user
-   * @param {Role} role
-   */
-  var UserRoleJob = function (commandId, user, role) {
-    BaseJob.call(this, commandId);
-
-    this.role = role;
-    this.user = user;
-    this.task = $q.defer();
-  };
-
-  UserRoleJob.prototype = Object.create(BaseJob.prototype);
-  UserRoleJob.prototype.constructor = UserRoleJob;
-
-  UserRoleJob.prototype.finish = function () {
-    BaseJob.prototype.finish.call(this);
-
-    if (this.state !== JobStates.FAILED) {
-      this.task.resolve();
-    }
-  };
-
-  UserRoleJob.prototype.fail = function () {
-    BaseJob.prototype.fail.call(this);
-
-    this.task.reject();
-  };
-
-  UserRoleJob.prototype.getDescription = function () {
-    var job = this,
-      description;
-
-    var failedDescriptionTemplate = _.template(
-      'Het toekennen of verwijderen van de rol: "${role.name}" is mislukt voor "${user.username}".'
-    );
-    var descriptionTemplate = _.template(
-      'Toevoegen of verwijderen van de rol: "${role.name}" voor gebruiker "${user.username}".'
-    );
-
-    if (this.state === JobStates.FAILED) {
-      description = failedDescriptionTemplate(job);
-    } else {
-      description = descriptionTemplate(job);
-    }
-
-    return description;
-  };
-
-  return (UserRoleJob);
-}
-UserRoleJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
-})();
-
 // Source: src/management/users/users-list.controller.js
 (function () {
 'use strict';
@@ -20090,61 +19414,6 @@ function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $ui
 UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
 })();
 
-// Source: src/media/create-image-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.media.CreateImageJob
- * @description
- * # Image creation job
- * This factory creates a job that tracks image creation.
- */
-angular
-  .module('udb.media')
-  .factory('CreateImageJob', CreateImageJobFactory);
-
-/* @ngInject */
-function CreateImageJobFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class CreateImageJob
-   * @constructor
-   * @param {string} commandId
-   */
-  var CreateImageJob = function (commandId) {
-    BaseJob.call(this, commandId);
-    this.task = $q.defer();
-  };
-
-  CreateImageJob.prototype = Object.create(BaseJob.prototype);
-  CreateImageJob.prototype.constructor = CreateImageJob;
-
-  CreateImageJob.prototype.finish = function () {
-    if (this.state !== JobStates.FAILED) {
-      this.state = JobStates.FINISHED;
-      this.finished = new Date();
-    }
-    this.progress = 100;
-  };
-
-  CreateImageJob.prototype.info = function (jobInfo) {
-    this.task.resolve(jobInfo);
-  };
-
-  CreateImageJob.prototype.fail = function () {
-    this.finished = new Date();
-    this.state = JobStates.FAILED;
-    this.progress = 100;
-    this.task.reject('Failed to create an image object');
-  };
-
-  return (CreateImageJob);
-}
-CreateImageJobFactory.$inject = ["BaseJob", "JobStates", "$q"];
-})();
-
 // Source: src/media/media-manager.service.js
 (function () {
 'use strict';
@@ -20173,7 +19442,7 @@ angular
 /**
  * @ngInject
  */
-function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
+function MediaManager(jobLogger, appConfig, $q, udbApi) {
   var service = this;
 
   /**
@@ -20195,19 +19464,9 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       return allowedFileExtensions.indexOf(fileExtension) >= 0;
     }
 
-    function logCreateImageJob(uploadResponse) {
-      var jobData = uploadResponse.data;
-      var job = new CreateImageJob(jobData  .commandId);
-      jobLogger.addJob(job);
-
-      job.task.promise
-        .then(fetchAndReturnMedia);
-    }
-
-    function fetchAndReturnMedia(jobInfo) {
-      var imageId = _.get(jobInfo, 'file_id');
+    function fetchAndReturnMedia(response) {
       service
-        .getImage(imageId)
+        .getImage(response.data.imageId)
         .then(deferredMediaObject.resolve, deferredMediaObject.reject);
     }
 
@@ -20220,7 +19479,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
     } else {
       udbApi
         .uploadMedia(imageFile, description, copyrightHolder, language)
-        .then(logCreateImageJob, deferredMediaObject.reject);
+        .then(fetchAndReturnMedia, deferredMediaObject.reject);
     }
 
     return deferredMediaObject.promise;
@@ -20244,7 +19503,7 @@ function MediaManager(jobLogger, appConfig, CreateImageJob, $q, udbApi) {
       .then(returnMediaObject);
   };
 }
-MediaManager.$inject = ["jobLogger", "appConfig", "CreateImageJob", "$q", "udbApi"];
+MediaManager.$inject = ["jobLogger", "appConfig", "$q", "udbApi"];
 })();
 
 // Source: src/migration/event-migration-footer.component.js
@@ -21073,7 +20332,7 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent($scope, appConfig) {
+function OrganizerContactComponent($scope, UdbOrganizer) {
   var controller = this;
 
   controller.newContact = {};
@@ -21085,7 +20344,7 @@ function OrganizerContactComponent($scope, appConfig) {
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
-  controller.contactUrlRegex = _.get(appConfig, 'offerEditor.urlRegex');
+  controller.contactUrlRegex = new UdbOrganizer().regex.url;
 
   $scope.$on('organizerContactSubmit', function() {
     controller.organizerContactWrapper.$setSubmitted();
@@ -21163,7 +20422,7 @@ function OrganizerContactComponent($scope, appConfig) {
     }
   }, true);
 }
-OrganizerContactComponent.$inject = ["$scope", "appConfig"];
+OrganizerContactComponent.$inject = ["$scope", "UdbOrganizer"];
 })();
 
 // Source: src/organizers/detail/organizer-detail.controller.js
@@ -21254,10 +20513,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     $location.path('/manage/organizations');
   }
 
-  function goToOrganizerOverviewOnJobCompletion(job) {
-    job.task.promise.then(goToOrganizerOverview);
-  }
-
   function deleteOrganization() {
     openOrganizationDeleteConfirmModal(controller.organizer);
   }
@@ -21275,7 +20530,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     });
 
     modalInstance.result
-      .then(goToOrganizerOverviewOnJobCompletion);
+      .then(goToOrganizerOverview);
   }
 
   /**
@@ -21312,58 +20567,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   }
 }
 OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state"];
-})();
-
-// Source: src/organizers/organization-delete-job.factory.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udbApp.organizers.CreateDeleteOrganizerJob
- * @description
- * # Oragnizer deletion job
- * This factory creates a job that tracks organizer deletion.
- */
-angular
-  .module('udb.organizers')
-  .factory('CreateDeleteOrganizerJob', CreateDeleteOrganizerFactory);
-
-/* @ngInject */
-function CreateDeleteOrganizerFactory(BaseJob, JobStates, $q) {
-
-  /**
-   * @class CreateDeleteOrganizerJob
-   * @constructor
-   * @param {string} commandId
-   */
-  var CreateDeleteOrganizerJob = function (commandId) {
-    BaseJob.call(this, commandId);
-    this.task = $q.defer();
-  };
-
-  CreateDeleteOrganizerJob.prototype = Object.create(BaseJob.prototype);
-  CreateDeleteOrganizerJob.prototype.constructor = CreateDeleteOrganizerJob;
-
-  CreateDeleteOrganizerJob.prototype.finish = function () {
-    if (this.state !== JobStates.FAILED) {
-      this.state = JobStates.FINISHED;
-      this.finished = new Date();
-      this.task.resolve();
-    }
-    this.progress = 100;
-  };
-
-  CreateDeleteOrganizerJob.prototype.fail = function () {
-    this.finished = new Date();
-    this.state = JobStates.FAILED;
-    this.progress = 100;
-    this.task.reject('Failed to delete the organization');
-  };
-
-  return (CreateDeleteOrganizerJob);
-}
-CreateDeleteOrganizerFactory.$inject = ["BaseJob", "JobStates", "$q"];
 })();
 
 // Source: src/organizers/organizer-form.controller.js
@@ -21691,35 +20894,17 @@ angular
   .service('OrganizerManager', OrganizerManager);
 
 /* @ngInject */
-function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDeleteOrganizerJob) {
+function OrganizerManager(udbApi) {
   var service = this;
 
   /**
    * @param {UdbOrganizer} organization
+   * @returns {Promise}
    */
   service.delete = function (organization) {
     return udbApi
-      .deleteOrganization(organization)
-      .then(logOrganizationDeleted(organization));
+      .deleteOrganization(organization);
   };
-
-  /**
-   * @param {UdbOrganizer} organization
-   * @return {Function}
-   */
-  function logOrganizationDeleted(organization) {
-    /**
-     * @param {Object} commandInfo
-     * @return {Promise.<CreateDeleteOrganizerJob>}
-     */
-    return function (commandInfo) {
-      var job = new CreateDeleteOrganizerJob(commandInfo.commandId);
-      jobLogger.addJob(job);
-      $rootScope.$emit('organizationDeleted', organization);
-      return $q.resolve(job);
-    };
-
-  }
 
   /**
    * @param {string} query
@@ -21749,8 +20934,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.addLabelToOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .addLabelToOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .addLabelToOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -21761,8 +20945,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.deleteLabelFromOrganizer = function(organizerId, labelUuid) {
     return udbApi
-      .deleteLabelFromOrganizer(organizerId, labelUuid)
-      .then(logUpdateOrganizerJob);
+      .deleteLabelFromOrganizer(organizerId, labelUuid);
   };
 
   /**
@@ -21782,8 +20965,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerWebsite = function(organizerId, website) {
     return udbApi
-        .updateOrganizerWebsite(organizerId, website)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerWebsite(organizerId, website);
   };
 
   /**
@@ -21796,8 +20978,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerName = function(organizerId, name, language) {
     return udbApi
-        .updateOrganizerName(organizerId, name, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerName(organizerId, name, language);
   };
 
   /**
@@ -21810,8 +20991,7 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
-        .updateOrganizerAddress(organizerId, address, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerAddress(organizerId, address, language);
   };
 
   /**
@@ -21824,22 +21004,10 @@ function OrganizerManager(udbApi, jobLogger, BaseJob, $q, $rootScope, CreateDele
    */
   service.updateOrganizerContact = function(organizerId, contact, language) {
     return udbApi
-        .updateOrganizerContact(organizerId, contact, language)
-        .then(logUpdateOrganizerJob);
+        .updateOrganizerContact(organizerId, contact, language);
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logUpdateOrganizerJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
-OrganizerManager.$inject = ["udbApi", "jobLogger", "BaseJob", "$q", "$rootScope", "CreateDeleteOrganizerJob"];
+OrganizerManager.$inject = ["udbApi"];
 })();
 
 // Source: src/place-detail/place-detail.directive.js
@@ -26167,8 +25335,10 @@ function OfferController(
   ];
   controller.uitId = _.get(appConfig, 'uitidUrl');
   controller.labelRemoved = labelRemoved;
-  controller.isGodUser = isGodUser;
-
+  authorizationService.isGodUser()
+    .then(function (permission) {
+      controller.isGodUser = permission;
+    });
   controller.init = function () {
     if (!$scope.event.title) {
       controller.fetching = true;
@@ -26216,10 +25386,6 @@ function OfferController(
     } else {
       return $q.reject();
     }
-  }
-
-  function isGodUser() {
-    return authorizationService.isGodUser();
   }
 
   function watchLabels() {
@@ -27466,7 +26632,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
     "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{::cm.status | translate }}</span>\n" +
-    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\">Online vanaf {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
+    "        <span ng-if=\"!cm.event.available && cm.event.availableFrom\"><span translate-once=\"workflowStatus.APPROVED\"></span> {{cm.event.availableFrom | date: 'dd/MM/yyyy'}}</span>\n" +
     "    </td>\n" +
     "    <td ng-if=\"cm.event.workflowStatus === 'REJECTED'\">\n" +
     "      <p><span translate-once=\"workflowStatus.rejected_full\"></span>&nbsp;<a ng-href=\"{{::cm.publicationRulesLink}}\" target=\"_blank\"><span translate-once=\"workflowStatus.rules\"></span></a></p>\n" +
@@ -27572,7 +26738,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <a ng-href=\"{{ event.url  + '/preview' }}\" ng-bind=\"::event.name\"></a>\n" +
     "  </strong>\n" +
     "  <span ng-if=\"event.workflowStatus==='DELETED' || event.workflowStatus==='DRAFT' \" class=\"label label-default\" translate-once=\"workflowStatus.DRAFT\"></span>\n" +
-    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\">Online op <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
+    "  <span class=\"label label-default\" ng-if=\"offerCtrl.hasFutureAvailableFrom && !offerCtrl.offerExpired && event.workflowStatus!=='DRAFT' && !offerCtrl.hideOnlineDate\"><span translate-once=\"workflowStatus.APPROVED\">Online op</span> <span ng-bind=\"::event.availableFrom | date:'yyyy-MM-dd'\"></span></span>\n" +
     "  <span ng-if=\"event.workflowStatus==='REJECTED'\"><span class=\"label label-default\" translate-once=\"workflowStatus.REJECTED\">Publicatie afgewezen</span><small>&nbsp;<a ng-href=\"{{::dash.publicationRulesLink}}\" target=\"blank\" translate-once=\"workflowStatus.rules\"></a></small></span>\n" +
     "  <br/>\n" +
     "  <small>\n" +
@@ -30334,14 +29500,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"col-sm-8\">\n" +
     "              <div class=\"radio\" ng-repeat=\"brand in ::exporter.brands\">\n" +
     "                <label>\n" +
-    "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.selectedBrand\"\n" +
+    "                    <input type=\"radio\" name=\"eventExportBrand\" ng-model=\"exporter.customizations.brand\"\n" +
     "                           ng-value=\"brand\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                    <span ng-bind=\"brand.label\"></span>\n" +
     "                </label>\n" +
     "              </div>\n" +
     "            </div>\n" +
     "            <div class=\"col-sm-4\">\n" +
-    "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.selectedBrand.logo}}\" alt=\"{{exporter.selectedBrand.name}}\" ng-show=\"exporter.selectedBrand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
+    "              <img ng-src=\"{{exporter.exportLogoUrl}}{{exporter.customizations.brand.logo}}\" alt=\"{{exporter.customizations.brand.name}}\" ng-show=\"exporter.customizations.brand\" class=\"img-responsive img-thumbnail center-block export-logo\"/>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportBrand.$error.required\">Gelieve een logo te selecteren. Dit is een noodzakelijk veld.</p>\n" +
@@ -30353,14 +29519,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <div class=\"col-sm-8\">\n" +
     "            <div class=\"radio\" ng-repeat=\"template in ::exporter.templates\">\n" +
     "              <label>\n" +
-    "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.selectedTemplate\"\n" +
+    "                <input type=\"radio\" name=\"eventExportTemplate\" ng-model=\"exporter.customizations.template\"\n" +
     "                       ng-value=\"template\" class=\"export-customization-brand-radio\" ng-required=\"true\">\n" +
     "                <span ng-bind=\"template.label\"></span>\n" +
     "              </label>\n" +
     "            </div>\n" +
     "          </div>\n" +
     "          <div class=\"col-sm-4\">\n" +
-    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.selectedTemplate.img}}\" alt=\"{{exporter.selectedTemplate.label}}\" ng-show=\"exporter.selectedTemplate\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
+    "            <img ng-src=\"{{exporter.templateUrl}}{{exporter.customizations.template.img}}\" alt=\"{{exporter.customizations.template.label}}\" ng-show=\"exporter.customizations.template\" class=\"img-responsive img-thumbnail center-block export-template\"/>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "        <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"exporter.hasErrors && customizeForm.eventExportTemplate.$error.required\">Gelieve een sjabloon te selecteren. Dit is een noodzakelijk veld.</p>\n" +
@@ -30445,7 +29611,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  <button class=\"btn btn-default pull-left\" ng-click=\"exporter.previousStep()\"\n" +
     "          ng-hide=\"exporter.isOnFirstStep()\">Vorige stap</button>\n" +
     "  <button ng-hide=\"exporter.onLastStep()\" class=\"btn btn-primary\"\n" +
-    "          ng-click=\"exporter.nextStep()\">Volgende</button>\n" +
+    "          ng-click=\"exporter.nextStep()\">Volgende </button>\n" +
     "  <button ng-show=\"exporter.onLastStep()\" class=\"btn btn-primary\" ng-click=\"exporter.export()\">Exporteren</button>\n" +
     "</div>\n"
   );
@@ -32060,8 +31226,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <p class=\"alert alert-danger\" ng-show=\"ofc.hasErrors\">\n" +
     "                    <span ng-show=\"ofc.organizersWebsiteFound\">Deze URL is al in gebruik door een andere organisatie.<br /></span>\n" +
     "                    <span ng-show=\"ofc.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
-    "                    <span ng-show=\"ofc.organizerEditForm.website.$error.required || ofc.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
-    "                    <span ng-show=\"ofc.organizerEditForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.website.$error.required || ofc.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.name.$error.maxlength\">De naam van de organisatie kan maar 250 karakters bevatten.<br /></span>\n" +
     "                    <span ng-show=\"ofc.addressError\">Gelieve een geldig adres in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.contactError\">Gelieve alle contactinfo correct in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +
@@ -32095,6 +31262,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                           class=\"form-control\"\n" +
     "                           ng-model=\"ofc.organizer.name\"\n" +
     "                           ng-change=\"ofc.validateName()\"\n" +
+    "                           ng-maxlength=\"250\"\n" +
     "                           required>\n" +
     "                    <p class=\"help-block\">De officiële publieke naam van de organisatie.</p>\n" +
     "                </div>\n" +

@@ -25,10 +25,12 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
 
   moc.loading = true;
   moc.offer = {};
-  moc.sendingJob = false;
   moc.error = false;
   moc.uitId = _.get(appConfig, 'uitidUrl');
-  moc.isGodUser = isGodUser;
+  authorizationService.isGodUser()
+    .then(function (permission) {
+      moc.isGodUser = permission;
+    });
 
   // fetch offer
   ModerationService
@@ -56,7 +58,4 @@ function ModerationSummaryComponent(ModerationService, jsonLDLangFilter, authori
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
   }
 
-  function isGodUser() {
-    return authorizationService.isGodUser();
-  }
 }

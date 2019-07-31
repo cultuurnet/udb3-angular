@@ -647,7 +647,7 @@ function UdbApi(
   this.deleteOrganization = function (organization) {
     return $http
       .delete(organization['@id'], defaultApiConfig)
-      .then(returnJobData, returnApiProblem);
+      .catch(returnApiProblem);
   };
 
   /**
@@ -795,8 +795,7 @@ function UdbApi(
         itemLocation + '/images',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -819,8 +818,7 @@ function UdbApi(
         itemLocation + '/images/' + imageId,
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -835,7 +833,7 @@ function UdbApi(
     return $http.delete(
       itemLocation + '/images/' + imageId,
       defaultApiConfig
-    ).then(returnJobData);
+    );
   };
 
   /**
@@ -856,8 +854,7 @@ function UdbApi(
         itemLocation + '/images/main',
         postData,
         defaultApiConfig
-      )
-      .then(returnJobData);
+      );
   };
 
   /**
@@ -871,17 +868,6 @@ function UdbApi(
       .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
-
-  /**
-   * @param {object} response
-   *  The response that is returned when creating a job.
-   *
-   * @return {Promise.<Object>}
-   *  The object containing the job data
-   */
-  function returnJobData(response) {
-    return $q.resolve(response.data);
-  }
 
   this.getOfferVariations = function (ownerId, purpose, offerUrl) {
     var parameters = {
@@ -926,37 +912,33 @@ function UdbApi(
    * @return {Promise.<PagedCollection>}
    */
   this.getDashboardItems = function(page) {
+    var params = {
+      'disableDefaultFilters': true,
+      'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED',
+      'sort[modified]': 'desc',
+      'limit': 50,
+      'start': (page - 1) * 50
+    };
+
+    var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
+
+    var tokenData = uitidAuth.getTokenData();
+    var userId = tokenData.uid;
+    var userEmail = tokenData.email;
+
+    if (createdByQueryMode === 'uuid') {
+      params.creator = userId;
+    } else if (createdByQueryMode === 'email') {
+      params.creator = userEmail;
+    } else if (createdByQueryMode === 'mixed') {
+      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+    }
+
     var requestConfig = _.cloneDeep(defaultApiConfig);
-    if (page > 1) {
-      requestConfig.params.page = page;
-    }
-
-    var dashboardApi = _.get(appConfig, 'dashboard.defaultApi', 'udb3');
-    var dashboardPath = 'dashboard/items';
-    if (dashboardApi === 'sapi3') {
-      dashboardPath = 'offers/';
-
-      requestConfig.params.disableDefaultFilters = true;
-      requestConfig.params['sort[modified]'] = 'desc';
-      requestConfig.params['sort[created]'] = 'asc';
-
-      var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
-
-      var tokenData = uitidAuth.getTokenData();
-      var userId = tokenData.uid;
-      var userEmail = tokenData.email;
-
-      if (createdByQueryMode === 'uuid') {
-        requestConfig.params.creator = userId;
-      } else if (createdByQueryMode === 'email') {
-        requestConfig.params.creator = userEmail;
-      } else if (createdByQueryMode === 'mixed') {
-        requestConfig.params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
-      }
-    }
+    requestConfig.params = params;
 
     return $http
-      .get(appConfig.baseUrl + dashboardPath, requestConfig)
+      .get(appConfig.baseUrl + 'offers/', requestConfig)
       .then(returnUnwrappedData);
   };
 
