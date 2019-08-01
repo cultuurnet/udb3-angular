@@ -71,12 +71,7 @@ describe('Controller: Event Form Publish', function () {
   });
 
   it('should display publish errors', function () {
-    var job = {
-      task: {
-        promise: $q.reject()
-      }
-    };
-    eventCrud.publishOffer.and.returnValue($q.resolve(job));
+    eventCrud.publishOffer.and.returnValue($q.reject());
     EventFormData.init();
     EventFormData.id = 'da86358c-d52c-429b-89c6-7adffd64ab55';
     expect(EventFormData.workflowStatus).toEqual('DRAFT');

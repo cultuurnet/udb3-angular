@@ -156,4 +156,14 @@ describe('Factory: UDB Organizer', function () {
     var organizer = new UdbOrganizer(jsonOrganizerDeleted);
     expect(organizer.deleted).toEqual(true);
   }));
+
+  it('should verify if contact url is valid according to the regex', inject(function (UdbOrganizer) {
+    var OrganizerUrlRegex = new UdbOrganizer().regex.url;
+    var mockUrls= MockData.urls; 
+    mockUrls.map(function(mockUrl){
+      expect(OrganizerUrlRegex.test(mockUrl.url)).toEqual(mockUrl.valid);
+    });
+  }));
+
+
 });

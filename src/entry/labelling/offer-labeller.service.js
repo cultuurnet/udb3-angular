@@ -12,7 +12,7 @@ angular
   .service('offerLabeller', OfferLabeller);
 
 /* @ngInject */
-function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, QueryLabelJob, $q, $uibModal) {
+function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q) {
   var offerLabeller = this;
 
   /**
@@ -46,23 +46,10 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * @param {string} labelName
    */
   this.label = function (offer, labelName) {
-    var result = {
-      success: false,
-      name: labelName
-    };
-
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName))
-      .then(function(response) {
+      .then(function() {
         offer.label(labelName);
-        result.success = true;
-        result.message = response.id;
-        return result;
-      })
-      .catch(function(error) {
-        result.message = error.data.title;
-        return result;
       });
   };
 
@@ -70,19 +57,14 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelJob, OfferLabelBatchJob, Que
    * Unlabel a label from an event
    * @param {UdbEvent|UdbPlace} offer
    * @param {string} labelName
-   *
-   * @return {Promise.<OfferLabelJob|ApiProblem>}
+   * @return {Promise}
    */
   this.unlabel = function (offer, labelName) {
-    function eagerlyUnlabelAndPassOnResponse(response) {
-      offer.unlabel(labelName);
-      return response;
-    }
-
     return udbApi
       .unlabelOffer(offer.apiUrl, labelName)
-      .then(eagerlyUnlabelAndPassOnResponse)
-      .then(jobCreatorFactory(OfferLabelJob, offer, labelName, true));
+      .then(function () {
+        offer.unlabel(labelName);
+      });
   };
 
   /**

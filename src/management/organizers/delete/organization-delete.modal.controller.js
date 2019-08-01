@@ -13,7 +13,7 @@ angular
   .controller('OrganizationDeleteModalController', OrganizationDeleteModalController);
 
 /* @ngInject */
-function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization) {
+function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, organization, $rootScope) {
   var controller = this;
 
   controller.organization = organization;
@@ -37,7 +37,10 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
 
     OrganizerManager
       .delete(organization)
-      .then($uibModalInstance.close)
+      .then(function () {
+        $uibModalInstance.close();
+        $rootScope.$emit('organizationDeleted', organization);
+      })
       .catch(showError);
   }
 

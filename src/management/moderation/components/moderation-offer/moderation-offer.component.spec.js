@@ -217,7 +217,6 @@ describe('Component: Moderation Offer', function () {
 
     expect(moderationManager.approve).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('APPROVED');
-    expect(controller.sendingJob).toEqual(false);
   });
 
   it('should ask for rejection reasons before rejecting', function() {
@@ -233,7 +232,6 @@ describe('Component: Moderation Offer', function () {
 
     expect(moderationManager.reject).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('REJECTED');
-    expect(controller.sendingJob).toEqual(false);
     expect(controller.error).toEqual(false);
   });
 
@@ -250,7 +248,6 @@ describe('Component: Moderation Offer', function () {
 
     expect(moderationManager.flagAsDuplicate).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('REJECTED');
-    expect(controller.sendingJob).toEqual(false);
     expect(controller.error).toEqual(false);
   });
 
@@ -267,7 +264,6 @@ describe('Component: Moderation Offer', function () {
 
     expect(moderationManager.flagAsInappropriate).toHaveBeenCalled();
     expect(controller.offer.workflowStatus).toEqual('REJECTED');
-    expect(controller.sendingJob).toEqual(false);
     expect(controller.error).toEqual(false);
   });
 });

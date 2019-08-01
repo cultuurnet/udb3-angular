@@ -52,8 +52,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.approve = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'Approve')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'Approve');
   };
 
   /**
@@ -63,8 +62,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.reject = function(offer, reason) {
     return udbApi
-      .patchOffer(offer['@id'], 'Reject', reason)
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'Reject', reason);
   };
 
   /**
@@ -74,8 +72,7 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.flagAsDuplicate = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'FlagAsDuplicate')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'FlagAsDuplicate');
   };
 
   /**
@@ -85,18 +82,6 @@ function ModerationService(udbApi, OfferWorkflowStatus, jobLogger, BaseJob, $q) 
    */
   service.flagAsInappropriate = function(offer) {
     return udbApi
-      .patchOffer(offer['@id'], 'FlagAsInappropriate')
-      .then(logModerationJob);
+      .patchOffer(offer['@id'], 'FlagAsInappropriate');
   };
-
-  /**
-   * @param {Object} commandInfo
-   * @return {Promise.<BaseJob>}
-   */
-  function logModerationJob(commandInfo) {
-    var job = new BaseJob(commandInfo.commandId);
-    jobLogger.addJob(job);
-
-    return $q.resolve(job);
-  }
 }
