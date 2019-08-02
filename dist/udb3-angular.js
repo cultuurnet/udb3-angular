@@ -10315,12 +10315,8 @@ function EventDetail(
     $state.go('split.footer.dashboard');
   }
 
-  /**
-   * @param {EventCrudJob} job
-   */
-  controller.goToDashboardOnJobCompletion = function(job) {
-    job.task.promise
-      .then(goToDashboard);
+  controller.goToDashboardOnJobCompletion = function() {
+    goToDashboard();
   };
 
   function openEventDeleteConfirmModal(item) {
@@ -21205,12 +21201,8 @@ function PlaceDetail(
     $state.go('split.footer.dashboard');
   }
 
-  /**
-   * @param {EventCrudJob} job
-   */
-  controller.goToDashboardOnJobCompletion = function(job) {
-    job.task.promise
-      .then(goToDashboard);
+  controller.goToDashboardOnJobCompletion = function() {
+    goToDashboard();
   };
 
   function openPlaceDeleteConfirmModal(item) {
