@@ -198,13 +198,8 @@ describe('Controller: Place Detail', function() {
   });
 
   it('should redirect to the dashboard after successfully deleting a Place', function () {
-    var job = {
-      task: {
-        promise: $q.resolve()
-      }
-    };
 
-    placeController.goToDashboardOnJobCompletion(job);
+    placeController.goToDashboardOnJobCompletion();
     $scope.$digest();
 
     expect($state.go).toHaveBeenCalledWith('split.footer.dashboard');
