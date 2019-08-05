@@ -10311,12 +10311,8 @@ function EventDetail(
     $state.go('split.eventTranslate', {id: id});
   };
 
-  function goToDashboard() {
+  controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
-  }
-
-  controller.goToDashboardOnJobCompletion = function() {
-    goToDashboard();
   };
 
   function openEventDeleteConfirmModal(item) {
@@ -10331,7 +10327,7 @@ function EventDetail(
     });
 
     modalInstance.result
-      .then(controller.goToDashboardOnJobCompletion);
+      .then(controller.goToDashboard);
   }
 
   /**
@@ -21197,12 +21193,8 @@ function PlaceDetail(
     }
   };
 
-  function goToDashboard() {
+  controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
-  }
-
-  controller.goToDashboardOnJobCompletion = function() {
-    goToDashboard();
   };
 
   function openPlaceDeleteConfirmModal(item) {
@@ -21222,7 +21214,7 @@ function PlaceDetail(
       });
 
       modalInstance.result
-        .then(controller.goToDashboardOnJobCompletion);
+        .then(controller.goToDashboard);
     }
 
     // Check if this place has planned events.

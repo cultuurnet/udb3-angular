@@ -361,7 +361,7 @@ describe('Controller: Event Detail', function() {
   });
 
   it('should redirect to the dashboard after successfully deleting an Event', function () {
-    eventController.goToDashboardOnJobCompletion();
+    eventController.goToDashboard();
     $scope.$digest();
 
     expect($state.go).toHaveBeenCalledWith('split.footer.dashboard');

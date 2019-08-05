@@ -161,12 +161,8 @@ function PlaceDetail(
     }
   };
 
-  function goToDashboard() {
+  controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
-  }
-
-  controller.goToDashboardOnJobCompletion = function() {
-    goToDashboard();
   };
 
   function openPlaceDeleteConfirmModal(item) {
@@ -186,7 +182,7 @@ function PlaceDetail(
       });
 
       modalInstance.result
-        .then(controller.goToDashboardOnJobCompletion);
+        .then(controller.goToDashboard);
     }
 
     // Check if this place has planned events.
