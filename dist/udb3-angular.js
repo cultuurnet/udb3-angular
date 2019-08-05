@@ -16397,7 +16397,7 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
         brand = customizations.brand || '',
         details = null,
         user = $cookies.getObject('user');
-    console.log(queryString);
+
     var jobPromise = udbApi.exportEvents(
         queryString,
         email,
