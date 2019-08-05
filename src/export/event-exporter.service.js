@@ -65,11 +65,4 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
 
     return jobPromise;
   };
-
-  /**
-   * @returns {String}
-   */
-  function getSapiVersion() {
-    return 'v' + searchApiSwitcher.getApiVersion();
-  }
 }
