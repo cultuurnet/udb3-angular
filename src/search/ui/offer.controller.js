@@ -26,7 +26,6 @@ function OfferController(
   UdbEvent,
   UdbPlace,
   UdbOrganizer,
-  $uibModal,
   $translate,
   authorizationService
 ) {
