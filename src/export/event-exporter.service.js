@@ -42,7 +42,6 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
         user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(
-        getSapiVersion(),
         queryString,
         email,
         format,

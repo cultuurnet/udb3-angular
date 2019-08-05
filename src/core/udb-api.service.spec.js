@@ -849,7 +849,6 @@ describe('Service: UDB3 Api', function () {
 
   // exportEvents
   it('should exports events based on a selection from the api', function(done){
-    var sapiVersion = 'v2';
     var query = 'title:bio';
     var customizations = {
       brand: 'uitpas',
@@ -866,7 +865,6 @@ describe('Service: UDB3 Api', function () {
     var email = 'email@example.com';
 
     var expectedBody = {
-      'sapiVersion': sapiVersion,
       'query': query,
       'selection': selection,
       'order': {},
@@ -879,13 +877,12 @@ describe('Service: UDB3 Api', function () {
       .expectPOST(baseUrl + 'events/export/pdf', expectedBody)
       .respond();
     service
-      .exportEvents(sapiVersion, query, email, 'pdf', include, true, selection, customizations)
+      .exportEvents(query, email, 'pdf', include, true, selection, customizations)
       .then(done);
 
     $httpBackend.flush();
   });
   it('should exports events based on a selection without email or customizations', function(done){
-    var sapiVersion = 'v3';
     var query = 'title:bio';
     var selection = [
       'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1',
@@ -897,7 +894,6 @@ describe('Service: UDB3 Api', function () {
     ];
 
     var expectedBody = {
-      'sapiVersion': sapiVersion,
       'query': query,
       'selection': selection,
       'order': {},
@@ -909,7 +905,7 @@ describe('Service: UDB3 Api', function () {
       .expectPOST(baseUrl + 'events/export/pdf', expectedBody)
       .respond();
     service
-      .exportEvents(sapiVersion, query, null, 'pdf', include, true, selection)
+      .exportEvents(query, null, 'pdf', include, true, selection)
       .then(done);
 
     $httpBackend.flush();
