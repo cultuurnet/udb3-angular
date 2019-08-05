@@ -16399,13 +16399,13 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
    * @return {object}
    */
   ex.export = function (format, email, properties, perDay, customizations) {
-    var queryString = ex.activeExport.query.queryString,
+    var queryString = ex.activeExport.query.queryString + ' AND workflowStatus:("APPROVED" OR "READY_FOR_VALIDATION")',
         selection = ex.activeExport.selection || [],
         eventCount = ex.activeExport.eventCount,
         brand = customizations.brand || '',
         details = null,
         user = $cookies.getObject('user');
-
+    console.log(queryString);
     var jobPromise = udbApi.exportEvents(
         queryString,
         email,
