@@ -112,7 +112,7 @@ function UdbApi(
     }
   };
 
-  this.createSavedSearch = function (sapiVersion, name, queryString) {
+  this.createSavedSearch = function (name, queryString) {
     var post = {
       name: name,
       query: queryString
@@ -122,13 +122,13 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
-  this.getSavedSearches = function (sapiVersion) {
+  this.getSavedSearches = function () {
     return $http
       .get(appConfig.baseUrl + 'saved-searches/v3', defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
-  this.deleteSavedSearch = function (sapiVersion, searchId) {
+  this.deleteSavedSearch = function (searchId) {
     return $http
       .delete(appConfig.baseUrl + 'saved-searches/v3/' + searchId, defaultApiConfig)
       .then(returnUnwrappedData);
