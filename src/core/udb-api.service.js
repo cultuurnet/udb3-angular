@@ -481,7 +481,6 @@ function UdbApi(
   };
 
   /**
-   * @param {string} sapiVersion
    * @param {string} query
    * @param {string} [email]
    * @param {string} format
@@ -491,10 +490,9 @@ function UdbApi(
    * @param {Object} [customizations]
    * @return {*}
    */
-  this.exportEvents = function (sapiVersion, query, email, format, properties, perDay, selection, customizations) {
+  this.exportEvents = function (query, email, format, properties, perDay, selection, customizations) {
 
     var exportData = {
-      sapiVersion: sapiVersion,
       query: query,
       selection: _.map(selection, function (url) {
         return url.toString();

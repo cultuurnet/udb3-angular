@@ -5331,7 +5331,6 @@ function UdbApi(
   };
 
   /**
-   * @param {string} sapiVersion
    * @param {string} query
    * @param {string} [email]
    * @param {string} format
@@ -5341,10 +5340,9 @@ function UdbApi(
    * @param {Object} [customizations]
    * @return {*}
    */
-  this.exportEvents = function (sapiVersion, query, email, format, properties, perDay, selection, customizations) {
+  this.exportEvents = function (query, email, format, properties, perDay, selection, customizations) {
 
     var exportData = {
-      sapiVersion: sapiVersion,
       query: query,
       selection: _.map(selection, function (url) {
         return url.toString();
@@ -16401,7 +16399,6 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
         user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(
-        getSapiVersion(),
         queryString,
         email,
         format,
@@ -16425,13 +16422,6 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
 
     return jobPromise;
   };
-
-  /**
-   * @returns {String}
-   */
-  function getSapiVersion() {
-    return 'v' + searchApiSwitcher.getApiVersion();
-  }
 }
 eventExporter.$inject = ["jobLogger", "appConfig", "udbApi", "EventExportJob", "$cookies", "searchApiSwitcher"];
 })();
