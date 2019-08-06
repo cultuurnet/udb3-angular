@@ -16,12 +16,5 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies) {
   var switcher = this;
   var apiVersionCookieKey = 'search-api-version';
   var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
-  switcher.getApiVersion = getApiVersion;
 
-  /**
-   * @returns {Number}
-   */
-  function getApiVersion() {
-    return parseInt($cookies.get(apiVersionCookieKey) || defaultApiVersion);
-  }
 }
