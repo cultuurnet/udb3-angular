@@ -118,19 +118,19 @@ function UdbApi(
       query: queryString
     };
     return $http
-      .post(appConfig.baseUrl + 'saved-searches/' + sapiVersion, post, defaultApiConfig)
+      .post(appConfig.baseUrl + 'saved-searches/v3', post, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
   this.getSavedSearches = function (sapiVersion) {
     return $http
-      .get(appConfig.baseUrl + 'saved-searches/' + sapiVersion, defaultApiConfig)
+      .get(appConfig.baseUrl + 'saved-searches/v3', defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
   this.deleteSavedSearch = function (sapiVersion, searchId) {
     return $http
-      .delete(appConfig.baseUrl + 'saved-searches/' + sapiVersion + '/' + searchId, defaultApiConfig)
+      .delete(appConfig.baseUrl + 'saved-searches/v3/' + searchId, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
