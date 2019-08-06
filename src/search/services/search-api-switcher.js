@@ -88,16 +88,4 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies) {
       };
     }
   };
-
-  /**
-   * @returns {string}
-   *  A query editor controller name.
-   */
-  switcher.getQueryEditorController = function() {
-    if (getApiVersion() > 2) {
-      return 'QueryEditorController';
-    } else {
-      return 'sapi2QueryEditorController';
-    }
-  };
 }
