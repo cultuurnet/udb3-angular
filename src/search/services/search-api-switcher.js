@@ -68,24 +68,4 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies) {
       }
     }
   };
-
-  /**
-   * @returns {object}
-   *  An angular directive definition object.
-   */
-  switcher.getQueryEditorFieldDefinition = function() {
-    if (getApiVersion() > 2) {
-      return {
-        templateUrl: 'templates/query-editor-field.directive.html',
-        restrict: 'E',
-        controller: 'QueryEditorFieldController'
-      };
-    } else {
-      return {
-        templateUrl: 'templates/sapi2.query-editor-field.directive.html',
-        restrict: 'E',
-        controller: 'QueryEditorFieldController'
-      };
-    }
-  };
 }
