@@ -26,16 +26,6 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
   }
 
   /**
-   * @param {string} queryString
-   * @param {number} start
-   * @returns {Promise.<PagedCollection>}
-   */
-  switcher.findOffers = function (queryString, start) {
-    start = start || 0;
-    return (getApiVersion() > 2) ? udbApi.findOffers(queryString, start) : udbApi.findEvents(queryString, start);
-  };
-
-  /**
    * @param {EventFormData} formData
    * @returns {object}
    */
