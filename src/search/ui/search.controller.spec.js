@@ -40,9 +40,7 @@ describe('Controller: SearchController', function() {
     udbApi = jasmine.createSpyObj('udbApi', ['findOffers', 'getEventById', 'exportEvents']);
     udbApi.findOffers.and.returnValue($q.reject('nope'));
 
-    searchApiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['getQueryBuilder']);
     queryBuilder = jasmine.createSpyObj('queryBuilder', ['isValid']);
-    searchApiSwitcher.getQueryBuilder.and.returnValue(queryBuilder);
 
     $location = jasmine.createSpyObj('$location', ['search']);
     $location.search.and.returnValue({});
@@ -60,7 +58,7 @@ describe('Controller: SearchController', function() {
         $location: $location,
         searchHelper: searchHelper,
         $uibModal: $uibModal,
-        searchApiSwitcher: searchApiSwitcher
+        LuceneQueryBuilder: queryBuilder
       }
     );
   }

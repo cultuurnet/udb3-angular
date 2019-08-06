@@ -25,12 +25,10 @@ function SearchController(
   $rootScope,
   eventExporter,
   $translate,
-  searchApiSwitcher,
+  LuceneQueryBuilder,
   authorization,
   authorizationService
 ) {
-  var queryBuilder = searchApiSwitcher.getQueryBuilder();
-
   function getSearchQuery() {
     return searchHelper.getQuery();
   }
@@ -99,8 +97,8 @@ function SearchController(
   var updateQuery = function (query) {
     $scope.activeQuery = query;
 
-    if (queryBuilder.isValid(query)) {
-      var realQuery = queryBuilder.unparse(query);
+    if (LuceneQueryBuilder.isValid(query)) {
+      var realQuery = LuceneQueryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
       findOffers(realQuery);
 
@@ -149,7 +147,7 @@ function SearchController(
     var query = $scope.activeQuery,
       eventCount = $scope.resultViewer.totalItems;
 
-    if (queryBuilder.isValid(query)) {
+    if (LuceneQueryBuilder.isValid(query)) {
       var modal = $uibModal.open({
         templateUrl: 'templates/offer-label-modal.html',
         controller: 'OfferLabelModalCtrl',
@@ -226,7 +224,7 @@ function SearchController(
       });
     }
     else {
-      if (query && query.queryString.length && queryBuilder.isValid(query)) {
+      if (query && query.queryString.length && LuceneQueryBuilder.isValid(query)) {
         var modal = $uibModal.open({
           templateUrl: 'templates/event-export-modal.html',
           controller: 'EventExportController',
