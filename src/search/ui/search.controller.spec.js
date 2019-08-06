@@ -10,7 +10,6 @@ describe('Controller: SearchController', function() {
     $q,
     $uibModal,
     searchHelper,
-    searchApiSwitcher,
     queryBuilder;
 
   beforeEach(module('udb.core', function ($translateProvider) {
