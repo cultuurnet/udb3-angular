@@ -147,6 +147,7 @@ function UdbApi(
           start: offset,
           disableDefaultFilters: true,
           workflowStatus: 'READY_FOR_VALIDATION,APPROVED',
+          embed: true
         };
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.params = searchParams;
@@ -228,6 +229,40 @@ function UdbApi(
     }
 
     return deferredOffer.promise;
+  };
+
+  /**
+   * @param {Array} events
+   * @return {Array}
+   */
+  this.reformatEvents = function(events) {
+    events.member = events.member.map(function(member) {
+      var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
+      memberContext = memberContext.charAt(0).toUpperCase() + memberContext.slice(1);
+      member['@type'] = (member['@type']) ? member['@type'] : memberContext;
+      return member;
+    });
+    return events;
+  };
+
+  /**
+   * @param {object} event
+   * @return {object}
+   */
+  this.formatOffer = function(event) {
+    var offer = {};
+    var type = event['@type'].toLowerCase();
+    if (type === 'event') {
+      offer = new UdbEvent();
+    }
+    else if (type === 'place') {
+      offer = new UdbPlace();
+    }
+    else {
+      offer = new UdbOrganizer();
+    }
+    offer.parseJson(event);
+    return offer;
   };
 
   this.getOrganizerByLDId = function(organizerLDId) {
