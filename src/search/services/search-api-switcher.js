@@ -12,7 +12,7 @@ angular
   .service('searchApiSwitcher', SearchApiSwitcher);
 
 /* @ngInject */
-function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuilder) {
+function SearchApiSwitcher(appConfig, udbApi, $cookies) {
   var switcher = this;
   var apiVersionCookieKey = 'search-api-version';
   var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
@@ -98,18 +98,6 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, Lucen
       return 'QueryEditorController';
     } else {
       return 'sapi2QueryEditorController';
-    }
-  };
-
-  /**
-   * @returns {object}
-   *  A query builder instance.
-   */
-  switcher.getQueryBuilder = function () {
-    if (getApiVersion() > 2) {
-      return LuceneQueryBuilder;
-    } else {
-      return sapi2QueryBuilder;
     }
   };
 }
