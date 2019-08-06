@@ -24,48 +24,4 @@ function SearchApiSwitcher(appConfig, udbApi, $cookies) {
   function getApiVersion() {
     return parseInt($cookies.get(apiVersionCookieKey) || defaultApiVersion);
   }
-
-  /**
-   * @param {EventFormData} formData
-   * @returns {object}
-   */
-  switcher.getDuplicateSearchConditions = function (formData) {
-    var location = formData.getLocation();
-
-    if (getApiVersion() > 2) {
-      if (formData.isEvent) {
-        /*jshint camelcase: false*/
-        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
-        return {
-          'name.\\*': formData.name.nl,
-          'location.name.\\*' : location.name
-        };
-      }
-      else {
-        /*jshint camelcase: false */
-        return {
-          'name.\\*': formData.name.nl,
-          'postalCode': formData.address.postalCode,
-          'labels': 'UDB3 place'
-        };
-      }
-    } else {
-      if (formData.isEvent) {
-        /*jshint camelcase: false*/
-        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
-        return {
-          text: formData.name.nl,
-          location_label : location.name
-        };
-      }
-      else {
-        /*jshint camelcase: false */
-        return {
-          text: formData.name.nl,
-          zipcode: formData.address.postalCode,
-          keywords: 'UDB3 place'
-        };
-      }
-    }
-  };
 }
