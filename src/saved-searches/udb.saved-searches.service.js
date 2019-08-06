@@ -12,7 +12,7 @@ angular
   .service('savedSearchesService', SavedSearchesService);
 
 /* @ngInject */
-function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi, searchApiSwitcher) {
+function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi) {
   var apiUrl = appConfig.baseUrl;
   var defaultApiConfig = {
     withCredentials: true,
