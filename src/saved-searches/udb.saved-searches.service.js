@@ -13,13 +13,6 @@ angular
 
 /* @ngInject */
 function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi) {
-  var apiUrl = appConfig.baseUrl;
-  var defaultApiConfig = {
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
   var savedSearches = [];
   var ss = this;
 
