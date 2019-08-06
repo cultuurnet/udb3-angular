@@ -37,10 +37,10 @@ describe('Controller: SearchController', function() {
     $window = {
       alert: jasmine.createSpy('alert')
     };
-    udbApi = jasmine.createSpyObj('udbApi', ['getEventById', 'exportEvents']);
-    searchApiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['findOffers', 'getQueryBuilder']);
-    searchApiSwitcher.findOffers.and.returnValue($q.reject('nope'));
+    udbApi = jasmine.createSpyObj('udbApi', ['findOffers', 'getEventById', 'exportEvents']);
+    udbApi.findOffers.and.returnValue($q.reject('nope'));
 
+    searchApiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['getQueryBuilder']);
     queryBuilder = jasmine.createSpyObj('queryBuilder', ['isValid']);
     searchApiSwitcher.getQueryBuilder.and.returnValue(queryBuilder);
 

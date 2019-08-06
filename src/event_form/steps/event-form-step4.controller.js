@@ -15,6 +15,7 @@ angular
 function EventFormStep4Controller(
   $scope,
   EventFormData,
+  udbApi,
   searchApiSwitcher,
   appConfig,
   SearchResultViewer,
@@ -139,7 +140,7 @@ function EventFormStep4Controller(
 
     var queryString = expressions.join(' AND ');
 
-    return searchApiSwitcher.findOffers(queryString);
+    return udbApi.findOffers(queryString);
   }
 
   /**

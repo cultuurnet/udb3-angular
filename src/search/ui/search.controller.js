@@ -85,7 +85,7 @@ function SearchController(
 
     $scope.resultViewer.loading = true;
 
-    searchApiSwitcher
+    udbApi
       .findOffers(queryString, offset)
       .then(function (pagedEvents) {
         offerLocator.addPagedCollection(pagedEvents);
