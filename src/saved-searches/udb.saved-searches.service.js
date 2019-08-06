@@ -22,7 +22,6 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   };
   var savedSearches = [];
   var ss = this;
-  var sapiVersion = getSapiVersion();
 
   ss.createSavedSearch = function(name, query) {
     return udbApi.createSavedSearch(name, query).then(function () {
@@ -51,13 +50,6 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
 
   function savedSearchesChanged () {
     $rootScope.$emit('savedSearchesChanged', savedSearches);
-  }
-
-  /**
-   * @returns {String}
-   */
-  function getSapiVersion() {
-    return 'v' + searchApiSwitcher.getApiVersion();
   }
 }
 
