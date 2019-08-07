@@ -51,21 +51,11 @@ function OfferController(
       controller.fetching = true;
 
       if ($scope.event.name) {
-        var offer = {};
-        var type = $scope.event['@type'].toLowerCase();
-        if (type === 'event') {
-          offer = new UdbEvent();
-        }
-        else if (type === 'place') {
-          offer = new UdbPlace();
-        }
-        else {
-          offer = new UdbOrganizer();
-        }
-        offer.parseJson($scope.event);
+        var offer = udbApi.formatOfferClass($scope.event);
         formatOffers(offer);
         return;
       }
+
       return udbApi
         .getOffer($scope.event['@id'])
         .then(function (offerObject) {
