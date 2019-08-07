@@ -3407,7 +3407,8 @@ angular.module('udb.core')
       'zipcode': 'postcode',
       'location_id': 'locatie (id)',
       'country': 'land',
-      'location_label': 'locatie (naam)',
+      'location_name': 'locatie (naam)',
+      'location_labels': 'locatie (labels)',
       'category_flandersregion_name': 'regio / gemeente',
       'nisRegions': 'regio / gemeente',
       'date': 'datum',
@@ -4478,7 +4479,8 @@ angular.module('udb.core')
       'zipcode': 'code postal',
       'location_id': 'location (id)',
       'country': 'pays',
-      'location_label': 'location (nom)',
+      'location_name': 'location (nom)',
+      'location_labels': 'location (labels)',
       'category_flandersregion_name': 'région / commune',
       'nisRegions': 'région / commune',
       'date': 'date',
@@ -5363,7 +5365,6 @@ function UdbApi(
   };
 
   /**
-   * @param {string} sapiVersion
    * @param {string} query
    * @param {string} [email]
    * @param {string} format
@@ -5373,10 +5374,9 @@ function UdbApi(
    * @param {Object} [customizations]
    * @return {*}
    */
-  this.exportEvents = function (sapiVersion, query, email, format, properties, perDay, selection, customizations) {
+  this.exportEvents = function (query, email, format, properties, perDay, selection, customizations) {
 
     var exportData = {
-      sapiVersion: sapiVersion,
       query: query,
       selection: _.map(selection, function (url) {
         return url.toString();
@@ -6902,6 +6902,9 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
     updateTranslationState: function (organizer) {
       organizer = organizer || this;
       updateTranslationState(organizer);
+    },
+    regex : {
+      url: new RegExp(/^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i)
     }
   };
 
@@ -8561,6 +8564,10 @@ function EventCrud(
       var isStream = name.charAt(name.length - 1) === '$';
       return (_.isDate(property) || !_.isEmpty(property)) && !isStream;
     });
+
+    if (majorInfo.location && majorInfo.location.id) {
+      majorInfo.location = majorInfo.location.id;
+    }
 
     return majorInfo;
   }
@@ -10343,16 +10350,8 @@ function EventDetail(
     $state.go('split.eventTranslate', {id: id});
   };
 
-  function goToDashboard() {
+  controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
-  }
-
-  /**
-   * @param {EventCrudJob} job
-   */
-  controller.goToDashboardOnJobCompletion = function(job) {
-    job.task.promise
-      .then(goToDashboard);
   };
 
   function openEventDeleteConfirmModal(item) {
@@ -10367,7 +10366,7 @@ function EventDetail(
     });
 
     modalInstance.result
-      .then(controller.goToDashboardOnJobCompletion);
+      .then(controller.goToDashboard);
   }
 
   /**
@@ -11842,12 +11841,8 @@ function EventFormOrganizerModalController(
   $q,
   organizerName,
   OrganizerManager,
-  appConfig,
-  citiesBE,
-  citiesNL
+  appConfig
 ) {
-
-  var controller = this;
 
   // Scope vars.
   $scope.organizer = organizerName;
@@ -11862,7 +11857,7 @@ function EventFormOrganizerModalController(
   $scope.organizers = [];
   $scope.selectedCity = '';
   $scope.disableSubmit = true;
-  $scope.contactUrlRegex = new RegExp(/^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i);
+  $scope.contactUrlRegex = new UdbOrganizer().regex.url;
   $scope.newOrganizer = {
     mainLanguage: 'nl',
     website: 'http://',
@@ -12036,7 +12031,7 @@ function EventFormOrganizerModalController(
   }
 
 }
-EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName", "OrganizerManager", "appConfig", "citiesBE", "citiesNL"];
+EventFormOrganizerModalController.$inject = ["$scope", "$uibModalInstance", "udbOrganizers", "UdbOrganizer", "eventCrud", "$q", "organizerName", "OrganizerManager", "appConfig"];
 })();
 
 // Source: src/event_form/components/place/event-form-place-modal.controller.js
@@ -16437,7 +16432,7 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
    * @return {object}
    */
   ex.export = function (format, email, properties, perDay, customizations) {
-    var queryString = ex.activeExport.query.queryString,
+    var queryString = ex.activeExport.query.queryString + ' AND workflowStatus:("APPROVED" OR "READY_FOR_VALIDATION")',
         selection = ex.activeExport.selection || [],
         eventCount = ex.activeExport.eventCount,
         brand = customizations.brand || '',
@@ -16445,7 +16440,6 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
         user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(
-        getSapiVersion(),
         queryString,
         email,
         format,
@@ -16469,13 +16463,6 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
 
     return jobPromise;
   };
-
-  /**
-   * @returns {String}
-   */
-  function getSapiVersion() {
-    return 'v' + searchApiSwitcher.getApiVersion();
-  }
 }
 eventExporter.$inject = ["jobLogger", "appConfig", "udbApi", "EventExportJob", "$cookies", "searchApiSwitcher"];
 })();
@@ -20370,7 +20357,7 @@ angular
     });
 
 /* @ngInject */
-function OrganizerContactComponent($scope, appConfig) {
+function OrganizerContactComponent($scope, UdbOrganizer) {
   var controller = this;
 
   controller.newContact = {};
@@ -20382,7 +20369,7 @@ function OrganizerContactComponent($scope, appConfig) {
   controller.addOrganizerContactInfo = addOrganizerContactInfo;
   controller.deleteOrganizerContactInfo = deleteOrganizerContactInfo;
   controller.sendUpdate = sendUpdate;
-  controller.contactUrlRegex = new RegExp(/^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i);
+  controller.contactUrlRegex = new UdbOrganizer().regex.url;
 
   $scope.$on('organizerContactSubmit', function() {
     controller.organizerContactWrapper.$setSubmitted();
@@ -20460,7 +20447,7 @@ function OrganizerContactComponent($scope, appConfig) {
     }
   }, true);
 }
-OrganizerContactComponent.$inject = ["$scope", "appConfig"];
+OrganizerContactComponent.$inject = ["$scope", "UdbOrganizer"];
 })();
 
 // Source: src/organizers/detail/organizer-detail.controller.js
@@ -21237,16 +21224,8 @@ function PlaceDetail(
     }
   };
 
-  function goToDashboard() {
+  controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
-  }
-
-  /**
-   * @param {EventCrudJob} job
-   */
-  controller.goToDashboardOnJobCompletion = function(job) {
-    job.task.promise
-      .then(goToDashboard);
   };
 
   function openPlaceDeleteConfirmModal(item) {
@@ -21266,7 +21245,7 @@ function PlaceDetail(
       });
 
       modalInstance.result
-        .then(controller.goToDashboardOnJobCompletion);
+        .then(controller.goToDashboard);
     }
 
     // Check if this place has planned events.
@@ -23627,7 +23606,8 @@ angular
       'STARTDATE' : 'startdate',
       'ENDDATE' : 'enddate',
       'ORGANISER_LABEL' : 'organiser_label',
-      'LOCATION_LABEL' : 'location_label',
+      'LOCATION_NAME' : 'location_name',
+      'LOCATION_LABELS' : 'location_labels',
       'EXTERNALID' : 'externalid',
       'LASTUPDATED' : 'lastupdated',
       'CREATIONDATE' : 'creationdate',
@@ -23739,7 +23719,8 @@ angular
     {name: 'zipcode', field:'address.\\*.postalCode', type: 'string', group:'where', editable: true},
     {name: 'location_id', field:'location.id', type: 'string', group:'where', editable: true},
     {name: 'country', field: 'address.\\*.addressCountry', type: 'choice', group:'where', editable: false, options: ['AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM']},
-    {name: 'location_label', field: 'location.name.\\*', type: 'tokenized-string', group:'where', editable: true},
+    {name: 'location_name', field: 'location.name.\\*', type: 'tokenized-string', group:'where', editable: true},
+    {name: 'location_labels', field: 'location.labels', type: 'string', group:'where', editable: true},
     {name: 'nisRegions', field:'regions', type: 'termNis' , group:'where', editable: true},
 
     {name: 'date', field:'dateRange', type: 'date-range', group:'when', editable: true},
@@ -24578,7 +24559,8 @@ angular
     {name: 'city', type: 'string', group:'where', editable: true},
     {name: 'zipcode', type: 'string', group:'where', editable: true},
     {name: 'country', type: 'choice', group:'where', editable: false, options: ['AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AO', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AW', 'AX', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BL', 'BM', 'BN', 'BO', 'BQ', 'BR', 'BS', 'BT', 'BV', 'BW', 'BY', 'BZ', 'CA', 'CC', 'CD', 'CF', 'CG', 'CH', 'CI', 'CK', 'CL', 'CM', 'CN', 'CO', 'CR', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DE', 'DJ', 'DK', 'DM', 'DO', 'DZ', 'EC', 'EE', 'EG', 'EH', 'ER', 'ES', 'ET', 'FI', 'FJ', 'FK', 'FM', 'FO', 'FR', 'GA', 'GB', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GL', 'GM', 'GN', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GW', 'GY', 'HK', 'HM', 'HN', 'HR', 'HT', 'HU', 'ID', 'IE', 'IL', 'IM', 'IN', 'IO', 'IQ', 'IR', 'IS', 'IT', 'JE', 'JM', 'JO', 'JP', 'KE', 'KG', 'KH', 'KI', 'KM', 'KN', 'KP', 'KR', 'KW', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LI', 'LK', 'LR', 'LS', 'LT', 'LU', 'LV', 'LY', 'MA', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NC', 'NE', 'NF', 'NG', 'NI', 'NL', 'NO', 'NP', 'NR', 'NU', 'NZ', 'OM', 'PA', 'PE', 'PF', 'PG', 'PH', 'PK', 'PL', 'PM', 'PN', 'PR', 'PS', 'PT', 'PW', 'PY', 'QA', 'RE', 'RO', 'RS', 'RU', 'RW', 'SA', 'SB', 'SC', 'SD', 'SE', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SR', 'SS', 'ST', 'SV', 'SX', 'SY', 'SZ', 'TC', 'TD', 'TF', 'TG', 'TH', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TR', 'TT', 'TV', 'TW', 'TZ', 'UA', 'UG', 'UM', 'US', 'UY', 'UZ', 'VA', 'VC', 'VE', 'VG', 'VI', 'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM']},
-    {name: 'location_label', type: 'tokenized-string', group:'where', editable: true},
+    {name: 'location_name', type: 'tokenized-string', group:'where', editable: true},
+    {name: 'location_labels', type: 'string', group:'where', editable: true},
     {name: 'category_flandersregion_name', type: 'term' , group:'where', editable: true},
 
     {name: 'startdate', type: 'date-range', group:'when', editable: true},

@@ -34,7 +34,7 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
    * @return {object}
    */
   ex.export = function (format, email, properties, perDay, customizations) {
-    var queryString = ex.activeExport.query.queryString,
+    var queryString = ex.activeExport.query.queryString + ' AND workflowStatus:("APPROVED" OR "READY_FOR_VALIDATION")',
         selection = ex.activeExport.selection || [],
         eventCount = ex.activeExport.eventCount,
         brand = customizations.brand || '',
@@ -42,7 +42,6 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
         user = $cookies.getObject('user');
 
     var jobPromise = udbApi.exportEvents(
-        getSapiVersion(),
         queryString,
         email,
         format,
@@ -66,11 +65,4 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
 
     return jobPromise;
   };
-
-  /**
-   * @returns {String}
-   */
-  function getSapiVersion() {
-    return 'v' + searchApiSwitcher.getApiVersion();
-  }
 }
