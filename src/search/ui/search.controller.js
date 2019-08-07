@@ -88,6 +88,9 @@ function SearchController(
     searchApiSwitcher
       .findOffers(queryString, offset)
       .then(function (pagedEvents) {
+        if (pagedEvents.member) {
+          pagedEvents = udbApi.reformatEvents(pagedEvents);
+        }
         offerLocator.addPagedCollection(pagedEvents);
         $scope.resultViewer.setResults(pagedEvents);
       });
@@ -131,7 +134,6 @@ function SearchController(
 
       _.each(selectedOffers, function (offer) {
         var eventPromise;
-
         eventPromise = udbApi.getOffer(new URL(offer['@id']));
 
         eventPromise.then(function (event) {
