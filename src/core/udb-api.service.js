@@ -249,7 +249,7 @@ function UdbApi(
    * @param {object} event
    * @return {object}
    */
-  this.formatOffer = function(event) {
+  this.formatOfferClass = function(event) {
     var offer = {};
     var type = event['@type'].toLowerCase();
     if (type === 'event') {
