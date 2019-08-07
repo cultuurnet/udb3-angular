@@ -4962,25 +4962,25 @@ function UdbApi(
     }
   };
 
-  this.createSavedSearch = function (sapiVersion, name, queryString) {
+  this.createSavedSearch = function (name, queryString) {
     var post = {
       name: name,
       query: queryString
     };
     return $http
-      .post(appConfig.baseUrl + 'saved-searches/' + sapiVersion, post, defaultApiConfig)
+      .post(appConfig.baseUrl + 'saved-searches/v3', post, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
-  this.getSavedSearches = function (sapiVersion) {
+  this.getSavedSearches = function () {
     return $http
-      .get(appConfig.baseUrl + 'saved-searches/' + sapiVersion, defaultApiConfig)
+      .get(appConfig.baseUrl + 'saved-searches/v3', defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
-  this.deleteSavedSearch = function (sapiVersion, searchId) {
+  this.deleteSavedSearch = function (searchId) {
     return $http
-      .delete(appConfig.baseUrl + 'saved-searches/' + sapiVersion + '/' + searchId, defaultApiConfig)
+      .delete(appConfig.baseUrl + 'saved-searches/v3/' + searchId, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
@@ -15071,7 +15071,7 @@ angular
 function EventFormStep4Controller(
   $scope,
   EventFormData,
-  searchApiSwitcher,
+  udbApi,
   appConfig,
   SearchResultViewer,
   eventCrud,
@@ -15195,7 +15195,7 @@ function EventFormStep4Controller(
 
     var queryString = expressions.join(' AND ');
 
-    return searchApiSwitcher.findOffers(queryString);
+    return udbApi.findOffers(queryString);
   }
 
   /**
@@ -15204,7 +15204,19 @@ function EventFormStep4Controller(
    * - on the same location
    */
   function duplicateSearchConditions(data) {
-    return searchApiSwitcher.getDuplicateSearchConditions(data);
+    var location = data.getLocation();
+    if (data.isEvent) {
+      return {
+        'name.\\*': data.name.nl,
+        'location.name.\\*' : location.name
+      };
+    } else {
+      return {
+        'name.\\*': data.name.nl,
+        'postalCode': data.address.postalCode,
+        'labels': 'UDB3 place'
+      };
+    }
   }
 
   /**
@@ -15279,7 +15291,7 @@ function EventFormStep4Controller(
   }
 
 }
-EventFormStep4Controller.$inject = ["$scope", "EventFormData", "searchApiSwitcher", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
+EventFormStep4Controller.$inject = ["$scope", "EventFormData", "udbApi", "appConfig", "SearchResultViewer", "eventCrud", "$rootScope", "$uibModal"];
 })();
 
 // Source: src/event_form/steps/event-form-step5.controller.js
@@ -16369,7 +16381,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, searchApiSwitcher) {
+function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies) {
 
   var ex = this; // jshint ignore:line
 
@@ -16423,7 +16435,7 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, s
     return jobPromise;
   };
 }
-eventExporter.$inject = ["jobLogger", "appConfig", "udbApi", "EventExportJob", "$cookies", "searchApiSwitcher"];
+eventExporter.$inject = ["jobLogger", "appConfig", "udbApi", "EventExportJob", "$cookies"];
 })();
 
 // Source: src/export/export-formats.constant.js
@@ -21294,7 +21306,7 @@ angular.module('udb.router')
   .service('offerLocator', OfferLocator);
 
 /* @ngInject */
-function OfferLocator($q, searchApiSwitcher) {
+function OfferLocator($q, udbApi) {
   // An associative array with UUIDs pointing to locations.
   // eg: 0586DF1-89D7-42F6-9804-DAE8878C2617 -> http://du.de/event/0586DF1-89D7-42F6-9804-DAE8878C2617
   var locations = {};
@@ -21354,12 +21366,9 @@ function OfferLocator($q, searchApiSwitcher) {
       }
     }
 
-    var queryString = 'cdbid:"' + uuid + '"';
-    if (searchApiSwitcher.getApiVersion() > 2) {
-      queryString = 'id:"' + uuid + '"';
-    }
+    var queryString = 'id:"' + uuid + '"';
 
-    searchApiSwitcher
+    udbApi
       .findOffers(queryString)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
@@ -21367,7 +21376,7 @@ function OfferLocator($q, searchApiSwitcher) {
     return deferredLocation.promise;
   }
 }
-OfferLocator.$inject = ["$q", "searchApiSwitcher"];
+OfferLocator.$inject = ["$q", "udbApi"];
 })();
 
 // Source: src/saved-searches/components/delete-search-modal.controller.js
@@ -21516,20 +21525,12 @@ angular
   .service('savedSearchesService', SavedSearchesService);
 
 /* @ngInject */
-function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi, searchApiSwitcher) {
-  var apiUrl = appConfig.baseUrl;
-  var defaultApiConfig = {
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
+function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi) {
   var savedSearches = [];
   var ss = this;
-  var sapiVersion = getSapiVersion();
 
   ss.createSavedSearch = function(name, query) {
-    return udbApi.createSavedSearch(sapiVersion, name, query).then(function () {
+    return udbApi.createSavedSearch(name, query).then(function () {
       savedSearches.push({'name': name, 'query': query});
       savedSearchesChanged();
 
@@ -21538,14 +21539,14 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   };
 
   ss.getSavedSearches = function () {
-    return udbApi.getSavedSearches(sapiVersion).then(function (data) {
+    return udbApi.getSavedSearches().then(function (data) {
       savedSearches = data;
       return $q.resolve(data);
     });
   };
 
   ss.deleteSavedSearch = function (searchId) {
-    return udbApi.deleteSavedSearch(sapiVersion, searchId).then(function () {
+    return udbApi.deleteSavedSearch(searchId).then(function () {
       _.remove(savedSearches, {id: searchId});
       savedSearchesChanged();
 
@@ -21556,15 +21557,8 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   function savedSearchesChanged () {
     $rootScope.$emit('savedSearchesChanged', savedSearches);
   }
-
-  /**
-   * @returns {String}
-   */
-  function getSapiVersion() {
-    return 'v' + searchApiSwitcher.getApiVersion();
-  }
 }
-SavedSearchesService.$inject = ["$q", "$http", "$cookies", "appConfig", "$rootScope", "udbApi", "searchApiSwitcher"];
+SavedSearchesService.$inject = ["$q", "$http", "$cookies", "appConfig", "$rootScope", "udbApi"];
 
 })();
 
@@ -22006,10 +22000,13 @@ angular
   .directive('udbQueryEditorField', udbQueryEditorField);
 
 /* @ngInject */
-function udbQueryEditorField(searchApiSwitcher) {
-  return searchApiSwitcher.getQueryEditorFieldDefinition();
+function udbQueryEditorField() {
+  return {
+    templateUrl: 'templates/query-editor-field.directive.html',
+    restrict: 'E',
+    controller: 'QueryEditorFieldController'
+  };
 }
-udbQueryEditorField.$inject = ["searchApiSwitcher"];
 })();
 
 // Source: src/search/components/query-editor.controller.js
@@ -22313,286 +22310,12 @@ angular
   .directive('udbQueryEditor', udbQueryEditor);
 
 /* @ngInject */
-function udbQueryEditor(searchApiSwitcher) {
+function udbQueryEditor() {
   return {
     templateUrl: 'templates/query-editor.directive.html',
     restrict: 'EA',
     controllerAs: 'qe',
-    controller: searchApiSwitcher.getQueryEditorController()
-  };
-}
-udbQueryEditor.$inject = ["searchApiSwitcher"];
-})();
-
-// Source: src/search/components/sapi2.query-editor.controller.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc directive
- * @name udb.search.controller:sapi2QueryEditorController
- * @description
- * # sapi2QueryEditorController
- */
-angular
-  .module('udb.search')
-  .controller('sapi2QueryEditorController', Sapi2QueryEditorController);
-
-Sapi2QueryEditorController.$inject = [
-  'sapi2QueryFields',
-  'sapi2QueryBuilder',
-  'taxonomyTerms',
-  'sapi2FieldTypeTransformers',
-  'searchHelper',
-  '$translate',
-  '$rootScope'
-];
-function Sapi2QueryEditorController(
-  queryFields,
-  LuceneQueryBuilder,
-  taxonomyTerms,
-  fieldTypeTransformers,
-  searchHelper,
-  $translate,
-  $rootScope
-) {
-  var qe = this,
-    queryBuilder = LuceneQueryBuilder;
-
-  qe.fields = _.filter(queryFields, 'editable');
-
-  // use the first occurrence of a group name to order it against the other groups
-  var orderedGroups = _.chain(qe.fields)
-    .map(function (field) {
-      return field.group;
-    })
-    .uniq()
-    .value();
-
-  _.forEach(qe.fields, function (field) {
-    var fieldName = 'queryFieldLabel.' + field.name,
-      fieldGroup = 'queryFieldGroup.' + field.group;
-
-    $translate([fieldName, fieldGroup]).then(function (translations) {
-      field.label = translations[fieldName];
-      field.groupIndex = _.indexOf(orderedGroups, field.group);
-      field.groupLabel = translations[fieldGroup];
-    });
-  });
-
-  qe.getDefaultQueryTree = function () {
-    return {
-      type: 'root',
-      nodes: [
-        {
-          type: 'group',
-          operator: 'OR',
-          nodes: [
-            {
-              field: 'title',
-              term: '',
-              fieldType: 'tokenized-string',
-              transformer: '+'
-            }
-          ]
-        }
-      ]
-    };
-  };
-  qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
-
-  // Holds options for both term and choice query-field types
-  qe.transformers = {};
-  qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
-    return 'category_' + term.domain + '_name';
-  });
-  _.forEach(queryFields, function (field) {
-    if (field.type === 'choice') {
-      qe.termOptions[field.name] = field.options;
-    }
-    qe.transformers[field.name] = fieldTypeTransformers[field.type];
-  });
-
-  /**
-   * Update the search input field with the data from the query editor
-   */
-  qe.updateQueryString = function () {
-    searchHelper.setQueryTree(qe.groupedQueryTree);
-    $rootScope.$emit('searchSubmitted');
-    qe.stopEditing();
-  };
-
-  qe.stopEditing = function () {
-    $rootScope.$emit('stopEditingQuery');
-  };
-
-  /**
-   * Add a field to a group
-   *
-   * @param  {object}  group       The group to add the field to
-   * @param {number}  fieldIndex  The index of the field after which to add
-   */
-  qe.addField = function (group, fieldIndex) {
-
-    var insertIndex = fieldIndex + 1,
-      field = {
-        field: 'title',
-        term: '',
-        fieldType: 'tokenized-string',
-        transformer: '+'
-      };
-
-    group.nodes.splice(insertIndex, 0, field);
-
-    if (group.nodes.length) {
-      group.type = 'group';
-    }
-  };
-
-  /**
-   * Remove a field from a group
-   *
-   * @param {object}    group       The group to delete a field from
-   * @param {number}    fieldIndex  The index of the field to delete
-   * @param {object=}   rootGroup   The root group of the field to delete
-   */
-  qe.removeField = function (group, fieldIndex, rootGroup) {
-    if (rootGroup.nodes.length > 1) {
-      group.nodes.splice(fieldIndex, 1);
-    }
-
-    qe.cleanUpGroups();
-  };
-
-  qe.cleanUpGroups = function () {
-    qe.removeEmptyGroups();
-    qe.unwrapSubGroups();
-  };
-
-  qe.unwrapSubGroups = function () {
-    var root = qe.groupedQueryTree;
-
-    _.forEach(root.nodes, function (group) {
-      var firstNode = group.nodes[0];
-
-      if (firstNode.nodes) {
-        var firstNodeChildren = firstNode.nodes;
-        group.nodes.splice(0, 1);
-        _.forEach(firstNodeChildren, function (node, index) {
-          group.nodes.splice(index, 0, node);
-        });
-      }
-    });
-  };
-
-  qe.removeEmptyGroups = function () {
-    var root = qe.groupedQueryTree;
-
-    _.forEach(root.nodes, function (group) {
-      _.remove(group.nodes, function (node) {
-        return node.nodes && node.nodes.length === 0;
-      });
-    });
-  };
-
-  qe.toggleExcludeGroup = function (group) {
-    group.excluded = !group.excluded;
-  };
-
-  qe.canRemoveGroup = function () {
-    return !qe.hasSingleGroup();
-  };
-
-  qe.removeGroup = function (groupIndex) {
-    if (qe.canRemoveGroup()) {
-      var root = qe.groupedQueryTree,
-        group = root.nodes[groupIndex];
-
-      if (qe.canRemoveGroup() && group) {
-        root.nodes.splice(groupIndex, 1);
-      }
-    }
-  };
-
-  qe.resetGroups = function () {
-    qe.groupedQueryTree = qe.getDefaultQueryTree();
-  };
-
-  /**
-   * Add a field group
-   */
-  qe.addGroup = function () {
-    var root = qe.groupedQueryTree;
-    var group = {
-      type: 'group',
-      operator: 'OR',
-      nodes: [
-        {
-          field: 'title',
-          term: '',
-          fieldType: 'tokenized-string',
-          transformer: '+'
-        }
-      ]
-    };
-
-    root.nodes.push(group);
-  };
-
-  qe.addSubGroup = function (parentGroup, fieldIndex) {
-    var group = {
-      type: 'group',
-      operator: 'AND',
-      nodes: [
-        {
-          field: 'title',
-          term: '',
-          fieldType: 'tokenized-string',
-          transformer: '+'
-        }
-      ]
-    };
-
-    parentGroup.nodes.splice(fieldIndex + 1, 0, group);
-  };
-
-  qe.updateFieldType = function (field) {
-    var fieldName = field.field,
-      queryField = _.find(queryFields, function (field) {
-        return field.name === fieldName;
-      });
-
-    if (field.fieldType !== queryField.type) {
-      // TODO: Maybe try to do a type conversion?
-      if (queryField.type === 'date-range') {
-        field.lowerBound = moment().startOf('day').toDate();
-        field.upperBound = moment().endOf('day').toDate();
-        field.inclusive = true;
-      } else {
-        field.term = '';
-        field.lowerBound = undefined;
-        field.upperBound = undefined;
-        field.inclusive = undefined;
-      }
-
-      if (queryField.type === 'check') {
-        field.term = 'TRUE';
-      }
-
-      if (queryField.type === 'number') {
-        field.inclusive = true;
-      }
-
-      if (!field.transformer || !_.contains(fieldTypeTransformers[queryField.type], field.transformer)) {
-        field.transformer = _.first(fieldTypeTransformers[queryField.type]);
-      }
-
-      field.fieldType = queryField.type;
-    }
-  };
-
-  qe.hasSingleGroup = function () {
-    return (qe.groupedQueryTree.nodes.length === 1);
+    controller: 'QueryEditorController'
   };
 }
 })();
@@ -22612,7 +22335,7 @@ angular
   .directive('udbSearchBar', udbSearchBar);
 
 /* @ngInject */
-function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService, searchApiSwitcher) {
+function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService) {
   return {
     templateUrl: 'templates/search-bar.directive.html',
     restrict: 'E',
@@ -22634,7 +22357,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService,
 
         editorModal = $uibModal.open({
           templateUrl: 'templates/query-editor-modal.html',
-          controller: searchApiSwitcher.getQueryEditorController(),
+          controller: 'QueryEditorController',
           controllerAs: 'qe',
           size: 'lg'
         });
@@ -22722,7 +22445,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService,
     }
   };
 }
-udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService", "searchApiSwitcher"];
+udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService"];
 })();
 
 // Source: src/search/event-types.value.js
@@ -24698,136 +24421,6 @@ function QueryTreeValidator(queryFields) {
 }
 })();
 
-// Source: src/search/services/search-api-switcher.js
-(function () {
-'use strict';
-
-/**
- * @ngdoc service
- * @name udb.search.searchApiSwitcher
- * @description
- * # searchApiSwitcher
- * This service provides context to switch between SAPI2 and SAPI3
- */
-angular
-  .module('udb.search')
-  .service('searchApiSwitcher', SearchApiSwitcher);
-
-/* @ngInject */
-function SearchApiSwitcher(appConfig, udbApi, $cookies, sapi2QueryBuilder, LuceneQueryBuilder) {
-  var switcher = this;
-  var apiVersionCookieKey = 'search-api-version';
-  var defaultApiVersion = _.get(appConfig, 'search.defaultApiVersion', '2');
-  switcher.getApiVersion = getApiVersion;
-
-  /**
-   * @returns {Number}
-   */
-  function getApiVersion() {
-    return parseInt($cookies.get(apiVersionCookieKey) || defaultApiVersion);
-  }
-
-  /**
-   * @param {string} queryString
-   * @param {number} start
-   * @returns {Promise.<PagedCollection>}
-   */
-  switcher.findOffers = function (queryString, start) {
-    start = start || 0;
-    return (getApiVersion() > 2) ? udbApi.findOffers(queryString, start) : udbApi.findEvents(queryString, start);
-  };
-
-  /**
-   * @param {EventFormData} formData
-   * @returns {object}
-   */
-  switcher.getDuplicateSearchConditions = function (formData) {
-    var location = formData.getLocation();
-
-    if (getApiVersion() > 2) {
-      if (formData.isEvent) {
-        /*jshint camelcase: false*/
-        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
-        return {
-          'name.\\*': formData.name.nl,
-          'location.name.\\*' : location.name
-        };
-      }
-      else {
-        /*jshint camelcase: false */
-        return {
-          'name.\\*': formData.name.nl,
-          'postalCode': formData.address.postalCode,
-          'labels': 'UDB3 place'
-        };
-      }
-    } else {
-      if (formData.isEvent) {
-        /*jshint camelcase: false*/
-        /*jscs:disable requireCamelCaseOrUpperCaseIdentifiers */
-        return {
-          text: formData.name.nl,
-          location_label : location.name
-        };
-      }
-      else {
-        /*jshint camelcase: false */
-        return {
-          text: formData.name.nl,
-          zipcode: formData.address.postalCode,
-          keywords: 'UDB3 place'
-        };
-      }
-    }
-  };
-
-  /**
-   * @returns {object}
-   *  An angular directive definition object.
-   */
-  switcher.getQueryEditorFieldDefinition = function() {
-    if (getApiVersion() > 2) {
-      return {
-        templateUrl: 'templates/query-editor-field.directive.html',
-        restrict: 'E',
-        controller: 'QueryEditorFieldController'
-      };
-    } else {
-      return {
-        templateUrl: 'templates/sapi2.query-editor-field.directive.html',
-        restrict: 'E',
-        controller: 'QueryEditorFieldController'
-      };
-    }
-  };
-
-  /**
-   * @returns {string}
-   *  A query editor controller name.
-   */
-  switcher.getQueryEditorController = function() {
-    if (getApiVersion() > 2) {
-      return 'QueryEditorController';
-    } else {
-      return 'sapi2QueryEditorController';
-    }
-  };
-
-  /**
-   * @returns {object}
-   *  A query builder instance.
-   */
-  switcher.getQueryBuilder = function () {
-    if (getApiVersion() > 2) {
-      return LuceneQueryBuilder;
-    } else {
-      return sapi2QueryBuilder;
-    }
-  };
-}
-SearchApiSwitcher.$inject = ["appConfig", "udbApi", "$cookies", "sapi2QueryBuilder", "LuceneQueryBuilder"];
-})();
-
 // Source: src/search/services/search-helper.service.js
 (function () {
 'use strict';
@@ -24844,10 +24437,9 @@ angular
   .service('searchHelper', SearchHelper);
 
 /* @ngInject */
-function SearchHelper(searchApiSwitcher, $rootScope) {
+function SearchHelper(LuceneQueryBuilder, $rootScope) {
   var query = null;
   var queryTree = null;
-  var queryBuilder = searchApiSwitcher.getQueryBuilder();
 
   this.clearQueryTree = function () {
     queryTree = null;
@@ -24864,8 +24456,8 @@ function SearchHelper(searchApiSwitcher, $rootScope) {
     var newQuery = false;
 
     if (!query || query.queryString !== queryString) {
-      newQuery = queryBuilder.createQuery(queryString);
-      queryBuilder.isValid(newQuery);
+      newQuery = LuceneQueryBuilder.createQuery(queryString);
+      LuceneQueryBuilder.isValid(newQuery);
       this.setQuery(newQuery);
       queryTree = null;
     }
@@ -24876,9 +24468,9 @@ function SearchHelper(searchApiSwitcher, $rootScope) {
   };
 
   this.setQueryTree = function (groupedQueryTree) {
-    var queryString = queryBuilder.unparseGroupedTree(groupedQueryTree);
-    var newQuery = queryBuilder.createQuery(queryString);
-    queryBuilder.isValid(newQuery);
+    var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedQueryTree);
+    var newQuery = LuceneQueryBuilder.createQuery(queryString);
+    LuceneQueryBuilder.isValid(newQuery);
     this.setQuery(newQuery);
 
     queryTree = groupedQueryTree;
@@ -24897,7 +24489,7 @@ function SearchHelper(searchApiSwitcher, $rootScope) {
     return angular.copy(queryTree);
   };
 }
-SearchHelper.$inject = ["searchApiSwitcher", "$rootScope"];
+SearchHelper.$inject = ["LuceneQueryBuilder", "$rootScope"];
 })();
 
 // Source: src/search/services/search-result-viewer.factory.js
@@ -25678,12 +25270,10 @@ function SearchController(
   $rootScope,
   eventExporter,
   $translate,
-  searchApiSwitcher,
+  LuceneQueryBuilder,
   authorization,
   authorizationService
 ) {
-  var queryBuilder = searchApiSwitcher.getQueryBuilder();
-
   function getSearchQuery() {
     return searchHelper.getQuery();
   }
@@ -25738,7 +25328,7 @@ function SearchController(
 
     $scope.resultViewer.loading = true;
 
-    searchApiSwitcher
+    udbApi
       .findOffers(queryString, offset)
       .then(function (pagedEvents) {
         offerLocator.addPagedCollection(pagedEvents);
@@ -25752,8 +25342,8 @@ function SearchController(
   var updateQuery = function (query) {
     $scope.activeQuery = query;
 
-    if (queryBuilder.isValid(query)) {
-      var realQuery = queryBuilder.unparse(query);
+    if (LuceneQueryBuilder.isValid(query)) {
+      var realQuery = LuceneQueryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
       findOffers(realQuery);
 
@@ -25802,7 +25392,7 @@ function SearchController(
     var query = $scope.activeQuery,
       eventCount = $scope.resultViewer.totalItems;
 
-    if (queryBuilder.isValid(query)) {
+    if (LuceneQueryBuilder.isValid(query)) {
       var modal = $uibModal.open({
         templateUrl: 'templates/offer-label-modal.html',
         controller: 'OfferLabelModalCtrl',
@@ -25879,7 +25469,7 @@ function SearchController(
       });
     }
     else {
-      if (query && query.queryString.length && queryBuilder.isValid(query)) {
+      if (query && query.queryString.length && LuceneQueryBuilder.isValid(query)) {
         var modal = $uibModal.open({
           templateUrl: 'templates/event-export-modal.html',
           controller: 'EventExportController',
@@ -25954,7 +25544,7 @@ function SearchController(
 
   initListeners();
 }
-SearchController.$inject = ["$scope", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "searchApiSwitcher", "authorization", "authorizationService"];
+SearchController.$inject = ["$scope", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "LuceneQueryBuilder", "authorization", "authorizationService"];
 })();
 
 // Source: src/search/ui/search.directive.js
@@ -31818,101 +31408,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      Zoeken\n" +
     "    </button>\n" +
     "  </div>\n" +
-    "</div>\n"
-  );
-
-
-  $templateCache.put('templates/sapi2.query-editor-field.directive.html',
-    "<div class=\"row voorwaarde qe-field {{ getOperatorClass() }}\">\n" +
-    "    <div class=\"col-md-3\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <select\n" +
-    "                    ng-options=\"field.name as field.label group by field.groupLabel for field in qe.fields | orderBy:['groupIndex','label']\"\n" +
-    "                    ng-model=\"field.field\" class=\"form-control\" ng-change=\"qe.updateFieldType(field)\">\n" +
-    "            </select>\n" +
-    "        </div>\n" +
-    "\n" +
-    "    </div>\n" +
-    "    <div class=\"col-md-3\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <select ng-model=\"field.transformer\" class=\"form-control\"\n" +
-    "                    ng-options=\"transformer + (field.fieldType === 'date-range' ? '_DATE' : '') | translate for transformer in qe.transformers[field.field]\">\n" +
-    "            </select>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"col-md-3 field-query-term\" ng-switch=\"field.fieldType\">\n" +
-    "        <div ng-switch-when=\"string\">\n" +
-    "            <input type=\"text\" ng-model=\"field.term\"\n" +
-    "                   class=\"form-control\"/>\n" +
-    "        </div>\n" +
-    "        <div ng-switch-when=\"tokenized-string\">\n" +
-    "            <input type=\"text\" ng-model=\"field.term\"\n" +
-    "                   class=\"form-control\"/>\n" +
-    "        </div>\n" +
-    "        <div ng-switch-when=\"term\">\n" +
-    "            <select ng-options=\"term.label as term.label for term in qe.termOptions[field.field] | orderBy:'label'\"\n" +
-    "                    ng-model=\"field.term\" class=\"form-control\">\n" +
-    "                <option value=\"\">-- maak een keuze --</option>\n" +
-    "            </select>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"choice\">\n" +
-    "            <select ng-options=\"'choice.' + option | translate for option in ::qe.termOptions[field.field]\"\n" +
-    "                    ng-model=\"field.term\" class=\"form-control\">\n" +
-    "                <option value=\"\">-- maak een keuze --</option>\n" +
-    "            </select>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"check\">\n" +
-    "            <label class=\"radio-inline\">\n" +
-    "                <input type=\"radio\" ng-model=\"field.term\" value=\"TRUE\"> ja\n" +
-    "            </label>\n" +
-    "            <label class=\"radio-inline\">\n" +
-    "                <input type=\"radio\" ng-model=\"field.term\" value=\"FALSE\"> nee\n" +
-    "            </label>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"date-range\">\n" +
-    "            <udb-query-editor-daterangepicker>\n" +
-    "            </udb-query-editor-daterangepicker>\n" +
-    "        </div>\n" +
-    "\n" +
-    "        <div ng-switch-when=\"number\" ng-switch=\"field.transformer\">\n" +
-    "            <div ng-switch-when=\"=\">\n" +
-    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.term\"/>\n" +
-    "            </div>\n" +
-    "\n" +
-    "            <div ng-switch-when=\">\">\n" +
-    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.lowerBound\"/>\n" +
-    "            </div>\n" +
-    "\n" +
-    "            <div ng-switch-when=\"<\">\n" +
-    "                <input type=\"text\" class=\"form-control\" ng-model=\"field.upperBound\"/>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"col-md-2 col-xs-8\">\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <div class=\"btn-group btn-group-justified\" role=\"group\">\n" +
-    "                <a type=\"button\" class=\"btn btn-default\" ng-click=\"addSubGroup($index)\"\n" +
-    "                   ng-disabled=\"isSubGroup() && !$last\">\n" +
-    "                    AND\n" +
-    "                </a>\n" +
-    "                <a type=\"button\" class=\"btn btn-default\" ng-click=\"addField($index)\">\n" +
-    "                    OR\n" +
-    "                </a>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "\n" +
-    "    <div class=\"col-md-1 col-xs-4\">\n" +
-    "        <button type=\"button\" class=\"close\" aria-label=\"Close\" ng-click=\"removeField($index)\"\n" +
-    "                ng-show=\"canRemoveField()\">\n" +
-    "            <span aria-hidden=\"true\">×</span>\n" +
-    "        </button>\n" +
-    "    </div>\n" +
     "</div>\n"
   );
 

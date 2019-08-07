@@ -11,11 +11,11 @@ angular
   .directive('udbQueryEditor', udbQueryEditor);
 
 /* @ngInject */
-function udbQueryEditor(searchApiSwitcher) {
+function udbQueryEditor() {
   return {
     templateUrl: 'templates/query-editor.directive.html',
     restrict: 'EA',
     controllerAs: 'qe',
-    controller: searchApiSwitcher.getQueryEditorController()
+    controller: 'QueryEditorController'
   };
 }

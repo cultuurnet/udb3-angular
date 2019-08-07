@@ -12,7 +12,7 @@ angular
   .service('eventExporter', eventExporter);
 
 /* @ngInject */
-function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies, searchApiSwitcher) {
+function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies) {
 
   var ex = this; // jshint ignore:line
 
