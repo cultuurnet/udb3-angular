@@ -11,6 +11,10 @@ angular
   .directive('udbQueryEditorField', udbQueryEditorField);
 
 /* @ngInject */
-function udbQueryEditorField(searchApiSwitcher) {
-  return searchApiSwitcher.getQueryEditorFieldDefinition();
+function udbQueryEditorField() {
+  return {
+    templateUrl: 'templates/query-editor-field.directive.html',
+    restrict: 'E',
+    controller: 'QueryEditorFieldController'
+  };
 }

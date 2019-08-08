@@ -1,16 +1,13 @@
 describe('Service: Search Helper', function () {
 
-  var searchHelper, queryBuilder, apiSwitcher;
+  var searchHelper, queryBuilder;
 
   // load the service's module
   beforeEach(module('udb.search', function ($provide) {
     queryBuilder = jasmine.createSpyObj('LuceneQueryBuilder', ['createQuery', 'unparseGroupedTree', 'isValid']);
     queryBuilder.createQuery.and.returnValue({ queryString: ''});
 
-    apiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['getQueryBuilder']);
-    apiSwitcher.getQueryBuilder.and.returnValue(queryBuilder);
-
-    $provide.value('searchApiSwitcher', apiSwitcher);
+    $provide.value('LuceneQueryBuilder', queryBuilder);
   }));
 
   beforeEach(inject(function (_searchHelper_) {

@@ -15,7 +15,7 @@ angular
 function EventFormStep4Controller(
   $scope,
   EventFormData,
-  searchApiSwitcher,
+  udbApi,
   appConfig,
   SearchResultViewer,
   eventCrud,
@@ -139,7 +139,7 @@ function EventFormStep4Controller(
 
     var queryString = expressions.join(' AND ');
 
-    return searchApiSwitcher.findOffers(queryString);
+    return udbApi.findOffers(queryString);
   }
 
   /**
@@ -148,7 +148,19 @@ function EventFormStep4Controller(
    * - on the same location
    */
   function duplicateSearchConditions(data) {
-    return searchApiSwitcher.getDuplicateSearchConditions(data);
+    var location = data.getLocation();
+    if (data.isEvent) {
+      return {
+        'name.\\*': data.name.nl,
+        'location.name.\\*' : location.name
+      };
+    } else {
+      return {
+        'name.\\*': data.name.nl,
+        'postalCode': data.address.postalCode,
+        'labels': 'UDB3 place'
+      };
+    }
   }
 
   /**

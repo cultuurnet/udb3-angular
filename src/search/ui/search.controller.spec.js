@@ -10,7 +10,6 @@ describe('Controller: SearchController', function() {
     $q,
     $uibModal,
     searchHelper,
-    searchApiSwitcher,
     queryBuilder;
 
   beforeEach(module('udb.core', function ($translateProvider) {
@@ -37,12 +36,10 @@ describe('Controller: SearchController', function() {
     $window = {
       alert: jasmine.createSpy('alert')
     };
-    udbApi = jasmine.createSpyObj('udbApi', ['getEventById', 'exportEvents']);
-    searchApiSwitcher = jasmine.createSpyObj('searchApiSwitcher', ['findOffers', 'getQueryBuilder']);
-    searchApiSwitcher.findOffers.and.returnValue($q.reject('nope'));
+    udbApi = jasmine.createSpyObj('udbApi', ['findOffers', 'getEventById', 'exportEvents']);
+    udbApi.findOffers.and.returnValue($q.reject('nope'));
 
     queryBuilder = jasmine.createSpyObj('queryBuilder', ['isValid']);
-    searchApiSwitcher.getQueryBuilder.and.returnValue(queryBuilder);
 
     $location = jasmine.createSpyObj('$location', ['search']);
     $location.search.and.returnValue({});
@@ -60,7 +57,7 @@ describe('Controller: SearchController', function() {
         $location: $location,
         searchHelper: searchHelper,
         $uibModal: $uibModal,
-        searchApiSwitcher: searchApiSwitcher
+        LuceneQueryBuilder: queryBuilder
       }
     );
   }
