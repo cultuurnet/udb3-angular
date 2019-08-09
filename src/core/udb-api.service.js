@@ -252,14 +252,15 @@ function UdbApi(
   this.formatOfferClass = function(event) {
     var offer = {};
     var type = event['@type'].toLowerCase();
-    if (type === 'event') {
-      offer = new UdbEvent();
-    }
-    else if (type === 'place') {
-      offer = new UdbPlace();
-    }
-    else {
-      offer = new UdbOrganizer();
+    switch(type) {
+      case 'event':
+        offer = new UdbEvent();
+        break;
+      case 'place':
+        offer = new UdbPlace();
+        break;
+      default:
+        offer = new UdbOrganizer();
     }
     offer.parseJson(event);
     return offer;
