@@ -252,7 +252,7 @@ function UdbApi(
   this.formatOfferClass = function(event) {
     var offer = {};
     var type = event['@type'].toLowerCase();
-    switch(type) {
+    switch (type) {
       case 'event':
         offer = new UdbEvent();
         break;
