@@ -2536,4 +2536,35 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should reformat events to have both @type and @context properties', function(){
+    var events = {
+      "member": [
+          {
+              "@id": "https://io.uitdatabank.be/event/140a9970-99f1-4556-9b24-95a5e7d51c6c",
+              "@context": "/contexts/event",
+              "mainLanguage": "nl",
+              "name": {
+                  "nl": "Opera, Ballet & Film: Kortfilms van Hans Op de Beeck"
+              }
+          }
+      ]
+    };
+    var expectedEvents = {
+      "member": [
+          {
+              "@id": "https://io.uitdatabank.be/event/140a9970-99f1-4556-9b24-95a5e7d51c6c",
+              "@context": "/contexts/event",
+              "@type": "Event",
+              "mainLanguage": "nl",
+              "name": {
+                  "nl": "Opera, Ballet & Film: Kortfilms van Hans Op de Beeck"
+              }
+          }
+      ]
+    };
+    var reformattedEvents = service.reformatEvents(events); 
+    expect(expectedEvents).toEqual(reformattedEvents);
+  })
+
 });
