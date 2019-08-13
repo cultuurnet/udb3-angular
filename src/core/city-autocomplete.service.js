@@ -18,10 +18,11 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
    *
    * @param {string} zipcode
    * @param {string} country
+   * @param {string} freeTextSearch
    * @returns {Promise}
    */
-  this.getPlacesByZipcode = function(zipcode, country) {
-
+  this.getPlacesByZipcode = function(zipcode, country, freeTextSearch) {
+    var textParam = (freeTextSearch) ? freeTextSearch : '';
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
@@ -35,7 +36,8 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'disableDefaultFilters': true,
         'embed': true,
         'limit': 1000,
-        'sort[created]': 'asc'
+        'sort[created]': 'asc',
+        'text': '*' + textParam + '*'
       }
     };
 
