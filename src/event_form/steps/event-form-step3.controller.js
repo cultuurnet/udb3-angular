@@ -105,7 +105,6 @@ function EventFormStep3Controller(
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
-      var length = value.length;
       var words = value.match(/.+/g);
       var labelMatches = words.filter(function (word) {
         return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -147,11 +146,10 @@ function EventFormStep3Controller(
 
     $scope.cityAutocompleteTextField = '';
     $scope.selectedCity = $label;
+    $scope.selectedCityObj = city;
     $scope.selectedLocation = undefined;
 
     setMajorInfoChanged();
-
-    controller.getLocations(city);
   };
   $scope.selectCity = controller.selectCity;
 
@@ -226,87 +224,68 @@ function EventFormStep3Controller(
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
     $scope.locationsSearched = false;
+    $scope.selectedCityObj = city;
 
     controller.stepUncompleted();
-    controller.getLocations(city);
   }
 
-  /**
-   * Get locations for Event.
-   * @returns {undefined}
-   * @param {Object} city
-   */
-  controller.getLocations = function (city) {
+  controller.getPlaces = function(filterValue) {
 
-    function showErrorAndReturnEmptyList () {
-      $scope.locationAutoCompleteError = true;
-      return [];
+    // exit code when the filterValue has < 3 characters
+    if (filterValue.length < 3) {
+      $scope.locationsSearched = false;
+      return;
     }
+
+    $scope.locationsSearched = true;
 
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
-      $scope.locationsForCity = locations;
-      return locations;
+      // sort locations by Levenshtein distance
+      var sortedLocations = locations.sort(orderSearchedLocations(filterValue));
+      $scope.locationsForCity = sortedLocations;
+      return sortedLocations;
     }
 
-    function clearLoadingState() {
-      $scope.locationsSearched = false;
-      $scope.loadingPlaces = false;
+    function showErrorAndReturnEmptyList () {
+      $scope.locationAutoCompleteError = true;
+      return [];
     }
-
-    $scope.loadingPlaces = true;
-    $scope.locationAutoCompleteError = false;
 
     if ($scope.selectedCountry.code === 'BE') {
       return cityAutocomplete
-        .getPlacesByZipcode(city.zip, 'BE')
-        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList)
-        .finally(clearLoadingState);
+        .getPlacesByZipcode($scope.selectedCityObj.zip, 'BE', filterValue)
+        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList);
     }
+
     if ($scope.selectedCountry.code === 'NL') {
       return cityAutocomplete
-        .getPlacesByCity(city.label, 'NL')
-        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList)
-        .finally(clearLoadingState);
+        .getPlacesByCity($scope.selectedCityObj.name, 'NL')
+        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList);
     }
+
   };
+
+  $scope.getPlaces = controller.getPlaces;
 
   controller.cityHasLocations = function () {
     return $scope.locationsForCity instanceof Array && $scope.locationsForCity.length > 0;
   };
-  $scope.cityHasLocations = controller.cityHasLocations;
 
-  controller.locationSearched = function () {
-    $scope.locationsSearched = true;
-  };
-  $scope.locationSearched = controller.locationSearched;
+  /**
+   * Order locations by Levenshtein distance
+   *
+   * @param {string} filterValue
+   */
 
-  controller.filterCityLocations = function (filterValue) {
+  function orderSearchedLocations(filterValue) {
     return function (location) {
-      var words = filterValue.match(/\w+/g).filter(function (word) {
-        return word.length > 2;
-      });
-      var addressMatches = words.filter(function (word) {
-        return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-      var nameMatches = words.filter(function (word) {
-        return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return addressMatches.length + nameMatches.length >= words.length;
+      return new Levenshtein(filterValue, location.name + '' + location.address.streetAddress);
     };
-  };
-  $scope.filterCityLocations = controller.filterCityLocations;
-
-  controller.orderCityLocations = function (filterValue) {
-    return function (location) {
-      return new Levenshtein(location, location.name + '' + location.address.streetAddress);
-    };
-  };
-  $scope.orderCityLocations = controller.orderCityLocations;
+  }
 
   /**
    * Open the place modal.
