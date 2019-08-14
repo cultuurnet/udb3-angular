@@ -204,16 +204,7 @@ function UdbApi(
     var offer = offerCache.get(offerLocation);
     function cacheAndResolveOffer(jsonOffer) {
       var type = jsonOffer['@id'].split('/').reverse()[1];
-      var offer = {};
-      if (type === 'event') {
-        offer = new UdbEvent();
-      }
-      else if (type === 'place') {
-        offer = new UdbPlace();
-      }
-      else {
-        offer = new UdbOrganizer();
-      }
+      var offer = formatJsonLDEntity(type, jsonOffer);
       offer.parseJson(jsonOffer);
       offerCache.put(offerLocation, offer);
       deferredOffer.resolve(offer);
@@ -235,7 +226,7 @@ function UdbApi(
    * @param {Array} events
    * @return {Array}
    */
-  this.reformatEvents = function(events) {
+  this.reformatJsonLDData = function(events) {
     events.member = events.member.map(function(member) {
       var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
       memberContext = memberContext.charAt(0).toUpperCase() + memberContext.slice(1);
@@ -246,12 +237,22 @@ function UdbApi(
   };
 
   /**
-   * @param {object} event
+   * @param {object} jsonLD
    * @return {object}
    */
-  this.formatOfferClass = function(event) {
+  this.formatJsonLDEntity = function(jsonLD) {
+    var type = jsonLD['@type'].toLowerCase();
+    var offer = formatJsonLDEntity(type, jsonLD);
+    return offer;
+  };
+
+  /**
+   * @param {string} type
+   * @param {object} jsonLD
+   * @return {object}
+   */
+  function formatJsonLDEntity(type, jsonLD) {
     var offer = {};
-    var type = event['@type'].toLowerCase();
     switch (type) {
       case 'event':
         offer = new UdbEvent();
@@ -259,12 +260,15 @@ function UdbApi(
       case 'place':
         offer = new UdbPlace();
         break;
-      default:
+      case 'organizer':
         offer = new UdbOrganizer();
+        break;
+      default:
+        console.warn('Unsupported ' +  type + 'in UdbApi.formateOfferClass');
     }
-    offer.parseJson(event);
+    offer.parseJson(jsonLD);
     return offer;
-  };
+  }
 
   this.getOrganizerByLDId = function(organizerLDId) {
     var organizerId = organizerLDId.split('/').pop();

@@ -87,7 +87,7 @@ function SearchController(
       .findOffers(queryString, offset)
       .then(function (pagedEvents) {
         if (pagedEvents.member) {
-          pagedEvents = udbApi.reformatEvents(pagedEvents);
+          pagedEvents = udbApi.reformatJsonLDData(pagedEvents);
         }
         offerLocator.addPagedCollection(pagedEvents);
         $scope.resultViewer.setResults(pagedEvents);

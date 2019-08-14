@@ -2563,7 +2563,7 @@ describe('Service: UDB3 Api', function () {
           }
       ]
     };
-    var reformattedEvents = service.reformatEvents(events); 
+    var reformattedEvents = service.reformatJsonLDData(events); 
     expect(expectedEvents).toEqual(reformattedEvents);
   })
 

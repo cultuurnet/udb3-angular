@@ -51,7 +51,7 @@ function OfferController(
       controller.fetching = true;
 
       if ($scope.event.name) {
-        var offer = udbApi.formatOfferClass($scope.event);
+        var offer = udbApi.formatJsonLDEntity($scope.event);
         formatOffers(offer);
         return;
       }
