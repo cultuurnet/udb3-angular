@@ -203,7 +203,7 @@ describe('Service: UDB3 Api', function () {
   it('should find offers when provided a query', function (done) {
     var response = {};
     $httpBackend
-      .expectGET(baseUrl + 'offers/?q=foo:bar&start=0&disableDefaultFilters=true&workflowStatus=READY_FOR_VALIDATION,APPROVED')
+      .expectGET(baseUrl + 'offers/?q=foo:bar&start=0&disableDefaultFilters=true&embed=true&workflowStatus=READY_FOR_VALIDATION,APPROVED')
       .respond(JSON.stringify(response));
     service
       .findOffers('foo:bar')
@@ -215,7 +215,7 @@ describe('Service: UDB3 Api', function () {
   it('should find offers when provided no query', function (done) {
     var response = {};
     $httpBackend
-      .expectGET(baseUrl + 'offers/?disableDefaultFilters=true&start=0&workflowStatus=READY_FOR_VALIDATION,APPROVED')
+      .expectGET(baseUrl + 'offers/?disableDefaultFilters=true&embed=true&start=0&workflowStatus=READY_FOR_VALIDATION,APPROVED')
       .respond(JSON.stringify(response));
     service
       .findOffers('')
@@ -1530,7 +1530,7 @@ describe('Service: UDB3 Api', function () {
     uitidAuth.getTokenData.and.returnValue({uid: 1, email: 'test@test.com'});
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&start=0&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&embed=true&limit=50&sort%5Bmodified%5D=desc&start=0&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
       .respond(JSON.stringify(response));
     service
       .getDashboardItems(1)
@@ -1539,7 +1539,7 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
 
     $httpBackend
-      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&limit=50&sort%5Bmodified%5D=desc&start=50&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
+      .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&embed=true&limit=50&sort%5Bmodified%5D=desc&start=50&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
       .respond(JSON.stringify(response));
     service
       .getDashboardItems(2)
@@ -2536,4 +2536,35 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
+
+  it('should reformat events to have both @type and @context properties', function(){
+    var events = {
+      "member": [
+          {
+              "@id": "https://io.uitdatabank.be/event/140a9970-99f1-4556-9b24-95a5e7d51c6c",
+              "@context": "/contexts/event",
+              "mainLanguage": "nl",
+              "name": {
+                  "nl": "Opera, Ballet & Film: Kortfilms van Hans Op de Beeck"
+              }
+          }
+      ]
+    };
+    var expectedEvents = {
+      "member": [
+          {
+              "@id": "https://io.uitdatabank.be/event/140a9970-99f1-4556-9b24-95a5e7d51c6c",
+              "@context": "/contexts/event",
+              "@type": "Event",
+              "mainLanguage": "nl",
+              "name": {
+                  "nl": "Opera, Ballet & Film: Kortfilms van Hans Op de Beeck"
+              }
+          }
+      ]
+    };
+    var reformattedEvents = service.reformatJsonLDData(events); 
+    expect(expectedEvents).toEqual(reformattedEvents);
+  })
+
 });
