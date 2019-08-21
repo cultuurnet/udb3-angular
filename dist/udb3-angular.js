@@ -4871,6 +4871,7 @@ angular.module('udb.core')
  * @typedef {Object} OfferIdentifier
  * @property {string} @id
  * @property {string} @type
+ * @property {string} @context
  */
 
 /**
@@ -4998,6 +4999,7 @@ function UdbApi(
           start: offset,
           disableDefaultFilters: true,
           workflowStatus: 'READY_FOR_VALIDATION,APPROVED',
+          embed: true
         };
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.params = searchParams;
@@ -5052,20 +5054,9 @@ function UdbApi(
   this.getOffer = function(offerLocation) {
     var deferredOffer = $q.defer();
     var offer = offerCache.get(offerLocation);
-
     function cacheAndResolveOffer(jsonOffer) {
       var type = jsonOffer['@id'].split('/').reverse()[1];
-
-      var offer = {};
-      if (type === 'event') {
-        offer = new UdbEvent();
-      }
-      else if (type === 'place') {
-        offer = new UdbPlace();
-      }
-      else {
-        offer = new UdbOrganizer();
-      }
+      var offer = formatJsonLDEntity(type, jsonOffer);
       offer.parseJson(jsonOffer);
       offerCache.put(offerLocation, offer);
       deferredOffer.resolve(offer);
@@ -5082,6 +5073,54 @@ function UdbApi(
 
     return deferredOffer.promise;
   };
+
+  /**
+   * @param {Array} events
+   * @return {Array}
+   */
+  this.reformatJsonLDData = function(events) {
+    events.member = events.member.map(function(member) {
+      var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
+      memberContext = memberContext.charAt(0).toUpperCase() + memberContext.slice(1);
+      member['@type'] = (member['@type']) ? member['@type'] : memberContext;
+      return member;
+    });
+    return events;
+  };
+
+  /**
+   * @param {object} jsonLD
+   * @return {object}
+   */
+  this.formatJsonLDEntity = function(jsonLD) {
+    var type = jsonLD['@type'].toLowerCase();
+    var offer = formatJsonLDEntity(type, jsonLD);
+    return offer;
+  };
+
+  /**
+   * @param {string} type
+   * @param {object} jsonLD
+   * @return {object}
+   */
+  function formatJsonLDEntity(type, jsonLD) {
+    var offer = {};
+    switch (type) {
+      case 'event':
+        offer = new UdbEvent();
+        break;
+      case 'place':
+        offer = new UdbPlace();
+        break;
+      case 'organizer':
+        offer = new UdbOrganizer();
+        break;
+      default:
+        console.warn('Unsupported ' +  type + 'in UdbApi.formateOfferClass');
+    }
+    offer.parseJson(jsonLD);
+    return offer;
+  }
 
   this.getOrganizerByLDId = function(organizerLDId) {
     var organizerId = organizerLDId.split('/').pop();
@@ -5767,7 +5806,8 @@ function UdbApi(
       'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED',
       'sort[modified]': 'desc',
       'limit': 50,
-      'start': (page - 1) * 50
+      'start': (page - 1) * 50,
+      'embed': true
     };
 
     var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
@@ -5786,7 +5826,6 @@ function UdbApi(
 
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = params;
-
     return $http
       .get(appConfig.baseUrl + 'offers/', requestConfig)
       .then(returnUnwrappedData);
@@ -7697,7 +7736,6 @@ function OrganizerController(
   controller.init = function () {
     if (!$scope.event.title) {
       controller.fetching = true;
-
       return udbApi
           .getOffer($scope.event['@id'])
           .then(function (offerObject) {
@@ -8024,6 +8062,14 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
      * @param {PagedCollection} results
      */
     function setItemViewerResults(results) {
+      if (results.member) {
+        results.member = results.member.map(function(member) {
+          var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
+          memberContext = memberContext.charAt(0).toUpperCase() + memberContext.slice(1);
+          member['@type'] = (member['@type']) ? member['@type'] : memberContext;
+          return member;
+        });
+      }
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
       $document.scrollTop(0);
@@ -24870,7 +24916,9 @@ function OfferController(
   variationRepository,
   $q,
   appConfig,
-  $uibModal,
+  UdbEvent,
+  UdbPlace,
+  UdbOrganizer,
   $translate,
   authorizationService
 ) {
@@ -24895,31 +24943,42 @@ function OfferController(
     if (!$scope.event.title) {
       controller.fetching = true;
 
+      if ($scope.event.name) {
+        var offer = udbApi.formatJsonLDEntity($scope.event);
+        formatOffers(offer);
+        return;
+      }
+
       return udbApi
         .getOffer($scope.event['@id'])
         .then(function (offerObject) {
-          var sortedFacilities = offerObject.facilities.sort(
-            function(a, b) {
-              return a.label.localeCompare(b.label);
-            });
-          offerObject.facilities = sortedFacilities;
-
-          cachedOffer = offerObject;
-          cachedOffer.updateTranslationState();
-
-          $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
-          $scope.offerType = $scope.event.url.split('/').shift();
-          $scope.translatedOfferType = $translate.instant('offerTypes.' + $scope.event.type.label);
-          controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
-          controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
-          controller.fetching = false;
-          watchLabels();
-          return cachedOffer;
+          formatOffers(offerObject);
         });
     } else {
       controller.fetching = false;
     }
   };
+
+  function formatOffers(offerObject) {
+
+    var sortedFacilities = offerObject.facilities.sort(
+      function(a, b) {
+        return a.label.localeCompare(b.label);
+      });
+    offerObject.facilities = sortedFacilities;
+
+    cachedOffer = offerObject;
+    cachedOffer.updateTranslationState();
+
+    $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
+    $scope.offerType = $scope.event.url.split('/').shift();
+    $scope.translatedOfferType = $translate.instant('offerTypes.' +  $scope.event.type.label);
+    controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
+    controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
+    controller.fetching = false;
+    watchLabels();
+    return cachedOffer;
+  }
 
   // initialize controller and take optional event actions
   $q.when(controller.init())
@@ -25119,7 +25178,7 @@ function OfferController(
     }
   };
 }
-OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "$uibModal", "$translate", "authorizationService"];
+OfferController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "offerEditor", "variationRepository", "$q", "appConfig", "UdbEvent", "UdbPlace", "UdbOrganizer", "$translate", "authorizationService"];
 })();
 
 // Source: src/search/ui/place.directive.js
@@ -25312,6 +25371,9 @@ function SearchController(
     udbApi
       .findOffers(queryString, offset)
       .then(function (pagedEvents) {
+        if (pagedEvents.member) {
+          pagedEvents = udbApi.reformatJsonLDData(pagedEvents);
+        }
         offerLocator.addPagedCollection(pagedEvents);
         $scope.resultViewer.setResults(pagedEvents);
       });
@@ -25355,7 +25417,6 @@ function SearchController(
 
       _.each(selectedOffers, function (offer) {
         var eventPromise;
-
         eventPromise = udbApi.getOffer(new URL(offer['@id']));
 
         eventPromise.then(function (event) {

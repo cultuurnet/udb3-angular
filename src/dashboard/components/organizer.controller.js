@@ -42,7 +42,6 @@ function OrganizerController(
   controller.init = function () {
     if (!$scope.event.title) {
       controller.fetching = true;
-
       return udbApi
           .getOffer($scope.event['@id'])
           .then(function (offerObject) {
