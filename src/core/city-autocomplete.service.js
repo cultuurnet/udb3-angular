@@ -40,7 +40,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     };
 
     // Add extra param to config if the free text search is defined
-    if(freeTextSearch){
+    if (freeTextSearch) {
       config.params.text = '*' + freeTextSearch + '*';
     }
 
