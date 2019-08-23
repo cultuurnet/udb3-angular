@@ -2332,7 +2332,6 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
    * @returns {Promise}
    */
   this.getPlacesByZipcode = function(zipcode, country, freeTextSearch) {
-    var textParam = (freeTextSearch) ? freeTextSearch : '';
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
@@ -2346,10 +2345,14 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'disableDefaultFilters': true,
         'embed': true,
         'limit': 1000,
-        'sort[created]': 'asc',
-        'text': '*' + textParam + '*'
+        'sort[created]': 'asc'
       }
     };
+
+    // Add extra param to config if the free text search is defined
+    if (freeTextSearch) {
+      config.params.text = '*' + freeTextSearch + '*';
+    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -14807,7 +14810,7 @@ function EventFormStep3Controller(
 
   controller.getPlaces = function(filterValue) {
 
-    // exit code when the filterValue has < 3 characters
+    // Do not look for place suggestions until the user has entered at least 3 characters
     if (filterValue.length < 3) {
       $scope.locationsSearched = false;
       return;
@@ -14820,8 +14823,7 @@ function EventFormStep3Controller(
       _.each(locations, function(location, key) {
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
-      // sort locations by Levenshtein distance
-      var sortedLocations = locations.sort(orderSearchedLocations(filterValue));
+      var sortedLocations = locations.sort(orderLocationsByLevenshtein(filterValue));
       $scope.locationsForCity = sortedLocations;
       return sortedLocations;
     }
@@ -14857,7 +14859,7 @@ function EventFormStep3Controller(
    * @param {string} filterValue
    */
 
-  function orderSearchedLocations(filterValue) {
+  function orderLocationsByLevenshtein(filterValue) {
     return function (location) {
       return new Levenshtein(filterValue, location.name + '' + location.address.streetAddress);
     };
