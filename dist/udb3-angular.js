@@ -14720,6 +14720,7 @@ function EventFormStep3Controller(
     }
 
     $scope.cityAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.selectedCity = $label;
     $scope.selectedCityObj = city;
     $scope.selectedLocation = undefined;
@@ -28493,7 +28494,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <input type=\"text\"\n" +
     "                     translate-once-placeholder=\"eventForm.step3.placeholder_location\"\n" +
     "                     class=\"form-control typeahead\"\n" +
-    "                     ng-model=\"asyncSelected\"\n" +
+    "                     ng-model=\"asyncPlaceSuggestion\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (getPlaces($viewValue)) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
