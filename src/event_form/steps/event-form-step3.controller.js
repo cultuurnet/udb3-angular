@@ -232,7 +232,7 @@ function EventFormStep3Controller(
 
   controller.getPlaces = function(filterValue) {
 
-    // exit code when the filterValue has < 3 characters
+    // Do not look for place suggestions until the user has entered at least 3 characters
     if (filterValue.length < 3) {
       $scope.locationsSearched = false;
       return;
