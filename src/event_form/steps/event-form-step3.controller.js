@@ -245,8 +245,7 @@ function EventFormStep3Controller(
       _.each(locations, function(location, key) {
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
-      // sort locations by Levenshtein distance
-      var sortedLocations = locations.sort(orderSearchedLocations(filterValue));
+      var sortedLocations = locations.sort(orderLocationsByLevenshtein(filterValue));
       $scope.locationsForCity = sortedLocations;
       return sortedLocations;
     }
@@ -282,7 +281,7 @@ function EventFormStep3Controller(
    * @param {string} filterValue
    */
 
-  function orderSearchedLocations(filterValue) {
+  function orderLocationsByLevenshtein(filterValue) {
     return function (location) {
       return new Levenshtein(filterValue, location.name + '' + location.address.streetAddress);
     };
