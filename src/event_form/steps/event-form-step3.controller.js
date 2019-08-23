@@ -145,6 +145,7 @@ function EventFormStep3Controller(
     }
 
     $scope.cityAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.selectedCity = $label;
     $scope.selectedCityObj = city;
     $scope.selectedLocation = undefined;

@@ -79,7 +79,7 @@
               <input type="text"
                      translate-once-placeholder="eventForm.step3.placeholder_location"
                      class="form-control typeahead"
-                     ng-model="asyncSelected"
+                     ng-model="asyncPlaceSuggestion"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (getPlaces($viewValue)) | limitTo:50"
                      typeahead-on-select="selectLocation($item, $model, $label)"
                      typeahead-min-length="3"
