@@ -499,7 +499,8 @@ angular.module('udb.core')
         'ok': 'OK',
         'zip': 'Postcode',
         'zip_validate': 'Postcode is een verplicht veld.',
-        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.'
+        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.',
+        'bookable_event_info_alert': 'Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen. Je evenement verschijnt wel op cultuurkuur.be test'
       },
       step4: {
         'basic_data': 'Basisgegevens',

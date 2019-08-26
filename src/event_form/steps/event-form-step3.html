@@ -26,10 +26,7 @@
       <div class="col-xs-12">
         <!-- show info alert when event is a BOOKABLE_EVENT -->
         <div class="alert alert-info" ng-show="selectedCountry.code === 'BOOKABLE_EVENT'">
-          <span>
-              Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen.
-              Je evenement verschijnt wel op cultuurkuur.be
-          </span>
+          <span translate-once="eventForm.step3.bookable_event_info_alert"></span>
         </div>
         <span ng-show="selectedCountry.code==='BE'">
           <label for="gemeente-autocomplete"
