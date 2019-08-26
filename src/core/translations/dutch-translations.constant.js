@@ -13,6 +13,7 @@ angular.module('udb.core')
   {
     'BE': 'België',
     'NL': 'Nederland',
+    'BOOKABLE_EVENT': 'Locatie in overleg met de school',
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
     'DE_ADJECTIVE': 'Duitse',
