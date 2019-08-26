@@ -25,8 +25,11 @@
     <div class="row">
       <div class="col-xs-12">
         <!-- show info alert when event is a BOOKABLE_EVENT -->
-        <div class="alert alert-info" ng-show="selectedCountry.code === 'BOOKABLE_EVENT'">
-          <span translate-once="eventForm.step3.bookable_event_info_alert"></span>
+        <div ng-show="selectedCountry.code === 'BOOKABLE_EVENT'">
+          <div class="alert alert-info">
+            <span translate-once="eventForm.step3.bookable_event_info_alert"></span>
+          </div>
+          <button type="button" class="btn btn-primary" ng-click="">Ga verder</button>
         </div>
         <span ng-show="selectedCountry.code==='BE'">
           <label for="gemeente-autocomplete"
