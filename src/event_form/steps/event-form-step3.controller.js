@@ -108,7 +108,6 @@ function EventFormStep3Controller(
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
-      var length = value.length;
       var words = value.match(/.+/g);
       var labelMatches = words.filter(function (word) {
         return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -168,6 +167,7 @@ function EventFormStep3Controller(
     $scope.cityAutocompleteTextField = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
+    isBookableEvent();
     controller.stepUncompleted();
   }
 
@@ -193,7 +193,7 @@ function EventFormStep3Controller(
   controller.selectLocation = function ($id, $label) {
 
     var selectedLocation = null;
-    if ($scope.selectedCountry.code === 'ZZ') {
+    if ($scope.isBookableEvent) {
       // fetch the location based on the id when bookable event
       return cityAutocomplete
         .getPlacesById($id)
@@ -223,7 +223,6 @@ function EventFormStep3Controller(
 
   };
   $scope.selectLocation = controller.selectLocation;
-
 
   /**
    * Change selected location.
@@ -486,6 +485,13 @@ function EventFormStep3Controller(
     $scope.showStreetValidation = false;
     $scope.showZipValidation = false;
     controller.stepUncompleted();
+  }
+
+  /**
+   * Checks if event is a bookable event
+   */
+  function isBookableEvent() {
+    $scope.isBookableEvent = ($scope.selectedCountry.code === 'ZZ') ? true : false;
   }
 
   /**
