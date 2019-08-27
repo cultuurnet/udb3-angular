@@ -189,9 +189,14 @@ function EventFormStep3Controller(
    */
   controller.selectLocation = function ($id, $label) {
 
-    var selectedLocation = _.find($scope.locationsForCity, function (location) {
-      return location.id === $id;
-    });
+    var selectedLocation = null;
+    if ($scope.selectedCountry.code === 'BOOKABLE_EVENT') {
+      // fetch the location based on the dummy id
+    }else{
+      selectedLocation = _.find($scope.locationsForCity, function (location) {
+        return location.id === $id;
+      });
+    }
 
     // Assign selection, hide the location field and show the selection.
     $scope.selectedLocation = selectedLocation;
@@ -209,6 +214,8 @@ function EventFormStep3Controller(
 
   };
   $scope.selectLocation = controller.selectLocation;
+
+
 
   /**
    * Change selected location.
