@@ -298,7 +298,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
 
     /**
-     * Get the calendar for this event.
+     * Get the location for this event.
      */
     getLocation: function() {
       return this.location;
