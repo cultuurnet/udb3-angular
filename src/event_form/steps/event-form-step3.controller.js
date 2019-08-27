@@ -183,12 +183,14 @@ function EventFormStep3Controller(
 
   /**
    * Select location.
+   * @param {string} $id 
+   * @param {string} $label 
    * @returns {undefined}
    */
-  controller.selectLocation = function ($item, $model, $label) {
+  controller.selectLocation = function ($id, $label) {
 
     var selectedLocation = _.find($scope.locationsForCity, function (location) {
-      return location.id === $model;
+      return location.id === $id;
     });
 
     // Assign selection, hide the location field and show the selection.
@@ -196,7 +198,7 @@ function EventFormStep3Controller(
     $scope.locationAutocompleteTextField = '';
 
     var location = EventFormData.getLocation();
-    location.id = $model;
+    location.id = $id;
     location.name = $label;
     location.address = selectedLocation.address;
     EventFormData.setLocation(location);
