@@ -102,4 +102,47 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     return deferredPlaces.promise;
   };
 
+  /**
+   *
+   * Get place by id
+   *
+   * @param {string} id
+   * @returns {Promise}
+   */
+  this.getPlacesById = function(id) {
+
+    var deferredPlaces = $q.defer();
+    var url = appConfig.baseUrl + 'places/';
+    var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
+      params: {
+        'id': id,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
+      }
+    };
+
+    var parsePagedCollection = function (response) {
+      var locations = _.map(response.data.member, function (placeJson) {
+        var place = new UdbPlace(placeJson);
+        return jsonLDLangFilter(place, 'nl');
+      });
+
+      deferredPlaces.resolve(locations);
+    };
+
+    var failed = function () {
+      deferredPlaces.reject('something went wrong while getting places by id with id: ' + id);
+    };
+
+    $http.get(url, config).then(parsePagedCollection, failed);
+
+    return deferredPlaces.promise;
+  };
+
 }
