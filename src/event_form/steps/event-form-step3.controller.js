@@ -195,11 +195,10 @@ function EventFormStep3Controller(
     var selectedLocation = null;
     if ($scope.isBookableEvent) {
       // fetch the location based on the id when bookable event
-      return cityAutocomplete
+      selectedLocation = cityAutocomplete
         .getPlacesById($id)
         .then(function(locations) {
-          selectedLocation = locations[0];
-          $label = selectedLocation.name;
+          return locations[0];
         });
     }else {
       selectedLocation = _.find($scope.locationsForCity, function (location) {
