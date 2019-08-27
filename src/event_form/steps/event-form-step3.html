@@ -25,11 +25,15 @@
     <div class="row">
       <div class="col-xs-12">
         <!-- show info alert when event is a BOOKABLE_EVENT -->
-        <div ng-show="selectedCountry.code === 'BOOKABLE_EVENT'">
+        <div ng-show="isBookableEvent">
           <div class="alert alert-info">
             <span translate-once="eventForm.step3.bookable_event_info_alert"></span>
           </div>
-          <button type="button" class="btn btn-primary" ng-click="" translate-once="eventForm.step3.bookable_event_next_button"></button>
+          <button type="button" 
+                  class="btn btn-primary" 
+                  ng-click="selectLocation(bookableEventLocationId)" 
+                  translate-once="eventForm.step3.bookable_event_next_button">
+          </button>
         </div>
         <span ng-show="selectedCountry.code==='BE'">
           <label for="gemeente-autocomplete"
@@ -47,7 +51,7 @@
                 <span translate-once="eventForm.step3.choose_residence_helper" class="text-muted"></span>
         </label>
         </span>
-        <div id="gemeente-kiezer" ng-hide="selectedCity || selectedCountry.code === 'BOOKABLE_EVENT'">
+        <div id="gemeente-kiezer" ng-hide="selectedCity || isBookableEvent">
           <span style="position: relative; display: inline-block; direction: ltr;" class="twitter-typeahead">
             <input type="text"
                    id="gemeente-autocomplete"
@@ -88,7 +92,7 @@
                      class="form-control typeahead"
                      ng-model="locationAutocompleteTextField"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50"
-                     typeahead-on-select="selectLocation($item, $model, $label)"
+                     typeahead-on-select="selectLocation($model, $label)"
                      typeahead-min-length="3"
                      typeahead-template-url="templates/place-suggestion.html"
                      typeahead-popup-template-url="templates/place-suggestion-popup.html"
