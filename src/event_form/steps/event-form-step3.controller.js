@@ -193,8 +193,14 @@ function EventFormStep3Controller(
   controller.selectLocation = function ($id, $label) {
 
     var selectedLocation = null;
-    if ($scope.selectedCountry.code === 'BOOKABLE_EVENT') {
-      // fetch the location based on the id
+    if ($scope.selectedCountry.code === 'ZZ') {
+      // fetch the location based on the id when bookable event
+      return cityAutocomplete
+        .getPlacesById($id)
+        .then(function(locations) {
+          selectedLocation = locations[0];
+          $label = selectedLocation.name;
+        });
     }else{
       selectedLocation = _.find($scope.locationsForCity, function (location) {
         return location.id === $id;
