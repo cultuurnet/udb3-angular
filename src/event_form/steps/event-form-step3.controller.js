@@ -62,6 +62,9 @@ function EventFormStep3Controller(
   // Autocomplete model field for the City/Postal code.
   $scope.cityAutocompleteTextField = '';
 
+  // Id ofdummy location for Bookable Event
+  $scope.bookableEventLocationId = appConfig.offerEditor.bookableEvent.dummyLocationId;
+
   // Autocomplete model field for the Location.
   $scope.locationAutocompleteTextField = '';
 
@@ -191,7 +194,7 @@ function EventFormStep3Controller(
 
     var selectedLocation = null;
     if ($scope.selectedCountry.code === 'BOOKABLE_EVENT') {
-      // fetch the location based on the dummy id
+      // fetch the location based on the id
     }else{
       selectedLocation = _.find($scope.locationsForCity, function (location) {
         return location.id === $id;
