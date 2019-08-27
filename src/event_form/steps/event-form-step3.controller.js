@@ -186,8 +186,8 @@ function EventFormStep3Controller(
 
   /**
    * Select location.
-   * @param {string} $id 
-   * @param {string} $label 
+   * @param {string} $id
+   * @param {string} $label
    * @returns {undefined}
    */
   controller.selectLocation = function ($id, $label) {
@@ -201,7 +201,7 @@ function EventFormStep3Controller(
           selectedLocation = locations[0];
           $label = selectedLocation.name;
         });
-    }else{
+    }else {
       selectedLocation = _.find($scope.locationsForCity, function (location) {
         return location.id === $id;
       });
@@ -223,7 +223,6 @@ function EventFormStep3Controller(
 
   };
   $scope.selectLocation = controller.selectLocation;
-
 
 
   /**
