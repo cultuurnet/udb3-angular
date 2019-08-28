@@ -985,12 +985,19 @@ function UdbApi(
    */
   this.getDashboardOrganizers = function(page) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
-    if (page > 1) {
-      requestConfig.params.page = page;
-    }
+
+    var tokenData = uitidAuth.getTokenData();
+    var userId = tokenData.uid;
+
+    requestConfig.params = {
+      'creator': userId,
+      'sort[modified]': 'desc',
+      'limit': 50,
+      'start': (page - 1) * 50
+    };
 
     return $http
-        .get(appConfig.baseUrl + 'user/organizers/', requestConfig)
+        .get(appConfig.baseUrl + 'organizers/', requestConfig)
         .then(returnUnwrappedData);
   };
 
