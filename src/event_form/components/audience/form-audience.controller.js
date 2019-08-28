@@ -29,5 +29,4 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
     return EventFormData.getLocation().isBookableEvent;
   }
 
-
 }

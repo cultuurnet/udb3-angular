@@ -216,22 +216,18 @@ function EventFormStep3Controller(
       // Assign selection, hide the location field and show the selection.
       $scope.selectedLocation = selectedLocation;
       $scope.locationAutocompleteTextField = '';
-  
       var location = EventFormData.getLocation();
       location.id = $id;
       location.name = $label;
       location.address = selectedLocation.address;
       location.isBookableEvent = selectedLocation.isDummyPlaceForEducationEvents;
       EventFormData.setLocation(location);
-  
       controller.stepCompleted();
       setMajorInfoChanged();
       $rootScope.$emit('locationSelected', location);
-    } 
+    }
 
   };
-
-
 
   $scope.selectLocation = controller.selectLocation;
 
