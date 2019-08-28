@@ -2328,10 +2328,10 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
    *
    * @param {string} zipcode
    * @param {string} country
+   * @param {string} freeTextSearch
    * @returns {Promise}
    */
-  this.getPlacesByZipcode = function(zipcode, country) {
-
+  this.getPlacesByZipcode = function(zipcode, country, freeTextSearch) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
@@ -2348,6 +2348,11 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'sort[created]': 'asc'
       }
     };
+
+    // Add extra param to config if the free text search is defined
+    if (freeTextSearch) {
+      config.params.text = '*' + freeTextSearch + '*';
+    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
@@ -14783,12 +14788,12 @@ function EventFormStep3Controller(
     }
 
     $scope.cityAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.selectedCity = $label;
+    $scope.selectedCityObj = city;
     $scope.selectedLocation = undefined;
 
     setMajorInfoChanged();
-
-    controller.getLocations(city);
   };
   $scope.selectCity = controller.selectCity;
 
@@ -14884,87 +14889,67 @@ function EventFormStep3Controller(
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
     $scope.locationsSearched = false;
+    $scope.selectedCityObj = city;
 
     controller.stepUncompleted();
-    controller.getLocations(city);
   }
 
-  /**
-   * Get locations for Event.
-   * @returns {undefined}
-   * @param {Object} city
-   */
-  controller.getLocations = function (city) {
+  controller.getPlaces = function(filterValue) {
 
-    function showErrorAndReturnEmptyList () {
-      $scope.locationAutoCompleteError = true;
-      return [];
+    // Do not look for place suggestions until the user has entered at least 3 characters
+    if (filterValue.length < 3) {
+      $scope.locationsSearched = false;
+      return;
     }
+
+    $scope.locationsSearched = true;
 
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
-      $scope.locationsForCity = locations;
-      return locations;
+      var sortedLocations = locations.sort(orderLocationsByLevenshtein(filterValue));
+      $scope.locationsForCity = sortedLocations;
+      return sortedLocations;
     }
 
-    function clearLoadingState() {
-      $scope.locationsSearched = false;
-      $scope.loadingPlaces = false;
+    function showErrorAndReturnEmptyList () {
+      $scope.locationAutoCompleteError = true;
+      return [];
     }
-
-    $scope.loadingPlaces = true;
-    $scope.locationAutoCompleteError = false;
 
     if ($scope.selectedCountry.code === 'BE') {
       return cityAutocomplete
-        .getPlacesByZipcode(city.zip, 'BE')
-        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList)
-        .finally(clearLoadingState);
+        .getPlacesByZipcode($scope.selectedCityObj.zip, 'BE', filterValue)
+        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList);
     }
+
     if ($scope.selectedCountry.code === 'NL') {
       return cityAutocomplete
-        .getPlacesByCity(city.label, 'NL')
-        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList)
-        .finally(clearLoadingState);
+        .getPlacesByCity($scope.selectedCityObj.name, 'NL')
+        .then(updateLocationsAndReturnList, showErrorAndReturnEmptyList);
     }
+
   };
+
+  $scope.getPlaces = controller.getPlaces;
 
   controller.cityHasLocations = function () {
     return $scope.locationsForCity instanceof Array && $scope.locationsForCity.length > 0;
   };
-  $scope.cityHasLocations = controller.cityHasLocations;
 
-  controller.locationSearched = function () {
-    $scope.locationsSearched = true;
-  };
-  $scope.locationSearched = controller.locationSearched;
+  /**
+   * Order locations by Levenshtein distance
+   *
+   * @param {string} filterValue
+   */
 
-  controller.filterCityLocations = function (filterValue) {
+  function orderLocationsByLevenshtein(filterValue) {
     return function (location) {
-      var words = filterValue.match(/\w+/g).filter(function (word) {
-        return word.length > 2;
-      });
-      var addressMatches = words.filter(function (word) {
-        return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-      var nameMatches = words.filter(function (word) {
-        return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-      });
-
-      return addressMatches.length + nameMatches.length >= words.length;
+      return new Levenshtein(filterValue, location.name + '' + location.address.streetAddress);
     };
-  };
-  $scope.filterCityLocations = controller.filterCityLocations;
-
-  controller.orderCityLocations = function (filterValue) {
-    return function (location) {
-      return new Levenshtein(location, location.name + '' + location.address.streetAddress);
-    };
-  };
-  $scope.orderCityLocations = controller.orderCityLocations;
+  }
 
   /**
    * Open the place modal.
@@ -28617,23 +28602,31 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"row\">\n" +
     "        <div class=\"col-xs-12\">\n" +
     "          <label id=\"locatie-label\" ng-show=\"!selectedLocation\">\n" +
-    "            <span translate-once=\"eventForm.step3.choose_location\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingPlaces\"></i>\n" +
+    "            <span translate-once=\"eventForm.step3.choose_location\"></span>\n" +
     "          </label>\n" +
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation || loadingPlaces\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
-    "              <input type=\"text\" ng-change=\"locationSearched()\"\n" +
+    "              <input type=\"text\"\n" +
     "                     translate-once-placeholder=\"eventForm.step3.placeholder_location\"\n" +
     "                     class=\"form-control typeahead\"\n" +
-    "                     ng-model=\"locationAutocompleteTextField\"\n" +
-    "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
+    "                     ng-model=\"asyncPlaceSuggestion\"\n" +
+    "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (getPlaces($viewValue)) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
+    "                     typeahead-wait-ms=\"500\"\n" +
+    "                     typeahead-loading=\"loadingLocations\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
     "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
-    "                     focus-if=\"!loadingPlaces\"\n" +
     "                     udb-auto-scroll/>\n" +
+    "              <div ng-show=\"loadingLocations\" class=\"dropdown-menu-no-results\">\n" +
+    "                <div class=\"panel panel-default text-center\">\n" +
+    "                  <div class=\"panel-body\">\n" +
+    "                      <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "                  </div>\n" +
+    "                </div>\n" +
+    "              </div>\n" +
     "              <div class=\"plaats-adres-resultaat dropdown-menu-no-results\"\n" +
-    "                   ng-show=\"(!cityHasLocations() || filteredLocations.length === 0) && locationsSearched\">\n" +
+    "                   ng-show=\"!cityHasLocations() && locationsSearched && !loadingLocations\">\n" +
     "                <div class=\"panel panel-default text-center\">\n" +
     "                  <div class=\"panel-body\">\n" +
     "                    <p translate-once=\"eventForm.step3.location_not_found\"></p>\n" +

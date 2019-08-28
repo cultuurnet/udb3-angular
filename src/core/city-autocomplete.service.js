@@ -18,10 +18,10 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
    *
    * @param {string} zipcode
    * @param {string} country
+   * @param {string} freeTextSearch
    * @returns {Promise}
    */
-  this.getPlacesByZipcode = function(zipcode, country) {
-
+  this.getPlacesByZipcode = function(zipcode, country, freeTextSearch) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
     var config = {
@@ -38,6 +38,11 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'sort[created]': 'asc'
       }
     };
+
+    // Add extra param to config if the free text search is defined
+    if (freeTextSearch) {
+      config.params.text = '*' + freeTextSearch + '*';
+    }
 
     var parsePagedCollection = function (response) {
       var locations = _.map(response.data.member, function (placeJson) {
