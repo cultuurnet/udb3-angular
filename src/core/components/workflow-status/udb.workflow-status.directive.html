@@ -17,8 +17,11 @@
             <li>
                 <span ng-bind="cm.event.id"></span>
             </li>
-            <li ng-if="cm.getPublicUrl(cm.event.id)">
+            <li ng-if="cm.getPublicUrl(cm.event.id) && cm.audienceType === 'everyone' ">
                 <a ng-href="{{cm.getPublicUrl(cm.event.id)}}" translate-once="preview.publiq_url" translate-values="{ publicationBrand: '{{::cm.publicationBrand}}' }"></a>
+            </li>
+            <li ng-if="cm.getCultuurKuurKUrl(cm.event.id) && cm.audienceType === 'education' ">
+              <a ng-href="{{cm.getCultuurKuurKUrl(cm.event.id)}}" translate-once="preview.publiq_url" translate-values="{ publicationBrand: 'cultuurkuur' }"></a>
             </li>
             <li ng-repeat="sameAs in cm.sameAsRelations(cm.event)"><span ng-bind="sameAs"></span></li>
         </ul>
