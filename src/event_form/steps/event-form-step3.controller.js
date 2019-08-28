@@ -167,6 +167,7 @@ function EventFormStep3Controller(
     $scope.cityAutocompleteTextField = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
+    $scope.bookableEventShowStep4 = false;
     isBookableEvent();
     controller.stepUncompleted();
   }
@@ -195,32 +196,43 @@ function EventFormStep3Controller(
     var selectedLocation = null;
     if ($scope.isBookableEvent) {
       // fetch the location based on the id when bookable event
-      selectedLocation = cityAutocomplete
+      return cityAutocomplete
         .getPlacesById($id)
         .then(function(locations) {
-          return locations[0];
+          selectedLocation = locations[0];
+          $label = selectedLocation.name;
+          setLocationToFormData(selectedLocation);
+          eventCrud.setAudienceType(EventFormData, 'education');
+          $scope.bookableEventShowStep4 = true;
         });
     }else {
       selectedLocation = _.find($scope.locationsForCity, function (location) {
         return location.id === $id;
       });
+      setLocationToFormData(selectedLocation);
     }
 
-    // Assign selection, hide the location field and show the selection.
-    $scope.selectedLocation = selectedLocation;
-    $scope.locationAutocompleteTextField = '';
-
-    var location = EventFormData.getLocation();
-    location.id = $id;
-    location.name = $label;
-    location.address = selectedLocation.address;
-    EventFormData.setLocation(location);
-
-    controller.stepCompleted();
-    setMajorInfoChanged();
-    $rootScope.$emit('locationSelected', location);
+    function setLocationToFormData(selectedLocation) {
+      // Assign selection, hide the location field and show the selection.
+      $scope.selectedLocation = selectedLocation;
+      $scope.locationAutocompleteTextField = '';
+  
+      var location = EventFormData.getLocation();
+      location.id = $id;
+      location.name = $label;
+      location.address = selectedLocation.address;
+      location.isBookableEvent = selectedLocation.isDummyPlaceForEducationEvents;
+      EventFormData.setLocation(location);
+  
+      controller.stepCompleted();
+      setMajorInfoChanged();
+      $rootScope.$emit('locationSelected', location);
+    } 
 
   };
+
+
+
   $scope.selectLocation = controller.selectLocation;
 
   /**
