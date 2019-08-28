@@ -26,7 +26,7 @@
       <div class="col-xs-12">
         <!-- show info alert when event is a BOOKABLE_EVENT -->
         <div ng-show="isBookableEvent">
-          <div ng-hide="eventFormData.showStep4">
+          <div ng-hide="bookableEventShowStep4">
             <div class="alert alert-info">
               <span translate-once="eventForm.step3.bookable_event_info_alert"></span>
             </div>
@@ -36,7 +36,7 @@
                     translate-once="eventForm.step3.bookable_event_next_button">
             </button>
           </div>
-          <div ng-show="eventFormData.showStep4">
+          <div ng-show="bookableEventShowStep4">
             <span class="btn-chosen" translate-once="eventForm.step3.bookable_event_success_message"></span>
           </div>
         </div>
