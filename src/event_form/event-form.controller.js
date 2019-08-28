@@ -141,6 +141,10 @@ function EventFormController(
       'mainLanguage'
     ];
 
+    if (item.isDummyPlaceForEducationEvents) {
+      EventFormData.isDummyPlaceForEducationEvents = item.isDummyPlaceForEducationEvents;
+    }
+
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
         EventFormData[sameProperties[i]] = item[sameProperties[i]];
