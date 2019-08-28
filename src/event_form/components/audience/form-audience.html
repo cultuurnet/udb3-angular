@@ -3,7 +3,7 @@
         <div class="col-sm-3">
             <em class="extra-task-label" translate-once="audience.entrance"></em>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-8" ng-hide="fac.isBookableEvent()">
             <div class="radio">
                 <label>
                     <input ng-model="fac.audienceType"
@@ -53,6 +53,10 @@
                     </span>
                 </label>
             </div>
+        </div>
+        <!-- show bookable event help block-->
+        <div class="col-sm-8" ng-show="fac.isBookableEvent()">
+          <span class="help-block" translate-once="audience.education_help"></span>
         </div>
     </div>
 </div>
