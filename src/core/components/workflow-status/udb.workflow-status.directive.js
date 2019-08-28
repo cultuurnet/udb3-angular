@@ -24,9 +24,11 @@ angular
 function WorkflowStatusDirectiveController($scope, appConfig) {
   var cm = this;
   cm.event = $scope.event;
+  cm.audienceType = $scope.event.audience.audienceType;
   cm.sameAsRelations = sameAsRelations;
   cm.isUrl = isUrl;
   cm.getPublicUrl = getPublicUrl;
+  cm.getCultuurKuurKUrl = getCultuurKuurKUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
   cm.publicationBrand = appConfig.publicationUrl.brand;
@@ -55,6 +57,18 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
       } else {
         return false;
       }
+    }
+  }
+
+  /**
+   * get the url for cultuurkuur
+   * @param {string} cdbid
+   */
+  function getCultuurKuurKUrl (cdbid) {
+    if (appConfig.cultuurkuurUrl) {
+      return appConfig.cultuurkuurUrl + 'agenda/e//' + cdbid;
+    } else {
+      return false;
     }
   }
 
