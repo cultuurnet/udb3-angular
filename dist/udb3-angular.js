@@ -2631,11 +2631,12 @@ angular
 function WorkflowStatusDirectiveController($scope, appConfig) {
   var cm = this;
   cm.event = $scope.event;
-  cm.audienceType = $scope.event.audience.audienceType;
   cm.sameAsRelations = sameAsRelations;
   cm.isUrl = isUrl;
   cm.getPublicUrl = getPublicUrl;
-  cm.getCultuurKuurKUrl = getCultuurKuurKUrl;
+  cm.showPublicUrl = showPublicUrl;
+  cm.getCultuurkuurKUrl = getCultuurKuurKUrl;
+  cm.showCultuurkuurUrl = showCultuurkuurUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
   cm.publicationBrand = appConfig.publicationUrl.brand;
@@ -2668,15 +2669,31 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   }
 
   /**
+   * show the publication url
+   * @returns {boolean}
+   */
+  function showPublicUrl () {
+    return isPlace() || cm.event.audience.audienceType === 'everyone';
+  }
+
+  /**
    * get the url for cultuurkuur
    * @param {string} cdbid
    */
   function getCultuurKuurKUrl (cdbid) {
-    if (appConfig.cultuurkuurUrl) {
+    if (appConfig.cultuurkuurUrl && !isPlace()) {
       return appConfig.cultuurkuurUrl + 'agenda/e//' + cdbid;
     } else {
       return false;
     }
+  }
+
+  /**
+   * show the publication url
+   * @returns {boolean}
+   */
+  function showCultuurkuurUrl () {
+    return cm.event.audience.audienceType === 'education';
   }
 
   function isPlace() {
@@ -26273,11 +26290,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <li>\n" +
     "                <span ng-bind=\"cm.event.id\"></span>\n" +
     "            </li>\n" +
-    "            <li ng-if=\"cm.getPublicUrl(cm.event.id) && cm.audienceType === 'everyone' \">\n" +
+    "            <li ng-if=\"cm.getPublicUrl(cm.event.id) && cm.showPublicUrl() \">\n" +
     "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\" translate-values=\"{ publicationBrand: '{{::cm.publicationBrand}}' }\"></a>\n" +
     "            </li>\n" +
-    "            <li ng-if=\"cm.getCultuurKuurKUrl(cm.event.id) && cm.audienceType === 'education' \">\n" +
-    "              <a ng-href=\"{{cm.getCultuurKuurKUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\" translate-values=\"{ publicationBrand: 'cultuurkuur' }\"></a>\n" +
+    "            <li ng-if=\"cm.getCultuurkuurKUrl(cm.event.id) && cm.showCultuurkuurUrl()\">\n" +
+    "              <a ng-href=\"{{cm.getCultuurkuurKUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\" translate-values=\"{ publicationBrand: 'cultuurkuur' }\"></a>\n" +
     "            </li>\n" +
     "            <li ng-repeat=\"sameAs in cm.sameAsRelations(cm.event)\"><span ng-bind=\"sameAs\"></span></li>\n" +
     "        </ul>\n" +
