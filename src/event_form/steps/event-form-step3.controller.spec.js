@@ -39,52 +39,68 @@ describe('Controller: event form step 3', function (){
     EventFormData.id = 1;
   }
 
-  it('should fetch a list of places by city when a Dutch city is selected', function () {
-    var zipcode = '1234';
-    spyOn(stepController, 'getLocations');
-
+  it('should save a dutch city to the scope', function () {
     stepController.selectCity({city: 'some-Dutch-city', country: 'NL'}, 'some-Dutch-city');
 
-    expect(stepController.getLocations).toHaveBeenCalledWith({city: 'some-Dutch-city', country: 'NL'});
+    expect(scope.selectedCity).toEqual('some-Dutch-city');
   });
 
-  it('should fetch a list of places by zipcode when a city is selected', function () {
+  it('should save a belgian city to the scope', function () {
     var zipcode = '1234';
-    spyOn(stepController, 'getLocations');
-
     stepController.selectCity({zip: zipcode, country: 'BE'}, 'some-city-id');
 
-    expect(stepController.getLocations).toHaveBeenCalledWith({zip: zipcode, country: 'BE'});
+    expect(scope.selectedCity).toEqual('some-city-id');
   });
 
-  it('should update the event form address when a city is selected for a place', function () {
-    spyOn(stepController, 'getLocations');
-    var address = {
-      'addressCountry': 'BE',
-      'addressLocality': 'Tienen',
-      'postalCode': '3300',
-      'streetAddress': 'Sluisstraat 79',
-      'country': 'BE'
+  it('should save the selected city to the scope', function () {
+    var expectedZip = {
+      'zip': '1000',
+      'name': 'Brussel'
     };
+    stepController.selectCity({zip: '1000', name: 'Brussel'}, '1000 Brussel');
 
-    var expectedAddress = {
-      'addressCountry': 'BE',
-      'addressLocality': 'Leuven',
-      'postalCode': '3000',
-      'streetAddress': 'Sluisstraat 79',
-      'country': 'BE'
+    expect(scope.selectedCityObj).toEqual(expectedZip);
+  });
+
+  it('should NOT trigger a search when the search query has less than 2 characters', function(){
+    stepController.getPlaces('aw');
+    expect(scope.locationsSearched).toBeFalsy();
+  });
+
+  it('should trigger a search when the search query has more than 2 characters', function(){
+    cityAutocomplete.getPlacesByZipcode.and.returnValue($q.resolve());
+    scope.selectedCityObj = {
+      zip: '1000',
+      name: 'Brussel'
     };
+    stepController.getPlaces('awesome-place');
+    expect(scope.locationsSearched).toBeTruthy();
+  });
 
-    EventFormData.address = address;
-    EventFormData.isPlace = true;
-    stepController.init(EventFormData);
 
-    stepController.selectCity({zip: '3000', name: 'Leuven', country: 'BE'}, '3300 Leuven');
-    expect(EventFormData.address).toEqual(expectedAddress);
+  it('should fetch a list with places for a certain search-query', function(){
+    cityAutocomplete.getPlacesByZipcode.and.returnValue($q.resolve());
+    scope.selectedCityObj = {
+      zip: '1000',
+      name: 'Brussel'
+    };
+    stepController.getPlaces('magic-place');
+    expect(cityAutocomplete.getPlacesByZipcode).toHaveBeenCalledWith('1000', 'BE', 'magic-place');
+  });
+
+  it('should show suggestion of creating new place if no places where found with this search query', function(){
+    spyOn(stepController, 'getPlaces');
+    var emptyList = [];
+    cityAutocomplete.getPlacesByZipcode.and.returnValue($q.resolve(emptyList));
+    scope.selectedCityObj = {
+      zip: '1000',
+      name: 'Brussel'
+    };
+    stepController.getPlaces('dummy-searchquery');
+    expect(scope.cityHasLocations).toBeFalsy();
   });
 
   it('should update the event form location when a city is selected for an event', function () {
-    spyOn(stepController, 'getLocations');
     var location = {
       'id' : 'd955afda-86ed-4047-b0c3-9f52e8dd2298',
       'name': 'De Hoorn',
@@ -116,66 +132,6 @@ describe('Controller: event form step 3', function (){
     expect(EventFormData.getLocation()).toEqual(expectedLocation);
   });
 
-  it('should return a list of places in a city filtered by address', function () {
-    var filterString = 'straat';
-    var cityFilter = stepController.filterCityLocations(filterString);
-    var locations = [
-      {
-        id: 'a-place-id',
-        name: 'do-not-filter-me',
-        address: {
-          streetAddress: 'Daalstraat 114'
-        }
-      },
-      {
-        id: 'a-place-id',
-        name: 'filter-me',
-        address: {
-          streetAddress: 'Daalstraaat 114'
-        }
-      }
-    ];
-
-    var filteredPlaces = locations.filter(cityFilter);
-
-    expect(filteredPlaces).toEqual([locations[0]]);
-  });
-
-  it('should return a list of places in a city filtered by name', function () {
-    var filterString = 'do-not-filter-me';
-    var cityFilter = stepController.filterCityLocations(filterString);
-    var locations = [
-      {
-        id: 'a-place-id',
-        name: 'do-not-filter-me',
-        address: {
-          streetAddress: 'Daalstraat 114'
-        }
-      },
-      {
-        id: 'a-place-id',
-        name: 'filter-me',
-        address: {
-          streetAddress: 'Daalstraat 114'
-        }
-      }
-    ];
-
-    var filteredPlaces = locations.filter(cityFilter);
-
-    expect(filteredPlaces).toEqual([locations[0]]);
-  });
-
-  it('should indicate that a city-place-search has happened to suggest creating a new place when no results are available', function () {
-    // whenever getLocations() is called this flag is flipped to false
-    // searching for places should make it true
-    scope.locationsSearched = false;
-
-    scope.locationSearched();
-
-    expect(scope.locationsSearched).toBeTruthy();
-  });
-
   it('should suggest creating a new location when selecting a city without any locations', function (){
     cityAutocomplete.getPlacesByZipcode.and.returnValue($q.resolve([]));
 
@@ -185,24 +141,14 @@ describe('Controller: event form step 3', function (){
     expect(stepController.cityHasLocations()).toEqual(false);
   });
 
-  it('should allow to search the known locations in a city', function () {
-    cityAutocomplete.getPlacesByZipcode.and.returnValue($q.resolve([
-      {name: 'hello', address: {streetAddress: 'straat'}},
-      {name: 'world', address: {streetAddress: 'street'}}
-    ]));
-
-    stepController.selectCity({zip: '1234', name: 'test'}, 'some-city-id');
+  it('should display an error when fetching places failed', function () {
+    cityAutocomplete.getPlacesByZipcode.and.returnValue($q.reject('error'));
+    scope.selectedCityObj = {
+      zip: '1000',
+      name: 'Brussel'
+    };
+    stepController.getPlaces('magic-place');
     scope.$apply();
-
-    expect(stepController.cityHasLocations()).toEqual(true);
-  });
-
-  it('should display an error when locations for a city fail to load', function () {
-    cityAutocomplete.getPlacesByZipcode.and.returnValue($q.reject('kapot'));
-
-    stepController.getLocations('6000');
-    scope.$apply();
-
     expect(stepController.cityHasLocations()).toEqual(false);
     expect(scope.locationAutoCompleteError).toEqual(true);
   });
@@ -227,7 +173,6 @@ describe('Controller: event form step 3', function (){
   });
 
   it('should set the address when initializing with place form data', function () {
-    spyOn(stepController, 'getLocations');
     var address = {
       'addressCountry': 'BE',
       'addressLocality': 'Leuven',
@@ -275,7 +220,6 @@ describe('Controller: event form step 3', function (){
   });
 
   it('should not update location info when street address changes are not confirmed', function () {
-    spyOn(stepController, 'getLocations');
     EventFormData.setLocation(getExampleLocation());
     stepController.init(EventFormData);
 
@@ -286,7 +230,6 @@ describe('Controller: event form step 3', function (){
   });
 
   it('should update the address info when street changes are confirmed', function () {
-    spyOn(stepController, 'getLocations');
     var expectedAddress = {
       'addressCountry': 'BE',
       'addressLocality': 'Leuven',
@@ -312,7 +255,6 @@ describe('Controller: event form step 3', function (){
   });
 
   it('should update the NL address info when street changes and postalCode are confirmed', function () {
-    spyOn(stepController, 'getLocations');
     var expectedAddress = {
       'addressCountry': 'NL',
       'addressLocality': 'Groningen',
@@ -342,7 +284,6 @@ describe('Controller: event form step 3', function (){
   });
 
   it('should ask if the street address is still correct when changing the city', function () {
-    spyOn(stepController, 'getLocations');
     EventFormData.setLocation(getExampleLocation());
     stepController.init(EventFormData);
 
