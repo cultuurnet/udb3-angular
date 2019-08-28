@@ -2412,6 +2412,49 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     return deferredPlaces.promise;
   };
 
+  /**
+   *
+   * Get place by id
+   *
+   * @param {string} id
+   * @returns {Promise}
+   */
+  this.getPlacesById = function(id) {
+
+    var deferredPlaces = $q.defer();
+    var url = appConfig.baseUrl + 'places/';
+    var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      },
+      params: {
+        'id': id,
+        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
+        'disableDefaultFilters': true,
+        'embed': true,
+        'limit': 1000,
+        'sort[created]': 'asc'
+      }
+    };
+
+    var parsePagedCollection = function (response) {
+      var locations = _.map(response.data.member, function (placeJson) {
+        var place = new UdbPlace(placeJson);
+        return jsonLDLangFilter(place, 'nl');
+      });
+
+      deferredPlaces.resolve(locations);
+    };
+
+    var failed = function () {
+      deferredPlaces.reject('something went wrong while getting places by id with id: ' + id);
+    };
+
+    $http.get(url, config).then(parsePagedCollection, failed);
+
+    return deferredPlaces.promise;
+  };
+
 }
 CityAutocomplete.$inject = ["$q", "$http", "appConfig", "UdbPlace", "jsonLDLangFilter"];
 })();
@@ -2717,6 +2760,7 @@ angular.module('udb.core')
   {
     'BE': 'België',
     'NL': 'Nederland',
+    'ZZ': 'Locatie in overleg met de school',
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
     'DE_ADJECTIVE': 'Duitse',
@@ -3202,7 +3246,10 @@ angular.module('udb.core')
         'ok': 'OK',
         'zip': 'Postcode',
         'zip_validate': 'Postcode is een verplicht veld.',
-        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.'
+        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.',
+        'bookable_event_info_alert': 'Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen. Je evenement verschijnt wel op cultuurkuur.be test',
+        'bookable_event_next_button': 'Ga verder',
+        'bookable_event_success_message': 'De locatie wordt bepaald in overleg met de school.'
       },
       step4: {
         'basic_data': 'Basisgegevens',
@@ -3792,6 +3839,7 @@ angular.module('udb.core')
   {
     'BE': 'Belgique',
     'NL': 'Pays-Bas',
+    'BOOKABLE_EVENT': 'Lieu en concertation avec l\'école',
     'EN_ADJECTIVE': 'Anglais',
     'FR_ADJECTIVE': 'Français',
     'DE_ADJECTIVE': 'Duitse',
@@ -6673,7 +6721,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     },
 
     /**
-     * Get the calendar for this event.
+     * Get the location for this event.
      */
     getLocation: function() {
       return this.location;
@@ -7177,6 +7225,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
       this.mainLanguage = jsonPlace.mainLanguage || 'nl';
       this.languages = jsonPlace.languages || [];
+
+      if (jsonPlace.isDummyPlaceForEducationEvents) {
+        this.isDummyPlaceForEducationEvents = jsonPlace.isDummyPlaceForEducationEvents;
+      }
     },
 
     /**
@@ -10741,10 +10793,16 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
   controller.enabled = !componentDisabled && EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
+  controller.isBookableEvent = isBookableEvent;
 
   function setAudienceType(audienceType) {
     eventCrud.setAudienceType(EventFormData, audienceType);
   }
+
+  function isBookableEvent() {
+    return EventFormData.getLocation().isBookableEvent;
+  }
+
 }
 FormAudienceController.$inject = ["EventFormData", "eventCrud", "appConfig"];
 })();
@@ -13924,6 +13982,10 @@ function EventFormController(
       'mainLanguage'
     ];
 
+    if (item.isDummyPlaceForEducationEvents) {
+      EventFormData.isDummyPlaceForEducationEvents = item.isDummyPlaceForEducationEvents;
+    }
+
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {
         EventFormData[sameProperties[i]] = item[sameProperties[i]];
@@ -14635,6 +14697,9 @@ function EventFormStep3Controller(
   // Autocomplete model field for the City/Postal code.
   $scope.cityAutocompleteTextField = '';
 
+  // Id ofdummy location for Bookable Event
+  $scope.bookableEventLocationId = appConfig.offerEditor.bookableEvent.dummyLocationId;
+
   // Autocomplete model field for the Location.
   $scope.locationAutocompleteTextField = '';
 
@@ -14678,7 +14743,6 @@ function EventFormStep3Controller(
   $scope.setMajorInfoChanged = setMajorInfoChanged;
   $scope.filterCities = function(value) {
     return function (city) {
-      var length = value.length;
       var words = value.match(/.+/g);
       var labelMatches = words.filter(function (word) {
         return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
@@ -14738,6 +14802,8 @@ function EventFormStep3Controller(
     $scope.cityAutocompleteTextField = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
+    $scope.bookableEventShowStep4 = false;
+    isBookableEvent();
     controller.stepUncompleted();
   }
 
@@ -14756,29 +14822,48 @@ function EventFormStep3Controller(
 
   /**
    * Select location.
+   * @param {string} $id
+   * @param {string} $label
    * @returns {undefined}
    */
-  controller.selectLocation = function ($item, $model, $label) {
+  controller.selectLocation = function ($id, $label) {
 
-    var selectedLocation = _.find($scope.locationsForCity, function (location) {
-      return location.id === $model;
-    });
+    var selectedLocation = null;
+    if ($scope.isBookableEvent) {
+      // fetch the location based on the id when bookable event
+      return cityAutocomplete
+        .getPlacesById($id)
+        .then(function(locations) {
+          selectedLocation = locations[0];
+          $label = selectedLocation.name;
+          setLocationToFormData(selectedLocation);
+          eventCrud.setAudienceType(EventFormData, 'education');
+          $scope.bookableEventShowStep4 = true;
+        });
+    }else {
+      selectedLocation = _.find($scope.locationsForCity, function (location) {
+        return location.id === $id;
+      });
+      setLocationToFormData(selectedLocation);
+    }
 
-    // Assign selection, hide the location field and show the selection.
-    $scope.selectedLocation = selectedLocation;
-    $scope.locationAutocompleteTextField = '';
-
-    var location = EventFormData.getLocation();
-    location.id = $model;
-    location.name = $label;
-    location.address = selectedLocation.address;
-    EventFormData.setLocation(location);
-
-    controller.stepCompleted();
-    setMajorInfoChanged();
-    $rootScope.$emit('locationSelected', location);
+    function setLocationToFormData(selectedLocation) {
+      // Assign selection, hide the location field and show the selection.
+      $scope.selectedLocation = selectedLocation;
+      $scope.locationAutocompleteTextField = '';
+      var location = EventFormData.getLocation();
+      location.id = $id;
+      location.name = $label;
+      location.address = selectedLocation.address;
+      location.isBookableEvent = selectedLocation.isDummyPlaceForEducationEvents;
+      EventFormData.setLocation(location);
+      controller.stepCompleted();
+      setMajorInfoChanged();
+      $rootScope.$emit('locationSelected', location);
+    }
 
   };
+
   $scope.selectLocation = controller.selectLocation;
 
   /**
@@ -15042,6 +15127,13 @@ function EventFormStep3Controller(
     $scope.showStreetValidation = false;
     $scope.showZipValidation = false;
     controller.stepUncompleted();
+  }
+
+  /**
+   * Checks if event is a bookable event
+   */
+  function isBookableEvent() {
+    $scope.isBookableEvent = ($scope.selectedCountry.code === 'ZZ') ? true : false;
   }
 
   /**
@@ -27090,7 +27182,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-sm-3\">\n" +
     "            <em class=\"extra-task-label\" translate-once=\"audience.entrance\"></em>\n" +
     "        </div>\n" +
-    "        <div class=\"col-sm-8\">\n" +
+    "        <div class=\"col-sm-8\" ng-hide=\"fac.isBookableEvent()\">\n" +
     "            <div class=\"radio\">\n" +
     "                <label>\n" +
     "                    <input ng-model=\"fac.audienceType\"\n" +
@@ -27141,8 +27233,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </label>\n" +
     "            </div>\n" +
     "        </div>\n" +
+    "        <!-- show bookable event help block-->\n" +
+    "        <div class=\"col-sm-8\" ng-show=\"fac.isBookableEvent()\">\n" +
+    "          <span class=\"help-block\" translate-once=\"audience.education_help\"></span>\n" +
+    "        </div>\n" +
     "    </div>\n" +
-    "</div>\n"
+    "</div>"
   );
 
 
@@ -28457,6 +28553,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-12\">\n" +
+    "        <!-- show info alert when event is a BOOKABLE_EVENT -->\n" +
+    "        <div ng-show=\"isBookableEvent\">\n" +
+    "          <div ng-hide=\"bookableEventShowStep4\">\n" +
+    "            <div class=\"alert alert-info\">\n" +
+    "              <span translate-once=\"eventForm.step3.bookable_event_info_alert\"></span>\n" +
+    "            </div>\n" +
+    "            <button type=\"button\" \n" +
+    "                    class=\"btn btn-primary\" \n" +
+    "                    ng-click=\"selectLocation(bookableEventLocationId)\" \n" +
+    "                    translate-once=\"eventForm.step3.bookable_event_next_button\">\n" +
+    "            </button>\n" +
+    "          </div>\n" +
+    "          <div ng-show=\"bookableEventShowStep4\">\n" +
+    "            <span class=\"btn-chosen\" translate-once=\"eventForm.step3.bookable_event_success_message\"></span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
     "        <span ng-show=\"selectedCountry.code==='BE'\">\n" +
     "          <label for=\"gemeente-autocomplete\"\n" +
     "                 id=\"gemeente-label\"\n" +
@@ -28473,7 +28585,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <span translate-once=\"eventForm.step3.choose_residence_helper\" class=\"text-muted\"></span>\n" +
     "        </label>\n" +
     "        </span>\n" +
-    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity\" ng-show=\"selectedCountry=='nl'\">\n" +
+    "        <div id=\"gemeente-kiezer\" ng-hide=\"selectedCity || isBookableEvent\">\n" +
     "          <span style=\"position: relative; display: inline-block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
     "            <input type=\"text\"\n" +
     "                   id=\"gemeente-autocomplete\"\n" +
@@ -28514,7 +28626,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"locationAutocompleteTextField\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderCityLocations($viewValue) | limitTo:50\"\n" +
-    "                     typeahead-on-select=\"selectLocation($item, $model, $label)\"\n" +
+    "                     typeahead-on-select=\"selectLocation($model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
     "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
