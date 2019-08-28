@@ -3106,6 +3106,7 @@ angular.module('udb.core')
       'description': 'Beschrijving',
       'no_description': 'Geen beschrijving',
       'where': 'Waar',
+      'bookable_event_location_info': 'Locatie in overleg met de school.',
       'when': 'Wanneer',
       'labels': 'Labels',
       'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
@@ -27019,12 +27020,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "                <td ng-if=\"::(isEmpty(event.description))\" translate-once=\"preview.no_description\"></td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
+    "              <tr ng-hide=\"::event.location.isDummyPlaceForEducationEvents\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
     "                  {{eventLocation(event)}}\n" +
     "                </td>\n" +
+    "              </tr>\n" +
+    "              <tr ng-show=\"::event.location.isDummyPlaceForEducationEvents\">\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
+    "                <td><span translate-once=\"preview.bookable_event_location_info\"></span></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.when\"></span></td>\n" +
