@@ -14802,7 +14802,7 @@ function EventFormStep3Controller(
   function filterAvailableCountries(isPlace) {
     return $scope.availableCountries.filter(function(country) {
       // country code ZZ (bookable event) should not be visible when eventType is a place
-      return !isPlace || isPlace && country.code !== 'ZZ';
+      return !isPlace || country.code !== 'ZZ';
     });
   }
 
