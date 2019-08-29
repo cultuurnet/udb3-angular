@@ -284,7 +284,11 @@ function EventFormStep3Controller(
       _.each(locations, function(location, key) {
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
-      var sortedLocations = locations.sort(orderLocationsByLevenshtein(filterValue));
+      // never show dummy locations in suggestion box
+      var locationsWithoutDummy = locations.filter(function(location) {
+        return !location.isDummyPlaceForEducationEvents;
+      });
+      var sortedLocations = locationsWithoutDummy.sort(orderLocationsByLevenshtein(filterValue));
       $scope.locationsForCity = sortedLocations;
       return sortedLocations;
     }
