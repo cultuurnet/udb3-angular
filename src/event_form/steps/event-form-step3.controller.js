@@ -197,9 +197,9 @@ function EventFormStep3Controller(
     if ($scope.isBookableEvent) {
       // fetch the location based on the id when bookable event
       return cityAutocomplete
-        .getPlacesById($id)
-        .then(function(locations) {
-          selectedLocation = locations[0];
+        .getPlaceById($id)
+        .then(function(location) {
+          selectedLocation = location;
           $label = selectedLocation.name;
           setLocationToFormData(selectedLocation);
           eventCrud.setAudienceType(EventFormData, 'education');
