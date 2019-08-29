@@ -14734,6 +14734,7 @@ function EventFormStep3Controller(
   $scope.resetStreetValidation = resetStreetValidation;
   $scope.resetZipValidation = resetZipValidation;
   $scope.setMajorInfoChanged = setMajorInfoChanged;
+  $scope.filterAvailableCountries = filterAvailableCountries;
   $scope.filterCities = function(value) {
     return function (city) {
       var words = value.match(/.+/g);
@@ -14784,6 +14785,18 @@ function EventFormStep3Controller(
     setMajorInfoChanged();
   };
   $scope.selectCity = controller.selectCity;
+
+  /**
+   * filter the available countries
+   * @param {boolean} isPlace
+   * @returns {Array}
+   */
+  function filterAvailableCountries(isPlace) {
+    return $scope.availableCountries.filter(function(country) {
+      // country code ZZ (bookable event) should not be visible when eventType is a place
+      return !isPlace || isPlace && country.code !== 'ZZ';
+    });
+  }
 
   /**
    * Change a city selection.
@@ -14849,7 +14862,6 @@ function EventFormStep3Controller(
       location.name = $label;
       location.address = selectedLocation.address;
       location.isBookableEvent = selectedLocation.isDummyPlaceForEducationEvents;
-      console.log('location.isBookableEvent', location.isBookableEvent);
       EventFormData.setLocation(location);
       controller.stepCompleted();
       setMajorInfoChanged();
@@ -28520,7 +28532,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-xs-4\">\n" +
     "          <select ng-change=\"changeCountrySelection()\"\n" +
-    "            ng-options=\"option.code | translate for option in availableCountries track by option.code\"\n" +
+    "            ng-options=\"option.code | translate for option in filterAvailableCountries(eventFormData.isPlace) track by option.code\"\n" +
     "            ng-model=\"selectedCountry\"\n" +
     "            class=\"form-control\"\n" +
     "            ng-show=\"availableCountries.length > 1\">\n" +
