@@ -178,6 +178,7 @@ function EventFormStep3Controller(
     $scope.selectedCity = '';
     $scope.placeStreetAddress = '';
     $scope.cityAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
     $scope.bookableEventShowStep4 = false;
@@ -233,7 +234,7 @@ function EventFormStep3Controller(
       location.id = $id;
       location.name = $label;
       location.address = selectedLocation.address;
-      location.isBookableEvent = selectedLocation.isDummyPlaceForEducationEvents;
+      location.isDummyPlaceForEducationEvents = selectedLocation.isDummyPlaceForEducationEvents;
       EventFormData.setLocation(location);
       controller.stepCompleted();
       setMajorInfoChanged();
@@ -261,6 +262,7 @@ function EventFormStep3Controller(
 
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.locationsSearched = false;
     $scope.selectedCityObj = city;
 
@@ -526,6 +528,10 @@ function EventFormStep3Controller(
       if (EventFormData.location.name) {
         $scope.selectedLocation = angular.copy(EventFormData.location);
       }
+      if (EventFormData.location.isDummyPlaceForEducationEvents) {
+        $scope.isBookableEvent = EventFormData.location.isDummyPlaceForEducationEvents;
+        $scope.bookableEventShowStep4 = true;
+      }
     }
 
     // Set the address when the form contains Place address info
@@ -541,6 +547,13 @@ function EventFormStep3Controller(
         return country.code === address.addressCountry;
       });
     }
+
+    if ($scope.isBookableEvent) {
+      $scope.selectedCountry = _.find($scope.availableCountries, function(country) {
+        return country.code === 'ZZ';
+      });
+    }
+
   };
 
   controller.init(EventFormData);

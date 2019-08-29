@@ -89,7 +89,8 @@ function EventFormController(
         EventFormData.location = {
           id : location.id.split('/').pop(),
           name : location.name,
-          address : location.address
+          address : location.address,
+          isDummyPlaceForEducationEvents: location.isDummyPlaceForEducationEvents
         };
       }
 

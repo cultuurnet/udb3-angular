@@ -26,7 +26,7 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
   }
 
   function isBookableEvent() {
-    return EventFormData.getLocation().isBookableEvent;
+    return EventFormData.getLocation().isDummyPlaceForEducationEvents;
   }
 
 }

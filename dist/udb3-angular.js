@@ -10800,7 +10800,7 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
   }
 
   function isBookableEvent() {
-    return EventFormData.getLocation().isBookableEvent;
+    return EventFormData.getLocation().isDummyPlaceForEducationEvents;
   }
 
 }
@@ -13930,7 +13930,8 @@ function EventFormController(
         EventFormData.location = {
           id : location.id.split('/').pop(),
           name : location.name,
-          address : location.address
+          address : location.address,
+          isDummyPlaceForEducationEvents: location.isDummyPlaceForEducationEvents
         };
       }
 
@@ -14813,6 +14814,7 @@ function EventFormStep3Controller(
     $scope.selectedCity = '';
     $scope.placeStreetAddress = '';
     $scope.cityAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
     $scope.bookableEventShowStep4 = false;
@@ -14868,7 +14870,7 @@ function EventFormStep3Controller(
       location.id = $id;
       location.name = $label;
       location.address = selectedLocation.address;
-      location.isBookableEvent = selectedLocation.isDummyPlaceForEducationEvents;
+      location.isDummyPlaceForEducationEvents = selectedLocation.isDummyPlaceForEducationEvents;
       EventFormData.setLocation(location);
       controller.stepCompleted();
       setMajorInfoChanged();
@@ -14896,6 +14898,7 @@ function EventFormStep3Controller(
 
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.locationsSearched = false;
     $scope.selectedCityObj = city;
 
@@ -15161,6 +15164,10 @@ function EventFormStep3Controller(
       if (EventFormData.location.name) {
         $scope.selectedLocation = angular.copy(EventFormData.location);
       }
+      if (EventFormData.location.isDummyPlaceForEducationEvents) {
+        $scope.isBookableEvent = EventFormData.location.isDummyPlaceForEducationEvents;
+        $scope.bookableEventShowStep4 = true;
+      }
     }
 
     // Set the address when the form contains Place address info
@@ -15176,6 +15183,13 @@ function EventFormStep3Controller(
         return country.code === address.addressCountry;
       });
     }
+
+    if ($scope.isBookableEvent) {
+      $scope.selectedCountry = _.find($scope.availableCountries, function(country) {
+        return country.code === 'ZZ';
+      });
+    }
+
   };
 
   controller.init(EventFormData);
@@ -28601,7 +28615,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "               ng-show=\"cityAutoCompleteError\">\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity\">\n" +
+    "        <div id=\"gemeente-gekozen\" ng-show=\"selectedCity && !isBookableEvent\">\n" +
     "          <span class=\"btn-chosen\" id=\"gemeente-gekozen-button\" ng-bind=\"selectedCity\"></span>\n" +
     "          <a href=\"\"\n" +
     "             class=\"btn btn-default btn-link\"\n" +
@@ -28659,7 +28673,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "          </div>\n" +
     "\n" +
-    "          <div id=\"locatie-gekozen\" ng-show=\"selectedLocation\" >\n" +
+    "          <div id=\"locatie-gekozen\" ng-show=\"selectedLocation && !isBookableEvent\" >\n" +
     "            <span ng-bind=\"selectedLocation.name\"></span>\n" +
     "            <button type=\"button\"\n" +
     "                    class=\"btn btn-default btn-link\"\n" +

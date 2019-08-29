@@ -75,7 +75,7 @@
                ng-show="cityAutoCompleteError">
           </div>
         </div>
-        <div id="gemeente-gekozen" ng-show="selectedCity">
+        <div id="gemeente-gekozen" ng-show="selectedCity && !isBookableEvent">
           <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="selectedCity"></span>
           <a href=""
              class="btn btn-default btn-link"
@@ -133,7 +133,7 @@
             </div>
           </div>
 
-          <div id="locatie-gekozen" ng-show="selectedLocation" >
+          <div id="locatie-gekozen" ng-show="selectedLocation && !isBookableEvent" >
             <span ng-bind="selectedLocation.name"></span>
             <button type="button"
                     class="btn btn-default btn-link"
