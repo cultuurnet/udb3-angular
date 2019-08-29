@@ -74,7 +74,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
    * @param {string} cdbid
    */
   function getCultuurKuurKUrl (cdbid) {
-    if (appConfig.cultuurkuurUrl && !isPlace()) {
+    if (appConfig.cultuurkuurUrl) {
       return appConfig.cultuurkuurUrl + 'agenda/e//' + cdbid;
     } else {
       return false;
@@ -86,7 +86,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
    * @returns {boolean}
    */
   function showCultuurkuurUrl () {
-    return cm.event.audience.audienceType === 'education';
+    return !isPlace() && cm.event.audience.audienceType === 'education';
   }
 
   function isPlace() {
