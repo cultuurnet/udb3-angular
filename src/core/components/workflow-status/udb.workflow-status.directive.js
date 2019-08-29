@@ -27,6 +27,9 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
   cm.sameAsRelations = sameAsRelations;
   cm.isUrl = isUrl;
   cm.getPublicUrl = getPublicUrl;
+  cm.showPublicUrl = showPublicUrl;
+  cm.getCultuurkuurKUrl = getCultuurKuurKUrl;
+  cm.showCultuurkuurUrl = showCultuurkuurUrl;
 
   cm.publicationRulesLink = appConfig.publicationRulesLink;
   cm.publicationBrand = appConfig.publicationUrl.brand;
@@ -56,6 +59,34 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
         return false;
       }
     }
+  }
+
+  /**
+   * show the publication url
+   * @returns {boolean}
+   */
+  function showPublicUrl () {
+    return isPlace() || cm.event.audience.audienceType === 'everyone';
+  }
+
+  /**
+   * get the url for cultuurkuur
+   * @param {string} cdbid
+   */
+  function getCultuurKuurKUrl (cdbid) {
+    if (appConfig.cultuurkuurUrl) {
+      return appConfig.cultuurkuurUrl + 'agenda/e//' + cdbid;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * show the publication url
+   * @returns {boolean}
+   */
+  function showCultuurkuurUrl () {
+    return !isPlace() && cm.event.audience.audienceType === 'education';
   }
 
   function isPlace() {
