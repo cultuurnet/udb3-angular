@@ -2424,40 +2424,30 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
    * @param {string} id
    * @returns {Promise}
    */
-  this.getPlacesById = function(id) {
+  this.getPlaceById = function(id) {
 
-    var deferredPlaces = $q.defer();
-    var url = appConfig.baseUrl + 'places/';
+    var deferredPlace = $q.defer();
+    var url = appConfig.baseUrl + 'place/' + id;
     var config = {
       headers: {
         'X-Api-Key': _.get(appConfig, 'apiKey')
-      },
-      params: {
-        'id': id,
-        'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
-        'disableDefaultFilters': true,
-        'embed': true,
-        'limit': 1000,
-        'sort[created]': 'asc'
       }
     };
 
     var parsePagedCollection = function (response) {
-      var locations = _.map(response.data.member, function (placeJson) {
-        var place = new UdbPlace(placeJson);
-        return jsonLDLangFilter(place, 'nl');
-      });
+      var location = new UdbPlace(response.data);
+      location = jsonLDLangFilter(location, 'nl');
 
-      deferredPlaces.resolve(locations);
+      deferredPlace.resolve(location);
     };
 
     var failed = function () {
-      deferredPlaces.reject('something went wrong while getting places by id with id: ' + id);
+      deferredPlace.reject('something went wrong while getting place by id with id: ' + id);
     };
 
     $http.get(url, config).then(parsePagedCollection, failed);
 
-    return deferredPlaces.promise;
+    return deferredPlace.promise;
   };
 
 }
@@ -6726,9 +6716,6 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.location = location;
     },
 
-    /**
-     * Get the location for this event.
-     */
     getLocation: function() {
       return this.location;
     },
@@ -14838,9 +14825,9 @@ function EventFormStep3Controller(
     if ($scope.isBookableEvent) {
       // fetch the location based on the id when bookable event
       return cityAutocomplete
-        .getPlacesById($id)
-        .then(function(locations) {
-          selectedLocation = locations[0];
+        .getPlaceById($id)
+        .then(function(location) {
+          selectedLocation = location;
           $label = selectedLocation.name;
           setLocationToFormData(selectedLocation);
           eventCrud.setAudienceType(EventFormData, 'education');
@@ -14862,6 +14849,7 @@ function EventFormStep3Controller(
       location.name = $label;
       location.address = selectedLocation.address;
       location.isBookableEvent = selectedLocation.isDummyPlaceForEducationEvents;
+      console.log('location.isBookableEvent', location.isBookableEvent);
       EventFormData.setLocation(location);
       controller.stepCompleted();
       setMajorInfoChanged();

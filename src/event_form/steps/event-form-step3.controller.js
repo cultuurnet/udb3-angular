@@ -106,6 +106,7 @@ function EventFormStep3Controller(
   $scope.resetStreetValidation = resetStreetValidation;
   $scope.resetZipValidation = resetZipValidation;
   $scope.setMajorInfoChanged = setMajorInfoChanged;
+  $scope.filterAvailableCountries = filterAvailableCountries;
   $scope.filterCities = function(value) {
     return function (city) {
       var words = value.match(/.+/g);
@@ -156,6 +157,18 @@ function EventFormStep3Controller(
     setMajorInfoChanged();
   };
   $scope.selectCity = controller.selectCity;
+
+  /**
+   * filter the available countries
+   * @param {boolean} isPlace
+   * @returns {Array}
+   */
+  function filterAvailableCountries(isPlace) {
+    return $scope.availableCountries.filter(function(country) {
+      // country code ZZ (bookable event) should not be visible when eventType is a place
+      return !isPlace || isPlace && country.code !== 'ZZ';
+    });
+  }
 
   /**
    * Change a city selection.
