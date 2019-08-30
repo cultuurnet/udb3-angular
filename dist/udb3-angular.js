@@ -14883,7 +14883,6 @@ function EventFormStep3Controller(
           selectedLocation = location;
           $label = selectedLocation.name;
           setLocationToFormData(selectedLocation);
-          eventCrud.setAudienceType(EventFormData, 'education');
           $scope.bookableEventShowStep4 = true;
         });
     }else {
@@ -15412,6 +15411,10 @@ function EventFormStep4Controller(
     eventCrudPromise.then(function(newEventFormData) {
       EventFormData = newEventFormData;
       EventFormData.majorInfoChanged = false;
+
+      if (EventFormData.getLocation().isDummyPlaceForEducationEvents) {
+        eventCrud.setAudienceType(EventFormData, 'education');
+      }
 
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();

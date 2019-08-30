@@ -216,7 +216,6 @@ function EventFormStep3Controller(
           selectedLocation = location;
           $label = selectedLocation.name;
           setLocationToFormData(selectedLocation);
-          eventCrud.setAudienceType(EventFormData, 'education');
           $scope.bookableEventShowStep4 = true;
         });
     }else {
