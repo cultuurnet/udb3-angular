@@ -13,6 +13,7 @@ angular.module('udb.core')
   {
     'BE': 'België',
     'NL': 'Nederland',
+    'ZZ': 'Locatie in overleg met de school',
     'EN_ADJECTIVE': 'Engelse',
     'FR_ADJECTIVE': 'Franse',
     'DE_ADJECTIVE': 'Duitse',
@@ -353,6 +354,7 @@ angular.module('udb.core')
       'description': 'Beschrijving',
       'no_description': 'Geen beschrijving',
       'where': 'Waar',
+      'bookable_event_location_info': 'Locatie in overleg met de school.',
       'when': 'Wanneer',
       'labels': 'Labels',
       'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
@@ -498,7 +500,10 @@ angular.module('udb.core')
         'ok': 'OK',
         'zip': 'Postcode',
         'zip_validate': 'Postcode is een verplicht veld.',
-        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.'
+        'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.',
+        'bookable_event_info_alert': 'Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen. Je evenement verschijnt wel op cultuurkuur.be test',
+        'bookable_event_next_button': 'Ga verder',
+        'bookable_event_success_message': 'De locatie wordt bepaald in overleg met de school.'
       },
       step4: {
         'basic_data': 'Basisgegevens',

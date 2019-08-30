@@ -89,7 +89,8 @@ function EventFormController(
         EventFormData.location = {
           id : location.id.split('/').pop(),
           name : location.name,
-          address : location.address
+          address : location.address,
+          isDummyPlaceForEducationEvents: location.isDummyPlaceForEducationEvents
         };
       }
 
@@ -140,6 +141,10 @@ function EventFormController(
       'labels',
       'mainLanguage'
     ];
+
+    if (item.isDummyPlaceForEducationEvents) {
+      EventFormData.isDummyPlaceForEducationEvents = item.isDummyPlaceForEducationEvents;
+    }
 
     for (var i = 0; i < sameProperties.length; i++) {
       if (item[sameProperties[i]]) {

@@ -13,7 +13,7 @@
         </div>
         <div class="col-xs-4">
           <select ng-change="changeCountrySelection()"
-            ng-options="option.code | translate for option in availableCountries track by option.code"
+            ng-options="option.code | translate for option in filterAvailableCountries(eventFormData.isPlace) track by option.code"
             ng-model="selectedCountry"
             class="form-control"
             ng-show="availableCountries.length > 1">
@@ -24,6 +24,22 @@
 
     <div class="row">
       <div class="col-xs-12">
+        <!-- show info alert when event is a BOOKABLE_EVENT -->
+        <div ng-show="isBookableEvent">
+          <div ng-hide="bookableEventShowStep4">
+            <div class="alert alert-info">
+              <span translate-once="eventForm.step3.bookable_event_info_alert"></span>
+            </div>
+            <button type="button" 
+                    class="btn btn-primary" 
+                    ng-click="selectLocation(bookableEventLocationId)" 
+                    translate-once="eventForm.step3.bookable_event_next_button">
+            </button>
+          </div>
+          <div ng-show="bookableEventShowStep4">
+            <span class="btn-chosen" translate-once="eventForm.step3.bookable_event_success_message"></span>
+          </div>
+        </div>
         <span ng-show="selectedCountry.code==='BE'">
           <label for="gemeente-autocomplete"
                  id="gemeente-label"
@@ -40,7 +56,7 @@
                 <span translate-once="eventForm.step3.choose_residence_helper" class="text-muted"></span>
         </label>
         </span>
-        <div id="gemeente-kiezer" ng-hide="selectedCity" ng-show="selectedCountry=='nl'">
+        <div id="gemeente-kiezer" ng-hide="selectedCity || isBookableEvent">
           <span style="position: relative; display: inline-block; direction: ltr;" class="twitter-typeahead">
             <input type="text"
                    id="gemeente-autocomplete"
@@ -59,7 +75,7 @@
                ng-show="cityAutoCompleteError">
           </div>
         </div>
-        <div id="gemeente-gekozen" ng-show="selectedCity">
+        <div id="gemeente-gekozen" ng-show="selectedCity && !isBookableEvent">
           <span class="btn-chosen" id="gemeente-gekozen-button" ng-bind="selectedCity"></span>
           <a href=""
              class="btn btn-default btn-link"
@@ -81,7 +97,7 @@
                      class="form-control typeahead"
                      ng-model="asyncPlaceSuggestion"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (getPlaces($viewValue)) | limitTo:50"
-                     typeahead-on-select="selectLocation($item, $model, $label)"
+                     typeahead-on-select="selectLocation($model, $label)"
                      typeahead-min-length="3"
                      typeahead-wait-ms="500"
                      typeahead-loading="loadingLocations"
@@ -117,7 +133,7 @@
             </div>
           </div>
 
-          <div id="locatie-gekozen" ng-show="selectedLocation" >
+          <div id="locatie-gekozen" ng-show="selectedLocation && !isBookableEvent" >
             <span ng-bind="selectedLocation.name"></span>
             <button type="button"
                     class="btn btn-default btn-link"

@@ -5,9 +5,13 @@ describe('Controller: event form step 3', function (){
   beforeEach(module('udb.core', function ($provide) {
     var appConfig = {
       "offerEditor": {
+        "bookableEvent": {
+          "dummyLocationId": ""
+        },
         "countries": [
           {"code": "BE", "default": true},
-          {"code": "NL", "default": false}
+          {"code": "NL", "default": false},
+          {"code": "ZZ", "default": false},
         ]
       }
     };

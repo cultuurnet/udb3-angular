@@ -19,8 +19,14 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
   controller.enabled = !componentDisabled && EventFormData.isEvent;
   controller.audienceType = EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
+  controller.isBookableEvent = isBookableEvent;
 
   function setAudienceType(audienceType) {
     eventCrud.setAudienceType(EventFormData, audienceType);
   }
+
+  function isBookableEvent() {
+    return EventFormData.getLocation().isDummyPlaceForEducationEvents;
+  }
+
 }

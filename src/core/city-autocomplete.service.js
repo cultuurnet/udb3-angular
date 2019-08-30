@@ -107,4 +107,37 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
     return deferredPlaces.promise;
   };
 
+  /**
+   *
+   * Get place by id
+   *
+   * @param {string} id
+   * @returns {Promise}
+   */
+  this.getPlaceById = function(id) {
+
+    var deferredPlace = $q.defer();
+    var url = appConfig.baseUrl + 'place/' + id;
+    var config = {
+      headers: {
+        'X-Api-Key': _.get(appConfig, 'apiKey')
+      }
+    };
+
+    var parsePagedCollection = function (response) {
+      var location = new UdbPlace(response.data);
+      location = jsonLDLangFilter(location, 'nl');
+
+      deferredPlace.resolve(location);
+    };
+
+    var failed = function () {
+      deferredPlace.reject('something went wrong while getting place by id with id: ' + id);
+    };
+
+    $http.get(url, config).then(parsePagedCollection, failed);
+
+    return deferredPlace.promise;
+  };
+
 }
