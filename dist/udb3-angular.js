@@ -5185,11 +5185,11 @@ function UdbApi(
       case 'place':
         offer = new UdbPlace();
         break;
-      case 'organizers':
+      case 'organizer':
         offer = new UdbOrganizer();
         break;
       default:
-        console.warn('Unsupported ' +  type + ' in UdbApi.formateOfferClass');
+        console.warn('Unsupported ' +  type + 'in UdbApi.formateOfferClass');
     }
     offer.parseJson(jsonLD);
     return offer;
@@ -15411,10 +15411,6 @@ function EventFormStep4Controller(
     eventCrudPromise.then(function(newEventFormData) {
       EventFormData = newEventFormData;
       EventFormData.majorInfoChanged = false;
-
-      if (EventFormData.getLocation().isDummyPlaceForEducationEvents) {
-        eventCrud.setAudienceType(EventFormData, 'education');
-      }
 
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
