@@ -3274,7 +3274,7 @@ angular.module('udb.core')
         'zip': 'Postcode',
         'zip_validate': 'Postcode is een verplicht veld.',
         'invalid_zip': 'Dit lijkt een ongeldige postcode. Een postcode bestaat uit 4 cijfers en 2 letters, zonder een spatie ertussen.',
-        'bookable_event_info_alert': 'Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen. Je evenement verschijnt wel op cultuurkuur.be test',
+        'bookable_event_info_alert': 'Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen. Je evenement verschijnt wel op cultuurkuur.be',
         'bookable_event_next_button': 'Ga verder',
         'bookable_event_success_message': 'De locatie wordt bepaald in overleg met de school.'
       },
@@ -5185,11 +5185,11 @@ function UdbApi(
       case 'place':
         offer = new UdbPlace();
         break;
-      case 'organizer':
+      case 'organizers':
         offer = new UdbOrganizer();
         break;
       default:
-        console.warn('Unsupported ' +  type + 'in UdbApi.formateOfferClass');
+        console.warn('Unsupported ' +  type + ' in UdbApi.formateOfferClass');
     }
     offer.parseJson(jsonLD);
     return offer;
@@ -14883,7 +14883,6 @@ function EventFormStep3Controller(
           selectedLocation = location;
           $label = selectedLocation.name;
           setLocationToFormData(selectedLocation);
-          eventCrud.setAudienceType(EventFormData, 'education');
           $scope.bookableEventShowStep4 = true;
         });
     }else {
@@ -15412,6 +15411,10 @@ function EventFormStep4Controller(
     eventCrudPromise.then(function(newEventFormData) {
       EventFormData = newEventFormData;
       EventFormData.majorInfoChanged = false;
+
+      if (EventFormData.getLocation().isDummyPlaceForEducationEvents) {
+        eventCrud.setAudienceType(EventFormData, 'education');
+      }
 
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();

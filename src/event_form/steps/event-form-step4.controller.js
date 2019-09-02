@@ -177,6 +177,10 @@ function EventFormStep4Controller(
       EventFormData = newEventFormData;
       EventFormData.majorInfoChanged = false;
 
+      if (EventFormData.getLocation().isDummyPlaceForEducationEvents) {
+        eventCrud.setAudienceType(EventFormData, 'education');
+      }
+
       $scope.saving = false;
       $scope.resultViewer = new SearchResultViewer();
       $scope.titleInputOptions = {updateOn: 'change blur'};
