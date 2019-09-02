@@ -53,6 +53,9 @@ function EventFormStep3Controller(
 
   var language = $translate.use() || 'nl';
 
+  // Feature toggle
+  $scope.asyncPlaceSuggestionsFeatureToggle = appConfig.asyncPlaceSuggestionsFeatureToggle;
+
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
@@ -153,6 +156,10 @@ function EventFormStep3Controller(
     $scope.selectedCity = $label;
     $scope.selectedCityObj = city;
     $scope.selectedLocation = undefined;
+
+    if (!$scope.asyncPlaceSuggestionsFeatureToggle) {
+      controller.getPlaces();
+    }
 
     setMajorInfoChanged();
   };
@@ -271,12 +278,14 @@ function EventFormStep3Controller(
   controller.getPlaces = function(filterValue) {
 
     // Do not look for place suggestions until the user has entered at least 3 characters
-    if (filterValue.length < 3) {
+    if ($scope.asyncPlaceSuggestionsFeatureToggle && filterValue.length < 3) {
       $scope.locationsSearched = false;
       return;
     }
 
-    $scope.locationsSearched = true;
+    if ($scope.asyncPlaceSuggestionsFeatureToggle) {
+      $scope.locationsSearched = true;
+    }
 
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
@@ -287,7 +296,12 @@ function EventFormStep3Controller(
       var locationsWithoutDummy = locations.filter(function(location) {
         return !location.isDummyPlaceForEducationEvents;
       });
-      var sortedLocations = locationsWithoutDummy.sort(orderLocationsByLevenshtein(filterValue));
+      var sortedLocations = null;
+      if ($scope.asyncPlaceSuggestionsFeatureToggle) {
+        sortedLocations = locationsWithoutDummy.sort(orderLocationsByLevenshtein(filterValue));
+      } else {
+        sortedLocations = locations;
+      }
       $scope.locationsForCity = sortedLocations;
       return sortedLocations;
     }
@@ -317,6 +331,26 @@ function EventFormStep3Controller(
     return $scope.locationsForCity instanceof Array && $scope.locationsForCity.length > 0;
   };
 
+  controller.filterCityLocations = function (filterValue) {
+    if (!$scope.asyncPlaceSuggestionsFeatureToggle) {
+      $scope.locationsSearched = true;
+      return function (location) {
+        var words = filterValue.match(/\w+/g).filter(function (word) {
+          return word.length > 2;
+        });
+        var addressMatches = words.filter(function (word) {
+          return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+        });
+        var nameMatches = words.filter(function (word) {
+          return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+        });
+        return addressMatches.length + nameMatches.length >= words.length;
+      };
+    }
+  };
+
+  $scope.filterCityLocations = controller.filterCityLocations;
+
   /**
    * Order locations by Levenshtein distance
    *
@@ -328,6 +362,8 @@ function EventFormStep3Controller(
       return new Levenshtein(filterValue, location.name + '' + location.address.streetAddress);
     };
   }
+
+  $scope.orderLocationsByLevenshtein = orderLocationsByLevenshtein;
 
   /**
    * Open the place modal.
