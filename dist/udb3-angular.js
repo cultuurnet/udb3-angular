@@ -5918,7 +5918,8 @@ function UdbApi(
       'creator': userId,
       'sort[modified]': 'desc',
       'limit': 50,
-      'start': (page - 1) * 50
+      'start': (page - 1) * 50,
+      'embed': true
     };
 
     return $http
@@ -18067,13 +18068,12 @@ function OrganizationSearchItem() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemController(udbApi, $rootScope) {
+function OrganizationSearchItemController($rootScope, jsonLDLangFilter, $translate) {
   var controller = this;
   var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
+  var defaultLanguage = $translate.use() || 'nl';
 
-  udbApi
-    .getOrganizerByLDId(controller.organizationSearchItem['@id'])
-    .then(showOrganization);
+  showOrganization(controller.organizationSearchItem);
 
   /**
    *
@@ -18081,6 +18081,8 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
    */
   function showOrganization(organization) {
     controller.organization = organization;
+    controller.organization.id = controller.organization['@id'].split('/').pop();
+    controller.organization = jsonLDLangFilter(controller.organization, defaultLanguage, true);
   }
 
   function markAsDeleted() {
@@ -18102,7 +18104,7 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
     }
   }
 }
-OrganizationSearchItemController.$inject = ["udbApi", "$rootScope"];
+OrganizationSearchItemController.$inject = ["$rootScope", "jsonLDLangFilter", "$translate"];
 })();
 
 // Source: src/management/organizers/search/organization-search.controller.js
