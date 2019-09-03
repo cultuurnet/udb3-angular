@@ -40,7 +40,7 @@ function OrganizerController(
   controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
-    if (!$scope.event.title) {
+    if (!$scope.event.name) {
       controller.fetching = true;
       return udbApi
           .getOffer($scope.event['@id'])
@@ -57,6 +57,9 @@ function OrganizerController(
             return cachedOrganizer;
           });
     } else {
+      $scope.event = jsonLDLangFilter($scope.event, defaultLanguage, true);
+      $scope.event.id = $scope.event['@id'].split('/').pop();
+      $scope.offerType = 'organizer';
       controller.fetching = false;
     }
   };

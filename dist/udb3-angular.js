@@ -7816,7 +7816,7 @@ function OrganizerController(
   controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
-    if (!$scope.event.title) {
+    if (!$scope.event.name) {
       controller.fetching = true;
       return udbApi
           .getOffer($scope.event['@id'])
@@ -7833,6 +7833,9 @@ function OrganizerController(
             return cachedOrganizer;
           });
     } else {
+      $scope.event = jsonLDLangFilter($scope.event, defaultLanguage, true);
+      $scope.event.id = $scope.event['@id'].split('/').pop();
+      $scope.offerType = 'organizer';
       controller.fetching = false;
     }
   };
@@ -8140,10 +8143,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       dash.username = user.nick;
     }
 
-    /**
-     * @param {PagedCollection} results
-     */
-    function setItemViewerResults(results) {
+    function reformatJsonLDData(results) {
       if (results.member) {
         results.member = results.member.map(function(member) {
           var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
@@ -8152,6 +8152,14 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
           return member;
         });
       }
+      return results;
+    }
+
+    /**
+     * @param {PagedCollection} results
+     */
+    function setItemViewerResults(results) {
+      results = reformatJsonLDData(results);
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
       $document.scrollTop(0);
@@ -8168,6 +8176,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
      * @param {PagedCollection} results
      */
     function setOrganizerViewerResults(results) {
+      results = reformatJsonLDData(results);
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewerOrganizers.setResults(results);
       $document.scrollTop(0);
