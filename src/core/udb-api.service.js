@@ -993,7 +993,8 @@ function UdbApi(
       'creator': userId,
       'sort[modified]': 'desc',
       'limit': 50,
-      'start': (page - 1) * 50
+      'start': (page - 1) * 50,
+      'embed': true
     };
 
     return $http
