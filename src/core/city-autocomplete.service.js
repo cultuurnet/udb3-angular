@@ -24,6 +24,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByZipcode = function(zipcode, country, freeTextSearch) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
+    var asyncPlaceSuggestionsFeatureToggle = appConfig.asyncPlaceSuggestionsFeatureToggle;
     var config = {
       headers: {
         'X-Api-Key': _.get(appConfig, 'apiKey')
@@ -34,7 +35,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
         'disableDefaultFilters': true,
         'embed': true,
-        'limit': 1000,
+        'limit': (asyncPlaceSuggestionsFeatureToggle) ? 1000 : 3000,
         'sort[created]': 'asc'
       }
     };
