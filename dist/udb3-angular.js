@@ -3867,7 +3867,7 @@ angular.module('udb.core')
   {
     'BE': 'Belgique',
     'NL': 'Pays-Bas',
-    'BOOKABLE_EVENT': 'Lieu en concertation avec l\'école',
+    'ZZ': 'Lieu en concertation avec l\'école',
     'EN_ADJECTIVE': 'Anglais',
     'FR_ADJECTIVE': 'Français',
     'DE_ADJECTIVE': 'Duitse',
@@ -4351,7 +4351,10 @@ angular.module('udb.core')
         'straat_validate': 'Rue et numéro sont des domaines obligatoires.',
         'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
         'ok': 'OK',
-        'zip': 'Code postal'
+        'zip': 'Code postal',
+        'bookable_event_info_alert': 'Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen. Je evenement verschijnt wel op cultuurkuur.be',
+        'bookable_event_next_button': 'Ga verder',
+        'bookable_event_success_message': 'De locatie wordt bepaald in overleg met de school.'
       },
       step4: {
         'basic_data': 'Données de base',
