@@ -5186,11 +5186,11 @@ function UdbApi(
       case 'place':
         offer = new UdbPlace();
         break;
-      case 'organizer':
+      case 'organizers':
         offer = new UdbOrganizer();
         break;
       default:
-        console.warn('Unsupported ' +  type + 'in UdbApi.formateOfferClass');
+        console.warn('Unsupported ' +  type + ' in UdbApi.formateOfferClass');
     }
     offer.parseJson(jsonLD);
     return offer;
@@ -5919,7 +5919,8 @@ function UdbApi(
       'creator': userId,
       'sort[modified]': 'desc',
       'limit': 50,
-      'start': (page - 1) * 50
+      'start': (page - 1) * 50,
+      'embed': true
     };
 
     return $http
@@ -7816,7 +7817,7 @@ function OrganizerController(
   controller.labelRemoved = labelRemoved;
 
   controller.init = function () {
-    if (!$scope.event.title) {
+    if (!$scope.event.name) {
       controller.fetching = true;
       return udbApi
           .getOffer($scope.event['@id'])
@@ -7833,6 +7834,9 @@ function OrganizerController(
             return cachedOrganizer;
           });
     } else {
+      $scope.event = jsonLDLangFilter($scope.event, defaultLanguage, true);
+      $scope.event.id = $scope.event['@id'].split('/').pop();
+      $scope.offerType = 'organizer';
       controller.fetching = false;
     }
   };
@@ -8140,10 +8144,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       dash.username = user.nick;
     }
 
-    /**
-     * @param {PagedCollection} results
-     */
-    function setItemViewerResults(results) {
+    function reformatJsonLDData(results) {
       if (results.member) {
         results.member = results.member.map(function(member) {
           var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
@@ -8152,6 +8153,14 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
           return member;
         });
       }
+      return results;
+    }
+
+    /**
+     * @param {PagedCollection} results
+     */
+    function setItemViewerResults(results) {
+      results = reformatJsonLDData(results);
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
       $document.scrollTop(0);
@@ -8168,6 +8177,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
      * @param {PagedCollection} results
      */
     function setOrganizerViewerResults(results) {
+      results = reformatJsonLDData(results);
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewerOrganizers.setResults(results);
       $document.scrollTop(0);
@@ -18103,13 +18113,12 @@ function OrganizationSearchItem() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemController(udbApi, $rootScope) {
+function OrganizationSearchItemController($rootScope, jsonLDLangFilter, $translate) {
   var controller = this;
   var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
+  var defaultLanguage = $translate.use() || 'nl';
 
-  udbApi
-    .getOrganizerByLDId(controller.organizationSearchItem['@id'])
-    .then(showOrganization);
+  showOrganization(controller.organizationSearchItem);
 
   /**
    *
@@ -18117,6 +18126,8 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
    */
   function showOrganization(organization) {
     controller.organization = organization;
+    controller.organization.id = controller.organization['@id'].split('/').pop();
+    controller.organization = jsonLDLangFilter(controller.organization, defaultLanguage, true);
   }
 
   function markAsDeleted() {
@@ -18138,7 +18149,7 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
     }
   }
 }
-OrganizationSearchItemController.$inject = ["udbApi", "$rootScope"];
+OrganizationSearchItemController.$inject = ["$rootScope", "jsonLDLangFilter", "$translate"];
 })();
 
 // Source: src/management/organizers/search/organization-search.controller.js
