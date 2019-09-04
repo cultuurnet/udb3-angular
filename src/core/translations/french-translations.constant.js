@@ -498,9 +498,9 @@ angular.module('udb.core')
         'street_validate_long': 'Cela semble une adresse invalide. Si vous utilisez des espaces dans l\'adresse, vous ne pouvez pas avoir plus de 15 caractères après le dernier espace.',
         'ok': 'OK',
         'zip': 'Code postal',
-        'bookable_event_info_alert': 'Evenementen waarvan de locatie in overleg wordt bepaald, worden niet gepubliceerd op UiTinVlaanderen of andere publiekskanalen. Je evenement verschijnt wel op cultuurkuur.be',
-        'bookable_event_next_button': 'Ga verder',
-        'bookable_event_success_message': 'De locatie wordt bepaald in overleg met de school.'
+        'bookable_event_info_alert': 'Les événements dont la localisation est déterminée en consultation ne sont pas publiés sur UiTinVlaanderen ou d\'autres chaînes publiques. Votre événement apparaîtra sur Cultuurkuur.be',
+        'bookable_event_next_button': 'Continuer',
+        'bookable_event_success_message': 'L\'emplacement est déterminé en consultation avec l\'école.'
       },
       step4: {
         'basic_data': 'Données de base',
