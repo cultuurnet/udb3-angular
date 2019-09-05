@@ -26,7 +26,10 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
   }
 
   function isBookableEvent() {
-    return EventFormData.getLocation().isDummyPlaceForEducationEvents;
+    if (EventFormData.getLocation().isDummyPlaceForEducationEvents) {
+      controller.audienceType = 'education';
+      return true;
+    }
   }
 
 }
