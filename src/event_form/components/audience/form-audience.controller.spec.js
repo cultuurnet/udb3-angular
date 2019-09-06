@@ -40,7 +40,7 @@ describe('Controller: Form: Audience', function () {
     expect(controller.audienceType).toEqual('education');
   });
 
-  it('for a bookable event should be education', function () {
+  it('should set the default audience type to education for bookable events', function () {
     var formData = { isEvent: true };
     formData.getLocation = function() {
       this.isDummyPlaceForEducationEvents = true;
