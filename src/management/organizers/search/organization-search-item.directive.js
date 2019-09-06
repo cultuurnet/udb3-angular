@@ -24,13 +24,12 @@ function OrganizationSearchItem() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemController(udbApi, $rootScope) {
+function OrganizationSearchItemController($rootScope, jsonLDLangFilter, $translate) {
   var controller = this;
   var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
+  var defaultLanguage = $translate.use() || 'nl';
 
-  udbApi
-    .getOrganizerByLDId(controller.organizationSearchItem['@id'])
-    .then(showOrganization);
+  showOrganization(controller.organizationSearchItem);
 
   /**
    *
@@ -38,6 +37,8 @@ function OrganizationSearchItemController(udbApi, $rootScope) {
    */
   function showOrganization(organization) {
     controller.organization = organization;
+    controller.organization.id = controller.organization['@id'].split('/').pop();
+    controller.organization = jsonLDLangFilter(controller.organization, defaultLanguage, true);
   }
 
   function markAsDeleted() {

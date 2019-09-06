@@ -200,6 +200,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.facilities = _.filter(_.get(jsonPlace, 'terms', []), {domain: 'facility'});
       this.mainLanguage = jsonPlace.mainLanguage || 'nl';
       this.languages = jsonPlace.languages || [];
+
+      if (jsonPlace.isDummyPlaceForEducationEvents) {
+        this.isDummyPlaceForEducationEvents = jsonPlace.isDummyPlaceForEducationEvents;
+      }
     },
 
     /**

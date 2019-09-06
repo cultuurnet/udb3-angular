@@ -53,6 +53,9 @@ function EventFormStep3Controller(
 
   var language = $translate.use() || 'nl';
 
+  // Feature toggle
+  $scope.asyncPlaceSuggestionsFeatureToggle = appConfig.asyncPlaceSuggestionsFeatureToggle;
+
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
@@ -61,6 +64,9 @@ function EventFormStep3Controller(
 
   // Autocomplete model field for the City/Postal code.
   $scope.cityAutocompleteTextField = '';
+
+  // Id ofdummy location for Bookable Event
+  $scope.bookableEventLocationId = appConfig.offerEditor.bookableEvent.dummyLocationId;
 
   // Autocomplete model field for the Location.
   $scope.locationAutocompleteTextField = '';
@@ -103,6 +109,7 @@ function EventFormStep3Controller(
   $scope.resetStreetValidation = resetStreetValidation;
   $scope.resetZipValidation = resetZipValidation;
   $scope.setMajorInfoChanged = setMajorInfoChanged;
+  $scope.filterAvailableCountries = filterAvailableCountries;
   $scope.filterCities = function(value) {
     return function (city) {
       var words = value.match(/.+/g);
@@ -150,9 +157,25 @@ function EventFormStep3Controller(
     $scope.selectedCityObj = city;
     $scope.selectedLocation = undefined;
 
+    if (!$scope.asyncPlaceSuggestionsFeatureToggle) {
+      controller.getPlaces();
+    }
+
     setMajorInfoChanged();
   };
   $scope.selectCity = controller.selectCity;
+
+  /**
+   * filter the available countries
+   * @param {boolean} isPlace
+   * @returns {Array}
+   */
+  function filterAvailableCountries(isPlace) {
+    return $scope.availableCountries.filter(function(country) {
+      // country code ZZ (bookable event) should not be visible when eventType is a place
+      return !isPlace || country.code !== 'ZZ';
+    });
+  }
 
   /**
    * Change a city selection.
@@ -162,8 +185,11 @@ function EventFormStep3Controller(
     $scope.selectedCity = '';
     $scope.placeStreetAddress = '';
     $scope.cityAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.locationsSearched = false;
     $scope.locationAutocompleteTextField = '';
+    $scope.bookableEventShowStep4 = false;
+    isBookableEvent();
     controller.stepUncompleted();
   }
 
@@ -182,29 +208,47 @@ function EventFormStep3Controller(
 
   /**
    * Select location.
+   * @param {string} $id
+   * @param {string} $label
    * @returns {undefined}
    */
-  controller.selectLocation = function ($item, $model, $label) {
+  controller.selectLocation = function ($id, $label) {
 
-    var selectedLocation = _.find($scope.locationsForCity, function (location) {
-      return location.id === $model;
-    });
+    var selectedLocation = null;
+    if ($scope.isBookableEvent) {
+      // fetch the location based on the id when bookable event
+      return cityAutocomplete
+        .getPlaceById($id)
+        .then(function(location) {
+          selectedLocation = location;
+          $label = selectedLocation.name;
+          setLocationToFormData(selectedLocation);
+          $scope.bookableEventShowStep4 = true;
+        });
+    }else {
+      selectedLocation = _.find($scope.locationsForCity, function (location) {
+        return location.id === $id;
+      });
+      setLocationToFormData(selectedLocation);
+    }
 
-    // Assign selection, hide the location field and show the selection.
-    $scope.selectedLocation = selectedLocation;
-    $scope.locationAutocompleteTextField = '';
-
-    var location = EventFormData.getLocation();
-    location.id = $model;
-    location.name = $label;
-    location.address = selectedLocation.address;
-    EventFormData.setLocation(location);
-
-    controller.stepCompleted();
-    setMajorInfoChanged();
-    $rootScope.$emit('locationSelected', location);
+    function setLocationToFormData(selectedLocation) {
+      // Assign selection, hide the location field and show the selection.
+      $scope.selectedLocation = selectedLocation;
+      $scope.locationAutocompleteTextField = '';
+      var location = EventFormData.getLocation();
+      location.id = $id;
+      location.name = $label;
+      location.address = selectedLocation.address;
+      location.isDummyPlaceForEducationEvents = selectedLocation.isDummyPlaceForEducationEvents;
+      EventFormData.setLocation(location);
+      controller.stepCompleted();
+      setMajorInfoChanged();
+      $rootScope.$emit('locationSelected', location);
+    }
 
   };
+
   $scope.selectLocation = controller.selectLocation;
 
   /**
@@ -224,6 +268,7 @@ function EventFormStep3Controller(
 
     $scope.selectedLocation = false;
     $scope.locationAutocompleteTextField = '';
+    $scope.asyncPlaceSuggestion = '';
     $scope.locationsSearched = false;
     $scope.selectedCityObj = city;
 
@@ -233,19 +278,30 @@ function EventFormStep3Controller(
   controller.getPlaces = function(filterValue) {
 
     // Do not look for place suggestions until the user has entered at least 3 characters
-    if (filterValue.length < 3) {
+    if ($scope.asyncPlaceSuggestionsFeatureToggle && filterValue.length < 3) {
       $scope.locationsSearched = false;
       return;
     }
 
-    $scope.locationsSearched = true;
+    if ($scope.asyncPlaceSuggestionsFeatureToggle) {
+      $scope.locationsSearched = true;
+    }
 
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
       _.each(locations, function(location, key) {
         locations[key] = jsonLDLangFilter(locations[key], language, true);
       });
-      var sortedLocations = locations.sort(orderLocationsByLevenshtein(filterValue));
+      // never show dummy locations in suggestion box
+      var locationsWithoutDummy = locations.filter(function(location) {
+        return !location.isDummyPlaceForEducationEvents;
+      });
+      var sortedLocations = null;
+      if ($scope.asyncPlaceSuggestionsFeatureToggle) {
+        sortedLocations = locationsWithoutDummy.sort(orderLocationsByLevenshtein(filterValue));
+      } else {
+        sortedLocations = locations;
+      }
       $scope.locationsForCity = sortedLocations;
       return sortedLocations;
     }
@@ -275,6 +331,26 @@ function EventFormStep3Controller(
     return $scope.locationsForCity instanceof Array && $scope.locationsForCity.length > 0;
   };
 
+  controller.filterCityLocations = function (filterValue) {
+    if (!$scope.asyncPlaceSuggestionsFeatureToggle) {
+      $scope.locationsSearched = true;
+      return function (location) {
+        var words = filterValue.match(/\w+/g).filter(function (word) {
+          return word.length > 2;
+        });
+        var addressMatches = words.filter(function (word) {
+          return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+        });
+        var nameMatches = words.filter(function (word) {
+          return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+        });
+        return addressMatches.length + nameMatches.length >= words.length;
+      };
+    }
+  };
+
+  $scope.filterCityLocations = controller.filterCityLocations;
+
   /**
    * Order locations by Levenshtein distance
    *
@@ -286,6 +362,8 @@ function EventFormStep3Controller(
       return new Levenshtein(filterValue, location.name + '' + location.address.streetAddress);
     };
   }
+
+  $scope.orderLocationsByLevenshtein = orderLocationsByLevenshtein;
 
   /**
    * Open the place modal.
@@ -451,6 +529,13 @@ function EventFormStep3Controller(
   }
 
   /**
+   * Checks if event is a bookable event
+   */
+  function isBookableEvent() {
+    $scope.isBookableEvent = ($scope.selectedCountry.code === 'ZZ') ? true : false;
+  }
+
+  /**
    * Mark the major info as changed.
    */
   function setMajorInfoChanged() {
@@ -482,6 +567,10 @@ function EventFormStep3Controller(
       if (EventFormData.location.name) {
         $scope.selectedLocation = angular.copy(EventFormData.location);
       }
+      if (EventFormData.location.isDummyPlaceForEducationEvents) {
+        $scope.isBookableEvent = EventFormData.location.isDummyPlaceForEducationEvents;
+        $scope.bookableEventShowStep4 = true;
+      }
     }
 
     // Set the address when the form contains Place address info
@@ -497,6 +586,13 @@ function EventFormStep3Controller(
         return country.code === address.addressCountry;
       });
     }
+
+    if ($scope.isBookableEvent) {
+      $scope.selectedCountry = _.find($scope.availableCountries, function(country) {
+        return country.code === 'ZZ';
+      });
+    }
+
   };
 
   controller.init(EventFormData);

@@ -97,10 +97,7 @@
       dash.username = user.nick;
     }
 
-    /**
-     * @param {PagedCollection} results
-     */
-    function setItemViewerResults(results) {
+    function reformatJsonLDData(results) {
       if (results.member) {
         results.member = results.member.map(function(member) {
           var memberContext = (member['@context']) ? member['@context'].split('/').pop() : '';
@@ -109,6 +106,14 @@
           return member;
         });
       }
+      return results;
+    }
+
+    /**
+     * @param {PagedCollection} results
+     */
+    function setItemViewerResults(results) {
+      results = reformatJsonLDData(results);
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewer.setResults(results);
       $document.scrollTop(0);
@@ -125,6 +130,7 @@
      * @param {PagedCollection} results
      */
     function setOrganizerViewerResults(results) {
+      results = reformatJsonLDData(results);
       offerLocator.addPagedCollection(results);
       dash.pagedItemViewerOrganizers.setResults(results);
       $document.scrollTop(0);

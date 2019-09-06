@@ -260,11 +260,11 @@ function UdbApi(
       case 'place':
         offer = new UdbPlace();
         break;
-      case 'organizer':
+      case 'organizers':
         offer = new UdbOrganizer();
         break;
       default:
-        console.warn('Unsupported ' +  type + 'in UdbApi.formateOfferClass');
+        console.warn('Unsupported ' +  type + ' in UdbApi.formateOfferClass');
     }
     offer.parseJson(jsonLD);
     return offer;
@@ -993,7 +993,8 @@ function UdbApi(
       'creator': userId,
       'sort[modified]': 'desc',
       'limit': 50,
-      'start': (page - 1) * 50
+      'start': (page - 1) * 50,
+      'embed': true
     };
 
     return $http
