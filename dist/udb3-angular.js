@@ -10836,7 +10836,7 @@ function FormAudienceController(EventFormData, eventCrud, appConfig) {
   var componentDisabled = _.get(appConfig, 'offerEditor.disableAudience');
 
   controller.enabled = !componentDisabled && EventFormData.isEvent;
-  controller.audienceType = EventFormData.audienceType;
+  controller.audienceType = isBookableEvent() ? 'education' : EventFormData.audienceType;
   controller.setAudienceType = setAudienceType;
   controller.isBookableEvent = isBookableEvent;
 
