@@ -31762,7 +31762,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <div class=\"col-sm-2\">\n" +
     "    <div class=\"udb-place-name\" ng-bind=\"event.location.name\"></div>\n" +
-    "    <div class=\"udb-place-city\" ng-bind=\"event.location.address.addressLocality\"></div>\n" +
+    "    <div class=\"udb-place-city\" ng-hide=\"event.location.isDummyPlaceForEducationEvents\" ng-bind=\"event.location.address.addressLocality\"></div>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-sm-2\" ng-switch=\"event.calendarType\">\n" +

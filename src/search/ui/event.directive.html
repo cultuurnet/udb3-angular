@@ -19,7 +19,7 @@
 
   <div class="col-sm-2">
     <div class="udb-place-name" ng-bind="event.location.name"></div>
-    <div class="udb-place-city" ng-bind="event.location.address.addressLocality"></div>
+    <div class="udb-place-city" ng-hide="event.location.isDummyPlaceForEducationEvents" ng-bind="event.location.address.addressLocality"></div>
   </div>
 
   <div class="col-sm-2" ng-switch="event.calendarType">
