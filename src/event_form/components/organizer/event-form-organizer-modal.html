@@ -45,14 +45,16 @@
           </div>
       </div>
 
-      <div class="form-group" ng-class="{'has-error' : showValidation && organizerForm.name.$error.required }">
+      <div class="form-group" ng-class="{'has-error' : (showValidation && organizerForm.name.$error.required) || organizerForm.name.$error.maxlength}">
         <label translate-once="organizer.modal.label_name"></label>
         <input type="text"
                name="name"
                class="form-control"
                ng-model="newOrganizer.name"
                ng-change="updateName()"
+               ng-maxlength="250"
                required>
+        <span class="help-block" ng-show="organizerForm.name.$error.maxlength" translate-once="organizer.modal.name_maxlength"></span>
         <p class="help-block" translate-once="organizer.modal.name_help"></p>
         <span class="help-block"
               ng-show="showValidation && organizerForm.name.$error.required"
