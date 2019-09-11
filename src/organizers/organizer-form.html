@@ -12,7 +12,7 @@
                     <span ng-show="ofc.websiteError">Er ging iets mis met het controleren van de website.<br /></span>
                     <span ng-show="ofc.organizerForm.website.$error.required || ofc.urlError">Gelieve een website in te vullen.<br /></span>
                     <span ng-show="ofc.organizerForm.name.$error.required">Gelieve een naam in te vullen.<br /></span>
-                    <span ng-show="ofc.organizerForm.name.$error.maxlength">De naam van de organisatie kan maar 250 karakters bevatten.<br /></span>
+                    <span ng-show="ofc.organizerForm.name.$error.maxlength" translate-once="organizer.modal.name_maxlength"><br /></span>
                     <span ng-show="ofc.addressError">Gelieve een geldig adres in te vullen.<br /></span>
                     <span ng-show="ofc.contactError">Gelieve alle contactinfo correct in te vullen.<br /></span>
                     <span ng-show="ofc.saveError">Er ging iets mis tijdens het opslaan.<br /></span>

@@ -3592,6 +3592,7 @@ angular.module('udb.core')
         'alert_button': 'gebruik {{organizerName}} als organisatie',
         'name_help': 'De officiële publieke naam van de organisatie.',
         'name_required': 'Gelieve een naam in te vullen',
+        'name_maxlength': 'De naam van de organisatie kan maar 250 karakters bevatten.',
         'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
         'doubles': 'We vonden deze gelijkaardige items:',
         'select': 'Selecteren',
@@ -4668,6 +4669,7 @@ angular.module('udb.core')
         'alert_button': 'utilisez {{organizerName}} comme organisation',
         'name_help': 'Le nom public officiel de l\'organisation.',
         'name_required': 'Veuillez introduire un nom',
+        'name_maxlength': 'Le nom de l\'organisation ne peut contenir que 250 caractères.',
         'add_confirm': 'Vous êtes sûr d\'ajouter \"{{newOrganizerName}}\" comme organisation? La  double importation d\'organisations n\'est pas permise.',
         'doubles': 'Nous avons trouvé des items similaires:',
         'select': 'Sélectionner',
@@ -27811,14 +27813,16 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"form-group\" ng-class=\"{'has-error' : showValidation && organizerForm.name.$error.required }\">\n" +
+    "      <div class=\"form-group\" ng-class=\"{'has-error' : (showValidation && organizerForm.name.$error.required) || organizerForm.name.$error.maxlength}\">\n" +
     "        <label translate-once=\"organizer.modal.label_name\"></label>\n" +
     "        <input type=\"text\"\n" +
     "               name=\"name\"\n" +
     "               class=\"form-control\"\n" +
     "               ng-model=\"newOrganizer.name\"\n" +
     "               ng-change=\"updateName()\"\n" +
+    "               ng-maxlength=\"250\"\n" +
     "               required>\n" +
+    "        <span class=\"help-block\" ng-show=\"organizerForm.name.$error.maxlength\" translate-once=\"organizer.modal.name_maxlength\"></span>\n" +
     "        <p class=\"help-block\" translate-once=\"organizer.modal.name_help\"></p>\n" +
     "        <span class=\"help-block\"\n" +
     "              ng-show=\"showValidation && organizerForm.name.$error.required\"\n" +
@@ -31090,7 +31094,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <span ng-show=\"ofc.websiteError\">Er ging iets mis met het controleren van de website.<br /></span>\n" +
     "                    <span ng-show=\"ofc.organizerForm.website.$error.required || ofc.urlError\">Gelieve een website in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.organizerForm.name.$error.required\">Gelieve een naam in te vullen.<br /></span>\n" +
-    "                    <span ng-show=\"ofc.organizerForm.name.$error.maxlength\">De naam van de organisatie kan maar 250 karakters bevatten.<br /></span>\n" +
+    "                    <span ng-show=\"ofc.organizerForm.name.$error.maxlength\" translate-once=\"organizer.modal.name_maxlength\"><br /></span>\n" +
     "                    <span ng-show=\"ofc.addressError\">Gelieve een geldig adres in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.contactError\">Gelieve alle contactinfo correct in te vullen.<br /></span>\n" +
     "                    <span ng-show=\"ofc.saveError\">Er ging iets mis tijdens het opslaan.<br /></span>\n" +

@@ -818,6 +818,7 @@ angular.module('udb.core')
         'alert_button': 'gebruik {{organizerName}} als organisatie',
         'name_help': 'De officiële publieke naam van de organisatie.',
         'name_required': 'Gelieve een naam in te vullen',
+        'name_maxlength': 'De naam van de organisatie kan maar 250 karakters bevatten.',
         'add_confirm': 'Ben je zeker dat je \"{{newOrganizerName}}\" wil toevoegen als organisatie? Dubbele invoer van organisaties is niet toegelaten.',
         'doubles': 'We vonden deze gelijkaardige items:',
         'select': 'Selecteren',
