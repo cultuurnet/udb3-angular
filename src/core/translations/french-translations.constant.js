@@ -814,6 +814,7 @@ angular.module('udb.core')
         'alert_button': 'utilisez {{organizerName}} comme organisation',
         'name_help': 'Le nom public officiel de l\'organisation.',
         'name_required': 'Veuillez introduire un nom',
+        'name_maxlength': 'Le nom de l\'organisation ne peut contenir que 250 caractères.',
         'add_confirm': 'Vous êtes sûr d\'ajouter \"{{newOrganizerName}}\" comme organisation? La  double importation d\'organisations n\'est pas permise.',
         'doubles': 'Nous avons trouvé des items similaires:',
         'select': 'Sélectionner',
