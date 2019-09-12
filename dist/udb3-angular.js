@@ -5069,10 +5069,11 @@ function UdbApi(
   /**
    * @param {string} queryString - The query used to find offers.
    * @param {number} [start] - From which offset the result set should start.
+   * @param {boolean} showDrafts - Include offers which are drafts.
    * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
    *  search results or a failure.
    */
-  this.findOffers = function (queryString, start) {
+  this.findOffers = function (queryString, start, showDrafts) {
     var offset = start || 0,
         searchParams = {
           start: offset,
@@ -5080,11 +5081,16 @@ function UdbApi(
           workflowStatus: 'READY_FOR_VALIDATION,APPROVED',
           embed: true
         };
+
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.params = searchParams;
 
     if (queryString.length) {
       searchParams.q = queryString;
+    }
+
+    if (showDrafts) {
+      searchParams.workflowStatus = 'DRAFT,READY_FOR_VALIDATION,APPROVED';
     }
 
     return $http
@@ -21599,9 +21605,11 @@ function OfferLocator($q, udbApi) {
     }
 
     var queryString = 'id:"' + uuid + '"';
+    var startOffset = 0;
+    var showDrafts = true;
 
     udbApi
-      .findOffers(queryString)
+      .findOffers(queryString, startOffset, showDrafts)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
