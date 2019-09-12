@@ -159,7 +159,7 @@ function UdbApi(
     }
 
     if (showDrafts) {
-      searchParams.workflowStatus = 'DRAFT,READY_FOR_VALIDATION,APPROVED';
+      searchParams.workflowStatus = 'DRAFT,' + searchParams.workflowStatus;
     }
 
     return $http
