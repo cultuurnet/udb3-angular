@@ -71,9 +71,11 @@ function OfferLocator($q, udbApi) {
     }
 
     var queryString = 'id:"' + uuid + '"';
+    var startOffset = 0;
+    var showDrafts = true;
 
     udbApi
-      .findOffers(queryString)
+      .findOffers(queryString, startOffset, showDrafts)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
