@@ -2344,6 +2344,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'addressCountry': country,
         'workflowStatus': 'DRAFT,READY_FOR_VALIDATION,APPROVED',
         'disableDefaultFilters': true,
+        'isDuplicate': false,
         'embed': true,
         'limit': (asyncPlaceSuggestionsFeatureToggle) ? 1000 : 3000,
         'sort[created]': 'asc'
