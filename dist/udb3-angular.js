@@ -2717,7 +2717,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
    */
   function getCultuurKuurKUrl (cdbid) {
     if (appConfig.cultuurkuur.cultuurkuurUrl) {
-      return appConfig.cultuurkuur.cultuurkuurUrl + 'agenda/e//' + cdbid;
+      return appConfig.cultuurkuur.cultuurkuurUrl + 'agenda/e/x/' + cdbid;
     } else {
       return false;
     }
@@ -7621,7 +7621,7 @@ function EventCultuurKuurComponentController(appConfig, uitidAuth) {
   if (!cm.cultuurkuurMaintenance) {
     var cultuurkuurUrl = _.get(appConfig, 'cultuurkuur.cultuurkuurUrl');
     cm.user = uitidAuth.getUser();
-    cm.previewLink = cultuurkuurUrl + 'agenda/e//' + cm.event.id + getUTMParameters('preview1.0');
+    cm.previewLink = cultuurkuurUrl + 'agenda/e/x/' + cm.event.id + getUTMParameters('preview1.0');
     cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
     cm.continueLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('continue1.0');
     cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
